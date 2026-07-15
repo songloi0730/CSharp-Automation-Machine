@@ -1,4 +1,4 @@
-<!-- SECTION: TRANG BÌA -->
+<!-- SECTION: COVER -->
 ---
 # C# cho Automation Machine
 
@@ -140,7 +140,9 @@ bị, giao thức, và mức độ chuẩn hoá kiến trúc phần mềm. Đi�
 hơn con số trong bảng là **cách đặt câu hỏi**: bài toán có cần xử lý ảnh,
 AI, hay tích hợp hệ thống IT không? Có cần thời gian đáp ứng cực chặt
 (**hard real-time**: deadline tuyệt đối — trễ quá deadline dù chỉ một
-lần cũng coi là lỗi hệ thống, ví dụ vòng servo yêu cầu trễ dưới 1µs) hay
+lần cũng coi là lỗi hệ thống, ví dụ vòng servo qua EtherCAT chạy chu kỳ
+250µs–1ms với jitter — độ trôi thời gian giữa các chu kỳ, khác với bản
+thân chu kỳ — phải giữ dưới 1µs để đảm bảo tính xác định) hay
 chấp nhận được độ trễ nhỏ (**soft real-time**: deadline mềm, trễ vài
 ms chấp nhận được — HMI, recipe)? PLC chạy hard real-time; C# trên
 Windows chỉ đảm bảo soft real-time. Vòng đời dự kiến của máy là bao lâu,
@@ -476,11 +478,13 @@ cứng"**
 
 Đây là ngộ nhận nguy hiểm nhất. C#/.NET chạy trên Windows — một hệ điều
 hành không đảm bảo thời gian thực cứng, và Garbage Collector có thể tạm
-dừng chương trình bất kỳ lúc nào trong vài mili-giây — thực tế Windows
-scheduler có thể gây jitter 15–50ms trong điều kiện bình thường, đỉnh có
-thể vượt 100ms khi có background process. So với PLC scan 1–5ms hay servo
-loop 250µs, đây là sự chênh lệch hoàn toàn không chấp nhận được cho điều
-khiển chuyển động. An toàn và điều khiển thời gian thực cứng luôn phải ở
+dừng chương trình bất kỳ lúc nào trong vài mili-giây; Windows scheduler
+tự thân cũng không cam kết độ trễ tối đa, và một background process bất
+kỳ (antivirus quét file, Windows Update kiểm tra ngầm...) có thể chiếm
+CPU đủ lâu để phá vỡ bất kỳ ràng buộc thời gian nào ứng dụng C# cố giữ.
+So với PLC scan 1–5ms hay servo loop 250µs, đây là sự chênh lệch hoàn
+toàn không chấp nhận được cho điều khiển chuyển động. An toàn và điều
+khiển thời gian thực cứng luôn phải ở
 tầng PLC/Safety PLC/motion controller chuyên dụng — không bao giờ đặt
 hoàn toàn vào tay ứng dụng C#.
 
@@ -2215,7 +2219,7 @@ Dùng `Func`/`Action` cho callback đơn giản; chỉ tự đặt tên delegate
 
 **Lambda** <!--idx:Lambda--> là cách viết nhanh một hàm tại chỗ: `(tham số) => biểu thức`. Bạn đã thấy nó ở Code 4.7. Lambda phổ biến cho callback ngắn, đăng ký event, và truy vấn dữ liệu (LINQ, mục 4.6). Hai dạng: biểu thức (`x => x * 2`) và khối lệnh (`(s, e) => { ...; ... }`).
 
-> 📌 **Lưu ý — closure trong vòng lặp:** Lambda có thể "bắt" (capture) biến bên ngoài. Trong vòng lặp đăng ký handler, bắt biến lặp sai cách tạo bug khó thấy (mọi handler dùng chung giá trị cuối). Khi cần, tạo biến cục bộ trong mỗi vòng, hoặc dùng method group.
+> 📌 **Lưu ý — closure trong vòng lặp `for`:** Lambda có thể "bắt" (capture) biến bên ngoài. Trong vòng lặp `for` đăng ký handler, bắt biến đếm dùng chung qua các lần lặp tạo bug khó thấy (mọi handler dùng chung giá trị cuối cùng của biến đếm). Khi cần, tạo biến cục bộ trong mỗi vòng, hoặc dùng method group. Lưu ý: `foreach` **không** gặp lỗi này từ C# 5.0 trở đi — compiler đã tự tạo một bản sao biến lặp riêng cho mỗi vòng, không còn cần biện pháp phòng thủ thủ công như `for`.
 
 ### 4.4.3  Event — phát thông báo, giảm phụ thuộc
 
@@ -2470,7 +2474,7 @@ UpdateChart(spectrum);   // chạy tiếp trên luồng UI sau khi tính xong
 
 Vì sao **không** dùng `Task.Run` cho I/O? Khi `ReadPlcAsync()` chạy bằng `async/await` *thật sự*, hệ điều hành đăng ký callback và **trả thread về pool ngay** — không có thread nào "ngồi chờ" PLC trả lời. Còn `Task.Run(() => plc.ReadSync())` vẫn chiếm **một thread suốt thời gian chờ**; nhiều lời gọi đồng thời sẽ ngốn nhiều thread và dễ gây ThreadPool starvation. Quy tắc: I/O dùng `async/await` với API async *thật* — đừng bọc một lời gọi đồng bộ vào `Task.Run` rồi tưởng là async.
 
-> ⚠️ **"Timeout huỷ được" khác "timeout chỉ ngừng chờ":** Bọc một method đồng bộ vào `Task.Run` rồi áp `CancellationToken`/timeout lên Task đó (`await Task.Run(() => plc.ReadSync(), ct)`) KHÔNG huỷ được thao tác thật đang chạy bên trong — `ct` chỉ ngăn *bạn tiếp tục chờ kết quả*, còn `plc.ReadSync()` vẫn chạy tiếp âm thầm trên một thread nền cho tới khi tự xong (hoặc treo mãi nếu thiết bị không phản hồi). Timeout *huỷ được thật sự* chỉ có khi SDK gốc hỗ trợ `CancellationToken` xuyên suốt (như `ReadStatusAsync(ct)` ở Code 5.2) — token khi đó truyền tới tận lệnh I/O hệ điều hành, huỷ đúng thao tác đang treo. Nhầm hai khái niệm này là một dẫn tới ảo giác nguy hiểm: tưởng đã "timeout an toàn" nhưng thao tác cũ vẫn chạy ngầm, có thể xung đột với lần gọi tiếp theo vào cùng thiết bị.
+> ⚠️ **`CancellationToken` truyền vào `Task.Run` gần như vô dụng một khi delegate đã bắt đầu chạy:** Bọc một method đồng bộ vào `Task.Run` rồi áp `CancellationToken`/timeout lên Task đó (`await Task.Run(() => plc.ReadSync(), ct)`) nguy hiểm hơn nhiều so với trực giác thông thường. `ct` truyền vào `Task.Run` **chỉ có tác dụng huỷ việc *lên lịch*** delegate đó — nếu nó chưa kịp bắt đầu chạy trên ThreadPool (một khung thời gian rất hẹp, gần như luôn bị bỏ lỡ trong thực tế vì ThreadPool nhận việc gần như ngay lập tức). Một khi `plc.ReadSync()` đã bắt đầu chạy, `ct` bị **bỏ qua hoàn toàn** — không chỉ thao tác bên trong không dừng, mà **`await` bên ngoài cũng không trả về sớm**: lệnh gọi vẫn treo nguyên cho tới khi `plc.ReadSync()` tự xong (hoặc treo mãi nếu thiết bị không phản hồi). Đây không phải "chỉ ngừng chờ mà vẫn timeout được" — thực tế là timeout hoàn toàn không có tác dụng trong tình huống thường gặp nhất. Timeout *huỷ được thật sự* chỉ có khi SDK gốc hỗ trợ `CancellationToken` xuyên suốt (như `ReadStatusAsync(ct)` ở Code 5.2) — token khi đó truyền tới tận lệnh I/O hệ điều hành, huỷ đúng thao tác đang treo. Đừng dựa vào `Task.Run(syncMethod, ct)` để có timeout đáng tin cậy dưới bất kỳ hình thức nào — nguồn: Stephen Cleary, "Cancellation, Part 1: Overview".
 
 **Phối hợp nhiều Task — `Task.WhenAll` và `Task.WhenAny`.** Khi có nhiều thao tác async độc lập, đừng `await` lần lượt (cộng dồn thời gian) — khởi chạy hết rồi chờ chung. `Task.WhenAll` chờ *tất cả* xong:
 
@@ -3087,7 +3091,7 @@ callback từ driver hardware (Chương 4, mục 4.4).
 Event-driven giúp giảm tải vòng quét và tăng tính phản ứng, nhưng nếu lạm dụng
 mà không kiểm soát luồng, hệ thống trở nên khó theo dõi.
 
-Lưu ý: nhiều giao thức fieldbus phổ biến (EtherCAT, Modbus, ADS) vẫn hoạt động
+Lưu ý: nhiều giao thức fieldbus phổ biến (EtherCAT, Modbus) vẫn hoạt động
 theo cơ chế polling theo chu kỳ ở tầng driver/giao tiếp — Event-driven ở đây nói
 về tầng logic ứng dụng phản ứng với thay đổi trạng thái, không thay thế hoàn
 toàn polling ở tầng giao thức.
@@ -4493,9 +4497,11 @@ không tự quét lại gì cả nếu luồng UI đang bận.
 
 WinForms áp một luật cứng: **chỉ luồng đã tạo ra control mới được phép đọc/ghi
 control đó** — luôn là luồng UI. Nếu một luồng nền (worker thread đọc PLC,
-thread đọc camera...) cố gán trực tiếp `label1.Text = "..."`, .NET Framework
-ở chế độ debug sẽ ném `InvalidOperationException`: *"Cross-thread operation
-not valid..."*. Đây không phải bug — đây là runtime đang bảo vệ bạn khỏi race
+thread đọc camera...) cố gán trực tiếp `label1.Text = "..."`, .NET sẽ ném
+`InvalidOperationException`: *"Cross-thread operation not valid..."* —
+**mặc định bật cả ở Debug lẫn Release** (từ .NET Framework 2.0, qua cờ tĩnh
+`Control.CheckForIllegalCrossThreadCalls = true`), không phải hành vi riêng
+của debug build. Đây không phải bug — đây là runtime đang bảo vệ bạn khỏi race
 condition, vì Windows chỉ cho phép một luồng nhận thông điệp giao diện.
 
 Cách chuẩn để một luồng khác yêu cầu luồng UI làm việc gì đó là qua
@@ -6832,9 +6838,9 @@ giảm chói và giảm mỏi mắt khi nhìn liên tục 8–12 tiếng mỗi c
 
 ```
 Nền tối #1E1E1E:
-  Chữ trắng #FFFFFF        — contrast ~13:1  ✅ dùng cho giá trị chính
-  Chữ xám nhạt #A0A0A0     — contrast ~5.5:1 ✅ dùng cho label phụ
-  Chữ xám đậm #606060      — contrast ~2.8:1 ❌ dưới ngưỡng, tránh dùng
+  Chữ trắng #FFFFFF        — contrast ~16.7:1 ✅ dùng cho giá trị chính
+  Chữ xám nhạt #A0A0A0     — contrast ~6.4:1  ✅ dùng cho label phụ
+  Chữ xám đậm #606060      — contrast ~2.8:1  ❌ dưới ngưỡng, tránh dùng
 ```
 
 Tỷ lệ tương phản tối thiểu **4.5:1** (mục tiêu lý tưởng **7:1** cho giá trị
@@ -6880,7 +6886,7 @@ với `Colors.xaml` (Code 10.2) nhưng đổi sắc độ để giữ đúng con
 
     <!-- Text — contrast trên nền #F5F5F5 -->
     <SolidColorBrush x:Key="BrushTextPrimary"   Color="#212121"/> <!-- ~15:1 ✅ -->
-    <SolidColorBrush x:Key="BrushTextSecondary" Color="#616161"/> <!-- ~4.9:1 ✅ -->
+    <SolidColorBrush x:Key="BrushTextSecondary" Color="#616161"/> <!-- ~5.7:1 ✅ -->
 
     <!-- Alarm severity — ý nghĩa giữ nguyên theo ISA-101 (Bảng 10.2a),
          chỉ đổi sắc độ để đủ contrast trên nền sáng -->
@@ -6904,11 +6910,14 @@ bằng công cụ — là lỗi thường gặp nhất khi làm theo yêu cầu 
 
 ### 10.2.2 Bảng màu alarm theo severity
 
-ISA-101 định nghĩa một bảng màu alarm chuẩn hoá theo mức độ nghiêm trọng,
-mỗi màu **chỉ được dùng cho đúng mục đích đó** — không tái sử dụng cho
-button hay trang trí:
+ISA-101 đưa ra **nguyên tắc** phân biệt màu theo mức độ nghiêm trọng (nền
+trung tính, chỉ dùng màu bão hoà cao cho tình huống bất thường) chứ không
+quy định một bảng mã hex cụ thể — mỗi dự án tự chọn palette miễn tuân thủ
+nguyên tắc đó. Palette cụ thể dưới đây là lựa chọn của MeoFrame theo tinh
+thần ISA-101, mỗi màu **chỉ được dùng cho đúng mục đích đó** trong dự án
+này — không tái sử dụng cho button hay trang trí:
 
-**Bảng 10.2a — Màu theo Severity (chuẩn ISA-101)**
+**Bảng 10.2a — Màu theo Severity (palette MeoFrame, theo tinh thần ISA-101)**
 
 | Mức | Màu | Mã hex | Không được dùng màu này cho |
 |---|---|---|---|
@@ -7434,10 +7443,12 @@ cửa sổ popup có thể bị đóng hay che khuất. Vị trí cố định, 
 hoặc dưới màn hình, không bao giờ chiếm không gian của khu vực điều khiển
 chính. Nguyên tắc hiển thị: mặc định chỉ hiện alarm đang active và chưa
 acknowledge, sắp xếp theo severity trước rồi đến thời gian phát sinh — alarm
-Critical mới nhất luôn ở vị trí dễ thấy nhất. Thực tế ISA-101 khuyến nghị
-Banner hiển thị tối đa 3–5 dòng; khi vượt quá, hiển thị "... và X alarm
-khác" và hướng operator sang Alarm Summary (mục 10.3.4) thay vì cố nhồi
-toàn bộ danh sách vào vùng persistent.
+Critical mới nhất luôn ở vị trí dễ thấy nhất. ISA-101 không quy định một
+con số dòng cụ thể cho Banner, nhưng nguyên tắc "vùng persistent phải gọn,
+không chiếm không gian điều khiển chính" kéo theo giới hạn thực tế thường
+chỉ vài dòng hiển thị đồng thời; khi vượt quá sức chứa đó, hiển thị "...
+và X alarm khác" và hướng operator sang Alarm Summary (mục 10.3.4) thay vì
+cố nhồi toàn bộ danh sách vào vùng persistent.
 
 ### 10.3.3 Binding `AlarmModel` lên Alarm Banner
 
@@ -8225,7 +8236,7 @@ Entity có ba đặc điểm chính: định danh (MachineId, AxisId, SensorId) 
 **Code 11.1 — Entity Machine (Aggregate Root)**
 
 ```csharp
-public sealed class Machine
+public sealed partial class Machine
 {
     public Guid Id { get; }
     public string Name { get; }
@@ -8344,7 +8355,7 @@ public enum AxisState
 
 Xét tình huống thực tế: kỹ sư truyền tốc độ chuyển động bằng kiểu double, đơn vị mm/s. Sau khi refactor, một chỗ nhầm truyền m/s — trục chạy nhanh hơn 1000 lần, kích E-Stop. Lỗi này không phát hiện được qua type checking vì cả hai đều là double.
 
-Value Object giải quyết bằng cách đóng gói đơn vị đo vào kiểu riêng. Đặc điểm: không có identity (hai Position(100mm) là một), bất biến (immutable), so sánh theo giá trị. C# 9+ có `readonly record struct`: compiler tự sinh constructor, `==`/`!=` và `ToString()` từ danh sách tham số — không cần viết boilerplate thủ công, 1 dòng thay cho ~20 dòng class truyền thống:
+Value Object giải quyết bằng cách đóng gói đơn vị đo vào kiểu riêng. Đặc điểm: không có identity (hai Position(100mm) là một), bất biến (immutable), so sánh theo giá trị. C# 10+ có `readonly record struct`: compiler tự sinh constructor, `==`/`!=` và `ToString()` từ danh sách tham số — không cần viết boilerplate thủ công, 1 dòng thay cho ~20 dòng class truyền thống:
 
 **Code 11.3 — Value Objects Position, Velocity, Acceleration**
 
@@ -8640,6 +8651,19 @@ namespace MachineDomain.MesIntegration.Handlers
  
             await _stationRepo.SaveAsync(station, ct).ConfigureAwait(false);
         }
+    }
+}
+```
+
+**Code 11.9b — IProductionStationRepository (khai báo trong MES Integration Context)**
+
+```csharp
+namespace MachineDomain.MesIntegration
+{
+    public interface IProductionStationRepository
+    {
+        Task<ProductionStation> GetByMachineIdAsync(Guid machineId, CancellationToken ct = default);
+        Task SaveAsync(ProductionStation station, CancellationToken ct = default);
     }
 }
 ```
@@ -8982,7 +9006,37 @@ public sealed class MachineContext
  
     // Lệnh từ bên ngoài → ủy quyền cho state hiện tại
     public void Send(string command) => _current.Handle(this, command);
+
+    // Snapshot input mới nhất — State đọc qua đây khi xử lý lệnh nội bộ "Tick"
+    public IoSnapshot? LastSnapshot { get; private set; }
+
+    private readonly Dictionary<string, bool> _pendingOutputs = new();
+
+    // State ghi output mong muốn vào đây (đồng bộ, trong OnEntry/OnExit/Handle);
+    // scan loop tự flush ra phần cứng bằng IoAdapter (bất đồng bộ) — xem Code 12.5.
+    public IReadOnlyDictionary<string, bool> PendingOutputs => _pendingOutputs;
+    public void SetOutput(string name, bool value) => _pendingOutputs[name] = value;
+
+    // Gọi mỗi chu kỳ scan để State tự kiểm tra timeout, đọc phản hồi cảm biến...
+    // Tick không phải lệnh operator/MES — tái sử dụng Handle() sẵn có với command đặc biệt "Tick"
+    public void Tick(IoSnapshot snapshot)
+    {
+        LastSnapshot = snapshot;
+        _current.Handle(this, "Tick");
+    }
 }
+```
+
+**Code 12.2b — IIoAdapter và IoSnapshot (đọc/ghi tín hiệu vật lý mỗi scan cycle)**
+
+```csharp
+public interface IIoAdapter
+{
+    Task<IoSnapshot> ReadSnapshotAsync(CancellationToken ct = default);
+    Task WriteOutputsAsync(IReadOnlyDictionary<string, bool> outputs, CancellationToken ct = default);
+}
+
+public sealed record IoSnapshot(IReadOnlyDictionary<string, bool> DigitalInputs);
 ```
 
 Context không biết gì về logic từng trạng thái — nó chỉ chuyển giao lệnh. State tự quyết định có cho phép chuyển sang trạng thái khác hay không. Thêm trạng thái mới chỉ cần tạo class mới implement `IState`, không động đến Context hay các State khác.
@@ -9150,17 +9204,17 @@ private async Task RunScanLoopAsync(CancellationToken ct)
         var cycleStart = Stopwatch.GetTimestamp();
  
         // Pha 1: Đọc toàn bộ input một lần — snapshot nhất quán
-        var snapshot = await _ioAdapter
+        var snapshot = await _context.IoAdapter
             .ReadSnapshotAsync(ct).ConfigureAwait(false);
  
         // Pha 2: Xử lý logic — đơn luồng, tất định (deterministic)
-        _context.ApplyInputSnapshot(snapshot);
-        _context.Tick();         // Tick() thuộc MachineContext (không phải IState) —
-                                 // Context ủy quyền xuống State hiện tại qua Handle()
-                                 // để State tự xử lý timeout, alarm theo đúng trạng thái
+        _context.Tick(snapshot);  // Tick() thuộc MachineContext (Code 12.2b), không phải IState —
+                                  // Context ủy quyền xuống State hiện tại qua Handle("Tick")
+                                  // để State tự xử lý timeout, alarm theo đúng trạng thái
  
-        // Pha 3: Ghi output — kết quả từ state hiện tại
-        await _ioAdapter
+        // Pha 3: Ghi output — State đã gọi ctx.SetOutput() (nếu cần) trong Pha 2,
+        // scan loop chỉ flush buffer PendingOutputs đó ra phần cứng
+        await _context.IoAdapter
             .WriteOutputsAsync(_context.PendingOutputs, ct).ConfigureAwait(false);
  
         // Giữ chu kỳ scan (điển hình: 10ms–100ms tùy yêu cầu real-time)
@@ -9205,10 +9259,11 @@ PackML ban đầu thiết kế cho máy đóng gói (packaging), nhưng mô hìn
 
 **Lưu ý về Mode và State:** PackML thực tế định nghĩa hai khái niệm tách biệt — **State** (trạng thái máy đang ở) và **Mode** (ngữ cảnh vận hành: Automatic, Manual, Maintenance, Setup). Một Mode có thể chứa một tập con các State phù hợp (ví dụ: trong Manual Mode, máy có Idle và Execute riêng dành cho thao tác tay từng bước, không phải chạy tự động liên tục). Chương này tập trung vào **State Model** — đủ dùng cho phần lớn ứng dụng điều khiển máy. Mode là khái niệm mở rộng cần khi hệ thống phải phân biệt rõ ngữ cảnh vận hành khác nhau (máy có cả màn tự động và màn vận hành tay), nhưng không phải mọi dự án đều cần triển khai đầy đủ.
 
-PackML định nghĩa 17 trạng thái chia làm hai nhóm:
+PackML định nghĩa 17 trạng thái chia làm ba nhóm theo tài liệu OMAC gốc:
 
-- **Trạng thái nghỉ (Resting state):** máy ổn định, không tự chuyển sang trạng thái khác nếu không có trigger bên ngoài — chờ lệnh từ operator hoặc MES. "Nghỉ" không có nghĩa là không chuyển động: Execute là Resting state dù servo đang vận hành bình thường, vì Execute sẽ ở nguyên Execute cho tới khi nhận được Hold, Stop, Suspend hoặc Abort.
-- **Trạng thái chuyển tiếp (Transitional state):** máy đang thực hiện một hành động nội bộ và tự chuyển sang trạng thái tiếp theo khi xong (phát SC) — không cần trigger bên ngoài. Starting và Completing là Transitional: chúng tự kết thúc ngay khi nhiệm vụ khởi động/hoàn tất hoàn thành.
+- **Trạng thái nghỉ / Wait state:** máy ổn định, không tự chuyển sang trạng thái khác nếu không có trigger bên ngoài — chờ lệnh từ operator hoặc MES. Có thể tồn tại lâu dài.
+- **Trạng thái chuyển tiếp / Acting state:** máy đang thực hiện một hành động nội bộ và tự chuyển sang trạng thái tiếp theo khi xong (phát SC) — không cần trigger bên ngoài, chỉ tồn tại trong một khoảng thời gian ngắn. Starting và Completing là Acting: chúng tự kết thúc ngay khi nhiệm vụ khởi động/hoàn tất hoàn thành.
+- **Trạng thái kép / Dual state:** một Wait state nhưng "trông giống" Acting state vì máy vẫn đang vận hành liên tục. Execute là trường hợp duy nhất thuộc nhóm này: servo vẫn chạy, sản phẩm vẫn ra, nhưng máy không tự chuyển trạng thái nếu không nhận lệnh Hold/Stop/Suspend/Abort — về bản chất giao thức nó vẫn là Wait state.
 
 **Bảng 12.4 — 17 trạng thái PackML (ISA-TR88.00.02)**
 
@@ -9230,9 +9285,9 @@ PackML định nghĩa 17 trạng thái chia làm hai nhóm:
 | **Stopping** | Chuyển tiếp | Đang thực hiện trình tự dừng an toàn (chờ chu kỳ hiện tại kết thúc) |
 | **Aborting** | Chuyển tiếp | Đang thực hiện dừng khẩn cấp (tất cả chuyển động dừng ngay lập tức) |
 | **Clearing** | Chuyển tiếp | Đang xoá điều kiện lỗi sau khi Abort (kiểm tra, đặt lại cảm biến) |
-| **Execute** | Nghỉ* | Máy đang sản xuất bình thường |
+| **Execute** | Kép (Dual)* | Máy đang sản xuất bình thường |
 
-*Execute là trạng thái nghỉ đặc biệt: máy "nghỉ" ở chế độ sản xuất liên tục — ổn định cho đến khi nhận lệnh Hold/Stop/Abort/Suspend.
+*Execute là trạng thái kép (Dual state) duy nhất trong PackML: xét theo giao thức nó là Wait state (không tự chuyển nếu không có lệnh), nhưng máy vẫn đang hoạt động liên tục như một Acting state — ổn định cho đến khi nhận lệnh Hold/Stop/Abort/Suspend.
 
 **Bảng 12.5 — 9 lệnh PackML và luồng chuyển trạng thái**
 
@@ -9858,6 +9913,15 @@ public interface ISensorDeviceRepository
 }
 ```
 
+> 📌 **Lưu ý:** `IAxisDeviceRepository` ở đây minh hoạ Device Gateway Pattern theo đúng
+> "hình dạng" Repository (định danh bằng `Guid`, đơn vị `decimal`) để nhất quán với các
+> pattern khác trong mục 13.1 (Unit of Work, Specification). Đây **không phải** interface
+> trục được dùng xuyên suốt phần còn lại của chương — từ mục 13.2 trở đi, chương này
+> chuyển sang thiết kế Capability-based (`IMotionAxis`/`IMotionAxisDriver`, định danh bằng
+> `string AxisId`, đơn vị `double`) kết hợp Factory + Bridge Pattern, và đó mới là thiết kế
+> áp dụng cho Device Manager (mục 13.3) cũng như sơ đồ kiến trúc tổng hợp cuối chương. Một
+> dự án thật chỉ nên chọn **một** trong hai cách biểu diễn trục, không trộn lẫn cả hai.
+>
 > ⚠️ **Cảnh báo:** Command nguy hiểm (`HomeAsync`, `MoveAbsAsync`) không được retry tự
 > động khi mất gói tin. Nếu lệnh Home đã chạy nhưng ACK bị mất và ta gửi lại, trục có
 > thể home lần 2 trong khi đang ở vị trí không an toàn. Luôn xác nhận trạng thái thiết
@@ -11076,8 +11140,9 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 Năm 2019, một kỹ sư tích hợp nhận bàn giao ba máy cho một nhà máy SMT: máy in kem
 hàn (solder paste printer), máy gắn linh kiện (pick-and-place), và lò hàn reflow. Ba
 máy từ ba vendor khác nhau, ba giao thức khác nhau. Máy in kết nối qua Modbus TCP —
-giao thức ra đời năm 1979, không có bảo mật, không có metadata, nhưng vẫn chạy ổn
-định ở mọi nhà máy trên thế giới. Máy gắn linh kiện dùng OPC UA — Information Model
+biến thể TCP/IP (1999) của giao thức Modbus gốc ra đời năm 1979, không có bảo mật,
+không có metadata, nhưng vẫn chạy ổn định ở mọi nhà máy trên thế giới. Máy gắn linh
+kiện dùng OPC UA — Information Model
 phân cấp, PKI certificate, subscription event. Lò hàn yêu cầu SECS/GEM — tiêu chuẩn
 SEMI mà mọi máy trong nhà máy bán dẫn phải tuân thủ để MES có thể điều phối tự động.
 
@@ -11310,8 +11375,8 @@ OPC UA tích hợp bảo mật từ tầng thiết kế (không phải add-on nh
 |---|---|---|---|
 | `None` | Không | Không | Lab/debug — KHÔNG production |
 | `Basic256Sha256` | SHA-256 RSA | AES-256-CBC | Production chuẩn |
-| `Aes128_Sha256_RsaOaep` | SHA-256 RSA-OAEP | AES-128-CTR | Balanced |
-| `Aes256_Sha256_RsaPss` | SHA-256 RSA-PSS | AES-256-CTR | Bảo mật cao nhất |
+| `Aes128_Sha256_RsaOaep` | SHA-256 RSA-OAEP | AES-128-CBC | Balanced |
+| `Aes256_Sha256_RsaPss` | SHA-256 RSA-PSS | AES-256-CBC | Bảo mật cao nhất |
 
 > 📌 **Lưu ý thực tế:** `Basic256Sha256` là lựa chọn phổ biến nhất trong OT — được hỗ trợ
 > rộng rãi trên PLC và thiết bị hiện trường từ các hãng lớn. `Aes256_Sha256_RsaPss` bảo mật
@@ -11328,9 +11393,10 @@ OPC UA tích hợp bảo mật từ tầng thiết kế (không phải add-on nh
 
 **Máy nào dùng Modbus?** Biến tần (VFD) ABB/Danfoss/Yaskawa, PLC Schneider Modicon M221/M241,
 cảm biến nhiệt độ/áp suất đa số, đồng hồ điện năng, máy HVAC, thiết bị cũ được retrofit.
-Modbus RTU/TCP xuất hiện từ năm 1979 và vẫn là giao thức automation phổ biến nhất thế giới vì
-tính đơn giản: không cần cấu hình, không có PKI, không có Information Model — chỉ là đọc/ghi
-thanh ghi số nguyên.
+Modbus (serial, RTU/ASCII) ra đời năm 1979; Modbus TCP — đóng gói cùng khung dữ liệu qua
+TCP/IP thay vì cổng nối tiếp — được Schneider Electric công bố năm 1999. Cả hai vẫn là
+giao thức automation phổ biến nhất thế giới vì tính đơn giản: không cần cấu hình, không
+có PKI, không có Information Model — chỉ là đọc/ghi thanh ghi số nguyên.
 
 #### Bốn vùng địa chỉ Modbus
 
@@ -12216,7 +12282,7 @@ async void OnPrimaryMessage(SecsMessage primaryMsg, Action<SecsMessage> reply)
 | Tiêu chí | OPC UA | Modbus TCP | SECS/GEM (HSMS) |
 |---|---|---|---|
 | **Ngành áp dụng** | Đa ngành, IT/OT bridge | Đa ngành, thiết bị cũ, cảm biến | Bán dẫn, SMT, FPD, Solar |
-| **Ra đời** | 2008 (IEC 62541) | 1979 (Modicon) | 1980 (SEMI E4), HSMS 1994 |
+| **Ra đời** | 2006–2008 (OPC Foundation), IEC 62541 chuẩn hoá ~2010 | 1979 (Modicon, serial); TCP: 1999 | 1980 (SEMI E4), HSMS 1994 |
 | **Chuẩn** | OPC Foundation, IEC 62541 | Modbus.org | SEMI E4/E5/E30/E37 |
 | **Information Model** | Có (phân cấp, gợi nghĩa) | Không (chỉ địa chỉ số) | Có (CEID, DVID, VID định nghĩa trước) |
 | **Bảo mật** | PKI, certificate, encrypt | Không có | HSMS: không; thêm TLS nếu cần |
@@ -15110,7 +15176,7 @@ cần cấu hình Recovery một lần sau khi đăng ký service:
 
 ```cmd
 REM Tự restart sau 1 phút khi crash; reset bộ đếm số lần crash sau 1 ngày:
-sc failure MeoFrameGatewayService reset=86400 actions=restart/60000
+sc failure MeoFrameGatewayService reset= 86400 actions= restart/60000
 ```
 
 Chạy lệnh này đúng một lần sau khi cài service — nhờ vậy, một lỗi kết
@@ -16831,7 +16897,7 @@ Polling toàn bộ danh sách tag PLC chỉ để trả lời "còn sống khôn
 công cụ giám sát thành một phần của vấn đề. Health check nên nhẹ nhất
 có thể — một tag kiểm tra, một phép đo round-trip time là đủ.
 
-<!-- SECTION: LỜI KẾT -->
+<!-- SECTION: LoiKet -->
 ---
 # Lời kết
 
@@ -16941,7 +17007,7 @@ Không có gì trong sách này thay thế được kinh nghiệm chúng ta sẽ
 luỹ trên chính máy của mình. Nếu nó giúp vững hơn một chút ở những bước
 đầu — vậy là đủ.
 
-<!-- SECTION: PHỤ LỤC A — C++/CLI -->
+<!-- SECTION: PhuLucA_CPPCLIWrapper -->
 ---
 # Phụ lục A: C++/CLI — Cầu nối C# và thư viện phần cứng gốc
 
@@ -17255,7 +17321,7 @@ managed code, gây ra lỗi biên dịch khó hiểu không liên quan gì đế
 thật của wrapper. Code A.2 đã làm đúng — không bỏ qua cặp
 `#pragma managed(push, off)`/`#pragma managed(pop)` dù có vẻ dư thừa.
 
-<!-- SECTION: PHỤ LỤC B — BẢNG THUẬT NGỮ -->
+<!-- SECTION: Phu_Luc_B_Thuat_Ngu -->
 ---
 # Phụ lục B: Bảng thuật ngữ
 
@@ -18350,3 +18416,4 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **xUnit** — Framework kiểm thử đơn vị (unit test) phổ biến nhất cho .NET; test method được đánh dấu bằng `[Fact]` (test đơn lẻ) hoặc `[Theory]` (data-driven); hỗ trợ `async Task` test method trực tiếp không cần adapter; tích hợp tốt với Visual Studio Test Explorer và CI/CD. (→ xem \[Fact\], \[Theory\])
 *Xuất hiện đầu tiên: Chương 18, mục 18.2.1.*
+

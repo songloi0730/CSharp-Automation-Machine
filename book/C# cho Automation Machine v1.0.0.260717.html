@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260715</title>
+<title>C# cho Automation Machine — v1.0.0.260717</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -438,6 +438,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#g">G</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#h">H</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#i">I</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j">J</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l">L</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#m">M</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#n">N</a></li>
@@ -469,7 +470,7 @@ lập trình phần mềm điều khiển máy theo chuẩn công nghiệp</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260715</td>
+<td>v1.0.0.260717</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -1169,7 +1170,8 @@ file <code>.dll</code> vào thư mục project (không để ở Download) và �
 Output Directory = Copy if newer</strong> để <code>.dll</code> được copy cùng khi build.</p>
 <p>Hai loại tham chiếu phổ biến nhất — Project và Package — sống trong file
 <code>.csproj</code>; Visual Studio tự cập nhật khi bạn thao tác qua UI:</p>
-<pre><code class="language-xml">&lt;!-- MeoFrame.Application.csproj — ví dụ tham chiếu --&gt;
+<pre><code class="language-xml">&lt;!-- MeoFrame.Application.csproj — ví dụ tham chiếu
+     (MeoFrame = tên dự án mẫu xuyên suốt sách, giải thích ngay bên dưới) --&gt;
 &lt;ItemGroup&gt;
   &lt;!-- Tham chiếu project cùng solution --&gt;
   &lt;ProjectReference Include=&quot;..\MeoFrame.Domain\MeoFrame.Domain.csproj&quot;/&gt;
@@ -2658,6 +2660,9 @@ foreach (var axis in axes)
 <p><strong>Delegate</strong> <!--idx:Delegate--> là một kiểu đại diện cho <em>chữ ký hàm</em> — như một &quot;con trỏ hàm&quot; nhưng an toàn kiểu (sai chữ ký là lỗi biên dịch, không phải lỗi runtime). Thay vì tự khai báo delegate, thường ta dùng hai họ có sẵn: <strong><code>Action</code></strong> (không trả giá trị) và <strong><code>Func</code></strong> <!--idx:Func/Action--> (có trả giá trị).</p>
 <p><strong>Code 4.7 — Func/Action cho interlock và callback</strong></p>
 <pre><code class="language-csharp">// Func&lt;MachineState, bool&gt;: nhận trạng thái máy, trả về có cho phép hay không
+// MachineState là enum; HasActiveAlarm() là extension method viết thêm cho
+// enum này (kỹ thuật đã học ở Chương 3, mục 3.4.3) — không phải method
+// thường trên một class, vì enum không thể tự có method.
 Func&lt;MachineState, bool&gt; canStartCycle =
     state =&gt; state == MachineState.Idle &amp;&amp; !state.HasActiveAlarm();
 
@@ -3195,6 +3200,31 @@ private async void OnPollTimerTick(object? sender, EventArgs e)
 </blockquote>
 <h3>5.3.4  Race condition và deadlock — hai con quỷ của đa luồng</h3>
 <p><strong>Race condition</strong> <!--idx:race condition--> là lỗi &quot;lúc được lúc không, không tái hiện được&quot; do nhiều luồng đọc/ghi dữ liệu chung không bảo vệ — triệu chứng kinh điển của bug đa luồng. <strong>Deadlock</strong> là hai luồng khoá nhau, mỗi bên giữ một tài nguyên và chờ tài nguyên bên kia. Cách phòng deadlock phổ biến nhất: <strong>thống nhất thứ tự lấy lock</strong> (luôn lock A trước B ở mọi nơi), giữ lock ngắn, và ưu tiên <em>truyền thông điệp qua hàng đợi</em> (mục 5.4) thay vì chia sẻ trạng thái — tránh lock ngay từ đầu là cách an toàn nhất.</p>
+<p><strong>Code 5.8b — Race condition cụ thể: <code>_counter++</code> đa luồng cho kết quả sai</strong></p>
+<pre><code class="language-csharp">private int _counter;
+
+// Chạy 4 luồng, mỗi luồng tăng _counter 100,000 lần
+var tasks = Enumerable.Range(0, 4).Select(_ =&gt; Task.Run(() =&gt;
+{
+    for (var i = 0; i &lt; 100_000; i++)
+        _counter++;    // đọc-cộng-ghi 3 bước KHÔNG nguyên tử — luồng khác
+                        // có thể xen vào giữa, làm mất một số lần tăng
+}));
+await Task.WhenAll(tasks);
+
+Console.WriteLine(_counter);   // Kỳ vọng 400,000 — thực tế thường thấp hơn,
+                                // sai số khác nhau mỗi lần chạy
+</code></pre>
+<p>Sửa bằng <code>Interlocked.Increment</code> — biến đọc-cộng-ghi thành một thao tác nguyên tử duy nhất, không cần <code>lock</code>:</p>
+<pre><code class="language-csharp">private int _counter;
+
+var tasks = Enumerable.Range(0, 4).Select(_ =&gt; Task.Run(() =&gt;
+{
+    for (var i = 0; i &lt; 100_000; i++)
+        Interlocked.Increment(ref _counter);   // nguyên tử — luôn đúng 400,000
+}));
+await Task.WhenAll(tasks);
+</code></pre>
 <hr>
 <h2 id="54-channelt-và-pipeline-producerconsumer">5.4  Channel&lt;T&gt; và pipeline producer–consumer</h2>
 <p>Đây là mẫu quan trọng nhất chương cho automation: dữ liệu chảy một chiều qua các tầng — sensor → xử lý → lưu/gửi. <strong>Producer–consumer</strong> <!--idx:producer-consumer--> tách bên <em>sinh</em> dữ liệu khỏi bên <em>xử lý</em>: producer chỉ đẩy vào hàng đợi rồi đi tiếp, consumer rút ra xử lý theo nhịp của nó. Logger ở Chương 3 chính là một producer–consumer (luồng nghiệp vụ đẩy log, thread nền ghi file).</p>
@@ -3745,6 +3775,20 @@ theo <em>ý nghĩa nghiệp vụ</em>, không mang theo địa chỉ hay đơn v
 <td><code>IsAxisYFaulted</code> (bool)</td>
 </tr>
 </tbody></table></div>
+<p>Một quy ước thực chiến khác thường gặp trong IO List thật: tín hiệu cảm biến
+(DI) và cơ cấu chấp hành (DO) điều khiển đúng cơ cấu đó dùng chung một gốc
+tên, chỉ khác hậu tố — ví dụ hậu tố kiểu <code>..._CYLINDER</code> cho cảm biến hành
+trình (ngõ vào) và <code>..._SOL</code> cho van điện từ điều khiển đúng xy-lanh đó (ngõ
+ra). Khi đọc log lỗi chỉ cần bỏ hậu tố là tra ra ngay cặp tín hiệu liên quan
+mà không cần bảng tra riêng — một mẹo nhỏ nhưng tiết kiệm nhiều thời gian
+debug hiện trường, đáng áp dụng cả khi đặt tên property C# tương ứng.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm:</strong> Một lý do lịch sử tại sao tag PLC vẫn hay có dạng cứng
+nhắc <code>X0xx</code>/<code>Y0xx</code> thay vì tên gợi nhớ: IO List thực tế thường nhóm theo
+khối 16 điểm cố định — kiểu địa chỉ hoá theo slot CPU — mỗi &quot;module&quot; input/
+output chiếm trọn một khối dù phần lớn địa chỉ trong đó còn trống, chứ
+không phải tag tự do đặt tên theo ý nghĩa như phần mềm hiện đại.</p>
+</blockquote>
 <h3>6.2.1  Biến và trạng thái máy</h3>
 <!--idx:biến trạng thái máy--><p>Trong PLC, mỗi trạng thái máy gắn với một địa chỉ bit hoặc word cụ thể (<code>%M0.0</code>,
 <code>%MW100</code>). Mọi rung Ladder đều có thể đọc và ghi địa chỉ bất kỳ.</p>
@@ -4418,8 +4462,8 @@ hoặc log warning thay vì im lặng.</p>
 }
 </code></pre>
 <p>Module <code>OperatorPanel</code> chỉ cần <code>Start()</code> và <code>Stop()</code>, nhưng phải import toàn bộ
-<code>IMachine</code>. Khi thêm <code>EnableSafetyBypass()</code> (chỉ dành cho SuperUser), mọi consumer
-của <code>IMachine</code> đều bị ảnh hưởng.</p>
+<code>IMachine</code>. Khi thêm <code>EnableSafetyBypass()</code> (chỉ dành cho Administrator), mọi
+consumer của <code>IMachine</code> đều bị ảnh hưởng.</p>
 <p><strong>Ví dụ đúng — tách theo nhóm hành vi:</strong></p>
 <p><strong>Code 7.6 — ISP: interface nhỏ, mỗi consumer chỉ phụ thuộc đúng thứ nó cần</strong></p>
 <pre><code class="language-csharp">public interface IStartable  { void Start(); }
@@ -4722,6 +4766,20 @@ public sealed class CycleWorker(RunCycleUseCase useCase) : BackgroundService
     }
 }
 </code></pre>
+<blockquote>
+<p>📌 <strong>Lưu ý:</strong> <code>RunCycleUseCase</code> và <code>CycleWorker</code> ở Code 7.8 dùng <strong>primary
+constructor</strong> (C# 12) — cú pháp rút gọn <code>public sealed class Foo(IBar bar)</code>
+thay cho việc viết tay field + constructor như Code 7.7 trước đó. Khác biệt
+đáng chú ý nhất: Code 7.8 <strong>không</strong> gọi <code>ArgumentNullException.ThrowIfNull</code>
+như CS02 yêu cầu — có chủ đích, không phải sơ suất. Cả hai class này chỉ
+được tạo qua DI container (Composition Root, Code 7.9), nơi kiểu tham chiếu
+non-nullable (<code>IPlcPort plc</code>, không phải <code>IPlcPort? plc</code>) cùng Nullable
+Reference Types đã đủ để compiler cảnh báo lúc build nếu có chỗ nào cố
+truyền <code>null</code> vào — validate runtime thêm ở đây là dư thừa. Với type được
+<code>new</code> trực tiếp bởi code khác (không qua DI, ví dụ một thư viện public), vẫn
+giữ nguyên <code>ArgumentNullException.ThrowIfNull</code> như Code 7.7 vì lúc đó
+compiler không đảm bảo được ai gọi constructor.</p>
+</blockquote>
 <p><strong>Code 7.9 — Composition Root (Program.cs) — nơi duy nhất biết concrete types</strong></p>
 <pre><code class="language-csharp">var builder = Host.CreateApplicationBuilder(args);
 
@@ -7205,10 +7263,10 @@ phù hợp với ngữ cảnh IPC màn hình lớn — bảng màu và phân c�
 ISA-101, ngưỡng định lượng alarm rate theo EEMUA 191/ISA-18.2 (Chương 15) —
 và bỏ qua các điều khoản chỉ có ý nghĩa cho phòng điều khiển tập trung nhiều
 màn hình. Song song đó, quyền thao tác trên các màn hình này được phân theo
-4 vai trò thực tế (Operator, LineLead, Engineer, Administrator) gắn với 4
-mức rủi ro thao tác <code>RiskTier</code> R0–R3 <em>(sẽ giới thiệu đầy đủ ở Chương 15,
-mục 15.2.3)</em> — quyết định này không nằm trong bất kỳ chuẩn nào, mà đến từ hiểu
-đúng ai đang đứng trước màn hình và họ được phép làm gì.</p>
+3 vai trò thực tế (Operator, Engineer, Administrator) gắn với 4 mức rủi ro
+thao tác <code>RiskTier</code> R0–R3 <em>(sẽ giới thiệu đầy đủ ở Chương 15, mục 15.2.3)</em> —
+quyết định này không nằm trong bất kỳ chuẩn nào, mà đến từ hiểu đúng ai đang
+đứng trước màn hình và họ được phép làm gì.</p>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Trước khi áp một chuẩn, luôn hỏi: &quot;chuẩn này được
 viết cho ngữ cảnh nào?&quot; Một quy tắc đúng cho phòng điều khiển 6 màn hình
@@ -7275,8 +7333,8 @@ khác nhau:</p>
 <td>Toàn quyền (sau xác thực)</td>
 </tr>
 </tbody></table></div>
-<p>Ba nhóm này khác về bản chất với 4 mức <code>UserLevel</code> đã học ở phần phân quyền
-của framework (Operator/LineLead/Engineer/Administrator, mục 10.1.3) —
+<p>Ba nhóm này khác về bản chất với 3 mức <code>UserLevel</code> đã học ở phần phân quyền
+của framework (Operator/Engineer/Administrator, mục 10.1.3) —
 <code>UserLevel</code> phân theo <strong>mức rủi ro thao tác được phép làm</strong>, còn ba nhóm ở
 đây phân theo <strong>nhiệm vụ hằng ngày cần màn hình nào</strong>. Hai cách phân loại bổ
 sung cho nhau: một Setter thực tế thường ứng với <code>UserLevel.Engineer</code> trở
@@ -8031,8 +8089,9 @@ SCADA/HMI, hoặc vẽ lại bằng Path XAML nếu cần đổi màu động.</
            Foreground=&quot;{StaticResource BrushAlarmWarning}&quot;/&gt;
 </code></pre>
 <p>Vì đây chỉ là một <code>TextBlock</code> dùng font đặc biệt, đổi màu icon theo
-severity tái sử dụng đúng <code>SeverityToBrushConverter</code> (Code 10.4) đã học —
-không cần thêm converter hay control riêng cho icon.</p>
+severity tái sử dụng đúng <code>SeverityToBrushConverter</code> — sẽ trình bày đầy đủ
+ở Code 10.4, mục 10.3.3 — không cần thêm converter hay control riêng cho
+icon.</p>
 <h3>10.2.7 Lỗi phổ biến khi áp bảng màu và chữ</h3>
 <ul>
 <li><strong>Dùng đỏ/cam cho decoration hoặc button thường</strong> — phá vỡ chính nguyên
@@ -8069,6 +8128,37 @@ Performance HMI: một chip xanh nhỏ, gọn, không đòi hỏi chú ý, cho t
                           Converter={StaticResource ConnectionToTextConverter}}&quot;/&gt;
     &lt;/StackPanel&gt;
 &lt;/Border&gt;
+</code></pre>
+<p>Hai converter dùng ở trên tự đổi màu/chữ theo <code>ConnectionState</code>, cùng nguyên
+tắc <code>IValueConverter</code> đã học ở Chương 9 (mục 9.1.5) — chỉ khác đích convert
+(brush/text thay vì visibility):</p>
+<pre><code class="language-csharp">public sealed class ConnectionToBrushConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        =&gt; value switch
+        {
+            ConnectionState.Connected    =&gt; Application.Current.Resources[&quot;BrushConnectionOk&quot;],
+            ConnectionState.Reconnecting =&gt; Application.Current.Resources[&quot;BrushConnectionWarn&quot;],
+            _                            =&gt; Application.Current.Resources[&quot;BrushConnectionLost&quot;],
+        };
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        =&gt; throw new NotSupportedException(&quot;Chip kết nối chỉ hiển thị — không binding ngược.&quot;);
+}
+
+public sealed class ConnectionToTextConverter : IValueConverter
+{
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+        =&gt; value switch
+        {
+            ConnectionState.Connected    =&gt; &quot;OK&quot;,
+            ConnectionState.Reconnecting =&gt; &quot;Đang kết nối lại...&quot;,
+            _                            =&gt; &quot;Mất kết nối&quot;,
+        };
+
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        =&gt; throw new NotSupportedException(&quot;Chip kết nối chỉ hiển thị — không binding ngược.&quot;);
+}
 </code></pre>
 <blockquote>
 <p>⚠️ <strong>Chip kết nối không thay thế alarm mất kết nối.</strong> Chip chỉ là chỉ báo
@@ -9091,6 +9181,18 @@ public readonly record struct Acceleration(decimal ValueMmPerSec2)
 <p>🔍 <strong>Đào sâu thêm:</strong> <code>readonly record struct</code> là kiểu giá trị (value type): instance lưu trên stack như <code>int</code>/<code>double</code>, không cấp phát heap. Điều này đồng nghĩa không có GC pressure khi tạo nhiều Value Object tạm thời trong vòng lặp điều khiển thời gian thực. Tìm hiểu thêm: &quot;value type vs reference type C#&quot;, &quot;readonly struct performance&quot;.</p>
 </blockquote>
 <p>Mỗi Value Object tự xác thực đầu vào. Khi domain nhận Position thay vì double, compiler chặn lỗi &quot;truyền mm/s vào chỗ cần mm&quot; ngay lúc build — không cần đến lúc chạy mới phát hiện.</p>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến:</strong> Position còn giấu một bẫy khác mà kiểu dữ liệu không
+tự bắt được — dấu (+/-) nghĩa là gì. Một dự án tham khảo từng ghi thành văn
+bản yêu cầu tường minh ngay tại đặc tả: chiều dương/âm của mỗi trục quy ước
+theo hướng nhìn của operator đứng trước máy (trái/phải, trước/sau, dưới/
+trên tương ứng dấu âm/dương thống nhất toàn máy). Không có quy ước bằng
+văn bản, mỗi kỹ sư dễ tự suy diễn chiều dương theo cách hiểu riêng — dẫn
+đến trục di chuyển sai hướng khi jog, thường chỉ phát hiện lúc chạy thật.
+Nguyên tắc rút ra: quy ước dấu của một Value Object toạ độ nên được ghi
+thành XML doc comment ngay tại nơi khai báo <code>Position</code>/<code>AxisPosition</code>,
+không để nằm rải rác trong đầu từng người viết code.</p>
+</blockquote>
 <p><strong>Bảng 11.1 — Value Object: khi nào nên dùng và không nên dùng</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -9369,6 +9471,19 @@ public enum ErrorSeverity { Info, Warning, Alarm, Fault, Emergency }
 <p>⚠️ <strong>Cảnh báo:</strong> Không để class MachineStarted (từ Machine Control) xuất hiện trực tiếp trong MES domain model. ACL phải &#39;dịch&#39; event thành command/method của MES context — nếu không, hai context sẽ coupling chặt và thay đổi một bên phá vỡ bên kia.</p>
 </blockquote>
 <p>Trong thực tế, ACL không nhất thiết là một class handler đơn giản như ví dụ trên — có thể là REST adapter nhận webhook từ MES, MQTT consumer xử lý message từ hệ thống SCADA, hoặc OPC UA gateway trao đổi dữ liệu chuẩn hoá với thiết bị cấp trên. Cách triển khai cụ thể phụ thuộc vào kiến trúc tích hợp của nhà máy; nguyên tắc &quot;dịch ngôn ngữ tại biên giữa hai context&quot; là bất biến dù dùng giao thức nào.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm:</strong> Khi hai &quot;station&quot; không chỉ là hai Bounded Context trong
+cùng một ứng dụng mà là hai tủ điều khiển/hai PLC vật lý độc lập (không
+chung tiến trình, không gọi hàm trực tiếp được), ranh giới ACL hiện ra dưới
+dạng phần cứng: một tập tín hiệu DI/DO bắt tay chuẩn hoá giữa hai máy, ví dụ
+mẫu <code>NOT-READY</code>/<code>NOT-READY-RESPONSE</code> và <code>AVAILABLE</code>/<code>AVAILABLE-RESPONSE</code>
+giữa máy trước và máy sau trên cùng dây chuyền, hoặc mẫu ba pha
+<code>REQUEST</code> → <code>READY</code> (xác nhận rảnh) → <code>SET</code> (khoá vị trí) giữa hai cụm xử
+lý liền kề. Đây chính là &quot;ngôn ngữ chung tại biên&quot; của ACL — chỉ khác là
+thay vì dịch qua một class C#, việc dịch nằm ở giao thức tín hiệu điện đã
+thoả thuận trước; gateway phần mềm khi đó chỉ đọc/ghi đúng tập tín hiệu này
+qua <code>IIoAdapter</code> (Chương 12) thay vì gọi thẳng API của máy kia.</p>
+</blockquote>
 <h3>11.2.4  Tại sao phân chia Bounded Context quan trọng với automation?</h3>
 <p><strong>Bảng 11.4 — Lý do hai context phải độc lập</strong></p>
 <div class="table-wrap"><table>
@@ -9752,6 +9867,8 @@ public sealed class MachineContext
     public string CurrentStateName =&gt; _current.Name;
  
     // Dependencies tiêm vào — domain không tự gọi hardware
+    // IEventPublisher: interface đầy đủ ở Chương 16, mục 16.1.2 — ở đây chỉ
+    // cần biết chữ ký PublishAsync(IDomainEvent, CancellationToken)
     public ILogger&lt;MachineContext&gt; Logger       { get; }
     public IIoAdapter              IoAdapter    { get; }
     public IEventPublisher         EventBus     { get; }
@@ -10036,6 +10153,16 @@ public sealed record StateChangedEventArgs(
 <p>PackML ban đầu thiết kế cho máy đóng gói (packaging), nhưng mô hình trạng thái của nó phù hợp với phần lớn máy sản xuất liên tục. ISA-TR88.00.02 là tài liệu tham chiếu; nhiều chuẩn khác (OMAC PackML v3.0, ISA-88 Part 1) sử dụng mô hình trạng thái tương tự hoặc tương thích.</p>
 <h3>12.2.2  Sơ đồ trạng thái PackML — 17 trạng thái và 9 lệnh</h3>
 <p><strong>Lưu ý về Mode và State:</strong> PackML thực tế định nghĩa hai khái niệm tách biệt — <strong>State</strong> (trạng thái máy đang ở) và <strong>Mode</strong> (ngữ cảnh vận hành: Automatic, Manual, Maintenance, Setup). Một Mode có thể chứa một tập con các State phù hợp (ví dụ: trong Manual Mode, máy có Idle và Execute riêng dành cho thao tác tay từng bước, không phải chạy tự động liên tục). Chương này tập trung vào <strong>State Model</strong> — đủ dùng cho phần lớn ứng dụng điều khiển máy. Mode là khái niệm mở rộng cần khi hệ thống phải phân biệt rõ ngữ cảnh vận hành khác nhau (máy có cả màn tự động và màn vận hành tay), nhưng không phải mọi dự án đều cần triển khai đầy đủ.</p>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến:</strong> Một Mode phụ thường thấy trong yêu cầu thực tế
+nhưng không nằm trong danh sách chuẩn PackML: chế độ &quot;chỉ chạy băng tải,
+không chạy cơ cấu xử lý&quot; — dùng để test luồng vật liệu/logistics độc lập
+với quy trình xử lý chính, không cần dừng cả dây chuyền chỉ để kiểm tra
+băng tải. Đây là ví dụ cụ thể cho việc mở rộng enum Mode: thêm một giá trị
+mới (ví dụ <code>ConveyorOnly</code>) tách khỏi luồng <code>Automatic</code> chính, có tập
+<code>MachineState</code> con hẹp hơn (không cần Execute &quot;đầy đủ&quot; vì cơ cấu xử lý
+không chạy) — phục vụ debug/bảo trì mà không phải sửa state machine chính.</p>
+</blockquote>
 <p>PackML định nghĩa 17 trạng thái chia làm ba nhóm theo tài liệu OMAC gốc:</p>
 <ul>
 <li><strong>Trạng thái nghỉ / Wait state:</strong> máy ổn định, không tự chuyển sang trạng thái khác nếu không có trigger bên ngoài — chờ lệnh từ operator hoặc MES. Có thể tồn tại lâu dài.</li>
@@ -11166,6 +11293,18 @@ phải chỉ đọc raw JSON và hy vọng field khớp tên:</p>
 </code></pre>
 <p>Kỹ thuật này rẻ hơn nhiều so với một EF Migration đầy đủ khi thứ cần thay đổi chỉ là
 cấu trúc của một file/record đơn lẻ, không phải toàn bộ schema database.</p>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến:</strong> Một ràng buộc thiết kế đáng học khác cho <code>Recipe</code>,
+thường thấy ghi rõ ngay ở mức yêu cầu (không chỉ ở cách hiện thực): tách
+hẳn <strong>toạ độ dạy máy</strong> (teach point — cố định theo phần cứng, không đổi
+khi đổi sản phẩm) khỏi <strong>toạ độ offset theo recipe</strong> (đổi theo từng biến
+thể sản phẩm, lưu riêng trong file recipe). Gộp chung hai loại toạ độ này
+vào một chỗ là nguồn lỗi kinh điển: kỹ sư sửa offset cho sản phẩm A xong
+vô tình làm lệch luôn gốc toạ độ máy dùng chung cho mọi sản phẩm khác.
+Tách bằng type khác nhau (<code>TeachPoint</code> bất biến giữa các recipe vs
+<code>RecipeOffset</code> đổi theo <code>Recipe.Version</code>) khiến compiler ngăn được việc
+gán nhầm giữa hai loại, thay vì chỉ trông chờ quy ước đặt tên field.</p>
+</blockquote>
 <p><strong>Validator ba mức, không phải nhị phân đúng/sai.</strong> Cách kiểm tra recipe phổ biến
 nhất là fail-fast: sai một chỗ, chặn toàn bộ. Nhưng không phải mọi vấn đề trong recipe
 đều nghiêm trọng như nhau — giống triết lý &quot;diagnostic severity&quot; của compiler C#
@@ -11708,9 +11847,87 @@ public sealed record DeviceFault(
 </code></pre>
 <p>Khởi động thiết bị phải theo thứ tự phụ thuộc — một số thiết bị cần thiết bị khác sẵn
 sàng trước (Vision cần PLC handshake I/O, Motion cần Safety IO): Device Manager khởi
-động theo topological order (cấu hình <code>DependsOn</code>). Dừng hệ thống phải theo thứ tự
-ngược: <code>StopAsync</code> → <code>DisconnectAsync</code> → <code>DisposeAsync</code>, mỗi device dùng <code>SemaphoreSlim</code>
-riêng để serial hoá thao tác nhạy cảm.</p>
+động theo đúng thứ tự đã đăng ký (topological order — thiết bị không phụ thuộc ai
+đăng ký trước). Dừng hệ thống phải theo thứ tự ngược lại — thiết bị phụ thuộc dừng
+trước thiết bị nó cần.</p>
+<p><strong>Code 13.10b — DeviceManager: triển khai IDeviceManager</strong></p>
+<pre><code class="language-csharp">public sealed class DeviceManager : IDeviceManager
+{
+    private readonly ILogger&lt;DeviceManager&gt; _logger;
+    private readonly List&lt;IDevice&gt; _devices = new();
+
+    public IReadOnlyCollection&lt;IDevice&gt; Devices =&gt; _devices;
+    public event EventHandler&lt;DeviceEvent&gt;? DeviceEventOccurred;
+
+    public DeviceManager(ILogger&lt;DeviceManager&gt; logger)
+    {
+        ArgumentNullException.ThrowIfNull(logger);
+        _logger = logger;
+    }
+
+    // Thứ tự trong _devices PHẢI đã theo topological order — DeviceManager
+    // tin tưởng thứ tự đăng ký, không tự suy luận dependency graph.
+    public Task RegisterAsync(IEnumerable&lt;IDevice&gt; devices, CancellationToken ct)
+    {
+        _devices.AddRange(devices);
+        return Task.CompletedTask;
+    }
+
+    public Task ConfigureAllAsync(CancellationToken ct)
+    {
+        // Cấu hình cụ thể cho từng loại thiết bị (Recipe, appsettings) đã
+        // được Factory (mục 13.2.2) đóng gói sẵn khi tạo IDevice —
+        // ConfigureAllAsync ở đây chỉ minh hoạ THỨ TỰ gọi Configure().
+        foreach (var device in _devices)
+            device.Configure(new object());
+        return Task.CompletedTask;
+    }
+
+    public async Task ConnectAllAsync(CancellationToken ct)
+    {
+        foreach (var device in _devices)
+        {
+            await device.ConnectAsync(ct).ConfigureAwait(false);
+            RaiseEvent(device, &quot;Connected&quot;);
+        }
+    }
+
+    public async Task StartAllAsync(CancellationToken ct)
+    {
+        foreach (var device in _devices)
+            await device.StartAsync(ct).ConfigureAwait(false);
+    }
+
+    public async Task StopAllAsync(CancellationToken ct)
+    {
+        // Dừng theo thứ tự NGƯỢC lại với lúc khởi động
+        for (var i = _devices.Count - 1; i &gt;= 0; i--)
+            await _devices[i].StopAsync(ct).ConfigureAwait(false);
+    }
+
+    public Task ResetAsync(string deviceId, CancellationToken ct)
+    {
+        var device = _devices.Find(d =&gt; d.DeviceId == deviceId);
+        if (device is null)
+            throw new InvalidOperationException($&quot;Device &#39;{deviceId}&#39; chưa đăng ký.&quot;);
+        return device.ResetAsync(ct);
+    }
+
+    public DeviceSnapshot GetSnapshot() =&gt; new(
+        DateTimeOffset.UtcNow,
+        _devices.ConvertAll(d =&gt; new DeviceStatus(d.DeviceId, d.DeviceType, d.State, null, null)));
+
+    private void RaiseEvent(IDevice device, string kind)
+        =&gt; DeviceEventOccurred?.Invoke(this,
+            new DeviceEvent(device.DeviceId, kind, $&quot;{device.DeviceType} {kind}&quot;, DateTimeOffset.UtcNow));
+
+    public async ValueTask DisposeAsync()
+    {
+        foreach (var device in _devices)
+            await device.DisposeAsync().ConfigureAwait(false);
+    }
+}
+</code></pre>
 <h3>13.3.2 Connection Pooling</h3>
 <p>Nhiều &quot;logical device&quot; có thể dùng chung một endpoint thật (ví dụ: nhiều tag group đọc
 từ cùng một PLC OPC UA server). Pooling giảm số session vật lý, quản lý reconnect tập
@@ -12893,10 +13110,17 @@ public sealed record CheckResult(
 <p><strong>Code 14.5 — IPC client: gửi lệnh, chờ kết quả, tự reconnect</strong></p>
 <pre><code class="language-csharp">public sealed class VisionIpcClient : IAsyncDisposable
 {
+    private readonly ILogger&lt;VisionIpcClient&gt; _logger;
     private TcpClient? _tcp;
     private StreamWriter? _writer;
     private StreamReader? _reader;
     private readonly SemaphoreSlim _lock = new(1, 1);
+
+    public VisionIpcClient(ILogger&lt;VisionIpcClient&gt; logger)
+    {
+        ArgumentNullException.ThrowIfNull(logger);
+        _logger = logger;
+    }
 
     public async Task&lt;VisionResult&gt; InspectAsync(
         string jobName, string correlationId,
@@ -13132,6 +13356,21 @@ gateway — và ứng dụng C# kết nối vào điểm đó.</p>
 <p>Đây là lý do chương tập trung vào OPC UA, Modbus TCP, SECS/GEM và TCP custom — đây là các
 giao thức ứng dụng C# <strong>tương tác trực tiếp</strong>, không phải fieldbus tầng dưới mà PLC/controller
 đã đảm nhiệm.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — nếu có ngày cần đọc trực tiếp một file ESI:</strong> dù ứng
+dụng C# hiếm khi tự đọc EtherCAT, thỉnh thoảng vẫn cần mở file cấu hình
+thiết bị (<code>.xml</code>) do vendor cung cấp để tra thông số. File ESI chuẩn theo
+đặc tả ETG.2000 có cấu trúc gốc <code>EtherCATInfo &gt; Vendor(Id, Name) &gt; Descriptions &gt; Devices &gt; Device</code>; mỗi <code>Device</code> khai <code>Type</code> (mang
+<code>ProductCode</code>/<code>RevisionNo</code> để nhận diện đúng phần cứng), cấu hình
+<code>Sm</code> (SyncManager)/<code>Fmmu</code>, mục <code>Mailbox</code>/<code>CoE</code>, danh sách <code>RxPdo</code>/<code>TxPdo</code>
+với từng <code>Entry</code> mang <code>Index</code>/<code>SubIndex</code>/<code>BitLen</code>/<code>DataType</code>, và <code>InitCmd</code>
+mang thuộc tính <code>Transition</code> (chuyển trạng thái PreOp→SafeOp...). Lưu ý
+quan trọng: không phải mọi file trông giống ESI đều theo chuẩn ETG mở —
+một số hãng card motion phát hành kèm &quot;device database&quot; XML theo schema
+độc quyền riêng của họ (dùng cho tool cấu hình riêng của hãng đó, không
+nạp được vào EtherCAT master chuẩn). Kiểm tra thẻ gốc của file trước khi
+giả định nó tuân thủ ETG.2000.</p>
+</blockquote>
 <hr>
 <h2 id="142-secsgem-xương-sng-ngành-bán-dn-và-smt">14.2  SECS/GEM — xương sống ngành bán dẫn và SMT</h2>
 <blockquote>
@@ -14076,6 +14315,18 @@ public sealed record AlarmModel(
 <blockquote>
 <p>📌 <strong>ISA-18.2 không quy định tên gọi mức priority.</strong> Tên Critical/Major/Minor/Warning là quy ước của framework này — ISA-18.2 chỉ yêu cầu hệ thống <em>có</em> phân cấp priority rõ ràng và mỗi mức gắn với response time tương ứng. Mỗi tổ chức tự định nghĩa tên và số mức trong Alarm Philosophy Document riêng; một số hệ thống dùng P1/P2/P3/P4, một số dùng High/Medium/Low. Điều quan trọng là áp dụng nhất quán và tất cả operator hiểu ý nghĩa từng mức.</p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến:</strong> <code>AlarmCode</code> ở Code 15.1 không nhất thiết chỉ đến từ
+logic máy tự sinh (dải 10000–70999, Chương AlarmCodes) — một nguồn alarm
+thực chiến khác là đọc trực tiếp mã lỗi từ chính servo driver (qua thanh
+ghi lỗi trên bus fieldbus/EtherCAT hoặc API SDK riêng của hãng), rồi map
+sang <code>AlarmModel</code> của hệ thống. Hai nguồn này nên tách rõ trong <code>Message</code>
+hoặc một field <code>Source</code> riêng (<code>&quot;Internal&quot;</code> vs <code>&quot;ServoDriver&quot;</code>) để operator
+biết đang xem lỗi logic máy hay lỗi phần cứng servo báo về. Một yêu cầu
+thường đi kèm: đếm dồn số lần xuất hiện theo từng mã lỗi servo (kiểu thống
+kê Pareto) — hữu ích để phát hiện servo nào đang có xu hướng hỏng dần
+trước khi nó gây dừng máy thật sự, thay vì chỉ xử lý từng lần alarm rời rạc.</p>
+</blockquote>
 <h3>15.1.3  IAlarmService — hợp đồng xử lý alarm</h3>
 <p><code>IAlarmService</code> là interface nằm ở <code>MeoFrame.Core.Abstractions</code> — tất cả code domain và sequence chỉ gọi qua interface này, không biết implementation.</p>
 <p><strong>Code 15.2 — IAlarmService interface</strong></p>
@@ -14092,6 +14343,11 @@ public interface IAlarmService
 
     /// &lt;summary&gt;Xoá alarm — chỉ khi điều kiện lỗi đã biến mất.&lt;/summary&gt;
     Task ClearAsync(int alarmCode, CancellationToken ct = default);
+
+    /// &lt;summary&gt;Tạm gác alarm cấp Minor/Warning trong &lt;paramref name=&quot;duration&quot;/&gt; —
+    /// tự động khôi phục khi hết hạn (mục 15.1.7). Không áp dụng cho Critical/Major.&lt;/summary&gt;
+    Task ShelveAsync(int alarmCode, TimeSpan duration, string reason, string shelvedBy,
+        CancellationToken ct = default);
 
     /// &lt;summary&gt;Snapshot thread-safe của danh sách alarm đang active.&lt;/summary&gt;
     IReadOnlyList&lt;AlarmModel&gt; GetActiveAlarms();
@@ -14197,6 +14453,11 @@ public sealed class AlarmService : IAlarmService, IDisposable
 
     // AcknowledgeAsync, ClearAsync — tương tự RaiseAsync: lock → update → release → fire event
     // ...
+
+    // ShelveAsync: kiểm tra severity != Critical/Major (mục 15.1.7) trước khi
+    // cho gác; ghi lại (alarmCode, expiresAt = DateTimeOffset.UtcNow + duration,
+    // reason, shelvedBy) vào audit trail; một PeriodicTimer nền quét định kỳ,
+    // tự động unshelve alarm nào đã quá expiresAt — không có shelve vĩnh viễn.
 
     public void Dispose()
     {
@@ -14467,9 +14728,9 @@ public interface IGuardEngine
 public enum RiskTier
 {
     R0 = 0,   // Operator — Start/Stop, xem alarm/recipe
-    R1 = 1,   // LineLead — thao tác phục hồi có guard
-    R2 = 2,   // Engineer — jog trục, teach điểm
-    R3 = 3    // Engineer Supervised — can thiệp vật lý, override
+    R1 = 1,   // Operator — thao tác phục hồi có guard (reset alarm, đổi mode)
+    R2 = 2,   // Engineer — jog trục, teach điểm, chỉnh tham số
+    R3 = 3    // Administrator + xác nhận 2 bước — Force IO, bypass interlock
 }
 
 public sealed record GuardResult(bool Allowed, string? DeniedReason)
@@ -14494,20 +14755,35 @@ public sealed record GuardResult(bool Allowed, string? DeniedReason)
 </tr>
 <tr>
 <td>R1</td>
-<td>LineLead</td>
+<td>Operator</td>
 <td>Reset alarm, chuyển chế độ, phục hồi sau lỗi nhẹ</td>
 </tr>
 <tr>
 <td>R2</td>
 <td>Engineer</td>
-<td>Jog trục thủ công, chỉnh tham số PID, Force I/O có xác nhận</td>
+<td>Jog trục thủ công, chỉnh tham số PID, dạy điểm teach</td>
 </tr>
 <tr>
 <td>R3</td>
-<td>Engineer + xác nhận 2 bước</td>
-<td>Bypass interlock tạm thời, cấu hình safety parameter</td>
+<td>Administrator + xác nhận 2 bước</td>
+<td>Force I/O, bypass interlock tạm thời, cấu hình safety parameter</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>📌 <strong>R0 và R1 cùng yêu cầu Operator — không phải trùng lặp thừa.</strong>
+<code>RiskTier</code> không chỉ quyết định <em>cấp quyền tối thiểu</em> (Tầng 2 của Guard
+Engine) — nó còn quyết định <em>trạng thái máy cho phép</em> (Tầng 1) và <em>có
+hiển thị xác nhận thêm hay không</em>, ngay cả khi hai tier dùng chung một
+<code>UserLevel</code>. R0 cho phép ở mọi trạng thái kể cả Aborted và không cần xác
+nhận gì thêm (xem/start/stop là hành động &quot;vô hại&quot;, không đổi trạng thái
+lỗi hiện tại); R1 loại trừ trạng thái Aborted và luôn hiện một hộp thoại
+xác nhận nhẹ trước khi thực thi — vì reset alarm/đổi chế độ thực sự làm
+<em>thay đổi</em> trạng thái vận hành, dù không cần huấn luyện kỹ thuật sâu như
+R2. Đây là một pattern thực chiến phổ biến: tăng độ ma sát UI (một hộp
+thoại xác nhận) để phản ánh rủi ro cao hơn, thay vì tăng số vai trò người
+dùng — giữ mô hình phân quyền gọn (3 cấp) trong khi vẫn phân biệt được
+&quot;xem/khởi động&quot; khỏi &quot;can thiệp phục hồi&quot; ở cùng một cấp Operator.</p>
+</blockquote>
 <blockquote>
 <p>⚠️ <strong>Bypass interlock chỉ áp dụng cho interlock THUẦN PHẦN MỀM — không
 bao giờ cho cảm biến thuộc Safety Function phần cứng.</strong> Theo Bảng 15.3,
@@ -14572,9 +14848,9 @@ public sealed class GuardEngine : IGuardEngine
         var requiredLevel = risk switch
         {
             RiskTier.R0 =&gt; UserLevel.Operator,
-            RiskTier.R1 =&gt; UserLevel.LineLead,
+            RiskTier.R1 =&gt; UserLevel.Operator,
             RiskTier.R2 =&gt; UserLevel.Engineer,
-            RiskTier.R3 =&gt; UserLevel.Engineer,   // + cần xác nhận 2 bước ở caller
+            RiskTier.R3 =&gt; UserLevel.Administrator,   // + cần xác nhận 2 bước ở caller
             _            =&gt; UserLevel.Administrator
         };
 
@@ -14627,7 +14903,7 @@ await _motion.JogAsync(axisIndex, velocity, ct);
 </tr>
 <tr>
 <td>R1</td>
-<td>LineLead</td>
+<td>Operator</td>
 <td>Mọi state (trừ Aborted)</td>
 <td>Không (có guard popup)</td>
 <td>Reset alarm, chế độ phục hồi</td>
@@ -14641,7 +14917,7 @@ await _motion.JogAsync(axisIndex, velocity, ct);
 </tr>
 <tr>
 <td>R3</td>
-<td>Engineer</td>
+<td>Administrator</td>
 <td>Idle / Held / Stopped</td>
 <td>Xác nhận 2 bước</td>
 <td>Force IO, can thiệp trực tiếp</td>
@@ -14688,12 +14964,12 @@ public sealed class AuthenticationService : IAuthenticationService
 <tr>
 <td>SemiAuto</td>
 <td>R0–R1</td>
-<td>LineLead xử lý phục hồi nhẹ, chuyển bước bằng tay khi cần</td>
+<td>Operator xử lý phục hồi nhẹ, chuyển bước bằng tay khi cần</td>
 </tr>
 <tr>
 <td>Manual</td>
 <td>R2–R3</td>
-<td>Engineer jog trục, teach điểm, bypass interlock có kiểm soát</td>
+<td>Engineer jog trục/teach điểm (R2); Administrator bypass interlock có kiểm soát (R3)</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -16057,6 +16333,28 @@ lệnh/tool lớn và thứ tự không quan trọng bằng việc &quot;không 
 truy vết bằng mắt, phải chạy code hoặc dùng &quot;Find Usages&quot; của IDE mới biết một command có
 được dùng ở đâu.</p>
 <p><code>CommandDispatcher</code> ở trên thực thi danh sách lệnh theo đúng thứ tự khai báo (FIFO). Nhưng queue trong automation không phải lúc nào cũng FIFO thuần túy: một số lệnh được phép chen hàng — E-Stop, Abort, Reset thường phải thực thi ngay lập tức bất kể có bao nhiêu lệnh đang chờ. Khi cần một queue đứng (standing queue) nhận lệnh liên tục, pattern phổ biến là dùng <code>PriorityQueue&lt;IDeviceCommand, int&gt;</code> thay cho <code>Queue&lt;IDeviceCommand&gt;</code>, với priority nhỏ hơn = thực thi trước (ví dụ: Emergency = 0, Normal = 10). Lệnh ở priority thấp nhất (Emergency) luôn được pop trước — đây là nguyên tắc sống còn với máy có E-Stop.</p>
+<p><strong>Code 16.7b — CommandQueue dùng PriorityQueue: E-Stop luôn chen trước</strong></p>
+<pre><code class="language-csharp">public sealed class CommandQueue
+{
+    private readonly PriorityQueue&lt;IDeviceCommand, int&gt; _queue = new();
+
+    public void Enqueue(IDeviceCommand command, int priority)
+        =&gt; _queue.Enqueue(command, priority);
+
+    // Lệnh cùng priority không đảm bảo giữ thứ tự FIFO (PriorityQueue không
+    // ổn định) — nếu cần, ghép thêm sequence number vào tuple priority.
+    public bool TryDequeue(out IDeviceCommand? command)
+        =&gt; _queue.TryDequeue(out command, out _);
+
+    public int Count =&gt; _queue.Count;
+}
+
+// Sử dụng: Normal chen sau nhưng Emergency luôn được lấy ra trước
+var queue = new CommandQueue();
+queue.Enqueue(new MoveAbsCommand(axis: 0, targetMm: 500), priority: 10); // Normal
+queue.Enqueue(new EStopCommand(),                          priority: 0);  // Emergency
+queue.TryDequeue(out var next);   // next = EStopCommand, dù enqueue sau
+</code></pre>
 <h3>16.2.4  Case study: &quot;Home → Move → Pick → Place&quot; bằng CommandQueue</h3>
 <p><strong>Code 16.8 — Sequence Pick-and-Place triển khai bằng CommandDispatcher</strong></p>
 <pre><code class="language-csharp">public sealed class PickAndPlaceStep
@@ -17304,6 +17602,19 @@ air-gapped.</strong>
 Phương tiện chuyển file vật lý không có cơ chế tự xác minh toàn vẹn như
 một kết nối mạng có kiểm tra lỗi. Một bit hỏng lúc copy có thể khiến bạn
 cài nhầm bản build lỗi mà không hề biết.</p>
+<p><strong>Lỗi 6: Copy nguyên tài liệu/file cấu hình của máy cũ làm mẫu cho máy
+mới rồi chỉnh tay không triệt để.</strong>
+Không riêng gì code — tài liệu kỹ thuật (IO List, checklist nghiệm thu,
+file cấu hình recipe mẫu) cũng &quot;trôi&quot; (drift) giống hệt config phần mềm
+khi bị copy thủ công giữa các môi trường: tên file được cập nhật đúng
+máy/ngày mới, nhưng tiêu đề bên trong hay một sheet dữ liệu phụ vẫn giữ
+nguyên nội dung của bản mẫu ban đầu — vì người sửa chỉ đổi phần &quot;nhìn
+thấy ngay&quot;. Hậu quả là tài liệu trông đúng nhưng dữ liệu bên trong sai,
+khó phát hiện vì không có gì báo lỗi (khác source code, tài liệu không
+qua build/test nào cả). Không tin nhãn/tiêu đề nội bộ của tài liệu khi nó
+có thể lệch khỏi tên file/ngày cập nhật thật; nếu có thể, sinh tài liệu
+từ một nguồn dữ liệu duy nhất (template + data binding) thay vì copy tay
+toàn bộ file.</p>
 <!-- SECTION: Chapter_18_Testing -->
 <hr>
 <h1 id="chương-18-unit-testing-và-quality-assurance-cho-phn-mm-điu-khin">Chương 18: Unit Testing và Quality Assurance cho phần mềm điều khiển</h1>
@@ -19228,6 +19539,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.1.</em></p>
 <p><strong>Alarm Rationalization</strong> — Quy trình phê duyệt có kiểm soát trước khi tạo alarm mới: xác định root cause, tên, mức độ ưu tiên, thời gian response, và hành động operator; ghi vào Master Alarm Database. Theo ISA-18.2, mỗi alarm phải có người chịu trách nhiệm và hành động rõ ràng — không tạo alarm chỉ vì &quot;dễ tạo&quot;. (→ xem ISA-18.2)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.3.2.</em></p>
+<p><strong>Alarm Consequence Sheet (ACS)</strong> — Tài liệu tối giản sau Alarm Rationalization: mô tả điều kiện kích hoạt, hậu quả nếu không xử lý, hành động operator, thời gian response tối đa, và mức priority được phê duyệt cho một alarm cụ thể. (→ xem Alarm Rationalization)
+<em>Xuất hiện đầu tiên: Chương 15, mục 15.3.2.</em></p>
 <p><strong>Alarm Shelving</strong> (tạm gác alarm) — Cơ chế operator tắt tạm một alarm đã biết trong khoảng thời gian xác định (ví dụ: cảm biến đang bảo trì); alarm tự động khôi phục khi hết thời gian. Chỉ áp dụng cho alarm cấp Minor/Warning, không cho Critical/Major. Khác Alarm Inhibition: Shelving là quyết định của operator, Inhibition là logic hệ thống. (→ xem Alarm Inhibition, ISA-18.2)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.7.</em></p>
 <p><strong>AlarmSeverity</strong> — Thang phân loại mức độ nghiêm trọng của alarm gồm 4 cấp: Critical (4) — dừng máy ngay, Major (3) — dừng chu kỳ hiện tại, Minor (2) — cảnh báo operator, Warning (1) — giám sát. Mức độ quyết định màu sắc HMI, phản ứng PackML (Abort/Stop/Hold), và thời gian response tối đa. Bảng ánh xạ cụ thể sang màu ISA-101 (đỏ/cam/vàng) ở Chương 10, mục 10.2.2 — tên gọi 4 cấp ở đây khác tên 5 mức của bảng màu ISA-101 gốc, phải đối chiếu theo ý nghĩa phản ứng chứ không theo tên trùng nhau. (→ xem ISA-18.2, ISA-101)
@@ -19258,6 +19571,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <h2 id="b">B</h2>
 <p><strong>BadImageFormatException</strong> — Exception ném lúc runtime khi ứng dụng .NET cố load một assembly/DLL có độ rộng process không khớp (ví dụ process 64-bit cố load DLL x86); nguyên nhân phổ biến nhất là Platform Target không đồng bộ với SDK/driver thiết bị. Thông báo lỗi không trực tiếp gợi ý &quot;sai platform&quot;, khiến người mới dễ tìm sai hướng. (→ xem Platform Target (x86/x64/AnyCPU), AnyCPU)
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
+<p><strong>Boxing</strong> — Value type (<code>int</code>, <code>struct</code>) bị &quot;đóng hộp&quot; thành <code>object</code> trên heap khi đưa vào collection không generic hoặc gán cho tham số kiểu <code>object</code>; unboxing (chuyển ngược lại) tốn thêm một bước ép kiểu. Tránh bằng cách luôn dùng collection generic (<code>List&lt;T&gt;</code> thay vì <code>ArrayList</code>). (→ xem Reference Type, Value Type)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.7.2.</em></p>
 <p><strong>Build / Rebuild / Clean</strong> — Ba lệnh biên dịch trong Visual Studio: <strong>Build</strong> chỉ compile file đã thay đổi (nhanh, dùng bình thường); <strong>Rebuild</strong> compile lại toàn bộ từ đầu (dùng sau khi đổi cấu hình build hoặc gặp lỗi &quot;lạ&quot; không giải thích được); <strong>Clean</strong> xoá toàn bộ output (<code>bin/</code>, <code>obj/</code>) — thường chạy trước Rebuild khi nghi ngờ cache cũ. Kỹ sư automation thường cần Rebuild sau khi copy đè file <code>.dll</code> SDK thiết bị phiên bản mới, vì VS đôi khi giữ bản cũ trong cache.
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>Binding (WPF)</strong> — Cơ chế đồng bộ giá trị giữa <code>DataContext</code> và property của một control, khai báo bằng cú pháp <code>{Binding TênProperty}</code> trong XAML; kèm <code>Mode</code> (OneWay/TwoWay) và <code>UpdateSourceTrigger</code> (PropertyChanged/LostFocus) quyết định chiều và thời điểm đồng bộ. Là cơ chế khiến MVVM không cần &quot;đẩy&quot; dữ liệu vào View thủ công như Presenter (MVP). (→ xem DataContext, INotifyPropertyChanged, MVVM)
@@ -19311,6 +19626,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.2.5.</em></p>
 <p><strong>Connection Pool (Connection Pooling)</strong> — Cơ chế chia sẻ một kết nối vật lý (session TCP, OPC UA session) giữa nhiều &quot;logical device&quot; dùng chung endpoint; giảm số kết nối, tập trung quản lý reconnect. Triển khai với reference counting để dispose đúng lúc.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.3.2.</em></p>
+<p><strong>CQRS (Command Query Responsibility Segregation)</strong> — Nguyên tắc tách rõ thao tác <em>ghi</em> (Command — thay đổi state, có side-effect) khỏi thao tác <em>đọc</em> (Query — chỉ trả dữ liệu, không side-effect); trong Device Gateway Pattern (Ch13) thể hiện qua việc tách riêng method đọc snapshot và method gửi lệnh trong cùng interface. Command trong CQRS là lệnh nghiệp vụ (StartMachineCommand) — khác Command Pattern (GoF) vốn đóng gói một lệnh thiết bị vật lý atomic. (→ xem Command Pattern (GoF), Device Gateway Pattern)
+<em>Xuất hiện đầu tiên: Chương 13, mục 13.1.1.</em></p>
 <p><strong>Command Pattern (GoF)</strong> — Mẫu thiết kế đóng gói mỗi lệnh thành một đối tượng có đủ thông tin để thực thi, hoàn tác (<code>UndoAsync</code>) và ghi log; trong automation, mỗi lệnh thiết bị (HomeAxis, MoveAbs) là một <code>IDeviceCommand</code> được queue thực thi kèm retry và audit trail. Khác CQRS Command (lệnh nghiệp vụ) và Sequence Step (đơn vị quy trình cấp cao hơn). (→ xem IDeviceCommand, CommandDispatcher)
 <em>Xuất hiện đầu tiên: Chương 16, mục 16.2.</em></p>
 <p><strong>CommandDispatcher</strong> — Thành phần thực thi tuần tự một danh sách <code>IDeviceCommand</code>, ghi log thời gian từng lệnh, áp retry có thể cấu hình (loại trừ safety alarm ≥70000 — không retry), và phát Domain Event khi thất bại. (→ xem Command Pattern, CommandQueue)
@@ -19382,10 +19699,16 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 13 (tiêu đề chương).</em></p>
 <p><strong>DDD (Domain-Driven Design — Thiết kế hướng miền)</strong> — Phương pháp thiết kế phần mềm đặt mô hình nghiệp vụ làm trung tâm; các khái niệm cốt lõi: Entity, Value Object, Aggregate Root, Domain Event, Bounded Context, Domain Service, Repository.
 <em>Xuất hiện đầu tiên: Chương 11 (tiêu đề chương).</em></p>
+<p><strong>deadlock</strong> (khoá chết) — Tình trạng hai (hoặc nhiều) luồng chờ lẫn nhau giải phóng tài nguyên mà không bên nào chịu nhường trước, khiến cả hai treo vĩnh viễn; ví dụ kinh điển trong C#: gọi <code>.Result</code>/<code>.Wait()</code> trên một <code>Task</code> từ luồng UI trong khi <code>Task</code> đó cần quay lại đúng luồng UI để hoàn tất (qua <code>SynchronizationContext</code>). Tránh bằng <code>await</code> xuyên suốt, không trộn sync/async. (→ xem SynchronizationContext, ConfigureAwait(false))
+<em>Xuất hiện đầu tiên: Chương 5, mục 5.1.4.</em></p>
 <p><strong>Deadband</strong> — Khoảng cách tối thiểu giữa ngưỡng Raise và ngưỡng Clear của một alarm; ví dụ: alarm Raise khi áp suất &lt; 5.00 bar, Clear khi áp suất &gt; 4.80 bar (deadband 0.20 bar). Mục đích: ngăn alarm Chattering khi tín hiệu dao động quanh một ngưỡng. (→ xem Alarm Chattering)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.7.</em></p>
+<p><strong>Dual State (Trạng thái kép — PackML)</strong> — Nhóm trạng thái thứ ba trong PackML (ngoài Resting và Transitional): về bản chất giao thức là Wait state (không tự chuyển nếu không có lệnh) nhưng máy vẫn đang hoạt động liên tục như một Acting state. Execute là trường hợp duy nhất thuộc nhóm này — servo chạy, sản phẩm ra liên tục, nhưng máy đứng yên ở Execute cho tới khi nhận Hold/Stop/Suspend/Abort. (→ xem Resting State (Trạng thái nghỉ / Wait state — PackML), Transitional State (Trạng thái chuyển tiếp — PackML))
+<em>Xuất hiện đầu tiên: Chương 12, mục 12.2.2.</em></p>
 <p><strong>Determinism (Tính dự đoán được)</strong> — Tính chất của hệ thống điều khiển: với cùng điều kiện đầu vào, hệ thống luôn cho ra cùng kết quả trong khoảng thời gian xác định. PLC đạt determinism cao nhờ scan cycle cứng; PC-Based cần thiết kế tường minh (State Machine, không phụ thuộc timing ngẫu nhiên) để đạt hành vi deterministic. Ở cấp phần mềm, không cần hard real-time tuyệt đối — chỉ cần hành vi logic nhất quán và dự đoán được. (→ xem Scan Cycle)
 <em>Xuất hiện đầu tiên: Chương 6, mục 6.1.5.</em></p>
+<p><strong>Device Manager (IDeviceManager)</strong> — Thành phần điều phối vòng đời toàn bộ thiết bị trong hệ thống: khởi động theo đúng thứ tự phụ thuộc, gọi tuần tự <code>ConfigureAllAsync → ConnectAllAsync → StartAllAsync</code> cho toàn bộ thiết bị đã đăng ký, áp retry/health-check nhất quán, và cấp snapshot trạng thái cho HMI. (→ xem Device Gateway Pattern, Health Monitor)
+<em>Xuất hiện đầu tiên: Chương 13, mục 13.3.1.</em></p>
 <p><strong>Device Gateway Pattern</strong> — Mượn ý tưởng của Repository Pattern (che giấu nguồn dữ liệu) nhưng nguồn dữ liệu là thiết bị vật lý (PLC, servo) thay vì database; trả về DTO rõ nghĩa (snapshot) thay vì raw bytes/bits. Phân biệt với Repository DDD: Device Gateway dùng cho real-time device data, không dùng để lưu Aggregate vào DB.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.1.</em></p>
 <p><strong>Domain Event</strong> — Đối tượng biểu diễn một sự kiện có ý nghĩa nghiệp vụ đã xảy ra trong miền (ví dụ: MachineStarted, AxisHomed); dùng để decouple giữa các thành phần, hỗ trợ audit trail, và mở rộng hệ thống mà không sửa lõi.
@@ -19408,6 +19731,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.2.3.</em></p>
 <p><strong>Dependency Injection (DI — tiêm phụ thuộc)</strong> — Nguyên tắc: object không tự tạo các phụ thuộc của nó mà nhận từ bên ngoài (thường qua constructor); giúp hoán đổi implementation, mô phỏng và test dễ. Khác Dependency Inversion (nguyên lý &quot;phụ thuộc vào abstraction&quot;) — DI là kỹ thuật cụ thể để hiện thực nguyên lý đó. (→ xem constructor injection, interface)
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.2.2.</em></p>
+<p><strong>DI Lifetime (Singleton / Scoped / Transient)</strong> — Ba vòng đời chuẩn khi đăng ký service vào DI container: <strong>Singleton</strong> (một instance dùng chung suốt vòng đời ứng dụng — bắt buộc cho driver kết nối phần cứng, vì Transient sẽ mở kết nối liên tục), <strong>Scoped</strong> (một instance mỗi &quot;phạm vi&quot; — ngoài ASP.NET không tự tạo scope theo request, cần <code>IServiceScopeFactory.CreateScope()</code> tường minh), <strong>Transient</strong> (instance mới mỗi lần resolve — hợp cho object nhẹ, không giữ state). Chọn sai lifetime cho driver phần cứng là lỗi phổ biến gây rò rỉ kết nối. (→ xem Dependency Injection (DI — tiêm phụ thuộc))
+<em>Xuất hiện đầu tiên: Chương 7, mục 7.2.5.</em></p>
 <p><strong>dotnet-counters</strong> — Công cụ dòng lệnh của .NET (<code>dotnet tool install --global dotnet-counters</code>) hiển thị CPU/memory/GC/thread pool theo thời gian thực của một tiến trình đang chạy, chỉ cần Process ID — không cần Visual Studio hay source code. Thường là bước đầu tiên khi chẩn đoán &quot;máy chạy chậm&quot; trên production. (→ xem dotnet-trace, dotnet-dump)
 <em>Xuất hiện đầu tiên: Chương 19, mục 19.1.</em></p>
 <p><strong>dotnet-trace</strong> — Công cụ dòng lệnh ghi lại một trace runtime dựa trên cơ chế EventPipe, nhẹ hơn nhiều so với gắn Visual Studio Profiler trực tiếp lên production. File <code>.nettrace</code> sinh ra có thể mang về máy dev mở bằng Visual Studio (CPU Usage tool) để phân tích hot path — mô hình &quot;thu tại hiện trường, phân tích tại phòng dev&quot;. (→ xem EventPipe, dotnet-counters)
@@ -19421,10 +19746,14 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.3.4.</em></p>
 <p><strong>Entity (DDD)</strong> — Đối tượng có định danh (identity) ổn định theo thời gian; hai Entity khác nhau dù giống mọi thuộc tính vẫn là hai đối tượng riêng biệt. Trong máy tự động hoá: Machine, Axis, Sensor.
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.1.1.</em></p>
+<p><strong>Encapsulation (đóng gói)</strong> — Một trong bốn trụ cột OOP (cùng inheritance, polymorphism, composition): giấu chi tiết triển khai bên trong object, chỉ lộ ra bên ngoài qua property/method public có kiểm soát (ví dụ <code>private set</code> chặn gán trực tiếp, buộc đi qua method có validate). Field nội bộ đổi được mà không ảnh hưởng code gọi bên ngoài, miễn interface công khai giữ nguyên. (→ xem class, Property, inheritance)
+<em>Xuất hiện đầu tiên: Chương 4, mục 4.1.2.</em></p>
 <p><strong>Eventual Consistency (nhất quán cuối cùng)</strong> — Đặc tính của hệ thống phân tán: hai thành phần có thể tạm thời không đồng bộ, nhưng cuối cùng sẽ về trạng thái nhất quán. Outbox Pattern là một giải pháp đảm bảo eventual consistency cho domain event.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.2.</em></p>
 <p><strong>Expression Tree</strong> (<code>Expression&lt;Func&lt;T, bool&gt;&gt;</code>) — Biểu diễn lambda dưới dạng cây dữ liệu (đối tượng mô tả phép tính) thay vì code thực thi ngay; ORM như EF Core đọc cây này và dịch thành câu SQL, tránh kéo toàn bộ bảng về bộ nhớ để lọc.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.3.</em></p>
+<p><strong>Extension method</strong> — Cơ chế C# &quot;thêm&quot; method vào một kiểu có sẵn (kể cả interface/kiểu không sửa được source) mà không cần sửa code gốc, khai báo <code>static</code> với tham số đầu có <code>this</code> (<code>static bool IsHomed(this IAxis axis)</code>); biến thao tác lặp lại thành câu lệnh đọc tự nhiên (<code>axis.IsHomed()</code> thay vì hàm tiện ích rời rạc). (→ xem interface)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.4.3.</em></p>
 <p><strong>Event Aggregator</strong> — Tên gọi thông dụng (Prism/WPF) cho cơ chế trung gian Pub-Sub nơi nhiều subscriber đăng ký nhận event mà không biết nguồn phát; trong sách tương ứng với <code>IEventPublisher</code> / Message Bus. Chỉ nên dùng khi số subscriber không biết trước hoặc thay đổi runtime — với 2 class cố định, dependency injection trực tiếp đơn giản hơn. (→ xem IEventPublisher, Observer Pattern)
 <em>Xuất hiện đầu tiên: Chương 16, mục 16.1.2.</em></p>
 <p><strong>Event Storm</strong> — Hiện tượng quá nhiều notification phát ra trong thời gian rất ngắn (ví dụ encoder 1kHz = 1000 event/giây) làm bão hoà UI thread hoặc log; với <code>IObservable&lt;T&gt;</code> giải quyết bằng điều tiết tần suất qua <code>Sample()</code>/<code>Throttle()</code> (ví dụ giảm còn 10Hz đủ để hiển thị). (→ xem IObservable<T>, Rx.NET)
@@ -19440,6 +19769,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="f">F</h2>
 <p><strong>FATP (Final Assembly Test &amp; Packaging)</strong> — Loại hình nhà máy lắp ráp cuối, kiểm tra và đóng gói sản phẩm (phổ biến trong điện tử); môi trường thường là phòng sạch (cleanroom) với ánh sáng ổn định, đồng đều — bối cảnh khác hẳn xưởng cơ khí có đèn chiếu mạnh, ảnh hưởng trực tiếp đến lựa chọn Dark/Light theme cho HMI. (→ xem Dark theme / Light theme (bối cảnh HMI))
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.2.1.</em></p>
+<p><strong>FAT (Factory Acceptance Test) / SAT (Site/System Acceptance Test)</strong> — Hai cấp nghiệm thu máy: FAT diễn ra tại xưởng nhà sản xuất trước khi xuất máy (≈ Integration Test — kiểm tra các cụm phối hợp với nhau); SAT diễn ra tại xưởng khách hàng sau khi lắp đặt (≈ System Test — kiểm tra toàn hệ thống trong môi trường thật). Không nhầm với FATP (loại hình nhà máy). (→ xem FATP, Test Pyramid (Tháp kiểm thử))
+<em>Xuất hiện đầu tiên: Chương 18, mục 18.1.2.</em></p>
 <p><strong>Fieldbus</strong> — Lớp mạng truyền thông kết nối IPC, PLC, Remote I/O, và thiết bị hiện trường (servo drive, biến tần, cảm biến thông minh); nhiều chuẩn khác nhau (EtherCAT, PROFINET, Modbus TCP, EtherNet/IP), mỗi chuẩn có đặc điểm thời gian thực và hệ sinh thái vendor riêng (Chương 14 đi sâu cách C# giao tiếp qua các giao thức này). (→ xem IPC (Industrial PC), Remote I/O)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.3.</em></p>
 <p><strong>Freezable</strong> (<code>System.Windows.Freezable</code>) — Lớp cơ sở WPF cho đối tượng đồ hoạ (<code>Brush</code>, <code>Pen</code>, <code>Transform</code>, <code>Geometry</code>, một số <code>BitmapSource</code>) có thể chuyển sang trạng thái bất biến qua <code>Freeze()</code>; sau khi freeze, đối tượng dùng chung an toàn giữa nhiều phần tử/luồng, giảm cấp phát lặp lại và áp lực GC. Dùng cho brush/geometry lặp lại nhiều lần (ví dụ màu theo mức alarm cho hàng nghìn dòng).
@@ -19450,6 +19781,10 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.3.5.</em></p>
 <p><strong>Factory Pattern</strong> — Mẫu thiết kế tập trung hoá việc tạo đối tượng; trong DAL, DeviceFactory nhận cấu hình và giao cho IDeviceBuilder đúng loại tạo ra device, tránh switch-case phình to trong client code.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.2.2.</em></p>
+<p><strong>Force I/O (Force IO)</strong> — Cơ chế phần mềm ứng dụng C# tạm ghi đè (đóng băng) giá trị một tín hiệu IO ở mức cố định, bỏ qua logic điều khiển thường — công cụ chẩn đoán mạnh nhưng nguy hiểm nếu quên gỡ. Yêu cầu 5 lớp bảo vệ: quyền Administrator, xác nhận 2 bước, alarm liên tục nhắc nhở trong lúc còn force, tự động gỡ (auto-unforce) theo timeout, và log audit đầy đủ. Khác Muting (cơ chế của Safety PLC, không phải C#). (→ xem Muting, RiskTier)
+<em>Xuất hiện đầu tiên: Chương 15 (cuối chương, callout &quot;Tai nạn kinh điển: Quên gỡ Force IO&quot;).</em></p>
+<p><strong>Function Block (FB) / Function (FC) / UDT / Data Block (DB)</strong> — Bốn khối xây dựng chương trình PLC (IEC 61131-3), ánh xạ sang C# theo Chương 6: <strong>FB</strong> (Function Block, có Instance Data giữ trạng thái giữa các lần gọi) ≈ <code>class</code> có field <code>private</code>; <strong>FC</strong> (Function, không state) ≈ <code>static method</code>; <strong>UDT</strong> (User-Defined Type) ≈ <code>struct</code>/<code>record struct</code> (value semantics); <strong>DB</strong> (Data Block, vùng nhớ) ≈ <code>class</code>/<code>record</code> có thêm method/validation. Lưu ý: <strong>FC</strong> ở đây (PLC Function) khác hoàn toàn <strong>FC</strong> trong ngữ cảnh Modbus (Function Code, ngay bên dưới) — cùng viết tắt, hai nghĩa không liên quan. (→ xem class, struct)
+<em>Xuất hiện đầu tiên: Chương 6, mục 6.2.3.</em></p>
 <p><strong>Function Code (FC — Modbus)</strong> — Byte đầu tiên trong Modbus PDU xác định loại thao tác: FC01/02 (Read Coil/Discrete Input), FC03/04 (Read Holding/Input Register), FC05/06 (Write Single Coil/Register), FC16 (Write Multiple Registers). Khi slave phát hiện lỗi, FC trong response có bit 7 set (FC03 → 0x83) kèm Exception Code 1 byte (0x01–0x04). (→ xem Modbus TCP, MBAP Header)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.2.</em></p>
 <p><strong>Func&lt;T&gt;</strong> — Delegate có sẵn của .NET cho method <strong>có trả giá trị</strong> (kiểu trả về là tham số cuối); dùng cho predicate/tính toán (<code>Func&lt;MachineState, bool&gt;</code> kiểm tra interlock, <code>Func&lt;bool&gt;</code> đánh giá điều kiện). (→ xem Action<T>, delegate)
@@ -19502,6 +19837,10 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.2.5.</em></p>
 <p><strong>HSMS (High-Speed Message Services — SEMI E37)</strong> — Tầng transport của SECS/GEM chạy trên TCP/IP, port 5000 theo convention; thay thế SECS-I (RS-232) từ những năm 1990. Định nghĩa hai role: Active (MES host, chủ động kết nối) và Passive (equipment, lắng nghe). Có thủ tục Select (SelectReq/SelectRsp) phải hoàn tất trước khi gửi bất kỳ SECS-II message nào; keepalive qua Linktest theo chu kỳ T7/T8. (→ xem SECS-II, GEM)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.2.2.</em></p>
+<p><strong>HAL (Hardware Abstraction Layer — trong Bridge Pattern)</strong> — Một chiều tách biệt bổ sung cho DAL: tách &quot;board&quot; (thiết bị vật lý cắm vào IPC, ví dụ card motion nhiều trục) khỏi &quot;kênh/trục trên board&quot; (<code>IMotionBoard.GetChannel(index)</code> trả về <code>IMotionAxisDriver</code> cho từng trục) — giảm N×M tổ hợp driver (N board × M trục) xuống còn N+M adapter. Không nhầm với DAL (Device Abstraction Layer, phạm vi rộng hơn). (→ xem DAL (Device Abstraction Layer), Bridge Pattern)
+<em>Xuất hiện đầu tiên: Chương 13, mục 13.2.4.</em></p>
+<p><strong>HIL (Hardware-in-the-Loop)</strong> — Cấp kiểm thử chạy phần mềm điều khiển thật kết nối với phần cứng thật (hoặc mô phỏng độ trung thực cao) nhưng chưa lắp vào dây chuyền sản xuất thật — đỉnh Test Pyramid, chậm và đắt nhất nhưng phát hiện được lỗi tương tác phần cứng-phần mềm mà Unit Test/Integration Test thuần software không thấy được. (→ xem Test Pyramid (Tháp kiểm thử), Simulator Driver)
+<em>Xuất hiện đầu tiên: Chương 18, mục 18.1.2.</em></p>
 <p><strong>Health Monitor</strong> — Thành phần chạy vòng lặp định kỳ (dùng PeriodicTimer) kiểm tra sức khoẻ thiết bị theo 3 mức Healthy / Degraded / Unhealthy, phát sự kiện khi mức thay đổi để HMI hiển thị và hệ thống ra quyết định an toàn.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.3.4.</em></p>
 <p><strong>Health Check (Endpoint)</strong> — Endpoint HTTP (<code>/health</code>, dùng <code>AddHealthChecks()</code>/<code>MapHealthChecks()</code> của ASP.NET Core) cho phép hệ thống giám sát bên ngoài định kỳ hỏi &quot;còn sống không&quot; mà không cần con người mở từng máy kiểm tra; trả về ba mức Healthy/Degraded/Unhealthy tương tự Health Monitor nhưng ở phạm vi khác — Health Monitor (Chương 13) theo dõi <em>sức khoẻ một thiết bị cụ thể</em> trong nội bộ ứng dụng, Health Check là <em>cổng vào từ bên ngoài</em> để hỏi sức khoẻ tổng thể của cả service. Nguyên tắc quan trọng: bản thân health check phải nhẹ (một tag kiểm tra, một phép đo round-trip), không được tạo tải thêm cho hệ thống nó giám sát. Vì trả về thông tin nội bộ (latency, tên connection...), không nên public ra Internet — bảo vệ bằng <code>.RequireHost(&quot;localhost&quot;, &quot;127.0.0.1&quot;)</code> (chỉ nội bộ) hoặc <code>.RequireAuthorization(...)</code> (yêu cầu xác thực), theo tinh thần defence-in-depth dù mạng nhà máy đã có firewall/VLAN. (→ xem Health Monitor)
@@ -19531,16 +19870,22 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.3.1.</em></p>
 <p><strong>Immediate Window</strong> — Cửa sổ debug tương tác của Visual Studio: gõ bất kỳ biểu thức C# hợp lệ nào và IDE đánh giá ngay lập tức, kể cả gọi hàm, mà không cần sửa code nguồn. Cảnh báo quan trọng trong automation: gọi hàm ở đây <em>thực sự thực thi</em> — không phải mô phỏng; gọi một hàm có side-effect lên PLC/phần cứng sẽ tác động thật ngay lập tức. (→ xem Breakpoint (điểm dừng))
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.3.</em></p>
-<p><strong>IPC (Industrial PC — máy tính công nghiệp)</strong> — Nền tảng tính toán trung tâm cho PC-Based Control; khác PC văn phòng ở khả năng chịu rung động/bụi/nhiệt độ dao động, thường fanless (không quạt cơ khí) để giảm điểm hỏng hóc, và chạy liên tục 24/7. Đây là nơi ứng dụng C# (Sequence Engine, HMI, driver) thực thi. (→ xem PC-Based Control, Fieldbus)
+<p><strong>IPC (Industrial PC — máy tính công nghiệp)</strong> — Nền tảng tính toán trung tâm cho PC-Based Control; khác PC văn phòng ở khả năng chịu rung động/bụi/nhiệt độ dao động, thường fanless (không quạt cơ khí) để giảm điểm hỏng hóc, và chạy liên tục 24/7. Đây là nơi ứng dụng C# (Sequence Engine, HMI, driver) thực thi. Không nhầm với IPC (Inter-Process Communication) — mục riêng ngay bên dưới, cùng viết tắt nhưng nghĩa khác hẳn. (→ xem PC-Based Control, Fieldbus)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.3.</em></p>
+<p><strong>IPC (Inter-Process Communication)</strong> — Cơ chế hai tiến trình (process) trao đổi dữ liệu với nhau, dùng khi tách một phần phụ thuộc (ví dụ SDK chỉ hỗ trợ x86) ra process riêng cách ly khỏi ứng dụng chính (x64) — Chương 14 đi sâu kỹ thuật giao tiếp giữa các process. Không nhầm với IPC (Industrial PC) ngay phía trên — cùng viết tắt, hai nghĩa hoàn toàn khác nhau, phân biệt theo ngữ cảnh câu. (→ xem IPC (Industrial PC — máy tính công nghiệp), Process Isolation (Boundary Contract))
+<em>Xuất hiện đầu tiên: Chương 2, mục 2.2 (nhắc tên); Chương 14, mục 14.1.3 (kỹ thuật đầy đủ).</em></p>
 <p><strong>IT/OT Convergence</strong> — Xu hướng hội tụ giữa OT (Operational Technology — máy móc, cảm biến, điều khiển thời gian thực) và IT (Information Technology — server, database, mạng doanh nghiệp), diễn ra ở tầng dữ liệu và kết nối, không phải tầng điều khiển cốt lõi. PC-Based Control là điểm hội tụ tự nhiên vì một ứng dụng C#/.NET nói được cả &quot;ngôn ngữ OT&quot; (fieldbus, tín hiệu thời gian thực) lẫn &quot;ngôn ngữ IT&quot; (REST API, database, xác thực doanh nghiệp). (→ xem PC-Based Control)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.4.</em></p>
+<p><strong>Interlocked</strong> — Lớp tĩnh <code>System.Threading.Interlocked</code> cung cấp thao tác đọc-sửa-ghi <em>nguyên tử</em> (atomic) trên một biến dùng chung giữa nhiều luồng mà không cần <code>lock</code> (<code>Interlocked.Increment</code>, <code>CompareExchange</code>, <code>Exchange</code>); nhanh hơn <code>lock</code> cho thao tác đơn giản trên một field, nhưng không thay được <code>lock</code>/<code>SemaphoreSlim</code> khi cần bảo vệ nhiều field cùng lúc — dùng <code>CompareExchange</code> để thay nguyên khối một record immutable trong trường hợp đó. Không nhầm với Interlock (logic an toàn phần mềm, Chương 15) — tên gần giống nhưng hai khái niệm hoàn toàn khác nhau. (→ xem lock, SemaphoreSlim, Torn read)
+<em>Xuất hiện đầu tiên: Chương 5, mục 5.3.3.</em></p>
 <p><strong>Interlock</strong> — Logic phần mềm kiểm tra tập hợp điều kiện tiền đề trước khi cho phép một hành động; ví dụ: &quot;chỉ cho phép StartMotor khi E-Stop = OK, DoorClosed = true, PressureOK = true&quot;. Khác E-Stop: Interlock là phần mềm chủ động ngăn thao tác sai, E-Stop là phần cứng dừng khẩn cấp sau sự cố. (→ xem E-Stop, Guard Engine)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.2.1.</em></p>
 <p><strong>ISA-101</strong> — Chuẩn ANSI/ISA &quot;Human Machine Interfaces for Process Automation Systems&quot;, quy định cách tổ chức, phân cấp và trình bày thông tin trên HMI công nghiệp — bảng màu (dành riêng màu bão hoà cho alarm), hệ thống chữ theo vai trò hiển thị, và mô hình phân cấp 4 mức (Level 1 Overview → Level 4 Control Module, mật độ thông tin tăng dần khi xuống cấp sâu). Khác ISA-18.2 (quy định logic quản lý alarm) và PackML/ISA-TR88.00.02 (quy định trạng thái máy) — ISA-101 quy định riêng phần <em>hiển thị</em>. (→ xem High Performance HMI, ISA-18.2, Alarm Banner)
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.1.2.</em></p>
 <p><strong>ISA-18.2</strong> — Chuẩn ANSI/ISA &quot;Management of Alarm Systems for the Process Industries&quot;; định nghĩa toàn bộ vòng đời alarm từ triết lý thiết kế (Alarm Philosophy Document) đến rationalization, priority, rate monitoring và suppression. Phiên bản quốc tế tương đương: IEC 62682. (→ xem IEC 62682, Alarm Rationalization, Alarm Shelving)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.3.</em></p>
+<p><strong>ISequenceEngine</strong> — Interface hợp đồng để Application Service, HMI, và test tương tác với state machine PackML mà không cần biết chi tiết cài đặt bên trong (<code>MachineContext</code>/<code>PackMlStateMachine</code>): <code>StartAsync</code>/<code>StopAsync</code> điều khiển vòng lặp scan cycle, <code>SendCommandAsync(PackMlCommand, ct)</code> gửi lệnh, <code>GetCurrentState()</code> đọc trạng thái, sự kiện <code>StateChanged</code> báo khi chuyển trạng thái. (→ xem PackML, State Pattern (GoF))
+<em>Xuất hiện đầu tiên: Chương 12, mục 12.1.3.</em></p>
 <p><strong>ISA-TR88.00.02</strong> — Tiêu chuẩn kỹ thuật PackML (Packaging Machine Language) do OMAC/ISA ban hành, định nghĩa 17 trạng thái máy, 9 lệnh, và cơ chế State Complete (SC) cho máy đóng gói và sản xuất. Mục đích: tạo ngôn ngữ chung giữa OEM, end-user, và hệ thống MES/SCADA — máy từ nhiều nhà sản xuất khác nhau có thể giao tiếp trạng thái nhất quán. (→ xem PackML, SC/State Complete)
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.2.1.</em></p>
 <p><strong>Invariant (bất biến)</strong> — Quy tắc nghiệp vụ phải đúng trong suốt vòng đời của một Aggregate, bất kể thao tác nào được thực hiện; Aggregate Root có trách nhiệm đảm bảo mọi invariant không bị vi phạm sau mỗi lần gọi method. Ví dụ: &quot;Axis chưa Homed thì không được Move&quot;, &quot;Máy Faulted thì không được Start&quot;. Trong PackML, invariant cứng nhất là: lệnh Abort phải được chấp nhận từ bất kỳ trạng thái nào — không có ngoại lệ.
@@ -19563,6 +19908,11 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.2.4.</em></p>
 <p><strong>interface</strong> — Một <em>hợp đồng</em> (contract) liệt kê các method/property mà class phải có, nhưng không quy định cách làm; một class có thể implement nhiều interface. Là nền tảng để đổi vendor, mô phỏng/test, và tách tầng (Dependency Inversion) trong automation; tách nhỏ theo năng lực để mỗi module chỉ phụ thuộc cái nó dùng. (→ xem Capability Interface, abstract class, Dependency Injection)
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.2 (dùng từ Chương 11, 13).</em></p>
+<h2 id="j">J</h2>
+<p><strong>jitter</strong> — Độ dao động thời gian giữa các chu kỳ thực thi liên tiếp — khác cycle time (thời gian một chu kỳ đơn lẻ): một vòng lặp có thể có cycle time ổn định nhưng jitter cao (thời điểm bắt đầu mỗi chu kỳ trôi dần), hoặc ngược lại. Với vòng servo hard real-time, jitter phải giữ dưới ngưỡng rất nhỏ (ví dụ dưới 1µs cho EtherCAT) để đảm bảo tính xác định — jitter cao gây mất đồng bộ dù cycle time trung bình vẫn đúng. (→ xem Determinism (Tính dự đoán được), GC pressure)
+<em>Xuất hiện đầu tiên: Chương 1, mục 1.1.</em></p>
+<p><strong>JsonSerializerOptions</strong> — Đối tượng cấu hình cho <code>JsonSerializer</code> (namespace <code>System.Text.Json</code>) quyết định cách serialize/deserialize (indent, naming policy, xử lý null...); phải khai báo <code>private static readonly</code> thay vì tạo mới mỗi lần gọi — tạo lại liên tục vừa tốn hiệu năng vừa bị Roslyn phân tích cảnh báo (CA1869). (→ xem readonly)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.6.3.</em></p>
 <h2 id="l">L</h2>
 <p><strong>LibraryImport</strong> — Cơ chế P/Invoke hiện đại (.NET 7+, Source Generator) thay thế <code>[DllImport]</code>: sinh code marshalling ngay lúc biên dịch thay vì dựa vào reflection lúc chạy — nhanh hơn và tương thích Native AOT. Chỉ áp dụng được trong đúng điều kiện của P/Invoke (SDK export hàm C thuần); không mở rộng sang trường hợp cần C++/CLI (class, vtable, callback C++). Class chứa method đánh dấu <code>[LibraryImport]</code> phải khai báo <code>partial</code>. (→ xem P/Invoke ([DllImport]), C++/CLI)
 <em>Xuất hiện đầu tiên: Phụ lục A, mục A.1.</em></p>
@@ -19582,7 +19932,9 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="m">M</h2>
 <p><strong>MVVM (Model-View-ViewModel)</strong> — Biến thể của MVP (Chương 8) dành cho nền tảng có Binding Engine mạnh (WPF, WinUI, MAUI): View bind trực tiếp vào ViewModel qua <code>DataContext</code>, ViewModel chỉ cần đổi giá trị property (<code>INotifyPropertyChanged</code>) — không cần &quot;đẩy&quot; dữ liệu vào View thủ công như Presenter. Nguyên tắc vàng &quot;View không gọi Model trực tiếp&quot; của MVP vẫn giữ nguyên. (→ xem MVP, Binding (WPF), INotifyPropertyChanged)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.2.</em></p>
-<p><strong>MeoFrame</strong> — Bí danh dự án thực hành dùng xuyên suốt toàn sách; thay thế <strong>VinaFrame</strong> (tên cũ, dùng tạm ở Ch9/Ch11–16 trước khi thống nhất) và mọi biến thể tên dự án thực tế khác (<code>MVA</code>/<code>Mva.*</code>, <code>AM.AutoFrame</code>). Đã chuẩn hoá toàn bộ <code>output/Chapter_*.md</code> bằng search-replace — xem <code>reference/Quy_Uoc_Ten_Bi_Danh.md</code> (nguồn sự thật duy nhất, đọc trước khi dùng tên dự án trong chương mới) và <code>Ghi_Chu_Hoan_Lai.md</code> mục #13/#16. Chương 1 cố ý CHƯA dùng tên này (viết trước khi MeoFrame &quot;ra mắt&quot; trong mạch kể của sách, dùng tên chung như &quot;phần mềm điều khiển máy&quot;) — Chương 2, mục 2.2 là nơi giới thiệu chính thức lần đầu.
+<p><strong>MES (Manufacturing Execution System)</strong> — Hệ thống quản lý sản xuất cấp trên máy: nhận lệnh sản xuất, phân phối recipe, thu thập dữ liệu truy xuất nguồn gốc — nằm giữa máy/PLC (thực thi) và ERP (Enterprise Resource Planning — quản lý nguồn lực toàn doanh nghiệp, cấp cao hơn MES). Máy giao tiếp với MES qua các giao thức Chương 14 (OPC UA, SECS/GEM...). (→ xem GEM (Generic Equipment Model — SEMI E30), OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể))
+<em>Xuất hiện đầu tiên: Chương 1 (mở đầu chương).</em></p>
+<p><strong>MeoFrame</strong> — Tên bí danh dùng xuyên suốt sách cho mọi ví dụ code, namespace (<code>MeoFrame.Domain</code>, <code>MeoFrame.Application</code>, <code>MeoFrame.Infrastructure</code>...) và tình huống thực chiến — placeholder đại diện cho &quot;dự án automation thực tế của bạn&quot;, không phải tên một framework cố định duy nhất. Đây là một TÊN dùng chung, không phải một codebase duy nhất khớp nhau tuyệt đối giữa mọi chương: mỗi chương có thể dùng MeoFrame để mô phỏng một máy khác nhau (Pick &amp; Place, Conveyor, Vision Inspection...), và cấu trúc namespace mỗi ví dụ giữ đúng theo khái niệm đang minh hoạ tại chỗ đó — không nên kỳ vọng ráp mọi đoạn code MeoFrame trong sách thành một solution build được nguyên khối. Mục đích của tên gọi thống nhất là giúp người đọc không phải làm quen bối cảnh mới mỗi chương, không phải cam kết một kiến trúc bất biến xuyên suốt như các ví dụ &quot;xây incrementally một ứng dụng&quot; của một số sách lập trình khác. Chương 1 cố ý chưa dùng tên này (dùng cách gọi chung &quot;phần mềm điều khiển máy&quot; khi khái niệm framework mẫu chưa cần thiết) — Chương 2, mục 2.2 là nơi giới thiệu chính thức lần đầu.
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>Mock&lt;T&gt;</strong> — Kiểu của Moq để tạo một test double từ interface <code>T</code>: các method trả giá trị mặc định (<code>null</code>/<code>false</code>) cho đến khi được cấu hình qua <code>Setup(...).Returns(...)</code>; sau khi test chạy, gọi <code>Verify(...)</code> để xác nhận method đã được gọi đúng số lần với tham số đúng. Dùng khi cần assert về <em>tương tác</em> (method có được gọi không?); nếu chỉ cần trả dữ liệu không cần verify, dùng Stub. (→ xem Moq, Stub)
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.3.2.</em></p>
@@ -19626,6 +19978,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 3, mục 3.8.1.</em></p>
 <p><strong>Nhóm ngôn ngữ theo font: English-like / Tall / Dense</strong> — Ba nhóm phân loại ngôn ngữ theo yêu cầu font trong HMI đa ngôn ngữ: <strong>English-like</strong> (Anh, Đức, Pháp — dùng baseline chuẩn); <strong>Tall</strong> (Việt, Thái, Ả Rập, Hindi — dấu thanh/dấu phụ cần <code>LineHeight</code> lớn hơn 1.4–1.5×, tránh <code>Height</code> cứng, tránh Bold); <strong>Dense</strong> (Trung, Nhật, Hàn — cần font Noto Sans CJK, <code>FontSize</code> +1px). Quyết định thang chỉnh <code>LineHeight</code>/font/weight khác nhau cho từng nhóm thay vì áp một quy tắc chung cho mọi ngôn ngữ. (→ xem ResourceDictionary (WPF))
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.2.3.</em></p>
+<p><strong>Nagle&#39;s Algorithm / NoDelay (TCP_NODELAY)</strong> — Thuật toán TCP mặc định gộp các gói tin nhỏ lại trước khi gửi để tăng hiệu quả băng thông — có thể trễ tới ~200ms, gây hại cho lệnh điều khiển tần suất thấp cần độ trễ thấp (trigger camera, lệnh chuyển động). Đặt <code>socket.NoDelay = true</code> để tắt Nagle, gửi ngay không chờ gộp gói. (→ xem TCP half-open)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
 <p><strong>NodeId (OPC UA)</strong> — Định danh duy nhất của mỗi Node trong OPC UA Address Space; gồm namespace index và identifier: dạng Numeric (<code>ns=3;i=1234</code>) hoặc String (<code>ns=3;s=PLC1.DB100.MotorSpeed</code>). Ưu tiên dùng String NodeId trong production vì Numeric NodeId phụ thuộc cấu hình server và có thể thay đổi sau firmware update. Dùng UA Expert để browse và copy đúng NodeId. (→ xem Information Model)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.1.</em></p>
 <p><strong>NullLogger</strong> — Implementation của <code>ILogger&lt;T&gt;</code> (từ <code>Microsoft.Extensions.Logging.Abstractions</code>) không làm gì với mọi log message; dùng trong test để thay thế logger thật mà không cần mock thủ công — lấy qua <code>NullLogger&lt;T&gt;.Instance</code>. (→ xem Dependency Injection)
@@ -19637,6 +19991,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>Native pointer</strong> — Con trỏ C++ thuần (<code>NativeCamera* _native</code>) dùng bên trong một wrapper C++/CLI để giữ tham chiếu tới object SDK gốc; khác handle managed <code>^</code> (do GC quản lý) — native pointer không được GC theo dõi hay di chuyển, vòng đời do wrapper tự quản lý (cấp phát/giải phóng qua cặp destructor <code>~</code>/finalizer <code>!</code>). Nhầm lẫn giữa hai loại &quot;địa chỉ&quot; này là nguồn gốc phổ biến nhất của crash trong wrapper. (→ xem C++/CLI, Finalizer (<code>!ClassName</code>, C++/CLI))
 <em>Xuất hiện đầu tiên: Phụ lục A, mục A.2.</em></p>
 <h2 id="o">O</h2>
+<p><strong>OPC UA (Open Platform Communications Unified Architecture)</strong> — Chuẩn giao thức công nghiệp hiện đại của OPC Foundation, biểu diễn hệ thống dưới dạng Information Model phân cấp (Node có kiểu mạnh) thay vì thanh ghi số thô như Modbus; hỗ trợ Subscription (đăng ký nhận thay đổi thay vì polling), bảo mật tích hợp (PKI, SecurityPolicy), và độc lập platform/vendor. Xem chi tiết từng phần: Information Model, NodeId, Subscription. (→ xem Information Model (OPC UA), NodeId (OPC UA), Subscription (OPC UA))
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.1.</em></p>
 <p><strong>ObservableCollection&lt;T&gt;</strong> — Collection .NET tự phát <code>CollectionChanged</code> khi thêm/xoá phần tử, khiến mọi <code>ItemsControl</code>/<code>DataGrid</code> binding vào nó tự vẽ lại; là phiên bản &quot;tự thông báo&quot; của <code>BindingList&lt;T&gt;</code> đã dùng ở Chương 8 cho <code>DataGridView</code>. Vẫn phải marshal qua <code>Dispatcher</code> trước khi cập nhật từ luồng nền — cập nhật trực tiếp từ thread khác gây exception. (→ xem Dispatcher, INotifyPropertyChanged)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.1.5.</em></p>
 <p><strong>[ObservableProperty] / [RelayCommand] (CommunityToolkit.Mvvm)</strong> — Hai attribute source generator: <code>[ObservableProperty]</code> trên một field private sinh ra property public đầy đủ cơ chế <code>INotifyPropertyChanged</code>; <code>[RelayCommand]</code> trên một method sinh ra property <code>ICommand</code> công khai cùng tên + hậu tố <code>Command</code>. Loại bỏ boilerplate của việc viết tay <code>BaseViewModel</code>/<code>RelayCommand</code> (Chương 9, Code 9.6). (→ xem CommunityToolkit.Mvvm, ICommand / RelayCommand)
@@ -19669,16 +20025,26 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.1.</em></p>
 <p><strong>PAC (Programmable Automation Controller)</strong> — Controller công nghiệp thế hệ mới, đứng giữa PLC truyền thống và PC-Based Control: giữ độ tin cậy/tính &quot;đóng&quot; của PLC nhưng có khả năng xử lý mạnh hơn và lập trình linh hoạt hơn. Không phổ biến bằng hai lựa chọn còn lại trong sách này nhưng đáng biết khi so sánh nền tảng điều khiển. (→ xem PC-Based Control)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.1.</em></p>
+<p><strong>Process Isolation (Boundary Contract)</strong> — Kỹ thuật tách một thư viện vendor không tương thích runtime/platform ra chạy trong process riêng, giao tiếp với process chính qua payload trung lập (chỉ kiểu cơ bản + JSON, gọi là Boundary Contract) thay vì tham chiếu trực tiếp — cho phép hai phía nâng cấp độc lập, và lỗi native (SEHException) trong process phụ không kéo sập process chính. (→ xem SEHException (Structured Exception), IPC (Inter-Process Communication))
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
 <p><strong>Platform Target (x86/x64/AnyCPU)</strong> — Thiết lập build quyết định độ rộng process của ứng dụng .NET; phải đồng bộ với SDK/driver thiết bị vì managed code (C#) và native code (<code>.dll</code> C/C++ của hãng thiết bị) phải cùng độ rộng process (đều 32-bit hoặc đều 64-bit) khi gọi lẫn nhau. Sai lệch platform ném <code>BadImageFormatException</code> lúc runtime — lỗi phổ biến nhất khi mới bắt đầu vì thông báo lỗi không trực tiếp gợi ý nguyên nhân. (→ xem AnyCPU, BadImageFormatException)
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>PackML (Packaging Machine Language)</strong> — Chuẩn giao diện trạng thái máy do OMAC định nghĩa và được ISA chuẩn hoá thành ISA-TR88.00.02; gồm 17 trạng thái (7 resting: Stopped/Idle/Execute/Complete/Held/Suspended/Aborted; 10 transitional), 9 lệnh operator, và tín hiệu SC nội bộ. Mục tiêu: máy sản xuất từ nhiều OEM khác nhau có thể được MES/SCADA điều phối theo cùng một ngữ nghĩa. (→ xem ISA-TR88.00.02, SC/State Complete, Hold/Suspend)
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.2.</em></p>
+<p><strong>Pattern matching</strong> — Mở rộng <code>switch</code>/<code>is</code> của C# để so khớp theo <em>kiểu</em> và <em>điều kiện</em> cùng lúc, không chỉ giá trị (<code>state is MachineState.Idle and { HasAlarm: false }</code>, hoặc <code>switch</code> expression trả giá trị trực tiếp); giảm nhiều nhánh <code>if/else</code> lồng nhau khi logic phụ thuộc cả kiểu lẫn thuộc tính bên trong. (→ xem enum)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.3.1.</em></p>
 <p><strong>partial class</strong> — Từ khoá C# cho phép chia một class thành nhiều file; compiler ghép lại khi build. Dùng để tách các nhóm method của class lớn mà không phá vỡ tính đóng gói.
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.1.3.</em></p>
 <p><strong>Passive View</strong> — Biến thể MVP trong đó View gần như không chứa logic (chỉ raise event, set/get dữ liệu); Presenter đảm nhiệm mọi formatting, validate, và quyết định enable/disable. Ưu tiên cho màn hình có logic an toàn (Start/Stop, interlock) vì test được đầy đủ. (→ xem MVP, Supervising Controller)
 <em>Xuất hiện đầu tiên: Chương 8, mục 8.3.3.</em></p>
 <p><strong>PL (Performance Level)</strong> — Thang đo mức độ an toàn trong ISO 13849-1 dành cho máy móc công nghiệp: 5 mức a–e (a = thấp nhất, e = cao nhất). Tương tự SIL nhưng dành cho machinery, không phải process industry. Chọn giữa SIL (IEC 62061) và PL (ISO 13849) tuỳ loại thiết bị và quy định áp dụng. (→ xem SIL)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.2.2.</em></p>
+<p><strong>Power Event Handling</strong> — Xử lý sự kiện chất lượng điện (sụt áp, mất điện, sét lan truyền) bằng cách giám sát tín hiệu Power-Good từ UPS/bộ giám sát nguồn qua digital input, phát hiện sớm trong &quot;cửa sổ ride-through&quot; (khoảng thời gian tín hiệu còn báo tốt trước khi điện áp thực sự sụp) để kích hoạt dừng có kiểm soát (<code>PackMlCommand.Stop</code>) trước khi mất điện đột ngột. Nguyên tắc: không tự động resume Auto sau sự cố điện — luôn cần xác nhận operator. (→ xem SC / State Complete)
+<em>Xuất hiện đầu tiên: Chương 15, mục 15.2.6.</em></p>
+<p><strong>Prism</strong> — Application framework XAML quy mô lớn cho WPF: Modularity (nạp module độc lập lúc runtime), Regions (vùng UI có thể cắm/gỡ View), Event Aggregator (Pub-Sub tích hợp), và DI container tích hợp sẵn. Nặng hơn CommunityToolkit.Mvvm (không có Regions/Modularity/Navigation) — chọn Prism khi ứng dụng có nhiều module độc lập cần nạp/gỡ động, chọn CommunityToolkit.Mvvm cho ứng dụng một khối gọn hơn. (→ xem CommunityToolkit.Mvvm, Event Aggregator)
+<em>Xuất hiện đầu tiên: Chương 9, mục 9.2.2.</em></p>
+<p><strong>Property</strong> — Một trong bốn cơ chế khai báo thành viên của class/struct (cùng Field/Method/Constructor): cặp accessor <code>get</code>/<code>set</code> bọc quanh việc đọc/ghi dữ liệu, cho phép kiểm soát (validate, chỉ đọc <code>private set</code>, tính toán lúc đọc) mà cú pháp gọi vẫn giống truy cập field trực tiếp. Nền tảng của Encapsulation. (→ xem Encapsulation (đóng gói), class)
+<em>Xuất hiện đầu tiên: Chương 4, mục 4.1.2.</em></p>
 <p><strong>Pattern Atlas (Bản đồ Pattern toàn hệ thống)</strong> — Sơ đồ đặt mọi pattern đã học (Ch11–16) vào đúng tầng kiến trúc (UI → Application → Domain → Device Abstraction → Reliability → Hardware) kèm bảng tra cứu &quot;pattern nào — chương nào — tầng nào — khi nào dùng&quot;; mục đích tránh nhầm các pattern tên giống nhau ở tầng khác nhau.
 <em>Xuất hiện đầu tiên: Chương 16, mục 16.3.</em></p>
 <p><strong>PeriodicTimer</strong> — Timer bất đồng bộ của .NET 6+, chờ nhịp tiếp theo bằng <code>await WaitForNextTickAsync(ct)</code> trong vòng lặp <code>async</code> thay vì <code>Task.Delay</code> thủ công; chạy trên threadpool (không phải UI thread), phù hợp polling nền theo nhịp đều và dễ phối hợp <code>CancellationToken</code> hơn. Khác <code>DispatcherTimer</code> (chạy trên UI thread) và <code>System.Threading.Timer</code> (callback tự do, không có cơ chế await nhịp tiếp theo). (→ xem DispatcherTimer)
@@ -19707,6 +20073,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="r">R</h2>
 <p><strong>Remote I/O</strong> — Module vào/ra phân tán, đặt gần điểm cần đọc/ghi tín hiệu (cảm biến, van, động cơ nhỏ) thay vì kéo dây tín hiệu dài về tủ điều khiển trung tâm; giao tiếp với IPC/PLC qua mạng Fieldbus, giảm chi phí đấu dây và dễ mở rộng điểm I/O sau này. (→ xem Fieldbus, IPC (Industrial PC))
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.3.</em></p>
+<p><strong>race condition</strong> — Lỗi đa luồng xảy ra khi kết quả phụ thuộc vào <em>thứ tự thực thi không xác định trước</em> của nhiều luồng truy cập cùng dữ liệu dùng chung — biểu hiện điển hình: lỗi lúc được lúc không, không tái hiện được theo ý muốn, khó debug bằng breakpoint (vì breakpoint làm chậm một luồng, thay đổi chính điều kiện gây lỗi). Khắc phục bằng đồng bộ hoá đúng cách (<code>lock</code>, <code>SemaphoreSlim</code>, <code>Interlocked</code>) quanh vùng dữ liệu dùng chung. (→ xem lock, Interlocked, Torn read)
+<em>Xuất hiện đầu tiên: Chương 5, mục 5.3.4.</em></p>
 <p><strong>Recipe Versioning</strong> — Kỹ thuật quản lý thay đổi cấu trúc recipe theo thời gian: field <code>Version</code> trên dữ liệu đi kèm logic migration thực sự (không chỉ tồn tại làm cảnh) — khi version đọc lên không khớp version hiện tại, code map dữ liệu cũ sang định dạng mới (đổi tên field, đổi đơn vị, thêm giá trị mặc định). Rẻ hơn nhiều so với EF Migration đầy đủ khi chỉ cần migrate cấu trúc một file/record đơn lẻ, không phải toàn bộ schema database. (→ xem Repository Pattern)
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.4.</em></p>
 <p><strong>Repository (kho mã nguồn — ngữ cảnh Git)</strong> — Nơi lưu trữ mã nguồn dùng Git, dùng chung cho cả nhóm (Chương 17); các tệp golden configuration (<code>.vsconfig</code>, <code>.editorconfig</code>, <code>global.json</code>, <code>Directory.Build.props</code>) nên nằm trong repository chứ không phải máy riêng của từng người. Có hai loại: <strong>local</strong> (nằm trên máy kỹ sư, đủ cho phần lớn thao tác — commit, xem lịch sử, tạo nhánh — không cần mạng) và <strong>remote</strong> (bản dùng chung; với nhà máy air-gapped, thường là một <strong>bare repository</strong> tự host trên server LAN nội bộ thay vì GitHub/GitLab). Khác <strong>Repository Pattern</strong> — đây là nơi lưu mã nguồn, không phải mẫu thiết kế che giấu chi tiết truy cập dữ liệu.
@@ -19719,9 +20087,9 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.1.2 (callout Lỗi thường gặp Bảng 12.9).</em></p>
 <p><strong>Regression Test (Kiểm thử hồi quy)</strong> — Test tự động chạy lại sau mỗi thay đổi code để phát hiện khi thay đổi mới vô tình phá vỡ hành vi cũ; đây là vai trò cốt lõi của bộ unit test — một test viết hôm nay sẽ bảo vệ code trong nhiều năm mà không cần ai chạy lại thủ công. (→ xem xUnit, Test Pyramid)
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.1.3.</em></p>
-<p><strong>Resting State (Trạng thái nghỉ — PackML)</strong> — Một trong hai nhóm trạng thái PackML: máy ở trạng thái ổn định, không tự chuyển sang trạng thái khác nếu không có trigger bên ngoài. &quot;Nghỉ&quot; không có nghĩa là không chuyển động — Execute là Resting state dù servo đang vận hành bình thường. 7 resting states: Stopped, Idle, Execute, Complete, Held, Suspended, Aborted. (→ xem Transitional State, PackML)
+<p><strong>Resting State (Trạng thái nghỉ / Wait state — PackML)</strong> — Một trong ba nhóm trạng thái PackML: máy ở trạng thái ổn định, không tự chuyển sang trạng thái khác nếu không có trigger bên ngoài. 6 resting states thuần tuý: Stopped, Idle, Complete, Held, Suspended, Aborted — Execute cũng là Wait state theo giao thức nhưng được xếp riêng vào nhóm Dual State vì máy vẫn đang vận hành liên tục. (→ xem Dual State (Trạng thái kép — PackML), Transitional State (Trạng thái chuyển tiếp — PackML), PackML)
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.2.2.</em></p>
-<p><strong>readonly record struct</strong> — Kiểu giá trị C# 9+ (lưu trên stack, không cấp phát heap) với so sánh theo giá trị và bất biến tích hợp; compiler tự sinh constructor, <code>==</code>/<code>!=</code> và <code>ToString()</code> từ danh sách tham số. Dùng cho Value Object (Position, Velocity) và data wrapper nhỏ (SignalValue&lt;T&gt;).
+<p><strong>readonly record struct</strong> — Kiểu giá trị C# 10+ (lưu trên stack, không cấp phát heap) với so sánh theo giá trị và bất biến tích hợp; compiler tự sinh constructor, <code>==</code>/<code>!=</code> và <code>ToString()</code> từ danh sách tham số. Dùng cho Value Object (Position, Velocity) và data wrapper nhỏ (SignalValue&lt;T&gt;).
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.1.2.</em></p>
 <p><strong>record</strong> (<code>sealed record</code>) — Kiểu tham chiếu C# 9+ với so sánh theo giá trị; positional syntax (<code>sealed record Foo(T x, T y)</code>) tự sinh constructor và property get-only. Dùng cho Domain Event và DTO bất biến. (→ xem readonly record struct cho kiểu giá trị tương ứng)
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.1.4.</em></p>
@@ -19729,7 +20097,7 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.3.2 (interface domain); Chương 13, mục 13.1.1 (device repository).</em></p>
 <p><strong>Retry Policy</strong> — Chính sách xác định khi nào và bao nhiêu lần retry một thao tác thất bại; trong DAL, chỉ retry thao tác an toàn (Read, Write idempotent). Dùng exponential backoff + jitter để tránh &quot;thundering herd&quot; — nhiều client retry cùng lúc làm quá tải thiết bị.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.3.3.</em></p>
-<p><strong>RiskTier</strong> — Mức rủi ro gán cho từng thao tác trong Guard Engine, xác định cấp quyền và xác nhận bổ sung cần thiết: R0 (Operator — thao tác an toàn như xem log), R1 (LineLead — thao tác phục hồi có guard), R2 (Engineer — jog trục, teach điểm), R3 (Engineer + xác nhận 2 bước — hành động có nguy cơ cao như Force IO). (→ xem Guard Engine)
+<p><strong>RiskTier</strong> — Mức rủi ro gán cho từng thao tác trong Guard Engine, xác định cấp quyền và xác nhận bổ sung cần thiết: R0 (Operator — thao tác an toàn như xem log), R1 (Operator — thao tác phục hồi có guard), R2 (Engineer — jog trục, teach điểm), R3 (Administrator + xác nhận 2 bước — hành động có nguy cơ cao như Force IO). (→ xem Guard Engine)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.2.3.</em></p>
 <p><strong>Rx.NET (System.Reactive)</strong> — Thư viện .NET hiện thực <code>IObservable&lt;T&gt;</code> với hàng chục toán tử tổ hợp luồng (<code>Buffer</code>, <code>Window</code>, <code>CombineLatest</code>, <code>Throttle</code>); mạnh khi cần đồng bộ/kết hợp nhiều stream sensor, nhưng là lựa chọn NÂNG CAO — telemetry đơn giản 100–200Hz thường chỉ cần <code>Channel&lt;T&gt;</code> với BackgroundService. (→ xem IObservable<T>, Event Storm)
 <em>Xuất hiện đầu tiên: Chương 16, mục 16.1.2.</em></p>
@@ -19748,6 +20116,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="s">S</h2>
 <p><strong>Semantic Versioning (SemVer, MAJOR.MINOR.PATCH)</strong> — Quy ước đánh số phiên bản ba phần. Trong phần mềm automation, &quot;tương thích&quot; phải tính cả hành vi vận hành chứ không chỉ API: tăng MAJOR khi đổi tag I/O trên PLC, đổi giao thức bắt tay robot/vision, đổi định dạng recipe không tương thích ngược, hoặc đổi hành vi safety/interlock cần chạy lại validation; tăng MINOR khi thêm tính năng không phá recipe/tích hợp cũ; tăng PATCH khi chỉ sửa lỗi/tối ưu, không đổi kỳ vọng bên ngoài. (→ xem CI/CD)
 <em>Xuất hiện đầu tiên: Chương 17, mục 17.1.</em></p>
+<p><strong>SEHException (Structured Exception)</strong> — Loại exception cấp hệ điều hành Windows (native), KHÔNG bắt được bằng <code>try/catch</code> C# thông thường vì nằm ngoài mô hình exception của CLR; một SDK C++ cũ ném SEHException có thể kéo sập toàn bộ tiến trình .NET đang chạy nó, kể cả logic điều khiển máy không liên quan. Lý do buộc phải cô lập SDK không tương thích runtime vào process riêng (Process Isolation) thay vì cố bắt exception. (→ xem Process Isolation (Boundary Contract), C++/CLI)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
 <p><strong>Sentence-case</strong> — Quy tắc viết hoa chỉ chữ đầu câu, mặc định cho label/heading/menu trong HMI (ví dụ &quot;Trạng thái trục X&quot;); đối lập với Title Case dùng riêng cho tên màn hình/tab navigation cấp cao. (→ xem Title Case)
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.2.3.</em></p>
 <p><strong>Setter (vai trò người dùng HMI)</strong> — Một trong ba nhóm người dùng theo nhiệm vụ hằng ngày (cùng Operator và Maintenance): thiết lập thông số nâng cao, nạp chương trình gia công, điều phối đơn hàng sản xuất; cần màn hình Recipe Editor/Parameter Setup/Calibration. Khác với <code>UserLevel</code> (phân theo mức rủi ro thao tác được phép làm, Chương 15) — đây là phân loại theo màn hình cần dùng, không phải quyền hạn; không nhầm với &quot;setter&quot; của property C#. (→ xem Glance Model)
@@ -19774,8 +20144,12 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>sealed record</strong> → xem <strong>record</strong>.</p>
 <p><strong>SIL (Safety Integrity Level)</strong> — Thang đo mức độ an toàn trong IEC 62061 dành cho process industry: 4 mức (SIL 1–4; SIL 4 = an toàn nhất, yêu cầu PFD ≤ 10⁻⁵). Xác định bởi phân tích rủi ro (HAZOP, FMEA), không phải do kỹ sư C# tự chọn. C# layer thường không đủ điều kiện đạt SIL 3/4 — phần đó phải do phần cứng safety được chứng nhận đảm nhiệm. (→ xem PL, Safe Torque Off)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.2.2.</em></p>
+<p><strong>SignalValue&lt;T&gt;</strong> — <code>readonly record struct</code> bọc một giá trị đo lường kèm metadata (<code>Timestamp</code>, <code>DataQuality</code>, <code>Source</code>) thay vì trả bare value trần trụi; tầng trên kiểm tra <code>DataQuality</code> và fail-safe (không dùng giá trị) khi khác <code>Good</code>, thay vì âm thầm tin một số liệu có thể sai/cũ. (→ xem readonly record struct, Device Gateway Pattern)
+<em>Xuất hiện đầu tiên: Chương 13, mục 13.2.1.</em></p>
 <p><strong>Simulator Driver</strong> — Bản cài đặt giả lập của một hardware driver interface (ví dụ: <code>SimulatedAxisDriver</code> implement <code>IMotionAxisDriver</code>) dùng cho FAT không cần phần cứng thật, CI/CD, unit test, và Digital Twin. Simulator phải implement đúng interface thật để test có giá trị; tầng sequence không biết đang chạy với driver thật hay giả lập.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.2.5.</em></p>
+<p><strong>Standing Alarm / Stale Alarm</strong> — Hai chỉ số sức khoẻ hệ thống alarm theo ISA-18.2, song song với Alarm Chattering/Alarm Flood: <strong>Standing Alarm</strong> là alarm tồn tại liên tục nhiều giờ không ai xử lý (dấu hiệu thiết kế sai — alarm không &quot;actionable&quot; hoặc điều kiện không bao giờ thực sự hết); <strong>Stale Alarm</strong> là alarm bị unacknowledged rất lâu vì không ai để ý (dấu hiệu alarm flood hoặc banner thiết kế kém). Cả hai là chỉ số cần theo dõi định kỳ, không chỉ đo alarm rate tức thời. (→ xem Alarm Chattering, Alarm Flood, ISA-18.2)
+<em>Xuất hiện đầu tiên: Chương 15, mục 15.3.4.</em></p>
 <p><strong>State Pattern (GoF)</strong> — Mẫu thiết kế hướng đối tượng (Gang of Four): mỗi trạng thái là một class riêng implement interface chung (<code>IState</code>); đối tượng ngữ cảnh (<code>Context</code>) uỷ quyền xử lý lệnh cho state hiện tại và chuyển state khi cần. Loại bỏ khối if/else / switch khổng lồ theo trạng thái; thêm trạng thái mới chỉ cần tạo class mới, không sửa code hiện có (Open/Closed Principle). Thường kết hợp với Transition Table cho logic chuyển trạng thái phức tạp.
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.1.2.</em></p>
 <p><strong>Stateful / Stateless</strong> — Phân loại cách hệ thống xử lý trạng thái: <strong>Stateful</strong> — lưu trạng thái nội bộ, hành vi phụ thuộc trạng thái đó (State Machine, Sequence Engine — phù hợp cho lõi điều khiển máy); <strong>Stateless</strong> — mỗi yêu cầu xử lý hoàn toàn độc lập, không giữ trạng thái nội bộ (REST API, web service — không phù hợp cho lõi điều khiển). Trong kiến trúc hybrid: lõi điều khiển phải <strong>stateful</strong>, tầng giao tiếp IT nên <strong>stateless</strong>. (→ xem State Pattern, Scan Cycle)
@@ -19839,7 +20213,13 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.1.</em></p>
 <p><strong>TCP half-open</strong> — Tình trạng TCP socket local vẫn báo <code>Connected = true</code> nhưng peer đã offline (switch mạng khởi động lại, IPC bị tắt đột ngột); <code>TcpClient.Connected</code> không phát hiện được tình trạng này. Giải pháp: heartbeat định kỳ (Ping/Pong mỗi 5s) — nếu không nhận được reply trong timeout, đóng socket và reconnect.
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
-<p><strong>Transitional State (Trạng thái chuyển tiếp — PackML)</strong> — Một trong hai nhóm trạng thái PackML: máy đang thực hiện một hành động nội bộ và tự chuyển sang trạng thái kế tiếp khi xong — không cần trigger bên ngoài, phát SC khi hoàn tất. 10 transitional states: Starting, Completing, Holding, Unholding, Suspending, Unsuspending, Stopping, Aborting, Resetting, Clearing. (→ xem Resting State, SC/State Complete)
+<p><strong>TCP Framing</strong> — Kỹ thuật phân tách message trong luồng byte TCP (vốn không có ranh giới message tự nhiên — TCP chỉ đảm bảo thứ tự byte, không đảm bảo một lần <code>Send()</code> khớp một lần <code>Receive()</code>); bốn cách phổ biến: newline-delimited (kết thúc bằng <code>\n</code>), length-prefix (header ghi độ dài trước payload), fixed length (mỗi message luôn N byte), và delimiter riêng (byte đặc biệt đánh dấu kết thúc). (→ xem TCP half-open)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
+<p><strong>Test Coverage (Code Coverage)</strong> — Tỷ lệ phần trăm dòng/nhánh code được thực thi khi chạy bộ test; hữu ích để tìm vùng chưa test (0% coverage), nhưng KHÔNG phải mục tiêu tự thân — 100% coverage vẫn có thể để lọt bug logic nếu assertion yếu. Ngưỡng thực tế cho hệ thống automation: 70–80% cho tầng Domain/Application, thấp hơn hoặc không áp dụng cho Infrastructure/driver (khó test thuần unit). (→ xem Test Pyramid (Tháp kiểm thử), Regression Test (Kiểm thử hồi quy))
+<em>Xuất hiện đầu tiên: Chương 18, mục 18.6.1.</em></p>
+<p><strong>Try-Pattern</strong> (mẫu <code>Try...</code> + <code>out</code>) — Quy ước đặt tên method trả <code>bool</code> (thành công/thất bại) kèm tham số <code>out</code> chứa kết quả, thay vì throw exception cho tình huống &quot;không tìm thấy/không hợp lệ&quot; vốn không hiếm gặp (<code>TryGetValue</code>, <code>TryParse</code>, <code>TryEnqueue/TryDequeue</code>); tránh chi phí exception cho luồng điều khiển bình thường, gọi được trực tiếp trong <code>if</code>. (→ xem Result<T>)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.4.1.</em></p>
+<p><strong>Transitional State (Trạng thái chuyển tiếp — PackML)</strong> — Một trong ba nhóm trạng thái PackML: máy đang thực hiện một hành động nội bộ và tự chuyển sang trạng thái kế tiếp khi xong — không cần trigger bên ngoài, phát SC khi hoàn tất. 10 transitional states: Starting, Completing, Holding, Unholding, Suspending, Unsuspending, Stopping, Aborting, Resetting, Clearing. (→ xem Resting State (Trạng thái nghỉ / Wait state — PackML), Dual State (Trạng thái kép — PackML), SC/State Complete)
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.2.2.</em></p>
 <p><strong>Transition Table (Bảng chuyển trạng thái)</strong> — Cấu trúc dữ liệu (thường là <code>Dictionary&lt;(State, Command), State&gt;</code>) ánh xạ tổ hợp (trạng thái hiện tại, lệnh) sang trạng thái kế tiếp; thay thế cho chuỗi if/else hay switch lồng nhau trong state machine. Tra cứu O(1), dễ test độc lập, dễ đọc như đặc tả — thêm transition mới chỉ cần thêm một entry vào bảng. Kết hợp tốt với State Pattern (GoF): State Pattern xử lý logic onEntry/onExit, Transition Table xử lý routing giữa các state.
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.3.2.</em></p>
@@ -19864,6 +20244,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>Torn read</strong> (đọc dữ liệu rách) — Lỗi đa luồng khi một thread đọc trạng thái được lưu ở nhiều field riêng biệt trong lúc thread khác đang ghi đè từng field một — kết quả đọc được là hỗn hợp giữa giá trị cũ và mới không tồn tại trong thực tế (ví dụ: mã alarm mới nhưng thời gian của alarm cũ). Tránh bằng <code>lock</code>/<code>SemaphoreSlim</code> bao quanh toàn bộ nhóm field, hoặc gộp state vào một record immutable duy nhất và thay nguyên khối bằng <code>Interlocked.CompareExchange</code>/<code>Volatile.Write</code>. (→ xem Interlocked, SemaphoreSlim)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.5.</em></p>
 <h2 id="u">U</h2>
+<p><strong>UserLevel</strong> — Enum phân quyền cốt lõi xuyên suốt hệ thống, từ thấp đến cao: Operator (thao tác an toàn hằng ngày + phục hồi có guard) → Engineer (jog trục, teach điểm, sửa recipe) → Administrator (Force IO, bypass interlock có xác nhận 2 bước, cấu hình hệ thống). Dùng làm một trong ba lớp kiểm tra của Guard Engine (cùng PackML state và điều kiện phần cứng). Khác phân loại theo nhiệm vụ Operator/Setter/Maintenance (Chương 10) — đó là theo màn hình cần dùng, đây là theo mức rủi ro được phép thao tác. (→ xem Guard Engine, RiskTier)
+<em>Xuất hiện đầu tiên: Chương 15, mục 15.2.3.</em></p>
 <p><strong>UI Virtualization</strong> — Cơ chế chỉ thực sự tạo (materialize) các phần tử UI đang hiển thị trong vùng nhìn thấy (viewport), thay vì tạo toàn bộ cho mọi item trong danh sách; bắt buộc cho alarm/event/log hàng chục nghìn dòng để tránh RAM tăng và GC chạy liên tục. Trong WPF hiện thực qua <code>VirtualizingStackPanel</code>; dễ vô hiệu hoá nhầm bằng cách bọc thêm <code>ScrollViewer</code> bên ngoài control đã có cuộn sẵn. (→ xem Freezable)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.3.1.</em></p>
 <p><strong>Unit of Work (UoW)</strong> — Mẫu gom nhiều thao tác repository vào một commit duy nhất, đảm bảo tính nhất quán (all-or-nothing) giữa các bảng liên quan. EF Core DbContext là một UoW ngầm; tách interface IUnitOfWork giúp test dễ và thay persistence engine không phá code.

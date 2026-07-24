@@ -3,13 +3,13 @@
 # C# cho Automation Machine
 
 > Dành cho kỹ sư PLC, kỹ thuật viên tự động hóa và sinh viên muốn
-> lập trình phần mềm điều khiển máy theo chuẩn công nghiệp
+> lập trình phần mềm điều khiển máy
 
 ---
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260717 |
+| **Phiên bản** | v1.0.0.260724 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -195,7 +195,7 @@ tác vụ AI/phân tích chuyên biệt tách rời.
   phóng, tích luỹ cho đến khi ứng dụng crash; dangling pointer — C++ cho
   phép truy cập vùng nhớ đã giải phóng, gây lỗi khó đoán) — đổi lại cần
   hiểu cách GC hoạt động để tránh giật lag trong vòng điều khiển (Chương
-  3, Chương 5 sẽ đi sâu). GC pause thường kéo dài 1–10ms — với HMI refresh
+  3 sẽ đi sâu). GC pause thường kéo dài 1–10ms — với HMI refresh
   60fps (16ms/frame) có thể gây giật nhẹ thấy được nhưng không nghiêm
   trọng, còn với vòng điều khiển servo 250µs hoặc PLC scan 1–5ms thì đủ
   để phá vỡ hoàn toàn. Đây là lý do C# làm tầng điều phối
@@ -894,6 +894,76 @@ dòng code tạm rồi build lại.
 > cần: "Visual Studio Edit and Continue", "Visual Studio dump file
 > analysis".
 
+## 2.4 Đọc code người khác viết — lần theo logic không cần đọc hết tên
+
+Tình huống rất thực tế khi đi làm: bạn nhận một dự án/máy có sẵn code —
+của đồng nghiệp cũ đã nghỉ, của hãng vendor bán máy, hoặc code viết vội
+nhiều năm trước không ai còn nhớ lý do. Tên biến/enum/method có thể viết
+tắt khó hiểu, sai chính tả, hoặc — tình huống khắc nghiệt nhất — viết bằng
+ngôn ngữ bạn không đọc được (tiếng Trung, tiếng Nhật...) nếu máy nhập từ
+nước ngoài và đội kỹ thuật gốc không việt hoá lại. Không đọc được **tên**
+không có nghĩa là không hiểu được **logic** — hai công cụ dưới đây, dùng
+cùng Breakpoint/Watch/Locals vừa học ở mục 2.3, cho phép lần theo hành vi
+thực tế của code mà không phụ thuộc vào việc đọc hiểu tên gọi.
+
+### Go To Definition (F12) — nhảy tới nơi định nghĩa
+
+Đặt con trỏ vào bất kỳ symbol (tên class, method, enum, field...) rồi nhấn
+**F12** (hoặc chuột phải → **Go To Definition**): Visual Studio nhảy thẳng
+tới nơi symbol đó được khai báo. Không cần hiểu tên gọi — chỉ riêng việc
+*nhìn thấy hình dạng* của định nghĩa đã tiết lộ nhiều: một enum có 8 giá
+trị thành viên nhiều khả năng là state machine (đối chiếu cấu trúc PackML
+đã/sẽ học ở Chương 12); một class có method `Connect`/`Disconnect`/`Read`
+nhiều khả năng là driver thiết bị (Chương 13), bất kể tên class đó viết
+bằng ngôn ngữ gì.
+
+**Peek Definition** (**Alt+F12**) làm việc tương tự nhưng mở định nghĩa
+trong một cửa sổ nhỏ nổi ngay tại chỗ, không rời khỏi dòng code đang đọc —
+tiện khi chỉ cần liếc nhanh rồi quay lại, không cần điều hướng qua lại
+nhiều file.
+
+### Find All References (Shift+F12) — tìm mọi nơi symbol được dùng
+
+Chuột phải vào một symbol → **Find All References** (hoặc **Shift+F12**):
+liệt kê *mọi* vị trí trong solution có gọi/dùng symbol đó. Đây là công cụ
+quan trọng nhất khi tên gọi không đọc được, vì suy luận ý nghĩa qua
+**ngữ cảnh sử dụng** thường đáng tin hơn suy luận qua tên:
+
+- Một giá trị enum không đọc được tên — xem nó được so sánh (`==`) ở những
+  đâu, đứng cạnh điều kiện gì. Nếu luôn xuất hiện ngay sau một lệnh gọi
+  `Home()` thành công, nhiều khả năng đó là trạng thái "đã home xong".
+- Một method không đọc được tên — xem nó được gọi từ những đâu, theo thứ
+  tự nào so với các method khác đã hiểu (`Connect` → *method lạ* →
+  `Start`: rất có thể là bước "khởi tạo cấu hình" nằm giữa hai bước quen
+  thuộc).
+
+### Kết hợp với debugger để suy luận nghĩa qua HÀNH VI, không qua TÊN
+
+Đặt breakpoint đúng đoạn nghi ngờ (mục 2.3), chạy máy thật hoặc simulator
+qua đúng bước cần hiểu, rồi đối chiếu hai nguồn thông tin cùng lúc:
+
+- **Locals/Watch**: giá trị enum/field thực sự là gì tại đúng thời điểm đó.
+- **Hành vi vật lý của máy**: đèn báo đổi màu, trục di chuyển, còi kêu —
+  đúng lúc dừng ở breakpoint. Khớp hai nguồn này lại — "biến này = giá trị
+  X đúng lúc đèn xanh sáng" — là cách xác định ý nghĩa một định danh không
+  đọc được, đáng tin hơn nhiều so với đoán mò qua hình dạng chữ.
+
+> 💡 **Mẹo thực chiến — xây "từ điển cá nhân" cho từng máy:** Không dịch
+> được không sao — mỗi máy vendor dù cùng hãng cũng thường đặt tên riêng,
+> không theo chuẩn chung nào để tra cứu. Cách làm bền vững: mỗi khi xác
+> định được ý nghĩa thật của một enum/method/field bằng kỹ thuật trên, ghi
+> lại ngay (một file text riêng, hoặc comment thêm bằng ngôn ngữ bạn đọc
+> được ngay cạnh định danh gốc — không xoá/sửa định danh gốc để tránh phá
+> vỡ code đang chạy). Việc dò một lần, ghi lại một lần, biến công sức "thám
+> tử" thành tài sản dùng lại được cho suốt quá trình làm việc với máy đó,
+> thay vì phải dò lại từ đầu mỗi lần quên.
+
+> 📌 **Lưu ý:** Hai công cụ này không chỉ hữu ích khi định danh viết bằng
+> ngôn ngữ khác — chúng giá trị y hệt với code tiếng Việt/tiếng Anh nhưng
+> đặt tên tắt khó hiểu (`tmp2`, `flg`, `procA`) hoặc code kế thừa không còn
+> ai nhớ rõ lý do thiết kế. Đây là kỹ năng đọc code nói chung, không riêng
+> tình huống rào cản ngôn ngữ.
+
 ## Tổng kết chương
 
 - **.NET 9 và Visual Studio 2022 Community** là chuẩn dùng xuyên suốt
@@ -912,6 +982,10 @@ dòng code tạm rồi build lại.
   debug trong automation — dừng đúng lúc cần, thay vì dừng thủ công nhiều
   lần; **Immediate Window** cho phép thử biểu thức C# ngay giữa phiên
   debug mà không cần sửa code nguồn.
+- **Go To Definition (F12) và Find All References (Shift+F12)** cho phép
+  lần theo logic code người khác viết bằng cách xem *hình dạng định nghĩa*
+  và *ngữ cảnh sử dụng*, không phụ thuộc việc đọc hiểu tên gọi — kết hợp
+  debugger để suy luận ý nghĩa qua hành vi thực tế.
 
 ## Lỗi thường gặp
 
@@ -985,6 +1059,135 @@ Một kỹ sư PLC đã có sẵn nhiều bản năng đúng. Bảng sau ánh x�
 > - Viết đúng biến, hằng, toán tử và cấu trúc điều khiển trong ngữ cảnh điều khiển máy
 > - Tổ chức hàm/phương thức theo module, xử lý ngoại lệ cơ bản đúng cách
 > - Đọc/ghi file và dùng Collections an toàn trong ứng dụng chạy real-time
+
+---
+
+## Trước khi vào chi tiết — cấu trúc chung của class, interface, method, property
+
+Trước khi gặp các ví dụ thật (đã lồng logic điều khiển vào cú pháp, dễ rối nếu chưa quen "khung sườn"), mục này tách riêng **hình dạng chung** của những khối cú pháp sẽ gặp liên tục xuyên suốt sách — không gắn với nghiệp vụ automation nào cả, chỉ để làm bản đồ tra cứu. Ngữ nghĩa đầy đủ của `class`/`interface` (kế thừa, đa hình, khi nào dùng cái nào) học kỹ ở Chương 4 — ở đây chỉ học **hình dạng câu lệnh**, để khi gặp một class/method/property bất kỳ trong sách, bạn nhận ra ngay từng phần đang làm gì mà không bị cú pháp cản trở việc đọc ý nghĩa.
+
+### Khai báo `class`
+
+```
+[access modifier] [sealed|abstract] class TênClass
+{
+    // field, property, constructor, method khai báo trong đây
+}
+```
+
+**Bảng 3.0a — Từng phần của khai báo class**
+
+| Phần | Ví dụ | Ý nghĩa |
+|---|---|---|
+| Access modifier | `public` | Ai được phép dùng class này (mục 3.4.1 nói kỹ hơn nếu cần) — `public` = mọi nơi trong project (và ngoài, nếu assembly được tham chiếu) |
+| `sealed`/`abstract` (tuỳ chọn) | `sealed` | `sealed` = không cho kế thừa tiếp; `abstract` = bắt buộc phải có lớp con mới dùng được (Chương 4) — bỏ trống thì cho kế thừa tự do |
+| `class` | `class` | Từ khoá bắt buộc, báo hiệu đây là khai báo class |
+| Tên class | `AxisController` | Theo quy ước `PascalCase` (mục 3.6.1) |
+| Thân class `{ }` | — | Chứa field, property, constructor, method của class này |
+
+**Ví dụ tối giản** (không có ý nghĩa nghiệp vụ, chỉ để thấy hình dạng):
+
+```csharp
+public sealed class Counter
+{
+    private int _value;                  // field
+
+    public Counter(int start) => _value = start;   // constructor
+
+    public int Value => _value;          // property chỉ đọc
+
+    public void Increment() => _value++; // method
+}
+```
+
+### Khai báo `interface`
+
+```
+[access modifier] interface ITênInterface
+{
+    // chỉ khai báo CHỮ KÝ method/property — KHÔNG có thân, KHÔNG có field
+}
+```
+
+Khác `class`, `interface` chỉ liệt kê "phải có gì", không nói "làm thế nào" — không viết `{ ... }` thân method, không khai `private` field. Class nào "implement" interface (viết `: ITênInterface` sau tên class) phải cung cấp đủ mọi method/property interface yêu cầu, đầy đủ thân.
+
+```csharp
+public interface ICounter
+{
+    int  Value { get; }        // chỉ khai chữ ký property — không "=> _value"
+    void Increment();          // chỉ khai chữ ký method — không thân, kết thúc bằng ";"
+}
+
+// Counter (ở trên) có thể khai lại là: public sealed class Counter : ICounter
+```
+
+### Khai báo method (hàm)
+
+```
+[access modifier] [static|async] KiểuTrảVề TênMethod(KiểuThamSố tênThamSố, ...)
+{
+    // thân method — có return nếu KiểuTrảVề khác void
+}
+```
+
+**Bảng 3.0b — Từng phần của khai báo method**
+
+| Phần | Ví dụ | Ý nghĩa |
+|---|---|---|
+| Access modifier | `public` | Ai gọi được method này |
+| `static` (tuỳ chọn) | *(không có)* | Có `static` = gọi qua tên class (`Math.Abs(...)`), không cần tạo object; không có = gọi qua object (`counter.Increment()`) |
+| `async` (tuỳ chọn) | *(không có)* | Method bất đồng bộ — học đầy đủ ở Chương 5 |
+| Kiểu trả về | `void` | `void` = không trả gì; nếu trả dữ liệu, ghi kiểu cụ thể (`int`, `bool`, `Task`...) |
+| Tên method | `Increment` | `PascalCase`, thường là động từ (hành động method làm) |
+| Tham số `(...)` | `(int step)` | 0 hoặc nhiều `KiểuDữLiệu tênThamSố`, cách nhau bằng dấu phẩy; có thể có giá trị mặc định (`int step = 1`) |
+| Thân `{ }` | — | Logic của method; nếu kiểu trả về khác `void`, phải có `return giá_trị;` trên mọi nhánh |
+
+### Khai báo property (thuộc tính)
+
+Property trông như field (đọc/gán bằng `tên`, không cần dấu ngoặc như method) nhưng thực chất là một cặp method `get`/`set` ẩn danh. Bốn hình dạng thường gặp:
+
+**Bảng 3.0c — Các biến thể property hay gặp**
+
+| Cú pháp | Đọc được? | Gán được từ ngoài class? | Dùng khi nào |
+|---|---|---|---|
+| `public double X { get; set; }` | Có | Có | Dữ liệu ai cũng chỉnh được (cấu hình đơn giản) |
+| `public double X { get; }` | Có | Không — chỉ gán trong constructor | Giá trị cố định sau khi tạo object |
+| `public double X { get; private set; }` | Có | Không — chỉ chính class tự đổi | Trạng thái chỉ thiết bị tự cập nhật (mục 4.1.2) |
+| `public double X { get; init; }` | Có | Chỉ lúc khởi tạo object (object-initializer), không sau đó | Thường dùng với `record` (Chương 7, 10) |
+| `public double X => bieu_thuc;` | Có (tính lại mỗi lần đọc) | Không | Giá trị suy ra từ field/property khác, không tự lưu riêng |
+
+### Khai báo field và constructor
+
+```csharp
+public sealed class Example
+{
+    private readonly int _limit;   // field: [access] [readonly] Kiểu _tênField;
+
+    public Example(int limit)      // constructor: [access] TênClass(tham số) { ... }
+    {                               // KHÔNG có kiểu trả về, tên PHẢI trùng tên class
+        _limit = limit;
+    }
+}
+```
+
+Field gần như luôn `private` (chỉ class tự dùng — nếu muốn cho bên ngoài đọc, bọc qua property, không để field `public` trần trụi). Constructor là method đặc biệt tự động chạy khi `new Example(...)`, dùng để đưa object về trạng thái hợp lệ ban đầu.
+
+### Cấu trúc các câu lệnh thường gặp
+
+Các câu lệnh dưới đây được dùng thực tế (gắn ví dụ interlock, vòng quét, xử lý lỗi automation) đầy đủ ở mục 3.2, 3.3, 3.5 — bảng này chỉ tóm hình dạng chung để tra nhanh khi cần nhớ lại cú pháp:
+
+**Bảng 3.0d — Hình dạng chung các câu lệnh cốt lõi**
+
+| Câu lệnh | Hình dạng | Xem dùng thật ở |
+|---|---|---|
+| Rẽ nhánh | `if (điều_kiện) { ... } else { ... }` | Mục 3.3.1 |
+| Rẽ nhiều nhánh | `switch (biến) { case A: ...; break; default: ...; break; }` | Mục 3.3.1 |
+| Lặp biết trước số lần | `for (int i = 0; i < n; i++) { ... }` | Mục 3.3.2 |
+| Lặp qua collection | `foreach (var item in collection) { ... }` | Mục 3.3.2 |
+| Lặp theo điều kiện | `while (điều_kiện) { ... }` | Mục 3.3.2 |
+| Bắt lỗi | `try { ... } catch (KiểuLỗi ex) { ... } finally { ... }` | Mục 3.5.1 |
+
+Từ đây trở đi, mỗi khi một class/method/property mới xuất hiện, bạn có thể quay lại các bảng trên để đối chiếu hình dạng — sách sẽ không nhắc lại "đây là access modifier, đây là kiểu trả về" mỗi lần nữa.
 
 ---
 
@@ -1173,6 +1376,8 @@ public sealed class AxisLimits
 ```
 
 > ⚠️ **Cảnh báo:** Sai lầm phổ biến là dùng `const` cho giá trị lẽ ra phải cấu hình được — hệ quả là phải **build lại phần mềm chỉ để đổi một tham số** ngoài hiện trường. Quy tắc: luật vật lý không đổi → `const`; tham số cấu hình → `readonly` (đọc từ file).
+>
+> 📌 **`sealed` ở đầu Code 3.4:** đánh dấu class **không cho kế thừa tiếp** — tương tự khoá một FB lại, không cho ai viết FB con "mở rộng" nó. **Lưu ý quan trọng:** đây KHÔNG phải thói quen phổ biến của C# nói chung — rất nhiều code C# bạn gặp ở nơi khác (tutorial, mã nguồn mở, dự án khác) không dùng `sealed` mấy. Sách này *cố ý* mặc định thêm `sealed` cho mọi class không thiết kế để kế thừa (sẽ thấy lặp lại rất nhiều — đúng quy ước của các dự án phần mềm điều khiển máy công nghiệp mà sách mô phỏng): trong code an toàn/điều khiển, một class bị kế thừa "ngoài kế hoạch" có thể âm thầm đổi hành vi (override một method) mà người review khó lường trước — khoá `sealed` loại bỏ rủi ro đó ngay từ lúc biên dịch. Nói cách khác: `sealed` không phải luật C#, mà là một lựa chọn phòng ngừa có chủ đích của sách này — khi đọc code C# ở nơi khác, đừng ngạc nhiên nếu không thấy `sealed` ở đâu cả. Chỉ bỏ `sealed` khi class thực sự cần cho lớp con kế thừa (học ở Chương 4, mục 4.3).
 
 ### 3.2.3  Toán tử — nền tảng của logic điều khiển
 
@@ -1194,10 +1399,10 @@ ushort inputWord = ReadInputWord(slot: 0);   // ví dụ: 0b0000_0000_0010_1101
 const int DoorClosedBit = 3;
 bool doorClosed = (inputWord & (1 << DoorClosedBit)) != 0;
 
-// Bật bit số 5 (output "Clamp") mà không đụng các bit khác
+// Hai kỹ thuật ĐỘC LẬP — không chạy nối tiếp nhau (nối tiếp sẽ triệt tiêu lẫn nhau)
 ushort outputWord = 0;
-outputWord |= (1 << 5);     // set bit 5
-outputWord &= ~(1 << 5);    // reset bit 5
+outputWord |= (1 << 5);     // Cách 1: BẬT bit số 5 (output "Clamp") mà không đụng các bit khác
+outputWord &= ~(1 << 5);    // Cách 2: TẮT bit số 5 mà không đụng các bit khác
 ```
 
 > 💡 **Mẹo thực chiến:** Bitwise nhanh và gọn, nhưng `(inputWord & (1 << 3)) != 0` không tự giải thích nó là cái gì. Luôn đặt tên bit qua hằng (`DoorClosedBit`) hoặc bọc trong một method/extension có tên (`io.IsOn("DoorClosed")`) — nếu không, ba tháng sau chính bạn cũng không đọc nổi code I/O của mình.
@@ -1438,6 +1643,13 @@ finally
 
 Nguyên tắc: bắt exception **cụ thể trước**, exception chung sau (nếu thật cần), và **không bao giờ** `catch` rồi bỏ trống — nuốt lỗi là cách chắc chắn nhất để biến một sự cố nhỏ thành một đêm dừng máy không rõ nguyên nhân. `finally` đặc biệt quan trọng khi làm việc với file, handle SDK, hoặc lock.
 
+> 📌 **Vì sao đặt tên biến exception là `ex`:** cũng là QUY ƯỚC (giống `_camelCase`
+> cho field sẽ gặp ở mục 3.6.1) — `catch (TimeoutException ex)` có thể đặt tên
+> khác (`error`, `e`, `exception`) vẫn biên dịch đúng, nhưng `ex` là cách viết tắt
+> gần như mọi codebase C# dùng thống nhất cho biến exception trong khối `catch`,
+> ngắn gọn mà vẫn rõ nghĩa. Dùng lại đúng quy ước này xuyên suốt sách, không nhắc
+> lại nữa từ đây.
+
 ### 3.5.2  Các exception phổ biến và cách phòng
 
 - `NullReferenceException` — dùng object chưa khởi tạo (driver chưa connect, sequence chạy trước init). Trong điều khiển, đây gần như luôn là **lỗi thiết kế/khởi tạo**, không nên "bắt rồi cho qua" — hãy sửa trình tự init và kiểm tra null trước khi dùng.
@@ -1465,6 +1677,11 @@ public sealed class AxisNotHomedException : Exception
         => AxisId = axisId;
 }
 ```
+
+> 📌 **Ba cú pháp mới ở Code 3.15:**
+> - `{ get; }` là **property tự động chỉ-đọc** — khai báo gọn cho một "biến" chỉ gán được lúc khởi tạo, đọc được từ ngoài nhưng không sửa được sau đó (khác `public int AxisId;` là field thường, ai cũng gán lại được). Học đầy đủ về property ở **Chương 4, mục 4.1**.
+> - `$"Trục {axisId} chưa được home..."` là **string interpolation** — dấu `$` trước chuỗi cho phép chèn thẳng biến vào trong `{ }`, tương đương nối chuỗi `"Trục " + axisId + " chưa được home..."` nhưng gọn và ít lỗi hơn.
+> - `=> AxisId = axisId;` (không có `{ }` bao quanh) là **expression-bodied member** — cách viết gọn khi thân method/constructor chỉ có đúng một biểu thức, tương đương `{ AxisId = axisId; }`. Đây là cùng ký hiệu `=>` sẽ gặp lại ở lambda (Chương 4) nhưng dùng trong ngữ cảnh khác: ở lambda, `=>` tách tham số khỏi thân hàm ẩn danh; ở đây, `=>` chỉ đơn thuần thay cho cặp `{ }` khi thân chỉ có một dòng.
 
 Chiến lược xử lý lỗi nên phân theo tầng: **Driver** ném exception kỹ thuật (timeout, IO); **Device/Logic** bắt và chuyển thành lỗi miền (domain error) + tạo alarm; **UI** chỉ hiển thị thông điệp đã chuẩn hoá. Và khi log exception, log phải đủ *ngữ cảnh*: máy đang ở mode/state nào, thiết bị nào, lệnh gì — một log "đủ context" tiết kiệm rất nhiều thời gian dừng máy.
 
@@ -1523,6 +1740,31 @@ public sealed class TextFileLogger
 
 Ý chính dễ nhớ: luồng điều khiển gọi `Log(...)` để bỏ dòng log vào hàng đợi rồi đi tiếp ngay; việc ghi đĩa (chậm) do thread nền lo — nên vòng quét không bao giờ bị chặn vì I/O.
 
+> 📌 **Quy ước đặt tên trong C# — vì sao có dấu `_` trước `_worker`:** khác C
+> (nơi coder tự do đặt tên, mỗi dự án một kiểu), cộng đồng C# theo một quy ước
+> gần như thống nhất — compiler KHÔNG bắt buộc, nhưng gần như mọi codebase C#
+> (kể cả sách này) đều theo, vì nhìn tên là biết ngay "cái này là gì" mà không
+> cần lần lên đầu class để tra:
+>
+> | Loại định danh | Quy ước | Ví dụ trong Code 3.16 |
+> |---|---|---|
+> | Field cấp lớp (`private`) | `_camelCase` — gạch dưới + chữ thường đầu | `_queue`, `_worker`, `_logDir` |
+> | Biến cục bộ / tham số | `camelCase` — chữ thường đầu, KHÔNG gạch dưới | `logDir` (tham số), `line`, `path` |
+> | Class / method / property `public` | `PascalCase` — viết hoa chữ đầu mỗi từ | `TextFileLogger`, `Log`, `Stop` |
+>
+> Dấu `_` đầu tên chỉ mang đúng một ý nghĩa: đây là **field** — biến sống suốt
+> vòng đời của object (gán một lần trong constructor, dùng lại ở mọi method
+> khác trong class) — khác biến cục bộ chỉ sống trong phạm vi một method rồi
+> mất. Nhìn dòng `_worker = new Thread(...)` trong constructor là biết ngay
+> đang gán vào field đã khai báo ở đầu class, không phải khai một biến mới
+> trùng tên (C# không cho khai 2 biến trùng tên trong cùng phạm vi — nếu đó là
+> khai biến mới, compiler sẽ báo lỗi). Quy ước này dùng lại xuyên suốt sách,
+> không nhắc lại nữa từ đây.
+>
+> 📌 **Hai cú pháp mới ở Code 3.16:**
+> - **Generic `<T>`** (`BlockingCollection<string>`): ký hiệu `<T>` trong `List<T>`, `Queue<T>`, `BlockingCollection<T>`, `Dictionary<TKey,TValue>`... nghĩa là collection được tham số hoá theo kiểu bạn chỉ định — `BlockingCollection<string>` chỉ chứa `string`, không nhét nhầm kiểu khác được (compiler bắt lỗi ngay, không đợi tới lúc chạy). Cách *tự viết* một kiểu generic của riêng mình học ở **Chương 4, mục 4.5**; ở đây chỉ cần biết cách *dùng* các kiểu generic sẵn có trong thư viện chuẩn.
+> - **Target-typed `new()`** (`= new();`): không cần ghi lại tên kiểu sau `new` vì compiler đã biết kiểu từ khai báo bên trái (`private readonly BlockingCollection<string> _queue = new();` — tương đương `new BlockingCollection<string>()` nhưng gọn hơn, khỏi lặp tên kiểu hai lần).
+>
 > 🔍 **Đào sâu thêm:** Bản production tinh chỉnh thêm: ghi **theo batch** (gom ~200 dòng hoặc mỗi giây) để giảm số lần chạm đĩa; giới hạn hàng đợi bằng `new BlockingCollection<string>(boundedCapacity: 5000)` để khi đĩa chậm thì chặn bớt thay vì phình bộ nhớ (backpressure); và một cờ `volatile bool` để dừng vòng lặp an toàn từ thread khác. `Thread`, `BlockingCollection`, `volatile` đều thuộc về đa luồng — học đầy đủ ở **Chương 5** (các từ khoá ít gặp xem thêm Phụ lục cuối chương).
 
 Log gần như luôn ghi **nối đuôi (append)** và **chia file theo ngày/giờ (rolling)** để tránh file khổng lồ. Flush quá thường xuyên thì chậm; quá thưa thì rủi ro mất log khi mất điện — ghi theo batch là điểm cân bằng.
@@ -1595,6 +1837,9 @@ public static class JsonConfigIO
     public static MachineConfig Load(string path)
     {
         var json = File.ReadAllText(path);
+        // ?? : nếu vế trái null (deserialize thất bại) thì thực thi vế phải —
+        // ở đây là ném exception thay vì trả về null cho caller tự đoán lỗi.
+        // Cú pháp toán tử null (??, ?.) học đầy đủ ở Chương 5, mục 5.6.
         return JsonSerializer.Deserialize<MachineConfig>(json, Options)
                ?? throw new InvalidOperationException("Config deserialize thất bại.");
     }
@@ -1682,8 +1927,6 @@ public void Tick()
     // phần còn lại của tick: cập nhật trạng thái, chạy sequence...
 }
 ```
-
-> 📌 **Lưu ý về generic `<T>`:** ký hiệu `<T>` trong `List<T>`, `Queue<T>`, `Dictionary<TKey,TValue>` nghĩa là collection được tham số hoá theo kiểu bạn chỉ định — `List<int>` chứa `int`, `Queue<Command>` chứa `Command`. Điều này cho an toàn kiểu (không nhét nhầm kiểu) và tránh boxing. Cơ chế generic tổng quát (tự viết kiểu generic của riêng mình) học ở **Chương 5**; ở đây chỉ cần biết cách *dùng* các collection generic sẵn có.
 
 Bảng sau tóm tắt đặc tính hiệu năng — điều mà real-time quan tâm hơn cả là **worst-case**, vì "đôi khi chậm" còn nguy hiểm hơn "thường chậm":
 
@@ -1842,7 +2085,6 @@ Các từ khoá dưới đây ít xuất hiện trong code automation thông th�
 | Từ khoá | Tình huống có thể gặp |
 |---|---|
 | `abstract` | Class/method buộc lớp con override (thường thay bằng interface) |
-| `sealed` | Ngăn class bị kế thừa tiếp (nên có mặc định cho class lá) |
 | `partial` | Chia một class thành nhiều file (hay gặp trong code WPF tự sinh) |
 | `checked` / `unchecked` | Bật/tắt kiểm tra tràn số nguyên |
 | `unsafe` | Dùng pointer trực tiếp — khi giao tiếp driver native |
@@ -1962,6 +2204,15 @@ public sealed class Axis
 
 Chú ý ba điểm thiết kế công nghiệp trong Code 4.1: trạng thái là `private set` (UI không "set bừa" được), `Axis` chỉ biết `_driver` qua interface (không khoá vào hãng nào), và các điều kiện "dùng sai" bị chặn ngay đầu method.
 
+> 📌 **Vì sao `IMotionDriver` bắt đầu bằng `I`:** cũng là quy ước đặt tên (như
+> `_camelCase` cho field ở Chương 3), không phải luật compiler — nhưng gần
+> 100% code C# bạn gặp đều theo. Chữ `I` hoa đứng đầu báo ngay "đây là
+> interface, không phải class" — nhìn khai báo biến `IMotionDriver _driver`
+> là biết ngay `_driver` có thể là *bất kỳ* implementation nào (SDK hãng A,
+> hãng B, hay bản giả lập test), không trói vào một class cụ thể. Đặt tên
+> interface theo tính từ/khả năng của nó (`IMotionDriver` = "thứ biết điều
+> khiển chuyển động"), không theo tên class hiện thực nó.
+
 > 📌 **Lưu ý — constructor không được "chạy máy":** Constructor chỉ chuẩn bị object, **tuyệt đối không** gọi hành động có side-effect như connect thiết bị hay bật servo. Những việc đó nằm trong `Initialize()`/`Connect()` để Sequence kiểm soát đúng thứ tự và thời điểm. Một object vừa `new` xong mà đã tự bật servo là một tai nạn chờ xảy ra.
 
 ### 4.1.3  Object: instance và ngữ nghĩa tham chiếu
@@ -1986,10 +2237,9 @@ Tạo object bằng `new` cấp phát trên heap và trả về một *tham chi�
 // Hợp đồng: bất cứ thứ gì "điều khiển chuyển động được" đều phải cung cấp các hành vi này
 public interface IMotionController
 {
-    // Task = "lời hứa" sẽ trả kết quả sau — thao tác này mất thời gian (không tức thì)
-    // CancellationToken = cơ chế huỷ nếu cần dừng giữa chừng
-    // Chương 5 giải thích đầy đủ async/await; ở đây đọc HomeAsync như:
-    // "thao tác đưa trục về home, có thể mất vài giây"
+    // Task = "lời hứa" sẽ trả kết quả sau; CancellationToken = cơ chế huỷ giữa chừng.
+    // Chương 5 giải thích đầy đủ async/await — ở đây đọc HomeAsync như:
+    // "thao tác đưa trục về home, có thể mất vài giây". Xem chú thích dưới bảng code.
     Task HomeAsync(int axis, CancellationToken ct = default);
     Task MoveAbsoluteAsync(int axis, double position, double velocity, CancellationToken ct = default);
     double GetPosition(int axis);
@@ -2007,6 +2257,17 @@ public sealed class SimulatedMotionController : IMotionController { /* tính to�
 
 Ba class trên không chia sẻ một dòng code triển khai nào, nhưng **dùng thay cho nhau được** ở bất cứ đâu chỉ cần `IMotionController`. Sequence viết một lần, chạy được trên CNC thật, pick-and-place thật, hay simulator.
 
+> 📌 **Hai quy ước đặt tên trong `IMotionController`:**
+> - Hậu tố `Async` (`HomeAsync`, `MoveAbsoluteAsync`) là QUY ƯỚC đặt tên, không
+>   phải luật compiler — mọi method trả về `Task`/`Task<T>` nên có tên kết thúc
+>   bằng "Async", để nhìn tên gọi là biết ngay cần `await` nó, không cần mở khai
+>   báo ra xem kiểu trả về.
+> - `ct` là tên viết tắt QUY ƯỚC cho tham số `CancellationToken` — đặt tên khác
+>   (`cancellationToken`) vẫn chạy đúng, nhưng gần như mọi codebase .NET dùng
+>   thống nhất `ct` vì tham số này xuất hiện ở hầu hết method async. Luôn đặt
+>   `CancellationToken` **cuối** danh sách tham số, kèm `= default`, để nơi gọi
+>   có thể bỏ qua khi không cần huỷ giữa chừng.
+>
 > 📌 **Khác biệt với abstract class:** Interface chỉ là hợp đồng (mặc định không có code). Một class có thể implement **nhiều** interface cùng lúc (C# không cho kế thừa nhiều class, nhưng cho implement nhiều interface). Khi nào chọn cái nào — xem Bảng 4.2 cuối mục 4.3.
 
 ### 4.2.2  Vì sao interface là trái tim của hệ thống tốt
@@ -2154,6 +2415,11 @@ public sealed class EtherCatAxis : AxisBase
 
 `abstract class` không tạo object trực tiếp được (`new AxisBase()` là lỗi) — nó là khuôn để kế thừa. Method `abstract` **buộc** lớp con triển khai (quên là lỗi biên dịch). `base(maxVelocity)` gọi constructor lớp cha. Giá trị công nghiệp: rule an toàn (kiểm tra alarm/servo/giới hạn) nằm **một nơi** trong `AxisBase`, mọi vendor kế thừa đều không thể "lách" qua.
 
+> 📌 **`nameof(vel)`:** trả về CHUỖI `"vel"` — tên tham số, không phải giá trị
+> của nó. Lợi ích: nếu sau này đổi tên tham số `vel` thành `velocity`, compiler
+> ép đổi luôn `nameof(vel)` (vì `"vel"` không còn tồn tại) — gõ tay chuỗi
+> `"vel"` thì không ai nhắc, dễ quên sửa, exception báo sai tên tham số.
+
 > 💡 **Mẹo thực chiến:** Đây là sức mạnh thật của kế thừa trong automation — không phải để "xài lại code", mà để **đóng khung quy trình an toàn** sao cho lớp con (mỗi vendor) chỉ điền được phần kỹ thuật, không sửa được phần kiểm tra. Lớp cha giữ kỷ luật, lớp con giữ chi tiết.
 
 ### 4.3.3  Đa hình: một API, nhiều triển khai
@@ -2221,7 +2487,7 @@ Dùng `Func`/`Action` cho callback đơn giản; chỉ tự đặt tên delegate
 
 ### 4.4.2  Lambda — hàm ẩn danh ngắn gọn
 
-**Lambda** <!--idx:Lambda--> là cách viết nhanh một hàm tại chỗ: `(tham số) => biểu thức`. Bạn đã thấy nó ở Code 4.7. Lambda phổ biến cho callback ngắn, đăng ký event, và truy vấn dữ liệu (LINQ, mục 4.6). Hai dạng: biểu thức (`x => x * 2`) và khối lệnh (`(s, e) => { ...; ... }`).
+**Lambda** <!--idx:Lambda--> là cách viết nhanh một hàm tại chỗ: `(tham số) => biểu thức`. Bạn đã thấy nó ở Code 4.7. Lambda phổ biến cho callback ngắn, đăng ký event, và truy vấn dữ liệu (LINQ, mục 4.6). Hai dạng: biểu thức (`x => x * 2`) và khối lệnh (`(sender, e) => { ...; ... }`).
 
 > 📌 **Lưu ý — closure trong vòng lặp `for`:** Lambda có thể "bắt" (capture) biến bên ngoài. Trong vòng lặp `for` đăng ký handler, bắt biến đếm dùng chung qua các lần lặp tạo bug khó thấy (mọi handler dùng chung giá trị cuối cùng của biến đếm). Khi cần, tạo biến cục bộ trong mỗi vòng, hoặc dùng method group. Lưu ý: `foreach` **không** gặp lỗi này từ C# 5.0 trở đi — compiler đã tự tạo một bản sao biến lặp riêng cho mỗi vòng, không còn cần biện pháp phòng thủ thủ công như `for`.
 
@@ -2259,6 +2525,17 @@ public sealed class Axis
 axis.PositionChanged += (sender, e) => hmi.UpdatePosition(e.AxisId, e.Position);
 ```
 
+> 📌 **Vì sao mọi event handler đều có đúng 2 tham số `(sender, e)`:** đây là
+> QUY ƯỚC CHUẨN của .NET (không phải luật compiler, nhưng gần như 100% code
+> C# theo, kể cả code Visual Studio tự sinh khi bạn double-click một control
+> trong Designer) — mọi event handler nhận đúng 2 tham số: `sender` (kiểu
+> `object`, ai vừa phát sự kiện — thường bỏ qua, đặt tên đủ dài `sender` để
+> rõ nghĩa) và `e` (kiểu `EventArgs` hoặc subclass, dữ liệu kèm theo sự kiện
+> — quy ước viết TẮT thành `e`, khác `sender`). Bạn sẽ thấy đúng chữ ký này
+> lặp lại ở mọi handler trong sách, không đổi hình dạng dù event khác nhau.
+
+> 📌 **Dấu `?` sau kiểu** (`EventHandler<PositionChangedEventArgs>? PositionChanged`): đây là **nullable annotation**, báo rằng biến này *được phép* là null (chưa có ai đăng ký lắng nghe) — khác `?.`/`??` (toán tử null, dùng khi *đọc* giá trị) ở chỗ đây là một phần của khai báo *kiểu*. Học đầy đủ ở **Chương 5, mục 5.6**; ở đây chỉ cần biết field/property có `?` sau kiểu thì luôn phải kiểm tra null trước khi dùng (đó là lý do gọi `PositionChanged?.Invoke(...)` chứ không `PositionChanged.Invoke(...)`).
+>
 > ⚠️ **Cảnh báo:** Nếu một subscriber ném exception, `?.Invoke()` sẽ truyền exception đó ngược về nơi gọi `Invoke` — có thể làm gián đoạn vòng cập nhật vị trí. Các subscriber quan trọng (đặc biệt code cập nhật HMI) nên bọc `try-catch` *bên trong* handler, không để exception thoát ra ngoài.
 
 Đây là **Observer Pattern** ở dạng cơ bản nhất — Chương 16 đặt tên và mở rộng nó thành ba biến thể (`event`, `IEventPublisher`, `IObservable<T>`). Ở đây chỉ cần nắm cơ chế nền.
@@ -2299,7 +2576,16 @@ Result<double> ReadPosition(int axisId)
 
 `Result<double>`, `Result<AxisStatus>`, `Result<Recipe>` — cùng một định nghĩa, dùng cho mọi kiểu. Đây cũng là nền của `Queue<DeviceCommand>` trong command queue (Chương 3) và `IDeviceCommand` trong Command Pattern (Chương 16).
 
-> 📌 **Lưu ý về độ sâu generic:** Ở Chương 4 chỉ cần dùng generic ở mức "`T` là một kiểu cụ thể do nơi gọi chỉ định". Các kỹ thuật nâng cao — *generic constraint* (`where T : ...`), covariance/contravariance, generic method ràng buộc — thuộc **Chương 5**. Đừng vội phức tạp hoá khi `Result<T>` đơn giản đã giải quyết được phần lớn nhu cầu.
+> 📌 **Lưu ý về độ sâu generic:** Ở Chương 4 chỉ cần dùng generic ở mức "`T` là một kiểu cụ thể do nơi gọi chỉ định". Các kỹ thuật nâng cao hơn — *generic constraint* (`where T : ...`, dùng thật ở Chương 13), covariance/contravariance (`in`/`out`, dùng thật ở Chương 16) — nằm ngoài phạm vi chương này, gặp lại khi thực sự cần ở các chương đó. Đừng vội phức tạp hoá khi `Result<T>` đơn giản đã giải quyết được phần lớn nhu cầu.
+>
+> 📌 **Vì sao đặt tên tham số kiểu là `T`:** cũng là quy ước, không phải luật —
+> `T` là chữ viết tắt của "Type", dùng khi generic chỉ có MỘT tham số kiểu và
+> ý nghĩa của nó đã rõ từ ngữ cảnh (`Result<T>`: T là kiểu dữ liệu trả về, không
+> cần nói rõ hơn). Khi có NHIỀU tham số kiểu hoặc cần nói rõ vai trò từng cái,
+> đặt tên có ý nghĩa với tiền tố `T`: `Dictionary<TKey, TValue>` (khoá/giá trị),
+> hay `Func<TResult>` (kết quả trả về) sẽ gặp sau. Quy tắc chung: 1 tham số kiểu,
+> ý nghĩa hiển nhiên → `T`; nhiều tham số hoặc cần rõ nghĩa → `T` + tên mô tả
+> (`TKey`, `TEvent`...).
 
 ---
 
@@ -2861,7 +3147,7 @@ public async Task ProcessLoopAsync(CancellationToken ct)
 
 > 🔍 **Đào sâu thêm — tối ưu Channel:** khi biết pipeline có đúng **1 producer và 1 consumer** (ví dụ vision: 1 thread capture → 1 thread process), bật `new BoundedChannelOptions(capacity) { SingleReader = true, SingleWriter = true }` để runtime tối ưu (giảm khoá nội bộ, gần lock-free).
 
-> 🔍 **Đào sâu thêm:** `Channel<Frame>` là một kiểu *generic* — `<T>` cho phép cùng một hàng đợi dùng cho `Frame`, `LogEvent`, hay `DeviceCommand`. Khi tự viết kiểu generic, có thể *ràng buộc* kiểu bằng `where T : ...` (generic constraint) và xử lý covariance/contravariance. Đây là phần generic nâng cao mà Chương 4 đã hẹn — tìm hiểu thêm: "C# generic constraints", "covariance contravariance C#".
+> 🔍 **Đào sâu thêm:** `Channel<Frame>` là một kiểu *generic* — `<T>` cho phép cùng một hàng đợi dùng cho `Frame`, `LogEvent`, hay `DeviceCommand`. Khi tự viết kiểu generic, có thể *ràng buộc* kiểu bằng `where T : ...` (generic constraint — dùng thật, có ví dụ đầy đủ ở Chương 13, mục 13.3.2) và xử lý covariance/contravariance (`in`/`out` — dùng thật, có ví dụ đầy đủ ở Chương 16, mục 16.1.2). Đây là phần generic nâng cao mà Chương 4 đã hẹn.
 
 ---
 
@@ -3316,9 +3602,12 @@ thức điều kiện.
 - **C#**: "nếu điều kiện an toàn thoả và mode đúng thì gọi `StartSequenceAsync()`"
   — điều kiện (condition) và hành động (method) được tách rõ ràng
 
-`switch expression` trong C# 8+ rất tương đồng với cách PLC xử lý State Machine
-qua các Network điều kiện — chúng ta đã dùng pattern này ở Chương 3, mục 3.3.
-Chương 12 (Sequence Engine) mở rộng pattern đó thành một kiến trúc đầy đủ.
+`switch` — dạng **statement** (`switch (x) { case A: ...; break; }`) đã dùng ở
+Chương 3, mục 3.3 — rất tương đồng với cách PLC xử lý State Machine qua các Network
+điều kiện. C# 8+ còn có dạng gọn hơn gọi là **switch expression**
+(`x switch { A => ..., B => ..., _ => ... }`, không `case`/`break`, trả thẳng giá
+trị) — sẽ gặp lần đầu ở Chương 7. Chương 12 (Sequence Engine) mở rộng cả hai thành
+một kiến trúc đầy đủ.
 
 ### 6.2.3  FB → Class; FC → Static Method
 
@@ -3763,10 +4052,11 @@ Bây giờ `SequenceEngine` chỉ thay đổi khi logic chu trình thay đổi. 
 sang Teams chỉ cần tạo `TeamsNotifier : INotifier` mới — không đụng đến sequence.
 Thay historian chỉ cần tạo implementation `IAlarmLogger` mới.
 
-> 💡 **Tín hiệu vi phạm SRP nhanh:** Nếu một class có tên `Manager`, `Handler`,
-> hay `Controller` và method count > 20, gần như chắc chắn đã vi phạm SRP. Nếu
-> một thay đổi nghiệp vụ "nhỏ" phải sửa > 3 vùng khác nhau trong cùng class,
-> đó là tín hiệu rõ ràng.
+> 💡 **Tín hiệu vi phạm SRP nhanh:** Đối chiếu ngưỡng "class quá lớn" đã nêu ở
+> mục 7.1.3 — nếu class đó còn mang tên `Manager`/`Handler`/`Controller`, gần
+> như chắc chắn đã vi phạm SRP. Một dấu hiệu bổ sung đáng chú ý: nếu một thay
+> đổi nghiệp vụ "nhỏ" phải sửa > 3 vùng khác nhau trong cùng class, đó cũng là
+> tín hiệu rõ ràng.
 
 ### 7.2.2  O — Open/Closed Principle (OCP)
 
@@ -3792,6 +4082,14 @@ public double GetSetpoint(StrategyType type, double baseValue, double offset) =>
         _ => throw new NotSupportedException($"Unknown strategy: {type}")
     };
 ```
+
+> 📌 **`switch` dạng expression:** khác `switch` dạng statement đã dùng ở Chương 3
+> (`switch (x) { case A: ...; break; }`), **switch expression** không có
+> `case`/`break` — mỗi nhánh viết `giá-trị-khớp => kết-quả,` và cả khối `switch`
+> trả thẳng về một giá trị (ở đây gán luôn cho `=>` của method — xem mục dưới).
+> `_` là **discard**, nghĩa là "khớp mọi giá trị còn lại" (giống `default:` trong
+> switch statement). Dùng khi mỗi nhánh chỉ cần *trả về một giá trị* — nếu nhánh
+> cần nhiều dòng logic, quay lại switch statement thường sẽ rõ hơn.
 
 **Plugin architecture cho driver thiết bị:**
 
@@ -4273,6 +4571,17 @@ public sealed class CycleWorker(RunCycleUseCase useCase) : BackgroundService
 }
 ```
 
+> 📌 **`record` — kiểu dữ liệu mới ở Code 7.8:** `AlarmRecord` khai báo bằng
+> `record` thay vì `class`. Cú pháp `public sealed record AlarmRecord(DateTime
+> TimestampUtc, string Code, ...)` — tham số ngay sau tên kiểu — tự động sinh ra
+> property chỉ-đọc cho từng tham số (`TimestampUtc`, `Code`...), constructor nhận
+> đủ tham số, và so sánh bằng **giá trị** (`record1 == record2` đúng nếu mọi field
+> giống nhau, khác `class` so sánh theo *tham chiếu* — hai object khác vùng nhớ
+> luôn `!=` dù field giống hệt). Hợp cho dữ liệu chỉ mang thông tin, đọc xong rồi
+> thôi — như một alarm record ghi lại một sự kiện đã xảy ra, không cần sửa sau khi
+> tạo. Sẽ gặp lại nhiều lần từ đây trở đi; Chương 11 giải thích sâu hơn khi dùng
+> `record` làm Value Object.
+>
 > 📌 **Lưu ý:** `RunCycleUseCase` và `CycleWorker` ở Code 7.8 dùng **primary
 > constructor** (C# 12) — cú pháp rút gọn `public sealed class Foo(IBar bar)`
 > thay cho việc viết tay field + constructor như Code 7.7 trước đó. Khác biệt
@@ -4758,8 +5067,7 @@ public sealed class LedIndicator : Control
         g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
         var color = IsOn ? Color.LimeGreen : Color.Gray;
-        // using bắt buộc: GDI+ object không được GC dọn ngay —
-        // rò rỉ tích luỹ qua nhiều giờ làm cạn GDI handle toàn HĐH
+        // using bắt buộc — xem cảnh báo 💡 ngay bên dưới về rò rỉ GDI handle
         using (var brush = new SolidBrush(color))
             g.FillEllipse(brush, ClientRectangle);
 
@@ -4941,6 +5249,16 @@ thread so với cập nhật từng dòng như Code 8.6. Lưu ý `BufferedCycleL
 phải được khởi tạo trên UI thread (ví dụ trong constructor của Form) —
 `System.Windows.Forms.Timer` gắn liền với message loop của luồng tạo ra nó,
 tạo ở luồng nền thì `Tick` sẽ không bao giờ fire.
+
+> 📌 **`(_, __)` làm tham số lambda:** cùng ký hiệu discard `_` đã học ở
+> Chương 7 (khớp "mọi giá trị còn lại" trong switch expression), ở đây dùng
+> làm THAM SỐ LAMBDA để báo "tôi không dùng tham số này". Handler `Tick` nhận
+> `(object? sender, EventArgs e)` như mọi event handler (Chương 4), nhưng ở
+> đây không cần đọc `sender`/`e` nên đặt tên `_`/`__` thay vì `sender`/`e` —
+> nhìn tên là biết ngay hai tham số này bị bỏ qua có chủ đích, không phải quên
+> dùng. Hai dấu gạch dưới khác nhau vì C# không cho đặt trùng tên hai tham số
+> cùng lambda — `__` vẫn là một tên hợp lệ (không phải cú pháp discard đặc
+> biệt như `_`), theo quy ước chỉ đơn giản là "tham số bị bỏ qua thứ hai".
 
 ### 8.2.4 WinForms Timer và giới hạn độ chính xác
 
@@ -5268,6 +5586,12 @@ WinForms tồn tại. Ba handler Start/Stop/ResetFault đều disable nút tươ
 ngay khi qua các guard check và bắt đầu gọi PLC thật (`_view.StartEnabled =
 false;` trước `try`) — chặn thao tác double-click gửi lệnh chồng lệnh trong
 lúc chờ phản hồi, cùng vấn đề re-entrancy đã cảnh báo ở Code 8.2.
+
+> 📌 **`{ Connected: false }` trong `status switch`:** đây là **property
+> pattern** — khớp khi property `Connected` của `status` bằng `false`, gọn hơn
+> viết `status.Connected == false`. Đọc từ trên xuống, khớp nhánh nào trước thì
+> dừng ở đó — nên thứ tự các nhánh có ý nghĩa (`Fault` kiểm tra trước `Running`
+> vì một trạng thái `Fault` vẫn có thể đang `Running`).
 
 > ⚠️ **Lưu ý về CancellationToken với PLC:** `CancellationTokenSource(3s)` ở
 > đây chỉ hủy việc *chờ phản hồi* phía C# — không rút lệnh đã gửi xuống PLC.
@@ -5620,14 +5944,14 @@ dù logic phía sau hoàn toàn đúng.
 
 <!--idx:WPF (Windows Presentation Foundation)-->
 
-Sau khi tái cấu trúc màn hình trạm bơm cũ sang MVP (Chương 8), chị Hạnh được
+Sau khi tái cấu trúc màn hình trạm bơm cũ sang MVP (Chương 8), Kỹ sư B được
 giao một dự án khác hẳn: một máy đóng gói vừa lắp đặt, chưa có phần mềm nào
 cả. Yêu cầu lần này không phải "sửa cho đúng" mà là "làm cho tốt" — màn hình
-vận hành cần biểu đồ xu hướng cập nhật liên tục, danh sách cảnh báo có thể
-lên tới hàng chục nghìn dòng mỗi ca, và khách hàng muốn giao diện đổi được
-theme sáng/tối. Với WinForms và MVP vừa học, để hiển thị mượt 50.000 dòng
-alarm, chị sẽ phải tự viết logic ảo hoá danh sách bằng owner-draw — nhiều
-công sức cho một việc mà một nền tảng UI khác đã giải quyết sẵn.
+vận hành cần biểu đồ xu hướng cập nhật liên tục, danh sách log/cảnh báo có
+thể lên tới hàng nghìn dòng mỗi ca, và khách hàng muốn giao diện đổi được
+theme sáng/tối. Với WinForms và MVP vừa học, để hiển thị mượt danh sách dài
+như vậy, kỹ sư sẽ phải tự viết logic ảo hoá danh sách bằng owner-draw —
+nhiều công sức cho một việc mà một nền tảng UI khác đã giải quyết sẵn.
 
 Chương 8 kết thúc bằng một lời hứa: WPF giải quyết hạn chế của WinForms bằng
 `INotifyPropertyChanged` và data binding — Presenter không còn phải "đẩy"
@@ -5647,12 +5971,12 @@ Binding Engine để không viết code chạy đúng nhưng chậm.
 Đây cũng là lý do sách có cả Chương 8 lẫn Chương 9: WinForms vẫn là lựa chọn
 đúng cho hệ thống kế thừa (bảo trì, thêm tính năng nhỏ, không đáng để viết
 lại). WPF là lựa chọn đúng khi được tự do chọn công nghệ cho một màn hình
-mới, phức tạp — đúng tình huống của chị Hạnh trong chương này.
+mới, phức tạp — đúng tình huống của Kỹ sư B trong chương này.
 
 > **Sau chương này, bạn sẽ:**
 > - Phân biệt mô hình retained-mode của WPF với immediate-mode của WinForms
 > - Xây MVVM đúng cách với `INotifyPropertyChanged`, Command, data binding hai chiều
-> - Ảo hoá danh sách lớn (hàng chục nghìn dòng alarm) mượt bằng UI Virtualization
+> - Ảo hoá danh sách lớn (hàng nghìn dòng log/alarm) mượt bằng UI Virtualization
 > - Chọn đúng framework MVVM (Prism/CommunityToolkit.Mvvm) theo quy mô dự án, và tự động hoá wiring View↔ViewModel theo convention
 
 ---
@@ -5801,6 +6125,18 @@ C# — nó nằm trong `Trigger` phía XAML:
 </Style>
 ```
 
+> 📌 **Cú pháp `{...}` trong XAML — markup extension:** dấu ngoặc nhọn trong
+> một giá trị attribute (`TargetType="{x:Type local:AlarmLamp}"`, và sau này
+> `Text="{Binding PositionMm}"`) không phải chuỗi thường — đây là cách XAML
+> "gọi" một đối tượng/giá trị được tính ra thay vì gõ thẳng chuỗi. `{x:Type
+> local:AlarmLamp}` nghĩa là "lấy kiểu C# `AlarmLamp`" (tương đương `typeof
+> (AlarmLamp)` trong code C#, `local:` là bí danh namespace khai báo ở đầu
+> file XAML). Tiền tố `x:` (như `x:Name`, `x:Key` sẽ gặp sau) đánh dấu đây là
+> chỉ thị của **chính ngôn ngữ XAML**, không phải property của control —
+> `x:Name` chỉ để đặt tên tham chiếu trong code-behind/style, không phải
+> property hiển thị. Cứ thấy `{...}` trong attribute XAML, đọc là "giá trị
+> này được tính ra, không phải chuỗi cứng".
+
 Không có dòng code C# nào đổi màu `Ellipse` — toàn bộ logic hiển thị nằm
 trong XAML, phản ứng tự động theo giá trị `Level`. Đây chính là điểm khác
 biệt cốt lõi so với `LedIndicator` tự vẽ bằng GDI+ ở Chương 8 (Code 8.4): ở
@@ -5916,6 +6252,17 @@ không truyền tham số, compiler tự điền tên property/method đang gọ
 `OnPropertyChanged(nameof(PositionMm))`. Thiếu attribute này, mỗi lần raise
 sự kiện phải truyền tên property thủ công.
 
+> 📌 **`AxisState` dùng toán tử điều kiện (ternary) nối chuỗi:**
+> `điều-kiện ? giá-trị-nếu-đúng : giá-trị-nếu-sai` gọn hơn `if/else` khi chỉ
+> cần **chọn một giá trị** (không phải chạy một hành động). Nối chuỗi nhiều
+> `? :` như ở `AxisState` tương đương `if/else if/else` lồng nhau — đọc từ
+> trên xuống, điều kiện nào đúng trước thì dừng ở đó:
+> ```csharp
+> if (PositionMm >= 480.0) return "NearLimit";
+> else if (PositionMm >= 450.0) return "Warning";
+> else return "Normal";
+> ```
+
 **Code 9.5 — XAML: binding vị trí + đổi màu theo ngưỡng bằng `DataTrigger`**
 
 ```xml
@@ -6001,6 +6348,23 @@ public partial class RecipeEditorViewModel : ObservableObject, INotifyDataErrorI
         propertyName != null && _errors.TryGetValue(propertyName, out var e) ? e : [];
 }
 ```
+
+> 📌 **Vì sao field `setpointSpeed` KHÔNG có dấu `_`:** ngoại lệ có chủ đích với
+> quy ước `_camelCase` (Chương 3) — `[ObservableProperty]` là source generator
+> (CommunityToolkit.Mvvm tự sinh thêm code lúc build, mục 9.2 giải thích đầy
+> đủ), nó ĐỌC tên field này để sinh property `public` cùng nghĩa nhưng viết
+> hoa chữ đầu (`setpointSpeed` → `SetpointSpeed`). Cách sinh tên hoạt động dù
+> field có `_` hay không (generator tự bỏ `_` nếu có), nhưng CommunityToolkit
+> .Mvvm khuyến nghị bỏ `_` cho field dùng với `[ObservableProperty]` để phân
+> biệt trực quan "field này sẽ có property sinh tự động" với field thường
+> (`_errors` ở trên — viết tay, không sinh property nào).
+>
+> 📌 **`[...]` — collection expression (C# 12):** `["Tốc độ không được âm."]` tương
+> đương `new List<string> { "Tốc độ không được âm." }` — compiler tự suy ra kiểu
+> collection cần tạo từ ngữ cảnh (ở đây là `List<string>` vì `_errors` là
+> `Dictionary<string, List<string>>`). `[]` (rỗng, dòng `GetErrors`) tương đương
+> `new List<string>()`/mảng rỗng tuỳ ngữ cảnh — cách viết gọn nhất cho "không có
+> phần tử nào".
 
 ```xml
 <TextBox Text="{Binding SetpointSpeed, ValidatesOnNotifyDataErrors=True,
@@ -6092,6 +6456,14 @@ public sealed class RelayCommand : ICommand
     }
 }
 ```
+
+> 📌 **`add`/`remove` — event với thân tự viết:** event khai báo kiểu
+> `public event EventHandler? X;` (đã dùng ở Chương 4) tự động có sẵn logic
+> `+=`/`-=`. Viết `{ add => ...; remove => ...; }` là **can thiệp vào chính
+> logic đó** — ở đây, thay vì giữ danh sách handler riêng, mọi `+=`/`-=` trên
+> `CanExecuteChanged` được "chuyển tiếp" thẳng vào sự kiện có sẵn của WPF
+> (`CommandManager.RequerySuggested`). Chỉ cần dùng cú pháp này khi có lý do
+> đặc biệt như trên; event thường (tự động) là đủ cho hầu hết trường hợp.
 
 `SetField` gom lại đúng đoạn "so sánh giá trị cũ, gán, raise PropertyChanged"
 đã lặp lại trong Code 9.4 — mọi ViewModel kế thừa `BaseViewModel` không cần
@@ -6246,9 +6618,13 @@ hệ thống cũ — không viết mới bằng nó.
 ## 9.3 Performance Optimization
 
 Ba điểm nghẽn hiệu năng WPF thường gặp trong HMI/SCADA: quá nhiều phần tử UI
-(danh sách log/alarm hàng chục nghìn dòng), UI thread bị bão hoà (dữ liệu
-cập nhật quá nhanh), và tạo lặp lại các đối tượng đồ hoạ tốn kém
-(`Brush`/`Geometry`/`Bitmap`). Mục này xử lý cả ba, theo đúng thứ tự.
+(danh sách log sự kiện có thể lên tới hàng chục nghìn dòng mỗi ca — mỗi lần
+đổi trạng thái/mỗi lần đọc cảm biến đều ghi log; danh sách alarm thực tế nhỏ
+hơn nhiều, thường vài trăm đến vài nghìn dòng/ca kể cả hệ thống chưa được
+rationalize tốt — xem ngưỡng flood EEMUA 191/ISA-18.2 ở Chương 15, mục
+15.1.6), UI thread bị bão hoà (dữ liệu cập nhật quá nhanh), và tạo lặp lại
+các đối tượng đồ hoạ tốn kém (`Brush`/`Geometry`/`Bitmap`). Mục này xử lý cả
+ba, theo đúng thứ tự.
 
 ### 9.3.1 Virtualization cho danh sách dài
 
@@ -6856,7 +7232,7 @@ còn số khác thì không:
   nhận biết thành một bức tranh có ý nghĩa — không chỉ "trục X dừng" mà
   "trục X dừng nghĩa là băng tải phía sau sắp hết phôi". Đòi hỏi các biến
   liên quan hiển thị gần nhau theo đúng luồng quy trình, không tách rời
-  theo cấu trúc PLC (đã nêu ở mục 10.1.2).
+  theo cấu trúc PLC.
 - **Tầng 3 — Dự đoán (Projection):** operator dự đoán được điều gì sắp xảy
   ra nếu không hành động ngay. Không nhất thiết cần biểu đồ xu hướng đầy đủ
   — đôi khi chỉ một chỉ báo tăng/giảm đơn giản cạnh giá trị cũng đủ tạo ngữ
@@ -7529,6 +7905,16 @@ public sealed record AlarmModel(
 }
 ```
 
+> 📌 **`init` — property chỉ gán được lúc khởi tạo:** khác `{ get; }` (Chương 3)
+> vốn chỉ gán được *trong constructor*, `{ get; init; }` cho phép gán bằng cú
+> pháp object-initializer (`new AlarmModel(...) { Lifecycle = ... }`) ngay lúc
+> tạo object — nhưng sau đó thì bất biến y hệt `{ get; }`, không có cách nào
+> sửa `Lifecycle` của một `AlarmModel` đã tồn tại. Vì record vốn khuyến khích
+> bất biến (đã học ở Chương 7), `init` là lựa chọn tự nhiên cho property khai
+> báo *ngoài* danh sách tham số chính (ở đây `Lifecycle` không nằm trong
+> `AlarmModel(...)` vì nó có giá trị mặc định riêng, không bắt buộc truyền vào).
+> Muốn "sửa" `Lifecycle` sau khi tạo — xem `with` expression ngay bên dưới.
+>
 > 📌 Đây chỉ là phần đủ dùng cho mục này (binding, đổi màu, đổi hiệu ứng
 > theo `Lifecycle`). Chương 15 (Code 15.1) trình bày bản đầy đủ kèm
 > `AckedAt`/`AckedBy`/`ClearedAt` và toàn bộ logic vòng đời.
@@ -7724,7 +8110,7 @@ Bốn điểm đáng chú ý so với ví dụ `IValueConverter` đã học ở 
 - `AlarmSeverity.Warning` (mức thấp nhất theo Chương 15) cố tình **không**
   map vào brush cam/vàng của bảng ISA-101 — dùng `LightGray` để giữ đúng
   nguyên tắc "màu bão hoà chỉ dành cho bất thường thật sự" đã nêu ở mục
-  10.2.5.
+  10.2.1.
 - `DataTrigger` nhấp nháy chỉ áp dụng cho `Lifecycle == Unacknowledged` —
   đúng nguyên tắc ở mục 10.2.2: severity quyết định **màu**, lifecycle
   quyết định **có nhấp nháy hay không**. Một alarm Critical đã acknowledge
@@ -7755,7 +8141,8 @@ chỉ số vận hành (alarm/giờ, top alarm gây nhiễu). Về mặt hiển 
 Summary dùng đúng kỹ thuật binding ở mục 10.3.3, chỉ khác `ItemsControl`
 đổi thành `DataGrid` có `ICollectionView` để hỗ trợ filter/sort — kỹ thuật
 virtualization cho danh sách dài đã học ở Chương 9, mục 9.3.1 áp dụng
-nguyên vẹn ở đây vì cùng bài toán "danh sách alarm hàng chục nghìn dòng/ca".
+nguyên vẹn ở đây, đặc biệt khi Alarm Summary gộp chung cả lịch sử alarm
+nhiều ca (không chỉ ca hiện tại) và có thể lên tới hàng nghìn dòng.
 
 **Code 10.5 — `AlarmSummaryViewModel`: filter/sort qua `ICollectionView`**
 
@@ -7792,13 +8179,19 @@ public partial class AlarmSummaryViewModel : ObservableObject
     {
         var index = _alarms.IndexOf(alarm);
         if (index < 0) return;
-        _alarms[index] = alarm with { Lifecycle = lifecycle };
         // Thay cả item bằng "with" vì AlarmModel là record init-only (Chương 15,
         // không có setter cho Lifecycle) — gán _alarms[index] phát CollectionChanged
         // dạng Replace, AlarmsView tự re-filter/re-sort ngay từ đó.
+        _alarms[index] = alarm with { Lifecycle = lifecycle };
     }
 }
 ```
+
+> 📌 **`with` tạo bản sao, không sửa tại chỗ:** `alarm with { Lifecycle =
+> lifecycle }` tạo một BẢN SAO record, chỉ đổi property nêu trong `{ }`, giữ
+> nguyên mọi property khác — bắt buộc phải làm vậy vì `AlarmModel` bất biến
+> (Chương 7): không có cách nào sửa `alarm.Lifecycle` trực tiếp, chỉ có thể
+> tạo bản mới rồi thay thế bản cũ trong danh sách.
 
 `ICollectionViewLiveShaping` (`IsLiveFiltering`/`IsLiveSorting`) là cơ chế
 thường gặp để tự re-filter/re-sort khi một property đổi — nhưng chỉ có tác
@@ -7938,6 +8331,11 @@ public sealed class TranslationService : INotifyPropertyChanged
 }
 ```
 
+> 📌 **`this[string key]` là INDEXER:** cho phép dùng cú pháp dấu ngoặc vuông
+> (`TranslationService.Instance["UI.Home.StartButton"]`) thay vì gọi method
+> tường minh, giống cách `Dictionary<K,V>` đã dùng `dict[key]` từ Chương 3 —
+> ở đây tự định nghĩa cùng cú pháp đó cho kiểu của riêng mình.
+
 Gán `dict[key]` bằng vòng lặp thay vì `.ToDictionary()` để trùng key (dòng
 CSV bị lặp do đội vận hành copy-paste nhầm) chỉ lấy dòng cuối thay vì ném
 `ArgumentException`; `detectEncodingFromByteOrderMarks: true` trên
@@ -7993,6 +8391,15 @@ public partial class LanguageSelectorViewModel : ObservableObject
     }
 }
 ```
+
+> 📌 **`(string Code, string Name)` — tuple có tên:** đóng gói 2 giá trị liên
+> quan thành một "cặp" tạm thời, không cần khai riêng một `class`/`record` chỉ
+> để chứa 2 field. Đặt tên trong ngoặc (`Code`, `Name`) cho phép đọc
+> `value.Code`/`value.Name` thay vì `value.Item1`/`value.Item2` (tuple không
+> tên). `("vi-VN", "Tiếng Việt")` là một *giá trị* tuple — khớp đúng thứ tự
+> với khai báo kiểu. Dùng tuple khi dữ liệu chỉ đi qua nội bộ, tạm thời (như
+> danh sách ngôn ngữ ở đây); dữ liệu quan trọng/dùng lại nhiều nơi nên là
+> `record` (Chương 7) để có tên kiểu rõ ràng, dễ tra lỗi.
 
 ```xml
 <ComboBox ItemsSource="{Binding Languages}"
@@ -8388,6 +8795,9 @@ public sealed class DomainException : Exception
 
 Ví dụ đơn giản hoá quá trình `Start`: trong thực tế, trạng thái `Starting` thường kéo dài trong khi hệ thống kiểm tra interlock, enable servo và đồng bộ thiết bị ngoại vi — máy không chuyển ngay sang `Running` như ở đây.
 
+> 📌 **`is A or B` — pattern combinator:** khớp khi `State` bằng `A` HOẶC `B`,
+> gọn hơn `State == A || State == B`. Có cả `and`/`not` tương tự cho AND/NOT.
+
 Entity Axis quản lý thông số công nghệ và ràng buộc di chuyển:
 
 **Code 11.2 — Entity Axis**
@@ -8452,7 +8862,7 @@ public enum AxisState
 
 Xét tình huống thực tế: kỹ sư truyền tốc độ chuyển động bằng kiểu double, đơn vị mm/s. Sau khi refactor, một chỗ nhầm truyền m/s — trục chạy nhanh hơn 1000 lần, kích E-Stop. Lỗi này không phát hiện được qua type checking vì cả hai đều là double.
 
-Value Object giải quyết bằng cách đóng gói đơn vị đo vào kiểu riêng. Đặc điểm: không có identity (hai Position(100mm) là một), bất biến (immutable), so sánh theo giá trị. C# 10+ có `readonly record struct`: compiler tự sinh constructor, `==`/`!=` và `ToString()` từ danh sách tham số — không cần viết boilerplate thủ công, 1 dòng thay cho ~20 dòng class truyền thống:
+Value Object giải quyết bằng cách đóng gói đơn vị đo vào kiểu riêng. Đặc điểm: không có identity (hai Position(100mm) là một), bất biến (immutable), so sánh theo giá trị. `record` (đã học ở Chương 7 — tự sinh property/constructor/so sánh theo giá trị từ danh sách tham số) có một biến thể **kiểu giá trị**: `readonly record struct`. Vẫn cùng cơ chế tự sinh đó, chỉ khác `struct` (Chương 3) lưu trên stack thay vì heap — hợp cho Value Object nhỏ, tạo/huỷ liên tục trong vòng lặp điều khiển:
 
 **Code 11.3 — Value Objects Position, Velocity, Acceleration**
 
@@ -8577,7 +8987,7 @@ Domain Event biểu diễn một sự kiện có ý nghĩa nghiệp vụ đã x�
 - Truy vết & audit: biết ai làm, lúc nào, thao tác gì
 - Mở rộng không sửa lõi: thêm handler mới mà không sửa logic máy
 
-`record` là kiểu tham chiếu C# 9+ với so sánh theo giá trị: hai record có cùng dữ liệu thì `==` trả true, không cần override `Equals` thủ công. Cú pháp positional — `sealed record MachineStarted(Guid MachineId, ...)` — tự sinh constructor và property get-only, viết 1 dòng thay vì ~20 dòng class truyền thống:
+`record` (đã dùng ở mục 11.1.2/Chương 7) phù hợp cho Domain Event vì bất biến và so sánh theo giá trị — một sự kiện đã xảy ra không nên "sửa lại" được. Cú pháp positional `sealed record MachineStarted(Guid MachineId, ...)` sinh constructor + property chỉ một dòng:
 
 **Code 11.5 — IDomainEvent và các event cụ thể**
 
@@ -8762,6 +9172,15 @@ namespace MachineDomain.MesIntegration.Handlers
     }
 }
 ```
+
+> 📌 **`@event` — dấu `@` đứng trước cho phép dùng một từ khoá dành riêng của
+> C# (`event` là từ khoá khai báo sự kiện, Chương 4) làm tên tham số bình
+> thường.** Không mâu thuẫn với quy tắc CA1716 "không dùng từ khoá dành riêng
+> làm tên tham số" đã nêu ở đầu sách — CA1716 khuyến nghị đổi tên trước (ví dụ
+> `evt`, `notification`); `@` chỉ nên dùng khi từ khoá đó là thuật ngữ miền tự
+> nhiên nhất, không có từ thay thế nào rõ nghĩa hơn — như `event` trong ngữ
+> cảnh Domain Event ở đây. Compiler hiểu `@event` và `event` (không `@`) là
+> hai thứ khác nhau: có `@` là định danh, không `@` là từ khoá.
 
 **Code 11.9b — IProductionStationRepository (khai báo trong MES Integration Context)**
 
@@ -9471,7 +9890,7 @@ Hai luồng tách biệt hoàn toàn: luồng chính (sản xuất bình thườ
 
 Quay lại tình huống mở đầu chương — máy đóng gói 8 trục: lệnh Hold khi đang Suspended chính là tình huống cần bất biến PackML để xử lý đúng, thay vì if/else chồng chéo như ví dụ ban đầu. Khi dùng Transition Table, tổ hợp (Suspended, Hold) đơn giản không tồn tại trong bảng — hàm `Send()` log warning và trả về `false`, không cần viết thêm nhánh xử lý nào.
 
-**Bất biến an toàn của PackML:** lệnh **Abort** được chấp nhận ở **bất kỳ trạng thái nào**, không có ngoại lệ. Đây là invariant cứng — tương tự bất biến của Aggregate Root đã học ở Chương 11, nhưng áp dụng cho toàn bộ state machine thay vì một entity cụ thể.
+**Bất biến an toàn của PackML:** lệnh **Abort** được chấp nhận ở hầu như **bất kỳ trạng thái nào** (trừ khi máy đã đang `Aborting`/`Aborted` — gọi lại Abort lúc đó là dư thừa, không phải bị chặn vì lý do an toàn). Đây là invariant cứng — tương tự bất biến của Aggregate Root đã học ở Chương 11, nhưng áp dụng cho toàn bộ state machine thay vì một entity cụ thể.
 
 Trước khi đi vào chi tiết, cần phân biệt ba khái niệm thường bị nhầm lẫn:
 
@@ -9570,6 +9989,14 @@ State Pattern (mục 12.1) và Transition Table không phải hai kỹ thuật c
 Với 17 trạng thái, viết 17 class riêng có thể là lựa chọn đúng cho project lớn (mỗi class có thể unit-test độc lập). Với project nhỏ hơn, dùng bảng transition là đủ:
 
 **Code 12.7 — State machine dựa trên bảng transition**
+
+> 📌 **Tuple làm khoá Dictionary:** `(PackMlState, PackMlCommand)` là tuple
+> không tên (khác tuple có tên `(string Code, string Name)` ở Chương 10) —
+> dùng được làm `TKey` vì tuple tự có sẵn so sánh theo giá trị (hai tuple bằng
+> nhau nếu từng phần tử bằng nhau), đúng thứ cần cho một khoá. `{ (A, B), C }`
+> trong phần khởi tạo `Dictionary` là **collection initializer** — mỗi cặp
+> `{ key, value }` tương đương gọi `Transitions.Add((A, B), C)`, viết liền
+> nhau cho gọn thay vì gọi `.Add(...)` nhiều dòng.
 
 ```csharp
 public sealed class PackMlStateMachine
@@ -9819,6 +10246,12 @@ public sealed class MachineOperationService
 }
 ```
 
+> 📌 **`if (ev is PackMlStateChanged { To: PackMlState.Aborted } abortedEv)`
+> kết hợp 3 thứ đã học:** type pattern (`ev` là `PackMlStateChanged`, Chương 3)
+> + property pattern (`To == Aborted`, Chương 8) + đặt tên biến bắt được
+> (`abortedEv`) để dùng tiếp trong khối `if` — như `j` trong `JogCommand j` ở
+> Chương 3, chỉ thêm điều kiện lọc theo property ngay trong `{ }`.
+
 Lưu ý: trong ví dụ này `PackMlStateMachine` tự tích luỹ và phát Domain Event theo cơ chế tương tự Aggregate Root ở Chương 11, dù bản thân nó không phải Aggregate Root (không có Repository, không có persistence riêng). Đây là cách đơn giản hoá hợp lý cho state machine đứng độc lập. Nếu `PackMlStateMachine` nằm bên trong một Aggregate Root lớn hơn (ví dụ class `Machine` từ Chương 11), domain event có thể được Aggregate Root đó raise thay vì state machine tự raise — tránh trùng lặp trách nhiệm publish event.
 
 **Hình 12.2 — Luồng gọi giữa các thành phần (khác với sơ đồ trạng thái ở Hình 12.1)**
@@ -10020,6 +10453,18 @@ public sealed record DeviceResult(bool Success, string? ErrorCode = null, string
 }
 ```
 
+> 📌 **`bool?`/`decimal?` khác `string?`:** dấu `?` sau kiểu **giá trị** (`bool`,
+> `decimal`, `int`...) và sau kiểu **tham chiếu** (`string`, hay bất kỳ `class`)
+> trông giống nhau nhưng là hai cơ chế khác nhau. `string?` (Chương 5) chỉ là
+> *chú thích* — nhắc compiler cảnh báo nếu quên kiểm tra null, bản thân biến vẫn
+> là tham chiếu bình thường. `bool?`/`decimal?` là viết tắt của `Nullable<bool>`/
+> `Nullable<decimal>` — một kiểu giá trị *thật sự khác*, bọc thêm cờ "có giá trị
+> hay không" quanh `bool`/`decimal` gốc (vì kiểu giá trị bình thường không bao
+> giờ null được). Vì vậy phải kiểm tra qua `.HasValue`/`.Value`, hoặc gọn hơn
+> `.GetValueOrDefault()` — ở đây hợp lý vì cảm biến vật lý có thể "chưa đọc
+> được" (digital chưa wire, analog module lỗi), khác `string?` là *có thể để
+> trống theo thiết kế*.
+
 Interface gateway tách command và query (CQRS nhẹ):
 
 **Code 13.2 — IAxisDeviceRepository và ISensorDeviceRepository**
@@ -10099,8 +10544,8 @@ public sealed record OutboxMessage(
 
 > 🔍 **Đào sâu thêm:** Outbox Pattern — đảm bảo "eventual consistency" (nhất quán cuối
 > cùng): ghi state và event cùng transaction, worker publish event at-least-once — dù
-> crash tại bất kỳ điểm nào, event vẫn được gửi đủ. Tìm hiểu thêm: "Transactional Outbox
-> Pattern", "eventual consistency distributed systems".
+> crash tại bất kỳ điểm nào, event vẫn được gửi đủ. Ví dụ triển khai đầy đủ bằng file
+> JSON thay vì DB transaction — xem `MesSpoolForwarder` ở Chương 14, mục 14.2.7.
 
 > 💡 **Mẹo thực chiến:** Với hệ thống có MES/SCADA, Outbox ổn định hơn nhiều so với
 > publish domain event trực tiếp trong transaction. Worker restart khi khởi động lại và
@@ -10819,6 +11264,137 @@ public sealed class AdvantechMotionBoard : IMotionBoard
 > dòng máy nhanh, hay khả năng test đầy đủ ngay từ đầu — không có đáp án đúng tuyệt
 > đối, giống các đánh đổi kiến trúc khác đã bàn trong chương này.
 
+### 13.2.4b Scanner mã vạch — Template Method khi driver chỉ khác vài chi tiết nhỏ
+
+Bridge Pattern ở mục 13.2.4 phù hợp khi các implementation khác nhau đủ lớn (SDK khác
+hẳn, mô hình dữ liệu khác hẳn — đúng trường hợp Beckhoff/Siemens). Với scanner mã vạch,
+tình huống thực chiến thường gặp hơn: phần lớn scanner công nghiệp phổ thông (Keyence,
+Cognex, và nhiều hãng khác) đều giao tiếp qua TCP theo dòng văn bản thuần — gửi lệnh
+kèm ký tự xuống dòng, nhận phản hồi kèm ký tự xuống dòng — khác nhau đúng ở lệnh trigger
+và chuỗi báo "không đọc được". Đây là tình huống **Template Method** (đã học ở Chương 4)
+phù hợp hơn Bridge: viết một lớp nền xử lý toàn bộ phần dùng chung (mở kết nối TCP, gửi
+lệnh, đọc tới ký tự xuống dòng, timeout, phát alarm), lớp con chỉ khai đúng phần khác biệt:
+
+```csharp
+public interface IBarcodeScanner : IDisposable, IHardwareDevice
+{
+    string Name { get; }
+    event EventHandler<BarcodeReceivedEventArgs>? CodeReceived;
+
+    /// <summary>Phát lệnh trigger và chờ nhận mã.</summary>
+    /// <exception cref="AlarmException">Ném khi timeout/không đọc được.</exception>
+    Task<string> TriggerAsync(CancellationToken ct = default);
+}
+```
+
+**Code 13.8b — TcpBarcodeScannerBase: lớp nền dùng chung, lớp con chỉ khai 2 dòng**
+
+```csharp
+public abstract class TcpBarcodeScannerBase : IBarcodeScanner
+{
+    private readonly SemaphoreSlim _lock = new(1, 1);
+    private readonly int _timeoutMs;
+    private TcpClient? _tcp;
+    private NetworkStream? _stream;
+
+    protected TcpBarcodeScannerBase(ILogger logger, string host, int port, string name, int timeoutMs)
+    {
+        Name = name;
+        _timeoutMs = timeoutMs;
+        // ... lưu logger/host/port, xem đầy đủ ConnectAsync/DisconnectAsync trong mã nguồn kèm sách
+    }
+
+    public string Name { get; }
+    public event EventHandler<BarcodeReceivedEventArgs>? CodeReceived;
+
+    // Lớp con CHỈ cần khai đúng những gì dưới đây — mọi thứ khác dùng chung từ lớp cha
+    protected abstract string TriggerCommand { get; }
+    protected virtual string NoReadToken => "ERROR";
+    protected virtual string Terminator => "\r\n";
+    protected virtual string ParseResponse(string raw) => raw.Trim();
+
+    public async Task<string> TriggerAsync(CancellationToken ct = default)
+    {
+        using var toCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        toCts.CancelAfter(_timeoutMs);
+        await _lock.WaitAsync(toCts.Token).ConfigureAwait(false);
+        try
+        {
+            var stream = _stream ?? throw new AlarmException(AlarmCodes.CommConnectionFail, Name, "Chưa kết nối");
+            var payload = Encoding.ASCII.GetBytes(TriggerCommand + Terminator);
+            await stream.WriteAsync(payload, toCts.Token).ConfigureAwait(false);
+
+            string raw = await ReadLineAsync(stream, toCts.Token).ConfigureAwait(false);
+            if (raw.Contains(NoReadToken, StringComparison.OrdinalIgnoreCase))
+                throw new AlarmException(AlarmCodes.CommProtocolError, Name, $"Không đọc được: '{raw}'");
+
+            string code = ParseResponse(raw);
+            CodeReceived?.Invoke(this, new BarcodeReceivedEventArgs(code));
+            return code;
+        }
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        {
+            throw new AlarmException(AlarmCodes.CommTimeout, Name, $"Trigger timeout sau {_timeoutMs}ms");
+        }
+        finally { _lock.Release(); }
+    }
+
+    // ConnectAsync/DisconnectAsync/ReadLineAsync/Dispose — cùng khuôn mẫu resilience
+    // đã học ở Chương 13 (RetryPolicy) và Chương 5 (SemaphoreSlim) — không lặp lại ở đây.
+}
+
+// Toàn bộ driver Keyence chỉ cần đúng 2 dòng khác biệt:
+public sealed class KeyenceScanner(ILogger<KeyenceScanner> logger, string host, int port = 9004)
+    : TcpBarcodeScannerBase(logger, host, port, "Keyence-SR", timeoutMs: 3_000)
+{
+    protected override string TriggerCommand => "LON";     // lệnh trigger riêng của hãng
+    protected override string NoReadToken    => "ERROR";
+}
+
+// Cognex khác Keyence đúng 2 dòng này — không lặp lại bất kỳ logic TCP/timeout/alarm nào
+public sealed class CognexScanner(ILogger<CognexScanner> logger, string host, int port = 23)
+    : TcpBarcodeScannerBase(logger, host, port, "Cognex-DataMan", timeoutMs: 3_000)
+{
+    protected override string TriggerCommand => "TRIGGER ON";
+    protected override string NoReadToken    => "NO READ";
+}
+```
+
+> 📌 **Khác Bridge Pattern (mục 13.2.4) ở chỗ nào:** Bridge tách Abstraction
+> (`IMotionAxisDriver`) khỏi Implementor hoàn toàn — hai phía không chia sẻ code,
+> chỉ chia sẻ hợp đồng interface. Template Method ở đây thì NGƯỢC LẠI: lớp con
+> (`KeyenceScanner`) kế thừa và dùng lại gần như toàn bộ logic của lớp cha
+> (`TcpBarcodeScannerBase`), chỉ override đúng phần khác biệt nhỏ nhất. Chọn
+> Template Method khi các implementation giống nhau phần lớn, chỉ khác vài chi
+> tiết cấu hình (đúng trường hợp scanner qua TCP theo dòng); chọn Bridge khi các
+> implementation khác nhau đủ lớn để dùng chung một lớp cha trở nên gượng ép.
+> Không có lựa chọn nào "đúng hơn" — tuỳ mức độ giống nhau thực tế giữa các driver.
+
+Test double đi kèm tuân đúng nguyên tắc Simulation Parity (mọi driver phần cứng đều có
+đối tác giả lập, mục 13.2.5 bàn kỹ hơn cho motion driver): `SimulatedBarcodeScanner`
+hiện thực thẳng `IBarcodeScanner` (không kế thừa `TcpBarcodeScannerBase` vì không có
+kết nối TCP thật nào để mô phỏng), trả mã từ hàng đợi nạp sẵn cho test, hoặc tự sinh
+số serial tăng dần nếu hàng đợi rỗng — đủ dùng để chạy toàn bộ Sequence mà không cần
+scanner vật lý cắm vào máy.
+
+> ⚠️ **Bốn lỗi thực chiến hay gặp khi tự viết driver scanner** (quan sát từ
+> nhiều dự án thực tế, không riêng ví dụ trên):
+> 1. Dựng timeout bằng `Task.WhenAny(...)` kết hợp `Thread.Sleep` thay vì
+>    `CancellationTokenSource.CancelAfter` — vi phạm nguyên tắc async đã học ở
+>    Chương 5 (không bao giờ `Thread.Sleep` trong code chạy trên luồng async),
+>    và không huỷ được tác vụ đang treo thật sự, chỉ "bỏ mặc" nó chạy nền.
+> 2. Không có "khoá tái nhập" (`SemaphoreSlim`, đã học ở Chương 5) chống gọi
+>    `TriggerAsync` chồng lên nhau — hai lệnh trigger liên tiếp trước khi lệnh
+>    đầu trả lời có thể làm lẫn lộn mã đọc được giữa hai lần quét.
+> 3. Không phân biệt "không đọc được mã" (`NoReadToken`, lỗi nghiệp vụ bình
+>    thường — sản phẩm không dán tem) với "mất kết nối" (lỗi hạ tầng nghiêm
+>    trọng hơn) — gộp chung một loại alarm khiến operator không biết nên kiểm
+>    tra tem hay kiểm tra dây cáp.
+> 4. Health-check hình thức — hàm báo "đang kết nối" luôn trả `true` bất kể
+>    trạng thái thật, khiến HMI hiển thị sai, chỉ phát hiện ra khi scanner đã
+>    treo từ lâu. Nguyên tắc chung: health-check phải phản ánh trạng thái thật
+>    đo được, không phải giá trị mặc định lạc quan.
+
 ### 13.2.5 Simulator Driver
 
 Mỗi `IMotionAxisDriver` đều có đối tác `SimulatedAxisDriver` — driver giả lập không cần
@@ -11108,6 +11684,12 @@ public sealed class ConnectionPool<T> : IConnectionPool<T> where T : IAsyncDispo
 }
 ```
 
+> 📌 **`required` (C# 11) trên field/property:** bắt buộc phải gán giá trị lúc
+> tạo object bằng object-initializer (`new Entry { Connection = ..., Gate =
+> ... }`) — thiếu một field `required` nào là LỖI BIÊN DỊCH, không phải lỗi
+> lúc chạy. Khác `readonly`/`init` (Chương 3, Chương 10) ở chỗ `required`
+> không tự gán được qua constructor thường — chỉ qua object-initializer.
+>
 > 🔍 **Đào sâu thêm:** `ConcurrentDictionary<K,V>` — dictionary thread-safe của .NET,
 > nhiều luồng đọc/ghi đồng thời không cần viết `lock` thủ công. Tìm hiểu thêm:
 > "ConcurrentDictionary C# thread safety", "lock-free data structures".
@@ -11521,8 +12103,8 @@ public sealed class OpcUaChannelStrategy : IProtocolClient  // IProtocolClient t
         // tự định nghĩa trong Infrastructure layer, không phải class của SDK.
         // Trong dự án thật: public class OpcUaException(StatusCode code, NodeId node)
         //     : Exception($"OPC UA error {code} reading {node}") { }
-        StatusCode.IsGood(readResult.StatusCode)
-            || throw new OpcUaException(readResult.StatusCode, nodeId);
+        if (!StatusCode.IsGood(readResult.StatusCode))
+            throw new OpcUaException(readResult.StatusCode, nodeId);
 
         // OPC UA SDK trả object — cast trực tiếp có thể lỗi nếu server trả
         // Int16 khi T là int (numeric widening). Production nên dùng:
@@ -12005,6 +12587,27 @@ public sealed class VisionIpcClient : IAsyncDisposable
     }
 }
 ```
+
+> 📌 **Ba cú pháp mới trong `VisionIpcClient`:**
+> - **Anonymous type** (`new { command = "Inspect", jobName, correlationId }`,
+>   `InspectAsync`): `new { ... }` không ghi tên kiểu — compiler tự sinh một
+>   kiểu chỉ dùng nội bộ, đủ cho `JsonSerializer.Serialize` đọc property mà
+>   ném ra JSON, không cần khai riêng một `record`/`class` chỉ để gửi 1 lần
+>   rồi bỏ. `jobName,` (không có `= jobName`) là property-shorthand — lấy tên
+>   property trùng tên biến cục bộ `jobName`, giá trị property = giá trị biến
+>   đó.
+> - **Null-forgiving `!`** (`_writer!.WriteLineAsync(...)`): báo compiler "tôi
+>   biết rõ giá trị này không null tại đây, đừng cảnh báo nữa" — dù `_writer`
+>   khai báo kiểu `StreamWriter?` (có thể null). Đúng ở đây vì
+>   `EnsureConnectedAsync` (gọi ngay trước) đã đảm bảo kết nối xong mới gán
+>   `_writer`; compiler không "nhìn xa" được tới mức đó nên vẫn cảnh báo. `!`
+>   chỉ tắt cảnh báo, KHÔNG kiểm tra gì lúc chạy — dùng sai chỗ (khi thật sự
+>   có thể null) vẫn crash `NullReferenceException`.
+> - **Raw string literal** (`"""{"command":"Ping"}"""`, `PingAsync`, C# 11):
+>   nội dung bên trong giữ nguyên văn, không cần escape dấu ngoặc kép. Không
+>   có raw string, cùng chuỗi JSON phải viết `"{\"command\":\"Ping\"}"` — mỗi
+>   dấu `"` bên trong phải thêm `\` phía trước, rất dễ đọc nhầm/gõ sai khi
+>   JSON còn lồng nhiều cấp.
 
 > 📌 **Lưu ý:** Đây không phải pattern chỉ dùng cho vision — bất kỳ thư viện vendor nào
 > chạy trên .NET Framework cũ, có native dependency không tương thích, hoặc có rủi ro crash
@@ -12516,6 +13119,154 @@ async void OnPrimaryMessage(SecsMessage primaryMsg, Action<SecsMessage> reply)
 > (AMHS), Clock, Limits Monitoring... Nhà máy bán dẫn thường yêu cầu Equipment Verification
 > (EV) theo SEMI E164. Tìm hiểu thêm: "SEMI E30 GEM standard", "GEM 300mm requirements SEMI E116".
 
+### 14.2.7  Khi không cần SECS/GEM — tích hợp MES kiểu nhẹ
+
+SECS/GEM đúng chuẩn bán dẫn/SMT, nhưng phần lớn nhà máy vừa và nhỏ — và rất nhiều máy
+vendor giá phổ thông — không đầu tư MES ở mức đó. Tích hợp MES thực tế ở quy mô này
+thường đơn giản hơn nhiều: gọi REST API, ghi file JSON/CSV vào thư mục dùng chung, hoặc
+ghi thẳng vào một bảng DB trung gian. Không có chuẩn cố định như GEM, nhưng có một
+nguyên tắc thiết kế lặp lại ở hầu hết hệ thống làm đúng: **tách lệnh gọi MES thành hai
+kênh khác nhau theo việc nó có bắt buộc chặn dòng chảy sản xuất hay không.**
+
+**Kênh đồng bộ — chỉ dùng cho quyết định BẮT BUỘC phải có trước khi tiếp tục** (ví dụ:
+hỏi MES "lô này có được phép qua trạm tiếp theo không" trước khi băng tải chạy):
+
+```csharp
+public async Task<bool> CheckRouteApprovalAsync(string lotId, string stationId, CancellationToken ct)
+{
+    using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+    timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));   // luôn có timeout cố định
+    try
+    {
+        var response = await _http.PostAsJsonAsync("mes/route-check",
+            new { lotId, stationId }, timeoutCts.Token).ConfigureAwait(false);
+        return response.IsSuccessStatusCode && await response.Content
+            .ReadFromJsonAsync<RouteCheckResult>(timeoutCts.Token) is { Approved: true };
+    }
+    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+    {
+        // MES không phản hồi trong 10s — KHÔNG tự ý cho qua, cũng KHÔNG retry vô hạn
+        // trong im lặng. Đẩy quyết định lên cho operator qua UI (nút Retry/Bỏ qua có ghi log).
+        return await _operatorPrompt.AskRouteOverrideAsync(lotId, stationId, ct).ConfigureAwait(false);
+    }
+}
+```
+
+**Kênh bất đồng bộ — cho dữ liệu KHÔNG cần trả lời ngay** (log sự kiện, cập nhật sản
+lượng, ghi nhận kết quả kiểm tra): dùng mẫu **spool-and-forward** — ghi ra hàng đợi cục
+bộ trước, một luồng nền tự đồng bộ lại sau. Đây chính là bản triển khai thực tế của
+**Outbox Pattern** đã nhắc ở Chương 13, mục 13.1.4 (ghi state + event cùng lúc, đảm bảo
+gửi đủ dù có sự cố giữa chừng) — áp dụng cụ thể cho việc báo cáo MES:
+
+**Code 14.8 — MesSpoolForwarder: hàng đợi cục bộ tự đồng bộ lại MES**
+
+```csharp
+public sealed record MesEventEnvelope(string EventType, string PayloadJson, DateTimeOffset CreatedAt);
+
+public sealed class MesSpoolForwarder : IAsyncDisposable
+{
+    private static readonly TimeSpan MaxAge = TimeSpan.FromHours(72);   // quá hạn thì coi là lỗi, cần người xử lý tay
+
+    private readonly string _pendingDir;
+    private readonly string _failedDir;
+    private readonly HttpClient _http;
+    private readonly ILogger<MesSpoolForwarder> _logger;
+    private readonly PeriodicTimer _timer = new(TimeSpan.FromSeconds(10));
+    private readonly CancellationTokenSource _cts = new();
+    private readonly Task _workerTask;
+
+    public MesSpoolForwarder(string spoolRoot, HttpClient http, ILogger<MesSpoolForwarder> logger)
+    {
+        _pendingDir = Path.Combine(spoolRoot, "pending");
+        _failedDir  = Path.Combine(spoolRoot, "failed");
+        Directory.CreateDirectory(_pendingDir);
+        Directory.CreateDirectory(_failedDir);
+        _http = http;
+        _logger = logger;
+        _workerTask = Task.Run(() => WorkerLoopAsync(_cts.Token));
+    }
+
+    // Gọi từ Step/Sequence — KHÔNG BAO GIỜ throw, KHÔNG chặn vòng điều khiển
+    public async Task EnqueueAsync(MesEventEnvelope envelope, CancellationToken ct = default)
+    {
+        var path = Path.Combine(_pendingDir, $"{Guid.NewGuid():N}.json");
+        var tmp  = path + ".tmp";
+        await File.WriteAllTextAsync(tmp, JsonSerializer.Serialize(envelope), ct).ConfigureAwait(false);
+        File.Move(tmp, path);   // atomic write — cùng kỹ thuật đã học ở Chương 3, mục 3.6.1
+    }
+
+    private async Task WorkerLoopAsync(CancellationToken ct)
+    {
+        while (await _timer.WaitForNextTickAsync(ct).ConfigureAwait(false))
+        {
+            foreach (var file in Directory.EnumerateFiles(_pendingDir, "*.json"))
+                await TryForwardAsync(file, ct).ConfigureAwait(false);
+        }
+    }
+
+    private async Task TryForwardAsync(string file, CancellationToken ct)
+    {
+        var envelope = JsonSerializer.Deserialize<MesEventEnvelope>(await File.ReadAllTextAsync(file, ct).ConfigureAwait(false));
+        if (DateTimeOffset.UtcNow - envelope!.CreatedAt > MaxAge)
+        {
+            File.Move(file, Path.Combine(_failedDir, Path.GetFileName(file)));
+            _logger.LogWarning("MES event quá hạn {MaxAge} — chuyển sang failed, cần xử lý tay: {File}", MaxAge, file);
+            return;
+        }
+
+        try
+        {
+            var response = await _http.PostAsJsonAsync("mes/events", envelope, ct).ConfigureAwait(false);
+            if (response.IsSuccessStatusCode)
+                File.Delete(file);
+            // Thất bại: giữ nguyên file, thử lại ở tick sau — không throw, không chặn worker.
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex, "MES tạm thời không phản hồi — giữ lại thử lại sau: {File}", file);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _cts.Cancel();
+        try { await _workerTask.ConfigureAwait(false); }
+        catch (OperationCanceledException) { /* dừng bình thường */ }
+        _cts.Dispose();
+        _timer.Dispose();
+    }
+}
+```
+
+Ý chính: `EnqueueAsync` không bao giờ ném lỗi ra ngoài — Step gọi xong là coi như xong,
+không quan tâm MES có nhận được ngay hay không. Việc gửi thật diễn ra ở luồng nền, có
+giới hạn thời gian rõ ràng (`MaxAge`) để một sự cố MES kéo dài không âm thầm tích luỹ
+mãi mãi trong thư mục `pending` — quá hạn thì chuyển sang `failed` để người vận hành
+biết mà xử lý tay, không phải để hệ thống tự "quên".
+
+**Bảng 14.9b — Ba mức xử lý khi MES mất kết nối, xếp từ nên tránh đến nên theo**
+
+| Mức | Cách làm | Vấn đề / Khi nào dùng |
+|---|---|---|
+| ⚠️ Nên tránh | Retry vô hạn trong im lặng, chỉ ghi log, không alarm, không giới hạn thời gian | Lỗi âm thầm không ai biết tới khi phát hiện hậu quả (ví dụ hàng nghìn lô sản xuất không có dữ liệu MES) — không có "van an toàn" nào cảnh báo |
+| 🟡 Chấp nhận được | Timeout cố định, hết thời gian thì hỏi operator quyết định (dialog Retry/Bỏ qua, có ghi log ai bấm gì) | Đúng khi quyết định THẬT SỰ cần con người — nhưng đừng dùng cho mọi lệnh gọi MES, sẽ làm operator "mù chuông báo" (alarm fatigue, Chương 15) |
+| ✅ Nên theo | Spool-and-forward: ghi hàng đợi cục bộ, luồng nền tự đồng bộ lại, có giới hạn thời gian rõ ràng, quá hạn chuyển sang nơi cần xử lý tay | Máy không bị chặn sản xuất, dữ liệu không mất — đánh đổi: cần theo dõi thư mục lỗi định kỳ, và chỉ phù hợp dữ liệu KHÔNG cần MES trả lời ngay lập tức |
+
+> 📌 **Đừng tin một alarm code "có khai báo" nghĩa là nó thật sự chạy:** một sai lầm
+> thường gặp khi kế thừa code cũ — thấy `AlarmCodes.MesDisconnected` được định nghĩa
+> sẵn, mặc định tin rằng hệ thống sẽ tự báo khi MES rớt kết nối. Thực tế có thể chỉ là
+> mã được khai báo cho tương lai nhưng chưa từng có chỗ nào gọi `RaiseAsync` với mã đó.
+> Xác nhận bằng **Find All References** (đã học ở Chương 2, mục 2.4) trên chính hằng số
+> alarm đó — nếu chỉ thấy đúng một kết quả (chỗ khai báo), nghĩa là alarm này chưa từng
+> được kích hoạt ở bất kỳ đâu.
+
+**Từ vựng MES thường gặp** (không phải hệ MES nào cũng dùng đủ cả bốn — tuỳ ngành và quy mô nhà máy):
+
+- **Lot** — mã định danh một lô sản phẩm được xử lý/theo dõi cùng nhau qua các công đoạn.
+- **Work Order / Production Order** — lệnh sản xuất MES giao cho máy: sản xuất gì, số lượng bao nhiêu, dùng recipe nào.
+- **Recipe / PPID** — tham số quy trình cho một sản phẩm cụ thể (đã học ở Chương 13) — trong ngữ cảnh SECS/GEM thường gọi là PPID (Process Program ID).
+- **Genealogy** (truy xuất nguồn gốc) — chuỗi liên kết Lot/số serial qua từng công đoạn, cho phép lần lại lịch sử đầy đủ của một sản phẩm khi phát hiện lỗi sau này.
+
 ---
 
 ## 14.3  So sánh và lựa chọn giao thức theo bài toán
@@ -12640,12 +13391,10 @@ cho từng bài toán.
 | OPC UA: `AutoAcceptUntrustedCertificates=true` trong production | Bất kỳ client nào cũng kết nối được, không cần xác thực | Luôn tắt trong production; PKI phải là checklist nghiệm thu |
 | Modbus: sai byte/word order khi đọc float | Không có exception — đọc ra giá trị vô nghĩa | Xác minh với giá trị có thể kiểm tra độc lập trước khi tin kết quả |
 | Modbus: nhầm địa chỉ 1-based/0-based | Đọc thanh ghi lệch 1 | Xác nhận quy ước với tài liệu vendor, test với giá trị đã biết |
-| SECS/GEM: gửi message trước khi Select+S1F13/F14 | Message bị reject, thiết bị không phản hồi | Luôn đợi Communication State = COMMUNICATING trước khi trao đổi |
+| SECS/GEM: gửi message trước khi hoàn tất HSMS Select + Communication State = COMMUNICATING | Message bị reject hoặc timeout không rõ nguyên nhân — bị drop phía thiết bị, không có error rõ ràng phía host | Luôn chờ SelectRsp OK, rồi đợi Communication State = COMMUNICATING, trước khi gửi bất kỳ Primary message SECS-II nào |
 | SECS/GEM: không handle S9F3/S9F5 | Host không biết equipment reject message, bug ẩn | Log tất cả S9 message; dùng để debug khi thiết bị không trả reply |
-| TCP custom: không có heartbeat | Mất kết nối không phát hiện, process con chết âm thầm | Heartbeat mỗi 5s; alarm dải 20xxx khi vision host không phản hồi |
+| TCP custom: không có heartbeat định kỳ | Mất kết nối không phát hiện — socket "zombie" còn open nhưng peer đã offline, process con có thể chết âm thầm, phát hiện muộn hàng chục giây | Heartbeat/Ping-Pong mỗi 5s; đánh dấu Unhealthy + alarm dải 20xxx khi không phản hồi, reconnect nếu Ping timeout |
 | TCP custom: không retry/reconnect | Restart máy khi mạng bị ngắt thoáng qua | `EnsureConnectedAsync` với backoff + alarm trước khi stop sequence |
-| SECS/GEM: HSMS Select chưa hoàn tất trước khi gửi message | Timeout không rõ nguyên nhân; message bị drop phía thiết bị, không có error rõ ràng phía host | Luôn chờ SelectRsp OK trước khi gửi bất kỳ Primary message SECS-II nào |
-| TCP custom: không có heartbeat định kỳ | Kết nối "zombie" — socket còn open nhưng peer đã offline, phát hiện muộn hàng chục giây | Ping/Pong mỗi 5s; đánh dấu Unhealthy và reconnect nếu Ping timeout |
 | OPC UA: namespace index thay đổi sau firmware update | Numeric NodeId cũ không còn hợp lệ, đọc ra `NodeNotFoundException` âm thầm | Dùng String NodeId (`ns=2;s="Motor1/Speed"`) thay Numeric; map bằng namespace URI, không phải index |
 
 <!-- SECTION: Chapter_15_Safety -->
@@ -12784,7 +13533,8 @@ Liên hệ với PackML (Chương 12): `AlarmSeverity.Critical` tương ứng v�
 > 📌 **ISA-18.2 không quy định tên gọi mức priority.** Tên Critical/Major/Minor/Warning là quy ước của framework này — ISA-18.2 chỉ yêu cầu hệ thống *có* phân cấp priority rõ ràng và mỗi mức gắn với response time tương ứng. Mỗi tổ chức tự định nghĩa tên và số mức trong Alarm Philosophy Document riêng; một số hệ thống dùng P1/P2/P3/P4, một số dùng High/Medium/Low. Điều quan trọng là áp dụng nhất quán và tất cả operator hiểu ý nghĩa từng mức.
 
 > 💡 **Mẹo thực chiến:** `AlarmCode` ở Code 15.1 không nhất thiết chỉ đến từ
-> logic máy tự sinh (dải 10000–70999, Chương AlarmCodes) — một nguồn alarm
+> logic máy tự sinh (dải mã tự quy ước theo hạng mục, ví dụ 10000+ cho
+> Motion, 70000+ cho Safety/Interlock) — một nguồn alarm
 > thực chiến khác là đọc trực tiếp mã lỗi từ chính servo driver (qua thanh
 > ghi lỗi trên bus fieldbus/EtherCAT hoặc API SDK riêng của hãng), rồi map
 > sang `AlarmModel` của hệ thống. Hai nguồn này nên tách rõ trong `Message`
@@ -12841,25 +13591,47 @@ Ba sự kiện trên — `AlarmRaised`, `AlarmAcknowledged`, `AlarmCleared` — 
 **Code 15.3 — EventArgs cho alarm lifecycle (CA1003 — mỗi event có subclass riêng)**
 
 ```csharp
-// Tuân theo CA1003: mỗi event dùng EventArgs subclass riêng
-public sealed record AlarmRaisedEventArgs(
-    int            AlarmCode,
-    string         Station,
-    AlarmSeverity  Severity,
-    string         Message,
-    DateTimeOffset OccurredAt) : EventArgs;
+// Tuân theo CA1003: mỗi event dùng EventArgs subclass riêng.
+// Lưu ý: record KHÔNG thể kế thừa một class thường như EventArgs — record chỉ
+// được kế thừa object hoặc record khác (lỗi biên dịch CS8864). Vì CA1003 bắt
+// buộc phải là EventArgs subclass, ở đây dùng class thường + primary constructor
+// (C# 12) — cú pháp khai báo vẫn gọn như record, chỉ khác phần thân { get; } = tham số.
+public sealed class AlarmRaisedEventArgs(
+    int            alarmCode,
+    string         station,
+    AlarmSeverity  severity,
+    string         message,
+    DateTimeOffset occurredAt) : EventArgs
+{
+    public int            AlarmCode  { get; } = alarmCode;
+    public string         Station    { get; } = station;
+    public AlarmSeverity  Severity   { get; } = severity;
+    public string         Message    { get; } = message;
+    public DateTimeOffset OccurredAt { get; } = occurredAt;
+}
 
-public sealed record AlarmAcknowledgedEventArgs(
-    int            AlarmCode,
-    string         AckedBy,
-    DateTimeOffset AckedAt) : EventArgs;
+public sealed class AlarmAcknowledgedEventArgs(
+    int            alarmCode,
+    string         ackedBy,
+    DateTimeOffset ackedAt) : EventArgs
+{
+    public int            AlarmCode { get; } = alarmCode;
+    public string         AckedBy   { get; } = ackedBy;
+    public DateTimeOffset AckedAt   { get; } = ackedAt;
+}
 
-public sealed record AlarmClearedEventArgs(
-    int            AlarmCode,
-    DateTimeOffset ClearedAt) : EventArgs;
+public sealed class AlarmClearedEventArgs(
+    int            alarmCode,
+    DateTimeOffset clearedAt) : EventArgs
+{
+    public int            AlarmCode { get; }  = alarmCode;
+    public DateTimeOffset ClearedAt { get; }  = clearedAt;
+}
 ```
 
 > 📌 **Lưu ý:** `AlarmRaised` không phải `AlarmRaisedEvent` (thêm "Event" vào cuối) — CA1003 yêu cầu tên event là verb/noun, EventArgs subclass mới mang hậu tố "EventArgs". Nếu bạn dùng Prism `EventAggregator`, wrap thêm một lớp `PrismEvent<AlarmRaisedEventArgs>` ở Modules layer.
+>
+> 🔍 **Đào sâu thêm — primary constructor trên class:** `class Foo(int x)` (không có từ `record`) khai báo constructor ngay trên dòng tên class — tham số `x` chỉ dùng được để gán vào property/field trong phần thân, không tự sinh property như record. Cú pháp này (C# 12) hữu ích khi bạn muốn constructor gọn nhưng vẫn cần class thường (ví dụ để kế thừa một class có sẵn như `EventArgs`).
 
 ### 15.1.5  AlarmService.RaiseAsync — implementation cốt lõi
 
@@ -13252,14 +14024,14 @@ public sealed record GuardResult(bool Allowed, string? DeniedReason)
 }
 ```
 
-**Bảng 15.4 — RiskTier R0-R3: ví dụ thao tác thực tế**
+**Bảng 15.5 — RiskTier R0-R3 và ràng buộc tương ứng**
 
-| RiskTier | UserLevel tối thiểu | Ví dụ thao tác |
-|---|---|---|
-| R0 | Operator | Xem trạng thái, acknowledge alarm, start/stop theo recipe |
-| R1 | Operator | Reset alarm, chuyển chế độ, phục hồi sau lỗi nhẹ |
-| R2 | Engineer | Jog trục thủ công, chỉnh tham số PID, dạy điểm teach |
-| R3 | Administrator + xác nhận 2 bước | Force I/O, bypass interlock tạm thời, cấu hình safety parameter |
+| Tier | Quyền tối thiểu | Machine State cho phép | Xác nhận thêm | Ví dụ thao tác |
+|---|---|---|---|---|
+| R0 | Operator | Mọi state | Không | Start, Stop, xem alarm |
+| R1 | Operator | Mọi state (trừ Aborted) | Không (có guard popup) | Reset alarm, chế độ phục hồi |
+| R2 | Engineer | Idle / Held / Stopped | Không | Jog trục, dạy điểm teach |
+| R3 | Administrator | Idle / Held / Stopped | Xác nhận 2 bước | Force IO, can thiệp trực tiếp |
 
 > 📌 **R0 và R1 cùng yêu cầu Operator — không phải trùng lặp thừa.**
 > `RiskTier` không chỉ quyết định *cấp quyền tối thiểu* (Tầng 2 của Guard
@@ -13289,8 +14061,9 @@ public sealed record GuardResult(bool Allowed, string? DeniedReason)
 > trước khi kẹp" để test tay từng bước — và vẫn cần đúng 5 lớp bảo vệ như
 > Force IO (mục cuối chương "Tai nạn kinh điển: Quên gỡ Force IO"): quyền
 > Administrator, xác nhận 2 bước, alarm liên tục không tắt được,
-> **auto-timeout** (tự động khôi phục interlock sau tối đa vài phút, ví dụ
-> 5 phút — kỹ sư phải chủ động gia hạn nếu cần thêm thời gian), và **cảnh
+> **auto-timeout** (tự động khôi phục interlock sau tối đa vài chục phút,
+> khớp mặc định 30 phút của Force IO — kỹ sư phải chủ động gia hạn nếu cần
+> thêm thời gian), và **cảnh
 > báo liên tục không thể bỏ qua trên HMI** (không phải một icon nhỏ mà một
 > banner nhấp nháy rõ ràng "INTERLOCK ĐANG BYPASS — [tên interlock]", tồn
 > tại suốt thời gian bypass còn hiệu lực). Lỗi kinh điển tương ứng: kỹ sư
@@ -13362,6 +14135,11 @@ public sealed class GuardEngine : IGuardEngine
 }
 ```
 
+> 📌 **`is not (A or B or C)`:** kết hợp `not` với `or` đã học (Chương 11) —
+> khớp khi `state` KHÔNG PHẢI bất kỳ giá trị nào trong ngoặc. Tương đương
+> `state != A && state != B && state != C` nhưng đọc thẳng theo nghĩa "không
+> phải Idle/Held/Stopped" — gần cách diễn đạt tiếng Việt hơn.
+
 Cách dùng ở caller — một dòng thay vì ba điều kiện:
 
 ```csharp
@@ -13377,15 +14155,6 @@ await _motion.JogAsync(axisIndex, velocity, ct);
 ```
 
 > 💡 **Mẹo thực chiến:** Tín hiệu phần cứng (tầng 3) nên đẩy theo sự kiện (event-push) thay vì polling liên tục trong `Evaluate()`. `SafetyMonitorService` ở mục 15.2.2 đã dùng pattern này — cập nhật `IsEStopActive` khi trạng thái thay đổi, Guard Engine chỉ đọc property, không gọi hardware mỗi lần evaluate.
-
-**Bảng 15.5 — RiskTier R0-R3 và ràng buộc tương ứng**
-
-| Tier | Quyền tối thiểu | Machine State cho phép | Xác nhận thêm | Ví dụ thao tác |
-|---|---|---|---|---|
-| R0 | Operator | Mọi state | Không | Start, Stop, xem alarm |
-| R1 | Operator | Mọi state (trừ Aborted) | Không (có guard popup) | Reset alarm, chế độ phục hồi |
-| R2 | Engineer | Idle / Held / Stopped | Không | Jog trục, dạy điểm teach |
-| R3 | Administrator | Idle / Held / Stopped | Xác nhận 2 bước | Force IO, can thiệp trực tiếp |
 
 > 💡 **Biến thể thiết kế khác — đánh đổi cần cân nhắc:** `RiskTier` enum cố định biên dịch sẵn (Code 15.7) không phải lựa chọn duy nhất. Một biến thể: lưu ma trận phân quyền Role×Screen trong database, nạp động lúc runtime — linh hoạt hơn cho khách hàng tự tinh chỉnh quyền theo từng dòng máy mà không cần build lại, đánh đổi là mất kiểm tra tại compile-time (gõ sai tên màn hình chỉ phát hiện lúc chạy, không phải lúc biên dịch). Một biến thể khác: thay vì kiểm tra `UserLevel` rải rác ở từng ViewModel/nút bấm (dễ quên gọi ở một chỗ), gắn `ReadLevel`/`WriteLevel` trực tiếp vào từng đối tượng dữ liệu (biến/tham số) và để chính đối tượng đó tự chặn khi bị ghi sai quyền — khó quên kiểm tra hơn vì logic nằm ngay tại nơi dữ liệu bị đổi, không phải tại nơi gọi. Cả hai biến thể đều hợp lệ; `Evaluate()` tập trung như Guard Engine dễ audit và test hơn, kiểm tra tại nguồn dữ liệu khó bị quên hơn — không có đáp án đúng tuyệt đối, chọn theo ưu tiên của từng dự án.
 
@@ -13480,6 +14249,13 @@ var motorSpeed = await RetryPolicy.ExecuteAsync(
     ct => _modbus.ReadHoldingRegistersAsync(1, 40001, 1, ct),
     maxRetries: 3, initialDelayMs: 100, operationName: "ReadMotorSpeed", ct: ct);
 ```
+
+> 📌 **`{ AlarmCode: >= 70000 }` là RELATIONAL PATTERN:** khớp property
+> `AlarmCode` bằng phép so sánh (`>=`, `>`, `<`, `<=`) thay vì bằng đúng một
+> giá trị. Cả cụm `AlarmException { AlarmCode: >= 70000 }` nghĩa là "`ex`
+> thuộc kiểu `AlarmException` VÀ có `AlarmCode` từ 70000 trở lên" (dải
+> Safety/Interlock theo quy ước đánh mã của chương này); `is not` phủ định
+> toàn bộ điều kiện đó.
 
 > ⚠️ **Cảnh báo:** Không retry lỗi liên quan đến Safety (alarm code 70000+). Nếu đọc trạng thái E-Stop thất bại, fail ngay — đừng giả định "chắc E-Stop OK, thử lại đọc sau". Principle: khi không chắc về trạng thái an toàn, assume unsafe.
 
@@ -14173,6 +14949,25 @@ public sealed class InMemoryEventPublisher : IEventPublisher
 }
 ```
 
+> 📌 **Hai cú pháp mới trong `IEventPublisher`/`InMemoryEventPublisher`:**
+> - **`in TEvent`** (khai báo `IDomainEventHandler<in TEvent>`): `TEvent` chỉ
+>   xuất hiện ở vị trí THAM SỐ ĐẦU VÀO (`HandleAsync` nhận `TEvent`, không trả
+>   về `TEvent`) — `in` báo compiler cho phép an toàn **chiều ngược lại** với
+>   trực giác thông thường: gán một `IDomainEventHandler<IDomainEvent>`
+>   (handler tổng quát, biết xử lý MỌI event) vào biến kiểu
+>   `IDomainEventHandler<MachineStarted>` (handler cụ thể hơn). Hợp lý vì một
+>   handler biết xử lý mọi `IDomainEvent` chắc chắn cũng xử lý được riêng
+>   `MachineStarted` — giống cách `Action<object>` gán được cho biến
+>   `Action<string>`. Không đánh dấu `in` thì không cho phép gán như vậy dù
+>   `MachineStarted : IDomainEvent`. Ít khi cần tự viết `in`/`out` — chỉ cần
+>   biết ý nghĩa khi đọc thấy trong interface có sẵn.
+> - **`(dynamic)handler`** (trong `PublishAsync`): ép biến sang kiểu
+>   `dynamic` — compiler bỏ qua kiểm tra kiểu lúc biên dịch, để dành việc tìm
+>   đúng method tới lúc chạy (khác mọi biến khác trong sách, luôn kiểm tra
+>   kiểu ngay lúc biên dịch). Cần ở đây vì `handler` chỉ biết là "một object
+>   nào đó implement `IDomainEventHandler<T>`" — không biết `T` cụ thể lúc
+>   biên dịch, nên không gọi thẳng `handler.HandleAsync(domainEvent)` được.
+
 Subscriber đăng ký bằng DI — không cần biết publisher tồn tại:
 
 ```csharp
@@ -14593,6 +15388,17 @@ mục "vision tool" hay "test method" mở rộng liên tục), attribute-driven
 tinh thần với `[MechanismUI]`/`[ParamView]` đã dùng cho UI xuyên suốt sách — mở rộng tự
 nhiên ra ngoài phạm vi UI:
 
+> 📌 **Vì sao class tên `DeviceCommandAttribute` nhưng dùng `[DeviceCommand(...)]`
+> (không có "Attribute"):** đây là quy ước ĐƯỢC COMPILER CÔNG NHẬN, không chỉ là
+> thói quen đặt tên như các quy ước khác trong sách. Luật: mọi attribute tự định
+> nghĩa PHẢI kế thừa từ `Attribute` và NÊN có tên kết thúc bằng "Attribute" —
+> nhưng khi áp dụng qua cú pháp `[...]`, được phép (và nên) bỏ hậu tố đó cho gọn.
+> Compiler tự thử tìm `DeviceCommand` rồi `DeviceCommandAttribute` — thấy cái sau
+> tồn tại thì dùng, nên `[DeviceCommand("Motion")]` và `[DeviceCommandAttribute
+> ("Motion")]` là MỘT, viết cách nào cũng đúng. Tất cả attribute có sẵn dùng
+> trong sách (`[Fact]`→`FactAttribute`, `[ParamView]`→`ParamViewAttribute`...)
+> đều theo đúng quy tắc ẩn hậu tố này.
+
 ```csharp
 [AttributeUsage(AttributeTargets.Class)]
 public sealed class DeviceCommandAttribute(string category) : Attribute
@@ -14641,9 +15447,10 @@ public sealed class CommandQueue
 }
 
 // Sử dụng: Normal chen sau nhưng Emergency luôn được lấy ra trước
+// (axis: IAxis đã có sẵn từ nơi khác, ví dụ inject qua constructor)
 var queue = new CommandQueue();
-queue.Enqueue(new MoveAbsCommand(axis: 0, targetMm: 500), priority: 10); // Normal
-queue.Enqueue(new EStopCommand(),                          priority: 0);  // Emergency
+queue.Enqueue(new MoveAbsCommand(axis, targetMm: 500, velocityMmPerSec: 50), priority: 10); // Normal
+queue.Enqueue(new EStopCommand(),                                            priority: 0);  // Emergency
 queue.TryDequeue(out var next);   // next = EStopCommand, dù enqueue sau
 ```
 
@@ -14797,6 +15604,17 @@ Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automati
 | **Health Monitor** | 13 | Device Abstraction | Kiểm tra Healthy/Degraded/Unhealthy theo chu kỳ |
 
 > 📌 **Lưu ý:** Repository phù hợp cho dữ liệu nghiệp vụ (Recipe, AlarmRecord, ProductionLog) cần persist. Không nên cố ánh xạ từng thanh ghi Modbus hoặc OPC UA Node thành Repository — đây là dữ liệu phần cứng thời gian thực, thuộc trách nhiệm của DAL/Driver layer (đã xây dựng ở Chương 13), không phải Repository pattern.
+>
+> 📌 **Quy ước đặt tên class theo pattern:** nhìn lại Bảng 16.4, hầu hết tên
+> class trong sách mang đúng hậu tố tên pattern nó hiện thực —
+> `BeckhoffAxisBuilder` (Factory/Builder), `OpcUaClientStrategy` (Strategy),
+> `HomeAxisCommand` (Command), `MachineStartedHandler` (Handler/Observer),
+> `CommandDispatcher` (Dispatcher). Khác `EventArgs`/`Attribute` (bắt buộc bởi
+> compiler đã nêu ở Chương 15, 16), đây là quy ước ĐỌC-HIỂU CHỦ ĐỘNG — không
+> ai bắt buộc, nhưng đặt tên đúng vai trò giúp người đọc nhận ra ngay class
+> đóng vai trò gì trong kiến trúc chỉ từ tên, không cần đọc hết thân class.
+> Khi tự thiết kế class mới, cân nhắc đặt tên theo đúng mẫu này nếu class đó
+> thực sự đóng vai trò một pattern đã học.
 
 ### 16.3.3  Nguyên tắc chọn Pattern — câu hỏi quyết định nhanh
 
@@ -14884,17 +15702,16 @@ tâm trạng: `May_DanNhan_V1`, `May_DanNhan_V2_Sua`, `May_Final`,
 `May_Final_CuoiCung`, `May_Final_CuoiCung_That`. Cách này *chạy được* —
 cho đến khi nó không còn chạy được nữa.
 
-Hãy hình dung một tình huống rất thật ở xưởng: anh Long, chị Mai và anh
-Phúc cùng phát triển một máy Pick & Place. Cả ba copy chung một thư mục
-dự án về máy mình "cho nhanh". Sáng thứ Hai, anh Long sửa lại thời gian
-chờ trong `SequenceEngine.cs` để khắc phục lỗi kẹt băng tải. Trưa cùng
-ngày, chị Mai — không biết anh Long vừa sửa — mở đúng file đó từ bản copy
-của mình (lấy từ tuần trước) để thêm bước kiểm tra cảm biến, rồi lưu đè
-lên thư mục dùng chung. Chiều đến, anh Phúc lấy bản "mới nhất" để build
-cho buổi chạy thử — và không hiểu vì sao lỗi kẹt băng tải sáng nay đã sửa
-lại... tái xuất hiện. Không ai làm gì sai cả. Vấn đề là ba người đang
-"quản lý phiên bản" bằng cách ghi đè lên nhau, và không ai biết chính xác
-ai đã đổi gì, lúc nào.
+Hãy hình dung một tình huống rất thật ở xưởng: Kỹ sư A, Kỹ sư B và Kỹ sư C
+cùng phát triển một máy Pick & Place. Cả ba copy chung một thư mục dự án về
+máy mình "cho nhanh". Sáng thứ Hai, Kỹ sư A sửa lại thời gian chờ trong
+`SequenceEngine.cs` để khắc phục lỗi kẹt băng tải. Trưa cùng ngày, Kỹ sư B —
+không biết Kỹ sư A vừa sửa — mở đúng file đó từ bản copy của mình (lấy từ
+tuần trước) để thêm bước kiểm tra cảm biến, rồi lưu đè lên thư mục dùng
+chung. Chiều đến, Kỹ sư C lấy bản "mới nhất" để build cho buổi chạy thử —
+và không hiểu vì sao lỗi kẹt băng tải sáng nay đã sửa lại... tái xuất hiện.
+Không ai làm gì sai cả. Vấn đề là ba người đang "quản lý phiên bản" bằng
+cách ghi đè lên nhau, và không ai biết chính xác ai đã đổi gì, lúc nào.
 
 Git giải quyết đúng nỗi đau này: nó không xoá thay đổi của ai, nó *hợp
 nhất* chúng, và luôn biết chính xác dòng nào do ai viết, lúc nào. Chương
@@ -15800,6 +16617,15 @@ public class AxisTests
 }
 ```
 
+> 📌 **Tiền tố `mock` trong tên biến (`mockDriver`, không phải `driver`):** quy
+> ước đặt tên riêng cho test — giúp người đọc code test phân biệt ngay object
+> nào là GIẢ (do Moq tạo, tự lập trình được hành vi) với object THẬT.
+> `Mock<T>` (kiểu của `mockDriver`) là đối tượng CẤU HÌNH — nơi gọi
+> `.Setup()`/`.Verify()` để khai báo/kiểm tra hành vi. `.Object`
+> (`mockDriver.Object`) mới là INSTANCE GIẢ thực sự hiện thực `IMotionDriver`
+> — thứ thật sự truyền vào `CreateAxis`, vì `Axis` chỉ nhận `IMotionDriver`,
+> không biết gì về `Mock<T>`.
+
 > 📌 **`SimulateConnect()` và `SimulateAlarm()` là gì?** Đây là helper method chỉ dùng trong test — đặt `Connected` hoặc `Alarm` về giá trị cần thiết mà không cần gọi hardware thật. Cách hiện thực tuỳ thiết kế class: có thể là `internal` method trên `Axis`, có thể dùng `InternalsVisibleTo`, hoặc tách `AxisState` thành object riêng inject vào. Điểm mấu chốt: **test không gọi phần cứng thật**.
 
 ### 18.2.3  `[Theory]` + `[InlineData]` — data-driven test
@@ -15835,6 +16661,25 @@ public void TryMoveAbs_KiemTraGioiHanVelocity(double velocity, bool expectedOk)
 ```
 
 Mỗi dòng `[InlineData(...)]` là một test case độc lập — Visual Studio Test Explorer hiển thị riêng từng dòng. Thêm case biên mới chỉ cần thêm 1 dòng `InlineData`, không sửa code test.
+
+> 📌 **Bốn dòng `.Setup(...)` dùng thư viện Moq — đọc kỹ vì cú pháp khác mọi
+> lambda đã gặp:**
+> 1. `Mock<IMotionDriver>` tạo một "driver giả" hiện thực interface
+>    `IMotionDriver`, không gọi phần cứng thật — `Setup()` quyết định nó trả
+>    về gì khi bị gọi.
+> 2. Lambda trong `Setup(d => d.TryMoveAbs(...))` KHÔNG được thực thi như
+>    lambda bình thường (Chương 4) — Moq chỉ ĐỌC cấu trúc lambda này để biết
+>    "method nào, tham số nào" cần theo dõi, rồi vứt bỏ lambda. Vì vậy viết
+>    được cả câu lệnh trông như "gọi thật" mà không hardware nào chạy cả.
+> 3. `It.IsAny<int>()` là MATCHER — nghĩa là "khớp với bất kỳ giá trị `int`
+>    nào", dùng khi test không quan tâm giá trị cụ thể, chỉ cần đúng kiểu
+>    tham số.
+> 4. `It.Ref<string>.IsAny` (không phải `It.IsAny<string>()`) — vì tham số
+>    cuối là `out string`, C# không cho phép truyền một lời gọi method
+>    (`It.IsAny<T>()`) vào chỗ cần `out`/`ref`. Moq giải quyết bằng cú pháp
+>    riêng `It.Ref<T>.IsAny` (một PROPERTY, không phải method) chỉ dùng cho
+>    vị trí `out`/`ref`. Cứ thấy tham số `out`/`ref` trong `Setup`, nhớ dùng
+>    `It.Ref<T>.IsAny`.
 
 > 💡 **Mẹo thực chiến — data-driven test cho bảng transition:** `[Theory]` + `[InlineData]` là công cụ lý tưởng nhất để test state machine. Mỗi transition (từ state nào + lệnh gì → sang state nào) là một dòng `InlineData`. Chương 12 đã áp dụng đúng cách này với PackML (Code 12.7b) — mục 18.5 quay lại phân tích pattern đó.
 
@@ -16620,7 +17465,8 @@ giữ một phần và chờ phần còn lại — cả hai đứng yên vĩnh v
 ```cmd
 dotnet-dump analyze MeoFrame_2026-07-05.dmp
 > threads
-> clrstack -a 12    # xem stack + biến cục bộ của thread 12 cụ thể
+> setthread 12      # chuyển context sang thread 12 cụ thể
+> clrstack -a       # xem stack + biến cục bộ của thread đang chọn
 > dumpheap -stat    # object nào đang chiếm memory nhiều nhất
 ```
 
@@ -16694,7 +17540,7 @@ không cần nữa**:
 
 | Triệu chứng | Lệnh trong `dotnet-dump analyze` |
 |---|---|
-| Nghi deadlock | `threads`, rồi `clrstack -a <id>` cho từng thread ở trạng thái Wait |
+| Nghi deadlock | `threads`, rồi `setthread <id>` + `clrstack -a` cho từng thread ở trạng thái Wait |
 | Nghi memory leak | `dumpheap -stat`, so sánh hai dump cách nhau vài giờ |
 | Object nào đang giữ tham chiếu | `gcroot <địa_chỉ_object>` — truy ngược chuỗi tham chiếu tới root |
 
@@ -17924,6 +18770,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **DispatcherTimer** — Timer WPF chạy trên UI thread qua `Dispatcher`, tương đương `System.Windows.Forms.Timer` ở Chương 8; dùng để throttle cập nhật UI theo nhịp cố định (ví dụ đọc snapshot dữ liệu thiết bị mỗi 100ms) thay vì cập nhật trực tiếp mỗi khi có dữ liệu mới ở tần suất cao. `Priority` chỉ set được qua constructor, không set được sau khi khởi tạo. (→ xem Dispatcher, WinForms Timer)
 *Xuất hiện đầu tiên: Chương 9, mục 9.3.2.*
 
+**dynamic** — Kiểu C# báo compiler bỏ qua kiểm tra kiểu lúc biên dịch, để dành việc tìm đúng method/property tới lúc chạy (khác mọi kiểu khác trong sách, luôn kiểm tra ngay lúc biên dịch); gọi sai method/tham số trên biến `dynamic` không báo lỗi build mà crash `RuntimeBinderException` lúc chạy. Dùng khi kiểu thật của object chỉ biết được lúc chạy (ví dụ dispatch handler theo kiểu generic ẩn danh). (→ xem generic)
+*Xuất hiện đầu tiên: Chương 16, mục 16.1.2.*
+
 **DynamicResource** — Cách tra `ResourceDictionary` phân giải lúc runtime và tự cập nhật khi resource đổi (khác `StaticResource` chỉ phân giải một lần lúc nạp XAML); cần thiết khi máy hỗ trợ đổi theme Light/Dark lúc đang chạy, nhưng tốn hiệu năng hơn nên HMI ưu tiên `StaticResource` cho phần lớn brush/style. (→ xem ResourceDictionary (WPF))
 *Xuất hiện đầu tiên: Chương 9, mục 9.3.3.*
 
@@ -18066,6 +18915,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **Force I/O (Force IO)** — Cơ chế phần mềm ứng dụng C# tạm ghi đè (đóng băng) giá trị một tín hiệu IO ở mức cố định, bỏ qua logic điều khiển thường — công cụ chẩn đoán mạnh nhưng nguy hiểm nếu quên gỡ. Yêu cầu 5 lớp bảo vệ: quyền Administrator, xác nhận 2 bước, alarm liên tục nhắc nhở trong lúc còn force, tự động gỡ (auto-unforce) theo timeout, và log audit đầy đủ. Khác Muting (cơ chế của Safety PLC, không phải C#). (→ xem Muting, RiskTier)
 *Xuất hiện đầu tiên: Chương 15 (cuối chương, callout "Tai nạn kinh điển: Quên gỡ Force IO").*
 
+**Find All References (Shift+F12)** — Lệnh Visual Studio liệt kê mọi vị trí trong solution có gọi/dùng một symbol (class, method, enum, field...); giá trị nhất khi đọc code không tự viết — suy luận ý nghĩa một định danh khó hiểu (viết tắt, ngôn ngữ khác) qua *ngữ cảnh sử dụng* thay vì qua tên gọi. (→ xem Go To Definition (F12))
+*Xuất hiện đầu tiên: Chương 2, mục 2.4.*
+
 **Function Block (FB) / Function (FC) / UDT / Data Block (DB)** — Bốn khối xây dựng chương trình PLC (IEC 61131-3), ánh xạ sang C# theo Chương 6: **FB** (Function Block, có Instance Data giữ trạng thái giữa các lần gọi) ≈ `class` có field `private`; **FC** (Function, không state) ≈ `static method`; **UDT** (User-Defined Type) ≈ `struct`/`record struct` (value semantics); **DB** (Data Block, vùng nhớ) ≈ `class`/`record` có thêm method/validation. Lưu ý: **FC** ở đây (PLC Function) khác hoàn toàn **FC** trong ngữ cảnh Modbus (Function Code, ngay bên dưới) — cùng viết tắt, hai nghĩa không liên quan. (→ xem class, struct)
 *Xuất hiện đầu tiên: Chương 6, mục 6.2.3.*
 
@@ -18101,11 +18953,17 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **GC pressure** (áp lực GC) — Tình trạng cấp phát object trên heap quá thường xuyên (ví dụ `new List`, ghép chuỗi log mỗi tick) khiến GC phải chạy nhiều, gây jitter thời gian thực. Giảm bằng tái sử dụng buffer, dùng `struct`, pre-allocate collection. (→ xem Garbage Collector)
 *Xuất hiện đầu tiên: Chương 3, mục 3.1.2.*
 
+**Genealogy** (truy xuất nguồn gốc) — Chuỗi liên kết Lot/số serial qua từng công đoạn sản xuất, cho phép lần lại lịch sử đầy đủ của một sản phẩm khi phát hiện lỗi sau này; một trong các khái niệm MES cơ bản. (→ xem MES, Lot)
+*Xuất hiện đầu tiên: Chương 14, mục 14.2.7.*
+
 **GDI+** (Graphics Device Interface Plus) — Hệ đồ hoạ 2D nền tảng của WinForms (`System.Drawing`); cung cấp `Graphics`, `Pen`, `Brush` để vẽ tuỳ chỉnh lên control qua sự kiện `Paint`/`OnPaint`. Dùng khi control chuẩn không đáp ứng đủ yêu cầu hiển thị (đèn báo, sơ đồ thiết bị, biểu đồ tự vẽ). (→ xem Double Buffering, Owner-Drawn Controls)
 *Xuất hiện đầu tiên: Chương 8, mục 8.2.1.*
 
 **GEM (Generic Equipment Model — SEMI E30)** — Tầng hành vi trong bộ chuẩn SECS/GEM: định nghĩa những gì thiết bị phải làm, không chỉ cách giao tiếp; bao gồm Communication State Machine, Control State Machine (OFF-LINE / ON-LINE LOCAL / ON-LINE REMOTE), Event Reporting qua S6F11, Alarm Management qua S5F1, và Process Program (recipe upload qua S7). Bắt buộc trong nhà máy bán dẫn, ngày càng phổ biến trong SMT. (→ xem SECS-II, HSMS, CEID, S6F11)
 *Xuất hiện đầu tiên: Chương 14, mục 14.2.5.*
+
+**Go To Definition (F12)** — Lệnh Visual Studio nhảy thẳng tới nơi một symbol được khai báo; **Peek Definition** (Alt+F12) làm tương tự nhưng mở trong cửa sổ nổi, không rời dòng đang đọc. Dùng để nắm *hình dạng* một class/enum/method (bao nhiêu thành viên, method gì) khi đọc code không tự viết, ngay cả khi không hiểu tên gọi. (→ xem Find All References (Shift+F12))
+*Xuất hiện đầu tiên: Chương 2, mục 2.4.*
 
 **Glance Model** — Mô hình thiết kế HMI cho operator không nhìn màn hình liên tục (chủ yếu thao tác với máy vật lý, có thể phụ trách nhiều máy cùng lúc): alarm phải nổi bật từ xa (≥3m, kèm blink cho Critical), trạng thái máy nhận biết được trong dưới 0.5 giây (màu nền toàn khối thay vì chỉ đổi màu chữ), và âm thanh bổ trợ hình ảnh trong môi trường ồn. (→ xem Alarm Banner, High Performance HMI)
 *Xuất hiện đầu tiên: Chương 10, mục 10.1.4.*
@@ -18113,7 +18971,7 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **Guard Engine** — Thành phần tập trung hoá logic kiểm tra tiền điều kiện trước thao tác nguy hiểm; đánh giá 3 lớp theo thứ tự: trạng thái máy (PackML state) → quyền người dùng (UserLevel) → điều kiện phần cứng (ISafetyInput). Trả về GuardResult (Allowed/Denied + lý do) thay vì throw exception, để UI hiển thị giải thích cho operator. (→ xem RiskTier)
 *Xuất hiện đầu tiên: Chương 15, mục 15.2.3.*
 
-**generic** (kiểu tổng quát, `<T>`) — Cơ chế viết class/method làm việc với "một kiểu `T` bất kỳ do nơi gọi chỉ định" mà vẫn an toàn kiểu, không boxing, không ép kiểu (`List<T>`, `Result<T>`, `Queue<DeviceCommand>`). Ràng buộc nâng cao (`where T : ...`), covariance/contravariance: Chương 5. (→ xem Result<T>)
+**generic** (kiểu tổng quát, `<T>`) — Cơ chế viết class/method làm việc với "một kiểu `T` bất kỳ do nơi gọi chỉ định" mà vẫn an toàn kiểu, không boxing, không ép kiểu (`List<T>`, `Result<T>`, `Queue<DeviceCommand>`). Ràng buộc nâng cao (`where T : ...`): Chương 13; covariance/contravariance (`in`/`out`): Chương 16. (→ xem Result<T>)
 *Xuất hiện đầu tiên: Chương 4, mục 4.5 (đã dùng collection generic từ Chương 3).*
 
 **Git** — Hệ thống quản lý phiên bản phân tán: mỗi lần "commit" là một ảnh chụp (snapshot) mã nguồn kèm tác giả, thời gian và thông điệp; phần lớn thao tác (commit, xem lịch sử, tạo nhánh, so sánh) chạy hoàn toàn offline, chỉ cần mạng khi đồng bộ với remote repository. Thay thế cách quản lý phiên bản thủ công kiểu sao chép thư mục (`May_Final_V2`) bằng khả năng hợp nhất thay đổi của nhiều người thay vì ghi đè lên nhau. (→ xem Repository, Branch, Tag)
@@ -18272,6 +19130,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **Logical Tree** — Cây phản ánh cấu trúc XAML bạn viết ra (`Window → Grid → Button`); dùng cho resource lookup (`StaticResource`), kế thừa `DataContext`, và đường đi của Routed Event. Khác Visual Tree (cây thật sự được render, bao gồm cả phần tử do `ControlTemplate` sinh ra). (→ xem Visual Tree, DataContext)
 *Xuất hiện đầu tiên: Chương 9, mục 9.1.2.*
 
+**Lot** — Mã định danh một lô sản phẩm được xử lý/theo dõi cùng nhau qua các công đoạn sản xuất; khái niệm MES cơ bản, không phải mọi hệ MES đều dùng — tuỳ ngành và quy mô nhà máy. (→ xem MES, Genealogy, Work Order)
+*Xuất hiện đầu tiên: Chương 14, mục 14.2.7.*
+
 **Ladder Logic (Ngôn ngữ bậc thang — IEC 61131-3)** — Ngôn ngữ lập trình PLC biểu diễn logic bằng tiếp điểm (thường mở/đóng) nối tiếp/song song, thay thế mạch rơ-le vật lý bằng phần mềm. Trực quan với kỹ sư điện-tự động hoá; xuất sắc cho interlock, safety logic, I/O điều khiển trực tiếp và được chứng nhận an toàn. Hạn chế với thuật toán phức tạp, dữ liệu cấu trúc lớn và tích hợp mạng. (→ xem Structured Text, Scan Cycle)
 *Xuất hiện đầu tiên: Chương 6, mục 6.3.1.*
 
@@ -18294,11 +19155,14 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **MVVM (Model-View-ViewModel)** — Biến thể của MVP (Chương 8) dành cho nền tảng có Binding Engine mạnh (WPF, WinUI, MAUI): View bind trực tiếp vào ViewModel qua `DataContext`, ViewModel chỉ cần đổi giá trị property (`INotifyPropertyChanged`) — không cần "đẩy" dữ liệu vào View thủ công như Presenter. Nguyên tắc vàng "View không gọi Model trực tiếp" của MVP vẫn giữ nguyên. (→ xem MVP, Binding (WPF), INotifyPropertyChanged)
 *Xuất hiện đầu tiên: Chương 9, mục 9.2.*
 
-**MES (Manufacturing Execution System)** — Hệ thống quản lý sản xuất cấp trên máy: nhận lệnh sản xuất, phân phối recipe, thu thập dữ liệu truy xuất nguồn gốc — nằm giữa máy/PLC (thực thi) và ERP (Enterprise Resource Planning — quản lý nguồn lực toàn doanh nghiệp, cấp cao hơn MES). Máy giao tiếp với MES qua các giao thức Chương 14 (OPC UA, SECS/GEM...). (→ xem GEM (Generic Equipment Model — SEMI E30), OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể))
+**MES (Manufacturing Execution System)** — Hệ thống quản lý sản xuất cấp trên máy: nhận lệnh sản xuất, phân phối recipe, thu thập dữ liệu truy xuất nguồn gốc — nằm giữa máy/PLC (thực thi) và ERP (Enterprise Resource Planning — quản lý nguồn lực toàn doanh nghiệp, cấp cao hơn MES). Máy giao tiếp với MES qua các giao thức Chương 14 (OPC UA, SECS/GEM cho MES cấp bán dẫn/SMT; REST API/spool-and-forward cho MES quy mô nhỏ hơn — mục 14.2.7). (→ xem GEM (Generic Equipment Model — SEMI E30), OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể), Lot, Work Order, Genealogy)
 *Xuất hiện đầu tiên: Chương 1 (mở đầu chương).*
 
 **MeoFrame** — Tên bí danh dùng xuyên suốt sách cho mọi ví dụ code, namespace (`MeoFrame.Domain`, `MeoFrame.Application`, `MeoFrame.Infrastructure`...) và tình huống thực chiến — placeholder đại diện cho "dự án automation thực tế của bạn", không phải tên một framework cố định duy nhất. Đây là một TÊN dùng chung, không phải một codebase duy nhất khớp nhau tuyệt đối giữa mọi chương: mỗi chương có thể dùng MeoFrame để mô phỏng một máy khác nhau (Pick & Place, Conveyor, Vision Inspection...), và cấu trúc namespace mỗi ví dụ giữ đúng theo khái niệm đang minh hoạ tại chỗ đó — không nên kỳ vọng ráp mọi đoạn code MeoFrame trong sách thành một solution build được nguyên khối. Mục đích của tên gọi thống nhất là giúp người đọc không phải làm quen bối cảnh mới mỗi chương, không phải cam kết một kiến trúc bất biến xuyên suốt như các ví dụ "xây incrementally một ứng dụng" của một số sách lập trình khác. Chương 1 cố ý chưa dùng tên này (dùng cách gọi chung "phần mềm điều khiển máy" khi khái niệm framework mẫu chưa cần thiết) — Chương 2, mục 2.2 là nơi giới thiệu chính thức lần đầu.
 *Xuất hiện đầu tiên: Chương 2, mục 2.2.*
+
+**Matcher (`It.IsAny<T>()` / `It.Ref<T>.IsAny`)** — Placeholder trong `Setup(...)` của Moq báo "khớp với bất kỳ giá trị nào của kiểu `T`", dùng khi test không quan tâm giá trị cụ thể của một tham số. `It.IsAny<T>()` dùng cho tham số thường; `It.Ref<T>.IsAny` (một property, không phải method) bắt buộc dùng cho vị trí tham số `out`/`ref` vì C# không cho truyền lời gọi method vào chỗ đó. (→ xem Mock\<T\>, Moq)
+*Xuất hiện đầu tiên: Chương 18, mục 18.2.3.*
 
 **Mock\<T\>** — Kiểu của Moq để tạo một test double từ interface `T`: các method trả giá trị mặc định (`null`/`false`) cho đến khi được cấu hình qua `Setup(...).Returns(...)`; sau khi test chạy, gọi `Verify(...)` để xác nhận method đã được gọi đúng số lần với tham số đúng. Dùng khi cần assert về *tương tác* (method có được gọi không?); nếu chỉ cần trả dữ liệu không cần verify, dùng Stub. (→ xem Moq, Stub)
 *Xuất hiện đầu tiên: Chương 18, mục 18.3.2.*
@@ -18822,6 +19686,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **WinForms Timer** (`System.Windows.Forms.Timer`) — Timer gửi thông điệp `WM_TIMER` vào chính message loop của luồng UI; tick bị trì hoãn nếu UI thread đang bận xử lý sự kiện khác — **không phải** timer thời gian thực, độ trễ có thể lệch hàng chục mili-giây tuỳ tải hệ thống. Đủ cho làm mới giao diện (đồng hồ, poll trạng thái), không dùng cho việc cần nhịp chính xác. (→ xem Message Loop, Determinism)
 *Xuất hiện đầu tiên: Chương 8, mục 8.2.4.*
+
+**Work Order / Production Order** — Lệnh sản xuất MES giao cho máy: sản xuất gì, số lượng bao nhiêu, dùng recipe nào; một trong các khái niệm MES cơ bản, không phải mọi hệ MES đều dùng đủ. (→ xem MES, Lot)
+*Xuất hiện đầu tiên: Chương 14, mục 14.2.7.*
 
 **WPF (Windows Presentation Foundation)** — Nền tảng UI desktop của .NET theo mô hình retained-mode: mô tả cấu trúc giao diện qua XAML, hệ thống layout/render tự tính toán và vẽ lại khi cần — khác WinForms/GDI+ (immediate-mode, code ra lệnh vẽ trực tiếp). Mạnh về data binding, style/template, animation; phù hợp màn hình HMI phức tạp hơn là hệ thống kế thừa (Chương 8). (→ xem Binding (WPF), MVVM, Dependency Property (DP))
 *Xuất hiện đầu tiên: Chương 9 (tiêu đề chương).*

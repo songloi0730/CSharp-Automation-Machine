@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260724</title>
+<title>C# cho Automation Machine — v1.0.0.260809</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -298,6 +298,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#22-cu-trúc-solutionproject-chun-công-nghip">2.2 Cấu trúc Solution/Project chuẩn công nghiệp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#23-debug-cơ-bn-breakpoint-watch-immediate-window">2.3 Debug cơ bản: Breakpoint, Watch, Immediate Window</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#24-đc-code-ngưi-khác-vit-ln-theo-logic-không-cn-đc-ht-tên">2.4 Đọc code người khác viết — lần theo logic không cần đọc hết tên</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#25-khi-code-thc-t-không-ging-ví-d-trong-sách">2.5  Khi code thực tế không giống ví dụ trong sách</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-2">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-2">Lỗi thường gặp</a></li>
   <li><a href="#chương-3-c-cơ-bn-cho-k-sư-automation">Chương 3: C# cơ bản cho kỹ sư Automation</a></li>
@@ -472,7 +473,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260724</td>
+<td>v1.0.0.260809</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -1453,6 +1454,103 @@ ngôn ngữ khác — chúng giá trị y hệt với code tiếng Việt/tiến
 ai nhớ rõ lý do thiết kế. Đây là kỹ năng đọc code nói chung, không riêng
 tình huống rào cản ngôn ngữ.</p>
 </blockquote>
+<h2 id="25-khi-code-thc-t-không-ging-ví-d-trong-sách">2.5  Khi code thực tế không giống ví dụ trong sách</h2>
+<p>Sách dạy cách viết code <strong>nên</strong> như thế nào — class/interface rõ ràng,
+<code>async</code>/<code>await</code>, dependency injection, đặt tên theo quy ước chuẩn. Code thực
+tế bạn kế thừa (máy vendor, dự án nhiều năm tuổi) rất có thể <strong>không</strong> viết
+như vậy — không phải vì sách sai, mà vì code đó viết trước khi các quy ước
+này phổ biến, hoặc do áp lực thời gian khi triển khai. Mục này không dạy quy
+ước mới — <strong>quy ước sạch (PascalCase, DI, async/await...) sách đã dạy vẫn
+là thứ bạn nên viết theo khi thêm code mới</strong>. Mục này dạy cách <strong>nhận ra</strong>
+những dạng cũ tương đương để đọc hiểu, không nhầm chúng với thứ hoàn toàn
+xa lạ.</p>
+<h3>Bảng đối chiếu: dạng cũ hay gặp ↔ khái niệm đã học</h3>
+<p><strong>Bảng 2.5 — Nhận diện pattern cũ qua khái niệm hiện đại tương ứng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dạng cũ hay gặp trong code kế thừa</th>
+<th>Khái niệm hiện đại tương ứng (đã/sẽ học)</th>
+<th>Vì sao code cũ viết vậy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>XxxManager.GetInstance()</code> gọi khắp nơi (Singleton tự chế)</td>
+<td>Service đăng ký qua DI container (Chương 7)</td>
+<td>Trước khi DI phổ biến, singleton là cách duy nhất &quot;chia sẻ 1 instance&quot; mà không cần truyền tham số qua nhiều tầng</td>
+</tr>
+<tr>
+<td><code>while (true) { ...; Thread.Sleep(ms); }</code> làm vòng lặp chính</td>
+<td>Vòng quét/scan cycle (đã học Bảng 3.1, Chương 6)</td>
+<td>Cùng một Ý TƯỞNG — &quot;đọc trạng thái + hành động theo chu kỳ cố định&quot; — chỉ khác công cụ viết; <code>async</code>/<code>await</code> (Chương 5) là cách hiện đại hơn để làm việc tương tự mà không chặn luồng</td>
+</tr>
+<tr>
+<td>Tham số truyền qua chuỗi/Dictionary (<code>SetParamBool(&quot;TênThamSố&quot;, giá_trị)</code>)</td>
+<td>Class Config/Recipe có kiểu rõ ràng (mục 3.6, Chương 13)</td>
+<td>Không cần build lại khi thêm tham số mới — đánh đổi lấy việc gõ sai tên chuỗi không bị compiler bắt lỗi</td>
+</tr>
+<tr>
+<td><code>enum</code> viết <code>ALL_CAPS</code> kèm tiền tố kiểu (<code>STATE_MANUAL_RUN</code>, <code>STATE_AUTO_RUN</code>)</td>
+<td><code>enum</code> <code>PascalCase</code> không tiền tố (mục 3.6.1, Chương 4)</td>
+<td>Thói quen mang từ ngôn ngữ C: macro/hằng số trong C không có khái niệm &quot;thuộc về một kiểu&quot; nên phải thêm tiền tố (<code>STATE_</code>) để tránh trùng tên toàn cục. C# cho phép viết <code>AutoState.AutoRun</code> (chấm rõ thuộc <code>enum</code> nào) nên không cần tiền tố nữa — <strong>cùng nhu cầu, khác công cụ giải quyết</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Nguyên tắc dùng bảng trên:</strong> nhận ra tương đương để <strong>đọc hiểu</strong> code
+sẵn có, không phải để <strong>bắt chước</strong> khi viết thêm code mới. Khi bạn thêm
+hàm/class mới vào một dự án đầy Singleton, vẫn nên cân nhắc viết theo
+hướng inject dependency thay vì tạo thêm một <code>GetInstance()</code> nữa — trộn
+lẫn 2 phong cách trong cùng dự án đã đủ khó đọc, nhưng &quot;chữa&quot; hết dự án
+cũ trong ngày đầu vào làm là việc không nên tự ý làm nếu chưa được giao.</p>
+</blockquote>
+<h3>Khi cả file cấu hình cũng dùng ngôn ngữ khác, không chỉ tên biến</h3>
+<p>Trường hợp khó nhất: không phải chỉ tên biến C# khó đọc, mà chính <strong>tên
+trường trong file cấu hình</strong> (XML/INI/JSON định nghĩa IO, recipe...) cũng
+viết bằng ngôn ngữ bạn không đọc được. Go To Definition/Find All References
+(mục 2.4) không giúp được ở đây — tên trường trong file cấu hình chỉ là một
+<strong>chuỗi ký tự</strong>, không phải symbol C# mà Visual Studio hiểu và lần theo được.</p>
+<p>Cách làm: dùng <strong>Find in Files</strong> (<strong>Ctrl+Shift+F</strong>) tìm chính chuỗi đó
+(copy-paste nguyên văn, không cần đọc hiểu) trong toàn bộ code C#. Vì file
+cấu hình luôn phải được một đoạn code nào đó ĐỌC (parse) mới dùng được, tìm
+đúng chuỗi sẽ dẫn tới đoạn code đọc trường đó — nhìn vào <strong>tên biến C# được
+gán từ chuỗi đó</strong> (nếu đã đặt tên tiếng Anh/Việt) hoặc <strong>cách giá trị được
+dùng tiếp theo</strong> (so sánh với gì, hiển thị lên đâu, điều khiển IO nào) để
+suy luận ý nghĩa, giống hệt cách dùng ngữ cảnh đã học ở mục 2.4.</p>
+<h3>Đừng tin comment hay tên hàm tuyệt đối — chỉ hành vi mới đáng tin</h3>
+<p>Comment và cả tên hàm <strong>có thể sai</strong>: một hàm được copy-paste từ hàm khác
+rồi đổi vài dòng logic bên trong nhưng quên đổi tên/comment, hoặc comment
+viết đúng lúc mới code nhưng logic đã đổi nhiều lần sau đó mà không ai cập
+nhật lại comment. Gặp một comment ghi &quot;chế độ tự động&quot; gắn trên một hằng số
+mà hành vi thực tế lại là chế độ tay không phải chuyện hiếm trong code
+nhiều năm tuổi, nhiều người sửa.</p>
+<blockquote>
+<p>⚠️ <strong>Quy tắc:</strong> Khi một quyết định QUAN TRỌNG (đặc biệt liên quan an
+toàn) dựa trên việc hiểu đúng ý nghĩa một biến/hàm, đừng dừng lại ở việc
+đọc tên hay comment — xác nhận lại bằng debugger (mục 2.3, 2.4): đặt
+breakpoint, chạy qua đúng tình huống, xem giá trị/hành vi THỰC TẾ có khớp
+với điều tên gọi/comment tuyên bố hay không. Tên gọi và comment là gợi ý
+tốt để bắt đầu tìm hiểu, không phải bằng chứng cuối cùng.</p>
+</blockquote>
+<h3>Đọc một file rất dài (hàng nghìn dòng)</h3>
+<p>Code kế thừa nhiều năm tuổi có thể dồn cả nghìn dòng vào một file/class
+duy nhất — đọc từ trên xuống dưới không khả thi. Hai công cụ Visual Studio
+giúp định hướng nhanh:</p>
+<ul>
+<li><strong>Go To All</strong> (<strong>Ctrl+T</strong>, hoặc <strong>Ctrl+,</strong>) — gõ một phần tên method/class/
+field bất kỳ, nhảy thẳng tới đó trong toàn bộ solution — không cần biết
+nó nằm ở dòng nào hay file nào.</li>
+<li><strong>Thu gọn (Outlining)</strong>: <strong>Ctrl+M, Ctrl+O</strong> thu gọn toàn bộ method/class về
+một dòng tiêu đề, cho cái nhìn tổng quan &quot;file này có những method gì&quot; mà
+không cần cuộn qua hàng nghìn dòng thân hàm. <strong>Ctrl+M, Ctrl+L</strong> mở lại tất cả.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến:</strong> Với file khổng lồ, đừng cố &quot;đọc hiểu hết file&quot; —
+hãy bắt đầu từ ĐÚNG một hành vi cụ thể cần hiểu (ví dụ &quot;khi bấm nút Start
+thì điều gì xảy ra&quot;), dùng Find All References lần ngược từ sự kiện Click
+đó, chỉ mở rộng đọc những method thực sự nằm trên đường đi đó. Hiểu 5%
+file liên quan trực tiếp tới việc cần làm còn giá trị hơn nhiều so với cố
+đọc lướt 100% mà không đọng lại gì.</p>
+</blockquote>
 <h2 id="tng-kt-chương-2">Tổng kết chương</h2>
 <ul>
 <li><strong>.NET 9 và Visual Studio 2022 Community</strong> là chuẩn dùng xuyên suốt
@@ -1475,6 +1573,11 @@ debug mà không cần sửa code nguồn.</li>
 lần theo logic code người khác viết bằng cách xem <em>hình dạng định nghĩa</em>
 và <em>ngữ cảnh sử dụng</em>, không phụ thuộc việc đọc hiểu tên gọi — kết hợp
 debugger để suy luận ý nghĩa qua hành vi thực tế.</li>
+<li><strong>Code thực tế kế thừa có thể trông rất khác ví dụ trong sách</strong> (Singleton
+tự chế thay DI, vòng lặp <code>Thread.Sleep</code> thay <code>async</code>/<code>await</code>, <code>enum</code>
+<code>ALL_CAPS</code> thay <code>PascalCase</code>) — nhận ra tương đương để đọc hiểu, không
+đổi quy ước sạch đã học khi tự viết code mới; tên gọi/comment có thể sai,
+luôn xác nhận lại bằng hành vi thực tế nếu quyết định quan trọng.</li>
 </ul>
 <h2 id="li-thưng-gp-2">Lỗi thường gặp</h2>
 <p><strong>Lỗi 1: Nhét toàn bộ code vào một project WinForms/WPF duy nhất</strong></p>
@@ -14727,6 +14830,123 @@ alarm đó — nếu chỉ thấy đúng một kết quả (chỗ khai báo), ng
 <li><strong>Recipe / PPID</strong> — tham số quy trình cho một sản phẩm cụ thể (đã học ở Chương 13) — trong ngữ cảnh SECS/GEM thường gọi là PPID (Process Program ID).</li>
 <li><strong>Genealogy</strong> (truy xuất nguồn gốc) — chuỗi liên kết Lot/số serial qua từng công đoạn, cho phép lần lại lịch sử đầy đủ của một sản phẩm khi phát hiện lỗi sau này.</li>
 </ul>
+<h3>14.2.8  Giao thức MES độc quyền kiểu &quot;cổng lệnh&quot; — nhận diện khi gặp trong nhà máy thật</h3>
+<p>Không phải nhà máy nào cũng có SECS/GEM chuẩn hay REST API sạch như mục 14.2.7. Rất nhiều
+MES đã chạy 10-15 năm trong các nhà máy lắp ráp/gia công lớn dùng một kiểu giao thức tự chế
+rất phổ biến trên thực địa nhưng gần như không được nhắc tới trong sách vở: <strong>một endpoint
+HTTP POST duy nhất đóng vai &quot;cổng lệnh&quot;</strong>, phân biệt hành động bằng một mã lệnh (số hoặc
+chuỗi) thay vì nhiều resource endpoint kiểu REST. Mục này KHÔNG dạy để bắt chước khi thiết kế
+giao thức mới — thiết kế mới nên theo kiểu resource/DTO có kiểu như đã học — mà dạy cách
+<strong>nhận diện và bọc an toàn</strong> khi máy phải tích hợp với một hệ MES kiểu này đã tồn tại sẵn,
+đúng tinh thần &quot;đọc code cũ thật&quot; ở mục 2.5, áp dụng cho hình dạng giao thức thay vì hình dạng
+code C#.</p>
+<p><strong>Bảng 14.9c — Ba lớp lồng nhau trong một request &quot;cổng lệnh&quot;</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lớp</th>
+<th>Vai trò</th>
+<th>Dấu hiệu nhận diện</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Vỏ giao vận (transport envelope)</td>
+<td>Loại thông điệp: đăng nhập, lỗi, dữ liệu bình thường...</td>
+<td>Một trường số nguyên nhỏ (<code>Cmd</code>/<code>Command</code>/<code>Opcode</code>) tra theo bảng enum riêng, KHÔNG phải HTTP status code</td>
+</tr>
+<tr>
+<td>Token phiên</td>
+<td>Danh tính phiên làm việc, đính kèm mọi lệnh sau đăng nhập</td>
+<td>Một chuỗi GUID/hash trả về sau login, phải gửi lại ở mọi request tiếp theo</td>
+</tr>
+<tr>
+<td>Payload nghiệp vụ</td>
+<td>Nội dung nghiệp vụ thật</td>
+<td>Nằm trong MỘT TRƯỜNG CHUỖI (không phải object JSON lồng bình thường) — phải deserialize hai lần</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Bẫy hay gặp nhất — JSON lồng trong chuỗi (double-encoded JSON):</strong> payload nghiệp vụ
+không phải một object JSON con bình thường (<code>&quot;data&quot;: {...}</code>) mà là một CHUỖI chứa JSON đã
+serialize sẵn (<code>&quot;data&quot;: &quot;{\&quot;Sn\&quot;:\&quot;ABC123\&quot;}&quot;</code>). Deserialize một lần chỉ ra một <code>string</code>,
+không ra được object — phải deserialize thêm lần nữa trên chính chuỗi đó. Lý do lịch sử: vỏ
+giao vận được thiết kế tổng quát để tái sử dụng cho hàng chục loại nghiệp vụ khác nhau, nên
+nội dung bên trong buộc phải giữ dạng &quot;chuỗi thô&quot; thay vì định kiểu cứng ngay từ vỏ ngoài.</p>
+</blockquote>
+<pre><code class="language-csharp">public sealed record GateEnvelope(int Opcode, string? Token, string Category, string PayloadJson);
+
+public sealed record RouteCheckPayload(string LotId, string StationCode);
+public sealed record RouteCheckResult(string Result); // &quot;OK&quot; hoặc &quot;NG&quot;
+
+public async Task&lt;bool&gt; CheckRouteAsync(string lotId, string stationCode, CancellationToken ct)
+{
+    var request = new GateEnvelope(
+        Opcode: 16,
+        Token: _sessionToken,
+        Category: &quot;ROUTE_CHECK&quot;,
+        PayloadJson: JsonSerializer.Serialize(new RouteCheckPayload(lotId, stationCode)));
+
+    var response = await _http.PostAsJsonAsync(&quot;gate&quot;, request, ct).ConfigureAwait(false);
+    var envelope = await response.Content.ReadFromJsonAsync&lt;GateEnvelope&gt;(ct).ConfigureAwait(false);
+    var result = JsonSerializer.Deserialize&lt;RouteCheckResult&gt;(envelope!.PayloadJson);
+    return result?.Result == &quot;OK&quot;;
+}
+</code></pre>
+<blockquote>
+<p>⚠️ Quên bước deserialize thứ hai (<code>JsonSerializer.Deserialize&lt;RouteCheckResult&gt;(envelope.PayloadJson)</code>
+ở trên) là lỗi tuần tra rất phổ biến khi mới tích hợp kiểu giao thức này: build chạy được,
+không throw exception, nhưng object nghiệp vụ luôn <code>null</code> hoặc rỗng — vì code chỉ đọc được
+lớp vỏ ngoài. Viết unit test xác nhận cả hai lớp deserialize ngay từ đầu, đừng đợi tới lúc
+chạy thật với MES.</p>
+</blockquote>
+<p><strong>Token phiên độc quyền theo trạm (exclusive session):</strong> một số hệ MES kiểu này chỉ cho phép
+đúng MỘT token hoạt động cho mỗi trạm — đăng nhập lại (kể cả từ một máy debug khác) sẽ vô
+hiệu hoá ngay token cũ đang dùng, không cảnh báo trước. Với terminal thao tác tay việc này ít
+gây hại, nhưng với một MÁY đang chạy tự động, token bị thu hồi đột ngột giữa ca sản xuất là
+tình huống có thật, cần xử lý như một lỗi kết nối bình thường (theo Bảng 14.9b ở trên) — không
+phải để sequence crash hay treo vì response 401 không lường trước.</p>
+<p><strong>Biến thể không cần đăng nhập (stateless):</strong> nhiều hệ cùng loại có thêm một endpoint riêng
+dành cho thiết bị tự động — không cần token, mỗi lệnh độc lập, phân loại nghiệp vụ bằng MỘT
+mã chuỗi thay vì object đường dẫn. Biến thể này gần với những gì một máy tự động thực sự cần
+gọi, và về bản chất là cùng ý tưởng với <code>CheckRouteApprovalAsync</code> ở mục 14.2.7 — chỉ khác cách
+đóng gói trên dây truyền:</p>
+<p><strong>Bảng 14.9d — Nghiệp vụ tự động hoá thường gặp và tương đương đã học</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nghiệp vụ máy thường gọi</th>
+<th>Tương đương khái niệm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tra cứu SN sản phẩm theo mã khay/gá (fixture)</td>
+<td>Input đầu chu trình — máy đọc mã, cần biết đang xử lý sản phẩm nào</td>
+</tr>
+<tr>
+<td>Kiểm tra lộ trình trước khi cho qua trạm</td>
+<td><code>CheckRouteApprovalAsync</code> (mục 14.2.7)</td>
+</tr>
+<tr>
+<td>Nộp thông số thiết bị theo SN (áp lực, nhiệt độ đã dùng...)</td>
+<td>Kênh bất đồng bộ / <code>MesSpoolForwarder</code> (mục 14.2.7)</td>
+</tr>
+<tr>
+<td>Nộp kết quả Pass/Fail theo SN, kèm danh sách mã lỗi nếu Fail</td>
+<td>Kênh bất đồng bộ — nhưng nội dung Fail cần đủ chi tiết để phục vụ Genealogy sau này, không chỉ một cờ boolean</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 Vì sao kết quả Fail cần nhiều hơn một boolean: MES dùng dữ liệu này cho phân tích yield
+và Genealogy về sau — chỉ gửi <code>false</code> thì không ai trả lời được câu hỏi &quot;sản phẩm này fail vì
+lý do gì&quot; sáu tháng sau khi có khiếu nại khách hàng. Payload Fail nên có ít nhất: mã lỗi (dùng
+chung một bảng mã cố định, không phải chuỗi tự do) và một trường mô tả ngắn.</p>
+</blockquote>
+<p><strong>Cách bọc an toàn:</strong> dùng chính Adapter Pattern đã học ở Chương 16 — toàn bộ vốn từ (<code>Opcode</code>,
+<code>Category</code>, JSON lồng, token phiên) của giao thức này chỉ nên xuất hiện trong một class
+Infrastructure duy nhất (ví dụ <code>LegacyGateMesClient : IMesClient</code>); Step/Sequence gọi qua
+interface đã định kiểu (<code>CheckRouteAsync</code>, <code>ReportResultAsync</code>...) và không bao giờ nhìn thấy
+<code>Opcode</code> hay chuỗi JSON lồng. Nếu sau này nhà máy đổi sang một MES khác nói REST sạch, chỉ cần
+viết <code>IMesClient</code> implementation mới — phần Step/Sequence không đổi một dòng.</p>
 <hr>
 <h2 id="143-so-sánh-và-la-chn-giao-thc-theo-bài-toán">14.3  So sánh và lựa chọn giao thức theo bài toán</h2>
 <h3>14.3.1  Bảng so sánh tổng hợp</h3>
@@ -20665,6 +20885,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.3.1.</em></p>
 <p><strong>Double Buffering</strong> (đệm kép) — Kỹ thuật vẽ toàn bộ nội dung vào một vùng đệm trong bộ nhớ trước, chỉ hiển thị lên màn hình khi đã vẽ xong, nhằm loại bỏ hiện tượng nhấp nháy (flicker) khi vẽ tuần tự nhiều bước. Bật qua thuộc tính <code>DoubleBuffered = true</code> hoặc <code>SetStyle(ControlStyles.OptimizedDoubleBuffer, ...)</code>. (→ xem GDI+)
 <em>Xuất hiện đầu tiên: Chương 8, mục 8.1.3.</em></p>
+<p><strong>Double-encoded JSON</strong> (JSON lồng trong chuỗi) — Cách đóng gói hay gặp ở các giao thức MES độc quyền cũ: nội dung nghiệp vụ nằm trong MỘT TRƯỜNG CHUỖI đã serialize sẵn, thay vì một object JSON con bình thường — phải <code>JsonSerializer.Deserialize</code> hai lần mới ra được object thật (lần một chỉ ra <code>string</code>). Quên bước thứ hai là lỗi rất phổ biến: build chạy, không throw, nhưng object luôn <code>null</code>. (→ xem Opcode (giao thức &quot;cổng lệnh&quot;), Adapter Pattern)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.2.8.</em></p>
 <p><strong>deferred execution</strong> (thực thi trì hoãn) — Đặc tính của LINQ: một truy vấn (<code>.Where()</code>, <code>.Select()</code>) chưa chạy khi khai báo, chỉ thực thi khi bắt đầu enumerate (foreach, <code>ToList()</code>, <code>Count()</code>). Hệ quả: nguồn dữ liệu đổi sau khi khai báo vẫn ảnh hưởng kết quả. (→ xem LINQ)
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.6.</em></p>
 <p><strong>delegate</strong> — Kiểu C# đại diện cho một <em>chữ ký hàm</em> (như &quot;con trỏ hàm&quot; nhưng an toàn kiểu): biến delegate trỏ tới method khớp chữ ký để gọi lại sau (callback). <code>Func</code>/<code>Action</code> là delegate có sẵn dùng cho phần lớn nhu cầu. (→ xem Func<T>, Action<T>, lambda)
@@ -20731,6 +20953,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 15 (cuối chương, callout &quot;Tai nạn kinh điển: Quên gỡ Force IO&quot;).</em></p>
 <p><strong>Find All References (Shift+F12)</strong> — Lệnh Visual Studio liệt kê mọi vị trí trong solution có gọi/dùng một symbol (class, method, enum, field...); giá trị nhất khi đọc code không tự viết — suy luận ý nghĩa một định danh khó hiểu (viết tắt, ngôn ngữ khác) qua <em>ngữ cảnh sử dụng</em> thay vì qua tên gọi. (→ xem Go To Definition (F12))
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.4.</em></p>
+<p><strong>Find in Files (Ctrl+Shift+F)</strong> — Tìm một chuỗi ký tự bất kỳ trong toàn bộ solution, khác Find All References ở chỗ tìm theo <em>chuỗi văn bản thô</em>, không cần đó là symbol C#. Dùng khi cần lần theo tên trường trong file cấu hình (XML/INI/JSON) — thứ Visual Studio không hiểu là symbol để Go To Definition/Find All References hoạt động được. (→ xem Find All References (Shift+F12))
+<em>Xuất hiện đầu tiên: Chương 2, mục 2.5.</em></p>
 <p><strong>Function Block (FB) / Function (FC) / UDT / Data Block (DB)</strong> — Bốn khối xây dựng chương trình PLC (IEC 61131-3), ánh xạ sang C# theo Chương 6: <strong>FB</strong> (Function Block, có Instance Data giữ trạng thái giữa các lần gọi) ≈ <code>class</code> có field <code>private</code>; <strong>FC</strong> (Function, không state) ≈ <code>static method</code>; <strong>UDT</strong> (User-Defined Type) ≈ <code>struct</code>/<code>record struct</code> (value semantics); <strong>DB</strong> (Data Block, vùng nhớ) ≈ <code>class</code>/<code>record</code> có thêm method/validation. Lưu ý: <strong>FC</strong> ở đây (PLC Function) khác hoàn toàn <strong>FC</strong> trong ngữ cảnh Modbus (Function Code, ngay bên dưới) — cùng viết tắt, hai nghĩa không liên quan. (→ xem class, struct)
 <em>Xuất hiện đầu tiên: Chương 6, mục 6.2.3.</em></p>
 <p><strong>Function Code (FC — Modbus)</strong> — Byte đầu tiên trong Modbus PDU xác định loại thao tác: FC01/02 (Read Coil/Discrete Input), FC03/04 (Read Holding/Input Register), FC05/06 (Write Single Coil/Register), FC16 (Write Multiple Registers). Khi slave phát hiện lỗi, FC trong response có bit 7 set (FC03 → 0x83) kèm Exception Code 1 byte (0x01–0x04). (→ xem Modbus TCP, MBAP Header)
@@ -20760,6 +20984,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 8, mục 8.2.1.</em></p>
 <p><strong>GEM (Generic Equipment Model — SEMI E30)</strong> — Tầng hành vi trong bộ chuẩn SECS/GEM: định nghĩa những gì thiết bị phải làm, không chỉ cách giao tiếp; bao gồm Communication State Machine, Control State Machine (OFF-LINE / ON-LINE LOCAL / ON-LINE REMOTE), Event Reporting qua S6F11, Alarm Management qua S5F1, và Process Program (recipe upload qua S7). Bắt buộc trong nhà máy bán dẫn, ngày càng phổ biến trong SMT. (→ xem SECS-II, HSMS, CEID, S6F11)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.2.5.</em></p>
+<p><strong>Go To All (Ctrl+T)</strong> — Gõ một phần tên method/class/field bất kỳ để nhảy thẳng tới đó trong toàn bộ solution, không cần biết nó nằm ở dòng nào hay file nào; hữu ích khi định hướng trong một class/file rất lớn (hàng nghìn dòng) kế thừa từ dự án cũ. (→ xem Go To Definition (F12))
+<em>Xuất hiện đầu tiên: Chương 2, mục 2.5.</em></p>
 <p><strong>Go To Definition (F12)</strong> — Lệnh Visual Studio nhảy thẳng tới nơi một symbol được khai báo; <strong>Peek Definition</strong> (Alt+F12) làm tương tự nhưng mở trong cửa sổ nổi, không rời dòng đang đọc. Dùng để nắm <em>hình dạng</em> một class/enum/method (bao nhiêu thành viên, method gì) khi đọc code không tự viết, ngay cả khi không hiểu tên gọi. (→ xem Find All References (Shift+F12))
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.4.</em></p>
 <p><strong>Glance Model</strong> — Mô hình thiết kế HMI cho operator không nhìn màn hình liên tục (chủ yếu thao tác với máy vật lý, có thể phụ trách nhiều máy cùng lúc): alarm phải nổi bật từ xa (≥3m, kèm blink cho Critical), trạng thái máy nhận biết được trong dưới 0.5 giây (màu nền toàn khối thay vì chỉ đổi màu chữ), và âm thanh bổ trợ hình ảnh trong môi trường ồn. (→ xem Alarm Banner, High Performance HMI)
@@ -20955,6 +21181,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.2.3.</em></p>
 <p><strong>OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể)</strong> — Chỉ số đo lường hiệu quả sản xuất, tính theo công thức: OEE = Availability × Performance × Quality. Trong PackML, các trạng thái máy ánh xạ vào 3 phân loại OEE: trạng thái Execute = Run time (tính vào Availability); Held/Suspended = Planned stop; Aborted/Stopping = Unplanned stop. Ánh xạ cụ thể có thể khác tuỳ site standard hoặc cấu hình MES.
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.2.1.</em></p>
+<p><strong>Opcode</strong> (giao thức &quot;cổng lệnh&quot;) — Một trường số nguyên hoặc chuỗi nhỏ trong vỏ giao vận của một giao thức tự chế, dùng để phân biệt loại thông điệp (đăng nhập, lỗi, dữ liệu bình thường...) thay vì dùng nhiều resource endpoint kiểu REST hay HTTP status code. Thường gặp ở MES độc quyền đã chạy lâu năm trong nhà máy: một endpoint HTTP POST duy nhất, mọi hành vi phân biệt qua Opcode. (→ xem Double-encoded JSON, Adapter Pattern)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.2.8.</em></p>
 <p><strong>Open/Closed Principle (OCP)</strong> — Nguyên lý thứ 2 trong SOLID: mở để mở rộng (open for extension), đóng để sửa đổi (closed for modification). Trong automation: thêm driver vendor mới hoặc thuật toán mới bằng cách tạo class implement interface sẵn có — không sửa code lõi đang chạy ổn định. Strategy Pattern và Plugin Architecture là hai cơ chế chính hiện thực OCP. (→ xem SOLID, Strategy Pattern, IDeviceDriver)
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.2.2.</em></p>
 <p><strong>Owner-Drawn Controls</strong> (điều khiển tự vẽ) — Kỹ thuật cho một control có sẵn (ListBox, ComboBox, ListView, DataGridView...) tự lo phần logic (cuộn, chọn mục) trong khi lập trình viên giành quyền vẽ nội dung, thường qua sự kiện <code>DrawItem</code>/<code>CellPainting</code> sau khi bật <code>DrawMode</code>/<code>OwnerDraw</code>. (→ xem GDI+, DataGridView)
@@ -21099,7 +21327,9 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.2.3.</em></p>
 <p><strong>sealed record</strong> → xem <strong>record</strong>.</p>
 <p><strong>SIL (Safety Integrity Level)</strong> — Thang đo mức độ an toàn trong IEC 62061 dành cho process industry: 4 mức (SIL 1–4; SIL 4 = an toàn nhất, yêu cầu PFD ≤ 10⁻⁵). Xác định bởi phân tích rủi ro (HAZOP, FMEA), không phải do kỹ sư C# tự chọn. C# layer thường không đủ điều kiện đạt SIL 3/4 — phần đó phải do phần cứng safety được chứng nhận đảm nhiệm. (→ xem PL, Safe Torque Off)
-<em>Xuất hiện đầu tiên: Chương 15, mục 15.2.2.</em></p>
+<em>Xuất hiện đầu tiên: Chương 15, mục 15.2.1.</em></p>
+<p><strong>Singleton</strong> — Khái niệm &quot;chỉ một instance dùng chung toàn hệ thống&quot; có hai hình dạng khác hẳn nhau về mức độ nên dùng. <strong>Singleton lifetime trong DI container</strong> (<code>services.AddSingleton&lt;T&gt;()</code>, Chương 7 Bảng 7.2) là cách hiện đại, đúng đắn: instance vẫn được inject qua constructor, vẫn mock/test được. <strong>Singleton pattern kiểu GoF cũ</strong> — method tĩnh <code>XxxManager.GetInstance()</code> gọi trực tiếp khắp nơi — là dạng hay gặp trong code kế thừa nhiều năm tuổi (mục 2.5), tạo global mutable state khó test, khó thay driver; nên đọc hiểu để không nhầm là thứ xa lạ, nhưng không nên viết thêm khi dự án đã có DI container. (→ xem God Object)
+<em>Xuất hiện đầu tiên: Chương 7, mục 7.2.5.</em></p>
 <p><strong>SignalValue&lt;T&gt;</strong> — <code>readonly record struct</code> bọc một giá trị đo lường kèm metadata (<code>Timestamp</code>, <code>DataQuality</code>, <code>Source</code>) thay vì trả bare value trần trụi; tầng trên kiểm tra <code>DataQuality</code> và fail-safe (không dùng giá trị) khi khác <code>Good</code>, thay vì âm thầm tin một số liệu có thể sai/cũ. (→ xem readonly record struct, Device Gateway Pattern)
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.2.1.</em></p>
 <p><strong>Simulator Driver</strong> — Bản cài đặt giả lập của một hardware driver interface (ví dụ: <code>SimulatedAxisDriver</code> implement <code>IMotionAxisDriver</code>) dùng cho FAT không cần phần cứng thật, CI/CD, unit test, và Digital Twin. Simulator phải implement đúng interface thật để test có giá trị; tầng sequence không biết đang chạy với driver thật hay giả lập.

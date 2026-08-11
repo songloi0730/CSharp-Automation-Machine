@@ -9,11 +9,21 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260812 |
+| **Phiên bản** | v1.0.1.260812 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
 | **Nội dung** | 30 chương + 4 phụ lục · 136 sơ đồ tự vẽ · 5 ảnh thật |
-| **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
+| **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
+| **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |
+
+> ⚠ **Về giấy phép ảnh — nói rõ để không ai dùng sai.** Phần **chữ và toàn bộ sơ đồ SVG** trong
+> sách là của tác giả, phát hành theo giấy phép ghi ở trên. Nhưng **ảnh thật là của người khác**:
+> tác giả **không có quyền** cấp giấy phép cho chúng. Các ảnh trong bản này đều là **CC BY-SA**
+> (Wikimedia Commons) — giấy phép đó **yêu cầu ghi công** và **không cho phép thêm điều kiện**
+> "phi thương mại". Vì vậy mỗi ảnh được ghi công ngay bên dưới nó, kèm giấy phép gốc.
+>
+> ⭐ **Nếu bạn dùng lại nội dung sách:** phần chữ và sơ đồ theo giấy phép trên; **ảnh thì phải
+> theo giấy phép riêng của từng ảnh** và **giữ nguyên phần ghi công**.
 
 > ⚠⚠ **Sách không thay thế tiêu chuẩn gốc và không thay thế đánh giá rủi ro của người có
 > năng lực.** Các chương an toàn (4, 26, 27, 28) giúp bạn **hiểu và kiểm tra** thiết kế của

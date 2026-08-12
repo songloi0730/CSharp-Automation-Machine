@@ -9,10 +9,10 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260812 |
+| **Phiên bản** | v1.1.0.260812 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
-| **Nội dung** | 30 chương + 4 phụ lục · 136 sơ đồ tự vẽ · 5 ảnh thật |
+| **Nội dung** | 30 chương + 5 phụ lục · 136 sơ đồ tự vẽ · 5 ảnh thật |
 | **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |
 
@@ -89,6 +89,7 @@
 - [Phụ lục B — Tiết diện dây, AWG và cách chọn theo dòng](#phan-pl-b-tiet-dien-awg)
 - [Phụ lục C — Đối chiếu hãng Nhật ↔ Trung/Đài theo nhóm thiết bị](#phan-pl-c-doi-chieu-hang)
 - [Phụ lục D — Checklist trước khi cấp điện lần đầu](#phan-pl-d-checklist-cap-dien)
+- [Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)
 - [Tài liệu tham khảo — tổng hợp toàn sách](#phan-00c-tai-lieu-tham-khao)
 
 ---
@@ -670,10 +671,17 @@ an toàn.
 |---|---|
 | Biết **loại thiết bị** | [Mục lục](#muc-luc-ban-gop) → chương tương ứng |
 | Biết **nhóm BOM** (E, S, B, M, A…) | [Danh mục thiết bị](#phan-00-danh-muc-thiet-bi) + [phần bổ sung](#phan-00b-danh-muc-bo-sung) |
-| Chỉ biết **triệu chứng** ("cảm biến báo ON giả") | Mục **"Sai lầm thường gặp"** ở cuối mỗi chương |
+| Chỉ biết **triệu chứng** ("cảm biến báo ON giả") | ⭐ **[Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)** |
 
-> 💡 Mỗi chương đều kết thúc bằng **bảng "Sai lầm thường gặp"** dạng *triệu chứng → nguyên nhân →
-> cách xử lý*, và một **bảng tóm tắt một trang** để in dán cạnh máy.
+> ⭐ **Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng [Phụ lục E](#phan-pl-e-chi-muc-trieu-chung).**
+> Nó gom **toàn bộ 538 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
+> *"bạn quan sát thấy gì → mở chương nào"*, một mục riêng cho **triệu chứng liên quan an toàn**,
+> và chỉ mục đầy đủ để `Ctrl+F`.
+>
+> 💡 **29 trong 30 chương** kết thúc bằng bảng **"Sai lầm thường gặp"** dạng *triệu chứng → nguyên
+> nhân → cách xử lý* (Ch.1 là chương giới thiệu, không có). **19 chương** có thêm **bảng tóm tắt
+> một trang** để in dán cạnh máy — các chương còn lại dùng chính bảng "Sai lầm thường gặp" làm bản
+> tóm tắt, vì với những chủ đề đó thì danh sách lỗi hữu ích hơn danh sách khái niệm.
 
 #### Quy ước cảnh báo trong sách
 
@@ -890,6 +898,24 @@ Một checklist rút gọn (bản đầy đủ ở Phụ lục D):
 ---
 
 **Chương sau:** [Chương 2 — Ngôn ngữ chung của đấu nối](#phan-ch02-ngon-ngu-chung) ⭐ *(bắt buộc đọc)*
+
+---
+
+### Nguồn tham khảo
+
+- **IEC 81346** — *Industrial systems, installations and equipment and industrial products —
+  Structuring principles and reference designations*: hệ ký hiệu thiết bị trên bản vẽ điện
+  (dùng ở mục 1.4).
+- **IEC 60204-1** — *Safety of machinery — Electrical equipment of machines*: cơ sở của quy ước
+  **đánh số tiếp điểm** (13-14 cho NO, 21-22 cho NC) và của yêu cầu bản vẽ phải thể hiện
+  **trạng thái nghỉ** của thiết bị (mục 1.4).
+- Các quy ước cảnh báo, quy ước mã hàng và cách tra cứu trong chương này là **quy ước riêng của
+  sách**, không phải trích từ tiêu chuẩn — chúng được định nghĩa tại đây và áp dụng nhất quán cho
+  cả 30 chương.
+
+> ⚠ Chương này chỉ **giới thiệu cách đọc bản vẽ**, không thay thế tài liệu bản vẽ của chính máy
+> bạn đang làm. Mỗi nhà chế tạo có thể có quy ước riêng — khi hai bên khác nhau thì **bản vẽ của
+> máy là đúng**.
 
 
 ---
@@ -1413,6 +1439,33 @@ kim**, **DC 3 dây NPN**, tiếp điểm **NO**, đầu nối **M12**.
 
 > ⚠ Câu cảnh báo Omron tự ghi trong datasheet, và đúng với mọi hãng: **không phải mọi tổ hợp mã đều
 > có hàng.** Đọc được mã không có nghĩa là mã đó tồn tại — luôn đối chiếu bảng đặt hàng.
+
+---
+
+### 2.13 Sai lầm thường gặp
+
+> ⭐ **Bảng này khác các chương sau ở một điểm:** đây là những lỗi **nền**, không thuộc riêng loại
+> thiết bị nào. Chúng xuất hiện lại ở gần như mọi chương — nên nếu bạn đang truy một sự cố mà chưa
+> biết bắt đầu từ đâu, **hãy loại trừ các dòng dưới đây trước**.
+
+| Triệu chứng | Nguyên nhân hay gặp nhất | Cách xử lý |
+|---|---|---|
+| **PLC không nhận** tín hiệu dù cảm biến sáng đèn | Nhầm NPN/PNP | **Nhìn chân chung đi đâu**, đừng tin nhãn: chung về **0 V** → hệ sink (cần cảm biến PNP); chung về **+24 V** → hệ source (cần NPN) |
+| Mua đúng "loại sink" mà vẫn sai | ⚠ **Tên gọi sink/source của Nhật và châu Âu ngược nhau** | Bỏ qua tên gọi hoàn toàn — chỉ xét chân chung |
+| **PLC báo ON dù cảm biến chưa tác động** | **Dòng rò** của cảm biến 2 dây | Mắc **điện trở gánh** song song ngõ vào; hoặc đổi sang cảm biến 3 dây |
+| Cảm biến 2 dây **không tác động nổi** ngõ vào | Không đạt **dòng tải tối thiểu** | Kiểm dòng tối thiểu trong datasheet; thêm tải giả |
+| Thiết bị nối tiếp nhiều cảm biến 2 dây thì **không chạy** | **Áp dư** cộng dồn qua từng cảm biến | Giới hạn số cảm biến nối tiếp; đổi sang 3 dây |
+| **Đứt dây mà máy vẫn chạy** | Dùng tiếp điểm **NO** cho mạch phải an toàn | Mạch an toàn **luôn dùng NC** — đứt dây phải làm máy dừng ([Ch.4](#phan-ch04-an-toan-may)) |
+| Đấu theo màu dây mà **sai chân** | ⚠ Màu dây **nói dối** ở 3 trường hợp | Xem [Phụ lục A.5](#phan-pl-a-tra-nhanh-mau-day): hàng rẻ không theo chuẩn · SMC đã **đổi màu** theo NECA 402 · cáp Cat 5 dùng màu khác |
+| Mua model **NC** của Omron rồi đấu chân 4, không có tín hiệu | Model NC ra tín hiệu ở **chân 2**, không phải chân 4 | Tra sơ đồ chân đúng model, đừng suy từ model NO |
+| **Cuộn dây / relay nổ** hoặc tiếp điểm cháy nhanh | Diode dập xung **lắp ngược**, hoặc không có | Diode ngược, **cathode về +24 V**. ⚠ Ở servo, diode ngược còn **vô hiệu hoá `EM2` và mạch bảo vệ** ([Ch.12](#phan-ch12-servo-ac)) |
+| Tín hiệu analog **trôi theo chiều dài dây** | Dùng **0–10 V** trên đường dài | Ưu tiên **4–20 mA** — không sụt theo dây, và **phát hiện được đứt dây** (0 mA = đứt) |
+| Analog đọc được **nhưng không biết dây đã đứt** | 0–10 V: đứt dây = 0 V = trông như "giá trị nhỏ" | Chuyển sang 4–20 mA, đặt ngưỡng báo lỗi dưới 4 mA |
+| Encoder **đếm thiếu / trôi vị trí** khi dây dài | Dùng open-collector cho khoảng cách xa | Dùng **line driver**, đấu đủ **6 dây** `A /A B /B Z /Z` |
+| Nhiễu vào tín hiệu **dù đã có màn chắn** | Nối đất màn chắn **hai đầu** → vòng lặp đất | Nối đất **một đầu, phía tủ** |
+| Tín hiệu loạn khi biến tần chạy | Cáp tín hiệu đi **chung máng** với cáp động lực | Tách máng; nếu buộc phải cắt nhau thì cắt **vuông góc 90°** |
+| Mua thiết bị "cùng chức năng" mà **không lắp lẫn được** | Đọc mã hàng theo cảm tính | Dùng cách **giải mã cấu trúc mã hàng** ở 2.12; và 8 điều phải kiểm ở [Phụ lục C.5](#phan-pl-c-doi-chieu-hang) |
+| Thiết bị **IP67** mà vẫn vào nước | ⚠ **IP bằng mắt xích yếu nhất** — một đầu nối chưa siết là hỏng cả cấp | Kiểm cả đầu nối, nắp che, lỗ ra cáp ([Ch.23](#phan-ch23-dau-noi-day-ky-thuat-dau)) |
 
 ---
 
@@ -16309,6 +16362,858 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | 3 | **Bộ nguồn không lên** khi bật máy | Dòng đỉnh/inrush vượt tính toán; nhiều thiết bị khởi động cùng lúc | [Ch.3](#phan-ch03-nguon-phan-phoi-dien) |
 | 4 | **Truyền thông RS-485 không thông** | Thiếu dây **Common**, hoặc đảo `D0`/`D1` (⚠ `D1`↔`B`) | [Ch.21](#phan-ch21-truyen-thong-mang) |
 | 5 | Van/xy lanh **không tác động dù có điện** | Không đủ **áp tối thiểu** hoặc **chênh áp tối thiểu** | [Ch.15](#phan-ch15-van-dien-tu-khi-nen) · [Ch.17](#phan-ch17-co-cau-chap-hanh-khac) |
+
+---
+
+
+---
+
+<a id="phan-pl-e-chi-muc-trieu-chung"></a>
+
+## Phụ lục E — Chỉ mục tra cứu theo triệu chứng
+
+> **Phụ lục này giải quyết đúng một tình huống:** bạn đang đứng trước cái máy, **chỉ biết nó đang
+> bị gì**, và không biết mở chương nào.
+>
+> Sách có **538 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
+> chỉ mục này thì bạn phải **đoán xem là chương nào** — đúng cái mà người đang sửa máy lúc 2 giờ
+> sáng không có thời gian làm.
+
+**Ba cách dùng, từ nhanh tới chậm:**
+
+| Bạn có gì | Vào mục |
+|---|---|
+| Biết **loại hỏng** (không chạy / chập chờn / trôi dần…) | **E.1** — bảng quyết định |
+| Nghi có **nguy hiểm cho người** | **E.2** — đọc trước, đừng thử nghiệm |
+| Chỉ nhớ **một từ** ("PASS", "nóng", "nhảy") | **E.4** — `Ctrl+F` trong chỉ mục đầy đủ |
+
+---
+
+### E.1 "Bạn quan sát thấy gì?" → mở chương nào
+
+Đọc từ trên xuống, dừng ở dòng đầu tiên khớp.
+
+#### Nhóm 1 — Không có gì xảy ra
+
+| Quan sát | Nghi trước hết | Mở chương |
+|---|---|---|
+| **Servo không quay**, không báo lỗi rõ | `EM2`/`LSP`/`LSN`/`ALM` là **NC** và đang hở | [Ch.12](#phan-ch12-servo-ac) |
+| **PLC không nhận** tín hiệu cảm biến | Nhầm NPN/PNP — **xem chân chung đi đâu** | [Ch.2](#phan-ch02-ngon-ngu-chung) · [Ch.6](#phan-ch06-module-io) |
+| **Bộ nguồn không lên** khi bật máy | Dòng đỉnh/inrush; nhiều thiết bị khởi động cùng lúc | [Ch.3](#phan-ch03-nguon-phan-phoi-dien) |
+| **Van / xy lanh không tác động** dù có điện | Thiếu **áp tối thiểu** hoặc **chênh áp tối thiểu** | [Ch.15](#phan-ch15-van-dien-tu-khi-nen) · [Ch.17](#phan-ch17-co-cau-chap-hanh-khac) |
+| **Truyền thông không thông chút nào** | Thiếu dây **Common**, hoặc đảo `D0`/`D1` | [Ch.21](#phan-ch21-truyen-thong-mang) |
+| **Camera không chụp**, chạy liên tục | `TriggerMode = Off` → free-run | [Ch.19](#phan-ch19-vision-chieu-sang) |
+| **Robot không chạy** ở chế độ dạy | Thiếu **thiết bị cho phép**, hoặc `SVCE` | [Ch.26](#phan-ch26-robot-chuyen-dong-dac-biet) |
+| **Đầu đọc mã không đọc được** mã trông rất rõ | Đặt **vuông góc** → phản xạ vào ống kính | [Ch.20](#phan-ch20-ma-vach-rfid) |
+
+#### Nhóm 2 — Chạy nhưng SAI
+
+| Quan sát | Nghi trước hết | Mở chương |
+|---|---|---|
+| **Sai vị trí** tích luỹ dần theo chu kỳ | Mất bước (động cơ bước) hoặc encoder mất xung | [Ch.11](#phan-ch11-dong-co-buoc) · [Ch.9](#phan-ch09-encoder-cam-bien-xy-lanh) |
+| **Chiều quay ngược** | Đấu pha / tham số chiều | [Ch.12](#phan-ch12-servo-ac) · [Ch.13](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Công suất đo ra số âm** | **CT lắp ngược chiều** | [Ch.29](#phan-ch29-he-phu-tro-nha-may) |
+| Số liệu điện sai theo **hệ số tròn** (2×, 5×, 10×) | Sai **tỉ số CT** trong cài đặt | [Ch.29](#phan-ch29-he-phu-tro-nha-may) |
+| **Nhiệt độ đo sai** trên kim loại sáng | **Độ phát xạ** thấp → đọc thấp hơn thật | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+| **Đo mức hạt rắn** hai cảm biến ra hai kết quả | **Góc nghỉ** — bề mặt đống hạt là hình nón | [Ch.30](#phan-ch30-sieu-am-muc-giam-sat) |
+| Cảm biến **báo ON giả** khi chưa có vật | **Dòng rò** của cảm biến 2 dây | [Ch.2](#phan-ch02-ngon-ngu-chung) |
+
+#### Nhóm 3 — CHẬP CHỜN, lúc được lúc không *(loại khó nhất)*
+
+| Quan sát | Nghi trước hết | Mở chương |
+|---|---|---|
+| Lỗi **chỉ xuất hiện khi máy chạy tải** | Nhiễu từ biến tần/servo; cáp tín hiệu đi chung máng | [Ch.13](#phan-ch13-giam-toc-bldc-bien-tan) · [Ch.21](#phan-ch21-truyen-thong-mang) |
+| **Camera rớt kết nối** khi servo tăng tốc | Nối chung **hai đất** chân 5 và chân 6 | [Ch.19](#phan-ch19-vision-chieu-sang) |
+| Bus RS-485 **chạy tốt lúc dây ngắn, chết khi kéo dài** | Thừa trở kết cuối, hoặc phân cực nhiều chỗ | [Ch.21](#phan-ch21-truyen-thong-mang) |
+| **Mối hàn siêu âm lúc được lúc không** | **Trigger force** quá thấp | [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| Vật **dừng sai vị trí, chỉ với sản phẩm nhẹ** | Giảm chấn đẩy **nảy lại** — cần cơ cấu chốt | [Ch.25](#phan-ch25-bang-tai-xu-ly-vat-lieu) |
+| Mỗi trạm thử riêng đều tốt, **chạy cả dây chuyền thì trượt** | Hai đầu đọc RFID **nhiễu lẫn nhau** | [Ch.20](#phan-ch20-ma-vach-rfid) |
+| Cùng vật **đứng yên** mà lúc OK lúc NG | **PWM không đồng bộ màn trập** | [Ch.19](#phan-ch19-vision-chieu-sang) |
+| Hai cảm biến tiệm cận gần nhau **báo loạn** | **Nhiễu lẫn nhau** — tra khoảng cách tối thiểu | [Ch.7](#phan-ch07-cam-bien-tiem-can) |
+
+#### Nhóm 4 — TRÔI DẦN *(nguy hiểm vì không ai để ý)*
+
+| Quan sát | Nghi trước hết | Mở chương |
+|---|---|---|
+| **Kích thước sản phẩm trôi theo giờ chạy** | Chiller mất lưu lượng, hoặc giãn nở nhiệt | [Ch.29](#phan-ch29-he-phu-tro-nha-may) · [Ch.26](#phan-ch26-robot-chuyen-dong-dac-biet) |
+| **Giá trị đo trôi theo giờ trong ngày** | Siêu âm: **1,75 mm mỗi °C** trên dải 700 mm | [Ch.30](#phan-ch30-sieu-am-muc-giam-sat) |
+| **Ảnh tối dần theo tuần**, NG giả tăng | LED suy giảm do **overdrive quá duty** | [Ch.19](#phan-ch19-vision-chieu-sang) |
+| **Ống kính / cửa sổ laser bẩn dần** | Hút khói không đủ — lọc tắc | [Ch.29](#phan-ch29-he-phu-tro-nha-may) · [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| Bộ nguồn **chết sau ~1 năm**, thay lại chết | Tủ quá nóng → tụ điện phân bay hơi | [Ch.24](#phan-ch24-nhiet-moi-truong-tu-dien) |
+| *"Siết lại cầu đấu thì hết"* rồi vài tháng lại thế | **Ăn mòn do đọng nước** → điện trở tiếp xúc tăng | [Ch.24](#phan-ch24-nhiet-moi-truong-tu-dien) |
+| Cáp trên trục chuyển động **đứt sau vài tháng** | Dùng cáp thường thay vì **siêu chịu uốn** | [Ch.23](#phan-ch23-dau-noi-day-ky-thuat-dau) |
+
+#### Nhóm 5 — Thiết bị hỏng / cháy
+
+| Quan sát | Nghi trước hết | Mở chương |
+|---|---|---|
+| **Cháy dây nhánh 24 V mà CB không nhảy** | **CB không bảo vệ được mạch 24 VDC** | [Ch.3](#phan-ch03-nguon-phan-phoi-dien) |
+| **Thermode cháy** (hàn xung nhiệt) | **Cặp nhiệt bong** → bộ điều khiển tự đẩy công suất | [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| Servo **không xuất tín hiệu**, mạch bảo vệ mất tác dụng | **Diode dập xung lắp ngược** | [Ch.12](#phan-ch12-servo-ac) |
+| Biến tần / động cơ hỏng sau khi lắp thêm thiết bị | Vi phạm **4 điều cấm khi đấu biến tần** | [Ch.13](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Vòng bi hỏng** dù hệ bôi trơn "vẫn chạy" | Ống tắc / hết mỡ — bộ đếm vẫn tăng | [Ch.29](#phan-ch29-he-phu-tro-nha-may) |
+| Đèn / relay nối vào ngõ ra thiết bị thì **không kéo nổi** | Ngõ ra chỉ **50 mA** (camera) / **< 100 mA** (đầu đọc) | [Ch.19](#phan-ch19-vision-chieu-sang) · [Ch.20](#phan-ch20-ma-vach-rfid) |
+
+#### Nhóm 6 — Trạm đo cho kết quả không tin được
+
+| Quan sát | Nghi trước hết | Mở chương |
+|---|---|---|
+| ⚠⚠ **Cả lô hàng đều PASS**, tỷ lệ NG về 0 | **Đứt dây đo** → dòng ≈ 0 → dưới ngưỡng → PASS | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+| Sản phẩm **PASS ở nhà máy, hỏng ngoài thị trường** | Hipot **không có thời gian tăng áp** | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+| Trạm rò rỉ **báo rò giả** buổi sáng | **Nhiệt độ** — khí nén nóng rồi nguội | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+| Quét mã mà **phần mềm không nhận**, không báo lỗi | Đầu đọc ở chế độ **giả bàn phím** | [Ch.20](#phan-ch20-ma-vach-rfid) |
+| Số liệu đo **không ai tin** khi có tranh chấp | Thiết bị **quá hạn hiệu chuẩn** | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+
+---
+
+### E.2 ⚠⚠ Triệu chứng liên quan tới AN TOÀN — đọc trước, đừng thử nghiệm
+
+> ⚠⚠ **Những dòng dưới đây không phải "lỗi kỹ thuật" — chúng là tình huống có thể làm người bị
+> thương hoặc chết.** Gặp bất kỳ dòng nào: **dừng máy, cô lập nguồn (LOTO), báo người phụ trách an
+> toàn.** Không "thử xem sao".
+
+| Quan sát | Vì sao nguy hiểm | Mở chương |
+|---|---|---|
+| **Người bị kẹt bên trong khi mất điện** | Chọn sai **power-to-lock / power-to-unlock** | [Ch.4](#phan-ch04-an-toan-may) |
+| **Cửa mở được trước khi máy dừng hẳn** | Sai **khoảng cách an toàn** ISO 13855 | [Ch.4](#phan-ch04-an-toan-may) |
+| **Contactor dính** mà mạch an toàn vẫn báo OK | Thiếu **EDM / tiếp điểm gương** | [Ch.4](#phan-ch04-an-toan-may) |
+| Mạch hai kênh **thoái hoá thành một kênh** mà không ai biết | Không phát hiện lỗi chập kênh | [Ch.4](#phan-ch04-an-toan-may) |
+| **E-stop đấu vào ngõ vào PLC thường** | PLC thường **không phải** kênh an toàn | [Ch.4](#phan-ch04-an-toan-may) |
+| **Trục Z rơi** khi kích hoạt STO | STO **không giữ tải**, không phải phanh | [Ch.12](#phan-ch12-servo-ac) |
+| Trục **trôi khi mất điện** (động cơ tuyến tính / DD) | Không có ma sát tự giữ → phải có phanh | [Ch.26](#phan-ch26-robot-chuyen-dong-dac-biet) |
+| **Bàn nâng / servo press rơi khi mất khí** | Không có van khoá hoặc chốt cơ khí | [Ch.25](#phan-ch25-bang-tai-xu-ly-vat-lieu) · [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| **Đầu công cụ rơi** khỏi tool changer | Không tự khoá cơ khí; chỉ có cảm biến "đã cấp khí" | [Ch.26](#phan-ch26-robot-chuyen-dong-dac-biet) |
+| **Robot vẫn chạy nhanh** trong chế độ dạy | ⚠⚠ **Giới hạn tốc độ KHÔNG phải chức năng an toàn** | [Ch.26](#phan-ch26-robot-chuyen-dong-dac-biet) |
+| **Bị điện giật sau khi máy thử cao áp đã báo xong** | Thử DC **để lại điện tích** trên sản phẩm và cáp | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+| **Máy thử cao áp vẫn phát khi cửa mở** | Chân interlock **bị nối tắt cố định** | [Ch.28](#phan-ch28-do-luong-kiem-tra) |
+| ⚠⚠ **Hồ quang / điện giật khi tháo dây đồng hồ đo điện** | **Hở thứ cấp biến dòng** khi sơ cấp còn tải | [Ch.29](#phan-ch29-he-phu-tro-nha-may) |
+| Nhìn chỗ laser chiếu **thấy không chói** nên tưởng an toàn | Cấp 4: **phản xạ khuếch tán cũng hại mắt** | [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| Đeo kính bảo hộ laser mà **vẫn hại mắt** | Sai **bước sóng / OD** của kính | [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| **Vật cháy trong buồng** laser | Cấp 4 **đốt cháy được vật liệu** | [Ch.27](#phan-ch27-gia-cong-lien-ket) |
+| **RCD nhảy liên tục** khi có biến tần | Sai loại RCD — cần **loại B** | [Ch.3](#phan-ch03-nguon-phan-phoi-dien) · [Ch.13](#phan-ch13-giam-toc-bldc-bien-tan) |
+| Người bị bất ngờ vì băng tải **tự chạy** | MDR khởi động **đột ngột và im lặng** | [Ch.25](#phan-ch25-bang-tai-xu-ly-vat-lieu) |
+| **Nước nhỏ vào tủ điện** từ đường ống lạnh | Đặt nhiệt độ **dưới điểm sương** | [Ch.29](#phan-ch29-he-phu-tro-nha-may) · [Ch.24](#phan-ch24-nhiet-moi-truong-tu-dien) |
+
+---
+
+### E.3 Từ khoá tra nhanh — gõ `Ctrl+F` trong mục E.4
+
+| Bạn gõ | Sẽ ra các triệu chứng về |
+|---|---|
+| `chập chờn` · `ngẫu nhiên` · `thỉnh thoảng` | Lỗi không tái hiện được — thường là nhiễu, tiếp xúc, hoặc dung sai |
+| `không quay` · `không chạy` · `không tác động` | Thiết bị không hoạt động |
+| `PASS` · `NG` | Trạm đo cho kết quả sai |
+| `trôi` · `dần` | Chất lượng suy giảm theo thời gian |
+| `nóng` · `nhiệt` | Nhiệt tủ điện, derating, đọng nước |
+| `nhảy` | CB / RCD nhảy, hoặc giá trị nhảy loạn |
+| `rơi` | Tải rơi khi mất điện / mất khí — **luôn là vấn đề an toàn** |
+| `ngược` · `nhầm` | Đấu ngược cực, sai chiều, nhầm loại |
+| `rò` · `dòng rò` | Dòng rò cảm biến, rò khí, rò cách điện |
+| `mã hàng` · `đặt hàng` · `hậu tố` | Mua nhầm vì đọc sai mã |
+
+---
+
+### E.4 Chỉ mục đầy đủ
+
+> Phần dưới đây **sinh tự động** từ chính các bảng *"Sai lầm thường gặp"* trong sách bằng
+> `scripts/tao_chi_muc_trieu_chung.py`, nên **không bao giờ lệch** với nội dung chương.
+> Sửa nội dung chương rồi chạy lại script là chỉ mục tự cập nhật.
+
+<!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
+
+### E.4 Chỉ mục đầy đủ — **538 triệu chứng** theo chương
+
+> 💡 **Cách dùng nhanh nhất: `Ctrl+F` rồi gõ đúng từ bạn quan sát được** —
+> ví dụ `chập chờn`, `không quay`, `nóng`, `PASS`, `trôi`, `rơi`, `nhảy`.
+>
+> Bảng này **sinh tự động từ chính 29 bảng "Sai lầm thường gặp"** trong sách,
+> nên không bao giờ lệch với nội dung chương. Cột **nguyên nhân** chỉ ghi vắn tắt để bạn
+> nhận ra đúng dòng — **cách xử lý nằm ở bảng gốc trong chương**.
+
+#### Chương 2 — [Ngôn ngữ chung của đấu nối](#phan-ch02-ngon-ngu-chung) · 16 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| PLC không nhận tín hiệu dù cảm biến sáng đèn | Nhầm NPN/PNP |
+| Mua đúng "loại sink" mà vẫn sai | ⚠ Tên gọi sink/source của Nhật và châu Âu ngược nhau |
+| PLC báo ON dù cảm biến chưa tác động | Dòng rò của cảm biến 2 dây |
+| Cảm biến 2 dây không tác động nổi ngõ vào | Không đạt dòng tải tối thiểu |
+| Thiết bị nối tiếp nhiều cảm biến 2 dây thì không chạy | Áp dư cộng dồn qua từng cảm biến |
+| Đứt dây mà máy vẫn chạy | Dùng tiếp điểm NO cho mạch phải an toàn |
+| Đấu theo màu dây mà sai chân | ⚠ Màu dây nói dối ở 3 trường hợp |
+| Mua model NC của Omron rồi đấu chân 4, không có tín hiệu | Model NC ra tín hiệu ở chân 2, không phải chân 4 |
+| Cuộn dây / relay nổ hoặc tiếp điểm cháy nhanh | Diode dập xung lắp ngược, hoặc không có |
+| Tín hiệu analog trôi theo chiều dài dây | Dùng 0–10 V trên đường dài |
+| Analog đọc được nhưng không biết dây đã đứt | 0–10 V: đứt dây = 0 V = trông như "giá trị nhỏ" |
+| Encoder đếm thiếu / trôi vị trí khi dây dài | Dùng open-collector cho khoảng cách xa |
+| Nhiễu vào tín hiệu dù đã có màn chắn | Nối đất màn chắn hai đầu → vòng lặp đất |
+| Tín hiệu loạn khi biến tần chạy | Cáp tín hiệu đi chung máng với cáp động lực |
+| Mua thiết bị "cùng chức năng" mà không lắp lẫn được | Đọc mã hàng theo cảm tính |
+| Thiết bị IP67 mà vẫn vào nước | ⚠ IP bằng mắt xích yếu nhất — một đầu nối chưa siết là hỏng cả cấp |
+
+#### Chương 3 — [Nguồn & phân phối điện](#phan-ch03-nguon-phan-phoi-dien) · 16 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| ⭐ Cảm biến nhảy loạn đúng lúc van hút | Van và cảm biến dùng chung một nhánh — sụt áp tức thời |
+| PLC reset ngẫu nhiên khi máy chạy chu kỳ | Như trên, hoặc nguồn thiếu công suất |
+| Bật máy → nguồn lên rồi sập, lặp vô tận | Hiccup do tải điện dung (IPC, màn hình) |
+| ⭐ CB nhảy ngay khi bật tủ | Dòng khởi động của bộ nguồn (32 A cho bộ chỉ 30 W!) |
+| ⚠ Cháy dây nhánh 24 V mà CB không nhảy | CB không bảo vệ được mạch 24 VDC — nguồn xung giới hạn dòng |
+| Đèn nguồn xanh nhưng thiết bị hoạt động sai | Đèn sáng từ 80 % điện áp — 19 V vẫn xanh |
+| Máy reset khi lưới chớp nhoáng | Thời gian giữ của nguồn quá ngắn |
+| Đấu 3–4 bộ nguồn song song → một bộ nóng, hỏng | Không chia tải đều; đa số nguồn chỉ cho tối đa 2 bộ |
+| Một bộ nguồn hỏng → sập cả hai | Đấu song song trực tiếp, bộ hỏng ngắn mạch kéo bộ kia |
+| Nguồn cắt hẳn không tự lên lại | Bảo vệ quá áp (≥130 %) — phải tắt/bật nguồn vào |
+| Chạm vỏ ở đâu đó nhưng không ai biết | Hệ 0 V thả nổi — lỗi ẩn |
+| RCD nhảy liên tục khi có biến tần | Dùng RCD loại AC |
+| Điện giật ở cửa tủ dù đã nối đất tủ | Cửa tủ không có dây bện nối đất — bản lề không dẫn tin cậy |
+| Tủ nóng bất thường | Hiệu suất nguồn 80–86 % → phần còn lại thành nhiệt |
+| Sụt áp đáng kể ở cụm xa | Dây quá nhỏ hoặc quá dài |
+| Nguồn chết đột ngột không cảnh báo | Không đấu tiếp điểm DC-OK / DC low về PLC |
+
+#### Chương 4 — [An toàn máy](#phan-ch04-an-toan-may) · 17 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Máy dừng khẩn hoạt động, nhưng không đạt đánh giá | Dùng công tắc không có mở cưỡng bức ⊗, hoặc mạch một kênh |
+| E-stop đấu vào ngõ vào PLC thường | PLC thường không phải thiết bị an toàn |
+| Nhả nút dừng khẩn là máy chạy lại | Logic PLC sai; thiếu reset riêng |
+| Contactor dính mà mạch an toàn báo OK | Dùng tiếp điểm phụ thường thay vì tiếp điểm gương |
+| Mạch hai kênh nhưng thoái hoá thành một kênh | Hai dây chập vào nhau; rơ le không phát hiện chập kênh |
+| Đứt một dây mà máy vẫn chạy | Đấu kiểu NO thay vì NC |
+| ⚠ Người bị kẹt bên trong khi mất điện | Khoá power-to-unlock không có thoát hiểm bên trong |
+| Cửa mở được trước khi máy dừng hẳn | Dùng công tắc thường thay vì khoá điện từ |
+| Màn chắn sáng lắp quá gần vùng nguy hiểm | Không tính khoảng cách an toàn, hoặc quên thời gian cơ khí trong T |
+| Máy dừng chậm dần theo năm tháng | Phanh mòn — khoảng cách an toàn không còn đủ |
+| Ai cũng vô hiệu hoá được màn chắn bằng cách che một cảm biến | Muting chỉ dùng một tín hiệu |
+| Cảm biến cửa bị lừa bằng nam châm rời | Dùng loại nam châm thường |
+| Dây nối tắt khi chạy thử bị quên tháo | Không có quy trình |
+| Trục Z rơi khi kích hoạt STO | STO cắt mô-men nhưng không giữ tải |
+| Bị điện giật khi sửa dù đã kích hoạt STO | STO không phải cách ly điện |
+| Mua rơ le PLe nhưng chuỗi vẫn không đạt | PL là thuộc tính của cả chuỗi |
+| Thay đổi chương trình an toàn rồi chạy luôn | Không kiểm chứng lại |
+
+#### Chương 5 — [Bộ điều khiển: PLC, IPC & motion controller](#phan-ch05-bo-dieu-khien) · 17 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Mua PLC về không đấu được với tải | Đặt nhầm MT/ES (sink) và MT/ESS (source) — khác một chữ |
+| Ngõ ra relay chết sau vài tuần | Đóng cắt nhiều lần/giây (điều khiển nhiệt ON-OFF) |
+| ⭐ Đếm thiếu ngẫu nhiên, test bằng tay luôn đúng | Tín hiệu ngắn hơn chu kỳ quét |
+| Máy đáp ứng chậm hơn mong đợi | Chu kỳ quét dài; trường hợp xấu nhất gần 2 chu kỳ |
+| CPU reset ngẫu nhiên khi chạy chu kỳ thật | ⚠ Vượt công suất backplane của nguồn rack |
+| Module ở cuối rack báo lỗi | Sụt áp dọc backplane do quá tải |
+| Sau khi sửa module, máy chạy sai lung tung | Cắm lại sai slot → địa chỉ I/O dịch hết |
+| 4 trục không đạt tần số như catalogue ghi | Tần số tối đa là cho một trục, giảm khi chạy nhiều trục |
+| Hai trục tạo đường bậc thang thay vì đường chéo | Phát xung độc lập không đồng bộ được |
+| ⭐ IPC tự khởi động lại giữa ca | Windows update tự động |
+| IPC hỏng hệ điều hành sau vài lần mất điện | Không có UPS DC |
+| Ổ cứng IPC chết sớm | Dùng ổ tiêu dùng thay vì SSD công nghiệp; log ghi liên tục |
+| Scan time nhảy lên bất thường trên soft-PLC | Antivirus quét nền, dịch vụ hệ điều hành |
+| PLC nóng, hay treo | Đặt dưới biến tần / SSR — hứng khí nóng |
+| Mất chương trình sau khi máy nghỉ dài | Pin hết |
+| ⚠ PLC chết, thay con mới, không có bản chương trình mới nhất | Không lưu bản sao có phiên bản |
+| Module analog trôi giá trị | Đặt cạnh module ngõ ra công suất; hoặc nguồn rack quá tải |
+
+#### Chương 6 — [Module I/O & remote I/O](#phan-ch06-module-io) · 19 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Đếm thiếu sản phẩm, thỉnh thoảng bỏ sót | Bộ lọc ngõ vào mặc định 10 ms nuốt xung |
+| Encoder đếm sai / trôi dần | Cắm vào module DI mở rộng thay vì điểm nhanh của CPU |
+| Encoder đếm sai chỉ khi chạy nhanh | Vượt tần số tối đa của điểm |
+| Chết cả một nhóm 8 ngõ ra cùng lúc | Vượt tổng dòng mỗi common, hoặc thiếu diode trên tải cảm |
+| Đèn báo sáng mờ dù đã tắt | Dòng rò của ngõ ra transistor/triac |
+| PLC báo ON dù cảm biến chưa tác động | Dòng rò của cảm biến 2 dây vượt ngưỡng OFF (1,5 mA) |
+| Cảm biến 2 dây chập chờn | Ngõ vào Type 1 không cấp đủ dòng duy trì |
+| Cảm biến cháy hàng loạt ngay khi cấp điện | Đấu nhầm chiều chân chung với cảm biến PNP |
+| Một nửa ngõ vào không đọc được | Trộn NPN và PNP trong cùng một nhóm common |
+| Số đọc analog nhảy loạn chỉ khi motor chạy | Cáp analog đi chung máng với cáp ra biến tần/servo |
+| Số đọc analog trôi chậm, lệch giữa các kênh | Màn chắn nối đất hai đầu → vòng lặp đất; hoặc kênh không cách ly |
+| Analog đọc 0 nhưng thiết bị vẫn tốt | Đứt dây — và bạn đang dùng dải 0–10 V nên không phát hiện được |
+| Ngõ ra analog không lên hết thang (chỉ tới ~17 mA) | Tổng trở vòng vượt 500 Ω |
+| Ngõ ra analog kiểu áp thấp hơn giá trị đặt | Trở tải < 1 kΩ, thường do nối song song hai thiết bị |
+| Trạm remote xanh trên phần mềm nhưng mọi tín hiệu = 0 | Mất nguồn I/O trong khi nguồn bộ ghép còn |
+| Rút cáp mạng, xy lanh vẫn giữ kẹp | Ngõ ra remote đặt hold last state (hoặc FSV sai chiều) |
+| Nút bấm một lần, PLC đếm 3 lần | Rung tiếp điểm, lọc ngõ vào đặt quá nhanh |
+| Ngõ ra relay "kẹt ON" không tắt được | Tiếp điểm hàn dính do ngắn mạch hoặc tải cảm không dập xung |
+| Ngõ ra relay dẫn chập chờn với tải rất nhỏ | Dưới tải tối thiểu 5 V / 2 mA |
+
+#### Chương 7 — [Cảm biến tiệm cận (từ & điện dung)](#phan-ch07-cam-bien-tiem-can) · 10 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Báo ON vĩnh viễn, tháo vật ra vẫn ON | Loại không bọc kim bị lắp chìm vào gá kim loại |
+| Không bao giờ ON dù vật sát mặt | Vật là nhôm/đồng/inox — hệ số vật liệu |
+| PLC báo ON dù chưa có vật | Dòng rò của cảm biến 2 dây |
+| Hai cảm biến gần nhau nhảy loạn | Nhiễu lẫn nhau |
+| Chạy ổn buổi sáng, lỗi buổi chiều | Lắp sát mép khoảng cách danh định, trôi theo nhiệt độ |
+| Cảm biến chết sau vài tuần, vỏ nứt | Siết quá mô-men |
+| Đấu xong cảm biến nóng rồi chết | Cấp ngược cực (tin màu dây của hàng rẻ) |
+| Cảm biến PNP đấu vào PLC không đọc được | Chân chung đấu sai phía |
+| Nhảy lung tung chỉ khi động cơ chạy | Nhiễu từ biến tần, dây tín hiệu đi chung máng dây động lực |
+| Xỉ hàn bám, báo giả liên tục | Dùng cảm biến thường ở trạm hàn |
+
+#### Chương 8 — [Cảm biến quang](#phan-ch08-cam-bien-quang) · 10 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Vật trắng thì ăn, vật đen thì không | Dùng loại khuếch tán — phụ thuộc độ phản xạ |
+| Ăn được lúc mới lắp, vài tuần sau chập chờn | Bụi/dầu bám ống kính, hoặc lắp ở sát giới hạn khoảng cách |
+| Vật bóng đi qua mà không phát hiện | Phản xạ gương không có lọc phân cực — vật bóng đóng vai gương |
+| Đặt xa hơn datasheet ghi vẫn không ăn | Khoảng cách ghi cho giấy trắng cỡ chuẩn, vật thật nhỏ/tối hơn |
+| Hai cảm biến cạnh nhau nhảy loạn | Nhiễu chéo giữa hai bộ |
+| Đặt hàng về nhận hai bộ phát | Nhầm hậu tố -L / -D |
+| Cảm biến chữ U đấu vào PLC không đọc được | Mua loại không có mạch khuếch đại (photointerrupter) |
+| Sợi quang lúc được lúc không, nhìn sợi vẫn lành | Uốn gấp quá bán kính tối thiểu |
+| Bị ánh sáng đèn xưởng / mặt trời làm sai | Ánh sáng ngoài lọt vào bộ thu |
+| Đọc sai khi vật đi rất nhanh | Tốc độ đáp ứng cài quá chậm (chế độ siêu nhạy) |
+
+#### Chương 9 — [Cảm biến xy lanh, công tắc hành trình & encoder](#phan-ch09-encoder-cam-bien-xy-lanh) · 14 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Cảm biến xy lanh không bao giờ có tín hiệu | Xy lanh không có ty nam châm |
+| Thay cảm biến mới xong mất tín hiệu / cháy | Đấu theo màu dây cũ — đen từng là GND, nay là ngõ ra |
+| Reed dính cứng luôn ON sau vài tháng | Đóng tải cảm hoặc dây dài > 5 m không có hộp bảo vệ |
+| Cảm biến chạy tốt lúc nguội, sai lúc nóng | Siết ở mép dải phát hiện |
+| Cảm biến bán dẫn làm PLC báo ON giả | Dòng rò (2 dây ≤ 1 mA) |
+| Cảm biến hỏng liên tục ở máy dập/đóng gói | Reed chỉ chịu 300 m/s² |
+| Đếm chu kỳ bị gấp đôi | Cảm biến đặt giữa hành trình, piston đi qua 2 lần mỗi chu kỳ |
+| Công tắc an toàn "vẫn hoạt động" nhưng không đạt đánh giá | Không có cơ cấu mở cưỡng bức (thiếu ký hiệu ⊗) |
+| Encoder cháy ngay khi cấp điện | Encoder 5 V cắm vào 24 V |
+| Vị trí trôi dần theo thời gian, không báo lỗi | Mất xung do vượt tần số ngõ vào, hoặc nhiễu |
+| Encoder đếm ngược chiều | Thứ tự pha A/B |
+| Encoder kêu, rơ, hỏng vòng bi sau vài tháng | Nối cứng vào trục / thanh giằng chống xoay siết cứng hai đầu |
+| Đọc A, B, Z được nhưng hay lỗi khi motor chạy | Đấu line driver mà bỏ 3 dây ngược pha |
+| Về gốc (home) mỗi lần một vị trí khác nhau | Chỉ dùng cảm biến gốc, không dùng xung Z |
+
+#### Chương 10 — [Cảm biến quá trình: áp suất, chân không, nhiệt độ, lưu lượng, lực](#phan-ch10-cam-bien-qua-trinh) · 26 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| # | Triệu chứng |
+| 1 | Ngõ ra công tắc áp băm liên tục, relay kêu lách cách |
+| 2 | Chốt "đủ áp" không bao giờ chặn, máy chạy với áp thiếu |
+| 3 | Cảm biến áp không về 0 khi đã xả hết áp, đáp ứng chậm |
+| 4 | Cảm biến áp rò khí ở chân ren sau vài tuần |
+| 5 | Giá trị analog áp lệch ở cả hai đầu thang trong PLC |
+| 6 | Máy báo "không hút được vật" liên tục dù giác hút đang giữ chắc |
+| 7 | Cảm biến chân không nhấp nháy báo lỗi mỗi chu kỳ |
+| 8 | Nhiệt độ đọc thiếu vài chục độ, sáng khác chiều khác |
+| 9 | Nhiệt độ chạy ngược — lò nóng lên thì số giảm |
+| 10 | Hai người đấu cùng loại cáp bù mà ra hai kết quả ngược nhau |
+| 11 | Bộ điều khiển mới báo s.err ngay khi cấp nguồn |
+| 12 | Buồng sấy luôn thấp hơn setpoint ~8 °C, không có báo động |
+| 13 | Đấu 3 dây rồi mà vẫn sai như 2 dây |
+| 14 | Đầu dò class A ±0,15 °C mà đo lệch hàng chục độ |
+| 15 | Relay ngõ ra bộ điều khiển chết sau khoảng một tuần |
+| 16 | Gia nhiệt chạy mãi không tắt dù bộ điều khiển đã tắt ngõ ra |
+| 17 | Nhiệt độ dao động đều, biên độ không giảm |
+| 18 | Nhiệt độ đứng thấp hơn SP mãi, không lên nữa |
+| 19 | Auto-tuning ra bộ số chạy tốt lúc thử, sai khi vào sản xuất |
+| 20 | Báo động nhiệt độ thấp kêu mỗi sáng, cuối cùng bị tắt hẳn |
+| 21 | Số liệu tiêu thụ nước/khí bị mất sau mỗi lần cúp điện |
+| 22 | Cân đọc thiếu ~2 % một cách ổn định |
+| 23 | Cân đọc 0 hoặc trôi lung tung sau khi thay bộ khuếch đại |
+| 24 | Cân đúng ở điểm hiệu chuẩn nhưng sai ở giữa dải |
+| 25 | Loadcell chết liên tục dù tải chưa tới nửa thang |
+
+#### Chương 11 — [Động cơ bước & driver](#phan-ch11-dong-co-buoc) · 17 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Động cơ rung tại chỗ, không quay | Đảo nhầm dây giữa hai cuộn |
+| Động cơ quay ngược chiều | Đảo hai dây trong cùng một cuộn |
+| Quay tay được, xung vào không tác dụng | ⚠ Chân ENA đang tích cực = cắt dòng động cơ |
+| Động cơ nóng bỏng tay, cháy sau vài tháng | Đặt dòng theo cột Peak trong khi nhãn động cơ ghi RMS |
+| Đấu nối tiếp 8 dây rồi cháy | Không giảm dòng — phải ≤ 70 % dòng pha |
+| Đấu song song 8 dây mà yếu | Chưa tăng dòng — được phép tới 1,2 lần dòng pha |
+| Vị trí lệch dần theo thời gian, không có alarm | ⚠ Mất bước do quá tải / gia tốc quá cao |
+| Lệch mỗi lần đổi chiều | DIR đổi không sớm hơn PUL đủ 5 µs |
+| Mất xung ngẫu nhiên ở tốc độ cao | Lắp thừa điện trở vào driver đã có sẵn; hoặc dây xung không xoắn/không chống nhiễu |
+| Cháy opto ngõ vào ngay khi cấp điện | Cấp 24 V vào ngõ vào 5 V |
+| Động cơ chỉ quay một chiều | DIP chọn nhầm chế độ 2 xung (CW/CCW) |
+| Trục Z tụt xuống khi dừng | Dòng idle 50 % không đủ giữ tải |
+| Rung mạnh ở một dải tốc độ nhất định | Cộng hưởng của hệ |
+| Đặt vi bước rất cao mà không chính xác hơn | Hiểu nhầm — vi bước không tăng độ chính xác |
+| PLC không phát nổi tần số cần thiết | Vi bước quá cao so với tốc độ yêu cầu |
+| Driver báo lỗi quá áp khi giảm tốc | Năng lượng hồi làm bus tăng; nguồn xung không hấp thụ được |
+| Driver lỗi mà máy vẫn chạy tiếp | Không đấu chân ALM về PLC |
+
+#### Chương 12 — [Servo AC](#phan-ch12-servo-ac) · 19 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| ⭐ Servo không quay, không có alarm | EM2 / LSP / LSN chưa đấu hoặc dùng tiếp điểm thường hở |
+| Servo không quay, trục quay tay được | SON chưa bật |
+| Toàn bộ I/O không hoạt động dù driver lên đèn | Quên cấp 24 V ngoài cho DICOM/DOCOM |
+| PLC báo "servo lỗi" ngay khi vừa bật máy | ALM chỉ bật sau 2,5–3,5 giây |
+| PLC báo lỗi ngược logic | Lập trình "ALM ON = lỗi" — sai, ALM là NC |
+| Trục đi sai quãng đường theo tỉ lệ cố định | Tỉ số bánh răng điện tử sai |
+| Chỉ quay được một chiều | Chỉ LSP hoặc chỉ LSN được bật; hoặc sai chế độ xung 1/2 xung |
+| Mất xung, vị trí trôi dần | Đấu xung kiểu open-collector ở tần số cao, hoặc nhiễu |
+| Tải rơi khi bật máy | Nhả phanh trước khi servo-on |
+| Tải tụt một đoạn khi dừng | Servo-off trước khi phanh ăn |
+| Phanh mòn nhanh | Dùng phanh để hãm trục đang chạy |
+| EM2 và mạch bảo vệ không hoạt động | ⚠ Diode dập xung trên relay phanh lắp ngược |
+| Alarm quá áp khi giảm tốc | Thiếu khả năng xả năng lượng hồi |
+| Alarm quá dòng khi tăng tốc | Mô-men không đủ, quán tính quá lớn |
+| Trục rung không dứt dù chỉnh gain thế nào | ⚠ Tỉ số quán tính vượt giới hạn của dòng servo |
+| Mất vị trí gốc sau khi nghỉ dài | Pin encoder tuyệt đối hết |
+| Encoder báo lỗi ngẫu nhiên khi trục tăng tốc | Nhiễu — cáp encoder đi chung máng với cáp động lực |
+| Chân trên máy không giống manual | Người trước đã gán lại I/O bằng tham số PD |
+| Va chạm phá cơ khí ngay lần chạy thử đầu | Không đặt giới hạn mô-men thấp, không tháo khớp nối |
+
+#### Chương 13 — [Động cơ giảm tốc, BLDC, biến tần & trục điện](#phan-ch13-giam-toc-bldc-bien-tan) · 18 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Động cơ 1 pha ù mà không quay | Tụ chạy hỏng |
+| Lắp biến tần cho động cơ 1 pha → nóng, yếu, cháy | Động cơ 1 pha có tụ không chạy được với biến tần |
+| ⚠ Biến tần ngắt bảo vệ liên tục, hoặc tụ nổ | Tụ bù / chống sét lắp ở phía RA (thường sót lại khi cải tạo máy cũ) |
+| Hỏng IGBT sau vài lần vận hành | Đóng/cắt contactor phía ra khi biến tần đang chạy |
+| Biến tần giảm tuổi thọ nhanh, mạch nạp hỏng | Dùng contactor phía vào để chạy/dừng máy |
+| Động cơ 400 V cháy cuộn dây sau vài tháng | Xung phản xạ do cáp dài phá cách điện |
+| Vòng bi động cơ hỏng sớm, có vết rỗ | Ăn mòn điện do điện áp trục |
+| Động cơ rít khó chịu | Tần số sóng mang thấp |
+| RCD nhảy liên tục khi bật biến tần | Dùng RCD loại AC — không hợp với dòng rò cao tần |
+| Băng tải "ì" khi khởi động có tải | Chế độ V/F yếu mô-men ở tốc độ thấp |
+| Lỗi quá dòng khi tăng tốc | Thời gian tăng tốc quá ngắn |
+| Lỗi quá áp khi giảm tốc | Năng lượng hồi về không xả được |
+| Tín hiệu chạy từ PLC không tác dụng | ⚠ Biến tần đang ở logic sink mà PLC là source (hoặc ngược lại) |
+| Tốc độ trôi theo tải | Chế độ V/F không có bù trượt |
+| Biến tần lỗi lung tung sau khi lắp | ⚠ Vụn dây còn sót trong biến tần |
+| Cảm biến quanh máy nhảy loạn khi động cơ chạy | Cáp tín hiệu quá gần cáp động lực |
+| Hộp số trục vít tốn điện bất thường | Hiệu suất worm chỉ 40–70 % |
+| Tải treo tụt xuống dù dùng hộp số tự hãm | ⚠ Tự hãm không phải cơ cấu an toàn, giảm tác dụng khi rung |
+
+#### Chương 14 — [Nguồn khí & xử lý khí](#phan-ch14-nguon-khi-xu-ly-khi) · 19 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Van chuyển chậm dần rồi kẹt hẳn sau 6–12 tháng | Khí ẩm → rỉ con trượt, rửa trôi mỡ gốc |
+| Cốc lọc FRL đầy nước dù có máy sấy | Nhánh lấy khí từ đáy ống chính, hoặc máy sấy chọn thiếu cỡ |
+| Máy sấy có mà nước vẫn ngưng trong ống | Điểm sương (+3 °C) cao hơn nhiệt độ ống đi qua (ống ngoài trời / phòng lạnh) |
+| Lọc tinh tắc sau vài tuần | Lắp lọc tinh trước lọc thô, hoặc lắp trước máy sấy |
+| Máy chạy yếu, xy lanh không đủ lực dù áp kế máy nén đủ | Tổn thất áp trên đường ống, hoặc lọc tắc (chênh áp ≥ 0,1 MPa) |
+| Vặn núm điều áp xuống mà áp không tụt | Dùng bản KHÔNG xả dư (tuỳ chọn N) |
+| Áp đặt trôi dần theo tuần | Quên ấn núm điều áp xuống để khoá sau khi chỉnh |
+| Gãy núm điều áp / hỏng ren | Vặn khi núm còn khoá, hoặc dùng kìm/cờ lê |
+| Nổ cốc lọc | Cốc polycarbonate tiếp xúc dung môi (xăng, thinner, aceton) hoặc bị va đập |
+| Xy lanh phóng đột ngột ngay khi mở khí lại sau bảo trì | Không có van khởi động chậm |
+| Thợ bị ống khí quất / xy lanh đá khi tháo đầu nối | Chỉ đóng van bi, áp dư vẫn nhốt trong hệ |
+| Sau van khởi động chậm, áp phía sau không xả hết | Bộ điều áp hạ nguồn là bản thường, không có cơ cấu hồi lưu |
+| Van khởi động chậm rò khí ra cửa xả, không mở hết | Dùng cho ứng dụng thổi khí — áp ra không bao giờ đạt ½ áp vào |
+| Ejector hút yếu, giác hút không bám | Có cụm tra dầu trên nhánh cấp cho ejector |
+| Máy nén chạy liên tục không nghỉ, tiền điện tăng vọt | Rò rỉ tích tụ (10–30 % sản lượng) |
+| Tính máy nén xong mua về vẫn thiếu khí | Quên cộng ejector, hoặc nhân hệ số đồng thời cho cả ejector |
+| Máy sấy đúng cỡ theo catalogue mà mùa hè vẫn không khô | Không nhân hệ số hiệu chỉnh A (nhiệt độ khí vào) và B (nhiệt độ môi trường) |
+| Xả tự động không xả | Áp hệ thống dưới ngưỡng tối thiểu (0,1–0,15 MPa), hoặc phao kẹt bẩn |
+| Cả nhánh mất khí khi bảo trì một máy | Mạng nhánh cụt, không có van cắt khu vực |
+
+#### Chương 15 — [Van điện từ khí nén](#phan-ch15-van-dien-tu-khi-nen) · 14 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| PLC ra tín hiệu, đèn van không sáng, van không chuyển | Đầu nối cắm ngược cực (loại có LED/diode có phân cực) |
+| Đèn van sáng nhưng xy lanh không chạy | Áp khí dưới ngưỡng pilot (< 0,15 MPa) |
+| Xy lanh không nghe lệnh PLC, không báo lỗi gì | Gạt tay đang bị khoá ở vị trí cưỡng bức |
+| Mất điện là chi tiết bung ra khỏi kẹp | Dùng van cuộn đơn cho cụm kẹp |
+| Mất điện là tải treo rơi xuống | Van 5/3 tâm xả |
+| Van cuộn kép rung, chạy chập chờn, cuộn nóng | Hai ngõ ra ON cùng lúc |
+| Xy lanh giật cục từng bước | Tiết lưu meter-in, hoặc van tiết lưu lắp ngược chiều |
+| Van chân không không chuyển | Dùng bản pilot trong — cửa 1 đang hút, không có áp làm pilot |
+| Xy lanh chạy chậm hơn sau khi đổi van cùng cỡ | Đổi sang van tâm áp — Cv thấp hơn |
+| Transistor ngõ ra PLC chết dần từng điểm | Van không có mạch dập xung |
+| Van 5/3 không theo kịp nhịp máy | Van 3 vị trí chỉ chịu 3 Hz (van 2 vị trí 10 Hz) |
+| Đầu nối mua về không cắm được | Sai form DIN 43650 (A/B/C) |
+| Van tiết kiệm điện không hút khi đấu 2 con song song | Mạch giảm dòng của hai van can thiệp lẫn nhau |
+| Cụm 20 van, sự cố mà dò dây mất cả buổi | Đi 20 sợi riêng thay vì manifold |
+
+#### Chương 16 — [Xy lanh khí nén & hệ chân không](#phan-ch16-xy-lanh-chan-khong) · 17 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Mua xy lanh về không gắn được cảm biến | Đặt mã CQ2 thay vì CDQ2 — không có nam châm |
+| Xy lanh không tới hết hành trình, cảm biến cuối không ăn | Vít đệm vặn quá chặt |
+| Nghe tiếng "cạch" đanh mỗi chu kỳ | Vít đệm quá lỏng, hoặc đệm không đủ sức |
+| Tiếng đập quay lại sau thời gian dài chạy êm | Giảm chấn thuỷ lực hết dầu |
+| Lực kéo về không đủ dù tính lực đẩy đã dư | Quên trừ diện tích ty — lực kéo nhỏ hơn 15–25 % |
+| Rò khí ở đầu ty, ty xước thành vệt | Lệch tâm giữa điểm gá và điểm tác động |
+| Xy lanh không ty tuột con trượt khi tải nặng | Vượt giới hạn lực trượt từ tính |
+| Xy lanh chạy giật cục | Tiết lưu meter-in |
+| Vật dính lại trên giác hút, không rơi | Không có van xả phá chân không (blow-off) |
+| Robot mang tay không đi tiếp | Không có cảm biến chân không xác nhận |
+| Vết lạ trên bề mặt, công đoạn sơn bị "mắt cá" | Giác hút silicone để lại màng dầu |
+| Vết đen trên chi tiết sáng màu | Giác hút NBR |
+| Chân không tụt liên tục, van tiết kiệm khí bật/tắt loạn | Hệ hở — vật cong vênh, giác mòn, ống rò |
+| Ejector yếu dần rồi chết | Bụi tắc họng Venturi do thiếu lọc chân không |
+| Chu kỳ máy chậm, thời gian hút lâu | Ống chân không nhỏ và dài |
+| Ejector ồn dần, hút yếu | Giảm âm bị tắc |
+| Hoá đơn tiền điện khí tăng vọt | Ejector chạy liên tục không có van tiết kiệm khí |
+
+#### Chương 17 — [Cơ cấu chấp hành khác](#phan-ch17-co-cau-chap-hanh-khac) · 31 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Van nước không mở, đèn trên van vẫn sáng, PLC báo ON | Van màng pilot thiếu chênh áp tối thiểu (0,02–0,05 MPa) |
+| Van nước kêu lạch cạch liên tục, lưu lượng nhấp nháy | Chênh áp tụt xuống dưới ngưỡng ngay khi van mở — bơm yếu, ống nhỏ, lọc bẩn |
+| Van nước rò liên tục khi đóng, hoặc tự mở không cần điện | Lắp ngược chiều mũi tên |
+| Cuộn van AC cháy khét sau vài phút | Lõi/màng bị kẹt → khe hở từ còn lớn → dòng đứng ở mức dòng khởi động |
+| Van nước rò sau vài tuần, mảnh gioăng đi vào bơm | Gioăng NBR dùng cho nước nóng (NBR chỉ tới 60 °C) |
+| Đặt đúng mã van "cho nước" mà về không dùng được cho nước | Sai cụm thân/gioăng trong mã hàng (CKD: nước phải chọn thân đồng thau) |
+| Solenoid không nhích khi có tải, nhưng đẩy tay một chút thì "ăn" | Chọn theo lực cuối hành trình, thực tế lực ở đầu hành trình nhỏ 5–10 lần |
+| Máy chạy tốt ca đầu, hay lỗi cuối ca; vỏ solenoid nóng không sờ được | Vượt duty cycle (% ED) — cuộn nóng dần, lực giảm dần |
+| Nam châm điện thường rơi vật khi mất điện / bấm E-stop | Đúng bản chất loại này — mất điện là mất từ |
+| Nam châm điện–vĩnh cửu giữ được lúc thử, tuột lúc chạy thật | Dùng nguồn xung 24 V thường thay vì bộ chỉnh lưu chuyên dụng → nạp từ không đủ |
+| Vật dính lại trên đầu gắp từ dù đã ra lệnh nhả | Từ dư 3–4 % của loại điện–vĩnh cửu; vật nhẹ hơn lực dư |
+| Trạm sau bị mạt sắt bám, hàn lệch tia, đo sai | Từ dư trên chi tiết do gắp từ ở trạm trước |
+| Gắp từ tuột vật dù tính lực dư | Lực catalogue là ở điều kiện tốt nhất; sơn/gỉ/ba-via tạo khe hở, vật mỏng hơn mẫu thử |
+| Gắp điện bung chấu khi mất điện | Cơ cấu không tự hãm (vít me bi bước lớn / cam có lò xo) |
+| Vision/trạm đo sai lệch, hết sai khi tắt bát rung | Bát rung bắt cứng xuống khung máy — truyền dao động khắp máy |
+| Bát rung vặn biên độ gần hết mà cấp vẫn chậm, cuộn nóng | Chạy lệch tần số cộng hưởng |
+| Bát rung mạnh khi vơi liệu, yếu khi đầy | Khối lượng liệu làm dịch tần số riêng |
+| Long bulông khắp khung máy, nứt mối hàn sau vài tháng | Dao động bát rung truyền vào kết cấu |
+| Vít trượt ren nhưng máy báo OK | Chỉ kiểm mô-men — mô-men đạt sớm do ma sát lệch ren, chưa đủ số vòng, đầu vít còn cao |
+| Sản phẩm thiếu vít mà máy báo đủ | Không có điều kiện chiều sâu và không có cảm biến "có vít trên mũi" |
+| Máy cấp vít kẹt ống thổi thường xuyên | Vít quá nhỏ / đầu quá dẹt / quá dài so với đường kính; hoặc vít có vòng đệm |
+| Lượng keo thiếu ca sáng, thừa ca chiều, ngày nào cũng vậy | Độ nhớt keo đổi theo nhiệt độ xưởng; van áp lực–thời gian định lượng theo thời gian |
+| Keo nhỏ giọt, kéo sợi sau khi ngắt van | Áp lực dư trong ống và trong keo |
+| Chấm keo rỗng, có bọt khí bên trong | Hút ngược quá nhiều — hút cả khí vào kim |
+| Cả lô hàng không có keo mà không ai biết | Không có cảm biến hết keo / mức thấp |
+| Keo đóng rắn trong ống và trong van | Ổn nhiệt đặt quá cao so với pot life của keo |
+| Bụi bám lại trên sản phẩm sau vài tuần ionizer chạy tốt | Kim phóng bẩn — hiệu quả giảm mà không có alarm |
+| Chi tiết nhẹ dính đồ gá trở lại, hoặc nạp điện ngược dấu | Mất cân bằng ion do kim bám bẩn không đối xứng |
+| Ionizer báo lỗi liên tục ngay sau khi đấu xong | OUT3 của IZS31 là ON khi bình thường (fail-safe), lập trình theo "ON = lỗi" |
+| Ionizer NPN/PNP không vào được PLC | Hậu tố ngõ ra: IZS31 Nil = NPN, P = PNP |
+| Kim inox khử kém hơn hẳn kim tungsten cùng model | Cân bằng ion của kim inox là ±100 V thay vì ±30 V |
+
+#### Chương 18 — [Rơ le, SSR, contactor & cầu đấu](#phan-ch18-relay-ssr-contactor-cau-dau) · 18 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Rơ le hút nhưng tiếp điểm không dẫn với tín hiệu nhỏ | Màng oxit trên tiếp điểm bạc — tải quá nhỏ để tự làm sạch |
+| Rơ le mạ vàng dùng vài lần rồi hết tác dụng | Đóng tải lớn làm bay lớp vàng |
+| Cắm rơ le có diode vào, nổ / cháy ngõ ra PLC | Cấp ngược cực — diode dẫn thẳng dòng làm việc |
+| Rơ le cắt tải DC dính tiếp điểm sau ít lần | Hồ quang DC không tự tắt; hoặc vượt định mức DC (chỉ 30 VDC) |
+| SSR chết, tải bật vĩnh viễn không tắt | Thiếu tản nhiệt — SSR chết ở trạng thái dẫn |
+| SSR nóng bất thường dù có tản nhiệt | Thiếu keo tản nhiệt, hoặc tản nhiệt bắt nằm ngang |
+| Cả tủ nhiễu, cảm biến nhảy loạn khi lò gia nhiệt chạy | Dùng SSR random cho tải gia nhiệt |
+| Đèn báo sáng mờ dù đã tắt SSR | Dòng rò của SSR |
+| Bị điện giật khi sửa dù "đã tắt" | ⚠ SSR không cách ly — tải vẫn có điện |
+| SSR chết mà cầu chì không đứt | Cầu chì thường quá chậm |
+| Contactor chọn "25 A" mà quá tải với motor nhỏ | Con số trên vỏ là AC-1, không phải AC-3 |
+| Rơ le nhiệt nhảy mỗi lần khởi động | Class quá thấp cho tải khởi động nặng |
+| Đảo chiều motor gây nổ contactor | Thiếu khoá chéo, hoặc chỉ có khoá điện mà tiếp điểm chính dính |
+| Mạch an toàn báo OK dù contactor dính | Dùng tiếp điểm phụ thường thay vì tiếp điểm gương |
+| Cầu đấu cháy đen sau vài tháng | Vít lỏng dần sau chu kỳ nhiệt, không được siết lại |
+| Ngắn mạch giữa hai chân cầu đấu liền kề | Sợi dây bện tòe ra vì không bấm ferrule |
+| Dây tuột khỏi ferrule sau thời gian rung | Bấm bằng kìm sai loại |
+| PLC nóng bất thường, hay treo | Đặt dưới SSR/biến tần — hứng khí nóng |
+
+#### Chương 19 — [Vision & chiếu sáng máy](#phan-ch19-vision-chieu-sang) · 19 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Camera rớt kết nối / tự reset khi servo hoặc biến tần chạy | Nối chung chân 5 (đất I/O) và chân 6 (đất nguồn) → mất cách ly |
+| Rớt khung hình ngẫu nhiên trên GigE | Chưa bật Jumbo Frame; dùng chung card mạng với mạng nhà máy |
+| Rớt khung hình trên USB3 chỉ khi máy chạy tải | Nhiễu + cáp quá dài — bệnh cố hữu của USB3 trong tủ điện |
+| Trigger chập chờn | Ngõ vào cần ≥ 5 mA, nguồn trigger không đẩy đủ dòng |
+| Chụp đôi — một cạnh, hai ảnh | Dội tiếp điểm hoặc nhiễu trên cáp trigger |
+| Camera chụp ngược (chụp lúc không có vật) | Chọn sai cạnh kích |
+| Camera không chụp, chỉ chạy liên tục | TriggerMode = Off → free-run |
+| Ngõ ra camera không kéo nổi relay / đèn | Ngõ ra chỉ 50 mA |
+| PLC đọc kết quả của lần chụp trước | Chỉ đọc OR, không chờ BUSY |
+| Cùng sản phẩm đứng yên mà lúc OK lúc NG, ảnh sáng tối nhấp nhô | PWM không đồng bộ với màn trập |
+| Ảnh tối dần theo tuần, tỷ lệ NG giả tăng | LED suy giảm — thường do overdrive quá duty |
+| Máy nhân bản sang dây chuyền khác thì ảnh tối hơn | Chiều dài cáp đèn khác nhau, vượt 5 m |
+| Bộ nguồn 24 V sụt áp mỗi lần đèn nháy | Tính nguồn theo 0,60 A, quên module đèn ăn tới 4,2 A |
+| Camera IP67 nhưng vào nước | IP67 chỉ khi đủ module đèn/nắp chống nước; trần chỉ IP40 |
+| Ảnh nhoè khi vật chạy | Phơi sáng quá dài |
+| Ảnh chỗ nét chỗ mờ trên vật cao thấp | Khẩu mở quá lớn → độ sâu trường ảnh nông |
+| Kết quả đổi theo giờ trong ngày | Ánh sáng phòng / ánh nắng lọt vào |
+| Đèn cắm vào hỏng ngay | Đèn 12 V cắm ngõ ra 24 V |
+| Cáp camera trên trục chuyển động đứt sau vài tháng | Dùng cáp thường thay vì loại siêu chịu uốn |
+
+#### Chương 20 — [Nhận dạng: mã vạch & RFID](#phan-ch20-ma-vach-rfid) · 18 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Quét mã nhưng phần mềm không nhận, không báo lỗi gì | Đầu đọc ở chế độ giả bàn phím, ký tự chạy vào cửa sổ khác |
+| Cùng mã cho ra ký tự khác nhau trên hai máy tính | Giả bàn phím + bố cục bàn phím Windows khác nhau |
+| PLC chờ vô hạn khi mã bẩn | Chưa bật chuỗi khi đọc lỗi |
+| PLC nhận được chuỗi nhưng không xử lý | Sai ký tự kết thúc (CR / LF / CR+LF) |
+| Mã trông rất rõ mà đầu đọc không đọc được | Đặt vuông góc → ánh sáng phản xạ thẳng vào ống kính |
+| Đọc được lúc đứng yên, trượt khi băng tải chạy | Chọn cảm biến 50C (5 fps, màn trập cuốn) |
+| Đọc trượt ngẫu nhiên chỉ khi máy chạy tải | Dùng cáp thường thay vì cáp có bộ lọc nhiễu (F) |
+| Tỷ lệ trượt cao dù mã in tốt | Trigger theo cạnh, chỉ được một khung hình |
+| Giải mã chậm, thỉnh thoảng ra mã lạ | Bật quá nhiều loại mã (symbology) |
+| Cáp M12 12 chân mới cắm không vào | Nhầm bản khoá thường và bản Alternate Key (-04) |
+| DPM trên kim loại không đọc được | Sai kiểu chiếu sáng |
+| Tag RFID không đọc được gì sau khi dán lên jig thép | Dùng tag bản phi kim trên bề mặt kim loại |
+| Tag mới mua đầu đọc không nhận | Tag 8 KB cần đầu đọc firmware ≥ 2.00 |
+| RFID đọc được nhưng ghi hay lỗi | Gá theo khoảng cách đọc; khoảng cách ghi ngắn hơn |
+| Gá sát vào mà vẫn không đọc | Tag chịu nhiệt có giới hạn dưới (7,5 hoặc 10 mm) |
+| Đổi tag sang bản M rồi mà vẫn hụt tầm | Bản kim loại chỉ đạt ~58 % tầm bản phi kim |
+| Mỗi trạm thử riêng đều tốt, chạy cả dây chuyền thì trượt | Hai đầu đọc RFID nhiễu lẫn nhau |
+| Máy xuất khẩu, UHF không hoạt động ở nước khác | Dải 860–960 MHz phân bổ khác nhau theo quốc gia |
+
+#### Chương 21 — [Truyền thông & mạng công nghiệp](#phan-ch21-truyen-thong-mang) · 18 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| RS-485 không thông chút nào | Đảo D0/D1 — nhãn hãng không thống nhất (D1↔B, D0↔A) |
+| Bus lỗi ngẫu nhiên, có khi hỏng chip thu phát | Chỉ kéo 2 dây, thiếu dây Common |
+| Chạy tốt lúc dây ngắn, chết khi kéo dài | Bật phân cực ở nhiều thiết bị, hoặc thừa trở kết cuối |
+| Bus chập chờn sau khi đi lại máng cáp | Đi kiểu hình sao, nhánh dài quá 20 m |
+| Dùng cáp Cat 5 chạy Modbus, xa là mất | Cat 5 chỉ được 600 m, không phải 1000 m |
+| Cắm cáp mạng bấm sẵn vào Modbus 2 dây → hỏng thiết bị | Cáp chéo (crossed) |
+| Nhiễu vào tín hiệu dù có lưới chắn | Nối đất lưới chắn hai đầu → vòng lặp đất |
+| Vòng quét Modbus chậm bất thường | Có trạm chết, chủ phải chờ hết timeout mỗi vòng |
+| Máy chạy tốt cả tuần rồi sáng thứ Hai lỗi mạng | Mạng thiết bị cắm chung mạng văn phòng |
+| Cắm thêm một sợi cáp là cả mạng sập trong vài giây | Vô tình tạo vòng kín trên Ethernet thường |
+| EtherNet/IP ngập mạng, thiết bị rớt | Switch không có IGMP snooping, multicast phát ra mọi cổng |
+| Camera GigE rớt khung khi chung switch | Switch không hỗ trợ Jumbo Frame |
+| Đứt một sợi cáp → mất nửa dây chuyền | Đấu kiểu đường thẳng, không ai lường trước |
+| Đặt nhầm CC-Link IE Field Basic thay vì Field | Tên gần giống, năng lực chênh xa (100 Mbps/64 trạm vs 1 Gbps/254 trạm) |
+| CC-Link nối hai module sát nhau không ổn định | Vi phạm khoảng cách tối thiểu giữa trạm (≥ 20 cm ở 10 Mbps) |
+| PLC đọc số liệu bình thường nhưng thiết bị thật đã ngắt | Gateway giữ giá trị cuối khi mất kết nối |
+| Tín hiệu quan trọng phản ứng chậm | Dùng Modbus polling cho tín hiệu cần nhanh |
+| Switch trong tủ chết sau vài tháng | Dùng switch văn phòng có quạt, bụi làm kẹt |
+
+#### Chương 22 — [HMI, nút bấm & báo hiệu](#phan-ch22-hmi-nut-bam-bao-hieu) · 19 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Người vận hành bấm nhầm giữa Stop và dừng khẩn | Nhiều nút đỏ trên cùng bảng — giá trị cảnh báo bị loãng |
+| Bấm nhầm Start khi định bấm dừng khẩn | Hai nút đặt sát nhau |
+| Cần thêm một tiếp điểm, phải thay cả nút | Không biết khối tiếp điểm mua rời và xếp chồng được |
+| Khối tiếp điểm mới không lắp vừa | Khác hãng — Φ22 không đảm bảo tương thích khối |
+| Đèn cháy ngay khi cấp điện | Cắm khối đèn 24 V vào mạch 220 V |
+| Đèn sáng mờ dù chưa bật | Dòng rò từ SSR hoặc cảm biến 2 dây |
+| Đèn trong nút sáng nhưng máy không chạy | Đèn và tiếp điểm là hai mạch độc lập |
+| Mặt tủ vào nước quanh nút | Vòng đệm không siết đủ chặt |
+| Nước vào cửa tủ có HMI, hoặc bị điện giật ở cửa | Cửa tủ không có dây bện nối đất |
+| HMI chớp màn hình / khởi động lại | Nguồn chung với tải cảm; hoặc HMI là tải điện dung gây hiccup |
+| Cảm ứng không nhận khi đeo găng | Màn hình điện dung |
+| Mua HMI về không nói chuyện được với PLC | Không kiểm tra driver hỗ trợ trước |
+| HMI chết, không có file chương trình | Không lưu bản sao |
+| Log ghi sai thời gian | Hết pin đồng hồ thời gian thực của HMI |
+| Còi bị rút dây / nhét giấy | Còi kêu quá thường xuyên hoặc quá to |
+| Đèn tháp không bật được tổ hợp mong muốn | Dùng loại đấu nối tiếp theo tầng |
+| Người vận hành hiểu sai đèn tháp | Quy ước màu khác nhau giữa các máy trong nhà máy |
+| Nút hai tay bị chèn cố định một nút | Không có yêu cầu nhả cả hai trước khi bấm lại |
+| Nút hai tay nhưng người thứ hai vẫn bị thương | Nút hai tay chỉ bảo vệ người đang bấm |
+
+#### Chương 23 — [Đầu nối, dây & kỹ thuật đấu](#phan-ch23-dau-noi-day-ky-thuat-dau) · 20 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| ⭐ Tín hiệu chập chờn theo vị trí trục, đo lúc đứng yên thì bình thường | ⚠ Dây thường dùng trong xích cáp — sợi đứt dần bên trong, vỏ vẫn nguyên |
+| Cảm biến "tự nhiên chết" sau vài tháng ngoài máy | Đầu nối tự lắp siết không đủ chặt vòng làm kín → nước/dầu vào |
+| Dây tuột khỏi ferrule sau thời gian rung | Bấm bằng kìm sai loại |
+| Cầu đấu cháy đen, dây nóng tại điểm bấm | Bấm lỏng, hoặc chọn ferrule sai cỡ |
+| Ngắn mạch giữa hai chân cầu đấu liền kề | Sợi dây bện tòe ra vì không bấm ferrule |
+| Chọn ferrule sai cỡ dù đã xem màu | ⚠ Màu xám dùng cho cả 0,75 và 4,0 mm² |
+| Đầu nối M12 phải dùng lực mới cắm được | ⚠ Sai mã hoá (A/B/D/X/L/S/T) |
+| Mạng 1 Gb không chạy dù cáp thông mạch | Dùng đầu D-code (4 chân, 100 Mb) cho 1 Gb |
+| Đứt dây bên trong đầu nối sau vài tháng | ⚠ Thiếu kẹp chống kéo (strain relief) |
+| Dây trong xích cáp bị mài bóng, kêu cọt kẹt | Nhồi quá chặt, thiếu vách ngăn, hoặc xoắn dây |
+| Dây đứt ở giữa xích cáp | Cố định dây ở giữa xích |
+| Đầu nối kiểu Dupont tuột khi máy rung | Loại không có khoá chốt |
+| Cắm chéo đầu nối bo mạch, tiếp xúc kém | Lẫn 2,5 mm (JST XH) với 2,54 mm (Molex/Dupont) |
+| Encoder servo báo lỗi ngẫu nhiên khi tăng tốc | Cáp encoder tự bấm, màn chắn không đúng cách |
+| Hộp IP65 vào nước | Lỗ vào cáp không có khoá cáp (gland) đúng cấp |
+| Thiết bị IP67 hỏng sau khi rửa vệ sinh | IP67 không chịu được tia áp cao |
+| Cụm cảm biến IP67 vẫn vào nước | ⚠ Cấp IP của cụm = mắt yếu nhất |
+| Đầu nối M12 chưa dùng trên hộp phân phối bị bụi/dầu | Không có nắp chụp |
+| Sửa máy mà không biết dây nào đi đâu | Không đánh số dây, hoặc nhãn bút bay màu |
+| Vỏ dây bị biến dạng, nứt tại điểm buộc | Dây rút siết quá chặt |
+
+#### Chương 24 — [Nhiệt & môi trường tủ điện](#phan-ch24-nhiet-moi-truong-tu-dien) · 21 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Bộ nguồn chết sau ~1 năm, thay cái mới lại chết | Tủ quá nóng; tụ điện phân bay hơi |
+| Bộ nguồn 10 A quá tải dù tải chỉ 8 A | Bộ nguồn giảm tải theo nhiệt độ ở 55 °C |
+| Tính đủ công suất làm mát mà tủ vẫn nóng | Bỏ dấu âm của Q̇s — môi trường nóng hơn Ti nên vỏ tủ hút nhiệt vào |
+| Lắp quạt to hơn mà không mát thêm | Môi trường nóng hơn nhiệt độ mong muốn → quạt lọc về nguyên tắc không làm được |
+| Bên trong tủ đầy bụi dù lưới lọc còn sạch | Quạt hút ra → áp suất âm → bụi vào qua khe hở, không qua lọc |
+| Quạt vẫn quay mà biến tần báo quá nhiệt | Lưới lọc tắc — lưu lượng gần bằng 0 nhưng không có tín hiệu nào báo |
+| Chỉ lắp một bộ quạt, hiệu quả rất kém | Không có đường khí ra |
+| Thiết bị giữa tủ nóng dù có quạt | Hai bộ quạt cùng một phía → khí đi vòng ngắn |
+| Tủ nóng theo mùa: tháng 5 lỗi, tháng 11 hết | Tính Tu theo trung bình, không theo chiều hè |
+| Nhiệt trong tủ lớn bất thường, không tra ra từ đâu | Điện trở xả của biến tần/servo nằm trong tủ |
+| Máy lạnh tủ điện không đạt công suất như catalogue | Con số 1460 W là ở 35 °C / 40 %RH; xưởng nóng hơn thì thấp hơn |
+| Lắp máy lạnh rồi mà phụ tải điện thiếu | Quên máy lạnh tiêu thụ 710 W / 4,3 A |
+| Máy lạnh chạy kém dần | Khí nóng thải ra bị hút lại vào |
+| Tủ IP54 mà vào bụi/nước ở đáy | Cấp IP của máy lạnh trừ cửa thoát nước ngưng |
+| Nước đọng trong tủ sáng thứ Hai | Tủ nguội qua cuối tuần, hoặc đặt máy lạnh quá thấp |
+| Sưởi chống đọng không hoạt động khi cần | Đấu sau công tắc nguồn chính → tắt máy là tắt sưởi |
+| Vỏ cáp bị chảy / nhãn cháy | Đặt bộ sưởi sát cáp hoặc linh kiện nhựa |
+| "Thỉnh thoảng mất tín hiệu, siết lại cầu đấu thì hết" rồi lặp lại | Ăn mòn tiếp điểm do đọng nước → điện trở tiếp xúc tăng → tự phát nhiệt |
+| PLC treo ngẫu nhiên vào buổi chiều | PLC đặt trên cao, ngay trên biến tần |
+| Đo nhiệt độ thấy "bình thường" mà vẫn hỏng | Đo sai chỗ (giữa tủ) hoặc sai lúc (mới bật máy) |
+| Không ai biết tủ đang nóng cho tới khi hỏng | Không có cảm biến nhiệt độ trong tủ |
+
+#### Chương 25 — [Băng tải & xử lý vật liệu](#phan-ch25-bang-tai-xu-ly-vat-lieu) · 18 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Vật nhỏ / túi nilon rơi hoặc kẹt giữa con lăn | Chọn MDR con lăn trần cho vật không phù hợp |
+| Thùng hàng trôi qua vùng sau, thỉnh thoảng đâm nhau | Tích luỹ ở tốc độ trên 180 FPM |
+| Hệ tưởng vùng trống mà thật ra có vật | Vật nhỏ và nặng trôi vượt qua hẳn mắt đọc |
+| Bộ nguồn không lên khi bật máy đầu ngày | Nhiều vùng khởi động cùng lúc, dòng đỉnh vượt xa dòng chạy |
+| Con lăn cuối dây chuyền chạy chậm, card báo thấp áp | Sụt áp trên đường 24 V — nguồn đặt quá xa |
+| Tính nguồn thiếu hẳn so với thực tế | Quên rằng mỗi con lăn ~2,2 A; một đoạn 3 m đã ~8,8 A |
+| Thi công phát sinh ngoài dự toán | Quên phải kéo điện lực AC tới từng vị trí RPP |
+| Card ngõ ra không khớp PLC | Card có bản NPN riêng và PNP riêng |
+| Ghép hai đoạn xong thì dây không đủ dài / mắt đọc khác phía | Card điều khiển của các đoạn không cùng một phía |
+| Máy phía sau ăn từng cái mà băng tải nhả cả cụm | Chọn sai kiểu nhả, và kiểu nhả khó đổi về sau |
+| Cần cơ cấu chốt cữ chặn mà cỡ đang dùng không có | Kiểu đòn chỉ có ở ø32/ø40/ø50 |
+| Vật nhẹ dừng không đúng vị trí, chỉ với sản phẩm nhẹ | Pallet nhẹ bị giảm chấn đẩy nảy lại |
+| Cần cho một số vật đi qua mà cữ vẫn chặn | Chưa dùng nắp vô hiệu (cancel cap) |
+| Mua cữ chặn rồi không gắn được cảm biến vị trí | Đặt RSQ/RSG (không nam châm) thay vì RSDQ/RSDG |
+| Bàn nâng rơi khi mất khí | Không có van khoá / chốt cơ khí |
+| AGV rời đi khi hàng còn nửa trên xe | Chưa định nghĩa hành vi khi mất liên lạc giữa lúc chuyển |
+| Người bị bất ngờ vì băng tải tự chạy | MDR khởi động đột ngột và im lặng, khác hẳn băng tải AC |
+| Sau dừng khẩn, mất trạng thái tích luỹ, vật kẹt vị trí xấu | Dừng khẩn thiết kế đơn giản là cắt hết 24 V |
+
+#### Chương 26 — [Robot & cơ cấu chuyển động đặc biệt](#phan-ch26-robot-chuyen-dong-dac-biet) · 23 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Robot 6 trục lắp xong thấy quá phức tạp cho việc đang làm | Chọn 6 trục khi SCARA đủ |
+| Rào an toàn phải làm lớn hơn dự kiến | Robot 6 trục với xa hơn theo mọi hướng |
+| Rút tay dạy thì robot dừng khẩn | Đúng thiết kế — rút là hở mạch dừng khẩn của tay dạy |
+| Robot vẫn chạy nhanh trong chế độ dạy dù đã đặt tốc độ thấp | ⚠ Giới hạn tốc độ không phải chức năng an toàn |
+| Người bị robot va khi đang dạy | Tin vào "đặt tốc độ thấp là an toàn" |
+| SVCE không tác dụng dù đã đấu đúng dây | Nhầm NPN/PNP — do DI.COM/DO.COM quyết định, không do mã hàng |
+| SVCE chập chờn | Dòng vào không đủ — cần ≥ 8 mA |
+| Robot tạm dừng bất ngờ giữa chương trình | SVCE thay đổi trạng thái khi đang chạy — đúng thiết kế |
+| Chọn "Category 3" rồi coi là đã đạt PL | Category chỉ là cấu trúc; PL còn phụ thuộc MTTFd/DCavg/CCF của linh kiện thật |
+| Không tính được PL vì không biết linh kiện gì | Thiếu B10d của nút dừng khẩn / công tắc cho phép |
+| Mua cobot rồi bỏ qua đánh giá rủi ro | Ngộ nhận "cobot là an toàn sẵn" |
+| Cobot cầm dao/mũi hàn vẫn để người đứng cạnh | Dụng cụ đầu tay phá vỡ toàn bộ giả định cộng tác |
+| Dùng chế độ PFL mà chưa đo lực | Con số giới hạn phụ thuộc vùng cơ thể |
+| Tín hiệu an toàn robot đi qua EtherNet/IP thường | Nhầm fieldbus thường với fieldbus an toàn |
+| Robot treo mà PLC không biết | Không có nhịp tim |
+| Đầu công cụ rơi khỏi tool changer | Không có tự khoá cơ khí, hoặc chỉ có cảm biến "đã cấp khí" |
+| Encoder mất xung / sai vị trí trên trục xoay | Cho encoder đi qua vành trượt |
+| Mạch an toàn qua vành trượt báo lỗi giả | Điện trở tiếp xúc thay đổi khi xoay |
+| Trục rơi khi mất điện | Động cơ tuyến tính / DD không có ma sát tự giữ |
+| Độ chính xác trôi theo thời gian chạy | Động cơ tuyến tính toả nhiệt vào kết cấu máy |
+| Trục tuyến tính xước, kẹt sau vài tháng | Nam châm hút mạt sắt |
+| Cam indexer không đổi được số vị trí khi thêm mã sản phẩm | Số vị trí cố định khi mua |
+| Cơ cấu khác lao vào lúc bàn đang xoay | Thiếu tín hiệu "đang chuyển" |
+
+#### Chương 27 — [Thiết bị gia công & liên kết](#phan-ch27-gia-cong-lien-ket) · 23 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Mối hàn siêu âm lúc được lúc không, mặt nhựa có vết mờ | Trigger force quá thấp — rung bắt đầu khi chưa ép chặt |
+| Chất lượng đổi theo lô nguyên liệu | Đang dùng chế độ thời gian — không bù được dung sai |
+| Cụm sau khi hàn không lọt vào vỏ | Chế độ năng lượng không kiểm soát kích thước cuối |
+| Mối hàn yếu dù thông số đúng | Thiếu thời gian giữ — nhựa chưa đông đã nhả |
+| Đổi thiết kế sản phẩm thì dừng sản xuất nhiều tuần | Horn phải chế tạo riêng, mất hàng tuần |
+| Chọn 40 kHz vì "số to hơn chắc tốt hơn" | Tần số cao = biên độ nhỏ, hợp chi tiết nhỏ |
+| Pulse heat: nhiệt độ đặt đúng mà mối hàn nguội | Mối bắt cáp thứ cấp lỏng/oxy hoá — điện áp chỉ ~1 V nên sụt áp là chí mạng |
+| Pulse heat: thermode cháy | Cặp nhiệt bong → đọc thấp → bộ điều khiển tự đẩy công suất lên |
+| Nhiệt độ hiển thị khác nhiệt độ thật | Cặp nhiệt gắn sai vị trí trên thermode |
+| Sai số nhiệt độ rất lớn | Cắm sai loại cặp nhiệt (K vào kênh cấu hình E/J) |
+| Đầu tán ép nhiệt mất lực kẹp sau vài ngày | Nhả sớm, nhựa đàn hồi trở lại |
+| Linh kiện dưới chi tiết hỏng do rung | Dùng siêu âm ở chỗ đáng lẽ dùng ép nhiệt |
+| Servo press: lực đỉnh đúng mà sản phẩm vẫn lỗi | Chỉ kiểm con số cuối, không kiểm đường cong |
+| Servo press trôi xuống khi mất điện | Không có phanh |
+| Bắt vít: mô-men đạt mà vít trờn ren | Chỉ kiểm mô-men cuối |
+| Số liệu bắt vít ghi lại không ai tin | Chưa hiệu chuẩn định kỳ |
+| Lượng keo khác nhau sáng và chiều | Độ nhớt đổi theo nhiệt độ |
+| ⚠ Nhìn "chỗ tia laser chiếu" thấy không chói nên tưởng an toàn | Cấp 4: phản xạ khuếch tán cũng gây hại |
+| ⚠ Đeo kính bảo hộ laser mà vẫn bị hại mắt | Sai bước sóng / sai OD |
+| ⚠ Vô hiệu hoá khoá cửa để "chỉnh cho nhanh" | Nguyên nhân của phần lớn tai nạn laser |
+| Cửa sổ quan sát buồng laser không bảo vệ được | Dùng kính thường |
+| Vật cháy trong buồng laser | Cấp 4 đốt cháy được vật liệu; không lường trước tình huống vật kẹt |
+| Không chứng minh được chất lượng lô hàng | Máy không ghi lại số liệu từng mối |
+
+#### Chương 28 — [Trạm đo lường & kiểm tra](#phan-ch28-do-luong-kiem-tra) · 17 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| ⚠⚠ Cả lô hàng đều PASS, tỷ lệ NG về 0 | Dây đo đứt / kẹp không tiếp xúc / không có sản phẩm → dòng ≈ 0 → dưới giới hạn trên → PASS |
+| Không ai phát hiện trạm đo hỏng | Không chạy mẫu NG đã biết |
+| Sản phẩm PASS ở nhà máy, hỏng cách điện ngoài thị trường | Thử hipot không có thời gian tăng áp → quá độ làm suy giảm cách điện cục bộ |
+| Chép quy trình hipot từ sản phẩm này sang sản phẩm khác thì sai | Mỗi tiêu chuẩn có quy trình khác nhau (60335 "tăng dần" vs 60065 "tăng nhanh") |
+| ⚠ Bị giật sau khi máy đã báo xong | Thử DC để lại điện tích trên sản phẩm và cáp |
+| Máy vẫn phát cao áp khi cửa mở | Chân 1–13 bị nối tắt cố định |
+| Số liệu đo trông hợp lý nhưng sai | Đọc kết quả trước khi phép đo xong |
+| Đổi thiết bị đo thì chương trình cho kết quả khó hiểu | Không kiểm tra IDN?; tập lệnh khác nhau dù cùng "hỗ trợ SCPI" |
+| Trạm rò rỉ báo rò giả vào buổi sáng / khi mở cửa xưởng | Nhiệt độ — khí nén nóng lên rồi nguội, hoặc gió lùa |
+| Sản phẩm vừa qua gia nhiệt luôn báo rò | Chi tiết đang nguội và co lại trong lúc đo |
+| Trạm rò rỉ báo "không rò" khi đầu bịt không kín | Cùng bẫy 28.4 |
+| Đo nhiệt kim loại sáng thấy mát mà sờ thấy nóng | Độ phát xạ thấp → hồng ngoại đọc thấp hơn thật |
+| Số đo nhiệt đổi theo người cầm máy | Bề mặt bóng phản xạ bức xạ từ xung quanh |
+| Đo nhiệt qua cửa tủ kính không ra kết quả | Kính thường chặn hồng ngoại |
+| Đo nhiệt điểm nhỏ mà ra giá trị trung bình cả vùng | Đứng quá xa so với tỷ lệ D:S |
+| Số liệu trạm đo không ai tin khi có tranh chấp | Thiết bị quá hạn hiệu chuẩn |
+| Sản phẩm hỏng ngay khi đưa vào hipot | Đã lỗi từ trước; đặt cao áp lên sản phẩm có vấn đề |
+
+#### Chương 29 — [Hệ phụ trợ nhà máy](#phan-ch29-he-phu-tro-nha-may) · 21 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Kích thước sản phẩm trôi dần theo giờ chạy | Chiller không giữ được nhiệt độ |
+| Chiller không đạt công suất lạnh và mất luôn độ ổn định | ⚠⚠ Lưu lượng thấp hơn định mức — catalogue ghi rõ mất cả hai thông số |
+| Nhiệt độ dao động khi tải thay đổi đột ngột | Dung tích bình chỉ ~5 L, nhiệt dung thấp |
+| Nước nhỏ giọt khắp đường ống, tủ điện dưới bị ẩm | Đặt nhiệt độ dưới điểm sương |
+| Nhà xưởng nóng lên sau khi lắp chiller | Bản giải nhiệt gió thải toàn bộ nhiệt vào xưởng |
+| Chiller cáu cặn, ăn mòn sau vài tháng | Nước máy không đạt tiêu chuẩn chất lượng nước |
+| Truyền thông chiller chập chờn | Chưa lắp lõi ferrite hãng kèm theo |
+| Khói không được hút hết dù quạt to | Miệng hút quá xa nguồn; lưu lượng giảm rất nhanh theo khoảng cách |
+| Quạt hút vẫn quay mà xưởng vẫn nhiều khói | Lọc tắc — không có tín hiệu nào báo |
+| Lọc tinh tắc rất nhanh, tốn tiền | Thiếu cấp lọc thô phía trước |
+| Vẫn còn mùi dung môi dù lọc mới | Lọc hạt không lọc được mùi |
+| Than hoạt tính hết tác dụng mà không ai biết | Bão hoà không làm đổi chênh áp |
+| Ống kính camera / cửa sổ laser bẩn dần, chất lượng trôi | Hút khói không đủ |
+| Vòng bi hỏng dù hệ bôi trơn "vẫn chạy" | Ống tắc / tuột / hết mỡ — bộ đếm bơm vẫn tăng |
+| Một số điểm thừa mỡ, một số điểm khô | Kiểu một đường theo trở kháng — một đường tắc thì đường khác nhận nhiều hơn |
+| Hệ bôi trơn không đẩy được vào sáng sớm mùa lạnh | Mỡ đặc lên khi lạnh |
+| ⚠⚠ Điện giật nặng / hồ quang khi tháo dây đồng hồ đo | Hở thứ cấp biến dòng khi sơ cấp còn mang tải → điện áp cảm ứng rất cao |
+| Công suất đo được ra số âm | CT lắp ngược chiều |
+| Từng giá trị điện áp/dòng đúng nhưng công suất sai | Nhầm pha giữa mạch áp và mạch dòng |
+| Số điện năng sai theo một hệ số tròn (2×, 5×, 10×) | Tỉ số CT cài trong đồng hồ không khớp CT thật |
+| Hệ phụ trợ hỏng mà không ai biết | Chỉ có nút bật/tắt, không có tín hiệu phản hồi |
+
+#### Chương 30 — [Cảm biến siêu âm, mức & giám sát tình trạng](#phan-ch30-sieu-am-muc-giam-sat) · 23 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| Cảm biến quang không thấy chai PET / màng trong suốt | Ánh sáng xuyên qua vật |
+| Cảm biến quang sai vì nền bóng hoặc màng phủ bề mặt | Ánh sáng bị hấp thụ / phản chiếu sai |
+| Siêu âm không thấy mút xốp / vải | ⚠⚠ Vật hút âm — âm đi vào không quay ra |
+| Siêu âm mất tín hiệu dù vật vẫn ở đó | ⚠⚠ Bề mặt nghiêng → âm dội đi hướng khác |
+| Không gá được đầu dò vì quá sát vật | Dải bắt đầu từ 50 mm (H02) hoặc 150 mm (H07/H10R) |
+| Đo chập chờn khi vật ở gần mép dải | ⭐⭐ Vùng chết ≈ 2 % F.S. ở CẢ HAI đầu dải |
+| Giá trị đo trôi theo giờ trong ngày | ⭐⭐ Trôi theo nhiệt độ — FW-H07 lệch tới 1,75 mm mỗi °C |
+| Sai số 35 mm mà cảm biến vẫn tốt | Chênh 20 °C sáng–chiều × 0,25 % F.S./°C trên 700 mm |
+| Không bắt kịp vật trên băng tải | Siêu âm đáp ứng 250–1000 ms — chậm hơn quang hàng nghìn lần |
+| Chọn bản chính xác nhất rồi hệ chạy chậm hẳn | FW-H10R chính xác nhất nhưng đáp ứng 1000 ms |
+| Ngõ ra nhấp nháy quanh ngưỡng | Giá trị dao động |
+| PLC đếm hàng trăm lần đầy/vơi giả mỗi phút | Mặt chất lỏng gợn sóng |
+| Đo mức bằng điện dung: số đọc đổi theo mùa | Hằng số điện môi đổi theo độ ẩm |
+| Điện cực dẫn điện báo mức giả | Bám cặn giữa các điện cực → dẫn điện giả |
+| Đổi loại chất lỏng thì số mức sai hết | Đo bằng áp suất thuỷ tĩnh — phụ thuộc khối lượng riêng |
+| Đo mức hạt rắn: hai cảm biến, hai kết quả khác xa | ⚠⚠ Đống hạt có góc nghỉ, bề mặt hình nón |
+| Phao kẹt, báo sai mức | Bộ phận chuyển động bám bẩn |
+| Gắn cảm biến rung nhưng không biết mức nào là xấu | Chưa có đường nền — gắn sau khi máy đã chạy lâu |
+| Số liệu rung không so sánh được giữa các lần đo | ⭐ Đổi vị trí gá giữa các lần |
+| Đo được rung nhưng không phát hiện hỏng vòng bi | Gá trên tấm vỏ mỏng, hoặc gá nam châm trên sơn dày → mất tần số cao |
+| Dùng cảm biến va chạm làm bảo vệ người | ⚠ Nó bảo vệ tài sản, không phải người |
+| Đầu đo tiếp xúc cho kích thước nhỏ hơn thật | Lực lò xo làm biến dạng chi tiết mềm/mỏng |
+| Đầu đo tiếp xúc sai lệch không đều | Chạm nghiêng thay vì vuông góc |
+
+<!-- AUTO:END -->
 
 ---
 

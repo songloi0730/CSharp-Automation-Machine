@@ -9,10 +9,10 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.3.0.260813 |
+| **Phiên bản** | v1.4.0.260813 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
-| **Nội dung** | 30 chương + 5 phụ lục · 136 sơ đồ tự vẽ · 31 ảnh thật |
+| **Nội dung** | 30 chương + 5 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
 | **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |
 
@@ -5208,6 +5208,12 @@ Bản vẽ kích thước ghi **mặt lục giác 12 mm** trên phần thân ren
 > lỏng hoặc ren có sẵn lớp làm kín an toàn hơn băng tan.
 
 #### 10.1.7 Đấu nối và màu dây
+
+![SMC ISE30A — đấu dây, bản analog, và mã phụ kiện](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MjAgNjAwIiB3aWR0aD0iOTIwIiBoZWlnaHQ9IjYwMCIKICAgICBmb250LWZhbWlseT0iU2Vnb2UgVUksIEFyaWFsLCBzYW5zLXNlcmlmIj4KICA8cmVjdCB3aWR0aD0iOTIwIiBoZWlnaHQ9IjYwMCIgZmlsbD0iI2ZmZmZmZiIvPgoKICA8dGV4dCB4PSIxNiIgeT0iMjYiIGZvbnQtc2l6ZT0iMTYiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMTExODI3Ij5TTUMgSVNFMzBBIOKAlCDEkeG6pXUgZMOieSB0aGVvIMSQw5pORyBtw6MgaMOgbmc8L3RleHQ+CiAgPHRleHQgeD0iMTYiIHk9IjQ2IiBmb250LXNpemU9IjExIiBmaWxsPSIjNGI1NTYzIj5N4buNaSBz4buRIGxp4buHdSBkxrDhu5tpIMSRw6J5IGzhuqV5IHThu6sgY2F0YWxvZ3VlIGNow61uaCBow6NuZyBTTUMgKFpTRTMwQShGKS9JU0UzMEEpLiBLaMO0bmcgc3V5IMSRb8Ohbi48L3RleHQ+CgogIDwhLS0gPT09PT09PT09PT09PT09PT0gMyBsw7VpID09PT09PT09PT09PT09PT09IC0tPgogIDxyZWN0IHg9IjE2IiB5PSI2MiIgd2lkdGg9IjQyOCIgaGVpZ2h0PSIyMTIiIHJ4PSI2IiBmaWxsPSIjZjlmYWZiIiBzdHJva2U9IiNkMWQ1ZGIiLz4KICA8dGV4dCB4PSIzMCIgeT0iODQiIGZvbnQtc2l6ZT0iMTMiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMTExODI3Ij5Dw6FwIDMgbMO1aSDigJQgMSBuZ8O1IHJhPC90ZXh0PgogIDx0ZXh0IHg9IjMwIiB5PSIxMDEiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzRiNTU2MyI+TcOjIGPDoXA6IFpTLTM4LTNMICgyIG0pIMK3IFpTLTM4LTNHIChrw6htIG7huq9wIGNoZSk8L3RleHQ+CgogIDxyZWN0IHg9IjM0IiB5PSIxMTIiIHdpZHRoPSIxMDQiIGhlaWdodD0iMTIwIiByeD0iNSIgZmlsbD0iI2U1ZTdlYiIgc3Ryb2tlPSIjNmI3MjgwIi8+CiAgPHJlY3QgeD0iNDYiIHk9IjEyNiIgd2lkdGg9IjgwIiBoZWlnaHQ9IjM0IiByeD0iMyIgZmlsbD0iIzExMTgyNyIvPgogIDx0ZXh0IHg9Ijg2IiB5PSIxNTAiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMjJjNTVlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4wLjUwMDwvdGV4dD4KICA8dGV4dCB4PSI4NiIgeT0iMTc2IiBmb250LXNpemU9IjkuNSIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TENEIDQgc+G7kSwgMiBtw6B1PC90ZXh0PgogIDx0ZXh0IHg9Ijg2IiB5PSIxODkiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjMzc0MTUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4oxJHhu48gLyB4YW5oIGzDoSk8L3RleHQ+CiAgPHRleHQgeD0iODYiIHk9IjIxMCIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiMzNzQxNTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPklTRTMwQTwvdGV4dD4KICA8dGV4dCB4PSI4NiIgeT0iMjIzIiBmb250LXNpemU9IjkiIGZpbGw9IiM2YjcyODAiIHRleHQtYW5jaG9yPSJtaWRkbGUiPsOhcCBkxrDGoW5nPC90ZXh0PgoKICA8bGluZSB4MT0iMTM4IiB5MT0iMTMyIiB4Mj0iMzAwIiB5Mj0iMTMyIiBzdHJva2U9IiM3YzJkMTIiIHN0cm9rZS13aWR0aD0iMy41Ii8+CiAgPHRleHQgeD0iMzA2IiB5PSIxMzYiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzExMTgyNyI+PHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj5Ow6J1PC90c3Bhbj4g4oCUIERDICgrKTwvdGV4dD4KICA8bGluZSB4MT0iMTM4IiB5MT0iMTcyIiB4Mj0iMzAwIiB5Mj0iMTcyIiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMy41Ii8+CiAgPHRleHQgeD0iMzA2IiB5PSIxNzYiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzExMTgyNyI+PHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj7EkGVuPC90c3Bhbj4g4oCUIE9VVDE8L3RleHQ+CiAgPGxpbmUgeDE9IjEzOCIgeTE9IjIxMiIgeDI9IjMwMCIgeTI9IjIxMiIgc3Ryb2tlPSIjMWQ0ZWQ4IiBzdHJva2Utd2lkdGg9IjMuNSIvPgogIDx0ZXh0IHg9IjMwNiIgeT0iMjE2IiBmb250LXNpemU9IjExLjUiIGZpbGw9IiMxMTE4MjciPjx0c3BhbiBmb250LXdlaWdodD0iYm9sZCI+WGFuaCBkxrDGoW5nPC90c3Bhbj4g4oCUIERDICjiiJIpPC90ZXh0PgoKICA8dGV4dCB4PSIzMCIgeT0iMjU2IiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM0YjU1NjMiPk5ndeG7k24gbnXDtGk6IDx0c3BhbiBmb250LXdlaWdodD0iYm9sZCI+MTLigJMyNCBWREMgwrExMCAlPC90c3Bhbj4sIMSR4buZIG5o4bqlcCBuaMO0IOKJpCAxMCAlLDwvdGV4dD4KICA8dGV4dCB4PSIzMCIgeT0iMjY5IiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM0YjU1NjMiPmPDsyA8dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPmLhuqNvIHbhu4cgxJHhuqV1IG5nxrDhu6NjIGPhu7FjIG5ndeG7k248L3RzcGFuPi48L3RleHQ+CgogIDwhLS0gPT09PT09PT09PT09PT09PT0gNCBsw7VpID09PT09PT09PT09PT09PT09IC0tPgogIDxyZWN0IHg9IjQ2MCIgeT0iNjIiIHdpZHRoPSI0NDQiIGhlaWdodD0iMjEyIiByeD0iNiIgZmlsbD0iI2Y5ZmFmYiIgc3Ryb2tlPSIjZDFkNWRiIi8+CiAgPHRleHQgeD0iNDc0IiB5PSI4NCIgZm9udC1zaXplPSIxMyIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxMTE4MjciPkPDoXAgNCBsw7VpIOKAlCAyIG5nw7UgcmE8L3RleHQ+CiAgPHRleHQgeD0iNDc0IiB5PSIxMDEiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzRiNTU2MyI+TcOjIGPDoXA6IFpTLTM4LTRMICgyIG0pIMK3IFpTLTM4LTRHIChrw6htIG7huq9wIGNoZSk8L3RleHQ+CgogIDxyZWN0IHg9IjQ3OCIgeT0iMTEyIiB3aWR0aD0iMTA0IiBoZWlnaHQ9IjEyMCIgcng9IjUiIGZpbGw9IiNlNWU3ZWIiIHN0cm9rZT0iIzZiNzI4MCIvPgogIDxyZWN0IHg9IjQ5MCIgeT0iMTI2IiB3aWR0aD0iODAiIGhlaWdodD0iMzQiIHJ4PSIzIiBmaWxsPSIjMTExODI3Ii8+CiAgPHRleHQgeD0iNTMwIiB5PSIxNTAiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjZWY0NDQ0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4wLjUwMDwvdGV4dD4KICA8dGV4dCB4PSI1MzAiIHk9IjE3NiIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiMzNzQxNTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPm3DoHUgY2jhu68gxJHhu5VpIHRoZW88L3RleHQ+CiAgPHRleHQgeD0iNTMwIiB5PSIxODkiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjMzc0MTUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj50cuG6oW5nIHRow6FpIG5nw7UgcmE8L3RleHQ+CiAgPHRleHQgeD0iNTMwIiB5PSIyMTAiIGZvbnQtc2l6ZT0iOS41IiBmaWxsPSIjMzc0MTUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5JU0UzMEE8L3RleHQ+CgogIDxsaW5lIHgxPSI1ODIiIHkxPSIxMjYiIHgyPSI3NDQiIHkyPSIxMjYiIHN0cm9rZT0iIzdjMmQxMiIgc3Ryb2tlLXdpZHRoPSIzLjUiLz4KICA8dGV4dCB4PSI3NTAiIHk9IjEzMCIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjMTExODI3Ij48dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPk7DonU8L3RzcGFuPiDigJQgREMgKCspPC90ZXh0PgogIDxsaW5lIHgxPSI1ODIiIHkxPSIxNTgiIHgyPSI3NDQiIHkyPSIxNTgiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIzLjUiLz4KICA8dGV4dCB4PSI3NTAiIHk9IjE2MiIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjMTExODI3Ij48dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPsSQZW48L3RzcGFuPiDigJQgT1VUMTwvdGV4dD4KICA8bGluZSB4MT0iNTgyIiB5MT0iMTkwIiB4Mj0iNzQ0IiB5Mj0iMTkwIiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMy41Ii8+CiAgPHRleHQgeD0iNzUwIiB5PSIxOTQiIGZvbnQtc2l6ZT0iMTEuNSIgZmlsbD0iIzExMTgyNyI+PHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj5UcuG6r25nPC90c3Bhbj4g4oCUIE9VVDI8L3RleHQ+CiAgPGxpbmUgeDE9IjU4MiIgeTE9IjIyMiIgeDI9Ijc0NCIgeTI9IjIyMiIgc3Ryb2tlPSIjMWQ0ZWQ4IiBzdHJva2Utd2lkdGg9IjMuNSIvPgogIDx0ZXh0IHg9Ijc1MCIgeT0iMjI2IiBmb250LXNpemU9IjExLjUiIGZpbGw9IiMxMTE4MjciPjx0c3BhbiBmb250LXdlaWdodD0iYm9sZCI+WGFuaCBkxrDGoW5nPC90c3Bhbj4g4oCUIERDICjiiJIpPC90ZXh0PgoKICA8dGV4dCB4PSI0NzQiIHk9IjI1NiIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNGI1NTYzIj7irZAgxJDDqG4gYsOhbyBzw6FuZyBraGkgbmfDtSByYSBPTiDigJQgdsOgIDx0c3BhbiBmb250LXdlaWdodD0iYm9sZCI+aGFpIG5nw7Uga2jDoWMgbcOgdTwvdHNwYW4+OjwvdGV4dD4KICA8dGV4dCB4PSI0NzQiIHk9IjI2OSIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNGI1NTYzIj5PVVQxIDx0c3BhbiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzE2YTM0YSI+eGFuaCBsw6E8L3RzcGFuPiDCtyBPVVQyIDx0c3BhbiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2RjMjYyNiI+xJHhu488L3RzcGFuPiDigJQgbmjDrG4gbMOgIGJp4bq/dCBuZ8O1IG7DoG8gxJFhbmcgdMOhYyDEkeG7mW5nLjwvdGV4dD4KCiAgPCEtLSA9PT09PT09PT09PT09PT09PSBi4bqjbiBhbmFsb2cgPT09PT09PT09PT09PT09PT0gLS0+CiAgPHJlY3QgeD0iMTYiIHk9IjI5MCIgd2lkdGg9IjQyOCIgaGVpZ2h0PSIxMjYiIHJ4PSI2IiBmaWxsPSIjZWZmNmZmIiBzdHJva2U9IiM5M2M1ZmQiLz4KICA8dGV4dCB4PSIzMCIgeT0iMzEyIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzFlM2E4YSI+QuG6o24gY8OzIG5nw7UgcmEgQU5BTE9HPC90ZXh0PgogIDx0ZXh0IHg9IjMwIiB5PSIzMzMiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzFlM2E4YSI+TmfDtSByYSA8dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPsOhcDwvdHNwYW4+OiAx4oCTNSBWIMKxMiw1ICUgRi5TLiDCtyB0cuG7nyBraMOhbmcgcmEg4omIIDx0c3BhbiBmb250LXdlaWdodD0iYm9sZCI+MSBrzqk8L3RzcGFuPjwvdGV4dD4KICA8dGV4dCB4PSIzMCIgeT0iMzUyIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMxZTNhOGEiPk5nw7UgcmEgPHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj5kw7JuZzwvdHNwYW4+OiA04oCTMjAgbUEgwrEyLDUgJSBGLlMuPC90ZXh0PgogIDx0ZXh0IHg9IjMwIiB5PSIzNzQiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzFlM2E4YSI+4pqgIFRy4bufIGtow6FuZyB04bqjaSBjaG8gbmfDtSBkw7JuZyA8dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPnBo4bulIHRodeG7mWMgxJFp4buHbiDDoXAgbmd14buTbjwvdHNwYW4+OjwvdGV4dD4KICA8dGV4dCB4PSI0NCIgeT0iMzkyIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMxZTNhOGEiPm5ndeG7k24gPHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj4xMiBWIOKGkiB04buRaSDEkWEgMzAwIM6pPC90c3Bhbj4gwrcgbmd14buTbiA8dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPjI0IFYg4oaSIHThu5FpIMSRYSA2MDAgzqk8L3RzcGFuPjwvdGV4dD4KICA8dGV4dCB4PSIzMCIgeT0iNDA5IiBmb250LXNpemU9IjEwIiBmaWxsPSIjMWU0MGFmIj5OdcO0aSAxMiBWIG3DoCDEkeG6t3QgdOG6o2kgNTAwIM6pIGzDoCBkw7JuZyBraMO0bmcgbMOqbiDEkeG7pyDigJQgbOG7l2kgcuG6pXQga2jDsyDEkW/DoW4uPC90ZXh0PgoKICA8IS0tID09PT09PT09PT09PT09PT09IGdp4bqjaSBtw6MgbcOjIGjDoG5nID09PT09PT09PT09PT09PT09IC0tPgogIDxyZWN0IHg9IjQ2MCIgeT0iMjkwIiB3aWR0aD0iNDQ0IiBoZWlnaHQ9IjEyNiIgcng9IjYiIGZpbGw9IiNmZWZjZTgiIHN0cm9rZT0iI2ZkZTA0NyIvPgogIDx0ZXh0IHg9IjQ3NCIgeT0iMzEyIiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzcxM2YxMiI+QmEgZMOybmcgY8O5bmcgaOG7jSDigJQgY2jhu41uIMSRw7puZyB0aGVvIMOhcDwvdGV4dD4KICA8dGV4dCB4PSI0NzQiIHk9IjMzNCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzcxM2YxMiI+PHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj5JU0UzMEE8L3RzcGFuPiDigJQgw6FwIDx0c3BhbiBmb250LXdlaWdodD0iYm9sZCI+ZMawxqFuZzwvdHNwYW4+LCBk4bqjaSDiiJIwLDEgxJHhur9uIDEgTVBhPC90ZXh0PgogIDx0ZXh0IHg9IjQ3NCIgeT0iMzU2IiBmb250LXNpemU9IjExIiBmaWxsPSIjNzEzZjEyIj48dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPlpTRTMwQTwvdHNwYW4+IOKAlCA8dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPmNow6JuIGtow7RuZzwvdHNwYW4+PC90ZXh0PgogIDx0ZXh0IHg9IjQ3NCIgeT0iMzc4IiBmb250LXNpemU9IjExIiBmaWxsPSIjNzEzZjEyIj48dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPlpTRTMwQUY8L3RzcGFuPiDigJQgPHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj5waOG7qWMgaOG7o3A8L3RzcGFuPiAoY+G6oyDDom0gdsOgIGTGsMahbmcpPC90ZXh0PgogIDx0ZXh0IHg9IjQ3NCIgeT0iNDAxIiBmb250LXNpemU9IjEwIiBmaWxsPSIjODU0ZDBlIj5CYSBtw6MgY2jhu4kga2jDoWMgbmhhdSBt4buZdCBoYWkga8O9IHThu7EgbmjGsG5nIEtIw5RORyB0aGF5IGzhuqtuIMSRxrDhu6NjLjwvdGV4dD4KCiAgPCEtLSA9PT09PT09PT09PT09PT09PSBwaOG7pSBraeG7h24gPT09PT09PT09PT09PT09PT0gLS0+CiAgPHJlY3QgeD0iMTYiIHk9IjQzMiIgd2lkdGg9Ijg4OCIgaGVpZ2h0PSIxNTIiIHJ4PSI2IiBmaWxsPSIjZjlmYWZiIiBzdHJva2U9IiNkMWQ1ZGIiLz4KICA8dGV4dCB4PSIzMCIgeT0iNDU0IiBmb250LXNpemU9IjEzIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzExMTgyNyI+UGjhu6Uga2nhu4duIMSRaSBrw6htIOKAlCDEkeG6t3QgaMOgbmcgYuG6sW5nIG3DoyByacOqbmcsIGtow7RuZyBrw6htIHPhurVuIHRyb25nIGjhu5lwPC90ZXh0PgoKICA8dGV4dCB4PSIzMCIgeT0iNDc4IiBmb250LXNpemU9IjExIiBmaWxsPSIjMTExODI3Ij48dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPkPDoXA8L3RzcGFuPjwvdGV4dD4KICA8dGV4dCB4PSIzMCIgeT0iNDk2IiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMzNzQxNTEiPlpTLTM4LTNMIOKAlCAzIGzDtWksIDEgbmfDtSByYSwgMiBtPC90ZXh0PgogIDx0ZXh0IHg9IjMwIiB5PSI1MTMiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzM3NDE1MSI+WlMtMzgtNEwg4oCUIDQgbMO1aSwgMiBuZ8O1IHJhLCAyIG08L3RleHQ+CiAgPHRleHQgeD0iMzAiIHk9IjUzMCIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzc0MTUxIj5aUy0zOC0zRyAvIDRHIOKAlCBuaMawIHRyw6puLCBrw6htIG7huq9wIGNoZSDEkeG6p3UgbuG7kWk8L3RleHQ+CiAgPHRleHQgeD0iMzAiIHk9IjU0NyIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzc0MTUxIj5aUy0zOC01TCDigJQgMyBsw7VpLCAxIG0sIGPDsyBjaOG7qWMgbsSDbmcgc2FvIGNow6lwPC90ZXh0PgogIDx0ZXh0IHg9IjMwIiB5PSI1NjQiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzM3NDE1MSI+WlMtMzgtVSDigJQgYuG7mSBzYW8gY2jDqXAsIHThu5tpIDEwIG3DoXkgY29uPC90ZXh0PgoKICA8dGV4dCB4PSIzNTIiIHk9IjQ3OCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzExMTgyNyI+PHRzcGFuIGZvbnQtd2VpZ2h0PSJib2xkIj5HacOhIMSR4buhPC90c3Bhbj48L3RleHQ+CiAgPHRleHQgeD0iMzUyIiB5PSI0OTYiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzM3NDE1MSI+WlMtMzgtQTEg4oCUIGdpw6EgQSAoa8OobSAyIHbDrXQgTTPDlzVMKTwvdGV4dD4KICA8dGV4dCB4PSIzNTIiIHk9IjUxMyIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzc0MTUxIj5aUy0zOC1BMiDigJQgZ2nDoSBCIChrw6htIDIgdsOtdCBNM8OXNUwpPC90ZXh0PgogIDx0ZXh0IHg9IjM1MiIgeT0iNTMwIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMzNzQxNTEiPlpTLTM4LUEzIOKAlCBnacOhIEMgKGvDqG0gMiB2w610IE0zw5c1TCk8L3RleHQ+CgogIDx0ZXh0IHg9IjY0NiIgeT0iNDc4IiBmb250LXNpemU9IjExIiBmaWxsPSIjMTExODI3Ij48dHNwYW4gZm9udC13ZWlnaHQ9ImJvbGQiPsSQ4bqndSBu4buRaSDhu5FuZyBuaGFuaDwvdHNwYW4+PC90ZXh0PgogIDx0ZXh0IHg9IjY0NiIgeT0iNDk2IiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiMzNzQxNTEiPlpTLTM4LUM0TCDigJQg4buRbmcgw7g0IG1tLCBjbzwvdGV4dD4KICA8dGV4dCB4PSI2NDYiIHk9IjUxMyIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjMzc0MTUxIj5aUy0zOC1DNkwg4oCUIOG7kW5nIMO4NiBtbSwgY288L3RleHQ+CiAgPHRleHQgeD0iNjQ2IiB5PSI1MzAiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzM3NDE1MSI+WlMtMzgtTjdMIOKAlCDhu5FuZyDDuDEvNCIsIGNvPC90ZXh0PgogIDx0ZXh0IHg9IjY0NiIgeT0iNTUyIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNmI3MjgwIj5D4bqjIGJhIMSR4buBdSBrw6htIGdpb8SDbmcgTyB2w6Aga+G6uXAgbeG7mXQgY2jhuqFtLjwvdGV4dD4KPC9zdmc+Cg==)
+
+**Hình 10.7** — ⭐ **Đấu dây cho đúng mã hàng `ISE30A`** mà mục này đang nói, không phải một cảm biến áp suất chung chung. Ba nhóm thông tin: **màu dây 3 lõi và 4 lõi** (nâu `DC(+)` · đen `OUT1` · trắng `OUT2` · xanh dương `DC(−)`), **bản có ngõ ra analog** kèm ⚠ trở kháng tải **phụ thuộc điện áp nguồn**, và **mã đặt hàng của từng phụ kiện** — cáp, giá đỡ, đầu nối ống. Toàn bộ số liệu lấy từ catalogue chính hãng, xem [Tài liệu tham khảo](#phan-00c-tai-lieu-tham-khao).
+
+> ⚠ **Cáp KHÔNG kèm sẵn trong hộp.** Mua `ISE30A` mà quên `ZS-38-3L` hoặc `ZS-38-4L` là có cảm biến nhưng không đấu được — lỗi đặt hàng kinh điển. Và chọn cáp **3 lõi cho thiết bị 2 ngõ ra** thì mất luôn `OUT2`.
 
 **Màu dây đã xác minh trên ZSE30A(F)/ISE30A:**
 
@@ -17672,6 +17678,31 @@ with pdfplumber.open(r'<đường dẫn PDF>') as pdf:
 
 ---
 
+### E.4 Nguồn cho Hình 10.7 (SMC ISE30A) — đọc trực tiếp từ catalogue
+
+- SMC, *Series ZSE30A(F)/ISE30A — 2-Color Display High-Precision Digital Pressure Switch*:
+  <https://content2.smcetech.com/pdf/ISE30.pdf> (14 trang, đọc bằng `pdfplumber` chế độ giữ layout).
+
+Những gì **trích thẳng** từ tài liệu này và đưa vào Hình 10.7:
+
+| Số liệu | Nguyên văn trong catalogue |
+|---|---|
+| Màu dây | `Brown DC (+)` · `Black OUT1` · `White OUT2` · `Blue DC (−)` |
+| Màn hình | *4-digit, 7-segment, 2-color LCD (Red/Green)* |
+| Đèn báo | *Lights up when switch output is turned ON. OUT1: Green, OUT2: Red* |
+| Nguồn nuôi | *12 to 24 VDC ±10%, Ripple (p-p) 10% or less (with power supply polarity protection)* |
+| Analog áp | *1 to 5V ±2.5% F.S.*, trở kháng ra *Approx. 1 kΩ* |
+| Analog dòng | *4 to 20 mA ±2.5% F.S.*, tải *Power supply voltage 12 V: 300 Ω, Power supply voltage 24 V: 600 Ω* |
+| Ba dòng cùng họ | *ZSE30A (vacuum) · ZSE30AF (compound) · ISE30A (positive)*; ISE30A *−0.1 to 1 MPa* |
+| Mã phụ kiện | `ZS-38-3L` `ZS-38-4L` `ZS-38-3G` `ZS-38-4G` `ZS-38-5L` `ZS-38-U` `ZS-38-A1/A2/A3` `ZS-38-C4L` `ZS-38-C6L` `ZS-38-N7L` |
+
+> ⭐ Đây là **mẫu quy trình** cho việc "hình cho đúng mã hàng": tải catalogue → đọc bằng
+> `pdfplumber` → **chỉ vẽ những gì đọc được nguyên văn** → ghi lại nguyên văn vào bảng này để
+> người sau kiểm được. **Số liệu trong catalogue không có bản quyền** — chỉ ảnh và bản vẽ của hãng
+> mới có. Vì vậy sách **tự vẽ lại**, không chép hình.
+
+---
+
 ## PHẦN F — Trạng thái mã hàng theo chương
 
 ### F.1 Đã xác minh trong tài liệu gốc
@@ -17942,6 +17973,70 @@ lặn**; `servo amplifier` ra bo mạch còn cũ và bẩn hơn ảnh đang dùn
 > hãng bằng email** rồi lưu thư trả lời cạnh ảnh. Còn **số liệu** trong datasheet (kích thước, sơ đồ
 > chân, dải làm việc) thì **không có bản quyền** — sách vẫn dùng tự do, và đó là cách 136 sơ đồ SVG
 > trong sách được vẽ ra.
+
+---
+
+### G.7 ⭐ "Ảnh cho ĐÚNG mã hàng" — kết quả tra: **0/44**, và đường đi thay thế
+
+Chủ dự án nêu đúng một lỗ thật: sách nhắc **mã hàng thật**, nhưng ảnh trong sách đều là ảnh
+**chung / tương tự**, không phải ảnh của chính mã đó.
+
+#### G.7.1 Đo trước đã — sách đang nhắc những mã nào
+
+`scripts/trich_ma_hang.py` quét toàn bộ 30 chương, lấy chuỗi trong code span có cả **chữ in và số**,
+loại tên tiêu chuẩn và ký hiệu tín hiệu: **44 mã hàng** được nhắc **≥ 3 lần**
+(nhiều nhất: `ADK11` ×15 · `AP11` ×9 · `IZS31` ×9 · `FW-H10R` ×8).
+
+#### G.7.2 Tra ảnh theo từng mã — **0/44 có ảnh thật**
+
+`scripts/tim_anh_theo_ma.py` tra Wikimedia Commons cho từng mã, và **chỉ nhận khi tên file hoặc mô
+tả chứa ĐÚNG chuỗi mã** (không nhận "cùng dòng sản phẩm", không nhận "trông tương tự").
+
+Kết quả thô là 10/44 "có ảnh", nhưng **xem lại thì cả 10 đều là trùng chuỗi ngẫu nhiên**:
+
+| Mã trong sách | Ảnh mà máy tìm ra |
+|---|---|
+| `AP11` | **Phi hành đoàn Apollo 11** |
+| `RCP6` | **Biểu đồ kịch bản khí hậu** (RCP = Representative Concentration Pathway) |
+| `AD12` | **Cung điện Pena**, Bồ Đào Nha |
+| `AB42` | **Cầu đi bộ** ở Scotland |
+| `AB41` | Kỵ binh Piemonte |
+| `AB21` | Diễu hành Quốc khánh Malaysia |
+| `OUT2` / `OUT3` | ảnh ngẫu nhiên |
+
+⚠ **Bài học cho lần sau:** quy tắc "tên file phải chứa đúng mã" **không đủ** khi mã **ngắn**
+(4–5 ký tự). Mã ngắn va chạm với vô số thứ khác. Phải kèm **tên hãng** và vẫn phải **mở ra xem**.
+
+→ Kết luận: **Wikimedia Commons không có ảnh của bất kỳ mã hàng nào sách nhắc.** Không phải chưa
+tìm kỹ — là không có.
+
+#### G.7.3 Kiểm chéo: ảnh sách đang có nêu model nào?
+
+31 ảnh trong sách có **6 model được nêu đích danh** (`DR-15-24`, `FP-XH`, `DPS-350FB`,
+`SDT-SS-112M`, `DES-MG8P-E1`, `MCS-51`) — nhưng **không model nào trong số đó được nhắc trong thân
+bài**. Nghĩa là nhận xét của chủ dự án đúng hoàn toàn.
+
+#### G.7.4 ⭐ Đường đi thay thế: **vẽ lại từ catalogue**, không chép hình
+
+Với sách đấu dây, thứ người đọc cần ở "hình của đúng mã hàng" là **màu dây, số lõi, chân ra, dải
+làm việc, mã phụ kiện** — và những thứ đó là **số liệu, không có bản quyền**. Chỉ **ảnh và bản vẽ**
+của hãng mới có bản quyền. Vì vậy sách **tự vẽ lại**:
+
+**Hình 10.7 (SMC `ISE30A`)** là bản mẫu đầu tiên — xem quy trình và bảng đối chiếu nguyên văn ở
+**§E.4**. Quy trình bốn bước, lặp lại được cho mọi mã:
+
+1. Tải catalogue chính hãng.
+2. Đọc bằng **`pdfplumber` chế độ giữ layout** (xem §E.1b — `pypdf` làm hỏng bảng nhiều cột).
+3. **Chỉ vẽ những gì đọc được nguyên văn**; cái nào không đọc được thì **không vẽ**.
+4. Ghi nguyên văn vào bảng đối chiếu để người sau kiểm được.
+
+> ⚠ **Vì sao không lấy thẳng ảnh trong datasheet.** Ảnh và bản vẽ trong tài liệu hãng **có bản
+> quyền**, và *sách miễn phí* **không** phải là giấy phép — đúng điều `CLAUDE.md` của dự án đã ghi.
+> Sách phát hành **CC BY-NC-SA** trên GitHub công khai, nên đưa ảnh hãng vào còn tạo **mâu thuẫn
+> giấy phép**: tác giả không có quyền cấp phép lại ảnh của họ.
+>
+> ⭐ Hai đường sạch còn lại cho ảnh chụp: **tự chụp tại xưởng**, hoặc **xin phép hãng bằng email**
+> rồi lưu thư trả lời cạnh ảnh trong `NGUON.md`.
 
 ---
 

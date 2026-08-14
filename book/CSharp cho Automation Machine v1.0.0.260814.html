@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260809</title>
+<title>C# cho Automation Machine — v1.0.0.260814</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -473,7 +473,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260809</td>
+<td>v1.0.0.260814</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -993,6 +993,41 @@ cụ nào đó thay đổi ở phiên bản mới hơn. Nếu dự án của b�
 Framework cũ (4.6.2–4.8) vì SDK thiết bị chưa hỗ trợ .NET hiện đại, phần
 lớn khái niệm trong sách vẫn áp dụng được — chỉ khác cú pháp cài đặt
 project, không khác tư duy kiến trúc.</p>
+<p>Cụ thể, file <code>.csproj</code> của dự án .NET Framework cũ trông khác hẳn — dài
+hơn nhiều và phải liệt kê tường minh từng file <code>.cs</code>, thay vì tự động gom
+theo thư mục như SDK-style hiện đại:</p>
+<pre><code class="language-xml">&lt;!-- SDK-style (.NET 9, mọi ví dụ trong sách) — vài dòng, tự gom file --&gt;
+&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
+    &lt;TargetFramework&gt;net9.0-windows&lt;/TargetFramework&gt;
+  &lt;/PropertyGroup&gt;
+&lt;/Project&gt;
+
+&lt;!-- .NET Framework cũ — phải khai TargetFrameworkVersion, KHÔNG có dòng
+     &lt;Project Sdk=&quot;...&quot;&gt; quen thuộc, và mỗi file .cs cần 1 dòng riêng --&gt;
+&lt;Project ToolsVersion=&quot;14.0&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
+  &lt;Import Project=&quot;$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props&quot; /&gt;
+  &lt;PropertyGroup&gt;
+    &lt;OutputType&gt;WinExe&lt;/OutputType&gt;
+    &lt;TargetFrameworkVersion&gt;v4.7.2&lt;/TargetFrameworkVersion&gt;
+  &lt;/PropertyGroup&gt;
+  &lt;ItemGroup&gt;
+    &lt;Compile Include=&quot;Program.cs&quot; /&gt;
+    &lt;Compile Include=&quot;Form1.cs&quot;&gt;
+      &lt;SubType&gt;Form&lt;/SubType&gt;
+    &lt;/Compile&gt;
+    &lt;!-- ... một dòng &lt;Compile Include&gt; cho MỖI file .cs trong project --&gt;
+  &lt;/ItemGroup&gt;
+&lt;/Project&gt;
+</code></pre>
+<p>Nhận ra ngay hai dấu hiệu: thiếu dòng <code>&lt;Project Sdk=&quot;Microsoft.NET.Sdk&quot;&gt;</code> ở
+đầu file, và một khối <code>&lt;ItemGroup&gt;</code> dài liệt kê từng <code>&lt;Compile Include&gt;</code> —
+gặp file <code>.csproj</code> dạng này, đó là .NET Framework cũ, không phải lỗi mở
+nhầm file. Quên thêm một file <code>.cs</code> mới vào đúng chỗ <code>&lt;ItemGroup&gt;</code> này
+(dễ xảy ra khi copy-paste file bằng Explorer thay vì qua Visual Studio) là
+lỗi hay gặp — file có trong thư mục nhưng build không thấy, vì
+<code>.csproj</code> không có dòng <code>&lt;Compile Include&gt;</code> trỏ tới nó.</p>
 <p>Ba khái niệm dễ nhầm lẫn khi mới bắt đầu: <strong>.NET SDK</strong> là bộ công cụ dòng
 lệnh (<code>dotnet build</code>, <code>dotnet run</code>) và compiler — cài SDK là đủ để build
 và chạy ứng dụng C# mà không cần Visual Studio. <strong>.NET Runtime</strong> là phần
@@ -1494,6 +1529,11 @@ xa lạ.</p>
 <td><code>enum</code> <code>PascalCase</code> không tiền tố (mục 3.6.1, Chương 4)</td>
 <td>Thói quen mang từ ngôn ngữ C: macro/hằng số trong C không có khái niệm &quot;thuộc về một kiểu&quot; nên phải thêm tiền tố (<code>STATE_</code>) để tránh trùng tên toàn cục. C# cho phép viết <code>AutoState.AutoRun</code> (chấm rõ thuộc <code>enum</code> nào) nên không cần tiền tố nữa — <strong>cùng nhu cầu, khác công cụ giải quyết</strong></td>
 </tr>
+<tr>
+<td>Đọc/sửa JSON bằng <code>JObject</code>/<code>JArray</code> (thư viện Newtonsoft.Json, indexer động <code>jo[&quot;field&quot;]</code>, <code>JObject.Parse(...)</code>)</td>
+<td><code>JsonSerializer</code>/kiểu DTO rõ ràng (<code>System.Text.Json</code>, mục 3.6.3)</td>
+<td>Newtonsoft.Json ra đời trước <code>System.Text.Json</code> (chỉ có từ .NET Core 3.0) rất lâu, gần như mặc định trong mọi dự án .NET Framework — <code>jo[&quot;field&quot;]</code> biên dịch được dù <code>&quot;field&quot;</code> gõ sai chính tả hay đổi kiểu tuỳ ý, lỗi chỉ lộ ra lúc chạy</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>📌 <strong>Nguyên tắc dùng bảng trên:</strong> nhận ra tương đương để <strong>đọc hiểu</strong> code
@@ -1501,7 +1541,13 @@ sẵn có, không phải để <strong>bắt chước</strong> khi viết thêm 
 hàm/class mới vào một dự án đầy Singleton, vẫn nên cân nhắc viết theo
 hướng inject dependency thay vì tạo thêm một <code>GetInstance()</code> nữa — trộn
 lẫn 2 phong cách trong cùng dự án đã đủ khó đọc, nhưng &quot;chữa&quot; hết dự án
-cũ trong ngày đầu vào làm là việc không nên tự ý làm nếu chưa được giao.</p>
+cũ trong ngày đầu vào làm là việc không nên tự ý làm nếu chưa được giao.
+Dòng đầu tiên của bảng (Singleton tự chế) còn một biến thể hay gặp: một
+<strong>field <code>static public</code></strong> khai báo ngay trên một class Form/UserControl,
+được class khác đọc/ghi trực tiếp để hai phần không liên quan &quot;nói
+chuyện&quot; với nhau mà không qua tham số hay sự kiện nào — cùng bản chất
+&quot;trạng thái toàn cục dùng chung&quot; như <code>GetInstance()</code>, chỉ khác chỗ khai
+báo, và cùng nên thay bằng Service đăng ký qua DI khi viết code mới.</p>
 </blockquote>
 <h3>Khi cả file cấu hình cũng dùng ngôn ngữ khác, không chỉ tên biến</h3>
 <p>Trường hợp khó nhất: không phải chỉ tên biến C# khó đọc, mà chính <strong>tên
@@ -3474,6 +3520,24 @@ if (await Task.WhenAny(arrived, timeout) == timeout)
     throw new AlarmException(AlarmCodes.MotionTimeout, &quot;AXIS&quot;);   // trục chưa tới đích
 await arrived;   // quan sát lỗi nếu arrived bị faulted
 </code></pre>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — nhận diện 2 mô hình bất đồng bộ cũ hơn khi đọc code .NET Framework:</strong>
+<code>async</code>/<code>await</code> (chính thức gọi là <strong>TAP</strong> — Task-based Asynchronous Pattern) không phải mô hình
+bất đồng bộ đầu tiên của .NET — hai mô hình cũ hơn vẫn xuất hiện rất nhiều trong code kế thừa:</p>
+<ul>
+<li><strong>APM</strong> (Asynchronous Programming Model) — cặp method <code>BeginXxx</code>/<code>EndXxx</code> (ví dụ
+<code>socket.BeginConnect(ip, port, callback, state)</code>), dùng <code>IAsyncResult</code>/<code>AsyncCallback</code>. Code cũ
+thường &quot;giả đồng bộ hoá&quot; APM bằng một <code>ManualResetEvent</code>: gọi <code>BeginConnect</code>, chờ
+<code>resetEvent.WaitOne(timeoutMs)</code> trong callback mới <code>Set()</code> — biến một API bất đồng bộ thành một
+lời gọi chặn có timeout, từ góc nhìn code gọi nó.</li>
+<li><strong>EAP</strong> (Event-based Asynchronous Pattern) — method tên <code>XxxAsync</code> (không <code>await</code> được) đi kèm
+sự kiện <code>XxxCompleted</code> (ví dụ <code>WebClient.DownloadDataAsync</code> + <code>DownloadDataCompleted</code>) — dễ
+nhầm với TAP vì cũng có hậu tố <code>Async</code>, nhưng không trả <code>Task</code> nên không <code>await</code> được.</li>
+</ul>
+<p>Không cần viết lại theo 2 mô hình này — chỉ cần nhận ra <code>BeginXxx</code>/<code>EndXxx</code>/<code>IAsyncResult</code> (APM)
+hay <code>XxxAsync</code> + sự kiện <code>XxxCompleted</code> (EAP) là bất đồng bộ kiểu cũ, hoạt động khác hẳn cách đọc
+tuần tự của <code>await</code>, trước khi cố gắng &quot;sửa&quot; hay tích hợp thêm code mới vào đó.</p>
+</blockquote>
 <h3>5.1.3  ConfigureAwait(false) — context và vì sao thư viện cần nó</h3>
 <p>Khi <code>await</code> xong, phần code sau nó cần chạy <em>ở đâu</em>? Mặc định, runtime cố quay về <strong>SynchronizationContext</strong> đã bắt lúc gọi <code>await</code> — với app WPF/WinForms, đó là luồng UI (để bạn cập nhật giao diện an toàn). Việc &quot;quay về context&quot; này tiện cho code UI nhưng tốn một chút và là mầm mống deadlock ở tầng dưới.</p>
 <p><code>ConfigureAwait(false)</code> <!--idx:ConfigureAwait--> bảo runtime &quot;đừng cần quay về context cũ, chạy tiếp ở đâu cũng được&quot;:</p>
@@ -3921,6 +3985,11 @@ IMotionDriver  _driver2;    // non-nullable: compiler đảm bảo không null
 <td>Truyền <code>ct</code> xuống mọi async + <code>Task.Delay</code>; kiểm tra trong loop</td>
 </tr>
 <tr>
+<td>Gọi method trả <code>Task</code> nhưng quên <code>await</code> (khác <code>async void</code>/fire-and-forget)</td>
+<td>Build chạy bình thường, không exception nào cả — nhưng câu lệnh vô tác dụng, như chưa từng được gọi</td>
+<td>Bật cảnh báo trình biên dịch CS4014 (&quot;vì lệnh gọi này không được chờ...&quot;) thành lỗi trong <code>.csproj</code>/<code>.editorconfig</code>; luôn gán kết quả <code>await</code> hoặc <code>_ =</code> tường minh nếu cố ý bỏ qua</td>
+</tr>
+<tr>
 <td><code>lock</code> quanh I/O</td>
 <td>Một thiết bị chậm khoá toàn hệ thống</td>
 <td>Lock ngắn, chỉ quanh thao tác RAM; không lock quanh I/O</td>
@@ -3929,6 +3998,11 @@ IMotionDriver  _driver2;    // non-nullable: compiler đảm bảo không null
 <td>Race condition (state chung không bảo vệ)</td>
 <td>Lỗi &quot;lúc được lúc không&quot;, không tái hiện</td>
 <td><code>lock</code>/<code>Interlocked</code>/immutable snapshot/message passing</td>
+</tr>
+<tr>
+<td><code>lock</code> bảo vệ field <code>static</code> bằng khoá field <strong>instance</strong> (<code>private readonly object _lock = new();</code>)</td>
+<td>Vẫn có <code>lock</code> nhìn tưởng an toàn, nhưng 2 object khác nhau của CÙNG class chạy song song vẫn đụng chung field <code>static</code> — vì mỗi object khoá bằng ổ khoá RIÊNG của mình</td>
+<td>Field <code>static</code> dùng chung giữa nhiều object thì khoá bảo vệ nó cũng phải là <code>static</code> (<code>private static readonly object s_lock = new();</code>) — khoá phải &quot;cùng phạm vi&quot; với dữ liệu nó bảo vệ</td>
 </tr>
 <tr>
 <td>Dùng <code>volatile</code> cho <code>counter++</code></td>
@@ -4599,6 +4673,27 @@ giúp code dễ hiểu và dễ unit test (Chương 18).</p>
 <p>Python rất hữu ích cho AI và phân tích — nhưng không phải cho logic điều khiển
 thời gian thực. Hãy để Python làm AI model và trả kết quả; C# nhận kết quả đó và
 ra quyết định điều khiển với timing và determinism đảm bảo.</p>
+<p><strong>Lỗi 7: Tin tín hiệu số ngay lần đọc đầu tiên — không chống dội (debounce)</strong></p>
+<p>Nhiều PLC có sẵn thông số <strong>input filter time</strong> cấu hình ngay trên module I/O:
+phần cứng tự bỏ qua thay đổi tín hiệu quá ngắn (nhiễu điện, tiếp điểm cơ khí rung
+khi vừa đóng) trước khi báo lên chương trình. Đọc I/O bằng C# qua driver PC-based
+thường <strong>không có</strong> lớp lọc này sẵn — code phải tự làm, nếu không mọi lần đọc bit
+đều tin ngay giá trị vừa nhận được:</p>
+<pre><code class="language-csharp">// ❌ Tin ngay lần đọc đầu — dễ bắt nhầm nhiễu/rung tiếp điểm thành tín hiệu thật
+bool sensorOn = io.ReadInputBit(cardNo, bitIndex);
+
+// ✅ Đọc lại sau một khoảng chờ ngắn, chỉ tin khi cả hai lần đọc khớp nhau
+bool first = io.ReadInputBit(cardNo, bitIndex);
+await Task.Delay(antiShakeMs, ct);
+bool second = io.ReadInputBit(cardNo, bitIndex);
+bool sensorOn = first &amp;&amp; second;   // chỉ set true khi ổn định qua 2 lần đọc
+</code></pre>
+<p>Kỹ thuật đọc lại tín hiệu số sau một khoảng chờ ngắn trước khi tin (thường gọi
+<strong>debounce</strong> hoặc <strong>chống dội tín hiệu</strong>) áp dụng cho mọi cảm biến tiếp điểm cơ
+khí (limit switch, nút nhấn vật lý) — không cần thiết cho tín hiệu điện tử thuần
+(encoder, cảm biến quang có mạch lọc sẵn bên trong). Thời gian chờ điển hình vài
+chục mili-giây, nên đưa vào tham số cấu hình (Chương 13) thay vì hardcode, vì mỗi
+loại cảm biến/dây cáp có đặc tính rung khác nhau.</p>
 <!-- SECTION: Chapter_07_SOLID -->
 <hr>
 <h1 id="chương-7-nguyên-lý-solid-và-clean-architecture">Chương 7: Nguyên lý SOLID và Clean Architecture</h1>
@@ -5651,6 +5746,20 @@ kịp xử lý sự kiện chuột/phím bình thường, gây cảm giác giao 
 Gộp cập nhật theo lô hoặc giảm tần suất (ví dụ cập nhật mỗi 50–100ms thay vì
 mỗi lần có dữ liệu mới) — xem thêm mục 8.2.3 và 8.2.4.</p>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong>Trường hợp dễ bỏ sót nhất: tạo và mở một <code>Form</code> mới từ luồng nền.</strong>
+Toàn bộ nội dung mục này minh hoạ bằng việc cập nhật một property đơn giản
+(<code>Text</code>), nhưng nguyên tắc &quot;chỉ luồng UI được đụng vào control&quot; áp dụng y hệt
+khi luồng nền tự <code>new</code> một <code>Form</code> rồi gọi <code>ShowDialog()</code>/<code>Show()</code> trực tiếp —
+lỗi này dễ lọt qua hơn vì đôi khi vẫn &quot;chạy được&quot; mà không ném exception ngay
+lập tức (phụ thuộc hành vi Windows tại thời điểm đó), khiến người viết tưởng
+nhầm là an toàn. Ngoài vi phạm luật cross-thread, <code>ShowDialog()</code> còn <strong>chặn
+(block)</strong> chính luồng gọi nó cho tới khi form đóng — nếu gọi từ một luồng nền
+đang giữ khoá thiết bị hoặc đang chạy vòng lặp quét I/O, cả luồng đó (và mọi
+thứ đang chờ nó) sẽ treo cho tới khi có người bấm OK trên dialog. Cách đúng:
+marshal việc <strong>tạo và hiển thị Form</strong> qua <code>Invoke</code>/<code>BeginInvoke</code> giống hệt Code
+8.1, không chỉ marshal việc cập nhật property bên trong nó.</p>
+</blockquote>
 <h3>8.1.3 Double Buffering cho hoạt ảnh mượt</h3>
 <!--idx:Double Buffering--><p>Vẽ đồ hoạ trực tiếp lên control theo nhiều bước (xoá nền → vẽ nội dung) tạo
 ra hiện tượng nhấp nháy (flicker): người dùng thoáng thấy trạng thái vẽ dở.
@@ -6378,6 +6487,24 @@ UI thread và cần dọn dẹp khi Form đóng — một factory nhỏ đảm n
 <p>Về vòng đời: <code>IPlcClient</code> thường là Singleton (một kết nối PLC dùng chung
 toàn ứng dụng); <code>Presenter</code> gắn với vòng đời màn hình — tạo khi mở, dispose
 khi đóng, như <code>FormClosed</code> ở trên đã đảm bảo.</p>
+<blockquote>
+<p>📌 <strong>Nhận diện cách làm khác: &quot;Form-as-UserControl&quot; — nhiều Form nhúng chung một shell.</strong>
+<code>Application.Run(factory.Create())</code> ở Code 8.11 chạy đúng MỘT Form cấp cao (top-level) cho cả
+ứng dụng. Code kế thừa từ trước khi <code>UserControl</code> (View chuẩn cho MVP, xem mục 8.3.4) phổ biến
+thường dùng một kỹ thuật khác để có nhiều &quot;trang màn hình&quot; trong cùng một cửa sổ: ép từng <code>Form</code>
+con thành non-top-level rồi nhúng vào panel của Form chính —</p>
+<pre><code class="language-csharp">// Kỹ thuật cũ: biến Form (vốn thiết kế để độc lập) thành control con
+childForm.TopLevel = false;
+childForm.Parent   = panelMain;
+childForm.Dock      = DockStyle.Fill;
+childForm.Show();
+</code></pre>
+<p>Kết quả tương tự việc dùng <code>UserControl</code> làm View và <code>Panel</code>/<code>TabControl</code> chứa nó (đúng chuẩn MVP
+mục 8.3.4), nhưng <code>UserControl</code> được thiết kế sẵn để nhúng ngay từ đầu — không cần ép <code>TopLevel</code>
+và không mang theo phần overhead của một cửa sổ độc lập (icon, border, <code>FormClosing</code>...) mà class
+<code>Form</code> vốn có. Gặp code ép <code>Form</code> làm control con kiểu này, nhận diện đây là &quot;shell nhiều màn hình&quot;
+viết trước khi <code>UserControl</code>-as-View trở thành cách làm chuẩn, không phải lỗi.</p>
+</blockquote>
 <h3>8.3.7 Unit test Presenter mà không cần WinForms thật</h3>
 <p>Đây là lợi ích cốt lõi của MVP: <code>PumpStationPresenter</code> không tham chiếu bất
 kỳ kiểu <code>Control</code> nào, nên có thể test bằng một <code>IPumpStationView</code> giả — không
@@ -12198,6 +12325,35 @@ dòng máy. Đối lập trực tiếp là hard-code toàn bộ AxisId/tag PLC n
 máy mới, mỗi lần đổi cấu hình I/O, đều phải sửa code và build lại — rủi ro sai sót
 cao hơn, và không thể tái sử dụng cùng bản build đã kiểm thử kỹ cho máy khác.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Nhận diện: nạp driver &quot;động&quot; bằng Reflection thay vì registry <code>IDeviceBuilder</code>.</strong> Code kế
+thừa từ thời chưa có DI container thường chọn class driver bằng cách ghép chuỗi tên đọc từ config
+rồi tự tạo instance lúc chạy:</p>
+<pre><code class="language-csharp">// Thay vì registry IDeviceBuilder — chọn class hoàn toàn theo 1 chuỗi tên từ XML
+var typeName = $&quot;MyDrivers.MotionCard_{cardModelFromXml}&quot;;   // ví dụ &quot;MotionCard_VendorA&quot;
+var driverType = Assembly.GetAssembly(typeof(MotionCardBase)).GetType(typeName);
+var driver = (MotionCardBase)Activator.CreateInstance(driverType, cardIndex)!;
+</code></pre>
+<p>Ưu điểm: thêm vendor mới chỉ cần thêm 1 file class + đổi chuỗi trong config, không sửa code C#
+nào khác. Đánh đổi: gõ sai tên trong XML (thiếu/thừa một ký tự trong tên model) không có lỗi biên
+dịch nào bắt được — chỉ lộ ra lúc chạy bằng exception &quot;không tìm thấy kiểu&quot;. Registry <code>IDeviceBuilder</code>
+ở trên giải quyết đúng cùng bài toán (đa vendor, thêm mới không sửa Factory) nhưng an toàn hơn:
+<code>CanBuild</code>/<code>Build</code> là method C# thật, gõ sai tên <code>Vendor</code> trong <code>DeviceConfig</code> vẫn là chuỗi (không
+tránh được hoàn toàn lỗi runtime), nhưng không phụ thuộc đúng tên class/namespace nội bộ như
+Reflection — đổi tên class nội bộ không làm vỡ registry, trong khi đổi tên class sẽ làm vỡ ngay
+kỹ thuật Reflection ở trên.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Nhận diện: truy xuất theo VỊ TRÍ MẢNG thay vì theo TÊN.</strong> Một rủi ro cấu hình khác, tinh vi
+hơn lỗi gõ sai tên: đọc danh sách thiết bị từ config theo đúng thứ tự xuất hiện, rồi truy xuất lại
+bằng chỉ số (<code>deviceList[2]</code>, hay <code>GetDevice(int index)</code>) thay vì bằng tên/khoá
+(<code>GetDevice(&quot;AxisX&quot;)</code>). Khác với lỗi gõ sai tên chuỗi (lộ ra ngay khi chạy vì không tìm thấy khoá),
+lỗi định danh theo vị trí <strong>không có triệu chứng báo lỗi nào cả</strong> — nếu ai đó chèn thêm một thiết
+bị mới vào GIỮA danh sách cấu hình (thay vì cuối), mọi <code>GetDevice(index)</code> phía sau đó âm thầm trỏ
+sang thiết bị KHÁC, máy vẫn chạy bình thường nhưng điều khiển nhầm thiết bị vật lý. Luôn định danh
+danh sách thiết bị đọc từ config bằng khoá/tên ổn định (<code>Dictionary&lt;string, IDevice&gt;</code>), không bao
+giờ bằng vị trí xuất hiện trong file.</p>
+</blockquote>
 <h3>13.2.3 Strategy Pattern cho Protocol Selection</h3>
 <p>Nếu không có Strategy, driver Beckhoff viết cứng giao thức bên trong:</p>
 <pre><code class="language-csharp">// Trong BeckhoffAdsAxisDriver — protocol hardcoded
@@ -12576,6 +12732,28 @@ phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p
 <p>Simulator không cần implement protocol, không cần IP/port — đây chính là kết quả của
 abstraction layer. Sequence code không biết nó đang chạy với driver thật hay giả lập:
 cả hai implement cùng <code>IMotionAxisDriver</code>.</p>
+<blockquote>
+<p>📌 <strong>Nhận diện cách làm khác: rẽ nhánh <code>if (IsSimulateMode())</code> ngay trong hàm nghiệp vụ.</strong> Code
+kế thừa từ trước khi có DI container thường không tách hẳn một class Simulator riêng như trên —
+thay vào đó, mỗi method nghiệp vụ tự kiểm tra cờ chế độ ngay từ dòng đầu:</p>
+<pre><code class="language-csharp">// ❌ Cách làm khác — không sai chức năng, nhưng khác kiến trúc SimulatedAxisDriver ở trên
+public int WaitInPosition(double targetPos, int timeoutMs)
+{
+    if (SystemConfig.IsSimulateMode)
+    {
+        Thread.Sleep(500);   // giả lập độ trễ, không đọc phần cứng thật
+        return 0;
+    }
+    // ... logic đọc phần cứng thật ...
+}
+</code></pre>
+<p>Cả hai cách đều giải quyết đúng bài toán &quot;chạy được không cần phần cứng thật&quot;, nhưng đánh đổi khác
+nhau: <code>SimulatedAxisDriver</code> (class riêng, cùng interface) giữ mỗi hàm chỉ có MỘT trách nhiệm, dễ
+test độc lập, và không có <code>if</code> rẽ nhánh nào sống sót tới bản build production nếu Factory chọn
+đúng driver theo <code>DeviceConfig.Vendor</code>. Cách rẽ nhánh trong hàm gọn hơn khi chỉ có vài chỗ cần giả
+lập, nhưng nếu lặp lại ở hàng chục method, logic thật và logic giả lập trộn lẫn trong cùng 1 hàm —
+khó đọc dần, và code giả lập vẫn tồn tại (dù không chạy) trong bản build production.</p>
+</blockquote>
 <hr>
 <h2 id="133-device-manager-qun-lý-vòng-đi-thit-b">13.3 Device Manager — quản lý vòng đời thiết bị</h2>
 <blockquote>
@@ -13435,6 +13613,19 @@ cao hơn nhưng ít thiết bị OT hỗ trợ — kiểm tra datasheet controll
 PLC đọc được từ mạng OT mà không cần xác thực. Với hệ thống điều khiển máy, đây là rủi ro nghiêm trọng
 — cấu hình bảo mật phải là checklist nghiệm thu trước khi bàn giao.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Nhận diện: &quot;OPC&quot; trong code cũ không nhất định là OPC UA.</strong> OPC UA (dạy ở mục này) là bản kế
+nhiệm của một họ giao thức cũ hơn — <strong>OPC Classic</strong> (OPC DA/HDA/A&amp;E), dựa trên <strong>COM/DCOM</strong>
+(Distributed COM — cơ chế giao tiếp liên-process/liên-máy riêng của Windows), KHÔNG phải TCP/IP
+mở như OPC UA. Trong code, nhận ra ngay qua <code>using OPCAutomation;</code> và các kiểu <code>OPCServer</code>/
+<code>OPCGroup</code>/<code>OPCItem</code> (COM interface, không phải <code>Opc.Ua.Client</code>) — server được tìm bằng tên máy
+(<code>GetOPCServers(hostName)</code>) và đăng ký COM cục bộ, không phải địa chỉ IP:port. Rất nhiều máy cũ
+trong thực tế vẫn chạy OPC Classic — người chỉ học OPC UA từ sách dễ nhầm đây &quot;chỉ là một cách viết
+khác của cùng công nghệ&quot;, trong khi thực chất là hai kiến trúc truyền tải hoàn toàn khác nhau (COM/
+DCOM chỉ chạy được trên Windows, đòi hỏi đăng ký component 32/64-bit khớp nhau — vs TCP/IP đa nền
+tảng của OPC UA). Sách không dạy sâu COM interop — chỉ cần nhận diện đúng để không tưởng nhầm kiến
+thức OPC UA áp dụng được nguyên xi.</p>
+</blockquote>
 <hr>
 <h3>14.1.2  Modbus TCP — giao thức đơn giản và bền bỉ</h3>
 <p><strong>Máy nào dùng Modbus?</strong> Biến tần (VFD) ABB/Danfoss/Yaskawa, PLC Schneider Modicon M221/M241,
@@ -13615,6 +13806,16 @@ lớn hơn, phải chia thành nhiều request liên tiếp.</p>
 <li><strong>Protocol ID</strong>: luôn <code>0x0000</code> (Modbus)</li>
 <li><strong>Unit ID</strong>: địa chỉ slave (<code>0xFF</code> = broadcast; <code>0x01</code>-<code>0xF7</code> = device). Lưu ý: broadcast <code>0xFF</code> trong Modbus RTU là chuẩn theo spec; trong Modbus TCP, broadcast không được chuẩn hoá theo cùng cách — nhiều TCP→RTU gateway xử lý khác nhau, một số bỏ qua hoàn toàn. Không dựa vào broadcast trong Modbus TCP production code nếu chưa xác nhận với vendor gateway.</li>
 </ul>
+<blockquote>
+<p>📌 <strong>Nhận diện: vùng nhớ PLC đặt tên theo CHỮ CÁI (X/Y/M/D) không phải range Modbus.</strong> Nhiều PLC
+(kiểu Mitsubishi và các hãng tương thích) đặt tên vùng nhớ bằng chữ cái thay vì prefix số 0x/1x/3x/
+4x: <code>X</code> = input vật lý, <code>Y</code> = output vật lý, <code>M</code> = relay nội bộ, <code>D</code> = thanh ghi dữ liệu — mỗi loại
+lại chia bit-element (X/Y/M) hay word-element (D) khác nhau. Khi PLC đó giao tiếp qua cổng Modbus
+TCP/gateway, driver của hãng tự ánh xạ <code>X0</code>/<code>M100</code>/<code>D200</code>... sang đúng range Coils/Holding Register
+nội bộ — người lập trình C# cần bảng ánh xạ riêng của hãng đó (không đoán được từ chuẩn Modbus
+thuần) để tính đúng địa chỉ. Gặp code đọc/ghi PLC dùng tên biến kiểu <code>SoftElement</code>/<code>X</code>/<code>Y</code>/<code>M</code>/<code>D</code>
+thay vì số thanh ghi trực tiếp — đây là dấu hiệu, không phải lỗi viết sai chuẩn Modbus.</p>
+</blockquote>
 <p><strong>Code 14.3 — Đọc Holding Registers bằng FluentModbus (.NET)</strong></p>
 <pre><code class="language-csharp">using FluentModbus;  // NuGet: FluentModbus
 
@@ -15061,6 +15262,16 @@ viết <code>IMesClient</code> implementation mới — phần Step/Sequence kh�
 <li>Thiết bị dùng proprietary protocol không có chuẩn mở</li>
 <li>Cần cách ly process vì rủi ro crash native</li>
 </ul>
+<p><strong>Một giao thức khác hay gặp ngoài ba giao thức trên: MQTT</strong> — mô hình
+publish/subscribe qua một <strong>broker</strong> trung gian (thiết bị gửi dữ liệu <strong>publish</strong>
+lên một <strong>topic</strong> dạng chuỗi phân cấp như <code>line1/station3/temperature</code>, hệ thống
+khác <strong>subscribe</strong> đúng topic đó để nhận, không cần biết địa chỉ IP của nhau).
+Phổ biến ở tầng IoT/thu thập dữ liệu nhẹ (gửi thông số cảm biến, trạng thái máy
+lên dashboard/cloud) hơn là điều khiển thời gian thực — sách này không dạy sâu
+MQTT vì không thuộc nhóm giao thức lõi cho automation (không có Information Model
+như OPC UA, không có remote command chuẩn hoá như SECS/GEM), nhưng nhận ra được
+bộ ba khái niệm <strong>broker/topic/publish-subscribe</strong> là đủ để đọc hiểu code tích
+hợp MQTT có sẵn — thư viện .NET phổ biến nhất là <code>MQTTnet</code> (NuGet).</p>
 <blockquote>
 <p>⚠️ <strong>Anti-pattern thường gặp — dùng OPC UA cho mọi thứ:</strong> OPC UA có chi phí tích hợp
 không nhỏ — PKI certificate management, Information Model design, subscription tuning.
@@ -15408,6 +15619,60 @@ biết đang xem lỗi logic máy hay lỗi phần cứng servo báo về. Một
 thường đi kèm: đếm dồn số lần xuất hiện theo từng mã lỗi servo (kiểu thống
 kê Pareto) — hữu ích để phát hiện servo nào đang có xu hướng hỏng dần
 trước khi nó gây dừng máy thật sự, thay vì chỉ xử lý từng lần alarm rời rạc.</p>
+</blockquote>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — bảng bit trạng thái servo thường gặp, và soft limit vs limit switch vật lý:</strong>
+Driver motion đọc trạng thái trục thường trả về MỘT word số nguyên, mỗi bit mang một ý nghĩa
+riêng — dùng đúng toán tử bitwise đã học ở Chương 3, mục 3.2 để tách từng bit. Không có chuẩn
+chung 100% giữa các hãng, nhưng bộ bit sau rất phổ biến, đủ để nhận diện khi gặp trong code thật:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bit (viết tắt)</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ALM</code></td>
+<td>Alarm — servo đang báo lỗi</td>
+</tr>
+<tr>
+<td><code>PEL</code> / <code>MEL</code></td>
+<td>Positive/Negative End Limit — đã chạm limit switch VẬT LÝ dương/âm</td>
+</tr>
+<tr>
+<td><code>SPEL</code> / <code>SMEL</code></td>
+<td>Software Positive/Negative End Limit — đã chạm <strong>soft limit</strong> (giới hạn hành trình đặt bằng phần mềm, mục dưới)</td>
+</tr>
+<tr>
+<td><code>ORG</code></td>
+<td>Origin — trục đang ở vị trí gốc (home)</td>
+</tr>
+<tr>
+<td><code>EMG</code></td>
+<td>Emergency — tín hiệu khẩn cấp từ driver</td>
+</tr>
+<tr>
+<td><code>INP</code></td>
+<td>In-Position — trục đã tới đích trong sai số cho phép</td>
+</tr>
+<tr>
+<td><code>SVO</code> / <code>RDY</code></td>
+<td>Servo On / Ready — động cơ đã cấp điện và sẵn sàng nhận lệnh</td>
+</tr>
+</tbody></table></div>
+<p><strong>Soft limit khác limit switch vật lý:</strong> limit switch là cảm biến thật gắn trên ray trượt — luôn
+hoạt động dù phần mềm có lỗi. Soft limit là một cặp toạ độ cấu hình trong phần mềm (ví dụ
+<code>SoftLimitPositive</code>/<code>SoftLimitNegative</code>), driver tự so sánh vị trí đọc được với cặp giá trị này
+trước khi cho phép lệnh move tiếp tục — mục đích là DỪNG SỚM hơn limit switch vật lý (vùng đệm an
+toàn), không phải thay thế nó. Một trục có soft limit đúng cấu hình vẫn cần limit switch vật lý
+làm lớp bảo vệ cuối cùng, đúng nguyên tắc phòng thủ nhiều lớp (Chương 15, mục 15.2).</p>
+<p>Liên quan trực tiếp: bit <code>ORG</code> ở trên chỉ đúng SAU khi trục đã chạy xong <strong>chuỗi home</strong> (homing
+sequence) — quy trình tìm lại điểm gốc vật lý sau mỗi lần mất điện/khởi động lại, thường gồm 2 tốc
+độ (dò nhanh về hướng sensor gốc, rồi bò chậm để dừng chính xác) cộng một khoảng offset cấu hình
+(vị trí sensor thường không trùng đúng điểm 0 mong muốn của quy trình). Trục CHƯA home xong thì
+mọi lệnh move tuyệt đối (<code>AbsMove</code>) đều dựa trên toạ độ không đáng tin — nhiều driver chủ động
+chặn lệnh move nếu bit <code>ORG</code> chưa từng được set từ lúc khởi động.</p>
 </blockquote>
 <h3>15.1.3  IAlarmService — hợp đồng xử lý alarm</h3>
 <p><code>IAlarmService</code> là interface nằm ở <code>MeoFrame.Core.Abstractions</code> — tất cả code domain và sequence chỉ gọi qua interface này, không biết implementation.</p>
@@ -20683,6 +20948,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.2.</em></p>
 <p><strong>Assert.ThrowsAsync&lt;T&gt;</strong> — API của xUnit để kiểm tra một async method throw đúng kiểu exception <code>T</code>; nếu exception không xuất hiện hoặc sai kiểu thì test fail. Không dùng try-catch thủ công trong test — nếu exception không được throw, test sẽ pass nhầm. Bản đồng bộ: <code>Assert.Throws&lt;T&gt;</code>. (→ xem xUnit, async/await)
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.4.2.</em></p>
+<p><strong>APM (Asynchronous Programming Model)</strong> — Mô hình bất đồng bộ cũ của .NET trước <code>async</code>/<code>await</code> (TAP), dùng cặp method <code>BeginXxx</code>/<code>EndXxx</code> với <code>IAsyncResult</code>/<code>AsyncCallback</code> (ví dụ <code>socket.BeginConnect(...)</code>). Code kế thừa thường &quot;giả đồng bộ hoá&quot; APM bằng <code>ManualResetEvent.WaitOne(timeoutMs)</code> trong callback. Khác EAP (method <code>XxxAsync</code> + sự kiện <code>XxxCompleted</code>, cũng cũ hơn TAP). Không cần viết theo 2 mô hình cũ này — chỉ cần nhận diện khi đọc code .NET Framework kế thừa. (→ xem async/await, Task<T>)
+<em>Xuất hiện đầu tiên: Chương 5, mục 5.1.2.</em></p>
 <p><strong>AnyCPU</strong> — Một trong ba giá trị Platform Target: khiến .NET tự chọn độ rộng process theo OS (64-bit trên Windows 64-bit hiện đại); tiện lợi nhưng nguy hiểm khi project gọi vào SDK/driver native chỉ có bản x86 — process AnyCPU chạy 64-bit sẽ ném <code>BadImageFormatException</code> ngay khi load DLL x86. (→ xem Platform Target (x86/x64/AnyCPU), BadImageFormatException)
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>abstract class</strong> — Lớp không thể tạo object trực tiếp (<code>new</code> báo lỗi), chỉ dùng để kế thừa; có thể chứa cả code chung lẫn method <code>abstract</code> buộc lớp con triển khai. Trong automation hay dùng theo mẫu Template Method: gom rule an toàn ở base, lớp con (mỗi vendor) chỉ điền phần gọi SDK. (→ xem Template Method, interface, inheritance)
@@ -20869,6 +21136,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 5, mục 5.1.4.</em></p>
 <p><strong>Deadband</strong> — Khoảng cách tối thiểu giữa ngưỡng Raise và ngưỡng Clear của một alarm; ví dụ: alarm Raise khi áp suất &lt; 5.00 bar, Clear khi áp suất &gt; 4.80 bar (deadband 0.20 bar). Mục đích: ngăn alarm Chattering khi tín hiệu dao động quanh một ngưỡng. (→ xem Alarm Chattering)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.7.</em></p>
+<p><strong>Debounce / Chống dội tín hiệu</strong> — Kỹ thuật đọc lại một tín hiệu số sau một khoảng chờ ngắn (thường vài chục ms), chỉ tin giá trị khi cả hai lần đọc khớp nhau — tránh bắt nhầm nhiễu điện hoặc rung tiếp điểm cơ khí (limit switch, nút nhấn vật lý) vừa đóng thành tín hiệu thật. PLC thường có sẵn thông số &quot;input filter time&quot; trên module I/O làm việc này trong phần cứng; đọc I/O bằng C# qua driver PC-based phải tự cài đặt tường minh. Khác Deadband (ngưỡng cho giá trị analog liên tục, không phải tín hiệu digital rời rạc). (→ xem Deadband)
+<em>Xuất hiện đầu tiên: Chương 6, &quot;Lỗi thường gặp&quot;.</em></p>
 <p><strong>Dual State (Trạng thái kép — PackML)</strong> — Nhóm trạng thái thứ ba trong PackML (ngoài Resting và Transitional): về bản chất giao thức là Wait state (không tự chuyển nếu không có lệnh) nhưng máy vẫn đang hoạt động liên tục như một Acting state. Execute là trường hợp duy nhất thuộc nhóm này — servo chạy, sản phẩm ra liên tục, nhưng máy đứng yên ở Execute cho tới khi nhận Hold/Stop/Suspend/Abort. (→ xem Resting State (Trạng thái nghỉ / Wait state — PackML), Transitional State (Trạng thái chuyển tiếp — PackML))
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.2.2.</em></p>
 <p><strong>Determinism (Tính dự đoán được)</strong> — Tính chất của hệ thống điều khiển: với cùng điều kiện đầu vào, hệ thống luôn cho ra cùng kết quả trong khoảng thời gian xác định. PLC đạt determinism cao nhờ scan cycle cứng; PC-Based cần thiết kế tường minh (State Machine, không phụ thuộc timing ngẫu nhiên) để đạt hành vi deterministic. Ở cấp phần mềm, không cần hard real-time tuyệt đối — chỉ cần hành vi logic nhất quán và dự đoán được. (→ xem Scan Cycle)
@@ -21127,6 +21396,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>Moq</strong> — Thư viện mocking phổ biến nhất cho .NET; tạo implementation giả từ interface bằng <code>new Mock&lt;IMyInterface&gt;()</code> mà không cần viết class thủ công; hỗ trợ <code>Setup/Returns/Verify</code> và callback lambda trong <code>Returns</code>. Package: <code>Moq</code> trên NuGet. (→ xem Mock&lt;T&gt;, Stub)
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.3.2.</em></p>
 <p><strong>Modbus TCP</strong> — Phiên bản Modbus RTU chạy trên TCP/IP (port 502); frame gồm MBAP Header (7 bytes) + PDU (Function Code + data). Ra đời năm 1979, vẫn là giao thức automation phổ biến nhất thế giới vì tính đơn giản: không cần cấu hình, không có PKI, không có Information Model — chỉ đọc/ghi thanh ghi số nguyên. (→ xem MBAP Header, Function Code, Byte order notation)</p>
+<p><strong>MQTT</strong> — Giao thức publish/subscribe qua một <strong>broker</strong> trung gian: thiết bị gửi dữ liệu <strong>publish</strong> lên một <strong>topic</strong> dạng chuỗi phân cấp (<code>line1/station3/temperature</code>), hệ thống khác <strong>subscribe</strong> đúng topic đó để nhận mà không cần biết địa chỉ nhau. Phổ biến ở tầng IoT/thu thập dữ liệu nhẹ hơn là điều khiển thời gian thực — sách không dạy sâu vì thiếu Information Model (khác OPC UA) và remote command chuẩn hoá (khác SECS/GEM); thư viện .NET phổ biến nhất: <code>MQTTnet</code> (NuGet). (→ xem OPC UA, SECS/GEM)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.3.2.</em></p>
 <p><strong>MVP (Model-View-Presenter)</strong> — Mẫu kiến trúc tách màn hình thành ba vai trò: Model (dữ liệu/nghiệp vụ), View (hiển thị, chỉ phát sự kiện), Presenter (điều phối, chứa logic). Nguyên tắc vàng: View không gọi Model trực tiếp — mọi điều phối qua Presenter. Tiền thân của MVVM. (→ xem Passive View, Supervising Controller)
 <em>Xuất hiện đầu tiên: Chương 8, mục 8.3.</em></p>
 <p><strong>Muting</strong> — Cơ chế do chính Safety PLC/Safety Relay quản lý để tạm thời vô hiệu hoá một Safety Function phần cứng theo chuẩn (ví dụ cho phép phôi đi qua light curtain mà không dừng máy, nhưng vẫn phát hiện người đi qua) — khác hoàn toàn Force IO (mục cuối Chương 15): Force IO là cơ chế phần mềm ứng dụng C# tạm khoá logic thường, còn Muting nằm ở tầng Safety PLC, có điều kiện kích hoạt được chứng nhận (ví dụ hai cảm biến xác nhận đúng là phôi, không phải người). C# không bao giờ tự thực hiện Muting — chỉ giám sát trạng thái Muting đang bật/tắt để hiển thị. (→ xem Safety Function, Force I/O)
@@ -21150,6 +21421,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="n">N</h2>
 <p><strong>.NET</strong> — Nền tảng phát triển của Microsoft, hợp nhất từ .NET 5 trở đi (trước đó tách rời .NET Framework và .NET Core); sách này dùng <strong>.NET 9</strong> làm chuẩn xuyên suốt. Với hệ thống dùng SDK thiết bị cũ chỉ hỗ trợ .NET Framework (4.6.2–4.8), phần lớn khái niệm trong sách vẫn áp dụng được — chỉ khác cú pháp cài đặt project. Microsoft phát hành hai loại theo chu kỳ: <strong>STS</strong> (Standard-Term Support — hỗ trợ 18 tháng, ví dụ .NET 9) và <strong>LTS</strong> (Long-Term Support — hỗ trợ 3 năm, ví dụ .NET 8, .NET 10); với máy công nghiệp vận hành 5–10 năm, nên chọn bản LTS cho môi trường production. (→ xem NuGet)
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.1.</em></p>
+<p><strong>Newtonsoft.Json (<code>JObject</code>/<code>JArray</code>)</strong> — Thư viện xử lý JSON phổ biến nhất trong code .NET Framework cũ (ra đời trước <code>System.Text.Json</code> rất lâu, gần như mặc định trước .NET Core 3.0). <code>JObject</code>/<code>JArray</code> cho phép đọc/sửa JSON không cần khai báo kiểu trước qua indexer động (<code>jo[&quot;field&quot;]</code>, <code>jo[&quot;a&quot;][&quot;b&quot;]</code>) — tiện khi cấu trúc JSON thay đổi thường xuyên, nhưng đổi lại: gõ sai tên field hay đổi kiểu tuỳ ý đều biên dịch được, lỗi chỉ lộ ra lúc chạy. Khác <code>JsonNode</code>/<code>JsonSerializer</code> của <code>System.Text.Json</code> (mục 3.6.3) mà sách dùng xuyên suốt — cùng mục đích, khác triết lý (động vs định kiểu). (→ xem generic, Double-encoded JSON)
+<em>Xuất hiện đầu tiên: Chương 2, mục 2.5.</em></p>
 <p><strong>NuGet</strong> — Hệ thống quản lý package/thư viện chuẩn của .NET; SDK vendor thiết bị, framework HMI (CommunityToolkit.Mvvm), thư viện test (xUnit, Moq) đều phân phối qua NuGet. Trong môi trường mạng cách ly (air-gapped), cần mirror NuGet nội bộ để <code>restore</code> package không phụ thuộc Internet. (→ xem .NET)
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.1.</em></p>
 <p><strong>Null Object Pattern</strong> — Thay vì để một property/field có thể <code>null</code> rồi rải <code>?.</code>/kiểm tra null khắp code nghiệp vụ, cung cấp một implementation &quot;rỗng&quot; hợp lệ theo quy ước đặt tên <code>Empty*</code>/<code>*Placeholder</code> (ví dụ <code>EmptyAxis : IAxis</code> luôn trả vị trí 0, <code>NullLogger</code> cho <code>ILogger</code>). Đánh đổi: nhiều class nhỏ hơn để duy trì, nhưng loại bỏ hẳn một lớp lỗi <code>NullReferenceException</code> tiềm ẩn ở nơi gọi. (→ xem NullReferenceException)
@@ -21174,6 +21447,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Phụ lục A, mục A.2.</em></p>
 <h2 id="o">O</h2>
 <p><strong>OPC UA (Open Platform Communications Unified Architecture)</strong> — Chuẩn giao thức công nghiệp hiện đại của OPC Foundation, biểu diễn hệ thống dưới dạng Information Model phân cấp (Node có kiểu mạnh) thay vì thanh ghi số thô như Modbus; hỗ trợ Subscription (đăng ký nhận thay đổi thay vì polling), bảo mật tích hợp (PKI, SecurityPolicy), và độc lập platform/vendor. Xem chi tiết từng phần: Information Model, NodeId, Subscription. (→ xem Information Model (OPC UA), NodeId (OPC UA), Subscription (OPC UA))
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.1.</em></p>
+<p><strong>OPC Classic (OPC DA/HDA/A&amp;E)</strong> — Họ giao thức OPC tiền nhiệm của OPC UA, dựa trên <strong>COM/DCOM</strong> (Distributed COM — cơ chế giao tiếp riêng của Windows) thay vì TCP/IP mở. Nhận diện qua <code>using OPCAutomation;</code> và các interface COM <code>OPCServer</code>/<code>OPCGroup</code>/<code>OPCItem</code> — server được tìm theo tên máy (<code>GetOPCServers(hostName)</code>) và đăng ký COM cục bộ, không phải địa chỉ IP:port. Chỉ chạy được trên Windows, đòi hỏi component 32/64-bit khớp nhau. Dùng chung 3 chữ &quot;OPC&quot; với OPC UA nhưng kiến trúc truyền tải hoàn toàn khác — rất nhiều máy cũ trong thực tế vẫn chạy OPC Classic. (→ xem OPC UA)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.1.</em></p>
 <p><strong>ObservableCollection&lt;T&gt;</strong> — Collection .NET tự phát <code>CollectionChanged</code> khi thêm/xoá phần tử, khiến mọi <code>ItemsControl</code>/<code>DataGrid</code> binding vào nó tự vẽ lại; là phiên bản &quot;tự thông báo&quot; của <code>BindingList&lt;T&gt;</code> đã dùng ở Chương 8 cho <code>DataGridView</code>. Vẫn phải marshal qua <code>Dispatcher</code> trước khi cập nhật từ luồng nền — cập nhật trực tiếp từ thread khác gây exception. (→ xem Dispatcher, INotifyPropertyChanged)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.1.5.</em></p>
@@ -21306,6 +21581,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.2.3.</em></p>
 <p><strong>Setter (vai trò người dùng HMI)</strong> — Một trong ba nhóm người dùng theo nhiệm vụ hằng ngày (cùng Operator và Maintenance): thiết lập thông số nâng cao, nạp chương trình gia công, điều phối đơn hàng sản xuất; cần màn hình Recipe Editor/Parameter Setup/Calibration. Khác với <code>UserLevel</code> (phân theo mức rủi ro thao tác được phép làm, Chương 15) — đây là phân loại theo màn hình cần dùng, không phải quyền hạn; không nhầm với &quot;setter&quot; của property C#. (→ xem Glance Model)
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.1.4.</em></p>
+<p><strong>Soft Limit</strong> — Cặp toạ độ giới hạn hành trình trục cấu hình BẰNG PHẦN MỀM (driver so sánh vị trí đọc được với cặp giá trị này trước khi cho phép lệnh move tiếp tục), khác hẳn <strong>limit switch vật lý</strong> (cảm biến thật gắn trên ray trượt, luôn hoạt động dù phần mềm lỗi). Mục đích của soft limit là dừng SỚM hơn limit switch vật lý — một vùng đệm an toàn — không phải thay thế nó; trục có soft limit đúng cấu hình vẫn cần limit switch vật lý làm lớp bảo vệ cuối cùng (phòng thủ nhiều lớp). Thường xuất hiện trong bit trạng thái driver dạng <code>SPEL</code>/<code>SMEL</code> (Software Positive/Negative End Limit), phân biệt với <code>PEL</code>/<code>MEL</code> (limit vật lý). (→ xem Deadband)
+<em>Xuất hiện đầu tiên: Chương 15, mục 15.1.2.</em></p>
 <p><strong>Soft-PLC</strong> — Biến thể kiến trúc trong đó logic PLC (thường vẫn viết bằng Ladder/Structured Text) chạy dưới dạng phần mềm ngay trên IPC — cùng máy với ứng dụng C# — thường cấp riêng một lõi CPU và hệ điều hành thời gian thực (real-time OS) chạy song song Windows để đảm bảo determinism. Làm mờ ranh giới PLC/PC vật lý, nhưng nguyên tắc phân vai (I/O &amp; safety cho logic PLC, điều phối/HMI/dữ liệu cho C#) vẫn giữ nguyên. (→ xem IPC (Industrial PC), PC-Based Control)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.3.</em></p>
 <p><strong>Solution (Visual Studio)</strong> — Đơn vị quản lý cao nhất trong Visual Studio, có thể chứa nhiều project; một dự án automation trưởng thành thường tách nhiều project theo trách nhiệm (ví dụ <code>MeoFrame.Domain</code>, <code>MeoFrame.Application</code>, <code>MeoFrame.Infrastructure</code>, <code>MeoFrame.Presentation</code>, <code>MeoFrame.Tests</code>) thay vì gộp mọi thứ vào một project WinForms/WPF duy nhất. (→ xem MeoFrame, Project (.csproj), Startup Project)</p>

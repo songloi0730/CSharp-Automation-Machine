@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260809 |
+| **Phiên bản** | v1.0.0.260814 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -535,6 +535,45 @@ Framework cũ (4.6.2–4.8) vì SDK thiết bị chưa hỗ trợ .NET hiện đ
 lớn khái niệm trong sách vẫn áp dụng được — chỉ khác cú pháp cài đặt
 project, không khác tư duy kiến trúc.
 
+Cụ thể, file `.csproj` của dự án .NET Framework cũ trông khác hẳn — dài
+hơn nhiều và phải liệt kê tường minh từng file `.cs`, thay vì tự động gom
+theo thư mục như SDK-style hiện đại:
+
+```xml
+<!-- SDK-style (.NET 9, mọi ví dụ trong sách) — vài dòng, tự gom file -->
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+  </PropertyGroup>
+</Project>
+
+<!-- .NET Framework cũ — phải khai TargetFrameworkVersion, KHÔNG có dòng
+     <Project Sdk="..."> quen thuộc, và mỗi file .cs cần 1 dòng riêng -->
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <!-- ... một dòng <Compile Include> cho MỖI file .cs trong project -->
+  </ItemGroup>
+</Project>
+```
+
+Nhận ra ngay hai dấu hiệu: thiếu dòng `<Project Sdk="Microsoft.NET.Sdk">` ở
+đầu file, và một khối `<ItemGroup>` dài liệt kê từng `<Compile Include>` —
+gặp file `.csproj` dạng này, đó là .NET Framework cũ, không phải lỗi mở
+nhầm file. Quên thêm một file `.cs` mới vào đúng chỗ `<ItemGroup>` này
+(dễ xảy ra khi copy-paste file bằng Explorer thay vì qua Visual Studio) là
+lỗi hay gặp — file có trong thư mục nhưng build không thấy, vì
+`.csproj` không có dòng `<Compile Include>` trỏ tới nó.
+
 Ba khái niệm dễ nhầm lẫn khi mới bắt đầu: **.NET SDK** là bộ công cụ dòng
 lệnh (`dotnet build`, `dotnet run`) và compiler — cài SDK là đủ để build
 và chạy ứng dụng C# mà không cần Visual Studio. **.NET Runtime** là phần
@@ -986,6 +1025,7 @@ xa lạ.
 | `while (true) { ...; Thread.Sleep(ms); }` làm vòng lặp chính | Vòng quét/scan cycle (đã học Bảng 3.1, Chương 6) | Cùng một Ý TƯỞNG — "đọc trạng thái + hành động theo chu kỳ cố định" — chỉ khác công cụ viết; `async`/`await` (Chương 5) là cách hiện đại hơn để làm việc tương tự mà không chặn luồng |
 | Tham số truyền qua chuỗi/Dictionary (`SetParamBool("TênThamSố", giá_trị)`) | Class Config/Recipe có kiểu rõ ràng (mục 3.6, Chương 13) | Không cần build lại khi thêm tham số mới — đánh đổi lấy việc gõ sai tên chuỗi không bị compiler bắt lỗi |
 | `enum` viết `ALL_CAPS` kèm tiền tố kiểu (`STATE_MANUAL_RUN`, `STATE_AUTO_RUN`) | `enum` `PascalCase` không tiền tố (mục 3.6.1, Chương 4) | Thói quen mang từ ngôn ngữ C: macro/hằng số trong C không có khái niệm "thuộc về một kiểu" nên phải thêm tiền tố (`STATE_`) để tránh trùng tên toàn cục. C# cho phép viết `AutoState.AutoRun` (chấm rõ thuộc `enum` nào) nên không cần tiền tố nữa — **cùng nhu cầu, khác công cụ giải quyết** |
+| Đọc/sửa JSON bằng `JObject`/`JArray` (thư viện Newtonsoft.Json, indexer động `jo["field"]`, `JObject.Parse(...)`) | `JsonSerializer`/kiểu DTO rõ ràng (`System.Text.Json`, mục 3.6.3) | Newtonsoft.Json ra đời trước `System.Text.Json` (chỉ có từ .NET Core 3.0) rất lâu, gần như mặc định trong mọi dự án .NET Framework — `jo["field"]` biên dịch được dù `"field"` gõ sai chính tả hay đổi kiểu tuỳ ý, lỗi chỉ lộ ra lúc chạy |
 
 > 📌 **Nguyên tắc dùng bảng trên:** nhận ra tương đương để **đọc hiểu** code
 > sẵn có, không phải để **bắt chước** khi viết thêm code mới. Khi bạn thêm
@@ -993,6 +1033,12 @@ xa lạ.
 > hướng inject dependency thay vì tạo thêm một `GetInstance()` nữa — trộn
 > lẫn 2 phong cách trong cùng dự án đã đủ khó đọc, nhưng "chữa" hết dự án
 > cũ trong ngày đầu vào làm là việc không nên tự ý làm nếu chưa được giao.
+> Dòng đầu tiên của bảng (Singleton tự chế) còn một biến thể hay gặp: một
+> **field `static public`** khai báo ngay trên một class Form/UserControl,
+> được class khác đọc/ghi trực tiếp để hai phần không liên quan "nói
+> chuyện" với nhau mà không qua tham số hay sự kiện nào — cùng bản chất
+> "trạng thái toàn cục dùng chung" như `GetInstance()`, chỉ khác chỗ khai
+> báo, và cùng nên thay bằng Service đăng ký qua DI khi viết code mới.
 
 ### Khi cả file cấu hình cũng dùng ngôn ngữ khác, không chỉ tên biến
 
@@ -2893,6 +2939,23 @@ if (await Task.WhenAny(arrived, timeout) == timeout)
 await arrived;   // quan sát lỗi nếu arrived bị faulted
 ```
 
+> 🔍 **Đào sâu thêm — nhận diện 2 mô hình bất đồng bộ cũ hơn khi đọc code .NET Framework:**
+> `async`/`await` (chính thức gọi là **TAP** — Task-based Asynchronous Pattern) không phải mô hình
+> bất đồng bộ đầu tiên của .NET — hai mô hình cũ hơn vẫn xuất hiện rất nhiều trong code kế thừa:
+>
+> - **APM** (Asynchronous Programming Model) — cặp method `BeginXxx`/`EndXxx` (ví dụ
+>   `socket.BeginConnect(ip, port, callback, state)`), dùng `IAsyncResult`/`AsyncCallback`. Code cũ
+>   thường "giả đồng bộ hoá" APM bằng một `ManualResetEvent`: gọi `BeginConnect`, chờ
+>   `resetEvent.WaitOne(timeoutMs)` trong callback mới `Set()` — biến một API bất đồng bộ thành một
+>   lời gọi chặn có timeout, từ góc nhìn code gọi nó.
+> - **EAP** (Event-based Asynchronous Pattern) — method tên `XxxAsync` (không `await` được) đi kèm
+>   sự kiện `XxxCompleted` (ví dụ `WebClient.DownloadDataAsync` + `DownloadDataCompleted`) — dễ
+>   nhầm với TAP vì cũng có hậu tố `Async`, nhưng không trả `Task` nên không `await` được.
+>
+> Không cần viết lại theo 2 mô hình này — chỉ cần nhận ra `BeginXxx`/`EndXxx`/`IAsyncResult` (APM)
+> hay `XxxAsync` + sự kiện `XxxCompleted` (EAP) là bất đồng bộ kiểu cũ, hoạt động khác hẳn cách đọc
+> tuần tự của `await`, trước khi cố gắng "sửa" hay tích hợp thêm code mới vào đó.
+
 ### 5.1.3  ConfigureAwait(false) — context và vì sao thư viện cần nó
 
 Khi `await` xong, phần code sau nó cần chạy *ở đâu*? Mặc định, runtime cố quay về **SynchronizationContext** đã bắt lúc gọi `await` — với app WPF/WinForms, đó là luồng UI (để bạn cập nhật giao diện an toàn). Việc "quay về context" này tiện cho code UI nhưng tốn một chút và là mầm mống deadlock ở tầng dưới.
@@ -3370,8 +3433,10 @@ Nhìn lại màn hình HMI đông cứng ở đầu chương: nguyên nhân là 
 | `.Result`/`.Wait()` (sync-over-async) | App/HMI đông cứng, không bao giờ phản hồi | "async all the way"; cần chờ thì dùng timeout |
 | `async void` | Ngoại lệ biến mất, không bắt được, crash bất ngờ | `async Task` mọi nơi; `async void` chỉ cho event handler UI |
 | Quên `CancellationToken` trong vòng dài | Không dừng được khi Stop/shutdown, treo khi thoát | Truyền `ct` xuống mọi async + `Task.Delay`; kiểm tra trong loop |
+| Gọi method trả `Task` nhưng quên `await` (khác `async void`/fire-and-forget) | Build chạy bình thường, không exception nào cả — nhưng câu lệnh vô tác dụng, như chưa từng được gọi | Bật cảnh báo trình biên dịch CS4014 ("vì lệnh gọi này không được chờ...") thành lỗi trong `.csproj`/`.editorconfig`; luôn gán kết quả `await` hoặc `_ =` tường minh nếu cố ý bỏ qua |
 | `lock` quanh I/O | Một thiết bị chậm khoá toàn hệ thống | Lock ngắn, chỉ quanh thao tác RAM; không lock quanh I/O |
 | Race condition (state chung không bảo vệ) | Lỗi "lúc được lúc không", không tái hiện | `lock`/`Interlocked`/immutable snapshot/message passing |
+| `lock` bảo vệ field `static` bằng khoá field **instance** (`private readonly object _lock = new();`) | Vẫn có `lock` nhìn tưởng an toàn, nhưng 2 object khác nhau của CÙNG class chạy song song vẫn đụng chung field `static` — vì mỗi object khoá bằng ổ khoá RIÊNG của mình | Field `static` dùng chung giữa nhiều object thì khoá bảo vệ nó cũng phải là `static` (`private static readonly object s_lock = new();`) — khoá phải "cùng phạm vi" với dữ liệu nó bảo vệ |
 | Dùng `volatile` cho `counter++` | Mất số đếm khi tải cao | `Interlocked.Increment` hoặc `lock` cho đọc-sửa-ghi |
 | Quên `Dispose` (handle SDK/file/socket) | Lần kết nối sau báo "device busy", camera không mở lại | `using`/`await using`; implement `IDisposable` cho class giữ handle |
 | `Task.Run` cho I/O-bound | Tốn thread vô ích, ThreadPool starvation khi tải cao | `Task.Run` chỉ cho CPU-bound; I/O dùng `async/await` thẳng |
@@ -3923,6 +3988,32 @@ giúp code dễ hiểu và dễ unit test (Chương 18).
 Python rất hữu ích cho AI và phân tích — nhưng không phải cho logic điều khiển
 thời gian thực. Hãy để Python làm AI model và trả kết quả; C# nhận kết quả đó và
 ra quyết định điều khiển với timing và determinism đảm bảo.
+
+**Lỗi 7: Tin tín hiệu số ngay lần đọc đầu tiên — không chống dội (debounce)**
+
+Nhiều PLC có sẵn thông số **input filter time** cấu hình ngay trên module I/O:
+phần cứng tự bỏ qua thay đổi tín hiệu quá ngắn (nhiễu điện, tiếp điểm cơ khí rung
+khi vừa đóng) trước khi báo lên chương trình. Đọc I/O bằng C# qua driver PC-based
+thường **không có** lớp lọc này sẵn — code phải tự làm, nếu không mọi lần đọc bit
+đều tin ngay giá trị vừa nhận được:
+
+```csharp
+// ❌ Tin ngay lần đọc đầu — dễ bắt nhầm nhiễu/rung tiếp điểm thành tín hiệu thật
+bool sensorOn = io.ReadInputBit(cardNo, bitIndex);
+
+// ✅ Đọc lại sau một khoảng chờ ngắn, chỉ tin khi cả hai lần đọc khớp nhau
+bool first = io.ReadInputBit(cardNo, bitIndex);
+await Task.Delay(antiShakeMs, ct);
+bool second = io.ReadInputBit(cardNo, bitIndex);
+bool sensorOn = first && second;   // chỉ set true khi ổn định qua 2 lần đọc
+```
+
+Kỹ thuật đọc lại tín hiệu số sau một khoảng chờ ngắn trước khi tin (thường gọi
+**debounce** hoặc **chống dội tín hiệu**) áp dụng cho mọi cảm biến tiếp điểm cơ
+khí (limit switch, nút nhấn vật lý) — không cần thiết cho tín hiệu điện tử thuần
+(encoder, cảm biến quang có mạch lọc sẵn bên trong). Thời gian chờ điển hình vài
+chục mili-giây, nên đưa vào tham số cấu hình (Chương 13) thay vì hardcode, vì mỗi
+loại cảm biến/dây cáp có đặc tính rung khác nhau.
 
 <!-- SECTION: Chapter_07_SOLID -->
 ---
@@ -5046,6 +5137,19 @@ private async void BtnCalibrate_Click(object sender, EventArgs e)
 > Gộp cập nhật theo lô hoặc giảm tần suất (ví dụ cập nhật mỗi 50–100ms thay vì
 > mỗi lần có dữ liệu mới) — xem thêm mục 8.2.3 và 8.2.4.
 
+> ⚠️ **Trường hợp dễ bỏ sót nhất: tạo và mở một `Form` mới từ luồng nền.**
+> Toàn bộ nội dung mục này minh hoạ bằng việc cập nhật một property đơn giản
+> (`Text`), nhưng nguyên tắc "chỉ luồng UI được đụng vào control" áp dụng y hệt
+> khi luồng nền tự `new` một `Form` rồi gọi `ShowDialog()`/`Show()` trực tiếp —
+> lỗi này dễ lọt qua hơn vì đôi khi vẫn "chạy được" mà không ném exception ngay
+> lập tức (phụ thuộc hành vi Windows tại thời điểm đó), khiến người viết tưởng
+> nhầm là an toàn. Ngoài vi phạm luật cross-thread, `ShowDialog()` còn **chặn
+> (block)** chính luồng gọi nó cho tới khi form đóng — nếu gọi từ một luồng nền
+> đang giữ khoá thiết bị hoặc đang chạy vòng lặp quét I/O, cả luồng đó (và mọi
+> thứ đang chờ nó) sẽ treo cho tới khi có người bấm OK trên dialog. Cách đúng:
+> marshal việc **tạo và hiển thị Form** qua `Invoke`/`BeginInvoke` giống hệt Code
+> 8.1, không chỉ marshal việc cập nhật property bên trong nó.
+
 ### 8.1.3 Double Buffering cho hoạt ảnh mượt
 
 <!--idx:Double Buffering-->
@@ -5798,6 +5902,24 @@ public sealed class PumpStationScreenFactory
 Về vòng đời: `IPlcClient` thường là Singleton (một kết nối PLC dùng chung
 toàn ứng dụng); `Presenter` gắn với vòng đời màn hình — tạo khi mở, dispose
 khi đóng, như `FormClosed` ở trên đã đảm bảo.
+
+> 📌 **Nhận diện cách làm khác: "Form-as-UserControl" — nhiều Form nhúng chung một shell.**
+> `Application.Run(factory.Create())` ở Code 8.11 chạy đúng MỘT Form cấp cao (top-level) cho cả
+> ứng dụng. Code kế thừa từ trước khi `UserControl` (View chuẩn cho MVP, xem mục 8.3.4) phổ biến
+> thường dùng một kỹ thuật khác để có nhiều "trang màn hình" trong cùng một cửa sổ: ép từng `Form`
+> con thành non-top-level rồi nhúng vào panel của Form chính —
+> ```csharp
+> // Kỹ thuật cũ: biến Form (vốn thiết kế để độc lập) thành control con
+> childForm.TopLevel = false;
+> childForm.Parent   = panelMain;
+> childForm.Dock      = DockStyle.Fill;
+> childForm.Show();
+> ```
+> Kết quả tương tự việc dùng `UserControl` làm View và `Panel`/`TabControl` chứa nó (đúng chuẩn MVP
+> mục 8.3.4), nhưng `UserControl` được thiết kế sẵn để nhúng ngay từ đầu — không cần ép `TopLevel`
+> và không mang theo phần overhead của một cửa sổ độc lập (icon, border, `FormClosing`...) mà class
+> `Form` vốn có. Gặp code ép `Form` làm control con kiểu này, nhận diện đây là "shell nhiều màn hình"
+> viết trước khi `UserControl`-as-View trở thành cách làm chuẩn, không phải lỗi.
 
 ### 8.3.7 Unit test Presenter mà không cần WinForms thật
 
@@ -11140,6 +11262,34 @@ public sealed class BeckhoffAxisBuilder : IDeviceBuilder
 > máy mới, mỗi lần đổi cấu hình I/O, đều phải sửa code và build lại — rủi ro sai sót
 > cao hơn, và không thể tái sử dụng cùng bản build đã kiểm thử kỹ cho máy khác.
 
+> 📌 **Nhận diện: nạp driver "động" bằng Reflection thay vì registry `IDeviceBuilder`.** Code kế
+> thừa từ thời chưa có DI container thường chọn class driver bằng cách ghép chuỗi tên đọc từ config
+> rồi tự tạo instance lúc chạy:
+> ```csharp
+> // Thay vì registry IDeviceBuilder — chọn class hoàn toàn theo 1 chuỗi tên từ XML
+> var typeName = $"MyDrivers.MotionCard_{cardModelFromXml}";   // ví dụ "MotionCard_VendorA"
+> var driverType = Assembly.GetAssembly(typeof(MotionCardBase)).GetType(typeName);
+> var driver = (MotionCardBase)Activator.CreateInstance(driverType, cardIndex)!;
+> ```
+> Ưu điểm: thêm vendor mới chỉ cần thêm 1 file class + đổi chuỗi trong config, không sửa code C#
+> nào khác. Đánh đổi: gõ sai tên trong XML (thiếu/thừa một ký tự trong tên model) không có lỗi biên
+> dịch nào bắt được — chỉ lộ ra lúc chạy bằng exception "không tìm thấy kiểu". Registry `IDeviceBuilder`
+> ở trên giải quyết đúng cùng bài toán (đa vendor, thêm mới không sửa Factory) nhưng an toàn hơn:
+> `CanBuild`/`Build` là method C# thật, gõ sai tên `Vendor` trong `DeviceConfig` vẫn là chuỗi (không
+> tránh được hoàn toàn lỗi runtime), nhưng không phụ thuộc đúng tên class/namespace nội bộ như
+> Reflection — đổi tên class nội bộ không làm vỡ registry, trong khi đổi tên class sẽ làm vỡ ngay
+> kỹ thuật Reflection ở trên.
+
+> 📌 **Nhận diện: truy xuất theo VỊ TRÍ MẢNG thay vì theo TÊN.** Một rủi ro cấu hình khác, tinh vi
+> hơn lỗi gõ sai tên: đọc danh sách thiết bị từ config theo đúng thứ tự xuất hiện, rồi truy xuất lại
+> bằng chỉ số (`deviceList[2]`, hay `GetDevice(int index)`) thay vì bằng tên/khoá
+> (`GetDevice("AxisX")`). Khác với lỗi gõ sai tên chuỗi (lộ ra ngay khi chạy vì không tìm thấy khoá),
+> lỗi định danh theo vị trí **không có triệu chứng báo lỗi nào cả** — nếu ai đó chèn thêm một thiết
+> bị mới vào GIỮA danh sách cấu hình (thay vì cuối), mọi `GetDevice(index)` phía sau đó âm thầm trỏ
+> sang thiết bị KHÁC, máy vẫn chạy bình thường nhưng điều khiển nhầm thiết bị vật lý. Luôn định danh
+> danh sách thiết bị đọc từ config bằng khoá/tên ổn định (`Dictionary<string, IDevice>`), không bao
+> giờ bằng vị trí xuất hiện trong file.
+
 ### 13.2.3 Strategy Pattern cho Protocol Selection
 
 Nếu không có Strategy, driver Beckhoff viết cứng giao thức bên trong:
@@ -11541,6 +11691,28 @@ public sealed class SimulatedAxisDriver : IMotionAxisDriver
 Simulator không cần implement protocol, không cần IP/port — đây chính là kết quả của
 abstraction layer. Sequence code không biết nó đang chạy với driver thật hay giả lập:
 cả hai implement cùng `IMotionAxisDriver`.
+
+> 📌 **Nhận diện cách làm khác: rẽ nhánh `if (IsSimulateMode())` ngay trong hàm nghiệp vụ.** Code
+> kế thừa từ trước khi có DI container thường không tách hẳn một class Simulator riêng như trên —
+> thay vào đó, mỗi method nghiệp vụ tự kiểm tra cờ chế độ ngay từ dòng đầu:
+> ```csharp
+> // ❌ Cách làm khác — không sai chức năng, nhưng khác kiến trúc SimulatedAxisDriver ở trên
+> public int WaitInPosition(double targetPos, int timeoutMs)
+> {
+>     if (SystemConfig.IsSimulateMode)
+>     {
+>         Thread.Sleep(500);   // giả lập độ trễ, không đọc phần cứng thật
+>         return 0;
+>     }
+>     // ... logic đọc phần cứng thật ...
+> }
+> ```
+> Cả hai cách đều giải quyết đúng bài toán "chạy được không cần phần cứng thật", nhưng đánh đổi khác
+> nhau: `SimulatedAxisDriver` (class riêng, cùng interface) giữ mỗi hàm chỉ có MỘT trách nhiệm, dễ
+> test độc lập, và không có `if` rẽ nhánh nào sống sót tới bản build production nếu Factory chọn
+> đúng driver theo `DeviceConfig.Vendor`. Cách rẽ nhánh trong hàm gọn hơn khi chỉ có vài chỗ cần giả
+> lập, nhưng nếu lặp lại ở hàng chục method, logic thật và logic giả lập trộn lẫn trong cùng 1 hàm —
+> khó đọc dần, và code giả lập vẫn tồn tại (dù không chạy) trong bản build production.
 
 ---
 
@@ -12279,6 +12451,18 @@ OPC UA tích hợp bảo mật từ tầng thiết kế (không phải add-on nh
 > PLC đọc được từ mạng OT mà không cần xác thực. Với hệ thống điều khiển máy, đây là rủi ro nghiêm trọng
 > — cấu hình bảo mật phải là checklist nghiệm thu trước khi bàn giao.
 
+> 📌 **Nhận diện: "OPC" trong code cũ không nhất định là OPC UA.** OPC UA (dạy ở mục này) là bản kế
+> nhiệm của một họ giao thức cũ hơn — **OPC Classic** (OPC DA/HDA/A&E), dựa trên **COM/DCOM**
+> (Distributed COM — cơ chế giao tiếp liên-process/liên-máy riêng của Windows), KHÔNG phải TCP/IP
+> mở như OPC UA. Trong code, nhận ra ngay qua `using OPCAutomation;` và các kiểu `OPCServer`/
+> `OPCGroup`/`OPCItem` (COM interface, không phải `Opc.Ua.Client`) — server được tìm bằng tên máy
+> (`GetOPCServers(hostName)`) và đăng ký COM cục bộ, không phải địa chỉ IP:port. Rất nhiều máy cũ
+> trong thực tế vẫn chạy OPC Classic — người chỉ học OPC UA từ sách dễ nhầm đây "chỉ là một cách viết
+> khác của cùng công nghệ", trong khi thực chất là hai kiến trúc truyền tải hoàn toàn khác nhau (COM/
+> DCOM chỉ chạy được trên Windows, đòi hỏi đăng ký component 32/64-bit khớp nhau — vs TCP/IP đa nền
+> tảng của OPC UA). Sách không dạy sâu COM interop — chỉ cần nhận diện đúng để không tưởng nhầm kiến
+> thức OPC UA áp dụng được nguyên xi.
+
 ---
 
 ### 14.1.2  Modbus TCP — giao thức đơn giản và bền bỉ
@@ -12359,6 +12543,15 @@ Trong Wireshark, Exception Response dễ nhận ra vì byte đầu PDU > `0x80` 
 - **Transaction ID**: do client tự tăng, server echo lại — dùng để ghép request/response
 - **Protocol ID**: luôn `0x0000` (Modbus)
 - **Unit ID**: địa chỉ slave (`0xFF` = broadcast; `0x01`-`0xF7` = device). Lưu ý: broadcast `0xFF` trong Modbus RTU là chuẩn theo spec; trong Modbus TCP, broadcast không được chuẩn hoá theo cùng cách — nhiều TCP→RTU gateway xử lý khác nhau, một số bỏ qua hoàn toàn. Không dựa vào broadcast trong Modbus TCP production code nếu chưa xác nhận với vendor gateway.
+
+> 📌 **Nhận diện: vùng nhớ PLC đặt tên theo CHỮ CÁI (X/Y/M/D) không phải range Modbus.** Nhiều PLC
+> (kiểu Mitsubishi và các hãng tương thích) đặt tên vùng nhớ bằng chữ cái thay vì prefix số 0x/1x/3x/
+> 4x: `X` = input vật lý, `Y` = output vật lý, `M` = relay nội bộ, `D` = thanh ghi dữ liệu — mỗi loại
+> lại chia bit-element (X/Y/M) hay word-element (D) khác nhau. Khi PLC đó giao tiếp qua cổng Modbus
+> TCP/gateway, driver của hãng tự ánh xạ `X0`/`M100`/`D200`... sang đúng range Coils/Holding Register
+> nội bộ — người lập trình C# cần bảng ánh xạ riêng của hãng đó (không đoán được từ chuẩn Modbus
+> thuần) để tính đúng địa chỉ. Gặp code đọc/ghi PLC dùng tên biến kiểu `SoftElement`/`X`/`Y`/`M`/`D`
+> thay vì số thanh ghi trực tiếp — đây là dấu hiệu, không phải lỗi viết sai chuẩn Modbus.
 
 **Code 14.3 — Đọc Holding Registers bằng FluentModbus (.NET)**
 
@@ -13490,6 +13683,17 @@ viết `IMesClient` implementation mới — phần Step/Sequence không đổi 
 - Thiết bị dùng proprietary protocol không có chuẩn mở
 - Cần cách ly process vì rủi ro crash native
 
+**Một giao thức khác hay gặp ngoài ba giao thức trên: MQTT** — mô hình
+publish/subscribe qua một **broker** trung gian (thiết bị gửi dữ liệu **publish**
+lên một **topic** dạng chuỗi phân cấp như `line1/station3/temperature`, hệ thống
+khác **subscribe** đúng topic đó để nhận, không cần biết địa chỉ IP của nhau).
+Phổ biến ở tầng IoT/thu thập dữ liệu nhẹ (gửi thông số cảm biến, trạng thái máy
+lên dashboard/cloud) hơn là điều khiển thời gian thực — sách này không dạy sâu
+MQTT vì không thuộc nhóm giao thức lõi cho automation (không có Information Model
+như OPC UA, không có remote command chuẩn hoá như SECS/GEM), nhưng nhận ra được
+bộ ba khái niệm **broker/topic/publish-subscribe** là đủ để đọc hiểu code tích
+hợp MQTT có sẵn — thư viện .NET phổ biến nhất là `MQTTnet` (NuGet).
+
 > ⚠️ **Anti-pattern thường gặp — dùng OPC UA cho mọi thứ:** OPC UA có chi phí tích hợp
 > không nhỏ — PKI certificate management, Information Model design, subscription tuning.
 > Dùng OPC UA để kết nối một cảm biến nhiệt độ có Modbus register là over-engineering.
@@ -13718,6 +13922,35 @@ Liên hệ với PackML (Chương 12): `AlarmSeverity.Critical` tương ứng v�
 > thường đi kèm: đếm dồn số lần xuất hiện theo từng mã lỗi servo (kiểu thống
 > kê Pareto) — hữu ích để phát hiện servo nào đang có xu hướng hỏng dần
 > trước khi nó gây dừng máy thật sự, thay vì chỉ xử lý từng lần alarm rời rạc.
+
+> 🔍 **Đào sâu thêm — bảng bit trạng thái servo thường gặp, và soft limit vs limit switch vật lý:**
+> Driver motion đọc trạng thái trục thường trả về MỘT word số nguyên, mỗi bit mang một ý nghĩa
+> riêng — dùng đúng toán tử bitwise đã học ở Chương 3, mục 3.2 để tách từng bit. Không có chuẩn
+> chung 100% giữa các hãng, nhưng bộ bit sau rất phổ biến, đủ để nhận diện khi gặp trong code thật:
+>
+> | Bit (viết tắt) | Ý nghĩa |
+> |---|---|
+> | `ALM` | Alarm — servo đang báo lỗi |
+> | `PEL` / `MEL` | Positive/Negative End Limit — đã chạm limit switch VẬT LÝ dương/âm |
+> | `SPEL` / `SMEL` | Software Positive/Negative End Limit — đã chạm **soft limit** (giới hạn hành trình đặt bằng phần mềm, mục dưới) |
+> | `ORG` | Origin — trục đang ở vị trí gốc (home) |
+> | `EMG` | Emergency — tín hiệu khẩn cấp từ driver |
+> | `INP` | In-Position — trục đã tới đích trong sai số cho phép |
+> | `SVO` / `RDY` | Servo On / Ready — động cơ đã cấp điện và sẵn sàng nhận lệnh |
+>
+> **Soft limit khác limit switch vật lý:** limit switch là cảm biến thật gắn trên ray trượt — luôn
+> hoạt động dù phần mềm có lỗi. Soft limit là một cặp toạ độ cấu hình trong phần mềm (ví dụ
+> `SoftLimitPositive`/`SoftLimitNegative`), driver tự so sánh vị trí đọc được với cặp giá trị này
+> trước khi cho phép lệnh move tiếp tục — mục đích là DỪNG SỚM hơn limit switch vật lý (vùng đệm an
+> toàn), không phải thay thế nó. Một trục có soft limit đúng cấu hình vẫn cần limit switch vật lý
+> làm lớp bảo vệ cuối cùng, đúng nguyên tắc phòng thủ nhiều lớp (Chương 15, mục 15.2).
+>
+> Liên quan trực tiếp: bit `ORG` ở trên chỉ đúng SAU khi trục đã chạy xong **chuỗi home** (homing
+> sequence) — quy trình tìm lại điểm gốc vật lý sau mỗi lần mất điện/khởi động lại, thường gồm 2 tốc
+> độ (dò nhanh về hướng sensor gốc, rồi bò chậm để dừng chính xác) cộng một khoảng offset cấu hình
+> (vị trí sensor thường không trùng đúng điểm 0 mong muốn của quy trình). Trục CHƯA home xong thì
+> mọi lệnh move tuyệt đối (`AbsMove`) đều dựa trên toạ độ không đáng tin — nhiều driver chủ động
+> chặn lệnh move nếu bit `ORG` chưa từng được set từ lúc khởi động.
 
 ### 15.1.3  IAlarmService — hợp đồng xử lý alarm
 
@@ -18691,6 +18924,9 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 **Assert.ThrowsAsync\<T\>** — API của xUnit để kiểm tra một async method throw đúng kiểu exception `T`; nếu exception không xuất hiện hoặc sai kiểu thì test fail. Không dùng try-catch thủ công trong test — nếu exception không được throw, test sẽ pass nhầm. Bản đồng bộ: `Assert.Throws<T>`. (→ xem xUnit, async/await)
 *Xuất hiện đầu tiên: Chương 18, mục 18.4.2.*
 
+**APM (Asynchronous Programming Model)** — Mô hình bất đồng bộ cũ của .NET trước `async`/`await` (TAP), dùng cặp method `BeginXxx`/`EndXxx` với `IAsyncResult`/`AsyncCallback` (ví dụ `socket.BeginConnect(...)`). Code kế thừa thường "giả đồng bộ hoá" APM bằng `ManualResetEvent.WaitOne(timeoutMs)` trong callback. Khác EAP (method `XxxAsync` + sự kiện `XxxCompleted`, cũng cũ hơn TAP). Không cần viết theo 2 mô hình cũ này — chỉ cần nhận diện khi đọc code .NET Framework kế thừa. (→ xem async/await, Task<T>)
+*Xuất hiện đầu tiên: Chương 5, mục 5.1.2.*
+
 **AnyCPU** — Một trong ba giá trị Platform Target: khiến .NET tự chọn độ rộng process theo OS (64-bit trên Windows 64-bit hiện đại); tiện lợi nhưng nguy hiểm khi project gọi vào SDK/driver native chỉ có bản x86 — process AnyCPU chạy 64-bit sẽ ném `BadImageFormatException` ngay khi load DLL x86. (→ xem Platform Target (x86/x64/AnyCPU), BadImageFormatException)
 *Xuất hiện đầu tiên: Chương 2, mục 2.2.*
 
@@ -18968,6 +19204,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **Deadband** — Khoảng cách tối thiểu giữa ngưỡng Raise và ngưỡng Clear của một alarm; ví dụ: alarm Raise khi áp suất < 5.00 bar, Clear khi áp suất > 4.80 bar (deadband 0.20 bar). Mục đích: ngăn alarm Chattering khi tín hiệu dao động quanh một ngưỡng. (→ xem Alarm Chattering)
 *Xuất hiện đầu tiên: Chương 15, mục 15.1.7.*
+
+**Debounce / Chống dội tín hiệu** — Kỹ thuật đọc lại một tín hiệu số sau một khoảng chờ ngắn (thường vài chục ms), chỉ tin giá trị khi cả hai lần đọc khớp nhau — tránh bắt nhầm nhiễu điện hoặc rung tiếp điểm cơ khí (limit switch, nút nhấn vật lý) vừa đóng thành tín hiệu thật. PLC thường có sẵn thông số "input filter time" trên module I/O làm việc này trong phần cứng; đọc I/O bằng C# qua driver PC-based phải tự cài đặt tường minh. Khác Deadband (ngưỡng cho giá trị analog liên tục, không phải tín hiệu digital rời rạc). (→ xem Deadband)
+*Xuất hiện đầu tiên: Chương 6, "Lỗi thường gặp".*
 
 **Dual State (Trạng thái kép — PackML)** — Nhóm trạng thái thứ ba trong PackML (ngoài Resting và Transitional): về bản chất giao thức là Wait state (không tự chuyển nếu không có lệnh) nhưng máy vẫn đang hoạt động liên tục như một Acting state. Execute là trường hợp duy nhất thuộc nhóm này — servo chạy, sản phẩm ra liên tục, nhưng máy đứng yên ở Execute cho tới khi nhận Hold/Stop/Suspend/Abort. (→ xem Resting State (Trạng thái nghỉ / Wait state — PackML), Transitional State (Trạng thái chuyển tiếp — PackML))
 *Xuất hiện đầu tiên: Chương 12, mục 12.2.2.*
@@ -19362,6 +19601,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **Modbus TCP** — Phiên bản Modbus RTU chạy trên TCP/IP (port 502); frame gồm MBAP Header (7 bytes) + PDU (Function Code + data). Ra đời năm 1979, vẫn là giao thức automation phổ biến nhất thế giới vì tính đơn giản: không cần cấu hình, không có PKI, không có Information Model — chỉ đọc/ghi thanh ghi số nguyên. (→ xem MBAP Header, Function Code, Byte order notation)
 
+**MQTT** — Giao thức publish/subscribe qua một **broker** trung gian: thiết bị gửi dữ liệu **publish** lên một **topic** dạng chuỗi phân cấp (`line1/station3/temperature`), hệ thống khác **subscribe** đúng topic đó để nhận mà không cần biết địa chỉ nhau. Phổ biến ở tầng IoT/thu thập dữ liệu nhẹ hơn là điều khiển thời gian thực — sách không dạy sâu vì thiếu Information Model (khác OPC UA) và remote command chuẩn hoá (khác SECS/GEM); thư viện .NET phổ biến nhất: `MQTTnet` (NuGet). (→ xem OPC UA, SECS/GEM)
+*Xuất hiện đầu tiên: Chương 14, mục 14.3.2.*
+
 **MVP (Model-View-Presenter)** — Mẫu kiến trúc tách màn hình thành ba vai trò: Model (dữ liệu/nghiệp vụ), View (hiển thị, chỉ phát sự kiện), Presenter (điều phối, chứa logic). Nguyên tắc vàng: View không gọi Model trực tiếp — mọi điều phối qua Presenter. Tiền thân của MVVM. (→ xem Passive View, Supervising Controller)
 *Xuất hiện đầu tiên: Chương 8, mục 8.3.*
 
@@ -19396,6 +19638,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **.NET** — Nền tảng phát triển của Microsoft, hợp nhất từ .NET 5 trở đi (trước đó tách rời .NET Framework và .NET Core); sách này dùng **.NET 9** làm chuẩn xuyên suốt. Với hệ thống dùng SDK thiết bị cũ chỉ hỗ trợ .NET Framework (4.6.2–4.8), phần lớn khái niệm trong sách vẫn áp dụng được — chỉ khác cú pháp cài đặt project. Microsoft phát hành hai loại theo chu kỳ: **STS** (Standard-Term Support — hỗ trợ 18 tháng, ví dụ .NET 9) và **LTS** (Long-Term Support — hỗ trợ 3 năm, ví dụ .NET 8, .NET 10); với máy công nghiệp vận hành 5–10 năm, nên chọn bản LTS cho môi trường production. (→ xem NuGet)
 *Xuất hiện đầu tiên: Chương 2, mục 2.1.*
+
+**Newtonsoft.Json (`JObject`/`JArray`)** — Thư viện xử lý JSON phổ biến nhất trong code .NET Framework cũ (ra đời trước `System.Text.Json` rất lâu, gần như mặc định trước .NET Core 3.0). `JObject`/`JArray` cho phép đọc/sửa JSON không cần khai báo kiểu trước qua indexer động (`jo["field"]`, `jo["a"]["b"]`) — tiện khi cấu trúc JSON thay đổi thường xuyên, nhưng đổi lại: gõ sai tên field hay đổi kiểu tuỳ ý đều biên dịch được, lỗi chỉ lộ ra lúc chạy. Khác `JsonNode`/`JsonSerializer` của `System.Text.Json` (mục 3.6.3) mà sách dùng xuyên suốt — cùng mục đích, khác triết lý (động vs định kiểu). (→ xem generic, Double-encoded JSON)
+*Xuất hiện đầu tiên: Chương 2, mục 2.5.*
 
 **NuGet** — Hệ thống quản lý package/thư viện chuẩn của .NET; SDK vendor thiết bị, framework HMI (CommunityToolkit.Mvvm), thư viện test (xUnit, Moq) đều phân phối qua NuGet. Trong môi trường mạng cách ly (air-gapped), cần mirror NuGet nội bộ để `restore` package không phụ thuộc Internet. (→ xem .NET)
 *Xuất hiện đầu tiên: Chương 2, mục 2.1.*
@@ -19433,6 +19678,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 ## O
 
 **OPC UA (Open Platform Communications Unified Architecture)** — Chuẩn giao thức công nghiệp hiện đại của OPC Foundation, biểu diễn hệ thống dưới dạng Information Model phân cấp (Node có kiểu mạnh) thay vì thanh ghi số thô như Modbus; hỗ trợ Subscription (đăng ký nhận thay đổi thay vì polling), bảo mật tích hợp (PKI, SecurityPolicy), và độc lập platform/vendor. Xem chi tiết từng phần: Information Model, NodeId, Subscription. (→ xem Information Model (OPC UA), NodeId (OPC UA), Subscription (OPC UA))
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.1.*
+
+**OPC Classic (OPC DA/HDA/A&E)** — Họ giao thức OPC tiền nhiệm của OPC UA, dựa trên **COM/DCOM** (Distributed COM — cơ chế giao tiếp riêng của Windows) thay vì TCP/IP mở. Nhận diện qua `using OPCAutomation;` và các interface COM `OPCServer`/`OPCGroup`/`OPCItem` — server được tìm theo tên máy (`GetOPCServers(hostName)`) và đăng ký COM cục bộ, không phải địa chỉ IP:port. Chỉ chạy được trên Windows, đòi hỏi component 32/64-bit khớp nhau. Dùng chung 3 chữ "OPC" với OPC UA nhưng kiến trúc truyền tải hoàn toàn khác — rất nhiều máy cũ trong thực tế vẫn chạy OPC Classic. (→ xem OPC UA)
 *Xuất hiện đầu tiên: Chương 14, mục 14.1.1.*
 
 **ObservableCollection\<T\>** — Collection .NET tự phát `CollectionChanged` khi thêm/xoá phần tử, khiến mọi `ItemsControl`/`DataGrid` binding vào nó tự vẽ lại; là phiên bản "tự thông báo" của `BindingList<T>` đã dùng ở Chương 8 cho `DataGridView`. Vẫn phải marshal qua `Dispatcher` trước khi cập nhật từ luồng nền — cập nhật trực tiếp từ thread khác gây exception. (→ xem Dispatcher, INotifyPropertyChanged)
@@ -19633,6 +19881,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **Setter (vai trò người dùng HMI)** — Một trong ba nhóm người dùng theo nhiệm vụ hằng ngày (cùng Operator và Maintenance): thiết lập thông số nâng cao, nạp chương trình gia công, điều phối đơn hàng sản xuất; cần màn hình Recipe Editor/Parameter Setup/Calibration. Khác với `UserLevel` (phân theo mức rủi ro thao tác được phép làm, Chương 15) — đây là phân loại theo màn hình cần dùng, không phải quyền hạn; không nhầm với "setter" của property C#. (→ xem Glance Model)
 *Xuất hiện đầu tiên: Chương 10, mục 10.1.4.*
+
+**Soft Limit** — Cặp toạ độ giới hạn hành trình trục cấu hình BẰNG PHẦN MỀM (driver so sánh vị trí đọc được với cặp giá trị này trước khi cho phép lệnh move tiếp tục), khác hẳn **limit switch vật lý** (cảm biến thật gắn trên ray trượt, luôn hoạt động dù phần mềm lỗi). Mục đích của soft limit là dừng SỚM hơn limit switch vật lý — một vùng đệm an toàn — không phải thay thế nó; trục có soft limit đúng cấu hình vẫn cần limit switch vật lý làm lớp bảo vệ cuối cùng (phòng thủ nhiều lớp). Thường xuất hiện trong bit trạng thái driver dạng `SPEL`/`SMEL` (Software Positive/Negative End Limit), phân biệt với `PEL`/`MEL` (limit vật lý). (→ xem Deadband)
+*Xuất hiện đầu tiên: Chương 15, mục 15.1.2.*
 
 **Soft-PLC** — Biến thể kiến trúc trong đó logic PLC (thường vẫn viết bằng Ladder/Structured Text) chạy dưới dạng phần mềm ngay trên IPC — cùng máy với ứng dụng C# — thường cấp riêng một lõi CPU và hệ điều hành thời gian thực (real-time OS) chạy song song Windows để đảm bảo determinism. Làm mờ ranh giới PLC/PC vật lý, nhưng nguyên tắc phân vai (I/O & safety cho logic PLC, điều phối/HMI/dữ liệu cho C#) vẫn giữ nguyên. (→ xem IPC (Industrial PC), PC-Based Control)
 *Xuất hiện đầu tiên: Chương 1, mục 1.3.*

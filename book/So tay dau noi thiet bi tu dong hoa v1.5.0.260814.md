@@ -9,10 +9,10 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.4.0.260813 |
+| **Phiên bản** | v1.5.0.260814 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
-| **Nội dung** | 30 chương + 5 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
+| **Nội dung** | 30 chương + 6 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
 | **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |
 
@@ -93,6 +93,7 @@
 - [Phụ lục C — Đối chiếu hãng Nhật ↔ Trung/Đài theo nhóm thiết bị](#phan-pl-c-doi-chieu-hang)
 - [Phụ lục D — Checklist trước khi cấp điện lần đầu](#phan-pl-d-checklist-cap-dien)
 - [Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)
+- [Phụ lục F — Tham số phải chốt khi dựng máy mới](#phan-pl-f-tham-so-may-moi)
 - [Tài liệu tham khảo — tổng hợp toàn sách](#phan-00c-tai-lieu-tham-khao)
 
 ---
@@ -7009,7 +7010,157 @@ Servo có hàng trăm tham số. Để **quay được lần đầu**, chỉ c�
 
 ---
 
-### 12.11 Quy trình chạy thử an toàn — làm đúng thứ tự này
+### 12.11 Chỉnh servo — sau khi đã quay được, trước khi giao máy
+
+Mục 12.10 chỉ đưa servo tới chỗ **quay được**. Máy giao cho khách thì cần thêm một bước nữa:
+chỉnh cho nó **chạy đúng, chạy êm, và biết tự báo khi sai**. Đây là phần tốn thời gian nhất khi
+dựng máy mới, và cũng là phần hay bị bỏ qua nhất — vì "máy chạy rồi mà".
+
+> ⚠ **Con số cụ thể khác nhau theo hãng và theo model.** Mục này nói **đại lượng nào phải chỉnh,
+> chỉnh theo hướng nào, và triệu chứng nào ứng với cái gì**. Giá trị chính xác phải tra manual của
+> đúng driver bạn đang dùng — mỗi hãng đặt tên tham số một kiểu.
+
+#### 12.11.1 ⭐ Tỉ số quán tính — con số quyết định mọi thứ phía sau
+
+**Tỉ số quán tính** = quán tính tải quy về trục động cơ ÷ quán tính rotor động cơ.
+
+Đây là con số **đầu tiên** phải biết, vì mọi thứ sau đó phụ thuộc vào nó. Hầu hết driver hiện đại
+đều **tự ước lượng** được và hiện lên màn hình sau khi cho chạy tới lui vài lần.
+
+| Tỉ số quán tính | Nghĩa là | Hệ quả khi chỉnh |
+|---|---|---|
+| **Thấp** (dưới ~3) | Động cơ "khoẻ" hơn tải nhiều | Dễ chỉnh, đặt độ lợi cao được, đáp ứng nhanh |
+| **Vừa** (~3–10) | Vùng làm việc bình thường của phần lớn máy | Chỉnh được nhưng phải để ý cộng hưởng |
+| **Cao** (trên ~10) | Tải nặng hơn động cơ nhiều lần | ⚠ Rất khó chỉnh: tăng độ lợi là rung, giảm độ lợi là ì |
+
+⭐ **Nếu tỉ số quán tính quá cao thì đừng cố chỉnh bằng tham số — sửa cơ khí.** Ba cách theo thứ tự
+hiệu quả: **tăng tỉ số truyền hộp số** (quán tính tải quy về trục giảm theo **bình phương** tỉ số
+truyền — đây là đòn bẩy mạnh nhất), **giảm khối lượng phần chuyển động**, hoặc **đổi động cơ lớn hơn**.
+
+> 💡 Vì quán tính quy đổi giảm theo **bình phương** tỉ số truyền, thêm một hộp số 1:5 làm quán tính
+> quy về trục giảm **25 lần**. Đó là lý do một trục "chỉnh mãi không êm" thường được chữa bằng hộp
+> số chứ không bằng tham số.
+
+#### 12.11.2 Tự chỉnh (auto-tuning) — dùng khi nào, và khi nào nó nói dối
+
+Gần như mọi driver đều có chế độ tự chỉnh. Có hai kiểu, đừng nhầm:
+
+| Kiểu | Cách làm | Dùng khi |
+|---|---|---|
+| **Tự chỉnh thời gian thực** | Driver liên tục ước lượng tải và tự đổi độ lợi khi máy đang chạy | Tải **ổn định**, ít thay đổi |
+| **Tự chỉnh một lần** | Cho chạy một chu trình thử, driver tính ra bộ độ lợi rồi **chốt lại** | Máy đã lắp xong, tải đã đúng như khi sản xuất |
+
+⚠ **Ba trường hợp tự chỉnh cho kết quả sai** — biết trước để khỏi mất buổi:
+
+| Trường hợp | Vì sao sai |
+|---|---|
+| Truyền động bằng **đai** hoặc khớp nối mềm | Hệ có **độ đàn hồi**; driver ước lượng ra quán tính không đúng, chỉnh xong vẫn rung |
+| Cơ cấu có **khe hở (backlash)** rõ | Lúc đảo chiều tải "biến mất" một đoạn, driver hiểu nhầm |
+| **Tải thay đổi nhiều** trong chu kỳ (gắp/thả vật nặng, trục Z lên–xuống) | Một bộ độ lợi không đúng cho cả hai trạng thái |
+
+⭐ Với ba trường hợp trên: chạy tự chỉnh để **lấy điểm khởi đầu**, rồi **chuyển sang chỉnh tay** và
+**chốt** giá trị. Đừng để chế độ tự chỉnh thời gian thực chạy suốt trên máy sản xuất — hôm nay nó
+chỉnh một kiểu, tháng sau một kiểu, và bạn mất khả năng tái lập.
+
+#### 12.11.3 Chỉnh tay — triệu chứng nào ứng với cái gì
+
+Vòng điều khiển servo lồng nhau: **vị trí → tốc độ → dòng**. Chỉnh **từ trong ra ngoài**: vòng
+tốc độ trước, vòng vị trí sau.
+
+| Bạn thấy | Nguyên nhân thường gặp | Chỉnh theo hướng |
+|---|---|---|
+| Trục **ì**, tới vị trí chậm, "mềm" | Độ lợi quá thấp | **Tăng** độ lợi vòng vị trí |
+| Trục **rung, kêu** khi dừng | Độ lợi quá cao | **Giảm** độ lợi, hoặc bật bộ lọc |
+| Dừng xong còn **lắc vài nhịp** rồi mới yên | Vòng tốc độ chưa đủ tắt dần | Tăng độ lợi vòng tốc độ, hoặc giảm hằng số tích phân |
+| Chạy **êm nhưng sai vị trí một chút, ổn định** | Còn sai số tĩnh | Kiểm khâu **tích phân** vòng tốc độ |
+| Rung **chỉ ở một dải tốc độ nhất định** | ⭐ **Cộng hưởng cơ khí** — xem 12.11.4 | Không phải việc của độ lợi |
+
+> 💡 **Quy tắc thực dụng:** tăng độ lợi từ từ **tới khi bắt đầu nghe tiếng rung**, rồi **lùi lại
+> khoảng 20–30 %**. Đó là điểm làm việc an toàn. Ghi lại con số đó vào hồ sơ máy.
+
+#### 12.11.4 Cộng hưởng cơ khí và bộ lọc chặn dải (notch)
+
+Nếu trục rung **chỉ ở một dải tốc độ** hoặc phát ra **tiếng rít cao tần** cố định, đó là **cộng
+hưởng cơ khí** — cả hệ động cơ + khớp nối + tải có một tần số riêng, và vòng điều khiển đang kích
+thích đúng tần số đó.
+
+Giảm độ lợi thì hết rung nhưng máy trở nên ì. Cách đúng là dùng **bộ lọc chặn dải (notch filter)**:
+nó cắt riêng dải tần gây cộng hưởng và **giữ nguyên độ lợi** ở các tần số khác.
+
+Phần lớn driver đời mới có **dò cộng hưởng tự động**: chạy một chu trình, driver tìm ra tần số và
+tự đặt bộ lọc. Nếu phải làm tay thì tăng dần tần số bộ lọc tới khi tiếng rít biến mất.
+
+⚠ **Bộ lọc chặn dải chữa triệu chứng, không chữa nguyên nhân.** Nếu phải bật tới hai ba bộ lọc mới
+êm thì vấn đề nằm ở **cơ khí**: khớp nối quá mềm, gá không đủ cứng, hoặc trục vít bị võng. Sửa cơ
+khí sẽ bền hơn nhiều so với chồng thêm bộ lọc.
+
+#### 12.11.5 ⚠ Sai lệch bám — cái báo cho bạn biết máy sắp hỏng
+
+**Sai lệch bám (following error)** = khoảng cách giữa **vị trí lệnh** và **vị trí thật** tại mọi thời
+điểm. Khi máy chạy, con số này **luôn khác 0** — đó là bình thường, servo bao giờ cũng bám sau lệnh
+một chút.
+
+Driver cho đặt một **ngưỡng**, vượt ngưỡng thì báo lỗi và dừng. ⭐ **Đây là cảnh báo sớm giá trị
+nhất mà servo cho bạn**, vì sai lệch bám tăng dần nghĩa là **cơ cấu đang nặng dần lên**: vòng bi
+mòn, thiếu mỡ, ray bẩn, hoặc có vật cản.
+
+| Đặt ngưỡng | Hậu quả |
+|---|---|
+| **Quá rộng** | Servo cố kéo tới cùng → ⚠ **phá cơ khí** hoặc cháy động cơ trước khi kịp báo |
+| **Quá hẹp** | Báo lỗi giả mỗi khi tăng tốc mạnh, người vận hành sẽ nới dần rồi bỏ luôn |
+
+⭐ **Cách đặt thực dụng:** chạy chu kỳ sản xuất thật, **ghi lại sai lệch bám lớn nhất** quan sát
+được, rồi đặt ngưỡng khoảng **2–3 lần** giá trị đó. Ghi con số quan sát được vào hồ sơ máy — **một
+năm sau đo lại, nếu nó tăng rõ thì cơ cấu đang xuống cấp**, dù máy vẫn chạy.
+
+#### 12.11.6 Cửa sổ "định vị xong" — chỗ ăn mất nhịp máy
+
+Servo báo **định vị xong** khi sai lệch nằm trong một **cửa sổ** do bạn đặt. Chương trình PLC
+thường chờ tín hiệu này rồi mới cho bước sau chạy.
+
+| Đặt cửa sổ | Hậu quả |
+|---|---|
+| **Quá hẹp** | Servo mãi không báo xong → ⚠ máy **đứng chờ** hoặc timeout, dù vị trí đã đủ tốt |
+| **Quá rộng** | Báo xong khi trục **còn đang lắc** → bước sau chạy sớm, gắp trượt, đo sai |
+
+⭐ Đặt cửa sổ theo **dung sai thật của sản phẩm**, đừng đặt theo cảm tính. Nếu sản phẩm cần đúng
+±0,05 mm thì cửa sổ chặt hơn mức đó là **phí nhịp máy** mà không đổi lấy chất lượng gì thêm.
+
+#### 12.11.7 Về gốc (homing) — chốt trước khi viết chương trình
+
+Trục dùng **encoder tăng dần** thì sau mỗi lần mất điện **không biết mình đang ở đâu**, nên phải
+**về gốc**. Trục dùng **encoder tuyệt đối có pin** (xem 12.5) thì chỉ phải về gốc **một lần** khi
+lắp — đây là lý do chính khiến người ta chọn encoder tuyệt đối.
+
+Ba điều phải chốt và **ghi vào hồ sơ máy**:
+
+| Phải chốt | Vì sao |
+|---|---|
+| **Kiểu về gốc** | Dùng cảm biến gốc, hay dùng cữ chặn cơ khí + giới hạn mô-men, hay dùng vạch Z của encoder |
+| **Chiều về gốc** | Đổi chiều là gốc lệch đi một đoạn bằng bề rộng cảm biến — mọi toạ độ dạy trước đó sai hết |
+| **Tốc độ về gốc** | ⚠ Về gốc nhanh làm **vị trí gốc lệch theo tốc độ** vì trễ nhận tín hiệu. Về gốc phải chậm |
+
+⚠⚠ **Về gốc bằng cách đâm vào cữ chặn cơ khí thì BẮT BUỘC đặt giới hạn mô-men thấp trước.**
+Quên bước này là servo đẩy hết công suất vào cữ chặn — gãy cữ, cong trục vít, hoặc cháy động cơ.
+
+#### 12.11.8 Giới hạn mềm — và điều nó KHÔNG thay thế được
+
+**Giới hạn mềm** là hai con số toạ độ trong driver hoặc PLC; vượt qua thì lệnh bị chặn.
+Chúng chặn **lỗi lập trình và lỗi thao tác** — người nhập nhầm toạ độ, hoặc jog quá đà.
+
+⚠⚠ **Giới hạn mềm KHÔNG thay thế được công tắc giới hạn cứng.** Lý do: giới hạn mềm chỉ đúng
+**khi toạ độ đúng**. Mà đúng lúc bạn cần nó nhất — chưa về gốc, encoder lỗi, mất pin encoder tuyệt
+đối, dây encoder đứt — thì toạ độ **sai**, và giới hạn mềm **mất tác dụng đúng lúc đó**.
+
+Vì vậy trục nào cũng cần đủ ba lớp, từ trong ra ngoài:
+
+| Lớp | Là gì | Chặn được gì |
+|---|---|---|
+| 1. **Giới hạn mềm** | Toạ độ trong phần mềm | Lỗi lập trình, jog quá đà — **khi toạ độ đúng** |
+| 2. **Công tắc giới hạn cứng** | `LSP` / `LSN` đấu vào driver, **thường đóng** (xem 12.3.3) | Vượt hành trình kể cả khi toạ độ sai |
+| 3. **Cữ chặn cơ khí** | Miếng chặn thật | Lớp cuối, khi cả hai lớp trên hỏng |
+
+### 12.12 Quy trình chạy thử an toàn — làm đúng thứ tự này
 
 > ⚠ Servo có mô-men đỉnh gấp 2–3 lần định mức và tăng tốc rất nhanh. Một trục servo lắp sai có thể
 > **phá cơ khí trong chưa tới một giây**.
@@ -7031,7 +7182,7 @@ Servo có hàng trăm tham số. Để **quay được lần đầu**, chỉ c�
 
 ---
 
-### 12.12 Chọn mua
+### 12.13 Chọn mua
 
 > ⚠ Trừ số liệu MR-J4 đã dẫn nguồn, mã dưới đây ở **cấp dòng sản phẩm**, chưa phải mã đặt hàng.
 
@@ -7065,7 +7216,7 @@ Servo có hàng trăm tham số. Để **quay được lần đầu**, chỉ c�
 
 ---
 
-### 12.13 Sai lầm thường gặp
+### 12.14 Sai lầm thường gặp
 
 | Triệu chứng | Nguyên nhân có khả năng nhất | Cách xử lý |
 |---|---|---|
@@ -7087,7 +7238,7 @@ Servo có hàng trăm tham số. Để **quay được lần đầu**, chỉ c�
 | Mất vị trí gốc sau khi nghỉ dài | **Pin encoder tuyệt đối hết** | Đưa cảnh báo pin về HMI; thay pin **khi máy đang có điện**; đưa vào bảo trì định kỳ |
 | Encoder báo lỗi ngẫu nhiên khi trục tăng tốc | **Nhiễu** — cáp encoder đi chung máng với cáp động lực | Tách máng, kẹp màn chắn 360°, kiểm tra PE |
 | Chân trên máy **không giống manual** | Người trước đã **gán lại I/O** bằng tham số `PD` | Đọc tham số PD thực tế trong driver trước khi kết luận đấu sai |
-| Va chạm phá cơ khí ngay lần chạy thử đầu | Không đặt **giới hạn mô-men thấp**, không tháo khớp nối | Làm theo quy trình 12.11 |
+| Va chạm phá cơ khí ngay lần chạy thử đầu | Không đặt **giới hạn mô-men thấp**, không tháo khớp nối | Làm theo quy trình 12.12 |
 
 ---
 
@@ -17357,6 +17508,154 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | Đầu đo tiếp xúc sai lệch không đều | Chạm nghiêng thay vì vuông góc |
 
 <!-- AUTO:END -->
+
+---
+
+
+---
+
+<a id="phan-pl-f-tham-so-may-moi"></a>
+
+## Phụ lục F — Tham số phải chốt khi dựng máy mới
+
+> **Phụ lục D** trả lời *"làm theo thứ tự nào"*. Phụ lục này trả lời câu còn lại:
+> ***"phải chốt những con số nào, và ghi lại ở đâu"***.
+>
+> ⭐ **Dùng như một tờ hồ sơ máy:** in ra, điền giá trị thật của máy bạn, ký, kẹp vào tủ điện.
+> Người sửa máy hai năm sau sẽ cảm ơn bạn — vì họ có **giá trị lúc máy còn tốt** để so sánh.
+
+**Vì sao phải ghi lại chứ không chỉ "cài xong là thôi":** rất nhiều hỏng hóc của máy tự động không
+xuất hiện đột ngột mà **trôi dần** (xem [Phụ lục E, nhóm 4](#phan-pl-e-chi-muc-trieu-chung)). Không có
+con số lúc máy còn tốt thì không ai chứng minh được là nó đã trôi.
+
+---
+
+### F.1 ⭐ Sáu con số phải đo lúc máy còn mới — để một năm sau so lại
+
+Đây là phần **quan trọng nhất** của phụ lục này, và cũng là phần hay bị bỏ nhất. Sáu con số dưới
+đây **không dùng để cài đặt** — chúng dùng để **so sánh về sau**.
+
+| Đo cái gì | Đo lúc nào | Một năm sau nếu tăng thì nghĩa là | Chương |
+|---|---|---|---|
+| ⭐ **Sai lệch bám lớn nhất** của từng trục servo, khi chạy chu kỳ thật | Sau khi chỉnh xong, chạy tải thật | Cơ cấu **nặng dần**: vòng bi mòn, thiếu mỡ, ray bẩn | [12.11.5](#phan-ch12-servo-ac) |
+| **Dòng động cơ** trung bình và đỉnh, từng trục | Chạy chu kỳ thật | Ma sát tăng, hoặc tải thay đổi so với thiết kế | [13](#phan-ch13-giam-toc-bldc-bien-tan) · [29.5](#phan-ch29-he-phu-tro-nha-may) |
+| **Thời gian một chu kỳ** máy | Chạy ổn định | Chậm dần thường là chờ tín hiệu — cảm biến yếu, khí không đủ | [25](#phan-ch25-bang-tai-xu-ly-vat-lieu) |
+| **Áp khí tại điểm xa nhất** khi nhiều van tác động cùng lúc | Lúc máy chạy nặng nhất | Đường ống tắc, lọc bẩn, hoặc rò rỉ mới sinh | [14](#phan-ch14-nguon-khi-xu-ly-khi) |
+| **Nhiệt độ trong tủ** ở điểm nóng nhất, lúc nóng nhất trong ngày | Mùa nóng, máy chạy liên tục | Quạt yếu, lọc bẩn, hoặc thêm thiết bị mà không tính lại nhiệt | [24](#phan-ch24-nhiet-moi-truong-tu-dien) |
+| **Biên độ tín hiệu cảm biến** ở ngưỡng (ví dụ mức thu của cảm biến quang) | Sau khi căn chỉnh | Ống kính bẩn, lệch quang, LED suy giảm | [8](#phan-ch08-cam-bien-quang) · [19](#phan-ch19-vision-chieu-sang) |
+
+> 💡 **Cách rẻ nhất để làm việc này:** chụp ảnh màn hình driver / đồng hồ / HMI ngay sau khi nghiệm
+> thu, đặt tên file theo ngày, bỏ vào một thư mục cạnh hồ sơ máy. Mất 10 phút, cứu được cả buổi
+> chẩn đoán sau này.
+
+---
+
+### F.2 Nguồn và phân phối điện
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **Dòng đỉnh** thực tế của nhánh 24 V (không phải dòng trung bình) | Nguồn chọn theo dòng trung bình sẽ sập khi nhiều van hút cùng lúc | [3](#phan-ch03-nguon-phan-phoi-dien) |
+| **Đường cong CB** và dòng định mức từng nhánh | ⚠ Đường cong sai thì CB nhảy ngay lúc bật máy vì dòng khởi động bộ nguồn | [3](#phan-ch03-nguon-phan-phoi-dien) |
+| ⚠ **Bảo vệ nhánh 24 VDC** — bằng gì | CB thường **không bảo vệ được** mạch 24 VDC | [3](#phan-ch03-nguon-phan-phoi-dien) |
+| **Loại RCD** (đặc biệt khi có biến tần) | Sai loại là nhảy liên tục, rồi bị tháo bỏ | [3](#phan-ch03-nguon-phan-phoi-dien) · [13](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Điểm nối đất 0 V** — nối ở đâu, đúng **một** điểm | Nối nhiều điểm tạo vòng lặp đất, nhiễu vào analog | [2.11](#phan-ch02-ngon-ngu-chung) |
+
+### F.3 An toàn — chốt trước, không sửa sau
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **PL / Category** yêu cầu cho từng chức năng an toàn | Quyết định kiến trúc mạch; đổi về sau là làm lại | [4.3](#phan-ch04-an-toan-may) |
+| ⚠⚠ **Khoảng cách an toàn** của màn chắn sáng — tính theo thời gian dừng **đo thật** | Tính theo thời gian dừng *danh nghĩa* là cửa mở trước khi máy dừng | [4.10](#phan-ch04-an-toan-may) |
+| **Thời gian dừng thật** của từng cơ cấu | Là đầu vào của công thức trên; phải **đo lại khi máy đã mòn** | [4.10](#phan-ch04-an-toan-may) |
+| **Khoá cửa**: power-to-lock hay power-to-unlock | ⚠⚠ Chọn sai là **nhốt người bên trong khi mất điện** | [4.9](#phan-ch04-an-toan-may) |
+| **EDM / tiếp điểm gương** có đấu không | Không có thì contactor dính mà mạch vẫn báo OK | [4.5](#phan-ch04-an-toan-may) |
+| **Loại reset**: tự động hay có giám sát | Reset tự động = máy chạy lại ngay khi đóng cửa | [4.6](#phan-ch04-an-toan-may) |
+
+### F.4 PLC và I/O
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **Chu kỳ quét** và độ rộng xung ngắn nhất cần bắt | Xung ngắn hơn chu kỳ quét sẽ **bị bỏ sót** | [5.4](#phan-ch05-bo-dieu-khien) |
+| **Thời gian lọc ngõ vào** từng nhóm | Lọc dài chống nhiễu nhưng làm chậm; lọc ngắn thì nhiễu lọt | [6.2](#phan-ch06-module-io) |
+| **Dòng tổng mỗi chân chung** của module ngõ ra | Từng kênh đủ tải nhưng tổng vượt là cháy module | [6.3](#phan-ch06-module-io) |
+| **Công suất backplane** còn lại | Cắm thêm module là hết điện, lỗi rất khó đoán | [5.3](#phan-ch05-bo-dieu-khien) |
+| ⚠ **Trạng thái fail-safe** của remote I/O khi mất mạng | Mặc định của nhiều hãng là **giữ nguyên trạng thái** — nguy hiểm | [6.7](#phan-ch06-module-io) |
+| **Pin nhớ** — ngày lắp, chu kỳ thay | Mất chương trình vì pin hết là sự cố kinh điển | [5.7](#phan-ch05-bo-dieu-khien) |
+
+### F.5 Truyền động — servo, động cơ bước, biến tần
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| ⭐ **Tỉ số quán tính** từng trục | Quyết định có chỉnh êm được không; quá cao thì phải sửa **cơ khí** | [12.11.1](#phan-ch12-servo-ac) |
+| **Bộ độ lợi** sau khi chỉnh — và **chốt lại**, tắt tự chỉnh liên tục | Để tự chỉnh chạy mãi thì mất khả năng tái lập | [12.11.2](#phan-ch12-servo-ac) |
+| **Ngưỡng sai lệch bám** | Quá rộng thì phá cơ khí; quá hẹp thì báo giả rồi bị nới bỏ | [12.11.5](#phan-ch12-servo-ac) |
+| **Cửa sổ định vị xong** — theo dung sai **sản phẩm** | Quá hẹp ăn mất nhịp máy; quá rộng thì bước sau chạy sớm | [12.11.6](#phan-ch12-servo-ac) |
+| **Kiểu / chiều / tốc độ về gốc** | Đổi chiều là mọi toạ độ đã dạy sai hết | [12.11.7](#phan-ch12-servo-ac) |
+| ⚠⚠ **Giới hạn mô-men khi về gốc bằng cữ chặn** | Quên là gãy cữ, cong trục vít, cháy động cơ | [12.11.7](#phan-ch12-servo-ac) |
+| **Giới hạn mềm** — và xác nhận vẫn **có đủ giới hạn cứng** | Giới hạn mềm mất tác dụng đúng lúc toạ độ sai | [12.11.8](#phan-ch12-servo-ac) |
+| **Điện trở xả** — có cần không, đặt bao nhiêu | Trục đứng hoặc quán tính lớn mà thiếu là báo lỗi quá áp | [12.8](#phan-ch12-servo-ac) |
+| **Trình tự thời gian phanh** | Nhả phanh trước khi có mô-men = **trục rơi một đoạn** | [12.6.2](#phan-ch12-servo-ac) |
+| **Tần số sóng mang** biến tần | Cao thì êm nhưng nóng và nhiễu hơn, ăn mòn vòng bi | [13.3](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Thời gian tăng/giảm tốc** biến tần | Quá ngắn là báo lỗi quá dòng / quá áp | [13.3](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Dòng đặt và vi bước** của driver động cơ bước | Đặt dòng cao là nóng; vi bước **không tăng độ chính xác** | [11](#phan-ch11-dong-co-buoc) |
+
+### F.6 Khí nén
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **Áp làm việc** và ⚠ **áp tối thiểu / chênh áp tối thiểu** của từng van | Van pilot không mở nổi khi thiếu chênh áp | [15](#phan-ch15-van-dien-tu-khi-nen) · [17.3](#phan-ch17-co-cau-chap-hanh-khac) |
+| **Điểm sương** của khí sau máy sấy | ⚠ Cao hơn nhiệt độ môi trường là **đọng nước trong đường ống** | [14](#phan-ch14-nguon-khi-xu-ly-khi) |
+| **Tiết lưu meter-in hay meter-out** từng xy lanh | Sai kiểu là xy lanh giật, hoặc không giữ được tải | [15](#phan-ch15-van-dien-tu-khi-nen) |
+| **Lưu lượng tổng** khi nhiều cơ cấu chạy cùng lúc | Tính theo từng cái thì luôn đủ; chạy cùng lúc mới sụt | [14](#phan-ch14-nguon-khi-xu-ly-khi) |
+| ⚠ **Trạng thái van khi mất điện** (kiểu tâm van) | Quyết định cơ cấu **giữ, thả, hay về vị trí** khi mất điện | [15](#phan-ch15-van-dien-tu-khi-nen) |
+
+### F.7 Cảm biến và đo lường
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **Ngưỡng và trễ (hysteresis)** từng cảm biến | Không có trễ là ngõ ra rung ở đúng ngưỡng | [10.1.4](#phan-ch10-cam-bien-qua-trinh) |
+| **Chế độ so sánh**: trễ hay cửa sổ | Chọn sai là chọn sai cả chức năng | [10.1.4](#phan-ch10-cam-bien-qua-trinh) |
+| **Loại cặp nhiệt và chuẩn màu dây** dùng trong máy | ⚠ Ba chuẩn màu khác nhau — nhầm là đo sai âm thầm | [10.3.4](#phan-ch10-cam-bien-qua-trinh) |
+| **RTD đấu 2, 3 hay 4 dây** | 2 dây cộng điện trở dây vào kết quả | [10.3](#phan-ch10-cam-bien-qua-trinh) |
+| **Dải analog** 4–20 mA hay 0–10 V, và **ngưỡng báo đứt dây** | 4–20 mA phát hiện được đứt dây; 0–10 V thì không | [2.9](#phan-ch02-ngon-ngu-chung) |
+| **Khoảng cách lắp tối thiểu** giữa hai cảm biến tiệm cận | Đặt gần quá là nhiễu lẫn nhau, báo loạn | [7](#phan-ch07-cam-bien-tiem-can) |
+
+### F.8 Truyền thông
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **Tốc độ baud, parity, stop bit** — và **ghi lại** | Không ai nhớ được sau sáu tháng | [21.2](#phan-ch21-truyen-thong-mang) |
+| ⭐ **Trở kết cuối**: đặt ở đâu, **đúng hai đầu** | Thừa hoặc thiếu đều gây lỗi chập chờn theo chiều dài dây | [21.2](#phan-ch21-truyen-thong-mang) |
+| **Phân cực (bias)**: đặt ở **đúng một chỗ** | Đặt nhiều chỗ là bus mất cân bằng | [21.2](#phan-ch21-truyen-thong-mang) |
+| **Địa chỉ trạm** từng thiết bị — có sơ đồ | Trùng địa chỉ là lỗi rất khó tìm | [21](#phan-ch21-truyen-thong-mang) |
+| **Thời gian timeout / heartbeat** và **hành vi khi mất kết nối** | Quyết định máy dừng an toàn hay chạy mù | [21.7](#phan-ch21-truyen-thong-mang) |
+
+### F.9 Nhiệt tủ điện và hệ phụ trợ
+
+| Tham số phải chốt | Vì sao quan trọng | Chương |
+|---|---|---|
+| **Tổng công suất toả nhiệt** trong tủ và lưu lượng quạt / công suất máy lạnh | Tủ nóng là tụ bộ nguồn bay hơi, chết sau ~1 năm | [24](#phan-ch24-nhiet-moi-truong-tu-dien) |
+| ⚠ **Nhiệt độ đặt của máy lạnh tủ** so với **điểm sương** phòng | Đặt dưới điểm sương là **nước nhỏ vào tủ điện** | [24](#phan-ch24-nhiet-moi-truong-tu-dien) · [29](#phan-ch29-he-phu-tro-nha-may) |
+| **Tỉ số biến dòng (CT)** nhập vào đồng hồ, và **chiều lắp** | Sai tỉ số là số đo lệch đúng hệ số đó; ngược chiều là công suất âm | [29.5](#phan-ch29-he-phu-tro-nha-may) |
+| **Nhiệt độ nước chiller** và lưu lượng | Mất lưu lượng làm kích thước sản phẩm trôi theo giờ chạy | [29.2](#phan-ch29-he-phu-tro-nha-may) |
+
+---
+
+### F.10 Năm tham số hay bị bỏ quên nhất
+
+Rút ra từ các bảng *"Sai lầm thường gặp"* của cả sách — đây là những cái **không báo lỗi ngay**,
+nên thường lọt qua nghiệm thu và phát tác vài tháng sau:
+
+| # | Tham số | Vì sao lọt qua nghiệm thu |
+|---|---|---|
+| 1 | **Trạng thái fail-safe của remote I/O khi mất mạng** | Lúc nghiệm thu mạng luôn tốt, không ai thử rút dây |
+| 2 | **Ngưỡng sai lệch bám servo** | Máy mới thì nhẹ, không bao giờ chạm ngưỡng dù đặt sai |
+| 3 | **Điểm sương khí nén** | Mùa khô không đọng nước; mùa mưa mới lộ |
+| 4 | **Nhiệt độ đặt máy lạnh tủ so với điểm sương** | Chỉ đọng nước khi độ ẩm phòng lên cao |
+| 5 | **Chiều và tỉ số CT** | Số vẫn hiện ra, chỉ là **sai** — không có gì báo lỗi |
+
+> ⭐ Điểm chung của cả năm: **máy vẫn chạy bình thường lúc nghiệm thu**. Cách duy nhất bắt được là
+> **chủ động thử điều kiện xấu** — rút dây mạng, chạy lúc trời ẩm, đối chiếu số đo với ampe kìm.
 
 ---
 

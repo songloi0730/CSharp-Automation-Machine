@@ -1577,6 +1577,15 @@ breakpoint, chạy qua đúng tình huống, xem giá trị/hành vi THỰC TẾ
 với điều tên gọi/comment tuyên bố hay không. Tên gọi và comment là gợi ý
 tốt để bắt đầu tìm hiểu, không phải bằng chứng cuối cùng.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Nguyên tắc này áp dụng cả cho TÊN FILE, không chỉ tên biến/hàm/comment.</strong> Khác Java (bắt buộc
+tên file <code>.java</code> trùng tên class public bên trong), <strong>C# không yêu cầu tên file <code>.cs</code> trùng tên
+class</strong> — Visual Studio tự đặt tên file theo tên class lúc TẠO MỚI qua UI, nhưng không kiểm tra lại
+nếu sau đó ai đó đổi tên class, hoặc copy-paste file rồi sửa nội dung mà quên đổi tên file. Gặp một
+file tên gợi ý một chức năng nhưng bên trong khai báo <code>class</code> với tên hoàn toàn khác — đó không
+phải lỗi biên dịch, chỉ là dấu hiệu file đã bị sửa/copy qua nhiều lần. Luôn mở file ra đọc dòng
+<code>class</code> thật, đừng suy đoán nội dung chỉ từ tên file trong danh sách thư mục.</p>
+</blockquote>
 <h3>Đọc một file rất dài (hàng nghìn dòng)</h3>
 <p>Code kế thừa nhiều năm tuổi có thể dồn cả nghìn dòng vào một file/class
 duy nhất — đọc từ trên xuống dưới không khả thi. Hai công cụ Visual Studio
@@ -2211,6 +2220,20 @@ while (!AxisInPosition())
 <blockquote>
 <p>⚠️ <strong>Cảnh báo:</strong> Mọi thao tác chờ thiết bị phải có <strong>timeout</strong> và <strong>không được chặn luồng điều khiển</strong>. Thay vì &quot;đợi bằng <code>while</code>&quot;, hãy &quot;chờ theo tick&quot;: tick 1 gửi lệnh move; các tick sau kiểm tra <code>InPosition</code>; quá thời gian thì chuyển sang state <code>Fault</code>. Cần lặp lại có giới hạn (retry) thì dùng <code>do-while</code> với bộ đếm + delay, không lặp vô hạn. Cách &quot;chờ không chặn&quot; hiện đại là <code>async/await</code> — viết code chờ trông như tuần tự nhưng không khoá luồng, học đầy đủ ở <strong>Chương 5</strong>.</p>
 </blockquote>
+<p><code>do-while</code> khác <code>while</code> ở chỗ <strong>điều kiện kiểm tra Ở CUỐI</strong> thân vòng lặp — nên thân vòng lặp luôn
+chạy tối thiểu 1 lần, dù điều kiện sai ngay từ đầu (khác <code>while</code>/<code>for</code> kiểm tra điều kiện trước khi
+chạy lần nào). Dùng khi logic cần &quot;làm ít nhất 1 lần rồi mới hỏi có làm tiếp không&quot;:</p>
+<pre><code class="language-csharp">// Thử tối đa 3 lần, luôn thử ít nhất 1 lần trước khi kiểm tra điều kiện dừng
+int attempt = 0;
+bool success;
+do
+{
+    attempt++;
+    success = TryConnectPlc();
+    if (!success) Thread.Sleep(200);   // chờ ngắn giữa các lần thử
+}
+while (!success &amp;&amp; attempt &lt; 3);
+</code></pre>
 <hr>
 <h2 id="34-hàm-và-phương-thc-trong-thit-k-module">3.4  Hàm và phương thức trong thiết kế module</h2>
 <p>Trong một hệ thống PC-Based Control, chất lượng không thể hiện ở &quot;code chạy được&quot; mà ở chỗ <strong>module hoá</strong>: mỗi phần (Device, Sequence, UI, Logging) có giao diện rõ ràng, dễ test, dễ mở rộng. Phương thức (method) là đơn vị nhỏ nhất tạo nên cấu trúc đó — tương đương một network/rung có tên trong PLC, nhưng mạnh hơn nhiều.</p>
@@ -2245,6 +2268,15 @@ else
 <blockquote>
 <p>📌 <strong>Lưu ý:</strong> Có hai cách truyền tham số đặc biệt. <code>out</code> để <em>trả dữ liệu ra</em> (như mẫu Try ở trên). <code>ref</code> truyền tham chiếu cho phép hàm sửa trực tiếp biến bên ngoài — nhưng nó tăng &quot;tác dụng phụ&quot; khó debug, nên trong logic điều khiển hãy hạn chế <code>ref</code>, ưu tiên <code>out</code> theo mẫu Try.</p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến:</strong> Mẫu <code>Try...</code> + <code>out</code> ở Code 3.11 không chỉ để tự viết — .NET có sẵn rất nhiều
+hàm theo đúng mẫu này: <code>int.TryParse(text, out int n)</code>, <code>double.TryParse(text, out double d)</code>,
+<code>DateTime.TryParse(text, out DateTime dt)</code>, <code>Dictionary&lt;TKey,TValue&gt;.TryGetValue(key, out value)</code>.
+Luôn ưu tiên <code>TryParse</code> thay vì <code>Convert.ToInt32</code>/<code>int.Parse</code> khi chuỗi đầu vào có thể sai định dạng
+(dữ liệu người dùng gõ tay, file cấu hình bên ngoài): <code>int.Parse(&quot;abc&quot;)</code> ném exception ngay,
+<code>Convert.ToInt32(null)</code> âm thầm trả về <code>0</code> (không báo lỗi) — cả hai đều khó kiểm soát hơn
+<code>TryParse</code> trả về <code>bool</code> rõ ràng đúng/sai.</p>
+</blockquote>
 <h3>3.4.2  Overloading, tham số tuỳ chọn và named arguments</h3>
 <p><strong>Overloading</strong> cho phép nhiều method cùng tên, khác danh sách tham số — hữu ích để làm API &quot;một cửa&quot; mà vẫn linh hoạt (ví dụ <code>Initialize()</code> dùng config mặc định, <code>Initialize(string path)</code> dùng config chỉ định). <strong>Tham số tuỳ chọn</strong> và <strong>named arguments</strong> giúp API điều khiển đọc lên như spec:</p>
 <p><strong>Code 3.12 — Tham số tuỳ chọn + named arguments cho lệnh chuyển động</strong></p>
@@ -2259,6 +2291,13 @@ MoveAbs(axisId: 1, position: 120.0, velocity: 80.0);
 </code></pre>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Named arguments cực kỳ đáng giá khi hàm có nhiều tham số cùng kiểu <code>double</code> (vị trí, vận tốc, gia tốc). <code>MoveAbs(1, 120.0, 80.0)</code> dễ nhầm thứ tự; <code>MoveAbs(axisId: 1, position: 120.0, velocity: 80.0)</code> thì không. Với lệnh nguy hiểm (Move, Home, Teach), luôn ưu tiên gọi kiểu này.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong><code>params</code> — số lượng tham số tuỳ ý:</strong> Khác tham số tuỳ chọn (số lượng tham số CỐ ĐỊNH, chỉ giá
+trị là tuỳ chọn), từ khoá <code>params</code> cho phép người gọi truyền một SỐ LƯỢNG BẤT KỲ đối số cùng kiểu,
+C# tự gộp thành mảng: <code>public void LogAxes(string label, params int[] axisIds)</code> cho phép gọi
+<code>LogAxes(&quot;Lỗi&quot;, 1, 2, 3)</code> thay vì phải tự tạo <code>new int[] { 1, 2, 3 }</code>. <code>Console.WriteLine</code> và
+<code>string.Format</code> của chính .NET cũng dùng <code>params</code> nội bộ để nhận số lượng tham số tuỳ ý.</p>
 </blockquote>
 <h3>3.4.3  Extension method — thêm &quot;cú pháp vận hành&quot;</h3>
 <p><strong>Extension method</strong> <!--idx:Extension method--> cho phép &quot;thêm&quot; một method vào kiểu có sẵn mà không sửa code gốc của nó. Trong automation, kỹ thuật này thường dùng để biến thao tác lặp lại thành câu lệnh đọc tự nhiên:</p>
@@ -2277,6 +2316,27 @@ axis.MoveTo(position: 120.0, velocity: 80.0);
 <p>📌 <strong>Sẽ học sâu hơn:</strong> Extension method còn nhiều ứng dụng (đặc biệt với LINQ) — Chương 4 và Chương 5 sẽ khai thác sâu. Ở đây chỉ cần biết nó tồn tại và dùng để tăng tính đọc được, không lạm dụng cho thao tác gây side-effect khó đoán. Lưu ý <code>IAxis</code> là một <em>interface</em> (bản hợp đồng các method mà một trục phải có) — khái niệm interface học đầy đủ ở Chương 4.</p>
 </blockquote>
 <p>Một nguyên tắc bao trùm cho mọi method trong điều khiển máy: <strong>một phương thức — một trách nhiệm</strong>. Tránh <code>Move</code> làm cả việc check alarm, ghi log lẫn update UI. Và <strong>UI không gọi thẳng xuống driver</strong> — UI chỉ gọi API của tầng logic/sequence.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — vài cú pháp/API cơ bản hay gặp khi đọc code người khác, dễ bỏ sót lúc mới học:</strong></p>
+<ul>
+<li><strong>Định danh (tên method/biến) không giới hạn chữ Latin</strong> — C# cho phép Unicode trong tên identifier,
+nên <code>public void 比对结果刷新()</code> hay <code>string 品名</code> biên dịch được bình thường (khác trực giác &quot;tên
+biến phải là a-z&quot;). Gặp code có tên hàm/biến bằng chữ tiếng Trung/Nhật/Việt có dấu, đó không phải
+lỗi cú pháp — dùng đúng kỹ thuật Find All References (mục 2.4) để lần theo, không cần đọc hiểu nghĩa.</li>
+<li><strong><code>using static</code></strong> — cho phép gọi thẳng thành viên <code>static</code> của một class mà không cần viết tên
+class ra trước: <code>using static System.Math;</code> rồi gọi <code>Sqrt(x)</code> thay vì <code>Math.Sqrt(x)</code>. Khác <code>using</code>
+thường (chỉ import namespace, vẫn phải viết tên class).</li>
+<li><strong><code>IComparer&lt;T&gt;</code> / <code>Array.Sort(array, comparer)</code></strong> — khi cần sắp xếp theo tiêu chí tuỳ biến (ví dụ
+sắp các nút bấm theo toạ độ hiển thị thay vì thứ tự khai báo), tự viết một class implement
+<code>IComparer&lt;T&gt;</code> với method <code>Compare(x, y)</code> trả về âm/0/dương, rồi truyền vào <code>Array.Sort</code>/
+<code>List&lt;T&gt;.Sort</code>. Cách gọn hơn cho hầu hết trường hợp đơn giản: LINQ <code>OrderBy(x =&gt; tiêuChiSapXep)</code>.</li>
+<li><strong><code>Regex</code> (namespace <code>System.Text.RegularExpressions</code>)</strong> — dùng khi cần tách/kiểm tra một chuỗi
+theo khuôn mẫu (ví dụ trích số từ <code>&quot;AXIS_3_POS&quot;</code>, kiểm tra một chuỗi có ký tự CJK hay không):
+<code>Regex.Match(text, @&quot;\d+&quot;).Value</code> lấy chuỗi số đầu tiên tìm thấy; <code>Regex.IsMatch(text, pattern)</code>
+trả <code>bool</code>. Với nhu cầu đơn giản (kiểm tra rỗng, cắt theo dấu phân cách cố định), <code>string.Split</code>/
+<code>string.Contains</code> thường đủ và dễ đọc hơn — chỉ dùng <code>Regex</code> khi khuôn mẫu thật sự phức tạp.</li>
+</ul>
+</blockquote>
 <hr>
 <h2 id="35-x-lý-ngoi-l-cơ-bn">3.5  Xử lý ngoại lệ cơ bản</h2>
 <p>Trong phần mềm điều khiển máy, lỗi là điều chắc chắn xảy ra: mất kết nối thiết bị, file cấu hình sai, timeout giao tiếp. Vấn đề không phải &quot;tránh lỗi tuyệt đối&quot; mà là <strong>quản lý lỗi có hệ thống</strong> để máy không rơi vào trạng thái nguy hiểm, không treo, và cung cấp đủ thông tin để truy vết.</p>
@@ -2515,6 +2575,45 @@ public static class JsonConfigIO
 }
 </code></pre>
 <p>Tóm lại chiến lược file cho một dự án PC-Based Control: <strong>Log</strong> → text + rolling + batch; <strong>Config</strong> → JSON + version + atomic + backup; <strong>Recipe/Historical</strong> → binary (compact) hoặc JSON/CSV (dễ kiểm); <strong>Export sản xuất</strong> → CSV với invariant culture.</p>
+<h3>3.6.4  XML — khi gặp trong config kế thừa</h3>
+<p>Sách khuyên dùng <strong>JSON</strong> cho config mới (mục 3.6.3), nhưng rất nhiều máy đang chạy trong nhà máy
+thật — nhất là máy đã hoạt động 10-15 năm — vẫn dùng <strong>XML</strong> làm định dạng file cấu hình (danh sách
+trục, danh sách IO, tham số trạm...), vì XML phổ biến hơn JSON ở thời điểm những máy đó được viết.
+Không cần chọn XML cho dự án mới, nhưng cần đọc hiểu được khi kế thừa code cũ:</p>
+<p><strong>Code 3.18b — Đọc XML thủ công bằng <code>XmlDocument</code></strong></p>
+<pre><code class="language-csharp">// SystemCfg.xml:
+// &lt;Config&gt;
+//   &lt;Axis Name=&quot;AxisX&quot; CardType=&quot;EtherCatCard01&quot; MaxVelocity=&quot;200&quot; /&gt;
+//   &lt;Axis Name=&quot;AxisY&quot; CardType=&quot;EtherCatCard01&quot; MaxVelocity=&quot;150&quot; /&gt;
+// &lt;/Config&gt;
+
+var doc = new XmlDocument();
+doc.Load(path);
+
+foreach (XmlNode node in doc.SelectNodes(&quot;//Axis&quot;)!)
+{
+    string name = node.Attributes![&quot;Name&quot;]!.Value;
+    double maxVel = double.Parse(node.Attributes[&quot;MaxVelocity&quot;]!.Value, CultureInfo.InvariantCulture);
+    // ... dùng name/maxVel để tạo Axis
+}
+</code></pre>
+<p><code>XmlDocument</code> (namespace <code>System.Xml</code>) là cách đọc XML <strong>thủ công</strong>, tự dò từng node/attribute bằng
+tên chuỗi — đúng kiểu code kế thừa hay dùng, cùng bản chất &quot;khoá qua chuỗi&quot; đã học ở Bảng 2.5
+(Chương 2, mục 2.5): gõ sai tên node/attribute không bị compiler bắt lỗi, chỉ lộ ra lúc chạy
+(<code>NullReferenceException</code> nếu <code>Attributes[&quot;TênSai&quot;]</code> trả <code>null</code>).</p>
+<p>Cách hiện đại hơn — đánh dấu class bằng attribute để <code>XmlSerializer</code> tự ánh xạ, tương tự tinh thần
+<code>JsonSerializer</code> đã học:</p>
+<pre><code class="language-csharp">public sealed class AxisConfig
+{
+    [XmlAttribute(&quot;Name&quot;)]        public string Name { get; set; } = &quot;&quot;;
+    [XmlAttribute(&quot;CardType&quot;)]    public string CardType { get; set; } = &quot;&quot;;
+    [XmlAttribute(&quot;MaxVelocity&quot;)] public double MaxVelocity { get; set; }
+}
+</code></pre>
+<p><code>[XmlAttribute(&quot;Name&quot;)]</code> báo <code>XmlSerializer</code> ánh xạ attribute XML <code>Name</code> vào đúng property — đọc
+kiểu này an toàn hơn <code>XmlDocument</code> thủ công (gõ sai tên property thì compiler bắt được ngay), nhưng
+code kế thừa thường KHÔNG dùng cách này dù class đã sẵn attribute — vẫn đọc tay bằng <code>XmlDocument</code>
+song song, hai cách cùng tồn tại không nhất quán là dấu hiệu thường gặp của code viết qua nhiều đợt.</p>
 <hr>
 <h2 id="37-collections-ct-lõi-cho-ng-dng-real-time">3.7  Collections cốt lõi cho ứng dụng real-time</h2>
 <p>Trong PC-Based Control, collection không chỉ là &quot;cách chứa dữ liệu&quot; — nó là một phần của <strong>thiết kế thời gian</strong>. Chọn sai collection, hoặc dùng đúng collection nhưng sai cách, tạo ra đúng những hiện tượng kinh điển trong nhà máy: vòng quét đang ổn định bỗng &quot;khựng&quot; theo chu kỳ, máy chạy tốt khi test nhưng lỗi khó tái hiện khi chạy 24/7.</p>
@@ -2759,6 +2858,11 @@ namespace MeoFrame.Automation.Common.Logging            // hạ tầng dùng chu
 <td>Bắt exception cụ thể, log đủ context, về safe state</td>
 </tr>
 <tr>
+<td><code>catch (Exception) { throw; }</code> — bắt rồi ném lại y nguyên, không làm gì thêm</td>
+<td>Vô nghĩa về hành vi (giống hệt như không có <code>try/catch</code>), chỉ tổ khó đọc hơn</td>
+<td>Nếu không log/xử lý gì thêm thì bỏ hẳn khối <code>try/catch</code>; nếu cần log thì log trong <code>catch</code> rồi mới <code>throw;</code></td>
+</tr>
+<tr>
 <td>Dùng exception cho luồng bình thường</td>
 <td>Hệ thống chậm, log nhiễu, khó truy lỗi thật</td>
 <td><code>if</code>/<code>switch</code>/Result cho điều kiện thường gặp</td>
@@ -2952,6 +3056,35 @@ khiển chuyển động&quot;), không theo tên class hiện thực nó.</p>
 </blockquote>
 <blockquote>
 <p>📌 <strong>Lưu ý — constructor không được &quot;chạy máy&quot;:</strong> Constructor chỉ chuẩn bị object, <strong>tuyệt đối không</strong> gọi hành động có side-effect như connect thiết bị hay bật servo. Những việc đó nằm trong <code>Initialize()</code>/<code>Connect()</code> để Sequence kiểm soát đúng thứ tự và thời điểm. Một object vừa <code>new</code> xong mà đã tự bật servo là một tai nạn chờ xảy ra.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Quy ước ngầm: property nên &quot;rẻ&quot;.</strong> <code>get</code>/<code>set</code> ở Code 4.1 chỉ trả về/gán một field trong bộ
+nhớ — gần như tức thời. Đây là kỳ vọng ngầm của mọi lập trình viên C#: gọi <code>axis.Position</code> trông
+giống đọc một biến, không ai ngờ nó có thể mở file, gọi mạng, hay tốn thời gian đáng kể. Code kế
+thừa đôi khi vi phạm điều này — ví dụ một property mà mỗi lần <code>get</code> đều đọc lại một file cấu hình
+từ đĩa, mỗi lần <code>set</code> đều ghi thẳng xuống đĩa ngay lập tức. Về cú pháp không sai (<code>get</code>/<code>set</code> vẫn
+là code hợp lệ), nhưng về thiết kế nên tránh: nếu thao tác tốn kém (I/O, gọi mạng, tính toán nặng),
+đặt tên là <strong>method</strong> rõ ràng (<code>LoadPositionFromFile()</code>/<code>SaveConfigToDisk()</code>) để người gọi biết
+trước chi phí, thay vì giấu nó sau cú pháp trông như truy cập field.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Nạp chồng toán tử (operator overloading) — khi <code>&gt;</code> không còn là phép so sánh số:</strong> C# cho
+phép một class tự định nghĩa lại ý nghĩa của các ký hiệu toán học/so sánh cho chính kiểu của mình:</p>
+<pre><code class="language-csharp">public readonly struct Pressure
+{
+    private readonly double _bar;
+    public Pressure(double bar) =&gt; _bar = bar;
+
+    public static bool operator &gt;(Pressure a, Pressure b) =&gt; a._bar &gt; b._bar;
+    public static bool operator &lt;(Pressure a, Pressure b) =&gt; a._bar &lt; b._bar;
+    public static implicit operator Pressure(double bar) =&gt; new(bar);   // cho phép Pressure p = 5.2;
+}
+</code></pre>
+<p>Sau khi định nghĩa, code gọi (<code>if (p1 &gt; p2)</code>, <code>Pressure p = 5.2;</code>) TRÔNG NHƯ đang so sánh/gán số
+bình thường, nhưng thực ra đang gọi các method <code>operator &gt;</code>/<code>implicit operator</code> do chính class tự
+viết. Đây là cạm bẫy đọc-hiểu thật sự: gặp một kiểu dữ liệu tự chế (không phải <code>int</code>/<code>double</code> chuẩn
+của .NET) dùng trong biểu thức so sánh/toán học, đừng mặc định đó là số — kiểm tra định nghĩa class
+xem có <code>operator</code> nào được nạp chồng không trước khi tin vào &quot;trực giác&quot; đọc biểu thức.</p>
 </blockquote>
 <h3>4.1.3  Object: instance và ngữ nghĩa tham chiếu</h3>
 <p>Tạo object bằng <code>new</code> cấp phát trên heap và trả về một <em>tham chiếu</em> (đã học ở Chương 3: <code>class</code> là reference type). Hệ quả quan trọng cho automation: nhiều nơi có thể cùng giữ tham chiếu tới <strong>một</strong> object trục — <code>DeviceManager</code> giữ, <code>Sequence</code> cũng giữ. Khi trục cập nhật trạng thái, cả hai phía đều thấy ngay. Điều này tiện cho chia sẻ, nhưng cũng là lý do trạng thái phải <code>private set</code>: nếu để <code>public set</code>, một module có thể ghi đè trạng thái interlock của module khác.</p>
@@ -3757,6 +3890,32 @@ private async void OnPollTimerTick(object? sender, EventArgs e)
 <blockquote>
 <p>🔍 <strong>Đào sâu thêm:</strong> Các cơ chế đồng bộ nâng cao — <code>Interlocked</code> (tăng/đổi giá trị nguyên tử không cần lock), <code>Mutex</code> (đồng bộ liên tiến trình), <code>Semaphore</code> (bản nặng cross-process của SemaphoreSlim), <code>ReaderWriterLockSlim</code> (đọc nhiều ghi ít), <code>SpinLock</code> — dùng khi có nhu cầu cụ thể và đã đo đạc. Tìm hiểu thêm: &quot;C# Interlocked&quot;, &quot;synchronization primitives .NET&quot;.</p>
 </blockquote>
+<p><strong>Ứng dụng thực tế của <code>Mutex</code> — chặn mở phần mềm điều khiển máy 2 lần cùng lúc.</strong> Một nhu cầu rất
+phổ biến nhưng ít sách nêu ví dụ cụ thể: phần mềm điều khiển máy KHÔNG được phép chạy 2 tiến trình
+cùng lúc — hai tiến trình cùng mở kết nối PLC/servo có thể gửi lệnh xung đột nhau. <code>Mutex</code> có tên
+(named Mutex) là cách chuẩn để kiểm tra điều này ngay từ <code>Main()</code>:</p>
+<p><strong>Code 5.8a — Chặn mở ứng dụng lần thứ hai bằng named <code>Mutex</code></strong></p>
+<pre><code class="language-csharp">[STAThread]
+static void Main()
+{
+    // &quot;Local\\&quot; giới hạn phạm vi trong session người dùng hiện tại
+    using var singleInstance = new Mutex(initiallyOwned: true, &quot;Local\\MeoFrameMachineApp&quot;,
+        out bool createdNew);
+
+    if (!createdNew)
+    {
+        MessageBox.Show(&quot;Phần mềm đang chạy — chỉ được mở một cửa sổ điều khiển máy tại một thời điểm.&quot;);
+        return;   // thoát ngay, không khởi tạo thêm kết nối phần cứng nào
+    }
+
+    Application.Run(new MainForm());
+}   // Mutex tự giải phóng khi using kết thúc — lần mở sau sẽ createdNew = true
+</code></pre>
+<p><code>createdNew</code> là <code>true</code> chỉ với tiến trình ĐẦU TIÊN tạo được Mutex tên đó trên máy; mọi tiến trình mở
+sau đều nhận <code>createdNew = false</code> (Mutex đã tồn tại) và nên thoát ngay. Một cách khác hay gặp trong
+code kế thừa (không dùng <code>Mutex</code>) là tự đếm số tiến trình cùng tên qua
+<code>Process.GetProcessesByName(...)</code> — hoạt động được nhưng cần tự so sánh đường dẫn file thực thi để
+tránh nhầm với tiến trình khác trùng tên, phức tạp hơn <code>Mutex</code> mà không có lợi ích rõ ràng.</p>
 <h3>5.3.4  Race condition và deadlock — hai con quỷ của đa luồng</h3>
 <p><strong>Race condition</strong> <!--idx:race condition--> là lỗi &quot;lúc được lúc không, không tái hiện được&quot; do nhiều luồng đọc/ghi dữ liệu chung không bảo vệ — triệu chứng kinh điển của bug đa luồng. <strong>Deadlock</strong> là hai luồng khoá nhau, mỗi bên giữ một tài nguyên và chờ tài nguyên bên kia. Cách phòng deadlock phổ biến nhất: <strong>thống nhất thứ tự lấy lock</strong> (luôn lock A trước B ở mọi nơi), giữ lock ngắn, và ưu tiên <em>truyền thông điệp qua hàng đợi</em> (mục 5.4) thay vì chia sẻ trạng thái — tránh lock ngay từ đầu là cách an toàn nhất.</p>
 <p><strong>Code 5.8b — Race condition cụ thể: <code>_counter++</code> đa luồng cho kết quả sai</strong></p>
@@ -6073,6 +6232,42 @@ grid hiệu năng cao) kèm nhiều theme đồng bộ.</p>
 <p>Lựa chọn phụ thuộc ngân sách và độ phức tạp giao diện — không có câu trả lời
 đúng tuyệt đối. Với màn hình chỉ cần vài đèn báo và một bảng dữ liệu, GDI+ và
 owner-draw (mục 8.2.1–8.2.3) thường đủ dùng mà không tốn chi phí license.</p>
+<h3>8.2.6 Microsoft Chart Control — biểu đồ có sẵn, không cần cài thêm</h3>
+<p><code>System.Windows.Forms.DataVisualization.Charting</code> (namespace <code>Chart</code> ở cột cuối Bảng 8.2) có sẵn
+trong .NET, không cần cài NuGet — control <code>Chart</code> phù hợp cho nhu cầu rất phổ biến trong automation:
+biểu đồ áp lực/dòng điện/mô-men theo thời gian hoặc theo vị trí trục.</p>
+<p><strong>Code 8.13 — Cấu hình <code>Chart</code> và đổ dữ liệu điểm</strong></p>
+<pre><code class="language-csharp">chart1.ChartAreas.Add(new ChartArea(&quot;Main&quot;));
+chart1.Series.Add(new Series(&quot;Pressure&quot;)
+{
+    ChartType = SeriesChartType.Line,
+    XValueType = ChartValueType.Double,
+});
+chart1.ChartAreas[0].AxisX.Title = &quot;Vị trí (mm)&quot;;
+chart1.ChartAreas[0].AxisY.Title = &quot;Áp lực (bar)&quot;;
+
+// Đổ dữ liệu: mỗi điểm là 1 cặp (x, y)
+chart1.Series[&quot;Pressure&quot;].Points.DataBindXY(positions, pressures);
+</code></pre>
+<p>Chỉ tạo/đổ dữ liệu vào <code>Chart</code> từ UI thread — cùng nguyên tắc <code>Control.Invoke</code>/<code>BeginInvoke</code> đã học
+ở mục 8.1.2 nếu dữ liệu đến từ luồng đọc thiết bị nền.</p>
+<blockquote>
+<p>📌 <strong><code>TextBox.Text</code> không bao giờ <code>null</code>.</strong> Thuộc tính <code>Text</code> của mọi <code>Control</code> WinForms (kể cả
+<code>TextBox</code>) có giá trị mặc định là chuỗi rỗng <code>&quot;&quot;</code>, không phải <code>null</code> — kể cả khi người dùng chưa
+gõ gì. Kiểm tra ô nhập trống nên dùng <code>string.IsNullOrEmpty(textBox1.Text)</code> hoặc
+<code>string.IsNullOrWhiteSpace(...)</code>, không dùng <code>textBox1.Text == null</code> — điều kiện đó không bao giờ
+đúng, tạo ra một nhánh code chết (không lỗi biên dịch, chỉ là logic vô dụng).</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Hộp thoại chọn file chuẩn — <code>SaveFileDialog</code>/<code>OpenFileDialog</code>.</strong> Nhu cầu rất phổ biến (export
+log, import recipe, chọn file cấu hình) có sẵn 2 class chuẩn của WinForms, không cần tự vẽ:</p>
+<pre><code class="language-csharp">using var dlg = new SaveFileDialog { Filter = &quot;CSV files (*.csv)|*.csv&quot;, FileName = &quot;export.csv&quot; };
+if (dlg.ShowDialog() == DialogResult.OK)
+    File.WriteAllText(dlg.FileName, csvContent);
+</code></pre>
+<p><code>OpenFileDialog</code> dùng tương tự cho việc chọn file để đọc. Cả hai implement <code>IDisposable</code> — luôn bọc
+<code>using</code> (đã học ở Chương 3, mục 3.6).</p>
+</blockquote>
 <hr>
 <h2 id="83-mvp-pattern-implementation">8.3 MVP Pattern Implementation</h2>
 <!--idx:MVP Pattern (Model-View-Presenter)--><p>Khó khăn lớn nhất khi phát triển HMI/SCADA bằng WinForms thường không nằm ở
@@ -12044,6 +12239,25 @@ invariant ở tầng Domain (Application Service gọi <code>machine.Start()</co
 gọi <code>SaveAsync()</code>) — Repository chỉ có nhiệm vụ <em>ghi lại kết quả</em>, không ra quyết
 định nghiệp vụ. Đừng để Repository tự gọi business method thay Aggregate.</p>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong>Khi buộc phải đọc/sửa code cũ dùng SQL thô (không qua EF Core):</strong> không phải mọi dự án kế
+thừa đều dùng EF Core LINQ như Code 13.3d — nhiều code cũ gọi thẳng <code>SQLiteCommand</code>/<code>OleDbCommand</code>
+với câu lệnh SQL dựng bằng NỐI CHUỖI trực tiếp:</p>
+<pre><code class="language-csharp">// ❌ Nguy hiểm nếu bất kỳ phần nào của chuỗi đến từ input người dùng gõ tay
+string sql = $&quot;SELECT * FROM state_record WHERE StationName = &#39;{stationName}&#39;&quot;;
+</code></pre>
+<p>Nếu <code>stationName</code> (hay bất kỳ giá trị nào ghép vào chuỗi SQL) từng có khả năng đến từ ô nhập liệu,
+file cấu hình người dùng chỉnh được, hoặc dữ liệu quét mã vạch — đây là lỗ hổng <strong>SQL injection</strong>
+thật: một chuỗi input như <code>x&#39; OR &#39;1&#39;=&#39;1</code> có thể đổi hoàn toàn ý nghĩa câu lệnh. Cách sửa đúng là
+<strong>tham số hoá</strong> (parameterized query), không nối chuỗi:</p>
+<pre><code class="language-csharp">// ✅ Giá trị truyền qua tham số, driver tự escape đúng cách
+using var cmd = new SQLiteCommand(&quot;SELECT * FROM state_record WHERE StationName = @name&quot;, conn);
+cmd.Parameters.AddWithValue(&quot;@name&quot;, stationName);
+</code></pre>
+<p>Nếu giá trị ghép vào SQL luôn đến từ nội bộ hệ thống (ví dụ chọn từ <code>DateTimePicker</code>, không phải ô
+gõ tay tự do), rủi ro injection thấp hơn nhưng thói quen tham số hoá vẫn nên giữ nhất quán — dễ audit
+hơn khi có ai đó thêm một trường nhập liệu mới vào câu lệnh này sau này.</p>
+</blockquote>
 <h3>13.1.4 Recipe Versioning và Validation nhiều mức</h3>
 <p>Recipe không phải dữ liệu tĩnh — nó thay đổi theo thời gian: kỹ sư tinh chỉnh tốc độ,
 thêm tham số mới, đổi định dạng file cấu hình. Hai vấn đề thường bị bỏ qua khi thiết kế
@@ -14072,6 +14286,15 @@ dùng <code>CogSerializer</code> (bên trong là <code>BinaryFormatter</code>) �
 hơn — <code>SEHException</code> native <strong>không bắt được bằng try/catch C# thông thường</strong> và có thể
 kéo sập toàn bộ process điều khiển máy. Theo nguyên tắc R01 (Safety-First), một đường
 code có khả năng crash native không được phép nằm trong process điều khiển máy.</p>
+<blockquote>
+<p>📌 <strong><code>SoapFormatter</code> — cùng họ với <code>BinaryFormatter</code>, còn cũ/nguy hiểm hơn.</strong> Code .NET Framework
+kế thừa đôi khi dùng <code>System.Runtime.Serialization.Formatters.Soap.SoapFormatter</code> (serialize object
+ra XML theo chuẩn SOAP cũ) cho cùng mục đích DeepCopy/lưu file mà <code>BinaryFormatter</code> hay được dùng —
+<code>SoapFormatter</code> đã bị loại khỏi .NET Core <strong>ngay từ đầu</strong> (không có shim tương thích như
+<code>BinaryFormatter</code>), cần gói NuGet tương thích riêng nếu buộc phải chạy trên .NET hiện đại. Gặp
+<code>SoapFormatter</code> trong code cũ, áp dụng đúng nguyên tắc vừa học: đừng cố nạp lại nguyên xi trên
+.NET 9 — đánh giá lại định dạng lưu trữ (JSON, Chương 3) thay vì mang theo rủi ro tương thích.</p>
+</blockquote>
 <p><strong>Giải pháp: tách thành process riêng giao tiếp qua IPC</strong></p>
 <pre><code>┌────────────────────────────────┐                              ┌────────────────┐
 │ MeoFrame.Controller (.NET 9)   │  JSON over TCP/named-pipe    │ VisionPro Host │

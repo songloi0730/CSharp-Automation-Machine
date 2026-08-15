@@ -2117,6 +2117,17 @@ public enum AutoState { Idle, Init, Home, Run, Fault }
 <blockquote>
 <p>⚠️ <strong>Cảnh báo:</strong> Sai lầm phổ biến là dùng <code>const</code> cho giá trị lẽ ra phải cấu hình được — hệ quả là phải <strong>build lại phần mềm chỉ để đổi một tham số</strong> ngoài hiện trường. Quy tắc: luật vật lý không đổi → <code>const</code>; tham số cấu hình → <code>readonly</code> (đọc từ file).</p>
 <p>📌 <strong><code>sealed</code> ở đầu Code 3.4:</strong> đánh dấu class <strong>không cho kế thừa tiếp</strong> — tương tự khoá một FB lại, không cho ai viết FB con &quot;mở rộng&quot; nó. <strong>Lưu ý quan trọng:</strong> đây KHÔNG phải thói quen phổ biến của C# nói chung — rất nhiều code C# bạn gặp ở nơi khác (tutorial, mã nguồn mở, dự án khác) không dùng <code>sealed</code> mấy. Sách này <em>cố ý</em> mặc định thêm <code>sealed</code> cho mọi class không thiết kế để kế thừa (sẽ thấy lặp lại rất nhiều — đúng quy ước của các dự án phần mềm điều khiển máy công nghiệp mà sách mô phỏng): trong code an toàn/điều khiển, một class bị kế thừa &quot;ngoài kế hoạch&quot; có thể âm thầm đổi hành vi (override một method) mà người review khó lường trước — khoá <code>sealed</code> loại bỏ rủi ro đó ngay từ lúc biên dịch. Nói cách khác: <code>sealed</code> không phải luật C#, mà là một lựa chọn phòng ngừa có chủ đích của sách này — khi đọc code C# ở nơi khác, đừng ngạc nhiên nếu không thấy <code>sealed</code> ở đâu cả. Chỉ bỏ <code>sealed</code> khi class thực sự cần cho lớp con kế thừa (học ở Chương 4, mục 4.3).</p>
+<p>⚠️ <strong>Hậu quả thật khi KHÔNG tập trung hằng số — ví dụ có thể xảy ra:</strong> giả sử hai mã sự kiện
+được khai báo tách rời trong hai chỗ khác nhau của code: <code>public const string EventPick = &quot;300&quot;;</code>
+và <code>public const string EventPlace = &quot;300&quot;;</code> — gõ nhầm cùng một giá trị cho hai hằng số khác
+tên. Code này <strong>biên dịch hoàn toàn bình thường</strong> — trình biên dịch C# không có cách nào tự phát
+hiện &quot;hai hằng số khác tên nhưng trùng giá trị có thể là lỗi&quot;. Hậu quả chỉ lộ ra ở logic dùng
+chúng: một điều kiện như <code>eventName == EventPick || eventName == EventPlace</code> thực chất chỉ còn
+so sánh một giá trị, không còn phân biệt được hai sự kiện — sai lệch số liệu (ví dụ đếm nhầm sản
+lượng Pick/Place) mà không có exception nào báo hiệu. Đây là lý do R10 (hằng số tập trung một
+chỗ, ví dụ <code>AlarmCodes.cs</code>) không chỉ là &quot;gọn code&quot; — nó còn cho phép viết một unit test đơn giản
+kiểm tra không có hai hằng số nào trùng giá trị (duyệt field bằng reflection, <code>Distinct().Count()</code>
+so với tổng số field), điều không thể làm được khi hằng số rải rác khắp nơi.</p>
 </blockquote>
 <h3>3.2.3  Toán tử — nền tảng của logic điều khiển</h3>
 <p>Toán tử số học (<code>+ - * / %</code>) và so sánh (<code>== != &lt; &gt; &lt;= &gt;=</code>) dùng để tính giá trị điều khiển và kiểm tra điều kiện chuyển trạng thái. Một bẫy cực kỳ quan trọng với số thực:</p>
@@ -2843,6 +2854,20 @@ namespace MeoFrame.Automation.PickPlace.UI              // WPF/WinForms
 namespace MeoFrame.Automation.Common.Logging            // hạ tầng dùng chung
 </code></pre>
 <p>Khuyến nghị mạnh: <strong>folder structure phản ánh namespace</strong> (file <code>Devices/Abstractions/IMotion.cs</code> thuộc namespace <code>...Devices.Abstractions</code>) — tìm file nhanh, onboarding người mới dễ.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — <code>using</code> còn một dạng khác ngoài import namespace:</strong> Mọi ví dụ <code>using</code> trong
+sách từ đầu tới giờ đều là <em>import namespace</em> (<code>using System;</code> — &quot;cho phép dùng ngắn gọn mọi kiểu
+trong namespace <code>System</code>&quot;). C# còn một dạng thứ hai gọi là <strong>using alias directive</strong> — đặt một
+tên ngắn cho MỘT kiểu cụ thể (thường là kiểu generic dài): <code>using Dict = System.Collections.Generic.Dictionary&lt;string, object?&gt;;</code>
+ở đầu file, sau đó cả file chỉ cần viết <code>Dict</code> thay vì gõ lại <code>Dictionary&lt;string, object?&gt;</code> hàng
+chục lần. Dễ tưởng nhầm là lỗi gõ nếu chưa gặp cú pháp này — phân biệt bằng dấu <code>=</code> ngay sau tên:
+<code>using Namespace;</code> (import, không có <code>=</code>) khác <code>using TênNgắn = KiểuDài;</code> (đặt alias, có <code>=</code>).
+Một biến thể hiếm hơn: alias có thể khai báo LẠI ở một phạm vi hẹp hơn (ví dụ ngay sau dòng
+<code>namespace Foo;</code>) để <strong>che (shadow)</strong> alias cùng tên đã khai báo trước đó ở phạm vi rộng hơn —
+hai alias trùng tên nhưng trỏ tới hai kiểu khác nhau, mỗi cái chỉ có hiệu lực trong đúng phạm vi
+của nó. Gặp trường hợp này, đọc chậm lại để xác định alias đang có hiệu lực TẠI DÒNG đang đọc,
+đừng giả định nó giống lần khai báo đầu tiên nhìn thấy trong file.</p>
+</blockquote>
 <h3>3.8.2  Project, reference và quy tắc phụ thuộc</h3>
 <p>Trong Visual Studio, <strong>Project</strong> là đơn vị build tạo ra một assembly (DLL/EXE) — nó là nơi thể hiện ranh giới module kỹ thuật, khác với <strong>Folder</strong> chỉ tổ chức logic. Lỗi phổ biến là &quot;đưa mọi thứ vào một project&quot;, khiến phụ thuộc chéo dễ phát sinh và khó test. Một solution PC-Based Control điển hình tách thành nhiều class library theo tầng, cộng UI (WPF App) và các tool/simulator (Console App) riêng.</p>
 <p>Quan trọng nhất là <strong>hướng phụ thuộc</strong> một chiều, và các quy tắc cấm:</p>
@@ -11159,6 +11184,20 @@ void OnEntry_MinhHoa(MachineContext ctx)
 <td>Nhiều trạng thái (10+), chuyển đổi đồng nhất, cần chuẩn hoá (PackML) hoặc visualize/audit toàn bộ transition</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — biến thể thứ tư: stackable state machine.</strong> <code>MachineContext.TransitionTo</code>
+ở Code 12.2 luôn THAY state hiện tại — cách duy nhất sách dạy. Một số framework automation dùng
+thêm biến thể &quot;có ngăn xếp&quot; (<code>Stack&lt;IState&gt;</code> thay vì một biến <code>_current</code> đơn): ngoài
+<code>TransitionTo</code> (Clear ngăn xếp rồi Push state mới, giống hệt cách sách dạy), còn có
+<code>PushState(next)</code> (chồng thêm 1 state con lên TRÊN state hiện tại, không mất state cha) và
+<code>PopState()</code>/<code>TryPopState()</code> (bỏ state đang ở đỉnh, quay lại đúng state cha bên dưới). Dùng khi
+cần &quot;rẽ nhánh tạm rồi quay lại&quot; — ví dụ một trạm đang ở state &quot;Đang xử lý&quot; cần chồng thêm state
+con &quot;Đang hiệu chỉnh lại vị trí&quot; rồi tự quay về đúng state &quot;Đang xử lý&quot; sau khi xong, mà không
+cần một biến cờ phụ để nhớ &quot;quay về đâu&quot;. Đánh đổi: thêm một chiều điều hướng (push/pop) nghĩa
+là đọc code khó hơn — phải luôn hỏi &quot;mình đang ở tầng nào của ngăn xếp&quot; thay vì chỉ hỏi &quot;mình
+đang ở state gì&quot;. Với hầu hết máy vừa và nhỏ, state phẳng (<code>TransitionTo</code>) đã đủ dùng; chỉ cân
+nhắc biến thể này khi việc &quot;tạm rẽ nhánh rồi quay lại nguyên trạng&quot; xảy ra thường xuyên.</p>
+</blockquote>
 <h3>12.1.3  ISequenceEngine — hợp đồng điều khiển từ bên ngoài</h3>
 <p><code>MachineContext</code> nội bộ quản lý chuyển trạng thái, còn <code>ISequenceEngine</code> là interface để Application Service, HMI và kiểm thử tương tác với state machine mà không cần biết chi tiết cài đặt:</p>
 <p><strong>Code 12.4 — ISequenceEngine interface</strong></p>
@@ -13299,6 +13338,16 @@ trung, và chia sẻ metrics theo endpoint.</p>
 implement <code>IAsyncDisposable</code>; nhờ đó compiler biết chắc code bên trong <code>Pool</code> được phép
 gọi <code>t.DisposeAsync()</code> mà không cần cast. Đây là CORE để hiểu tại sao interface
 <code>IConnectionPool&lt;T&gt;</code> viết được như vậy:</p>
+<blockquote>
+<p>📌 <strong>Các dạng <code>where T :</code> khác thường gặp:</strong> <code>where T : IAsyncDisposable</code> ở đây là ràng buộc
+&quot;phải implement interface X&quot;. Một dạng khác hay gặp là <strong>constructor constraint</strong> —
+<code>where T : new()</code> — yêu cầu <code>T</code> phải có constructor không tham số, để code bên trong được phép
+gọi <code>new T()</code> tạo giá trị mặc định (ví dụ một class <code>Variable&lt;T&gt; where T : new()</code> tự tạo giá trị
+khởi tạo bằng <code>new T()</code> nếu người dùng không truyền giá trị ban đầu). Có thể kết hợp nhiều ràng
+buộc cùng lúc: <code>where T : class, IAsyncDisposable, new()</code> (phải là reference type, phải
+implement interface, phải có constructor không tham số) — C# cho phép liệt kê nhiều điều kiện
+cách nhau bằng dấu phẩy trên cùng một <code>where</code>.</p>
+</blockquote>
 <p><strong>Code 13.11 — IConnectionPool&lt;T&gt; và ConnectionPool&lt;T&gt; với reference counting</strong></p>
 <pre><code class="language-csharp">public sealed record ConnectionKey(string Protocol, string Endpoint, string? Profile = null);
 
@@ -17489,6 +17538,22 @@ tầng (MasterController → Station → Mechanism, không dùng static toàn c�
 Pattern (mục này) là hai công cụ giải quyết đúng gốc rễ vấn đề: phụ thuộc theo hướng
 interface + injection, không theo hướng static reference toàn cục.</p>
 </blockquote>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — Actor Model, một kiến trúc điều phối khác hẳn cây phân cấp:</strong> Sách này dạy
+xuyên suốt kiến trúc 3 tầng gọi trực tiếp (MasterController → Station → Mechanism). Khi đọc mã
+nguồn framework automation khác, bạn có thể gặp một lối tổ chức hoàn toàn khác gốc rễ: <strong>Actor
+Model</strong><!--idx:Actor Model--> — mỗi thành phần (Actor) chạy trên một luồng riêng, chỉ có đúng
+một <strong>mailbox</strong><!--idx:Mailbox (Actor)--> (hàng đợi thông điệp, ví dụ <code>BlockingCollection&lt;Message&gt;</code>)
+nhận lệnh từ bên ngoài, và không có class trung tâm nào &quot;ra lệnh&quot; — các Actor ngang hàng tự quản
+state của mình, giao tiếp bằng cách gửi message cho nhau. So với 3 tầng đang học: 1 Actor thường
+gộp vai trò của cả Station lẫn Mechanism, còn &quot;gọi method trực tiếp&quot; được thay bằng &quot;gửi message
+vào mailbox rồi actor kia tự xử lý khi tới lượt&quot;. Đánh đổi: Actor Model tránh được race condition
+khi ghi state (mỗi actor chỉ một luồng ghi state của chính nó, không cần <code>lock</code>) và cô lập lỗi
+tốt (1 actor crash không kéo actor khác theo), nhưng tốn 1 luồng hệ điều hành cho mỗi actor và
+khó truy vết luồng dữ liệu hơn (không thể &quot;F12 vào định nghĩa&quot; một lệnh gọi — phải lần theo tên
+message và nơi nó được xử lý). Sách không dạy sâu Actor Model — chỉ cần nhận diện được khi gặp,
+tương tự cách nhận diện State Pattern hay Observer khi đọc code người khác.</p>
+</blockquote>
 <p>Observer Pattern đảo ngược mối quan hệ: nguồn phát (<code>Machine</code>, <code>PackMlStateMachine</code>) chỉ biết đến interface trừu tượng <code>IEventPublisher</code>, còn việc ai nhận và làm gì với event là vấn đề của subscriber.</p>
 <blockquote>
 <p>Kỹ sư PLC quen với scan cycle — mỗi chu kỳ PLC đọc toàn bộ input, xử lý logic, cập nhật output. Vậy Observer trong C# để làm gì nếu PLC đã &quot;scan liên tục&quot; rồi?</p>
@@ -21413,6 +21478,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.3.2.</em></p>
 <p><strong>Action&lt;T&gt;</strong> — Delegate có sẵn của .NET cho method <strong>không trả giá trị</strong> (void), nhận 0–n tham số; dùng cho callback &quot;thực hiện hành động&quot; (<code>Action onReset</code>, <code>Action&lt;int, double&gt; moveAxis</code>). (→ xem Func<T>, delegate)
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.4.1.</em></p>
+<p><strong>Actor Model</strong> — Kiến trúc điều phối trong đó mỗi thành phần (Actor) chạy trên một luồng riêng, chỉ nhận lệnh qua một Mailbox (hàng đợi thông điệp) của chính nó, và không có class trung tâm nào ra lệnh — các Actor ngang hàng tự quản state, giao tiếp bằng cách gửi message cho nhau. Khác kiến trúc 3 tầng gọi trực tiếp (MasterController → Station → Mechanism) mà sách dạy xuyên suốt: 1 Actor thường gộp vai trò Station lẫn Mechanism, &quot;gọi method&quot; được thay bằng &quot;gửi message vào Mailbox&quot;. Đánh đổi: tránh race condition khi ghi state và cô lập lỗi tốt, nhưng tốn 1 luồng hệ điều hành/actor và khó truy vết luồng dữ liệu hơn. (→ xem Mailbox (Actor))
+<em>Xuất hiện đầu tiên: Chương 16, mục 16.1.1.</em></p>
 <p><strong>Aggregate Root</strong> — Thực thể gốc trong một Aggregate; đóng vai trò cửa ngõ duy nhất để thay đổi các entity con bên trong và đảm bảo mọi bất biến (invariant) của Aggregate luôn hợp lệ sau mỗi thao tác.
 <em>Xuất hiện đầu tiên: Chương 11, mục 11.1.3.</em></p>
 <p><strong>Alarm Banner</strong> — Vùng hiển thị cảnh báo luôn nằm cố định trên màn hình HMI (persistent, không phải popup có thể che khuất), thường ở trên hoặc dưới, liệt kê alarm đang active và chưa acknowledge, sắp xếp theo severity rồi đến thời gian phát sinh. Ở tầng UI, chỉ hiển thị — mọi logic xử lý (acknowledge, escalation) nằm ở Service layer (Chương 15). (→ xem AlarmSeverity, Alarm Lifecycle, ISA-101)
@@ -21836,6 +21903,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>lock</strong> (statement / Monitor) — Cơ chế đồng bộ phổ biến nhất: chỉ một luồng vào &quot;vùng tới hạn&quot; tại một thời điểm, bảo vệ dữ liệu dùng chung. Quy tắc: giữ lock ngắn, KHÔNG lock quanh I/O, KHÔNG <code>lock(this)</code> (dùng field private), KHÔNG <code>await</code> trong <code>lock</code> (dùng <code>SemaphoreSlim</code>). (→ xem SemaphoreSlim)
 <em>Xuất hiện đầu tiên: Chương 5, mục 5.3.2.</em></p>
 <h2 id="m">M</h2>
+<p><strong>Mailbox (Actor)</strong> — Hàng đợi thông điệp riêng của một Actor (ví dụ kiểu <code>BlockingCollection&lt;Message&gt;</code>), nơi mọi lệnh gửi tới Actor đó phải đi qua; Actor xử lý message tuần tự trên đúng một luồng của mình, không có ai khác ghi trực tiếp vào state của nó. Đảm bảo mỗi Actor chỉ có một luồng ghi state → không cần <code>lock</code> khi tự Actor đó cập nhật dữ liệu của mình. (→ xem Actor Model)
+<em>Xuất hiện đầu tiên: Chương 16, mục 16.1.1.</em></p>
 <p><strong>MVVM (Model-View-ViewModel)</strong> — Biến thể của MVP (Chương 8) dành cho nền tảng có Binding Engine mạnh (WPF, WinUI, MAUI): View bind trực tiếp vào ViewModel qua <code>DataContext</code>, ViewModel chỉ cần đổi giá trị property (<code>INotifyPropertyChanged</code>) — không cần &quot;đẩy&quot; dữ liệu vào View thủ công như Presenter. Nguyên tắc vàng &quot;View không gọi Model trực tiếp&quot; của MVP vẫn giữ nguyên. (→ xem MVP, Binding (WPF), INotifyPropertyChanged)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.2.</em></p>
 <p><strong>MES (Manufacturing Execution System)</strong> — Hệ thống quản lý sản xuất cấp trên máy: nhận lệnh sản xuất, phân phối recipe, thu thập dữ liệu truy xuất nguồn gốc — nằm giữa máy/PLC (thực thi) và ERP (Enterprise Resource Planning — quản lý nguồn lực toàn doanh nghiệp, cấp cao hơn MES). Máy giao tiếp với MES qua các giao thức Chương 14 (OPC UA, SECS/GEM cho MES cấp bán dẫn/SMT; REST API/spool-and-forward cho MES quy mô nhỏ hơn — mục 14.2.7). (→ xem GEM (Generic Equipment Model — SEMI E30), OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể), Lot, Work Order, Genealogy)
@@ -22049,6 +22118,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>Soft-PLC</strong> — Biến thể kiến trúc trong đó logic PLC (thường vẫn viết bằng Ladder/Structured Text) chạy dưới dạng phần mềm ngay trên IPC — cùng máy với ứng dụng C# — thường cấp riêng một lõi CPU và hệ điều hành thời gian thực (real-time OS) chạy song song Windows để đảm bảo determinism. Làm mờ ranh giới PLC/PC vật lý, nhưng nguyên tắc phân vai (I/O &amp; safety cho logic PLC, điều phối/HMI/dữ liệu cho C#) vẫn giữ nguyên. (→ xem IPC (Industrial PC), PC-Based Control)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.3.</em></p>
 <p><strong>Solution (Visual Studio)</strong> — Đơn vị quản lý cao nhất trong Visual Studio, có thể chứa nhiều project; một dự án automation trưởng thành thường tách nhiều project theo trách nhiệm (ví dụ <code>MeoFrame.Domain</code>, <code>MeoFrame.Application</code>, <code>MeoFrame.Infrastructure</code>, <code>MeoFrame.Presentation</code>, <code>MeoFrame.Tests</code>) thay vì gộp mọi thứ vào một project WinForms/WPF duy nhất. (→ xem MeoFrame, Project (.csproj), Startup Project)</p>
+<p><strong>Stackable State Machine (Push/Pop State)</strong> — Biến thể của State Pattern dùng một ngăn xếp (<code>Stack&lt;IState&gt;</code>) thay vì một biến state đơn: ngoài <code>TransitionTo</code> (thay hoàn toàn state hiện tại — cách sách dạy chính), còn có <code>PushState</code> (chồng thêm state con lên trên state cha, không mất state cha) và <code>PopState</code>/<code>TryPopState</code> (bỏ state đỉnh, quay lại đúng state cha bên dưới). Dùng khi cần &quot;rẽ nhánh tạm rồi quay lại nguyên trạng&quot; mà không cần một biến cờ phụ để nhớ điểm quay về. (→ xem State Pattern (GoF))
+<em>Xuất hiện đầu tiên: Chương 12, mục 12.1.2.</em></p>
 <p><strong>Startup Project</strong> — Project được Visual Studio chạy khi nhấn F5, trong solution nhiều project. Mặc định VS chọn project tạo đầu tiên — nếu đó là Class Library (không chạy độc lập được), F5 báo lỗi &quot;A project with an Output Type of Class Library cannot be started directly&quot;. Sửa bằng chuột phải vào project UI/Console mong muốn → &quot;Set as Startup Project&quot;. (→ xem Solution (Visual Studio))
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>Safe Torque Off (STO)</strong> — Tính năng phần cứng servo drive ngắt nguồn mô-men (torque) khỏi motor mà không cần tắt nguồn cấp chính; được chứng nhận safety (thường SIL 3 / PL e). C# không kích hoạt STO mà chỉ giám sát tín hiệu phản hồi để cập nhật HMI và ghi log sự kiện safety. (→ xem SIL, E-Stop)
@@ -22178,6 +22249,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.2.</em></p>
 <p><strong>using</strong> (statement / declaration) — Cú pháp đảm bảo <code>Dispose()</code> được gọi tự động khi ra khỏi scope (kể cả khi có ngoại lệ): <code>using (var x = ...) { }</code> (có khối) hoặc <code>using var x = ...;</code> (C# 8+, <em>declaration</em> — dispose ở cuối scope chứa nó). Bản async: <code>await using</code> (gọi <code>DisposeAsync</code>). (→ xem IDisposable, IAsyncDisposable)
 <em>Xuất hiện đầu tiên: Chương 5, mục 5.5.</em></p>
+<p><strong>using alias directive</strong> — Dạng thứ hai của từ khoá <code>using</code>, khác hẳn import namespace: đặt một tên ngắn cho MỘT kiểu cụ thể — <code>using Dict = System.Collections.Generic.Dictionary&lt;string, object?&gt;;</code> — sau đó cả file chỉ cần viết <code>Dict</code> thay vì gõ lại kiểu generic dài nhiều lần. Phân biệt bằng dấu <code>=</code> ngay sau tên (import namespace không có <code>=</code>). Có thể khai báo lại ở phạm vi hẹp hơn (ví dụ ngay sau dòng <code>namespace Foo;</code>) để che (shadow) alias cùng tên đã khai báo trước đó ở phạm vi rộng hơn. (→ xem Namespace)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.8.1.</em></p>
 <h2 id="v">V</h2>
 <p><strong>ViewModelLocator</strong> — Cơ chế convention-based có sẵn trong Prism: tự &quot;auto-wire&quot; <code>DataContext</code> của một View theo quy ước đặt tên (<code>AxisControlView</code> → tự tìm và gán <code>AxisControlViewModel</code>) ngay khi View được activate, không cần dòng gán <code>DataContext</code> viết tay. Đánh đổi với Bootstrapper thủ công: giảm boilerplate khi số màn hình tăng lên hàng chục, nhưng gõ sai tên khiến auto-wire thất bại âm thầm lúc runtime thay vì báo lỗi biên dịch. (→ xem Bootstrapper, DataContext)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.2.4.</em></p>

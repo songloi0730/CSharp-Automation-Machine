@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260814</title>
+<title>C# cho Automation Machine — v1.0.0.260816</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -473,7 +473,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260814</td>
+<td>v1.0.0.260816</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -1534,6 +1534,11 @@ xa lạ.</p>
 <td><code>JsonSerializer</code>/kiểu DTO rõ ràng (<code>System.Text.Json</code>, mục 3.6.3)</td>
 <td>Newtonsoft.Json ra đời trước <code>System.Text.Json</code> (chỉ có từ .NET Core 3.0) rất lâu, gần như mặc định trong mọi dự án .NET Framework — <code>jo[&quot;field&quot;]</code> biên dịch được dù <code>&quot;field&quot;</code> gõ sai chính tả hay đổi kiểu tuỳ ý, lỗi chỉ lộ ra lúc chạy</td>
 </tr>
+<tr>
+<td><code>log4net</code> (<code>ILog log = LogManager.GetLogger(...)</code>, <code>log.Debug(...)</code>/<code>log.Error(...)</code>)</td>
+<td><code>ILogger&lt;T&gt;</code>/<code>Microsoft.Extensions.Logging</code> (structured logging, Chương 19)</td>
+<td><code>log4net</code> phổ biến trước khi <code>Microsoft.Extensions.Logging</code> ra đời — API bề mặt khác hẳn (<code>log.Debug(&quot;chuỗi&quot;)</code> ghép chuỗi tay, không có message template <code>{Placeholder}</code> như <code>ILogger</code>), nhưng cùng vai trò: ghi log có phân mức (Debug/Info/Warn/Error)</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>📌 <strong>Nguyên tắc dùng bảng trên:</strong> nhận ra tương đương để <strong>đọc hiểu</strong> code
@@ -1548,6 +1553,15 @@ Dòng đầu tiên của bảng (Singleton tự chế) còn một biến thể h
 chuyện&quot; với nhau mà không qua tham số hay sự kiện nào — cùng bản chất
 &quot;trạng thái toàn cục dùng chung&quot; như <code>GetInstance()</code>, chỉ khác chỗ khai
 báo, và cùng nên thay bằng Service đăng ký qua DI khi viết code mới.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Trường hợp cực đoan nhất của &quot;đừng tin tên gọi&quot;: chính comment cũng thừa nhận đang sai.</strong> Thỉnh
+thoảng gặp một biến/tham số đặt tên KHÔNG khớp với recipe/tài liệu thật, kèm một dòng comment kiểu
+&quot;giữ nguyên tên biến cũ để tránh phá vỡ code khác, dù biết tên không đúng nghĩa&quot; — người viết trước
+đã BIẾT tên sai nhưng chọn không sửa (thường vì sợ ảnh hưởng chỗ khác đang dùng). Đây là tín hiệu
+mạnh nhất có thể có rằng tên gọi không đáng tin — không chỉ &quot;có thể lỗi thời&quot; như các trường hợp
+khác trong mục này, mà là &quot;đã xác nhận sai, cố ý giữ nguyên&quot;. Khi sửa code quanh biến này, đọc kỹ ý
+nghĩa THẬT (qua cách nó được dùng) trước khi đổi giá trị, đừng suy luận từ tên.</p>
 </blockquote>
 <h3>Khi cả file cấu hình cũng dùng ngôn ngữ khác, không chỉ tên biến</h3>
 <p>Trường hợp khó nhất: không phải chỉ tên biến C# khó đọc, mà chính <strong>tên
@@ -2335,6 +2349,13 @@ theo khuôn mẫu (ví dụ trích số từ <code>&quot;AXIS_3_POS&quot;</code>
 <code>Regex.Match(text, @&quot;\d+&quot;).Value</code> lấy chuỗi số đầu tiên tìm thấy; <code>Regex.IsMatch(text, pattern)</code>
 trả <code>bool</code>. Với nhu cầu đơn giản (kiểm tra rỗng, cắt theo dấu phân cách cố định), <code>string.Split</code>/
 <code>string.Contains</code> thường đủ và dễ đọc hơn — chỉ dùng <code>Regex</code> khi khuôn mẫu thật sự phức tạp.</li>
+<li><strong><code>Math.Atan2(y, x)</code> — tính góc xoay 2D, hay gặp trong hiệu chỉnh vị trí bằng camera.</strong> Bài toán
+phổ biến: camera phát hiện một điểm tham chiếu trên sản phẩm lệch <code>(dx, dy)</code> so với vị trí lý
+tưởng, cần tính GÓC lệch để bù trừ trước khi robot/trục thao tác. <code>Math.Atan2(dy, dx)</code> trả về góc
+(radian, từ <code>-π</code> đến <code>π</code>) của vector <code>(dx, dy)</code> so với trục X — khác <code>Math.Atan(dy/dx)</code> ở chỗ
+<code>Atan2</code> nhận đúng CẢ HAI dấu của <code>dx</code>/<code>dy</code> nên xác định đúng góc ở đủ 4 góc phần tư (<code>Atan</code> đơn lẻ
+chia <code>dy/dx</code> sẽ mất thông tin dấu, cho kết quả sai góc phần tư 2 và 3). Đổi sang độ:
+<code>double degrees = Math.Atan2(dy, dx) * 180.0 / Math.PI;</code>.</li>
 </ul>
 </blockquote>
 <hr>
@@ -2416,6 +2437,38 @@ lại nữa từ đây.</p>
 <li><strong>Ghi atomic cho dữ liệu quan trọng.</strong> Với config/recipe, không ghi đè trực tiếp. Ghi ra file tạm <code>.tmp</code>, flush, rồi mới thay thế (replace) sang file chính — gọi là <strong>atomic write</strong> <!--idx:Atomic write-->, giảm rủi ro file hỏng khi crash giữa chừng.</li>
 <li><strong>Chuẩn hoá timestamp và culture.</strong> Dùng ISO 8601 (<code>2025-12-26T10:15:30.123</code>); với CSV/số thực phải khoá <code>InvariantCulture</code> để dấu thập phân không loạn giữa các môi trường.</li>
 </ol>
+<p><strong>Bảng 3.1b — Format specifier hay dùng trong <code>$&quot;{giá_trị:X}&quot;</code> khi log/hiển thị số</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Specifier</th>
+<th>Ý nghĩa</th>
+<th>Ví dụ (<code>giá_trị = 12.3456</code>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>F2</code>/<code>F3</code></td>
+<td>Số thập phân cố định N chữ số sau dấu chấm</td>
+<td><code>$&quot;{giá_trị:F2}&quot;</code> → <code>&quot;12.35&quot;</code></td>
+</tr>
+<tr>
+<td><code>N2</code></td>
+<td>Như <code>F2</code> nhưng thêm dấu phân cách hàng nghìn</td>
+<td><code>$&quot;{1234.5:N2}&quot;</code> → <code>&quot;1,234.50&quot;</code></td>
+</tr>
+<tr>
+<td><code>P</code></td>
+<td>Phần trăm (nhân 100, thêm <code>%</code>)</td>
+<td><code>$&quot;{0.856:P0}&quot;</code> → <code>&quot;86%&quot;</code></td>
+</tr>
+<tr>
+<td><code>X</code></td>
+<td>Số nguyên hệ hex (viết hoa)</td>
+<td><code>$&quot;{255:X}&quot;</code> → <code>&quot;FF&quot;</code></td>
+</tr>
+</tbody></table></div>
+<p>Nhầm <code>N</code> (dấu phẩy ngăn nghìn) với <code>F</code> (không có) là lỗi đọc log hay gặp — <code>1234.50</code> (F2) và <code>1,234.50</code>
+(N2) trông giống nhau thoáng qua nhưng có/không dấu phẩy đổi hẳn cách đọc trong ngữ cảnh số lớn.</p>
 <h3>3.6.1  File text và logger không chặn luồng</h3>
 <p>File text hợp cho log vận hành và config đơn giản — mạnh về truy vết, đọc được bằng mắt. Một dòng log tốt trả lời nhanh: <em>khi nào, máy nào, mode/state nào, làm gì, kết quả ra sao</em>. Điểm mấu chốt là tách việc ghi file khỏi luồng điều khiển bằng một hàng đợi + thread nền:</p>
 <p><strong>Code 3.16 — Logger ghi text theo batch, không chặn điều khiển</strong></p>
@@ -2614,6 +2667,17 @@ tên chuỗi — đúng kiểu code kế thừa hay dùng, cùng bản chất &q
 kiểu này an toàn hơn <code>XmlDocument</code> thủ công (gõ sai tên property thì compiler bắt được ngay), nhưng
 code kế thừa thường KHÔNG dùng cách này dù class đã sẵn attribute — vẫn đọc tay bằng <code>XmlDocument</code>
 song song, hai cách cùng tồn tại không nhất quán là dấu hiệu thường gặp của code viết qua nhiều đợt.</p>
+<blockquote>
+<p>📌 <strong><code>XElement</code> (LINQ to XML) — API hiện đại hơn <code>XmlDocument</code>, cùng mục đích.</strong> Namespace
+<code>System.Xml.Linq</code> cung cấp cách đọc/dựng XML gọn hơn, kết hợp được với LINQ:</p>
+<pre><code class="language-csharp">var doc = XElement.Load(path);
+var names = doc.Elements(&quot;Axis&quot;).Select(e =&gt; e.Attribute(&quot;Name&quot;)?.Value).ToList();
+</code></pre>
+<p>So với <code>XmlDocument.SelectNodes(&quot;//Axis&quot;)</code> (Code 3.18b), <code>XElement</code>/<code>.Elements()</code>/<code>.Attribute()</code> đọc
+tự nhiên hơn và dùng được trực tiếp với <code>Select</code>/<code>Where</code> đã học ở mục LINQ — cùng vai trò với
+<code>XmlDocument</code>, khác thế hệ API (giống cách sách đã đối chiếu Newtonsoft.Json cũ với
+<code>System.Text.Json</code> mới).</p>
+</blockquote>
 <hr>
 <h2 id="37-collections-ct-lõi-cho-ng-dng-real-time">3.7  Collections cốt lõi cho ứng dụng real-time</h2>
 <p>Trong PC-Based Control, collection không chỉ là &quot;cách chứa dữ liệu&quot; — nó là một phần của <strong>thiết kế thời gian</strong>. Chọn sai collection, hoặc dùng đúng collection nhưng sai cách, tạo ra đúng những hiện tượng kinh điển trong nhà máy: vòng quét đang ổn định bỗng &quot;khựng&quot; theo chu kỳ, máy chạy tốt khi test nhưng lỗi khó tái hiện khi chạy 24/7.</p>
@@ -3090,6 +3154,39 @@ xem có <code>operator</code> nào được nạp chồng không trước khi ti
 <p>Tạo object bằng <code>new</code> cấp phát trên heap và trả về một <em>tham chiếu</em> (đã học ở Chương 3: <code>class</code> là reference type). Hệ quả quan trọng cho automation: nhiều nơi có thể cùng giữ tham chiếu tới <strong>một</strong> object trục — <code>DeviceManager</code> giữ, <code>Sequence</code> cũng giữ. Khi trục cập nhật trạng thái, cả hai phía đều thấy ngay. Điều này tiện cho chia sẻ, nhưng cũng là lý do trạng thái phải <code>private set</code>: nếu để <code>public set</code>, một module có thể ghi đè trạng thái interlock của module khác.</p>
 <blockquote>
 <p>📌 <strong>Quy tắc sở hữu trạng thái:</strong> Thiết bị là <strong>chủ sở hữu</strong> trạng thái của chính nó. Sequence ra lệnh qua method (<code>Move</code>/<code>Home</code>/<code>Stop</code>), UI chỉ đọc trạng thái và gửi lệnh — <strong>không ai set trạng thái thiết bị từ bên ngoài</strong>. Quy tắc một dòng này loại bỏ cả một lớp lỗi &quot;sửa nhầm trạng thái&quot;.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong><code>partial class</code> — MỘT class định nghĩa rải trên NHIỀU file.</strong> Từ khoá <code>partial</code> đặt trước
+<code>class</code> cho phép chia định nghĩa của cùng một class ra nhiều file <code>.cs</code> — compiler ghép chúng lại
+thành một class duy nhất lúc build, y hệt như viết trong một file:</p>
+<pre><code class="language-csharp">// AxisSequence.Motion.cs — phần lệnh di chuyển
+public partial class AxisSequence
+{
+    public void MoveAbs(double position) { /* ... */ }
+}
+
+// AxisSequence.Alarm.cs — phần xử lý alarm, CÙNG class AxisSequence
+public partial class AxisSequence
+{
+    public void RaiseAlarm(int code) { /* ... */ }
+}
+</code></pre>
+<p>Cả 2 file phải khai <code>partial class AxisSequence</code> giống hệt tên — thiếu <code>partial</code> ở một trong hai
+file là lỗi biên dịch &quot;đã định nghĩa trùng tên&quot;. Dùng khi một class quá lớn (một sequence trạm có
+hàng chục method) và muốn tách theo chủ đề (Motion/Alarm/IO...) mà vẫn là MỘT class, MỘT instance,
+chia sẻ chung field/property — khác hẳn tách thành nhiều class riêng biệt. <strong>Cạm bẫy khi đọc code
+lạ:</strong> mở một file thấy class có vẻ &quot;thiếu&quot; nhiều method đang được gọi ở nơi khác — trước khi kết
+luận có lỗi, Grep tên class đó xem có file <code>.cs</code> KHÁC cũng khai <code>partial class</code> cùng tên hay không
+(WinForms Designer cũng dùng kỹ thuật này: <code>Form1.cs</code> + <code>Form1.Designer.cs</code> là CÙNG MỘT class).</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong><code>MemberwiseClone()</code> — nhân bản nông (shallow copy) có sẵn từ <code>object</code>.</strong> Mọi class C# đều thừa
+kế method <code>protected MemberwiseClone()</code> từ <code>object</code>: tạo một object mới, copy từng field sang
+nguyên xi. &quot;Nông&quot; nghĩa là nếu field là kiểu tham chiếu (một class khác, một <code>List&lt;T&gt;</code>...), bản sao
+vẫn TRỎ VÀO CÙNG object gốc — sửa field đó trên bản sao sẽ ảnh hưởng luôn bản gốc. Chỉ an toàn dùng
+trực tiếp khi mọi field đều là kiểu giá trị (<code>int</code>, <code>double</code>, <code>struct</code>...); nếu có field tham chiếu
+cần độc lập thật sự, phải tự viết &quot;nhân bản sâu&quot; (deep copy) — tự tạo bản sao mới cho từng field
+tham chiếu đó, không chỉ gọi <code>MemberwiseClone()</code> rồi dừng lại.</p>
 </blockquote>
 <hr>
 <h2 id="42-interface-hp-đng-hành-vi">4.2  Interface — hợp đồng hành vi</h2>
@@ -3723,6 +3820,25 @@ _ = Task.Run(async () =&gt;
 UploadLogAsync().Forget(_logger);
 </code></pre>
 <p><code>ContinueWith</code> vẫn chạy được nhưng dài dòng và ít phổ biến trong .NET 6+ — <code>Task.Run</code> với async lambda gọn và rõ hơn.</p>
+<blockquote>
+<p>⚠️ <strong>Biến thể nguy hiểm hơn: fire-and-forget NGAY TRONG CONSTRUCTOR.</strong> <code>_ = UploadLogAsync();</code> ở ví
+dụ trên ít nhất còn chạy sau khi object đã khởi tạo xong. Gặp đúng dòng <code>_ = SomeAsyncMethod();</code> bên
+trong <strong>constructor</strong> thì rủi ro cao hơn: object có thể chưa hoàn toàn sẵn sàng (field khác chưa gán
+xong) khi Task nền đã bắt đầu chạy, và exception ném ra vẫn bị nuốt im lặng như thường. Nếu công việc
+async thật sự cần khởi động cùng lúc object được tạo, tách ra một method <code>InitializeAsync()</code> để caller
+tự <code>await</code> tường minh, thay vì giấu nó trong constructor.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>LINQ <code>.Select(async x =&gt; ...)</code> + <code>Task.WhenAll</code> — dễ viết sai thứ tự.</strong> Muốn chạy song song một
+thao tác async cho từng phần tử trong danh sách, cú pháp đúng là:</p>
+<pre><code class="language-csharp">var tasks = items.Select(async item =&gt; await ProcessAsync(item));   // IEnumerable&lt;Task&lt;TResult&gt;&gt;
+var results = await Task.WhenAll(tasks);
+</code></pre>
+<p><code>.Select(async x =&gt; ...)</code> không tự &quot;chạy&quot; gì cả — nó chỉ tạo ra một chuỗi <code>Task</code> (mỗi phần tử một
+<code>Task</code>, đã bắt đầu chạy ngay lúc <code>Select</code> enumerate qua, không cần đợi <code>WhenAll</code>). Quên bọc
+<code>Task.WhenAll</code> mà chỉ <code>foreach</code> qua kết quả <code>.Select</code> rồi <code>await</code> từng cái sẽ chạy TUẦN TỰ (mất hết lợi
+ích song song) dù nhìn cú pháp giống hệt.</p>
+</blockquote>
 <hr>
 <h2 id="52-cancellationtoken-e-stop-phn-mm-cho-thao-tác-async">5.2  CancellationToken — &quot;E-Stop phần mềm&quot; cho thao tác async</h2>
 <blockquote>
@@ -3879,6 +3995,31 @@ private async void OnPollTimerTick(object? sender, EventArgs e)
 </code></pre>
 <p><code>WaitAsync(0)</code> trả về <code>false</code> ngay lập tức nếu semaphore đang bị giữ — không đợi, không chặn luồng gọi. Cùng ý tưởng áp dụng được cho việc chặn lệnh Start/Reset bị bấm dội (double-click) trong lúc lệnh trước còn đang xử lý.</p>
 <p>Hai nguyên tắc xương máu khi dùng lock: <strong>giữ lock càng ngắn càng tốt</strong>, và <strong>tuyệt đối không lock quanh I/O</strong> (đọc PLC, ghi DB) — I/O có thể treo lâu, khoá luôn mọi luồng khác đang chờ lock đó.</p>
+<p><strong><code>ManualResetEvent</code>/<code>AutoResetEvent</code> — cờ tín hiệu chờ được, hay gặp trong code kế thừa.</strong> Trước khi
+<code>async</code>/<code>await</code> phổ biến, một cách chuẩn để một luồng &quot;đánh thức&quot; luồng khác đang chờ là dùng
+<code>ManualResetEvent</code>: một cờ hai trạng thái (Set/Reset) mà luồng khác có thể <code>WaitOne()</code> để CHẶN cho tới
+khi cờ được <code>Set()</code>.</p>
+<pre><code class="language-csharp">private readonly ManualResetEvent _dataReady = new(initialState: false);
+
+// Luồng đọc PLC: có dữ liệu mới thì mở cờ
+void OnPlcDataArrived() =&gt; _dataReady.Set();
+
+// Luồng khác: chặn tại đây cho tới khi có dữ liệu, hoặc hết 5 giây
+if (!_dataReady.WaitOne(TimeSpan.FromSeconds(5)))
+    throw new TimeoutException(&quot;Không nhận được dữ liệu PLC trong 5 giây.&quot;);
+_dataReady.Reset();   // ManualResetEvent phải TỰ Reset — không tự tắt sau khi 1 luồng qua được
+</code></pre>
+<p>Khác <code>AutoResetEvent</code> (tự động <code>Reset()</code> ngay sau khi ĐÚNG MỘT luồng đang chờ được thả — hợp cho mô
+hình &quot;một tín hiệu, một người nhận&quot;), <code>ManualResetEvent</code> ở trạng thái Set sẽ cho <strong>MỌI</strong> luồng đang
+<code>WaitOne()</code> cùng đi qua, và giữ nguyên Set cho tới khi có ai gọi <code>Reset()</code> tường minh — hợp cho cờ kiểu
+&quot;đã sẵn sàng, cứ vào&quot; (ví dụ cờ EMO/Pause dùng chung cho nhiều luồng theo dõi cùng lúc). <code>WaitAny(mảng handle, timeoutMs)</code> chờ ĐẦU TIÊN trong một mảng nhiều cờ được Set, trả về CHỈ SỐ (không phải chính cờ)
+của cờ đó trong mảng — dò đúng thứ tự khai báo mảng để biết <code>WaitAny</code> vừa trả cờ nào.</p>
+<blockquote>
+<p>📌 Code mới nên ưu tiên <code>async</code>/<code>await</code> + <code>TaskCompletionSource&lt;T&gt;</code>/<code>SemaphoreSlim.WaitAsync()</code> (đã
+học ở trên) — không chặn luồng vật lý, dùng ít tài nguyên hơn. Nhưng <code>ManualResetEvent</code>/
+<code>AutoResetEvent</code> vẫn là &quot;xương sống&quot; đồng bộ hoá của rất nhiều dự án .NET Framework cũ — nhận diện
+đúng để đọc hiểu, không cần viết mới theo cách này.</p>
+</blockquote>
 <h3>5.3.3  volatile — tính nhìn thấy, KHÔNG phải tính nguyên tử</h3>
 <p>Chương 3 đã <em>dùng</em> <code>volatile</code> cho cờ dừng logger nhưng để dành giải thích. <code>volatile</code> <!--idx:volatile--> giải quyết bài toán <strong>visibility (tính nhìn thấy)</strong>: khi một luồng ghi một biến và luồng khác đọc, không có <code>volatile</code> thì luồng đọc có thể dùng một bản <em>cache</em> cũ trong thanh ghi và <strong>không bao giờ thấy giá trị mới</strong>. <code>volatile</code> buộc luôn đọc giá trị mới nhất từ bộ nhớ:</p>
 <pre><code class="language-csharp">private volatile bool _running = true;   // luồng worker luôn thấy khi bị set false
@@ -3916,6 +4057,21 @@ sau đều nhận <code>createdNew = false</code> (Mutex đã tồn tại) và n
 code kế thừa (không dùng <code>Mutex</code>) là tự đếm số tiến trình cùng tên qua
 <code>Process.GetProcessesByName(...)</code> — hoạt động được nhưng cần tự so sánh đường dẫn file thực thi để
 tránh nhầm với tiến trình khác trùng tên, phức tạp hơn <code>Mutex</code> mà không có lợi ích rõ ràng.</p>
+<blockquote>
+<p>⚠️ <strong>Named Mutex là tài nguyên theo TÊN trên toàn hệ thống, không theo instance.</strong> Code 5.8a dùng
+đúng 1 Mutex cho cả ứng dụng — hợp lý. Nhưng nếu bạn cần một khoá RIÊNG cho từng object (ví dụ mỗi
+trạm/mỗi trục có khoá độc lập), đừng hard-code cùng một chuỗi tên trong constructor của class đó:</p>
+<pre><code class="language-csharp">// ❌ Mọi instance của StationLock đều tạo Mutex CÙNG TÊN — instance A vô tình khoá chéo instance B
+public class StationLock
+{
+    private readonly Mutex _mutex = new(false, &quot;StationReserved&quot;);
+}
+</code></pre>
+<p>Hai object <code>StationLock</code> khác nhau (ví dụ trạm 1 và trạm 2) tưởng có khoá riêng nhưng thực ra đang
+tranh chấp CHUNG một Mutex hệ thống cùng tên — nếu sau này có ai thêm <code>.WaitOne()</code> mà không để ý, trạm
+1 có thể bị khoá bởi trạm 2. Ghép thêm định danh duy nhất vào tên (<code>$&quot;StationReserved_{stationId}&quot;</code>)
+để mỗi instance thực sự có khoá độc lập.</p>
+</blockquote>
 <h3>5.3.4  Race condition và deadlock — hai con quỷ của đa luồng</h3>
 <p><strong>Race condition</strong> <!--idx:race condition--> là lỗi &quot;lúc được lúc không, không tái hiện được&quot; do nhiều luồng đọc/ghi dữ liệu chung không bảo vệ — triệu chứng kinh điển của bug đa luồng. <strong>Deadlock</strong> là hai luồng khoá nhau, mỗi bên giữ một tài nguyên và chờ tài nguyên bên kia. Cách phòng deadlock phổ biến nhất: <strong>thống nhất thứ tự lấy lock</strong> (luôn lock A trước B ở mọi nơi), giữ lock ngắn, và ưu tiên <em>truyền thông điệp qua hàng đợi</em> (mục 5.4) thay vì chia sẻ trạng thái — tránh lock ngay từ đầu là cách an toàn nhất.</p>
 <p><strong>Code 5.8b — Race condition cụ thể: <code>_counter++</code> đa luồng cho kết quả sai</strong></p>
@@ -11069,6 +11225,18 @@ public sealed record StateChangedEventArgs(
 <blockquote>
 <p>🔍 <strong>Đào sâu thêm:</strong> <code>Task.Delay</code> trong .NET là soft real-time — độ trễ thực tế có thể lớn hơn giá trị yêu cầu vài ms do GC hay Windows scheduler. Với vòng điều khiển servo dưới 1ms, cần real-time OS (EtherCAT + TwinCAT/INtime) hoặc dedicated FPGA. Scan cycle này phù hợp cho điều khiển cấp giám sát (supervisory), không phải vòng lặp servo. Tìm hiểu thêm: &quot;soft real-time vs hard real-time&quot;, &quot;.NET garbage collector pause&quot;.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Nhận diện: state machine 2 TẦNG lồng nhau trong code kế thừa.</strong> Ví dụ State Pattern ở mục 12.1
+chỉ có MỘT tầng trạng thái. Code thực tế nhiều trạm thường có tới HAI tầng: tầng ngoài là trạng thái
+máy tổng quát (<code>MachineState.Run</code>/<code>Pause</code>/<code>Stop</code>...), nhưng bên trong đúng MỘT case (thường là
+<code>Run</code>) lại có một <code>enum</code> trạng thái RIÊNG (<code>RunState</code>/<code>InitState</code>...) cho từng bước tuần tự của
+chính trạm đó — thường điều khiển bằng một <code>switch</code> nội bộ khác, khai báo lại ở MỖI lớp con (mỗi
+trạm một bộ trạng thái nội bộ khác nhau). Hai tầng này DỄ NHẦM là cùng một state machine nếu chỉ đọc
+tầng ngoài — phải nhận ra: tầng ngoài trả lời &quot;máy đang ở chế độ gì&quot; (ai cũng cần biết), tầng trong
+trả lời &quot;trong chế độ Run, trạm này đang ở bước nào&quot; (chỉ nội bộ trạm đó cần biết). PackML chuẩn hoá
+đúng tầng ngoài (mục 12.2 bên dưới); tầng trong là chi tiết triển khai riêng từng trạm, không có
+chuẩn chung — khi đọc code lạ, luôn xác định rõ đang ở tầng nào trước khi lần theo logic.</p>
+</blockquote>
 <h2 id="122-chun-packml-isa-tr880002">12.2  Chuẩn PackML / ISA-TR88.00.02</h2>
 <h3>12.2.1  PackML là gì và tại sao cần chuẩn hoá</h3>
 <p>Mỗi hãng máy đặt tên trạng thái theo cách riêng: Siemens gọi &quot;Betrieb&quot;, Beckhoff gọi &quot;Running&quot;, kỹ sư nội bộ gọi &quot;Auto&quot;. Khi nhà máy tích hợp MES (Manufacturing Execution System) với 20 loại máy khác nhau, cần 20 bộ adapter để đọc trạng thái từ 20 cách đặt tên khác nhau.</p>
@@ -11917,6 +12085,14 @@ Core vẫn đúng vai trò cho dữ liệu tần suất thấp (recipe, alarm, a
 Bảng 13.1 đã phân loại — vấn đề chỉ nảy sinh khi áp dụng đúng công cụ đó sai
 tần suất.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Thư viện khác cùng vai trò với EF Core.</strong> Sách dùng EF Core xuyên suốt vì phổ biến nhất trong
+.NET hiện đại, nhưng code kế thừa có thể dùng ORM khác cho cùng vai trò Repository/Unit of Work — ví
+dụ <strong>FreeSql</strong>, <strong>Dapper</strong>, <strong>NHibernate</strong>. API bề mặt khác hẳn (FreeSql: <code>this.Update(predicate).Set(...)</code>;
+Dapper: viết SQL tay, map kết quả qua <code>Query&lt;T&gt;()</code>) nhưng khái niệm nền — Repository che giấu nguồn dữ
+liệu, <code>Expression&lt;Func&lt;T,bool&gt;&gt;</code> biểu diễn điều kiện lọc dưới dạng cây cú pháp để dịch sang SQL thay vì
+chạy ngay — vẫn giữ nguyên, chỉ cần tra tên method tương ứng của thư viện đang gặp.</p>
+</blockquote>
 <h3>13.1.1 Device Gateway Pattern</h3>
 <p>Repository trong DDD (đã học ở Chương 11 — <code>IMachineRepository</code>) dùng để lưu Aggregate
 vào database: tầng nghiệp vụ gọi <code>Save(machine)</code> và không cần biết SQL gì. Device
@@ -12567,6 +12743,11 @@ bị mới vào GIỮA danh sách cấu hình (thay vì cuối), mọi <code>Get
 sang thiết bị KHÁC, máy vẫn chạy bình thường nhưng điều khiển nhầm thiết bị vật lý. Luôn định danh
 danh sách thiết bị đọc từ config bằng khoá/tên ổn định (<code>Dictionary&lt;string, IDevice&gt;</code>), không bao
 giờ bằng vị trí xuất hiện trong file.</p>
+<p>Biến thể hay gặp ở tầng composition root: <code>var gate1 = (GateStation)stationList[2];</code> — lấy phần
+tử tại vị trí cố định trong danh sách RỒI ép kiểu (cast) sang class cụ thể. Rủi ro cộng dồn: vừa
+phụ thuộc đúng thứ tự khởi tạo (như trên), vừa có thể ép kiểu ĐÚNG loại class nhưng SAI Ý NGHĨA nếu
+có nhiều trạm cùng kiểu (<code>gate1</code>/<code>gate2</code> cùng là <code>GateStation</code> — đổi thứ tự sẽ gán nhầm trạm mà
+<code>InvalidCastException</code> không hề xuất hiện để báo lỗi, vì kiểu ép vẫn đúng).</p>
 </blockquote>
 <h3>13.2.3 Strategy Pattern cho Protocol Selection</h3>
 <p>Nếu không có Strategy, driver Beckhoff viết cứng giao thức bên trong:</p>
@@ -14225,10 +14406,31 @@ trigger và GigE Vision protocol xem thêm trong tài liệu SDK camera hãng (B
 Cognex VisionPro) và chuẩn GigE Vision / USB3 Vision (AIA).</p>
 </blockquote>
 <p><strong>Nhóm 2 — Thiết bị dùng ASCII protocol đơn giản qua TCP</strong>
-Barcode scanner giá rẻ, cân điện tử công nghiệp, máy đo kích thước đơn giản: thường dùng
-ASCII commands qua TCP (ví dụ gửi <code>&quot;TRIGGER\r\n&quot;</code> nhận <code>&quot;OK: 1234567890\r\n&quot;</code>). Dùng
-<code>TcpClient</code> + <code>StreamReader/Writer</code> + timeout đơn giản — KHÔNG cần SemaphoreSlim hay
-reconnect phức tạp như nhóm 3.</p>
+Barcode scanner giá rẻ, cân điện tử công nghiệp, máy đo kích thước đơn giản, bộ điều khiển
+chuyển động đọc/ghi qua lệnh text (ví dụ họ PMAC): thường dùng ASCII commands qua TCP (ví dụ
+gửi <code>&quot;TRIGGER\r\n&quot;</code> nhận <code>&quot;OK: 1234567890\r\n&quot;</code>, hoặc gửi lệnh đọc vị trí trục nhận về chuỗi
+số dạng text <code>&quot;12.500\r\n&quot;</code>). Dùng <code>TcpClient</code> + <code>StreamReader/Writer</code> + timeout đơn giản —
+KHÔNG cần SemaphoreSlim hay reconnect phức tạp như nhóm 3.</p>
+<blockquote>
+<p>📌 <strong>Parse phản hồi ASCII sang đúng kiểu số — luôn khoá <code>CultureInfo.InvariantCulture</code>.</strong> Phản
+hồi text từ driver là chuỗi (<code>&quot;12.500&quot;</code>), cần ép sang <code>double</code>/<code>int</code> trước khi dùng. Khi kiểu đích
+chỉ biết được lúc chạy (ví dụ một hàm đọc generic dùng chung cho nhiều loại tham số), dùng
+<code>Convert.ChangeType</code> thay vì <code>double.Parse</code>/<code>int.Parse</code> riêng từng kiểu:</p>
+<pre><code class="language-csharp">private static T ParseAsciiReply&lt;T&gt;(string raw)
+    =&gt; (T)Convert.ChangeType(raw.Trim(), typeof(T), CultureInfo.InvariantCulture);
+</code></pre>
+<p>Bắt buộc truyền <code>CultureInfo.InvariantCulture</code> — nếu bỏ qua, <code>Convert.ChangeType</code> dùng culture mặc
+định của hệ điều hành, và trên một máy có Windows Region đặt dấu phẩy làm dấu thập phân, chuỗi
+<code>&quot;12.500&quot;</code> từ driver (luôn dùng dấu chấm chuẩn ASCII) có thể bị parse sai hoặc ném exception — lỗi
+ẩn chỉ xuất hiện khi triển khai ở nhà máy có cấu hình Windows khác máy dev, rất khó tái hiện khi
+debug tại chỗ.</p>
+</blockquote>
+<p><strong>Nhóm 2b — Buffer độ dài cố định cần làm sạch trước khi parse.</strong> Một số driver trả về chuỗi
+trong buffer byte có ĐỘ DÀI CỐ ĐỊNH (đệm thêm ký tự rỗng <code>\0</code> cho đủ độ dài khai báo trước, thay
+vì kết thúc bằng dấu xuống dòng). Chuyển buffer đó sang <code>string</code> rồi <code>.Trim(&#39;\0&#39;)</code> (overload
+<code>Trim</code> nhận tham số — khác <code>.Trim()</code> không tham số chỉ cắt khoảng trắng) để loại bỏ phần đệm
+trước khi <code>Convert.ChangeType</code>/<code>Parse</code> — nếu không, phần <code>\0</code> còn sót lại khiến parse thất bại dù
+nhìn chuỗi có vẻ đúng khi debug (<code>\0</code> không hiển thị rõ trên nhiều công cụ xem log).</p>
 <p><strong>Nhóm 3 — Thư viện vendor không tương thích runtime</strong>
 Thư viện vendor chỉ chạy trên .NET Framework cũ, có native dependency gây crash trong
 .NET 9. Đây là trường hợp mà phần còn lại của mục này tập trung vào.</p>
@@ -16184,6 +16386,16 @@ if (!_rateLimiter.Allow(alarmCode, windowSecs: 10, maxCount: 5))
 <blockquote>
 <p>⚠️ <strong>Cảnh báo:</strong> Không được đặt logic E-Stop trong Domain layer C#. E-Stop là concern của Infrastructure/Hardware layer — phần mềm chỉ <strong>giám sát</strong>, <strong>ghi log</strong>, và <strong>phản ứng</strong> (khóa lệnh điều khiển), không <em>thực hiện</em> dừng khẩn cấp. Tín hiệu STO (Safe Torque Off) không đi qua C#; C# chỉ đọc trạng thái STO từ Drive để hiển thị và ngăn restart.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>&quot;Code tồn tại&quot; ≠ &quot;code đang chạy&quot; — luôn xác minh bằng Find All References, đặc biệt cho
+interlock.</strong> Đọc code kế thừa, không hiếm khi thấy một method interlock/safety-check được viết đầy
+đủ (<code>CheckDoorClosed()</code>, <code>VerifyToolPresent()</code>...) nhưng lời GỌI nó lại bị comment lại ở nơi đáng lẽ
+phải gọi, trong khi phần còn lại của sequence (ví dụ một <code>Timer</code> polling trạng thái) vẫn chạy bình
+thường — cả file trông &quot;đầy đủ&quot; nếu chỉ đọc lướt, nhưng thực tế đường kiểm tra an toàn đó không bao
+giờ được thực thi. Trước khi tin một cơ chế an toàn đang hoạt động, dùng đúng kỹ thuật đã học ở
+Chương 2 mục 2.4 (Find All References) trên chính tên method đó — xác nhận có ít nhất một lời gọi
+THẬT (không bị comment) từ đường chạy chính, không chỉ tin vì method đã được định nghĩa.</p>
+</blockquote>
 <h3>15.2.2  Vai trò C# trong hệ thống Safety</h3>
 <p>C# trong hệ thống có Safety PLC đóng bốn vai trò, không hơn:</p>
 <ol>
@@ -17941,6 +18153,28 @@ tự thực thi — phù hợp cho sequence cố định. Registry attribute-dri
 lệnh/tool lớn và thứ tự không quan trọng bằng việc &quot;không quên đăng ký&quot; — chi phí là khó
 truy vết bằng mắt, phải chạy code hoặc dùng &quot;Find Usages&quot; của IDE mới biết một command có
 được dùng ở đâu.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — vài cú pháp Reflection cơ bản khác hay gặp, ngoài <code>GetTypes()</code>/<code>GetCustomAttribute</code>
+vừa dùng:</strong> Reflection cho phép code tự &quot;hỏi&quot; một object/kiểu về chính nó lúc đang CHẠY (không phải
+lúc biên dịch). Ba idiom cực kỳ phổ biến trong code kế thừa:</p>
+<ul>
+<li><strong><code>GetType()</code></strong> — trả về kiểu THẬT SỰ lúc chạy của một object (khác <code>typeof(T)</code> — biết kiểu ngay
+lúc viết code). <code>obj.GetType().Name</code> in ra đúng tên class thật, kể cả khi biến khai báo kiểu cha/
+interface (<code>IDevice obj = new CognexCamera();</code> thì <code>obj.GetType().Name</code> vẫn là <code>&quot;CognexCamera&quot;</code>).</li>
+<li><strong><code>.GetProperty(&quot;TênThuộcTính&quot;)</code>/<code>.GetValue(obj)</code>/<code>.SetValue(obj, value)</code></strong> — đọc/ghi một property
+theo TÊN CHUỖI thay vì <code>obj.TenProperty</code> trực tiếp; hữu ích khi tên property chỉ biết được lúc chạy
+(đọc từ config), nhưng mất kiểm tra lúc biên dịch — gõ sai tên chuỗi không có lỗi build, chỉ lỗi
+runtime (<code>null</code>/exception).</li>
+<li><strong><code>System.Reflection.MethodBase.GetCurrentMethod().DeclaringType</code></strong> — lấy ra kiểu (class) đang CHỨA
+method hiện tại đang chạy; xuất hiện rất phổ biến trong code .NET Framework cũ ở đúng một chỗ: khai
+báo logger đầu mỗi class, kiểu
+<code>private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);</code>
+— một cách &quot;tự động&quot; lấy đúng tên class hiện tại làm tên logger mà không phải gõ tay tên class vào
+mỗi file (tránh copy-paste rồi quên đổi tên class trong logger của file mới).</li>
+</ul>
+<p>Không cần tự viết Reflection từ đầu để đọc hiểu 3 idiom trên — chỉ cần nhận ra chúng đang làm gì khi
+gặp lặp lại (đặc biệt dòng khai báo logger, thường xuất hiện ở gần như MỌI file trong một dự án lớn).</p>
+</blockquote>
 <p><code>CommandDispatcher</code> ở trên thực thi danh sách lệnh theo đúng thứ tự khai báo (FIFO). Nhưng queue trong automation không phải lúc nào cũng FIFO thuần túy: một số lệnh được phép chen hàng — E-Stop, Abort, Reset thường phải thực thi ngay lập tức bất kể có bao nhiêu lệnh đang chờ. Khi cần một queue đứng (standing queue) nhận lệnh liên tục, pattern phổ biến là dùng <code>PriorityQueue&lt;IDeviceCommand, int&gt;</code> thay cho <code>Queue&lt;IDeviceCommand&gt;</code>, với priority nhỏ hơn = thực thi trước (ví dụ: Emergency = 0, Normal = 10). Lệnh ở priority thấp nhất (Emergency) luôn được pop trước — đây là nguyên tắc sống còn với máy có E-Stop.</p>
 <p><strong>Code 16.7b — CommandQueue dùng PriorityQueue: E-Stop luôn chen trước</strong></p>
 <pre><code class="language-csharp">public sealed class CommandQueue
@@ -21606,6 +21840,10 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.2.</em></p>
 <p><strong>MES (Manufacturing Execution System)</strong> — Hệ thống quản lý sản xuất cấp trên máy: nhận lệnh sản xuất, phân phối recipe, thu thập dữ liệu truy xuất nguồn gốc — nằm giữa máy/PLC (thực thi) và ERP (Enterprise Resource Planning — quản lý nguồn lực toàn doanh nghiệp, cấp cao hơn MES). Máy giao tiếp với MES qua các giao thức Chương 14 (OPC UA, SECS/GEM cho MES cấp bán dẫn/SMT; REST API/spool-and-forward cho MES quy mô nhỏ hơn — mục 14.2.7). (→ xem GEM (Generic Equipment Model — SEMI E30), OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể), Lot, Work Order, Genealogy)
 <em>Xuất hiện đầu tiên: Chương 1 (mở đầu chương).</em></p>
+<p><strong>ManualResetEvent / AutoResetEvent</strong> — Cờ tín hiệu chờ được (<code>Set()</code>/<code>Reset()</code>/<code>WaitOne()</code>), công cụ đồng bộ hoá đa luồng phổ biến trước khi <code>async</code>/<code>await</code> ra đời. <code>ManualResetEvent</code> ở trạng thái Set cho MỌI luồng đang <code>WaitOne()</code> cùng đi qua, tự giữ Set cho tới khi có ai <code>Reset()</code> tường minh; <code>AutoResetEvent</code> tự động <code>Reset()</code> ngay sau khi thả ĐÚNG MỘT luồng đang chờ. <code>WaitAny(mảng, timeout)</code> chờ cờ đầu tiên trong một mảng được Set, trả về CHỈ SỐ (không phải chính cờ) của cờ đó. Code mới nên ưu tiên <code>SemaphoreSlim.WaitAsync()</code>/<code>TaskCompletionSource&lt;T&gt;</code> — không chặn luồng vật lý; nhưng đây vẫn là &quot;xương sống&quot; đồng bộ hoá của rất nhiều dự án .NET Framework cũ. (→ xem SemaphoreSlim, lock)
+<em>Xuất hiện đầu tiên: Chương 5, mục 5.3.2.</em></p>
+<p><strong>MemberwiseClone</strong> — Method <code>protected</code> kế thừa từ <code>object</code> trên mọi class C#, tạo nhân bản NÔNG (shallow copy): copy từng field sang object mới nguyên xi. Với field kiểu tham chiếu (class khác, <code>List&lt;T&gt;</code>...), bản sao vẫn TRỎ VÀO CÙNG object gốc — sửa trên bản sao ảnh hưởng cả bản gốc. Chỉ an toàn dùng trực tiếp khi mọi field là kiểu giá trị; cần nhân bản sâu (deep copy) thì phải tự tạo bản sao mới cho từng field tham chiếu. (→ xem Reference Type)
+<em>Xuất hiện đầu tiên: Chương 4, mục 4.1.3.</em></p>
 <p><strong>MeoFrame</strong> — Bí danh dùng chung xuyên suốt sách cho namespace (<code>MeoFrame.Domain</code>, <code>MeoFrame.Application</code>, <code>MeoFrame.Infrastructure</code>...) và ví dụ code — không phải tên một framework/codebase cố định duy nhất, chỉ là cách gọi thống nhất giúp người đọc không phải làm quen bối cảnh mới mỗi chương.
 <em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>Matcher (<code>It.IsAny&lt;T&gt;()</code> / <code>It.Ref&lt;T&gt;.IsAny</code>)</strong> — Placeholder trong <code>Setup(...)</code> của Moq báo &quot;khớp với bất kỳ giá trị nào của kiểu <code>T</code>&quot;, dùng khi test không quan tâm giá trị cụ thể của một tham số. <code>It.IsAny&lt;T&gt;()</code> dùng cho tham số thường; <code>It.Ref&lt;T&gt;.IsAny</code> (một property, không phải method) bắt buộc dùng cho vị trí tham số <code>out</code>/<code>ref</code> vì C# không cho truyền lời gọi method vào chỗ đó. (→ xem Mock&lt;T&gt;, Moq)
@@ -21707,6 +21945,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.1.</em></p>
 <p><strong>PAC (Programmable Automation Controller)</strong> — Controller công nghiệp thế hệ mới, đứng giữa PLC truyền thống và PC-Based Control: giữ độ tin cậy/tính &quot;đóng&quot; của PLC nhưng có khả năng xử lý mạnh hơn và lập trình linh hoạt hơn. Không phổ biến bằng hai lựa chọn còn lại trong sách này nhưng đáng biết khi so sánh nền tảng điều khiển. (→ xem PC-Based Control)
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.1.</em></p>
+<p><strong>partial class</strong> — Từ khoá cho phép chia định nghĩa của MỘT class ra nhiều file <code>.cs</code> (mỗi file khai <code>partial class TênGiốngHệt</code>); compiler ghép lại thành một class duy nhất lúc build — chung field/property/instance, không phải nhiều class riêng biệt. Dùng khi một class quá lớn, muốn tách theo chủ đề mà vẫn giữ là một class (ví dụ <code>AxisSequence.Motion.cs</code> + <code>AxisSequence.Alarm.cs</code>); WinForms Designer cũng dùng kỹ thuật này (<code>Form1.cs</code> + <code>Form1.Designer.cs</code>). Gặp một class có vẻ &quot;thiếu&quot; method đang được gọi ở nơi khác, Grep tên class xem có file khác cũng khai <code>partial class</code> cùng tên hay không trước khi kết luận có lỗi. (→ xem class)
+<em>Xuất hiện đầu tiên: Chương 4, mục 4.1.3.</em></p>
 <p><strong>Process Isolation (Boundary Contract)</strong> — Kỹ thuật tách một thư viện vendor không tương thích runtime/platform ra chạy trong process riêng, giao tiếp với process chính qua payload trung lập (chỉ kiểu cơ bản + JSON, gọi là Boundary Contract) thay vì tham chiếu trực tiếp — cho phép hai phía nâng cấp độc lập, và lỗi native (SEHException) trong process phụ không kéo sập process chính. (→ xem SEHException (Structured Exception), IPC (Inter-Process Communication))
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
 <p><strong>Platform Target (x86/x64/AnyCPU)</strong> — Thiết lập build quyết định độ rộng process của ứng dụng .NET; phải đồng bộ với SDK/driver thiết bị vì managed code (C#) và native code (<code>.dll</code> C/C++ của hãng thiết bị) phải cùng độ rộng process (đều 32-bit hoặc đều 64-bit) khi gọi lẫn nhau. Sai lệch platform ném <code>BadImageFormatException</code> lúc runtime — lỗi phổ biến nhất khi mới bắt đầu vì thông báo lỗi không trực tiếp gợi ý nguyên nhân. (→ xem AnyCPU, BadImageFormatException)

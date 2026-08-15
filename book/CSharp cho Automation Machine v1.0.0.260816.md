@@ -1040,6 +1040,47 @@ xa lạ.
 > chuyện" với nhau mà không qua tham số hay sự kiện nào — cùng bản chất
 > "trạng thái toàn cục dùng chung" như `GetInstance()`, chỉ khác chỗ khai
 > báo, và cùng nên thay bằng Service đăng ký qua DI khi viết code mới.
+>
+> 🔍 **Đào sâu thêm — hai kiểu `GetInstance()` khác nhau, một an toàn luồng một không.** Dạng đơn
+> giản nhất chỉ kiểm tra một lần:
+> ```csharp
+> // Không thread-safe: 2 luồng cùng gọi lần đầu tiên có thể tạo ra 2 instance khác nhau
+> public static MyManager GetInstance()
+> {
+>     if (instance == null) instance = new MyManager();
+>     return instance;
+> }
+> ```
+> Một biến thể an toàn luồng hơn — **double-checked locking** (kiểm tra hai lần) — hay gặp trong code
+> kế thừa cũ hơn (trước khi `Lazy<T>` phổ biến):
+> ```csharp
+> private static MyManager? _instance;
+> private static readonly object _lock = new();
+>
+> public static MyManager Instance
+> {
+>     get
+>     {
+>         if (_instance == null)                    // kiểm tra lần 1 — KHÔNG lock, chỉ để tránh
+>         {                                          // tốn lock mỗi lần gọi SAU KHI đã khởi tạo xong
+>             lock (_lock)
+>             {
+>                 if (_instance == null)              // kiểm tra lần 2 — BÊN TRONG lock, phòng trường
+>                     _instance = new MyManager();    // hợp 2 luồng cùng vượt qua kiểm tra lần 1
+>             }
+>         }
+>         return _instance;
+>     }
+> }
+> ```
+> Đọc lần đầu dễ tưởng kiểm tra 2 lần là thừa — không thừa: lần 1 tránh phải `lock` (có phí tổn hiệu
+> năng nhỏ) ở MỌI lần gọi sau khi đã khởi tạo xong; lần 2 (bên trong `lock`) mới thật sự ngăn 2 luồng
+> cùng tạo 2 instance nếu cả hai đến đúng lúc `_instance` còn `null`. Trong cùng một dự án, không hiếm
+> gặp CẢ HAI kiểu cùng tồn tại — một singleton không lock (ít rủi ro vì chỉ luồng UI gọi), một dùng
+> double-checked locking (vì bị gọi từ nhiều `Task`/luồng nền) — không phải lỗi nhất quán, miễn đúng
+> chỗ nào cần thread-safe thì có, chỗ nào chắc chắn đơn luồng thì không cần thêm `lock` không cần
+> thiết. Cách hiện đại hơn cho cùng bài toán: `Lazy<T>` (C# tự lo phần double-checked locking):
+> `private static readonly Lazy<MyManager> _lazy = new(() => new MyManager()); public static MyManager Instance => _lazy.Value;`
 
 > ⚠️ **Trường hợp cực đoan nhất của "đừng tin tên gọi": chính comment cũng thừa nhận đang sai.** Thỉnh
 > thoảng gặp một biến/tham số đặt tên KHÔNG khớp với recipe/tài liệu thật, kèm một dòng comment kiểu
@@ -1470,6 +1511,16 @@ Chọn kiểu số trong điều khiển không phải chuyện thẩm mỹ — 
 - `float` (32-bit): nhẹ hơn, sai số lớn hơn — đủ cho sensor đơn giản.
 - Số nguyên: `byte`/`ushort` cho bit/word I/O, `int` cho state và index, `long` cho timestamp (ticks).
 - `decimal`: chính xác thập phân tuyệt đối nhưng **chậm hơn `double` đáng kể** (phép tính thập phân thực hiện bằng phần mềm) — không dùng trong vòng quét thời gian thực. Ngoại lệ: tính tổng tiền ở phần báo cáo/MES (không phải control loop) thì `decimal` lại là lựa chọn đúng.
+- `Guid`: kiểu 128-bit sinh giá trị gần như chắc chắn không trùng, không cần một nguồn cấp số trung tâm — dùng cho ID không phụ thuộc thứ tự (ID một bước test, ID một phiên làm việc), khác `int` tự tăng (auto-increment) cần cơ sở dữ liệu cấp phát tuần tự. Tạo bằng `Guid.NewGuid()`; định dạng chuỗi qua `.ToString(format)` — `"D"` (mặc định, có dấu gạch ngang: `"a1b2c3d4-...-..."`), `"N"` (không dấu gạch ngang, 32 ký tự liền — gọn hơn khi dùng làm ID hiển thị rút gọn), `"B"` (bọc trong dấu ngoặc nhọn `{}`).
+
+> ⚠️ **Ép kiểu `long` TRƯỚC phép nhân — tránh tràn số (integer overflow) trên `int`.** `int` chỉ chứa được tối đa khoảng ±2.1 tỷ. Nhân hai biến `int` có vẻ vô hại (ví dụ một `timeout` (mili-giây) nhân với `soLanLặpToiDa`) có thể vượt giới hạn đó mà không có exception nào báo — kết quả "quay vòng" thành số ÂM sai lệch hoàn toàn:
+> ```csharp
+> int timeoutMs = 30_000;
+> int maxIterations = 100_000;
+> int total = timeoutMs * maxIterations;        // ❌ 3 tỷ > giới hạn int → tràn số, ra số ÂM
+> long totalSafe = (long)timeoutMs * maxIterations;  // ✅ ép (long) TRƯỚC phép nhân — phép nhân chạy ở độ rộng long
+> ```
+> Mấu chốt là ép kiểu ĐÚNG VỊ TRÍ — trước phép toán, không phải sau: `(long)(timeoutMs * maxIterations)` vẫn sai, vì phép nhân `int * int` đã tràn số XONG rồi mới ép kiểu kết quả sai đó sang `long`. Chỉ cần MỘT trong hai toán hạng là `long`, C# tự nâng cả phép tính lên độ rộng `long` trước khi nhân.
 
 `enum` <!--idx:enum--> là cách C# đặt tên cho một tập giá trị nguyên cố định — tương đương "bảng symbol" của PLC. Thay vì rải số 0/1/2 khắp code, ta đặt tên có nghĩa cho từng trạng thái/chế độ:
 
@@ -1625,6 +1676,37 @@ switch (state)
         break;
 }
 ```
+
+> ⚠️ **`state` phải là `enum`, không phải `string`.** Code 3.7 dùng biến `state` kiểu `enum`
+> (`AutoState.Idle`, `AutoState.Init`...) — đây là lựa chọn có chủ đích, không phải tình cờ. `switch`
+> nhận biến `string` làm khoá trạng thái cũng biên dịch được (`case "Idle": ...`), nhưng mất hoàn
+> toàn lợi ích compiler-check: gõ nhầm `"Idel"` ở một nơi so với `"Idle"` ở nơi khác không báo lỗi
+> biên dịch — chương trình chỉ âm thầm không khớp `case` nào, rơi vào `default`. Với `enum`, IDE tự
+> gợi ý tên hợp lệ và gõ sai tên hoàn toàn không biên dịch được. Khi số trạng thái tăng lên nhiều
+> (10+), Chương 12 sẽ thay `switch` bằng State Pattern hoặc Transition Table — nhưng dù ở quy mô
+> nào, khoá trạng thái luôn nên là `enum`, không phải `string`.
+
+> 📌 **Nhiều `case` dùng CHUNG một khối lệnh — hợp lệ, khác `switch` C/C++.** Một biến thể khác của
+> `switch` hay gặp trong code thật:
+> ```csharp
+> switch (startMode)
+> {
+>     case StartMode.JigClosed:   // case này KHÔNG có lệnh gì — "rơi" xuống case bên dưới
+>     case StartMode.Loop:
+>         startSignal = true;
+>         break;
+>     default:
+>         startSignal = false;
+>         break;
+> }
+> ```
+> `case StartMode.JigClosed:` không có lệnh nào ở giữa nó và `case StartMode.Loop:` — cả hai cùng
+> chạy chung khối lệnh `startSignal = true; break;`. Đây là cú pháp HỢP LỆ trong C# và khá phổ biến
+> khi nhiều trạng thái cần cùng một hành động. Dễ gây hiểu lầm với người quen C/C++: ở C/C++,
+> `switch` mặc định "rơi" (fall-through) từ MỌI case có lệnh sang case kế tiếp trừ khi có `break` —
+> còn C# chỉ cho phép "rơi" khi case phía trên có THÂN RỖNG (không lệnh nào giữa hai nhãn `case`);
+> case đã CÓ lệnh mà thiếu `break`/`return`/`goto case` ở cuối là lỗi biên dịch, không âm thầm rơi
+> xuống như C/C++.
 
 **Pattern matching** <!--idx:Pattern matching--> (C# 7.0+) mở rộng `switch` để phân loại theo *kiểu* hoặc *điều kiện đi kèm* — rất hợp khi xử lý nhiều loại lệnh từ HMI:
 
@@ -3223,6 +3305,15 @@ public void OnReadClick()
 Cơ chế deadlock <!--idx:deadlock--> diễn ra như sau: (1) luồng UI gọi `.Result` và **dừng lại đợi** Task hoàn tất; (2) nhưng phần tiếp theo (continuation) của `ReadRecipeAsync` lại được xếp lịch *quay về luồng UI* để chạy; (3) luồng UI đang bị chặn ở bước (1) nên không bao giờ chạy được continuation → Task không bao giờ xong → `.Result` chờ mãi. Hai bên khoá nhau.
 
 > ⚠️ **Cảnh báo:** Tuyệt đối **không** dùng `.Result`, `.Wait()`, hay `Thread.Sleep()` trong vòng quét điều khiển, luồng UI, hay bất kỳ đường đi async nào. Thay vào đó để method gọi cũng là `async` và `await` xuống — "async all the way". Cần chờ có giới hạn thì dùng timeout (mục 5.2), không dùng vòng `while` bận chờ.
+>
+> 📌 **Biến thể cùng lỗi, khác vỏ cú pháp: `.GetAwaiter().GetResult()`.** `.Result` và `.Wait()`
+> không phải hai cách chặn đồng bộ duy nhất — `task.GetAwaiter().GetResult()` gây CHÍNH XÁC cùng
+> rủi ro deadlock vừa giải thích (thực ra `.Result`/`.Wait()` bên trong .NET cũng đi qua cơ chế
+> `Awaiter` tương tự). Điểm khác biệt duy nhất: `GetResult()` ném lại exception gốc trực tiếp thay
+> vì bọc trong `AggregateException` như `.Result`/`.Wait()` — vì vậy đôi khi được chọn có chủ đích
+> để tránh phải `.InnerException` khi bắt lỗi. Nhưng về mặt "có chặn đồng bộ một Task hay không",
+> nó giống hệt `.Result`/`.Wait()` — nếu chỉ nhớ tránh đúng hai cái tên `.Result`/`.Wait()` khi đọc
+> code người khác, `.GetAwaiter().GetResult()` sẽ dễ "lọt lưới".
 
 Hai bẫy async khác cần tránh — `async void` và "fire-and-forget" nuốt lỗi:
 
@@ -3276,6 +3367,25 @@ UploadLogAsync().Forget(_logger);
 ## 5.2  CancellationToken — "E-Stop phần mềm" cho thao tác async
 
 > 📌 **Quan trọng:** `CancellationToken` **KHÔNG** kill thread hay huỷ Task ngay lập tức — nó chỉ là *tín hiệu đề nghị dừng*. Code bên trong Task phải chủ động kiểm tra token và tự dừng ở chỗ an toàn. Đây là *cooperative cancellation* (hủy có hợp tác), khác hoàn toàn với `Thread.Abort()` (đã bị xoá khỏi .NET hiện đại).
+
+> ⚠️ **Bẫy dễ nhầm nhất: `Task.Run(delegateĐồngBộ, token)` KHÔNG huỷ được công việc đang chạy dở.**
+> `token` truyền làm tham số thứ hai cho `Task.Run` chỉ có tác dụng NẾU Task đó còn nằm trong hàng
+> đợi thread pool, chưa được bắt đầu chạy — huỷ trước khi vào lịch. Một khi delegate bên trong đã
+> bắt đầu thực thi, và bản thân delegate đó là code ĐỒNG BỘ không tự kiểm tra token (ví dụ gọi
+> `MethodInfo.Invoke(...)` qua reflection, hay bất kỳ hàm cũ nào không nhận `CancellationToken`),
+> code đó sẽ CHẠY TIẾP ĐẾN HẾT dù token đã bị huỷ — chỉ có luồng gọi (`await task`) ngừng chờ và
+> ném `OperationCanceledException`/`TimeoutException`, còn công việc thật vẫn chạy ngầm tới khi tự
+> xong:
+> ```csharp
+> // ❌ ẢO TƯỞNG "đã huỷ được" — token chỉ ngăn Task CHƯA bắt đầu chạy
+> using var cts = new CancellationTokenSource(timeoutMs);
+> var task = Task.Run(() => LegacySyncMethod(), cts.Token);   // LegacySyncMethod không nhận token
+> try { await task; }
+> catch (OperationCanceledException) { /* task này ngừng CHỜ — nhưng LegacySyncMethod vẫn chạy ngầm */ }
+> ```
+> Muốn huỷ thật, method bên trong phải TỰ nhận `CancellationToken` và tự kiểm tra
+> (`ct.ThrowIfCancellationRequested()` hoặc truyền `ct` xuống các API con) — không có cách nào ép
+> một method đồng bộ cũ dừng giữa chừng chỉ bằng cách bọc `Task.Run(..., token)` bên ngoài.
 
 Kỹ sư PLC quen nút E-Stop phần cứng: nhấn là mọi chuyển động dừng ngay. **`CancellationToken`** <!--idx:CancellationToken--> là phiên bản phần mềm của ý tưởng đó cho thao tác bất đồng bộ — một "tín hiệu dừng" truyền xuống mọi tầng để chúng tự kết thúc sạch sẽ thay vì bị "giết" giữa chừng.
 
@@ -3456,6 +3566,27 @@ private async void OnPollTimerTick(object? sender, EventArgs e)
 `WaitAsync(0)` trả về `false` ngay lập tức nếu semaphore đang bị giữ — không đợi, không chặn luồng gọi. Cùng ý tưởng áp dụng được cho việc chặn lệnh Start/Reset bị bấm dội (double-click) trong lúc lệnh trước còn đang xử lý.
 
 Hai nguyên tắc xương máu khi dùng lock: **giữ lock càng ngắn càng tốt**, và **tuyệt đối không lock quanh I/O** (đọc PLC, ghi DB) — I/O có thể treo lâu, khoá luôn mọi luồng khác đang chờ lock đó.
+
+> 💡 **`ConcurrentDictionary<TKey,TValue>` — khi cả cấu trúc dữ liệu tự lo `lock` bên trong.** Code
+> 5.7 tự quản một `List<T>` bằng `lock` viết tay quanh mỗi thao tác đọc/ghi. Với một bảng tra cứu
+> (biến toàn cục theo tên, cache trạng thái thiết bị theo ID...) bị nhiều luồng cùng đọc/ghi thường
+> xuyên, `System.Collections.Concurrent.ConcurrentDictionary<TKey,TValue>` tự đồng bộ hoá bên trong
+> — không cần `lock` bên ngoài mỗi lần truy cập:
+> ```csharp
+> private readonly ConcurrentDictionary<string, object?> _variables = new();
+>
+> public void SetVariable(string name, object? value) => _variables[name] = value;   // thread-safe
+> public bool TryGetVariable(string name, out object? value) => _variables.TryGetValue(name, out value);
+>
+> // Cập nhật nguyên tử dựa trên giá trị cũ — không cần lock thủ công quanh "đọc rồi ghi"
+> _variables.AddOrUpdate("cycleCount", 1, (_, old) => (int)old! + 1);
+> ```
+> `TryGetValue`/`TryAdd`/`TryRemove`/`AddOrUpdate` đều nguyên tử (atomic) — an toàn gọi từ nhiều
+> luồng cùng lúc mà không cần bọc thêm `lock`. Đánh đổi: chỉ đúng một thao tác là nguyên tử tại một
+> thời điểm; một chuỗi NHIỀU thao tác liên tiếp trên `ConcurrentDictionary` (ví dụ "kiểm tra tồn tại
+> rồi mới thêm bằng 2 lệnh riêng") vẫn có thể xảy ra race condition giữa các lệnh — khi đó cần
+> `AddOrUpdate`/`GetOrAdd` (gộp kiểm tra + ghi thành một thao tác nguyên tử) hoặc quay lại `lock`
+> thủ công như Code 5.7.
 
 **`ManualResetEvent`/`AutoResetEvent` — cờ tín hiệu chờ được, hay gặp trong code kế thừa.** Trước khi
 `async`/`await` phổ biến, một cách chuẩn để một luồng "đánh thức" luồng khác đang chờ là dùng
@@ -19577,6 +19708,9 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 **CommunityToolkit.Mvvm** — Toolkit MVVM hiện đại của Microsoft, chạy trên .NET Standard (dùng được cả WPF/WinForms, .NET Framework lẫn .NET mới); cung cấp `ObservableObject`, `RelayCommand`, và đặc biệt là source generator (`[ObservableProperty]`, `[RelayCommand]`) để tự sinh property/command từ attribute, giảm mạnh boilerplate so với viết tay. Nhẹ hơn Prism (không có Regions/Modularity/Navigation). (→ xem MVVM, ICommand / RelayCommand, INotifyPropertyChanged)
 *Xuất hiện đầu tiên: Chương 9, mục 9.2.3.*
 
+**ConcurrentDictionary\<TKey,TValue\>** — Bảng tra cứu (`System.Collections.Concurrent`) tự đồng bộ hoá bên trong — an toàn gọi `TryGetValue`/`TryAdd`/`TryRemove`/`AddOrUpdate`/`GetOrAdd` từ nhiều luồng cùng lúc mà không cần bọc thêm `lock` bên ngoài như `Dictionary<TKey,TValue>` thường. Chỉ ĐÚNG MỘT thao tác là nguyên tử tại một thời điểm — một chuỗi nhiều thao tác liên tiếp (kiểm tra tồn tại rồi mới thêm bằng 2 lệnh riêng) vẫn có thể race; dùng `AddOrUpdate`/`GetOrAdd` (gộp kiểm tra + ghi thành một thao tác) cho trường hợp đó. (→ xem lock)
+*Xuất hiện đầu tiên: Chương 5, mục 5.3.2.*
+
 **ControlTemplate** — Định nghĩa cách một control WPF được render (Visual Tree bên trong nó), tách biệt khỏi logic/hành vi của control; cho phép đổi hoàn toàn giao diện (ví dụ nút tròn thay vì chữ nhật) mà không sửa code C#. Nguồn gốc phổ biến nhất khiến Visual Tree khác Logical Tree. (→ xem Visual Tree, DataTemplate)
 *Xuất hiện đầu tiên: Chương 9, mục 9.1.2.*
 
@@ -19765,6 +19899,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **DI Lifetime (Singleton / Scoped / Transient)** — Ba vòng đời chuẩn khi đăng ký service vào DI container: **Singleton** (một instance dùng chung suốt vòng đời ứng dụng — bắt buộc cho driver kết nối phần cứng, vì Transient sẽ mở kết nối liên tục), **Scoped** (một instance mỗi "phạm vi" — ngoài ASP.NET không tự tạo scope theo request, cần `IServiceScopeFactory.CreateScope()` tường minh), **Transient** (instance mới mỗi lần resolve — hợp cho object nhẹ, không giữ state). Chọn sai lifetime cho driver phần cứng là lỗi phổ biến gây rò rỉ kết nối. (→ xem Dependency Injection (DI — tiêm phụ thuộc))
 *Xuất hiện đầu tiên: Chương 7, mục 7.2.5.*
 
+**Double-Checked Locking** — Kỹ thuật khởi tạo singleton an toàn luồng bằng cách kiểm tra `instance == null` HAI LẦN: lần 1 không có `lock` (tránh phí tổn `lock` ở mọi lần gọi sau khi đã khởi tạo xong), lần 2 bên trong `lock` (ngăn 2 luồng cùng vượt qua kiểm tra lần 1 rồi cùng tạo instance). Khác singleton `GetInstance()` đơn giản (Bảng 2.5, Chương 2) không có `lock` — chỉ an toàn nếu chắc chắn luôn gọi từ đúng một luồng. Cách hiện đại tương đương: `Lazy<T>`. (→ xem lock, DI Lifetime (Singleton / Scoped / Transient))
+*Xuất hiện đầu tiên: Chương 2, mục 2.5.*
+
 **dotnet-counters** — Công cụ dòng lệnh của .NET (`dotnet tool install --global dotnet-counters`) hiển thị CPU/memory/GC/thread pool theo thời gian thực của một tiến trình đang chạy, chỉ cần Process ID — không cần Visual Studio hay source code. Thường là bước đầu tiên khi chẩn đoán "máy chạy chậm" trên production. (→ xem dotnet-trace, dotnet-dump)
 *Xuất hiện đầu tiên: Chương 19, mục 19.1.*
 
@@ -19866,6 +20003,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 *Xuất hiện đầu tiên: Phụ lục A, mục A.2.*
 
 ## G
+
+**Guid** — Kiểu 128-bit sinh giá trị gần như chắc chắn không trùng (`Guid.NewGuid()`), không cần một nguồn cấp số trung tâm — dùng cho ID không phụ thuộc thứ tự (ID bước test, ID phiên làm việc), khác `int` tự tăng cần cơ sở dữ liệu cấp phát tuần tự. Định dạng chuỗi qua `.ToString(format)`: `"D"` (mặc định, có dấu gạch ngang), `"N"` (không dấu gạch ngang, gọn hơn), `"B"` (bọc trong `{}`).
+*Xuất hiện đầu tiên: Chương 3, mục 3.1.4.*
 
 **Garbage Collector (GC)** — Bộ thu hồi bộ nhớ tự động của .NET cho các object trên heap; tránh memory leak nhưng chạy theo thuật toán riêng, không đảm bảo thời điểm và có thể tạm dừng (pause) luồng vài mili-giây — đủ phá vỡ một vòng điều khiển. Nguyên tắc: không cấp phát object mới trong vòng quét. (→ xem Heap, GC pressure)
 *Xuất hiện đầu tiên: Chương 3, mục 3.1.2.*

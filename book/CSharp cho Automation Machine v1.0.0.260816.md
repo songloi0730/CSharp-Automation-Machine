@@ -1495,6 +1495,34 @@ Với mỗi vòng quét, value type cho chúng ta đúng tư duy PLC: làm việ
 
 > 📌 **Sẽ học sâu hơn:** `class` và `interface` đầy đủ (thành viên, kế thừa, đóng gói) thuộc Chương 4. Ở đây chỉ cần nắm: `class` là reference type, `struct` là value type — và hệ quả của chúng lên vòng quét.
 
+> ⚠️ **Bẫy thật: đưa các FIELD reference type vào một mảng TRƯỚC KHI field đó được gán.** Mảng
+> (`T[]`) bản thân cũng là reference type — mỗi PHẦN TỬ của mảng chứa reference chỉ tham chiếu tới
+> chính object mà field gốc đang trỏ tới TẠI THỜI ĐIỂM gán vào mảng, không phải "liên kết sống" tự
+> cập nhật theo field:
+> ```csharp
+> public sealed class TransferMachine
+> {
+>     public AxisController? AxisX;
+>     public AxisController? AxisY;
+>     public AxisController[] Axes;   // mảng chứa 3 trục
+>
+>     public TransferMachine()
+>     {
+>         // ❌ AxisX/AxisY CÒN NULL tại đây — mảng "chụp" đúng giá trị null hiện tại
+>         Axes = new[] { AxisX, AxisY };
+>         AxisX = new AxisController();   // gán field SAU — Axes[0] vẫn null, KHÔNG tự cập nhật!
+>         AxisY = new AxisController();
+>     }
+> }
+> ```
+> `Axes[0]` không "theo dõi" field `AxisX` — nó chỉ giữ đúng giá trị `AxisX` có TẠI DÒNG khởi tạo
+> mảng. Nếu field còn `null` lúc đó (thứ tự khai báo/gán sai), mảng giữ `null` vĩnh viễn dù field gốc
+> sau đó được gán object thật — bất kỳ code nào đọc qua `Axes[0]` (thay vì `AxisX` trực tiếp) sẽ luôn
+> gặp `null`, dẫn tới `NullReferenceException` ở một chỗ hoàn toàn khác, xa nơi lỗi thật sự nằm. Sửa
+> đúng: gán field TRƯỚC, dựng mảng SAU CÙNG — hoặc tốt hơn, chỉ gán field, để `Axes` là một property
+> tính toán (`AxisController[] Axes => new[] { AxisX, AxisY };`) luôn đọc giá trị field mới nhất mỗi
+> lần truy cập thay vì "chụp ảnh" một lần.
+
 ### 3.1.2  Stack, Heap và Garbage Collector — nhìn từ vòng quét
 
 Hai biến local trong một method nằm trên **stack** <!--idx:Stack-->: cấp phát và thu hồi cực nhanh, tự động biến mất khi ra khỏi scope, không cần ai dọn. Trong vòng quét, stack là "vùng an toàn".
@@ -1662,7 +1690,7 @@ public sealed class AxisLimits
 }
 ```
 
-> ⚠️ **Cảnh báo:** Sai lầm phổ biến là dùng `const` cho giá trị lẽ ra phải cấu hình được — hệ quả là phải **build lại phần mềm chỉ để đổi một tham số** ngoài hiện trường. Quy tắc: luật vật lý không đổi → `const`; tham số cấu hình → `readonly` (đọc từ file).
+> ⚠️ **Cảnh báo:** Sai lầm phổ biến là dùng `const` cho giá trị lẽ ra phải cấu hình được — hệ quả là phải **build lại phần mềm chỉ để đổi một tham số** ngoài hiện trường. Quy tắc: luật vật lý không đổi → `const`; tham số cấu hình → `readonly` (đọc từ file). Cùng rủi ro áp dụng cho `bool` — một cờ hard-code kiểu `public static bool UseRealHardware = false;` quyết định "chạy mô phỏng hay chạy máy thật" mà không đọc từ file cấu hình nào cũng buộc build lại + đổi đúng giá trị trước khi đưa lên máy thật; quên đổi (không có gì ngăn quên, kể cả một dòng comment `// TODO: đổi trước khi phát hành` bên cạnh) khiến máy chạy sai chế độ mà không cách nào phát hiện ngoài đọc lại source.
 >
 > 📌 **`sealed` ở đầu Code 3.4:** đánh dấu class **không cho kế thừa tiếp** — tương tự khoá một FB lại, không cho ai viết FB con "mở rộng" nó. **Lưu ý quan trọng:** đây KHÔNG phải thói quen phổ biến của C# nói chung — rất nhiều code C# bạn gặp ở nơi khác (tutorial, mã nguồn mở, dự án khác) không dùng `sealed` mấy. Sách này *cố ý* mặc định thêm `sealed` cho mọi class không thiết kế để kế thừa (sẽ thấy lặp lại rất nhiều — đúng quy ước của các dự án phần mềm điều khiển máy công nghiệp mà sách mô phỏng): trong code an toàn/điều khiển, một class bị kế thừa "ngoài kế hoạch" có thể âm thầm đổi hành vi (override một method) mà người review khó lường trước — khoá `sealed` loại bỏ rủi ro đó ngay từ lúc biên dịch. Nói cách khác: `sealed` không phải luật C#, mà là một lựa chọn phòng ngừa có chủ đích của sách này — khi đọc code C# ở nơi khác, đừng ngạc nhiên nếu không thấy `sealed` ở đâu cả. Chỉ bỏ `sealed` khi class thực sự cần cho lớp con kế thừa (học ở Chương 4, mục 4.3).
 >
@@ -1778,6 +1806,14 @@ switch (state)
 > gợi ý tên hợp lệ và gõ sai tên hoàn toàn không biên dịch được. Khi số trạng thái tăng lên nhiều
 > (10+), Chương 12 sẽ thay `switch` bằng State Pattern hoặc Transition Table — nhưng dù ở quy mô
 > nào, khoá trạng thái luôn nên là `enum`, không phải `string`.
+>
+> Một biến thể còn tệ hơn `string` hay gặp trong code kế thừa: khoá trạng thái là **số nguyên thô**
+> (`case 1000: ...`, `case 1090: ...`, chuyển bước bằng `m_step = 1090;`). Mất TOÀN BỘ lợi ích mà
+> `string` còn giữ được một phần — Find All References/Go To Definition (mục 2.4, Chương 2) không
+> lọc được gì hữu ích trên một con số (`1090` có thể là bất kỳ hằng số nào trong hệ thống, không chỉ
+> tên bước sequence), trong khi ít nhất `"Idle"` còn là một chuỗi có nghĩa tra được. Đọc code dùng số
+> nguyên làm bước sequence, luôn tìm bảng ánh xạ số↔tên (comment, tài liệu, hoặc hằng số đặt tên
+> riêng) trước khi cố nhớ ý nghĩa từng con số.
 
 > 📌 **Nhiều `case` dùng CHUNG một khối lệnh — hợp lệ, khác `switch` C/C++.** Một biến thể khác của
 > `switch` hay gặp trong code thật:
@@ -2089,6 +2125,22 @@ public sealed class AxisNotHomedException : Exception
 > - `$"Trục {axisId} chưa được home..."` là **string interpolation** — dấu `$` trước chuỗi cho phép chèn thẳng biến vào trong `{ }`, tương đương nối chuỗi `"Trục " + axisId + " chưa được home..."` nhưng gọn và ít lỗi hơn.
 > - `=> AxisId = axisId;` (không có `{ }` bao quanh) là **expression-bodied member** — cách viết gọn khi thân method/constructor chỉ có đúng một biểu thức, tương đương `{ AxisId = axisId; }`. Đây là cùng ký hiệu `=>` sẽ gặp lại ở lambda (Chương 4) nhưng dùng trong ngữ cảnh khác: ở lambda, `=>` tách tham số khỏi thân hàm ẩn danh; ở đây, `=>` chỉ đơn thuần thay cho cặp `{ }` khi thân chỉ có một dòng.
 
+> ⚠️ **Bẫy cú pháp cơ bản dễ bỏ sót: QUÊN dấu `$` trước chuỗi.** So sánh hai dòng sau — chỉ khác
+> đúng 1 ký tự ở đầu:
+> ```csharp
+> var name1 = $"{Assembly.GetExecutingAssembly().GetName().Name}";  // ✅ interpolation — chèn giá trị thật
+> var name2 = "{Assembly.GetExecutingAssembly().GetName().Name}";   //  THIẾU $ — chuỗi VĂN BẢN THẬT
+> ```
+> Thiếu `$`, dòng thứ hai KHÔNG lỗi biên dịch — nó chỉ là một chuỗi ký tự bình thường chứa nguyên
+> văn `{`, `}` và cả đoạn code trông giống lời gọi method, không hề được "chạy". Không có exception,
+> không có cảnh báo — chương trình vẫn hoạt động, chỉ là giá trị chuỗi hoàn toàn khác ý định người
+> viết. Rủi ro thực tế: nếu chuỗi này dùng làm tên tài nguyên định danh duy nhất (ví dụ tên `Mutex`
+> chặn mở ứng dụng 2 lần — mục 5.3.3, Chương 5), lỗi này vô hại VỀ CHỨC NĂNG (mọi lần chạy đều dùng
+> đúng cùng 1 chuỗi cố định, nên vẫn khoá đúng) — nhưng nếu chuỗi đó cần MANG GIÁ TRỊ THẬT (tên file
+> log theo timestamp, đường dẫn theo tên máy), thiếu `$` sẽ tạo ra kết quả sai hoàn toàn mà không ai
+> báo lỗi. Luôn liếc dấu `$` đầu chuỗi khi thấy `{ }` bên trong — đây là 1 trong những lỗi dễ "lọt
+> qua" review nhất vì code vẫn biên dịch và chạy bình thường.
+
 Chiến lược xử lý lỗi nên phân theo tầng: **Driver** ném exception kỹ thuật (timeout, IO); **Device/Logic** bắt và chuyển thành lỗi miền (domain error) + tạo alarm; **UI** chỉ hiển thị thông điệp đã chuẩn hoá. Và khi log exception, log phải đủ *ngữ cảnh*: máy đang ở mode/state nào, thiết bị nào, lệnh gì — một log "đủ context" tiết kiệm rất nhiều thời gian dừng máy.
 
 > 📌 **Liên hệ chương sau:** Mô hình lỗi miền này được Chương 11 và 15 phát triển thành `AlarmException` với mã alarm chuẩn. Ở đây chỉ cần nắm cú pháp tạo và ném custom exception.
@@ -2344,6 +2396,73 @@ song song, hai cách cùng tồn tại không nhất quán là dấu hiệu thư
 > tự nhiên hơn và dùng được trực tiếp với `Select`/`Where` đã học ở mục LINQ — cùng vai trò với
 > `XmlDocument`, khác thế hệ API (giống cách sách đã đối chiếu Newtonsoft.Json cũ với
 > `System.Text.Json` mới).
+
+### 3.6.5  YAML — gặp trong config/recipe kế thừa, cân nhắc kỹ trước khi chọn cho dự án mới
+
+Ngoài XML/JSON, một số dự án (đặc biệt gốc từ Hàn Quốc/Nhật Bản) dùng **YAML** cho toàn bộ file cấu
+hình/recipe/teaching point — thư viện phổ biến nhất là **YamlDotNet** (NuGet). Cú pháp gần giống
+`System.Text.Json`/Newtonsoft.Json đã học ở mục 3.6.3 (cùng là "đưa 1 object C# ra thành text và
+ngược lại"), chỉ khác API bề mặt:
+
+**Code 3.18c — Đọc/ghi YAML bằng YamlDotNet**
+
+```csharp
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+
+public sealed class TeachingConfig
+{
+    public double Speed { get; set; }
+    public List<double> Position { get; set; } = [];
+}
+
+// Builder cấu hình MỘT LẦN — tương đương JsonSerializerOptions (mục 3.6.3)
+var serializer = new SerializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .Build();
+var deserializer = new DeserializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .Build();
+
+string yamlText = serializer.Serialize(config);           // object -> chuỗi YAML
+var loaded = deserializer.Deserialize<TeachingConfig>(yamlText);  // chuỗi YAML -> object
+```
+
+File YAML sinh ra trông như thế này — không có dấu ngoặc `{}`/`[]` như JSON, phân cấp bằng THỤT LỀ
+(indentation), giống Python:
+
+```yaml
+speed: 100.5
+position:
+  - 10.0
+  - 20.0
+  - 5.0
+```
+
+> ⚠️ **Bẫy thật gặp trong code kế thừa: TẠO builder cẩn thận nhưng KHÔNG BAO GIỜ DÙNG nó.** Một lỗi
+> dễ xảy ra: cấu hình một field `_serializer`/`_deserializer` với `WithNamingConvention(...)` trong
+> constructor, nhưng các method `Load`/`Save` thật sự lại tự tạo MỘT builder khác (mặc định, không
+> có `WithNamingConvention`) ngay bên trong thân hàm — field đã cấu hình công phu trở thành "tử thi"
+> không ai gọi tới, trong khi hành vi thật của ứng dụng đi theo builder mặc định. Biên dịch được,
+> chạy được, không ai báo lỗi — chỉ lộ ra khi so khớp tên property không đúng như kỳ vọng (naming
+> convention không thống nhất giữa nơi ghi và nơi đọc).
+>
+> ⚠️ **`IYamlTypeConverter` chỉ cài một chiều.** Muốn tuỳ biến cách 1 kiểu cụ thể được serialize
+> (ví dụ ép `List<double>` xuất ra 1 dòng thay vì mỗi phần tử 1 dòng có gạch đầu dòng), cài interface
+> `IYamlTypeConverter` (có `Accepts`/`ReadYaml`/`WriteYaml`, hình dạng tương tự `JsonConverter<T>`
+> nếu quen `System.Text.Json`) — nhưng nếu chỉ cần chiều GHI, dễ để `ReadYaml` ném
+> `NotImplementedException` cho "xong việc trước mắt". Đây là quả mìn hẹn giờ: converter trông đầy
+> đủ hai chiều qua tên interface, nhưng chỉ dùng nhầm cho việc ĐỌC (gán vào builder deserialize) sẽ
+> crash ngay lập tức. Đọc code có custom converter, luôn kiểm tra CẢ HAI method đã cài thật hay chỉ
+> một trong hai ném exception.
+
+> 📌 **Có nên chọn YAML cho dự án mới không?** Chương 10 (mục Đa ngôn ngữ HMI) đã khuyến nghị
+> KHÔNG dùng YAML cho file cấu hình HMI vận hành trên máy công nghiệp: nhạy cảm với khoảng trắng thụt
+> lề (một dòng thụt sai 1 cách vô tình đổi cả cấu trúc, không có dấu ngoặc rõ ràng như JSON để phát
+> hiện lỗi ngay), khó sửa thủ công trên máy không có IDE hỗ trợ highlight lỗi cú pháp, và không mở
+> được trực tiếp bằng Excel như CSV. YAML vẫn phổ biến trong các lĩnh vực khác (file cấu hình CI/CD ở
+> Chương 17, Kubernetes/Docker Compose) — chỉ riêng cho **recipe/config vận hành trên HMI công
+> nghiệp**, JSON hoặc XML (mục 3.6.3/3.6.4) vẫn là lựa chọn an toàn hơn.
 
 ---
 
@@ -21202,4 +21321,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **xUnit** — Framework kiểm thử đơn vị (unit test) phổ biến nhất cho .NET; test method được đánh dấu bằng `[Fact]` (test đơn lẻ) hoặc `[Theory]` (data-driven); hỗ trợ `async Task` test method trực tiếp không cần adapter; tích hợp tốt với Visual Studio Test Explorer và CI/CD. (→ xem \[Fact\], \[Theory\])
 *Xuất hiện đầu tiên: Chương 18, mục 18.2.1.*
+
+## Y
+
+**YAML / YamlDotNet** — Định dạng dữ liệu dùng thụt lề (indentation) thay cho dấu ngoặc `{}`/`[]` như JSON để thể hiện cấu trúc/phân cấp; `YamlDotNet` là thư viện .NET phổ biến nhất để serialize/deserialize (`SerializerBuilder`/`DeserializerBuilder`, `WithNamingConvention`, tuỳ biến kiểu qua `IYamlTypeConverter`). Gặp trong config/recipe/teaching-point của một số dự án kế thừa. KHÔNG khuyến nghị cho file cấu hình HMI vận hành (Chương 10) — nhạy cảm với lỗi thụt lề, khó sửa tay trên máy không có IDE; JSON/XML (mục 3.6.3/3.6.4) vẫn là lựa chọn an toàn hơn cho recipe/config công nghiệp. (→ xem JsonSerializer, XmlSerializer)
+*Xuất hiện đầu tiên: Chương 3, mục 3.6.5.*
 

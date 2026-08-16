@@ -454,6 +454,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#v">V</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#w">W</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#x">X</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#y">Y</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -2108,6 +2109,34 @@ b.TargetMm = 200.0;          // a.TargetMm GIỜ cũng = 200.0!
 <blockquote>
 <p>📌 <strong>Sẽ học sâu hơn:</strong> <code>class</code> và <code>interface</code> đầy đủ (thành viên, kế thừa, đóng gói) thuộc Chương 4. Ở đây chỉ cần nắm: <code>class</code> là reference type, <code>struct</code> là value type — và hệ quả của chúng lên vòng quét.</p>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong>Bẫy thật: đưa các FIELD reference type vào một mảng TRƯỚC KHI field đó được gán.</strong> Mảng
+(<code>T[]</code>) bản thân cũng là reference type — mỗi PHẦN TỬ của mảng chứa reference chỉ tham chiếu tới
+chính object mà field gốc đang trỏ tới TẠI THỜI ĐIỂM gán vào mảng, không phải &quot;liên kết sống&quot; tự
+cập nhật theo field:</p>
+<pre><code class="language-csharp">public sealed class TransferMachine
+{
+    public AxisController? AxisX;
+    public AxisController? AxisY;
+    public AxisController[] Axes;   // mảng chứa 3 trục
+
+    public TransferMachine()
+    {
+        // ❌ AxisX/AxisY CÒN NULL tại đây — mảng &quot;chụp&quot; đúng giá trị null hiện tại
+        Axes = new[] { AxisX, AxisY };
+        AxisX = new AxisController();   // gán field SAU — Axes[0] vẫn null, KHÔNG tự cập nhật!
+        AxisY = new AxisController();
+    }
+}
+</code></pre>
+<p><code>Axes[0]</code> không &quot;theo dõi&quot; field <code>AxisX</code> — nó chỉ giữ đúng giá trị <code>AxisX</code> có TẠI DÒNG khởi tạo
+mảng. Nếu field còn <code>null</code> lúc đó (thứ tự khai báo/gán sai), mảng giữ <code>null</code> vĩnh viễn dù field gốc
+sau đó được gán object thật — bất kỳ code nào đọc qua <code>Axes[0]</code> (thay vì <code>AxisX</code> trực tiếp) sẽ luôn
+gặp <code>null</code>, dẫn tới <code>NullReferenceException</code> ở một chỗ hoàn toàn khác, xa nơi lỗi thật sự nằm. Sửa
+đúng: gán field TRƯỚC, dựng mảng SAU CÙNG — hoặc tốt hơn, chỉ gán field, để <code>Axes</code> là một property
+tính toán (<code>AxisController[] Axes =&gt; new[] { AxisX, AxisY };</code>) luôn đọc giá trị field mới nhất mỗi
+lần truy cập thay vì &quot;chụp ảnh&quot; một lần.</p>
+</blockquote>
 <h3>3.1.2  Stack, Heap và Garbage Collector — nhìn từ vòng quét</h3>
 <p>Hai biến local trong một method nằm trên <strong>stack</strong> <!--idx:Stack-->: cấp phát và thu hồi cực nhanh, tự động biến mất khi ra khỏi scope, không cần ai dọn. Trong vòng quét, stack là &quot;vùng an toàn&quot;.</p>
 <p>Object, mảng, string, delegate nằm trên <strong>heap</strong> <!--idx:Heap-->: linh hoạt, tồn tại lâu, nhưng cấp phát chậm hơn và cần <strong>Garbage Collector (GC)</strong> <!--idx:Garbage Collector--> thu hồi. GC tự động tránh memory leak — bạn tốt của lập trình IT thông thường. Nhưng GC chạy theo thuật toán riêng, <strong>không đảm bảo thời điểm</strong>, và khi chạy có thể tạm dừng (pause) luồng. Vài mili-giây pause không ảnh hưởng UI, nhưng đủ phá vỡ một vòng điều khiển đang chạy — chính xác là lỗi máy pick-and-place ở đầu chương.</p>
@@ -2251,7 +2280,7 @@ phía sau, báo nhầm alarm cho trục khác mà không có bất kỳ dấu hi
 }
 </code></pre>
 <blockquote>
-<p>⚠️ <strong>Cảnh báo:</strong> Sai lầm phổ biến là dùng <code>const</code> cho giá trị lẽ ra phải cấu hình được — hệ quả là phải <strong>build lại phần mềm chỉ để đổi một tham số</strong> ngoài hiện trường. Quy tắc: luật vật lý không đổi → <code>const</code>; tham số cấu hình → <code>readonly</code> (đọc từ file).</p>
+<p>⚠️ <strong>Cảnh báo:</strong> Sai lầm phổ biến là dùng <code>const</code> cho giá trị lẽ ra phải cấu hình được — hệ quả là phải <strong>build lại phần mềm chỉ để đổi một tham số</strong> ngoài hiện trường. Quy tắc: luật vật lý không đổi → <code>const</code>; tham số cấu hình → <code>readonly</code> (đọc từ file). Cùng rủi ro áp dụng cho <code>bool</code> — một cờ hard-code kiểu <code>public static bool UseRealHardware = false;</code> quyết định &quot;chạy mô phỏng hay chạy máy thật&quot; mà không đọc từ file cấu hình nào cũng buộc build lại + đổi đúng giá trị trước khi đưa lên máy thật; quên đổi (không có gì ngăn quên, kể cả một dòng comment <code>// TODO: đổi trước khi phát hành</code> bên cạnh) khiến máy chạy sai chế độ mà không cách nào phát hiện ngoài đọc lại source.</p>
 <p>📌 <strong><code>sealed</code> ở đầu Code 3.4:</strong> đánh dấu class <strong>không cho kế thừa tiếp</strong> — tương tự khoá một FB lại, không cho ai viết FB con &quot;mở rộng&quot; nó. <strong>Lưu ý quan trọng:</strong> đây KHÔNG phải thói quen phổ biến của C# nói chung — rất nhiều code C# bạn gặp ở nơi khác (tutorial, mã nguồn mở, dự án khác) không dùng <code>sealed</code> mấy. Sách này <em>cố ý</em> mặc định thêm <code>sealed</code> cho mọi class không thiết kế để kế thừa (sẽ thấy lặp lại rất nhiều — đúng quy ước của các dự án phần mềm điều khiển máy công nghiệp mà sách mô phỏng): trong code an toàn/điều khiển, một class bị kế thừa &quot;ngoài kế hoạch&quot; có thể âm thầm đổi hành vi (override một method) mà người review khó lường trước — khoá <code>sealed</code> loại bỏ rủi ro đó ngay từ lúc biên dịch. Nói cách khác: <code>sealed</code> không phải luật C#, mà là một lựa chọn phòng ngừa có chủ đích của sách này — khi đọc code C# ở nơi khác, đừng ngạc nhiên nếu không thấy <code>sealed</code> ở đâu cả. Chỉ bỏ <code>sealed</code> khi class thực sự cần cho lớp con kế thừa (học ở Chương 4, mục 4.3).</p>
 <p>⚠️ <strong>Hậu quả thật khi KHÔNG tập trung hằng số — ví dụ có thể xảy ra:</strong> giả sử hai mã sự kiện
 được khai báo tách rời trong hai chỗ khác nhau của code: <code>public const string EventPick = &quot;300&quot;;</code>
@@ -2350,6 +2379,13 @@ biên dịch — chương trình chỉ âm thầm không khớp <code>case</code
 gợi ý tên hợp lệ và gõ sai tên hoàn toàn không biên dịch được. Khi số trạng thái tăng lên nhiều
 (10+), Chương 12 sẽ thay <code>switch</code> bằng State Pattern hoặc Transition Table — nhưng dù ở quy mô
 nào, khoá trạng thái luôn nên là <code>enum</code>, không phải <code>string</code>.</p>
+<p>Một biến thể còn tệ hơn <code>string</code> hay gặp trong code kế thừa: khoá trạng thái là <strong>số nguyên thô</strong>
+(<code>case 1000: ...</code>, <code>case 1090: ...</code>, chuyển bước bằng <code>m_step = 1090;</code>). Mất TOÀN BỘ lợi ích mà
+<code>string</code> còn giữ được một phần — Find All References/Go To Definition (mục 2.4, Chương 2) không
+lọc được gì hữu ích trên một con số (<code>1090</code> có thể là bất kỳ hằng số nào trong hệ thống, không chỉ
+tên bước sequence), trong khi ít nhất <code>&quot;Idle&quot;</code> còn là một chuỗi có nghĩa tra được. Đọc code dùng số
+nguyên làm bước sequence, luôn tìm bảng ánh xạ số↔tên (comment, tài liệu, hoặc hằng số đặt tên
+riêng) trước khi cố nhớ ý nghĩa từng con số.</p>
 </blockquote>
 <blockquote>
 <p>📌 <strong>Nhiều <code>case</code> dùng CHUNG một khối lệnh — hợp lệ, khác <code>switch</code> C/C++.</strong> Một biến thể khác của
@@ -2622,6 +2658,22 @@ lại nữa từ đây.</p>
 <li><code>=&gt; AxisId = axisId;</code> (không có <code>{ }</code> bao quanh) là <strong>expression-bodied member</strong> — cách viết gọn khi thân method/constructor chỉ có đúng một biểu thức, tương đương <code>{ AxisId = axisId; }</code>. Đây là cùng ký hiệu <code>=&gt;</code> sẽ gặp lại ở lambda (Chương 4) nhưng dùng trong ngữ cảnh khác: ở lambda, <code>=&gt;</code> tách tham số khỏi thân hàm ẩn danh; ở đây, <code>=&gt;</code> chỉ đơn thuần thay cho cặp <code>{ }</code> khi thân chỉ có một dòng.</li>
 </ul>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong>Bẫy cú pháp cơ bản dễ bỏ sót: QUÊN dấu <code>$</code> trước chuỗi.</strong> So sánh hai dòng sau — chỉ khác
+đúng 1 ký tự ở đầu:</p>
+<pre><code class="language-csharp">var name1 = $&quot;{Assembly.GetExecutingAssembly().GetName().Name}&quot;;  // ✅ interpolation — chèn giá trị thật
+var name2 = &quot;{Assembly.GetExecutingAssembly().GetName().Name}&quot;;   //  THIẾU $ — chuỗi VĂN BẢN THẬT
+</code></pre>
+<p>Thiếu <code>$</code>, dòng thứ hai KHÔNG lỗi biên dịch — nó chỉ là một chuỗi ký tự bình thường chứa nguyên
+văn <code>{</code>, <code>}</code> và cả đoạn code trông giống lời gọi method, không hề được &quot;chạy&quot;. Không có exception,
+không có cảnh báo — chương trình vẫn hoạt động, chỉ là giá trị chuỗi hoàn toàn khác ý định người
+viết. Rủi ro thực tế: nếu chuỗi này dùng làm tên tài nguyên định danh duy nhất (ví dụ tên <code>Mutex</code>
+chặn mở ứng dụng 2 lần — mục 5.3.3, Chương 5), lỗi này vô hại VỀ CHỨC NĂNG (mọi lần chạy đều dùng
+đúng cùng 1 chuỗi cố định, nên vẫn khoá đúng) — nhưng nếu chuỗi đó cần MANG GIÁ TRỊ THẬT (tên file
+log theo timestamp, đường dẫn theo tên máy), thiếu <code>$</code> sẽ tạo ra kết quả sai hoàn toàn mà không ai
+báo lỗi. Luôn liếc dấu <code>$</code> đầu chuỗi khi thấy <code>{ }</code> bên trong — đây là 1 trong những lỗi dễ &quot;lọt
+qua&quot; review nhất vì code vẫn biên dịch và chạy bình thường.</p>
+</blockquote>
 <p>Chiến lược xử lý lỗi nên phân theo tầng: <strong>Driver</strong> ném exception kỹ thuật (timeout, IO); <strong>Device/Logic</strong> bắt và chuyển thành lỗi miền (domain error) + tạo alarm; <strong>UI</strong> chỉ hiển thị thông điệp đã chuẩn hoá. Và khi log exception, log phải đủ <em>ngữ cảnh</em>: máy đang ở mode/state nào, thiết bị nào, lệnh gì — một log &quot;đủ context&quot; tiết kiệm rất nhiều thời gian dừng máy.</p>
 <blockquote>
 <p>📌 <strong>Liên hệ chương sau:</strong> Mô hình lỗi miền này được Chương 11 và 15 phát triển thành <code>AlarmException</code> với mã alarm chuẩn. Ở đây chỉ cần nắm cú pháp tạo và ném custom exception.</p>
@@ -2883,6 +2935,66 @@ var names = doc.Elements(&quot;Axis&quot;).Select(e =&gt; e.Attribute(&quot;Name
 tự nhiên hơn và dùng được trực tiếp với <code>Select</code>/<code>Where</code> đã học ở mục LINQ — cùng vai trò với
 <code>XmlDocument</code>, khác thế hệ API (giống cách sách đã đối chiếu Newtonsoft.Json cũ với
 <code>System.Text.Json</code> mới).</p>
+</blockquote>
+<h3>3.6.5  YAML — gặp trong config/recipe kế thừa, cân nhắc kỹ trước khi chọn cho dự án mới</h3>
+<p>Ngoài XML/JSON, một số dự án (đặc biệt gốc từ Hàn Quốc/Nhật Bản) dùng <strong>YAML</strong> cho toàn bộ file cấu
+hình/recipe/teaching point — thư viện phổ biến nhất là <strong>YamlDotNet</strong> (NuGet). Cú pháp gần giống
+<code>System.Text.Json</code>/Newtonsoft.Json đã học ở mục 3.6.3 (cùng là &quot;đưa 1 object C# ra thành text và
+ngược lại&quot;), chỉ khác API bề mặt:</p>
+<p><strong>Code 3.18c — Đọc/ghi YAML bằng YamlDotNet</strong></p>
+<pre><code class="language-csharp">using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+
+public sealed class TeachingConfig
+{
+    public double Speed { get; set; }
+    public List&lt;double&gt; Position { get; set; } = [];
+}
+
+// Builder cấu hình MỘT LẦN — tương đương JsonSerializerOptions (mục 3.6.3)
+var serializer = new SerializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .Build();
+var deserializer = new DeserializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .Build();
+
+string yamlText = serializer.Serialize(config);           // object -&gt; chuỗi YAML
+var loaded = deserializer.Deserialize&lt;TeachingConfig&gt;(yamlText);  // chuỗi YAML -&gt; object
+</code></pre>
+<p>File YAML sinh ra trông như thế này — không có dấu ngoặc <code>{}</code>/<code>[]</code> như JSON, phân cấp bằng THỤT LỀ
+(indentation), giống Python:</p>
+<pre><code class="language-yaml">speed: 100.5
+position:
+  - 10.0
+  - 20.0
+  - 5.0
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Bẫy thật gặp trong code kế thừa: TẠO builder cẩn thận nhưng KHÔNG BAO GIỜ DÙNG nó.</strong> Một lỗi
+dễ xảy ra: cấu hình một field <code>_serializer</code>/<code>_deserializer</code> với <code>WithNamingConvention(...)</code> trong
+constructor, nhưng các method <code>Load</code>/<code>Save</code> thật sự lại tự tạo MỘT builder khác (mặc định, không
+có <code>WithNamingConvention</code>) ngay bên trong thân hàm — field đã cấu hình công phu trở thành &quot;tử thi&quot;
+không ai gọi tới, trong khi hành vi thật của ứng dụng đi theo builder mặc định. Biên dịch được,
+chạy được, không ai báo lỗi — chỉ lộ ra khi so khớp tên property không đúng như kỳ vọng (naming
+convention không thống nhất giữa nơi ghi và nơi đọc).</p>
+<p>⚠️ <strong><code>IYamlTypeConverter</code> chỉ cài một chiều.</strong> Muốn tuỳ biến cách 1 kiểu cụ thể được serialize
+(ví dụ ép <code>List&lt;double&gt;</code> xuất ra 1 dòng thay vì mỗi phần tử 1 dòng có gạch đầu dòng), cài interface
+<code>IYamlTypeConverter</code> (có <code>Accepts</code>/<code>ReadYaml</code>/<code>WriteYaml</code>, hình dạng tương tự <code>JsonConverter&lt;T&gt;</code>
+nếu quen <code>System.Text.Json</code>) — nhưng nếu chỉ cần chiều GHI, dễ để <code>ReadYaml</code> ném
+<code>NotImplementedException</code> cho &quot;xong việc trước mắt&quot;. Đây là quả mìn hẹn giờ: converter trông đầy
+đủ hai chiều qua tên interface, nhưng chỉ dùng nhầm cho việc ĐỌC (gán vào builder deserialize) sẽ
+crash ngay lập tức. Đọc code có custom converter, luôn kiểm tra CẢ HAI method đã cài thật hay chỉ
+một trong hai ném exception.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Có nên chọn YAML cho dự án mới không?</strong> Chương 10 (mục Đa ngôn ngữ HMI) đã khuyến nghị
+KHÔNG dùng YAML cho file cấu hình HMI vận hành trên máy công nghiệp: nhạy cảm với khoảng trắng thụt
+lề (một dòng thụt sai 1 cách vô tình đổi cả cấu trúc, không có dấu ngoặc rõ ràng như JSON để phát
+hiện lỗi ngay), khó sửa thủ công trên máy không có IDE hỗ trợ highlight lỗi cú pháp, và không mở
+được trực tiếp bằng Excel như CSV. YAML vẫn phổ biến trong các lĩnh vực khác (file cấu hình CI/CD ở
+Chương 17, Kubernetes/Docker Compose) — chỉ riêng cho <strong>recipe/config vận hành trên HMI công
+nghiệp</strong>, JSON hoặc XML (mục 3.6.3/3.6.4) vẫn là lựa chọn an toàn hơn.</p>
 </blockquote>
 <hr>
 <h2 id="37-collections-ct-lõi-cho-ng-dng-real-time">3.7  Collections cốt lõi cho ứng dụng real-time</h2>
@@ -22814,6 +22926,9 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="x">X</h2>
 <p><strong>xUnit</strong> — Framework kiểm thử đơn vị (unit test) phổ biến nhất cho .NET; test method được đánh dấu bằng <code>[Fact]</code> (test đơn lẻ) hoặc <code>[Theory]</code> (data-driven); hỗ trợ <code>async Task</code> test method trực tiếp không cần adapter; tích hợp tốt với Visual Studio Test Explorer và CI/CD. (→ xem [Fact], [Theory])
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.2.1.</em></p>
+<h2 id="y">Y</h2>
+<p><strong>YAML / YamlDotNet</strong> — Định dạng dữ liệu dùng thụt lề (indentation) thay cho dấu ngoặc <code>{}</code>/<code>[]</code> như JSON để thể hiện cấu trúc/phân cấp; <code>YamlDotNet</code> là thư viện .NET phổ biến nhất để serialize/deserialize (<code>SerializerBuilder</code>/<code>DeserializerBuilder</code>, <code>WithNamingConvention</code>, tuỳ biến kiểu qua <code>IYamlTypeConverter</code>). Gặp trong config/recipe/teaching-point của một số dự án kế thừa. KHÔNG khuyến nghị cho file cấu hình HMI vận hành (Chương 10) — nhạy cảm với lỗi thụt lề, khó sửa tay trên máy không có IDE; JSON/XML (mục 3.6.3/3.6.4) vẫn là lựa chọn an toàn hơn cho recipe/config công nghiệp. (→ xem JsonSerializer, XmlSerializer)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.6.5.</em></p>
 </div>
 </div>
 

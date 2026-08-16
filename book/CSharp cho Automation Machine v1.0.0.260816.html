@@ -1649,6 +1649,14 @@ hoặc một Form/màn hình đặt tên theo một thiết bị cụ thể (ví
 màn hình cài đặt tham số có khoá đăng nhập, không xử lý ảnh gì cả. Không có cách nào phát hiện
 trước ngoài việc mở file ra đọc — nhưng biết trước hiện tượng này tồn tại giúp không mất phương
 hướng khi nội dung file hoàn toàn không khớp kỳ vọng từ tên thư mục/form chứa nó.</p>
+<p>Đi xa hơn một cấp nữa: ngay cả <strong>README/tài liệu cấp module</strong> cũng có thể mô tả sai hiện trạng code
+— không phải vì cố ý sai, mà vì tài liệu mô tả Ý ĐỊNH thiết kế ban đầu hoặc một phiên bản cũ hơn,
+trong khi code đã thay đổi mà tài liệu không được cập nhật theo. README tuyên bố &quot;module A phối hợp
+với module B&quot; không đảm bảo trong code THẬT có bất kỳ tham chiếu/lời gọi nào giữa A và B — cách xác
+minh nhanh: <code>grep</code> tên module B trong toàn bộ mã nguồn của module A, hoặc kiểm tra file dự án
+(<code>.csproj</code>) của A có tham chiếu tới B hay không. Tài liệu là điểm khởi đầu tốt để định hướng đọc,
+không phải bằng chứng cuối cùng về hành vi thật — đúng tinh thần &quot;đừng tin tuyệt đối&quot;, chỉ mở rộng
+từ cấp dòng code lên cấp tài liệu module.</p>
 </blockquote>
 <h3>Đọc một file rất dài (hàng nghìn dòng)</h3>
 <p>Code kế thừa nhiều năm tuổi có thể dồn cả nghìn dòng vào một file/class
@@ -2392,6 +2400,17 @@ else
 </code></pre>
 <blockquote>
 <p>📌 <strong>Lưu ý:</strong> Có hai cách truyền tham số đặc biệt. <code>out</code> để <em>trả dữ liệu ra</em> (như mẫu Try ở trên). <code>ref</code> truyền tham chiếu cho phép hàm sửa trực tiếp biến bên ngoài — nhưng nó tăng &quot;tác dụng phụ&quot; khó debug, nên trong logic điều khiển hãy hạn chế <code>ref</code>, ưu tiên <code>out</code> theo mẫu Try.</p>
+<p>⚠️ <strong>Dấu hiệu nhận biết <code>ref</code> bị dùng NHẦM chỗ đáng lẽ là <code>out</code>:</strong> khác biệt kỹ thuật duy nhất giữa
+hai từ khoá: biến truyền vào <code>ref</code> PHẢI được gán giá trị trước khi gọi (compiler bắt lỗi nếu chưa),
+còn biến truyền vào <code>out</code> thì không cần — và hàm nhận <code>ref</code> được phép ĐỌC giá trị cũ của tham số
+trước khi ghi đè, còn hàm nhận <code>out</code> thì không (compiler cấm đọc trước khi gán). Gặp code kế thừa
+dùng <code>ref</code> cho một tham số mà hàm chỉ GHI (không bao giờ đọc giá trị cũ) — ví dụ
+<code>bool Process(..., ref string errorMessage, ref ResultData result)</code> chỉ gán <code>errorMessage</code>/<code>result</code>
+chứ không đọc giá trị cũ của chúng ở đâu trong thân hàm — đó là dấu hiệu <code>ref</code> bị chọn theo thói
+quen (thường mang từ ngôn ngữ khác, hoặc chỉ vì &quot;cả hai đều truyền theo tham chiếu&quot;) chứ không phải
+vì cần đọc giá trị cũ. Không phải lỗi biên dịch, nhưng đúng ra nên là <code>out</code> — chọn đúng từ khoá giúp
+người đọc sau này biết ngay ý định của tham số (chỉ ghi = <code>out</code>, đọc-và-ghi = <code>ref</code>) mà không cần
+đọc hết thân hàm.</p>
 </blockquote>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Mẫu <code>Try...</code> + <code>out</code> ở Code 3.11 không chỉ để tự viết — .NET có sẵn rất nhiều
@@ -3131,6 +3150,18 @@ của nó. Gặp trường hợp này, đọc chậm lại để xác định al
 </tr>
 </tbody></table></div>
 <p>Ghi chú: <code>unsafe</code>, <code>extern</code>, <code>volatile</code> và <code>fixed</code> có thể gặp khi tích hợp thư viện driver native (P/Invoke với SDK phần cứng) — xem Chương 13 (Device Abstraction Layer).</p>
+<blockquote>
+<p>📌 <strong><code>checked(...)</code> — ví dụ cú pháp thật:</strong> dùng khi ép kiểu một giá trị đọc từ SDK/driver có thể
+vượt phạm vi kiểu đích, và muốn phát hiện tràn số NGAY thay vì âm thầm cho ra số sai:</p>
+<pre><code class="language-csharp">long rawValue = sdkDevice.ReadPayloadSize();     // SDK trả kiểu rộng hơn, có thể lớn bất thường
+uint payloadSize = checked((uint)rawValue);       // ném OverflowException nếu rawValue âm hoặc &gt; uint.MaxValue
+</code></pre>
+<p>Không bọc <code>checked</code>, phép ép kiểu <code>(uint)rawValue</code> vẫn biên dịch và chạy — chỉ ÂM THẦM cắt bit nếu
+<code>rawValue</code> vượt phạm vi <code>uint</code>, cho ra một số hoàn toàn sai mà không có dấu hiệu gì báo lỗi. Với dữ
+liệu đọc từ SDK hãng ngoài (không kiểm soát được driver có luôn trả giá trị hợp lệ hay không),
+<code>checked</code> là lựa chọn phòng thủ hợp lý: thà ném exception rõ ràng ngay tại điểm ép kiểu, còn hơn để
+một số sai âm thầm lan xuống logic phía sau rồi mới gây lỗi khó truy ở đâu đó khác.</p>
+</blockquote>
 <!-- SECTION: Chapter_04_OOP -->
 <hr>
 <h1 id="chương-4-lp-trình-hưng-đi-tưng-cho-k-sư-automation">Chương 4: Lập trình hướng đối tượng cho kỹ sư Automation</h1>
@@ -3289,6 +3320,16 @@ bình thường, nhưng thực ra đang gọi các method <code>operator &gt;</c
 viết. Đây là cạm bẫy đọc-hiểu thật sự: gặp một kiểu dữ liệu tự chế (không phải <code>int</code>/<code>double</code> chuẩn
 của .NET) dùng trong biểu thức so sánh/toán học, đừng mặc định đó là số — kiểm tra định nghĩa class
 xem có <code>operator</code> nào được nạp chồng không trước khi tin vào &quot;trực giác&quot; đọc biểu thức.</p>
+<p>⚠️ <strong>Cùng một ký hiệu có thể nạp chồng NHIỀU LẦN, mỗi lần một ý nghĩa khác hẳn.</strong> Ví dụ trên chỉ
+có 1 overload cho mỗi ký hiệu — thực tế một kiểu dữ liệu hình học (ví dụ <code>Vector2D</code>) thường nạp
+chồng CÙNG một ký hiệu <code>*</code> hai lần, phân biệt bằng kiểu tham số thứ hai:</p>
+<pre><code class="language-csharp">public static Vector2D operator *(Vector2D v, double scalar) { ... }   // nhân vô hướng — trả Vector2D
+public static double   operator *(Vector2D v1, Vector2D v2) { ... }    // tích vô hướng (dot product) — trả double
+</code></pre>
+<p>Gặp biểu thức <code>a * b</code> trong code, KHÔNG đủ để biết ngay kết quả là <code>Vector2D</code> mới hay một <code>double</code>
+chỉ bằng cách nhìn ký hiệu <code>*</code> — phải xem kiểu THẬT của <code>b</code> tại chỗ gọi (biến <code>double</code> hay
+<code>Vector2D</code>) để biết overload nào được compiler chọn. Đọc code hình học/vision, luôn kiểm tra HẾT
+các overload của một operator trước khi tin vào ý nghĩa của riêng 1 lần gặp đầu tiên.</p>
 </blockquote>
 <h3>4.1.3  Object: instance và ngữ nghĩa tham chiếu</h3>
 <p>Tạo object bằng <code>new</code> cấp phát trên heap và trả về một <em>tham chiếu</em> (đã học ở Chương 3: <code>class</code> là reference type). Hệ quả quan trọng cho automation: nhiều nơi có thể cùng giữ tham chiếu tới <strong>một</strong> object trục — <code>DeviceManager</code> giữ, <code>Sequence</code> cũng giữ. Khi trục cập nhật trạng thái, cả hai phía đều thấy ngay. Điều này tiện cho chia sẻ, nhưng cũng là lý do trạng thái phải <code>private set</code>: nếu để <code>public set</code>, một module có thể ghi đè trạng thái interlock của module khác.</p>
@@ -3507,6 +3548,36 @@ foreach (var axis in axes)
 </code></pre>
 <p>Đây là lý do kỹ thuật khiến &quot;đổi vendor không sửa sequence&quot; thành hiện thực: vòng lặp trên viết một lần, đúng với mọi triển khai hiện tại và cả những triển khai chưa tồn tại.</p>
 <p><code>virtual</code> <!--idx:virtual/override--> cho phép lớp con <em>tuỳ chọn</em> override; <code>abstract</code> <em>bắt buộc</em> override; <code>sealed</code> <!--idx:sealed--> chặn kế thừa/override tiếp — nên cân nhắc đặt cho class không có kế hoạch cho kế thừa: giúp compiler tối ưu và làm rõ ý định thiết kế, nhưng không phải quy tắc bắt buộc. </p>
+<blockquote>
+<p>⚠️ <strong>Bẫy nguy hiểm: <code>new</code> để &quot;ẩn&quot; method khi lớp cha QUÊN đánh dấu <code>virtual</code>.</strong> Nếu lớp cha khai
+báo một method KHÔNG có <code>virtual</code>, và lớp con muốn thay đổi hành vi của nó, C# vẫn cho biên dịch
+— nhưng compiler tự động chuyển thành <strong>method hiding</strong> (dùng từ khoá <code>new</code>, hoặc thậm chí không
+viết <code>new</code> mà chỉ cảnh báo CS0114), khác hẳn override thật:</p>
+<pre><code class="language-csharp">public class Shape                          // KHÔNG có virtual — có thể do quên
+{
+    public void Describe() =&gt; Console.WriteLine(&quot;Shape&quot;);
+}
+public class Circle : Shape
+{
+    public new void Describe() =&gt; Console.WriteLine(&quot;Circle&quot;);   // che, không override
+}
+</code></pre>
+<pre><code class="language-csharp">Circle c = new Circle();
+c.Describe();              // &quot;Circle&quot; — gọi qua biến kiểu Circle, đúng như mong đợi
+
+Shape s = c;                // CÙNG MỘT OBJECT, chỉ khác kiểu biến tham chiếu
+s.Describe();               // &quot;Shape&quot; — SAI với trực giác! Không có đa hình ở đây
+</code></pre>
+<p>Với <code>override</code> thật (lớp cha có <code>virtual</code>), gọi qua biến kiểu nào cũng ra đúng hành vi của Circle —
+đó là bản chất đa hình mục 4.3.3 vừa học. Với <code>new</code> (method hiding), C# chọn method theo <strong>kiểu
+KHAI BÁO của biến tại thời điểm biên dịch</strong>, không theo kiểu THẬT của object lúc chạy — hậu quả
+nguy hiểm nhất xảy ra khi code xử lý một danh sách qua kiểu base (<code>List&lt;Shape&gt; shapes</code>, giống Code
+4.6): mọi lời gọi <code>Describe()</code> trong vòng lặp đều chạy phiên bản của <code>Shape</code>, ÂM THẦM bỏ qua hành
+vi riêng của <code>Circle</code> — không exception, không cảnh báo lúc chạy, chỉ là kết quả sai. Bài học: nếu
+một class có ý định cho kế thừa và override, LUÔN đánh dấu method <code>virtual</code> ngay từ đầu; gặp cảnh
+báo biên dịch &quot;ẩn thành viên kế thừa, cần dùng <code>new</code>&quot; (CS0108/CS0114), dừng lại đọc kỹ — đó là dấu
+hiệu thiết kế lớp cha thiếu <code>virtual</code> chứ không phải một lựa chọn cú pháp vô hại.</p>
+</blockquote>
 <h3>4.3.4  Abstract class hay Interface?</h3>
 <p>Hai công cụ dễ lẫn. Quy tắc chọn:</p>
 <p><strong>Bảng 4.2 — Abstract class vs Interface: chọn cái nào</strong></p>
@@ -3954,6 +4025,23 @@ vì bọc trong <code>AggregateException</code> như <code>.Result</code>/<code>
 để tránh phải <code>.InnerException</code> khi bắt lỗi. Nhưng về mặt &quot;có chặn đồng bộ một Task hay không&quot;,
 nó giống hệt <code>.Result</code>/<code>.Wait()</code> — nếu chỉ nhớ tránh đúng hai cái tên <code>.Result</code>/<code>.Wait()</code> khi đọc
 code người khác, <code>.GetAwaiter().GetResult()</code> sẽ dễ &quot;lọt lưới&quot;.</p>
+<p>⚠️ <strong>Biến thể tệ hơn: tự tạo Task rồi tự <code>.Wait()</code> NGAY trong cùng một hàm.</strong> Khác việc <code>.Wait()</code>
+trên một Task người khác trả về (Code 5.4), đôi khi gặp code tự <code>Task.Run(...)</code>/
+<code>Task.Factory.StartNew(...)</code> rồi gọi <code>.Wait()</code> ngay dòng kế tiếp, trong CHÍNH constructor/method
+đó:</p>
+<pre><code class="language-csharp">// ❌ Không có lợi ích async nào — tạo Task nền rồi tự chặn ngay lập tức
+public MyClass(SourceData data)
+{
+    Task t = Task.Factory.StartNew(() =&gt; Result = Convert(data));
+    t.Wait();   // chờ ngay tại đây — coi như đã viết code đồng bộ, chỉ tốn thêm 1 thread pool thread
+}
+</code></pre>
+<p>Không giống Code 5.4 (nơi Task đến từ MỘT NGUỒN KHÁC, ví dụ gọi hardware thật), ở đây không có gì
+chạy song song thật cả — luồng gọi constructor bị chặn đứng chờ đúng công việc nó vừa tự giao cho
+một luồng khác. Kết quả tương đương hệt như gọi <code>Convert(data)</code> trực tiếp, đồng bộ, không cần
+<code>Task</code> gì cả — chỉ khác là tốn thêm một thread pool thread hoàn toàn vô ích. Gặp mẫu này trong code
+kế thừa, đó thường là dấu hiệu tác giả &quot;thêm Task cho có vẻ async&quot; mà chưa hiểu bản chất bất đồng
+bộ, không phải một thiết kế có chủ đích.</p>
 </blockquote>
 <p>Hai bẫy async khác cần tránh — <code>async void</code> và &quot;fire-and-forget&quot; nuốt lỗi:</p>
 <pre><code class="language-csharp">// ❌ NGUY HIỂM: exception trong async void làm CRASH process, không bắt được
@@ -5685,6 +5773,21 @@ public sealed class ModbusPlcAdapter : IPlcPort
 </code></pre>
 <p><code>RunCycleUseCase</code> không biết Modbus, không biết OPC UA, không biết Beckhoff hay
 Siemens. Khi nhà máy chuyển từ Modbus sang OPC UA, chỉ cần tạo <code>OpcUaPlcAdapter : IPlcPort</code> mới và đổi đăng ký trong DI container.</p>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — một mô hình ghép nối khác: qua KIỂU DỮ LIỆU chung, không qua interface hành
+vi.</strong> DIP ở Code 7.7 ghép nối hai module bằng <em>interface hành vi</em> (<code>IPlcPort</code> khai báo các thao
+tác <code>ReadBoolAsync</code>/<code>WriteBoolAsync</code>) — module A gọi thẳng method trên module B thông qua abstraction.
+Một số bộ thư viện/toolkit (khác với 1 ứng dụng máy hoàn chỉnh) chọn cách ghép nối lỏng hơn: hai
+module hoàn toàn KHÔNG tham chiếu lẫn nhau (không <code>ProjectReference</code>, không interface chung nào cả)
+— chỉ cùng hiểu một <strong>kiểu dữ liệu trung gian</strong> (ví dụ một class <code>Image</code>/<code>Vector2D</code> &quot;trung lập&quot;).
+Module A tạo ra dữ liệu kiểu đó, module B nhận nó làm tham số constructor hoặc method — không module
+nào biết module kia tồn tại. Đủ để TRAO DỮ LIỆU giữa hai thư viện độc lập, nhưng đánh đổi khác hẳn
+DIP: không hoán đổi được HÀNH VI lúc chạy (không thể &quot;tiêm&quot; 1 nguồn dữ liệu giả lập vào chỗ đang
+chờ dữ liệu thật theo kiểu DI, vì chẳng có interface nào để mock — code nhận thẳng kiểu dữ liệu cụ
+thể). Mô hình này phù hợp cho một BỘ THƯ VIỆN dùng lại cho nhiều máy khác nhau (mỗi thư viện độc lập,
+chỉ chia sẻ vài kiểu dữ liệu nền), khác hẳn kiến trúc 1 ứng dụng máy hoàn chỉnh (nơi DIP qua interface
+hành vi vẫn là lựa chọn đúng, vì cần hoán đổi vendor/mock để test).</p>
+</blockquote>
 <p><strong>Lifetime management trong ứng dụng máy:</strong></p>
 <p><strong>Bảng 7.2 — Chọn lifetime DI cho các loại đối tượng</strong></p>
 <div class="table-wrap"><table>
@@ -22121,6 +22224,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.2.</em></p>
 <p><strong>Message Loop (Message Pump)</strong> — Vòng lặp thông điệp chạy trên UI thread của một ứng dụng WinForms, khởi động bởi <code>Application.Run()</code>; liên tục lấy thông điệp Windows từ hàng đợi và dịch thành sự kiện .NET tương ứng. Là bản chất &quot;event-driven&quot; của WinForms, đối lập với Scan Cycle của PLC. (→ xem Scan Cycle)
 <em>Xuất hiện đầu tiên: Chương 8, mục 8.1.1.</em></p>
+<p><strong>Method Hiding (từ khoá <code>new</code> trên method)</strong> — Khi lớp con khai báo lại một method CÙNG TÊN với lớp cha nhưng lớp cha KHÔNG đánh dấu <code>virtual</code>, C# coi đây là &quot;che&quot; (hiding) chứ không phải override thật; đánh dấu tường minh bằng <code>new</code> để tắt cảnh báo CS0108. Khác <code>override</code> (chọn method theo kiểu THẬT của object lúc chạy — đa hình), method hiding chọn method theo <strong>kiểu khai báo của biến tại thời điểm biên dịch</strong> — gọi qua biến kiểu lớp cha sẽ chạy nhầm phiên bản của lớp cha, âm thầm mất hành vi riêng của lớp con, không exception nào báo. (→ xem virtual/override, Polymorphism)
+<em>Xuất hiện đầu tiên: Chương 4, mục 4.3.3.</em></p>
 <p><strong>Moq</strong> — Thư viện mocking phổ biến nhất cho .NET; tạo implementation giả từ interface bằng <code>new Mock&lt;IMyInterface&gt;()</code> mà không cần viết class thủ công; hỗ trợ <code>Setup/Returns/Verify</code> và callback lambda trong <code>Returns</code>. Package: <code>Moq</code> trên NuGet. (→ xem Mock&lt;T&gt;, Stub)
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.3.2.</em></p>
 <p><strong>Modbus TCP</strong> — Phiên bản Modbus RTU chạy trên TCP/IP (port 502); frame gồm MBAP Header (7 bytes) + PDU (Function Code + data). Ra đời năm 1979, vẫn là giao thức automation phổ biến nhất thế giới vì tính đơn giản: không cần cấu hình, không có PKI, không có Information Model — chỉ đọc/ghi thanh ghi số nguyên. (→ xem MBAP Header, Function Code, Byte order notation)</p>

@@ -1138,6 +1138,15 @@ nhiều năm tuổi, nhiều người sửa.
 > màn hình cài đặt tham số có khoá đăng nhập, không xử lý ảnh gì cả. Không có cách nào phát hiện
 > trước ngoài việc mở file ra đọc — nhưng biết trước hiện tượng này tồn tại giúp không mất phương
 > hướng khi nội dung file hoàn toàn không khớp kỳ vọng từ tên thư mục/form chứa nó.
+>
+> Đi xa hơn một cấp nữa: ngay cả **README/tài liệu cấp module** cũng có thể mô tả sai hiện trạng code
+> — không phải vì cố ý sai, mà vì tài liệu mô tả Ý ĐỊNH thiết kế ban đầu hoặc một phiên bản cũ hơn,
+> trong khi code đã thay đổi mà tài liệu không được cập nhật theo. README tuyên bố "module A phối hợp
+> với module B" không đảm bảo trong code THẬT có bất kỳ tham chiếu/lời gọi nào giữa A và B — cách xác
+> minh nhanh: `grep` tên module B trong toàn bộ mã nguồn của module A, hoặc kiểm tra file dự án
+> (`.csproj`) của A có tham chiếu tới B hay không. Tài liệu là điểm khởi đầu tốt để định hướng đọc,
+> không phải bằng chứng cuối cùng về hành vi thật — đúng tinh thần "đừng tin tuyệt đối", chỉ mở rộng
+> từ cấp dòng code lên cấp tài liệu module.
 
 ### Đọc một file rất dài (hàng nghìn dòng)
 
@@ -1842,6 +1851,18 @@ else
 ```
 
 > 📌 **Lưu ý:** Có hai cách truyền tham số đặc biệt. `out` để *trả dữ liệu ra* (như mẫu Try ở trên). `ref` truyền tham chiếu cho phép hàm sửa trực tiếp biến bên ngoài — nhưng nó tăng "tác dụng phụ" khó debug, nên trong logic điều khiển hãy hạn chế `ref`, ưu tiên `out` theo mẫu Try.
+>
+> ⚠️ **Dấu hiệu nhận biết `ref` bị dùng NHẦM chỗ đáng lẽ là `out`:** khác biệt kỹ thuật duy nhất giữa
+> hai từ khoá: biến truyền vào `ref` PHẢI được gán giá trị trước khi gọi (compiler bắt lỗi nếu chưa),
+> còn biến truyền vào `out` thì không cần — và hàm nhận `ref` được phép ĐỌC giá trị cũ của tham số
+> trước khi ghi đè, còn hàm nhận `out` thì không (compiler cấm đọc trước khi gán). Gặp code kế thừa
+> dùng `ref` cho một tham số mà hàm chỉ GHI (không bao giờ đọc giá trị cũ) — ví dụ
+> `bool Process(..., ref string errorMessage, ref ResultData result)` chỉ gán `errorMessage`/`result`
+> chứ không đọc giá trị cũ của chúng ở đâu trong thân hàm — đó là dấu hiệu `ref` bị chọn theo thói
+> quen (thường mang từ ngôn ngữ khác, hoặc chỉ vì "cả hai đều truyền theo tham chiếu") chứ không phải
+> vì cần đọc giá trị cũ. Không phải lỗi biên dịch, nhưng đúng ra nên là `out` — chọn đúng từ khoá giúp
+> người đọc sau này biết ngay ý định của tham số (chỉ ghi = `out`, đọc-và-ghi = `ref`) mà không cần
+> đọc hết thân hàm.
 
 > 💡 **Mẹo thực chiến:** Mẫu `Try...` + `out` ở Code 3.11 không chỉ để tự viết — .NET có sẵn rất nhiều
 > hàm theo đúng mẫu này: `int.TryParse(text, out int n)`, `double.TryParse(text, out double d)`,
@@ -2514,6 +2535,18 @@ Các từ khoá dưới đây ít xuất hiện trong code automation thông th�
 
 Ghi chú: `unsafe`, `extern`, `volatile` và `fixed` có thể gặp khi tích hợp thư viện driver native (P/Invoke với SDK phần cứng) — xem Chương 13 (Device Abstraction Layer).
 
+> 📌 **`checked(...)` — ví dụ cú pháp thật:** dùng khi ép kiểu một giá trị đọc từ SDK/driver có thể
+> vượt phạm vi kiểu đích, và muốn phát hiện tràn số NGAY thay vì âm thầm cho ra số sai:
+> ```csharp
+> long rawValue = sdkDevice.ReadPayloadSize();     // SDK trả kiểu rộng hơn, có thể lớn bất thường
+> uint payloadSize = checked((uint)rawValue);       // ném OverflowException nếu rawValue âm hoặc > uint.MaxValue
+> ```
+> Không bọc `checked`, phép ép kiểu `(uint)rawValue` vẫn biên dịch và chạy — chỉ ÂM THẦM cắt bit nếu
+> `rawValue` vượt phạm vi `uint`, cho ra một số hoàn toàn sai mà không có dấu hiệu gì báo lỗi. Với dữ
+> liệu đọc từ SDK hãng ngoài (không kiểm soát được driver có luôn trả giá trị hợp lệ hay không),
+> `checked` là lựa chọn phòng thủ hợp lý: thà ném exception rõ ràng ngay tại điểm ép kiểu, còn hơn để
+> một số sai âm thầm lan xuống logic phía sau rồi mới gây lỗi khó truy ở đâu đó khác.
+
 <!-- SECTION: Chapter_04_OOP -->
 ---
 # Chương 4: Lập trình hướng đối tượng cho kỹ sư Automation
@@ -2660,6 +2693,18 @@ Chú ý ba điểm thiết kế công nghiệp trong Code 4.1: trạng thái là
 > viết. Đây là cạm bẫy đọc-hiểu thật sự: gặp một kiểu dữ liệu tự chế (không phải `int`/`double` chuẩn
 > của .NET) dùng trong biểu thức so sánh/toán học, đừng mặc định đó là số — kiểm tra định nghĩa class
 > xem có `operator` nào được nạp chồng không trước khi tin vào "trực giác" đọc biểu thức.
+>
+> ⚠️ **Cùng một ký hiệu có thể nạp chồng NHIỀU LẦN, mỗi lần một ý nghĩa khác hẳn.** Ví dụ trên chỉ
+> có 1 overload cho mỗi ký hiệu — thực tế một kiểu dữ liệu hình học (ví dụ `Vector2D`) thường nạp
+> chồng CÙNG một ký hiệu `*` hai lần, phân biệt bằng kiểu tham số thứ hai:
+> ```csharp
+> public static Vector2D operator *(Vector2D v, double scalar) { ... }   // nhân vô hướng — trả Vector2D
+> public static double   operator *(Vector2D v1, Vector2D v2) { ... }    // tích vô hướng (dot product) — trả double
+> ```
+> Gặp biểu thức `a * b` trong code, KHÔNG đủ để biết ngay kết quả là `Vector2D` mới hay một `double`
+> chỉ bằng cách nhìn ký hiệu `*` — phải xem kiểu THẬT của `b` tại chỗ gọi (biến `double` hay
+> `Vector2D`) để biết overload nào được compiler chọn. Đọc code hình học/vision, luôn kiểm tra HẾT
+> các overload của một operator trước khi tin vào ý nghĩa của riêng 1 lần gặp đầu tiên.
 
 ### 4.1.3  Object: instance và ngữ nghĩa tham chiếu
 
@@ -2917,6 +2962,37 @@ foreach (var axis in axes)
 Đây là lý do kỹ thuật khiến "đổi vendor không sửa sequence" thành hiện thực: vòng lặp trên viết một lần, đúng với mọi triển khai hiện tại và cả những triển khai chưa tồn tại.
 
 `virtual` <!--idx:virtual/override--> cho phép lớp con *tuỳ chọn* override; `abstract` *bắt buộc* override; `sealed` <!--idx:sealed--> chặn kế thừa/override tiếp — nên cân nhắc đặt cho class không có kế hoạch cho kế thừa: giúp compiler tối ưu và làm rõ ý định thiết kế, nhưng không phải quy tắc bắt buộc. 
+
+> ⚠️ **Bẫy nguy hiểm: `new` để "ẩn" method khi lớp cha QUÊN đánh dấu `virtual`.** Nếu lớp cha khai
+> báo một method KHÔNG có `virtual`, và lớp con muốn thay đổi hành vi của nó, C# vẫn cho biên dịch
+> — nhưng compiler tự động chuyển thành **method hiding** (dùng từ khoá `new`, hoặc thậm chí không
+> viết `new` mà chỉ cảnh báo CS0114), khác hẳn override thật:
+> ```csharp
+> public class Shape                          // KHÔNG có virtual — có thể do quên
+> {
+>     public void Describe() => Console.WriteLine("Shape");
+> }
+> public class Circle : Shape
+> {
+>     public new void Describe() => Console.WriteLine("Circle");   // che, không override
+> }
+> ```
+> ```csharp
+> Circle c = new Circle();
+> c.Describe();              // "Circle" — gọi qua biến kiểu Circle, đúng như mong đợi
+>
+> Shape s = c;                // CÙNG MỘT OBJECT, chỉ khác kiểu biến tham chiếu
+> s.Describe();               // "Shape" — SAI với trực giác! Không có đa hình ở đây
+> ```
+> Với `override` thật (lớp cha có `virtual`), gọi qua biến kiểu nào cũng ra đúng hành vi của Circle —
+> đó là bản chất đa hình mục 4.3.3 vừa học. Với `new` (method hiding), C# chọn method theo **kiểu
+> KHAI BÁO của biến tại thời điểm biên dịch**, không theo kiểu THẬT của object lúc chạy — hậu quả
+> nguy hiểm nhất xảy ra khi code xử lý một danh sách qua kiểu base (`List<Shape> shapes`, giống Code
+> 4.6): mọi lời gọi `Describe()` trong vòng lặp đều chạy phiên bản của `Shape`, ÂM THẦM bỏ qua hành
+> vi riêng của `Circle` — không exception, không cảnh báo lúc chạy, chỉ là kết quả sai. Bài học: nếu
+> một class có ý định cho kế thừa và override, LUÔN đánh dấu method `virtual` ngay từ đầu; gặp cảnh
+> báo biên dịch "ẩn thành viên kế thừa, cần dùng `new`" (CS0108/CS0114), dừng lại đọc kỹ — đó là dấu
+> hiệu thiết kế lớp cha thiếu `virtual` chứ không phải một lựa chọn cú pháp vô hại.
 
 ### 4.3.4  Abstract class hay Interface?
 
@@ -3356,6 +3432,25 @@ Cơ chế deadlock <!--idx:deadlock--> diễn ra như sau: (1) luồng UI gọi 
 > để tránh phải `.InnerException` khi bắt lỗi. Nhưng về mặt "có chặn đồng bộ một Task hay không",
 > nó giống hệt `.Result`/`.Wait()` — nếu chỉ nhớ tránh đúng hai cái tên `.Result`/`.Wait()` khi đọc
 > code người khác, `.GetAwaiter().GetResult()` sẽ dễ "lọt lưới".
+>
+> ⚠️ **Biến thể tệ hơn: tự tạo Task rồi tự `.Wait()` NGAY trong cùng một hàm.** Khác việc `.Wait()`
+> trên một Task người khác trả về (Code 5.4), đôi khi gặp code tự `Task.Run(...)`/
+> `Task.Factory.StartNew(...)` rồi gọi `.Wait()` ngay dòng kế tiếp, trong CHÍNH constructor/method
+> đó:
+> ```csharp
+> // ❌ Không có lợi ích async nào — tạo Task nền rồi tự chặn ngay lập tức
+> public MyClass(SourceData data)
+> {
+>     Task t = Task.Factory.StartNew(() => Result = Convert(data));
+>     t.Wait();   // chờ ngay tại đây — coi như đã viết code đồng bộ, chỉ tốn thêm 1 thread pool thread
+> }
+> ```
+> Không giống Code 5.4 (nơi Task đến từ MỘT NGUỒN KHÁC, ví dụ gọi hardware thật), ở đây không có gì
+> chạy song song thật cả — luồng gọi constructor bị chặn đứng chờ đúng công việc nó vừa tự giao cho
+> một luồng khác. Kết quả tương đương hệt như gọi `Convert(data)` trực tiếp, đồng bộ, không cần
+> `Task` gì cả — chỉ khác là tốn thêm một thread pool thread hoàn toàn vô ích. Gặp mẫu này trong code
+> kế thừa, đó thường là dấu hiệu tác giả "thêm Task cho có vẻ async" mà chưa hiểu bản chất bất đồng
+> bộ, không phải một thiết kế có chủ đích.
 
 Hai bẫy async khác cần tránh — `async void` và "fire-and-forget" nuốt lỗi:
 
@@ -5050,6 +5145,20 @@ public sealed class ModbusPlcAdapter : IPlcPort
 `RunCycleUseCase` không biết Modbus, không biết OPC UA, không biết Beckhoff hay
 Siemens. Khi nhà máy chuyển từ Modbus sang OPC UA, chỉ cần tạo `OpcUaPlcAdapter :
 IPlcPort` mới và đổi đăng ký trong DI container.
+
+> 🔍 **Đào sâu thêm — một mô hình ghép nối khác: qua KIỂU DỮ LIỆU chung, không qua interface hành
+> vi.** DIP ở Code 7.7 ghép nối hai module bằng *interface hành vi* (`IPlcPort` khai báo các thao
+> tác `ReadBoolAsync`/`WriteBoolAsync`) — module A gọi thẳng method trên module B thông qua abstraction.
+> Một số bộ thư viện/toolkit (khác với 1 ứng dụng máy hoàn chỉnh) chọn cách ghép nối lỏng hơn: hai
+> module hoàn toàn KHÔNG tham chiếu lẫn nhau (không `ProjectReference`, không interface chung nào cả)
+> — chỉ cùng hiểu một **kiểu dữ liệu trung gian** (ví dụ một class `Image`/`Vector2D` "trung lập").
+> Module A tạo ra dữ liệu kiểu đó, module B nhận nó làm tham số constructor hoặc method — không module
+> nào biết module kia tồn tại. Đủ để TRAO DỮ LIỆU giữa hai thư viện độc lập, nhưng đánh đổi khác hẳn
+> DIP: không hoán đổi được HÀNH VI lúc chạy (không thể "tiêm" 1 nguồn dữ liệu giả lập vào chỗ đang
+> chờ dữ liệu thật theo kiểu DI, vì chẳng có interface nào để mock — code nhận thẳng kiểu dữ liệu cụ
+> thể). Mô hình này phù hợp cho một BỘ THƯ VIỆN dùng lại cho nhiều máy khác nhau (mỗi thư viện độc lập,
+> chỉ chia sẻ vài kiểu dữ liệu nền), khác hẳn kiến trúc 1 ứng dụng máy hoàn chỉnh (nơi DIP qua interface
+> hành vi vẫn là lựa chọn đúng, vì cần hoán đổi vendor/mock để test).
 
 **Lifetime management trong ứng dụng máy:**
 
@@ -20312,6 +20421,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **Message Loop (Message Pump)** — Vòng lặp thông điệp chạy trên UI thread của một ứng dụng WinForms, khởi động bởi `Application.Run()`; liên tục lấy thông điệp Windows từ hàng đợi và dịch thành sự kiện .NET tương ứng. Là bản chất "event-driven" của WinForms, đối lập với Scan Cycle của PLC. (→ xem Scan Cycle)
 *Xuất hiện đầu tiên: Chương 8, mục 8.1.1.*
+
+**Method Hiding (từ khoá `new` trên method)** — Khi lớp con khai báo lại một method CÙNG TÊN với lớp cha nhưng lớp cha KHÔNG đánh dấu `virtual`, C# coi đây là "che" (hiding) chứ không phải override thật; đánh dấu tường minh bằng `new` để tắt cảnh báo CS0108. Khác `override` (chọn method theo kiểu THẬT của object lúc chạy — đa hình), method hiding chọn method theo **kiểu khai báo của biến tại thời điểm biên dịch** — gọi qua biến kiểu lớp cha sẽ chạy nhầm phiên bản của lớp cha, âm thầm mất hành vi riêng của lớp con, không exception nào báo. (→ xem virtual/override, Polymorphism)
+*Xuất hiện đầu tiên: Chương 4, mục 4.3.3.*
 
 **Moq** — Thư viện mocking phổ biến nhất cho .NET; tạo implementation giả từ interface bằng `new Mock<IMyInterface>()` mà không cần viết class thủ công; hỗ trợ `Setup/Returns/Verify` và callback lambda trong `Returns`. Package: `Moq` trên NuGet. (→ xem Mock\<T\>, Stub)
 *Xuất hiện đầu tiên: Chương 18, mục 18.3.2.*

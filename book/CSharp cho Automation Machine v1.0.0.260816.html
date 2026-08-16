@@ -1539,6 +1539,11 @@ xa lạ.</p>
 <td><code>ILogger&lt;T&gt;</code>/<code>Microsoft.Extensions.Logging</code> (structured logging, Chương 19)</td>
 <td><code>log4net</code> phổ biến trước khi <code>Microsoft.Extensions.Logging</code> ra đời — API bề mặt khác hẳn (<code>log.Debug(&quot;chuỗi&quot;)</code> ghép chuỗi tay, không có message template <code>{Placeholder}</code> như <code>ILogger</code>), nhưng cùng vai trò: ghi log có phân mức (Debug/Info/Warn/Error)</td>
 </tr>
+<tr>
+<td><code>using Microsoft.VisualBasic;</code> trong file <code>.cs</code>, gọi <code>FileSystem.FileOpen/FileGet/FilePut</code> (I/O nhị phân kiểu số hiệu file), <code>Interaction.MsgBox(...)</code>, <code>Constants.vbNullString</code></td>
+<td><code>FileStream</code>/<code>BinaryReader</code>/<code>BinaryWriter</code> (mục 3.6.2), <code>MessageBox.Show(...)</code> (Chương 8), <code>null</code>/<code>string.Empty</code></td>
+<td>Dự án chuyển ngữ (port) từ VB6/VB.NET sang C# — thư viện <code>Microsoft.VisualBasic</code> (đi kèm sẵn trong .NET) cho phép giữ nguyên gần như 100% logic I/O/UI gốc, chỉ đổi cú pháp gọi hàm, tránh phải viết lại toàn bộ bằng API .NET chuẩn</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>📌 <strong>Nguyên tắc dùng bảng trên:</strong> nhận ra tương đương để <strong>đọc hiểu</strong> code
@@ -1637,6 +1642,13 @@ nếu sau đó ai đó đổi tên class, hoặc copy-paste file rồi sửa n�
 file tên gợi ý một chức năng nhưng bên trong khai báo <code>class</code> với tên hoàn toàn khác — đó không
 phải lỗi biên dịch, chỉ là dấu hiệu file đã bị sửa/copy qua nhiều lần. Luôn mở file ra đọc dòng
 <code>class</code> thật, đừng suy đoán nội dung chỉ từ tên file trong danh sách thư mục.</p>
+<p>🔍 <strong>Đào sâu thêm — tên THƯ MỤC/module cũng không đáng tin hơn tên file.</strong> Cùng nguyên tắc, mở
+rộng thêm một cấp: một thư mục tên gợi ý rõ một chức năng (ví dụ tên viết tắt gợi ý &quot;thuật toán
+xử lý ảnh&quot;) đôi khi chứa thứ hoàn toàn khác (thuần hình học/toán học, không đụng tới ảnh nào) —
+hoặc một Form/màn hình đặt tên theo một thiết bị cụ thể (ví dụ tên gợi ý &quot;camera&quot;) hoá ra chỉ là
+màn hình cài đặt tham số có khoá đăng nhập, không xử lý ảnh gì cả. Không có cách nào phát hiện
+trước ngoài việc mở file ra đọc — nhưng biết trước hiện tượng này tồn tại giúp không mất phương
+hướng khi nội dung file hoàn toàn không khớp kỳ vọng từ tên thư mục/form chứa nó.</p>
 </blockquote>
 <h3>Đọc một file rất dài (hàng nghìn dòng)</h3>
 <p>Code kế thừa nhiều năm tuổi có thể dồn cả nghìn dòng vào một file/class
@@ -2199,6 +2211,14 @@ outputWord &amp;= ~(1 &lt;&lt; 5);    // Cách 2: TẮT bit số 5 mà không đ
 </code></pre>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Bitwise nhanh và gọn, nhưng <code>(inputWord &amp; (1 &lt;&lt; 3)) != 0</code> không tự giải thích nó là cái gì. Luôn đặt tên bit qua hằng (<code>DoorClosedBit</code>) hoặc bọc trong một method/extension có tên (<code>io.IsOn(&quot;DoorClosed&quot;)</code>) — nếu không, ba tháng sau chính bạn cũng không đọc nổi code I/O của mình.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Biến thể khác của cùng kỹ thuật, hay gặp trong code SDK cũ:</strong> <code>Convert.ToBoolean(statusWord &amp; 0x400) == false</code>.
+Đây là CÙNG Ý TƯỞNG với Code 3.5 (<code>&amp;</code> để mask một bit) — chỉ khác <code>Convert.ToBoolean(x)</code> được dùng
+thay cho <code>x != 0</code> để đổi kết quả phép <code>&amp;</code> (vẫn là số nguyên) sang <code>bool</code>. Hằng số hex như <code>0x400</code>
+(= 1024 = bit thứ 10) thường xuất hiện trong SDK motion card/PLC trả về &quot;status word&quot; — phải tra
+tài liệu hãng để biết bit nào ứng với ý nghĩa gì (ví dụ bit 10 = &quot;đang chạy&quot;). Đọc gặp mẫu này,
+nhận ra ngay đó là đọc 1 bit cờ trạng thái, không phải phép tính số học thông thường.</p>
 </blockquote>
 <hr>
 <h2 id="33-cu-trúc-điu-khin-áp-dng-vào-logic-máy">3.3  Cấu trúc điều khiển — áp dụng vào logic máy</h2>
@@ -2778,6 +2798,21 @@ tự nhiên hơn và dùng được trực tiếp với <code>Select</code>/<cod
 </blockquote>
 <h3>3.7.1  Array, List, Dictionary, Queue</h3>
 <p><strong>Array</strong> <!--idx:Array--> (<code>T[]</code>) là nền tảng cho dữ liệu quét liên tục: vùng nhớ liên tục, truy cập index O(1), kích thước cố định (không resize). Mảng của <code>struct</code> cho trạng thái thiết bị là lựa chọn lý tưởng — đã thấy ở <code>AxisStatus[] axes</code> (Code 3.2).</p>
+<blockquote>
+<p>📌 <strong>Mảng nhiều chiều <code>T[,]</code> (rectangular array) — khác <code>T[][]</code> (jagged array).</strong> <code>T[]</code> một chiều
+đủ cho hầu hết trường hợp, nhưng dữ liệu có 2 &quot;trục toạ độ&quot; tự nhiên (ví dụ trạng thái home của
+từng trục trên từng card: <code>[SốCard, SốTrục]</code>) đôi khi được khai báo bằng dấu phẩy trong ngoặc
+vuông:</p>
+<pre><code class="language-csharp">var axisHome = new HomeStatus[2, 9];   // 2 card, mỗi card 9 trục — MỘT khối bộ nhớ liên tục
+axisHome[cardNum, axisIndex] = HomeStatus.Done;
+</code></pre>
+<p><code>T[,]</code> (rectangular array — mọi &quot;hàng&quot; cùng độ dài cố định, một khối bộ nhớ liên tục) khác hẳn
+<code>T[][]</code> (jagged array — mảng CHỨA các mảng con, mỗi mảng con có thể dài ngắn khác nhau, mỗi mảng
+con là một vùng nhớ riêng): <code>var jagged = new int[2][]; jagged[0] = new int[9]; jagged[1] = new int[5];</code>.
+Trong automation, <code>T[,]</code> thường phù hợp hơn khi cả hai chiều có kích thước CỐ ĐỊNH và biết trước
+(số card × số trục tối đa) — còn <code>Dictionary&lt;(int Card, int Axis), T&gt;</code> (đã học ở Chương 12, dùng
+tuple làm key) là lựa chọn dễ đọc hơn khi cần truy cập theo tên có ý nghĩa thay vì chỉ số thô.</p>
+</blockquote>
 <p><strong>List&lt;T&gt;</strong> <!--idx:List--> là array động. Điểm mấu chốt: khi số phần tử vượt <code>Capacity</code>, List <strong>resize</strong> — copy O(n) + cấp phát mới, gây spike bất ngờ. Vì vậy khi biết quy mô gần đúng, luôn đặt sẵn capacity: <code>new List&lt;IDevice&gt;(capacity: 64)</code>. List hợp cho danh sách thiết bị/alarm load từ config rồi cố định; <strong>không</strong> hợp cho hàng đợi lệnh thời gian thực.</p>
 <p><strong>Dictionary&lt;TKey,TValue&gt;</strong> <!--idx:Dictionary--> là công cụ chính để ánh xạ: <code>DeviceID → Device</code>, <code>TagName → IO point</code>, <code>ErrorCode → Alarm</code>. Trong control code, dùng <code>TryGetValue</code> thay cho indexer để tránh ngoại lệ khi thiếu key:</p>
 <p><strong>Code 3.19 — Dictionary với TryGetValue và chiến lược &quot;resolve một lần&quot;</strong></p>
@@ -3577,6 +3612,18 @@ lặp lại ở mọi handler trong sách, không đổi hình dạng dù event 
 <blockquote>
 <p>📌 <strong>Dấu <code>?</code> sau kiểu</strong> (<code>EventHandler&lt;PositionChangedEventArgs&gt;? PositionChanged</code>): đây là <strong>nullable annotation</strong>, báo rằng biến này <em>được phép</em> là null (chưa có ai đăng ký lắng nghe) — khác <code>?.</code>/<code>??</code> (toán tử null, dùng khi <em>đọc</em> giá trị) ở chỗ đây là một phần của khai báo <em>kiểu</em>. Học đầy đủ ở <strong>Chương 5, mục 5.6</strong>; ở đây chỉ cần biết field/property có <code>?</code> sau kiểu thì luôn phải kiểm tra null trước khi dùng (đó là lý do gọi <code>PositionChanged?.Invoke(...)</code> chứ không <code>PositionChanged.Invoke(...)</code>).</p>
 <p>⚠️ <strong>Cảnh báo:</strong> Nếu một subscriber ném exception, <code>?.Invoke()</code> sẽ truyền exception đó ngược về nơi gọi <code>Invoke</code> — có thể làm gián đoạn vòng cập nhật vị trí. Các subscriber quan trọng (đặc biệt code cập nhật HMI) nên bọc <code>try-catch</code> <em>bên trong</em> handler, không để exception thoát ra ngoài.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Biến thể hay gặp trong code cũ: <code>event Action&lt;T1,T2&gt;</code> thay vì <code>event EventHandler&lt;TEventArgs&gt;</code>.</strong>
+Cú pháp <code>public event Action&lt;string, Color&gt; OnStep;</code> cũng hợp lệ về mặt ngôn ngữ — <code>Action&lt;T1,T2&gt;</code>
+là delegate có sẵn của .NET nhận đúng 2 tham số kiểu tuỳ ý, không bắt buộc phải là <code>(sender, e)</code>.
+Khác <code>EventHandler&lt;TEventArgs&gt;</code> (mẫu chuẩn sách dùng xuyên suốt — luôn <code>sender</code> + một
+<code>EventArgs</code>-subclass gộp mọi dữ liệu liên quan), <code>event Action&lt;T1,T2&gt;</code> truyền trực tiếp từng giá
+trị rời rạc, không có <code>sender</code>. Đọc code cũ gặp mẫu này không phải lỗi cú pháp — chỉ là một phong
+cách khác, thường thấy ở framework tự chế viết trước khi <code>EventHandler&lt;T&gt;</code> + <code>EventArgs</code> trở thành
+quy ước phổ biến. Viết code MỚI vẫn nên theo <code>EventHandler&lt;TEventArgs&gt;</code> (đúng CA1003 dự án nhà) vì
+dễ mở rộng thêm field vào <code>EventArgs</code> sau này mà không phải đổi chữ ký <code>Action&lt;...&gt;</code> ở mọi nơi đã
+đăng ký.</p>
 </blockquote>
 <p>Đây là <strong>Observer Pattern</strong> ở dạng cơ bản nhất — Chương 16 đặt tên và mở rộng nó thành ba biến thể (<code>event</code>, <code>IEventPublisher</code>, <code>IObservable&lt;T&gt;</code>). Ở đây chỉ cần nắm cơ chế nền.</p>
 <blockquote>
@@ -13475,6 +13522,23 @@ khởi tạo bằng <code>new T()</code> nếu người dùng không truyền gi
 buộc cùng lúc: <code>where T : class, IAsyncDisposable, new()</code> (phải là reference type, phải
 implement interface, phải có constructor không tham số) — C# cho phép liệt kê nhiều điều kiện
 cách nhau bằng dấu phẩy trên cùng một <code>where</code>.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Cách cũ trước khi quen generic constraint: tham số kiểu <code>System.ValueType</code>.</strong> Code kế thừa
+viết trước khi tác giả quen generic đôi khi giải quyết bài toán &quot;1 hàm nhận nhiều loại
+<code>enum</code>/<code>struct</code> I/O khác nhau&quot; bằng cách khai tham số kiểu <code>System.ValueType</code> (lớp cơ sở trừu
+tượng của MỌI value type trong .NET):</p>
+<pre><code class="language-csharp">// ❌ Cách cũ — nhận bất kỳ enum/struct nào, nhưng BOXING mỗi lần gọi
+public static short GetDi(int cardNum, System.ValueType ioChannel) { ... }
+
+// ✅ Generic constraint — cùng ý tưởng &quot;nhận nhiều loại enum&quot;, không boxing
+public static short GetDi&lt;T&gt;(int cardNum, T ioChannel) where T : struct, Enum { ... }
+</code></pre>
+<p>Cách cũ hoạt động đúng, nhưng MỖI LẦN gọi, giá trị <code>enum</code>/<code>struct</code> (value type) truyền vào tham
+số <code>System.ValueType</code> (kiểu tham chiếu) đều bị <strong>boxing</strong> (mục 3.7.2) — cấp phát heap ngầm mỗi
+lần. Với hàm đọc 1 bit IO gọi liên tục trong vòng quét, đây là nguồn cấp phát ẩn tích luỹ theo
+thời gian. Generic constraint giải quyết đúng bài toán &quot;nhận nhiều loại value type&quot; mà không cần
+boxing — nên ưu tiên khi viết code mới.</p>
 </blockquote>
 <p><strong>Code 13.11 — IConnectionPool&lt;T&gt; và ConnectionPool&lt;T&gt; với reference counting</strong></p>
 <pre><code class="language-csharp">public sealed record ConnectionKey(string Protocol, string Endpoint, string? Profile = null);

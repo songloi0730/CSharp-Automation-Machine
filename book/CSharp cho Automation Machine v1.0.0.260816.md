@@ -1027,6 +1027,7 @@ xa lạ.
 | `enum` viết `ALL_CAPS` kèm tiền tố kiểu (`STATE_MANUAL_RUN`, `STATE_AUTO_RUN`) | `enum` `PascalCase` không tiền tố (mục 3.6.1, Chương 4) | Thói quen mang từ ngôn ngữ C: macro/hằng số trong C không có khái niệm "thuộc về một kiểu" nên phải thêm tiền tố (`STATE_`) để tránh trùng tên toàn cục. C# cho phép viết `AutoState.AutoRun` (chấm rõ thuộc `enum` nào) nên không cần tiền tố nữa — **cùng nhu cầu, khác công cụ giải quyết** |
 | Đọc/sửa JSON bằng `JObject`/`JArray` (thư viện Newtonsoft.Json, indexer động `jo["field"]`, `JObject.Parse(...)`) | `JsonSerializer`/kiểu DTO rõ ràng (`System.Text.Json`, mục 3.6.3) | Newtonsoft.Json ra đời trước `System.Text.Json` (chỉ có từ .NET Core 3.0) rất lâu, gần như mặc định trong mọi dự án .NET Framework — `jo["field"]` biên dịch được dù `"field"` gõ sai chính tả hay đổi kiểu tuỳ ý, lỗi chỉ lộ ra lúc chạy |
 | `log4net` (`ILog log = LogManager.GetLogger(...)`, `log.Debug(...)`/`log.Error(...)`) | `ILogger<T>`/`Microsoft.Extensions.Logging` (structured logging, Chương 19) | `log4net` phổ biến trước khi `Microsoft.Extensions.Logging` ra đời — API bề mặt khác hẳn (`log.Debug("chuỗi")` ghép chuỗi tay, không có message template `{Placeholder}` như `ILogger`), nhưng cùng vai trò: ghi log có phân mức (Debug/Info/Warn/Error) |
+| `using Microsoft.VisualBasic;` trong file `.cs`, gọi `FileSystem.FileOpen/FileGet/FilePut` (I/O nhị phân kiểu số hiệu file), `Interaction.MsgBox(...)`, `Constants.vbNullString` | `FileStream`/`BinaryReader`/`BinaryWriter` (mục 3.6.2), `MessageBox.Show(...)` (Chương 8), `null`/`string.Empty` | Dự án chuyển ngữ (port) từ VB6/VB.NET sang C# — thư viện `Microsoft.VisualBasic` (đi kèm sẵn trong .NET) cho phép giữ nguyên gần như 100% logic I/O/UI gốc, chỉ đổi cú pháp gọi hàm, tránh phải viết lại toàn bộ bằng API .NET chuẩn |
 
 > 📌 **Nguyên tắc dùng bảng trên:** nhận ra tương đương để **đọc hiểu** code
 > sẵn có, không phải để **bắt chước** khi viết thêm code mới. Khi bạn thêm
@@ -1129,6 +1130,14 @@ nhiều năm tuổi, nhiều người sửa.
 > file tên gợi ý một chức năng nhưng bên trong khai báo `class` với tên hoàn toàn khác — đó không
 > phải lỗi biên dịch, chỉ là dấu hiệu file đã bị sửa/copy qua nhiều lần. Luôn mở file ra đọc dòng
 > `class` thật, đừng suy đoán nội dung chỉ từ tên file trong danh sách thư mục.
+>
+> 🔍 **Đào sâu thêm — tên THƯ MỤC/module cũng không đáng tin hơn tên file.** Cùng nguyên tắc, mở
+> rộng thêm một cấp: một thư mục tên gợi ý rõ một chức năng (ví dụ tên viết tắt gợi ý "thuật toán
+> xử lý ảnh") đôi khi chứa thứ hoàn toàn khác (thuần hình học/toán học, không đụng tới ảnh nào) —
+> hoặc một Form/màn hình đặt tên theo một thiết bị cụ thể (ví dụ tên gợi ý "camera") hoá ra chỉ là
+> màn hình cài đặt tham số có khoá đăng nhập, không xử lý ảnh gì cả. Không có cách nào phát hiện
+> trước ngoài việc mở file ra đọc — nhưng biết trước hiện tượng này tồn tại giúp không mất phương
+> hướng khi nội dung file hoàn toàn không khớp kỳ vọng từ tên thư mục/form chứa nó.
 
 ### Đọc một file rất dài (hàng nghìn dòng)
 
@@ -1619,6 +1628,13 @@ outputWord &= ~(1 << 5);    // Cách 2: TẮT bit số 5 mà không đụng các
 ```
 
 > 💡 **Mẹo thực chiến:** Bitwise nhanh và gọn, nhưng `(inputWord & (1 << 3)) != 0` không tự giải thích nó là cái gì. Luôn đặt tên bit qua hằng (`DoorClosedBit`) hoặc bọc trong một method/extension có tên (`io.IsOn("DoorClosed")`) — nếu không, ba tháng sau chính bạn cũng không đọc nổi code I/O của mình.
+
+> 📌 **Biến thể khác của cùng kỹ thuật, hay gặp trong code SDK cũ:** `Convert.ToBoolean(statusWord & 0x400) == false`.
+> Đây là CÙNG Ý TƯỞNG với Code 3.5 (`&` để mask một bit) — chỉ khác `Convert.ToBoolean(x)` được dùng
+> thay cho `x != 0` để đổi kết quả phép `&` (vẫn là số nguyên) sang `bool`. Hằng số hex như `0x400`
+> (= 1024 = bit thứ 10) thường xuất hiện trong SDK motion card/PLC trả về "status word" — phải tra
+> tài liệu hãng để biết bit nào ứng với ý nghĩa gì (ví dụ bit 10 = "đang chạy"). Đọc gặp mẫu này,
+> nhận ra ngay đó là đọc 1 bit cờ trạng thái, không phải phép tính số học thông thường.
 
 ---
 
@@ -2244,6 +2260,21 @@ Trong PC-Based Control, collection không chỉ là "cách chứa dữ liệu" �
 ### 3.7.1  Array, List, Dictionary, Queue
 
 **Array** <!--idx:Array--> (`T[]`) là nền tảng cho dữ liệu quét liên tục: vùng nhớ liên tục, truy cập index O(1), kích thước cố định (không resize). Mảng của `struct` cho trạng thái thiết bị là lựa chọn lý tưởng — đã thấy ở `AxisStatus[] axes` (Code 3.2).
+
+> 📌 **Mảng nhiều chiều `T[,]` (rectangular array) — khác `T[][]` (jagged array).** `T[]` một chiều
+> đủ cho hầu hết trường hợp, nhưng dữ liệu có 2 "trục toạ độ" tự nhiên (ví dụ trạng thái home của
+> từng trục trên từng card: `[SốCard, SốTrục]`) đôi khi được khai báo bằng dấu phẩy trong ngoặc
+> vuông:
+> ```csharp
+> var axisHome = new HomeStatus[2, 9];   // 2 card, mỗi card 9 trục — MỘT khối bộ nhớ liên tục
+> axisHome[cardNum, axisIndex] = HomeStatus.Done;
+> ```
+> `T[,]` (rectangular array — mọi "hàng" cùng độ dài cố định, một khối bộ nhớ liên tục) khác hẳn
+> `T[][]` (jagged array — mảng CHỨA các mảng con, mỗi mảng con có thể dài ngắn khác nhau, mỗi mảng
+> con là một vùng nhớ riêng): `var jagged = new int[2][]; jagged[0] = new int[9]; jagged[1] = new int[5];`.
+> Trong automation, `T[,]` thường phù hợp hơn khi cả hai chiều có kích thước CỐ ĐỊNH và biết trước
+> (số card × số trục tối đa) — còn `Dictionary<(int Card, int Axis), T>` (đã học ở Chương 12, dùng
+> tuple làm key) là lựa chọn dễ đọc hơn khi cần truy cập theo tên có ý nghĩa thay vì chỉ số thô.
 
 **List\<T\>** <!--idx:List--> là array động. Điểm mấu chốt: khi số phần tử vượt `Capacity`, List **resize** — copy O(n) + cấp phát mới, gây spike bất ngờ. Vì vậy khi biết quy mô gần đúng, luôn đặt sẵn capacity: `new List<IDevice>(capacity: 64)`. List hợp cho danh sách thiết bị/alarm load từ config rồi cố định; **không** hợp cho hàng đợi lệnh thời gian thực.
 
@@ -2984,6 +3015,17 @@ axis.PositionChanged += (sender, e) => hmi.UpdatePosition(e.AxisId, e.Position);
 > 📌 **Dấu `?` sau kiểu** (`EventHandler<PositionChangedEventArgs>? PositionChanged`): đây là **nullable annotation**, báo rằng biến này *được phép* là null (chưa có ai đăng ký lắng nghe) — khác `?.`/`??` (toán tử null, dùng khi *đọc* giá trị) ở chỗ đây là một phần của khai báo *kiểu*. Học đầy đủ ở **Chương 5, mục 5.6**; ở đây chỉ cần biết field/property có `?` sau kiểu thì luôn phải kiểm tra null trước khi dùng (đó là lý do gọi `PositionChanged?.Invoke(...)` chứ không `PositionChanged.Invoke(...)`).
 >
 > ⚠️ **Cảnh báo:** Nếu một subscriber ném exception, `?.Invoke()` sẽ truyền exception đó ngược về nơi gọi `Invoke` — có thể làm gián đoạn vòng cập nhật vị trí. Các subscriber quan trọng (đặc biệt code cập nhật HMI) nên bọc `try-catch` *bên trong* handler, không để exception thoát ra ngoài.
+
+> 📌 **Biến thể hay gặp trong code cũ: `event Action<T1,T2>` thay vì `event EventHandler<TEventArgs>`.**
+> Cú pháp `public event Action<string, Color> OnStep;` cũng hợp lệ về mặt ngôn ngữ — `Action<T1,T2>`
+> là delegate có sẵn của .NET nhận đúng 2 tham số kiểu tuỳ ý, không bắt buộc phải là `(sender, e)`.
+> Khác `EventHandler<TEventArgs>` (mẫu chuẩn sách dùng xuyên suốt — luôn `sender` + một
+> `EventArgs`-subclass gộp mọi dữ liệu liên quan), `event Action<T1,T2>` truyền trực tiếp từng giá
+> trị rời rạc, không có `sender`. Đọc code cũ gặp mẫu này không phải lỗi cú pháp — chỉ là một phong
+> cách khác, thường thấy ở framework tự chế viết trước khi `EventHandler<T>` + `EventArgs` trở thành
+> quy ước phổ biến. Viết code MỚI vẫn nên theo `EventHandler<TEventArgs>` (đúng CA1003 dự án nhà) vì
+> dễ mở rộng thêm field vào `EventArgs` sau này mà không phải đổi chữ ký `Action<...>` ở mọi nơi đã
+> đăng ký.
 
 Đây là **Observer Pattern** ở dạng cơ bản nhất — Chương 16 đặt tên và mở rộng nó thành ba biến thể (`event`, `IEventPublisher`, `IObservable<T>`). Ở đây chỉ cần nắm cơ chế nền.
 
@@ -12439,6 +12481,23 @@ gọi `t.DisposeAsync()` mà không cần cast. Đây là CORE để hiểu tạ
 > buộc cùng lúc: `where T : class, IAsyncDisposable, new()` (phải là reference type, phải
 > implement interface, phải có constructor không tham số) — C# cho phép liệt kê nhiều điều kiện
 > cách nhau bằng dấu phẩy trên cùng một `where`.
+
+> 📌 **Cách cũ trước khi quen generic constraint: tham số kiểu `System.ValueType`.** Code kế thừa
+> viết trước khi tác giả quen generic đôi khi giải quyết bài toán "1 hàm nhận nhiều loại
+> `enum`/`struct` I/O khác nhau" bằng cách khai tham số kiểu `System.ValueType` (lớp cơ sở trừu
+> tượng của MỌI value type trong .NET):
+> ```csharp
+> // ❌ Cách cũ — nhận bất kỳ enum/struct nào, nhưng BOXING mỗi lần gọi
+> public static short GetDi(int cardNum, System.ValueType ioChannel) { ... }
+>
+> // ✅ Generic constraint — cùng ý tưởng "nhận nhiều loại enum", không boxing
+> public static short GetDi<T>(int cardNum, T ioChannel) where T : struct, Enum { ... }
+> ```
+> Cách cũ hoạt động đúng, nhưng MỖI LẦN gọi, giá trị `enum`/`struct` (value type) truyền vào tham
+> số `System.ValueType` (kiểu tham chiếu) đều bị **boxing** (mục 3.7.2) — cấp phát heap ngầm mỗi
+> lần. Với hàm đọc 1 bit IO gọi liên tục trong vòng quét, đây là nguồn cấp phát ẩn tích luỹ theo
+> thời gian. Generic constraint giải quyết đúng bài toán "nhận nhiều loại value type" mà không cần
+> boxing — nên ưu tiên khi viết code mới.
 
 **Code 13.11 — IConnectionPool\<T\> và ConnectionPool\<T\> với reference counting**
 

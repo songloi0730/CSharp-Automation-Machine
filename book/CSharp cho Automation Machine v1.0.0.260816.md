@@ -1741,6 +1741,24 @@ outputWord &= ~(1 << 5);    // Cách 2: TẮT bit số 5 mà không đụng các
 > tài liệu hãng để biết bit nào ứng với ý nghĩa gì (ví dụ bit 10 = "đang chạy"). Đọc gặp mẫu này,
 > nhận ra ngay đó là đọc 1 bit cờ trạng thái, không phải phép tính số học thông thường.
 
+> ⚠️ **`&`/`|` còn dùng được trên `bool` — KHÁC hẳn `&&`/`||` dù trông giống hệt.** Đa số người mới
+> chỉ quen `&`/`|` áp dụng lên số nguyên (mask bit, như Code 3.5). C# còn định nghĩa `&`/`|` cho
+> KIỂU `bool` — hợp lệ về cú pháp, dễ đọc nhầm là gõ thiếu 1 ký tự:
+> ```csharp
+> bool res1 = TryConnectPlc();
+> bool res2 = TryConnectCamera();
+> bool res3 = TryConnectRobot();
+> return res1 & res2 & res3;   // KHÁC res1 && res2 && res3 ở một điểm quan trọng
+> ```
+> Khác biệt duy nhất nhưng quan trọng: `&&`/`||` có **short-circuit** (ngừng đánh giá ngay khi đã đủ
+> biết kết quả — `a && b` không gọi `b` nếu `a` đã `false`), còn `&`/`|` LUÔN đánh giá CẢ HAI vế dù
+> vế đầu đã đủ quyết định kết quả. Với biến `bool` đã tính xong TRƯỚC (như ví dụ trên), không có khác
+> biệt hành vi — chỉ khác khi vế sau là một LỜI GỌI HÀM có tác dụng phụ: `LoadA() & LoadB()` LUÔN
+> chạy CẢ HAI hàm dù `LoadA()` đã trả `false`, trong khi `LoadA() && LoadB()` sẽ BỎ QUA `LoadB()`
+> hoàn toàn. Gặp `&`/`|` áp lên biến/biểu thức kiểu `bool` trong code kế thừa, đừng vội sửa thành
+> `&&`/`||` — kiểm tra trước xem tác giả có chủ đích buộc mọi vế đều chạy hay không (ví dụ: muốn TẤT
+> CẢ bước kết nối đều thử, không dừng ở lỗi đầu tiên, để log được đầy đủ lỗi của mọi thiết bị).
+
 ---
 
 ## 3.3  Cấu trúc điều khiển — áp dụng vào logic máy
@@ -2140,6 +2158,20 @@ public sealed class AxisNotHomedException : Exception
 > log theo timestamp, đường dẫn theo tên máy), thiếu `$` sẽ tạo ra kết quả sai hoàn toàn mà không ai
 > báo lỗi. Luôn liếc dấu `$` đầu chuỗi khi thấy `{ }` bên trong — đây là 1 trong những lỗi dễ "lọt
 > qua" review nhất vì code vẫn biên dịch và chạy bình thường.
+
+> 📌 **Range operator `[..N]` (C# 8+) — cách viết gọn thay cho `Substring`.** Muốn lấy một đoạn con
+> của chuỗi (hoặc mảng), cách cũ quen thuộc là `Substring(start, length)`; C# 8 thêm cú pháp `[..]`
+> ngắn gọn hơn cho các trường hợp phổ biến:
+> ```csharp
+> string id = Guid.NewGuid().ToString();     // ví dụ: "a1b2c3d4-5e6f-..."
+> string shortId = id.Substring(0, 8);       // cách cũ — lấy 8 ký tự đầu
+> string shortId2 = id[..8];                 // cách mới — TƯƠNG ĐƯƠNG, gọn hơn
+> string suffix = id[24..];                  // từ ký tự thứ 24 tới HẾT chuỗi
+> ```
+> `id[..8]` là viết tắt của `id[0..8]` — bỏ trống số ĐẦU nghĩa là "từ vị trí 0"; `id[24..]` bỏ trống
+> số CUỐI nghĩa là "tới hết". Lần đầu gặp `[..8]` dễ tưởng thiếu số trước dấu `..` — thực ra cả hai
+> đầu của Range đều được phép bỏ trống, không phải lỗi gõ. Cùng cú pháp này áp dụng được cho mảng
+> (`arr[2..5]` lấy phần tử chỉ số 2,3,4) — không chỉ riêng `string`.
 
 Chiến lược xử lý lỗi nên phân theo tầng: **Driver** ném exception kỹ thuật (timeout, IO); **Device/Logic** bắt và chuyển thành lỗi miền (domain error) + tạo alarm; **UI** chỉ hiển thị thông điệp đã chuẩn hoá. Và khi log exception, log phải đủ *ngữ cảnh*: máy đang ở mode/state nào, thiết bị nào, lệnh gì — một log "đủ context" tiết kiệm rất nhiều thời gian dừng máy.
 
@@ -3717,6 +3749,18 @@ Cơ chế deadlock <!--idx:deadlock--> diễn ra như sau: (1) luồng UI gọi 
 > kế thừa, đó thường là dấu hiệu tác giả "thêm Task cho có vẻ async" mà chưa hiểu bản chất bất đồng
 > bộ, không phải một thiết kế có chủ đích.
 
+> 📌 **Ngoại lệ hiếm hoi được chấp nhận: `.GetAwaiter().GetResult()` bên trong `Dispose()`.**
+> `IDisposable.Dispose()` là hợp đồng ĐỒNG BỘ của .NET — không thể đổi chữ ký thành `async Task` dù
+> class đó có `DisconnectAsync()`/`CloseAsync()` cần dọn dẹp. Khi đó, tác giả bị kẹt giữa 2 lựa chọn
+> đều không hoàn hảo: (a) chặn đồng bộ bằng `.GetAwaiter().GetResult()` để chắc chắn tài nguyên được
+> giải phóng xong trước khi `Dispose()` return (có rủi ro deadlock nếu đang có `SynchronizationContext`
+> — hiếm gặp trong code chạy nền/service, phổ biến hơn nếu gọi từ UI thread), hoặc (b) không đợi,
+> chấp nhận kết nối có thể chưa đóng hẳn khi object đã bị huỷ. Nếu class có triển khai
+> `IAsyncDisposable` (`await using`, mục 5.5) thì luôn ưu tiên gọi `DisposeAsync()` thay vì
+> `Dispose()` để tránh tình huống này hoàn toàn — nhưng khi bắt buộc phải dọn dẹp async trong đúng
+> `Dispose()` đồng bộ (ví dụ finalizer gọi `Dispose(false)`), `.GetAwaiter().GetResult()` là lựa chọn
+> ít tệ nhất trong 2 lựa chọn tồi, KHÔNG phải một ngoại lệ để bắt chước tuỳ tiện ở nơi khác.
+
 Hai bẫy async khác cần tránh — `async void` và "fire-and-forget" nuốt lỗi:
 
 ```csharp
@@ -3752,6 +3796,26 @@ UploadLogAsync().Forget(_logger);
 > xong) khi Task nền đã bắt đầu chạy, và exception ném ra vẫn bị nuốt im lặng như thường. Nếu công việc
 > async thật sự cần khởi động cùng lúc object được tạo, tách ra một method `InitializeAsync()` để caller
 > tự `await` tường minh, thay vì giấu nó trong constructor.
+
+> ⚠️ **Nhầm lẫn nguy hiểm: gọi `.ConfigureAwait(false)` mà QUÊN `await` phía trước.** `ConfigureAwait`
+> (mục 5.1.3) chỉ có tác dụng khi nó là một MẮT XÍCH trong chuỗi `await ai_do().ConfigureAwait(false)`
+> — bản thân nó KHÔNG phải một cách "an toàn hơn" để chạy fire-and-forget:
+> ```csharp
+> // ❌ ẢO TƯỞNG "đã xử lý đúng" — nhìn có vẻ cẩn thận (có ConfigureAwait) nhưng vô nghĩa
+> HandleMessageAsync(msg).ConfigureAwait(false);   // KHÔNG có await — Task bị bỏ rơi y hệt không viết gì
+>
+> // ✅ Nếu ý định là fire-and-forget có kiểm soát — dùng đúng mẫu đã học
+> _ = Task.Run(async () => { try { await HandleMessageAsync(msg); } catch (Exception ex) { _logger.LogError(ex, "..."); } });
+>
+> // ✅ Nếu ý định là chờ xong mới tiếp tục — phải có await
+> await HandleMessageAsync(msg).ConfigureAwait(false);
+> ```
+> `HandleMessageAsync(msg).ConfigureAwait(false)` không có `await` đứng trước chỉ đơn giản TẠO ra
+> một `ConfiguredTaskAwaitable` rồi **bỏ luôn**, không khác gì gọi method mà không dùng giá trị trả
+> về — Task đó vẫn chạy nền, nhưng không ai chờ nó, không ai bắt exception của nó (giống hệt lỗi fire-
+> and-forget đã học, chỉ khác cái đuôi `.ConfigureAwait(false)` trông "có vẻ" cẩn thận). Đây là một
+> cách viết dễ đánh lừa người review: thấy có `ConfigureAwait(false)` dễ tưởng tác giả đã cân nhắc kỹ
+> vấn đề threading, trong khi thực chất dòng code không hề `await` gì cả.
 
 > 📌 **LINQ `.Select(async x => ...)` + `Task.WhenAll` — dễ viết sai thứ tự.** Muốn chạy song song một
 > thao tác async cho từng phần tử trong danh sách, cú pháp đúng là:
@@ -3864,6 +3928,23 @@ Hai cách phản ứng với token: kiểm tra `ct.IsCancellationRequested` tron
 > exception khi token bị huỷ, chỉ trả `false` khi chính `PeriodicTimer` đó bị `Dispose()`
 > (một tình huống khác). Dùng `PeriodicTimer` cho vòng polling chạy liên tục dài hạn cần
 > chu kỳ ổn định; `Task.Delay` vẫn phù hợp cho một lần chờ đơn lẻ (như timeout ở Code 5.6).
+
+> ⚠️ **`await Task.Delay(N)` không kèm lý do — nghi ngờ đây là "vá tạm" một race condition.** Code
+> 5.5/5.6 dùng `Task.Delay` cho hai mục đích rõ ràng (chờ giữa các vòng polling, tạo timeout) — cả
+> hai đều có LÝ DO tường minh. Gặp một dòng `await Task.Delay(500);` chen giữa hai bước KHỞI TẠO
+> tưởng như độc lập, không kèm comment giải thích:
+> ```csharp
+> await InitializeIncentiveCommandsAsync();
+> await Task.Delay(500);            // ??? không rõ lý do — chờ cái gì?
+> await InitializeResponseCommandsAsync();
+> ```
+> — đây là dấu hiệu đáng ngờ, không phải cách viết bình thường. Nếu hai bước THỰC SỰ độc lập, không
+> có lý do gì cần đợi giữa chúng. Nếu có PHỤ THUỘC NGẦM (bước 2 cần bước 1 hoàn tất một việc gì đó ở
+> phía khác, ví dụ một luồng nền khác cần thời gian ổn định), con số mili-giây cụ thể luôn là ĐOÁN
+> MÒ — không có gì đảm bảo đủ trên máy chậm hơn, dưới tải cao hơn, hoặc sau khi thêm bước xử lý mới.
+> Gặp mẫu "delay không giải thích", đừng chỉ chấp nhận nó là bình thường — đó là tín hiệu cần đồng bộ
+> hoá ĐÚNG CÁCH (chờ đúng sự kiện/tín hiệu hoàn tất qua `SemaphoreSlim`/`TaskCompletionSource`, không
+> phải đoán một khoảng thời gian "chắc là đủ").
 
 > ⚠️ **`catch (Exception)` nuốt lỗi im lặng — hậu quả cụ thể trong automation:** Code 5.5 chỉ bắt đúng một loại lỗi có ý nghĩa (`OperationCanceledException` khi bị huỷ). Một biến thể nguy hiểm hay gặp trong thực tế: `catch (Exception) { }` bắt rộng và không log gì, hoặc chỉ log rồi nuốt luôn — không phân biệt lỗi tạm thời (mất kết nối, thử lại được) với lỗi hệ thống (cần dừng và báo alarm). Hậu quả không phải lúc nào cũng là crash rõ ràng: đăng nhập sai không rõ lý do (exception bị nuốt trước khi thông báo tới UI), hay lệnh jog trục thất bại âm thầm (operator nhấn nút, trục không nhúc nhích, không có alarm nào giải thích tại sao) — cả hai đều khiến người vận hành mất niềm tin vào hệ thống, hoặc tệ hơn, thử lại thao tác nguy hiểm vì tưởng lần trước "không có gì xảy ra". Luôn phân loại: lỗi mong đợi (`AlarmException`) xử lý riêng, huỷ (`OperationCanceledException`) xử lý riêng, còn lại mới `catch (Exception)` như lưới an toàn cuối cùng — và luôn log với exception làm tham số đầu tiên.
 
@@ -7867,6 +7948,26 @@ nhưng không có tác dụng".
 `EnableRowVirtualization="True"` và `EnableColumnVirtualization="True"`,
 cùng với `VirtualizingPanel.*` như trên.
 
+> ⚠️ **Bẫy khác hẳn, gặp khi `DataGrid` cho phép SỬA trực tiếp trên lưới (recipe/danh sách user):**
+> `DataGrid` mặc định chỉ đẩy giá trị ô đang gõ vào property của item khi người dùng RỜI Ô (mất focus
+> hoặc nhấn Enter/Tab) — nếu code đọc `ObservableCollection` đang binding NGAY TRONG LÚC con trỏ vẫn
+> còn ở ô vừa gõ (ví dụ nút "Lưu" đọc dữ liệu để ghi xuống DB), giá trị vừa gõ CHƯA kịp vào property,
+> bị đọc thiếu mà không có exception nào báo. Khắc phục: ép DataGrid "chốt" ô/dòng đang dở trước khi
+> đọc, qua `CollectionViewSource.GetDefaultView(...)`:
+> ```csharp
+> var view = CollectionViewSource.GetDefaultView(Users) as IEditableCollectionView;
+> view?.CommitEdit();   // đẩy giá trị ô đang gõ vào property
+> view?.CommitNew();    // chốt luôn dòng mới đang thêm dở (nếu DataGrid cho AddNewItem)
+>
+> var changed = Users.Where(u => u.IsDirty).ToList();   // giờ đọc mới đủ, kể cả thay đổi cuối cùng
+> ```
+> `CollectionViewSource.GetDefaultView(collection)` lấy "khung nhìn mặc định" (quản lý sort/filter/
+> trạng thái edit) gắn sẵn với MỘT `ObservableCollection` cụ thể mà không cần khai báo
+> `CollectionViewSource` tường minh trong XAML — mọi `ItemsControl`/`DataGrid` binding cùng collection
+> đó đều chia sẻ chung 1 view này. Gọi `CommitEdit()`/`CommitNew()` ngay TRƯỚC bước đọc dữ liệu (nút
+> Lưu, validate, gửi đi) là thói quen bắt buộc với mọi DataGrid cho phép sửa trực tiếp — quên bước này
+> là nguyên nhân phổ biến của "tôi vừa gõ xong bấm Lưu ngay mà mất đúng ô cuối cùng".
+
 > 💡 **Mẹo thực chiến:** Với log thật sự lớn (200.000+ dòng/ngày), đừng cố
 > hiển thị toàn bộ trên một lưới dù đã ảo hoá — lưu đầy đủ vào DB/file, UI
 > chỉ giữ "cửa sổ gần nhất" (1.000–5.000 dòng) kèm tìm kiếm/lọc thực hiện ở
@@ -9970,6 +10071,28 @@ Ví dụ đơn giản hoá quá trình `Start`: trong thực tế, trạng thái
 
 > 📌 **`is A or B` — pattern combinator:** khớp khi `State` bằng `A` HOẶC `B`,
 > gọn hơn `State == A || State == B`. Có cả `and`/`not` tương tự cho AND/NOT.
+>
+> 🔍 **Đào sâu thêm — các mẫu `is` phức tạp hơn hay gặp trong code thật.** Ngoài so khớp giá trị đơn
+> (`is A or B`), `is` còn so khớp được CẤU TRÚC. Với 1 biến kiểu `object`, có thể kiểm tra nó có phải
+> đúng 1 `tuple` (kèm gán biến luôn nếu khớp):
+> ```csharp
+> object pathPart = (3, 5);   // ví dụ: 1 phần tử "địa chỉ" kiểu (hàng, cột)
+> if (pathPart is (int row, int col))     // vừa kiểm tra ĐÚNG tuple (int,int), vừa gán row/col
+>     Console.WriteLine($"Ô ({row}, {col})");
+> ```
+> Các mảnh nhỏ (type pattern, property pattern, combinator `and`/`or`, gán biến) còn ghép được thành
+> MỘT biểu thức nhiều tầng:
+> ```csharp
+> if (newValue is ArrayBase and IIndex1D { Size: > 0 } index1D)
+>     var first = index1D.GetValue(0);
+> ```
+> Đọc từ trái sang phải: `newValue` phải là `ArrayBase` (type pattern) **VÀ** (combinator `and`) phải
+> implement `IIndex1D` **VÀ** property `Size` của nó phải `> 0` (property pattern lồng có so sánh
+> quan hệ) — nếu khớp CẢ BA điều kiện, gán vào biến `index1D` (kiểu `IIndex1D`) để dùng tiếp. Đây là
+> 4 kỹ thuật pattern matching đã học rải rác (type pattern, property pattern, combinator, biến bắt
+> trong `is`) ghép chung một biểu thức — không có cú pháp mới nào cả, chỉ là mức độ kết hợp cao hơn
+> ví dụ đơn giản phía trên. Gặp một biểu thức `is` dài, đọc chậm từng mảnh nối bằng `and`/`or`, đừng
+> cố hiểu cả câu cùng lúc.
 
 Entity Axis quản lý thông số công nghệ và ràng buộc di chuyển:
 
@@ -18662,6 +18785,27 @@ Coverage là công cụ tìm **code chưa được test**, không phải bằng 
 
 > 📌 **Ngưỡng coverage thực tế trong automation:** Hầu hết team công nghiệp chọn 70–80% như mức khởi điểm hợp lý cho code mới. Quan trọng hơn là *cái gì* được cover, không phải *bao nhiêu phần trăm*.
 
+> ⚠️ **"Xanh giả" (false green) — nguy hiểm hơn cả 0% coverage.** Có một cách tệ hơn "không test":
+> một `[Fact]` TỒN TẠI, tên gợi ý đúng hành vi quan trọng, CI báo "Passed" — nhưng toàn bộ thân hàm
+> đã bị comment lại, không còn dòng nào thực sự chạy hay assert gì cả:
+> ```csharp
+> [Fact]
+> public void CallbackChayDungTrenUiThreadTest()
+> {
+>     // var handler = new UiMessageDispatcher(dispatcher);
+>     // handler.ProcessMessage(new Message(actor, "_hello", null));
+>     // Assert.True(callbackDaChay);
+> }   // Thân rỗng — biên dịch được, chạy xong ngay, KHÔNG BAO GIỜ fail
+> ```
+> Test này **luôn "Pass"** — không phải vì hành vi đúng, mà vì không còn gì để kiểm tra. Nếu sau này
+> ai đó sửa `UiMessageDispatcher` sai (ví dụ quên gọi `Dispatcher.InvokeAsync`, callback chạy nhầm
+> thread), CI vẫn báo xanh — không một tín hiệu nào cảnh báo. So với 1 method hoàn toàn CHƯA CÓ test
+> (rõ ràng là "chưa test", coverage tool chỉ ra ngay), đây tệ hơn: coverage tool vẫn đếm dòng `[Fact]`
+> này là "đã test", tạo cảm giác an toàn sai. Nếu cần tạm tắt một test (đang sửa dở, phụ thuộc hạ tầng
+> chưa sẵn sàng), dùng đúng cú pháp xUnit cho việc đó — `[Fact(Skip = "Lý do tạm tắt, xem issue #123")]`
+> — kết quả hiện "Skipped" (khác hẳn "Passed") trong báo cáo test, ai nhìn báo cáo cũng biết ngay đây
+> là một khoảng trống coverage thật sự, không phải một test đã xác nhận hành vi đúng.
+
 ### 18.6.2  Ưu tiên test theo mức rủi ro
 
 Phần mềm điều khiển có phân cấp rủi ro rõ ràng. Phân bổ công sức viết test theo cùng phân cấp đó:
@@ -20454,6 +20598,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **FATP (Final Assembly Test & Packaging)** — Loại hình nhà máy lắp ráp cuối, kiểm tra và đóng gói sản phẩm (phổ biến trong điện tử); môi trường thường là phòng sạch (cleanroom) với ánh sáng ổn định, đồng đều — bối cảnh khác hẳn xưởng cơ khí có đèn chiếu mạnh, ảnh hưởng trực tiếp đến lựa chọn Dark/Light theme cho HMI. (→ xem Dark theme / Light theme (bối cảnh HMI))
 *Xuất hiện đầu tiên: Chương 10, mục 10.2.1.*
+
+**False Green (test xanh giả)** — Một test case tồn tại và báo "Passed" trên CI nhưng không còn thực sự kiểm tra hành vi nào (thân hàm bị comment hết, hoặc assert đã bị xoá) — nguy hiểm hơn 0% coverage vì coverage tool vẫn đếm nó là "đã test", tạo cảm giác an toàn sai. Khác việc tạm tắt test có chủ đích và có ghi chú qua `[Fact(Skip = "lý do")]` (hiện "Skipped", không phải "Passed", trong báo cáo). (→ xem xUnit, AAA)
+*Xuất hiện đầu tiên: Chương 18, mục 18.6.1.*
 
 **FAT (Factory Acceptance Test) / SAT (Site/System Acceptance Test)** — Hai cấp nghiệm thu máy: FAT diễn ra tại xưởng nhà sản xuất trước khi xuất máy (≈ Integration Test — kiểm tra các cụm phối hợp với nhau); SAT diễn ra tại xưởng khách hàng sau khi lắp đặt (≈ System Test — kiểm tra toàn hệ thống trong môi trường thật). Không nhầm với FATP (loại hình nhà máy). (→ xem FATP, Test Pyramid (Tháp kiểm thử))
 *Xuất hiện đầu tiên: Chương 18, mục 18.1.2.*

@@ -2325,6 +2325,24 @@ thay cho <code>x != 0</code> để đổi kết quả phép <code>&amp;</code> (
 tài liệu hãng để biết bit nào ứng với ý nghĩa gì (ví dụ bit 10 = &quot;đang chạy&quot;). Đọc gặp mẫu này,
 nhận ra ngay đó là đọc 1 bit cờ trạng thái, không phải phép tính số học thông thường.</p>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong><code>&amp;</code>/<code>|</code> còn dùng được trên <code>bool</code> — KHÁC hẳn <code>&amp;&amp;</code>/<code>||</code> dù trông giống hệt.</strong> Đa số người mới
+chỉ quen <code>&amp;</code>/<code>|</code> áp dụng lên số nguyên (mask bit, như Code 3.5). C# còn định nghĩa <code>&amp;</code>/<code>|</code> cho
+KIỂU <code>bool</code> — hợp lệ về cú pháp, dễ đọc nhầm là gõ thiếu 1 ký tự:</p>
+<pre><code class="language-csharp">bool res1 = TryConnectPlc();
+bool res2 = TryConnectCamera();
+bool res3 = TryConnectRobot();
+return res1 &amp; res2 &amp; res3;   // KHÁC res1 &amp;&amp; res2 &amp;&amp; res3 ở một điểm quan trọng
+</code></pre>
+<p>Khác biệt duy nhất nhưng quan trọng: <code>&amp;&amp;</code>/<code>||</code> có <strong>short-circuit</strong> (ngừng đánh giá ngay khi đã đủ
+biết kết quả — <code>a &amp;&amp; b</code> không gọi <code>b</code> nếu <code>a</code> đã <code>false</code>), còn <code>&amp;</code>/<code>|</code> LUÔN đánh giá CẢ HAI vế dù
+vế đầu đã đủ quyết định kết quả. Với biến <code>bool</code> đã tính xong TRƯỚC (như ví dụ trên), không có khác
+biệt hành vi — chỉ khác khi vế sau là một LỜI GỌI HÀM có tác dụng phụ: <code>LoadA() &amp; LoadB()</code> LUÔN
+chạy CẢ HAI hàm dù <code>LoadA()</code> đã trả <code>false</code>, trong khi <code>LoadA() &amp;&amp; LoadB()</code> sẽ BỎ QUA <code>LoadB()</code>
+hoàn toàn. Gặp <code>&amp;</code>/<code>|</code> áp lên biến/biểu thức kiểu <code>bool</code> trong code kế thừa, đừng vội sửa thành
+<code>&amp;&amp;</code>/<code>||</code> — kiểm tra trước xem tác giả có chủ đích buộc mọi vế đều chạy hay không (ví dụ: muốn TẤT
+CẢ bước kết nối đều thử, không dừng ở lỗi đầu tiên, để log được đầy đủ lỗi của mọi thiết bị).</p>
+</blockquote>
 <hr>
 <h2 id="33-cu-trúc-điu-khin-áp-dng-vào-logic-máy">3.3  Cấu trúc điều khiển — áp dụng vào logic máy</h2>
 <p>Rẽ nhánh và vòng lặp là công cụ hiện thực những thứ rất &quot;đời thường&quot; của máy: kiểm tra interlock, quyết định bước tiếp theo, xử lý Manual/Auto, quét trạng thái thiết bị. Vấn đề không nằm ở cú pháp, mà ở chỗ dùng sao cho hành vi <strong>dự đoán được</strong> và <strong>không treo vòng quét</strong>.</p>
@@ -2673,6 +2691,20 @@ chặn mở ứng dụng 2 lần — mục 5.3.3, Chương 5), lỗi này vô h�
 log theo timestamp, đường dẫn theo tên máy), thiếu <code>$</code> sẽ tạo ra kết quả sai hoàn toàn mà không ai
 báo lỗi. Luôn liếc dấu <code>$</code> đầu chuỗi khi thấy <code>{ }</code> bên trong — đây là 1 trong những lỗi dễ &quot;lọt
 qua&quot; review nhất vì code vẫn biên dịch và chạy bình thường.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Range operator <code>[..N]</code> (C# 8+) — cách viết gọn thay cho <code>Substring</code>.</strong> Muốn lấy một đoạn con
+của chuỗi (hoặc mảng), cách cũ quen thuộc là <code>Substring(start, length)</code>; C# 8 thêm cú pháp <code>[..]</code>
+ngắn gọn hơn cho các trường hợp phổ biến:</p>
+<pre><code class="language-csharp">string id = Guid.NewGuid().ToString();     // ví dụ: &quot;a1b2c3d4-5e6f-...&quot;
+string shortId = id.Substring(0, 8);       // cách cũ — lấy 8 ký tự đầu
+string shortId2 = id[..8];                 // cách mới — TƯƠNG ĐƯƠNG, gọn hơn
+string suffix = id[24..];                  // từ ký tự thứ 24 tới HẾT chuỗi
+</code></pre>
+<p><code>id[..8]</code> là viết tắt của <code>id[0..8]</code> — bỏ trống số ĐẦU nghĩa là &quot;từ vị trí 0&quot;; <code>id[24..]</code> bỏ trống
+số CUỐI nghĩa là &quot;tới hết&quot;. Lần đầu gặp <code>[..8]</code> dễ tưởng thiếu số trước dấu <code>..</code> — thực ra cả hai
+đầu của Range đều được phép bỏ trống, không phải lỗi gõ. Cùng cú pháp này áp dụng được cho mảng
+(<code>arr[2..5]</code> lấy phần tử chỉ số 2,3,4) — không chỉ riêng <code>string</code>.</p>
 </blockquote>
 <p>Chiến lược xử lý lỗi nên phân theo tầng: <strong>Driver</strong> ném exception kỹ thuật (timeout, IO); <strong>Device/Logic</strong> bắt và chuyển thành lỗi miền (domain error) + tạo alarm; <strong>UI</strong> chỉ hiển thị thông điệp đã chuẩn hoá. Và khi log exception, log phải đủ <em>ngữ cảnh</em>: máy đang ở mode/state nào, thiết bị nào, lệnh gì — một log &quot;đủ context&quot; tiết kiệm rất nhiều thời gian dừng máy.</p>
 <blockquote>
@@ -4303,6 +4335,19 @@ một luồng khác. Kết quả tương đương hệt như gọi <code>Convert
 kế thừa, đó thường là dấu hiệu tác giả &quot;thêm Task cho có vẻ async&quot; mà chưa hiểu bản chất bất đồng
 bộ, không phải một thiết kế có chủ đích.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Ngoại lệ hiếm hoi được chấp nhận: <code>.GetAwaiter().GetResult()</code> bên trong <code>Dispose()</code>.</strong>
+<code>IDisposable.Dispose()</code> là hợp đồng ĐỒNG BỘ của .NET — không thể đổi chữ ký thành <code>async Task</code> dù
+class đó có <code>DisconnectAsync()</code>/<code>CloseAsync()</code> cần dọn dẹp. Khi đó, tác giả bị kẹt giữa 2 lựa chọn
+đều không hoàn hảo: (a) chặn đồng bộ bằng <code>.GetAwaiter().GetResult()</code> để chắc chắn tài nguyên được
+giải phóng xong trước khi <code>Dispose()</code> return (có rủi ro deadlock nếu đang có <code>SynchronizationContext</code>
+— hiếm gặp trong code chạy nền/service, phổ biến hơn nếu gọi từ UI thread), hoặc (b) không đợi,
+chấp nhận kết nối có thể chưa đóng hẳn khi object đã bị huỷ. Nếu class có triển khai
+<code>IAsyncDisposable</code> (<code>await using</code>, mục 5.5) thì luôn ưu tiên gọi <code>DisposeAsync()</code> thay vì
+<code>Dispose()</code> để tránh tình huống này hoàn toàn — nhưng khi bắt buộc phải dọn dẹp async trong đúng
+<code>Dispose()</code> đồng bộ (ví dụ finalizer gọi <code>Dispose(false)</code>), <code>.GetAwaiter().GetResult()</code> là lựa chọn
+ít tệ nhất trong 2 lựa chọn tồi, KHÔNG phải một ngoại lệ để bắt chước tuỳ tiện ở nơi khác.</p>
+</blockquote>
 <p>Hai bẫy async khác cần tránh — <code>async void</code> và &quot;fire-and-forget&quot; nuốt lỗi:</p>
 <pre><code class="language-csharp">// ❌ NGUY HIỂM: exception trong async void làm CRASH process, không bắt được
 async void StartAsync() { await DoSomethingAsync(); }
@@ -4335,6 +4380,26 @@ trong <strong>constructor</strong> thì rủi ro cao hơn: object có thể chư
 xong) khi Task nền đã bắt đầu chạy, và exception ném ra vẫn bị nuốt im lặng như thường. Nếu công việc
 async thật sự cần khởi động cùng lúc object được tạo, tách ra một method <code>InitializeAsync()</code> để caller
 tự <code>await</code> tường minh, thay vì giấu nó trong constructor.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Nhầm lẫn nguy hiểm: gọi <code>.ConfigureAwait(false)</code> mà QUÊN <code>await</code> phía trước.</strong> <code>ConfigureAwait</code>
+(mục 5.1.3) chỉ có tác dụng khi nó là một MẮT XÍCH trong chuỗi <code>await ai_do().ConfigureAwait(false)</code>
+— bản thân nó KHÔNG phải một cách &quot;an toàn hơn&quot; để chạy fire-and-forget:</p>
+<pre><code class="language-csharp">// ❌ ẢO TƯỞNG &quot;đã xử lý đúng&quot; — nhìn có vẻ cẩn thận (có ConfigureAwait) nhưng vô nghĩa
+HandleMessageAsync(msg).ConfigureAwait(false);   // KHÔNG có await — Task bị bỏ rơi y hệt không viết gì
+
+// ✅ Nếu ý định là fire-and-forget có kiểm soát — dùng đúng mẫu đã học
+_ = Task.Run(async () =&gt; { try { await HandleMessageAsync(msg); } catch (Exception ex) { _logger.LogError(ex, &quot;...&quot;); } });
+
+// ✅ Nếu ý định là chờ xong mới tiếp tục — phải có await
+await HandleMessageAsync(msg).ConfigureAwait(false);
+</code></pre>
+<p><code>HandleMessageAsync(msg).ConfigureAwait(false)</code> không có <code>await</code> đứng trước chỉ đơn giản TẠO ra
+một <code>ConfiguredTaskAwaitable</code> rồi <strong>bỏ luôn</strong>, không khác gì gọi method mà không dùng giá trị trả
+về — Task đó vẫn chạy nền, nhưng không ai chờ nó, không ai bắt exception của nó (giống hệt lỗi fire-
+and-forget đã học, chỉ khác cái đuôi <code>.ConfigureAwait(false)</code> trông &quot;có vẻ&quot; cẩn thận). Đây là một
+cách viết dễ đánh lừa người review: thấy có <code>ConfigureAwait(false)</code> dễ tưởng tác giả đã cân nhắc kỹ
+vấn đề threading, trong khi thực chất dòng code không hề <code>await</code> gì cả.</p>
 </blockquote>
 <blockquote>
 <p>📌 <strong>LINQ <code>.Select(async x =&gt; ...)</code> + <code>Task.WhenAll</code> — dễ viết sai thứ tự.</strong> Muốn chạy song song một
@@ -4438,6 +4503,23 @@ catch (OperationCanceledException) when (ct.IsCancellationRequested)
 exception khi token bị huỷ, chỉ trả <code>false</code> khi chính <code>PeriodicTimer</code> đó bị <code>Dispose()</code>
 (một tình huống khác). Dùng <code>PeriodicTimer</code> cho vòng polling chạy liên tục dài hạn cần
 chu kỳ ổn định; <code>Task.Delay</code> vẫn phù hợp cho một lần chờ đơn lẻ (như timeout ở Code 5.6).</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong><code>await Task.Delay(N)</code> không kèm lý do — nghi ngờ đây là &quot;vá tạm&quot; một race condition.</strong> Code
+5.5/5.6 dùng <code>Task.Delay</code> cho hai mục đích rõ ràng (chờ giữa các vòng polling, tạo timeout) — cả
+hai đều có LÝ DO tường minh. Gặp một dòng <code>await Task.Delay(500);</code> chen giữa hai bước KHỞI TẠO
+tưởng như độc lập, không kèm comment giải thích:</p>
+<pre><code class="language-csharp">await InitializeIncentiveCommandsAsync();
+await Task.Delay(500);            // ??? không rõ lý do — chờ cái gì?
+await InitializeResponseCommandsAsync();
+</code></pre>
+<p>— đây là dấu hiệu đáng ngờ, không phải cách viết bình thường. Nếu hai bước THỰC SỰ độc lập, không
+có lý do gì cần đợi giữa chúng. Nếu có PHỤ THUỘC NGẦM (bước 2 cần bước 1 hoàn tất một việc gì đó ở
+phía khác, ví dụ một luồng nền khác cần thời gian ổn định), con số mili-giây cụ thể luôn là ĐOÁN
+MÒ — không có gì đảm bảo đủ trên máy chậm hơn, dưới tải cao hơn, hoặc sau khi thêm bước xử lý mới.
+Gặp mẫu &quot;delay không giải thích&quot;, đừng chỉ chấp nhận nó là bình thường — đó là tín hiệu cần đồng bộ
+hoá ĐÚNG CÁCH (chờ đúng sự kiện/tín hiệu hoàn tất qua <code>SemaphoreSlim</code>/<code>TaskCompletionSource</code>, không
+phải đoán một khoảng thời gian &quot;chắc là đủ&quot;).</p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong><code>catch (Exception)</code> nuốt lỗi im lặng — hậu quả cụ thể trong automation:</strong> Code 5.5 chỉ bắt đúng một loại lỗi có ý nghĩa (<code>OperationCanceledException</code> khi bị huỷ). Một biến thể nguy hiểm hay gặp trong thực tế: <code>catch (Exception) { }</code> bắt rộng và không log gì, hoặc chỉ log rồi nuốt luôn — không phân biệt lỗi tạm thời (mất kết nối, thử lại được) với lỗi hệ thống (cần dừng và báo alarm). Hậu quả không phải lúc nào cũng là crash rõ ràng: đăng nhập sai không rõ lý do (exception bị nuốt trước khi thông báo tới UI), hay lệnh jog trục thất bại âm thầm (operator nhấn nút, trục không nhúc nhích, không có alarm nào giải thích tại sao) — cả hai đều khiến người vận hành mất niềm tin vào hệ thống, hoặc tệ hơn, thử lại thao tác nguy hiểm vì tưởng lần trước &quot;không có gì xảy ra&quot;. Luôn phân loại: lỗi mong đợi (<code>AlarmException</code>) xử lý riêng, huỷ (<code>OperationCanceledException</code>) xử lý riêng, còn lại mới <code>catch (Exception)</code> như lưới an toàn cuối cùng — và luôn log với exception làm tham số đầu tiên.</p>
@@ -8433,6 +8515,26 @@ bật virtualization — mỗi item hiển thị vẫn phải dựng template đ
 <code>EnableRowVirtualization=&quot;True&quot;</code> và <code>EnableColumnVirtualization=&quot;True&quot;</code>,
 cùng với <code>VirtualizingPanel.*</code> như trên.</p>
 <blockquote>
+<p>⚠️ <strong>Bẫy khác hẳn, gặp khi <code>DataGrid</code> cho phép SỬA trực tiếp trên lưới (recipe/danh sách user):</strong>
+<code>DataGrid</code> mặc định chỉ đẩy giá trị ô đang gõ vào property của item khi người dùng RỜI Ô (mất focus
+hoặc nhấn Enter/Tab) — nếu code đọc <code>ObservableCollection</code> đang binding NGAY TRONG LÚC con trỏ vẫn
+còn ở ô vừa gõ (ví dụ nút &quot;Lưu&quot; đọc dữ liệu để ghi xuống DB), giá trị vừa gõ CHƯA kịp vào property,
+bị đọc thiếu mà không có exception nào báo. Khắc phục: ép DataGrid &quot;chốt&quot; ô/dòng đang dở trước khi
+đọc, qua <code>CollectionViewSource.GetDefaultView(...)</code>:</p>
+<pre><code class="language-csharp">var view = CollectionViewSource.GetDefaultView(Users) as IEditableCollectionView;
+view?.CommitEdit();   // đẩy giá trị ô đang gõ vào property
+view?.CommitNew();    // chốt luôn dòng mới đang thêm dở (nếu DataGrid cho AddNewItem)
+
+var changed = Users.Where(u =&gt; u.IsDirty).ToList();   // giờ đọc mới đủ, kể cả thay đổi cuối cùng
+</code></pre>
+<p><code>CollectionViewSource.GetDefaultView(collection)</code> lấy &quot;khung nhìn mặc định&quot; (quản lý sort/filter/
+trạng thái edit) gắn sẵn với MỘT <code>ObservableCollection</code> cụ thể mà không cần khai báo
+<code>CollectionViewSource</code> tường minh trong XAML — mọi <code>ItemsControl</code>/<code>DataGrid</code> binding cùng collection
+đó đều chia sẻ chung 1 view này. Gọi <code>CommitEdit()</code>/<code>CommitNew()</code> ngay TRƯỚC bước đọc dữ liệu (nút
+Lưu, validate, gửi đi) là thói quen bắt buộc với mọi DataGrid cho phép sửa trực tiếp — quên bước này
+là nguyên nhân phổ biến của &quot;tôi vừa gõ xong bấm Lưu ngay mà mất đúng ô cuối cùng&quot;.</p>
+</blockquote>
+<blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Với log thật sự lớn (200.000+ dòng/ngày), đừng cố
 hiển thị toàn bộ trên một lưới dù đã ảo hoá — lưu đầy đủ vào DB/file, UI
 chỉ giữ &quot;cửa sổ gần nhất&quot; (1.000–5.000 dòng) kèm tìm kiếm/lọc thực hiện ở
@@ -10798,6 +10900,25 @@ public sealed class DomainException : Exception
 <blockquote>
 <p>📌 <strong><code>is A or B</code> — pattern combinator:</strong> khớp khi <code>State</code> bằng <code>A</code> HOẶC <code>B</code>,
 gọn hơn <code>State == A || State == B</code>. Có cả <code>and</code>/<code>not</code> tương tự cho AND/NOT.</p>
+<p>🔍 <strong>Đào sâu thêm — các mẫu <code>is</code> phức tạp hơn hay gặp trong code thật.</strong> Ngoài so khớp giá trị đơn
+(<code>is A or B</code>), <code>is</code> còn so khớp được CẤU TRÚC. Với 1 biến kiểu <code>object</code>, có thể kiểm tra nó có phải
+đúng 1 <code>tuple</code> (kèm gán biến luôn nếu khớp):</p>
+<pre><code class="language-csharp">object pathPart = (3, 5);   // ví dụ: 1 phần tử &quot;địa chỉ&quot; kiểu (hàng, cột)
+if (pathPart is (int row, int col))     // vừa kiểm tra ĐÚNG tuple (int,int), vừa gán row/col
+    Console.WriteLine($&quot;Ô ({row}, {col})&quot;);
+</code></pre>
+<p>Các mảnh nhỏ (type pattern, property pattern, combinator <code>and</code>/<code>or</code>, gán biến) còn ghép được thành
+MỘT biểu thức nhiều tầng:</p>
+<pre><code class="language-csharp">if (newValue is ArrayBase and IIndex1D { Size: &gt; 0 } index1D)
+    var first = index1D.GetValue(0);
+</code></pre>
+<p>Đọc từ trái sang phải: <code>newValue</code> phải là <code>ArrayBase</code> (type pattern) <strong>VÀ</strong> (combinator <code>and</code>) phải
+implement <code>IIndex1D</code> <strong>VÀ</strong> property <code>Size</code> của nó phải <code>&gt; 0</code> (property pattern lồng có so sánh
+quan hệ) — nếu khớp CẢ BA điều kiện, gán vào biến <code>index1D</code> (kiểu <code>IIndex1D</code>) để dùng tiếp. Đây là
+4 kỹ thuật pattern matching đã học rải rác (type pattern, property pattern, combinator, biến bắt
+trong <code>is</code>) ghép chung một biểu thức — không có cú pháp mới nào cả, chỉ là mức độ kết hợp cao hơn
+ví dụ đơn giản phía trên. Gặp một biểu thức <code>is</code> dài, đọc chậm từng mảnh nối bằng <code>and</code>/<code>or</code>, đừng
+cố hiểu cả câu cùng lúc.</p>
 </blockquote>
 <p>Entity Axis quản lý thông số công nghệ và ràng buộc di chuyển:</p>
 <p><strong>Code 11.2 — Entity Axis</strong></p>
@@ -20806,6 +20927,27 @@ sm.Send(PackMlCommand.Reset);
 <blockquote>
 <p>📌 <strong>Ngưỡng coverage thực tế trong automation:</strong> Hầu hết team công nghiệp chọn 70–80% như mức khởi điểm hợp lý cho code mới. Quan trọng hơn là <em>cái gì</em> được cover, không phải <em>bao nhiêu phần trăm</em>.</p>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong>&quot;Xanh giả&quot; (false green) — nguy hiểm hơn cả 0% coverage.</strong> Có một cách tệ hơn &quot;không test&quot;:
+một <code>[Fact]</code> TỒN TẠI, tên gợi ý đúng hành vi quan trọng, CI báo &quot;Passed&quot; — nhưng toàn bộ thân hàm
+đã bị comment lại, không còn dòng nào thực sự chạy hay assert gì cả:</p>
+<pre><code class="language-csharp">[Fact]
+public void CallbackChayDungTrenUiThreadTest()
+{
+    // var handler = new UiMessageDispatcher(dispatcher);
+    // handler.ProcessMessage(new Message(actor, &quot;_hello&quot;, null));
+    // Assert.True(callbackDaChay);
+}   // Thân rỗng — biên dịch được, chạy xong ngay, KHÔNG BAO GIỜ fail
+</code></pre>
+<p>Test này <strong>luôn &quot;Pass&quot;</strong> — không phải vì hành vi đúng, mà vì không còn gì để kiểm tra. Nếu sau này
+ai đó sửa <code>UiMessageDispatcher</code> sai (ví dụ quên gọi <code>Dispatcher.InvokeAsync</code>, callback chạy nhầm
+thread), CI vẫn báo xanh — không một tín hiệu nào cảnh báo. So với 1 method hoàn toàn CHƯA CÓ test
+(rõ ràng là &quot;chưa test&quot;, coverage tool chỉ ra ngay), đây tệ hơn: coverage tool vẫn đếm dòng <code>[Fact]</code>
+này là &quot;đã test&quot;, tạo cảm giác an toàn sai. Nếu cần tạm tắt một test (đang sửa dở, phụ thuộc hạ tầng
+chưa sẵn sàng), dùng đúng cú pháp xUnit cho việc đó — <code>[Fact(Skip = &quot;Lý do tạm tắt, xem issue #123&quot;)]</code>
+— kết quả hiện &quot;Skipped&quot; (khác hẳn &quot;Passed&quot;) trong báo cáo test, ai nhìn báo cáo cũng biết ngay đây
+là một khoảng trống coverage thật sự, không phải một test đã xác nhận hành vi đúng.</p>
+</blockquote>
 <h3>18.6.2  Ưu tiên test theo mức rủi ro</h3>
 <p>Phần mềm điều khiển có phân cấp rủi ro rõ ràng. Phân bổ công sức viết test theo cùng phân cấp đó:</p>
 <p><strong>Bảng 18.5 — Thứ tự ưu tiên test theo mức rủi ro</strong></p>
@@ -22356,6 +22498,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="f">F</h2>
 <p><strong>FATP (Final Assembly Test &amp; Packaging)</strong> — Loại hình nhà máy lắp ráp cuối, kiểm tra và đóng gói sản phẩm (phổ biến trong điện tử); môi trường thường là phòng sạch (cleanroom) với ánh sáng ổn định, đồng đều — bối cảnh khác hẳn xưởng cơ khí có đèn chiếu mạnh, ảnh hưởng trực tiếp đến lựa chọn Dark/Light theme cho HMI. (→ xem Dark theme / Light theme (bối cảnh HMI))
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.2.1.</em></p>
+<p><strong>False Green (test xanh giả)</strong> — Một test case tồn tại và báo &quot;Passed&quot; trên CI nhưng không còn thực sự kiểm tra hành vi nào (thân hàm bị comment hết, hoặc assert đã bị xoá) — nguy hiểm hơn 0% coverage vì coverage tool vẫn đếm nó là &quot;đã test&quot;, tạo cảm giác an toàn sai. Khác việc tạm tắt test có chủ đích và có ghi chú qua <code>[Fact(Skip = &quot;lý do&quot;)]</code> (hiện &quot;Skipped&quot;, không phải &quot;Passed&quot;, trong báo cáo). (→ xem xUnit, AAA)
+<em>Xuất hiện đầu tiên: Chương 18, mục 18.6.1.</em></p>
 <p><strong>FAT (Factory Acceptance Test) / SAT (Site/System Acceptance Test)</strong> — Hai cấp nghiệm thu máy: FAT diễn ra tại xưởng nhà sản xuất trước khi xuất máy (≈ Integration Test — kiểm tra các cụm phối hợp với nhau); SAT diễn ra tại xưởng khách hàng sau khi lắp đặt (≈ System Test — kiểm tra toàn hệ thống trong môi trường thật). Không nhầm với FATP (loại hình nhà máy). (→ xem FATP, Test Pyramid (Tháp kiểm thử))
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.1.2.</em></p>
 <p><strong>Fieldbus</strong> — Lớp mạng truyền thông kết nối IPC, PLC, Remote I/O, và thiết bị hiện trường (servo drive, biến tần, cảm biến thông minh); nhiều chuẩn khác nhau (EtherCAT, PROFINET, Modbus TCP, EtherNet/IP), mỗi chuẩn có đặc điểm thời gian thực và hệ sinh thái vendor riêng (Chương 14 đi sâu cách C# giao tiếp qua các giao thức này). (→ xem IPC (Industrial PC), Remote I/O)

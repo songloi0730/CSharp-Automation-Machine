@@ -1552,6 +1552,24 @@ public enum AutoState { Idle, Init, Home, Run, Fault }
 
 `enum` là value type, so sánh nhanh như số nguyên, nhưng đọc code lên rõ nghĩa như đọc spec. Mọi chương sau (PackML state, alarm severity, loại lệnh...) đều dựa trên `enum`.
 
+> 💡 **Mẹo thực chiến — đánh số CÁCH QUÃNG cho enum bước sequence.** Code 3.3 để compiler tự đánh số
+> liên tiếp (0, 1, 2...) — hợp lý cho state chung chung. Với enum liệt kê CÁC BƯỚC của một trình tự
+> dài (tương tự SFC/PLC step), gán số tường minh cách quãng (thường 10 đơn vị) thay vì để mặc định:
+> ```csharp
+> public enum FeedingStep
+> {
+>     WaitStartButton = 0,
+>     ValidateBatchCount = 10,
+>     LoadRecipeParam = 20,
+>     CheckAxisReady = 30,
+>     // ...
+> }
+> ```
+> Lý do: khi cần CHÈN một bước mới ở giữa (ví dụ giữa `ValidateBatchCount` và `LoadRecipeParam`),
+> chỉ cần thêm `CheckSafetyDoor = 15` mà không phải đổi số của mọi bước phía sau — nếu đánh số liên
+> tiếp 0,1,2,3, chèn giữa buộc phải đổi lại toàn bộ số từ điểm chèn trở đi, dễ gây lỗi nếu có nơi
+> khác trong code so sánh trực tiếp bằng số nguyên thay vì tên enum.
+
 ---
 
 ## 3.2  Biến, hằng và toán tử trong ngữ cảnh điều khiển
@@ -2110,6 +2128,15 @@ public sealed class TextFileLogger
 > trùng tên (C# không cho khai 2 biến trùng tên trong cùng phạm vi — nếu đó là
 > khai biến mới, compiler sẽ báo lỗi). Quy ước này dùng lại xuyên suốt sách,
 > không nhắc lại nữa từ đây.
+>
+> ⚠️ **Bẫy dễ tự mắc: đặt tên field TRÙNG tên KIỂU của chính nó.** `_camelCase` giúp phân biệt field
+> với biến cục bộ — nhưng nếu bỏ qua quy ước này, một field kiểu `Random` đặt tên PascalCase `Random`
+> (`private Random Random = new Random();`) sẽ khiến `Random.Next()` ở nơi khác trong class trông
+> giống hệt đang gọi một method TĨNH của chính kiểu `System.Random` — dù `Random` không có method
+> tĩnh nào, người đọc vẫn phải khựng lại 1 nhịp để xác nhận đây là field instance, không phải static
+> member của kiểu. Không phải lỗi biên dịch (C# phân biệt được nhờ ngữ cảnh), nhưng là một cách tự
+> làm khó chính mình khi đọc lại code sau này — luôn giữ đúng `_camelCase` cho field, kể cả khi tên
+> "hiển nhiên" trùng với tên kiểu của nó.
 >
 > 📌 **Hai cú pháp mới ở Code 3.16:**
 > - **Generic `<T>`** (`BlockingCollection<string>`): ký hiệu `<T>` trong `List<T>`, `Queue<T>`, `BlockingCollection<T>`, `Dictionary<TKey,TValue>`... nghĩa là collection được tham số hoá theo kiểu bạn chỉ định — `BlockingCollection<string>` chỉ chứa `string`, không nhét nhầm kiểu khác được (compiler bắt lỗi ngay, không đợi tới lúc chạy). Cách *tự viết* một kiểu generic của riêng mình học ở **Chương 4, mục 4.5**; ở đây chỉ cần biết cách *dùng* các kiểu generic sẵn có trong thư viện chuẩn.
@@ -3141,6 +3168,25 @@ Result<double> ReadPosition(int axisId)
 
 `Result<double>`, `Result<AxisStatus>`, `Result<Recipe>` — cùng một định nghĩa, dùng cho mọi kiểu. Đây cũng là nền của `Queue<DeviceCommand>` trong command queue (Chương 3) và `IDeviceCommand` trong Command Pattern (Chương 16).
 
+> 🔍 **Đào sâu thêm — Result-type vs Exception-type: hai trường phái xử lý lỗi hardware, cả hai đều
+> hợp lệ.** Sách dùng `Result<T>`/`AlarmException` (Chương 6) SONG SONG tuỳ tình huống — nhưng một
+> số codebase thực tế chọn HẲN một trường phái cho toàn bộ tầng Mechanism/hardware, mở rộng
+> `Result<T>` thêm một field mã lỗi (không chỉ chuỗi message): `MechResult.Fail(AlarmCodes.MoveFailed, "Di chuyển thất bại")`
+> thay vì `throw new AlarmException(...)`. Đánh đổi giữa hai trường phái:
+> - **Result-type** (mọi method trả `Result<T>`/`MechResult`): buộc caller PHẢI kiểm tra `IsOk` mới
+>   dùng được `Value` (nếu không kiểm tra, dùng nhầm giá trị mặc định) — lỗi hiển thị RÕ trong chữ ký
+>   hàm, dễ thấy khi đọc code. Nhược điểm: không tự có stack trace, phải tự truyền lỗi ngược lên từng
+>   tầng gọi (dễ quên kiểm tra `IsOk` ở một tầng nào đó, lỗi bị "nuốt" âm thầm nếu code sau đó không
+>   check).
+> - **Exception-type** (`throw new AlarmException(...)`): tự động lan truyền lên đến chỗ có `catch`
+>   gần nhất, không cần caller nào cũng phải nhớ kiểm tra — nhưng dễ QUÊN bắt ở tầng cần bắt (compiler
+>   không ép), và có chi phí hiệu năng cao hơn với luồng lỗi tần suất cao.
+> Một codebase chọn nhất quán MỘT trường phái cho toàn tầng Mechanism (ví dụ toàn bộ trả
+> `MechResult`, không ném exception nào cho lỗi hardware dự kiến) không phải sai — chỉ là một lựa
+> chọn kiến trúc khác với cách sách trình bày song song cả hai. Điều quan trọng là NHẤT QUÁN trong
+> một tầng: trộn lẫn tuỳ tiện (có method trả `Result<T>`, có method khác cùng tầng lại `throw`) mới
+> là vấn đề thật, vì caller không biết chắc nên `try/catch` hay kiểm tra `IsOk`.
+
 > 📌 **Lưu ý về độ sâu generic:** Ở Chương 4 chỉ cần dùng generic ở mức "`T` là một kiểu cụ thể do nơi gọi chỉ định". Các kỹ thuật nâng cao hơn — *generic constraint* (`where T : ...`, dùng thật ở Chương 13), covariance/contravariance (`in`/`out`, dùng thật ở Chương 16) — nằm ngoài phạm vi chương này, gặp lại khi thực sự cần ở các chương đó. Đừng vội phức tạp hoá khi `Result<T>` đơn giản đã giải quyết được phần lớn nhu cầu.
 >
 > 📌 **Vì sao đặt tên tham số kiểu là `T`:** cũng là quy ước, không phải luật —
@@ -3371,6 +3417,38 @@ if (await Task.WhenAny(arrived, timeout) == timeout)
 await arrived;   // quan sát lỗi nếu arrived bị faulted
 ```
 
+> 💡 **`Task.WaitAsync(TimeSpan)` (.NET 6+) — cách viết gọn hơn cho ĐÚNG mẫu timeout trên.** Thay vì
+> tự tạo `Task.Delay` rồi so sánh kết quả `Task.WhenAny`, có thể viết ngắn hơn:
+> ```csharp
+> try   { await arrived.WaitAsync(TimeSpan.FromSeconds(5), ct); }
+> catch (TimeoutException) { throw new AlarmException(AlarmCodes.MotionTimeout, "AXIS"); }
+> ```
+> `WaitAsync` tự ném `TimeoutException` khi hết hạn — không cần so sánh Task nào thắng. Hai cách
+> tương đương về hành vi; `Task.WhenAny` + `Task.Delay` vẫn cần thiết khi phải RACE nhiều hơn 2 Task,
+> hoặc khi Task "thua" không phải đơn thuần timeout mà là một tài nguyên nghiệp vụ khác (xem hộp
+> "Đào sâu thêm" ngay bên dưới).
+
+> 🔍 **Đào sâu thêm — `Task.WhenAny` để RACE hai tài nguyên nghiệp vụ, không chỉ để timeout.** Ví dụ
+> trên dùng `Task.WhenAny` giữa một thao tác nghiệp vụ và MỘT `Task.Delay` — mẫu timeout quen thuộc.
+> Một tình huống khác: hai TRẠM đều cần dùng chung một thiết bị (ví dụ 2 công vị chia sẻ 1 camera),
+> và `Task.WhenAny` được dùng để "ai xin được tín hiệu trước thì thắng":
+> ```csharp
+> using var raceCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+> var task1 = _sync.WaitAsync("Station1_PermitDetect", raceCts.Token);
+> var task2 = _sync.WaitAsync("Station2_PermitDetect", raceCts.Token);
+> var winner = await Task.WhenAny(task1, task2).ConfigureAwait(false);
+> raceCts.Cancel();   // huỷ ngay task còn lại — nhưng "huỷ" không hoàn tác được side-effect đã xảy ra
+> ```
+> Cạm bẫy tinh vi: `Task.WhenAny` chỉ trả về Task thắng, HOÀN TOÀN BỎ QUA kết quả các Task còn lại —
+> nhưng "Task thua" có thể đã **thành công lấy được tín hiệu/semaphore NGAY TRƯỚC** lúc bị
+> `raceCts.Cancel()`, chỉ là `Task.WhenAny` không quan tâm tới nó nữa. Nếu không xử lý, tín hiệu đó
+> coi như "mất tích" — vòng sau, phe thua sẽ chờ vô thời hạn một tín hiệu không bao giờ được cấp lại
+> (một dạng deadlock giả). Cách sửa: sau khi biết ai thắng, luôn `await` Task thua (để nó "chốt hạ"
+> trạng thái) rồi kiểm tra `loserTask.Status == TaskStatus.RanToCompletion` — nếu đúng, chủ động trả
+> lại (Release) tài nguyên nó đã trót lấy được. Bài học chung: `Task.WhenAny` an toàn tuyệt đối khi
+> các Task không có side-effect ngoài việc trả giá trị (như `Task.Delay`) — khi Task có side-effect
+> thật (chiếm giữ tài nguyên dùng chung), luôn xử lý dứt điểm Task thua trước khi bỏ qua nó.
+
 > 🔍 **Đào sâu thêm — nhận diện 2 mô hình bất đồng bộ cũ hơn khi đọc code .NET Framework:**
 > `async`/`await` (chính thức gọi là **TAP** — Task-based Asynchronous Pattern) không phải mô hình
 > bất đồng bộ đầu tiên của .NET — hai mô hình cũ hơn vẫn xuất hiện rất nhiều trong code kế thừa:
@@ -3523,6 +3601,26 @@ UploadLogAsync().Forget(_logger);
 > Muốn huỷ thật, method bên trong phải TỰ nhận `CancellationToken` và tự kiểm tra
 > (`ct.ThrowIfCancellationRequested()` hoặc truyền `ct` xuống các API con) — không có cách nào ép
 > một method đồng bộ cũ dừng giữa chừng chỉ bằng cách bọc `Task.Run(..., token)` bên ngoài.
+
+> 🔍 **Đào sâu thêm — chiều ngược lại: cố ý truyền `CancellationToken.None` cho `Task.Run`.** Token
+> truyền làm tham số thứ hai của `Task.Run` có đúng MỘT tác dụng: nếu nó đã bị huỷ NGAY TẠI THỜI
+> ĐIỂM `Task.Run` được gọi (trước khi kịp xếp vào hàng đợi thread pool), `Task.Run` sẽ huỷ Task
+> ngay lập tức mà KHÔNG BAO GIỜ chạy thân lambda — kể cả một dòng đầu tiên. Với một vòng lặp nền
+> chạy suốt vòng đời (kiểu `while (!ct.IsCancellationRequested) { ... }` ở Code 5.5), đây là cạm bẫy
+> ngược: nếu vô tình truyền đúng `ct` của vòng lặp (không phải một token mới) làm tham số THỨ HAI
+> của `Task.Run`, và `ct` đó đã bị huỷ ngay từ đầu (ví dụ do restart nhanh), `Task.Run` sẽ không bao
+> giờ khởi động task — không exception rõ ràng, chỉ là "task lẽ ra phải chạy nhưng không chạy":
+> ```csharp
+> // Cố ý: KHÔNG dùng ct của vòng lặp cho tham số thứ hai — chỉ để CHẠY được task,
+> // bên trong thân lambda mới tự kiểm tra ct theo đúng cơ chế cooperative cancellation
+> _backgroundTask = Task.Run(() => RunLoopAsync(ct), CancellationToken.None);
+> ```
+> Đây là lý do nhiều codebase automation cố ý truyền `CancellationToken.None` (không phải token thật
+> của vòng lặp) làm tham số THỨ HAI của `Task.Run` — đảm bảo TASK LUÔN ĐƯỢC KHỞI ĐỘNG, còn việc dừng
+> vòng lặp bên trong hoàn toàn dựa vào `ct` được truyền là THAM SỐ của hàm chạy bên trong (`RunLoopAsync(ct)`),
+> kiểm tra theo đúng mẫu cooperative cancellation đã học, không phải qua cơ chế huỷ-trước-khi-chạy
+> của chính `Task.Run`. Hai tham số `CancellationToken` ở đây phục vụ HAI mục đích hoàn toàn khác
+> nhau — nhầm lẫn giữa chúng là nguồn gốc của cả hai bẫy vừa nêu.
 
 Kỹ sư PLC quen nút E-Stop phần cứng: nhấn là mọi chuyển động dừng ngay. **`CancellationToken`** <!--idx:CancellationToken--> là phiên bản phần mềm của ý tưởng đó cho thao tác bất đồng bộ — một "tín hiệu dừng" truyền xuống mọi tầng để chúng tự kết thúc sạch sẽ thay vì bị "giết" giữa chừng.
 
@@ -10566,6 +10664,20 @@ Chương này dùng cả hai cách sau — State Pattern ở 12.1 để hiểu c
 > là đọc code khó hơn — phải luôn hỏi "mình đang ở tầng nào của ngăn xếp" thay vì chỉ hỏi "mình
 > đang ở state gì". Với hầu hết máy vừa và nhỏ, state phẳng (`TransitionTo`) đã đủ dùng; chỉ cân
 > nhắc biến thể này khi việc "tạm rẽ nhánh rồi quay lại nguyên trạng" xảy ra thường xuyên.
+
+> 🔍 **Đào sâu thêm — biến thể thứ năm: state machine 2 CẤP LỒNG NHAU (global + per-station).**
+> Kiến trúc 3 tầng MasterController→Station→Mechanism mà sách dạy có thể triển khai state machine
+> theo 2 cách: (1) **một** state machine duy nhất tại MasterController, mọi Station chỉ là dữ liệu bị
+> điều khiển — cách sách trình bày chính; hoặc (2) MasterController có state machine TOÀN CỤC
+> (Idle/Running/Paused ở cấp hệ thống) VÀ mỗi Station lại có state machine RIÊNG của chính nó (ví dụ
+> từng bước xử lý cục bộ của trạm đó) — hai tầng state machine lồng nhau, độc lập nhưng phối hợp: khi
+> state machine toàn cục chuyển sang `Running`, nó gọi `station.StartAsync()` cho từng trạm, và mỗi
+> trạm tự vận hành state machine con của mình mà không cần MasterController biết chi tiết bên trong.
+> Biến thể (2) hợp lý khi các trạm có trình tự bước KHÁC NHAU đáng kể (ví dụ trạm nạp liệu và trạm đo
+> OCR có số bước, tên bước hoàn toàn khác nhau) — tách state machine con giúp mỗi trạm độc lập bảo
+> trì, không cần một enum trạng thái khổng lồ liệt kê hết mọi bước của mọi trạm. Đánh đổi: khi debug,
+> phải luôn xác định đang hỏi về state TOÀN CỤC hay state của MỘT TRẠM cụ thể — dễ nhầm nếu không đặt
+> tên rõ ràng (ví dụ `MachineState` cho toàn cục, `StationStep` cho từng trạm).
 
 ### 12.1.3  ISequenceEngine — hợp đồng điều khiển từ bên ngoài
 

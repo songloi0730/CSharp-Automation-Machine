@@ -1302,6 +1302,26 @@ nhiều RAM hơn cho xử lý ảnh), giải pháp thường là tách tiến tr
 Communication) — Chương 14 sẽ động đến kỹ thuật này khi bàn về tích hợp
 SDK không tương thích.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong><code>&lt;DefineConstants&gt;</code> và chỉ thị tiền xử lý <code>#if</code>/<code>#endif</code> — biên dịch có điều kiện.</strong> File
+<code>.csproj</code> có thể khai một danh sách &quot;cờ&quot; (<code>&lt;DefineConstants&gt;USE_MODBUS;USE_CCLINK&lt;/DefineConstants&gt;</code>),
+thường khác nhau giữa cấu hình Debug/Release/x64. Trong code, <code>#if TÊN_CỜ ... #endif</code> chỉ giữ lại
+đoạn code đó nếu cờ tương ứng ĐANG được định nghĩa lúc biên dịch — phần còn lại bị compiler LOẠI BỎ
+HOÀN TOÀN, không phải chỉ bỏ qua lúc chạy:</p>
+<pre><code class="language-csharp">#if USE_MODBUS
+_plc = new ModbusPlcAdapter(...);
+#else
+_plc = new SimulatedPlcAdapter(...);
+#endif
+</code></pre>
+<p>Khác <code>if</code> thường (kiểm tra lúc CHẠY, cả hai nhánh đều được biên dịch vào assembly), <code>#if</code> được xử lý
+lúc BIÊN DỊCH — nhánh không khớp cờ hoàn toàn không tồn tại trong file <code>.exe</code>/<code>.dll</code> sinh ra. Dùng
+khi cần build ra nhiều PHIÊN BẢN của cùng một ứng dụng cho các cấu hình phần cứng khác nhau (máy có/
+không có module giao tiếp CC-Link, dùng Modbus hay giao thức khác) mà không muốn duy trì nhiều
+nhánh source code riêng biệt. Đánh đổi: code có nhiều <code>#if</code> lồng nhau rất khó đọc (phải nhớ tổ hợp
+cờ nào đang bật để hình dung đúng đoạn code sẽ chạy), và không có công cụ nào cảnh báo khi một tổ
+hợp cờ hiếm gặp chưa từng được build thử.</p>
+</blockquote>
 <p><strong>Bảng 2.3 — Build, Rebuild, và Clean: khi nào dùng cái nào</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -2165,6 +2185,36 @@ dài (tương tự SFC/PLC step), gán số tường minh cách quãng (thườn
 chỉ cần thêm <code>CheckSafetyDoor = 15</code> mà không phải đổi số của mọi bước phía sau — nếu đánh số liên
 tiếp 0,1,2,3, chèn giữa buộc phải đổi lại toàn bộ số từ điểm chèn trở đi, dễ gây lỗi nếu có nơi
 khác trong code so sánh trực tiếp bằng số nguyên thay vì tên enum.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Anti-pattern nguy hiểm: nhiều <code>enum</code> ĐỘC LẬP chia nhau chung MỘT dải chỉ số.</strong> Khác đánh số
+cách quãng (một mình một enum), đây là tình huống NHIỀU enum khác nhau cùng ghi/đọc vào một mảng
+dữ liệu DÙNG CHUNG, mỗi enum &quot;chiếm&quot; một đoạn liên tiếp trong dải chỉ số đó — offset bắt đầu của
+enum sau được TÍNH TAY bằng số lượng thành viên của (các) enum trước:</p>
+<pre><code class="language-csharp">public enum DelayA { Grip = 0, Ungrip, Timeout }              // 3 thành viên: 0,1,2
+public enum DelayB { CvRun = 3, CvStop, /* ... */ }            // phải TỰ BIẾT DelayA có 3 thành viên
+public enum DelayC { CylFwd = 14, CylBack, /* ... */ }         // phải TỰ BIẾT tổng DelayA+DelayB = 14
+// Cả 3 enum cùng ghi vào MỘT mảng: double[] m_delayTime = new double[512];
+</code></pre>
+<p>Đúng ở thời điểm viết, nhưng CỰC KỲ GIÒN: thêm hoặc bớt một thành viên ở <code>DelayA</code> mà quên tính lại
+số bắt đầu <code>= 3</code> của <code>DelayB</code> sẽ làm lệch TOÀN BỘ chỉ số của <code>DelayB</code> và mọi enum phía sau nó —
+không có lỗi biên dịch, không có cảnh báo runtime, chỉ là đọc/ghi nhầm ô nhớ của một xy-lanh/motor
+hoàn toàn khác. Nhận diện: thấy nhiều <code>enum</code> riêng biệt có giá trị khởi tạo là những con số &quot;kỳ lạ&quot;
+(không phải 0, không theo cách quãng đều 10/100) — nghi ngờ ngay đây là dải chỉ số dùng chung, cần
+đếm thủ công xác nhận trước khi sửa bất kỳ enum nào trong nhóm. Thiết kế an toàn hơn: gộp thành MỘT
+enum duy nhất, hoặc dùng <code>Dictionary&lt;TKey, TValue&gt;</code> với key có ý nghĩa thay vì mảng chỉ-số-thô.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Phép toán số học trên <code>enum</code>.</strong> C# cho phép cộng/trừ trực tiếp giữa một giá trị <code>enum</code> và số
+nguyên — kết quả trả về CÙNG kiểu <code>enum</code> đó (tương đương cộng trên kiểu số nền rồi ép ngược lại):</p>
+<pre><code class="language-csharp">AlarmCode code = AlarmCode.AxisZMoveTimeout + axisIndex;   // &quot;nhảy&quot; tới đúng mã alarm của trục đó
+</code></pre>
+<p>Kỹ thuật này dùng để tính ĐỘNG một mã alarm/tham số theo chỉ số (ví dụ trục số mấy), tránh viết một
+<code>switch-case</code> lặp lại cho từng trục — nhưng phụ thuộc HOÀN TOÀN vào thứ tự khai báo của 2 enum có
+khớp nhau hay không (ví dụ thứ tự các mã <code>AxisZMoveTimeout</code>/<code>AxisYMoveTimeout</code>/... trong <code>AlarmCode</code>
+phải khớp đúng thứ tự các trục trong enum <code>Axis</code>). Cùng rủi ro với anti-pattern &quot;dải chỉ số dùng
+chung&quot; ở trên: chèn một trục mới vào GIỮA danh sách thay vì cuối cùng sẽ làm lệch toàn bộ phép cộng
+phía sau, báo nhầm alarm cho trục khác mà không có bất kỳ dấu hiệu lỗi nào lúc build hay chạy.</p>
 </blockquote>
 <hr>
 <h2 id="32-bin-hng-và-toán-t-trong-ng-cnh-điu-khin">3.2  Biến, hằng và toán tử trong ngữ cảnh điều khiển</h2>
@@ -3187,6 +3237,24 @@ uint payloadSize = checked((uint)rawValue);       // ném OverflowException nế
 liệu đọc từ SDK hãng ngoài (không kiểm soát được driver có luôn trả giá trị hợp lệ hay không),
 <code>checked</code> là lựa chọn phòng thủ hợp lý: thà ném exception rõ ràng ngay tại điểm ép kiểu, còn hơn để
 một số sai âm thầm lan xuống logic phía sau rồi mới gây lỗi khó truy ở đâu đó khác.</p>
+</blockquote>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — <code>Environment.TickCount</code>: đo thời gian trôi qua, rẻ nhưng có &quot;hạn dùng&quot;.</strong>
+<code>Environment.TickCount</code> trả về số mili-giây kể từ lúc HĐH khởi động, kiểu <code>int</code> — rẻ hơn tạo một
+object <code>Stopwatch</code> (không cấp phát heap), hay gặp trong code timer tự chế:</p>
+<pre><code class="language-csharp">int start = Environment.TickCount;
+// ... làm việc gì đó ...
+bool hetGio = (Environment.TickCount - start) &gt; timeoutMs;
+</code></pre>
+<p>Vì <code>int</code> chỉ 32-bit có dấu, <code>TickCount</code> TRÀN SỐ (quay về âm) sau khoảng 24.9 ngày máy chạy liên
+tục — một máy công nghiệp chạy 24/7 hoàn toàn có thể chạm mốc này. Điểm hay: phép TRỪ
+<code>Environment.TickCount - start</code> vẫn cho kết quả ĐÚNG ngay cả khi đã tràn số, nhờ tính chất số học
+modulo của kiểu <code>int</code> — miễn khoảng thời gian đang đo (không phải tổng thời gian máy chạy) không tự
+nó vượt quá ~24.9 ngày. Với timer đo vài giây tới vài phút (timeout xy-lanh, timeout di chuyển
+trục), đây hoàn toàn an toàn — dễ bị nhầm là bug nếu không biết tính chất modulo này. Cho khoảng
+thời gian đo dài hơn, hoặc khi cần độ chính xác cao/không cấp phát đối tượng mới mỗi timer, ưu tiên
+<code>Stopwatch</code> (<code>Stopwatch.StartNew()</code>, đọc <code>.ElapsedMilliseconds</code> — dùng <code>long</code>, không tràn số trong
+phạm vi thời gian thực tế).</p>
 </blockquote>
 <!-- SECTION: Chapter_04_OOP -->
 <hr>
@@ -4333,6 +4401,24 @@ public void AddAlarm(AlarmRecord a)
 </code></pre>
 <blockquote>
 <p>⚠️ <strong>Không <code>lock(this)</code> hay <code>lock(typeof(...))</code>:</strong> <code>lock(this)</code> để lộ object lock ra ngoài — code bên ngoài có thể vô tình lock cùng object đó và gây deadlock khó truy. Luôn dùng một field private riêng: <code>private readonly object _gate = new();</code> (như Code 5.7).</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Cùng rủi ro, biến thể hay gặp: <code>lock</code> trực tiếp trên chính collection đang bảo vệ.</strong> Thay vì
+một field khoá riêng, code kế thừa đôi khi <code>lock</code> thẳng lên chính <code>List&lt;T&gt;</code>/collection đang thao
+tác — nếu field đó không <code>private readonly</code>, bất kỳ code nào khác trong assembly cũng có thể vô
+tình <code>lock</code> trên cùng object vì một lý do hoàn toàn khác, gây deadlock khó truy đúng như cảnh báo
+trên. Một lỗi khác hay đi kèm: đặt bước KIỂM TRA (đọc <code>Count</code>/tìm phần tử trùng) BÊN NGOÀI khối
+<code>lock</code>, chỉ bước GHI mới nằm trong <code>lock</code>:</p>
+<pre><code class="language-csharp">// ❌ &quot;check&quot; không có lock, &quot;lock&quot; chỉ bọc quanh &quot;act&quot; — vẫn có khe hở race condition
+if (!_activeAlarms.Exists(a =&gt; a.Code == code))   // 2 luồng có thể CÙNG đọc &quot;chưa có&quot; ở đây
+{
+    lock (_activeAlarms) { _activeAlarms.Add(new AlarmModel(code)); }   // cả 2 cùng Add → trùng
+}
+</code></pre>
+<p>Nếu 2 luồng gọi đồng thời với cùng <code>code</code>, cả hai có thể cùng đọc thấy &quot;chưa tồn tại&quot; TRƯỚC KHI bên
+nào kịp <code>lock</code> để thêm — kết quả: alarm bị thêm trùng lặp dù có <code>lock</code>. Nguyên tắc đúng là
+<strong>&quot;lock rồi mới check&quot;</strong>, không phải &quot;check rồi mới lock&quot; — toàn bộ chuỗi kiểm-tra-rồi-ghi phải nằm
+TRỌN VẸN bên trong cùng một khối <code>lock</code>, không tách rời hai bước.</p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Không thể <code>await</code> bên trong <code>lock { }</code>:</strong> compiler báo lỗi nếu bạn <code>await</code> trong khối <code>lock</code> — đây là thiết kế có chủ đích, vì <code>lock</code> phải được giải phóng trên <em>cùng một thread</em> đã lấy nó, trong khi <code>await</code> có thể chạy tiếp ở thread khác. Khi cần &quot;khoá&quot; quanh một thao tác async, dùng <code>SemaphoreSlim</code> với <code>WaitAsync()</code> (ngay phần dưới) thay cho <code>lock</code>.</p>
@@ -6386,6 +6472,20 @@ thread đọc camera...) cố gán trực tiếp <code>label1.Text = &quot;...&q
 <code>Control.CheckForIllegalCrossThreadCalls = true</code>), không phải hành vi riêng
 của debug build. Đây không phải bug — đây là runtime đang bảo vệ bạn khỏi race
 condition, vì Windows chỉ cho phép một luồng nhận thông điệp giao diện.</p>
+<blockquote>
+<p>⚠️ <strong>Đừng bao giờ set <code>Control.CheckForIllegalCrossThreadCalls = false</code> để &quot;sửa&quot; exception này.</strong>
+Cờ tĩnh này CÓ THỂ đổi thành <code>false</code> (thường thấy đặt ngay đầu <code>FormMain</code> constructor, trước khi
+tạo control nào) — làm đúng một việc: TẮT HẲN việc kiểm tra, exception không còn ném ra nữa. Đây
+không phải &quot;sửa lỗi&quot; — chỉ là che triệu chứng đi. Mọi đoạn code cập nhật control từ luồng nền
+(worker đọc PLC, thread quét cảm biến) vẫn tiếp tục ghi thẳng vào control mà KHÔNG qua
+<code>Invoke</code>/<code>BeginInvoke</code>, chỉ khác là giờ không ai báo lỗi cho bạn nữa. Hậu quả không biến mất, chỉ
+đổi hình dạng: control WinForms không thread-safe ở tầng dựng UI của Windows — ghi đồng thời từ 2
+luồng có thể làm hỏng trạng thái nội bộ của control, gây crash ngẫu nhiên khó tái hiện (chỉ xảy ra
+khi đúng 2 luồng ghi cùng lúc — hiếm khi lộ ra lúc test, dễ xuất hiện sau nhiều giờ chạy thật ở nhà
+máy) thay vì một exception rõ ràng, dễ debug ngay lúc code mới viết. Nếu gặp cờ này bị tắt trong
+code kế thừa, đó là tín hiệu cần rà lại TOÀN BỘ nơi luồng nền chạm vào UI và bọc đúng
+<code>Invoke</code>/<code>BeginInvoke</code>, không phải bằng chứng rằng code đó đã an toàn.</p>
+</blockquote>
 <p>Cách chuẩn để một luồng khác yêu cầu luồng UI làm việc gì đó là qua
 <code>Control.Invoke</code>/<code>Control.BeginInvoke</code> — hai phương thức mọi <code>Control</code> đều kế
 thừa. <code>Invoke</code> gửi yêu cầu <strong>đồng bộ</strong>: luồng gọi bị chặn cho đến khi luồng UI
@@ -22434,6 +22534,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 1, mục 1.1.</em></p>
 <p><strong>partial class</strong> — Từ khoá cho phép chia định nghĩa của MỘT class ra nhiều file <code>.cs</code> (mỗi file khai <code>partial class TênGiốngHệt</code>); compiler ghép lại thành một class duy nhất lúc build — chung field/property/instance, không phải nhiều class riêng biệt. Dùng khi một class quá lớn, muốn tách theo chủ đề mà vẫn giữ là một class (ví dụ <code>AxisSequence.Motion.cs</code> + <code>AxisSequence.Alarm.cs</code>); WinForms Designer cũng dùng kỹ thuật này (<code>Form1.cs</code> + <code>Form1.Designer.cs</code>). Gặp một class có vẻ &quot;thiếu&quot; method đang được gọi ở nơi khác, Grep tên class xem có file khác cũng khai <code>partial class</code> cùng tên hay không trước khi kết luận có lỗi. (→ xem class)
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.1.3.</em></p>
+<p><strong>Preprocessor Directive (<code>#if</code>/<code>#endif</code>, biên dịch có điều kiện)</strong> — Chỉ thị xử lý lúc BIÊN DỊCH (không phải lúc chạy): <code>#if TÊN_CỜ ... #endif</code> chỉ giữ lại đoạn code nếu cờ tương ứng được khai trong <code>&lt;DefineConstants&gt;</code> của <code>.csproj</code> — nhánh không khớp bị compiler loại bỏ hoàn toàn khỏi assembly sinh ra, khác <code>if</code> thường (cả hai nhánh đều được biên dịch, chỉ chọn lúc chạy). Dùng để build nhiều phiên bản ứng dụng cho các cấu hình phần cứng khác nhau từ cùng một source code. (→ xem Platform Target (x86/x64/AnyCPU))
+<em>Xuất hiện đầu tiên: Chương 2, mục 2.2.</em></p>
 <p><strong>Process Isolation (Boundary Contract)</strong> — Kỹ thuật tách một thư viện vendor không tương thích runtime/platform ra chạy trong process riêng, giao tiếp với process chính qua payload trung lập (chỉ kiểu cơ bản + JSON, gọi là Boundary Contract) thay vì tham chiếu trực tiếp — cho phép hai phía nâng cấp độc lập, và lỗi native (SEHException) trong process phụ không kéo sập process chính. (→ xem SEHException (Structured Exception), IPC (Inter-Process Communication))
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.3.</em></p>
 <p><strong>Platform Target (x86/x64/AnyCPU)</strong> — Thiết lập build quyết định độ rộng process của ứng dụng .NET; phải đồng bộ với SDK/driver thiết bị vì managed code (C#) và native code (<code>.dll</code> C/C++ của hãng thiết bị) phải cùng độ rộng process (đều 32-bit hoặc đều 64-bit) khi gọi lẫn nhau. Sai lệch platform ném <code>BadImageFormatException</code> lúc runtime — lỗi phổ biến nhất khi mới bắt đầu vì thông báo lỗi không trực tiếp gợi ý nguyên nhân. (→ xem AnyCPU, BadImageFormatException)

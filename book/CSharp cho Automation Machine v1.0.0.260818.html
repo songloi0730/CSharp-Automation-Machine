@@ -1565,6 +1565,11 @@ xa lạ.</p>
 <td><code>FileStream</code>/<code>BinaryReader</code>/<code>BinaryWriter</code> (mục 3.6.2), <code>MessageBox.Show(...)</code> (Chương 8), <code>null</code>/<code>string.Empty</code></td>
 <td>Dự án chuyển ngữ (port) từ VB6/VB.NET sang C# — thư viện <code>Microsoft.VisualBasic</code> (đi kèm sẵn trong .NET) cho phép giữ nguyên gần như 100% logic I/O/UI gốc, chỉ đổi cú pháp gọi hàm, tránh phải viết lại toàn bộ bằng API .NET chuẩn</td>
 </tr>
+<tr>
+<td>Cùng họ VB6-compat, mảng xử lý chuỗi/số và hộp thoại: <code>Strings.Mid(s, start, len)</code>, <code>Conversion.Val(s)</code>, <code>Constants.vbYesNo</code>/<code>vbYes</code>/<code>vbOKOnly</code>/<code>vbCr</code>; và <code>(new Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase()).Info.DirectoryPath</code> chỉ để lấy đường dẫn thư mục chứa <code>.exe</code></td>
+<td><code>s.Substring(start, len)</code>, <code>double.Parse(s)</code>/<code>double.TryParse(s, out v)</code>, <code>DialogResult.Yes</code>/<code>MessageBoxButtons.YesNo</code> (Chương 8), <code>AppDomain.CurrentDomain.BaseDirectory</code>/<code>Application.StartupPath</code></td>
+<td>Cùng lý do ở dòng trên — không phải 1 hàm lẻ mà là CẢ MỘT HỌ API <code>Microsoft.VisualBasic.*</code> (I/O nhị phân, xử lý chuỗi/số, hộp thoại, thông tin ứng dụng) được VB6/VB.NET giữ nguyên khi port sang C#. Nhận diện được cả họ giúp không bị bất ngờ khi gặp thành viên khác của cùng namespace ở dự án khác</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>📌 <strong>Nguyên tắc dùng bảng trên:</strong> nhận ra tương đương để <strong>đọc hiểu</strong> code
@@ -7082,6 +7087,34 @@ thái mỗi 500ms), nhưng không dùng cho bất cứ việc gì cần nhịp c
 định kỳ trên luồng nền (<code>PeriodicTimer</code> — Chương 5) rồi marshal kết quả về
 UI qua <code>Invoke</code>/<code>BeginInvoke</code> như mục 8.2.3.</p>
 </blockquote>
+<blockquote>
+<p>⚠️ <strong>Bẫy thật — chọn nhầm class Timer khiến phải tự marshal thủ công khắp
+nơi:</strong> một dự án tham khảo dùng <code>System.Timers.Timer</code> (namespace
+<code>System.Timers</code>, KHÁC <code>System.Windows.Forms.Timer</code> dù tên method giống hệt
+nhau) để cập nhật trạng thái trục lên UI mỗi vài trăm mili-giây. Sự kiện
+<code>Elapsed</code> của <code>System.Timers.Timer</code> chạy trên một luồng ThreadPool — không
+phải UI thread — nên MỌI handler <code>Elapsed</code> trong dự án đó đều phải tự viết
+lại đúng khuôn <code>lock</code>+<code>try { BeginInvoke(...) } catch (Exception) { }</code> lặp
+lại ở từng form dùng đến nó. Nếu chọn đúng <code>System.Windows.Forms.Timer</code>
+ngay từ đầu (mục này), <code>Tick</code> đã tự chạy sẵn trên UI thread — không cần
+<code>BeginInvoke</code>, không cần <code>lock</code>, không cần nuốt exception rỗng để &quot;cho chắc&quot;.
+Quy tắc chọn: đang ở trong 1 Form/UserControl và chỉ cần cập nhật UI theo
+nhịp → <code>System.Windows.Forms.Timer</code>; cần chạy nền độc lập UI (worker
+service, không có message loop) → <code>System.Timers.Timer</code> hoặc <code>PeriodicTimer</code>
+(Chương 5) kèm marshal rõ ràng khi cần chạm UI.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong><code>Control.Tag</code> không phải chỗ để nhét ID nghiệp vụ:</strong> <code>Tag</code> (kiểu
+<code>object</code>, có sẵn trên mọi <code>Control</code>) được thiết kế để lưu 1 mẩu dữ liệu tuỳ
+ý gắn kèm control — nhưng dùng nó làm &quot;trạm nào đang mở&quot;/&quot;ID nghiệp vụ&quot; cho
+1 <code>UserControl</code> tái sử dụng nhiều nơi là cách dùng sai mục đích thường gặp:
+mọi chỗ cần biết ID phải viết lại <code>Convert.ToInt32(this.Tag)</code>, không có
+enum/property tường minh nào giữ ý nghĩa, và Designer gán sai kiểu vào <code>Tag</code>
+chỉ lộ ra lúc chạy (runtime), không phải lúc biên dịch. Nếu <code>UserControl</code>
+cần phân biệt &quot;đang đại diện cho đối tượng nghiệp vụ nào&quot;, khai báo hẳn 1
+property kiểu enum/id riêng (<code>public StationId Station { get; set; }</code>) thay
+vì mượn <code>Tag</code>.</p>
+</blockquote>
 <h3>8.2.5 Thư viện bên thứ ba: DevExpress, Telerik</h3>
 <p>Khi một dự án cần nhiều gauge, biểu đồ thời gian thực, hoặc giao diện dashboard
 phức tạp, tự vẽ bằng GDI+ tốn thời gian phát triển đáng kể. DevExpress và
@@ -12095,6 +12128,24 @@ tầng ngoài — phải nhận ra: tầng ngoài trả lời &quot;máy đang �
 trả lời &quot;trong chế độ Run, trạm này đang ở bước nào&quot; (chỉ nội bộ trạm đó cần biết). PackML chuẩn hoá
 đúng tầng ngoài (mục 12.2 bên dưới); tầng trong là chi tiết triển khai riêng từng trạm, không có
 chuẩn chung — khi đọc code lạ, luôn xác định rõ đang ở tầng nào trước khi lần theo logic.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Bẫy thật — 1 case tự ý chặn phá vỡ toàn bộ nguyên tắc &quot;không chặn&quot; của scan cycle.</strong>
+Nguyên tắc cốt lõi của Code 12.5 (và mọi state machine dạng step/case tương tự) là: mỗi lần
+hàm được gọi chỉ chạy đúng 1 bước rồi <strong>trả quyền điều khiển ngay</strong>, để vòng lặp ngoài gọi lại
+ở lần scan kế tiếp — không có case nào được tự <code>Thread.Sleep</code>/chờ block bên trong. Một dự án
+tham khảo cho thấy chính xác điều gì xảy ra khi nguyên tắc này bị phá vỡ CỤC BỘ, không phải
+toàn bộ: state machine điều khiển tự động (mỗi case <code>return</code> ngay, đúng khuôn Code 12.5) sống
+chung 1 solution với state machine điều khiển tay (jog/teach thủ công) — CÙNG hình dáng
+<code>switch(step)</code>, nhưng mỗi case của nhánh thủ công lại nhét nguyên 1 vòng <code>while(true)</code> +
+<code>Thread.Sleep(5)</code> bên trong, chỉ &quot;sống sót&quot; nhờ bơm lại message loop UI (<code>Application. DoEvents()</code>) mỗi vòng lặp. Hậu quả: đọc code nhánh tự động, mọi thứ đúng chuẩn; đọc code nhánh
+thủ công (trông giống hệt về mặt hình dáng <code>switch</code>), tưởng cũng &quot;không chặn&quot; như bên kia,
+nhưng thực ra chặn UI thread theo từng bước motion — chỉ lộ ra khi thử bấm nút khác trong lúc
+đang jog thì UI phản hồi trễ hoặc kẹt. Bài học: &quot;trông giống case-based state machine&quot; không
+đảm bảo &quot;không chặn&quot; — phải kiểm tra TỪNG case có gọi bất kỳ API blocking nào không
+(<code>Thread.Sleep</code>, <code>.Result</code>, <code>.Wait()</code>, vòng lặp chờ không nhường CPU — Chương 5), đặc biệt khi
+1 codebase có cả nhánh auto lẫn nhánh manual cùng dùng chung 1 khuôn switch nhưng do 2 người
+hoặc 2 giai đoạn khác nhau viết ra.</p>
 </blockquote>
 <h2 id="122-chun-packml-isa-tr880002">12.2  Chuẩn PackML / ISA-TR88.00.02</h2>
 <h3>12.2.1  PackML là gì và tại sao cần chuẩn hoá</h3>
@@ -21535,6 +21586,29 @@ thiết kế cẩn thận, có test-được, có validate đầy đủ — khô
 grep xem class đó có được <code>new</code> lên ở bất kỳ đâu trong code đang chạy thật
 hay không.</p>
 </blockquote>
+<blockquote>
+<p>🔍 <strong>Biến thể mạnh hơn — cả một <code>namespace</code> riêng lạc trong solution, 3 tầng
+&quot;định làm nhưng không làm&quot; chồng lên nhau:</strong> một dự án tham khảo khác có 1
+file 1421 dòng chứa 6 thuật toán &quot;tìm điểm gốc&quot; (homing) tham số hoá đầy đủ
+theo từng trục — nhìn qua tưởng là thư viện trung tâm cho thao tác home. Quy
+trình xác minh bằng grep, theo đúng thứ tự: (1) file này khai báo 1
+<code>namespace</code> KHÁC hoàn toàn với mọi file còn lại trong cùng solution — dấu
+hiệu đầu tiên đáng ngờ; (2) các hàm bên trong gán giá trị cho field của 1
+class dùng chung, nhưng grep field đó trên toàn solution chỉ tìm thấy chúng
+Ở NGAY BÊN TRONG chính file 1421 dòng này — class dùng chung thật (cùng
+tên) ở namespace khác không hề có field nào tên như vậy; (3) grep tên chính
+file này (dạng <code>TenClass.</code>) trên toàn bộ mã nguồn còn lại ra 0 kết quả —
+không ai gọi bất kỳ hàm nào của nó; (4) grep <code>using</code> namespace lạ đó ra 0
+kết quả — không nơi nào import nó; (5) ngay cả API &quot;home 1 lệnh&quot; có sẵn của
+SDK phần cứng (thứ mà 1421 dòng tự viết tay này lẽ ra thay thế được) cũng 0
+lượt gọi trên toàn solution. Đường &quot;home&quot; thật của máy hoá ra tự cài đặt
+lại từ đầu ở một file khác, hoàn toàn không đụng tới cả thư viện tự viết
+lẫn API SDK có sẵn. Bài học phương pháp: khi nghi ngờ 1 class/namespace là
+code chết, đừng dừng ở 1 lần grep — chuỗi bằng chứng (namespace lạc → field
+chỉ tự tham chiếu chính nó → 0 lượt gọi tên class → 0 lượt import namespace
+→ giải pháp thay thế có sẵn cũng không được dùng) mới đủ thuyết phục để kết
+luận chắc chắn, không phải suy đoán từ 1 dấu hiệu đơn lẻ.</p>
+</blockquote>
 <p><strong>Bảng 19.1 — Chọn công cụ theo triệu chứng</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -22197,6 +22271,20 @@ References&quot;, hoặc công cụ phân tích &quot;unreferenced type&quot; ch
 toàn solution) mới lộ ra. Khi dọn dẹp code cũ hoặc review 1 class lạ,
 luôn hỏi thêm 1 câu ngoài &quot;có biên dịch không&quot;: &quot;có ai thực sự <code>new</code> nó lên
 không?&quot;</p>
+<p><strong>Lỗi 8: <code>switch</code> phân loại dữ liệu vào rồi ghi xuống, nhưng dòng ghi lại nằm
+NGOÀI switch, chạy vô điều kiện với giá trị mặc định.</strong>
+Một dự án tham khảo có hàm ghi nhận thống kê lỗi vào file cấu hình: khai báo 1
+biến đếm cục bộ mặc định <code>0</code>, <code>switch</code> theo tên loại lỗi (chuỗi) chỉ khớp một
+số case biết trước — mỗi case gán giá trị đếm mới cho biến đó — nhưng dòng ghi
+biến đó xuống file lại đặt NGAY SAU khối <code>switch</code>, không nằm trong bất kỳ case
+nào. Nếu hàm được gọi với 1 tên loại lỗi không khớp case nào (gõ sai chính tả,
+hoặc thêm 1 loại lỗi mới mà quên thêm case), dòng ghi vẫn chạy với biến đếm
+còn nguyên giá trị mặc định — ghi đè số liệu thống kê đã tích luỹ trước đó về
+0, không log cảnh báo, không exception. Đây là bug đọc code là thấy ngay,
+không cần chạy thử — bài học: khi <code>switch</code> chỉ dùng để TÍNH giá trị cho 1
+biến rồi dùng biến đó sau switch, luôn thêm case <code>default</code> xử lý tường minh
+(ném lỗi, hoặc <code>return</code>/<code>continue</code> sớm để chặn đường ghi phía sau) — đừng để
+trường hợp &quot;không khớp gì cả&quot; âm thầm rơi qua với giá trị mặc định của biến.</p>
 <!-- SECTION: LoiKet -->
 <hr>
 <h1 id="li-kt">Lời kết</h1>

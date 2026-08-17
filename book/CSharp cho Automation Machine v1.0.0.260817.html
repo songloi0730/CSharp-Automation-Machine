@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260816</title>
+<title>C# cho Automation Machine — v1.0.0.260817</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -474,7 +474,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260816</td>
+<td>v1.0.0.260817</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -3648,6 +3648,26 @@ thống nhất <code>ct</code> vì tham số này xuất hiện ở hầu hết 
 có thể bỏ qua khi không cần huỷ giữa chừng.</li>
 </ul>
 <p>📌 <strong>Khác biệt với abstract class:</strong> Interface chỉ là hợp đồng (mặc định không có code). Một class có thể implement <strong>nhiều</strong> interface cùng lúc (C# không cho kế thừa nhiều class, nhưng cho implement nhiều interface). Khi nào chọn cái nào — xem Bảng 4.2 cuối mục 4.3.</p>
+<p>⚠️ <strong>Khớp chữ ký method KHÔNG đủ để &quot;implement&quot; interface:</strong> C# không có duck
+typing (khác Python/Go, nơi chỉ cần object có đúng method là dùng được). Một
+class chỉ thật sự implement một interface khi khai báo tường minh
+<code>: ITenInterface</code> trên dòng <code>class</code>. Viết một method trùng tên, trùng tham
+số, trùng kiểu trả về với method của interface đó, nhưng KHÔNG khai báo
+interface, thì method đó chỉ là một method bình thường của class — không có
+gì tự động nối nó với interface cả. Ví dụ thật gặp trong một dự án tham
+khảo: một class validate viết <code>public IEnumerable&lt;ValidationResult&gt; Validate(ValidationContext validationContext)</code> — khớp chính xác chữ ký chuẩn
+<code>IValidatableObject.Validate</code> của .NET (Chương 9, mục 9.1.5) — nhưng class
+không có <code>: IValidatableObject</code>. Code biên dịch được, không báo lỗi gì, chạy
+bình thường — nhưng cơ chế validate tự động của .NET không bao giờ gọi tới
+method đó, vì nó kiểm tra bằng <code>obj is IValidatableObject</code>, không phải bằng
+so tên method. Rule nghiệp vụ viết bên trong hàm coi như chết lặng — không
+exception, không log, chỉ đơn giản không chạy.</p>
+<p>💡 <strong>Mẹo nhỏ — đánh dấu code không nên dùng nữa:</strong> dùng attribute
+<code>[Obsolete(&quot;Lý do, dùng XXX thay thế&quot;)]</code> trên class/method, không phải
+comment thường (<code>// deprecated</code>, <code>/// deprecated</code>). Attribute tạo cảnh báo
+biên dịch (warning) ở mọi nơi gọi tới, và IntelliSense gạch ngang tên đó —
+comment thường thì không, chỉ dựa vào việc lập trình viên tự đọc thấy dòng
+comment trước khi dùng nhầm.</p>
 </blockquote>
 <h3>4.2.2  Vì sao interface là trái tim của hệ thống tốt</h3>
 <p>Lập trình theo interface mang lại bốn lợi ích mà mọi dự án automation dài hơi đều cần:</p>
@@ -7943,6 +7963,46 @@ soát; nếu cần bỏ giá trị local đã lỡ set, gọi <code>ClearValue(B
 <p><strong>Attached Property</strong> là một biến thể của DP &quot;gắn kèm&quot; lên đối tượng khác —
 ví dụ kinh điển <code>Grid.Row</code>, <code>Grid.Column</code>. Trong HMI, có thể tự định nghĩa
 attached property để gắn metadata (ví dụ mã thiết bị) lên bất kỳ control nào.</p>
+<p><strong>Code 9.1b — Tự viết một Attached Property (khuôn <code>RegisterAttached</code>)</strong></p>
+<pre><code class="language-csharp">public static class BlinkBehavior
+{
+    public static readonly DependencyProperty IsBlinkingProperty =
+        DependencyProperty.RegisterAttached(
+            &quot;IsBlinking&quot;, typeof(bool), typeof(BlinkBehavior),
+            new PropertyMetadata(false, OnIsBlinkingChanged));
+
+    public static bool GetIsBlinking(DependencyObject obj) =&gt;
+        (bool)obj.GetValue(IsBlinkingProperty);
+
+    public static void SetIsBlinking(DependencyObject obj, bool value) =&gt;
+        obj.SetValue(IsBlinkingProperty, value);
+
+    private static void OnIsBlinkingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not Control control) return;
+        // Bật/tắt Storyboard animation nhấp nháy Opacity 1.0 &lt;-&gt; 0.3 khi giá trị đổi.
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;Ellipse local:BlinkBehavior.IsBlinking=&quot;{Binding IsAlarmActive}&quot; .../&gt;
+</code></pre>
+<p>Khuôn cố định cho MỌI attached property tự viết: <code>static class</code> + trường
+<code>DependencyProperty</code> gọi <code>RegisterAttached</code> (không phải <code>Register</code> như DP
+thường ở Code 9.2 bên dưới) + cặp method tĩnh <code>GetX(DependencyObject)</code>/
+<code>SetX(DependencyObject, T)</code> cùng tên với property + callback tuỳ chọn khi
+giá trị đổi. Nhờ <code>Get</code>/<code>Set</code> là method tĩnh nhận <code>DependencyObject</code> bất kỳ
+làm tham số, property này &quot;gắn&quot; được lên <strong>mọi</strong> control (<code>Ellipse</code>, <code>Button</code>,
+<code>Border</code>...) mà không cần control đó biết trước gì về <code>BlinkBehavior</code> —
+ngược lại hoàn toàn với DP thường (Code 9.2), vốn chỉ tồn tại trên chính
+class định nghĩa nó (<code>AlarmLamp.Level</code> chỉ có trên <code>AlarmLamp</code>).</p>
+<blockquote>
+<p>📌 <strong>Khi nào viết Attached Property thay vì DP thường:</strong> khi hành vi cần
+gắn lên NHIỀU loại control có sẵn (built-in hoặc bên thứ ba) mà không thể
+sửa lại class gốc — ví dụ nhấp nháy cảnh báo, tự động format số, hay đóng
+khung layout dạng chuỗi (<code>local:GridHelper.Columns=&quot;100,*,80&quot;</code> tự parse
+thành nhiều <code>ColumnDefinition</code>) đều là kỹ thuật attached property, không
+phải DP thường.</p>
+</blockquote>
 <p><strong>Code 9.2 — Dependency Property tuỳ chỉnh cho control <code>AlarmLamp</code></strong></p>
 <pre><code class="language-csharp">public enum AlarmLevel { None, Info, Warning, Critical }
 
@@ -8207,6 +8267,19 @@ giá trị. WPF tự hiển thị viền đỏ và tooltip lỗi khi
 <code>ValidatesOnNotifyDataErrors=True</code> và ViewModel báo có lỗi qua
 <code>INotifyDataErrorInfo</code> — không cần code-behind hay converter nào thêm.</p>
 <blockquote>
+<p>📌 <strong>DataAnnotations — cơ chế validate chuẩn khác, không riêng cho WPF:</strong>
+<code>INotifyDataErrorInfo</code> ở trên là validate viết tay, đổi giá trị là kiểm tra
+ngay. .NET còn có sẵn một bộ API validate dùng chung cho WPF, ASP.NET, EF
+Core: namespace <code>System.ComponentModel.DataAnnotations</code>, gồm attribute khai
+báo trên property (<code>[Required]</code>, <code>[MaxLength(50)]</code>...) và hàm
+<code>Validator.TryValidateObject(obj, new ValidationContext(obj), results, validateAllProperties: true)</code> tự đọc các attribute đó rồi trả về danh sách
+lỗi. Muốn thêm rule phức tạp hơn 1 attribute diễn tả được (ví dụ &quot;Min không
+được lớn hơn Max&quot;), implement interface <code>IValidatableObject</code> với method
+<code>IEnumerable&lt;ValidationResult&gt; Validate(ValidationContext validationContext)</code>
+— <code>Validator.TryValidateObject</code> tự gọi method này sau khi xong các
+attribute, NHƯNG chỉ khi class thật sự khai báo <code>: IValidatableObject</code> (xem
+cảnh báo về khai báo interface tường minh ở Chương 4, mục 4.2.1 — khớp chữ
+ký method không đủ).</p>
 <p>🔍 <strong>Đào sâu thêm:</strong> Lỗi binding sai đường dẫn property, converter ném
 exception, hay <code>DataContext</code> null thường <strong>không</strong> ném exception ngay —
 WPF chỉ ghi vào cửa sổ Output (Debug), rất dễ bị bỏ sót. Bật
@@ -18187,7 +18260,33 @@ một chuỗi leo thang duy nhất, từ lỗi tạm thời vô hại đến d�
 <td>Không tìm ra root cause trước khi reconnect</td>
 <td>Yêu cầu operator acknowledge trước khi reset</td>
 </tr>
+<tr>
+<td><code>catch (Exception ex) { }</code> rỗng quanh lệnh khởi động chu trình máy</td>
+<td>Lỗi thật xảy ra nhưng operator không biết gì — chỉ thấy máy dừng, không rõ vì sao</td>
+<td>Luôn log <code>ex</code> + báo alarm cụ thể; không bao giờ catch rỗng</td>
+</tr>
 </tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Ví dụ thật — catch rỗng ngay tại lệnh nguy hiểm nhất:</strong> trong một dự án
+tham khảo, command khởi động chu trình chính (tương đương &quot;bấm nút Start
+máy&quot;) viết:</p>
+<pre><code class="language-csharp">try
+{
+    foreach (var (top, bot) in topList.Zip(botList))
+        await _sequenceService.MachineStartAsync(top, bot, ct);
+}
+catch (OperationCanceledException) { }
+catch (Exception ex) { }   // rỗng hoàn toàn — không log, không alarm, không thông báo
+finally { IsRunning = false; }
+</code></pre>
+<p>Nếu <code>MachineStartAsync</code> ném lỗi không lường trước, người vận hành chỉ thấy
+cờ &quot;đang chạy&quot; tắt về <code>false</code> (do <code>finally</code>) — không có dấu hiệu nào cho
+biết đã có lỗi, càng không biết lỗi gì, ở đâu. Nhiều coding standard nội bộ
+(kể cả của chính dự án khung mẫu dùng xuyên suốt sách này) cấm tường minh
+<code>catch (Exception) {}</code> — nhưng đây là bằng chứng thật rằng quy tắc viết ra
+giấy không tự động ngăn được lỗi này lọt vào đúng lệnh nguy hiểm nhất trong
+toàn hệ thống: code review/static analysis vẫn phải bắt được nó.</p>
+</blockquote>
 <hr>
 <blockquote>
 <p>⚠️ <strong>Cảnh báo — &quot;Tai nạn kinh điển&quot;: Quên gỡ Force IO</strong></p>
@@ -21198,6 +21297,21 @@ lâu ngày lẫn với code sống làm tăng nguy cơ này — quy tắc thực
 không dùng nữa nên có TTL rõ ràng (xoá hẳn sau vài tuần không dùng lại,
 lịch sử vẫn còn trong Git), không để lại &quot;phòng khi cần&quot; lẫn vào code
 đang chạy thật.</p>
+<blockquote>
+<p>🔍 <strong>Ví dụ thật — cả một abstraction được đầu tư kỹ nhưng 0 lượt gọi:</strong>
+trong một dự án tham khảo, một dialog &quot;tạo Recipe&quot; có đầy đủ: base class
+generic validate theo <code>[Required]</code>/<code>IValidatableObject</code> (Chương 9, mục
+9.1.5), một lớp cầu nối dùng Reflection để đóng dialog mà không cần biết
+kiểu <code>T</code> lúc biên dịch — rõ ràng tốn nhiều công sức thiết kế. Grep toàn bộ
+mã nguồn ứng dụng đang chạy (<code>new RecipeCreateWindow</code>, <code>new RecipeCreateVM</code>)
+cho ra <strong>0 kết quả</strong> ngoài các bản backup không còn build. Luồng &quot;tạo
+Recipe&quot; thật sự chạy trong ứng dụng đi qua một class hoàn toàn khác, đơn
+giản hơn nhiều, không hề validate gì. Bài học: đọc code thấy một class được
+thiết kế cẩn thận, có test-được, có validate đầy đủ — không có nghĩa nó
+đang được gọi. Trước khi kết luận &quot;chỗ này chắc đã được validate rồi&quot;, luôn
+grep xem class đó có được <code>new</code> lên ở bất kỳ đâu trong code đang chạy thật
+hay không.</p>
+</blockquote>
 <p><strong>Bảng 19.1 — Chọn công cụ theo triệu chứng</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -21824,6 +21938,24 @@ tra, tắt lại sau đó.</p>
 Polling toàn bộ danh sách tag PLC chỉ để trả lời &quot;còn sống không&quot; biến
 công cụ giám sát thành một phần của vấn đề. Health check nên nhẹ nhất
 có thể — một tag kiểm tra, một phép đo round-trip time là đủ.</p>
+<p><strong>Lỗi 6: Tra cứu dữ liệu giữa hai tầng bằng chuỗi ký tự tự do, không qua
+enum/whitelist — sai chính tả bị bỏ qua trong im lặng.</strong>
+Một dự án tham khảo cho thấy đúng mẫu lỗi này lặp lại độc lập ở ba nơi khác
+nhau: tên tham số recipe do người vận hành gõ tự do ở màn hình tạo, rồi
+Sequence tra lại bằng <code>FindByParam(&quot;TenThamSo&quot;)</code> — nếu chuỗi tra bằng
+<code>TryParse</code> (không phải <code>Parse</code>), sai một ký tự khiến khối <code>if</code> bị bỏ qua
+hoàn toàn, không log, không alarm, máy tiếp tục chạy với giá trị mặc định
+thay vì giá trị recipe thật; cùng dự án còn có <code>switch</code> chọn trục theo chuỗi
+phân biệt hoa/thường (<code>&quot;HZ&quot;</code> và <code>&quot;hz&quot;</code> là hai trục vật lý khác nhau, gõ sai
+hoa/thường mà không có <code>default:</code> cảnh báo thì lệnh jog không làm gì cả) và
+một <code>switch</code> khác map tên bảng UI sang tên trục theo cùng kiểu. Khi debug
+một sự cố &quot;giá trị cấu hình không được áp dụng&quot; mà không có exception nào
+ném ra, luôn nghi ngờ trước tiên một điểm tra cứu bằng chuỗi giữa hai tầng
+(UI nhập liệu ↔ logic đọc lại) — đây là nguồn lỗi im lặng phổ biến nhất
+trong automation, và cách phòng vững nhất là chuẩn hoá chuỗi
+(<code>ToUpperInvariant()</code>) hoặc thay hẳn bằng enum/hằng số dùng chung giữa hai
+tầng, validate ngay tại thời điểm nhập thay vì để hai bên tự đồng bộ chuỗi
+bằng kỷ luật con người.</p>
 <!-- SECTION: LoiKet -->
 <hr>
 <h1 id="li-kt">Lời kết</h1>
@@ -22396,6 +22528,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <p><strong>C++/CLI</strong> — Biến thể C++ do Microsoft mở rộng để chạy trên .NET, cho phép một project chứa cả code managed (IL, chạy trên CLR) và code native (C++ thuần, gọi trực tiếp thư viện C/C++) trong cùng một assembly &quot;mixed-mode&quot;. Dùng làm cầu nối khi một SDK thiết bị chỉ có thư viện C++ class-based (không phải hàm C thuần) mà P/Invoke không xử lý được. (→ xem P/Invoke ([DllImport]), Managed Wrapper, ABI (Application Binary Interface))
 <em>Xuất hiện đầu tiên: Phụ lục A, mục A.1.</em></p>
 <h2 id="d">D</h2>
+<p><strong>DataAnnotations</strong> — Bộ API validate chuẩn của .NET (<code>System.ComponentModel.DataAnnotations</code>), dùng chung được cho WPF, ASP.NET và EF Core: attribute khai báo trên property (<code>[Required]</code>, <code>[MaxLength(50)]</code>...) cộng hàm <code>Validator.TryValidateObject(obj, new ValidationContext(obj), results, validateAllProperties: true)</code> tự đọc các attribute đó để kiểm tra. Rule phức tạp hơn 1 attribute diễn tả được thì implement <code>IValidatableObject</code> (method <code>Validate(ValidationContext)</code>) — chỉ được gọi tự động nếu class khai báo tường minh <code>: IValidatableObject</code> (khớp chữ ký method không đủ). (→ xem interface)
+<em>Xuất hiện đầu tiên: Chương 9, mục 9.1.5.</em></p>
 <p><strong>DataContext</strong> — Thuộc tính của mọi phần tử WPF trỏ tới object nguồn dữ liệu cho <code>Binding</code>; kế thừa xuống theo Logical Tree, nên đặt một ViewModel làm <code>DataContext</code> của <code>Window</code>/<code>UserControl</code> là đủ để mọi control con bind vào mà không cần khai báo lại. Là &quot;đường ống&quot; chính khiến MVVM hoạt động. (→ xem Binding (WPF), MVVM, Visual Tree)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.1.5.</em></p>
 <p><strong>DataTemplate</strong> — Định nghĩa cách hiển thị <em>dữ liệu</em> (khác <code>ControlTemplate</code> định nghĩa cách hiển thị <em>control</em>): dùng khi một <code>ItemsControl</code>/<code>ListBox</code> cần vẽ mỗi phần tử dữ liệu (ví dụ mỗi dòng alarm) theo một layout tuỳ chỉnh. (→ xem ControlTemplate)

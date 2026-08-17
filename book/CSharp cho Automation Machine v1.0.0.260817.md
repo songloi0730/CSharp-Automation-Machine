@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260816 |
+| **Phiên bản** | v1.0.0.260817 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -3038,6 +3038,29 @@ Ba class trên không chia sẻ một dòng code triển khai nào, nhưng **dù
 >   có thể bỏ qua khi không cần huỷ giữa chừng.
 >
 > 📌 **Khác biệt với abstract class:** Interface chỉ là hợp đồng (mặc định không có code). Một class có thể implement **nhiều** interface cùng lúc (C# không cho kế thừa nhiều class, nhưng cho implement nhiều interface). Khi nào chọn cái nào — xem Bảng 4.2 cuối mục 4.3.
+>
+> ⚠️ **Khớp chữ ký method KHÔNG đủ để "implement" interface:** C# không có duck
+> typing (khác Python/Go, nơi chỉ cần object có đúng method là dùng được). Một
+> class chỉ thật sự implement một interface khi khai báo tường minh
+> `: ITenInterface` trên dòng `class`. Viết một method trùng tên, trùng tham
+> số, trùng kiểu trả về với method của interface đó, nhưng KHÔNG khai báo
+> interface, thì method đó chỉ là một method bình thường của class — không có
+> gì tự động nối nó với interface cả. Ví dụ thật gặp trong một dự án tham
+> khảo: một class validate viết `public IEnumerable<ValidationResult>
+> Validate(ValidationContext validationContext)` — khớp chính xác chữ ký chuẩn
+> `IValidatableObject.Validate` của .NET (Chương 9, mục 9.1.5) — nhưng class
+> không có `: IValidatableObject`. Code biên dịch được, không báo lỗi gì, chạy
+> bình thường — nhưng cơ chế validate tự động của .NET không bao giờ gọi tới
+> method đó, vì nó kiểm tra bằng `obj is IValidatableObject`, không phải bằng
+> so tên method. Rule nghiệp vụ viết bên trong hàm coi như chết lặng — không
+> exception, không log, chỉ đơn giản không chạy.
+>
+> 💡 **Mẹo nhỏ — đánh dấu code không nên dùng nữa:** dùng attribute
+> `[Obsolete("Lý do, dùng XXX thay thế")]` trên class/method, không phải
+> comment thường (`// deprecated`, `/// deprecated`). Attribute tạo cảnh báo
+> biên dịch (warning) ở mọi nơi gọi tới, và IntelliSense gạch ngang tên đó —
+> comment thường thì không, chỉ dựa vào việc lập trình viên tự đọc thấy dòng
+> comment trước khi dùng nhầm.
 
 ### 4.2.2  Vì sao interface là trái tim của hệ thống tốt
 
@@ -7328,6 +7351,51 @@ soát; nếu cần bỏ giá trị local đã lỡ set, gọi `ClearValue(Backgr
 ví dụ kinh điển `Grid.Row`, `Grid.Column`. Trong HMI, có thể tự định nghĩa
 attached property để gắn metadata (ví dụ mã thiết bị) lên bất kỳ control nào.
 
+**Code 9.1b — Tự viết một Attached Property (khuôn `RegisterAttached`)**
+
+```csharp
+public static class BlinkBehavior
+{
+    public static readonly DependencyProperty IsBlinkingProperty =
+        DependencyProperty.RegisterAttached(
+            "IsBlinking", typeof(bool), typeof(BlinkBehavior),
+            new PropertyMetadata(false, OnIsBlinkingChanged));
+
+    public static bool GetIsBlinking(DependencyObject obj) =>
+        (bool)obj.GetValue(IsBlinkingProperty);
+
+    public static void SetIsBlinking(DependencyObject obj, bool value) =>
+        obj.SetValue(IsBlinkingProperty, value);
+
+    private static void OnIsBlinkingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not Control control) return;
+        // Bật/tắt Storyboard animation nhấp nháy Opacity 1.0 <-> 0.3 khi giá trị đổi.
+    }
+}
+```
+
+```xml
+<Ellipse local:BlinkBehavior.IsBlinking="{Binding IsAlarmActive}" .../>
+```
+
+Khuôn cố định cho MỌI attached property tự viết: `static class` + trường
+`DependencyProperty` gọi `RegisterAttached` (không phải `Register` như DP
+thường ở Code 9.2 bên dưới) + cặp method tĩnh `GetX(DependencyObject)`/
+`SetX(DependencyObject, T)` cùng tên với property + callback tuỳ chọn khi
+giá trị đổi. Nhờ `Get`/`Set` là method tĩnh nhận `DependencyObject` bất kỳ
+làm tham số, property này "gắn" được lên **mọi** control (`Ellipse`, `Button`,
+`Border`...) mà không cần control đó biết trước gì về `BlinkBehavior` —
+ngược lại hoàn toàn với DP thường (Code 9.2), vốn chỉ tồn tại trên chính
+class định nghĩa nó (`AlarmLamp.Level` chỉ có trên `AlarmLamp`).
+
+> 📌 **Khi nào viết Attached Property thay vì DP thường:** khi hành vi cần
+> gắn lên NHIỀU loại control có sẵn (built-in hoặc bên thứ ba) mà không thể
+> sửa lại class gốc — ví dụ nhấp nháy cảnh báo, tự động format số, hay đóng
+> khung layout dạng chuỗi (`local:GridHelper.Columns="100,*,80"` tự parse
+> thành nhiều `ColumnDefinition`) đều là kỹ thuật attached property, không
+> phải DP thường.
+
 **Code 9.2 — Dependency Property tuỳ chỉnh cho control `AlarmLamp`**
 
 ```csharp
@@ -7632,6 +7700,21 @@ giá trị. WPF tự hiển thị viền đỏ và tooltip lỗi khi
 `ValidatesOnNotifyDataErrors=True` và ViewModel báo có lỗi qua
 `INotifyDataErrorInfo` — không cần code-behind hay converter nào thêm.
 
+> 📌 **DataAnnotations — cơ chế validate chuẩn khác, không riêng cho WPF:**
+> `INotifyDataErrorInfo` ở trên là validate viết tay, đổi giá trị là kiểm tra
+> ngay. .NET còn có sẵn một bộ API validate dùng chung cho WPF, ASP.NET, EF
+> Core: namespace `System.ComponentModel.DataAnnotations`, gồm attribute khai
+> báo trên property (`[Required]`, `[MaxLength(50)]`...) và hàm
+> `Validator.TryValidateObject(obj, new ValidationContext(obj), results,
+> validateAllProperties: true)` tự đọc các attribute đó rồi trả về danh sách
+> lỗi. Muốn thêm rule phức tạp hơn 1 attribute diễn tả được (ví dụ "Min không
+> được lớn hơn Max"), implement interface `IValidatableObject` với method
+> `IEnumerable<ValidationResult> Validate(ValidationContext validationContext)`
+> — `Validator.TryValidateObject` tự gọi method này sau khi xong các
+> attribute, NHƯNG chỉ khi class thật sự khai báo `: IValidatableObject` (xem
+> cảnh báo về khai báo interface tường minh ở Chương 4, mục 4.2.1 — khớp chữ
+> ký method không đủ).
+>
 > 🔍 **Đào sâu thêm:** Lỗi binding sai đường dẫn property, converter ném
 > exception, hay `DataContext` null thường **không** ném exception ngay —
 > WPF chỉ ghi vào cửa sổ Output (Debug), rất dễ bị bỏ sót. Bật
@@ -16348,6 +16431,28 @@ Chương này xây dựng hai tầng bảo vệ cho hệ thống automation:
 | Guard condition rải rác ở nhiều chỗ | Quên kiểm tra 1 điều kiện → lỗ hổng bảo mật | Guard Engine tập trung |
 | Alarm Shelving không có thời hạn | Alarm bị ẩn vĩnh viễn, operator quên | Bắt buộc auto-unshelve, hiển thị số alarm shelved |
 | Circuit Breaker tự động reset | Không tìm ra root cause trước khi reconnect | Yêu cầu operator acknowledge trước khi reset |
+| `catch (Exception ex) { }` rỗng quanh lệnh khởi động chu trình máy | Lỗi thật xảy ra nhưng operator không biết gì — chỉ thấy máy dừng, không rõ vì sao | Luôn log `ex` + báo alarm cụ thể; không bao giờ catch rỗng |
+
+> ⚠️ **Ví dụ thật — catch rỗng ngay tại lệnh nguy hiểm nhất:** trong một dự án
+> tham khảo, command khởi động chu trình chính (tương đương "bấm nút Start
+> máy") viết:
+> ```csharp
+> try
+> {
+>     foreach (var (top, bot) in topList.Zip(botList))
+>         await _sequenceService.MachineStartAsync(top, bot, ct);
+> }
+> catch (OperationCanceledException) { }
+> catch (Exception ex) { }   // rỗng hoàn toàn — không log, không alarm, không thông báo
+> finally { IsRunning = false; }
+> ```
+> Nếu `MachineStartAsync` ném lỗi không lường trước, người vận hành chỉ thấy
+> cờ "đang chạy" tắt về `false` (do `finally`) — không có dấu hiệu nào cho
+> biết đã có lỗi, càng không biết lỗi gì, ở đâu. Nhiều coding standard nội bộ
+> (kể cả của chính dự án khung mẫu dùng xuyên suốt sách này) cấm tường minh
+> `catch (Exception) {}` — nhưng đây là bằng chứng thật rằng quy tắc viết ra
+> giấy không tự động ngăn được lỗi này lọt vào đúng lệnh nguy hiểm nhất trong
+> toàn hệ thống: code review/static analysis vẫn phải bắt được nó.
 
 ---
 
@@ -19087,6 +19192,20 @@ không dùng nữa nên có TTL rõ ràng (xoá hẳn sau vài tuần không dù
 lịch sử vẫn còn trong Git), không để lại "phòng khi cần" lẫn vào code
 đang chạy thật.
 
+> 🔍 **Ví dụ thật — cả một abstraction được đầu tư kỹ nhưng 0 lượt gọi:**
+> trong một dự án tham khảo, một dialog "tạo Recipe" có đầy đủ: base class
+> generic validate theo `[Required]`/`IValidatableObject` (Chương 9, mục
+> 9.1.5), một lớp cầu nối dùng Reflection để đóng dialog mà không cần biết
+> kiểu `T` lúc biên dịch — rõ ràng tốn nhiều công sức thiết kế. Grep toàn bộ
+> mã nguồn ứng dụng đang chạy (`new RecipeCreateWindow`, `new RecipeCreateVM`)
+> cho ra **0 kết quả** ngoài các bản backup không còn build. Luồng "tạo
+> Recipe" thật sự chạy trong ứng dụng đi qua một class hoàn toàn khác, đơn
+> giản hơn nhiều, không hề validate gì. Bài học: đọc code thấy một class được
+> thiết kế cẩn thận, có test-được, có validate đầy đủ — không có nghĩa nó
+> đang được gọi. Trước khi kết luận "chỗ này chắc đã được validate rồi", luôn
+> grep xem class đó có được `new` lên ở bất kỳ đâu trong code đang chạy thật
+> hay không.
+
 **Bảng 19.1 — Chọn công cụ theo triệu chứng**
 
 | Triệu chứng | Công cụ bắt đầu |
@@ -19748,6 +19867,25 @@ tra, tắt lại sau đó.
 Polling toàn bộ danh sách tag PLC chỉ để trả lời "còn sống không" biến
 công cụ giám sát thành một phần của vấn đề. Health check nên nhẹ nhất
 có thể — một tag kiểm tra, một phép đo round-trip time là đủ.
+
+**Lỗi 6: Tra cứu dữ liệu giữa hai tầng bằng chuỗi ký tự tự do, không qua
+enum/whitelist — sai chính tả bị bỏ qua trong im lặng.**
+Một dự án tham khảo cho thấy đúng mẫu lỗi này lặp lại độc lập ở ba nơi khác
+nhau: tên tham số recipe do người vận hành gõ tự do ở màn hình tạo, rồi
+Sequence tra lại bằng `FindByParam("TenThamSo")` — nếu chuỗi tra bằng
+`TryParse` (không phải `Parse`), sai một ký tự khiến khối `if` bị bỏ qua
+hoàn toàn, không log, không alarm, máy tiếp tục chạy với giá trị mặc định
+thay vì giá trị recipe thật; cùng dự án còn có `switch` chọn trục theo chuỗi
+phân biệt hoa/thường (`"HZ"` và `"hz"` là hai trục vật lý khác nhau, gõ sai
+hoa/thường mà không có `default:` cảnh báo thì lệnh jog không làm gì cả) và
+một `switch` khác map tên bảng UI sang tên trục theo cùng kiểu. Khi debug
+một sự cố "giá trị cấu hình không được áp dụng" mà không có exception nào
+ném ra, luôn nghi ngờ trước tiên một điểm tra cứu bằng chuỗi giữa hai tầng
+(UI nhập liệu ↔ logic đọc lại) — đây là nguồn lỗi im lặng phổ biến nhất
+trong automation, và cách phòng vững nhất là chuẩn hoá chuỗi
+(`ToUpperInvariant()`) hoặc thay hẳn bằng enum/hằng số dùng chung giữa hai
+tầng, validate ngay tại thời điểm nhập thay vì để hai bên tự đồng bộ chuỗi
+bằng kỷ luật con người.
 
 <!-- SECTION: LoiKet -->
 ---
@@ -20444,6 +20582,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 *Xuất hiện đầu tiên: Phụ lục A, mục A.1.*
 
 ## D
+
+**DataAnnotations** — Bộ API validate chuẩn của .NET (`System.ComponentModel.DataAnnotations`), dùng chung được cho WPF, ASP.NET và EF Core: attribute khai báo trên property (`[Required]`, `[MaxLength(50)]`...) cộng hàm `Validator.TryValidateObject(obj, new ValidationContext(obj), results, validateAllProperties: true)` tự đọc các attribute đó để kiểm tra. Rule phức tạp hơn 1 attribute diễn tả được thì implement `IValidatableObject` (method `Validate(ValidationContext)`) — chỉ được gọi tự động nếu class khai báo tường minh `: IValidatableObject` (khớp chữ ký method không đủ). (→ xem interface)
+*Xuất hiện đầu tiên: Chương 9, mục 9.1.5.*
 
 **DataContext** — Thuộc tính của mọi phần tử WPF trỏ tới object nguồn dữ liệu cho `Binding`; kế thừa xuống theo Logical Tree, nên đặt một ViewModel làm `DataContext` của `Window`/`UserControl` là đủ để mọi control con bind vào mà không cần khai báo lại. Là "đường ống" chính khiến MVVM hoạt động. (→ xem Binding (WPF), MVVM, Visual Tree)
 *Xuất hiện đầu tiên: Chương 9, mục 9.1.5.*

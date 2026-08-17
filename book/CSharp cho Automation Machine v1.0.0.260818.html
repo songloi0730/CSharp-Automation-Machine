@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260817</title>
+<title>C# cho Automation Machine — v1.0.0.260818</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -474,7 +474,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260817</td>
+<td>v1.0.0.260818</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -5955,6 +5955,27 @@ public sealed class DriverHost
 </code></pre>
 <p>Nhà máy bổ sung camera Basler? Tạo <code>BaslerCameraDriver : IDeviceDriver</code>, đăng ký
 vào DI container. <code>DriverHost</code> và toàn bộ core không cần sửa.</p>
+<blockquote>
+<p>⚠️ <strong>Case study thật — cái giá của việc trì hoãn rút interface quá lâu:</strong> một dự án
+tham khảo có ~35 driver thiết bị serial (máy đọc mã vạch, cân điện tử, cảm biến, biến
+tần — nhiều hãng khác nhau cho cùng loại thiết bị). Grep cấu trúc kế thừa toàn bộ thư
+mục driver xác nhận: chỉ 3/42 file có quan hệ kế thừa; còn lại — kể cả 4 driver máy đọc
+mã vạch của 4 hãng khác nhau, cùng giải quyết cùng 1 bài toán — đều là class độc lập,
+không interface/base class chung. Hệ quả cụ thể: 4 driver &quot;họ mã vạch&quot; có <strong>3 cách xử
+lý khác nhau</strong> cho đúng 1 vấn đề (khi nào được phép gửi lệnh xuống cổng) — một cách bị
+treo vĩnh viễn vì quên set 1 cờ điều kiện, một cách bỏ hẳn điều kiện đó, chỉ một cách
+làm đúng. Cả 3 cách đều <strong>biên dịch được</strong> — compiler không bắt được loại lỗi này vì
+không có hợp đồng chung nào để đối chiếu. Một hàm tiện ích không phụ thuộc hãng thiết
+bị nào (liệt kê cổng COM khả dụng) cũng bị copy-paste giống hệt ký-tự-cho-ký-tự vào 8
+file khác nhau, thay vì viết một lần rồi gọi lại.</p>
+<p>Bài học: không cần rút interface ngay từ driver đầu tiên (over-engineering, YAGNI) —
+nhưng cũng không nên đợi tới driver thứ 5 mới thấy cần. Thời điểm hợp lý để rút ra 1
+interface tối thiểu (ví dụ <code>IBarcodeReader</code> với <code>Connect</code>/<code>IsConnected</code>/<code>Send</code>/
+<code>event ScanReceived</code>) là ngay khi viết driver thứ <strong>hai</strong> cùng loại thiết bị — lúc đó
+chi phí gộp lại còn thấp (chỉ 2 bản để so sánh). Đợi tới bản thứ 5, mỗi bản đã lệch
+theo một hướng khác nhau, và việc gộp lại đòi hỏi quyết định &quot;bản nào đúng&quot; cho từng
+điểm khác biệt — tốn công hơn nhiều so với thiết kế đúng từ đầu.</p>
+</blockquote>
 <p><strong>Ví dụ — Strategy Pattern cho thuật toán thay đổi:</strong></p>
 <p><strong>Code 7.4 — OCP: thêm chiến lược mới không sửa SetpointService</strong></p>
 <pre><code class="language-csharp">public interface ISetpointStrategy
@@ -15681,6 +15702,194 @@ nạp được vào EtherCAT master chuẩn). Kiểm tra thẻ gốc của file 
 giả định nó tuân thủ ETG.2000.</p>
 </blockquote>
 <hr>
+<h3>14.1.5  Giao tiếp Serial (RS-232/RS-485) — thiết bị ngoại vi</h3>
+<p>Không phải mọi thiết bị đều nói TCP/IP. Máy đọc mã vạch, cân điện tử, cảm biến đo
+khoảng cách/độ dày, biến tần (VFD), bộ điều khiển nhiệt độ — rất nhiều thiết bị ngoại
+vi công nghiệp vẫn giao tiếp qua cổng <strong>Serial (RS-232/RS-485)</strong>, đặc biệt là thiết bị
+đời cũ hoặc thiết bị giá rẻ chưa tích hợp Ethernet. API chuẩn của .NET cho việc này là
+<code>System.IO.Ports.SerialPort</code>.</p>
+<p><strong>Code 14.3b — Mở cổng Serial và nhận dữ liệu đúng chuẩn <code>EventHandler&lt;T&gt;</code></strong></p>
+<pre><code class="language-csharp">using System.IO.Ports;
+
+public sealed class ScaleReadEventArgs(double weightKg) : EventArgs
+{
+    public double WeightKg { get; } = weightKg;
+}
+
+public sealed class SerialScaleClient : IDisposable
+{
+    private readonly SerialPort _port;
+
+    public event EventHandler&lt;ScaleReadEventArgs&gt;? WeightReceived;
+
+    public SerialScaleClient(string portName, int baudRate = 9600)
+    {
+        _port = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One)
+        {
+            ReadTimeout = 500,
+            NewLine = &quot;\r\n&quot;
+        };
+        _port.DataReceived += OnDataReceived;
+    }
+
+    public void Open() =&gt; _port.Open();
+
+    private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+    {
+        // ReadExisting() gộp mọi byte đã tới cổng kể từ lần đọc trước — không
+        // đảm bảo đúng 1 message trọn vẹn, cần tách khung ở tầng trên (Bảng 14.5b).
+        string raw = _port.ReadExisting();
+        if (double.TryParse(raw.Trim(), out double weightKg))
+            WeightReceived?.Invoke(this, new ScaleReadEventArgs(weightKg));
+    }
+
+    public void Dispose()
+    {
+        _port.DataReceived -= OnDataReceived;
+        _port.Dispose();
+    }
+}
+</code></pre>
+<p>So khớp với chuẩn <code>EventHandler&lt;T&gt;</code> đã học ở Chương 4 (mục 4.2, callout &quot;khớp chữ ký
+không đủ để implement interface&quot; và ví dụ <code>PositionChangedEventArgs</code>): tham số 1 luôn
+là <code>sender</code> (đối tượng phát sự kiện — ở đây là <code>this</code>, class <code>SerialScaleClient</code>), dữ
+liệu thật (<code>WeightKg</code>) đi qua <code>EventArgs</code> subclass ở tham số 2. Chính <code>SerialDataReceivedEventHandler</code>
+của .NET (tham số <code>sender</code>/<code>SerialDataReceivedEventArgs e</code>) cũng tuân theo đúng khuôn
+này — không có lý do kỹ thuật nào để driver tự viết đi chệch khuôn, ngoài thói quen sao
+chép từ 1 bản mẫu sai ban đầu rồi nhân bản cho mọi thiết bị sau đó.</p>
+<blockquote>
+<p>⚠️ <strong>Anti-pattern có thật:</strong> một dự án tham khảo nhét thẳng dữ liệu (<code>byte[]</code> hoặc
+<code>double</code>) vào tham số <code>sender</code> và luôn truyền <code>null</code> cho <code>e</code> — <code>IncomingData(data, null)</code>
+thay vì <code>IncomingData(this, new DataReceivedEventArgs(data))</code>. Vì tham số <code>sender</code> khai
+báo kiểu <code>object</code>, C# chấp nhận cả 2 cách dùng mà không báo lỗi biên dịch — nơi subscribe
+phải tự ép kiểu <code>(byte[])sender</code> theo quy ước ngầm, không được compiler kiểm tra. Điều
+đáng chú ý hơn cả bug: cách làm sai này được lặp lại NHẤT QUÁN ở toàn bộ driver serial
+của dự án đó — chứng tỏ đây là 1 lựa chọn kiến trúc ban đầu (dù sai), không phải sơ suất
+của một người. Bài học: nhất quán trong một codebase không đồng nghĩa với đúng chuẩn —
+khi review code, luôn đối chiếu với chuẩn ngôn ngữ/framework, không chỉ với chính codebase
+đang đọc.</p>
+</blockquote>
+<p>Vì Serial cũng là một luồng byte liên tục giống TCP (mục 14.1.3), ứng dụng phải tự phân
+tách message — không có khái niệm &quot;1 message = 1 lần đọc&quot; nào được đảm bảo:</p>
+<p><strong>Bảng 14.5b — Cách đóng khung (framing) thường gặp qua Serial</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu khung</th>
+<th>Cách nhận diện hết 1 gói</th>
+<th>Thiết bị hay dùng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kết thúc bằng 1 byte cố định (<code>ETX</code>/<code>CR</code>)</td>
+<td>Gặp byte đó là kết thúc gói</td>
+<td>Máy đọc mã vạch đơn giản, cân điện tử</td>
+</tr>
+<tr>
+<td><code>STX</code>...<code>ETX</code> bao quanh</td>
+<td>Bật cờ khi gặp <code>STX</code>; đóng gói khi gặp <code>ETX</code> sau đó</td>
+<td>Thiết bị đo, bộ điều khiển nhiệt độ</td>
+</tr>
+<tr>
+<td>2 byte kết liền kề (<code>CR</code>+<code>LF</code>)</td>
+<td>Kiểm tra 2 byte liên tiếp đúng cặp</td>
+<td>Cảm biến đo khoảng cách/độ dày</td>
+</tr>
+<tr>
+<td>Độ dài cố định</td>
+<td>Đếm đủ N byte là 1 gói, không cần ký tự kết thúc</td>
+<td>Giao thức nhị phân chặt (Modbus RTU)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Bẫy khi copy khung mẫu sang thiết bị mới:</strong> khung <code>STX...ETX</code> LUÔN có dữ liệu thật
+nằm giữa 2 ký tự (không liền kề), khác hẳn khung <code>CR+LF</code> (2 ký tự đúng là liền kề ở cuối
+gói). Một dự án tham khảo có driver dùng điều kiện <code>buff[i-1] == STX &amp;&amp; buff[i] == ETX</code>
+(đòi 2 byte liền kề) cho một thiết bị dùng khung <code>STX...ETX</code> — gần như sẽ không bao giờ
+khớp một gói tin có nội dung thật, vì STX và ETX của khung này không liền kề nhau về bản
+chất giao thức. Dấu hiệu rõ: đoạn code trông giống hệt khuôn kiểm tra <code>CR</code>+<code>LF</code> ở gần đó,
+gợi ý bị copy nhầm khuôn giữa 2 giao thức có bản chất framing khác nhau. Khi copy code
+mẫu cho thiết bị mới, phải hiểu ĐÚNG bản chất cấu trúc khung — không chỉ đổi tên biến —
+và nên gửi thử 1 khung mẫu thật để xác nhận trước khi coi là xong.</p>
+</blockquote>
+<p>Nhiều giao thức Serial công nghiệp còn yêu cầu 1 byte/word <strong>checksum</strong> để phát hiện lỗi
+truyền (nhiễu điện, cáp dài) — điều Modbus TCP không cần vì TCP đã đảm bảo toàn vẹn dữ
+liệu ở tầng dưới:</p>
+<p><strong>Bảng 14.5c — Ba kiểu checksum thường gặp trong giao tiếp Serial công nghiệp</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Cách tính</th>
+<th>Độ tin cậy</th>
+<th>Dùng trong</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CRC16</strong></td>
+<td>Bảng tra cứu (lookup table) 256 phần tử + dịch bit/XOR</td>
+<td>Cao — chuẩn phát hiện lỗi tốt</td>
+<td>Modbus RTU</td>
+</tr>
+<tr>
+<td><strong>LRC</strong> (Longitudinal Redundancy Check)</td>
+<td>Trừ dồn (hoặc cộng dồn rồi lấy bù-hai — 2 cách biểu diễn tương đương) từng byte dữ liệu</td>
+<td>Trung bình</td>
+<td>Modbus ASCII</td>
+</tr>
+<tr>
+<td><strong>BCC</strong> (Block Check Character)</td>
+<td>XOR luỹ kế toàn bộ byte dữ liệu</td>
+<td>Thấp nhất trong 3 kiểu, đơn giản nhất</td>
+<td>Nhiều giao thức thiết bị đo/heater độc quyền</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong><code>ToString(&quot;X2&quot;)</code> và <code>Convert.ToInt32(text, 16)</code> — cặp đôi hex đi cùng checksum:</strong>
+khi debug giao tiếp Serial, in từng byte ra dạng hex 2 chữ số để đối chiếu tài liệu thiết
+bị là thao tác thường trực: <code>data[i].ToString(&quot;X2&quot;)</code> (số → chuỗi hex, đệm 0 bên trái —
+<code>&quot;X4&quot;</code>/<code>&quot;X8&quot;</code> cho 16-bit/32-bit). Chiều ngược lại, <code>Convert.ToInt32(hexText, 16)</code>/
+<code>Convert.ToByte(hexText, 16)</code> parse một chuỗi hex (ví dụ nhận từ giao thức Modbus ASCII,
+nơi số được mã hoá thành ký tự hex thay vì byte nhị phân thô) trở lại thành số.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong><code>SerialPort.GetPortNames()</code> — API sẵn có, không cần tự đọc Registry:</strong> liệt kê danh
+sách cổng COM đang có trên máy là nhu cầu phổ biến (hiển thị dropdown chọn cổng khi cấu
+hình thiết bị mới), và .NET có sẵn <code>SerialPort.GetPortNames()</code> trả về <code>string[]</code> chỉ trong
+1 dòng. Một dự án tham khảo không dùng API này — thay vào đó tự đọc registry
+(<code>Microsoft.Win32.Registry.LocalMachine.OpenSubKey(&quot;HARDWARE\\DEVICEMAP\\SERIALCOMM&quot;)</code>)
+để lấy cùng thông tin, và hàm ~15 dòng đó bị copy-paste giống hệt ký-tự-cho-ký-tự vào
+<strong>8 file khác nhau</strong> trong cùng dự án. Bài học kép: (1) luôn kiểm tra BCL có sẵn API
+tương đương trước khi tự viết bằng cách &quot;thấp cấp&quot; hơn; (2) một hàm không phụ thuộc gì
+vào hãng thiết bị cụ thể (như liệt kê cổng COM) là ứng viên rõ ràng để rút ra dùng chung —
+không cần chờ có sẵn 1 interface tổng thể mới dám refactor.</p>
+</blockquote>
+<p>Khi thiết bị dùng Modbus nhưng qua cổng Serial thay vì TCP (<strong>Modbus RTU</strong>), thư viện
+NModbus xử lý cả CRC16 lẫn framing sẵn — không cần tự viết lại hạ tầng của mục 14.1.2:</p>
+<p><strong>Code 14.3c — Modbus RTU qua Serial bằng NModbus, đối chiếu với Code 14.3 (Modbus TCP)</strong></p>
+<pre><code class="language-csharp">using System.IO.Ports;
+using Modbus.Device;   // NuGet: NModbus
+
+using var port = new SerialPort(&quot;COM3&quot;, 9600, Parity.Even, 8, StopBits.One);
+port.Open();
+
+using ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(port);
+master.Transport.ReadTimeout = 200;
+master.Transport.WriteTimeout = 200;
+
+// FC03 — giống hệt Code 14.3 (FluentModbus/Modbus TCP), chỉ khác lớp vận chuyển
+ushort[] registers = master.ReadHoldingRegisters(slaveAddress: 1, startAddress: 0x0801, numberOfPoints: 6);
+</code></pre>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — 2 con đường Modbus song song trong cùng 1 dự án:</strong> một dự án tham
+khảo có sẵn hạ tầng Modbus RTU tự viết tay (framing + tính CRC16/LRC thủ công) cho phần
+lớn thiết bị, nhưng 1 thiết bị mới hơn (biến tần) lại dùng thẳng NModbus thay vì tái sử
+dụng hạ tầng đã có — tạo ra 2 con đường bảo trì độc lập cho cùng 1 loại vấn đề, không có
+quy ước nào ghi rõ &quot;dự án này dùng gì cho Modbus&quot;. Nếu một dự án đã đầu tư hạ tầng dùng
+chung, nên ghi rõ trong tài liệu/code review checklist rằng thiết bị Modbus mới PHẢI tái
+sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo thói quen riêng.</p>
+</blockquote>
+<hr>
 <h2 id="142-secsgem-xương-sng-ngành-bán-dn-và-smt">14.2  SECS/GEM — xương sống ngành bán dẫn và SMT</h2>
 <blockquote>
 <p>📌 <strong>Lưu ý về phạm vi:</strong> SECS/GEM là giao thức chuyên biệt cho ngành bán dẫn và SMT.
@@ -17269,6 +17478,20 @@ THẬT (không bị comment) từ đường chạy chính, không chỉ tin vì 
 <li><strong>Ghi log</strong> — audit trail thời điểm kích hoạt, người reset</li>
 <li><strong>Khóa lệnh</strong> — ngăn người dùng gửi lệnh khi safety state chưa cho phép</li>
 </ol>
+<blockquote>
+<p>⚠️ <strong>Vai trò thứ năm không được phép — tự động &quot;sửa&quot; trạng thái an toàn:</strong> một dự án
+tham khảo có driver giao tiếp servo, ở tầng THẤP NHẤT (luồng nền đọc thanh ghi trạng
+thái mỗi ~100ms), tự động gửi lệnh bật lại nguồn động lực trục ngay khi phát hiện servo
+đang tắt — không phân biệt lý do tắt là gì (operator chủ động tắt để bảo trì, hay một
+alarm vừa tắt servo để bảo vệ), không qua xác nhận operator, không log cảnh báo riêng
+cho hành vi này. Đây chính là vai trò thứ năm ngoài 4 vai trò cho phép ở trên — driver
+tầng giao tiếp tự ra quyết định &quot;điều khiển&quot; thay vì chỉ giám sát/hiển thị/log/khoá lệnh,
+và làm điều đó ở lớp thấp nhất, nơi không có bất kỳ logic nghiệp vụ/an toàn nào phía trên
+kịp can thiệp. Nguyên tắc rút ra: driver thiết bị — dù ở tầng nào — không bao giờ được tự
+quyết định thay đổi trạng thái an toàn/nguồn động lực; mọi hành động actuation phải đi
+qua đúng luồng đã có chủ đích rà soát an toàn (Sequence/MasterController), không phải
+phản xạ tự động trong vòng lặp đọc trạng thái nền.</p>
+</blockquote>
 <p>Sơ đồ kiến trúc — safety path và control path là hai đường vật lý tách biệt:</p>
 <pre><code>  [E-Stop]   [Door Switch]  [Light Curtain]
       │            │              │
@@ -21956,6 +22179,24 @@ trong automation, và cách phòng vững nhất là chuẩn hoá chuỗi
 (<code>ToUpperInvariant()</code>) hoặc thay hẳn bằng enum/hằng số dùng chung giữa hai
 tầng, validate ngay tại thời điểm nhập thay vì để hai bên tự đồng bộ chuỗi
 bằng kỷ luật con người.</p>
+<p><strong>Lỗi 7: Coi &quot;biên dịch sạch, không cảnh báo&quot; là bằng chứng code đang được
+dùng.</strong>
+Một dự án tham khảo có 1 class TCP client 585 dòng, dùng thư viện bên thứ ba
+để kết nối — biên dịch vào bản build thật (symbol điều kiện biên dịch của nó
+được định nghĩa sẵn trong file cấu hình project, cả Debug lẫn Release), không
+có cảnh báo nào của compiler. Nhưng grep toàn bộ mã nguồn còn lại xác nhận
+<strong>không có bất kỳ điểm nào thực sự khởi tạo class đó</strong> — 585 dòng logic tồn
+tại, được bảo trì (đọc hiểu, không dám xoá vì sợ có chỗ nào đó lỡ dùng), tốn
+thời gian review mỗi khi ai đó chạm gần nó, nhưng chưa từng chạy một lần nào
+trong ứng dụng đang vận hành. Đây là biến thể NGUY HIỂM HƠN dead code bị vô
+hiệu hoá bằng <code>#if</code>/<code>#endif</code> (đã nêu ở phần trên) — vì loại đó ít nhất còn có
+dấu hiệu trực quan (&quot;code này có thể không được bật&quot;), còn loại này trông
+hệt như mọi class khác đang hoạt động bình thường. Không có cách nào phát
+hiện qua đọc code hay biên dịch thử — chỉ grep/tìm-tham-chiếu (&quot;Find All
+References&quot;, hoặc công cụ phân tích &quot;unreferenced type&quot; chạy định kỳ trên
+toàn solution) mới lộ ra. Khi dọn dẹp code cũ hoặc review 1 class lạ,
+luôn hỏi thêm 1 câu ngoài &quot;có biên dịch không&quot;: &quot;có ai thực sự <code>new</code> nó lên
+không?&quot;</p>
 <!-- SECTION: LoiKet -->
 <hr>
 <h1 id="li-kt">Lời kết</h1>
@@ -23095,6 +23336,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 17, mục 17.2.</em></p>
 <p><strong>Structured Logging</strong> — Cách ghi log dùng message template (<code>_logger.LogError(&quot;Axis {AxisName} fault: {ErrorCode}&quot;, axisName, errorCode)</code>) thay vì string đã ghép sẵn (<code>$&quot;Axis {axisName} fault&quot;</code>); hệ thống log lưu từng tham số như một trường dữ liệu riêng, cho phép truy vấn (&quot;AxisName = &#39;X&#39; và ErrorCode = 1234 xảy ra bao nhiêu lần&quot;) thay vì chỉ tìm kiếm chuỗi văn bản. Điều kiện cần để log thực sự dùng được khi điều tra sự cố hàng loạt. (→ xem Serilog, Seq)
 <em>Xuất hiện đầu tiên: Chương 19, mục 19.4.</em></p>
+<p><strong>SerialPort (<code>System.IO.Ports</code>)</strong> — Lớp .NET giao tiếp cổng nối tiếp RS-232/RS-485 (constructor mở theo tên cổng + baud rate; <code>.Open()</code>/<code>.IsOpen</code>; sự kiện <code>DataReceived</code> báo có byte mới tới; <code>.ReadExisting()</code>/<code>.Read()</code>; <code>.GetPortNames()</code> liệt kê cổng COM khả dụng — không cần tự đọc Windows Registry). Vì Serial cũng là luồng byte liên tục như TCP, ứng dụng phải tự đóng khung (framing) message — không có message boundary tự nhiên. Nhiều thiết bị ngoại vi công nghiệp (máy đọc mã vạch, cân điện tử, cảm biến, biến tần) vẫn giao tiếp qua Serial dù đã có Ethernet. (→ xem TCP framing)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.5.</em></p>
 <p><strong>Serilog</strong> — Thư viện logging cho .NET đóng vai trò <em>sink provider</em>, cắm vào interface chuẩn <code>Microsoft.Extensions.Logging</code> để quyết định log đi đâu (file xoay vòng theo ngày/kích thước, Event Viewer, database, hệ thống log tập trung). Domain/Application layer chỉ nên phụ thuộc interface chuẩn, không bind trực tiếp vào Serilog — giữ khả năng đổi thư viện logging mà không sửa code nghiệp vụ. (→ xem Structured Logging)
 <em>Xuất hiện đầu tiên: Chương 19, mục 19.4.</em></p>
 <p><strong>Seq</strong> — Hệ thống log tập trung nhận structured log qua HTTP, cho phép truy vấn theo trường dữ liệu (AxisName, ErrorCode...) thay vì chỉ tìm kiếm chuỗi văn bản; phù hợp quy mô một vài máy. Bản free tier giới hạn 1 user và không có alert (đủ cho team nhỏ/dùng thử); bản commercial có alert qua email/Slack khi phát hiện pattern lỗi. Với quy mô nhiều máy trong cùng dây chuyền, Grafana Loki là lựa chọn thay thế phổ biến; cả hai đều tự host được trên server nội bộ cho nhà máy không có Internet. (→ xem Structured Logging)

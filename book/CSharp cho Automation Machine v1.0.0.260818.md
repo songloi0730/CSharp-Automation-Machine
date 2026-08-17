@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260817 |
+| **Phiên bản** | v1.0.0.260818 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -5298,6 +5298,27 @@ public sealed class DriverHost
 
 Nhà máy bổ sung camera Basler? Tạo `BaslerCameraDriver : IDeviceDriver`, đăng ký
 vào DI container. `DriverHost` và toàn bộ core không cần sửa.
+
+> ⚠️ **Case study thật — cái giá của việc trì hoãn rút interface quá lâu:** một dự án
+> tham khảo có ~35 driver thiết bị serial (máy đọc mã vạch, cân điện tử, cảm biến, biến
+> tần — nhiều hãng khác nhau cho cùng loại thiết bị). Grep cấu trúc kế thừa toàn bộ thư
+> mục driver xác nhận: chỉ 3/42 file có quan hệ kế thừa; còn lại — kể cả 4 driver máy đọc
+> mã vạch của 4 hãng khác nhau, cùng giải quyết cùng 1 bài toán — đều là class độc lập,
+> không interface/base class chung. Hệ quả cụ thể: 4 driver "họ mã vạch" có **3 cách xử
+> lý khác nhau** cho đúng 1 vấn đề (khi nào được phép gửi lệnh xuống cổng) — một cách bị
+> treo vĩnh viễn vì quên set 1 cờ điều kiện, một cách bỏ hẳn điều kiện đó, chỉ một cách
+> làm đúng. Cả 3 cách đều **biên dịch được** — compiler không bắt được loại lỗi này vì
+> không có hợp đồng chung nào để đối chiếu. Một hàm tiện ích không phụ thuộc hãng thiết
+> bị nào (liệt kê cổng COM khả dụng) cũng bị copy-paste giống hệt ký-tự-cho-ký-tự vào 8
+> file khác nhau, thay vì viết một lần rồi gọi lại.
+>
+> Bài học: không cần rút interface ngay từ driver đầu tiên (over-engineering, YAGNI) —
+> nhưng cũng không nên đợi tới driver thứ 5 mới thấy cần. Thời điểm hợp lý để rút ra 1
+> interface tối thiểu (ví dụ `IBarcodeReader` với `Connect`/`IsConnected`/`Send`/
+> `event ScanReceived`) là ngay khi viết driver thứ **hai** cùng loại thiết bị — lúc đó
+> chi phí gộp lại còn thấp (chỉ 2 bản để so sánh). Đợi tới bản thứ 5, mỗi bản đã lệch
+> theo một hướng khác nhau, và việc gộp lại đòi hỏi quyết định "bản nào đúng" cho từng
+> điểm khác biệt — tốn công hơn nhiều so với thiết kế đúng từ đầu.
 
 **Ví dụ — Strategy Pattern cho thuật toán thay đổi:**
 
@@ -14338,6 +14359,160 @@ giao thức ứng dụng C# **tương tác trực tiếp**, không phải fieldb
 
 ---
 
+### 14.1.5  Giao tiếp Serial (RS-232/RS-485) — thiết bị ngoại vi
+
+Không phải mọi thiết bị đều nói TCP/IP. Máy đọc mã vạch, cân điện tử, cảm biến đo
+khoảng cách/độ dày, biến tần (VFD), bộ điều khiển nhiệt độ — rất nhiều thiết bị ngoại
+vi công nghiệp vẫn giao tiếp qua cổng **Serial (RS-232/RS-485)**, đặc biệt là thiết bị
+đời cũ hoặc thiết bị giá rẻ chưa tích hợp Ethernet. API chuẩn của .NET cho việc này là
+`System.IO.Ports.SerialPort`.
+
+**Code 14.3b — Mở cổng Serial và nhận dữ liệu đúng chuẩn `EventHandler<T>`**
+
+```csharp
+using System.IO.Ports;
+
+public sealed class ScaleReadEventArgs(double weightKg) : EventArgs
+{
+    public double WeightKg { get; } = weightKg;
+}
+
+public sealed class SerialScaleClient : IDisposable
+{
+    private readonly SerialPort _port;
+
+    public event EventHandler<ScaleReadEventArgs>? WeightReceived;
+
+    public SerialScaleClient(string portName, int baudRate = 9600)
+    {
+        _port = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One)
+        {
+            ReadTimeout = 500,
+            NewLine = "\r\n"
+        };
+        _port.DataReceived += OnDataReceived;
+    }
+
+    public void Open() => _port.Open();
+
+    private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+    {
+        // ReadExisting() gộp mọi byte đã tới cổng kể từ lần đọc trước — không
+        // đảm bảo đúng 1 message trọn vẹn, cần tách khung ở tầng trên (Bảng 14.5b).
+        string raw = _port.ReadExisting();
+        if (double.TryParse(raw.Trim(), out double weightKg))
+            WeightReceived?.Invoke(this, new ScaleReadEventArgs(weightKg));
+    }
+
+    public void Dispose()
+    {
+        _port.DataReceived -= OnDataReceived;
+        _port.Dispose();
+    }
+}
+```
+
+So khớp với chuẩn `EventHandler<T>` đã học ở Chương 4 (mục 4.2, callout "khớp chữ ký
+không đủ để implement interface" và ví dụ `PositionChangedEventArgs`): tham số 1 luôn
+là `sender` (đối tượng phát sự kiện — ở đây là `this`, class `SerialScaleClient`), dữ
+liệu thật (`WeightKg`) đi qua `EventArgs` subclass ở tham số 2. Chính `SerialDataReceivedEventHandler`
+của .NET (tham số `sender`/`SerialDataReceivedEventArgs e`) cũng tuân theo đúng khuôn
+này — không có lý do kỹ thuật nào để driver tự viết đi chệch khuôn, ngoài thói quen sao
+chép từ 1 bản mẫu sai ban đầu rồi nhân bản cho mọi thiết bị sau đó.
+
+> ⚠️ **Anti-pattern có thật:** một dự án tham khảo nhét thẳng dữ liệu (`byte[]` hoặc
+> `double`) vào tham số `sender` và luôn truyền `null` cho `e` — `IncomingData(data, null)`
+> thay vì `IncomingData(this, new DataReceivedEventArgs(data))`. Vì tham số `sender` khai
+> báo kiểu `object`, C# chấp nhận cả 2 cách dùng mà không báo lỗi biên dịch — nơi subscribe
+> phải tự ép kiểu `(byte[])sender` theo quy ước ngầm, không được compiler kiểm tra. Điều
+> đáng chú ý hơn cả bug: cách làm sai này được lặp lại NHẤT QUÁN ở toàn bộ driver serial
+> của dự án đó — chứng tỏ đây là 1 lựa chọn kiến trúc ban đầu (dù sai), không phải sơ suất
+> của một người. Bài học: nhất quán trong một codebase không đồng nghĩa với đúng chuẩn —
+> khi review code, luôn đối chiếu với chuẩn ngôn ngữ/framework, không chỉ với chính codebase
+> đang đọc.
+
+Vì Serial cũng là một luồng byte liên tục giống TCP (mục 14.1.3), ứng dụng phải tự phân
+tách message — không có khái niệm "1 message = 1 lần đọc" nào được đảm bảo:
+
+**Bảng 14.5b — Cách đóng khung (framing) thường gặp qua Serial**
+
+| Kiểu khung | Cách nhận diện hết 1 gói | Thiết bị hay dùng |
+|---|---|---|
+| Kết thúc bằng 1 byte cố định (`ETX`/`CR`) | Gặp byte đó là kết thúc gói | Máy đọc mã vạch đơn giản, cân điện tử |
+| `STX`...`ETX` bao quanh | Bật cờ khi gặp `STX`; đóng gói khi gặp `ETX` sau đó | Thiết bị đo, bộ điều khiển nhiệt độ |
+| 2 byte kết liền kề (`CR`+`LF`) | Kiểm tra 2 byte liên tiếp đúng cặp | Cảm biến đo khoảng cách/độ dày |
+| Độ dài cố định | Đếm đủ N byte là 1 gói, không cần ký tự kết thúc | Giao thức nhị phân chặt (Modbus RTU) |
+
+> ⚠️ **Bẫy khi copy khung mẫu sang thiết bị mới:** khung `STX...ETX` LUÔN có dữ liệu thật
+> nằm giữa 2 ký tự (không liền kề), khác hẳn khung `CR+LF` (2 ký tự đúng là liền kề ở cuối
+> gói). Một dự án tham khảo có driver dùng điều kiện `buff[i-1] == STX && buff[i] == ETX`
+> (đòi 2 byte liền kề) cho một thiết bị dùng khung `STX...ETX` — gần như sẽ không bao giờ
+> khớp một gói tin có nội dung thật, vì STX và ETX của khung này không liền kề nhau về bản
+> chất giao thức. Dấu hiệu rõ: đoạn code trông giống hệt khuôn kiểm tra `CR`+`LF` ở gần đó,
+> gợi ý bị copy nhầm khuôn giữa 2 giao thức có bản chất framing khác nhau. Khi copy code
+> mẫu cho thiết bị mới, phải hiểu ĐÚNG bản chất cấu trúc khung — không chỉ đổi tên biến —
+> và nên gửi thử 1 khung mẫu thật để xác nhận trước khi coi là xong.
+
+Nhiều giao thức Serial công nghiệp còn yêu cầu 1 byte/word **checksum** để phát hiện lỗi
+truyền (nhiễu điện, cáp dài) — điều Modbus TCP không cần vì TCP đã đảm bảo toàn vẹn dữ
+liệu ở tầng dưới:
+
+**Bảng 14.5c — Ba kiểu checksum thường gặp trong giao tiếp Serial công nghiệp**
+
+| Kiểu | Cách tính | Độ tin cậy | Dùng trong |
+|---|---|---|---|
+| **CRC16** | Bảng tra cứu (lookup table) 256 phần tử + dịch bit/XOR | Cao — chuẩn phát hiện lỗi tốt | Modbus RTU |
+| **LRC** (Longitudinal Redundancy Check) | Trừ dồn (hoặc cộng dồn rồi lấy bù-hai — 2 cách biểu diễn tương đương) từng byte dữ liệu | Trung bình | Modbus ASCII |
+| **BCC** (Block Check Character) | XOR luỹ kế toàn bộ byte dữ liệu | Thấp nhất trong 3 kiểu, đơn giản nhất | Nhiều giao thức thiết bị đo/heater độc quyền |
+
+> 📌 **`ToString("X2")` và `Convert.ToInt32(text, 16)` — cặp đôi hex đi cùng checksum:**
+> khi debug giao tiếp Serial, in từng byte ra dạng hex 2 chữ số để đối chiếu tài liệu thiết
+> bị là thao tác thường trực: `data[i].ToString("X2")` (số → chuỗi hex, đệm 0 bên trái —
+> `"X4"`/`"X8"` cho 16-bit/32-bit). Chiều ngược lại, `Convert.ToInt32(hexText, 16)`/
+> `Convert.ToByte(hexText, 16)` parse một chuỗi hex (ví dụ nhận từ giao thức Modbus ASCII,
+> nơi số được mã hoá thành ký tự hex thay vì byte nhị phân thô) trở lại thành số.
+
+> 📌 **`SerialPort.GetPortNames()` — API sẵn có, không cần tự đọc Registry:** liệt kê danh
+> sách cổng COM đang có trên máy là nhu cầu phổ biến (hiển thị dropdown chọn cổng khi cấu
+> hình thiết bị mới), và .NET có sẵn `SerialPort.GetPortNames()` trả về `string[]` chỉ trong
+> 1 dòng. Một dự án tham khảo không dùng API này — thay vào đó tự đọc registry
+> (`Microsoft.Win32.Registry.LocalMachine.OpenSubKey("HARDWARE\\DEVICEMAP\\SERIALCOMM")`)
+> để lấy cùng thông tin, và hàm ~15 dòng đó bị copy-paste giống hệt ký-tự-cho-ký-tự vào
+> **8 file khác nhau** trong cùng dự án. Bài học kép: (1) luôn kiểm tra BCL có sẵn API
+> tương đương trước khi tự viết bằng cách "thấp cấp" hơn; (2) một hàm không phụ thuộc gì
+> vào hãng thiết bị cụ thể (như liệt kê cổng COM) là ứng viên rõ ràng để rút ra dùng chung —
+> không cần chờ có sẵn 1 interface tổng thể mới dám refactor.
+
+Khi thiết bị dùng Modbus nhưng qua cổng Serial thay vì TCP (**Modbus RTU**), thư viện
+NModbus xử lý cả CRC16 lẫn framing sẵn — không cần tự viết lại hạ tầng của mục 14.1.2:
+
+**Code 14.3c — Modbus RTU qua Serial bằng NModbus, đối chiếu với Code 14.3 (Modbus TCP)**
+
+```csharp
+using System.IO.Ports;
+using Modbus.Device;   // NuGet: NModbus
+
+using var port = new SerialPort("COM3", 9600, Parity.Even, 8, StopBits.One);
+port.Open();
+
+using ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(port);
+master.Transport.ReadTimeout = 200;
+master.Transport.WriteTimeout = 200;
+
+// FC03 — giống hệt Code 14.3 (FluentModbus/Modbus TCP), chỉ khác lớp vận chuyển
+ushort[] registers = master.ReadHoldingRegisters(slaveAddress: 1, startAddress: 0x0801, numberOfPoints: 6);
+```
+
+> 🔍 **Đào sâu thêm — 2 con đường Modbus song song trong cùng 1 dự án:** một dự án tham
+> khảo có sẵn hạ tầng Modbus RTU tự viết tay (framing + tính CRC16/LRC thủ công) cho phần
+> lớn thiết bị, nhưng 1 thiết bị mới hơn (biến tần) lại dùng thẳng NModbus thay vì tái sử
+> dụng hạ tầng đã có — tạo ra 2 con đường bảo trì độc lập cho cùng 1 loại vấn đề, không có
+> quy ước nào ghi rõ "dự án này dùng gì cho Modbus". Nếu một dự án đã đầu tư hạ tầng dùng
+> chung, nên ghi rõ trong tài liệu/code review checklist rằng thiết bị Modbus mới PHẢI tái
+> sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo thói quen riêng.
+
+---
+
 ## 14.2  SECS/GEM — xương sống ngành bán dẫn và SMT
 
 > 📌 **Lưu ý về phạm vi:** SECS/GEM là giao thức chuyên biệt cho ngành bán dẫn và SMT.
@@ -15584,6 +15759,19 @@ C# trong hệ thống có Safety PLC đóng bốn vai trò, không hơn:
 2. **Hiển thị** — show trạng thái E-Stop, STO, door interlock trên HMI
 3. **Ghi log** — audit trail thời điểm kích hoạt, người reset
 4. **Khóa lệnh** — ngăn người dùng gửi lệnh khi safety state chưa cho phép
+
+> ⚠️ **Vai trò thứ năm không được phép — tự động "sửa" trạng thái an toàn:** một dự án
+> tham khảo có driver giao tiếp servo, ở tầng THẤP NHẤT (luồng nền đọc thanh ghi trạng
+> thái mỗi ~100ms), tự động gửi lệnh bật lại nguồn động lực trục ngay khi phát hiện servo
+> đang tắt — không phân biệt lý do tắt là gì (operator chủ động tắt để bảo trì, hay một
+> alarm vừa tắt servo để bảo vệ), không qua xác nhận operator, không log cảnh báo riêng
+> cho hành vi này. Đây chính là vai trò thứ năm ngoài 4 vai trò cho phép ở trên — driver
+> tầng giao tiếp tự ra quyết định "điều khiển" thay vì chỉ giám sát/hiển thị/log/khoá lệnh,
+> và làm điều đó ở lớp thấp nhất, nơi không có bất kỳ logic nghiệp vụ/an toàn nào phía trên
+> kịp can thiệp. Nguyên tắc rút ra: driver thiết bị — dù ở tầng nào — không bao giờ được tự
+> quyết định thay đổi trạng thái an toàn/nguồn động lực; mọi hành động actuation phải đi
+> qua đúng luồng đã có chủ đích rà soát an toàn (Sequence/MasterController), không phải
+> phản xạ tự động trong vòng lặp đọc trạng thái nền.
 
 Sơ đồ kiến trúc — safety path và control path là hai đường vật lý tách biệt:
 
@@ -19887,6 +20075,25 @@ trong automation, và cách phòng vững nhất là chuẩn hoá chuỗi
 tầng, validate ngay tại thời điểm nhập thay vì để hai bên tự đồng bộ chuỗi
 bằng kỷ luật con người.
 
+**Lỗi 7: Coi "biên dịch sạch, không cảnh báo" là bằng chứng code đang được
+dùng.**
+Một dự án tham khảo có 1 class TCP client 585 dòng, dùng thư viện bên thứ ba
+để kết nối — biên dịch vào bản build thật (symbol điều kiện biên dịch của nó
+được định nghĩa sẵn trong file cấu hình project, cả Debug lẫn Release), không
+có cảnh báo nào của compiler. Nhưng grep toàn bộ mã nguồn còn lại xác nhận
+**không có bất kỳ điểm nào thực sự khởi tạo class đó** — 585 dòng logic tồn
+tại, được bảo trì (đọc hiểu, không dám xoá vì sợ có chỗ nào đó lỡ dùng), tốn
+thời gian review mỗi khi ai đó chạm gần nó, nhưng chưa từng chạy một lần nào
+trong ứng dụng đang vận hành. Đây là biến thể NGUY HIỂM HƠN dead code bị vô
+hiệu hoá bằng `#if`/`#endif` (đã nêu ở phần trên) — vì loại đó ít nhất còn có
+dấu hiệu trực quan ("code này có thể không được bật"), còn loại này trông
+hệt như mọi class khác đang hoạt động bình thường. Không có cách nào phát
+hiện qua đọc code hay biên dịch thử — chỉ grep/tìm-tham-chiếu ("Find All
+References", hoặc công cụ phân tích "unreferenced type" chạy định kỳ trên
+toàn solution) mới lộ ra. Khi dọn dẹp code cũ hoặc review 1 class lạ,
+luôn hỏi thêm 1 câu ngoài "có biên dịch không": "có ai thực sự `new` nó lên
+không?"
+
 <!-- SECTION: LoiKet -->
 ---
 # Lời kết
@@ -21443,6 +21650,9 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **Structured Logging** — Cách ghi log dùng message template (`_logger.LogError("Axis {AxisName} fault: {ErrorCode}", axisName, errorCode)`) thay vì string đã ghép sẵn (`$"Axis {axisName} fault"`); hệ thống log lưu từng tham số như một trường dữ liệu riêng, cho phép truy vấn ("AxisName = 'X' và ErrorCode = 1234 xảy ra bao nhiêu lần") thay vì chỉ tìm kiếm chuỗi văn bản. Điều kiện cần để log thực sự dùng được khi điều tra sự cố hàng loạt. (→ xem Serilog, Seq)
 *Xuất hiện đầu tiên: Chương 19, mục 19.4.*
+
+**SerialPort (`System.IO.Ports`)** — Lớp .NET giao tiếp cổng nối tiếp RS-232/RS-485 (constructor mở theo tên cổng + baud rate; `.Open()`/`.IsOpen`; sự kiện `DataReceived` báo có byte mới tới; `.ReadExisting()`/`.Read()`; `.GetPortNames()` liệt kê cổng COM khả dụng — không cần tự đọc Windows Registry). Vì Serial cũng là luồng byte liên tục như TCP, ứng dụng phải tự đóng khung (framing) message — không có message boundary tự nhiên. Nhiều thiết bị ngoại vi công nghiệp (máy đọc mã vạch, cân điện tử, cảm biến, biến tần) vẫn giao tiếp qua Serial dù đã có Ethernet. (→ xem TCP framing)
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.5.*
 
 **Serilog** — Thư viện logging cho .NET đóng vai trò *sink provider*, cắm vào interface chuẩn `Microsoft.Extensions.Logging` để quyết định log đi đâu (file xoay vòng theo ngày/kích thước, Event Viewer, database, hệ thống log tập trung). Domain/Application layer chỉ nên phụ thuộc interface chuẩn, không bind trực tiếp vào Serilog — giữ khả năng đổi thư viện logging mà không sửa code nghiệp vụ. (→ xem Structured Logging)
 *Xuất hiện đầu tiên: Chương 19, mục 19.4.*

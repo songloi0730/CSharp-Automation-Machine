@@ -1284,6 +1284,32 @@ Một kỹ sư PLC đã có sẵn nhiều bản năng đúng. Bảng sau ánh x�
 | Word I/O + mask bit | `int`/`ushort` + toán tử bitwise | Đọc/ghi DI/DO theo word |
 | Bảng symbol | `enum`, hằng số (`const`) | Đặt tên cho con số |
 
+> ⚠️ **Hậu quả thật khi "bit nhớ retentive" (dòng bảng trên) bị đặt nhầm chỗ:**
+> field `static` không chỉ "sống lâu" — nó còn dùng CHUNG cho MỌI instance của
+> class, bất kể có 1 hay 100 object đang tồn tại. Một dự án tham khảo có 3
+> kênh giao tiếp TCP độc lập của cùng 1 robot (3 object thật, 3 vùng nhớ heap
+> khác nhau), mỗi kênh cần 1 cổng (port) riêng. Nhưng cấu hình cổng của mỗi
+> kênh lại được lưu trong 1 `struct` khai báo LỒNG bên trong class, với MỌI
+> field bên trong đều đánh dấu `static`:
+> ```csharp
+> private struct Parameter { public static string Port = "1234"; /* ... */ }
+> public string Port { get => Parameter.Port; set => Parameter.Port = value; }
+> ```
+> `static` của kiểu lồng vẫn là bộ nhớ dùng chung theo KIỂU — không phụ
+> thuộc lớp ngoài (`class` chứa nó) có bao nhiêu instance. Khi code gán cổng
+> cho lần lượt cả 3 kênh (`kenh1.Port = "29999"; kenh2.Port = "30001";
+> kenh3.Port = "50000";`), cả 3 dòng đều ghi vào ĐÚNG 1 ô nhớ — giá trị CUỐI
+> CÙNG ("50000") "thắng" và trở thành `Port` của CẢ 3 đối tượng, dù chúng là
+> 3 object reference khác nhau thật sự trên heap. Kênh 1 và kênh 2 sẽ cố kết
+> nối tới cổng sai. Đây đúng là kịch bản dòng "Instance DB của FB" ở bảng
+> trên đang cảnh báo ("mỗi thiết bị một bản dữ liệu riêng") bị vi phạm ngay
+> bên trong chính C#, không phải do quên tách Instance DB kiểu PLC, mà do
+> `static` âm thầm biến 1 field TƯỞNG LÀ per-instance thành DÙNG CHUNG toàn
+> tiến trình. Quy tắc thực dụng: nếu 1 giá trị PHẢI khác nhau giữa các
+> instance (địa chỉ, cổng, offset riêng từng thiết bị), nó không bao giờ được
+> đánh dấu `static` — kể cả khi nó nằm trong 1 kiểu lồng riêng tư trông "vô
+> hại".
+
 > **Sau chương này, bạn sẽ:**
 > - Phân biệt Value Type và Reference Type, hiểu Stack/Heap ảnh hưởng gì tới GC pressure
 > - Viết đúng biến, hằng, toán tử và cấu trúc điều khiển trong ngữ cảnh điều khiển máy
@@ -3372,6 +3398,44 @@ axis.PositionChanged += (sender, e) => hmi.UpdatePosition(e.AxisId, e.Position);
 > quy ước phổ biến. Viết code MỚI vẫn nên theo `EventHandler<TEventArgs>` (đúng CA1003 dự án nhà) vì
 > dễ mở rộng thêm field vào `EventArgs` sau này mà không phải đổi chữ ký `Action<...>` ở mọi nơi đã
 > đăng ký.
+
+> ⚠️ **Bẫy thời điểm khi "chuyển tiếp" (forward) một sự kiện qua constructor:**
+> muốn sự kiện của 1 object con "nổi" lên thành sự kiện của object cha bọc nó,
+> cách viết sau trông hợp lý nhưng SAI:
+> ```csharp
+> public sealed class RobotController
+> {
+>     private readonly IChannel _channel;
+>     public event EventHandler? StatusChanged;
+>
+>     public RobotController(IChannel channel)
+>     {
+>         _channel = channel;
+>         _channel.StatusChanged += StatusChanged;   // ← SAI — xem giải thích dưới
+>     }
+> }
+> ```
+> `_channel.StatusChanged += StatusChanged;` đọc GIÁ TRỊ HIỆN TẠI của
+> `this.StatusChanged` (delegate field của `RobotController`) NGAY TẠI THỜI
+> ĐIỂM dòng này chạy, rồi cộng dồn giá trị đó vào sự kiện của `_channel` —
+> nó không tạo ra một "đường ống sống" tự cập nhật theo những gì được đăng ký
+> VÀO SAU NÀY. Dòng này chạy bên trong constructor — tại thời điểm đó,
+> `this.StatusChanged` chắc chắn vẫn là `null` (chưa ai bên ngoài kịp
+> subscribe vào object còn chưa được trả về từ `new RobotController(...)`).
+> Cộng dồn `null` vào một sự kiện là phép no-op hợp lệ trong C# — dòng
+> "wiring" này thực chất KHÔNG NỐI GÌ CẢ. Người dùng gọi
+> `controller.StatusChanged += MyHandler;` SAU KHI constructor đã chạy xong
+> — handler đó chỉ được thêm vào sự kiện RIÊNG của `RobotController`, không
+> hồi tố ngược lại `_channel.StatusChanged` (đã "chốt" giá trị `null` từ lúc
+> constructor chạy). Kết quả: `_channel` tự bắn sự kiện bình thường, nhưng
+> `MyHandler` không bao giờ được gọi — không có exception nào báo hiệu, chỉ
+> đơn giản là "im lặng", rất khó phát hiện nếu không đối chiếu đúng THỨ TỰ
+> constructor chạy trước điểm gọi từ ngoài. Cách viết đúng — dùng lambda,
+> luôn đọc `StatusChanged` MỚI NHẤT tại đúng thời điểm `_channel` bắn sự
+> kiện:
+> ```csharp
+> _channel.StatusChanged += (s, e) => StatusChanged?.Invoke(s, e);
+> ```
 
 Đây là **Observer Pattern** ở dạng cơ bản nhất — Chương 16 đặt tên và mở rộng nó thành ba biến thể (`event`, `IEventPublisher`, `IObservable<T>`). Ở đây chỉ cần nắm cơ chế nền.
 
@@ -5588,6 +5652,24 @@ IPlcPort` mới và đổi đăng ký trong DI container.
 > thể). Mô hình này phù hợp cho một BỘ THƯ VIỆN dùng lại cho nhiều máy khác nhau (mỗi thư viện độc lập,
 > chỉ chia sẻ vài kiểu dữ liệu nền), khác hẳn kiến trúc 1 ứng dụng máy hoàn chỉnh (nơi DIP qua interface
 > hành vi vẫn là lựa chọn đúng, vì cần hoán đổi vendor/mock để test).
+
+> ⚠️ **Trường hợp thứ ba, dễ bị bỏ sót khi review: interface đúng chuẩn tồn
+> tại, có cài đặt đúng — nhưng consumer vẫn bind vào KIỂU CỤ THỂ.** Khác hẳn
+> 2 mô hình ghép nối ở trên (qua interface hành vi thật, hoặc qua kiểu dữ
+> liệu chung), một dự án tham khảo cho thấy 1 biến thể tinh vi hơn: `IPlcPort`
+> tồn tại đúng hình dạng, MỘT cài đặt thật (`ModbusPlcAdapter`) implement nó
+> đầy đủ, đúng chuẩn — nhưng nơi sử dụng thật duy nhất tìm được trong toàn bộ
+> mã nguồn lại khai báo field kiểu `ModbusPlcAdapter` cụ thể
+> (`private ModbusPlcAdapter _plc;`), không phải `IPlcPort _plc;`. Về mặt lý
+> thuyết, code có thể "cắm" 1 adapter khác vào chỉ bằng cách đổi kiểu khai
+> báo field sang interface — nhưng trên thực tế, chưa một dòng code nào từng
+> làm vậy: interface tồn tại đúng hình dạng 1 hợp đồng Strategy, nhưng chưa
+> từng thực sự được dùng để hoán đổi (swap) 2 cài đặt khác nhau. Bài học review
+> quan trọng: kiểm tra "có interface không" và "có ai implement nó không" là
+> CHƯA ĐỦ — phải kiểm tra thêm CẢ kiểu khai báo ở phía consumer (biến/field/
+> tham số dùng kiểu interface hay kiểu cụ thể). Bỏ qua vế thứ ba này, một
+> interface được thiết kế đúng vẫn có thể chưa từng đóng vai trò seam đa hình
+> nào trong thực tế — nó chỉ đang "làm tài liệu" cho 1 class cụ thể.
 
 **Lifetime management trong ứng dụng máy:**
 
@@ -20175,6 +20257,22 @@ không cần chạy thử — bài học: khi `switch` chỉ dùng để TÍNH g
 biến rồi dùng biến đó sau switch, luôn thêm case `default` xử lý tường minh
 (ném lỗi, hoặc `return`/`continue` sớm để chặn đường ghi phía sau) — đừng để
 trường hợp "không khớp gì cả" âm thầm rơi qua với giá trị mặc định của biến.
+
+**Lỗi 9: Hàm trả `bool` nhưng một nhánh thất bại vẫn `return true`.**
+Một dự án tham khảo có hàm nạp tham số cấu hình từ file: nhánh thành công trả
+`true` (đúng); nhánh thất bại (file không tồn tại, dữ liệu hỏng, ép kiểu ra
+`null`) phục hồi lại bằng bản sao lưu mặc định hard-code trong code rồi... vẫn
+`return true`. Chữ ký `bool LoadParameter(...)` ngầm định giá trị trả về phản
+ánh đúng "nạp có thành công hay không", nhưng trên thực tế hàm gần như không
+bao giờ trả `false` — nơi gọi hoàn toàn không có cách nào phân biệt "đã nạp
+đúng cấu hình đã lưu trước đó" với "đang chạy lần đầu/file hỏng, dùng giá trị
+mặc định cứng trong code". Hậu quả: máy có thể chạy nhiều ngày với cấu hình
+mặc định thay vì cấu hình đã lưu, mà không ai biết cho tới khi hành vi máy
+lệch rõ rệt — không có exception, không có log cảnh báo, chỉ có 1 giá trị
+`bool` nói dối. Quy tắc review đơn giản nhưng dễ bỏ sót: với mọi hàm trả
+`bool`, liệt kê hết các nhánh `return` và xác nhận có ÍT NHẤT một nhánh trả
+`false` tương ứng với đúng trường hợp thất bại — một hàm `bool` mà mọi
+đường đi đều dẫn tới `true` gần như chắc chắn là dấu hiệu của silent failure.
 
 <!-- SECTION: LoiKet -->
 ---

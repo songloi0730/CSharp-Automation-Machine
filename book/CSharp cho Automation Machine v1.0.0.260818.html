@@ -1826,6 +1826,31 @@ as Administrator&quot;. Một số team đặt VS shortcut mặc định &quot;R
 </tr>
 </tbody></table></div>
 <blockquote>
+<p>⚠️ <strong>Hậu quả thật khi &quot;bit nhớ retentive&quot; (dòng bảng trên) bị đặt nhầm chỗ:</strong>
+field <code>static</code> không chỉ &quot;sống lâu&quot; — nó còn dùng CHUNG cho MỌI instance của
+class, bất kể có 1 hay 100 object đang tồn tại. Một dự án tham khảo có 3
+kênh giao tiếp TCP độc lập của cùng 1 robot (3 object thật, 3 vùng nhớ heap
+khác nhau), mỗi kênh cần 1 cổng (port) riêng. Nhưng cấu hình cổng của mỗi
+kênh lại được lưu trong 1 <code>struct</code> khai báo LỒNG bên trong class, với MỌI
+field bên trong đều đánh dấu <code>static</code>:</p>
+<pre><code class="language-csharp">private struct Parameter { public static string Port = &quot;1234&quot;; /* ... */ }
+public string Port { get =&gt; Parameter.Port; set =&gt; Parameter.Port = value; }
+</code></pre>
+<p><code>static</code> của kiểu lồng vẫn là bộ nhớ dùng chung theo KIỂU — không phụ
+thuộc lớp ngoài (<code>class</code> chứa nó) có bao nhiêu instance. Khi code gán cổng
+cho lần lượt cả 3 kênh (<code>kenh1.Port = &quot;29999&quot;; kenh2.Port = &quot;30001&quot;; kenh3.Port = &quot;50000&quot;;</code>), cả 3 dòng đều ghi vào ĐÚNG 1 ô nhớ — giá trị CUỐI
+CÙNG (&quot;50000&quot;) &quot;thắng&quot; và trở thành <code>Port</code> của CẢ 3 đối tượng, dù chúng là
+3 object reference khác nhau thật sự trên heap. Kênh 1 và kênh 2 sẽ cố kết
+nối tới cổng sai. Đây đúng là kịch bản dòng &quot;Instance DB của FB&quot; ở bảng
+trên đang cảnh báo (&quot;mỗi thiết bị một bản dữ liệu riêng&quot;) bị vi phạm ngay
+bên trong chính C#, không phải do quên tách Instance DB kiểu PLC, mà do
+<code>static</code> âm thầm biến 1 field TƯỞNG LÀ per-instance thành DÙNG CHUNG toàn
+tiến trình. Quy tắc thực dụng: nếu 1 giá trị PHẢI khác nhau giữa các
+instance (địa chỉ, cổng, offset riêng từng thiết bị), nó không bao giờ được
+đánh dấu <code>static</code> — kể cả khi nó nằm trong 1 kiểu lồng riêng tư trông &quot;vô
+hại&quot;.</p>
+</blockquote>
+<blockquote>
 <p><strong>Sau chương này, bạn sẽ:</strong></p>
 <ul>
 <li>Phân biệt Value Type và Reference Type, hiểu Stack/Heap ảnh hưởng gì tới GC pressure</li>
@@ -3958,6 +3983,43 @@ cách khác, thường thấy ở framework tự chế viết trước khi <code
 quy ước phổ biến. Viết code MỚI vẫn nên theo <code>EventHandler&lt;TEventArgs&gt;</code> (đúng CA1003 dự án nhà) vì
 dễ mở rộng thêm field vào <code>EventArgs</code> sau này mà không phải đổi chữ ký <code>Action&lt;...&gt;</code> ở mọi nơi đã
 đăng ký.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Bẫy thời điểm khi &quot;chuyển tiếp&quot; (forward) một sự kiện qua constructor:</strong>
+muốn sự kiện của 1 object con &quot;nổi&quot; lên thành sự kiện của object cha bọc nó,
+cách viết sau trông hợp lý nhưng SAI:</p>
+<pre><code class="language-csharp">public sealed class RobotController
+{
+    private readonly IChannel _channel;
+    public event EventHandler? StatusChanged;
+
+    public RobotController(IChannel channel)
+    {
+        _channel = channel;
+        _channel.StatusChanged += StatusChanged;   // ← SAI — xem giải thích dưới
+    }
+}
+</code></pre>
+<p><code>_channel.StatusChanged += StatusChanged;</code> đọc GIÁ TRỊ HIỆN TẠI của
+<code>this.StatusChanged</code> (delegate field của <code>RobotController</code>) NGAY TẠI THỜI
+ĐIỂM dòng này chạy, rồi cộng dồn giá trị đó vào sự kiện của <code>_channel</code> —
+nó không tạo ra một &quot;đường ống sống&quot; tự cập nhật theo những gì được đăng ký
+VÀO SAU NÀY. Dòng này chạy bên trong constructor — tại thời điểm đó,
+<code>this.StatusChanged</code> chắc chắn vẫn là <code>null</code> (chưa ai bên ngoài kịp
+subscribe vào object còn chưa được trả về từ <code>new RobotController(...)</code>).
+Cộng dồn <code>null</code> vào một sự kiện là phép no-op hợp lệ trong C# — dòng
+&quot;wiring&quot; này thực chất KHÔNG NỐI GÌ CẢ. Người dùng gọi
+<code>controller.StatusChanged += MyHandler;</code> SAU KHI constructor đã chạy xong
+— handler đó chỉ được thêm vào sự kiện RIÊNG của <code>RobotController</code>, không
+hồi tố ngược lại <code>_channel.StatusChanged</code> (đã &quot;chốt&quot; giá trị <code>null</code> từ lúc
+constructor chạy). Kết quả: <code>_channel</code> tự bắn sự kiện bình thường, nhưng
+<code>MyHandler</code> không bao giờ được gọi — không có exception nào báo hiệu, chỉ
+đơn giản là &quot;im lặng&quot;, rất khó phát hiện nếu không đối chiếu đúng THỨ TỰ
+constructor chạy trước điểm gọi từ ngoài. Cách viết đúng — dùng lambda,
+luôn đọc <code>StatusChanged</code> MỚI NHẤT tại đúng thời điểm <code>_channel</code> bắn sự
+kiện:</p>
+<pre><code class="language-csharp">_channel.StatusChanged += (s, e) =&gt; StatusChanged?.Invoke(s, e);
+</code></pre>
 </blockquote>
 <p>Đây là <strong>Observer Pattern</strong> ở dạng cơ bản nhất — Chương 16 đặt tên và mở rộng nó thành ba biến thể (<code>event</code>, <code>IEventPublisher</code>, <code>IObservable&lt;T&gt;</code>). Ở đây chỉ cần nắm cơ chế nền.</p>
 <blockquote>
@@ -6213,6 +6275,25 @@ chờ dữ liệu thật theo kiểu DI, vì chẳng có interface nào để mo
 thể). Mô hình này phù hợp cho một BỘ THƯ VIỆN dùng lại cho nhiều máy khác nhau (mỗi thư viện độc lập,
 chỉ chia sẻ vài kiểu dữ liệu nền), khác hẳn kiến trúc 1 ứng dụng máy hoàn chỉnh (nơi DIP qua interface
 hành vi vẫn là lựa chọn đúng, vì cần hoán đổi vendor/mock để test).</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Trường hợp thứ ba, dễ bị bỏ sót khi review: interface đúng chuẩn tồn
+tại, có cài đặt đúng — nhưng consumer vẫn bind vào KIỂU CỤ THỂ.</strong> Khác hẳn
+2 mô hình ghép nối ở trên (qua interface hành vi thật, hoặc qua kiểu dữ
+liệu chung), một dự án tham khảo cho thấy 1 biến thể tinh vi hơn: <code>IPlcPort</code>
+tồn tại đúng hình dạng, MỘT cài đặt thật (<code>ModbusPlcAdapter</code>) implement nó
+đầy đủ, đúng chuẩn — nhưng nơi sử dụng thật duy nhất tìm được trong toàn bộ
+mã nguồn lại khai báo field kiểu <code>ModbusPlcAdapter</code> cụ thể
+(<code>private ModbusPlcAdapter _plc;</code>), không phải <code>IPlcPort _plc;</code>. Về mặt lý
+thuyết, code có thể &quot;cắm&quot; 1 adapter khác vào chỉ bằng cách đổi kiểu khai
+báo field sang interface — nhưng trên thực tế, chưa một dòng code nào từng
+làm vậy: interface tồn tại đúng hình dạng 1 hợp đồng Strategy, nhưng chưa
+từng thực sự được dùng để hoán đổi (swap) 2 cài đặt khác nhau. Bài học review
+quan trọng: kiểm tra &quot;có interface không&quot; và &quot;có ai implement nó không&quot; là
+CHƯA ĐỦ — phải kiểm tra thêm CẢ kiểu khai báo ở phía consumer (biến/field/
+tham số dùng kiểu interface hay kiểu cụ thể). Bỏ qua vế thứ ba này, một
+interface được thiết kế đúng vẫn có thể chưa từng đóng vai trò seam đa hình
+nào trong thực tế — nó chỉ đang &quot;làm tài liệu&quot; cho 1 class cụ thể.</p>
 </blockquote>
 <p><strong>Lifetime management trong ứng dụng máy:</strong></p>
 <p><strong>Bảng 7.2 — Chọn lifetime DI cho các loại đối tượng</strong></p>
@@ -22285,6 +22366,21 @@ không cần chạy thử — bài học: khi <code>switch</code> chỉ dùng đ
 biến rồi dùng biến đó sau switch, luôn thêm case <code>default</code> xử lý tường minh
 (ném lỗi, hoặc <code>return</code>/<code>continue</code> sớm để chặn đường ghi phía sau) — đừng để
 trường hợp &quot;không khớp gì cả&quot; âm thầm rơi qua với giá trị mặc định của biến.</p>
+<p><strong>Lỗi 9: Hàm trả <code>bool</code> nhưng một nhánh thất bại vẫn <code>return true</code>.</strong>
+Một dự án tham khảo có hàm nạp tham số cấu hình từ file: nhánh thành công trả
+<code>true</code> (đúng); nhánh thất bại (file không tồn tại, dữ liệu hỏng, ép kiểu ra
+<code>null</code>) phục hồi lại bằng bản sao lưu mặc định hard-code trong code rồi... vẫn
+<code>return true</code>. Chữ ký <code>bool LoadParameter(...)</code> ngầm định giá trị trả về phản
+ánh đúng &quot;nạp có thành công hay không&quot;, nhưng trên thực tế hàm gần như không
+bao giờ trả <code>false</code> — nơi gọi hoàn toàn không có cách nào phân biệt &quot;đã nạp
+đúng cấu hình đã lưu trước đó&quot; với &quot;đang chạy lần đầu/file hỏng, dùng giá trị
+mặc định cứng trong code&quot;. Hậu quả: máy có thể chạy nhiều ngày với cấu hình
+mặc định thay vì cấu hình đã lưu, mà không ai biết cho tới khi hành vi máy
+lệch rõ rệt — không có exception, không có log cảnh báo, chỉ có 1 giá trị
+<code>bool</code> nói dối. Quy tắc review đơn giản nhưng dễ bỏ sót: với mọi hàm trả
+<code>bool</code>, liệt kê hết các nhánh <code>return</code> và xác nhận có ÍT NHẤT một nhánh trả
+<code>false</code> tương ứng với đúng trường hợp thất bại — một hàm <code>bool</code> mà mọi
+đường đi đều dẫn tới <code>true</code> gần như chắc chắn là dấu hiệu của silent failure.</p>
 <!-- SECTION: LoiKet -->
 <hr>
 <h1 id="li-kt">Lời kết</h1>

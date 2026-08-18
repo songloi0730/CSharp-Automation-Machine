@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260818 |
+| **Phiên bản** | v1.0.0.260819 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -1023,6 +1023,63 @@ qua đúng bước cần hiểu, rồi đối chiếu hai nguồn thông tin cù
 > ai nhớ rõ lý do thiết kế. Đây là kỹ năng đọc code nói chung, không riêng
 > tình huống rào cản ngôn ngữ.
 
+### Hai mẹo cho file quá dài để đọc hết
+
+Hai công cụ trên giải quyết bài toán "không đọc được tên". Còn bài toán thứ
+hai, gặp thường xuyên không kém: file dài **3000 dòng**, đọc tuần tự thì mất
+cả tuần mà vẫn không nắm được gì.
+
+**Mẹo 1 — Tìm "API thật" qua file NGẮN NHẤT dùng nó, đừng liệt kê thành viên.**
+
+Phản xạ tự nhiên khi mở một class 3000 dòng là liệt kê toàn bộ thành viên
+(bằng dropdown điều hướng của Visual Studio, hoặc tìm kiếm `public `). Kết
+quả thường là **hơn trăm** method — một danh sách vô dụng, không cho biết cái
+nào quan trọng.
+
+Cách hiệu quả hơn nhiều: tìm **class con hoặc file ngắn nhất** có dùng class
+đó, rồi liệt kê những gì file ngắn ấy thực sự gọi. Một lớp cơ sở 3000 dòng
+với 150 thành viên thường chỉ có **10–15 hàm** được lớp con gọi tới thật sự;
+phần còn lại là hạ tầng nội bộ mà bạn chưa cần đụng vào. Đọc kỹ 15 hàm đó là
+đủ để sửa được việc, và biết chính xác mình đang bỏ qua cái gì.
+
+Cùng ý tưởng, diễn đạt khác: **đọc theo mặt tiếp xúc (interface bề mặt), không
+đọc theo cấu trúc file.**
+
+**Mẹo 2 — Trong code điều khiển tuần tự, `enum` bước CHÍNH LÀ tài liệu quy trình.**
+
+Phần mềm máy viết theo kiểu `switch (stepNum)` (Chương 12 mục 12.1 gọi đây là
+state machine dạng bước) hầu như luôn có một `enum` liệt kê các bước ngay đầu
+file:
+
+```csharp
+private enum NormalRunStep
+{
+    WaitForPartPresent,      // 30 dòng enum này...
+    ClampWorkpiece,
+    MoveToInspectPosition,
+    TriggerCamera,
+    // ...
+}
+```
+
+**Thứ tự khai báo trong enum chính là thứ tự chạy thật của máy.** Nghĩa là 30
+dòng enum trả lời được câu hỏi "trạm này làm gì" mà không cần đọc 800 dòng
+thân `switch` phía dưới. Đọc enum trước, và chỉ mở thân `case` của những bước
+thật sự cần sửa.
+
+Hệ quả cho việc **sửa** code: thêm một bước mới vào quy trình thường chỉ là
+hai chỗ — thêm một thành viên vào enum (ở **cuối**, không phải giữa — xem
+cảnh báo về chỉ số enum ở Chương 3) và thêm một `case` tương ứng. Nếu bạn thấy
+mình phải sửa hơn hai chỗ, nhiều khả năng đã hiểu sai cấu trúc.
+
+> ⚠️ **Kiểm chứng trước khi kết luận "chỗ này không có".** Khi đọc code lạ và
+> định kết luận "framework/thư viện này không hỗ trợ X", hãy tìm kiếm bằng
+> **ít nhất ba cách gọi tên khác nhau** của cùng khái niệm: tên tiếng Anh
+> chuẩn (`debounce`), tên tiếng Việt (`chống dội`, `chống rung`), và tên biến
+> thực tế trong code (`antiShake`, `filterTime`). Rất nhiều kết luận "không
+> có" hoá ra chỉ là "có, nhưng gọi bằng tên khác" — và kết luận sai kiểu này
+> dẫn thẳng tới việc viết lại một thứ đã tồn tại.
+
 ## 2.5  Khi code thực tế không giống ví dụ trong sách
 
 Sách dạy cách viết code **nên** như thế nào — class/interface rõ ràng,
@@ -1675,6 +1732,31 @@ public enum AutoState { Idle, Init, Home, Run, Fault }
 > chung" ở trên: chèn một trục mới vào GIỮA danh sách thay vì cuối cùng sẽ làm lệch toàn bộ phép cộng
 > phía sau, báo nhầm alarm cho trục khác mà không có bất kỳ dấu hiệu lỗi nào lúc build hay chạy.
 
+> 💡 **Lấy TÊN thành viên enum từ giá trị số — `Enum.GetName` / `Enum.GetValues`.** Hai chiều ngược
+> nhau, cả hai đều hay dùng trong phần mềm máy:
+> ```csharp
+> // Chiều 1: từ giá trị → tên. Dùng để in log/hiển thị HMI mà không cần bảng tra.
+> int stepNum = 7;
+> string stepName  = Enum.GetName(typeof(FeedingStep), stepNum);  // "MoveToNest"
+> string stepName2 = ((FeedingStep)stepNum).ToString();           // cách viết gọn hơn, cùng kết quả
+>
+> // Chiều 2: liệt kê MỌI thành viên. Dùng để nạp ComboBox chọn chế độ, hoặc tạo mảng đúng kích thước.
+> foreach (var mode in Enum.GetValues<MachineMode>())   // .NET 5+
+>     comboBoxMode.Items.Add(mode);
+> var stepNames = new string[Enum.GetValues<FeedingStep>().Length];
+> ```
+> Ứng dụng đáng giá nhất là **log tự mô tả**: nếu enum bước được đặt tên theo đúng câu mô tả hành động
+> (`RetractLiftCylinder` thay vì `Step3`), thì một dòng
+> `logger.LogInformation("Bước {Num}: {Name}", n, Enum.GetName(typeof(FeedingStep), n))` sinh ra nhật
+> ký mà **người vận hành đọc được trực tiếp**, không cần kỹ sư dịch từ "bước 3" sang nghĩa. Đây là lý
+> do trong nhiều phần mềm máy thực tế, enum bước được đặt tên rất dài và rất mô tả — nó vừa là code,
+> vừa là tài liệu quy trình, vừa là nội dung log.
+>
+> Hai lưu ý khi dùng: `Enum.GetName` trả về `null` nếu giá trị không khớp thành viên nào (ví dụ
+> `(FeedingStep)99`) — luôn dự phòng khi in log. Và cả hai hàm dùng reflection nên **không gọi trong
+> vòng lặp tần suất rất cao** (mỗi vòng quét 20 ms thì không sao; mỗi mẫu encoder 1 kHz thì có) —
+> trường hợp đó nạp sẵn một `Dictionary<int, string>` một lần lúc khởi động.
+
 ---
 
 ## 3.2  Biến, hằng và toán tử trong ngữ cảnh điều khiển
@@ -2203,6 +2285,105 @@ public sealed class AxisNotHomedException : Exception
 Chiến lược xử lý lỗi nên phân theo tầng: **Driver** ném exception kỹ thuật (timeout, IO); **Device/Logic** bắt và chuyển thành lỗi miền (domain error) + tạo alarm; **UI** chỉ hiển thị thông điệp đã chuẩn hoá. Và khi log exception, log phải đủ *ngữ cảnh*: máy đang ở mode/state nào, thiết bị nào, lệnh gì — một log "đủ context" tiết kiệm rất nhiều thời gian dừng máy.
 
 > 📌 **Liên hệ chương sau:** Mô hình lỗi miền này được Chương 11 và 15 phát triển thành `AlarmException` với mã alarm chuẩn. Ở đây chỉ cần nắm cú pháp tạo và ném custom exception.
+
+### 3.5.4  Ba điều bạn sẽ gặp khi đọc code cũ (mà không nên viết mới)
+
+Mục 3.5.3 nêu nguyên tắc đúng. Nhưng code cũ đang chạy ngoài hiện trường thường **vi phạm** nguyên
+tắc đó một cách có chủ ý, và nếu không hiểu lý do, bạn sẽ hoặc tưởng sách sai, hoặc "sửa cho đúng" rồi
+làm hỏng cơ chế dừng máy. Ba tình huống dưới đây gặp trong hầu hết mọi phần mềm máy viết trước
+khoảng 2015.
+
+**1. `ApplicationException` — lớp cha của custom exception thời .NET Framework.**
+
+```csharp
+// Rất hay gặp trong code cũ:
+public class StationException : ApplicationException { public StationException(string m) : base(m) { } }
+public class SafeException    : ApplicationException { public SafeException(string m) : base(m) { } }
+```
+
+`ApplicationException` là một lớp trong .NET từ những phiên bản đầu, sinh ra với ý định "lỗi do ứng
+dụng gây ra" để phân biệt với `SystemException` ("lỗi do runtime gây ra"). Ý tưởng đó **không hoạt động
+trong thực tế** — không ai bắt `catch (ApplicationException)` chung được gì hữu ích — nên Microsoft đã
+khuyến nghị **không dùng nữa** từ lâu: custom exception nên kế thừa trực tiếp `Exception` như Code
+3.15. Nhưng hàng triệu dòng code cũ vẫn dùng nó. Khi đọc, hiểu đơn giản: **`ApplicationException`
+tương đương `Exception`**, không có hành vi đặc biệt nào. Khi viết mới, dùng `Exception`.
+
+**2. Exception dùng làm cơ chế **huỷ lệnh** — tiền thân thủ công của `CancellationToken`.**
+
+Đây là mẫu gây bối rối nhất. Một hàm kiểm tra trạng thái được rải khắp quy trình, và khi người vận
+hành bấm Stop, nó **ném exception** thay vì trả về `false`:
+
+**Code 3.15b — Huỷ quy trình bằng exception (mẫu của code cũ)**
+
+```csharp
+// Rải khắp mọi bước của quy trình:
+private void CheckContinue()
+{
+    if (_state == StationState.Stopped)  throw new SafeException("Người vận hành bấm Stop");
+    if (_state == StationState.EStop)    throw new SafeException("Dừng khẩn cấp");
+    while (_state == StationState.Paused) Thread.Sleep(50);   // tạm dừng thì chờ tại chỗ
+}
+
+// Vòng lặp chính bắt nó:
+try
+{
+    RunOneCycle();                       // bên trong gọi CheckContinue() ở ~50 chỗ
+}
+catch (SafeException) { /* thoát êm, KHÔNG báo alarm — đây là dừng chủ ý */ }
+```
+
+Nhìn qua thì đây đúng là "dùng exception cho luồng bình thường" mà mục 3.5.3 cấm. Nhưng hãy nhìn lý do:
+nếu `CheckContinue()` trả về `bool`, thì **mỗi lời gọi** trong quy trình phải viết thành
+`if (!CheckContinue()) return;`. Với một quy trình có hàng trăm bước, và mỗi bước lại gọi xuống các
+hàm chờ IO/chờ trục ở độ sâu 3–4 tầng, số chỗ phải thêm dòng kiểm tra lên tới hàng nghìn — và **quên
+một chỗ** nghĩa là máy không dừng được ở chỗ đó. Ném exception cho phép nhảy một phát từ độ sâu bất kỳ
+ra tới vòng lặp chính, không cần thêm dòng nào ở chỗ gọi.
+
+Nói cách khác: mẫu này **chính là** `CancellationToken` (Chương 5) phiên bản tự làm, ra đời trước khi
+`CancellationToken` phổ biến. `ct.ThrowIfCancellationRequested()` của .NET hiện đại làm **đúng cùng
+một việc** — cũng ném exception (`OperationCanceledException`) từ độ sâu bất kỳ, và cũng được bắt ở
+vòng ngoài mà không báo alarm.
+
+**Bảng 3.15c — Huỷ lệnh: mẫu tự làm của code cũ ↔ cơ chế chuẩn hiện đại**
+
+| | Code cũ (tự làm) | .NET hiện đại |
+|---|---|---|
+| Tín hiệu huỷ | Biến trạng thái `_state` | `CancellationTokenSource` |
+| Điểm kiểm tra | `CheckContinue()` gọi tay ở mọi bước | `ct.ThrowIfCancellationRequested()`, và mọi API `async` nhận `ct` tự kiểm tra |
+| Cách thoát | `throw new SafeException(...)` | `throw new OperationCanceledException(...)` (runtime tự ném) |
+| Bắt ở đâu | `catch (SafeException)` ở vòng lặp trạm | `catch (OperationCanceledException)` |
+| Phân biệt "dừng chủ ý" vs "lỗi thật" | Hai lớp exception riêng (`SafeException` vs `StationException`) | `OperationCanceledException` vs `AlarmException` (Chương 15) |
+| Nhược điểm | Không lan truyền được qua `await`; không có timeout gộp sẵn | — |
+
+> ⚠️ **Đừng "hiện đại hoá" nửa vời.** Khi bảo trì code dùng mẫu cũ, tuyệt đối không thay
+> `throw new SafeException` bằng `return` (mất khả năng dừng ở các tầng sâu), cũng không trộn lẫn hai
+> cơ chế trong cùng một quy trình (một nửa dừng bằng exception, một nửa bằng `CancellationToken` → có
+> đường thoát nào không được bắt đúng). Nếu muốn chuyển sang `CancellationToken`, chuyển **cả một
+> trạm/quy trình** một lần, kèm chạy thử đủ các tình huống dừng: Stop, Pause→Stop, E-Stop giữa lúc trục
+> đang chuyển động.
+
+**3. Đừng nhận dạng loại lỗi bằng cách so chuỗi `ex.Message`.**
+
+```csharp
+// ❌ Gặp thật trong code hiện trường:
+catch (Exception ex)
+{
+    if (!ex.Message.Contains("đang hủy bỏ luồng"))   // chuỗi do runtime sinh theo NGÔN NGỮ HỆ ĐIỀU HÀNH
+        RaiseAlarm(ex.Message);
+}
+
+// ✅ Bắt theo KIỂU — không phụ thuộc ngôn ngữ, compiler kiểm tra được
+catch (ThreadAbortException) { /* dừng chủ ý — bỏ qua */ }
+catch (Exception ex)         { RaiseAlarm(ex.Message); }
+```
+
+Thông điệp của exception do .NET sinh ra **theo ngôn ngữ của hệ điều hành**. Máy xuất khẩu được cài
+Windows tiếng Anh, tiếng Trung, tiếng Việt — cùng một dòng code sẽ hoạt động ở nhà máy này và sai ở
+nhà máy khác, biểu hiện là "máy báo alarm giả mỗi lần bấm Stop". Đây là một trong những lỗi khó chẩn
+đoán nhất vì nó **phụ thuộc môi trường**, không tái hiện được trên máy của kỹ sư. Nguyên tắc: `Message`
+chỉ để **hiển thị và ghi log**, không bao giờ để **ra quyết định**. Muốn phân loại thì dùng kiểu
+exception, hoặc một property riêng do mình định nghĩa (như `AxisId` ở Code 3.15, hay `AlarmCode` ở
+Chương 15).
 
 ---
 
@@ -4240,6 +4421,25 @@ Nhưng phải hiểu đúng giới hạn:
 
 > 🔍 **Đào sâu thêm:** Các cơ chế đồng bộ nâng cao — `Interlocked` (tăng/đổi giá trị nguyên tử không cần lock), `Mutex` (đồng bộ liên tiến trình), `Semaphore` (bản nặng cross-process của SemaphoreSlim), `ReaderWriterLockSlim` (đọc nhiều ghi ít), `SpinLock` — dùng khi có nhu cầu cụ thể và đã đo đạc. Tìm hiểu thêm: "C# Interlocked", "synchronization primitives .NET".
 
+> 📌 **Hai cơ chế cho bài toán "chờ đủ N luồng cùng đến điểm hẹn".** Máy nhiều trạm rất hay cần điều
+> này: mỗi trạm chạy luồng riêng, tự về gốc (home) xong thì báo "tôi sẵn sàng", và **chỉ khi tất cả
+> đều sẵn sàng** thì nhạc trưởng mới phát lệnh bắt đầu đồng loạt. Code kế thừa thường tự làm bằng một
+> mảng cờ `bool` + vòng lặp `IsAllReady()`. .NET có sẵn hai lớp cho đúng bài toán này:
+> ```csharp
+> // CountdownEvent — đếm ngược: mỗi luồng xong việc thì Signal(), ai chờ thì Wait()
+> using var allHomed = new CountdownEvent(initialCount: stations.Count);
+> // trong mỗi luồng trạm:  await HomeAsync(ct);  allHomed.Signal();
+> allHomed.Wait(ct);                       // nhạc trưởng chờ đủ N lần Signal
+>
+> // Barrier — điểm hẹn LẶP LẠI: mọi luồng cùng chờ nhau ở cuối mỗi chu kỳ rồi cùng đi tiếp
+> var cycleBarrier = new Barrier(participantCount: stations.Count);
+> // cuối mỗi chu kỳ của từng trạm:  cycleBarrier.SignalAndWait(ct);
+> ```
+> Khác biệt: `CountdownEvent` dùng **một lần** (đếm về 0 là xong — hợp với khởi tạo/về gốc);
+> `Barrier` **tự nạp lại** sau mỗi lần đủ mặt (hợp với các trạm phải đồng bộ ở cuối *mỗi* chu kỳ).
+> Cả hai đều chặn luồng vật lý, nên chỉ dùng với mô hình một-luồng-một-trạm; nếu các trạm là `Task`
+> async thì `Task.WhenAll` (mục 5.2) đã đủ và không chặn luồng nào.
+
 **Ứng dụng thực tế của `Mutex` — chặn mở phần mềm điều khiển máy 2 lần cùng lúc.** Một nhu cầu rất
 phổ biến nhưng ít sách nêu ví dụ cụ thể: phần mềm điều khiển máy KHÔNG được phép chạy 2 tiến trình
 cùng lúc — hai tiến trình cùng mở kết nối PLC/servo có thể gửi lệnh xung đột nhau. `Mutex` có tên
@@ -5168,6 +5368,36 @@ Trước khi đi vào nguyên lý, cần biết cách nhận ra khi nào code "�
   vừa import `SmtpClient`, vừa import `DbContext`.
 - **Sợ sửa:** Khi lập trình viên nói "tôi sợ chạm vào file này", đó là kiến
   trúc đang ra tín hiệu cứu cứu.
+- **Một tham số mang nhiều nghĩa trái ngược nhau:** một con số vừa là giá
+  trị thật, vừa là mã điều khiển hành vi. Dạng hay gặp nhất trong phần mềm
+  máy là tham số thời gian chờ:
+
+  ```csharp
+  // ⚠ Ba nghĩa nhồi vào một tham số:
+  //   -1 = chờ mãi mãi;  0 = dùng giá trị mặc định trong cấu hình;  n = chờ n giây
+  public int WaitForSignal(string tag, bool expected, int timeoutSeconds = -1)
+  ```
+
+  Người mới đọc chữ ký này sẽ truyền `0` với ý *"không chờ, kiểm tra một
+  lần rồi thôi"* — và nhận được hành vi ngược hẳn: chờ theo thời gian mặc
+  định. Không có lỗi biên dịch, không có cảnh báo, chỉ có một cái máy hành
+  xử khác ý định. Càng nguy hiểm khi mẫu này lặp lại ở hàng chục hàm `Wait*`
+  của cùng một framework. Cách sửa không cần đổi kiến trúc, chỉ cần đặt tên
+  cho các giá trị đặc biệt và tách hành vi ra:
+
+  ```csharp
+  public static class WaitTimeout
+  {
+      public static readonly TimeSpan Forever = Timeout.InfiniteTimeSpan;
+      public static readonly TimeSpan FromConfig = TimeSpan.FromMilliseconds(-2); // hằng có TÊN
+  }
+  public bool WaitForSignal(string tag, bool expected, TimeSpan timeout);
+  public bool CheckSignalOnce(string tag, bool expected);   // tách hẳn trường hợp "không chờ"
+  ```
+
+  Nguyên tắc chung: **kiểu dữ liệu và tên gọi nên tự nói lên ý nghĩa**; nếu
+  phải đọc tài liệu mới biết `0` nghĩa là gì, thiết kế API đó đang đẩy rủi ro
+  sang người dùng nó.
 
 > 🔍 **Đào sâu thêm:** Visual Studio cung cấp công cụ Code Metrics (menu
 > *Analyze → Calculate Code Metrics*) để đo Cyclomatic Complexity (CC — số
@@ -8743,6 +8973,80 @@ trọng hơn việc mỗi màn hình trông "đẹp" ra sao.
 > mức tốn ít công sửa hơn mức sau — phát hiện sai luồng thao tác ở wireframe
 > rẻ hơn rất nhiều so với phát hiện sau khi đã viết xong ViewModel thật.
 
+### 10.1.5 Khi operator không rảnh tay: hộp thoại trả lời được bằng nút cứng
+
+Mục 10.1.4 nêu rằng operator làm việc chủ yếu với máy vật lý. Có một hệ quả
+thiết kế đi xa hơn "alarm phải nổi bật", và nó chỉ lộ ra khi đứng cạnh máy
+thật: **rất nhiều lúc operator không có tay rảnh để bấm chuột.**
+
+Tình huống điển hình: quy trình dừng giữa chừng vì phát hiện có phôi còn sót
+trên bàn gá. Phần mềm bật hộp thoại *"Bàn gá còn phôi — chọn: Lấy tay / Tự
+động xả"*. Nhưng lúc đó operator đang **đứng trong lòng máy**, hai tay giữ
+chi tiết, cách bàn phím và chuột hai mét. Với một hộp thoại thông thường,
+quy trình đứng im cho tới khi họ đặt chi tiết xuống, đi ra, bấm chuột, rồi
+quay lại — mỗi lần vài chục giây, lặp lại hàng chục lần mỗi ca.
+
+Giải pháp đã thành thông lệ trong phần mềm máy: **gán mỗi nút của hộp thoại
+với một tín hiệu vào vật lý**. Nút Reset, nút Start, nút hai tay trên bàn máy
+— vốn đã nằm trong tầm với của operator — trở thành cách trả lời hộp thoại.
+
+**Code 10.2b — Hộp thoại có thể trả lời bằng chuột HOẶC bằng nút cứng**
+
+```csharp
+namespace MeoFrame.Presentation.Dialogs;
+
+/// <summary>Một lựa chọn trong hộp thoại, có thể gắn với một tín hiệu vào vật lý.</summary>
+public sealed record OperatorChoice(
+    string Text,                 // nhãn hiển thị, ví dụ "Lấy tay"
+    string? BoundInputTag,       // tên IO vào, ví dụ "BTN_RESET"; null = chỉ bấm chuột
+    TimeSpan HoldTime);          // phải giữ nút bao lâu mới tính là đã chọn
+
+public interface IOperatorPrompt
+{
+    /// <summary>
+    /// Hỏi operator và CHỜ trả lời. Trả về chỉ số lựa chọn, hoặc -1 nếu bị huỷ.
+    /// Gọi từ luồng quy trình, không phải luồng UI.
+    /// </summary>
+    Task<int> AskAsync(string message, IReadOnlyList<OperatorChoice> choices,
+                       CancellationToken ct);
+}
+```
+
+Hai chi tiết trong `OperatorChoice` không được bỏ:
+
+- **`HoldTime` — phải giữ nút, không phải chạm là xong.** Nút cứng trên bàn
+  máy được bấm vì đủ thứ lý do khác (thói quen, va chạm, reset alarm khác).
+  Yêu cầu giữ 1–3 giây biến một cú chạm vô tình thành một hành động có chủ ý.
+- **`BoundInputTag` cho phép null.** Lựa chọn nguy hiểm (ví dụ "Tự động xả"
+  khi bên trong máy còn người) **không nên** gán nút cứng — bắt buộc phải ra
+  ngoài, nhìn màn hình, và bấm chuột có ý thức. Việc gán hay không gán nút
+  cứng cho từng lựa chọn chính là một quyết định an toàn, không phải tiện
+  nghi.
+
+> ⚠️ **Không gán nút cứng cho lựa chọn có thể gây chuyển động máy khi cửa an
+> toàn đang mở.** Nút cứng làm thao tác nhanh hơn — và cũng làm thao tác sai
+> nhanh hơn. Quy tắc thực dụng: nút cứng chỉ dành cho các lựa chọn *xác nhận
+> đã hoàn tất việc bằng tay* ("tôi đã lấy phôi ra"), không dành cho các lựa
+> chọn *ra lệnh cho máy làm gì tiếp*. Xem thêm phân cấp mức rủi ro thao tác
+> ở Chương 15.
+
+> 💡 **Biến thể nhẹ hơn — "hộp thoại vô hình".** Với những lần dừng rất
+> thường xuyên và luôn chỉ có một cách xử lý duy nhất (ví dụ "hết phôi, nạp
+> thêm rồi bấm Reset"), nhiều phần mềm máy không bật hộp thoại nào cả: chúng
+> đẩy một alarm mức thấp lên Alarm Banner rồi **chờ tín hiệu Reset**, phát
+> lại alarm mỗi vài giây cho tới khi có tín hiệu. Ưu điểm: không có cửa sổ
+> che mất màn hình chính, không cần đóng gì, và luồng thao tác của operator
+> giống hệt mọi lần xử lý alarm khác — họ không phải học thêm một tương tác
+> mới. Nhược điểm: không đặt được câu hỏi nhiều lựa chọn. Chọn hộp thoại khi
+> cần **quyết định**; chọn alarm + chờ Reset khi chỉ cần **xác nhận**.
+
+> 📌 **Hệ quả kiến trúc:** hàm hỏi này bị **chặn** cho tới khi có câu trả lời
+> — đó là điều đúng, vì quy trình máy thực sự không được đi tiếp khi chưa
+> biết operator chọn gì. Nhưng nó bị chặn ở **luồng quy trình**, tuyệt đối
+> không phải luồng UI. Chương 8 trình bày cách hiện một cửa sổ từ luồng nền
+> mà không khoá giao diện; nguyên tắc "không chặn luồng UI" vẫn nguyên vẹn,
+> chỉ là luồng bị chặn ở đây là một luồng khác.
+
 ---
 
 ## 10.2 Bảng màu & Hệ thống phân cấp theo ISA-101
@@ -11847,6 +12151,131 @@ Lưu ý: trong ví dụ này `PackMlStateMachine` tự tích luỹ và phát Dom
 
 `PackMlStateMachine` không biết gì về các đích đến ở hàng cuối — nó chỉ phát `IDomainEvent`. Application Service là nơi duy nhất quyết định event đó dẫn đến action gì: gửi SCADA, tạo alarm, hay ghi log.
 
+## 12.4  Chế độ chạy — cùng một quy trình, bốn cách thực thi
+
+Mục 12.2 chuẩn hoá câu hỏi *"máy đang ở trạng thái nào"*. Mục này trả lời một câu hỏi song song mà
+PackML **không** quy định, nhưng gần như mọi phần mềm máy sản xuất đều phải có: *"máy đang chạy ở chế
+độ nào"*.
+
+Mở giao diện của một máy đang chạy trong nhà máy điện tử, bạn sẽ thấy một hàng nút không nằm trong bất
+kỳ chuẩn nào — và không hiểu chúng thì không dám bấm.
+
+### 12.4.1  Bốn chế độ và ai được dùng
+
+**Bảng 12.7b — Chế độ chạy của phần mềm máy sản xuất**
+
+| Chế độ | Có sản phẩm thật? | Có ghi dữ liệu sản xuất? | Dùng khi nào | Quyền tối thiểu |
+|---|---|---|---|---|
+| **Sản xuất** (Normal / Production) | Có | Có | Chạy hàng bình thường | Operator |
+| **Chạy không** (Dry Run) | Không, hoặc phôi giả | **Không** — hoặc ghi kèm cờ đánh dấu dữ liệu thử | Sau khi sửa cơ khí/đổi khuôn: kiểm tra toàn bộ chuyển động và bắt tay giữa các trạm mà không phí sản phẩm | Kỹ thuật viên |
+| **Hiệu chuẩn** (Calibration) | Dùng mẫu chuẩn (master sample / gauge) | Ghi vào **hồ sơ hiệu chuẩn**, không vào dữ liệu sản xuất | Định kỳ, hoặc sau khi thay cảm biến/camera: xác lập lại quan hệ giữa giá trị đọc và giá trị thật | Kỹ sư |
+| **GR&R** (Gage R&R) | Đo **lặp lại** cùng một bộ mẫu nhiều lần | Ghi vào **hồ sơ đánh giá hệ đo** | Khi cần chứng minh với khách hàng rằng bản thân hệ đo đủ ổn định | Kỹ sư |
+
+Ba chế độ đầu khá dễ hiểu. **GR&R** thì cần giải thích, vì đây là khái niệm đo lường chứ không phải
+lập trình, và người mới hầu như chưa gặp bao giờ.
+
+> 📌 **GR&R — Gage Repeatability & Reproducibility.** Máy của bạn đo được một chi tiết là 12,03 mm.
+> Câu hỏi mà khách hàng sẽ hỏi: *con số đó sai lệch bao nhiêu là do sản phẩm, bao nhiêu là do chính hệ
+> đo của bạn?* GR&R trả lời bằng cách cho máy đo **lặp lại** một bộ mẫu (thường 10 chi tiết × 3 lần ×
+> 2–3 người vận hành), rồi tách phương sai tổng thành hai phần: **Repeatability** (cùng máy, cùng
+> người, đo lại nhiều lần có ra giống nhau không) và **Reproducibility** (đổi người vận hành thì kết
+> quả có lệch không). Nếu %GR&R vượt ngưỡng cho phép (thường 10–30% tuỳ tiêu chuẩn khách hàng), hệ đo
+> bị coi là **không đủ tin cậy để phán định OK/NG** — và toàn bộ dữ liệu chất lượng do máy sinh ra mất
+> giá trị. Về phía phần mềm, chế độ GR&R chỉ cần làm ba việc: chạy đúng số lần lặp theo kịch bản, ghi
+> **toàn bộ** giá trị đo thô (không lọc, không làm tròn), và **không** phán định OK/NG cũng không đẩy
+> dữ liệu vào luồng sản xuất.
+
+### 12.4.2  Triển khai: một điểm rẽ duy nhất
+
+Cách triển khai gọn nhất là **Template Method** — lớp cơ sở chọn chế độ, lớp con chỉ viết nội dung
+từng chế độ:
+
+**Code 12.14b — Điểm rẽ chế độ đặt ở lớp cơ sở của trạm**
+
+```csharp
+namespace MeoFrame.Application.Sequencing;
+
+public enum RunMode { Production, DryRun, Calibration, GageRR }
+
+public abstract class StationBase
+{
+    protected IRunModeProvider Modes { get; }
+
+    /// <summary>Được scan cycle gọi lặp lại. Chỉ rẽ nhánh theo chế độ, không chứa logic.</summary>
+    protected async Task ExecuteOnceAsync(CancellationToken ct)
+    {
+        switch (Modes.Current)
+        {
+            case RunMode.Production:  await RunProductionAsync(ct);  break;
+            case RunMode.DryRun:      await RunDryAsync(ct);         break;
+            case RunMode.Calibration: await RunCalibrationAsync(ct); break;
+            case RunMode.GageRR:      await RunGageRRAsync(ct);      break;
+            default: throw new InvalidOperationException($"Chế độ chưa hỗ trợ: {Modes.Current}");
+        }
+    }
+
+    protected abstract Task RunProductionAsync(CancellationToken ct);
+
+    // Ba chế độ còn lại có mặc định: trạm nào không cần thì không phải viết gì.
+    protected virtual Task RunDryAsync(CancellationToken ct)         => RunProductionAsync(ct);
+    protected virtual Task RunCalibrationAsync(CancellationToken ct) => Task.CompletedTask;
+    protected virtual Task RunGageRRAsync(CancellationToken ct)      => Task.CompletedTask;
+}
+```
+
+Điểm đáng chú ý là **mặc định của `RunDryAsync` gọi lại `RunProductionAsync`**. Lý do: mục đích của
+Dry Run là kiểm tra *chuyển động và bắt tay*, nên phần lớn trạm phải chạy **đúng y hệt** chế độ sản
+xuất; chỉ vài trạm cần khác biệt (trạm hút chân không thì không hút, trạm ghi MES thì không ghi). Đặt
+mặc định như vậy thì trạm nào không quan tâm sẽ tự động đúng, thay vì phải nhớ viết lại.
+
+> ⚠️ **Bất biến bắt buộc: chế độ chỉ được đổi khi máy đang dừng.** Đổi từ Sản xuất sang Dry Run giữa
+> chu kỳ nghĩa là nửa sản phẩm được xử lý theo một luật, nửa còn lại theo luật khác — và dữ liệu ghi
+> ra không thuộc về loại nào. Ràng buộc này phải cưỡng chế trong code, không chỉ ghi trong hướng dẫn:
+> kiểm tra trạng thái PackML là `Idle`/`Stopped` trước khi cho phép đổi chế độ, và ghi audit log mỗi
+> lần đổi (ai đổi, lúc nào, từ chế độ nào sang chế độ nào).
+
+> ⚠️ **Dữ liệu của chế độ không phải Sản xuất tuyệt đối không được lẫn vào dữ liệu sản xuất.** Đây là
+> lỗi có hậu quả nặng nhất trong nhóm này: một lô hàng "đạt" nhờ những con số sinh ra lúc chạy thử sẽ
+> làm sai lệch báo cáo chất lượng gửi khách hàng, và khi bị phát hiện thì toàn bộ dữ liệu của máy mất
+> uy tín. Cách làm an toàn: **ghi chế độ chạy vào từng bản ghi** (một cột `RunMode` trong bảng dữ liệu
+> sản xuất), thay vì tin rằng "chế độ thử thì đã không ghi gì". Có cột đó thì mọi truy vấn báo cáo đều
+> lọc được, và sự cố lẫn dữ liệu trở thành sự cố khắc phục được thay vì mất trắng.
+
+### 12.4.3  Quy trình thích nghi — khi máy không biết trước phải làm gì
+
+Toàn bộ chương này (và ví dụ Pick-and-Place quen thuộc) giả định một điều: **trình tự đã biết trước**.
+Máy đi tới toạ độ đã teach, gắp, đặt, lặp lại. Có một họ máy khác không như vậy — và người mới thường
+chỉ gặp lần đầu khi đứng trước code thật.
+
+Ở họ máy này, quy trình là một **vòng lặp đo → tính → thử lại**: máy tác động một lượng, đo kết quả,
+tính lượng tác động tiếp theo **từ kết quả vừa đo**, và lặp cho đến khi đạt đặc tả. Đại lượng đích
+không nằm trong recipe — recipe chỉ chứa **dải chấp nhận** và **giới hạn số lần thử**. Ví dụ thực tế:
+máy siết vít có phản hồi lực, máy dò tiêu điểm camera, máy căn chỉnh quang học (active alignment), máy
+hiệu chuẩn cảm biến.
+
+Về mặt cấu trúc, quy trình này vẫn là state machine — nhưng **hai tầng**, theo đúng mẫu đã nêu ở
+callout cuối mục 12.1.4:
+
+- **Tầng ngoài — giai đoạn (phase):** dò thô → dò tinh → xác nhận. Chỉ tiến, **không bao giờ lùi**.
+- **Tầng trong — bước (step):** tác động, đo, tính, kiểm tra. Lặp lại **nhiều lần** trong cùng một
+  giai đoạn.
+
+Ba ràng buộc phải viết ra ngay từ đầu, vì thiếu chúng thì máy có thể lặp vô hạn hoặc phá hỏng sản phẩm:
+
+1. **Giới hạn số lần lặp mỗi giai đoạn.** Hết số lần mà chưa đạt → kết luận NG với mã lý do riêng
+   ("không hội tụ"), không lặp tiếp.
+2. **Giới hạn biên độ mỗi lần tác động.** Kết quả tính ra phải bị kẹp (clamp) trong một khoảng an
+   toàn trước khi gửi xuống thiết bị — một phép nội suy gặp dữ liệu nhiễu có thể sinh ra con số vô
+   lý, và thiết bị sẽ thực hiện đúng con số vô lý đó.
+3. **Lưu lại toàn bộ giá trị đo của mọi lần thử**, không chỉ lần cuối. Khi khách hàng khiếu nại, thứ
+   chứng minh được máy làm đúng là **chuỗi** đo, không phải kết quả cuối.
+
+> 💡 **Nhận diện nhanh khi đọc code lạ:** thấy một biến đếm giai đoạn kiểu `_adjustPhase` chỉ tăng
+> không giảm, nằm cạnh một biến bước `_stepNum` chạy vòng — đó là quy trình thích nghi, không phải
+> sequence tuyến tính. Đọc **biến đếm giai đoạn trước**: nó cho biết máy có mấy giai đoạn và điều kiện
+> chuyển giai đoạn là gì. Đọc chi tiết từng bước sau, vì các bước thường lặp lại gần giống nhau giữa
+> các giai đoạn, chỉ khác công thức tính lượng tác động.
+
 ## Tổng kết chương
 
 Nhìn từ góc độ bảo trì dài hạn, sự khác biệt giữa if/else và State Pattern trở nên rõ ràng hơn khi máy đã chạy sản xuất được 2–3 năm: kỹ sư mới được giao xử lý lỗi trong đêm cần hiểu ngay "máy đang ở trạng thái nào, lệnh nào còn hợp lệ" — nếu logic nằm trong một class 300 dòng với if/else chồng chéo, câu hỏi đó tốn vài giờ để trả lời. Với State Pattern và Transition Table, câu trả lời nằm ở hai chỗ duy nhất: class State tương ứng (logic riêng) và bảng Transitions (toàn bộ quan hệ state–command). PackML bổ sung thêm lớp đảm bảo: khi kỹ sư mới viết một State mới, chuẩn nói rõ Abort phải nằm ở đó — không phụ thuộc vào kinh nghiệm hay trí nhớ cá nhân.
@@ -11862,6 +12291,9 @@ State machine if/else là lối đi tự nhiên nhất — và cũng là nguồn
 | Mỗi hãng máy đặt tên state riêng | PackML (ISA-TR88.00.02): 17 state chung, MES đọc được |
 | Lệnh Abort có thể bị bỏ qua khi máy đang transitional | Bất biến PackML: Abort phải nằm trong mọi State |
 | State machine không liên kết với audit trail | Domain Event: PackMlStateChanged ghi lại mọi transition |
+| Cùng quy trình nhưng lúc chạy hàng, lúc chạy thử, lúc hiệu chuẩn | Chế độ chạy (mục 12.4) + Template Method: 1 điểm rẽ ở lớp cơ sở |
+| Dữ liệu chạy thử lẫn vào báo cáo chất lượng | Ghi cột `RunMode` vào TỪNG bản ghi, không tin "chế độ thử thì không ghi" |
+| Máy phải đo–tính–thử lại vì không biết trước đích | State machine 2 tầng (giai đoạn/bước) + 3 ràng buộc: giới hạn số lần lặp, kẹp biên độ tác động, lưu toàn bộ chuỗi đo |
 
 Một hướng mở rộng từ State Machine là **Actor Model** — mỗi Actor là một đơn vị độc lập có state machine riêng, giao tiếp với nhau hoàn toàn qua message (không chia sẻ state trực tiếp). Trong máy automation phức tạp nhiều cơ cấu độc lập (nhiều trục, nhiều camera, nhiều station), Actor Model giúp phân tách rõ trách nhiệm: `AxisActor`, `CameraActor`, `TransferActor` hoạt động song song, phối hợp qua message thay vì được điều phối tập trung. Đây là hướng thiết kế nâng cao, thường thấy trong framework automation thương mại phức tạp — nền tảng State Machine và PackML vừa học trong chương này là bước khởi đầu để hiểu Actor Model khi cần mở rộng.
 
@@ -13102,6 +13534,73 @@ cả hai implement cùng `IMotionAxisDriver`.
 > đúng driver theo `DeviceConfig.Vendor`. Cách rẽ nhánh trong hàm gọn hơn khi chỉ có vài chỗ cần giả
 > lập, nhưng nếu lặp lại ở hàng chục method, logic thật và logic giả lập trộn lẫn trong cùng 1 hàm —
 > khó đọc dần, và code giả lập vẫn tồn tại (dù không chạy) trong bản build production.
+
+### 13.2.6 Biến thể máy — một bộ mã nguồn, nhiều cấu hình vật lý
+
+Factory ở mục 13.2.2 giải quyết bài toán "nhiều **hãng** thiết bị". Có một bài toán họ hàng, xuất hiện
+gần như chắc chắn trong máy phi tiêu chuẩn, mà Factory một mình không giải quyết: **cùng một loại máy
+nhưng có nhiều biến thể vật lý**.
+
+Ví dụ điển hình từ nhà máy điện tử:
+
+- Nhà máy đặt **hai máy đối xứng** đứng cạnh nhau — bản Trái và bản Phải. Chức năng giống hệt, nhưng
+  chiều chuyển động ngược nhau và tên thanh ghi trao đổi với PLC dây chuyền khác nhau.
+- Cùng dòng máy, khách A mua bản **2 đầu công tác**, khách B mua bản **4 đầu**.
+- Khách C mua thêm **trạm quét mã** tuỳ chọn, khách D thì không.
+
+Cách xử lý sai — và rất phổ biến — là **sao chép cả solution** rồi sửa cho biến thể mới. Sáu tháng sau
+có một lỗi cần vá, bạn phải vá ở bốn nơi, và chắc chắn sẽ sót một nơi. Đây là quyết định kiến trúc
+phải làm **sớm**, vì đảo ngược nó về sau rất tốn kém.
+
+**Bảng 13.7b — Ba mức xử lý biến thể máy, theo thứ tự nên ưu tiên**
+
+| Mức | Cách làm | Phù hợp khi | Cái giá phải trả |
+|---|---|---|---|
+| **1. Tham số cấu hình** | Một khoá trong file cấu hình (`Variant = "Left"`), code đọc và tự điều chỉnh | Khác biệt chỉ ở **dữ liệu**: tên tag, dấu chiều chuyển động, số lượng đầu công tác, có/không bật một trạm | Rẻ nhất. Nhưng nếu lạm dụng sẽ thành `if (variant == ...)` rải khắp code |
+| **2. Lớp con theo biến thể** | Một interface chung + mỗi biến thể một lớp cài đặt (chọn qua Factory như 13.2.2) | Khác biệt ở **hành vi**: biến thể này có thêm bước trong quy trình, biến thể kia dùng thuật toán khác | Nhiều class hơn; phải xác định đúng chỗ nào là điểm khác biệt |
+| **3. Bản build riêng** | Mỗi biến thể một nhánh mã nguồn / một cấu hình build | Khác biệt sâu tới mức gần như là hai sản phẩm khác nhau | **Đắt nhất** — mọi bản vá phải nhân bản. Chỉ chọn khi hai mức trên đã thực sự không đủ |
+
+Nguyên tắc thực dụng: **bắt đầu từ mức 1, chỉ leo lên mức cao hơn khi mức hiện tại thực sự gãy.** Và
+dù ở mức nào, gom toàn bộ khác biệt vào **một chỗ duy nhất** thay vì rải rác:
+
+**Code 13.13b — Gom khác biệt của biến thể vào một nơi**
+
+```csharp
+namespace MeoFrame.Infrastructure.Configuration;
+
+/// <summary>Toàn bộ khác biệt giữa các biến thể máy, nạp một lần lúc khởi động.</summary>
+public sealed record MachineVariant(
+    string  Name,               // "Left" / "Right"
+    int     HeadCount,          // 2 hoặc 4 đầu công tác
+    bool    HasScannerStation,  // trạm tuỳ chọn
+    double  XAxisDirection,     // +1 hoặc -1
+    IReadOnlyDictionary<string, string> PlcTagMap);   // tên tag nội bộ → tên tag trên PLC dây chuyền
+
+// ✅ Nơi dùng: đọc từ variant, không rẽ nhánh theo tên biến thể
+double target = _variant.XAxisDirection * recipe.OffsetMm;
+string tag    = _variant.PlcTagMap["LoadComplete"];   // "LeftLoadComplete" hay "RightLoadComplete"
+
+// ❌ Tránh: rẽ nhánh theo TÊN biến thể rải khắp code
+if (_variant.Name == "Left") target = -recipe.OffsetMm; else target = recipe.OffsetMm;
+```
+
+Điểm mấu chốt: nơi sử dụng hỏi **"đặc tính gì"** (`XAxisDirection`, `HeadCount`), không hỏi
+**"biến thể nào"** (`Name == "Left"`). Nhờ vậy khi có biến thể thứ ba, bạn chỉ thêm một bản ghi cấu
+hình, không phải đi tìm mọi câu `if` trong solution.
+
+> ⚠️ **Một nguồn sự thật cho mỗi danh sách.** Một lỗi cấu hình rất khó tìm xảy ra khi **cùng một danh
+> sách được khai báo ở hai nơi** — ví dụ danh sách các trạm vừa nằm trong code khởi tạo
+> (`AddStation(new InspectStation(...))`) vừa nằm trong file cấu hình XML (`<Station name="Inspect"
+> axis="3"/>`). Hai nơi này không có gì ràng buộc phải khớp nhau: xoá trạm ở code mà quên xoá trong
+> cấu hình (hoặc ngược lại) thì chương trình vẫn chạy, chỉ là một trạm nào đó nhận sai số trục. Quy
+> tắc: mỗi danh sách chỉ có **một** nguồn sự thật. Nếu buộc phải có hai (ví dụ code tạo đối tượng,
+> cấu hình cấp tham số), thì phải **kiểm tra chéo lúc khởi động** và dừng máy với thông báo rõ ràng
+> nếu lệch — đừng để sai lệch âm thầm đi vào sản xuất.
+
+> 💡 **Mẹo — hiển thị biến thể ngay trên màn hình chính.** Khi có nhiều biến thể, một dòng nhỏ trên
+> HMI ghi rõ *"Bản: Trái · 4 đầu · có trạm quét mã"* tiết kiệm rất nhiều thời gian chẩn đoán từ xa:
+> câu hỏi đầu tiên khi hỗ trợ qua điện thoại luôn là "máy của anh là bản nào?", và câu trả lời từ trí
+> nhớ của người vận hành thường không đáng tin.
 
 ---
 
@@ -14629,6 +15128,34 @@ master.Transport.WriteTimeout = 200;
 // FC03 — giống hệt Code 14.3 (FluentModbus/Modbus TCP), chỉ khác lớp vận chuyển
 ushort[] registers = master.ReadHoldingRegisters(slaveAddress: 1, startAddress: 0x0801, numberOfPoints: 6);
 ```
+
+> ⚠️ **Bẫy kinh điển khi tự đọc cổng COM: một lần `Read` KHÔNG đảm bảo đủ khung.** Nếu vì lý do nào
+> đó bạn phải tự dựng khung thay vì dùng thư viện, đoạn code dưới đây là mẫu sai hay gặp nhất:
+> ```csharp
+> // ❌ SAI — nhưng "chạy tốt" trên máy của kỹ sư nên không ai phát hiện
+> _port.Write(request, 0, request.Length);
+> Thread.Sleep(100);                              // chờ đại 100ms cho dữ liệu về
+> int n = _port.Read(buffer, 0, buffer.Length);   // đọc ĐÚNG MỘT LẦN
+> ```
+> Cổng COM trả dữ liệu theo **dòng byte**, không theo gói: một lần `Read` trả về *bao nhiêu byte đang
+> có trong bộ đệm tại thời điểm đó*, có thể là 3 byte trong khi khung cần 9. Với khung ngắn và
+> baudrate cao thì gần như luôn may mắn đủ — nên lỗi **ẩn hàng tháng**, rồi nổ ra khi đổi baudrate,
+> khi CPU tải cao, hoặc khi chuyển sang bộ chuyển USB-RS485 khác. Cách đúng là đọc lặp cho tới khi đủ
+> số byte mong đợi hoặc hết thời gian chờ:
+> ```csharp
+> // ✅ ĐÚNG — đọc dồn tới khi đủ khung, có thời gian chờ tối đa
+> int need = 9, got = 0;
+> var sw = Stopwatch.StartNew();
+> while (got < need && sw.ElapsedMilliseconds < timeoutMs)
+> {
+>     int n = _port.Read(buffer, got, need - got);   // Read trả về SỐ BYTE THỰC ĐỌC ĐƯỢC
+>     if (n > 0) got += n;
+> }
+> if (got < need) throw new TimeoutException($"Chỉ nhận {got}/{need} byte");
+> ```
+> Với khung **độ dài thay đổi** thì còn phải đọc phần đầu để biết độ dài rồi mới đọc tiếp phần thân —
+> đây chính là bài toán "tách khung" (framing) mà Bảng 14.5b đã nêu, và là lý do nên dùng thư viện có
+> sẵn thay vì tự viết.
 
 > 🔍 **Đào sâu thêm — 2 con đường Modbus song song trong cùng 1 dự án:** một dự án tham
 > khảo có sẵn hạ tầng Modbus RTU tự viết tay (framing + tính CRC16/LRC thủ công) cho phần
@@ -17611,6 +18138,227 @@ So sánh với Code 16.5 (anti-pattern): `PickAndPlaceStep.ExecuteAsync` giờ:
 
 ---
 
+## 16.2b  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung
+
+Hai mục trên (Observer và Command) là pattern bạn sẽ **viết**. Mục này là pattern bạn sẽ **đọc** — vì
+nó có mặt trong gần như mọi phần mềm máy nhiều trạm do người xuất thân từ PLC viết, và nếu không nhận
+ra nó thì không đọc nổi một dòng nào của tầng quy trình.
+
+### 16.2b.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai
+
+Một máy phi tiêu chuẩn thường có nhiều trạm chạy **đồng thời**, mỗi trạm một luồng riêng, mỗi trạm một
+quy trình riêng. Trạm nạp phôi và trạm kiểm tra không làm việc tuần tự — chúng chạy song song, chỉ
+**gặp nhau ở một vài điểm** đồng bộ: "phôi đã vào vị trí, mời anh kiểm tra", "kiểm tra xong rồi, mời
+anh lấy ra".
+
+Cách trực giác nhất là gọi hàm trực tiếp:
+
+**Code 16.8b — Gọi hàm trực tiếp giữa các trạm: vì sao không dùng được**
+
+```csharp
+// ❌ Trạm A gọi thẳng vào trạm B
+public class LoadStation
+{
+    private readonly InspectStation _inspect;   // A phải BIẾT B
+
+    public async Task RunCycleAsync(CancellationToken ct)
+    {
+        await MoveToNestAsync(ct);
+        await _inspect.InspectAsync(ct);        // ← chặn cả luồng của A để chờ B
+        await UnloadAsync(ct);
+    }
+}
+```
+
+Ba vấn đề, đều nghiêm trọng với máy thật:
+
+1. **Mất tính song song.** Trong lúc A chờ B kiểm tra, A không làm được gì khác — dù thực tế A hoàn
+   toàn có thể đi lấy phôi tiếp theo. Năng suất máy (UPH) giảm đúng bằng thời gian chờ.
+2. **Phụ thuộc vòng.** B cũng cần báo lại cho A. Nếu B giữ tham chiếu tới A và A giữ tham chiếu tới B,
+   ta có phụ thuộc vòng — thêm trạm thứ ba thì thành mạng nhện.
+3. **Thêm/bớt trạm phải sửa trạm khác.** Máy phi tiêu chuẩn thường bị thêm trạm giữa dự án ("khách
+   yêu cầu thêm trạm quét mã"). Với cách gọi trực tiếp, mỗi lần thêm là mỗi lần sửa code trạm cũ đang
+   chạy ổn định — điều tệ nhất có thể làm với phần mềm điều khiển máy.
+
+### 16.2b.2  Giải pháp: một bảng cờ, hai thao tác
+
+Cách mà thế giới PLC đã dùng hàng chục năm: **không ai gọi ai**. Tất cả cùng đọc/ghi một bảng biến
+trạng thái dùng chung (trong PLC gọi là *tag table* hoặc vùng nhớ `M`), và mỗi bên chỉ làm hai việc —
+**đặt cờ** để yêu cầu, **chờ cờ** để biết việc đã xong.
+
+**Code 16.9b — Shared Tag Table: khai báo cờ và hai thao tác cơ bản**
+
+```csharp
+namespace MeoFrame.Application.Sequencing;
+
+/// <summary>Danh mục cờ bắt tay giữa các trạm. Tên cờ = câu mô tả ý định.</summary>
+public enum StationFlag
+{
+    // Trạm nạp phôi → trạm kiểm tra
+    RequestInspect,          // "mời trạm kiểm tra làm việc"
+    InspectDone,             // "trạm kiểm tra đã xong"
+    // Trạm kiểm tra → trạm xả phôi
+    RequestUnload,
+    UnloadDone,
+    // Cờ báo hoàn tất khởi tạo, dùng để chặn nhau lúc về gốc
+    LoadStationInitDone,
+    InspectStationInitDone,
+}
+
+public interface IStationFlags
+{
+    bool Get(StationFlag flag);
+    void Set(StationFlag flag, bool value);
+
+    /// <summary>Chờ cờ đạt giá trị mong muốn. Trả về false nếu quá thời gian.</summary>
+    Task<bool> WaitAsync(StationFlag flag, bool expected,
+                         TimeSpan timeout, CancellationToken ct);
+}
+```
+
+Bảng cờ thực chất là một mảng `bool` có khoá kiểu enum, cộng thêm khoá đồng bộ. Điểm đáng chú ý duy
+nhất trong phần triển khai là **`WaitAsync` phải phản hồi được cả huỷ lệnh và quá thời gian**:
+
+**Code 16.10b — Triển khai `StationFlags`: an toàn luồng + có thời gian chờ**
+
+```csharp
+namespace MeoFrame.Infrastructure.Sequencing;
+
+public sealed class StationFlags : IStationFlags
+{
+    private readonly bool[] _flags =
+        new bool[Enum.GetValues<StationFlag>().Length];
+    private readonly object _lock = new();
+    private readonly TimeSpan _scanTime = TimeSpan.FromMilliseconds(20);
+
+    public bool Get(StationFlag flag)
+    {
+        lock (_lock) { return _flags[(int)flag]; }
+    }
+
+    public void Set(StationFlag flag, bool value)
+    {
+        lock (_lock) { _flags[(int)flag] = value; }
+    }
+
+    public async Task<bool> WaitAsync(StationFlag flag, bool expected,
+                                      TimeSpan timeout, CancellationToken ct)
+    {
+        var deadline = DateTime.UtcNow + timeout;
+        while (Get(flag) != expected)
+        {
+            ct.ThrowIfCancellationRequested();            // Stop/E-Stop dừng được ngay
+            if (DateTime.UtcNow >= deadline) return false; // quá thời gian → báo lên trên
+            await Task.Delay(_scanTime, ct).ConfigureAwait(false);
+        }
+        return true;
+    }
+}
+```
+
+Và đây là hai trạm sau khi viết lại — **không trạm nào biết trạm nào tồn tại**:
+
+**Code 16.11b — Hai trạm bắt tay qua bảng cờ**
+
+```csharp
+// Trạm nạp phôi
+await MoveToNestAsync(ct);
+_flags.Set(StationFlag.RequestInspect, true);                       // yêu cầu
+if (!await _flags.WaitAsync(StationFlag.InspectDone, true,
+                            TimeSpan.FromSeconds(30), ct))          // chờ trả lời
+    throw new AlarmException(AlarmCodes.HandshakeTimeout, "LOAD",
+        "Trạm kiểm tra không phản hồi trong 30 giây");
+_flags.Set(StationFlag.InspectDone, false);                         // xoá cờ cho chu kỳ sau
+await UnloadAsync(ct);
+
+// Trạm kiểm tra — vòng lặp riêng, luồng riêng
+await _flags.WaitAsync(StationFlag.RequestInspect, true, Timeout.InfiniteTimeSpan, ct);
+_flags.Set(StationFlag.RequestInspect, false);
+await DoInspectAsync(ct);
+_flags.Set(StationFlag.InspectDone, true);
+```
+
+### 16.2b.3  Bốn quy tắc bắt buộc (mỗi quy tắc tương ứng một lỗi thật)
+
+**Quy tắc 1 — Ai chờ cờ thì người đó xoá cờ.** Cờ là tín hiệu một lần dùng cho **một** chu kỳ. Nếu
+bên đặt cờ cũng tự xoá, có nguy cơ xoá trước khi bên kia kịp thấy (mất tín hiệu). Nếu không ai xoá,
+chu kỳ sau thấy cờ vẫn `true` và **chạy vượt bước ngay lập tức** — sự cố kinh điển: máy chạy chu kỳ
+đầu đúng, chu kỳ hai thì tay gắp đi xuống trước khi phôi vào.
+
+**Quy tắc 2 — Xoá sạch toàn bộ cờ trước mỗi lần Start.** Không dựa vào việc "chu kỳ trước đã xoá
+đúng", vì chu kỳ trước có thể bị E-Stop giữa đường và để lại cờ bẩn.
+
+**Code 16.12b — Reset toàn bộ bảng cờ trước khi cho phép chạy**
+
+```csharp
+public void ResetAll()
+{
+    lock (_lock) { Array.Clear(_flags); }
+}
+// Gọi trong luồng khởi động, TRƯỚC khi bật luồng của các trạm:
+_flags.ResetAll();
+foreach (var station in _stations) station.Start();
+```
+
+**Quy tắc 3 — Mọi lần chờ phải có thời gian chờ tối đa và một alarm tương ứng.** Một `WaitAsync`
+không có thời gian chờ là một cái máy có thể đứng im vô hạn mà không báo gì — người vận hành không
+biết máy hỏng hay đang làm việc. Ngoại lệ hợp lý duy nhất là vòng chờ "đợi lệnh Start", vì ở đó đứng
+im **là** trạng thái đúng.
+
+**Quy tắc 4 — Tên cờ phải là một câu mô tả ý định, đọc lên hiểu ngay ai yêu cầu ai làm gì.**
+`RequestInspect` tốt hơn `bFlag12`. Lý do không phải thẩm mỹ mà là **kỹ thuật**: đây là pattern duy
+nhất trong sách mà trình biên dịch **không** kiểm tra được tính đúng đắn cho bạn (xem mục tiếp), nên
+công cụ duy nhất còn lại để lần dấu là tìm kiếm toàn văn theo tên cờ.
+
+### 16.2b.4  Nhược điểm phải biết trước khi chọn
+
+**Bảng 16.3b — Gọi hàm trực tiếp, Event, và Shared Tag Table**
+
+| | Gọi hàm trực tiếp | Event / Pub-Sub (16.1) | Shared Tag Table |
+|---|---|---|---|
+| **Bên gửi biết bên nhận?** | Có (phụ thuộc chặt) | Không | Không |
+| **Chạy song song thật?** | Không — bên gọi bị chặn | Có | Có |
+| **Trình biên dịch kiểm tra được?** | Có — sai tên là lỗi build | Một phần | **Không** — cờ mồ côi vẫn build được |
+| **Thêm trạm mới** | Phải sửa trạm cũ | Chỉ đăng ký thêm | Chỉ thêm cờ |
+| **Trạng thái quan sát được từ HMI?** | Khó | Khó (event là tức thời) | **Dễ** — bảng cờ là dữ liệu, hiển thị trực tiếp được |
+| **Điểm yếu chính** | Mất song song, phụ thuộc vòng | Khó biết "đã tới đâu" | Cờ mồ côi, cờ bẩn, không type-safe theo ngữ nghĩa |
+
+Nhược điểm lớn nhất — và không có cách khắc phục hoàn toàn — là **cờ mồ côi**: bạn `Set` một cờ mà
+không trạm nào `Wait`, hoặc `Wait` một cờ mà không ai `Set`. Chương trình biên dịch bình thường, chạy
+bình thường, chỉ là máy đứng im hoặc chạy vượt bước. Ba biện pháp giảm thiểu:
+
+- **Kiểm tra tĩnh bằng tìm kiếm.** Mỗi thành viên enum phải xuất hiện **tối thiểu 2 lần** trong
+  solution (một `Set`, một `Wait`/`Get`). Việc này viết được thành một unit test dùng reflection +
+  đọc mã nguồn, hoặc đơn giản là một mục trong checklist review.
+- **Bảng cờ hiển thị trên màn hình chẩn đoán.** Một trang HMI liệt kê mọi cờ kèm giá trị hiện tại là
+  công cụ gỡ lỗi mạnh nhất cho pattern này — biến điểm yếu "không type-safe" thành điểm mạnh "quan sát
+  được".
+- **Log mỗi lần đổi cờ.** Khi máy đứng im, nhật ký cho biết cờ nào đang chờ và ai đã đặt lần cuối.
+
+> ⚠️ **Bẫy chèn thành viên vào GIỮA enum.** Nếu bảng cờ được lưu ngoài chương trình (file, bộ nhớ chia
+> sẻ, hoặc thanh ghi PLC) và được truy cập theo **chỉ số** thay vì theo tên, thì việc chèn một thành
+> viên mới vào giữa `enum StationFlag` sẽ **dịch toàn bộ chỉ số phía sau đi 1**. Không có lỗi biên
+> dịch, không có cảnh báo — chỉ là mọi trạm bắt đầu chờ sai cờ. Quy tắc: **luôn thêm thành viên mới ở
+> cuối enum**, hoặc gán giá trị tường minh (`RequestInspect = 10`) ngay từ đầu để chỉ số không bao giờ
+> phụ thuộc vị trí khai báo.
+
+> 💡 **Khi nào nên chọn pattern này, khi nào không.** Chọn khi máy có **nhiều trạm chạy song song thật
+> sự** và cần nhìn được trạng thái đồng bộ từ HMI — đây là đa số máy phi tiêu chuẩn nhiều trạm. Không
+> chọn khi quy trình vốn tuần tự (một sequence chạy hết bước này mới sang bước sau): lúc đó Sequence
+> Step (Chương 12) rõ ràng hơn nhiều, vì thứ tự nằm ngay trong code chứ không phải suy ra từ các cặp
+> Set/Wait rải rác. Một máy có thể dùng **cả hai**: Sequence Step cho quy trình bên trong một trạm,
+> Shared Tag Table cho đồng bộ giữa các trạm.
+
+> 🔍 **Đào sâu thêm — quan hệ với `ManualResetEvent` và với thanh ghi PLC thật.** Về mặt kỹ thuật, một
+> cờ bắt tay chính là một `ManualResetEventSlim` (Chương 5) có tên gọi nghiệp vụ. Vậy tại sao các dự
+> án thật lại tự làm mảng `bool` + polling? Hai lý do chính đáng: (1) `ManualResetEvent` **không đọc
+> được giá trị hiện tại một cách tự nhiên** để hiển thị lên HMI, còn mảng `bool` thì đọc lúc nào cũng
+> được; (2) khi một phần bảng cờ cần **ánh xạ thẳng sang thanh ghi `M` của PLC ngoài** (Chương 14),
+> mô hình "mảng có chỉ số" khớp 1:1 với vùng nhớ PLC, còn mô hình event thì không. Nếu máy của bạn
+> không có cả hai nhu cầu đó, `ManualResetEventSlim` gọn hơn và không cần vòng quét.
+
+---
+
 ## 16.3  Bản đồ Pattern toàn hệ thống
 
 Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automation đã tích luỹ hơn mười pattern. Mục này đặt tất cả vào đúng vị trí trong kiến trúc layered để không nhầm lẫn giữa các pattern có tên tương tự hoặc giải quyết vấn đề tương tự ở các tầng khác nhau.
@@ -17631,6 +18379,7 @@ Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automati
 │  ← Command Pattern: CommandDispatcher thực thi IDeviceCommand queue      │
 │  ← IEventPublisher (Observer biến thể 2): dispatch IDomainEvent          │
 │  ← Guard Engine (Ch15): kiểm tra RiskTier trước lệnh nguy hiểm           │
+│  ← Shared Tag Table: đồng bộ giữa các trạm chạy song song                │
 └───────────────────────────────┬──────────────────────────────────────────┘
                                 │ IDeviceCommand / IDomainEvent
 ┌───────────────────────────────▼──────────────────────────────────────────┐
@@ -17678,6 +18427,7 @@ Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automati
 | **Observer / IEventPublisher** | 11, 12, 16 | App → Domain | Cross-module event, nhiều subscriber, cần isolation |
 | **Observer / IObservable** | 16 | Reliability | Dữ liệu liên tục tần suất cao cần filter/throttle |
 | **Command Pattern** (GoF) | 16 | App | Lệnh thiết bị cần queue, retry, log, undo |
+| **Shared Tag Table** | 16 | App | Đồng bộ giữa nhiều trạm chạy **song song**, và cần nhìn trạng thái đồng bộ từ HMI |
 | **Repository Pattern** | 11, 13 | Domain → Infra | Tách persistence khỏi domain — **interface ở Domain, implementation ở Infrastructure** |
 | **Factory Pattern** | 13 | Device Abstraction | Tạo device object đúng loại theo cấu hình |
 | **Strategy Pattern** | 13 | Device Abstraction | Chọn protocol (OpcUa / ModbusTcp) theo cấu hình |
@@ -17721,6 +18471,9 @@ Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automati
 | "PLC bị restart → mọi lệnh đều fail 30 giây" | Circuit Breaker |
 | "Vision module lỗi kéo chết toàn bộ sequence" | Bulkhead Pattern |
 | "Operator cấp Operator đang cố jog trục" | Guard Engine + RiskTier |
+| "Trạm A phải chờ trạm B xong, nhưng không muốn A bị chặn hoàn toàn" | Shared Tag Table |
+| "Thêm 1 trạm giữa dự án mà phải sửa code trạm đang chạy ổn định" | Shared Tag Table |
+| "Máy đứng im, không báo gì, không biết đang chờ ai" | Shared Tag Table + timeout bắt buộc mỗi lần chờ |
 
 Chi phí áp dụng = thời gian học + độ phức tạp code + overhead test. Pattern đơn giản hơn luôn được ưu tiên nếu đáp ứng được yêu cầu:
 
@@ -17731,6 +18484,7 @@ Chi phí áp dụng = thời gian học + độ phức tạp code + overhead tes
 | IEventPublisher | Cross-module, nhiều subscriber | Trung bình |
 | IObservable/Rx | Streaming, tần suất cao | Cao (học Rx) |
 | Command Pattern | Queue, retry, audit | Trung bình |
+| Shared Tag Table | Đồng bộ nhiều trạm song song | Thấp để viết, **cao để bảo trì** (không type-safe) |
 | Repository | Persist dữ liệu nghiệp vụ | Trung bình |
 | Circuit Breaker | External service không ổn định | Trung bình-cao |
 
@@ -17740,13 +18494,19 @@ Chi phí áp dụng = thời gian học + độ phức tạp code + overhead tes
 
 ## Tổng kết chương
 
-Chương 16 hoàn thiện bộ pattern cho hệ thống automation với hai pattern còn thiếu sau Ch11–Ch15:
+Chương 16 hoàn thiện bộ pattern cho hệ thống automation với ba pattern còn thiếu sau Ch11–Ch15:
 
 **Observer / Pub-Sub Pattern** giải quyết bài toán "nguồn phát biết quá nhiều về subscriber". Ba biến thể phục vụ ba nhu cầu khác nhau: C# `event` cho UI binding đơn giản in-process; `IEventPublisher` cho Domain Event và cross-module notification — đây là cơ chế đã dùng ẩn danh từ Chương 11 và 12; `IObservable<T>` cho telemetry liên tục tần suất cao cần filter/throttle.
 
 **Command Pattern** đóng gói mỗi lệnh thiết bị thành đối tượng có `ExecuteAsync`, `UndoAsync`, và `Name`. `CommandDispatcher` thực thi queue với log từng lệnh, retry có thể cấu hình, và phát Domain Event khi thất bại. Case study Pick-and-Place cho thấy sequence phức tạp trở nên dễ đọc và dễ mở rộng khi từng bước được đóng gói thành `IDeviceCommand`.
 
-**Bản đồ Pattern toàn hệ thống** đặt 15 pattern đã học vào đúng tầng kiến trúc — từ HMI xuống Hardware — và cung cấp decision guide để chọn pattern đúng theo bài toán thực tế.
+**Shared Tag Table** là pattern bạn sẽ *đọc* nhiều hơn *viết*: nhiều trạm chạy song song đồng bộ
+với nhau qua một bảng cờ dùng chung, không trạm nào gọi hàm trạm nào. Nó đánh đổi tính an toàn kiểu
+(trình biên dịch không phát hiện được cờ mồ côi) để lấy tính song song thật và khả năng quan sát trạng
+thái đồng bộ trực tiếp từ HMI. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng cờ
+trước mỗi lần Start; mọi lần chờ phải có thời gian chờ tối đa kèm alarm; tên cờ phải mô tả ý định.
+
+**Bản đồ Pattern toàn hệ thống** đặt 16 pattern đã học vào đúng tầng kiến trúc — từ HMI xuống Hardware — và cung cấp decision guide để chọn pattern đúng theo bài toán thực tế.
 
 Kết thúc Phần V (Chương 11–16), kiến trúc lõi của hệ thống automation đã hoàn chỉnh. Phần VI chuyển sang vận hành: quản lý mã nguồn, kiểm thử, và debug trên máy production.
 
@@ -17765,6 +18525,9 @@ Kết thúc Phần V (Chương 11–16), kiến trúc lõi của hệ thống au
 | **Nhầm Sequence Step với Command Pattern** | Đặt retry logic trong Step thay vì CommandDispatcher | Sequence Step khai báo **ý định**, CommandDispatcher xử lý **cơ chế** |
 | **Khai báo IObservable nhưng không Dispose subscription** | Memory leak, handler tiếp tục nhận event sau khi component bị destroy | Giữ `IDisposable` trả về từ `.Subscribe()`, dispose trong `IDisposable.Dispose()` |
 | **Pub-Sub nhưng không xử lý slow subscriber** | Subscriber chậm (gửi HTTP lên SCADA) block publisher | Mỗi handler nên có timeout; hoặc dùng Channel\<T\> để offload sang background thread |
+| **Cờ mồ côi trong Shared Tag Table** | Máy đứng im vô hạn hoặc chạy vượt bước; không có lỗi biên dịch nào | Mỗi cờ phải xuất hiện tối thiểu 2 lần (1 Set, 1 Wait) — kiểm bằng tìm kiếm toàn văn hoặc unit test; thêm trang HMI hiển thị toàn bộ bảng cờ |
+| **Không xoá bảng cờ trước khi Start** | Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước (tay gắp xuống trước khi phôi vào) | `ResetAll()` toàn bộ cờ trong luồng khởi động, TRƯỚC khi bật luồng các trạm |
+| **Chèn thành viên vào giữa enum cờ** | Mọi trạm bắt đầu chờ sai cờ sau một lần "sửa nhỏ" | Chỉ thêm ở cuối enum, hoặc gán giá trị tường minh ngay từ đầu |
 | **Message Bus quá phức tạp cho hệ thống đơn giản** | Dùng RabbitMQ/Azure Service Bus cho IPC duy nhất không cần HA | `InMemoryEventPublisher` đủ dùng cho single-process; chỉ nâng cấp khi thực sự cần cross-process |
 
 <!-- SECTION: Chapter_17_DevOps -->
@@ -20655,6 +21418,217 @@ bên trong nó có code C++ thay vì P/Invoke.
 
 ---
 
+## A.3 Đọc một file khai báo P/Invoke có sẵn
+
+Mục A.1 và A.2 trả lời câu hỏi *"tôi phải viết cái gì"*. Mục này trả lời một câu hỏi khác, và trong
+thực tế bạn gặp nó **trước**: *"ai đó đã viết rồi, tôi phải đọc hiểu để sửa"*.
+
+Lý do rất cụ thể. Khi nhận bảo trì một máy đang chạy, gần như chắc chắn trong solution có sẵn một
+hoặc nhiều file kiểu `LTDMC.cs`, `GTS.cs`, `APS168.cs`, `Dask.cs`, `PCI_DMC.cs` — mỗi file **vài trăm
+đến năm trăm dòng**, mỗi dòng là một hàm của SDK card được khai báo lại cho C#. Trong một dự án tham
+khảo dùng cho cuốn sách này, tổng số dòng `[DllImport]` vượt **2000 dòng**. Không ai viết lại chúng;
+chúng do hãng card phát hành kèm SDK, hoặc do người tiền nhiệm chép về. Việc của bạn là **đọc được**,
+đủ để biết một hàm nhận gì, trả gì, và vì sao gọi nó lại ra giá trị lạ.
+
+### Giải phẫu một dòng khai báo
+
+Bắt đầu từ dạng đơn giản nhất — thường thấy ở SDK card của Googol (họ GTS):
+
+```csharp
+[DllImport("gts.dll")]
+public static extern short GT_Open(short cardNum, short channel, short param);
+```
+
+Đọc từ phải sang trái, có 5 thông tin:
+
+1. **`"gts.dll"`** — tên file DLL native sẽ được nạp lúc chạy. Không có đường dẫn → .NET tìm theo thứ
+   tự: thư mục chứa file `.exe`, rồi các thư mục trong biến môi trường `PATH`. Đây là lý do file
+   `.dll` của hãng phải nằm **cạnh file `.exe`**, và là nguyên nhân số một của lỗi
+   `DllNotFoundException` khi copy chương trình sang máy khác mà quên copy DLL hãng.
+2. **`static extern`** — `extern` nghĩa là "thân hàm không nằm ở đây, nó nằm trong DLL kia". Vì vậy
+   dòng khai báo kết thúc bằng dấu `;`, không có `{ }`. Người mới thường tìm định nghĩa của hàm này
+   bằng Go To Definition và không thấy gì — đúng vậy, **không có** code C# nào để xem.
+3. **`short` (giá trị trả về)** — hầu hết SDK card trả về **mã lỗi dạng số nguyên nhỏ**, với quy ước
+   `0 = thành công`, khác 0 = mã lỗi. Đây là điểm ngược trực giác đầu tiên: trong C# ta quen
+   `if (thanhCong)`, còn ở đây phải viết `if (0 == GT_Open(...))`. Gặp code kiểu
+   `if (0 == mc.GT_Open(card, 0, 1))` thì đó **không phải** lỗi gõ nhầm — đó là kiểm tra "thành công".
+4. **`GT_Open`** — tên method C#, ở đây trùng đúng tên hàm trong DLL.
+5. **`(short cardNum, short channel, short param)`** — tham số. Chú ý kiểu là `short` chứ không phải
+   `int`: SDK viết bằng C dùng `short`/`WORD` để tiết kiệm, và **kiểu phải khớp chính xác** với chữ ký
+   hàm gốc, nếu không dữ liệu bị lệch byte trên stack.
+
+### Bốn tuỳ chọn hay gặp trong `[DllImport]`
+
+Dạng đầy đủ hơn — thường thấy ở SDK card của Leadshine (họ DMC/LTDMC):
+
+```csharp
+[DllImport("LTDMC.dll", EntryPoint = "dmc_board_init",
+           CharSet = CharSet.Ansi, CallingConvention = CallingConvention.StdCall)]
+public static extern short dmc_board_init();
+```
+
+**Bảng A.2 — Bốn tuỳ chọn `[DllImport]` cần đọc hiểu**
+
+| Tuỳ chọn | Nghĩa | Hậu quả nếu sai |
+|---|---|---|
+| `EntryPoint = "..."` | Tên hàm **thật** trong DLL, khi tên method C# muốn đặt khác | Sai tên → `EntryPointNotFoundException` ngay lần gọi đầu |
+| `CallingConvention` | Quy ước gọi hàm: ai dọn stack sau khi gọi, tham số đẩy theo thứ tự nào | Sai → stack lệch: crash, hoặc tệ hơn là **trả về giá trị rác mà không báo lỗi** |
+| `CharSet` | Chuỗi truyền qua ranh giới là 1 byte/ký tự (`Ansi`) hay 2 byte (`Unicode`) | Sai → chuỗi nhận được là ký tự lạ, hoặc chỉ đọc được ký tự đầu |
+| `SetLastError = true` | Cho phép đọc mã lỗi Windows sau khi gọi, bằng `Marshal.GetLastWin32Error()` | Không bật thì không lấy được mã lỗi hệ thống (chỉ ảnh hưởng chẩn đoán) |
+
+Về `CallingConvention`, chỉ cần nhớ hai giá trị thực tế gặp:
+
+- **`StdCall`** — quy ước của Windows API. Đây là **mặc định** khi không ghi gì, nên đa số SDK card
+  Windows dùng nó.
+- **`Cdecl`** — quy ước của C/C++ chuẩn. Gặp khi DLL được biên dịch như thư viện C thông thường thay
+  vì DLL kiểu Windows API.
+
+Cách biết chọn cái nào: **đọc header `.h` của hãng**. Nếu chữ ký hàm có `__stdcall` hoặc macro
+`WINAPI` → `StdCall`; nếu có `__cdecl` hoặc không ghi gì trong một thư viện C thuần → `Cdecl`. Không
+đoán: sai quy ước là loại lỗi *chạy được vài lần rồi crash*, cực khó chẩn đoán.
+
+### Marshalling: bốn tình huống khiến người mới sai
+
+**Tình huống 1 — `bool` không phải `bool`.**
+
+```csharp
+[DllImport("SysLib.dll", CallingConvention = CallingConvention.Cdecl)]
+[return: MarshalAs(UnmanagedType.I1)]
+private static extern bool GetBit(int index);
+```
+
+`bool` trong C++ là **1 byte**; nhưng `BOOL` của Win32 (mà .NET lấy làm mặc định khi marshal `bool`)
+là **4 byte**. Không có dòng `[return: MarshalAs(UnmanagedType.I1)]`, .NET đọc 4 byte cho một giá trị
+chỉ có 1 byte thật → 3 byte còn lại là rác → `true`/`false` **đọc sai một cách ngẫu nhiên**. `I1`
+nghĩa là "integer 1 byte". Cú pháp `[return: ...]` là cách gắn attribute cho **giá trị trả về** thay
+vì cho tham số hay cho method.
+
+> ⚠️ **Đây là loại lỗi tệ nhất trong nhóm P/Invoke:** nó không crash, không throw, chỉ trả sai
+> `true`/`false`. Nếu giá trị đó là "cảm biến an toàn có đang OK không", hậu quả thuộc về an toàn máy,
+> không phải thuộc về phần mềm. Khi thấy một hàm native trả `bool`, luôn kiểm tra xem có `MarshalAs`
+> hay không, và đối chiếu với header của hãng.
+
+**Tình huống 2 — `ref` / `out` chính là con trỏ.**
+
+```csharp
+// Header hãng:  short GT_GetSts(short card, short axis, long* pSts, short count, long* pClk);
+[DllImport("gts.dll")]
+public static extern short GT_GetSts(short cardNum, short axis, out int sts, short count, out uint clk);
+```
+
+Hàm C nhận con trỏ `long*` để **ghi kết quả ra ngoài**. Phía C#, con trỏ đó được biểu diễn bằng `out`
+(hàm sẽ ghi giá trị) hoặc `ref` (hàm đọc giá trị hiện có rồi có thể ghi lại). Đây là lý do các hàm
+đọc trạng thái card không "trả về" trạng thái — chúng trả về mã lỗi, còn trạng thái đi ra qua tham số
+`out`. Mẫu này lặp lại ở **mọi** SDK card:
+
+```csharp
+int sts = 0; uint clk = 0;
+if (0 == GT_GetSts(card, axis, out sts, 1, out clk))     // 0 = thành công
+{
+    bool servoOn = 0 != (sts & (1 << 9));                // bit 9 của thanh ghi trạng thái
+}
+```
+
+Dòng trong ngoặc là mẫu thứ hai cần quen: **trạng thái trục được đóng gói thành các bit trong một số
+nguyên**. `sts & (1 << 9)` là "lấy bit thứ 9". Ý nghĩa từng bit nằm trong tài liệu hãng, không có cách
+nào suy ra từ code. Toán tử dịch bit và mặt nạ đã học ở Chương 3; ở đây chỉ khác là bảng nghĩa nằm
+trong PDF của hãng card.
+
+**Tình huống 3 — chuỗi trả ra cần `StringBuilder`.**
+
+```csharp
+[DllImport("SysLib.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.Cdecl)]
+private static extern int GetString(int index, StringBuilder v, int len);
+```
+
+Hàm C ghi ký tự vào một vùng đệm do **người gọi** cấp. `string` của .NET là bất biến (immutable) nên
+không dùng được làm vùng đệm ghi ra; `StringBuilder` thì có vùng nhớ thay đổi được. Bắt buộc phải cấp
+dung lượng trước và truyền đúng độ dài:
+
+```csharp
+var sb = new StringBuilder(256);       // cấp trước, không để mặc định
+GetString(index, sb, sb.Capacity);     // luôn truyền Capacity, đừng hardcode
+string value = sb.ToString();
+```
+
+Truyền `len` lớn hơn dung lượng thật → hàm native ghi tràn ra ngoài vùng nhớ. Đây là lỗi phá hoại bộ
+nhớ, biểu hiện có thể xuất hiện ở một chỗ hoàn toàn khác trong chương trình.
+
+**Tình huống 4 — mảng và `struct`.**
+
+```csharp
+// Mảng: truyền thẳng, .NET tự ghim (pin) bộ nhớ trong lúc gọi
+[DllImport("LTDMC.dll")]
+public static extern short dmc_get_CardInfList(ref ushort CardNum, uint[] CardTypeList, ushort[] CardIdList);
+```
+
+Mảng `T[]` của kiểu nguyên thuỷ (blittable) được truyền như con trỏ tới phần tử đầu — không cần
+attribute gì. Nhưng **kích thước mảng phải đủ** trước khi gọi: hàm native không biết mảng dài bao nhiêu
+trừ khi ta nói cho nó biết (thường qua tham số `CardNum`). Cấp thiếu → ghi tràn.
+
+Với `struct`, cần `[StructLayout(LayoutKind.Sequential)]` để bảo đảm .NET **không sắp xếp lại thứ tự
+field** khi truyền sang native:
+
+```csharp
+[StructLayout(LayoutKind.Sequential)]
+public struct TrapProfileParam { public double acc; public double dec; public short smoothTime; }
+```
+
+### Các họ card chuyển động thường gặp ngoài hiện trường
+
+Trường học hầu như không dạy phần này, mà hiện trường thì gặp hằng ngày. Bảng dưới liệt kê các họ card
+xuất hiện trong các dự án tham khảo của sách, để bạn nhận diện được ngay khi mở một solution lạ và
+thấy tên file quen quen.
+
+**Bảng A.3 — Nhận diện họ card qua tên DLL và tiền tố hàm**
+
+| Hãng / họ card | DLL | Tiền tố hàm | Dấu hiệu nhận biết khác |
+|---|---|---|---|
+| Googol (固高) GTS | `gts.dll` | `GT_` | Có file cấu hình `.cfg` nạp lúc mở card (`GT_LoadConfig`); trục đánh số từ 1 |
+| Leadshine (雷赛) DMC/LTDMC | `LTDMC.dll` | `dmc_` | Khai báo đầy đủ `EntryPoint` + `CharSet` + `CallingConvention`; có cả card PCI và bộ điều khiển EtherCAT |
+| ADLINK (凌華) APS | `APS168.dll` | `APS_` | Kèm một file hằng số rất dài (`APS_Define.cs`) — đó là bảng tra tham số, không phải code |
+| ADLINK PCI-8254 / DMC | `PCI_DMC.dll` | `_8254_` | Thường đi cùng file mã lỗi riêng (`PCI_DMC_ERR.cs`) |
+| Advantech (研華) DAQ | `Dask.dll` | `DRV_` | Là card **thu thập dữ liệu** (AI/AO/DI/DO), không phải card điều khiển trục |
+| Inovance (匯川) EtherCAT | — | `Ecat` | Cấu hình qua file `eni.xml` (mô tả mạng EtherCAT), không cấu hình từng trục trong code |
+| National Instruments | `nicaiu.dll` | (qua `NationalInstruments.DAQmx`) | **Đã có** .NET wrapper chính thức — không cần P/Invoke, thêm reference là dùng |
+
+> 💡 **Mẹo thực dụng:** nhìn tiền tố hàm là biết hãng, và biết ngay phải tìm tài liệu nào. Một máy có
+> thể dùng **hai họ card cùng lúc** (ví dụ card điều khiển trục của một hãng + card thu thập dữ liệu
+> analog của hãng khác) — khi đó số hiệu trục và số hiệu kênh analog là hai hệ đánh số hoàn toàn độc
+> lập, đừng lẫn.
+
+### Ba việc cần làm khi *thêm* một hàm SDK chưa được khai báo
+
+Đây là nhiệm vụ thực tế hay gặp nhất: hàm bạn cần có trong tài liệu hãng nhưng chưa có trong file
+`.cs` mà người tiền nhiệm chép về.
+
+1. **Chép chữ ký từ header `.h` của hãng**, không tự nghĩ. Ánh xạ kiểu theo bảng: `short`→`short`,
+   `WORD`/`unsigned short`→`ushort`, `DWORD`/`unsigned long`→`uint`, `long`→`int` (chú ý: `long` của
+   C trên Windows là **32 bit**, không phải `long` 64 bit của C#), `double`→`double`,
+   `char*`→`string` (vào) hoặc `StringBuilder` (ra), `T*`→`ref`/`out T` hoặc `T[]`, `bool`→`bool` kèm
+   `[MarshalAs(UnmanagedType.I1)]`.
+2. **Giữ đúng `CallingConvention` và `CharSet` như các hàm khác trong cùng file.** Cả một DLL dùng
+   chung một quy ước — nếu 400 dòng phía trên đều `StdCall` thì hàm mới cũng `StdCall`.
+3. **Thử với một lệnh vô hại trước** (đọc trạng thái, đọc phiên bản firmware), không thử ngay bằng
+   lệnh làm trục chuyển động. Nếu marshalling sai, lệnh đọc chỉ trả số rác; lệnh chuyển động có thể
+   làm trục lao vào giới hạn cơ khí.
+
+> ⚠️ **Kiến trúc build phải khớp.** Card chuyển động thường chỉ có DLL **x86** (32 bit). Nếu ứng dụng
+> .NET để `AnyCPU` và chạy trên Windows 64 bit, tiến trình sẽ là 64 bit và **không nạp được** DLL 32
+> bit — lỗi `BadImageFormatException`. Cách xử lý: đặt `PlatformTarget` = `x86` cho project ứng dụng
+> (hoặc bật `Prefer32Bit`). Đây là cùng một vấn đề đã nêu ở Chương 2 và ở Lỗi 3 cuối phụ lục này,
+> nhưng với P/Invoke nó xảy ra thường xuyên hơn vì SDK card cũ hiếm khi có bản 64 bit.
+
+> 🔍 **Đào sâu thêm — vì sao lớp bọc P/Invoke nên là `internal`, không `public`.** Trong các dự án
+> tham khảo, các file khai báo card đều `public static extern` và được gọi **trực tiếp** từ tầng
+> driver. Hệ quả: bất kỳ chỗ nào trong solution cũng gọi được `GT_AxisOn(...)`, bỏ qua toàn bộ lớp
+> trừu tượng bên trên. Cách làm gọn hơn: để class P/Invoke là `internal static` bên trong project
+> driver, và chỉ lộ ra bên ngoài interface đã trừu tượng hoá (`IMotionController` — Chương 13). Khi đó
+> trình biên dịch **bảo đảm** không ai gọi tắt xuống card từ tầng UI hay tầng sequence. Đổi một từ
+> khoá đổi được một tầng bảo vệ.
+
+---
+
 ## Tổng kết phụ lục
 
 - P/Invoke đủ dùng khi SDK export hàm C thuần; C++/CLI cần thiết khi
@@ -20670,6 +21644,13 @@ bên trong nó có code C++ thay vì P/Invoke.
 - Kiến trúc build (x86/x64) của ứng dụng .NET, wrapper C++/CLI, và SDK
   native phải khớp nhau tuyệt đối — sai kiến trúc là nguyên nhân hàng
   đầu của lỗi load DLL khó chẩn đoán.
+- Việc bạn gặp trước cả việc *viết* wrapper là việc **đọc** file khai
+  báo P/Invoke có sẵn của SDK card (mục A.3): nhớ 3 quy ước ngược trực
+  giác — trả về `0` nghĩa là **thành công**, `ref`/`out` chính là **con
+  trỏ ra**, và `bool` native cần `[MarshalAs(UnmanagedType.I1)]` nếu
+  không muốn đọc sai `true`/`false`.
+- Nhận diện họ card qua **tiền tố hàm** (`GT_`, `dmc_`, `APS_`, `DRV_`)
+  là cách nhanh nhất để biết phải tra tài liệu hãng nào (Bảng A.3).
 
 ## Lỗi thường gặp
 
@@ -20698,9 +21679,379 @@ managed code, gây ra lỗi biên dịch khó hiểu không liên quan gì đế
 thật của wrapper. Code A.2 đã làm đúng — không bỏ qua cặp
 `#pragma managed(push, off)`/`#pragma managed(pop)` dù có vẻ dư thừa.
 
-<!-- SECTION: Phu_Luc_B_Thuat_Ngu -->
+<!-- SECTION: PhuLucB_GiaiPhauPhanMemMay -->
 ---
-# Phụ lục B: Bảng thuật ngữ
+# Phụ lục B: Giải phẫu một phần mềm máy tự động hoá
+
+Mười chín chương của cuốn sách này dạy **cách xây từng bộ phận**: state machine, driver thiết bị,
+HMI, tầng dữ liệu, giao thức, an toàn. Phụ lục này trả lời một câu hỏi khác, thường là câu hỏi đầu
+tiên của người mới nhận việc:
+
+> *"Một phần mềm máy hoàn chỉnh gồm những gì? Tôi phải làm bao nhiêu màn hình, bao nhiêu chức năng
+> nền thì mới gọi là đủ?"*
+
+Nội dung dưới đây là bản tổng hợp rút từ việc đọc mã nguồn thật của một nhóm dự án phần mềm máy tự
+động hoá đang chạy trong nhà máy điện tử — máy lắp ráp nhiều trạm, máy bonding, máy kiểm tra bằng
+thị giác máy, máy hiệu chỉnh có phản hồi lực, cùng vài framework dùng chung. Chúng khác nhau về hãng
+thiết bị, về công nghệ giao diện (WinForms cũ, WPF/Prism mới), về ngôn ngữ đặt tên — nhưng **danh
+mục chức năng thì trùng nhau đến mức đáng ngạc nhiên**. Đó là điều làm nên giá trị của một danh mục
+kiểm: nó không phải ý kiến cá nhân, nó là thứ hội tụ khi nhiều đội độc lập cùng giải một lớp bài
+toán.
+
+Phụ lục này **không dạy kỹ thuật mới** — mọi kỹ thuật đều đã có ở các chương. Nó dùng để: ước lượng
+khối lượng công việc khi nhận một máy mới, rà soát xem phần mềm sắp bàn giao còn thiếu gì, và định
+hướng khi mở một solution lạ mà chưa biết bắt đầu từ đâu.
+
+---
+
+## B.1 Bản đồ sáu tầng
+
+Bất kể dùng WinForms hay WPF, dùng framework tự viết hay Prism, một phần mềm máy tự động hoá luôn
+tách được thành sáu tầng sau. Cột bên phải là chương đã dạy phần đó.
+
+**Bảng B.1 — Sáu tầng của một phần mềm máy và nơi học**
+
+| Tầng | Trách nhiệm | Chương |
+|---|---|---|
+| **1. Giao diện (HMI)** | Màn hình vận hành, chạy tay, cấu hình, báo cáo | Ch8 (WinForms), Ch9 (WPF/MVVM), Ch10 (ISA-101) |
+| **2. Điều phối quy trình** | Trình tự các bước, trạng thái máy, đồng bộ giữa các trạm | Ch12 (State/PackML), Ch16 (Command, Shared Tag Table) |
+| **3. Nghiệp vụ & an toàn** | Recipe, phán định OK/NG, alarm, interlock, phân quyền | Ch11 (DDD), Ch15 (Safety) |
+| **4. Trừu tượng thiết bị** | `IAxis`, `ICamera`, `IIoModule` — che giấu hãng cụ thể | Ch13 (DAL, Factory/Adapter/Bridge) |
+| **5. Driver & giao thức** | SDK card, Modbus/OPC UA/EtherNet-IP/SECS-GEM, serial | Ch14 (Protocols), Phụ lục A (P/Invoke, C++/CLI) |
+| **6. Dữ liệu & tích hợp** | Cấu hình, nhật ký, dữ liệu sản xuất, kết nối MES/host | Ch13 (Repository), Ch14 (MES), Ch17 (vận hành) |
+
+> 📌 **Cách dùng bảng này khi mở một solution lạ.** Ánh xạ từng project trong solution vào một trong
+> sáu tầng. Nếu có project không thuộc tầng nào, hoặc một project trải trên bốn tầng — đó chính là
+> chỗ cần chú ý trước tiên, vì nó thường là nơi tích tụ nợ kỹ thuật. Đây cũng là cách nhanh nhất để
+> phát hiện vi phạm Dependency Rule (Ch7 mục 7.3.2): một project tầng 1 mà `using` thẳng namespace
+> của tầng 5 nghĩa là giao diện đang gọi trực tiếp xuống card.
+
+---
+
+## B.2 Danh mục màn hình
+
+Đây là phần khác biệt lớn nhất giữa "biết lập trình C#" và "biết làm phần mềm máy". Số lượng màn
+hình thường vượt xa hình dung ban đầu: các dự án tham khảo có từ **40 đến 70 màn hình**, trong khi
+đặc tả ban đầu của khách hàng thường chỉ nhắc tới bốn hay năm.
+
+Bảng dưới nhóm chúng thành bảy nhóm chức năng. Cột "Bắt buộc" đánh dấu những màn hình mà **mọi** máy
+sản xuất đều cần — thiếu là không bàn giao được.
+
+### B.2.1 Nhóm 1 — Vận hành hằng ngày
+
+**Bảng B.2 — Màn hình nhóm vận hành**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Khung ứng dụng (shell)** | ✔ | Tất cả | Thanh tiêu đề, điều hướng, trạng thái máy, chip kết nối thiết bị, đồng hồ, người đăng nhập |
+| **Màn hình chính / Tự động** | ✔ | Operator | Trạng thái từng trạm, sản lượng ca hiện tại, kết quả gần nhất, nút Start/Stop/Reset, dòng nhắc thao tác |
+| **Banner cảnh báo** | ✔ | Operator | Alarm đang hoạt động, mức độ, nút xác nhận (Ch10 mục 10.3) |
+| **Đăng nhập** | ✔ | Tất cả | Mật khẩu, và/hoặc thẻ từ, và/hoặc khoá vật lý |
+| **Hộp thoại hỏi người vận hành** | ✔ | Operator | Câu hỏi giữa quy trình, có thể gán nút cứng (Ch10 mục 10.1.5) |
+| **Biểu đồ theo dõi trực tiếp** | | Operator, Kỹ sư | Đường cong đại lượng đo của chi tiết vừa xử lý (lực, áp suất, mô-men) |
+| **Trợ giúp / hướng dẫn thao tác** | | Operator | Ảnh minh hoạ cách xử lý các tình huống dừng máy thường gặp |
+
+> 💡 **Màn hình "kết quả gần nhất" bị bỏ quên nhiều nhất.** Operator cần biết *chi tiết vừa rồi đạt
+> hay không, và nếu không thì vì sao* — trong vòng vài giây, không phải mở báo cáo. Một khối nhỏ trên
+> màn hình chính hiển thị 5–10 kết quả gần nhất kèm lý do NG giải quyết được phần lớn câu hỏi của
+> operator mà không cần đào tạo thêm.
+
+### B.2.2 Nhóm 2 — Chạy tay và gỡ rối phần cứng
+
+Nhóm này chiếm số lượng màn hình lớn nhất, và cũng là nhóm bị đánh giá thấp nhất lúc lập kế hoạch.
+Chúng không sinh ra sản phẩm nào, nhưng **quyết định thời gian dừng máy** mỗi khi có sự cố.
+
+**Bảng B.3 — Màn hình nhóm chạy tay**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Chạy tay theo trạm** | ✔ | Kỹ thuật viên, Kỹ sư | Với mỗi trạm: bảng IO vào/ra, danh sách xi-lanh kèm nút ra/về, jog từng trục, bảng điểm dạy (teach) |
+| **Giám sát IO toàn máy** | ✔ | Kỹ thuật viên | Toàn bộ DI/DO theo thời gian thực, tìm theo tên, cưỡng bức (force) có kiểm soát quyền |
+| **Bảng điểm / dạy vị trí** | ✔ | Kỹ sư | Toạ độ từng điểm, nút "lấy vị trí hiện tại", nút "chạy tới điểm này" |
+| **Quản lý xi-lanh** | | Kỹ sư | Khai báo van/cảm biến/thời gian chờ cho từng xi-lanh |
+| **Giám sát trạng thái trục** | | Kỹ sư | Vị trí, tốc độ, trạng thái servo, cảnh báo driver, giới hạn hành trình |
+| **Kiểm tra riêng từng cụm** | | Kỹ sư | Chạy thử một cơ cấu độc lập (chụp ảnh thử, siết thử, gõ thử) không cần chạy cả chu kỳ |
+| **Thu thập dữ liệu analog** | | Kỹ sư | Giá trị các kênh AI/AO theo thời gian thực |
+| **Nhật ký thao tác tay** | | Kỹ sư | Ghi lại ai đã jog/force/teach cái gì, lúc nào |
+
+> ⚠️ **Cưỡng bức IO (Force) phải là chức năng có kiểm soát, không phải tiện ích.** Force một tín hiệu
+> vào nghĩa là nói dối phần mềm về trạng thái thực của máy. Ba ràng buộc tối thiểu: chỉ cho phép từ
+> quyền Kỹ sư trở lên; hiển thị **thường trực và nổi bật** danh sách tín hiệu đang bị force ở màn hình
+> chính (không được để một tín hiệu bị force âm thầm suốt ca); và **tự động huỷ toàn bộ force** khi
+> chuyển sang chế độ tự động. Xem Ch15 về phân cấp mức rủi ro thao tác.
+
+> 💡 **Mẫu tiết kiệm công nhất của cả nhóm này: MỘT màn hình chạy tay dùng chung, tự sinh theo khai
+> báo của trạm.** Thay vì vẽ tay một màn hình riêng cho mỗi trạm (8 trạm = 8 form gần giống nhau, sửa
+> một lỗi phải sửa 8 lần), hãy để mỗi trạm **khai báo dữ liệu** về phần cứng của nó, và một màn hình
+> duy nhất dựng giao diện từ khai báo đó:
+>
+> ```csharp
+> public sealed class InspectStation : StationBase
+> {
+>     public InspectStation() : base("Trạm kiểm tra")
+>     {
+>         DigitalInputs  = ["Cảm biến có phôi", "Chân không đủ"];
+>         DigitalOutputs = ["Hút chân không", "Xả chân không"];
+>         Cylinders      = ["Xi-lanh nâng", "Xi-lanh kẹp"];
+>         Axes           = ["Trục Z kiểm tra"];
+>     }
+> }
+> ```
+>
+> Màn hình chạy tay đọc bốn danh sách này và tự dựng: mỗi tín hiệu vào một đèn báo, mỗi tín hiệu ra
+> một công tắc, mỗi xi-lanh một cặp nút Ra/Về, mỗi trục một cụm jog. Thêm trạm mới **không phải vẽ
+> thêm màn hình nào**. Trạm thuần logic (không có phần cứng) khai báo danh sách rỗng và tự động không
+> xuất hiện tab chạy tay. Đây là "giao diện do dữ liệu điều khiển" (data-driven UI), và với WPF thì
+> `ItemsControl` + `DataTemplate` (Ch9) làm việc này gọn hơn WinForms nhiều.
+
+### B.2.3 Nhóm 3 — Công thức và tham số
+
+**Bảng B.4 — Màn hình nhóm công thức/tham số**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Chọn / nạp công thức (recipe)** | ✔ | Operator | Danh sách công thức, công thức đang chạy, nút nạp |
+| **Sửa công thức** | ✔ | Kỹ sư | Từng tham số kèm đơn vị, dải hợp lệ, mô tả; kiểm tra hợp lệ trước khi lưu |
+| **Tham số hệ thống** | ✔ | Kỹ sư | Tốc độ, thời gian chờ, ngưỡng cảnh báo — thứ **không** đổi theo mã sản phẩm |
+| **Lưu thành bản mới / so sánh phiên bản** | | Kỹ sư | Nhân bản công thức, xem khác biệt giữa hai phiên bản |
+| **Cấu hình thiết bị** | | Kỹ sư | Cổng COM, địa chỉ IP, số hiệu card, ánh xạ tên IO sang địa chỉ vật lý |
+
+> ⚠️ **Phân biệt cho được ba loại "tham số" — nhầm lẫn ở đây là nguồn của rất nhiều sự cố.**
+> **Công thức (recipe)** đổi theo mã sản phẩm, operator được chọn nhưng không được sửa nội dung.
+> **Tham số hệ thống** thuộc về cỗ máy, không đổi khi đổi sản phẩm, chỉ kỹ sư sửa.
+> **Cấu hình phần cứng** thuộc về lần lắp đặt cụ thể (cổng COM nào, IP nào), gần như không bao giờ
+> đổi sau khi chạy ổn định. Ba loại này khác nhau về **tần suất đổi** và **ai được đổi**, nên phải
+> lưu ở ba nơi tách biệt và có ba mức quyền khác nhau. Trộn cả ba vào một file duy nhất là lỗi thiết
+> kế thường gặp nhất trong nhóm này — hậu quả: đổi mã sản phẩm làm mất cấu hình IP của camera.
+
+### B.2.4 Nhóm 4 — Cảnh báo và nhật ký
+
+**Bảng B.5 — Màn hình nhóm cảnh báo**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Danh sách alarm đang hoạt động** | ✔ | Operator | Mã, mô tả, mức độ, thời điểm, hướng dẫn xử lý |
+| **Lịch sử alarm** | ✔ | Kỹ sư | Lọc theo khoảng thời gian/mức độ/trạm, xuất file |
+| **Cấu hình ngưỡng cảnh báo** | | Kỹ sư | Ngưỡng, độ trễ, mức độ cho từng loại alarm |
+| **Nhật ký thao tác người dùng** | ✔ | Quản lý | Ai đăng nhập, ai đổi công thức, ai force IO, ai bỏ qua cảnh báo |
+| **Nhật ký hệ thống** | | Kỹ sư | Log kỹ thuật của phần mềm, dùng khi chẩn đoán sâu |
+
+> 📌 **Nhật ký thao tác người dùng không phải tính năng "cho vui".** Khi một lô hàng có vấn đề, câu
+> hỏi đầu tiên của bộ phận chất lượng luôn là *"có ai đổi gì trên máy trong khoảng thời gian đó
+> không?"*. Không có nhật ký này thì không trả lời được, và toàn bộ lô hàng bị nghi ngờ. Với các nhà
+> máy làm hàng cho khách yêu cầu truy xuất nghiêm ngặt, đây là hạng mục **bắt buộc để được duyệt máy**,
+> không phải tuỳ chọn.
+
+### B.2.5 Nhóm 5 — Sản lượng và báo cáo
+
+**Bảng B.6 — Màn hình nhóm sản lượng**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Sản lượng theo ca** | ✔ | Operator, Quản lý | Tổng số, số đạt, số không đạt, tỷ lệ đạt |
+| **Năng suất (UPH) và thời gian chu kỳ** | | Quản lý | Sản phẩm/giờ, thời gian chu kỳ trung bình, xu hướng |
+| **Phân tích thời gian chu kỳ theo bước** | | Kỹ sư | Bước nào tốn thời gian nhất — cơ sở để cải tiến năng suất |
+| **Phân loại lý do không đạt** | ✔ | Kỹ sư | Biểu đồ Pareto các mã lỗi — cơ sở để cải tiến chất lượng |
+| **Chỉ số hiệu suất thiết bị (OEE)** | | Quản lý | Khả dụng × Hiệu suất × Chất lượng |
+| **Thống kê dừng máy** | | Quản lý | Dừng bao nhiêu lần, mỗi lần bao lâu, vì lý do gì |
+| **Truy vấn dữ liệu chi tiết** | | Kỹ sư | Tra theo mã sản phẩm/khoảng thời gian, xem toàn bộ số liệu đo của một chi tiết cụ thể |
+| **Theo dõi tuổi thọ đồ gá / dụng cụ** | | Kỹ thuật viên | Số lần sử dụng của từng đồ gá, cảnh báo khi tới hạn thay |
+
+> 💡 **Biểu đồ Pareto lý do không đạt là màn hình có tỷ lệ giá trị trên công sức cao nhất trong cả
+> nhóm.** Nó chỉ là một truy vấn nhóm-và-đếm trên bảng dữ liệu sản xuất, làm trong một buổi — nhưng nó
+> trả lời trực tiếp câu hỏi "cải tiến cái gì trước thì hiệu quả nhất". Điều kiện tiên quyết: mỗi lần
+> phán định không đạt **phải ghi kèm một mã lý do**, không phải chỉ ghi "NG". Đây là quyết định phải
+> làm từ lúc thiết kế bảng dữ liệu, rất khó bổ sung về sau.
+
+### B.2.6 Nhóm 6 — Bảo trì và chẩn đoán
+
+**Bảng B.7 — Màn hình nhóm bảo trì**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Nhắc bảo dưỡng định kỳ** | | Kỹ thuật viên | Việc cần làm theo số chu kỳ/số giờ chạy, xác nhận đã làm |
+| **Đếm số lần tác động của cơ cấu** | | Kỹ thuật viên | Số lần đóng/mở của từng xi-lanh, van, để dự báo hao mòn |
+| **Kiểm tra kết nối thiết bị** | ✔ | Kỹ thuật viên | Trạng thái từng thiết bị, nút thử kết nối lại |
+| **Thông tin phiên bản phần mềm** | ✔ | Tất cả | Phiên bản, ngày build — câu hỏi đầu tiên khi hỗ trợ từ xa |
+| **Màn hình gỡ rối cho nhà cung cấp** | | Nhà cung cấp | Truy cập thẳng xuống thiết bị, ẩn sau quyền cao nhất |
+
+### B.2.7 Nhóm 7 — Tích hợp bên ngoài
+
+**Bảng B.8 — Màn hình nhóm tích hợp**
+
+| Màn hình | Bắt buộc | Ai dùng | Nội dung chính |
+|---|---|---|---|
+| **Trạng thái kết nối hệ MES/host** | ✔ (nếu có MES) | Operator | Đang kết nối hay mất, số bản ghi chờ gửi |
+| **Nhật ký trao đổi với MES** | | Kỹ sư | Nội dung gửi/nhận, để đối chất khi số liệu hai bên lệch nhau |
+| **Gửi lại bản ghi bị lỗi** | | Kỹ sư | Danh sách bản ghi gửi thất bại, nút gửi lại thủ công |
+| **Trạng thái giao tiếp PLC dây chuyền** | | Kỹ thuật viên | Các tín hiệu bắt tay với băng tải/robot bên ngoài |
+| **Cấu hình và gỡ rối giao thức** | | Kỹ sư | OPC UA, SECS/GEM, TCP — xem giá trị thô đang trao đổi |
+
+---
+
+## B.3 Chức năng chạy nền — thứ không có màn hình nhưng thiếu là hỏng
+
+Danh mục màn hình chỉ là phần nổi. Bên dưới luôn có một nhóm dịch vụ chạy ngầm, và người mới thường
+chỉ phát hiện ra chúng khi chúng **thiếu**.
+
+**Bảng B.9 — Dịch vụ nền bắt buộc**
+
+| Dịch vụ | Vì sao cần | Chương |
+|---|---|---|
+| **Vòng quét IO** | Đọc toàn bộ tín hiệu vào theo chu kỳ cố định, một nguồn dữ liệu duy nhất cho mọi nơi | Ch6, Ch13 |
+| **Giám sát an toàn** | Cửa an toàn, nút dừng khẩn, rèm sáng — kiểm tra ở mức ưu tiên cao nhất, độc lập với quy trình | Ch15 |
+| **Quản lý cảnh báo** | Nhận, phân loại, chống dội, lưu lịch sử, phát tín hiệu ra đèn/còi | Ch15 |
+| **Điều khiển đèn tháp và còi** | Ánh xạ trạng thái máy sang tín hiệu vật lý mà người ở xa nhìn thấy | Ch15 |
+| **Ghi nhật ký có xoay vòng** | Nhật ký phải tự xoá bản cũ, nếu không ổ cứng đầy sau vài tháng và máy dừng | Ch17, Ch19 |
+| **Hàng đợi gửi dữ liệu lên MES** | Mạng nhà máy sẽ mất kết nối; dữ liệu phải được giữ lại và gửi lại sau, không được mất | Ch14 |
+| **Chặn mở phần mềm hai lần** | Hai tiến trình cùng điều khiển một card là tình huống nguy hiểm | Ch5 |
+| **Khôi phục sau mất điện** | Khi khởi động lại, phải biết chu kỳ trước dở dang tới đâu và phôi đang nằm ở đâu | Ch12, Ch19 |
+| **Đồng bộ thời gian** | Dữ liệu truy xuất nguồn gốc vô giá trị nếu đồng hồ các máy lệch nhau | Ch17 |
+| **Sao lưu cấu hình và công thức** | Ổ SSD của máy công nghiệp sẽ hỏng; công thức mất là dừng sản xuất nhiều ngày | Ch17 |
+
+> ⚠️ **Khôi phục sau mất điện là hạng mục bị bỏ sót nhiều nhất, và tốn kém nhất khi bổ sung muộn.**
+> Câu hỏi cần trả lời từ lúc thiết kế: sau khi mất điện đột ngột giữa chu kỳ, lúc bật lại thì phần
+> mềm biết được gì? Nếu câu trả lời là "không biết gì, phải dọn máy bằng tay rồi chạy lại từ đầu" —
+> điều đó **chấp nhận được**, miễn là phần mềm **nói rõ điều đó với operator** thay vì âm thầm chạy
+> tiếp như chưa có gì xảy ra. Tình huống tệ nhất là phần mềm tưởng bàn gá trống trong khi thực tế còn
+> phôi từ chu kỳ trước.
+
+### B.3.1 Trạm ghi bằng chứng — nhóm chức năng ít được nhắc tới
+
+Có một nhóm chức năng không sản xuất ra gì, không kiểm tra gì, chỉ **ghi lại bằng chứng** về những
+việc đã xảy ra. Trong các dự án tham khảo, chúng tồn tại như những trạm độc lập chạy song song với
+trạm sản xuất, được bật/tắt bằng chính cơ chế bắt tay đã học ở Ch16:
+
+- **Ghi dữ liệu chuyển động thô** — lấy mẫu vị trí, tốc độ, mô-men của servo trong lúc thao tác quan
+  trọng, lưu thành file cho từng chi tiết. Khi có khiếu nại, đây là thứ chứng minh máy đã làm đúng.
+- **Quay video giám sát** — ghi hình khu vực làm việc trong lúc trạm chính hoạt động, lưu kèm mã
+  chi tiết.
+- **Lưu ảnh gốc của kiểm tra thị giác** — không chỉ lưu kết quả đạt/không đạt mà cả ảnh đã chụp, ít
+  nhất với các chi tiết bị đánh không đạt.
+- **Lưu toàn bộ đường cong đo**, không chỉ giá trị đỉnh.
+
+> 💡 **Nguyên tắc quyết định: lưu thô cho chi tiết KHÔNG ĐẠT, lưu tóm tắt cho chi tiết ĐẠT.** Lưu dữ
+> liệu thô cho mọi chi tiết sẽ làm đầy ổ cứng rất nhanh (video và ảnh đặc biệt nặng). Nhưng thứ người
+> ta cần xem lại gần như luôn là chi tiết có vấn đề. Cách làm thực dụng: ghi tạm vào bộ đệm vòng
+> (ring buffer) cho mọi chi tiết, và chỉ **giữ lại vĩnh viễn** khi kết quả là không đạt hoặc khi giá
+> trị đo nằm sát ngưỡng. Kèm theo đó là chính sách xoá tự động theo tuổi — và chính sách này phải là
+> tham số cấu hình, vì mỗi khách hàng yêu cầu lưu một thời hạn khác nhau.
+
+---
+
+## B.4 Dữ liệu và cấu hình — có những gì trên đĩa
+
+**Bảng B.10 — Các nhóm dữ liệu và nơi lưu điển hình**
+
+| Nhóm | Nội dung | Định dạng thường gặp | Tần suất đổi |
+|---|---|---|---|
+| **Cấu hình phần cứng** | Số hiệu card, cổng COM, IP, ánh xạ tên IO → địa chỉ | XML/JSON | Gần như không |
+| **Bảng điểm** | Toạ độ các vị trí đã dạy cho từng trục | XML/JSON | Khi căn chỉnh lại cơ khí |
+| **Công thức** | Tham số theo mã sản phẩm | XML/JSON/CSDL | Mỗi lần đổi mã hàng |
+| **Tham số hệ thống** | Tốc độ, thời gian chờ, ngưỡng | XML/INI/CSDL | Hiếm |
+| **Người dùng và phân quyền** | Tài khoản, mức quyền | CSDL (mật khẩu phải băm) | Hiếm |
+| **Dữ liệu sản xuất** | Mỗi chi tiết một bản ghi: mã, kết quả, số đo, thời điểm, **chế độ chạy** | CSDL + xuất CSV | Liên tục |
+| **Lịch sử cảnh báo** | Mã, thời điểm phát/hết, ai xác nhận | CSDL | Liên tục |
+| **Nhật ký thao tác** | Ai làm gì, lúc nào | CSDL hoặc file có chữ ký | Liên tục |
+| **Nhật ký kỹ thuật** | Log của phần mềm | File text xoay vòng theo ngày | Liên tục |
+| **Bằng chứng thô** | Ảnh, video, đường cong đo | File, đặt tên theo mã chi tiết | Liên tục, cần chính sách xoá |
+| **Bản dịch giao diện** | Chuỗi hiển thị theo ngôn ngữ | `.resx` + CSV ghi đè | Khi bàn giao nước khác |
+
+> ⚠️ **Hai quyết định về dữ liệu rất khó sửa về sau.** Thứ nhất: **mỗi bản ghi sản xuất phải có mã
+> định danh duy nhất của chi tiết** (mã vạch, mã 2D, hoặc mã sinh ra tại chỗ nếu chi tiết không có
+> mã). Không có nó thì không truy ngược được, và không ghép được dữ liệu của máy này với máy khác
+> trên cùng dây chuyền. Thứ hai: **ghi cả chế độ chạy vào từng bản ghi** (Ch12 mục 12.4) để dữ liệu
+> chạy thử không bao giờ lẫn vào báo cáo chất lượng.
+
+---
+
+## B.5 Danh mục kiểm trước khi bàn giao
+
+Dùng danh mục này để rà soát một phần mềm sắp bàn giao. Nó không thay thế quy trình nghiệm thu chính
+thức của công ty — nó bắt những thứ hay bị quên.
+
+**Chức năng**
+- [ ] Máy chạy được đủ chu kỳ liên tục trong ca dài nhất mà không cần khởi động lại phần mềm
+- [ ] Có đủ bốn chế độ chạy, và chế độ chỉ đổi được khi máy đang dừng (Ch12 mục 12.4)
+- [ ] Mỗi trạm có màn hình chạy tay đủ dùng để xử lý sự cố mà không cần lập trình viên
+- [ ] Recipe kiểm tra hợp lệ trước khi nạp, không nạp được recipe sai dải
+
+**An toàn**
+- [ ] Dừng khẩn cấp có tác dụng ở **mọi** trạng thái, kể cả khi đang trong hộp thoại
+- [ ] Mở cửa an toàn khi đang chạy → dừng chuyển động, và không tự chạy lại khi đóng cửa
+- [ ] Sau dừng khẩn, phải có thao tác reset có chủ ý mới chạy lại được
+- [ ] Danh sách tín hiệu đang bị force hiển thị thường trực; force tự huỷ khi vào chế độ tự động
+- [ ] Mọi thao tác có rủi ro đều kiểm tra quyền, và ghi nhật ký ai làm
+
+**Dữ liệu**
+- [ ] Mỗi chi tiết một bản ghi, có mã định danh duy nhất và có cột chế độ chạy
+- [ ] Mất kết nối MES không làm mất dữ liệu — có hàng đợi và gửi lại được
+- [ ] Nhật ký tự xoay vòng, ổ cứng không đầy sau ba tháng chạy liên tục
+- [ ] Có cách sao lưu và khôi phục công thức + cấu hình, và **đã thử khôi phục thật một lần**
+
+**Vận hành**
+- [ ] Màn hình chính đọc được từ khoảng cách vận hành thực tế (Ch10)
+- [ ] Alarm có hướng dẫn xử lý bằng ngôn ngữ của người vận hành, không phải mã kỹ thuật
+- [ ] Có màn hình hiển thị phiên bản phần mềm
+- [ ] Người vận hành mới được đào tạo trong một ca là dùng được các chức năng hằng ngày
+
+**Bàn giao**
+- [ ] Mã nguồn nằm trong hệ quản lý phiên bản, bản đang chạy có gắn thẻ phiên bản (Ch17)
+- [ ] Có tài liệu ánh xạ tên IO ↔ địa chỉ vật lý ↔ vị trí trên tủ điện
+- [ ] Có hướng dẫn cài lại phần mềm từ đầu trên một máy tính trống
+
+---
+
+## B.6 Thứ tự xây dựng khi làm một máy mới
+
+Danh mục ở trên có thể gây choáng. Trên thực tế không ai làm cùng lúc — thứ tự dưới đây phản ánh
+cách các dự án thật tiến hành, và quan trọng là **thứ tự này giảm rủi ro**: những thứ dễ sai nhất
+được làm sớm nhất, khi sửa còn rẻ.
+
+1. **Trừu tượng thiết bị + driver mô phỏng trước.** Viết `IAxis`, `IIoModule`, `ICamera` cùng bản mô
+   phỏng. Điều này cho phép toàn bộ phần còn lại phát triển được **trước khi máy cơ khí có mặt** —
+   và trong dự án máy phi tiêu chuẩn, phần cơ khí luôn tới muộn (Ch13 mục 13.2.5).
+2. **Cấu hình và ánh xạ IO.** Đặt tên cho mọi tín hiệu ngay từ đầu; đừng dùng địa chỉ số trong logic.
+3. **Vòng quét IO + màn hình giám sát IO.** Đây là công cụ đầu tiên bạn cần khi phần cứng thật về.
+4. **Màn hình chạy tay.** Trước cả quy trình tự động — vì lắp máy cần chạy tay, và khi quy trình tự
+   động sai thì cũng phải chạy tay để dọn.
+5. **Quy trình từng trạm, chạy độc lập.** Mỗi trạm chạy đúng một mình trước đã.
+6. **Đồng bộ giữa các trạm.** Bây giờ mới ghép (Ch16 mục 16.2b).
+7. **Cảnh báo và an toàn.** Đúng ra nên làm sớm hơn; thực tế thường làm ở bước này vì cần biết những
+   lỗi nào thực sự xảy ra. Nhưng **giám sát an toàn thì phải làm ngay từ bước 3**, không được hoãn.
+8. **Công thức và tham số.**
+9. **Dữ liệu sản xuất và báo cáo.**
+10. **Tích hợp MES/host.** Thường phụ thuộc phía nhà máy nên hay bị chậm — nhưng phải **thiết kế
+    chỗ trống cho nó từ bước 9**, đừng để phải sửa lại cấu trúc dữ liệu.
+11. **Đa ngôn ngữ, trợ giúp, tinh chỉnh giao diện.**
+
+> 📌 **Điểm quan trọng nhất của thứ tự này: bước 1 và 2 quyết định chi phí của mọi bước sau.** Một
+> `IAxis` được thiết kế tử tế cho phép đổi hãng card mà chỉ sửa một project; một bảng tên IO đặt đúng
+> ngay từ đầu giúp mọi màn hình, mọi log, mọi tài liệu về sau đều nói cùng một ngôn ngữ với người đấu
+> điện. Ngược lại, nếu bước 1–2 làm ẩu thì mọi bước sau đều phải trả giá, và không có cách nào bù lại
+> bằng cách viết code cẩn thận hơn ở tầng trên.
+
+---
+
+## Tổng kết phụ lục
+
+- Một phần mềm máy tự động hoá tách được thành **sáu tầng** (Bảng B.1); ánh xạ project vào tầng là
+  cách nhanh nhất để định hướng trong một solution lạ.
+- Số lượng màn hình thực tế là **40–70**, chia thành bảy nhóm — trong đó nhóm **chạy tay và gỡ rối**
+  đông nhất và bị đánh giá thấp nhất, dù chính nó quyết định thời gian dừng máy.
+- Một màn hình chạy tay **dùng chung, tự sinh theo khai báo của trạm** tiết kiệm phần lớn công sức
+  của nhóm đông nhất đó.
+- Phần chìm là các **dịch vụ nền** (Bảng B.9): vòng quét IO, giám sát an toàn, quản lý cảnh báo,
+  hàng đợi gửi MES, xoay vòng nhật ký, khôi phục sau mất điện — thiếu chúng thì phần mềm chạy được
+  trong buổi nghiệm thu nhưng không sống được qua vài tháng sản xuất.
+- Ba quyết định khó sửa nhất, phải làm đúng từ đầu: **tách ba loại tham số** (công thức / hệ thống /
+  phần cứng), **mã định danh duy nhất cho từng chi tiết**, và **ghi chế độ chạy vào từng bản ghi**.
+- Thứ tự xây dựng (mục B.6) đặt phần khó sửa nhất lên trước: trừu tượng thiết bị và bảng tên IO
+  quyết định chi phí của mọi việc còn lại.
+
+<!-- SECTION: Phu_Luc_C_Thuat_Ngu -->
+---
+# Phụ lục C: Bảng thuật ngữ
 
 Tra cứu nhanh các thuật ngữ kỹ thuật xuất hiện xuyên suốt sách — sắp xếp
 theo bảng chữ cái, mỗi mục ghi kèm chương/mục nơi thuật ngữ được giới

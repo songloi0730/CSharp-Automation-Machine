@@ -3192,6 +3192,31 @@ kiểu này an toàn hơn <code>XmlDocument</code> thủ công (gõ sai tên pro
 code kế thừa thường KHÔNG dùng cách này dù class đã sẵn attribute — vẫn đọc tay bằng <code>XmlDocument</code>
 song song, hai cách cùng tồn tại không nhất quán là dấu hiệu thường gặp của code viết qua nhiều đợt.</p>
 <blockquote>
+<p>⚠️ <strong><code>[XmlIgnore]</code> — attribute nhỏ, hậu quả lớn.</strong> Cặp đôi của <code>[XmlAttribute]</code> là <code>[XmlIgnore]</code>:
+đánh dấu một property <strong>KHÔNG</strong> được ghi ra file. Trong phần mềm máy, đây thường là ranh giới giữa
+<strong>cấu hình cần lưu</strong> (vùng dò, ngưỡng, số hàng/cột) và <strong>trạng thái lúc chạy</strong> (ảnh hiện tại, kết
+quả vừa đo, thời gian xử lý, các đối tượng đồng bộ luồng):</p>
+<pre><code class="language-csharp">public class InspectionConfig
+{
+    public double Threshold { get; set; }              // ✅ lưu vào recipe
+    public int    Rows      { get; set; }              // ✅ lưu vào recipe
+
+    [XmlIgnore] public byte[] CurrentImage { get; set; }   // ❌ không lưu — ảnh nặng
+    [XmlIgnore] public double LastScore    { get; set; }   // ❌ không lưu — kết quả tức thời
+}
+</code></pre>
+<p>Sai theo hai chiều đều có hậu quả thật, và chiều thứ hai rất khó tìm:</p>
+<ul>
+<li><strong>Quên <code>[XmlIgnore]</code></strong> cho một ảnh hoặc một danh sách kết quả → file recipe phình lên hàng chục
+MB, lưu chậm, và có thể chứa dữ liệu của lô hàng trước.</li>
+<li><strong>Đánh nhầm <code>[XmlIgnore]</code></strong> cho một tham số thật → tham số đó <strong>âm thầm quay về giá trị mặc định
+sau mỗi lần khởi động phần mềm</strong>. Không có lỗi, không có cảnh báo; biểu hiện là &quot;máy chạy tốt cả
+ca, sáng hôm sau lại lỗi&quot;, và người ta thường đi tìm nguyên nhân ở cơ khí trước.</li>
+</ul>
+<p>Cách phòng rẻ nhất: sau khi lưu recipe, <strong>đọc lại file vừa ghi</strong> và so từng tham số với giá trị
+đang chạy — một hàm kiểm tra vài chục dòng, chạy một lần lúc phát triển, bắt được cả hai chiều sai.</p>
+</blockquote>
+<blockquote>
 <p>📌 <strong><code>XElement</code> (LINQ to XML) — API hiện đại hơn <code>XmlDocument</code>, cùng mục đích.</strong> Namespace
 <code>System.Xml.Linq</code> cung cấp cách đọc/dựng XML gọn hơn, kết hợp được với LINQ:</p>
 <pre><code class="language-csharp">var doc = XElement.Load(path);
@@ -5010,6 +5035,20 @@ hình &quot;một tín hiệu, một người nhận&quot;), <code>ManualResetEv
 <code>WaitOne()</code> cùng đi qua, và giữ nguyên Set cho tới khi có ai gọi <code>Reset()</code> tường minh — hợp cho cờ kiểu
 &quot;đã sẵn sàng, cứ vào&quot; (ví dụ cờ EMO/Pause dùng chung cho nhiều luồng theo dõi cùng lúc). <code>WaitAny(mảng handle, timeoutMs)</code> chờ ĐẦU TIÊN trong một mảng nhiều cờ được Set, trả về CHỈ SỐ (không phải chính cờ)
 của cờ đó trong mảng — dò đúng thứ tự khai báo mảng để biết <code>WaitAny</code> vừa trả cờ nào.</p>
+<blockquote>
+<p>⚠️ <strong>Hai giới hạn của <code>WaitHandle.WaitAll</code> mà tài liệu ít nhấn mạnh.</strong> Mẫu &quot;chia việc cho N luồng
+rồi chờ tất cả xong&quot; trong code kế thừa thường viết bằng
+<code>ManualResetEvent.WaitAll(mảngEvent)</code>. Nó hoạt động, nhưng có hai bẫy nằm sẵn:
+(1) <strong>tối đa 64 handle</strong> — vượt quá là ném exception, mà số luồng con thường là <strong>tham số cấu
+hình</strong> (chia khay thành bao nhiêu khối, quét bao nhiêu thiết bị song song), nên lỗi chỉ nổ khi ai
+đó tăng con số đó ngoài hiện trường; (2) <strong>không dùng được trên luồng STA</strong> — tức là gọi từ luồng
+giao diện của WinForms/WPF sẽ lỗi ngay. Bản hiện đại <code>await Task.WhenAll(tasks)</code> không có cả hai
+giới hạn này và cũng không chặn luồng vật lý nào.</p>
+<p>Cùng nhóm, một mẫu thừa hay gặp: <code>evt.WaitOne(50)</code> rồi lại <code>Thread.Sleep(100)</code> trong cùng vòng lặp
+chờ. <code>WaitOne(50)</code> <strong>đã là</strong> chờ có thời hạn — nó trả về ngay khi có tín hiệu, hoặc sau 50 ms nếu
+không. Thêm <code>Sleep(100)</code> chỉ làm phản ứng chậm thêm 100 ms mỗi vòng mà không được gì. Thấy mẫu này
+là dấu hiệu người viết chưa chắc về ngữ nghĩa của hàm chờ đang dùng.</p>
+</blockquote>
 <blockquote>
 <p>📌 Code mới nên ưu tiên <code>async</code>/<code>await</code> + <code>TaskCompletionSource&lt;T&gt;</code>/<code>SemaphoreSlim.WaitAsync()</code> (đã
 học ở trên) — không chặn luồng vật lý, dùng ít tài nguyên hơn. Nhưng <code>ManualResetEvent</code>/
@@ -14756,6 +14795,155 @@ treo từ lâu. Nguyên tắc chung: health-check phải phản ánh trạng th�
 đo được, không phải giá trị mặc định lạc quan.</li>
 </ol>
 </blockquote>
+<h3>13.2.4c Thị giác máy — thiết bị duy nhất mà phần mềm máy KHÔNG tự làm</h3>
+<p>Mọi thiết bị đến giờ đều theo cùng một khuôn: bọc SDK vào interface, gọi lệnh, đọc kết
+quả. Thị giác máy phá khuôn đó, và người mới thường mất vài tháng mới nhận ra — thời
+gian đủ để đi sai hướng khá xa.</p>
+<p><strong>Sai lầm điển hình của người mới:</strong> nghĩ rằng &quot;máy cần kiểm tra linh kiện bằng camera&quot;
+nghĩa là mình phải viết code xử lý ảnh trong C#. Thực tế trong hầu hết dự án công
+nghiệp: <strong>bạn không viết thuật toán xử lý ảnh, và bạn cũng không nên</strong>.</p>
+<h4>Ai làm gì</h4>
+<p>Công việc thị giác được chia cho hai người, hai công cụ, hai loại file:</p>
+<p><strong>Bảng 13.8b — Phân chia trách nhiệm khi máy có thị giác</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Kỹ sư thị giác</th>
+<th>Người viết phần mềm máy (bạn)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Làm gì</strong></td>
+<td>Ghép các công cụ xử lý ảnh thành một &quot;công việc&quot; (job): tìm mẫu, đo cạnh, đếm điểm ảnh, đọc mã</td>
+<td>Nạp job đó, kích chụp đúng thời điểm, truyền tham số vào, lấy kết quả ra, quyết định cơ khí</td>
+</tr>
+<tr>
+<td><strong>Bằng công cụ</strong></td>
+<td>Môi trường kéo-thả của hãng (Cognex VisionPro QuickBuild, Halcon HDevelop, phần mềm của hãng camera)</td>
+<td>Visual Studio</td>
+</tr>
+<tr>
+<td><strong>Kết quả</strong></td>
+<td>Một <strong>file cấu hình</strong> (<code>.vpp</code>, <code>.hdev</code>…) — là <strong>dữ liệu</strong>, không phải code</td>
+<td>Mã C# của phần mềm máy</td>
+</tr>
+<tr>
+<td><strong>Đổi khi nào</strong></td>
+<td>Khi đổi loại sản phẩm, đổi ánh sáng, tỷ lệ lỗi thay đổi</td>
+<td>Khi đổi quy trình cơ khí</td>
+</tr>
+</tbody></table></div>
+<p>Điểm mấu chốt là dòng cuối: <strong>hai bên đổi theo hai nhịp hoàn toàn khác nhau</strong>. Job vision
+được chỉnh đi chỉnh lại hàng chục lần trong giai đoạn chạy thử, đôi khi ngay tại nhà máy
+lúc 2 giờ sáng. Nếu thuật toán nằm trong C#, mỗi lần chỉnh là một lần build và triển khai
+lại toàn bộ phần mềm máy. Vì vậy <strong>job vision phải là dữ liệu</strong>, và nó thuộc về <strong>recipe</strong>
+(Chương 11) chứ không phải mã nguồn.</p>
+<h4>Chỗ nối — và vì sao nó dễ gãy</h4>
+<p>Phần mềm máy nạp job rồi thò tay vào lấy từng công cụ <strong>theo tên</strong>:</p>
+<pre><code class="language-csharp">// Mẫu điển hình khi dùng thư viện thị giác thương mại
+var job = VisionJob.Load(recipe.VisionJobPath);           // nạp file do kỹ sư thị giác tạo
+var fixture   = job.Tools[&quot;TrayFixture&quot;];                 // ← nối bằng CHUỖI
+var alignTool = job.Tools[&quot;PartAlign&quot;];
+alignTool.Params[&quot;AcceptThreshold&quot;] = recipe.MatchScoreMin;
+</code></pre>
+<p><code>job.Tools[&quot;TrayFixture&quot;]</code> là một <strong>hợp đồng bằng chuỗi ký tự giữa hai công cụ khác
+nhau</strong>. Kỹ sư thị giác đổi tên công cụ trong phần mềm của hãng — việc hoàn toàn hợp lý
+với họ — và code C# vẫn biên dịch bình thường, rồi hỏng lúc chạy, ngoài hiện trường, vào
+đúng lúc không ai đoán được nguyên nhân.</p>
+<p>Ba biện pháp, chi phí thấp, nên làm ngay từ đầu:</p>
+<pre><code class="language-csharp">// 1. Gom mọi tên vào MỘT nơi — không rải chuỗi khắp code
+internal static class VisionToolNames
+{
+    public const string TrayFixture = &quot;TrayFixture&quot;;
+    public const string PartAlign   = &quot;PartAlign&quot;;
+    public const string EmptyPocket = &quot;EmptyPocketDetect&quot;;
+}
+
+// 2. Kiểm tra ngay khi NẠP, không đợi tới lúc chạy sản xuất
+public void LoadAndVerify(string jobPath)
+{
+    _job = VisionJob.Load(jobPath);
+    foreach (var name in VisionToolNames.All)
+        if (!_job.Tools.Contains(name))
+            throw new AlarmException(AlarmCodes.VisionJobMismatch, &quot;VISION&quot;,
+                $&quot;Job &#39;{Path.GetFileName(jobPath)}&#39; thiếu công cụ &#39;{name}&#39;. &quot; +
+                $&quot;Job hiện có: {string.Join(&quot;, &quot;, _job.Tools.Select(t =&gt; t.Name))}&quot;);
+}
+
+// 3. Ghi phiên bản job vào TỪNG bản ghi sản xuất
+record InspectionRecord(string PartId, bool Passed, string FailReason,
+                        string VisionJobName, string VisionJobHash);
+</code></pre>
+<p>Biện pháp 3 hay bị bỏ qua nhưng cứu bạn khi có khiếu nại: câu hỏi <em>&quot;lô hàng đó được kiểm
+bằng job phiên bản nào&quot;</em> chỉ trả lời được nếu đã ghi lại từ đầu.</p>
+<h4>Gá toạ độ (fixturing) — khái niệm quan trọng nhất</h4>
+<p>Đây là thứ phân biệt một hệ thống thị giác chạy được ngoài hiện trường với một hệ thống
+chỉ chạy trong phòng thí nghiệm.</p>
+<p>Bài toán: bạn dạy phần mềm rằng &quot;vùng cần kiểm tra nằm ở toạ độ ảnh (320, 180)&quot;. Nhưng
+phôi thật không bao giờ vào đúng một chỗ — nó lệch vài mi-li-mét và xoay vài độ mỗi lần.
+Vùng dò cố định sẽ trượt ra ngoài chi tiết.</p>
+<p>Cách giải: <strong>hai bước, không phải một</strong>.</p>
+<pre><code>Bước 1 — Tìm đặc trưng chuẩn:  dò một đặc trưng dễ nhận và luôn có mặt
+                               (mép khay, lỗ định vị, ký hiệu in sẵn)
+                               → biết phôi lệch bao nhiêu, xoay bao nhiêu
+
+Bước 2 — Gá toạ độ (fixture):  dời/xoay TOÀN BỘ các vùng dò còn lại theo đúng
+                               lượng lệch vừa đo được
+                               → mọi vùng dò &quot;bám&quot; theo phôi
+</code></pre>
+<p>Nhờ vậy bạn chỉ dạy vùng dò <strong>một lần</strong>, theo hệ toạ độ gắn với phôi, và chúng tự đúng ở
+mọi lần chụp sau. Về mặt toán học đây là một <strong>phép biến đổi affine</strong> (dời + xoay + co
+giãn); mọi thư viện thị giác thương mại đều có sẵn công cụ này, bạn không phải tự viết —
+nhưng bạn phải biết nó tồn tại để yêu cầu kỹ sư thị giác dùng nó.</p>
+<blockquote>
+<p>⚠️ <strong>Đừng nhầm gá toạ độ với hiệu chuẩn.</strong> Hai việc khác nhau, thường bị gộp: <strong>hiệu
+chuẩn</strong> (calibration) trả lời <em>&quot;1 điểm ảnh bằng bao nhiêu mi-li-mét, và ống kính méo bao
+nhiêu&quot;</em> — làm một lần khi lắp camera, làm lại khi camera bị va chạm. <strong>Gá toạ độ</strong>
+(fixturing) trả lời <em>&quot;phôi lần này lệch bao nhiêu so với lúc dạy&quot;</em> — làm <strong>lại mỗi lần
+chụp</strong>. Thiếu hiệu chuẩn thì toạ độ trả về là điểm ảnh, không dùng để ra lệnh cho trục
+được. Thiếu gá toạ độ thì hệ thống chỉ chạy đúng khi phôi vào hoàn hảo.</p>
+</blockquote>
+<h4>Interface nên đặt ranh giới ở đâu</h4>
+<p>Áp dụng đúng nguyên tắc của chương này (interface theo <strong>năng lực</strong>, mục 13.2.1): interface
+thị giác <strong>không</strong> nên lộ ra bất kỳ kiểu dữ liệu nào của hãng.</p>
+<p><strong>Code 13.14b — Ranh giới thị giác: đi vào bằng lệnh, đi ra bằng kết quả</strong></p>
+<pre><code class="language-csharp">namespace MeoFrame.Domain.Devices;
+
+/// &lt;summary&gt;Kết quả kiểm tra — toàn bộ bằng kiểu của MIỀN, không phải kiểu của hãng.&lt;/summary&gt;
+public sealed record VisionResult(
+    bool     Passed,
+    string   FailReason,          // mã lý do, phục vụ biểu đồ Pareto (Phụ lục B mục B.2.5)
+    double   Score,
+    PointMm? FoundPositionMm,     // đã quy đổi sang mm — trục dùng được ngay
+    double   AngleDeg,
+    string   EvidenceImagePath);  // đường dẫn ảnh đã lưu, rỗng nếu không lưu
+
+public interface IVisionInspector
+{
+    Task LoadJobAsync(string jobPath, CancellationToken ct = default);
+    Task&lt;VisionResult&gt; InspectAsync(string recipeName, CancellationToken ct = default);
+}
+</code></pre>
+<p>Không có kiểu nào của hãng trong chữ ký. Nhờ vậy: tầng quy trình test được bằng một
+<code>SimulatedVisionInspector</code> (mục 13.2.5); đổi hãng thị giác chỉ phải viết một adapter mới;
+và quan trọng nhất — <strong>tầng quy trình không thể vô tình phụ thuộc vào chi tiết của hãng</strong>.</p>
+<blockquote>
+<p>💡 <strong>Một dấu hiệu để tự kiểm tra thiết kế:</strong> nếu tầng quy trình của bạn có dòng nào
+<code>using</code> vùng tên của hãng thị giác, ranh giới đã bị thủng. Trong một dự án tham khảo,
+class kiểm tra khay vừa kế thừa lớp quy trình của khung máy, vừa là ViewModel cho giao
+diện, vừa được lưu ra XML làm recipe — 1051 dòng gánh ba vai với ba nhịp thay đổi khác
+nhau. Hệ quả không phải &quot;code xấu&quot; trừu tượng, mà rất cụ thể: <strong>không test được phần nào
+mà không dựng cả ba</strong>.</p>
+</blockquote>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm — vì sao thư viện hãng có bản riêng cho những kiểu .NET đã có.</strong> Đọc
+code thị giác sẽ gặp bản riêng của hãng cho đồng hồ bấm giờ, hình chữ nhật, màu sắc.
+Chúng tồn tại vì thư viện cần chạy trên nhiều nền và cần tích hợp với hệ hiển thị riêng.
+Dùng chúng <strong>bên trong</strong> adapter thị giác là bình thường; dùng chúng ở chỗ <strong>không liên
+quan tới thị giác</strong> (đo thời gian chạy, ghi log) là tự trói mình vào hãng ở những nơi lẽ
+ra không cần — đúng thứ mà Bridge/Adapter ở mục 13.2.4 sinh ra để tránh.</p>
+</blockquote>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -24446,6 +24634,12 @@ Chúng không sinh ra sản phẩm nào, nhưng <strong>quyết định thời g
 <td>Toạ độ từng điểm, nút &quot;lấy vị trí hiện tại&quot;, nút &quot;chạy tới điểm này&quot;</td>
 </tr>
 <tr>
+<td><strong>Dạy vùng dò trên ảnh</strong></td>
+<td>✔ (nếu có camera)</td>
+<td>Kỹ sư</td>
+<td>Ảnh trực tiếp/ảnh vừa chụp + lớp phủ kéo được để khoanh vùng, lưu vào recipe; xem hai mẫu bên dưới</td>
+</tr>
+<tr>
 <td><strong>Quản lý xi-lanh</strong></td>
 <td></td>
 <td>Kỹ sư</td>
@@ -24504,6 +24698,50 @@ một công tắc, mỗi xi-lanh một cặp nút Ra/Về, mỗi trục một c�
 thêm màn hình nào</strong>. Trạm thuần logic (không có phần cứng) khai báo danh sách rỗng và tự động không
 xuất hiện tab chạy tay. Đây là &quot;giao diện do dữ liệu điều khiển&quot; (data-driven UI), và với WPF thì
 <code>ItemsControl</code> + <code>DataTemplate</code> (Ch9) làm việc này gọn hơn WinForms nhiều.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Hai mẫu tiết kiệm rất nhiều công cho màn hình dạy vị trí và dạy vùng dò.</strong></p>
+<p><strong>Mẫu 1 — &quot;dạy một, sinh nhiều&quot;.</strong> Khay linh kiện có thể có hàng trăm ô; băng tải có
+hàng chục vị trí cách đều. Không ai dạy tay từng vị trí. Người vận hành dạy <strong>một</strong> hình
+bao (hoặc hai điểm góc), khai báo <strong>số hàng và số cột</strong>, rồi phần mềm sinh ra lưới:</p>
+<pre><code class="language-csharp">IReadOnlyList&lt;RectMm&gt; GenerateGrid(RectMm bounds, int rows, int cols)
+{
+    var list = new List&lt;RectMm&gt;(rows * cols);
+    double w = bounds.Width / cols, h = bounds.Height / rows;
+    for (int r = 0; r &lt; rows; r++)
+        for (int c = 0; c &lt; cols; c++)
+            list.Add(new RectMm(bounds.X + c * w, bounds.Y + r * h, w, h));
+    return list;   // thứ tự sinh PHẢI khớp thứ tự đánh số ô mà quy trình dùng
+}
+</code></pre>
+<p>Recipe chỉ lưu <strong>1 hình bao + 2 con số</strong> thay vì 200 toạ độ; đổi loại khay chỉ sửa 3 giá
+trị. Lưu ý duy nhất nhưng quan trọng: <strong>thứ tự sinh phải khớp cách đánh số ô của quy
+trình và của hệ MES</strong> (trái→phải rồi trên→xuống, hay ngược lại) — lệch thứ tự nghĩa là mọi
+kết quả kiểm tra bị gán nhầm ô, và sai lệch đó không có dấu hiệu nào ngoài dữ liệu sai.</p>
+<p><strong>Mẫu 2 — hai lớp phủ trên ảnh, cho hai mục đích khác nhau.</strong> Màn hình dạy vùng dò của
+máy có camera cần phân biệt rõ:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lớp phủ</th>
+<th>Người vận hành làm gì được</th>
+<th>Dùng cho</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tương tác</strong></td>
+<td>Kéo, đổi kích thước, xoay bằng chuột/cảm ứng</td>
+<td><strong>Dạy</strong> vùng dò rồi bấm lưu vào recipe</td>
+</tr>
+<tr>
+<td><strong>Tĩnh</strong></td>
+<td>Chỉ nhìn</td>
+<td><strong>Hiển thị kết quả</strong>: khoanh chi tiết tìm thấy, tô đỏ ô không đạt</td>
+</tr>
+</tbody></table></div>
+<p>Trộn hai loại là lỗi hay gặp: người vận hành vô tình kéo một khung kết quả và tưởng mình
+vừa sửa recipe. Quy tắc: chỉ bật lớp tương tác khi đang ở <strong>chế độ dạy</strong>, và chế độ đó
+phải yêu cầu quyền Kỹ sư (Chương 15).</p>
 </blockquote>
 <h3>B.2.3 Nhóm 3 — Công thức và tham số</h3>
 <p><strong>Bảng B.4 — Màn hình nhóm công thức/tham số</strong></p>

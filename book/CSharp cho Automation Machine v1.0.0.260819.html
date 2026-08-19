@@ -2319,6 +2319,17 @@ hoàn toàn khác. Nhận diện: thấy nhiều <code>enum</code> riêng biệt
 (không phải 0, không theo cách quãng đều 10/100) — nghi ngờ ngay đây là dải chỉ số dùng chung, cần
 đếm thủ công xác nhận trước khi sửa bất kỳ enum nào trong nhóm. Thiết kế an toàn hơn: gộp thành MỘT
 enum duy nhất, hoặc dùng <code>Dictionary&lt;TKey, TValue&gt;</code> với key có ý nghĩa thay vì mảng chỉ-số-thô.</p>
+<p><strong>Họ hàng gần của anti-pattern này: khoá ghép tính bằng số học.</strong> Cùng một tư duy &quot;nhét nhiều thông
+tin vào một con số&quot;, nhưng khó thấy hơn vì phép tính thường nằm trong constructor:</p>
+<pre><code class="language-csharp">// Gói (hãng card, số hiệu card, số hiệu trục) vào MỘT int để làm khoá tra cứu
+tag_AxisId = vendor * 1000 + card * 100 + axis;
+</code></pre>
+<p>Nó chạy đúng — cho tới khi có card thứ 10 (<code>card = 10</code> lấn sang chỗ của <code>vendor</code>) hoặc trục thứ 100.
+Không có gì kiểm tra, không có lỗi biên dịch, chỉ là hai trục khác nhau bỗng có cùng khoá và tra
+nhầm cấu hình của nhau. Cách an toàn trong C# hiện đại: dùng thẳng một <code>record struct</code> làm khoá —
+<code>readonly record struct AxisKey(short Vendor, short Card, short Axis)</code> — rồi <code>Dictionary&lt;AxisKey, T&gt;</code>.
+<code>record</code> tự sinh sẵn phép so sánh bằng và hàm băm theo <strong>toàn bộ</strong> các trường, nên không cần tự
+nghĩ công thức, không có ngưỡng tràn, và đọc code lên thấy ngay khoá gồm những gì.</p>
 </blockquote>
 <blockquote>
 <p>📌 <strong>Phép toán số học trên <code>enum</code>.</strong> C# cho phép cộng/trừ trực tiếp giữa một giá trị <code>enum</code> và số
@@ -3444,6 +3455,23 @@ Một biến thể hiếm hơn: alias có thể khai báo LẠI ở một phạm
 hai alias trùng tên nhưng trỏ tới hai kiểu khác nhau, mỗi cái chỉ có hiệu lực trong đúng phạm vi
 của nó. Gặp trường hợp này, đọc chậm lại để xác định alias đang có hiệu lực TẠI DÒNG đang đọc,
 đừng giả định nó giống lần khai báo đầu tiên nhìn thấy trong file.</p>
+<p>⚠️ <strong>Alias KHÔNG tạo ra kiểu mới — đây là chỗ người mới hay hiểu sai.</strong> Một mẫu rất hay gặp trong
+code driver phần cứng là đặt alias cho kiểu nguyên thuỷ để tên đọc lên có nghĩa:</p>
+<pre><code class="language-csharp">using TCard  = System.Int16;      // số hiệu card
+using TAxis  = System.Int16;      // số hiệu trục
+using TPulse = System.Int32;      // số xung
+</code></pre>
+<p>Ý định tốt (đọc chữ ký hàm hiểu ngay tham số là gì; sau này đổi <code>Int16</code> sang <code>Int32</code> chỉ sửa một
+dòng), nhưng <strong>trình biên dịch vẫn coi <code>TCard</code> và <code>TAxis</code> là cùng một <code>Int16</code></strong> — nên gọi
+<code>MoveAxis(axisNumber, cardNumber)</code> khi chữ ký là <code>MoveAxis(TCard, TAxis)</code> vẫn biên dịch trót lọt,
+và trục sai sẽ chuyển động. Alias giúp <strong>người đọc</strong>, không bảo vệ <strong>chương trình</strong>. Muốn compiler
+bắt lỗi hoán vị tham số thì cần kiểu thật, không phải alias:</p>
+<pre><code class="language-csharp">public readonly record struct CardId(short Value);
+public readonly record struct AxisId(short Value);
+// Giờ truyền nhầm CardId vào chỗ AxisId là LỖI BIÊN DỊCH, không phải trục sai chạy lúc 2 giờ sáng.
+</code></pre>
+<p><code>record struct</code> là value type nên không tốn thêm bộ nhớ heap — cái giá gần như bằng không, đổi lại
+một lớp bảo vệ mà alias không cho được.</p>
 </blockquote>
 <h3>3.8.2  Project, reference và quy tắc phụ thuộc</h3>
 <p>Trong Visual Studio, <strong>Project</strong> là đơn vị build tạo ra một assembly (DLL/EXE) — nó là nơi thể hiện ranh giới module kỹ thuật, khác với <strong>Folder</strong> chỉ tổ chức logic. Lỗi phổ biến là &quot;đưa mọi thứ vào một project&quot;, khiến phụ thuộc chéo dễ phát sinh và khó test. Một solution PC-Based Control điển hình tách thành nhiều class library theo tầng, cộng UI (WPF App) và các tool/simulator (Console App) riêng.</p>
@@ -4857,6 +4885,26 @@ await WaitForSignalAsync(() =&gt; sensor.IsTriggered, timeoutMs: 3000,
 <li><strong>Dừng Thread</strong>: không bao giờ <code>Abort()</code> (đã bị loại bỏ ở .NET hiện đại). Thiết kế thread <strong>tự kết thúc</strong> qua tín hiệu hủy (<code>CancellationToken</code> hoặc cờ), giống Logger ở Chương 3 dùng <code>CompleteAdding()</code>.</li>
 </ul>
 <blockquote>
+<p>🔍 <strong>Đào sâu thêm — vì sao code cũ lại đầy <code>Thread.Abort()</code>, và cái giá cuối cùng.</strong> Gần như không
+ai chọn <code>Abort()</code> một cách có chủ ý; nó là thứ người ta <strong>buộc phải dùng khi cơ chế dừng hợp tác đã
+hỏng từ trước</strong>. Chuỗi nhân-quả quan sát được trong một dự án tham khảo:</p>
+<ol>
+<li>Tác giả chọn cơ chế dừng dạng <strong>trả về <code>bool</code></strong> — một hàm <code>IsExit()</code> mà mỗi bước của quy trình
+phải tự gọi và tự kiểm tra (đúng phương án mà Chương 3 mục 3.5.4 đã phân tích đánh đổi).</li>
+<li>Vì phải nhớ gọi ở <strong>mọi</strong> chỗ, người viết quên dần. Đếm thật trong dự án đó: file trạm 912 dòng
+gọi <strong>1 lần</strong>; file trạm <strong>2067 dòng gọi 0 lần</strong>. Nghĩa là bấm Stop lúc trạm đó đang chạy thì
+quy trình vẫn chạy tới hết.</li>
+<li>Không dừng được bằng cách hợp tác, cách duy nhất còn lại là giết luồng từ bên ngoài → <strong>19 chỗ</strong>
+gọi <code>tag_workThread.Abort()</code>.</li>
+<li>Hệ quả cuối cùng, và là hệ quả ít ai lường trước: <code>Thread.Abort()</code> <strong>không còn tồn tại trên .NET
+hiện đại</strong>, nên dự án đó <strong>không nâng cấp nền tảng được</strong> nếu chưa viết lại toàn bộ cơ chế dừng ở
+cả 19 chỗ. Một quyết định thiết kế nhỏ ở năm đầu tiên trở thành rào cản kỹ thuật nhiều năm sau.</li>
+</ol>
+<p>Đây là lý do thực dụng nhất để dùng <code>CancellationToken</code> ngay từ đầu, kể cả khi dự án hiện tại còn
+chạy .NET Framework: nó biến &quot;nhớ gọi kiểm tra ở mọi chỗ&quot; thành &quot;truyền <code>ct</code> xuống mọi hàm&quot; — việc
+mà compiler và IDE nhắc giúp bạn, thay vì phụ thuộc vào trí nhớ.</p>
+</blockquote>
+<blockquote>
 <p>⚠️ <strong>Vì sao <code>Thread.Abort()</code> bị loại bỏ hẳn khỏi .NET hiện đại:</strong> <code>Thread.Abort()</code> ném một exception đặc biệt vào luồng đích tại <strong>bất kỳ dòng nào nó đang chạy</strong> — kể cả giữa lúc đang giữ khoá thiết bị. Hình dung một luồng giao tiếp camera đang ở giữa &quot;gửi lệnh chụp&quot; và &quot;đọc dữ liệu ảnh trả về&quot;: <code>Abort()</code> có thể ngắt đúng lúc đó, để camera kẹt vĩnh viễn ở trạng thái &quot;đang chụp&quot; trong firmware của nó — lần mở kết nối tiếp theo báo lỗi busy, phải rút nguồn cắm lại camera mới phục hồi. Đây là lý do <code>Thread.Abort()</code> không còn hoạt động trên .NET hiện đại (ném <code>PlatformNotSupportedException</code>): tín hiệu hủy phải là <em>đề nghị hợp tác</em> (<code>CancellationToken</code>) để code tự chọn điểm dừng an toàn, không phải một &quot;nhát dao&quot; có thể cắt ngang bất kỳ đâu. <code>Thread.Interrupt()</code> là API khác — vẫn hoạt động bình thường trên .NET hiện đại — nhưng chỉ đánh thức một luồng đang ở trạng thái blocked/wait (ném <code>ThreadInterruptedException</code> tại điểm đó), không cắt ngang một luồng đang chạy như <code>Abort()</code>; vẫn nên ưu tiên <code>CancellationToken</code> vì nó tường minh hơn về điểm dừng an toàn.</p>
 </blockquote>
 <h3>5.3.2  lock, SemaphoreSlim — bảo vệ tài nguyên dùng chung</h3>
@@ -5976,6 +6024,34 @@ khí (limit switch, nút nhấn vật lý) — không cần thiết cho tín hi�
 (encoder, cảm biến quang có mạch lọc sẵn bên trong). Thời gian chờ điển hình vài
 chục mili-giây, nên đưa vào tham số cấu hình (Chương 13) thay vì hardcode, vì mỗi
 loại cảm biến/dây cáp có đặc tính rung khác nhau.</p>
+<blockquote>
+<p>💡 <strong>Mẫu thiết kế đi kèm: tính sẵn cạnh lên/cạnh xuống ngay trong vòng quét.</strong> PLC có sẵn lệnh phát
+hiện cạnh (<code>R_TRIG</code>/<code>F_TRIG</code>); C# thì không, nên mỗi chỗ cần biết &quot;tín hiệu vừa mới bật&quot; phải tự nhớ
+giá trị lần quét trước. Làm rải rác ở nhiều nơi thì mỗi nơi nhớ một kiểu, và nơi nào quét chậm hơn
+sẽ <strong>bỏ sót cạnh</strong>. Cách gọn hơn: cho vòng quét tính sẵn một lần, rồi phát cho mọi nơi dùng:</p>
+<pre><code class="language-csharp">public sealed class DigitalInput
+{
+    public string Name  { get; init; }
+    public bool   Value { get; private set; }          // trạng thái hiện tại (đã debounce)
+    public bool   RisingEdge  { get; private set; }    // vừa chuyển 0→1 ở lần quét NÀY
+    public bool   FallingEdge { get; private set; }    // vừa chuyển 1→0 ở lần quét NÀY
+    public bool   ActiveHigh { get; init; } = true;    // cảm biến NPN đấu ngược thì đặt false
+
+    internal void Update(bool rawBit)                  // chỉ vòng quét được gọi
+    {
+        bool v = ActiveHigh ? rawBit : !rawBit;
+        RisingEdge  = !Value &amp;&amp;  v;
+        FallingEdge =  Value &amp;&amp; !v;
+        Value = v;
+    }
+}
+</code></pre>
+<p>Hai điểm đáng chú ý. Thứ nhất, <code>ActiveHigh</code> tách bạch <strong>&quot;chân này đang có điện&quot;</strong> khỏi <strong>&quot;cảm biến
+này đang tác động&quot;</strong> — với cảm biến đấu kiểu thường-đóng (NC) thì hai điều đó ngược nhau, và trộn
+lẫn chúng là nguồn của những logic đảo ngược rất khó tìm. Thứ hai, <code>RisingEdge</code> chỉ đúng <strong>trong
+đúng lần quét đó</strong>: code đọc nó phải chạy cùng nhịp với vòng quét, nếu không sẽ bỏ lỡ. Khi cần bắt
+cạnh từ một luồng chạy chậm hơn, dùng hàng đợi sự kiện thay vì đọc cờ (Chương 16, Observer).</p>
+</blockquote>
 <!-- SECTION: Chapter_07_SOLID -->
 <hr>
 <h1 id="chương-7-nguyên-lý-solid-và-clean-architecture">Chương 7: Nguyên lý SOLID và Clean Architecture</h1>
@@ -7023,6 +7099,77 @@ nhưng mở ra nguy cơ <strong>tái nhập</strong> (re-entrancy) — một s�
 lại vào chính handler đang chạy dở, gây trạng thái không nhất quán. Không
 dùng <code>DoEvents()</code> như giải pháp lâu dài; giải pháp đúng là tách việc nặng ra
 luồng khác (mục 8.1.2).</p>
+</blockquote>
+<p><strong>Lưới an toàn cuối cùng: bắt exception chưa ai bắt</strong></p>
+<p><code>Application.Run()</code> chỉ bảo vệ được luồng UI, và chỉ khi bạn nói cho nó biết.
+Với phần mềm máy, đây là chi tiết quan trọng hơn vẻ ngoài của nó: một exception
+không được bắt ở <strong>luồng nền</strong> (luồng quy trình trạm, luồng đọc cổng COM, luồng
+callback của SDK camera) sẽ <strong>kết thúc cả tiến trình ngay lập tức</strong> — cửa sổ ứng
+dụng biến mất, không thông báo, không log, trong khi máy vẫn còn phôi bên trong
+và trục có thể đang giữa hành trình.</p>
+<p>Hai móc nối dưới đây là nơi cuối cùng bạn còn cơ hội ghi lại chuyện gì đã xảy ra:</p>
+<p><strong>Code 8.0b — Đăng ký hai bộ bắt lỗi toàn cục ngay đầu <code>Main()</code></strong></p>
+<pre><code class="language-csharp">[STAThread]
+static void Main()
+{
+    // (1) Exception chưa bắt trên LUỒNG UI — ứng dụng còn sống, có thể xử lý mềm
+    Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+    Application.ThreadException += OnUiThreadException;
+
+    // (2) Exception chưa bắt trên MỌI LUỒNG KHÁC — tiến trình SẼ chết, chỉ kịp ghi lại
+    AppDomain.CurrentDomain.UnhandledException += OnBackgroundException;
+
+    Application.EnableVisualStyles();
+    Application.Run(new MainForm());
+}
+
+private static void OnUiThreadException(object sender, ThreadExceptionEventArgs e)
+{
+    Log.Fatal(e.Exception, &quot;Lỗi chưa bắt trên luồng UI | máy={State} recipe={Recipe}&quot;,
+              Machine.CurrentState, Machine.CurrentRecipeName);
+    Machine.TryEnterSafeState();      // ngắt lệnh chuyển động, giữ nguyên hiện trạng để chẩn đoán
+    MessageBox.Show(&quot;Phần mềm gặp lỗi không mong muốn. Đã ghi nhật ký. &quot; +
+                    &quot;KHÔNG thao tác máy trước khi kỹ thuật kiểm tra.&quot;, &quot;Lỗi hệ thống&quot;);
+}
+
+private static void OnBackgroundException(object sender, UnhandledExceptionEventArgs e)
+{
+    // Tiến trình sắp bị kết thúc — chỉ còn vài chục mili-giây, làm ít việc nhất có thể
+    Log.Fatal(e.ExceptionObject as Exception,
+              &quot;Lỗi chưa bắt trên luồng nền — tiến trình sẽ thoát | máy={State}&quot;,
+              Machine.CurrentState);
+    Log.CloseAndFlush();              // BẮT BUỘC: ép ghi hết bộ đệm log xuống đĩa
+}
+</code></pre>
+<p>Ba điểm phân biệt hai handler, và cả ba đều quan trọng khi đọc code người khác:</p>
+<ul>
+<li><strong><code>Application.ThreadException</code></strong> chỉ nhận exception phát sinh trên luồng UI, và
+chỉ khi đã gọi <code>SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException)</code>.
+Sau handler này ứng dụng <strong>vẫn chạy tiếp</strong> — nên đây là nơi xử lý mềm được.</li>
+<li><strong><code>AppDomain.CurrentDomain.UnhandledException</code></strong> nhận mọi luồng khác, nhưng
+<strong>không ngăn được</strong> tiến trình kết thúc. Nó là nơi <em>ghi chép</em>, không phải nơi
+<em>phục hồi</em>. Vì vậy việc đầu tiên và gần như duy nhất nên làm ở đây là ghi log rồi
+<strong>ép đẩy bộ đệm xuống đĩa</strong> — thư viện log thường ghi bất đồng bộ, tiến trình chết
+trước khi kịp ghi thì lưới an toàn thành vô dụng.</li>
+<li>Cả hai đều phải ghi kèm <strong>ngữ cảnh của máy</strong> (trạng thái, recipe, trạm nào đang
+chạy), không chỉ stack trace. Stack trace nói code hỏng ở đâu; ngữ cảnh máy nói
+<em>máy đang làm gì lúc đó</em> — và câu hỏi thứ hai mới là câu người ta cần trả lời lúc
+6 giờ sáng.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Có lưới an toàn mà không dùng còn tệ hơn không có.</strong> Trong một dự án tham
+khảo, cả hai handler đều được đăng ký đúng — nhưng thân hàm chỉ <code>MessageBox.Show</code>
+rồi <code>Application.Exit()</code>, còn dòng ghi log thì bị comment lại. Khi sự cố xảy ra
+thật, thứ duy nhất còn lại là một hộp thoại trên màn hình máy lúc 2 giờ sáng mà
+không ai kịp chụp lại. Đăng ký handler là bước dễ; <strong>bảo đảm nó ghi được thứ gì đó
+tồn tại sau khi tiến trình chết</strong> mới là phần có giá trị.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Bản tương ứng bên WPF (Chương 9).</strong> Hai móc nối đổi tên:
+<code>Application.Current.DispatcherUnhandledException</code> cho luồng UI (có <code>e.Handled = true</code>
+để chặn ứng dụng thoát), còn <code>AppDomain.CurrentDomain.UnhandledException</code> thì giữ
+nguyên cho mọi luồng khác. Bổ sung thêm <code>TaskScheduler.UnobservedTaskException</code> nếu
+code có <code>Task</code> mà không phải lúc nào cũng <code>await</code> — xem Chương 5.</p>
 </blockquote>
 <h3>8.1.2 An toàn luồng: Control.Invoke và BeginInvoke</h3>
 <!--idx:Control.Invoke / BeginInvoke-->
@@ -8679,6 +8826,83 @@ vì đẩy dữ liệu tần suất cao thẳng vào binding — mục 9.3.3.</l
 <li>Cập nhật từ luồng nền luôn qua <code>Dispatcher</code>, không update
 <code>ObservableCollection&lt;T&gt;</code> trực tiếp từ thread khác.</li>
 </ul>
+<h3>9.1.7 Sống chung với WinForms: <code>ElementHost</code> và <code>WindowsFormsHost</code></h3>
+<p>Chương 8 dạy WinForms, chương này dạy WPF — nhưng trong thực tế bạn hiếm khi
+được chọn một trong hai. Tình huống phổ biến nhất khi nhận việc là: có sẵn một
+phần mềm máy WinForms với 40–70 màn hình đang chạy sản xuất, và yêu cầu là
+<strong>thêm màn hình mới bằng WPF</strong> (hoặc dựng lại vài màn quan trọng) mà không được
+dừng dây chuyền để viết lại toàn bộ.</p>
+<p>Không ai viết lại 70 form trong một lần. Con đường thực tế là <strong>cải tạo dần</strong>
+(strangler pattern — Chương 8 mục 8.3.8b): mỗi lần chỉ thay một màn hình, và hai
+công nghệ phải sống chung trong cùng một tiến trình. .NET hỗ trợ việc này bằng
+hai control cầu nối, mỗi cái đi một chiều:</p>
+<p><strong>Bảng 9.2b — Hai chiều nhúng giữa WinForms và WPF</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cầu nối</th>
+<th>Namespace</th>
+<th>Dùng khi</th>
+<th>Cách dùng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong><code>ElementHost</code></strong></td>
+<td><code>System.Windows.Forms.Integration</code></td>
+<td>Đặt một control <strong>WPF</strong> vào bên trong một <code>Form</code> <strong>WinForms</strong></td>
+<td><code>host.Child = wpfUserControl;</code> rồi <code>form.Controls.Add(host);</code></td>
+</tr>
+<tr>
+<td><strong><code>WindowsFormsHost</code></strong></td>
+<td><code>System.Windows.Forms.Integration</code></td>
+<td>Đặt một control <strong>WinForms</strong> vào bên trong một cửa sổ <strong>WPF</strong></td>
+<td><code>&lt;WindowsFormsHost&gt;&lt;wf:MyLegacyControl/&gt;&lt;/WindowsFormsHost&gt;</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>Code 9.4b — Nhúng một màn hình WPF mới vào khung WinForms cũ</strong></p>
+<pre><code class="language-csharp">// Trong một Form WinForms đang có sẵn — thay panel cũ bằng màn hình WPF mới
+var axisPanel = new AxisMonitorView();              // UserControl viết bằng WPF (+ ViewModel)
+axisPanel.DataContext = _axisMonitorViewModel;
+
+var host = new ElementHost { Dock = DockStyle.Fill };
+host.Child = axisPanel;
+panelRight.Controls.Clear();
+panelRight.Controls.Add(host);
+</code></pre>
+<p>Chiều thứ hai hay dùng cho các control mà bên WPF không có sẵn tương đương — ví
+dụ control hiển thị ảnh do hãng camera cung cấp dưới dạng WinForms:</p>
+<pre><code class="language-xml">&lt;Window xmlns:wf=&quot;clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms&quot;
+        xmlns:vendor=&quot;clr-namespace:Cognex.VisionPro.Display;assembly=Cognex.VisionPro&quot;&gt;
+    &lt;WindowsFormsHost&gt;
+        &lt;vendor:CogRecordDisplay x:Name=&quot;imageDisplay&quot;/&gt;
+    &lt;/WindowsFormsHost&gt;
+&lt;/Window&gt;
+</code></pre>
+<p><strong>Bốn cái bẫy phải biết trước khi dùng</strong> — chúng bắt nguồn từ việc hai công nghệ
+vẽ lên màn hình theo hai cách khác nhau:</p>
+<ol>
+<li><strong>&quot;Airspace&quot;</strong> — vùng do control nhúng chiếm giữ được vẽ bởi công nghệ kia, nên
+<strong>không có gì của WPF hiển thị chồng lên nó được</strong>: popup, tooltip, <code>Adorner</code>,
+hộp thoại mờ nền, hiệu ứng trong suốt đều bị control nhúng che mất. Hệ quả thực
+tế: đừng đặt control nhúng ở chỗ mà một menu thả xuống hay banner alarm cần phủ
+lên. Hạn chế này đã được nới ở .NET hiện đại nhưng không biến mất hoàn toàn.</li>
+<li><strong>Phím tắt và Tab</strong> — hai hệ thống xử lý bàn phím độc lập nhau. Phím <code>Tab</code> có
+thể không đi qua được ranh giới, và phím tắt khai báo ở lớp ngoài có thể không
+tới được control bên trong. Luôn thử bằng bàn phím, không chỉ bằng chuột.</li>
+<li><strong>Tỉ lệ hiển thị (DPI)</strong> — WPF độc lập DPI, WinForms thì tuỳ cấu hình. Trên màn
+hình công nghiệp đặt tỉ lệ 125%/150%, phần nhúng có thể bị mờ hoặc lệch kích
+thước. Kiểm tra ở đúng độ phân giải và đúng tỉ lệ của máy thật.</li>
+<li><strong>Giải phóng tài nguyên</strong> — <code>ElementHost</code> là control WinForms nên cần <code>Dispose</code>
+theo vòng đời <code>Form</code>; quên thì mỗi lần mở/đóng màn hình lại rò rỉ một chút.</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Chọn chiều nào?</strong> Nếu phần mềm hiện tại là WinForms và bạn đang <strong>tiến dần
+sang WPF</strong>, dùng <code>ElementHost</code> — khung cũ giữ nguyên, từng ô được thay bằng màn
+hình mới. Nếu bạn viết mới bằng WPF nhưng <strong>bị kẹt một control của hãng thiết bị
+chỉ có bản WinForms</strong> (rất hay gặp với control hiển thị ảnh của camera), dùng
+<code>WindowsFormsHost</code> và cô lập nó vào một vùng riêng, càng nhỏ càng tốt, để bốn cái
+bẫy trên chỉ ảnh hưởng một góc màn hình.</p>
+</blockquote>
 <hr>
 <h2 id="92-mvvm-frameworks-comparison">9.2 MVVM Frameworks Comparison</h2>
 <!--idx:MVVM (Model-View-ViewModel)--><p><strong>MVVM (Model-View-ViewModel)</strong> là biến thể của MVP (Chương 8) được thiết kế
@@ -16065,6 +16289,19 @@ ra XML theo chuẩn SOAP cũ) cho cùng mục đích DeepCopy/lưu file mà <cod
 <code>SoapFormatter</code> trong code cũ, áp dụng đúng nguyên tắc vừa học: đừng cố nạp lại nguyên xi trên
 .NET 9 — đánh giá lại định dạng lưu trữ (JSON, Chương 3) thay vì mang theo rủi ro tương thích.</p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Dấu hiệu nhận biết sớm: attribute <code>[Serializable]</code>.</strong> Khi mở một dự án kế thừa và thấy các
+class cấu hình/điểm dạy được đánh dấu:</p>
+<pre><code class="language-csharp">[Serializable]
+public class AxisSafe { public int tag_AxisId; public double tag_max, tag_min; }
+</code></pre>
+<p>thì gần như chắc chắn ở đâu đó trong dự án có <code>BinaryFormatter</code>/<code>SoapFormatter</code> đang ghi các object
+này ra file — attribute đó tồn tại chính là để phục vụ hai lớp trên. Đây là <strong>manh mối tìm nhanh
+công việc phải làm khi nâng cấp .NET</strong>: tìm toàn văn <code>[Serializable]</code> cho ra danh sách mọi class có
+file dữ liệu cần chuyển sang JSON/XML, kèm theo là mọi file cấu hình cũ ngoài hiện trường phải có
+đường chuyển đổi (đọc định dạng cũ một lần, ghi ra định dạng mới) — nếu không, máy nâng cấp phần
+mềm xong sẽ mất toàn bộ điểm dạy và tham số.</p>
+</blockquote>
 <p><strong>Giải pháp: tách thành process riêng giao tiếp qua IPC</strong></p>
 <pre><code>┌────────────────────────────────┐                              ┌────────────────┐
 │ MeoFrame.Controller (.NET 9)   │  JSON over TCP/named-pipe    │ VisionPro Host │
@@ -17151,6 +17388,15 @@ public sealed class MesSpoolForwarder : IAsyncDisposable
         File.Move(tmp, path);   // atomic write — cùng kỹ thuật đã học ở Chương 3, mục 3.6.1
     }
 
+    // 📌 Nếu bạn đang đọc code kế thừa và thấy `HttpWebRequest`/`WebRequest.Create(url)` thay vì
+    // `HttpClient`: đó là API tiền nhiệm của .NET Framework, vẫn chạy được nhưng không nên dùng cho
+    // code mới. Ba khác biệt đáng biết: (1) `HttpClient` được thiết kế để TÁI SỬ DỤNG một instance
+    // cho toàn ứng dụng (tạo mới mỗi lần gọi sẽ cạn cổng TCP — lỗi kinh điển), trong khi
+    // `HttpWebRequest` tạo mới mỗi lần theo thiết kế; (2) `HttpClient` có API async đúng chuẩn,
+    // `HttpWebRequest` dùng mẫu Begin/End cũ; (3) đừng trộn cả hai trong một dự án — một dự án tham
+    // khảo có TÁM biến thể hàm gửi HTTP gần trùng nhau (kể cả hai hàm cùng tên khác chữ ký) vì mỗi
+    // lần thêm một khách hàng lại chép hàm cũ ra sửa thay vì tham số hoá.
+
     private async Task WorkerLoopAsync(CancellationToken ct)
     {
         while (await _timer.WaitForNextTickAsync(ct).ConfigureAwait(false))
@@ -18178,6 +18424,107 @@ thường — cả file trông &quot;đầy đủ&quot; nếu chỉ đọc lư�
 giờ được thực thi. Trước khi tin một cơ chế an toàn đang hoạt động, dùng đúng kỹ thuật đã học ở
 Chương 2 mục 2.4 (Find All References) trên chính tên method đó — xác nhận có ít nhất một lời gọi
 THẬT (không bị comment) từ đường chạy chính, không chỉ tin vì method đã được định nghĩa.</p>
+</blockquote>
+<h4>Interlock viết bằng code, và interlock khai báo bằng dữ liệu</h4>
+<p>Mọi ví dụ interlock ở trên đều là <strong>code</strong>: một hàm <code>if</code> kiểm tra điều kiện. Cách
+này rõ ràng, compiler kiểm tra được, và dễ viết unit test. Nhưng nó có một cái giá
+mà chỉ lộ ra sau khi máy đã ra hiện trường: <strong>mỗi lần cơ khí thay đổi, phải sửa
+code, build lại, và triển khai lại phần mềm</strong> — và người làm được việc đó phải là
+lập trình viên, không phải kỹ sư đang đứng cạnh máy.</p>
+<p>Với máy nhiều trục, phần lớn interlock lại thuộc về một dạng rất đều đặn: <em>&quot;chỉ
+được đi tới điểm P khi các trục khác đang nằm trong dải an toàn nào đó&quot;</em> — ví dụ
+trục X không được chạy ngang nếu trục Z chưa nâng lên trên độ cao an toàn, nếu
+không đầu công tác sẽ quét ngang qua đồ gá. Dạng lặp đi lặp lại như vậy khai báo
+được <strong>bằng dữ liệu</strong>, gắn ngay vào từng điểm đã dạy:</p>
+<p><strong>Code 15.7b — Điều kiện an toàn khai báo kèm mỗi điểm dạy</strong></p>
+<pre><code class="language-csharp">namespace MeoFrame.Domain.Motion;
+
+/// &lt;summary&gt;Một trục phải nằm trong dải [Min, Max] thì mới được phép đi.&lt;/summary&gt;
+public sealed record AxisWindow(string AxisName, double MinMm, double MaxMm);
+
+/// &lt;summary&gt;Một tín hiệu vào phải ở trạng thái mong đợi.&lt;/summary&gt;
+public sealed record SignalCondition(string TagName, bool Expected);
+
+public sealed record TaughtPoint(
+    string Name,
+    IReadOnlyDictionary&lt;string, double&gt; Targets,     // trục nào đi tới đâu
+    IReadOnlyList&lt;AxisWindow&gt; RequiredWindows,       // điều kiện vị trí các trục khác
+    IReadOnlyList&lt;SignalCondition&gt; RequiredSignals,  // điều kiện IO
+    bool RequireAll = true);                         // true = AND, false = OR
+
+// Kiểm tra tại một chỗ duy nhất, trước MỌI lệnh đi tới điểm
+public bool CanMoveTo(TaughtPoint p, out string reason)
+{
+    foreach (var w in p.RequiredWindows)
+    {
+        double pos = _axes[w.AxisName].CurrentPositionMm;
+        bool ok = pos &gt;= w.MinMm &amp;&amp; pos &lt;= w.MaxMm;
+        if (p.RequireAll &amp;&amp; !ok)
+        {
+            reason = $&quot;Trục {w.AxisName} đang ở {pos:0.00} mm, &quot; +
+                     $&quot;cần trong [{w.MinMm:0.00}, {w.MaxMm:0.00}] để đi tới {p.Name}&quot;;
+            return false;                            // lý do phải nêu TÊN và SỐ, không chỉ &quot;không an toàn&quot;
+        }
+    }
+    // ... kiểm tra RequiredSignals tương tự
+    reason = string.Empty;
+    return true;
+}
+</code></pre>
+<p>Điều kiện được lưu cùng bảng điểm (Phụ lục B mục B.4), nên <strong>kỹ sư tại nhà máy sửa
+được trong vài phút mà không cần biên dịch lại</strong> — đúng bằng thao tác họ đã quen khi
+dạy lại một điểm.</p>
+<p><strong>Bảng 15.4b — Interlock dạng code và dạng dữ liệu: chọn cái nào</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Dạng code (<code>if</code> trong sequence)</th>
+<th>Dạng dữ liệu (khai báo theo điểm)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Sửa khi cơ khí đổi</strong></td>
+<td>Sửa code → build → triển khai lại</td>
+<td>Sửa cấu hình tại chỗ</td>
+</tr>
+<tr>
+<td><strong>Ai sửa được</strong></td>
+<td>Lập trình viên</td>
+<td>Kỹ sư vận hành máy</td>
+</tr>
+<tr>
+<td><strong>Compiler kiểm tra</strong></td>
+<td>Có</td>
+<td><strong>Không</strong> — tên trục/tag sai chỉ lộ ra lúc chạy</td>
+</tr>
+<tr>
+<td><strong>Unit test</strong></td>
+<td>Dễ</td>
+<td>Cần test cả bộ dữ liệu, không chỉ code</td>
+</tr>
+<tr>
+<td><strong>Phù hợp với</strong></td>
+<td>Điều kiện mang tính nghiệp vụ, ít lặp lại (recipe đã nạp chưa, bước trước xong chưa)</td>
+<td>Điều kiện hình học lặp đi lặp lại theo từng điểm/từng trục</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Ba ràng buộc bắt buộc nếu chọn dạng dữ liệu.</strong> (1) <strong>Kiểm tra tính hợp lệ của
+cấu hình lúc khởi động</strong> — mọi <code>AxisName</code>/<code>TagName</code> phải tồn tại thật, sai thì dừng
+máy với thông báo rõ ràng, tuyệt đối không bỏ qua âm thầm (một điều kiện trỏ tới
+trục không tồn tại mà bị bỏ qua nghĩa là interlock đó <strong>không tồn tại</strong>, trong khi
+mọi người tin là có). (2) <strong>Mặc định phải là an toàn</strong>: điểm chưa khai báo điều kiện
+nào thì coi là chưa được duyệt, không phải &quot;tự do đi&quot;. (3) <strong>Mọi thay đổi phải vào
+nhật ký thao tác</strong> — nới một dải an toàn là hành vi cùng loại rủi ro với bypass
+interlock, cần ghi lại ai sửa, sửa từ giá trị nào sang giá trị nào.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Lý do đặt &quot;vì sao không đi được&quot; vào thông báo, kèm tên trục và con số:</strong> khi
+máy từ chối di chuyển mà chỉ báo &quot;điều kiện an toàn chưa thoả&quot;, người vận hành không
+làm gì được ngoài gọi kỹ thuật. Khi nó báo <em>&quot;trục Z đang ở 12,4 mm, cần trên 50 mm&quot;</em>,
+họ tự xử lý được trong mười giây. Cùng một interlock, khác nhau ở một chuỗi thông báo
+— và chênh lệch là hàng chục phút dừng máy mỗi lần.</p>
 </blockquote>
 <h3>15.2.2  Vai trò C# trong hệ thống Safety</h3>
 <p>C# trong hệ thống có Safety PLC đóng bốn vai trò, không hơn:</p>
@@ -22477,6 +22824,71 @@ chẩn đoán nào khác.</li>
 <pre><code class="language-powershell">Get-WinEvent -LogName Application -MaxEvents 20 |
     Where-Object { $_.LevelDisplayName -eq &#39;Error&#39; }
 </code></pre>
+<blockquote>
+<p>📌 <strong>Điều kiện để hai nguồn trên có ích: ứng dụng phải đăng ký bộ bắt lỗi toàn
+cục.</strong> Không có <code>Application.ThreadException</code> và
+<code>AppDomain.CurrentDomain.UnhandledException</code> (Chương 8, Code 8.0b), một exception
+trên luồng nền sẽ kết thúc tiến trình mà log của ứng dụng không kịp ghi gì — chỉ
+còn Event Viewer với một dòng .NET Runtime khô khan, không có ngữ cảnh máy. Đây là
+việc phải làm <strong>trước khi</strong> máy ra hiện trường, không phải sau khi gặp sự cố.</p>
+</blockquote>
+<h3>Lớp lỗi chỉ xuất hiện ngoài hiện trường: đường dẫn và môi trường</h3>
+<p>Một nhóm lỗi rất đặc trưng của phần mềm máy: <strong>chạy hoàn hảo trên máy lập trình
+viên, hỏng ngay trên máy công nghiệp</strong> — và không phải vì logic sai, mà vì môi
+trường khác. Chúng không xuất hiện trong bất kỳ lần test nào ở văn phòng, nên đáng
+rà soát thành danh mục riêng trước khi bàn giao:</p>
+<p><strong>Bảng 19.2b — Lỗi môi trường thường gặp khi triển khai ra máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Biểu hiện ngoài hiện trường</th>
+<th>Nguyên nhân</th>
+<th>Cách phòng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mở một chức năng thì báo không tìm thấy file</td>
+<td>Đường dẫn đi ngược từ thư mục chạy tới thư mục <strong>mã nguồn</strong>: <code>AppDomain.CurrentDomain.BaseDirectory + &quot;..\..\DuAn\File.cs&quot;</code> — đúng khi chạy từ <code>bin\Debug</code>, không tồn tại trên máy đã cài đặt</td>
+<td>Mọi tài nguyên phải nằm <strong>trong</strong> thư mục cài đặt; đặt &quot;Copy to Output Directory&quot; cho file cần thiết</td>
+</tr>
+<tr>
+<td>Ghi cấu hình/log thất bại, hoặc mất khi khởi động lại</td>
+<td>Ghi vào <code>Program Files</code> — Windows chặn ghi, hoặc chuyển hướng âm thầm</td>
+<td>Dữ liệu ghi được phải nằm ở <code>ProgramData</code> hoặc một thư mục dữ liệu cấu hình được</td>
+</tr>
+<tr>
+<td><code>DllNotFoundException</code> ngay khi mở phần mềm</td>
+<td>DLL của hãng thiết bị không được copy cạnh file <code>.exe</code></td>
+<td>Kiểm tra danh sách file khi đóng gói; xem Phụ lục A mục A.3</td>
+</tr>
+<tr>
+<td><code>BadImageFormatException</code> khi khởi động</td>
+<td>Ứng dụng chạy 64 bit nhưng SDK card chỉ có bản 32 bit</td>
+<td>Đặt <code>PlatformTarget = x86</code> — Chương 2 và Phụ lục A</td>
+</tr>
+<tr>
+<td>Số thập phân đọc/ghi sai, hoặc lỗi phân tích chuỗi số</td>
+<td>Máy hiện trường đặt vùng miền khác: dấu phẩy làm dấu thập phân</td>
+<td>Dùng <code>CultureInfo.InvariantCulture</code> cho mọi dữ liệu <strong>máy đọc máy</strong> (file, giao thức), chỉ dùng vùng miền cho phần <strong>người đọc</strong></td>
+</tr>
+<tr>
+<td>Đường dẫn có ký tự lạ, hoặc quá dài</td>
+<td>Tên máy/tên lô hàng theo ngôn ngữ bản địa</td>
+<td>Dùng <code>Path.Combine</code>, không nối chuỗi; kiểm tra độ dài đường dẫn</td>
+</tr>
+<tr>
+<td>Đồng hồ lệch, dữ liệu truy xuất không khớp giữa các máy</td>
+<td>Máy hiện trường không đồng bộ giờ</td>
+<td>Đồng bộ NTP; lưu mốc thời gian dạng UTC trong cơ sở dữ liệu</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Cách rẻ nhất để bắt gần hết nhóm này trước khi ra hiện trường:</strong> cài phần mềm
+lên <strong>một máy tính trống</strong> (hoặc máy ảo sạch) — không có Visual Studio, không có
+thư mục mã nguồn, không có runtime cài sẵn — rồi chạy đủ một chu kỳ. Gần như mọi
+lỗi trong bảng trên lộ ra ngay trong mười phút đầu. Đây cũng chính là mục cuối
+trong danh mục kiểm bàn giao ở Phụ lục B mục B.5.</p>
+</blockquote>
 <h3>Code tồn tại không đồng nghĩa code đang hoạt động</h3>
 <p>Một trong những bài học khó chấp nhận nhất khi debug production: đọc
 source code thấy đầy đủ logic giám sát an toàn (kiểm tra E-Stop, cửa an
@@ -24393,6 +24805,11 @@ chỉ phát hiện ra chúng khi chúng <strong>thiếu</strong>.</p>
 <td>Ch5</td>
 </tr>
 <tr>
+<td><strong>Bộ bắt lỗi toàn cục</strong></td>
+<td>Exception chưa bắt trên luồng nền giết cả tiến trình — không log, không thông báo, máy còn phôi bên trong</td>
+<td>Ch8 (Code 8.0b), Ch19</td>
+</tr>
+<tr>
 <td><strong>Khôi phục sau mất điện</strong></td>
 <td>Khi khởi động lại, phải biết chu kỳ trước dở dang tới đâu và phôi đang nằm ở đâu</td>
 <td>Ch12, Ch19</td>
@@ -24436,6 +24853,58 @@ ta cần xem lại gần như luôn là chi tiết có vấn đề. Cách làm t
 (ring buffer) cho mọi chi tiết, và chỉ <strong>giữ lại vĩnh viễn</strong> khi kết quả là không đạt hoặc khi giá
 trị đo nằm sát ngưỡng. Kèm theo đó là chính sách xoá tự động theo tuổi — và chính sách này phải là
 tham số cấu hình, vì mỗi khách hàng yêu cầu lưu một thời hạn khác nhau.</p>
+</blockquote>
+<h3>B.3.2 &quot;Cho khách tự sửa quy trình&quot; — ba con đường và con đường nên chọn</h3>
+<p>Máy phi tiêu chuẩn có một áp lực đặc trưng: mỗi khách hàng muốn quy trình khác nhau một chút, và
+không ai muốn chờ nhà cung cấp build lại phần mềm cho mỗi thay đổi nhỏ. Nhu cầu &quot;cho phép sửa quy
+trình mà không cần lập trình viên&quot; xuất hiện đi xuất hiện lại. Có ba cách đáp ứng, và chúng khác nhau
+rất xa về chi phí thật.</p>
+<p><strong>Bảng B.9b — Ba con đường cho &quot;sửa quy trình không cần build lại&quot;</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Con đường</th>
+<th>Cách làm</th>
+<th>Ưu</th>
+<th>Nhược</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Sinh mã nguồn</strong> (code generation)</td>
+<td>Phần mềm tự ghi ra file <code>.cs</code> cho trạm mới từ khai báo trên giao diện</td>
+<td>Kết quả là code thật, chạy nhanh</td>
+<td>Sinh bằng nối chuỗi thì <strong>không có gì kiểm tra cú pháp</strong>; sửa khuôn thì các trạm đã sinh trước đó không được cập nhật; vẫn <strong>phải build lại</strong> — nên không thật sự giải quyết được vấn đề</td>
+</tr>
+<tr>
+<td><strong>2. Kịch bản người dùng viết</strong></td>
+<td>Nhúng trình soạn thảo + biên dịch/thông dịch lúc chạy (Roslyn, CS-Script, hoặc một ngôn ngữ kịch bản nhúng)</td>
+<td>Rất linh hoạt</td>
+<td>Người dùng viết được <strong>mã tuỳ ý</strong> chạy trong tiến trình điều khiển máy — lỗi trong kịch bản có thể treo hoặc làm hỏng máy; khó giới hạn quyền; khó kiểm tra lại phiên bản nào đang chạy</td>
+</tr>
+<tr>
+<td><strong>3. Cấu hình dạng dữ liệu</strong></td>
+<td>Quy trình là <strong>dữ liệu</strong> (danh sách bước, mỗi bước là một hành động đã định nghĩa sẵn kèm tham số), phần mềm chỉ <strong>diễn giải</strong></td>
+<td>Không build lại, không chạy mã lạ, kiểm tra hợp lệ được, ghi phiên bản được, hiển thị lên HMI được</td>
+<td>Chỉ làm được những gì đã định nghĩa sẵn; cần đầu tư thiết kế tập hành động ban đầu</td>
+</tr>
+</tbody></table></div>
+<p><strong>Con đường 3 gần như luôn là lựa chọn đúng</strong> cho phần mềm điều khiển máy. Lý do không phải kỹ thuật
+mà là an toàn và vận hành: bạn kiểm soát được <strong>tập hành động</strong> mà người dùng có thể ghép (mỗi hành
+động đã được bạn viết, đã kiểm tra interlock), thay vì mở cửa cho mã tuỳ ý. Nó cũng là cùng một tinh
+thần với &quot;màn hình chạy tay tự sinh theo khai báo&quot; ở mục B.2.2 — mô tả bằng dữ liệu, để phần mềm diễn
+giải.</p>
+<blockquote>
+<p>⚠️ <strong>Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.</strong> Nếu thấy một
+class vài trăm dòng toàn các chuỗi kiểu `&quot;public class &quot; + name + &quot; : StationBase</p>
+</blockquote>
+<p>{&quot;` — đó là</p>
+<blockquote>
+<p>bộ sinh mã bằng nối chuỗi. Trong một dự án tham khảo, bộ này dài <strong>608 dòng</strong>, và nằm cạnh một
+trình soạn thảo code C# nhúng trong app (đầy đủ tô màu cú pháp, gợi ý khi gõ, gấp khối) mà <strong>nút
+Build thì để trống, chỉ có comment ghi tên vài thư viện định dùng</strong>. Tham vọng rất lớn, hoàn thành
+thì không. Đây là mẫu thất bại điển hình của con đường 1 và 2: chi phí làm cho <em>đúng</em> và <em>an toàn</em>
+lớn hơn nhiều so với vẻ ngoài, nên tính năng thường dừng ở nửa chừng và trở thành mã chết. Nếu tiếp
+quản một dự án như vậy, ưu tiên chuyển sang con đường 3 thay vì hoàn thiện nốt.</p>
 </blockquote>
 <hr>
 <h2 id="b4-d-liu-và-cu-hình-có-nhng-gì-trên-đĩa">B.4 Dữ liệu và cấu hình — có những gì trên đĩa</h2>
@@ -24523,6 +24992,48 @@ mã). Không có nó thì không truy ngược được, và không ghép đư�
 trên cùng dây chuyền. Thứ hai: <strong>ghi cả chế độ chạy vào từng bản ghi</strong> (Ch12 mục 12.4) để dữ liệu
 chạy thử không bao giờ lẫn vào báo cáo chất lượng.</p>
 </blockquote>
+<h3>B.4.1 Ba loại &quot;mắt&quot; của máy — và ba kiểu dữ liệu hoàn toàn khác nhau</h3>
+<p>Người mới thường gộp mọi thiết bị đo vào một khái niệm &quot;cảm biến&quot;. Trên thực tế, ba nhóm dưới đây
+khác nhau về <strong>kiểu dữ liệu trả về</strong>, và khác biệt đó lan ra toàn bộ thiết kế: lượng dữ liệu phải
+lưu, cách phán định OK/NG, băng thông mạng, và cả việc có cần máy tính mạnh hay không.</p>
+<p><strong>Bảng B.10b — Ba nhóm thiết bị đo và hệ quả thiết kế</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Trả về</th>
+<th>Ví dụ thiết bị</th>
+<th>Hệ quả với phần mềm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Trả một giá trị</strong></td>
+<td>Một số</td>
+<td>Cảm biến khoảng cách laser, cảm biến lực, áp suất, nhiệt độ, cân</td>
+<td>Phán định = so với ngưỡng. Lưu trữ rẻ. Đọc được qua Modbus/analog</td>
+</tr>
+<tr>
+<td><strong>Trả một mảng</strong> (biên dạng, profile)</td>
+<td>Vài trăm đến vài nghìn điểm cao độ = <strong>mặt cắt</strong> của chi tiết</td>
+<td>Cảm biến đo biên dạng laser (ví dụ Keyence dòng LJ-V)</td>
+<td>Phần mềm phải <strong>tự tính ra kết luận</strong> từ mảng: độ cao gờ keo, độ phẳng, thiếu vật liệu. Lưu mảng thô tốn hơn nhiều lần</td>
+</tr>
+<tr>
+<td><strong>Trả một ảnh</strong></td>
+<td>Ma trận điểm ảnh</td>
+<td>Camera công nghiệp + thư viện xử lý ảnh (Cognex VisionPro, Halcon, Basler + OpenCV)</td>
+<td>Cần tài nguyên xử lý lớn; kết quả thường do công cụ vision quyết định, phần mềm máy chỉ nhận kết luận + toạ độ</td>
+</tr>
+</tbody></table></div>
+<p>Hai chi tiết thực tế đi kèm nhóm thứ hai và ba, đều hay bị bỏ sót:</p>
+<ul>
+<li><strong>Giá trị encoder gắn kèm mỗi lần đo.</strong> Khi cảm biến biên dạng quét dọc theo chi tiết đang di
+chuyển, mỗi mặt cắt phải mang theo <strong>vị trí lúc lấy mẫu</strong> thì mới ghép lại thành hình 3D được.
+Thiếu nó thì có dữ liệu mà không biết dữ liệu thuộc chỗ nào trên chi tiết.</li>
+<li><strong>Một máy thường có nhiều nhóm cùng lúc.</strong> Việc một máy vừa có camera vừa có cảm biến biên dạng
+vừa có cảm biến lực là bình thường — và mỗi nhóm có hệ đánh số riêng, chu kỳ lấy mẫu riêng, nhu
+cầu lưu trữ riêng. Đừng cố nhét cả ba vào một interface chung chỉ vì cả ba đều &quot;đo&quot;.</li>
+</ul>
 <hr>
 <h2 id="b5-danh-mc-kim-trưc-khi-bàn-giao">B.5 Danh mục kiểm trước khi bàn giao</h2>
 <p>Dùng danh mục này để rà soát một phần mềm sắp bàn giao. Nó không thay thế quy trình nghiệm thu chính
@@ -24606,6 +25117,9 @@ hàng đợi gửi MES, xoay vòng nhật ký, khôi phục sau mất điện �
 trong buổi nghiệm thu nhưng không sống được qua vài tháng sản xuất.</li>
 <li>Ba quyết định khó sửa nhất, phải làm đúng từ đầu: <strong>tách ba loại tham số</strong> (công thức / hệ thống /
 phần cứng), <strong>mã định danh duy nhất cho từng chi tiết</strong>, và <strong>ghi chế độ chạy vào từng bản ghi</strong>.</li>
+<li>Khi có nhu cầu &quot;cho khách tự sửa quy trình&quot;, chọn <strong>con đường cấu hình dạng dữ liệu</strong> (mục B.3.2) —
+sinh mã nguồn và cho người dùng viết kịch bản đều đắt hơn nhiều so với vẻ ngoài, và thường dừng ở
+nửa chừng.</li>
 <li>Thứ tự xây dựng (mục B.6) đặt phần khó sửa nhất lên trước: trừu tượng thiết bị và bảng tên IO
 quyết định chi phí của mọi việc còn lại.</li>
 </ul>

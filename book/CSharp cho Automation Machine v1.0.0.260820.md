@@ -1072,6 +1072,12 @@ hai chỗ — thêm một thành viên vào enum (ở **cuối**, không phải 
 cảnh báo về chỉ số enum ở Chương 3) và thêm một `case` tương ứng. Nếu bạn thấy
 mình phải sửa hơn hai chỗ, nhiều khả năng đã hiểu sai cấu trúc.
 
+> 💡 **Chưa đi làm, hoặc chưa được đụng vào mã nguồn máy — tập đọc ở đâu?** Kỹ năng trong mục này chỉ
+> lên khi thực hành trên code thật, mà mã nguồn phần mềm máy thường không được mang ra khỏi công ty.
+> Lối thoát là các dự án **mã nguồn mở** cùng lĩnh vực: **Phụ lục B mục B.7** liệt kê một số dự án C#
+> công nghiệp đọc được ngay hôm nay (hệ SCADA, thư viện máy trạng thái, driver PLC nhiều hãng, khung
+> ứng dụng máy tự động hoá), kèm gợi ý **đọc từng dự án để học điều gì** và cách đọc cho hiệu quả.
+
 > ⚠️ **Kiểm chứng trước khi kết luận "chỗ này không có".** Khi đọc code lạ và
 > định kết luận "framework/thư viện này không hỗ trợ X", hãy tìm kiếm bằng
 > **ít nhất ba cách gọi tên khác nhau** của cùng khái niệm: tên tiếng Anh
@@ -2662,6 +2668,28 @@ song song, hai cách cùng tồn tại không nhất quán là dấu hiệu thư
 >
 > Cách phòng rẻ nhất: sau khi lưu recipe, **đọc lại file vừa ghi** và so từng tham số với giá trị
 > đang chạy — một hàm kiểm tra vài chục dòng, chạy một lần lúc phát triển, bắt được cả hai chiều sai.
+
+> 💡 **Đừng gõ tay class ánh xạ XML khi đã có lược đồ hoặc file mẫu — để công cụ sinh ra.** Với XML
+> đơn giản (danh sách trục, vài tham số) thì viết tay như class `AxisConfig` ở trên là hợp lý. Nhưng nhiều định dạng
+> XML trong công nghiệp được **chuẩn hoá bởi tổ chức ngành** và có cấu trúc rất sâu — ví dụ định dạng
+> bản đồ khay dùng trong ngành bán dẫn (Chương 14, mục 14.2.6b) dịch sang C# là khoảng **700 dòng**
+> class lồng nhau. Gõ tay 700 dòng đó vừa mất vài ngày vừa chắc chắn sai tên trường ở đâu đó.
+>
+> Hai cách sinh tự động, cả hai đều có sẵn:
+> ```bash
+> # 1. Có file lược đồ .xsd (tổ chức chuẩn hoặc khách hàng cung cấp)
+> xsd.exe MapData.xsd /classes /language:CS
+> ```
+> **2. Chỉ có một file XML mẫu:** mở Visual Studio, chép nội dung XML vào clipboard, rồi
+> **Edit → Paste Special → Paste XML as Classes**. Visual Studio suy ra cấu trúc và sinh toàn bộ
+> class ngay tại vị trí con trỏ.
+>
+> Nhận diện code sinh tự động khi đọc dự án người khác: mọi class đều `partial`, mỗi property có một
+> field riêng phía sau (`private ... xxxField;`), và có các attribute dạng
+> `[XmlTypeAttribute(AnonymousType = true)]`. Kèm theo đó là **quy tắc bắt buộc: không sửa tay file
+> sinh tự động** — lần sinh lại kế tiếp sẽ xoá sạch mọi thay đổi. Cần thêm phương thức hay thuộc tính
+> gì, hãy tạo **một file `partial` khác** cùng tên class. Đây chính là lý do công cụ sinh ra chúng
+> dưới dạng `partial` ngay từ đầu.
 
 > 📌 **`XElement` (LINQ to XML) — API hiện đại hơn `XmlDocument`, cùng mục đích.** Namespace
 > `System.Xml.Linq` cung cấp cách đọc/dựng XML gọn hơn, kết hợp được với LINQ:
@@ -16130,6 +16158,138 @@ async void OnPrimaryMessage(SecsMessage primaryMsg, Action<SecsMessage> reply)
 > (AMHS), Clock, Limits Monitoring... Nhà máy bán dẫn thường yêu cầu Equipment Verification
 > (EV) theo SEMI E164. Tìm hiểu thêm: "SEMI E30 GEM standard", "GEM 300mm requirements SEMI E116".
 
+### 14.2.6b  Thực tế khi nối một máy vào nhà máy thật
+
+Các mục trên trình bày phần **chuẩn** của SECS/GEM. Mục này nói về ba điều chỉ lộ ra khi đọc mã nguồn
+một máy đang chạy — và cả ba đều ảnh hưởng trực tiếp tới việc **ước lượng khối lượng công việc**, nên
+biết trước sẽ tránh được cam kết sai với khách hàng.
+
+#### Chuẩn là sàn, không phải trần
+
+Thống kê toàn bộ mã message xuất hiện trong phần SECS/GEM của một máy thật cho kết quả đáng chú ý:
+trong 22 loại message được xử lý, khoảng **một phần ba mang số hiệu không tồn tại trong chuẩn SEMI** —
+những stream đánh số rất cao (64, 99, 101...).
+
+Đó không phải lỗi. Chuẩn SECS-II **cố ý để trống** vùng số hiệu cao cho người dùng tự định nghĩa, và
+mọi nhà máy lớn đều tận dụng: họ có nhu cầu riêng (một cách báo cáo dữ liệu đặc thù, một lệnh điều
+khiển riêng cho dây chuyền của họ) và chuẩn hoá nó trong nội bộ tập đoàn.
+
+Hệ quả rất cụ thể, và là điều quan trọng nhất của cả mục này:
+
+> ⚠️ **Bạn không thể ước lượng công việc tích hợp host trước khi đọc tài liệu đặc tả giao diện của
+> khách hàng.** Phần chuẩn thì có sách, có SDK, có ví dụ. Phần riêng của khách thì **chỉ có trong tài
+> liệu của họ** — thường là một tài liệu vài chục đến vài trăm trang, và thường chỉ được cung cấp sau
+> khi đã ký hợp đồng. Nếu ai đó hỏi "làm SECS/GEM cho máy này mất bao lâu", câu trả lời đúng luôn bắt
+> đầu bằng: *"cho tôi xem tài liệu giao diện của khách trước đã"*.
+
+Về mặt kỹ thuật, phần riêng này không khó hơn phần chuẩn — vẫn là message SECS-II với cùng cấu trúc
+dữ liệu. Cái khó nằm ở chỗ **không có tài liệu chung để tra**, và mỗi khách hàng một kiểu.
+
+#### GEM cơ bản thường không đủ để nối vào nhà máy hiện đại
+
+Mục 14.2.5 trình bày GEM: trạng thái liên lạc, trạng thái điều khiển, báo cáo sự kiện, cảnh báo,
+truyền recipe. Đó là nền — nhưng đọc mã nguồn một máy thật thấy còn cả một nhóm trạng thái khác:
+trạng thái **cổng nạp** (load port) với các pha chuyển giao/gán/đặt chỗ, trạng thái **vật mang**
+(carrier — hộp hoặc khay chứa nhiều chi tiết), và trạng thái **bản đồ khe**.
+
+Những thứ này thuộc các chuẩn SEMI **bổ sung** cho GEM, thường được gọi chung là nhóm "GEM 300":
+
+**Bảng 14.8b — GEM cơ bản và các chuẩn bổ sung thường được yêu cầu**
+
+| Nhóm | Nội dung | Khi nào khách hàng yêu cầu |
+|---|---|---|
+| **GEM (E30)** | Liên lạc, quyền điều khiển, sự kiện, cảnh báo, recipe | Luôn luôn — đây là nền |
+| **Quản lý vật mang (E87)** | Cổng nạp, vật mang, bản đồ khe: vật mang nào đang ở cổng nào, đã quét khe chưa, ai được phép đụng vào | Nhà máy có hệ thống vận chuyển tự động giữa các máy |
+| **Theo dõi chi tiết (E90)** | Từng chi tiết đang ở vị trí nào trong máy, đã qua bước nào | Yêu cầu truy xuất nguồn gốc tới từng đơn vị sản phẩm |
+| **Quản lý công việc (E40/E94)** | Host giao "lô này chạy recipe kia" như một đơn vị công việc có vòng đời riêng | Nhà máy điều độ tập trung từ hệ thống trên |
+
+> 📌 **Vì sao điều này quan trọng với người mới:** khi nhận yêu cầu *"máy phải hỗ trợ SECS/GEM"* và
+> chỉ đọc phần GEM cơ bản, bạn sẽ ước lượng thiếu **rất nhiều**. Một máy chỉ có GEM cơ bản vẫn nói
+> chuyện được với host, nhưng **không tham gia được** vào luồng vận chuyển tự động của nhà máy hiện
+> đại — và đó thường là lý do thật sự khiến khách hàng yêu cầu SECS/GEM ngay từ đầu. Câu hỏi cần hỏi
+> lại khách hàng, trước khi báo giá: *"ngoài GEM, có yêu cầu quản lý vật mang và theo dõi chi tiết
+> không?"*.
+
+#### Bản đồ khay — cách các máy trên dây chuyền nói về từng chi tiết
+
+Đây là khái niệm mà một máy trong ngành bán dẫn/điện tử gần như chắc chắn phải làm việc với, và nó
+không xuất hiện trong bất kỳ phần nào của chương này cho tới đây.
+
+Bài toán: một khay chứa hàng trăm chi tiết. Máy phía trước đã kiểm tra và biết ô nào đạt, ô nào không,
+ô nào trống. Máy của bạn cần biết thông tin đó để **bỏ qua các ô không cần xử lý**, rồi sau khi làm
+xong phải cập nhật lại kết quả của mình cho máy phía sau.
+
+Nếu mỗi chi tiết có mã vạch riêng thì đơn giản — nhưng chi tiết điện tử thường quá nhỏ để in mã.
+Giải pháp của ngành: **bản đồ khay** (map) — một bảng ghi rõ *vị trí nào chứa gì và kết quả ra sao*,
+đi kèm khay qua từng máy:
+
+```
+Khay ABC123, 4 hàng × 6 cột
+┌────┬────┬────┬────┬────┬────┐
+│ OK │ OK │ NG │ -- │ OK │ OK │     OK = đạt
+├────┼────┼────┼────┼────┼────┤     NG = không đạt (kèm mã lý do)
+│ OK │ NG │ OK │ OK │ OK │ -- │     -- = ô trống
+└────┴────┴────┴────┴────┴────┘
+```
+
+Mỗi ô mang một **mã phân loại** (bin code) — không chỉ đạt/không đạt mà cả *không đạt vì lý do gì*,
+để phân tích Pareto ở cuối chuyền (Phụ lục B mục B.2.5).
+
+Về mặt kỹ thuật, bản đồ được truyền qua một nhóm message SECS riêng, và ở các hệ thống hiện đại nội
+dung thật là **một tài liệu XML** đặt bên trong message — message SECS chỉ đóng vai trò phong bì. Cấu
+trúc XML đó khá sâu (bố cục khay lồng nhiều cấp → danh sách chi tiết → bản đồ kết quả → định nghĩa
+từng mã phân loại), và **được chuẩn hoá bởi SEMI**, nên bạn không tự thiết kế mà làm theo lược đồ có
+sẵn.
+
+> 💡 **Đừng gõ tay các class ánh xạ XML đó.** Cấu trúc bản đồ khay dịch sang C# là khoảng **700 dòng**
+> class lồng nhau — trong dự án tham khảo, toàn bộ 700 dòng ấy là **code sinh tự động từ lược đồ XML**,
+> không ai gõ. Cách làm và quy tắc kèm theo xem ở Chương 3 (mục sinh class từ lược đồ XML). Nhận ra
+> được điều này tiết kiệm vài ngày công và tránh hàng chục lỗi gõ nhầm tên trường.
+
+#### Một chi tiết kỹ thuật nhỏ nhưng dễ gây lỗi khó tìm
+
+Khi máy gửi một yêu cầu lên host và chờ trả lời, cần ghép **câu trả lời nào thuộc yêu cầu nào**. Mã
+nguồn kế thừa hay dùng cách đơn giản nhất: mỗi loại message một cờ chờ riêng, kèm một biến giữ nội
+dung trả lời.
+
+```csharp
+// ❌ Mẫu hay gặp — chỉ đúng khi mỗi lúc có TỐI ĐA MỘT yêu cầu cùng loại đang chờ
+public ManualResetEvent cmdS3F17evt;
+public string strS3F17Reply;
+```
+
+Nếu hai chỗ trong máy cùng gửi một loại message gần nhau, cả hai cùng chờ trên một cờ và biến trả lời
+chỉ giữ được **một** kết quả — bên còn lại nhận nhầm dữ liệu của bên kia. Đây là lỗi phụ thuộc thời
+điểm: hiếm khi xảy ra, rất khó tái hiện, và biểu hiện là "thỉnh thoảng máy nhận sai thông tin từ
+host".
+
+May mắn là SECS đã giải sẵn một nửa bài toán: **mọi message SECS đều mang một số định danh giao dịch**
+trong phần đầu, và câu trả lời luôn mang đúng số của yêu cầu. Cách đúng là ghép theo số đó — cùng
+nguyên tắc "hợp đồng ranh giới" đã trình bày ở mục 14.1.3 cho giao thức TCP tự thiết kế:
+
+```csharp
+// ✅ Ghép theo số định danh giao dịch — nhiều yêu cầu cùng loại chạy song song vẫn đúng
+private readonly ConcurrentDictionary<uint, TaskCompletionSource<SecsMessage>> _pending = new();
+
+public async Task<SecsMessage> SendAndWaitAsync(SecsMessage req, CancellationToken ct)
+{
+    var tcs = new TaskCompletionSource<SecsMessage>(TaskCreationOptions.RunContinuationsAsynchronously);
+    _pending[req.TransactionId] = tcs;
+    try
+    {
+        await _link.SendAsync(req, ct).ConfigureAwait(false);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        timeout.CancelAfter(_replyTimeout);          // T3 — luôn có thời gian chờ tối đa
+        return await tcs.Task.WaitAsync(timeout.Token).ConfigureAwait(false);
+    }
+    finally { _pending.TryRemove(req.TransactionId, out _); }   // dọn cả khi lỗi
+}
+
+// Khi nhận được message từ host:
+if (_pending.TryRemove(reply.TransactionId, out var waiter)) waiter.TrySetResult(reply);
+```
+
+
 ### 14.2.7  Khi không cần SECS/GEM — tích hợp MES kiểu nhẹ
 
 SECS/GEM đúng chuẩn bán dẫn/SMT, nhưng phần lớn nhà máy vừa và nhỏ — và rất nhiều máy
@@ -23086,6 +23246,77 @@ cách các dự án thật tiến hành, và quan trọng là **thứ tự này 
 
 ---
 
+## B.7 Đọc code mã nguồn mở để luyện tập
+
+Cuốn sách này lặp lại một thông điệp: kỹ năng quan trọng nhất của người mới không phải viết code từ
+đầu mà là **đọc được code người khác đã viết**. Chương 2 mục 2.4 dạy kỹ thuật; nhưng ngay sau khi
+gấp sách lại, bạn gặp một vấn đề rất thực tế — *lấy đâu ra code để tập đọc?* Mã nguồn của máy trong
+công ty thường không được mang ra ngoài, và nếu bạn chưa đi làm thì không có gì cả.
+
+Mục này giải quyết đúng việc đó: một danh sách dự án **mã nguồn mở** đang tồn tại thật, đủ lớn để có
+những vấn đề thật, và đọc được ngay hôm nay. Mỗi dòng ghi rõ **đọc nó để học cái gì** — đừng đọc dàn
+trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc code.
+
+**Bảng B.11 — Dự án C# mã nguồn mở đáng đọc, theo mục tiêu học**
+
+| Dự án | Đọc để học | Ghi chú khi đọc |
+|---|---|---|
+| **SharpSCADA** (`GavinYellow/SharpSCADA`) | Kiến trúc một hệ **SCADA** hoàn chỉnh viết bằng C#: gom dữ liệu từ nhiều loại PLC, lưu trữ, hiển thị, cảnh báo | Dự án C# công nghiệp có nhiều sao nhất trong nhóm này. Đọc phần **trừu tượng hoá driver** trước — đối chiếu với Chương 13. Lưu ý giấy phép (xem cảnh báo bên dưới) |
+| **Stateless** (`dotnet-state-machine/stateless`) | Một thư viện **máy trạng thái** được thiết kế tốt, đang được bảo trì tích cực | Đối chiếu trực tiếp với Chương 12: cách họ biểu diễn bảng chuyển trạng thái bằng API fluent, và cách xử lý trạng thái con. Nhỏ, đọc hết được |
+| **Serilog** / **NLog** | Cách một thư viện **ghi nhật ký** được thiết kế để mở rộng (sink, enricher, cấu hình) | Đối chiếu với Chương 19. Đây là ví dụ tốt nhất trong danh sách về thiết kế API cho người khác dùng |
+| **TcOpen** (`TcOpenGroup/TcOpen`, `Inxton/TcOpen`) | Khung ứng dụng cho máy tự động hoá nối **PLC Beckhoff/TwinCAT** với .NET; có mô hình thành phần, sinh mã, và giao diện | Gần với chủ đề sách nhất trong danh sách. Đọc cách họ ánh xạ **biến PLC ↔ đối tượng C#** — vấn đề Chương 14 mô tả |
+| **S7CommPlusDriver**, **Sharp7**, `siemens/simatic-s7-webserver-api` | Ba cách **khác nhau** để nói chuyện với cùng một dòng PLC Siemens: driver giao thức tự viết, thư viện cộng đồng, và API chính thức của hãng | Bài tập đối chiếu rất tốt: cùng một bài toán, ba mức trừu tượng, ba đánh đổi. Liên hệ Chương 14 |
+| **MewtocolNet** | Giao thức của một hãng PLC **ít phổ biến hơn** (Panasonic), qua cả TCP lẫn Serial | Đọc để thấy: khi hãng không có SDK .NET, người ta tự viết lớp giao thức như thế nào. Liên hệ Chương 14 mục 14.1.5 |
+| **tinyua** | Một stack **OPC UA** client viết lại từ đầu cho .NET, không phụ thuộc SDK của tổ chức chuẩn | Đọc nếu muốn hiểu OPC UA thật sự làm gì bên dưới lớp SDK ở Chương 14 mục 14.1.1 |
+
+### B.7.1 Cách đọc một dự án mã nguồn mở cho hiệu quả
+
+Đừng bắt đầu bằng cách mở file đầu tiên trong danh sách. Áp dụng đúng quy trình mà các chương đã dạy:
+
+1. **Đặt mục tiêu trước** (Bước 0): "sau buổi này tôi phải trả lời được câu gì?". Không có mục tiêu
+   thì đọc mã nguồn mở là hoạt động vô tận và không đọng lại gì.
+2. **Ánh xạ project vào sáu tầng** ở mục B.1 — biết mình đang đứng ở tầng nào trước khi đọc dòng nào.
+3. **Đọc test trước code, nếu dự án có test.** Đây là lợi thế lớn nhất của dự án mã nguồn mở so với
+   phần mềm máy trong công ty (mục 18.6.4 cho thấy chỉ 1/12 dự án máy thật có test): **test là tài
+   liệu đặc tả chạy được**. Muốn biết một class dùng thế nào, mở file test của nó nhanh hơn đọc
+   chính nó.
+4. **Đọc lịch sử thay đổi của một file hay sửa.** Lệnh `git log -p --follow <file>` cho thấy file đó
+   đã sai những gì và được sửa ra sao — thứ mà mã nguồn ở trạng thái hiện tại không kể lại. Đây là
+   thứ hoàn toàn không có khi đọc mã nguồn chép tay không có Git (4/12 dự án máy thật, mục 17.4).
+5. **Đọc phần thảo luận (issue, pull request) của một tính năng bạn quan tâm.** Nó cho thấy các
+   phương án đã được cân nhắc và lý do chọn — đúng loại thông tin mà code không bao giờ nói.
+
+> 💡 **Bài tập đối chiếu đáng giá nhất:** chọn **một** khái niệm bạn đã học trong sách (máy trạng
+> thái, trừu tượng hoá driver, ghi nhật ký có cấu trúc), rồi đọc **cách hai dự án khác nhau** giải
+> quyết nó. Bạn sẽ thấy ngay điều mà không sách nào dạy được: không có một cách đúng duy nhất, chỉ có
+> những đánh đổi khác nhau — và nhận ra được đánh đổi chính là khác biệt giữa người mới và người có
+> kinh nghiệm.
+
+> ⚠️ **Giấy phép là chuyện nghiêm túc khi bạn bán máy, không phải chi tiết pháp lý vụn vặt.** Phần
+> mềm máy được **giao cho khách hàng cùng cỗ máy** — tức là bạn đang *phân phối* phần mềm, và nghĩa vụ
+> giấy phép được kích hoạt. Ba nhóm cần phân biệt:
+> - **MIT / Apache-2.0 / BSD** — dùng thoải mái trong sản phẩm thương mại, chỉ cần giữ thông báo bản
+>   quyền. Phần lớn thư viện trong bảng trên thuộc nhóm này.
+> - **LGPL** (SharpSCADA và một số thư viện driver dùng giấy phép này) — dùng được trong sản phẩm
+>   thương mại **nếu liên kết động** (tham chiếu DLL riêng, không nhúng mã nguồn vào assembly của
+>   bạn), và bạn phải cho phép khách hàng thay thế được thư viện đó. Sao chép mã nguồn của nó vào dự
+>   án mình là chuyện khác hẳn về nghĩa vụ.
+> - **GPL** — điều kiện nặng nhất: có thể buộc **toàn bộ** phần mềm bạn phân phối phải công khai mã
+>   nguồn. Với phần mềm máy thương mại, gần như luôn là điều không chấp nhận được.
+>
+> Nguyên tắc thực dụng: **đọc để học thì giấy phép nào cũng được; chép vào sản phẩm thì phải kiểm tra
+> trước.** Và khi đưa một gói NuGet mới vào dự án, hãy liếc mục giấy phép của nó — mất mười giây, tránh
+> được một vấn đề rất khó gỡ khi máy đã giao và khách hàng yêu cầu rà soát.
+
+> 📌 **Danh sách này sẽ cũ đi.** Số sao, mức độ bảo trì và cả sự tồn tại của một dự án đều thay đổi.
+> Trước khi đầu tư thời gian đọc, kiểm tra hai chỉ số: **lần cập nhật gần nhất** (dự án ngừng bảo trì
+> vài năm vẫn đọc để học được, nhưng đừng dùng trong sản phẩm mới) và **số vấn đề đang mở so với đã
+> đóng** (tỷ lệ đóng cao cho thấy có người thật sự duy trì). Cách tìm dự án mới cùng loại: tìm kiếm
+> trên GitHub theo ngôn ngữ và chủ đề, sắp xếp theo số sao — ví dụ `language:csharp opc-ua`,
+> `language:csharp modbus`, `language:csharp scada`.
+
+---
+
 ## Tổng kết phụ lục
 
 - Một phần mềm máy tự động hoá tách được thành **sáu tầng** (Bảng B.1); ánh xạ project vào tầng là
@@ -23104,6 +23335,9 @@ cách các dự án thật tiến hành, và quan trọng là **thứ tự này 
   nửa chừng.
 - Thứ tự xây dựng (mục B.6) đặt phần khó sửa nhất lên trước: trừu tượng thiết bị và bảng tên IO
   quyết định chi phí của mọi việc còn lại.
+- Muốn luyện kỹ năng đọc code mà chưa có dự án thật trong tay: mục B.7 liệt kê các dự án **mã nguồn
+  mở** đọc được ngay, kèm mục tiêu học cho từng dự án — và một cảnh báo về giấy phép, vì phần mềm máy
+  được **phân phối cùng cỗ máy** nên nghĩa vụ giấy phép có hiệu lực thật.
 
 <!-- SECTION: Phu_Luc_C_Thuat_Ngu -->
 ---

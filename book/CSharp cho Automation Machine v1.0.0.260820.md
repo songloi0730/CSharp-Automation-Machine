@@ -2381,6 +2381,57 @@ vòng ngoài mà không báo alarm.
 > trạm/quy trình** một lần, kèm chạy thử đủ các tình huống dừng: Stop, Pause→Stop, E-Stop giữa lúc trục
 > đang chuyển động.
 
+**2b. Cách thứ ba: trả về một ĐỐI TƯỢNG KẾT QUẢ.**
+
+Hai cách trên (ném exception, trả `bool`) không phải toàn bộ lựa chọn. Các khung điều khiển hiện đại
+thường dùng cách thứ ba: mỗi bước trả về một **đối tượng mô tả kết quả**, mang theo cả thành công/thất
+bại lẫn **lý do**:
+
+```csharp
+public sealed record OperateResult(bool Success, string FailCode, string Message)
+{
+    public static OperateResult Ok() => new(true, "", "");
+    public static OperateResult Fail(string code, string message) => new(false, code, message);
+}
+
+// Mỗi bước của quy trình trả về nó — kể cả nhánh catch, không exception nào thoát ra ngoài
+protected override OperateResult Execute()
+{
+    try
+    {
+        if (!MoveAxis(target)) return OperateResult.Fail("MOVE_TIMEOUT", "Trục không tới vị trí");
+        return OperateResult.Ok();
+    }
+    catch (Exception ex)
+    {
+        return OperateResult.Fail("UNEXPECTED", ex.Message);
+    }
+}
+```
+
+**Bảng 3.15d — Ba cách một bước quy trình báo thất bại**
+
+| | Ném exception | Trả `bool` | Trả đối tượng kết quả |
+|---|---|---|---|
+| **Dừng được từ độ sâu bất kỳ** | Có — tự động | Không — phải kiểm tra ở mọi chỗ gọi | Không — phải kiểm tra ở mọi chỗ gọi |
+| **Mang được lý do thất bại** | Có (kiểu + thông điệp) | **Không** | Có (mã lỗi + thông điệp) |
+| **Người gọi có thể vô tình bỏ qua** | Không | **Có** | Có (nhưng thấy rõ hơn `bool`) |
+| **Hợp với** | Quy trình viết tuần tự bằng code | (không khuyến khích) | **Động cơ chạy quy trình** cần *nhận* kết quả từng bước để quyết định nhánh tiếp theo |
+| **Chi phí lúc chạy** | Cao khi ném thường xuyên | Gần bằng không | Gần bằng không |
+
+Điểm mạnh riêng của cách thứ ba, và là lý do các khung điều khiển chọn nó: khi quy trình được mô tả
+bằng **dữ liệu** (danh sách bước, hoặc đồ thị các bước — Phụ lục B mục B.3.2) thì có một **động cơ**
+đứng ngoài điều phối. Động cơ đó cần **cầm được kết quả** của từng bước để quyết định đi tiếp nhánh
+nào, ghi vào nhật ký gì, báo mã lỗi nào cho hệ MES. Nếu bước ném exception, động cơ mất quyền điều
+khiển và phải bọc `try/catch` quanh mọi lời gọi — vòng vo hơn hẳn.
+
+Ngược lại, khi quy trình được **viết tuần tự bằng code** (mẫu phổ biến hơn ở máy nhỏ), exception gọn
+hơn vì nó tự động thoát khỏi hàng chục tầng gọi mà không cần thêm dòng nào.
+
+> 💡 **Quy tắc chọn:** quy trình **là code** → dùng exception cho lỗi thật + `CancellationToken` cho
+> huỷ lệnh. Quy trình **là dữ liệu do động cơ chạy** → dùng đối tượng kết quả. Đừng trộn hai cách
+> trong cùng một tầng — người đọc sau sẽ không biết phải kiểm tra giá trị trả về hay bắt exception.
+
 **3. Đừng nhận dạng loại lỗi bằng cách so chuỗi `ex.Message`.**
 
 ```csharp
@@ -11517,6 +11568,69 @@ Anti-Corruption Layer (ACL) — dịch ngôn ngữ tại biên context
 MES / SCADA  (Bounded Context khác)
 ```
 
+### 11.3.4  Đối chiếu thực tế — phần nào của chương này thật sự được dùng
+
+Chương này trình bày DDD khá đầy đủ: Entity, Value Object, Aggregate Root, Domain Event, Bounded
+Context, Domain Service, Repository. Trước khi khép lại, cần một đoạn thẳng thắn về mức độ áp dụng
+thật, vì khoảng cách ở đây lớn hơn mọi chương khác — và biết trước sẽ giúp bạn dùng chương này **đúng
+cách** thay vì kỳ vọng sai.
+
+Khảo sát **13 dự án phần mềm máy tự động hoá thật** trong nhà máy điện tử, tìm dấu vết từng khái niệm:
+
+**Bảng 11.5b — Mức độ áp dụng DDD trong 13 dự án máy thật**
+
+| Khái niệm | Số dự án dùng |
+|---|---|
+| **Repository** (tách truy cập dữ liệu sau một interface) | **3** / 13 |
+| Aggregate Root | **0** / 13 |
+| Domain Event | **0** / 13 |
+| Value Object (theo nghĩa DDD) | **0** / 13 |
+| Bounded Context (tách model theo ngữ cảnh, có tài liệu) | **0** / 13 |
+| Có tầng `Domain` / `Application` / `Infrastructure` tách bạch | **0** / 13 |
+
+Con số này cần được đọc cho đúng, vì nó dễ dẫn tới hai kết luận sai ngược nhau.
+
+**Kết luận sai thứ nhất: "vậy chương này vô dụng, bỏ qua đi".** Không đúng, vì ba lý do:
+
+- **Repository — khái niệm được áp dụng nhiều nhất — lại đúng là khái niệm mang lại lợi ích rõ nhất
+  cho phần mềm máy**: nó là điều kiện để kiểm thử được (mục 18.6.4 cho thấy dự án duy nhất có test là
+  dự án có thiết bị và dữ liệu nằm sau interface). Ba dự án dùng nó không phải ngẫu nhiên — cả ba đều
+  là dự án lớn và mới hơn phần còn lại.
+- **Vấn đề mà DDD giải quyết vẫn tồn tại trong mọi dự án**, kể cả dự án không biết tới DDD: logic
+  nghiệp vụ (điều kiện phán định, luật recipe, quy tắc an toàn) trộn lẫn với mã điều khiển thiết bị
+  và mã giao diện, đến mức không sửa được một thứ mà không sợ hỏng thứ kia. Bạn sẽ gặp đúng vấn đề
+  này; chương này cho bạn **từ vựng để gọi tên nó** và một hướng ra.
+- **Nhiều dự án làm đúng tinh thần mà không dùng tên gọi.** Ví dụ: tách class chứa tham số (`Profile`)
+  khỏi class chứa hành vi (`Operator`) — đó chính là tinh thần tách dữ liệu nghiệp vụ khỏi hành vi kỹ
+  thuật, chỉ là không ai gọi nó là DDD.
+
+**Kết luận sai thứ hai: "vậy phải áp dụng đầy đủ DDD cho máy tiếp theo".** Cũng không đúng. DDD sinh
+ra cho phần mềm nghiệp vụ có **miền phức tạp** (bảo hiểm, ngân hàng, logistics) — nơi luật nghiệp vụ
+là phần khó nhất. Phần mềm máy có đặc điểm khác: phần khó nhất thường là **thời gian, đồng thời, và
+phần cứng**, còn luật nghiệp vụ tương đối đơn giản (so ngưỡng, kiểm tra dải, đúng thứ tự bước). Áp
+dụng đủ bộ DDD vào một máy đơn lẻ thường tạo ra nhiều tầng hơn lợi ích nó mang lại.
+
+> 💡 **Cách dùng chương này cho đúng: lấy ba thứ, bỏ qua phần còn lại cho tới khi thật sự cần.**
+>
+> 1. **Repository** cho dữ liệu nghiệp vụ (recipe, lịch sử alarm, dữ liệu sản xuất) — đây là thứ đáng
+>    áp dụng gần như luôn luôn, vì nó mở đường cho kiểm thử.
+> 2. **Tách logic phán định ra khỏi mã điều khiển thiết bị** — không cần gọi nó là Aggregate hay
+>    Domain Service; chỉ cần "hàm quyết định đạt/không đạt không được đụng vào card". Riêng điều này
+>    đã giải quyết phần lớn nỗi đau, và nó là điều kiện để viết được test ở bậc 2–3 của Bảng 18.8b.
+> 3. **Ý thức về Bounded Context** khi máy nói chuyện với hệ MES: cùng một từ "lô hàng" nghĩa khác
+>    nhau ở hai phía, và chỗ dịch giữa hai nghĩa cần một lớp riêng (mục 11.2.3) — đây là chỗ DDD thật
+>    sự cứu bạn, vì lệch nghĩa ở ranh giới này gây ra dữ liệu sai mà rất khó truy.
+>
+> Ba thứ còn lại (Aggregate Root, Domain Event, Value Object) đáng học để **hiểu**, và đáng áp dụng
+> khi bạn xây một **framework dùng cho nhiều máy** — nơi độ phức tạp đủ lớn để trả công cho lớp trừu
+> tượng thêm vào. Với một máy đơn lẻ giao trong sáu tháng, chúng thường là chi phí không thu hồi được.
+
+> 📌 **Một chi tiết phương pháp khi tự khảo sát kiểu này.** Khi đếm số dự án "có Value Object", kết
+> quả thô ban đầu là 3 — nhưng mở ra xem thì đó là các property tên `ValueObject` với nghĩa hoàn toàn
+> khác ("giá trị dưới dạng object"), không liên quan gì tới DDD. Đây là lý do vì sao Chương 2 mục 2.4
+> nhấn mạnh: **đếm số lần xuất hiện của một từ khoá không phải là bằng chứng — phải mở ra xem ít nhất
+> vài chỗ** trước khi kết luận. Sai lầm này rất dễ mắc khi khảo sát nhanh trên nhiều dự án.
+
 ## Tổng kết chương
 
 Mục tiêu của DDD không phải tạo nhiều class hơn, mà đảm bảo các quy tắc vận hành máy — interlock, homing, alarm, safety — luôn nằm đúng chỗ, không bị phân tán khắp codebase. Khi một kỹ sư mới tham gia sau 3 năm, hoặc khi phải nâng cấp phần cứng servo sang dòng mới, câu hỏi thực tế là: "tôi có thể tìm và sửa logic an toàn ở đâu mà không sợ bỏ sót chỗ nào?" — đó mới là câu hỏi DDD trả lời. Mô hình rõ ràng hôm nay là bảo hiểm cho bảo trì an toàn nhiều năm sau.
@@ -12508,6 +12622,16 @@ kỳ chuẩn nào — và không hiểu chúng thì không dám bấm.
 | **Chạy không** (Dry Run) | Không, hoặc phôi giả | **Không** — hoặc ghi kèm cờ đánh dấu dữ liệu thử | Sau khi sửa cơ khí/đổi khuôn: kiểm tra toàn bộ chuyển động và bắt tay giữa các trạm mà không phí sản phẩm | Kỹ thuật viên |
 | **Hiệu chuẩn** (Calibration) | Dùng mẫu chuẩn (master sample / gauge) | Ghi vào **hồ sơ hiệu chuẩn**, không vào dữ liệu sản xuất | Định kỳ, hoặc sau khi thay cảm biến/camera: xác lập lại quan hệ giữa giá trị đọc và giá trị thật | Kỹ sư |
 | **GR&R** (Gage R&R) | Đo **lặp lại** cùng một bộ mẫu nhiều lần | Ghi vào **hồ sơ đánh giá hệ đo** | Khi cần chứng minh với khách hàng rằng bản thân hệ đo đủ ổn định | Kỹ sư |
+
+> 📌 **Nhóm thứ hai: các trình tự phụ trợ.** Ngoài bốn *cách chạy sản xuất* ở Bảng 12.7b, phần mềm máy
+> thường có thêm vài trình tự không tạo ra sản phẩm nào nhưng cần chạy được như một chế độ riêng:
+> **Về gốc / Reset** (đưa mọi cơ cấu về trạng thái ban đầu đã biết, thường chạy sau mỗi lần dừng khẩn),
+> **Dọn máy / Clear** (xả hết phôi còn sót bên trong — bắt buộc trước khi đổi mã hàng), và **Gỡ rối /
+> Debug** (chạy từng bước một, dừng sau mỗi bước để kỹ sư quan sát). Chúng khác nhóm với bốn chế độ
+> trên: bốn chế độ kia trả lời *"chạy sản xuất theo kiểu nào"*, còn nhóm này là *"trình tự phụ trợ
+> nào đang chạy"*. Trong một dự án tham khảo, cả hai nhóm được gộp vào một enum kiểu **cờ tổ hợp**, và
+> mỗi máy khai báo tập chế độ nó hỗ trợ ngay lúc khởi động — gọn hơn hẳn việc mỗi máy sửa lại phần rẽ
+> nhánh chọn chế độ.
 
 Ba chế độ đầu khá dễ hiểu. **GR&R** thì cần giải thích, vì đây là khái niệm đo lường chứ không phải
 lập trình, và người mới hầu như chưa gặp bao giờ.
@@ -20129,6 +20253,18 @@ ngày 12`. Nếu bạn tiếp quản một dự án như vậy, việc **đầu 
 trình nhánh — mà là `git init` và commit nguyên trạng bản đang chạy. Chỉ riêng việc đó đã cho bạn
 khả năng biết mình vừa sửa gì.
 
+> ⚠️ **Đã có Git rồi thì đừng "xoá" code bằng cách vô hiệu hoá nó.** Hai kiểu hay gặp trong mã nguồn
+> máy: comment cả khối vài trăm dòng, và bọc trong `#if false` (một dự án tham khảo có **9 chỗ** như
+> vậy). Cả hai đều tệ hơn xoá hẳn, và kiểu thứ hai tệ hơn kiểu thứ nhất: code trong `#if false`
+> **không được biên dịch**, nên khi API xung quanh thay đổi nó cũng không báo lỗi — đến lúc ai đó bật
+> lại thì nó đã hỏng từ lâu mà không ai biết. Người đọc sau cũng không có cách nào biết khối đó còn
+> đúng hay không, nên không ai dám xoá, và nó nằm đó mãi.
+>
+> Lý do người ta giữ lại luôn là "để sau này cần thì lấy lại" — nhưng đó **chính xác là việc Git làm**,
+> và làm tốt hơn: `git log`, `git show`, `git revert` lấy lại được bất cứ thứ gì từng được commit.
+> Xoá hẳn, commit với thông điệp nói rõ vì sao xoá. Nếu lo quên, gắn thêm một tag hoặc ghi số commit
+> vào tài liệu — vẫn gọn hơn là để code chết trong file đang đọc hằng ngày.
+
 ### Bậc thang áp dụng — theo thứ tự lợi ích trên công sức
 
 **Bảng 17.7b — Nên làm gì trước khi đội chưa có gì**
@@ -23116,6 +23252,81 @@ mà là an toàn và vận hành: bạn kiểm soát được **tập hành đ�
 thần với "màn hình chạy tay tự sinh theo khai báo" ở mục B.2.2 — mô tả bằng dữ liệu, để phần mềm diễn
 giải.
 
+#### Con đường 3 trông như thế nào khi làm đến nơi đến chốn
+
+Bảng trên nói con đường 3 gần như luôn thắng, nhưng "cấu hình dạng dữ liệu" nghe còn trừu tượng. Dưới
+đây là hình dung cụ thể, rút từ một dự án tham khảo đã hiện thực trọn vẹn cách này.
+
+**Ý tưởng: quy trình là một ĐỒ THỊ, còn C# chỉ cung cấp thư viện các nút.**
+
+```
+   [Bắt đầu] → [Đưa trục Z lên an toàn] → [Di chuyển XY tới điểm chụp] → [Chụp ảnh]
+                                                                              │
+                                        ┌─────────────── kết quả ─────────────┘
+                                        ▼
+                              [Có đạt không?] ──không──→ [Ghi NG + xả phôi]
+                                        │ đạt
+                                        ▼
+                                  [Gắp và đặt] → [Báo hệ MES] → [Kết thúc]
+```
+
+Mỗi ô là một **nút**; mũi tên là thứ tự thực thi; và giữa các nút còn có **cổng dữ liệu** để truyền
+giá trị (toạ độ đo được từ nút chụp ảnh đi thẳng sang nút gắp đặt). Kỹ sư tại chỗ dựng đồ thị này
+bằng một màn hình kéo-thả, và nó được **lưu thành file dữ liệu** — không phải mã nguồn.
+
+**Phần bạn viết bằng C# là thư viện nút.** Mỗi loại hành động một class, theo một khuôn cố định:
+
+```csharp
+namespace MeoFrame.Application.Nodes;
+
+/// <summary>Tham số của nút — thứ kỹ sư điền trên màn hình, được lưu vào file quy trình.</summary>
+public sealed class MoveAxisNodeProfile : NodeProfile
+{
+    public string AxisName   { get; set; } = "";
+    public double SpeedRatio { get; set; } = 1.0;
+    public string TargetPort { get; set; } = "";   // tên cổng vào lấy toạ độ đích
+}
+
+/// <summary>Hành vi của nút — thứ bạn viết một lần, dùng cho mọi quy trình.</summary>
+public sealed class MoveAxisNode : NodeOperator
+{
+    public MoveAxisNode(NodeProfile profile) : base(profile) { }
+
+    protected override OperateResult OnExecute(ITraceData trace)
+    {
+        var p = (MoveAxisNodeProfile)Profile;
+        double target = Inputs.GetDouble(p.TargetPort);      // ← nhận từ nút trước qua cổng
+        if (!_axes[p.AxisName].MoveAbsolute(target, p.SpeedRatio))
+            return OperateResult.Fail("MOVE_TIMEOUT", $"Trục {p.AxisName} không tới {target:0.00} mm");
+        Outputs.SetDouble("ActualPosition", _axes[p.AxisName].CurrentPositionMm);
+        return OperateResult.Ok();
+    }
+}
+```
+
+Bốn điểm thiết kế đáng chú ý trong khuôn này, và cả bốn đều là quyết định có lý do:
+
+1. **Tách `Profile` (tham số) khỏi `Node` (hành vi).** `Profile` là dữ liệu thuần, tuần tự hoá được,
+   hiển thị lên màn hình cấu hình được. `Node` là code, không lưu. Trộn hai thứ là lỗi thiết kế phổ
+   biến nhất khi tự làm mẫu này.
+2. **Nút trả về đối tượng kết quả, không ném exception** (Chương 3 mục 3.5.4, cách thứ ba) — vì động
+   cơ chạy đồ thị cần *cầm* kết quả để quyết định đi nhánh nào.
+3. **Dữ liệu giữa các nút đi qua cổng có tên**, không qua biến toàn cục. Nhờ vậy một nút dùng lại
+   được ở nhiều quy trình khác nhau mà không cần biết ai đứng trước nó.
+4. **Thêm loại hành động mới = thêm một class**, không sửa đồ thị nào đã dựng, không sửa động cơ.
+
+**Cái giá phải trả — nói thẳng để không ai bất ngờ:** làm được đến mức này cần một khoản đầu tư ban
+đầu thật sự (động cơ chạy đồ thị, màn hình dựng đồ thị, cơ chế lưu/nạp, gỡ rối từng nút). Nó **không**
+đáng cho một máy đơn lẻ. Nó đáng khi bạn làm **nhiều máy cùng họ** và mỗi khách hàng lại muốn khác
+một chút — lúc đó chi phí ban đầu chia đều ra rất nhỏ, và cái được là mỗi máy mới không cần lập trình
+viên.
+
+> 💡 **Nếu chưa đủ nguồn lực cho đồ thị, vẫn có bản rút gọn rất đáng làm:** quy trình là một **danh
+> sách bước tuần tự** trong file cấu hình (mỗi bước một tên hành động + tham số), không có nhánh,
+> không có cổng dữ liệu. Bạn mất khả năng rẽ nhánh nhưng giữ được lợi ích lớn nhất: **đổi thứ tự và
+> tham số các bước mà không build lại**. Nhiều máy chỉ cần đúng chừng đó.
+
+
 > ⚠️ **Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.** Nếu thấy một
 > class vài trăm dòng toàn các chuỗi kiểu `"public class " + name + " : StationBase
 
@@ -23243,6 +23454,70 @@ cách các dự án thật tiến hành, và quan trọng là **thứ tự này 
 > ngay từ đầu giúp mọi màn hình, mọi log, mọi tài liệu về sau đều nói cùng một ngôn ngữ với người đấu
 > điện. Ngược lại, nếu bước 1–2 làm ẩu thì mọi bước sau đều phải trả giá, và không có cách nào bù lại
 > bằng cách viết code cẩn thận hơn ở tầng trên.
+
+### B.6.1 Một sản phẩm, nhiều khách hàng: kiến trúc plugin
+
+Mục B.6 giả định bạn làm **một** máy. Nếu công ty bạn bán **nhiều máy cùng họ** cho nhiều khách hàng,
+có một mức tổ chức nữa đáng biết — và nó là bước tiếp theo tự nhiên sau "biến thể máy" ở Chương 13
+mục 13.2.6.
+
+Ý tưởng: ứng dụng chính chỉ là một **cái khung** (đăng nhập, phân quyền, khung màn hình, nhật ký,
+nối MES). Mọi chức năng đặc thù nằm trong các **plugin** — mỗi plugin là một file DLL riêng, nạp vào
+lúc chạy. Máy nào cần chức năng gì thì cài plugin đó.
+
+**Code B.1 — Nạp plugin từ một thư mục, lúc khởi động**
+
+```csharp
+var pluginDir = Path.Combine(AppContext.BaseDirectory, "Extensions");
+foreach (var dll in Directory.GetFiles(pluginDir, "*.dll"))
+{
+    try
+    {
+        var assembly = Assembly.LoadFrom(dll);
+        var type = assembly.GetTypes()
+                           .FirstOrDefault(t => typeof(IMachinePlugin).IsAssignableFrom(t)
+                                             && !t.IsAbstract);
+        if (type is null) { _log.Warn("{Dll} không chứa plugin nào", dll); continue; }
+
+        var plugin = (IMachinePlugin)Activator.CreateInstance(type)!;
+        plugin.Register(_services);                 // plugin tự đăng ký dịch vụ/màn hình của nó
+        _loaded.Add(plugin);
+        _log.Information("Đã nạp plugin {Name} v{Version}", plugin.Name, plugin.Version);
+    }
+    catch (Exception ex)
+    {
+        // Nạp hỏng MỘT plugin không được làm chết ứng dụng — nhưng phải hiện lên màn hình
+        _log.Error(ex, "Nạp {Dll} thất bại", dll);
+        _failedPlugins.Add((Path.GetFileName(dll), ex.Message));
+    }
+}
+```
+
+Ba điểm quyết định chất lượng của cơ chế này:
+
+1. **Nạp hỏng một plugin không làm chết ứng dụng** — bọc `try/catch` quanh từng file. Đúng với bối
+   cảnh máy: thiếu module thị giác thì vẫn nên vào được màn hình để chạy tay và chẩn đoán.
+2. **Nhưng phải HIỂN THỊ plugin nào nạp hỏng, không chỉ ghi log.** Đây là điều một dự án tham khảo
+   làm thiếu, và nó nguy hiểm: máy chạy **thiếu chức năng** trong khi giao diện trông vẫn bình thường.
+   Một dòng cảnh báo thường trực trên màn hình chính ("Thiếu module: Thị giác — máy đang chạy hạn
+   chế") giải quyết được.
+3. **Ghi phiên bản từng plugin vào nhật ký khởi động và vào màn hình "Về phần mềm".** Với kiến trúc
+   plugin, câu hỏi "máy này đang chạy phiên bản nào" không còn một câu trả lời duy nhất — nó là một
+   **danh sách**. Không ghi lại thì hỗ trợ từ xa gần như không làm được.
+
+**Bảng B.12 — Ba mức phục vụ nhiều khách hàng, theo thứ tự chi phí tăng dần**
+
+| Mức | Cách làm | Đáng chọn khi |
+|---|---|---|
+| **1. Một bộ mã, khác nhau ở cấu hình** | Tham số cấu hình chọn biến thể (Chương 13 mục 13.2.6) | Khác biệt chỉ ở dữ liệu: tên tag, số đầu công tác, bật/tắt một trạm |
+| **2. Một bộ mã, khác nhau ở tổ hợp plugin** | Khung chung + thư viện plugin; mỗi máy cài một tập plugin | Khác biệt ở **chức năng**: máy này có thị giác, máy kia có đo lực |
+| **3. Bản build riêng cho từng khách** | Hằng biên dịch riêng, nhánh mã nguồn riêng | Gần như hai sản phẩm khác nhau — **và hãy chắc chắn trước khi chọn** |
+
+> ⚠️ **Đừng dùng mức 3 cho việc chỉ cần mức 1.** Trong một dự án tham khảo, hằng biên dịch riêng theo
+> **tên nhà máy** được dùng cho... việc đổi kích thước cửa sổ mặc định. Cái giá: mỗi lần sửa một lỗi
+> bất kỳ phải build và kiểm thử **hai bản**, và bản của nhà máy ít được chú ý hơn sẽ dần lệch pha với
+> bản chính. Quy tắc phân biệt rất đơn giản: nếu khác biệt có thể viết thành **một dòng trong file cấu
+> hình** thì nó thuộc mức 1, không phải mức 3.
 
 ---
 

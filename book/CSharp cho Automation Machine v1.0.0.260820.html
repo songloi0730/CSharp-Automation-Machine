@@ -2934,6 +2934,83 @@ cơ chế trong cùng một quy trình (một nửa dừng bằng exception, m�
 trạm/quy trình</strong> một lần, kèm chạy thử đủ các tình huống dừng: Stop, Pause→Stop, E-Stop giữa lúc trục
 đang chuyển động.</p>
 </blockquote>
+<p><strong>2b. Cách thứ ba: trả về một ĐỐI TƯỢNG KẾT QUẢ.</strong></p>
+<p>Hai cách trên (ném exception, trả <code>bool</code>) không phải toàn bộ lựa chọn. Các khung điều khiển hiện đại
+thường dùng cách thứ ba: mỗi bước trả về một <strong>đối tượng mô tả kết quả</strong>, mang theo cả thành công/thất
+bại lẫn <strong>lý do</strong>:</p>
+<pre><code class="language-csharp">public sealed record OperateResult(bool Success, string FailCode, string Message)
+{
+    public static OperateResult Ok() =&gt; new(true, &quot;&quot;, &quot;&quot;);
+    public static OperateResult Fail(string code, string message) =&gt; new(false, code, message);
+}
+
+// Mỗi bước của quy trình trả về nó — kể cả nhánh catch, không exception nào thoát ra ngoài
+protected override OperateResult Execute()
+{
+    try
+    {
+        if (!MoveAxis(target)) return OperateResult.Fail(&quot;MOVE_TIMEOUT&quot;, &quot;Trục không tới vị trí&quot;);
+        return OperateResult.Ok();
+    }
+    catch (Exception ex)
+    {
+        return OperateResult.Fail(&quot;UNEXPECTED&quot;, ex.Message);
+    }
+}
+</code></pre>
+<p><strong>Bảng 3.15d — Ba cách một bước quy trình báo thất bại</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Ném exception</th>
+<th>Trả <code>bool</code></th>
+<th>Trả đối tượng kết quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Dừng được từ độ sâu bất kỳ</strong></td>
+<td>Có — tự động</td>
+<td>Không — phải kiểm tra ở mọi chỗ gọi</td>
+<td>Không — phải kiểm tra ở mọi chỗ gọi</td>
+</tr>
+<tr>
+<td><strong>Mang được lý do thất bại</strong></td>
+<td>Có (kiểu + thông điệp)</td>
+<td><strong>Không</strong></td>
+<td>Có (mã lỗi + thông điệp)</td>
+</tr>
+<tr>
+<td><strong>Người gọi có thể vô tình bỏ qua</strong></td>
+<td>Không</td>
+<td><strong>Có</strong></td>
+<td>Có (nhưng thấy rõ hơn <code>bool</code>)</td>
+</tr>
+<tr>
+<td><strong>Hợp với</strong></td>
+<td>Quy trình viết tuần tự bằng code</td>
+<td>(không khuyến khích)</td>
+<td><strong>Động cơ chạy quy trình</strong> cần <em>nhận</em> kết quả từng bước để quyết định nhánh tiếp theo</td>
+</tr>
+<tr>
+<td><strong>Chi phí lúc chạy</strong></td>
+<td>Cao khi ném thường xuyên</td>
+<td>Gần bằng không</td>
+<td>Gần bằng không</td>
+</tr>
+</tbody></table></div>
+<p>Điểm mạnh riêng của cách thứ ba, và là lý do các khung điều khiển chọn nó: khi quy trình được mô tả
+bằng <strong>dữ liệu</strong> (danh sách bước, hoặc đồ thị các bước — Phụ lục B mục B.3.2) thì có một <strong>động cơ</strong>
+đứng ngoài điều phối. Động cơ đó cần <strong>cầm được kết quả</strong> của từng bước để quyết định đi tiếp nhánh
+nào, ghi vào nhật ký gì, báo mã lỗi nào cho hệ MES. Nếu bước ném exception, động cơ mất quyền điều
+khiển và phải bọc <code>try/catch</code> quanh mọi lời gọi — vòng vo hơn hẳn.</p>
+<p>Ngược lại, khi quy trình được <strong>viết tuần tự bằng code</strong> (mẫu phổ biến hơn ở máy nhỏ), exception gọn
+hơn vì nó tự động thoát khỏi hàng chục tầng gọi mà không cần thêm dòng nào.</p>
+<blockquote>
+<p>💡 <strong>Quy tắc chọn:</strong> quy trình <strong>là code</strong> → dùng exception cho lỗi thật + <code>CancellationToken</code> cho
+huỷ lệnh. Quy trình <strong>là dữ liệu do động cơ chạy</strong> → dùng đối tượng kết quả. Đừng trộn hai cách
+trong cùng một tầng — người đọc sau sẽ không biết phải kiểm tra giá trị trả về hay bắt exception.</p>
+</blockquote>
 <p><strong>3. Đừng nhận dạng loại lỗi bằng cách so chuỗi <code>ex.Message</code>.</strong></p>
 <pre><code class="language-csharp">// ❌ Gặp thật trong code hiện trường:
 catch (Exception ex)
@@ -12386,6 +12463,88 @@ Anti-Corruption Layer (ACL) — dịch ngôn ngữ tại biên context
 ▼
 MES / SCADA  (Bounded Context khác)
 </code></pre>
+<h3>11.3.4  Đối chiếu thực tế — phần nào của chương này thật sự được dùng</h3>
+<p>Chương này trình bày DDD khá đầy đủ: Entity, Value Object, Aggregate Root, Domain Event, Bounded
+Context, Domain Service, Repository. Trước khi khép lại, cần một đoạn thẳng thắn về mức độ áp dụng
+thật, vì khoảng cách ở đây lớn hơn mọi chương khác — và biết trước sẽ giúp bạn dùng chương này <strong>đúng
+cách</strong> thay vì kỳ vọng sai.</p>
+<p>Khảo sát <strong>13 dự án phần mềm máy tự động hoá thật</strong> trong nhà máy điện tử, tìm dấu vết từng khái niệm:</p>
+<p><strong>Bảng 11.5b — Mức độ áp dụng DDD trong 13 dự án máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Khái niệm</th>
+<th>Số dự án dùng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Repository</strong> (tách truy cập dữ liệu sau một interface)</td>
+<td><strong>3</strong> / 13</td>
+</tr>
+<tr>
+<td>Aggregate Root</td>
+<td><strong>0</strong> / 13</td>
+</tr>
+<tr>
+<td>Domain Event</td>
+<td><strong>0</strong> / 13</td>
+</tr>
+<tr>
+<td>Value Object (theo nghĩa DDD)</td>
+<td><strong>0</strong> / 13</td>
+</tr>
+<tr>
+<td>Bounded Context (tách model theo ngữ cảnh, có tài liệu)</td>
+<td><strong>0</strong> / 13</td>
+</tr>
+<tr>
+<td>Có tầng <code>Domain</code> / <code>Application</code> / <code>Infrastructure</code> tách bạch</td>
+<td><strong>0</strong> / 13</td>
+</tr>
+</tbody></table></div>
+<p>Con số này cần được đọc cho đúng, vì nó dễ dẫn tới hai kết luận sai ngược nhau.</p>
+<p><strong>Kết luận sai thứ nhất: &quot;vậy chương này vô dụng, bỏ qua đi&quot;.</strong> Không đúng, vì ba lý do:</p>
+<ul>
+<li><strong>Repository — khái niệm được áp dụng nhiều nhất — lại đúng là khái niệm mang lại lợi ích rõ nhất
+cho phần mềm máy</strong>: nó là điều kiện để kiểm thử được (mục 18.6.4 cho thấy dự án duy nhất có test là
+dự án có thiết bị và dữ liệu nằm sau interface). Ba dự án dùng nó không phải ngẫu nhiên — cả ba đều
+là dự án lớn và mới hơn phần còn lại.</li>
+<li><strong>Vấn đề mà DDD giải quyết vẫn tồn tại trong mọi dự án</strong>, kể cả dự án không biết tới DDD: logic
+nghiệp vụ (điều kiện phán định, luật recipe, quy tắc an toàn) trộn lẫn với mã điều khiển thiết bị
+và mã giao diện, đến mức không sửa được một thứ mà không sợ hỏng thứ kia. Bạn sẽ gặp đúng vấn đề
+này; chương này cho bạn <strong>từ vựng để gọi tên nó</strong> và một hướng ra.</li>
+<li><strong>Nhiều dự án làm đúng tinh thần mà không dùng tên gọi.</strong> Ví dụ: tách class chứa tham số (<code>Profile</code>)
+khỏi class chứa hành vi (<code>Operator</code>) — đó chính là tinh thần tách dữ liệu nghiệp vụ khỏi hành vi kỹ
+thuật, chỉ là không ai gọi nó là DDD.</li>
+</ul>
+<p><strong>Kết luận sai thứ hai: &quot;vậy phải áp dụng đầy đủ DDD cho máy tiếp theo&quot;.</strong> Cũng không đúng. DDD sinh
+ra cho phần mềm nghiệp vụ có <strong>miền phức tạp</strong> (bảo hiểm, ngân hàng, logistics) — nơi luật nghiệp vụ
+là phần khó nhất. Phần mềm máy có đặc điểm khác: phần khó nhất thường là <strong>thời gian, đồng thời, và
+phần cứng</strong>, còn luật nghiệp vụ tương đối đơn giản (so ngưỡng, kiểm tra dải, đúng thứ tự bước). Áp
+dụng đủ bộ DDD vào một máy đơn lẻ thường tạo ra nhiều tầng hơn lợi ích nó mang lại.</p>
+<blockquote>
+<p>💡 <strong>Cách dùng chương này cho đúng: lấy ba thứ, bỏ qua phần còn lại cho tới khi thật sự cần.</strong></p>
+<ol>
+<li><strong>Repository</strong> cho dữ liệu nghiệp vụ (recipe, lịch sử alarm, dữ liệu sản xuất) — đây là thứ đáng
+áp dụng gần như luôn luôn, vì nó mở đường cho kiểm thử.</li>
+<li><strong>Tách logic phán định ra khỏi mã điều khiển thiết bị</strong> — không cần gọi nó là Aggregate hay
+Domain Service; chỉ cần &quot;hàm quyết định đạt/không đạt không được đụng vào card&quot;. Riêng điều này
+đã giải quyết phần lớn nỗi đau, và nó là điều kiện để viết được test ở bậc 2–3 của Bảng 18.8b.</li>
+<li><strong>Ý thức về Bounded Context</strong> khi máy nói chuyện với hệ MES: cùng một từ &quot;lô hàng&quot; nghĩa khác
+nhau ở hai phía, và chỗ dịch giữa hai nghĩa cần một lớp riêng (mục 11.2.3) — đây là chỗ DDD thật
+sự cứu bạn, vì lệch nghĩa ở ranh giới này gây ra dữ liệu sai mà rất khó truy.</li>
+</ol>
+<p>Ba thứ còn lại (Aggregate Root, Domain Event, Value Object) đáng học để <strong>hiểu</strong>, và đáng áp dụng
+khi bạn xây một <strong>framework dùng cho nhiều máy</strong> — nơi độ phức tạp đủ lớn để trả công cho lớp trừu
+tượng thêm vào. Với một máy đơn lẻ giao trong sáu tháng, chúng thường là chi phí không thu hồi được.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Một chi tiết phương pháp khi tự khảo sát kiểu này.</strong> Khi đếm số dự án &quot;có Value Object&quot;, kết
+quả thô ban đầu là 3 — nhưng mở ra xem thì đó là các property tên <code>ValueObject</code> với nghĩa hoàn toàn
+khác (&quot;giá trị dưới dạng object&quot;), không liên quan gì tới DDD. Đây là lý do vì sao Chương 2 mục 2.4
+nhấn mạnh: <strong>đếm số lần xuất hiện của một từ khoá không phải là bằng chứng — phải mở ra xem ít nhất
+vài chỗ</strong> trước khi kết luận. Sai lầm này rất dễ mắc khi khảo sát nhanh trên nhiều dự án.</p>
+</blockquote>
 <h2 id="tng-kt-chương-11">Tổng kết chương</h2>
 <p>Mục tiêu của DDD không phải tạo nhiều class hơn, mà đảm bảo các quy tắc vận hành máy — interlock, homing, alarm, safety — luôn nằm đúng chỗ, không bị phân tán khắp codebase. Khi một kỹ sư mới tham gia sau 3 năm, hoặc khi phải nâng cấp phần cứng servo sang dòng mới, câu hỏi thực tế là: &quot;tôi có thể tìm và sửa logic an toàn ở đâu mà không sợ bỏ sót chỗ nào?&quot; — đó mới là câu hỏi DDD trả lời. Mô hình rõ ràng hôm nay là bảo hiểm cho bảo trì an toàn nhiều năm sau.</p>
 <p>Chương 11 áp dụng Domain-Driven Design vào máy tự động hoá:</p>
@@ -13619,6 +13778,17 @@ kỳ chuẩn nào — và không hiểu chúng thì không dám bấm.</p>
 <td>Kỹ sư</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>📌 <strong>Nhóm thứ hai: các trình tự phụ trợ.</strong> Ngoài bốn <em>cách chạy sản xuất</em> ở Bảng 12.7b, phần mềm máy
+thường có thêm vài trình tự không tạo ra sản phẩm nào nhưng cần chạy được như một chế độ riêng:
+<strong>Về gốc / Reset</strong> (đưa mọi cơ cấu về trạng thái ban đầu đã biết, thường chạy sau mỗi lần dừng khẩn),
+<strong>Dọn máy / Clear</strong> (xả hết phôi còn sót bên trong — bắt buộc trước khi đổi mã hàng), và <strong>Gỡ rối /
+Debug</strong> (chạy từng bước một, dừng sau mỗi bước để kỹ sư quan sát). Chúng khác nhóm với bốn chế độ
+trên: bốn chế độ kia trả lời <em>&quot;chạy sản xuất theo kiểu nào&quot;</em>, còn nhóm này là <em>&quot;trình tự phụ trợ
+nào đang chạy&quot;</em>. Trong một dự án tham khảo, cả hai nhóm được gộp vào một enum kiểu <strong>cờ tổ hợp</strong>, và
+mỗi máy khai báo tập chế độ nó hỗ trợ ngay lúc khởi động — gọn hơn hẳn việc mỗi máy sửa lại phần rẽ
+nhánh chọn chế độ.</p>
+</blockquote>
 <p>Ba chế độ đầu khá dễ hiểu. <strong>GR&amp;R</strong> thì cần giải thích, vì đây là khái niệm đo lường chứ không phải
 lập trình, và người mới hầu như chưa gặp bao giờ.</p>
 <blockquote>
@@ -22380,6 +22550,18 @@ quyền không bao giờ nằm trong kho mã nguồn</strong> — kể cả kho 
 <p><strong>3. Bốn dự án không có Git.</strong> Chúng được quản lý bằng thư mục chép tay kiểu <code>Máy A - bản 3 - sửa ngày 12</code>. Nếu bạn tiếp quản một dự án như vậy, việc <strong>đầu tiên</strong> nên làm không phải là đề xuất quy
 trình nhánh — mà là <code>git init</code> và commit nguyên trạng bản đang chạy. Chỉ riêng việc đó đã cho bạn
 khả năng biết mình vừa sửa gì.</p>
+<blockquote>
+<p>⚠️ <strong>Đã có Git rồi thì đừng &quot;xoá&quot; code bằng cách vô hiệu hoá nó.</strong> Hai kiểu hay gặp trong mã nguồn
+máy: comment cả khối vài trăm dòng, và bọc trong <code>#if false</code> (một dự án tham khảo có <strong>9 chỗ</strong> như
+vậy). Cả hai đều tệ hơn xoá hẳn, và kiểu thứ hai tệ hơn kiểu thứ nhất: code trong <code>#if false</code>
+<strong>không được biên dịch</strong>, nên khi API xung quanh thay đổi nó cũng không báo lỗi — đến lúc ai đó bật
+lại thì nó đã hỏng từ lâu mà không ai biết. Người đọc sau cũng không có cách nào biết khối đó còn
+đúng hay không, nên không ai dám xoá, và nó nằm đó mãi.</p>
+<p>Lý do người ta giữ lại luôn là &quot;để sau này cần thì lấy lại&quot; — nhưng đó <strong>chính xác là việc Git làm</strong>,
+và làm tốt hơn: <code>git log</code>, <code>git show</code>, <code>git revert</code> lấy lại được bất cứ thứ gì từng được commit.
+Xoá hẳn, commit với thông điệp nói rõ vì sao xoá. Nếu lo quên, gắn thêm một tag hoặc ghi số commit
+vào tài liệu — vẫn gọn hơn là để code chết trong file đang đọc hằng ngày.</p>
+</blockquote>
 <h3>Bậc thang áp dụng — theo thứ tự lợi ích trên công sức</h3>
 <p><strong>Bảng 17.7b — Nên làm gì trước khi đội chưa có gì</strong></p>
 <div class="table-wrap"><table>
@@ -25825,6 +26007,71 @@ mà là an toàn và vận hành: bạn kiểm soát được <strong>tập hàn
 động đã được bạn viết, đã kiểm tra interlock), thay vì mở cửa cho mã tuỳ ý. Nó cũng là cùng một tinh
 thần với &quot;màn hình chạy tay tự sinh theo khai báo&quot; ở mục B.2.2 — mô tả bằng dữ liệu, để phần mềm diễn
 giải.</p>
+<h4>Con đường 3 trông như thế nào khi làm đến nơi đến chốn</h4>
+<p>Bảng trên nói con đường 3 gần như luôn thắng, nhưng &quot;cấu hình dạng dữ liệu&quot; nghe còn trừu tượng. Dưới
+đây là hình dung cụ thể, rút từ một dự án tham khảo đã hiện thực trọn vẹn cách này.</p>
+<p><strong>Ý tưởng: quy trình là một ĐỒ THỊ, còn C# chỉ cung cấp thư viện các nút.</strong></p>
+<pre><code>   [Bắt đầu] → [Đưa trục Z lên an toàn] → [Di chuyển XY tới điểm chụp] → [Chụp ảnh]
+                                                                              │
+                                        ┌─────────────── kết quả ─────────────┘
+                                        ▼
+                              [Có đạt không?] ──không──→ [Ghi NG + xả phôi]
+                                        │ đạt
+                                        ▼
+                                  [Gắp và đặt] → [Báo hệ MES] → [Kết thúc]
+</code></pre>
+<p>Mỗi ô là một <strong>nút</strong>; mũi tên là thứ tự thực thi; và giữa các nút còn có <strong>cổng dữ liệu</strong> để truyền
+giá trị (toạ độ đo được từ nút chụp ảnh đi thẳng sang nút gắp đặt). Kỹ sư tại chỗ dựng đồ thị này
+bằng một màn hình kéo-thả, và nó được <strong>lưu thành file dữ liệu</strong> — không phải mã nguồn.</p>
+<p><strong>Phần bạn viết bằng C# là thư viện nút.</strong> Mỗi loại hành động một class, theo một khuôn cố định:</p>
+<pre><code class="language-csharp">namespace MeoFrame.Application.Nodes;
+
+/// &lt;summary&gt;Tham số của nút — thứ kỹ sư điền trên màn hình, được lưu vào file quy trình.&lt;/summary&gt;
+public sealed class MoveAxisNodeProfile : NodeProfile
+{
+    public string AxisName   { get; set; } = &quot;&quot;;
+    public double SpeedRatio { get; set; } = 1.0;
+    public string TargetPort { get; set; } = &quot;&quot;;   // tên cổng vào lấy toạ độ đích
+}
+
+/// &lt;summary&gt;Hành vi của nút — thứ bạn viết một lần, dùng cho mọi quy trình.&lt;/summary&gt;
+public sealed class MoveAxisNode : NodeOperator
+{
+    public MoveAxisNode(NodeProfile profile) : base(profile) { }
+
+    protected override OperateResult OnExecute(ITraceData trace)
+    {
+        var p = (MoveAxisNodeProfile)Profile;
+        double target = Inputs.GetDouble(p.TargetPort);      // ← nhận từ nút trước qua cổng
+        if (!_axes[p.AxisName].MoveAbsolute(target, p.SpeedRatio))
+            return OperateResult.Fail(&quot;MOVE_TIMEOUT&quot;, $&quot;Trục {p.AxisName} không tới {target:0.00} mm&quot;);
+        Outputs.SetDouble(&quot;ActualPosition&quot;, _axes[p.AxisName].CurrentPositionMm);
+        return OperateResult.Ok();
+    }
+}
+</code></pre>
+<p>Bốn điểm thiết kế đáng chú ý trong khuôn này, và cả bốn đều là quyết định có lý do:</p>
+<ol>
+<li><strong>Tách <code>Profile</code> (tham số) khỏi <code>Node</code> (hành vi).</strong> <code>Profile</code> là dữ liệu thuần, tuần tự hoá được,
+hiển thị lên màn hình cấu hình được. <code>Node</code> là code, không lưu. Trộn hai thứ là lỗi thiết kế phổ
+biến nhất khi tự làm mẫu này.</li>
+<li><strong>Nút trả về đối tượng kết quả, không ném exception</strong> (Chương 3 mục 3.5.4, cách thứ ba) — vì động
+cơ chạy đồ thị cần <em>cầm</em> kết quả để quyết định đi nhánh nào.</li>
+<li><strong>Dữ liệu giữa các nút đi qua cổng có tên</strong>, không qua biến toàn cục. Nhờ vậy một nút dùng lại
+được ở nhiều quy trình khác nhau mà không cần biết ai đứng trước nó.</li>
+<li><strong>Thêm loại hành động mới = thêm một class</strong>, không sửa đồ thị nào đã dựng, không sửa động cơ.</li>
+</ol>
+<p><strong>Cái giá phải trả — nói thẳng để không ai bất ngờ:</strong> làm được đến mức này cần một khoản đầu tư ban
+đầu thật sự (động cơ chạy đồ thị, màn hình dựng đồ thị, cơ chế lưu/nạp, gỡ rối từng nút). Nó <strong>không</strong>
+đáng cho một máy đơn lẻ. Nó đáng khi bạn làm <strong>nhiều máy cùng họ</strong> và mỗi khách hàng lại muốn khác
+một chút — lúc đó chi phí ban đầu chia đều ra rất nhỏ, và cái được là mỗi máy mới không cần lập trình
+viên.</p>
+<blockquote>
+<p>💡 <strong>Nếu chưa đủ nguồn lực cho đồ thị, vẫn có bản rút gọn rất đáng làm:</strong> quy trình là một <strong>danh
+sách bước tuần tự</strong> trong file cấu hình (mỗi bước một tên hành động + tham số), không có nhánh,
+không có cổng dữ liệu. Bạn mất khả năng rẽ nhánh nhưng giữ được lợi ích lớn nhất: <strong>đổi thứ tự và
+tham số các bước mà không build lại</strong>. Nhiều máy chỉ cần đúng chừng đó.</p>
+</blockquote>
 <blockquote>
 <p>⚠️ <strong>Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.</strong> Nếu thấy một
 class vài trăm dòng toàn các chuỗi kiểu `&quot;public class &quot; + name + &quot; : StationBase</p>
@@ -26034,6 +26281,82 @@ chỗ trống cho nó từ bước 9</strong>, đừng để phải sửa lại 
 ngay từ đầu giúp mọi màn hình, mọi log, mọi tài liệu về sau đều nói cùng một ngôn ngữ với người đấu
 điện. Ngược lại, nếu bước 1–2 làm ẩu thì mọi bước sau đều phải trả giá, và không có cách nào bù lại
 bằng cách viết code cẩn thận hơn ở tầng trên.</p>
+</blockquote>
+<h3>B.6.1 Một sản phẩm, nhiều khách hàng: kiến trúc plugin</h3>
+<p>Mục B.6 giả định bạn làm <strong>một</strong> máy. Nếu công ty bạn bán <strong>nhiều máy cùng họ</strong> cho nhiều khách hàng,
+có một mức tổ chức nữa đáng biết — và nó là bước tiếp theo tự nhiên sau &quot;biến thể máy&quot; ở Chương 13
+mục 13.2.6.</p>
+<p>Ý tưởng: ứng dụng chính chỉ là một <strong>cái khung</strong> (đăng nhập, phân quyền, khung màn hình, nhật ký,
+nối MES). Mọi chức năng đặc thù nằm trong các <strong>plugin</strong> — mỗi plugin là một file DLL riêng, nạp vào
+lúc chạy. Máy nào cần chức năng gì thì cài plugin đó.</p>
+<p><strong>Code B.1 — Nạp plugin từ một thư mục, lúc khởi động</strong></p>
+<pre><code class="language-csharp">var pluginDir = Path.Combine(AppContext.BaseDirectory, &quot;Extensions&quot;);
+foreach (var dll in Directory.GetFiles(pluginDir, &quot;*.dll&quot;))
+{
+    try
+    {
+        var assembly = Assembly.LoadFrom(dll);
+        var type = assembly.GetTypes()
+                           .FirstOrDefault(t =&gt; typeof(IMachinePlugin).IsAssignableFrom(t)
+                                             &amp;&amp; !t.IsAbstract);
+        if (type is null) { _log.Warn(&quot;{Dll} không chứa plugin nào&quot;, dll); continue; }
+
+        var plugin = (IMachinePlugin)Activator.CreateInstance(type)!;
+        plugin.Register(_services);                 // plugin tự đăng ký dịch vụ/màn hình của nó
+        _loaded.Add(plugin);
+        _log.Information(&quot;Đã nạp plugin {Name} v{Version}&quot;, plugin.Name, plugin.Version);
+    }
+    catch (Exception ex)
+    {
+        // Nạp hỏng MỘT plugin không được làm chết ứng dụng — nhưng phải hiện lên màn hình
+        _log.Error(ex, &quot;Nạp {Dll} thất bại&quot;, dll);
+        _failedPlugins.Add((Path.GetFileName(dll), ex.Message));
+    }
+}
+</code></pre>
+<p>Ba điểm quyết định chất lượng của cơ chế này:</p>
+<ol>
+<li><strong>Nạp hỏng một plugin không làm chết ứng dụng</strong> — bọc <code>try/catch</code> quanh từng file. Đúng với bối
+cảnh máy: thiếu module thị giác thì vẫn nên vào được màn hình để chạy tay và chẩn đoán.</li>
+<li><strong>Nhưng phải HIỂN THỊ plugin nào nạp hỏng, không chỉ ghi log.</strong> Đây là điều một dự án tham khảo
+làm thiếu, và nó nguy hiểm: máy chạy <strong>thiếu chức năng</strong> trong khi giao diện trông vẫn bình thường.
+Một dòng cảnh báo thường trực trên màn hình chính (&quot;Thiếu module: Thị giác — máy đang chạy hạn
+chế&quot;) giải quyết được.</li>
+<li><strong>Ghi phiên bản từng plugin vào nhật ký khởi động và vào màn hình &quot;Về phần mềm&quot;.</strong> Với kiến trúc
+plugin, câu hỏi &quot;máy này đang chạy phiên bản nào&quot; không còn một câu trả lời duy nhất — nó là một
+<strong>danh sách</strong>. Không ghi lại thì hỗ trợ từ xa gần như không làm được.</li>
+</ol>
+<p><strong>Bảng B.12 — Ba mức phục vụ nhiều khách hàng, theo thứ tự chi phí tăng dần</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mức</th>
+<th>Cách làm</th>
+<th>Đáng chọn khi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Một bộ mã, khác nhau ở cấu hình</strong></td>
+<td>Tham số cấu hình chọn biến thể (Chương 13 mục 13.2.6)</td>
+<td>Khác biệt chỉ ở dữ liệu: tên tag, số đầu công tác, bật/tắt một trạm</td>
+</tr>
+<tr>
+<td><strong>2. Một bộ mã, khác nhau ở tổ hợp plugin</strong></td>
+<td>Khung chung + thư viện plugin; mỗi máy cài một tập plugin</td>
+<td>Khác biệt ở <strong>chức năng</strong>: máy này có thị giác, máy kia có đo lực</td>
+</tr>
+<tr>
+<td><strong>3. Bản build riêng cho từng khách</strong></td>
+<td>Hằng biên dịch riêng, nhánh mã nguồn riêng</td>
+<td>Gần như hai sản phẩm khác nhau — <strong>và hãy chắc chắn trước khi chọn</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Đừng dùng mức 3 cho việc chỉ cần mức 1.</strong> Trong một dự án tham khảo, hằng biên dịch riêng theo
+<strong>tên nhà máy</strong> được dùng cho... việc đổi kích thước cửa sổ mặc định. Cái giá: mỗi lần sửa một lỗi
+bất kỳ phải build và kiểm thử <strong>hai bản</strong>, và bản của nhà máy ít được chú ý hơn sẽ dần lệch pha với
+bản chính. Quy tắc phân biệt rất đơn giản: nếu khác biệt có thể viết thành <strong>một dòng trong file cấu
+hình</strong> thì nó thuộc mức 1, không phải mức 3.</p>
 </blockquote>
 <hr>
 <h2 id="b7-đc-code-mã-ngun-m-đ-luyn-tp">B.7 Đọc code mã nguồn mở để luyện tập</h2>

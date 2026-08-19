@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260819 |
+| **Phiên bản** | v1.0.0.260820 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -8574,6 +8574,54 @@ hệ thống cũ — không viết mới bằng nó.
 
 ---
 
+### 9.2.5 Đối chiếu thực tế — các dự án máy thật đang dùng gì
+
+Khuyến nghị ở mục 9.2.4 không chỉ dựa trên đặc điểm kỹ thuật. Khảo sát các dự án
+phần mềm máy tự động hoá thật có giao diện WPF cho kết quả như sau:
+
+**Bảng 9.3b — Lựa chọn MVVM trong các dự án máy WPF thật**
+
+| Cách làm | Số dự án | Ghi chú |
+|---|---|---|
+| **CommunityToolkit.Mvvm** | 2 | Cả hai đều là dự án .NET 8 mới; một dự án dùng `[ObservableProperty]` trong **160 file** và `RelayCommand` trong 63 file |
+| **Prism + DryIoc** | 1 | Framework dùng chung cho nhiều máy — đúng trường hợp Bảng 9.2 nói nên chọn Prism |
+| **Tự viết `INotifyPropertyChanged`** | 1 | Dự án cũ hơn, không dùng thư viện MVVM nào |
+| **MVVM Light** | 0 | Không dự án nào dùng — khớp với khuyến nghị "không viết mới bằng nó" |
+
+Ba điều xác nhận được từ số liệu này:
+
+- **Khuyến nghị "mặc định dùng CommunityToolkit.Mvvm cho màn hình WPF mới" khớp với
+  thực tế**: đó là lựa chọn của cả hai dự án hiện đại trong nhóm khảo sát.
+- **Prism không sai, nhưng đúng phạm vi hẹp** — dự án dùng Prism là một *framework
+  dùng chung cho nhiều máy*, tức là đúng tình huống "nhiều module độc lập" mà Bảng
+  9.2 mô tả, chứ không phải một máy đơn lẻ.
+- **Ba trường phái ở mục 9.2.2 đều tồn tại thật** trong cùng một ngành, cùng một
+  thời điểm. Nghĩa là khi bạn chuyển việc hoặc tiếp quản dự án khác, khả năng gặp
+  cách làm khác với cách bạn quen là rất cao — nên hiểu cả ba, không chỉ cái mình dùng.
+
+> 💡 **Thư viện giao diện thương mại là chuyện bình thường trong phần mềm máy.** Một
+> trong các dự án dùng bộ control WPF thương mại (lưới dữ liệu, biểu đồ, đồng hồ đo
+> công nghiệp) thay vì tự vẽ — cùng lý do đã nêu ở Chương 8 mục 8.2.5 cho WinForms:
+> một bảng dữ liệu có lọc/nhóm/xuất Excel sẵn tiết kiệm hàng tuần công. Hai hệ quả
+> cần biết trước: (1) gói NuGet của chúng **cần đăng nhập** để tải, nên máy build
+> (và cả máy CI) phải có thông tin đăng nhập — đặt trong kho bí mật của dịch vụ CI,
+> **không bao giờ trong mã nguồn** (Chương 17 mục 17.4); (2) chúng ràng buộc bạn vào
+> một hãng cho phần giao diện, nên hãy giữ **ViewModel hoàn toàn sạch** khỏi kiểu dữ
+> liệu của hãng — đúng nguyên tắc ranh giới đã dùng cho thiết bị ở Chương 13.
+
+> 📌 **Một điều số liệu cho thấy mà dễ hiểu nhầm: không dự án nào viết
+> `VirtualizingStackPanel` tường minh trong XAML.** Điều đó **không** có nghĩa là
+> họ bỏ qua ảo hoá — mà vì `ListBox`, `ListView` và `DataGrid` đã **bật ảo hoá theo
+> mặc định**. Code 9.9 (mục 9.3.1) viết đầy đủ để bạn thấy rõ từng thuộc tính, nhưng
+> trong thực tế bạn hiếm khi phải gõ chúng ra. Kỹ năng thật sự cần ở đây không phải
+> *bật* ảo hoá, mà là **không vô tình phá nó** — và cách phá phổ biến nhất chỉ là một
+> dòng vô hại: bọc danh sách trong một `ScrollViewer` bên ngoài để "cho nó cuộn được".
+> Vì vậy khi gặp một màn hình alarm/log bị giật, việc đầu tiên nên kiểm tra là danh
+> sách đó có bị bọc trong `ScrollViewer` hay bị đổi `ItemsPanel` sang `StackPanel`
+> thường hay không, chứ không phải đi thêm thuộc tính ảo hoá vào.
+
+---
+
 ## 9.3 Performance Optimization
 
 Ba điểm nghẽn hiệu năng WPF thường gặp trong HMI/SCADA: quá nhiều phần tử UI
@@ -13824,6 +13872,135 @@ nhưng bạn phải biết nó tồn tại để yêu cầu kỹ sư thị giác
 > chụp**. Thiếu hiệu chuẩn thì toạ độ trả về là điểm ảnh, không dùng để ra lệnh cho trục
 > được. Thiếu gá toạ độ thì hệ thống chỉ chạy đúng khi phôi vào hoàn hảo.
 
+#### Nửa còn lại: chụp cho đúng
+
+Toàn bộ phần trên nói về **dò cho đúng** — vùng dò, gá toạ độ, ranh giới interface. Nhưng mọi thuật
+toán dò tốt nhất cũng vô dụng nếu bức ảnh đầu vào sai. Phần này thuộc trách nhiệm của **bạn**, không
+phải kỹ sư thị giác, và nó là nguyên nhân số một của câu than phiền kinh điển: *"hôm nay máy đọc sai
+mà hôm qua vẫn tốt"*.
+
+**Đèn chiếu là một thiết bị, không phải một món đồ lắp một lần.**
+
+Người mới thường coi đèn là phần cơ khí: lắp lên, chỉnh cho sáng, xong. Trong máy kiểm tra thật, bộ
+điều khiển đèn được nối vào phần mềm và có ba lý do rất cụ thể:
+
+- **Mỗi loại sản phẩm cần một cấu hình sáng khác nhau.** Sản phẩm sẫm màu cần sáng hơn; bề mặt bóng
+  cần góc chiếu khác để không bị loá. Vì vậy **độ sáng từng kênh đèn thuộc recipe**, đổi cùng lúc với
+  đổi mã hàng.
+- **Nhiều góc chiếu bật theo từng bước.** Máy thường có vài bộ đèn (đèn vòng, đèn xiên, đèn nền), và
+  mỗi phép kiểm tra dùng một tổ hợp khác nhau — bật/tắt **trong quy trình**, không bật suốt.
+- **Đèn LED giảm sáng dần theo thời gian sử dụng.** Đây là điều ít ai nói với người mới: sau vài
+  nghìn giờ, cùng một cấu hình cho ra ảnh tối hơn, ngưỡng phán định bắt đầu trượt, và tỷ lệ đánh sai
+  tăng từ từ trong nhiều tuần — không có sự kiện nào để lần theo.
+
+Cách phòng cho vấn đề thứ ba đơn giản đến bất ngờ, và hai dự án tham khảo độc lập đều làm giống nhau:
+**dùng chính bức ảnh để đo độ sáng**. Thêm một vùng dò cố định lên một chi tiết luôn có mặt (nền gá,
+mảng chuẩn trắng), tính độ sáng trung bình của vùng đó mỗi lần chụp, và cảnh báo khi nó trôi khỏi dải
+đã đặt:
+
+```csharp
+// Chạy cùng mỗi lần kiểm tra — rẻ, và bắt được thứ không có triệu chứng nào khác
+double brightness = MeasureMeanGray(image, _lightCheckRegion);
+if (brightness < recipe.LightCheckMin)
+    _alarms.Raise(AlarmCodes.LightDegraded, "VISION",
+        $"Độ sáng nền {brightness:0} dưới ngưỡng {recipe.LightCheckMin:0} — kiểm tra đèn/kính chắn");
+```
+
+Nó bắt được cả ba nguyên nhân cùng lúc: đèn yếu đi, kính chắn bám bụi, và ai đó vô tình xoay đèn.
+
+**Recipe của một trạm thị giác gồm ba nhóm, không phải một.**
+
+| Nhóm | Gồm gì | Ai chỉnh |
+|---|---|---|
+| **Tham số chụp** | Thời gian phơi sáng, độ sáng/tương phản, cấu hình từng kênh đèn | Kỹ sư (khi đổi mã hàng hoặc đổi đèn) |
+| **Tham số dò** | Vùng dò, mẫu chuẩn, điểm chấp nhận của phép dò | Kỹ sư thị giác |
+| **Tham số phán định** | Dải kích thước cho phép, số lỗi tối đa, mã lý do không đạt | Kỹ sư chất lượng |
+
+Ba nhóm này do ba vai trò khác nhau chỉnh, vào những lúc khác nhau — nên tách bạch chúng trong cấu
+trúc recipe (và trong màn hình sửa recipe) sẽ tránh được rất nhiều nhầm lẫn về sau.
+
+**Hai loại ROI, đừng nhầm.**
+
+| | ROI **phần cứng** | ROI **phần mềm** (vùng dò) |
+|---|---|---|
+| Ai thực thi | Camera — chỉ truyền về phần ảnh đó | Phần mềm — chỉ tìm trong phần ảnh đó |
+| Tác dụng chính | Giảm băng thông mạng, **tăng tốc độ khung hình** | Tăng tốc xử lý, tránh nhiễu từ vùng không liên quan |
+| Đặt ở đâu | Cấu hình camera | Job vision / recipe |
+
+Cắt ROI phần cứng là cách rẻ nhất để tăng tốc một máy đang chậm vì truyền ảnh — nhưng nhớ rằng nó đổi
+**hệ toạ độ ảnh**, nên mọi vùng dò đã dạy trước đó sẽ lệch nếu bạn đổi ROI phần cứng sau khi dạy.
+
+**Định danh thiết bị bằng số sê-ri, không bằng chỉ số.**
+
+Đoạn code dưới đây trông vô hại và là cách viết tự nhiên nhất:
+
+```csharp
+var camera = grabbers[0];      // ❌ camera thứ nhất trong danh sách
+```
+
+Nhưng thứ tự trong danh sách phụ thuộc vào thứ tự thiết bị trả lời trên mạng. Thêm một camera, đổi
+thứ tự bật nguồn, hay thay card mạng là **camera trái thành camera phải** — và máy vẫn chạy bình
+thường, chỉ là kết quả kiểm tra bị gán nhầm phía. Không có lỗi nào để phát hiện.
+
+```csharp
+// ✅ Khớp theo số sê-ri lấy từ cấu hình — camera nào là camera nào không bao giờ đổi
+var camera = grabbers.FirstOrDefault(g => g.SerialNumber == config.LeftCameraSerial)
+    ?? throw new AlarmException(AlarmCodes.DeviceNotFound, "CAM_L",
+        $"Không thấy camera S/N {config.LeftCameraSerial}. Đang thấy: " +
+        string.Join(", ", grabbers.Select(g => g.SerialNumber)));
+```
+
+Nguyên tắc này áp dụng cho **mọi thiết bị liệt kê được**, không riêng camera: cổng COM (dùng mô tả
+thiết bị thay vì `COM3`), card chuyển động (số sê-ri card thay vì chỉ số 0), đầu đọc mã. Và thông báo
+lỗi nên **liệt kê những gì đang thấy** — nhờ vậy người ở hiện trường tự đối chiếu được ngay thay vì
+phải gọi về.
+
+**Thiết bị nối qua mạng cần một kênh kiểm tra độc lập với SDK.**
+
+Đây là bài học đắt từ một dự án tham khảo. Camera GigE nối qua Ethernet, và mạng thì rớt — nhưng SDK
+**không phải lúc nào cũng báo**: đối tượng camera trong bộ nhớ vẫn còn, lệnh chụp vẫn gọi được, nó
+chỉ **không bao giờ trả về**. Dự án đó còn làm tình hình tệ hơn bằng hai dòng liền nhau:
+
+```csharp
+acqFifo.Timeout = 10000;
+acqFifo.TimeoutEnabled = false;   // ❌ đặt thời gian chờ rồi tắt nó đi
+```
+
+Kết quả: quy trình treo vô hạn, không alarm, không thông báo — người vận hành chỉ thấy máy đứng im.
+Hai biện pháp đi cùng nhau:
+
+1. **Bật thời gian chờ cho mọi lệnh gọi thiết bị** (nguyên tắc xuyên suốt Chương 5 và Chương 16 mục
+   16.2b): thà báo lỗi sau 10 giây còn hơn treo mãi.
+2. **Thêm một nhịp kiểm tra độc lập** — một luồng nền nhẹ ping địa chỉ IP của thiết bị mỗi vài giây.
+   Nó biết trước cả SDK, và nó phân biệt được "mạng chết" với "thiết bị bận":
+
+```csharp
+// Đặt IsBackground = true để luồng không giữ ứng dụng sống khi đóng phần mềm.
+// Dừng bằng CancellationToken, KHÔNG bằng Thread.Abort (Chương 5).
+private async Task HeartbeatLoopAsync(CancellationToken ct)
+{
+    using var ping = new Ping();
+    while (!ct.IsCancellationRequested)
+    {
+        var reply = await ping.SendPingAsync(_cameraIp, timeout: 1000).ConfigureAwait(false);
+        _health.Report(reply.Status == IPStatus.Success ? DeviceHealth.Healthy
+                                                        : DeviceHealth.Unhealthy);
+        await Task.Delay(TimeSpan.FromSeconds(2.5), ct).ConfigureAwait(false);
+    }
+}
+```
+
+Trạng thái này nối thẳng vào chip kết nối trên màn hình (Chương 10) — người vận hành nhìn thấy camera
+mất kết nối **trước khi** chu kỳ tiếp theo treo.
+
+> 🔍 **Đào sâu thêm — vài thiết lập mạng quyết định camera GigE chạy ổn hay không.** Ba thứ nằm ngoài
+> mã nguồn nhưng thường là nguyên nhân thật của "ảnh bị rách" hoặc "mất khung hình": camera nên nối
+> vào một **card mạng riêng** (không dùng chung với mạng nhà máy); card đó nên bật **khung dữ liệu
+> lớn** (jumbo frame) nếu camera hỗ trợ, để giảm số gói tin phải xử lý; và **kích thước gói tin** cấu
+> hình trên camera phải nhỏ hơn hoặc bằng mức card mạng và switch chấp nhận được. Đây là kiến thức
+> lắp đặt, không phải lập trình — nhưng khi máy chạy tốt ở phòng thử rồi lỗi ở nhà máy, đây là chỗ
+> nên kiểm tra trước khi đọc lại code.
+
 #### Interface nên đặt ranh giới ở đâu
 
 Áp dụng đúng nguyên tắc của chương này (interface theo **năng lực**, mục 13.2.1): interface
@@ -16199,6 +16376,58 @@ interface đã định kiểu (`CheckRouteAsync`, `ReportResultAsync`...) và kh
 viết `IMesClient` implementation mới — phần Step/Sequence không đổi một dòng.
 
 ---
+
+### 14.2.9  Web service kiểu SOAP — cách nhiều hệ MES đời cũ vẫn nói chuyện
+
+Mục 14.2.7 trình bày tích hợp MES kiểu nhẹ bằng HTTP + JSON, mục 14.2.8 là kiểu "cổng lệnh" độc
+quyền. Còn một dạng thứ ba bạn sẽ gặp ở các nhà máy có hệ MES triển khai từ 10–15 năm trước:
+**web service kiểu SOAP**.
+
+**Nhận diện.** Đầu mối kết nối có đuôi `.asmx` hoặc `.svc`; địa chỉ mô tả dịch vụ kết thúc bằng
+`?wsdl`; trong solution có mục **Service Reference** hoặc **Web Reference**, và một file `.wsdl`
+hoặc một thư mục sinh mã tự động với các class tên kiểu `XxxSoapClient`. Nội dung truyền đi là XML
+bọc trong phong bì `<soap:Envelope>`, không phải JSON.
+
+**Điều quan trọng nhất cần biết: đừng tự dựng XML bằng tay.** Đây là lỗi tốn thời gian nhất khi gặp
+SOAP lần đầu — người mới thấy "chỉ là XML gửi qua HTTP" rồi tự nối chuỗi. Cách đúng là **sinh mã
+client từ WSDL**, và công cụ lo toàn bộ phần phong bì, kiểu dữ liệu, và mã hoá:
+
+```bash
+# .NET hiện đại — sinh class client từ địa chỉ WSDL của hệ MES
+dotnet tool install --global dotnet-svcutil
+dotnet-svcutil http://mes-server/LineService.asmx?wsdl
+```
+
+Sau đó gọi như một object bình thường, không thấy XML ở đâu cả:
+
+```csharp
+using var client = new LineServiceSoapClient(LineServiceSoapClient.EndpointConfiguration.LineServiceSoap);
+var reply = await client.ReportInspectionAsync(partId, passed ? "OK" : "NG", reasonCode);
+```
+
+**Bảng 14.9b — Ba kiểu tích hợp MES gặp trong nhà máy điện tử**
+
+| | SOAP web service | HTTP + JSON (14.2.7) | Cổng lệnh độc quyền (14.2.8) |
+|---|---|---|---|
+| Thường gặp ở | Hệ MES triển khai ~2010 trở về trước | Hệ mới, hoặc nội bộ tự viết | Hệ nội bộ của tập đoàn lớn |
+| Có mô tả giao diện máy đọc được? | **Có** (WSDL) — sinh mã tự động | Thường không, chỉ có tài liệu | Không |
+| Công sức bắt đầu | Thấp nếu dùng công cụ sinh mã | Thấp | Cao — phải đọc tài liệu kỹ |
+| Bẫy chính | .NET hiện đại **không** hỗ trợ sẵn như .NET Framework | Không có mô tả chuẩn, dễ lệch hiểu | Mã lệnh và payload lồng nhau khó dò |
+
+> ⚠️ **Bẫy khi nâng cấp .NET.** Trên .NET Framework, gọi SOAP là chuyện có sẵn trong khung. Trên .NET
+> hiện đại, bạn cần gói `System.ServiceModel.*` riêng, và **một số tính năng của WCF đời cũ không có
+> bản tương ứng** — đặc biệt là các cơ chế bảo mật/giao dịch phức tạp. Nếu dự án của bạn đang gọi
+> SOAP và có kế hoạch lên .NET hiện đại, hãy **thử phần này sớm** thay vì để đến cuối: đây là một
+> trong vài chỗ có thể chặn hẳn việc nâng cấp, cùng nhóm với `BinaryFormatter` và `Thread.Abort` đã
+> nêu ở các chương trước.
+
+> 💡 **Đừng đánh giá thấp khối lượng công việc của phần nối MES.** Trong một dự án tham khảo là máy
+> kiểm tra bằng thị giác, file nối hệ MES là file **lớn thứ hai của cả dự án** (gần 2000 dòng), chỉ
+> sau logic sản phẩm — lớn hơn cả phần điều khiển camera. Điều này lặp lại ở nhiều dự án khác: phần
+> "báo kết quả cho hệ thống nhà máy" thường tốn công tương đương phần "làm ra kết quả", vì nó phải xử
+> lý mất kết nối, gửi lại, đối soát số liệu, và thích ứng với những thay đổi phía hệ MES mà bạn không
+> kiểm soát. Khi ước lượng thời gian cho một máy có tích hợp MES, hãy tính hạng mục này thành một
+> khối riêng, không phải "vài ngày cuối dự án".
 
 ## 14.3  So sánh và lựa chọn giao thức theo bài toán
 
@@ -19686,6 +19915,98 @@ cạnh để đặt breakpoint như ở Chương 2. Ghi đủ log, đủ dấu v
 
 ---
 
+## 17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu
+
+Ba mục trên trình bày cách làm đúng. Mục này nói thẳng về khoảng cách giữa cách làm đúng và thực tế,
+vì biết trước sẽ giúp bạn chọn trận đánh — thay vì đề xuất một quy trình đầy đủ trong tuần đầu đi làm
+rồi bị từ chối và mất luôn cơ hội cải thiện.
+
+Khảo sát **12 dự án phần mềm máy tự động hoá thật** trong nhà máy điện tử:
+
+**Bảng 17.6b — Thực trạng quản lý mã nguồn và tự động hoá build**
+
+| Hạng mục | Kết quả |
+|---|---|
+| Có kho Git | **8** / 12 (4 dự án chỉ có thư mục chép tay) |
+| Số commit | Trải rất rộng: **6** commit ở dự án ít nhất, **739** ở dự án nhiều nhất |
+| Có dùng **tag** để đánh dấu phiên bản đã giao | **0** / 12 |
+| Có CI tự động | **1** / 12 |
+| CI đó có chạy test | Không — chỉ `restore` + `build` |
+
+Ba điều đáng chú ý:
+
+**1. Không dự án nào dùng tag.** Đây là con số làm tôi bất ngờ nhất khi khảo sát, vì tag là thứ **rẻ
+nhất** trong cả chương này — một câu lệnh, không cần công cụ gì thêm, không cần ai đồng ý. Hệ quả
+thực tế của việc thiếu nó rất cụ thể: khi khách hàng báo lỗi trên máy giao tháng trước, không ai xác
+định được **chính xác** mã nguồn nào đang chạy trên máy đó. Người ta dò lại bằng ngày sửa file, bằng
+trí nhớ, hoặc bằng cách so từng file với bản hiện tại.
+
+**2. CI dừng ở "có build được không" — và như vậy đã có giá trị.** Dự án duy nhất có CI chạy đúng ba
+việc: lấy mã nguồn, cài .NET SDK, `dotnet restore` + `dotnet build --configuration Release`. Không
+test, không đóng gói, không triển khai. Nhưng nó vẫn bắt được lớp lỗi phổ biến nhất trong đội nhiều
+người: **"trên máy tôi build được"** — thiếu một file chưa commit, một tham chiếu trỏ vào thư mục cá
+nhân, một gói NuGet chỉ có trong bộ nhớ đệm cục bộ.
+
+Một chi tiết trong đó rất đáng học và ít tài liệu nhắc: dự án dùng một **thư viện giao diện thương
+mại**, mà gói NuGet của nó cần đăng nhập. Thông tin đăng nhập không nằm trong mã nguồn mà lấy từ kho
+bí mật của dịch vụ CI:
+
+```yaml
+- name: Restore dependencies
+  run: dotnet restore ./src/MyMachine.sln
+  env:
+    VENDOR_NUGET_USERNAME: ${{ secrets.VENDOR_NUGET_USERNAME }}
+    VENDOR_NUGET_PASSWORD: ${{ secrets.VENDOR_NUGET_PASSWORD }}
+```
+
+Đây là tình huống gần như chắc chắn gặp trong phần mềm máy, vì thư viện giao diện, thư viện thị giác
+và SDK thiết bị thường là hàng thương mại có bản quyền. Nguyên tắc: **thông tin đăng nhập và khoá bản
+quyền không bao giờ nằm trong kho mã nguồn** — kể cả kho riêng tư, vì mọi người trong đội đều đọc
+được và nó sẽ theo bản sao kho đi khắp nơi.
+
+**3. Bốn dự án không có Git.** Chúng được quản lý bằng thư mục chép tay kiểu `Máy A - bản 3 - sửa
+ngày 12`. Nếu bạn tiếp quản một dự án như vậy, việc **đầu tiên** nên làm không phải là đề xuất quy
+trình nhánh — mà là `git init` và commit nguyên trạng bản đang chạy. Chỉ riêng việc đó đã cho bạn
+khả năng biết mình vừa sửa gì.
+
+### Bậc thang áp dụng — theo thứ tự lợi ích trên công sức
+
+**Bảng 17.7b — Nên làm gì trước khi đội chưa có gì**
+
+| Bậc | Việc làm | Công sức | Lợi ích chính |
+|---|---|---|---|
+| **1** | `git init` + commit bản đang chạy + `.gitignore` đúng (bỏ `bin`, `obj`, và **cả** file cấu hình riêng của máy) | Nửa buổi | Biết mình vừa sửa gì; quay lại được khi sửa hỏng |
+| **2** | **Gắn tag cho mọi bản đã giao khách**, tên tag ghi rõ máy nào và ngày nào | 5 phút mỗi lần giao | Trả lời được "máy đó đang chạy mã nguồn nào" — hạng mục lợi ích/công sức cao nhất cả chương |
+| **3** | Ghi số phiên bản vào **màn hình phần mềm**, sinh tự động từ tag | Một buổi | Hỏi qua điện thoại là biết ngay, không cần ai vào máy tra |
+| **4** | CI chỉ chạy `build` | Một buổi | Chặn lỗi "trên máy tôi build được" |
+| **5** | CI chạy thêm `test` | Chỉ có ý nghĩa khi đã có test (Chương 18, mục 18.6.4) | Chặn lỗi hồi quy |
+| **6** | Đóng gói tự động thành bộ cài, triển khai theo mục 17.3 | Vài tuần | Giao hàng lặp lại được, không phụ thuộc một người |
+
+> 💡 **Bậc 2 và 3 đi cùng nhau, và đây là cặp đáng làm nhất.** Gắn tag mà không hiển thị phiên bản
+> lên màn hình thì vẫn phải hỏi người ở nhà máy "anh mở thư mục ra xem ngày sửa file"; hiển thị phiên
+> bản mà không gắn tag thì có số nhưng không lần ngược về mã nguồn được. Làm cả hai, tổng cộng chưa
+> tới một ngày công, và nó thay đổi hoàn toàn cách bạn hỗ trợ máy từ xa. Trong .NET, số phiên bản có
+> thể sinh thẳng từ mô tả tag lúc build:
+>
+> ```xml
+> <!-- .csproj — hoặc truyền qua tham số dòng lệnh trong CI -->
+> <PropertyGroup>
+>   <InformativeVersion>$(GitTagDescribe)</InformativeVersion>
+> </PropertyGroup>
+> ```
+> ```csharp
+> // Đọc ra để hiển thị trên màn hình "Về phần mềm"
+> var ver = Assembly.GetExecutingAssembly()
+>                   .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+>                   .InformationalVersion ?? "không rõ";
+> ```
+
+> ⚠️ **Đừng đề xuất cả bậc thang cùng lúc.** Phản ứng thường gặp khi một người mới đề nghị áp dụng
+> đầy đủ quy trình nhánh, CI, kiểm thử và đóng gói tự động là "không có thời gian, máy phải giao tuần
+> sau" — và sau lần từ chối đó, đề xuất tiếp theo khó được nghe hơn nhiều. Cách hiệu quả hơn: làm bậc
+> 1–3 **một mình, trong im lặng**, rồi để kết quả tự nói khi có sự cố đầu tiên cần lần ngược phiên
+> bản. Ba bậc đó không đòi hỏi ai đổi thói quen ngoài bạn.
+
 ## Tổng kết chương
 
 - Git giải quyết đúng nỗi đau của quản lý phiên bản kiểu folder-copy:
@@ -20562,11 +20883,101 @@ dotnet test --filter "Category=Unit"    # Chỉ chạy unit test trong CI pipeli
 dotnet test --filter "Category=Integration"  # Chạy thủ công trên lab machine
 ```
 
+### 18.6.4  Đối chiếu thực tế ngành — và lối đi khả thi nếu bạn đang ở con số 0
+
+Cả chương này trình bày cách viết test đúng. Trước khi khép lại, cần một đoạn trung thực về điều bạn
+sẽ thật sự gặp khi vào làm, vì khoảng cách giữa hai thứ đó rất lớn và biết trước sẽ đỡ hụt hẫng.
+
+Khảo sát **12 dự án phần mềm máy tự động hoá thật** đang hoặc đã chạy trong nhà máy điện tử (máy lắp
+ráp nhiều trạm, máy bonding, máy kiểm tra thị giác, máy hiệu chỉnh có phản hồi lực, và vài framework
+dùng chung), tìm dấu vết của các thuộc tính test (`[Fact]`, `[Test]`, `[TestMethod]`, `[Theory]`):
+
+**Bảng 18.7b — Kiểm thử tự động trong 12 dự án phần mềm máy thật**
+
+| Tình trạng | Số dự án |
+|---|---|
+| Có test project **và** có test thật đang chạy | **1** / 12 |
+| Có test project nhưng **rỗng** — dựng lên rồi bỏ | 2 / 12 |
+| Không có gì | 9 / 12 |
+
+Con số này không phải để chê ngành, mà để bạn hiểu đúng bối cảnh: **nếu bạn viết được test cho phần
+mềm máy, bạn đã ở nhóm rất nhỏ**. Và ngược lại, khi tiếp quản một dự án không có test nào, đó là
+tình huống bình thường chứ không phải dấu hiệu đội cũ yếu kém — nó phản ánh những áp lực rất thật:
+máy phải giao đúng hạn, phần cứng đến muộn, và mọi thứ cần "chạy được trước đã".
+
+#### Dự án duy nhất có test làm gì khác?
+
+Đáng chú ý là dự án duy nhất có kiểm thử nghiêm túc (**192 test**, xUnit + Moq — đúng bộ công cụ
+chương này dạy) không phải dự án có kỷ luật cao hơn, mà là dự án có **kiến trúc cho phép test**. Hai
+điểm khác biệt cụ thể:
+
+**1. Chế độ giả lập là một tham số của hệ thống, không phải thứ chắp vá.** Toàn bộ hệ thống nhận một
+cấu hình dạng `SystemConfigurations { FakeMode = true }`, và mọi thiết bị được tạo qua factory sẽ trở
+thành phiên bản giả khi cờ đó bật. Nhờ vậy test không phải mock từng thiết bị một — nó dựng **cả hệ
+thống** ở chế độ giả rồi kiểm tra hành vi.
+
+**2. Cấu hình máy là dữ liệu, nạp được từ chuỗi.** Test khai báo cấu hình trục ngay trong thân test
+bằng một chuỗi nhiều dòng, rồi nạp thẳng vào hệ thống:
+
+```csharp
+SystemPropertiesDataSource.ReadFromString(
+    """
+      testActor:
+        X:
+          DeviceName: MyDevice
+          Channel: 0
+        Y:
+          DeviceName: MyDevice
+          Channel: 1
+    """
+);
+var device = Mock.Of<IMotionDevice>();
+DeviceManager.Add("MyDevice", device);
+```
+
+Điều này chỉ làm được vì cấu hình được thiết kế để **nạp từ luồng dữ liệu bất kỳ**, không phải "đọc
+từ file ở đường dẫn cố định". Một chi tiết kiến trúc nhỏ, nhưng nó quyết định việc mỗi test có tự
+dựng được bối cảnh riêng hay không.
+
+> 📌 **Bài học rút ra không phải "hãy viết nhiều test hơn" mà là: khả năng test là HỆ QUẢ của kiến
+> trúc, không phải của kỷ luật.** Chín dự án không có test kia phần lớn **không thể** viết test kể cả
+> khi muốn — vì trạng thái máy nằm trong biến static toàn cục, thiết bị được gọi thẳng qua lớp P/Invoke
+> `public static`, và cấu hình chỉ đọc được từ một đường dẫn cố định. Ba thứ đó là nguyên nhân; thiếu
+> test chỉ là triệu chứng. Nếu bạn muốn dự án của mình test được, ba quyết định phải làm **từ đầu**:
+> interface cho mọi thiết bị (Chương 4, 13), trạng thái nằm trong đối tượng chứ không phải biến
+> static (Chương 3, 11), và cấu hình nạp được từ luồng dữ liệu bất kỳ (Chương 13).
+
+#### Bậc thang áp dụng — nếu hôm nay bạn có 0 test
+
+Đừng bắt đầu bằng mục tiêu độ phủ. Với phần mềm máy, thứ tự dưới đây cho lợi ích giảm dần theo từng
+bậc, và bạn dừng ở bất kỳ bậc nào cũng vẫn có lãi:
+
+**Bảng 18.8b — Bậc thang áp dụng kiểm thử cho phần mềm máy**
+
+| Bậc | Việc làm | Công sức | Vì sao đáng làm trước |
+|---|---|---|---|
+| **1** | Test **bảng chuyển trạng thái** bằng `[Theory]` (mục 18.5) | Một buổi | Không cần mock gì cả, thuần dữ liệu; bắt được đúng loại lỗi nguy hiểm nhất (một trạng thái quên xử lý lệnh dừng) |
+| **2** | Test **hàm tính toán thuần** — quy đổi đơn vị, kiểm tra dải recipe, tính toạ độ, giải mã khung giao thức | Một buổi | Không phụ thuộc gì; đây là chỗ lỗi âm thầm hay nằm (nhầm dấu, nhầm đơn vị, tràn số) |
+| **3** | Test **luật an toàn**: hàm interlock, kiểm tra quyền, điều kiện cho phép chuyển động | Vài ngày | Rủi ro cao nhất trên mỗi dòng code; thường đã là hàm thuần sẵn |
+| **4** | Test **sequence** với thiết bị giả (mục 18.3, 18.4) | Vài tuần — cần interface hoá trước | Bắt được lỗi thứ tự bước, xử lý lỗi, huỷ lệnh |
+| **5** | Chạy test tự động mỗi lần commit | Vài ngày (Chương 17) | Chỉ có ý nghĩa khi đã có test ở bậc 1–3 |
+
+> 💡 **Nếu chỉ làm được đúng một việc, làm bậc 1.** Bảng chuyển trạng thái là dữ liệu; viết `[Theory]`
+> duyệt hết mọi cặp (trạng thái × lệnh) mất một buổi và không đòi hỏi bất kỳ thay đổi kiến trúc nào.
+> Nó cũng là nơi bắt được lỗi có hậu quả nặng nhất — một trạng thái quên xử lý lệnh Dừng khẩn thì
+> không có cách nào phát hiện bằng chạy thử tay, vì bạn không bao giờ thử đủ tổ hợp.
+
+> ⚠️ **Test project rỗng còn tệ hơn không có.** Hai trong 12 dự án có sẵn một project test nhưng
+> không chứa test nào — dựng lên trong tuần đầu rồi bỏ. Nó tạo ấn tượng sai cho người mới tiếp quản
+> ("dự án này có test"), và làm hỏng luôn thói quen chạy `dotnet test` vì lệnh đó luôn báo xanh mà
+> không kiểm tra gì. Hoặc viết test thật, hoặc xoá project đó đi.
+
 ---
 
 ## Tổng kết chương
 
 - **Chi phí lỗi automation** tăng theo cấp số nhân từ dev đến production — unit test là lớp phòng thủ rẻ nhất và chạy mỗi commit.
+- **Khả năng test là hệ quả của kiến trúc, không phải của kỷ luật** (mục 18.6.4): khảo sát 12 dự án máy thật cho thấy chỉ 1 có test đang chạy — và đó là dự án duy nhất có chế độ giả lập ở cấp hệ thống, thiết bị sau interface, và cấu hình nạp được từ luồng dữ liệu bất kỳ. Nếu hôm nay bạn có 0 test, bắt đầu từ bảng chuyển trạng thái (bậc 1) — một buổi, không cần đổi kiến trúc.
 - **xUnit** với `[Fact]` và `[Theory]` + `[InlineData]` là bộ công cụ chuẩn hiện đại cho .NET; `[Theory]` đặc biệt phù hợp với bảng transition state machine.
 - **Moq** mock interface (không phải class cụ thể) — cho phép test `Axis`, `GuardEngine`, `AlarmService` hoàn toàn không cần phần cứng, bằng cách hoán đổi driver thật bằng mock.
 - **Async test:** khai báo `async Task` là đủ — tuyệt đối không dùng `.Result` hay `.Wait()` trong test code.

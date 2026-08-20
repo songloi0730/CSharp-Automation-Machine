@@ -26193,7 +26193,7 @@ rất xa về chi phí thật.</p>
 <td><strong>2. Kịch bản người dùng viết</strong></td>
 <td>Nhúng trình soạn thảo + biên dịch/thông dịch lúc chạy (Roslyn, CS-Script, hoặc một ngôn ngữ kịch bản nhúng)</td>
 <td>Rất linh hoạt</td>
-<td>Người dùng viết được <strong>mã tuỳ ý</strong> chạy trong tiến trình điều khiển máy — lỗi trong kịch bản có thể treo hoặc làm hỏng máy; khó giới hạn quyền; khó kiểm tra lại phiên bản nào đang chạy</td>
+<td><strong>Tuỳ ngôn ngữ rộng hay hẹp</strong> — nếu là C# đầy đủ: người dùng viết được mã tuỳ ý chạy trong tiến trình điều khiển máy, khó giới hạn quyền, khó biết phiên bản nào đang chạy. Nếu là <strong>ngôn ngữ hẹp gồm động từ của nghề</strong> thì rủi ro giảm hẳn — xem mục ngay bên dưới</td>
 </tr>
 <tr>
 <td><strong>3. Cấu hình dạng dữ liệu</strong></td>
@@ -26207,6 +26207,61 @@ mà là an toàn và vận hành: bạn kiểm soát được <strong>tập hàn
 động đã được bạn viết, đã kiểm tra interlock), thay vì mở cửa cho mã tuỳ ý. Nó cũng là cùng một tinh
 thần với &quot;màn hình chạy tay tự sinh theo khai báo&quot; ở mục B.2.2 — mô tả bằng dữ liệu, để phần mềm diễn
 giải.</p>
+<h4>Con đường 2 làm đúng cách: ngôn ngữ hẹp, không phải C# đầy đủ</h4>
+<p>Bảng trên xếp &quot;kịch bản người dùng viết&quot; vào nhóm rủi ro cao, với lý do: người dùng viết được <strong>mã
+tuỳ ý</strong> chạy trong tiến trình điều khiển máy. Điều đó đúng — <strong>nhưng chỉ khi ngôn ngữ là C# đầy đủ</strong>.
+Có một biến thể khác, đã chạy thật trong sản xuất, và nó tránh được gần hết rủi ro nhờ một quyết định
+duy nhất: <strong>thu hẹp ngôn ngữ xuống còn một bộ động từ của nghề</strong>.</p>
+<p>Trong một dự án mã nguồn mở của ngành, kịch bản trông như thế này (từ khoá viết bằng <strong>tiếng mẹ đẻ
+của kỹ sư vận hành</strong>, ở đây minh hoạ bằng tiếng Việt):</p>
+<pre><code>Bước &quot;LấyPhôi&quot;:
+    ĐƯA_VỀ_GỐC(&quot;TrụcZ&quot;)
+    CHẠY_TUYỆT_ĐỐI(&quot;ĐiểmChờ&quot;)
+    KHI ĐỌC_ĐẦU_VÀO_BẬT(&quot;CảmBiếnCóPhôi&quot;) THÌ
+        ĐẶT_ĐẦU_RA_BẬT(&quot;HútChânKhông&quot;)
+        CHỜ(0.3)
+        CHUYỂN_BƯỚC &quot;ĐặtPhôi&quot;
+    NGƯỢC_LẠI
+        HỘP_THOẠI(&quot;Không thấy phôi — nạp phôi rồi bấm Thử lại&quot;)
+</code></pre>
+<p>Toàn bộ &quot;ngôn ngữ&quot; chỉ gồm khoảng <strong>hai mươi động từ</strong>: về gốc một trục / nhiều trục, chạy tuyệt đối
+tới điểm đã dạy, chạy tương đối, chạy liên tục, dừng trục, đọc/đặt tín hiệu vào-ra, chờ, hộp thoại
+(báo / hỏi có-không / hỏi thử-lại), rẽ nhánh, chuyển bước, tạm dừng, dừng khẩn. Không có vòng lặp
+tuỳ ý, không có con trỏ, không có gọi thư viện ngoài, không có truy cập file.</p>
+<p>Ba điều làm nên khác biệt so với &quot;cho viết C# tự do&quot;:</p>
+<p><strong>1. Đóng kín từ vựng đồng nghĩa với đóng kín rủi ro.</strong> Kịch bản <strong>không thể</strong> làm gì ngoài những
+động từ bạn đã viết và đã kiểm tra. Không có cách nào để một kịch bản sai gây rò rỉ bộ nhớ, treo
+luồng, hay gọi thẳng xuống card. So sánh với việc cho viết C# tự do — nơi bạn phải phòng mọi thứ mà
+người dùng có thể nghĩ ra.</p>
+<p><strong>2. An toàn nằm trong lớp cơ sở, người viết kịch bản không thể quên.</strong> Đây là chi tiết hay nhất của
+thiết kế đó: <strong>mỗi bước đều tự động gọi một hàm kiểm tra</strong> trước khi chạy — hàm này xử lý tạm dừng,
+dừng khẩn, và ghi nhật ký tên tác vụ/tên bước. Người viết kịch bản không phải nhớ gì cả, và cũng
+không có cách nào bỏ qua nó.</p>
+<p>Đối chiếu với vấn đề đã nêu ở Chương 3 mục 3.5.4: một dự án khác chọn cơ chế dừng dạng &quot;gọi hàm kiểm
+tra ở mọi bước&quot; và người viết quên gọi ở hầu hết các chỗ (đo được 0 lần trong một file 2067 dòng).
+Ở đây, cùng cơ chế nhưng <strong>do khung gọi hộ</strong>, nên không thể quên. Cùng một ý tưởng, khác nhau ở chỗ
+ai chịu trách nhiệm gọi — và khác biệt đó quyết định nó có hoạt động ngoài hiện trường hay không.</p>
+<p><strong>3. Từ khoá bằng tiếng mẹ đẻ, để người đúng việc đọc được.</strong> Người sửa quy trình máy thường là kỹ sư
+công nghệ hoặc kỹ thuật viên, không phải lập trình viên. Một kịch bản viết bằng động từ của nghề, ở
+ngôn ngữ họ dùng hằng ngày, là thứ họ <strong>đọc được và sửa được</strong> — và quan trọng không kém, là thứ họ
+<strong>đọc lại được sau sáu tháng</strong>. Đây là lợi ích thường bị bỏ qua khi bàn về ngôn ngữ nội bộ.</p>
+<p><strong>Cách hiện thực bên dưới:</strong> dự án đó <strong>dịch kịch bản sang mã C#, biên dịch lúc chạy, rồi thực thi</strong>.
+Nghĩa là kỹ thuật &quot;sinh mã&quot; (con đường 1) không hề sai — nó chỉ sai khi được dùng làm <strong>mô hình mà
+người dùng nhìn thấy</strong>. Ở đây người dùng thấy hai mươi động từ; việc sinh mã và biên dịch xảy ra bên
+dưới và không ai cần biết.</p>
+<blockquote>
+<p>💡 <strong>Cách chọn giữa ba con đường, phát biểu lại cho gọn:</strong> câu hỏi quyết định không phải &quot;sinh mã
+hay kịch bản hay cấu hình&quot;, mà là <strong>&quot;người dùng cuối nhìn thấy cái gì?&quot;</strong>.</p>
+<ul>
+<li>Thấy <strong>danh sách bước / đồ thị các nút</strong> → con đường 3, rẻ nhất, an toàn nhất, ít linh hoạt nhất.</li>
+<li>Thấy <strong>một ngôn ngữ hẹp gồm động từ của nghề</strong> → biến thể an toàn của con đường 2; đắt hơn nhưng
+diễn đạt được rẽ nhánh và điều kiện phức tạp.</li>
+<li>Thấy <strong>C# đầy đủ</strong> → tránh. Bạn vừa nhận trách nhiệm cho mọi dòng code người khác viết, chạy
+trong tiến trình đang điều khiển một cỗ máy.</li>
+</ul>
+<p>Và dù chọn đường nào: <strong>kiểm tra dừng/tạm dừng phải do khung gọi tự động ở mỗi bước</strong>, không bao giờ
+giao cho người viết quy trình nhớ.</p>
+</blockquote>
 <h4>Con đường 3 trông như thế nào khi làm đến nơi đến chốn</h4>
 <p>Bảng trên nói con đường 3 gần như luôn thắng, nhưng &quot;cấu hình dạng dữ liệu&quot; nghe còn trừu tượng. Dưới
 đây là hình dung cụ thể, rút từ một dự án tham khảo đã hiện thực trọn vẹn cách này.</p>
@@ -26274,16 +26329,16 @@ tham số các bước mà không build lại</strong>. Nhiều máy chỉ cần
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.</strong> Nếu thấy một
-class vài trăm dòng toàn các chuỗi kiểu `&quot;public class &quot; + name + &quot; : StationBase</p>
-</blockquote>
-<p>{&quot;` — đó là</p>
-<blockquote>
-<p>bộ sinh mã bằng nối chuỗi. Trong một dự án tham khảo, bộ này dài <strong>608 dòng</strong>, và nằm cạnh một
+class vài trăm dòng toàn các chuỗi kiểu <code>&quot;public class &quot; + name + &quot; : StationBase&quot; + xuongDong + &quot;{&quot;</code> — đó là
+bộ sinh mã bằng nối chuỗi. Trong một dự án tham khảo, bộ này dài <strong>608 dòng</strong>, và nằm cạnh một
 trình soạn thảo code C# nhúng trong app (đầy đủ tô màu cú pháp, gợi ý khi gõ, gấp khối) mà <strong>nút
 Build thì để trống, chỉ có comment ghi tên vài thư viện định dùng</strong>. Tham vọng rất lớn, hoàn thành
-thì không. Đây là mẫu thất bại điển hình của con đường 1 và 2: chi phí làm cho <em>đúng</em> và <em>an toàn</em>
-lớn hơn nhiều so với vẻ ngoài, nên tính năng thường dừng ở nửa chừng và trở thành mã chết. Nếu tiếp
-quản một dự án như vậy, ưu tiên chuyển sang con đường 3 thay vì hoàn thiện nốt.</p>
+thì không. Đây là mẫu thất bại điển hình khi con đường 1 và 2 được làm ở dạng <strong>rộng nhất</strong>: chi phí
+làm cho <em>đúng</em> và <em>an toàn</em> lớn hơn nhiều so với vẻ ngoài, nên tính năng thường dừng ở nửa chừng và
+trở thành mã chết. Nếu tiếp quản một dự án như vậy, ưu tiên chuyển sang con đường 3, hoặc sang biến
+thể ngôn ngữ hẹp ở mục trên — đừng cố hoàn thiện nốt một trình biên dịch C# nhúng trong phần mềm máy.</p>
+<p>Phân biệt cho rõ: vấn đề <strong>không phải</strong> kỹ thuật sinh mã, mà là <strong>sinh mã làm mô hình mà người dùng
+nhìn thấy</strong>. Dùng sinh mã như một chi tiết hiện thực bên dưới một ngôn ngữ hẹp thì hoàn toàn hợp lý.</p>
 </blockquote>
 <hr>
 <h2 id="b4-d-liu-và-cu-hình-có-nhng-gì-trên-đĩa">B.4 Dữ liệu và cấu hình — có những gì trên đĩa</h2>

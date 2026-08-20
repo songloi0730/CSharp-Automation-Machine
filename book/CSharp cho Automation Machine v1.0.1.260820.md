@@ -391,6 +391,10 @@ trạng thái và cùng suy luận là nguồn của loại lỗi khó nhất: h
 chờ tối đa là bao nhiêu, và **làm gì khi quá thời gian**. Đây chính là mẫu đã trình bày ở Chương 16
 mục 16.2b (bắt tay bằng bảng cờ), chỉ khác là bảng cờ nằm trong PLC thay vì trong bộ nhớ C#.
 
+> 📌 **Phần kỹ thuật chi tiết của ranh giới này nằm ở Chương 14 mục 14.1.2b** — từ vựng thiết bị nhớ
+> của PLC (X/Y/M/D), vì sao không được ghi thẳng vào đầu ra từ C#, kỹ thuật **gộp địa chỉ thành khối**
+> để không phải hỏi PLC từng giá trị một, và mẫu "bản sao trong bộ nhớ" cho toàn ứng dụng đọc chung.
+
 **4. Bảng tag được quản lý ra sao?** Đây là chỗ tốn thời gian nhất trong thực tế: một tài liệu mô tả
 **từng địa chỉ trên PLC ↔ ý nghĩa ↔ kiểu dữ liệu**, và nó **thay đổi liên tục** trong giai đoạn chạy
 thử khi bên PLC thêm bớt biến. Ba điều cần làm:
@@ -15711,6 +15715,125 @@ lượt 4 pattern này — CDAB là thủ phạm phổ biến nhất sau ABCD ch
 > 💡 **Mẹo thực chiến:** Công cụ ModRSsim2 (Windows, miễn phí) giả lập Modbus TCP server —
 > dùng để test client code mà không cần thiết bị thật. Wireshark + plugin Modbus Dissector
 > là bộ đôi không thể thiếu khi debug frame thực tế trên dây.
+
+---
+
+### 14.1.2b  Tầng giao tiếp PLC — thiết kế cho kiến trúc "PLC điều khiển, C# lo phần trên"
+
+Chương 1 mục 1.3.1 giới thiệu kiến trúc **B**: PLC lo chuyển động, tín hiệu vào-ra và trình tự an
+toàn; C# lo giao diện, thị giác, dữ liệu và tích hợp hệ thống trên. Mục này đi vào phần khó nhất của
+kiến trúc đó — **tầng giao tiếp giữa hai bên** — dựa trên một tầng giao tiếp PLC thật (khoảng 8000
+dòng, một lớp cơ sở dùng chung và bốn lớp cài đặt cho bốn hãng khác nhau).
+
+#### Từ vựng phải quen: thiết bị nhớ của PLC
+
+Trước khi viết dòng code nào, phải quen bốn nhóm biến mà mọi PLC đều có (tên chữ cái khác nhau chút
+ít giữa các hãng, nhưng khái niệm thì chung):
+
+**Bảng 14.3b — Bốn nhóm thiết bị nhớ của PLC**
+
+| Nhóm | Là gì | Kiểu | C# thường làm gì với nó |
+|---|---|---|---|
+| **X** | Tín hiệu **vào** vật lý (cảm biến, nút) | Bit | Chỉ đọc — để hiển thị và chẩn đoán |
+| **Y** | Tín hiệu **ra** vật lý (van, đèn, còi) | Bit | Chỉ đọc — **không nên** ghi trực tiếp (xem cảnh báo bên dưới) |
+| **M** | Bit nhớ **nội bộ** — cờ trạng thái, cờ bắt tay | Bit | Đọc **và** ghi — đây là nơi hai bên bắt tay |
+| **D** | Thanh ghi **dữ liệu** — số, mã, chuỗi | Word (16 bit) | Đọc và ghi — truyền tham số và kết quả |
+
+> ⚠️ **Đừng ghi thẳng vào Y từ C#.** Rất hấp dẫn khi cần thử nhanh: bật một van bằng cách ghi `Y10 =
+> 1`. Nhưng ở kiến trúc B, PLC là bên chịu trách nhiệm về trình tự và interlock — nếu C# ghi thẳng
+> vào đầu ra, **hai bên cùng điều khiển một van** và mọi ràng buộc an toàn PLC đang giữ đều bị vượt
+> qua. Quy tắc: C# ghi vào **M** (nói *ý định*), PLC đọc M, kiểm tra điều kiện của nó, rồi mới quyết
+> định có bật Y hay không. Đây chính là nguyên tắc "cho đi qua ranh giới ý định và kết quả, không cho
+> đi qua từng tín hiệu rời rạc" ở Chương 1 mục 1.3.1, nói lại bằng từ vựng PLC.
+
+#### Vấn đề thật sự: không thể đọc từng địa chỉ một
+
+Đây là chỗ người mới hay vấp, và nó không lộ ra cho tới khi màn hình bắt đầu giật.
+
+Giả sử màn hình cần hiển thị 60 giá trị lấy từ PLC. Cách viết tự nhiên là gọi 60 lần đọc. Nhưng mỗi
+lần đọc là **một vòng hỏi–đáp qua mạng**, tốn cỡ vài mi-li-giây đến vài chục mi-li-giây tuỳ giao thức
+và tải mạng. Sáu mươi lần như vậy có thể mất **hơn một giây** cho **một** lần làm tươi màn hình —
+không dùng được.
+
+Cách giải mà tầng giao tiếp thật dùng: **gộp các địa chỉ gần nhau thành khối liên tục và đọc mỗi khối
+một lần**.
+
+```csharp
+// Ý tưởng: hai vùng cần đọc chỉ cách nhau vài địa chỉ thì đọc gộp làm một
+// vẫn rẻ hơn hai lần hỏi-đáp riêng — kể cả khi phải đọc thừa vài thanh ghi ở giữa.
+public bool AllowMerge(DataBlock other, int maxSize)
+{
+    bool near =
+        (other.End   < Start && Start - other.End   < IntervalMax) ||   // other nằm trước, gần
+        (other.Start > End   && other.Start - End   < IntervalMax) ||   // other nằm sau, gần
+        Overlaps(other);                                                // hoặc chồng lấn
+
+    if (!near) return false;
+
+    // Nhưng không được gộp thành khối quá lớn: mỗi giao thức có giới hạn
+    // số thanh ghi đọc được trong MỘT lần hỏi.
+    int span = Math.Max(End, other.End) - Math.Min(Start, other.Start);
+    return span < maxSize;
+}
+```
+
+Hai tham số trong đoạn trên là toàn bộ nghệ thuật của việc này:
+
+- **`IntervalMax` — khoảng cách tối đa còn đáng gộp.** Đọc thừa vài thanh ghi không dùng đến vẫn rẻ
+  hơn một vòng hỏi–đáp nữa. Nhưng gộp hai vùng cách nhau 500 địa chỉ thì phần lớn dữ liệu truyền về
+  là rác.
+- **`maxSize` — giới hạn của giao thức.** Mỗi giao thức có mức trần cho số thanh ghi đọc được trong
+  một lần hỏi (Modbus là một ví dụ điển hình). Vượt trần thì thiết bị trả lỗi, hoặc tệ hơn là trả về
+  dữ liệu cụt mà không báo gì.
+
+Kèm theo đó là hai thiết kế nữa đáng học từ tầng giao tiếp thật đó:
+
+**Bit và word là hai loại khối riêng.** Đọc 16 bit liên tiếp và đọc 1 thanh ghi 16 bit là hai lệnh
+khác nhau trên PLC, nên hai loại này không gộp chung được — trong code là hai lớp con riêng kế thừa
+cùng một lớp khối.
+
+**Không phải mọi thứ cần làm tươi cùng nhịp.** Trạng thái nút và cảnh báo cần vài chục mi-li-giây;
+số đếm sản lượng và thông tin lô hàng thì một giây một lần là thừa. Cho mỗi nhóm một chu kỳ riêng
+giảm tải mạng rất nhiều mà người dùng không nhận ra khác biệt.
+
+> 💡 **Hệ quả kiến trúc quan trọng nhất: hãy có một "bản sao trong bộ nhớ".** Cách làm chuẩn cho kiến
+> trúc B là **một luồng nền duy nhất** đọc PLC theo khối và theo chu kỳ, cập nhật vào một bản sao
+> trong bộ nhớ; toàn bộ phần còn lại của ứng dụng (giao diện, quy trình, ghi dữ liệu) **đọc bản sao
+> đó**, không ai gọi thẳng xuống PLC. Ba lợi ích: số vòng hỏi–đáp không tăng khi thêm màn hình mới;
+> mọi nơi thấy cùng một giá trị tại cùng một thời điểm; và khi mất kết nối, chỉ cần đánh dấu bản sao
+> là "cũ" thay vì để hàng chục chỗ cùng ném lỗi. Đây chính là **vòng quét** của Chương 6 áp dụng cho
+> ranh giới mạng, và nó cùng họ với mẫu bảng cờ ở Chương 16 mục 16.2b.
+
+#### Đặt tên cho địa chỉ — và kiểm tra ngay khi khởi động
+
+Địa chỉ thô (`D1250`, `M430`) rải khắp code là cách chắc chắn nhất để một lần đổi bên PLC làm hỏng
+mười chỗ bên C#. Tầng giao tiếp thật giải quyết bằng cách mô tả **vùng địa chỉ hợp lệ** cho từng nhóm
+thiết bị, kèm hàm kiểm tra:
+
+```csharp
+public readonly record struct DeviceRange(SoftElement Element, int Start, int Count)
+{
+    public bool Contains(int address, int count = 1) =>
+        address >= Start && address + count - 1 < Start + Count;
+}
+
+// Nạp từ file cấu hình — cùng file mà bên PLC dùng, không phải bản chép riêng
+if (!_map.D.Contains(addr, len))
+    throw new AlarmException(AlarmCodes.PlcAddressOutOfRange, "PLC",
+        $"Địa chỉ D{addr} (dài {len}) nằm ngoài vùng khai báo D{_map.D.Start}–{_map.D.Start + _map.D.Count - 1}. " +
+        $"Kiểm tra lại bảng tag đã đồng bộ với chương trình PLC chưa.");
+```
+
+Kiểm tra này rẻ và bắt được đúng lỗi hay xảy ra nhất trong giai đoạn chạy thử: bên PLC dời vùng dữ
+liệu mà bên C# chưa cập nhật. Không có nó, chương trình đọc phải vùng nhớ khác và nhận **số rác trông
+như số thật** — loại lỗi tốn nhiều ngày nhất để tìm ra.
+
+> 📌 **Một chi tiết nhỏ đáng bắt chước.** Trong tầng giao tiếp thật đó có một file mã nguồn **không
+> chứa code nào** — chỉ chứa phần chú thích mô tả toàn bộ giao thức trao đổi giữa C# và PLC. Cách làm
+> hơi lạ, nhưng ý đồ thì đúng: **tài liệu về ranh giới nằm ngay trong mã nguồn**, đi cùng phiên bản,
+> không thất lạc như một file Word trong ổ đĩa chung. Nếu thấy khó chịu vì nó không phải code, hãy đặt
+> cùng nội dung đó vào một file `README.md` trong thư mục của tầng giao tiếp — điều quan trọng là nó
+> **đi cùng mã nguồn**, không phải nó nằm ở định dạng nào.
 
 ---
 

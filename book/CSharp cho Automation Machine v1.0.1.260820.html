@@ -15647,6 +15647,86 @@ nhiêu&quot;</em> — làm một lần khi lắp camera, làm lại khi camera b
 chụp</strong>. Thiếu hiệu chuẩn thì toạ độ trả về là điểm ảnh, không dùng để ra lệnh cho trục
 được. Thiếu gá toạ độ thì hệ thống chỉ chạy đúng khi phôi vào hoàn hảo.</p>
 </blockquote>
+<h4>Hiệu chuẩn được làm như thế nào — và làm sao biết nó đạt</h4>
+<p>Callout ở trên phân biệt hiệu chuẩn với gá toạ độ. Mục này nói về <strong>quy trình hiệu chuẩn thật</strong>, vì
+nó là một trong những màn hình bạn sẽ phải làm, và là chỗ người mới hay tưởng &quot;chạy một lần là xong&quot;.</p>
+<p>Có hai cách hiệu chuẩn, dùng cho hai bài toán khác nhau, và một máy có camera thường cần <strong>cả hai</strong>:</p>
+<p><strong>Bảng 13.9b — Hai kiểu hiệu chuẩn thị giác</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Hiệu chuẩn camera</strong> (dùng tấm bàn cờ)</th>
+<th><strong>Hiệu chuẩn tay–mắt</strong> (N điểm)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Trả lời câu hỏi</td>
+<td><em>&quot;Một điểm ảnh bằng bao nhiêu mi-li-mét, và ống kính méo bao nhiêu?&quot;</em></td>
+<td><em>&quot;Toạ độ trong ảnh tương ứng với toạ độ nào của <strong>trục máy</strong>?&quot;</em></td>
+</tr>
+<tr>
+<td>Cách làm</td>
+<td>Đặt một <strong>tấm in ô bàn cờ</strong> kích thước đã biết dưới camera, chụp, công cụ tự tính</td>
+<td>Cho trục chạy tới <strong>N vị trí đã biết</strong>, mỗi vị trí chụp một ảnh và ghi lại toạ độ ảnh của cùng một điểm đặc trưng</td>
+</tr>
+<tr>
+<td>Khi nào làm lại</td>
+<td>Khi lắp/thay camera hoặc ống kính, khi camera bị va chạm, khi đổi khoảng cách chụp</td>
+<td>Thêm cả khi <strong>cơ khí bị chỉnh</strong> — tháo lắp gá, thay đầu công tác</td>
+</tr>
+<tr>
+<td>Kết quả</td>
+<td>Hệ số quy đổi + tham số bù méo ống kính</td>
+<td>Phép biến đổi từ hệ toạ độ ảnh sang hệ toạ độ trục</td>
+</tr>
+</tbody></table></div>
+<p>Cách thứ hai là lý do màn hình hiệu chuẩn trong các dự án thật thường <strong>gộp chung nút jog trục với
+nút chụp ảnh</strong>: người vận hành chạy trục tới một điểm, bấm ghi, lặp lại N lần, rồi bấm tính. Nếu bạn
+thấy một màn hình tên kiểu &quot;hiệu chuẩn + jog&quot; thì đó chính là quy trình này.</p>
+<h4>Hiệu chuẩn không phải &quot;xong hay chưa xong&quot; mà là &quot;đạt tới mức nào&quot;</h4>
+<p>Đây là điểm quan trọng nhất và cũng là điểm hay bị bỏ qua nhất. Mọi công cụ hiệu chuẩn nghiêm túc đều
+trả về <strong>một con số sai lệch</strong> — thường là sai số bình phương trung bình giữa vị trí công cụ <em>dự
+đoán</em> và vị trí <em>đo được</em> của các điểm chuẩn. Con số đó chính là <strong>chất lượng của lần hiệu chuẩn</strong>:</p>
+<pre><code class="language-csharp">calibTool.Calibration.CalibrationImage = image;
+calibTool.Calibration.Calibrate();
+
+double rms = calibTool.Calibration.ComputedRMSError;      // đơn vị: điểm ảnh
+if (rms &gt; recipe.CalibrationMaxRmsPixels)
+{
+    // KHÔNG được lưu kết quả hiệu chuẩn này
+    return OperateResult.Fail(&quot;CALIB_QUALITY&quot;,
+        $&quot;Hiệu chuẩn sai lệch {rms:0.000} điểm ảnh, vượt ngưỡng cho phép &quot; +
+        $&quot;{recipe.CalibrationMaxRmsPixels:0.000}. Kiểm tra: tấm chuẩn có phẳng và sạch không, &quot; +
+        $&quot;ánh sáng có đều không, camera có đúng tiêu cự không.&quot;);
+}
+_calibrationStore.Save(cameraId, calibTool.Calibration, rms, DateTime.UtcNow, currentUser);
+</code></pre>
+<p>Ba việc phải làm quanh con số đó, và thiếu bất kỳ việc nào cũng dẫn tới hậu quả thật:</p>
+<ol>
+<li><strong>Có ngưỡng chấp nhận, và từ chối lưu nếu vượt.</strong> Không có ngưỡng thì một lần hiệu chuẩn tồi —
+tấm chuẩn bị cong, có vệt bẩn, đèn loá một góc — vẫn được lưu và dùng cho cả tháng sản xuất. Sai
+lệch nhỏ ở bước hiệu chuẩn trở thành sai lệch có hệ thống ở mọi phép đo sau đó.</li>
+<li><strong>Lưu lại kết quả kèm sai lệch, thời điểm, và người thực hiện.</strong> Khi có khiếu nại về kích thước
+đo, câu hỏi đầu tiên sẽ là <em>&quot;lần hiệu chuẩn gần nhất là khi nào và đạt bao nhiêu&quot;</em>.</li>
+<li><strong>Kiểm tra &quot;đã hiệu chuẩn chưa&quot; trước khi cho chạy tự động.</strong> Công cụ hiệu chuẩn có cờ trạng thái
+cho biết nó đã được hiệu chuẩn hay chưa. Máy khởi động với camera chưa hiệu chuẩn phải <strong>từ chối
+vào chế độ tự động</strong>, không phải chạy rồi trả toạ độ theo điểm ảnh.</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Hiệu chuẩn là thao tác có rủi ro cao, phải nằm sau quyền và phải ghi nhật ký.</strong> Một lần hiệu
+chuẩn sai không làm máy dừng — nó làm máy <strong>tiếp tục chạy và cho ra kết quả sai một cách nhất
+quán</strong>, đúng loại lỗi khó phát hiện nhất (Phụ lục B mục B.8: sản phẩm lỗi trông y hệt sản phẩm
+tốt). Đối xử với nó như với việc sửa recipe: yêu cầu quyền Kỹ sư, ghi ai làm và lúc nào, và <strong>giữ
+lại kết quả cũ</strong> để còn quay về được nếu lần mới tệ hơn.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Một mẹo vận hành đáng đưa vào máy: kiểm tra hiệu chuẩn định kỳ, không hiệu chuẩn lại định kỳ.</strong>
+Hiệu chuẩn lại thường xuyên nghe có vẻ cẩn thận nhưng thực ra làm tăng rủi ro — mỗi lần làm là một
+cơ hội làm sai. Cách tốt hơn: định kỳ <strong>đo một mẫu chuẩn đã biết kích thước</strong> và so với giá trị
+đúng; chỉ khi lệch vượt ngưỡng mới hiệu chuẩn lại. Cách này cũng phát hiện được những thứ mà hiệu
+chuẩn lại không giải quyết được, ví dụ ống kính bị xê dịch dần hoặc gá bị lỏng.</p>
+</blockquote>
 <h4>Nửa còn lại: chụp cho đúng</h4>
 <p>Toàn bộ phần trên nói về <strong>dò cho đúng</strong> — vùng dò, gá toạ độ, ranh giới interface. Nhưng mọi thuật
 toán dò tốt nhất cũng vô dụng nếu bức ảnh đầu vào sai. Phần này thuộc trách nhiệm của <strong>bạn</strong>, không
@@ -24415,7 +24495,11 @@ dùng chung), tìm dấu vết của các thuộc tính test (<code>[Fact]</code
 </tr>
 </thead>
 <tbody><tr>
-<td>Có test project <strong>và</strong> có test thật đang chạy</td>
+<td>Có test viết bằng <strong>khung kiểm thử</strong> (xUnit), 192 phép kiểm</td>
+<td><strong>1</strong> / 12</td>
+</tr>
+<tr>
+<td>Có test <strong>tự viết không dùng khung</strong>, 31 phép kiểm — cách đếm ở trên bỏ sót (xem mục ngay dưới)</td>
 <td><strong>1</strong> / 12</td>
 </tr>
 <tr>
@@ -24423,8 +24507,8 @@ dùng chung), tìm dấu vết của các thuộc tính test (<code>[Fact]</code
 <td>2 / 12</td>
 </tr>
 <tr>
-<td>Không có gì</td>
-<td>9 / 12</td>
+<td>Không tìm thấy gì</td>
+<td>8 / 12</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -24439,9 +24523,88 @@ dự án trong ngành có test&quot;</em>. Xem thêm ghi chú chung về bộ m�
 hệ nhân quả</strong>: nhìn vào dự án có test và hỏi <em>điều gì khiến nó test được</em>. Và ngược lại, khi tiếp quản một dự án không có test nào, đó là
 tình huống bình thường chứ không phải dấu hiệu đội cũ yếu kém — nó phản ánh những áp lực rất thật:
 máy phải giao đúng hạn, phần cứng đến muộn, và mọi thứ cần &quot;chạy được trước đã&quot;.</p>
-<h4>Dự án duy nhất có test làm gì khác?</h4>
-<p>Đáng chú ý là dự án duy nhất có kiểm thử nghiêm túc (<strong>192 test</strong>, xUnit + Moq — đúng bộ công cụ
-chương này dạy) không phải dự án có kỷ luật cao hơn, mà là dự án có <strong>kiến trúc cho phép test</strong>. Hai
+<h4>Một dạng kiểm thử khác mà khảo sát suýt bỏ sót: tự kiểm tra nằm trong chính phần mềm máy</h4>
+<p>Cách đếm ở bảng trên tìm các thuộc tính của khung kiểm thử (<code>[Fact]</code>, <code>[Test]</code>, <code>[TestMethod]</code>,
+<code>[Theory]</code>). Khi đọc kỹ hơn, một dự án nữa <strong>có tới 31 hàm kiểm thử</strong> nhưng <strong>không dùng khung nào
+cả</strong> — nên cách đếm trên bỏ sót hoàn toàn. Chúng trông như thế này:</p>
+<pre><code class="language-csharp">public class ActionCalculatorTests
+{
+    private int passCount, failCount, totalCount;
+    private StringBuilder report = new();
+
+    public string RunAllTests()
+    {
+        TestAddition();
+        TestSubtraction();
+        TestDivisionByZero();
+        // ... 14 phép kiểm tra
+        return report.ToString();     // trả về một BÁO CÁO DẠNG VĂN BẢN
+    }
+}
+</code></pre>
+<p>Và quan trọng hơn cách viết: các file này được <strong>biên dịch vào chính ứng dụng máy</strong>, không nằm ở
+project riêng.</p>
+<p><strong>Vì sao có người làm vậy — và đó không phải chuyện vô lý.</strong> Trên máy tính công nghiệp ngoài hiện
+trường <strong>không có Visual Studio, không chạy được <code>dotnet test</code></strong>. Nhưng bạn hoàn toàn có thể thêm một
+nút trên màn hình chẩn đoán, bấm vào thì chạy toàn bộ phép tự kiểm và hiện báo cáo ngay tại chỗ. Khi
+máy có biểu hiện lạ lúc 2 giờ sáng, câu hỏi <em>&quot;phần tính toán còn đúng không, hay vấn đề ở cơ khí?&quot;</em>
+được trả lời trong ba mươi giây thay vì phải mang máy tính tới đấu vào.</p>
+<p>Đây là cùng ý tưởng với hai hàm tự kiểm tra thứ tự byte và mã kiểm tra đã gặp ở một dự án khác (Phụ
+lục B mục B.8.1): <strong>kiểm tra phần logic thuần, ngay trong sản phẩm, chạy được ở hiện trường</strong>.</p>
+<p><strong>Bảng 18.9b — Hai chỗ đặt phép kiểm thử, dùng cho hai mục đích khác nhau</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Kiểm thử ở project riêng (khung xUnit…)</th>
+<th>Tự kiểm tra nhúng trong ứng dụng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Chạy khi nào</td>
+<td>Lúc phát triển, mỗi lần commit</td>
+<td><strong>Tại hiện trường</strong>, khi nghi ngờ</td>
+</tr>
+<tr>
+<td>Chạy bằng gì</td>
+<td><code>dotnet test</code>, máy chủ tự động</td>
+<td><strong>Một nút trên màn hình chẩn đoán</strong></td>
+</tr>
+<tr>
+<td>Kiểm được gì</td>
+<td>Mọi thứ, kể cả với thiết bị giả lập</td>
+<td>Chỉ phần <strong>logic thuần</strong> — tính toán, chuyển đổi định dạng, luật phán định</td>
+</tr>
+<tr>
+<td>Có đi cùng sản phẩm không</td>
+<td>Không (thường không đóng gói khi giao)</td>
+<td><strong>Có</strong> — đó là mục đích</td>
+</tr>
+<tr>
+<td>Điểm yếu</td>
+<td>Không dùng được ở hiện trường</td>
+<td>Làm ứng dụng lớn thêm; <strong>và rất dễ trở thành mã chết</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Điểm yếu cuối là điều đã xảy ra thật trong dự án đó: không nơi nào gọi <code>RunAllTests()</code>.</strong> Tìm
+toàn bộ mã nguồn, hàm này <strong>không được gọi từ đâu cả</strong> — 31 phép kiểm tra được viết cẩn thận, được
+biên dịch vào sản phẩm, và <strong>chưa từng chạy</strong>. Bài học giống hệt &quot;test project rỗng&quot; ở trên, chỉ ở
+dạng khác: <strong>viết được test là một chuyện, có đường để chạy nó là chuyện khác</strong>. Nếu chọn cách tự
+kiểm tra nhúng, việc bắt buộc phải làm cùng lúc là <strong>thêm nút gọi nó vào màn hình chẩn đoán</strong> — nếu
+không, nó chỉ là mã chết mang lại cảm giác an toàn giả.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Hai điều rút ra cho cách bạn tự khảo sát một dự án lạ.</strong> Thứ nhất, <strong>đừng chỉ tìm thuộc tính
+của khung kiểm thử</strong> — hãy tìm cả tên thư mục (<code>Tests</code>, <code>UnitTest</code>), tên lớp kết thúc bằng <code>Tests</code>,
+và các hàm tên bắt đầu bằng <code>Test</code>. Thứ hai, và quan trọng hơn: <strong>tìm thấy test rồi thì kiểm tra
+xem có ai gọi chúng không</strong> — cả hai dự án có test trong khảo sát này đều cho thấy tồn tại ≠ đang
+chạy (Chương 19 gọi đó là &quot;code tồn tại không đồng nghĩa code đang hoạt động&quot;).</p>
+</blockquote>
+<h4>Dự án dùng khung kiểm thử làm gì khác?</h4>
+<p>Đáng chú ý là dự án dùng khung kiểm thử một cách nghiêm túc (<strong>192 test</strong>, xUnit + Moq — đúng bộ
+công cụ chương này dạy) không phải dự án có kỷ luật cao hơn, mà là dự án có <strong>kiến trúc cho phép
+test</strong>. Hai
 điểm khác biệt cụ thể:</p>
 <p><strong>1. Chế độ giả lập là một tham số của hệ thống, không phải thứ chắp vá.</strong> Toàn bộ hệ thống nhận một
 cấu hình dạng <code>SystemConfigurations { FakeMode = true }</code>, và mọi thiết bị được tạo qua factory sẽ trở

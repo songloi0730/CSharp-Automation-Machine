@@ -8479,7 +8479,7 @@ kỳ kiểu <code>Control</code> nào, nên có thể test bằng một <code>IP
 cần mở Form thật, không cần UI thread thật. Chi tiết kỹ thuật viết test với
 xUnit sẽ học đầy đủ ở Chương 18; ở đây chỉ minh hoạ vì sao MVP làm được điều
 mà code-behind của Form không bao giờ làm được.</p>
-<p><strong>Code 8.13 — Fake View và Fake PLC client cho test</strong></p>
+<p><strong>Code 8.13b — Fake View và Fake PLC client cho test</strong></p>
 <pre><code class="language-csharp">public sealed class FakePumpStationView : IPumpStationView
 {
     public event EventHandler? ViewLoaded;
@@ -18861,7 +18861,7 @@ dotnet-svcutil http://mes-server/LineService.asmx?wsdl
 <pre><code class="language-csharp">using var client = new LineServiceSoapClient(LineServiceSoapClient.EndpointConfiguration.LineServiceSoap);
 var reply = await client.ReportInspectionAsync(partId, passed ? &quot;OK&quot; : &quot;NG&quot;, reasonCode);
 </code></pre>
-<p><strong>Bảng 14.9b — Ba kiểu tích hợp MES gặp trong nhà máy điện tử</strong></p>
+<p><strong>Bảng 14.9e — Ba kiểu tích hợp MES gặp trong nhà máy điện tử</strong></p>
 <div class="table-wrap"><table>
 <thead>
 <tr>

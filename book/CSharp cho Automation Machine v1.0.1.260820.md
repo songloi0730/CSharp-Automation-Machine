@@ -7809,7 +7809,7 @@ cần mở Form thật, không cần UI thread thật. Chi tiết kỹ thuật v
 xUnit sẽ học đầy đủ ở Chương 18; ở đây chỉ minh hoạ vì sao MVP làm được điều
 mà code-behind của Form không bao giờ làm được.
 
-**Code 8.13 — Fake View và Fake PLC client cho test**
+**Code 8.13b — Fake View và Fake PLC client cho test**
 
 ```csharp
 public sealed class FakePumpStationView : IPumpStationView
@@ -17155,7 +17155,7 @@ using var client = new LineServiceSoapClient(LineServiceSoapClient.EndpointConfi
 var reply = await client.ReportInspectionAsync(partId, passed ? "OK" : "NG", reasonCode);
 ```
 
-**Bảng 14.9b — Ba kiểu tích hợp MES gặp trong nhà máy điện tử**
+**Bảng 14.9e — Ba kiểu tích hợp MES gặp trong nhà máy điện tử**
 
 | | SOAP web service | HTTP + JSON (14.2.7) | Cổng lệnh độc quyền (14.2.8) |
 |---|---|---|---|

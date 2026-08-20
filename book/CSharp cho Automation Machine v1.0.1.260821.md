@@ -26269,3 +26269,49 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 **YAML / YamlDotNet** — Định dạng dữ liệu dùng thụt lề (indentation) thay cho dấu ngoặc `{}`/`[]` như JSON để thể hiện cấu trúc/phân cấp; `YamlDotNet` là thư viện .NET phổ biến nhất để serialize/deserialize (`SerializerBuilder`/`DeserializerBuilder`, `WithNamingConvention`, tuỳ biến kiểu qua `IYamlTypeConverter`). Gặp trong config/recipe/teaching-point của một số dự án kế thừa. KHÔNG khuyến nghị cho file cấu hình HMI vận hành (Chương 10) — nhạy cảm với lỗi thụt lề, khó sửa tay trên máy không có IDE; JSON/XML (mục 3.6.3/3.6.4) vẫn là lựa chọn an toàn hơn cho recipe/config công nghiệp. (→ xem JsonSerializer, XmlSerializer)
 *Xuất hiện đầu tiên: Chương 3, mục 3.6.5.*
 
+---
+
+## Bổ sung đợt 20–21/8/2026
+
+> Các mục dưới đây được thêm sau đợt đọc mã nguồn dự án tham khảo và sẽ được trộn vào danh sách
+> chính theo thứ tự bảng chữ cái ở lần rà soát Glossary tiếp theo.
+
+**Bàn phím ảo (Virtual Keyboard / Numpad)** — Bàn phím vẽ trên màn hình, mở ra khi người dùng chạm vào một ô nhập; bắt buộc với máy tính công nghiệp dùng cảm ứng không có bàn phím vật lý. Ba loại dùng cho ba mục đích khác nhau: bàn phím số (tham số, toạ độ — cần đơn vị và số chữ số thập phân), bàn phím chữ (tên công thức, mã lô), bàn phím mật khẩu (che ký tự). Nên viết **một** lớp dùng chung và kiểm thử kỹ, thay vì mỗi màn hình tự xử lý chuỗi. (→ xem Touch Target Size, Recipe)
+*Xuất hiện đầu tiên: Chương 10, mục 10.1.6.*
+
+**Bản đồ khay (Map Data / Wafer Map)** — Bảng ghi *vị trí nào trên khay chứa gì và kết quả phán định ra sao*, đi kèm khay qua từng máy trên dây chuyền; mỗi ô mang một **mã phân loại** (bin code) chứ không chỉ đạt/không đạt. Là cách các máy truyền thông tin về từng chi tiết khi chi tiết quá nhỏ để in mã vạch riêng. Ở hệ thống hiện đại, nội dung là một tài liệu XML đặt trong message SECS. (→ xem SECS/GEM, Traceability)
+*Xuất hiện đầu tiên: Chương 14, mục 14.2.6b.*
+
+**Bản đồ bộ nhớ (Memory Map)** — File dữ liệu mô tả từng trường cần ghi vào bộ nhớ sản phẩm: địa chỉ, kích thước, định dạng. Thuộc về kỹ sư sản phẩm và thay đổi theo đời sản phẩm, nên **không được đưa vào code**. Dùng ở máy nạp dữ liệu vào sản phẩm. (→ xem EEPROM, Checksum)
+*Xuất hiện đầu tiên: Phụ lục B, mục B.8.1.*
+
+**Bảng cờ dùng chung (Shared Tag Table)** — Mẫu đồng bộ giữa nhiều trạm chạy song song: không trạm nào gọi hàm trạm nào, tất cả cùng đọc/ghi một bảng cờ chung, mỗi bên chỉ **đặt cờ** để yêu cầu và **chờ cờ** để biết việc đã xong. Đánh đổi: được tính song song thật và khả năng quan sát trạng thái từ HMI, mất khả năng để trình biên dịch phát hiện **cờ mồ côi**. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng trước mỗi lần Start; mọi lần chờ có thời gian chờ tối đa kèm alarm; tên cờ mô tả ý định. (→ xem Handshake, ManualResetEvent)
+*Xuất hiện đầu tiên: Chương 16, mục 16.2b.*
+
+**CiA 402** — Chuẩn hồ sơ thiết bị truyền động cho servo drive nối qua fieldbus; quy định một **máy trạng thái** mà trục phải đi qua từng bước để được phép chuyển động (chưa cho phép bật → sẵn sàng → đã bật → đang vận hành), giao tiếp qua *từ điều khiển* và *từ trạng thái* nằm trong dữ liệu chu kỳ. Điểm dễ nhầm: trạng thái "đã bật" **chưa** giữ mô-men — trục thẳng đứng sẽ rơi nếu nhả phanh ở bước này. (→ xem PDO, SDO, EtherCAT, STO)
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.4.*
+
+**Gá toạ độ (Fixturing)** — Kỹ thuật thị giác máy: dò một đặc trưng chuẩn dễ nhận trên phôi trước (mép khay, lỗ định vị), đo lượng lệch và xoay, rồi **dời toàn bộ các vùng dò khác theo đúng lượng đó**. Nhờ vậy chỉ phải dạy vùng dò một lần dù phôi vào lệch mỗi lần. **Khác hiệu chuẩn**: gá toạ độ làm lại **mỗi lần chụp**; hiệu chuẩn làm một lần khi lắp camera. (→ xem Calibration, ROI, Affine Transform)
+*Xuất hiện đầu tiên: Chương 13, mục 13.2.4c.*
+
+**GR&R (Gage Repeatability & Reproducibility)** — Phép đánh giá xem sai lệch trong kết quả đo đến từ **sản phẩm** hay từ **chính hệ đo**: cho máy đo lặp lại một bộ mẫu nhiều lần với nhiều người vận hành, rồi tách phương sai thành Repeatability (cùng người, đo lại) và Reproducibility (đổi người). Vượt ngưỡng cho phép thì hệ đo bị coi là không đủ tin cậy để phán định OK/NG. Về phía phần mềm, chế độ GR&R phải ghi **toàn bộ giá trị đo thô** và **không** phán định OK/NG. (→ xem Chế độ chạy, Calibration)
+*Xuất hiện đầu tiên: Chương 12, mục 12.4.1.*
+
+**PDO (Process Data Object)** — Dữ liệu **quy trình** trên fieldbus, trao đổi **mỗi chu kỳ bus** với độ trễ thấp và tất định: vị trí hiện tại, lệnh chuyển động, bit trạng thái, bit vào-ra. Đối lập với SDO. Nếu một giá trị cần đọc mỗi chu kỳ mà phải gọi SDO thì bản đồ PDO đang cấu hình thiếu. (→ xem SDO, EtherCAT, CiA 402)
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.4.*
+
+**SDO (Service Data Object)** — Kênh trao đổi **tham số** trên fieldbus, gọi khi cần chứ không theo chu kỳ, độ trễ **không tất định**: nạp cấu hình drive lúc khởi động, đọc mã lỗi chi tiết khi có sự cố. **Sai lầm kinh điển: gọi SDO trong vòng điều khiển** — làm chu kỳ giãn thất thường và có thể mất nhịp bus. (→ xem PDO, CiA 402)
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.4.*
+
+**Thiết bị nhớ PLC (X / Y / M / D)** — Bốn nhóm biến mà mọi PLC đều có: **X** tín hiệu vào vật lý, **Y** tín hiệu ra vật lý, **M** bit nhớ nội bộ, **D** thanh ghi dữ liệu 16 bit. Quy tắc quan trọng khi C# nói chuyện với PLC: **ghi vào M** (nói ý định) chứ **không ghi thẳng vào Y** — nếu không, hai bên cùng điều khiển một đầu ra và mọi interlock PLC đang giữ đều bị vượt qua. (→ xem Modbus, Tag Table)
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.2b.*
+
+**Gộp khối địa chỉ (Block Merge)** — Kỹ thuật đọc PLC hiệu quả: gộp các vùng địa chỉ gần nhau thành một khối liên tục để đọc trong **một** vòng hỏi–đáp thay vì nhiều lần. Điều khiển bằng hai tham số: khoảng cách tối đa còn đáng gộp (đọc thừa vài thanh ghi rẻ hơn một vòng hỏi–đáp nữa) và giới hạn số thanh ghi mỗi lần hỏi của giao thức. Đi kèm mẫu **bản sao trong bộ nhớ**: một luồng nền đọc theo khối, toàn ứng dụng đọc bản sao. (→ xem Thiết bị nhớ PLC, Scan Cycle)
+*Xuất hiện đầu tiên: Chương 14, mục 14.1.2b.*
+
+**Đối tượng kết quả (Result Object)** — Cách thứ ba để một bước quy trình báo thất bại, bên cạnh ném exception và trả `bool`: trả về một đối tượng mang **cả trạng thái lẫn lý do** (mã lỗi + thông điệp). Hợp nhất với **động cơ chạy quy trình** cần cầm kết quả từng bước để quyết định nhánh tiếp theo. Quy tắc chọn: quy trình **là code** → exception; quy trình **là dữ liệu do động cơ chạy** → đối tượng kết quả. (→ xem CancellationToken, AlarmException)
+*Xuất hiện đầu tiên: Chương 3, mục 3.5.4.*
+
+**Bộ kiểm tra cấu hình (Config Validator)** — Thành phần kiểm tra một quy trình dạng dữ liệu **trước khi cho nạp**, bắt các lỗi mà trình soạn từng ô không thấy: trùng mã, nhảy tới bước không tồn tại, vòng lặp bước nhảy bằng 0, giới hạn dưới lớn hơn trên. Nên có **ba mức** (lỗi chặn nạp / cảnh báo cho nạp nhưng phải xem / gợi ý), vì các trường hợp nguy hiểm nhất lại là những quy trình **chạy được** nhưng không phán định được kết quả. (→ xem Cấu hình dạng dữ liệu, NodeOperator)
+*Xuất hiện đầu tiên: Phụ lục B, mục B.3.2.*
+

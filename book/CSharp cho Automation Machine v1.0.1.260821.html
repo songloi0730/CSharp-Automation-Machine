@@ -470,6 +470,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#w">W</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#x">X</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#y">Y</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#b-sung-đt-202182026">Bổ sung đợt 20–21/8/2026</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -28987,6 +28988,38 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <h2 id="y">Y</h2>
 <p><strong>YAML / YamlDotNet</strong> — Định dạng dữ liệu dùng thụt lề (indentation) thay cho dấu ngoặc <code>{}</code>/<code>[]</code> như JSON để thể hiện cấu trúc/phân cấp; <code>YamlDotNet</code> là thư viện .NET phổ biến nhất để serialize/deserialize (<code>SerializerBuilder</code>/<code>DeserializerBuilder</code>, <code>WithNamingConvention</code>, tuỳ biến kiểu qua <code>IYamlTypeConverter</code>). Gặp trong config/recipe/teaching-point của một số dự án kế thừa. KHÔNG khuyến nghị cho file cấu hình HMI vận hành (Chương 10) — nhạy cảm với lỗi thụt lề, khó sửa tay trên máy không có IDE; JSON/XML (mục 3.6.3/3.6.4) vẫn là lựa chọn an toàn hơn cho recipe/config công nghiệp. (→ xem JsonSerializer, XmlSerializer)
 <em>Xuất hiện đầu tiên: Chương 3, mục 3.6.5.</em></p>
+<hr>
+<h2 id="b-sung-đt-202182026">Bổ sung đợt 20–21/8/2026</h2>
+<blockquote>
+<p>Các mục dưới đây được thêm sau đợt đọc mã nguồn dự án tham khảo và sẽ được trộn vào danh sách
+chính theo thứ tự bảng chữ cái ở lần rà soát Glossary tiếp theo.</p>
+</blockquote>
+<p><strong>Bàn phím ảo (Virtual Keyboard / Numpad)</strong> — Bàn phím vẽ trên màn hình, mở ra khi người dùng chạm vào một ô nhập; bắt buộc với máy tính công nghiệp dùng cảm ứng không có bàn phím vật lý. Ba loại dùng cho ba mục đích khác nhau: bàn phím số (tham số, toạ độ — cần đơn vị và số chữ số thập phân), bàn phím chữ (tên công thức, mã lô), bàn phím mật khẩu (che ký tự). Nên viết <strong>một</strong> lớp dùng chung và kiểm thử kỹ, thay vì mỗi màn hình tự xử lý chuỗi. (→ xem Touch Target Size, Recipe)
+<em>Xuất hiện đầu tiên: Chương 10, mục 10.1.6.</em></p>
+<p><strong>Bản đồ khay (Map Data / Wafer Map)</strong> — Bảng ghi <em>vị trí nào trên khay chứa gì và kết quả phán định ra sao</em>, đi kèm khay qua từng máy trên dây chuyền; mỗi ô mang một <strong>mã phân loại</strong> (bin code) chứ không chỉ đạt/không đạt. Là cách các máy truyền thông tin về từng chi tiết khi chi tiết quá nhỏ để in mã vạch riêng. Ở hệ thống hiện đại, nội dung là một tài liệu XML đặt trong message SECS. (→ xem SECS/GEM, Traceability)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.2.6b.</em></p>
+<p><strong>Bản đồ bộ nhớ (Memory Map)</strong> — File dữ liệu mô tả từng trường cần ghi vào bộ nhớ sản phẩm: địa chỉ, kích thước, định dạng. Thuộc về kỹ sư sản phẩm và thay đổi theo đời sản phẩm, nên <strong>không được đưa vào code</strong>. Dùng ở máy nạp dữ liệu vào sản phẩm. (→ xem EEPROM, Checksum)
+<em>Xuất hiện đầu tiên: Phụ lục B, mục B.8.1.</em></p>
+<p><strong>Bảng cờ dùng chung (Shared Tag Table)</strong> — Mẫu đồng bộ giữa nhiều trạm chạy song song: không trạm nào gọi hàm trạm nào, tất cả cùng đọc/ghi một bảng cờ chung, mỗi bên chỉ <strong>đặt cờ</strong> để yêu cầu và <strong>chờ cờ</strong> để biết việc đã xong. Đánh đổi: được tính song song thật và khả năng quan sát trạng thái từ HMI, mất khả năng để trình biên dịch phát hiện <strong>cờ mồ côi</strong>. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng trước mỗi lần Start; mọi lần chờ có thời gian chờ tối đa kèm alarm; tên cờ mô tả ý định. (→ xem Handshake, ManualResetEvent)
+<em>Xuất hiện đầu tiên: Chương 16, mục 16.2b.</em></p>
+<p><strong>CiA 402</strong> — Chuẩn hồ sơ thiết bị truyền động cho servo drive nối qua fieldbus; quy định một <strong>máy trạng thái</strong> mà trục phải đi qua từng bước để được phép chuyển động (chưa cho phép bật → sẵn sàng → đã bật → đang vận hành), giao tiếp qua <em>từ điều khiển</em> và <em>từ trạng thái</em> nằm trong dữ liệu chu kỳ. Điểm dễ nhầm: trạng thái &quot;đã bật&quot; <strong>chưa</strong> giữ mô-men — trục thẳng đứng sẽ rơi nếu nhả phanh ở bước này. (→ xem PDO, SDO, EtherCAT, STO)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.4.</em></p>
+<p><strong>Gá toạ độ (Fixturing)</strong> — Kỹ thuật thị giác máy: dò một đặc trưng chuẩn dễ nhận trên phôi trước (mép khay, lỗ định vị), đo lượng lệch và xoay, rồi <strong>dời toàn bộ các vùng dò khác theo đúng lượng đó</strong>. Nhờ vậy chỉ phải dạy vùng dò một lần dù phôi vào lệch mỗi lần. <strong>Khác hiệu chuẩn</strong>: gá toạ độ làm lại <strong>mỗi lần chụp</strong>; hiệu chuẩn làm một lần khi lắp camera. (→ xem Calibration, ROI, Affine Transform)
+<em>Xuất hiện đầu tiên: Chương 13, mục 13.2.4c.</em></p>
+<p><strong>GR&amp;R (Gage Repeatability &amp; Reproducibility)</strong> — Phép đánh giá xem sai lệch trong kết quả đo đến từ <strong>sản phẩm</strong> hay từ <strong>chính hệ đo</strong>: cho máy đo lặp lại một bộ mẫu nhiều lần với nhiều người vận hành, rồi tách phương sai thành Repeatability (cùng người, đo lại) và Reproducibility (đổi người). Vượt ngưỡng cho phép thì hệ đo bị coi là không đủ tin cậy để phán định OK/NG. Về phía phần mềm, chế độ GR&amp;R phải ghi <strong>toàn bộ giá trị đo thô</strong> và <strong>không</strong> phán định OK/NG. (→ xem Chế độ chạy, Calibration)
+<em>Xuất hiện đầu tiên: Chương 12, mục 12.4.1.</em></p>
+<p><strong>PDO (Process Data Object)</strong> — Dữ liệu <strong>quy trình</strong> trên fieldbus, trao đổi <strong>mỗi chu kỳ bus</strong> với độ trễ thấp và tất định: vị trí hiện tại, lệnh chuyển động, bit trạng thái, bit vào-ra. Đối lập với SDO. Nếu một giá trị cần đọc mỗi chu kỳ mà phải gọi SDO thì bản đồ PDO đang cấu hình thiếu. (→ xem SDO, EtherCAT, CiA 402)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.4.</em></p>
+<p><strong>SDO (Service Data Object)</strong> — Kênh trao đổi <strong>tham số</strong> trên fieldbus, gọi khi cần chứ không theo chu kỳ, độ trễ <strong>không tất định</strong>: nạp cấu hình drive lúc khởi động, đọc mã lỗi chi tiết khi có sự cố. <strong>Sai lầm kinh điển: gọi SDO trong vòng điều khiển</strong> — làm chu kỳ giãn thất thường và có thể mất nhịp bus. (→ xem PDO, CiA 402)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.4.</em></p>
+<p><strong>Thiết bị nhớ PLC (X / Y / M / D)</strong> — Bốn nhóm biến mà mọi PLC đều có: <strong>X</strong> tín hiệu vào vật lý, <strong>Y</strong> tín hiệu ra vật lý, <strong>M</strong> bit nhớ nội bộ, <strong>D</strong> thanh ghi dữ liệu 16 bit. Quy tắc quan trọng khi C# nói chuyện với PLC: <strong>ghi vào M</strong> (nói ý định) chứ <strong>không ghi thẳng vào Y</strong> — nếu không, hai bên cùng điều khiển một đầu ra và mọi interlock PLC đang giữ đều bị vượt qua. (→ xem Modbus, Tag Table)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.2b.</em></p>
+<p><strong>Gộp khối địa chỉ (Block Merge)</strong> — Kỹ thuật đọc PLC hiệu quả: gộp các vùng địa chỉ gần nhau thành một khối liên tục để đọc trong <strong>một</strong> vòng hỏi–đáp thay vì nhiều lần. Điều khiển bằng hai tham số: khoảng cách tối đa còn đáng gộp (đọc thừa vài thanh ghi rẻ hơn một vòng hỏi–đáp nữa) và giới hạn số thanh ghi mỗi lần hỏi của giao thức. Đi kèm mẫu <strong>bản sao trong bộ nhớ</strong>: một luồng nền đọc theo khối, toàn ứng dụng đọc bản sao. (→ xem Thiết bị nhớ PLC, Scan Cycle)
+<em>Xuất hiện đầu tiên: Chương 14, mục 14.1.2b.</em></p>
+<p><strong>Đối tượng kết quả (Result Object)</strong> — Cách thứ ba để một bước quy trình báo thất bại, bên cạnh ném exception và trả <code>bool</code>: trả về một đối tượng mang <strong>cả trạng thái lẫn lý do</strong> (mã lỗi + thông điệp). Hợp nhất với <strong>động cơ chạy quy trình</strong> cần cầm kết quả từng bước để quyết định nhánh tiếp theo. Quy tắc chọn: quy trình <strong>là code</strong> → exception; quy trình <strong>là dữ liệu do động cơ chạy</strong> → đối tượng kết quả. (→ xem CancellationToken, AlarmException)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.5.4.</em></p>
+<p><strong>Bộ kiểm tra cấu hình (Config Validator)</strong> — Thành phần kiểm tra một quy trình dạng dữ liệu <strong>trước khi cho nạp</strong>, bắt các lỗi mà trình soạn từng ô không thấy: trùng mã, nhảy tới bước không tồn tại, vòng lặp bước nhảy bằng 0, giới hạn dưới lớn hơn trên. Nên có <strong>ba mức</strong> (lỗi chặn nạp / cảnh báo cho nạp nhưng phải xem / gợi ý), vì các trường hợp nguy hiểm nhất lại là những quy trình <strong>chạy được</strong> nhưng không phán định được kết quả. (→ xem Cấu hình dạng dữ liệu, NodeOperator)
+<em>Xuất hiện đầu tiên: Phụ lục B, mục B.3.2.</em></p>
 </div>
 </div>
 

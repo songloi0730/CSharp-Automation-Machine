@@ -12031,6 +12031,30 @@ Ba vấn đề nảy sinh không thể tránh khi code theo cách này:
 
 > ⚠️ **Biến thể tệ hơn: số nguyên tuỳ ý thay vì cả chuỗi lẫn enum.** Code 12.1 dùng chuỗi (`"Idle"`, `"Starting"`...) — dễ đọc nhưng vẫn có thể gõ sai không bị bắt lúc biên dịch. Một biến thể còn tệ hơn hay gặp trong code dịch thẳng từ tư duy PLC/SFC sang C# mà không refactor lại: dùng số nguyên tuỳ ý làm mã trạng thái (`step = 10`, `step = 20`, `step = 8000`...) — các con số không có ý nghĩa gì ngoài quy ước riêng trong đầu người viết, không tự-document, và một dòng `if (step == 8000)` không cho người đọc mới biết 8000 là trạng thái gì. Dù dùng chuỗi hay số nguyên tuỳ ý, cả hai đều có chung một lỗ hổng: compiler không bắt được gõ sai, và ý nghĩa trạng thái chỉ tồn tại trong tài liệu rời hoặc trí nhớ người viết — đây chính là lý do `PackMlState`/`PackMlCommand` enum (mục 12.3.1) là bước bắt buộc, không phải tuỳ chọn phong cách.
 
+> 💡 **Một ưu điểm của `switch(bước)` mà State Pattern dễ làm mất — đừng đánh đổi nó đi mà không
+> biết.** Khi bước hiện tại là **một con số** (`stepNum = 17`), bạn được ba thứ gần như miễn phí:
+> hiển thị được lên màn hình (*"máy đang ở bước 17 — kẹp phôi"*), ghi thẳng vào nhật ký và vào dữ liệu
+> sản xuất, và **người vận hành đọc được** để mô tả sự cố qua điện thoại. Trong các phần mềm máy thật,
+> đây không phải chi tiết phụ — nó là cách chính để người ở hiện trường và kỹ sư ở xa nói chuyện với
+> nhau về việc máy đang làm gì.
+>
+> Chuyển sang State Pattern, mỗi trạng thái thành một đối tượng và **con số biến mất** nếu bạn không
+> cố ý giữ lại. Cách giữ rất rẻ: cho mỗi lớp trạng thái một **mã định danh ổn định** cùng với tên hiển
+> thị, rồi phát nó ra ngoài như một phần của trạng thái máy:
+> ```csharp
+> public interface IState
+> {
+>     string Name { get; }        // "Kẹp phôi" — cho người đọc
+>     int    Code { get; }        // 17 — ổn định, cho log, cho MES, cho người vận hành đọc số
+> }
+> ```
+> Quy tắc kèm theo giống hệt cảnh báo về enum ở Chương 3: **mã số phải ổn định giữa các phiên bản**.
+> Đánh số lại vì "cho gọn" sẽ làm mọi dữ liệu lịch sử và mọi tài liệu hướng dẫn xử lý sự cố nói sai.
+>
+> Cũng nên nói rõ điều ngược lại: đây **không** phải lý do để giữ `switch` khổng lồ. Ba vấn đề ở mục
+> 12.1.1 vẫn còn nguyên. Đây chỉ là một thứ cần **mang theo** khi chuyển sang State Pattern, không
+> phải một lý do để không chuyển.
+
 ### 12.1.2  Giải pháp: GoF State Pattern
 
 GoF State Pattern đưa ra nguyên tắc: **mỗi trạng thái là một đối tượng riêng** (State), đóng gói toàn bộ hành vi của máy khi ở trạng thái đó. Một class trung tâm (Context) giữ tham chiếu đến State hiện tại và ủy quyền mọi lệnh xuống State xử lý — thêm trạng thái mới chỉ cần thêm class mới, không sửa class cũ.
@@ -15304,6 +15328,9 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Factory Pattern (13.2.2) | Tập trung hoá tạo device, tránh coupling với vendor/protocol | Thay thiết bị = đổi config; không sửa logic máy |
 | Strategy Pattern (13.2.3) | Đổi protocol không sửa code driver | OPC UA → Modbus TCP → ADS bằng 1 dòng config |
 | Bridge Pattern (13.2.4) | Tách abstraction (Axis) khỏi implementor (Beckhoff/Siemens/Sim) | Thay driver không ảnh hưởng tầng trên |
+| Thị giác máy (13.2.4c) | Job vision là **dữ liệu** do kỹ sư thị giác tạo, không phải code C# | Chỉnh nhận dạng không cần build lại; interface không lộ kiểu của hãng |
+| Gá toạ độ + hiệu chuẩn (13.2.4c) | Phôi lệch/xoay mỗi lần vào; toạ độ ảnh không dùng ra lệnh trục được | Dạy vùng dò **một lần**; hiệu chuẩn có ngưỡng chấp nhận nên không lưu kết quả tồi |
+| Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
 | Connection Pool (13.3.2) | Nhiều device chia sẻ một session vật lý, reconnect tập trung | Giảm số kết nối, quản lý tài nguyên nhất quán |
@@ -17595,8 +17622,15 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 | Modbus TCP | `IProtocolClient` Strategy (Ch13) | FluentModbus / NModbus4 | Kiểm tra byte/word order khi đọc float |
 | SECS/GEM (HSMS) | GEM State Machine + Event Bus (Ch11) | secs4net | Primary/Secondary message, GEM compliance level |
 | TCP custom | Process isolation + IPC contract | System.Net.Sockets | Payload trung lập, heartbeat, reconnect bắt buộc |
+| Giao tiếp PLC (14.1.2b) | Bản sao trong bộ nhớ + gộp địa chỉ thành khối | Thư viện của hãng PLC | C# ghi vào bit nhớ nội bộ (ý định), **không ghi thẳng đầu ra** |
+| EtherCAT khi PC là master (14.1.4) | P/Invoke SDK card + máy trạng thái servo | SDK của hãng card | Phân biệt dữ liệu chu kỳ và tham số; không gọi tham số trong vòng điều khiển |
+| Web service SOAP (14.2.9) | Sinh mã client từ mô tả dịch vụ | System.ServiceModel.* | Đừng tự dựng XML; thử sớm nếu có kế hoạch nâng cấp .NET |
 
-Ba giao thức, ba vấn đề khác nhau, ba solution khác nhau. Modbus phù hợp cho thế giới
+Bảng trên gộp cả các ranh giới đã bổ sung ở mục 14.1.2b (giao tiếp PLC cho kiến trúc "PLC điều khiển,
+C# lo phần trên" — Chương 1 mục 1.3.1), mục 14.1.4 (khi chính máy tính là chủ bus thời gian thực), và
+mục 14.2.9 (hệ MES đời cũ dùng web service).
+
+Ba giao thức chính, ba vấn đề khác nhau, ba solution khác nhau. Modbus phù hợp cho thế giới
 thiết bị đơn giản không có chuẩn tích hợp. OPC UA là cầu nối IT/OT khi nhiều vendor cần
 nói chuyện với nhau. SECS/GEM là điều kiện bắt buộc khi gia nhập dây chuyền sản xuất bán
 dẫn. Hiểu đặc điểm từng giao thức — không chỉ tên gọi — là nền tảng để chọn đúng công cụ
@@ -24663,6 +24697,50 @@ kết quả, rồi đưa sản phẩm vào đúng khay theo hạng. Trong ngành
 - Muốn luyện kỹ năng đọc code mà chưa có dự án thật trong tay: mục B.7 liệt kê các dự án **mã nguồn
   mở** đọc được ngay, kèm mục tiêu học cho từng dự án — và một cảnh báo về giấy phép, vì phần mềm máy
   được **phân phối cùng cỗ máy** nên nghĩa vụ giấy phép có hiệu lực thật.
+
+---
+
+## Lỗi thường gặp
+
+Danh sách này gom các lỗi **lặp lại ở nhiều dự án** trong quá trình khảo sát mã nguồn thật — không
+phải lỗi cú pháp, mà là những quyết định trông vô hại lúc viết và trở thành sự cố sau khi máy ra hiện
+trường. Xếp theo nhóm để dễ dùng như một danh mục rà soát.
+
+**Bảng B.13 — Lỗi thiết kế lặp lại trong phần mềm máy**
+
+| Lỗi | Biểu hiện ngoài hiện trường | Cách phòng |
+|---|---|---|
+| **Không xoá cờ bắt tay trước khi Start** | Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước — tay gắp xuống trước khi phôi vào | Xoá sạch bảng cờ trong luồng khởi động, trước khi bật luồng các trạm (Ch16 §16.2b) |
+| **Chờ tín hiệu mà không có thời gian chờ tối đa** | Máy đứng im vô hạn, không báo gì — người vận hành không biết máy hỏng hay đang làm việc | Mọi lần chờ đều có thời gian chờ và một alarm tương ứng; ngoại lệ duy nhất là vòng chờ lệnh Start |
+| **Tín hiệu bị cưỡng bức (force) mà không hiển thị** | Một tín hiệu bị force âm thầm suốt ca; phần mềm ra quyết định trên dữ liệu giả | Hiển thị thường trực danh sách đang force; tự huỷ toàn bộ khi vào chế độ tự động (§B.2.2) |
+| **Chế độ chạy thử ghi dữ liệu lẫn vào dữ liệu sản xuất** | Báo cáo chất lượng gửi khách hàng chứa số liệu chạy thử | Ghi cột chế độ chạy vào **từng bản ghi**, đừng tin "chế độ thử thì không ghi gì" (Ch12 §12.4) |
+| **Không có mã định danh duy nhất cho từng chi tiết** | Có khiếu nại nhưng không truy ngược được; không ghép được dữ liệu giữa các máy trên chuyền | Quyết định từ lúc thiết kế bảng dữ liệu — rất khó bổ sung về sau (§B.4) |
+| **Phán định NG mà không ghi mã lý do** | Biết tỷ lệ hỏng nhưng không biết cải tiến cái gì trước | Mỗi lần NG kèm một mã lý do; đây là điều kiện để có biểu đồ Pareto (§B.2.5) |
+| **Hiệu chuẩn không có ngưỡng chấp nhận** | Một lần hiệu chuẩn tồi được lưu và dùng cả tháng; mọi phép đo lệch có hệ thống | Từ chối lưu nếu sai lệch vượt ngưỡng; lưu kèm sai lệch, thời điểm, người làm (Ch13) |
+| **Định danh thiết bị bằng chỉ số thay vì số sê-ri** | Thêm một camera là "trái thành phải"; máy vẫn chạy, kết quả gán nhầm phía | Khớp theo số sê-ri lấy từ cấu hình; thông báo lỗi liệt kê những gì đang thấy (Ch13 §13.2.4c) |
+| **Plugin/module nạp hỏng chỉ ghi log** | Máy chạy **thiếu chức năng** trong khi giao diện trông bình thường | Hiển thị thường trực danh sách module nạp hỏng trên màn hình chính (§B.6.1) |
+| **Không có bộ bắt lỗi toàn cục** | Ứng dụng biến mất khỏi màn hình, không log, không thông báo — máy còn phôi bên trong | Đăng ký hai bộ bắt lỗi ngay đầu `Main()` và **ép đẩy log xuống đĩa** (Ch8) |
+| **Chạy tiếp sau tạm dừng mà không xác minh** | Ai đó jog trục hoặc tắt chân không lúc dừng; bước tiếp theo gây va chạm | Chụp trạng thái lúc dừng, đối chiếu có dung sai lúc chạy tiếp, từ chối kèm hướng dẫn cụ thể (Ch12 §12.2.4) |
+| **Không xử lý khởi động lại sau mất điện** | Phần mềm chạy tiếp như chưa có gì xảy ra, trong khi máy còn phôi từ chu kỳ trước | Cờ "đang chạy" ghi xuống đĩa; chặn chế độ tự động tới khi người vận hành xác nhận đã dọn máy (§B.3) |
+| **Nhật ký không xoay vòng** | Ổ cứng đầy sau vài tháng, máy dừng vì lý do không liên quan gì tới sản xuất | Xoay vòng theo ngày và theo dung lượng, có chính sách xoá tự động (§B.3) |
+| **Mất kết nối hệ MES làm mất dữ liệu** | Cả ca sản xuất không có dữ liệu, không dựng lại được | Hàng đợi ghi xuống đĩa, gửi lại khi có kết nối; màn hình xem số bản ghi đang chờ (§B.2.7) |
+| **Trộn ba loại tham số vào một file** | Đổi mã sản phẩm làm mất cấu hình IP của camera | Tách công thức / tham số hệ thống / cấu hình phần cứng thành ba nơi, ba mức quyền (§B.2.3) |
+| **Hai nguồn sự thật cho cùng một danh sách** | Xoá trạm ở code mà quên xoá trong cấu hình; một trạm nhận sai số trục | Một nguồn sự thật; nếu buộc phải có hai thì **kiểm tra chéo lúc khởi động** (Ch13 §13.2.6) |
+| **Dùng bản build riêng cho việc chỉ cần một tham số** | Mỗi lần sửa lỗi phải build và kiểm thử hai bản; bản ít dùng dần lệch pha | Nếu khác biệt viết được thành một dòng cấu hình thì nó thuộc mức 1, không phải mức 3 (§B.6.1) |
+| **Tham số nút cấu hình bằng ô văn bản tự do** | Gõ sai tên điểm; đồ thị vẫn lưu, vẫn chạy, hỏng lúc vận hành | Mỗi loại tham số có trình soạn riêng — chọn từ danh sách (§B.3.2) |
+| **Có test nhưng không có đường chạy** | Cảm giác an toàn giả; test chưa từng chạy lần nào | Tự kiểm tra nhúng phải kèm nút gọi trên màn hình chẩn đoán (Ch18 §18.6.4) |
+| **Lọc tín hiệu trên đường bảo vệ** | Ngắt bảo vệ chậm vài chục mili-giây — đủ để hỏng sản phẩm | Đường bảo vệ dùng giá trị thô; chỉ đường hiển thị và phán định mới lọc mạnh (Ch6) |
+
+> 💡 **Cách dùng bảng này.** Đọc một lượt trước khi bắt đầu một máy mới — nó rẻ hơn nhiều so với gặp
+> từng lỗi ngoài hiện trường. Và đọc lại một lượt nữa **trước khi bàn giao**, cùng với danh mục kiểm ở
+> mục B.5: hai danh sách bổ trợ nhau, một nhìn từ phía *"đã làm đủ chưa"*, một nhìn từ phía *"có đang
+> mắc lỗi quen thuộc nào không"*.
+>
+> Một điểm chung đáng để ý giữa gần hết các dòng trong bảng: **lỗi không nằm ở chỗ thiếu tính năng,
+> mà ở chỗ hệ thống im lặng khi có chuyện.** Cờ không xoá, force không hiển thị, plugin nạp hỏng chỉ
+> ghi log, test không ai gọi, mất điện rồi chạy tiếp — tất cả đều là phần mềm **biết** có gì đó không
+> ổn nhưng **không nói ra**. Nếu phải rút gọn cả bảng này thành một nguyên tắc: *khi phần mềm máy phát
+> hiện điều bất thường, nó phải nói to — với người đang đứng trước máy, không phải với file log.*
 
 <!-- SECTION: Phu_Luc_C_Thuat_Ngu -->
 ---

@@ -444,6 +444,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#b7-đc-code-mã-ngun-m-đ-luyn-tp">B.7 Đọc code mã nguồn mở để luyện tập</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b8-khi-máy-ca-bn-không-phi-máy-lp-ráp">B.8 Khi máy của bạn không phải máy lắp ráp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-ph-lc-2">Tổng kết phụ lục</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-21">Lỗi thường gặp</a></li>
   <li><a href="#ph-lc-c-bng-thut-ng">Phụ lục C: Bảng thuật ngữ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#quy-ưc-đnh-dng-mi-mc">Quy ước định dạng mỗi mục</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#a">A</a></li>
@@ -13062,6 +13063,28 @@ vài chỗ</strong> trước khi kết luận. Sai lầm này rất dễ mắc k
 <blockquote>
 <p>⚠️ <strong>Biến thể tệ hơn: số nguyên tuỳ ý thay vì cả chuỗi lẫn enum.</strong> Code 12.1 dùng chuỗi (<code>&quot;Idle&quot;</code>, <code>&quot;Starting&quot;</code>...) — dễ đọc nhưng vẫn có thể gõ sai không bị bắt lúc biên dịch. Một biến thể còn tệ hơn hay gặp trong code dịch thẳng từ tư duy PLC/SFC sang C# mà không refactor lại: dùng số nguyên tuỳ ý làm mã trạng thái (<code>step = 10</code>, <code>step = 20</code>, <code>step = 8000</code>...) — các con số không có ý nghĩa gì ngoài quy ước riêng trong đầu người viết, không tự-document, và một dòng <code>if (step == 8000)</code> không cho người đọc mới biết 8000 là trạng thái gì. Dù dùng chuỗi hay số nguyên tuỳ ý, cả hai đều có chung một lỗ hổng: compiler không bắt được gõ sai, và ý nghĩa trạng thái chỉ tồn tại trong tài liệu rời hoặc trí nhớ người viết — đây chính là lý do <code>PackMlState</code>/<code>PackMlCommand</code> enum (mục 12.3.1) là bước bắt buộc, không phải tuỳ chọn phong cách.</p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Một ưu điểm của <code>switch(bước)</code> mà State Pattern dễ làm mất — đừng đánh đổi nó đi mà không
+biết.</strong> Khi bước hiện tại là <strong>một con số</strong> (<code>stepNum = 17</code>), bạn được ba thứ gần như miễn phí:
+hiển thị được lên màn hình (<em>&quot;máy đang ở bước 17 — kẹp phôi&quot;</em>), ghi thẳng vào nhật ký và vào dữ liệu
+sản xuất, và <strong>người vận hành đọc được</strong> để mô tả sự cố qua điện thoại. Trong các phần mềm máy thật,
+đây không phải chi tiết phụ — nó là cách chính để người ở hiện trường và kỹ sư ở xa nói chuyện với
+nhau về việc máy đang làm gì.</p>
+<p>Chuyển sang State Pattern, mỗi trạng thái thành một đối tượng và <strong>con số biến mất</strong> nếu bạn không
+cố ý giữ lại. Cách giữ rất rẻ: cho mỗi lớp trạng thái một <strong>mã định danh ổn định</strong> cùng với tên hiển
+thị, rồi phát nó ra ngoài như một phần của trạng thái máy:</p>
+<pre><code class="language-csharp">public interface IState
+{
+    string Name { get; }        // &quot;Kẹp phôi&quot; — cho người đọc
+    int    Code { get; }        // 17 — ổn định, cho log, cho MES, cho người vận hành đọc số
+}
+</code></pre>
+<p>Quy tắc kèm theo giống hệt cảnh báo về enum ở Chương 3: <strong>mã số phải ổn định giữa các phiên bản</strong>.
+Đánh số lại vì &quot;cho gọn&quot; sẽ làm mọi dữ liệu lịch sử và mọi tài liệu hướng dẫn xử lý sự cố nói sai.</p>
+<p>Cũng nên nói rõ điều ngược lại: đây <strong>không</strong> phải lý do để giữ <code>switch</code> khổng lồ. Ba vấn đề ở mục
+12.1.1 vẫn còn nguyên. Đây chỉ là một thứ cần <strong>mang theo</strong> khi chuyển sang State Pattern, không
+phải một lý do để không chuyển.</p>
+</blockquote>
 <h3>12.1.2  Giải pháp: GoF State Pattern</h3>
 <p>GoF State Pattern đưa ra nguyên tắc: <strong>mỗi trạng thái là một đối tượng riêng</strong> (State), đóng gói toàn bộ hành vi của máy khi ở trạng thái đó. Một class trung tâm (Context) giữ tham chiếu đến State hiện tại và ủy quyền mọi lệnh xuống State xử lý — thêm trạng thái mới chỉ cần thêm class mới, không sửa class cũ.</p>
 <p><strong>Bảng 12.1 — Thuật ngữ state machine</strong></p>
@@ -16582,6 +16605,21 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Thay driver không ảnh hưởng tầng trên</td>
 </tr>
 <tr>
+<td>Thị giác máy (13.2.4c)</td>
+<td>Job vision là <strong>dữ liệu</strong> do kỹ sư thị giác tạo, không phải code C#</td>
+<td>Chỉnh nhận dạng không cần build lại; interface không lộ kiểu của hãng</td>
+</tr>
+<tr>
+<td>Gá toạ độ + hiệu chuẩn (13.2.4c)</td>
+<td>Phôi lệch/xoay mỗi lần vào; toạ độ ảnh không dùng ra lệnh trục được</td>
+<td>Dạy vùng dò <strong>một lần</strong>; hiệu chuẩn có ngưỡng chấp nhận nên không lưu kết quả tồi</td>
+</tr>
+<tr>
+<td>Biến thể máy (13.2.6)</td>
+<td>Nhiều máy cùng họ khác nhau vài chi tiết vật lý</td>
+<td>Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork</td>
+</tr>
+<tr>
 <td>Simulator Driver (13.2.5)</td>
 <td>FAT, CI/CD, unit test mà không cần phần cứng thật</td>
 <td>Toàn bộ sequence test được từ ngày đầu dự án</td>
@@ -19498,8 +19536,29 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 <td>System.Net.Sockets</td>
 <td>Payload trung lập, heartbeat, reconnect bắt buộc</td>
 </tr>
+<tr>
+<td>Giao tiếp PLC (14.1.2b)</td>
+<td>Bản sao trong bộ nhớ + gộp địa chỉ thành khối</td>
+<td>Thư viện của hãng PLC</td>
+<td>C# ghi vào bit nhớ nội bộ (ý định), <strong>không ghi thẳng đầu ra</strong></td>
+</tr>
+<tr>
+<td>EtherCAT khi PC là master (14.1.4)</td>
+<td>P/Invoke SDK card + máy trạng thái servo</td>
+<td>SDK của hãng card</td>
+<td>Phân biệt dữ liệu chu kỳ và tham số; không gọi tham số trong vòng điều khiển</td>
+</tr>
+<tr>
+<td>Web service SOAP (14.2.9)</td>
+<td>Sinh mã client từ mô tả dịch vụ</td>
+<td>System.ServiceModel.*</td>
+<td>Đừng tự dựng XML; thử sớm nếu có kế hoạch nâng cấp .NET</td>
+</tr>
 </tbody></table></div>
-<p>Ba giao thức, ba vấn đề khác nhau, ba solution khác nhau. Modbus phù hợp cho thế giới
+<p>Bảng trên gộp cả các ranh giới đã bổ sung ở mục 14.1.2b (giao tiếp PLC cho kiến trúc &quot;PLC điều khiển,
+C# lo phần trên&quot; — Chương 1 mục 1.3.1), mục 14.1.4 (khi chính máy tính là chủ bus thời gian thực), và
+mục 14.2.9 (hệ MES đời cũ dùng web service).</p>
+<p>Ba giao thức chính, ba vấn đề khác nhau, ba solution khác nhau. Modbus phù hợp cho thế giới
 thiết bị đơn giản không có chuẩn tích hợp. OPC UA là cầu nối IT/OT khi nhiều vendor cần
 nói chuyện với nhau. SECS/GEM là điều kiện bắt buộc khi gia nhập dây chuyền sản xuất bán
 dẫn. Hiểu đặc điểm từng giao thức — không chỉ tên gọi — là nền tảng để chọn đúng công cụ
@@ -27688,6 +27747,132 @@ sản phẩm tốt, nên truy xuất nguồn gốc chuyển từ <em>nên có</e
 mở</strong> đọc được ngay, kèm mục tiêu học cho từng dự án — và một cảnh báo về giấy phép, vì phần mềm máy
 được <strong>phân phối cùng cỗ máy</strong> nên nghĩa vụ giấy phép có hiệu lực thật.</li>
 </ul>
+<hr>
+<h2 id="li-thưng-gp-21">Lỗi thường gặp</h2>
+<p>Danh sách này gom các lỗi <strong>lặp lại ở nhiều dự án</strong> trong quá trình khảo sát mã nguồn thật — không
+phải lỗi cú pháp, mà là những quyết định trông vô hại lúc viết và trở thành sự cố sau khi máy ra hiện
+trường. Xếp theo nhóm để dễ dùng như một danh mục rà soát.</p>
+<p><strong>Bảng B.13 — Lỗi thiết kế lặp lại trong phần mềm máy</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lỗi</th>
+<th>Biểu hiện ngoài hiện trường</th>
+<th>Cách phòng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Không xoá cờ bắt tay trước khi Start</strong></td>
+<td>Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước — tay gắp xuống trước khi phôi vào</td>
+<td>Xoá sạch bảng cờ trong luồng khởi động, trước khi bật luồng các trạm (Ch16 §16.2b)</td>
+</tr>
+<tr>
+<td><strong>Chờ tín hiệu mà không có thời gian chờ tối đa</strong></td>
+<td>Máy đứng im vô hạn, không báo gì — người vận hành không biết máy hỏng hay đang làm việc</td>
+<td>Mọi lần chờ đều có thời gian chờ và một alarm tương ứng; ngoại lệ duy nhất là vòng chờ lệnh Start</td>
+</tr>
+<tr>
+<td><strong>Tín hiệu bị cưỡng bức (force) mà không hiển thị</strong></td>
+<td>Một tín hiệu bị force âm thầm suốt ca; phần mềm ra quyết định trên dữ liệu giả</td>
+<td>Hiển thị thường trực danh sách đang force; tự huỷ toàn bộ khi vào chế độ tự động (§B.2.2)</td>
+</tr>
+<tr>
+<td><strong>Chế độ chạy thử ghi dữ liệu lẫn vào dữ liệu sản xuất</strong></td>
+<td>Báo cáo chất lượng gửi khách hàng chứa số liệu chạy thử</td>
+<td>Ghi cột chế độ chạy vào <strong>từng bản ghi</strong>, đừng tin &quot;chế độ thử thì không ghi gì&quot; (Ch12 §12.4)</td>
+</tr>
+<tr>
+<td><strong>Không có mã định danh duy nhất cho từng chi tiết</strong></td>
+<td>Có khiếu nại nhưng không truy ngược được; không ghép được dữ liệu giữa các máy trên chuyền</td>
+<td>Quyết định từ lúc thiết kế bảng dữ liệu — rất khó bổ sung về sau (§B.4)</td>
+</tr>
+<tr>
+<td><strong>Phán định NG mà không ghi mã lý do</strong></td>
+<td>Biết tỷ lệ hỏng nhưng không biết cải tiến cái gì trước</td>
+<td>Mỗi lần NG kèm một mã lý do; đây là điều kiện để có biểu đồ Pareto (§B.2.5)</td>
+</tr>
+<tr>
+<td><strong>Hiệu chuẩn không có ngưỡng chấp nhận</strong></td>
+<td>Một lần hiệu chuẩn tồi được lưu và dùng cả tháng; mọi phép đo lệch có hệ thống</td>
+<td>Từ chối lưu nếu sai lệch vượt ngưỡng; lưu kèm sai lệch, thời điểm, người làm (Ch13)</td>
+</tr>
+<tr>
+<td><strong>Định danh thiết bị bằng chỉ số thay vì số sê-ri</strong></td>
+<td>Thêm một camera là &quot;trái thành phải&quot;; máy vẫn chạy, kết quả gán nhầm phía</td>
+<td>Khớp theo số sê-ri lấy từ cấu hình; thông báo lỗi liệt kê những gì đang thấy (Ch13 §13.2.4c)</td>
+</tr>
+<tr>
+<td><strong>Plugin/module nạp hỏng chỉ ghi log</strong></td>
+<td>Máy chạy <strong>thiếu chức năng</strong> trong khi giao diện trông bình thường</td>
+<td>Hiển thị thường trực danh sách module nạp hỏng trên màn hình chính (§B.6.1)</td>
+</tr>
+<tr>
+<td><strong>Không có bộ bắt lỗi toàn cục</strong></td>
+<td>Ứng dụng biến mất khỏi màn hình, không log, không thông báo — máy còn phôi bên trong</td>
+<td>Đăng ký hai bộ bắt lỗi ngay đầu <code>Main()</code> và <strong>ép đẩy log xuống đĩa</strong> (Ch8)</td>
+</tr>
+<tr>
+<td><strong>Chạy tiếp sau tạm dừng mà không xác minh</strong></td>
+<td>Ai đó jog trục hoặc tắt chân không lúc dừng; bước tiếp theo gây va chạm</td>
+<td>Chụp trạng thái lúc dừng, đối chiếu có dung sai lúc chạy tiếp, từ chối kèm hướng dẫn cụ thể (Ch12 §12.2.4)</td>
+</tr>
+<tr>
+<td><strong>Không xử lý khởi động lại sau mất điện</strong></td>
+<td>Phần mềm chạy tiếp như chưa có gì xảy ra, trong khi máy còn phôi từ chu kỳ trước</td>
+<td>Cờ &quot;đang chạy&quot; ghi xuống đĩa; chặn chế độ tự động tới khi người vận hành xác nhận đã dọn máy (§B.3)</td>
+</tr>
+<tr>
+<td><strong>Nhật ký không xoay vòng</strong></td>
+<td>Ổ cứng đầy sau vài tháng, máy dừng vì lý do không liên quan gì tới sản xuất</td>
+<td>Xoay vòng theo ngày và theo dung lượng, có chính sách xoá tự động (§B.3)</td>
+</tr>
+<tr>
+<td><strong>Mất kết nối hệ MES làm mất dữ liệu</strong></td>
+<td>Cả ca sản xuất không có dữ liệu, không dựng lại được</td>
+<td>Hàng đợi ghi xuống đĩa, gửi lại khi có kết nối; màn hình xem số bản ghi đang chờ (§B.2.7)</td>
+</tr>
+<tr>
+<td><strong>Trộn ba loại tham số vào một file</strong></td>
+<td>Đổi mã sản phẩm làm mất cấu hình IP của camera</td>
+<td>Tách công thức / tham số hệ thống / cấu hình phần cứng thành ba nơi, ba mức quyền (§B.2.3)</td>
+</tr>
+<tr>
+<td><strong>Hai nguồn sự thật cho cùng một danh sách</strong></td>
+<td>Xoá trạm ở code mà quên xoá trong cấu hình; một trạm nhận sai số trục</td>
+<td>Một nguồn sự thật; nếu buộc phải có hai thì <strong>kiểm tra chéo lúc khởi động</strong> (Ch13 §13.2.6)</td>
+</tr>
+<tr>
+<td><strong>Dùng bản build riêng cho việc chỉ cần một tham số</strong></td>
+<td>Mỗi lần sửa lỗi phải build và kiểm thử hai bản; bản ít dùng dần lệch pha</td>
+<td>Nếu khác biệt viết được thành một dòng cấu hình thì nó thuộc mức 1, không phải mức 3 (§B.6.1)</td>
+</tr>
+<tr>
+<td><strong>Tham số nút cấu hình bằng ô văn bản tự do</strong></td>
+<td>Gõ sai tên điểm; đồ thị vẫn lưu, vẫn chạy, hỏng lúc vận hành</td>
+<td>Mỗi loại tham số có trình soạn riêng — chọn từ danh sách (§B.3.2)</td>
+</tr>
+<tr>
+<td><strong>Có test nhưng không có đường chạy</strong></td>
+<td>Cảm giác an toàn giả; test chưa từng chạy lần nào</td>
+<td>Tự kiểm tra nhúng phải kèm nút gọi trên màn hình chẩn đoán (Ch18 §18.6.4)</td>
+</tr>
+<tr>
+<td><strong>Lọc tín hiệu trên đường bảo vệ</strong></td>
+<td>Ngắt bảo vệ chậm vài chục mili-giây — đủ để hỏng sản phẩm</td>
+<td>Đường bảo vệ dùng giá trị thô; chỉ đường hiển thị và phán định mới lọc mạnh (Ch6)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Cách dùng bảng này.</strong> Đọc một lượt trước khi bắt đầu một máy mới — nó rẻ hơn nhiều so với gặp
+từng lỗi ngoài hiện trường. Và đọc lại một lượt nữa <strong>trước khi bàn giao</strong>, cùng với danh mục kiểm ở
+mục B.5: hai danh sách bổ trợ nhau, một nhìn từ phía <em>&quot;đã làm đủ chưa&quot;</em>, một nhìn từ phía <em>&quot;có đang
+mắc lỗi quen thuộc nào không&quot;</em>.</p>
+<p>Một điểm chung đáng để ý giữa gần hết các dòng trong bảng: <strong>lỗi không nằm ở chỗ thiếu tính năng,
+mà ở chỗ hệ thống im lặng khi có chuyện.</strong> Cờ không xoá, force không hiển thị, plugin nạp hỏng chỉ
+ghi log, test không ai gọi, mất điện rồi chạy tiếp — tất cả đều là phần mềm <strong>biết</strong> có gì đó không
+ổn nhưng <strong>không nói ra</strong>. Nếu phải rút gọn cả bảng này thành một nguyên tắc: <em>khi phần mềm máy phát
+hiện điều bất thường, nó phải nói to — với người đang đứng trước máy, không phải với file log.</em></p>
+</blockquote>
 <!-- SECTION: Phu_Luc_C_Thuat_Ngu -->
 <hr>
 <h1 id="ph-lc-c-bng-thut-ng">Phụ lục C: Bảng thuật ngữ</h1>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.0.260820</title>
+<title>C# cho Automation Machine — v1.0.1.260820</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -487,7 +487,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260820</td>
+<td>v1.0.1.260820</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -17373,6 +17373,81 @@ giá trị mà quy trình cần mỗi chu kỳ, nghĩa là bản đồ PDO đang
 <strong>sửa cấu hình bus</strong>, không phải gọi SDO nhiều hơn.</p>
 <p>Ngược lại cũng đúng: đừng cố nhét mọi tham số vào PDO. PDO tốn băng thông mỗi chu kỳ, nên chỉ chứa
 thứ thật sự cần liên tục.</p>
+</blockquote>
+<h4>Bật một trục servo không phải là bật một công tắc: máy trạng thái CiA 402</h4>
+<p>Khi dùng card hãng, lệnh bật servo thường là một hàm duy nhất (<code>ServoOn(axis)</code>). Khi <strong>máy tính là
+master</strong> (mục trên), bạn sẽ gặp sự thật nằm bên dưới hàm đó: mọi servo drive nối qua EtherCAT đều
+tuân theo một <strong>máy trạng thái chuẩn hoá</strong> — trong tài liệu thường gọi là <strong>CiA 402</strong> (hoặc &quot;DS402&quot;,
+&quot;chuẩn hồ sơ thiết bị truyền động&quot;). Trục không chuyển từ &quot;tắt&quot; sang &quot;chạy được&quot; trong một bước; nó
+đi qua một chuỗi trạng thái, và <strong>bạn phải dẫn nó qua từng bước</strong>.</p>
+<p>Chuỗi rút gọn, đủ để hiểu code bạn sẽ đọc:</p>
+<pre><code>   Không sẵn sàng
+        ↓ (drive tự chuyển sau khi khởi động xong)
+   Chưa cho phép bật    ← cũng là nơi trục quay về sau khi có lỗi và được xoá lỗi
+        ↓ lệnh &quot;chuẩn bị bật&quot;
+   Sẵn sàng bật
+        ↓ lệnh &quot;bật&quot;
+   Đã bật               ← đã cấp điện mạch công suất, nhưng CHƯA giữ mô-men
+        ↓ lệnh &quot;cho phép vận hành&quot;
+   ĐANG VẬN HÀNH        ← chỉ ở trạng thái này trục mới nhận lệnh chuyển động
+        │
+        ├─ lệnh &quot;dừng nhanh&quot;  → Dừng nhanh đang thực hiện
+        └─ có lỗi             → Phản ứng lỗi → LỖI  (xoá lỗi → quay về &quot;Chưa cho phép bật&quot;)
+</code></pre>
+<p>Giao tiếp với máy trạng thái này qua hai từ nằm trong dữ liệu chu kỳ (PDO):</p>
+<ul>
+<li><strong>Từ điều khiển</strong> (controlword) — bạn <strong>ghi</strong> vào để ra lệnh chuyển trạng thái.</li>
+<li><strong>Từ trạng thái</strong> (statusword) — bạn <strong>đọc</strong> để biết trục đang ở trạng thái nào.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Không tra giá trị bit từ trí nhớ hay từ ví dụ trên mạng — mở tài liệu của drive.</strong> Ý nghĩa từng
+bit đã chuẩn hoá, nhưng mỗi hãng vẫn có phần mở rộng riêng, và một số bit trạng thái mang nghĩa khác
+nhau tuỳ <strong>chế độ vận hành</strong> đang chọn. Tài liệu drive luôn có một bảng đầy đủ; hãy dùng đúng bảng
+đó.</p>
+</blockquote>
+<p><strong>Ba hệ quả thực tế cho phần mềm máy:</strong></p>
+<p><strong>1. Trình tự bật servo phải là một chuỗi có chờ, không phải một lệnh.</strong> Sau mỗi lệnh chuyển trạng
+thái, phải <strong>đọc lại từ trạng thái để xác nhận</strong> drive đã chuyển thật, rồi mới ra lệnh tiếp — kèm
+thời gian chờ tối đa cho từng bước:</p>
+<pre><code class="language-csharp">async Task&lt;bool&gt; EnableAxisAsync(int slave, CancellationToken ct)
+{
+    foreach (var step in EnableSequence)          // 3 bước: chuẩn bị bật → bật → cho phép vận hành
+    {
+        WriteControlword(slave, step.Command);
+        if (!await WaitStatusAsync(slave, step.ExpectedState, timeout: TimeSpan.FromSeconds(2), ct))
+        {
+            _alarms.Raise(AlarmCodes.ServoEnableTimeout, $&quot;AXIS{slave}&quot;,
+                $&quot;Trục {slave} không vào được trạng thái &#39;{step.ExpectedState}&#39; sau 2 giây &quot; +
+                $&quot;(đang ở &#39;{ReadState(slave)}&#39;) — kiểm tra nguồn công suất và tín hiệu an toàn.&quot;);
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+<p><strong>2. &quot;Đã bật&quot; chưa phải là &quot;giữ được mô-men&quot;.</strong> Đây là chỗ dễ nhầm nhất và có hậu quả cơ khí thật: ở
+trạng thái <em>Đã bật</em>, mạch công suất đã có điện nhưng trục <strong>chưa giữ</strong>. Với trục thẳng đứng, nếu code
+tưởng đã xong ở bước này và nhả phanh, <strong>trục sẽ rơi</strong>. Chỉ ở trạng thái <em>Đang vận hành</em> trục mới thực
+sự giữ vị trí.</p>
+<p><strong>3. Mất tín hiệu an toàn làm trục rơi khỏi trạng thái vận hành — và đó là đúng.</strong> Khi mạch an toàn
+cắt mô-men (chức năng STO — Chương 15), drive tự chuyển khỏi <em>Đang vận hành</em>. Phần mềm <strong>không nên</strong>
+cố bật lại tự động; nó phải nhận ra sự kiện đó, báo alarm, và chờ người vận hành reset có chủ ý. Một
+vòng lặp &quot;thấy trục tắt thì bật lại&quot; là cách vô hiệu hoá mạch an toàn bằng phần mềm — tuyệt đối không
+làm.</p>
+<blockquote>
+<p>💡 <strong>Vì sao nên biết dù bạn đang dùng card hãng và không thấy CiA 402 ở đâu cả:</strong> hàm <code>ServoOn()</code> của
+hãng chính là chuỗi trên được đóng gói lại. Khi nó trả về lỗi, thông báo thường chỉ là một mã số —
+và biết máy trạng thái bên dưới giúp bạn đoán đúng chỗ hỏng: kẹt ở bước đầu thường là <strong>chưa có
+nguồn mạch công suất</strong> hoặc mạch an toàn đang cắt; kẹt ở bước cuối thường là <strong>drive đang báo lỗi
+chưa xoá</strong>. Không biết thì chỉ còn cách thử lại và gọi hãng.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Một khái niệm đi kèm: chế độ vận hành.</strong> Cùng một trục nhận lệnh theo nhiều <strong>chế độ</strong> khác
+nhau — chạy tới một vị trí đích (drive tự tính đường), nhận vị trí đích <strong>mới mỗi chu kỳ</strong> từ master
+(dùng cho nội suy nhiều trục), chạy theo tốc độ, chạy theo mô-men, và chế độ về gốc. Chọn sai chế độ
+thì lệnh gửi xuống bị bỏ qua mà không báo lỗi rõ ràng. Khi đọc code người khác, tìm chỗ đặt chế độ
+vận hành <strong>trước</strong> khi tìm chỗ ra lệnh chuyển động — nó giải thích vì sao lệnh có vẻ đúng mà trục
+không nhúc nhích.</p>
 </blockquote>
 <h4>Ba hệ quả thực tế cho phần mềm C#</h4>
 <p><strong>1. Cấu hình bus nằm trong một file, không trong code.</strong> Hàm nạp cấu hình

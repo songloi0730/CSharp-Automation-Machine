@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260820 |
+| **Phiên bản** | v1.0.1.260820 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -15890,6 +15890,89 @@ mọi tài liệu và mọi tên hàm, và nhầm chúng dẫn tới thiết k�
 >
 > Ngược lại cũng đúng: đừng cố nhét mọi tham số vào PDO. PDO tốn băng thông mỗi chu kỳ, nên chỉ chứa
 > thứ thật sự cần liên tục.
+
+#### Bật một trục servo không phải là bật một công tắc: máy trạng thái CiA 402
+
+Khi dùng card hãng, lệnh bật servo thường là một hàm duy nhất (`ServoOn(axis)`). Khi **máy tính là
+master** (mục trên), bạn sẽ gặp sự thật nằm bên dưới hàm đó: mọi servo drive nối qua EtherCAT đều
+tuân theo một **máy trạng thái chuẩn hoá** — trong tài liệu thường gọi là **CiA 402** (hoặc "DS402",
+"chuẩn hồ sơ thiết bị truyền động"). Trục không chuyển từ "tắt" sang "chạy được" trong một bước; nó
+đi qua một chuỗi trạng thái, và **bạn phải dẫn nó qua từng bước**.
+
+Chuỗi rút gọn, đủ để hiểu code bạn sẽ đọc:
+
+```
+   Không sẵn sàng
+        ↓ (drive tự chuyển sau khi khởi động xong)
+   Chưa cho phép bật    ← cũng là nơi trục quay về sau khi có lỗi và được xoá lỗi
+        ↓ lệnh "chuẩn bị bật"
+   Sẵn sàng bật
+        ↓ lệnh "bật"
+   Đã bật               ← đã cấp điện mạch công suất, nhưng CHƯA giữ mô-men
+        ↓ lệnh "cho phép vận hành"
+   ĐANG VẬN HÀNH        ← chỉ ở trạng thái này trục mới nhận lệnh chuyển động
+        │
+        ├─ lệnh "dừng nhanh"  → Dừng nhanh đang thực hiện
+        └─ có lỗi             → Phản ứng lỗi → LỖI  (xoá lỗi → quay về "Chưa cho phép bật")
+```
+
+Giao tiếp với máy trạng thái này qua hai từ nằm trong dữ liệu chu kỳ (PDO):
+
+- **Từ điều khiển** (controlword) — bạn **ghi** vào để ra lệnh chuyển trạng thái.
+- **Từ trạng thái** (statusword) — bạn **đọc** để biết trục đang ở trạng thái nào.
+
+> ⚠️ **Không tra giá trị bit từ trí nhớ hay từ ví dụ trên mạng — mở tài liệu của drive.** Ý nghĩa từng
+> bit đã chuẩn hoá, nhưng mỗi hãng vẫn có phần mở rộng riêng, và một số bit trạng thái mang nghĩa khác
+> nhau tuỳ **chế độ vận hành** đang chọn. Tài liệu drive luôn có một bảng đầy đủ; hãy dùng đúng bảng
+> đó.
+
+**Ba hệ quả thực tế cho phần mềm máy:**
+
+**1. Trình tự bật servo phải là một chuỗi có chờ, không phải một lệnh.** Sau mỗi lệnh chuyển trạng
+thái, phải **đọc lại từ trạng thái để xác nhận** drive đã chuyển thật, rồi mới ra lệnh tiếp — kèm
+thời gian chờ tối đa cho từng bước:
+
+```csharp
+async Task<bool> EnableAxisAsync(int slave, CancellationToken ct)
+{
+    foreach (var step in EnableSequence)          // 3 bước: chuẩn bị bật → bật → cho phép vận hành
+    {
+        WriteControlword(slave, step.Command);
+        if (!await WaitStatusAsync(slave, step.ExpectedState, timeout: TimeSpan.FromSeconds(2), ct))
+        {
+            _alarms.Raise(AlarmCodes.ServoEnableTimeout, $"AXIS{slave}",
+                $"Trục {slave} không vào được trạng thái '{step.ExpectedState}' sau 2 giây " +
+                $"(đang ở '{ReadState(slave)}') — kiểm tra nguồn công suất và tín hiệu an toàn.");
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+**2. "Đã bật" chưa phải là "giữ được mô-men".** Đây là chỗ dễ nhầm nhất và có hậu quả cơ khí thật: ở
+trạng thái *Đã bật*, mạch công suất đã có điện nhưng trục **chưa giữ**. Với trục thẳng đứng, nếu code
+tưởng đã xong ở bước này và nhả phanh, **trục sẽ rơi**. Chỉ ở trạng thái *Đang vận hành* trục mới thực
+sự giữ vị trí.
+
+**3. Mất tín hiệu an toàn làm trục rơi khỏi trạng thái vận hành — và đó là đúng.** Khi mạch an toàn
+cắt mô-men (chức năng STO — Chương 15), drive tự chuyển khỏi *Đang vận hành*. Phần mềm **không nên**
+cố bật lại tự động; nó phải nhận ra sự kiện đó, báo alarm, và chờ người vận hành reset có chủ ý. Một
+vòng lặp "thấy trục tắt thì bật lại" là cách vô hiệu hoá mạch an toàn bằng phần mềm — tuyệt đối không
+làm.
+
+> 💡 **Vì sao nên biết dù bạn đang dùng card hãng và không thấy CiA 402 ở đâu cả:** hàm `ServoOn()` của
+> hãng chính là chuỗi trên được đóng gói lại. Khi nó trả về lỗi, thông báo thường chỉ là một mã số —
+> và biết máy trạng thái bên dưới giúp bạn đoán đúng chỗ hỏng: kẹt ở bước đầu thường là **chưa có
+> nguồn mạch công suất** hoặc mạch an toàn đang cắt; kẹt ở bước cuối thường là **drive đang báo lỗi
+> chưa xoá**. Không biết thì chỉ còn cách thử lại và gọi hãng.
+
+> 📌 **Một khái niệm đi kèm: chế độ vận hành.** Cùng một trục nhận lệnh theo nhiều **chế độ** khác
+> nhau — chạy tới một vị trí đích (drive tự tính đường), nhận vị trí đích **mới mỗi chu kỳ** từ master
+> (dùng cho nội suy nhiều trục), chạy theo tốc độ, chạy theo mô-men, và chế độ về gốc. Chọn sai chế độ
+> thì lệnh gửi xuống bị bỏ qua mà không báo lỗi rõ ràng. Khi đọc code người khác, tìm chỗ đặt chế độ
+> vận hành **trước** khi tìm chỗ ra lệnh chuyển động — nó giải thích vì sao lệnh có vẻ đúng mà trục
+> không nhúc nhích.
 
 #### Ba hệ quả thực tế cho phần mềm C#
 

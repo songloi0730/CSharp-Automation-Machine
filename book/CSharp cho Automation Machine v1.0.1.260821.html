@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260820</title>
+<title>C# cho Automation Machine — v1.0.1.260821</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -489,7 +489,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260820</td>
+<td>v1.0.1.260821</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -27209,16 +27209,113 @@ số đều là <strong>chọn từ danh sách</strong>, cả một lớp lỗi 
 <p>Nói cách khác: trong một hệ cấu hình dạng dữ liệu, <strong>trình soạn tham số chính là &quot;trình biên dịch&quot;
 của bạn</strong> — nó là nơi duy nhất còn bắt được lỗi trước khi máy chạy. Hãy đầu tư vào nó tương xứng.</p>
 </blockquote>
+<h4>Nửa còn lại của an toàn: kiểm tra cấu hình trước khi chạy</h4>
+<p>Trình soạn tham số ngăn người dùng nhập sai <strong>một ô</strong>. Nhưng còn những lỗi chỉ lộ ra khi nhìn <strong>toàn
+bộ quy trình</strong>: hai bước trùng mã, một bước nhảy tới mã không tồn tại, một vòng lặp có bước nhảy bằng
+không. Không trình soạn ô nào bắt được chúng.</p>
+<p>Đó là việc của một <strong>bộ kiểm tra cấu hình</strong> — chạy trước khi cho phép nạp quy trình, và trong dự án
+tham khảo có bộ kiểm tra dài <strong>hơn 700 dòng</strong> cho một hệ quy trình dạng danh sách bước. Đây là thành
+phần mà cả hai hệ cấu hình dạng dữ liệu khác trong khảo sát <strong>đều không có</strong>, và nó chính là thứ biến
+&quot;cấu hình dạng dữ liệu&quot; từ một ý tưởng hay thành một hệ dùng được ngoài hiện trường.</p>
+<p><strong>Ba mức nghiêm trọng, không phải hai.</strong> Đây là điểm thiết kế quan trọng nhất: kết quả kiểm tra không
+phải &quot;hợp lệ / không hợp lệ&quot; mà gồm ba loại, và mỗi loại có một cách xử lý khác nhau:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mức</th>
+<th>Ý nghĩa</th>
+<th>Hành xử</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Lỗi</strong></td>
+<td>Quy trình <strong>không thể chạy đúng</strong></td>
+<td><strong>Chặn nạp.</strong> Không có ngoại lệ</td>
+</tr>
+<tr>
+<td><strong>Cảnh báo</strong></td>
+<td>Chạy được nhưng gần như chắc chắn không phải ý người viết</td>
+<td>Cho nạp, nhưng <strong>hiện rõ</strong> và bắt xác nhận</td>
+</tr>
+<tr>
+<td><strong>Gợi ý</strong></td>
+<td>Vẫn đúng, nhưng có cách viết tốt hơn</td>
+<td>Chỉ hiển thị — đây là cách hệ thống <strong>dạy</strong> người dùng</td>
+</tr>
+</tbody></table></div>
+<p>Mức thứ ba hay bị bỏ qua nhưng rất đáng có: nó biến bộ kiểm tra thành một người hướng dẫn thay vì
+một cái cổng chặn.</p>
+<p><strong>Những gì thật sự được kiểm.</strong> Danh sách dưới đây rút từ bộ kiểm tra thật, và đáng dùng làm mẫu vì
+nó cho thấy loại lỗi nào hay xảy ra:</p>
+<p><em>Mức lỗi — chặn nạp:</em></p>
+<ul>
+<li><strong>Trùng mã</strong>: hai quy trình cùng mã, hai bước cùng mã, hai biến cùng tên.</li>
+<li><strong>Nhảy tới mã bước không tồn tại</strong> — lỗi kinh điển khi ai đó xoá một bước mà quên sửa chỗ nhảy tới.</li>
+<li><strong>Vòng lặp có bước nhảy bằng không</strong> → vòng lặp vô hạn. Bắt được lúc kiểm tra thì rẻ; phát hiện lúc
+máy đang chạy thì phải cắt nguồn.</li>
+<li><strong>Giới hạn dưới lớn hơn giới hạn trên</strong> → không sản phẩm nào đạt được, cả lô bị đánh hỏng.</li>
+<li>Thiếu biểu thức điều kiện cho vòng lặp có điều kiện hoặc nhánh rẽ.</li>
+<li>Bước gọi hàm mà thiếu tên lớp hoặc tên hàm.</li>
+</ul>
+<p><em>Mức cảnh báo — cho chạy nhưng nói rõ:</em></p>
+<ul>
+<li><strong>Phép đo số mà không đặt giới hạn</strong> → chạy được nhưng <strong>không phán định được đạt/không đạt</strong>. Đây
+là cảnh báo giá trị nhất trong cả danh sách: máy vẫn chạy, vẫn ghi dữ liệu, nhưng cột kết quả trống.</li>
+<li><strong>Giới hạn trên bằng giới hạn dưới</strong> → dung sai bằng không, thực tế là không gì đạt.</li>
+<li><strong>Hàm đích chưa đăng ký</strong> trong thư viện hành động — bước sẽ hỏng lúc chạy tới nó, có thể là sau
+bốn mươi phút chu kỳ.</li>
+<li>Bước đang bị vô hiệu hoá; thời gian chờ chưa đặt; vòng lặp không có bước con.</li>
+<li><strong>Số vòng lặp rất lớn</strong> — không sai, nhưng đáng để người viết nhìn lại.</li>
+</ul>
+<p><em>Mức gợi ý:</em></p>
+<ul>
+<li>Nên đặt đơn vị cho phép đo số; nên đặt tên cho biến vòng lặp; nên có bước khởi tạo.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Vì sao mức &quot;cảnh báo&quot; quan trọng ngang mức &quot;lỗi&quot;.</strong> Hai cảnh báo <em>&quot;phép đo không có giới hạn&quot;</em>
+và <em>&quot;hàm đích chưa đăng ký&quot;</em> mô tả những quy trình <strong>chạy được</strong>. Nếu bộ kiểm tra chỉ có hai mức
+đúng/sai, chúng sẽ lọt qua — và hậu quả là một ca sản xuất cho ra dữ liệu không phán định được, hoặc
+một chu kỳ dừng giữa chừng vì gọi một hàm không tồn tại. Cả hai đều <strong>đắt hơn nhiều</strong> so với một
+dòng cảnh báo lúc nạp.</p>
+</blockquote>
+<p><strong>Ba điều cần làm cho bộ kiểm tra có ích thật:</strong></p>
+<ol>
+<li><strong>Chạy nó ở hai thời điểm</strong>: khi người dùng bấm Lưu trong trình soạn (để sửa ngay khi còn nhớ), và
+<strong>lại một lần nữa lúc nạp để chạy</strong> (vì file có thể bị sửa tay hoặc chép từ máy khác).</li>
+<li><strong>Thông báo phải nêu đích danh vị trí</strong>: <em>&quot;Quy trình &#39;Kiểm tra lực&#39; → bước 12 &#39;Đo lực siết&#39;: giới
+hạn dưới (8,0) lớn hơn giới hạn trên (5,0)&quot;</em>. Một danh sách lỗi không có vị trí thì người dùng phải
+tự dò — và họ sẽ bỏ qua cảnh báo.</li>
+<li><strong>Cho xuất báo cáo kiểm tra</strong> kèm theo quy trình. Khi giao máy hoặc khi đổi quy trình cho một mã
+hàng mới, báo cáo &quot;không lỗi, 2 cảnh báo đã xem xét&quot; là bằng chứng có giá trị.</li>
+</ol>
+<blockquote>
+<p>📌 <strong>Đặt đúng chỗ trong bức tranh chung.</strong> Ở một hệ cấu hình dạng dữ liệu, bạn đã tự bỏ đi trình
+biên dịch của C#. Hai thứ thay thế nó, và bạn cần <strong>cả hai</strong>: <strong>trình soạn tham số</strong> bắt lỗi ở mức
+từng ô (chọn từ danh sách thay vì gõ tự do), và <strong>bộ kiểm tra cấu hình</strong> bắt lỗi ở mức toàn quy
+trình (trùng mã, nhảy sai chỗ, vòng lặp vô hạn). Thiếu cái thứ nhất thì người dùng gõ sai tên; thiếu
+cái thứ hai thì quy trình sai cấu trúc mà không ai biết cho tới lúc chạy.</p>
+</blockquote>
 <p><strong>Cái giá phải trả — nói thẳng để không ai bất ngờ:</strong> làm được đến mức này cần một khoản đầu tư ban
 đầu thật sự (động cơ chạy đồ thị, màn hình dựng đồ thị, cơ chế lưu/nạp, gỡ rối từng nút). Nó <strong>không</strong>
 đáng cho một máy đơn lẻ. Nó đáng khi bạn làm <strong>nhiều máy cùng họ</strong> và mỗi khách hàng lại muốn khác
 một chút — lúc đó chi phí ban đầu chia đều ra rất nhỏ, và cái được là mỗi máy mới không cần lập trình
 viên.</p>
 <blockquote>
-<p>💡 <strong>Nếu chưa đủ nguồn lực cho đồ thị, vẫn có bản rút gọn rất đáng làm:</strong> quy trình là một <strong>danh
-sách bước tuần tự</strong> trong file cấu hình (mỗi bước một tên hành động + tham số), không có nhánh,
-không có cổng dữ liệu. Bạn mất khả năng rẽ nhánh nhưng giữ được lợi ích lớn nhất: <strong>đổi thứ tự và
-tham số các bước mà không build lại</strong>. Nhiều máy chỉ cần đúng chừng đó.</p>
+<p>💡 <strong>Không phải chọn giữa hai thái cực — có cả một dải.</strong> Đồ thị đầy đủ là đầu đắt nhất của dải đó.
+Hai mức nhẹ hơn, đều đã chạy thật:</p>
+<ul>
+<li><strong>Danh sách bước tuần tự</strong>: mỗi bước một tên hành động + tham số, không nhánh, không cổng dữ liệu.
+Mất khả năng rẽ nhánh nhưng giữ được lợi ích lớn nhất — <strong>đổi thứ tự và tham số mà không build
+lại</strong>. Nhiều máy chỉ cần đúng chừng đó.</li>
+<li><strong>Danh sách bước CÓ điều khiển luồng</strong>: vẫn là danh sách (dễ hiển thị, dễ sửa hơn đồ thị nhiều),
+nhưng thêm vài loại bước đặc biệt — lặp N lần, lặp theo điều kiện, lặp qua một danh sách, rẽ
+nhánh, gọi một quy trình con — cộng <strong>biến có phạm vi</strong> (biến dùng chung cho cả máy và biến riêng
+của một lần chạy). Một dự án tham khảo làm đúng mức này và nó đủ diễn đạt cho một máy kiểm tra
+nhiều bước đo.</li>
+</ul>
+<p>Mức thứ hai đáng cân nhắc nhất cho phần lớn dự án: nó cho gần hết sức mạnh của đồ thị với chi phí
+giao diện thấp hơn hẳn — vì <strong>danh sách thì hiển thị và sửa dễ hơn đồ thị rất nhiều</strong>, nhất là trên
+màn hình cảm ứng ngoài hiện trường.</p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.</strong> Nếu thấy một

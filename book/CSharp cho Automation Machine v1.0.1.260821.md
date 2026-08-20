@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260820 |
+| **Phiên bản** | v1.0.1.260821 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -24292,16 +24292,98 @@ nút phức tạp còn có **hẳn một màn hình cấu hình riêng** thay v�
 > của bạn** — nó là nơi duy nhất còn bắt được lỗi trước khi máy chạy. Hãy đầu tư vào nó tương xứng.
 
 
+
+#### Nửa còn lại của an toàn: kiểm tra cấu hình trước khi chạy
+
+Trình soạn tham số ngăn người dùng nhập sai **một ô**. Nhưng còn những lỗi chỉ lộ ra khi nhìn **toàn
+bộ quy trình**: hai bước trùng mã, một bước nhảy tới mã không tồn tại, một vòng lặp có bước nhảy bằng
+không. Không trình soạn ô nào bắt được chúng.
+
+Đó là việc của một **bộ kiểm tra cấu hình** — chạy trước khi cho phép nạp quy trình, và trong dự án
+tham khảo có bộ kiểm tra dài **hơn 700 dòng** cho một hệ quy trình dạng danh sách bước. Đây là thành
+phần mà cả hai hệ cấu hình dạng dữ liệu khác trong khảo sát **đều không có**, và nó chính là thứ biến
+"cấu hình dạng dữ liệu" từ một ý tưởng hay thành một hệ dùng được ngoài hiện trường.
+
+**Ba mức nghiêm trọng, không phải hai.** Đây là điểm thiết kế quan trọng nhất: kết quả kiểm tra không
+phải "hợp lệ / không hợp lệ" mà gồm ba loại, và mỗi loại có một cách xử lý khác nhau:
+
+| Mức | Ý nghĩa | Hành xử |
+|---|---|---|
+| **Lỗi** | Quy trình **không thể chạy đúng** | **Chặn nạp.** Không có ngoại lệ |
+| **Cảnh báo** | Chạy được nhưng gần như chắc chắn không phải ý người viết | Cho nạp, nhưng **hiện rõ** và bắt xác nhận |
+| **Gợi ý** | Vẫn đúng, nhưng có cách viết tốt hơn | Chỉ hiển thị — đây là cách hệ thống **dạy** người dùng |
+
+Mức thứ ba hay bị bỏ qua nhưng rất đáng có: nó biến bộ kiểm tra thành một người hướng dẫn thay vì
+một cái cổng chặn.
+
+**Những gì thật sự được kiểm.** Danh sách dưới đây rút từ bộ kiểm tra thật, và đáng dùng làm mẫu vì
+nó cho thấy loại lỗi nào hay xảy ra:
+
+*Mức lỗi — chặn nạp:*
+- **Trùng mã**: hai quy trình cùng mã, hai bước cùng mã, hai biến cùng tên.
+- **Nhảy tới mã bước không tồn tại** — lỗi kinh điển khi ai đó xoá một bước mà quên sửa chỗ nhảy tới.
+- **Vòng lặp có bước nhảy bằng không** → vòng lặp vô hạn. Bắt được lúc kiểm tra thì rẻ; phát hiện lúc
+  máy đang chạy thì phải cắt nguồn.
+- **Giới hạn dưới lớn hơn giới hạn trên** → không sản phẩm nào đạt được, cả lô bị đánh hỏng.
+- Thiếu biểu thức điều kiện cho vòng lặp có điều kiện hoặc nhánh rẽ.
+- Bước gọi hàm mà thiếu tên lớp hoặc tên hàm.
+
+*Mức cảnh báo — cho chạy nhưng nói rõ:*
+- **Phép đo số mà không đặt giới hạn** → chạy được nhưng **không phán định được đạt/không đạt**. Đây
+  là cảnh báo giá trị nhất trong cả danh sách: máy vẫn chạy, vẫn ghi dữ liệu, nhưng cột kết quả trống.
+- **Giới hạn trên bằng giới hạn dưới** → dung sai bằng không, thực tế là không gì đạt.
+- **Hàm đích chưa đăng ký** trong thư viện hành động — bước sẽ hỏng lúc chạy tới nó, có thể là sau
+  bốn mươi phút chu kỳ.
+- Bước đang bị vô hiệu hoá; thời gian chờ chưa đặt; vòng lặp không có bước con.
+- **Số vòng lặp rất lớn** — không sai, nhưng đáng để người viết nhìn lại.
+
+*Mức gợi ý:*
+- Nên đặt đơn vị cho phép đo số; nên đặt tên cho biến vòng lặp; nên có bước khởi tạo.
+
+> 💡 **Vì sao mức "cảnh báo" quan trọng ngang mức "lỗi".** Hai cảnh báo *"phép đo không có giới hạn"*
+> và *"hàm đích chưa đăng ký"* mô tả những quy trình **chạy được**. Nếu bộ kiểm tra chỉ có hai mức
+> đúng/sai, chúng sẽ lọt qua — và hậu quả là một ca sản xuất cho ra dữ liệu không phán định được, hoặc
+> một chu kỳ dừng giữa chừng vì gọi một hàm không tồn tại. Cả hai đều **đắt hơn nhiều** so với một
+> dòng cảnh báo lúc nạp.
+
+**Ba điều cần làm cho bộ kiểm tra có ích thật:**
+
+1. **Chạy nó ở hai thời điểm**: khi người dùng bấm Lưu trong trình soạn (để sửa ngay khi còn nhớ), và
+   **lại một lần nữa lúc nạp để chạy** (vì file có thể bị sửa tay hoặc chép từ máy khác).
+2. **Thông báo phải nêu đích danh vị trí**: *"Quy trình 'Kiểm tra lực' → bước 12 'Đo lực siết': giới
+   hạn dưới (8,0) lớn hơn giới hạn trên (5,0)"*. Một danh sách lỗi không có vị trí thì người dùng phải
+   tự dò — và họ sẽ bỏ qua cảnh báo.
+3. **Cho xuất báo cáo kiểm tra** kèm theo quy trình. Khi giao máy hoặc khi đổi quy trình cho một mã
+   hàng mới, báo cáo "không lỗi, 2 cảnh báo đã xem xét" là bằng chứng có giá trị.
+
+> 📌 **Đặt đúng chỗ trong bức tranh chung.** Ở một hệ cấu hình dạng dữ liệu, bạn đã tự bỏ đi trình
+> biên dịch của C#. Hai thứ thay thế nó, và bạn cần **cả hai**: **trình soạn tham số** bắt lỗi ở mức
+> từng ô (chọn từ danh sách thay vì gõ tự do), và **bộ kiểm tra cấu hình** bắt lỗi ở mức toàn quy
+> trình (trùng mã, nhảy sai chỗ, vòng lặp vô hạn). Thiếu cái thứ nhất thì người dùng gõ sai tên; thiếu
+> cái thứ hai thì quy trình sai cấu trúc mà không ai biết cho tới lúc chạy.
+
+
 **Cái giá phải trả — nói thẳng để không ai bất ngờ:** làm được đến mức này cần một khoản đầu tư ban
 đầu thật sự (động cơ chạy đồ thị, màn hình dựng đồ thị, cơ chế lưu/nạp, gỡ rối từng nút). Nó **không**
 đáng cho một máy đơn lẻ. Nó đáng khi bạn làm **nhiều máy cùng họ** và mỗi khách hàng lại muốn khác
 một chút — lúc đó chi phí ban đầu chia đều ra rất nhỏ, và cái được là mỗi máy mới không cần lập trình
 viên.
 
-> 💡 **Nếu chưa đủ nguồn lực cho đồ thị, vẫn có bản rút gọn rất đáng làm:** quy trình là một **danh
-> sách bước tuần tự** trong file cấu hình (mỗi bước một tên hành động + tham số), không có nhánh,
-> không có cổng dữ liệu. Bạn mất khả năng rẽ nhánh nhưng giữ được lợi ích lớn nhất: **đổi thứ tự và
-> tham số các bước mà không build lại**. Nhiều máy chỉ cần đúng chừng đó.
+> 💡 **Không phải chọn giữa hai thái cực — có cả một dải.** Đồ thị đầy đủ là đầu đắt nhất của dải đó.
+> Hai mức nhẹ hơn, đều đã chạy thật:
+>
+> - **Danh sách bước tuần tự**: mỗi bước một tên hành động + tham số, không nhánh, không cổng dữ liệu.
+>   Mất khả năng rẽ nhánh nhưng giữ được lợi ích lớn nhất — **đổi thứ tự và tham số mà không build
+>   lại**. Nhiều máy chỉ cần đúng chừng đó.
+> - **Danh sách bước CÓ điều khiển luồng**: vẫn là danh sách (dễ hiển thị, dễ sửa hơn đồ thị nhiều),
+>   nhưng thêm vài loại bước đặc biệt — lặp N lần, lặp theo điều kiện, lặp qua một danh sách, rẽ
+>   nhánh, gọi một quy trình con — cộng **biến có phạm vi** (biến dùng chung cho cả máy và biến riêng
+>   của một lần chạy). Một dự án tham khảo làm đúng mức này và nó đủ diễn đạt cho một máy kiểm tra
+>   nhiều bước đo.
+>
+> Mức thứ hai đáng cân nhắc nhất cho phần lớn dự án: nó cho gần hết sức mạnh của đồ thị với chi phí
+> giao diện thấp hơn hẳn — vì **danh sách thì hiển thị và sửa dễ hơn đồ thị rất nhiều**, nhất là trên
+> màn hình cảm ứng ngoài hiện trường.
 
 
 > ⚠️ **Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.** Nếu thấy một

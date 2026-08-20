@@ -330,50 +330,106 @@ chịu trách nhiệm cho khối IPC ở trên cùng.
 
 ---
 
-### 1.3.1 Đối chiếu thực tế — máy phi tiêu chuẩn thật sự nối với phần cứng bằng gì
+### 1.3.1 Hai kiến trúc đều phổ biến — và bộ mẫu khảo sát của cuốn sách này
 
-Mục trên trình bày các thành phần của một hệ PC-Based. Trước khi sang chương sau, một đoạn số liệu để
-bạn biết **cái gì sẽ gặp trước** khi vào làm. Khảo sát **13 dự án phần mềm máy thật** đang hoặc đã
-chạy sản xuất trong nhà máy điện tử:
+Mục trên trình bày các thành phần của một hệ PC-Based. Mục này nói về **cách chúng được ghép lại
+trong thực tế**, vì có hai kiến trúc rất khác nhau cùng phổ biến trong nhà máy điện tử, và biết mình
+đang ở kiến trúc nào quyết định phần lớn những gì bạn phải học trước.
 
-**Bảng 1.5b — Cách phần mềm máy nối xuống phần cứng, đo trên 13 dự án**
+**Bảng 1.5b — Hai cách chia việc giữa PLC và máy tính**
 
-| Cách nối | Số dự án | Ghi chú |
+| | **A. Máy tính điều khiển trực tiếp** | **B. PLC điều khiển, C# lo phần trên** |
 |---|---|---|
-| **Gọi thẳng SDK của card qua P/Invoke** | **13 / 13** | Card chuyển động, card vào-ra, cảm biến — không dự án nào không có |
-| **Giao thức của hãng PLC / Modbus** | 11 / 13 | Chủ yếu để nói chuyện với PLC của **dây chuyền**, không phải của chính máy |
-| **OPC UA** | **0 / 13** | Không dự án nào — kiểm tra cả theo tên thư viện lẫn theo vùng tên |
+| Ai điều khiển trục và tín hiệu vào-ra | Máy tính, qua **card cắm trong máy** | **PLC** |
+| Ai lo interlock và trình tự an toàn | Phần mềm C# (+ mạch an toàn phần cứng) | **PLC** (thường kèm Safety PLC) |
+| C# làm gì | Toàn bộ: quy trình, chuyển động, giao diện, dữ liệu | **Giao diện, thị giác máy, dữ liệu, nối hệ MES, báo cáo** |
+| Nối giữa hai bên | Không có ranh giới — cùng một tiến trình | **Một giao thức**: Modbus TCP, giao thức riêng của hãng PLC, OPC UA, hoặc TCP tự định nghĩa |
+| Kỹ năng cần trước tiên | Đọc SDK của card (Phụ lục A mục A.3) | **Thiết kế bảng tag và giao thức trao đổi** (Chương 14) |
+| Hay gặp ở | Máy phi tiêu chuẩn cần chuyển động phối hợp phức tạp, máy có thị giác dẫn đường | Máy dây chuyền, máy do đội cơ điện làm phần điều khiển, nhà máy đã chuẩn hoá theo một hãng PLC |
 
-Con số cuối cần được giải thích cẩn thận, vì nó dễ bị hiểu sai theo cả hai chiều.
+Cả hai đều là kiến trúc hợp lệ và đều rất phổ biến. Kiểu **B** đặc biệt hay gặp khi nhà máy đã có
+sẵn đội ngũ và tiêu chuẩn PLC: phần chuyển động và an toàn giao cho PLC (nơi nó là thế mạnh và có
+chứng nhận an toàn), còn C# nhận đúng những việc PLC làm dở — giao diện, xử lý ảnh, cơ sở dữ liệu,
+tích hợp hệ thống trên.
 
-**OPC UA không phải là công nghệ thất bại.** Nó là chuẩn thật, được dùng rộng rãi — nhưng ở **tầng
-khác**: nối dây chuyền với hệ thống nhà máy, nối SCADA với nhiều máy, nối máy do các hãng lớn chế tạo
-sẵn (nơi PLC đã có sẵn máy chủ OPC UA bên trong). Đó là **tầng dây chuyền và nhà máy**.
-
-**Còn ở tầng một cỗ máy phi tiêu chuẩn — chủ đề của cuốn sách này — bức tranh khác hẳn.** Máy phi
-tiêu chuẩn thường **không có PLC làm chủ**; máy tính công nghiệp trực tiếp điều khiển card chuyển
-động và card vào-ra. Không có PLC thì cũng không có máy chủ OPC UA để nối vào. Phần mềm nói chuyện
-với phần cứng bằng **SDK của hãng card** (Phụ lục A mục A.3), và chỉ dùng Modbus hoặc giao thức hãng
-PLC khi cần bắt tay với **băng tải hoặc robot của dây chuyền** bên ngoài máy.
-
-> 📌 **Điều này nghĩa là gì với bạn — người mới vào nghề.** Thứ bạn gặp trong tuần đầu gần như chắc
-> chắn là: một thư mục chứa mấy file `.dll` của hãng card, một file `.cs` vài trăm dòng khai báo
-> `[DllImport]`, và một bảng Excel ánh xạ tên tín hiệu sang số chân. **Không phải** một máy chủ OPC UA
-> với cây địa chỉ đẹp đẽ. Vì vậy:
-> - Đọc **Phụ lục A mục A.3** (đọc file khai báo P/Invoke) **sớm** — đó là kỹ năng dùng ngay.
-> - Chương 14 mục 14.1.1 (OPC UA) vẫn đáng học, nhưng hãy đặt nó đúng chỗ: bạn sẽ cần nó khi **nối
->   máy của mình lên hệ thống nhà máy**, hoặc khi làm việc với máy mua sẵn của hãng lớn — không phải
->   khi điều khiển trục của chính máy mình.
+> ⚠️ **Về bộ mẫu khảo sát dùng trong cuốn sách này — đọc một lần, nhớ cho mọi chương.** Nhiều chương
+> sau có các bảng "đối chiếu thực tế" trích số liệu từ **13 dự án phần mềm máy thật** mà tác giả thu
+> thập được. Những con số đó có ích, nhưng chúng đo **bộ mẫu này**, không phải toàn ngành. Ba giới hạn
+> cần biết:
 >
-> Nói cách khác: **OPC UA là cách máy nói chuyện với nhà máy; SDK của card là cách phần mềm nói chuyện
-> với cỗ máy.** Cuốn sách này dạy cả hai, nhưng thứ tự bạn dùng đến chúng trong thực tế thường là cái
-> thứ hai trước.
+> 1. **Bộ mẫu nghiêng hẳn về kiến trúc A.** Các dự án thu thập được chủ yếu là máy điều khiển chuyển
+>    động trực tiếp bằng C#. Vì vậy mọi kết luận dạng "phần lớn dự án gọi thẳng SDK card" phản ánh
+>    **cách chọn mẫu**, không phải tỷ lệ thật của ngành. Với kiến trúc B — cũng rất phổ biến — bức
+>    tranh khác hẳn: gần như không có `[DllImport]` nào, thay vào đó là một lớp giao tiếp PLC và một
+>    bảng tag.
+> 2. **Chỉ nhìn được phần mã nguồn được giao.** Nhiều đội **không đóng gói mã kiểm thử cùng sản phẩm**
+>    khi bàn giao cho khách hàng, nên một dự án "không thấy test" có thể vẫn có test đầy đủ trong kho
+>    mã nguồn nội bộ của họ. Con số về kiểm thử ở Chương 18 vì vậy là **giới hạn dưới**, không phải
+>    con số thật.
+> 3. **Không có dự án nào của hãng máy lớn phương Tây hay Nhật.** Bộ mẫu chủ yếu là máy phi tiêu chuẩn
+>    của các nhà chế tạo vừa và nhỏ ở châu Á.
+>
+> Cách dùng các bảng đó cho đúng: coi chúng là **"đây là những gì tồn tại thật ngoài kia"**, không
+> phải **"đây là tỷ lệ của ngành"**. Chúng có giá trị vì cho thấy điều gì **có thể** gặp và vì sao —
+> chứ không phải để kết luận cái gì phổ biến hơn cái gì.
 
-> 💡 **Một hệ quả cho quyết định thiết kế.** Vì phần nối phần cứng gần như luôn là SDK riêng của một
-> hãng, **rủi ro phụ thuộc hãng là có thật và xảy ra thường xuyên** — hãng ngừng bán dòng card, hoặc
-> khách hàng thứ hai yêu cầu hãng khác. Đó là lý do Chương 13 nhấn mạnh đặt một lớp trừu tượng ngay
-> tại ranh giới thiết bị. Khảo sát cũng cho thấy hệ quả của việc **không** làm điều đó: một dự án có
-> **bốn** họ card khác nhau và gần **16.000 dòng** code gần trùng nhau, mỗi họ một bản chép riêng.
+#### Nếu bạn đang ở kiến trúc B: ranh giới nằm ở đâu
+
+Với kiến trúc B, công việc khó nhất của người viết C# **không phải** điều khiển thiết bị mà là
+**thiết kế ranh giới** giữa PLC và máy tính. Bốn câu hỏi phải trả lời sớm, vì sửa về sau rất tốn:
+
+**1. Cái gì đi qua ranh giới?** Nguyên tắc thực dụng: cho đi qua **ý định và kết quả**, không cho đi
+qua **từng tín hiệu rời rạc**. Ví dụ tốt: C# ghi *"chạy công thức số 3 cho vị trí số 5"*, PLC trả về
+*"xong, kết quả đạt"*. Ví dụ xấu: C# tự bật/tắt từng van qua PLC — làm vậy thì trình tự an toàn bị
+xé làm đôi giữa hai bên và **không bên nào chịu trách nhiệm trọn vẹn**.
+
+**2. Ai giữ trạng thái?** Chỉ được có **một** nơi giữ trạng thái thật của máy. Nếu PLC điều khiển
+trình tự thì PLC giữ trạng thái, còn C# **phản ánh lại** trạng thái đó lên màn hình. Hai bên cùng giữ
+trạng thái và cùng suy luận là nguồn của loại lỗi khó nhất: hai bên bất đồng về việc máy đang làm gì.
+
+**3. Bắt tay như thế nào?** Cần một quy ước rõ ràng cho mỗi lệnh: ai đặt cờ yêu cầu, ai xoá, thời gian
+chờ tối đa là bao nhiêu, và **làm gì khi quá thời gian**. Đây chính là mẫu đã trình bày ở Chương 16
+mục 16.2b (bắt tay bằng bảng cờ), chỉ khác là bảng cờ nằm trong PLC thay vì trong bộ nhớ C#.
+
+**4. Bảng tag được quản lý ra sao?** Đây là chỗ tốn thời gian nhất trong thực tế: một tài liệu mô tả
+**từng địa chỉ trên PLC ↔ ý nghĩa ↔ kiểu dữ liệu**, và nó **thay đổi liên tục** trong giai đoạn chạy
+thử khi bên PLC thêm bớt biến. Ba điều cần làm:
+
+- **Một nguồn sự thật duy nhất** cho bảng tag — thường là một file mà **cả hai bên** cùng dùng, không
+  phải mỗi bên một bản chép (Chương 13 mục 13.2.6).
+- **Kiểm tra lúc khởi động**: đọc thử một vài tag nền và so kiểu dữ liệu với khai báo; lệch thì dừng
+  với thông báo rõ, đừng chạy tiếp với dữ liệu rác.
+- **Không rải địa chỉ thô trong code.** `plc.Read("D1250")` rải khắp nơi là cách chắc chắn nhất để
+  một lần đổi địa chỉ bên PLC làm hỏng mười chỗ. Đặt tên cho tag, và chỉ một nơi biết địa chỉ thật.
+
+> 💡 **Một khác biệt về con người, không phải kỹ thuật, nhưng ảnh hưởng lớn hơn.** Ở kiến trúc B, bạn
+> làm việc với **một người khác** viết phần PLC — thường là kỹ sư cơ điện, dùng công cụ khác, ngôn ngữ
+> khác, và có lịch chạy thử riêng. Phần lớn rắc rối của kiểu kiến trúc này không đến từ giao thức mà
+> đến từ **hai bên hiểu khác nhau về một cái tên**. Vì vậy: chốt bảng tag **bằng văn bản**, đánh số
+> phiên bản cho nó, và mỗi lần đổi thì cả hai bên cùng xác nhận. Nghe như thủ tục hành chính, nhưng nó
+> tiết kiệm nhiều ngày chạy thử hơn bất kỳ mẹo kỹ thuật nào trong chương này.
+
+#### Nếu bạn đang ở kiến trúc A
+
+Phần mềm nói chuyện với phần cứng bằng **SDK của hãng card**, và bạn sẽ gặp ngay trong tuần đầu: một
+thư mục chứa vài file `.dll` của hãng, một file `.cs` vài trăm dòng khai báo `[DllImport]`, và một
+bảng ánh xạ tên tín hiệu sang số chân. Kỹ năng dùng ngay là **đọc file khai báo P/Invoke** (Phụ lục A
+mục A.3).
+
+Hệ quả thiết kế quan trọng nhất: vì phần nối phần cứng là SDK riêng của **một** hãng, rủi ro phụ
+thuộc hãng là có thật và xảy ra thường xuyên — hãng ngừng bán dòng card, hoặc khách hàng thứ hai yêu
+cầu hãng khác. Đó là lý do Chương 13 nhấn mạnh đặt lớp trừu tượng ngay tại ranh giới thiết bị. Trong
+bộ mẫu khảo sát có một dự án **không** làm điều đó và phải trả giá bằng **bốn** họ card với gần
+**16.000 dòng** code gần trùng nhau, mỗi họ một bản chép riêng.
+
+> 📌 **Còn OPC UA đứng ở đâu trong hai kiến trúc này?** Nó là chuẩn để **nối lên trên** — máy nói
+> chuyện với hệ giám sát, hệ điều độ, hoặc giữa các máy với nhau — chứ không phải cách điều khiển
+> trục của chính máy mình. Ở kiến trúc B nó là một trong các lựa chọn cho ranh giới PLC ↔ C# (đặc biệt
+> khi PLC đã có sẵn máy chủ OPC UA); ở kiến trúc A nó gần như chỉ xuất hiện ở phần tích hợp nhà máy.
+> Trong bộ mẫu khảo sát — vốn nghiêng về kiến trúc A và về máy phi tiêu chuẩn chưa nối MES qua OPC UA
+> — **không dự án nào dùng nó**, nhưng như cảnh báo ở trên, đó là đặc điểm của bộ mẫu chứ không phải
+> của ngành. Chương 14 mục 14.1.1 dạy OPC UA đầy đủ; hãy học nó khi bài toán của bạn là **tích hợp**,
+> và học SDK card hoặc giao tiếp PLC trước khi bài toán của bạn là **điều khiển**.
 
 ---
 
@@ -3530,6 +3586,12 @@ dưới đây giúp bạn đọc tình huống cho đúng.
 | **Ba dự án dạng *framework*** (viết để dùng lại cho nhiều máy) | **82, 54, 41** | Có tầng trừu tượng thiết bị rõ ràng |
 | **Mười dự án dạng *một máy cụ thể*** | **0 – 8** (năm dự án có **đúng 0**) | Gọi thẳng SDK/card từ nơi cần dùng |
 
+
+> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
+> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
+> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
+> mục 1.3.1.
+
 Sự phân hoá này rất rõ, và nó **không ngẫu nhiên**. Ba dự án nhiều interface nhất cũng chính là:
 
 - **dự án duy nhất có kiểm thử tự động đang chạy** (Chương 18 mục 18.6.4), và
@@ -5227,6 +5289,12 @@ Mục 6.1.2 trình bày ba mô hình lập trình trong điều khiển máy. M�
 | **Luồng riêng** (`new Thread` / `Task.Run`) | **13 / 13** | Mọi dự án đều có luồng nền riêng cho quy trình |
 | **`Timer`** | **13 / 13** | Dùng cho làm tươi giao diện và quét trạng thái định kỳ |
 | **`async` / `await`** | **3 / 13 ở mức đáng kể** (104, 97, 27 file); **năm dự án dùng ĐÚNG 0** | Phân hoá rất mạnh |
+
+
+> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
+> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
+> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
+> mục 1.3.1.
 
 Ba kết luận, và cái thứ ba là quan trọng nhất:
 
@@ -11768,6 +11836,12 @@ Khảo sát **13 dự án phần mềm máy tự động hoá thật** trong nh�
 | Bounded Context (tách model theo ngữ cảnh, có tài liệu) | **0** / 13 |
 | Có tầng `Domain` / `Application` / `Infrastructure` tách bạch | **0** / 13 |
 
+
+> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
+> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
+> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
+> mục 1.3.1.
+
 Con số này cần được đọc cho đúng, vì nó dễ dẫn tới hai kết luận sai ngược nhau.
 
 **Kết luận sai thứ nhất: "vậy chương này vô dụng, bỏ qua đi".** Không đúng, vì ba lý do:
@@ -15185,12 +15259,16 @@ function code gì để đọc/ghi thanh ghi, SECS/GEM trao đổi message ra sa
 
 ### 14.1.1  OPC UA — giao thức tích hợp IT/OT
 
-> 📌 **Đặt OPC UA đúng chỗ trước khi đọc mục này.** Khảo sát 13 dự án máy phi tiêu chuẩn thật cho thấy
-> **không dự án nào dùng OPC UA** (Chương 1 mục 1.3.1) — vì máy phi tiêu chuẩn thường không có PLC làm
-> chủ, nên cũng không có máy chủ OPC UA để nối vào. OPC UA là cách **máy nói chuyện với nhà máy** (hệ
-> giám sát, hệ điều độ, máy mua sẵn của hãng lớn), không phải cách phần mềm nói chuyện với card chuyển
-> động của chính máy mình. Học mục này để làm phần tích hợp lên trên; còn để điều khiển thiết bị của
-> máy, phần bạn cần là SDK của card (Phụ lục A mục A.3) và Modbus (mục 14.1.2).
+> 📌 **Đặt OPC UA đúng chỗ trước khi đọc mục này.** OPC UA là chuẩn để **nối lên trên** — máy nói
+> chuyện với hệ giám sát, hệ điều độ, hoặc giữa các máy — chứ không phải cách điều khiển trục của
+> chính máy mình. Nó xuất hiện ở hai tình huống: khi bạn tích hợp máy vào hệ thống nhà máy, và khi
+> ranh giới PLC ↔ C# (kiến trúc B ở Chương 1 mục 1.3.1) chọn OPC UA làm giao thức — điều khá thường
+> gặp vì nhiều dòng PLC đã có sẵn máy chủ OPC UA bên trong.
+>
+> Đáng lưu ý: trong bộ mẫu 13 dự án của cuốn sách, **không dự án nào dùng OPC UA** — nhưng bộ mẫu đó
+> nghiêng hẳn về máy điều khiển chuyển động trực tiếp bằng C# và chưa nối MES qua OPC UA, nên đó là
+> đặc điểm của bộ mẫu chứ không phải của ngành (Chương 1 mục 1.3.1). Nếu bạn đang làm kiến trúc B,
+> khả năng gặp OPC UA cao hơn nhiều.
 
 **Máy nào dùng OPC UA?** PLC Siemens S7-1500/1200 (TIA Portal bật OPC UA server), Beckhoff
 TwinCAT 3, Mitsubishi MELSEC iQ-R, máy CNC Fanuc 30i trở lên, robot ABB/KUKA, và ngày
@@ -20683,6 +20761,12 @@ Khảo sát **12 dự án phần mềm máy tự động hoá thật** trong nh�
 | Có CI tự động | **1** / 12 |
 | CI đó có chạy test | Không — chỉ `restore` + `build` |
 
+
+> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
+> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
+> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
+> mục 1.3.1.
+
 Ba điều đáng chú ý:
 
 **1. Không dự án nào dùng tag.** Đây là con số làm tôi bất ngờ nhất khi khảo sát, vì tag là thứ **rẻ
@@ -21662,8 +21746,15 @@ dùng chung), tìm dấu vết của các thuộc tính test (`[Fact]`, `[Test]`
 | Có test project nhưng **rỗng** — dựng lên rồi bỏ | 2 / 12 |
 | Không có gì | 9 / 12 |
 
-Con số này không phải để chê ngành, mà để bạn hiểu đúng bối cảnh: **nếu bạn viết được test cho phần
-mềm máy, bạn đã ở nhóm rất nhỏ**. Và ngược lại, khi tiếp quản một dự án không có test nào, đó là
+> ⚠️ **Con số này là GIỚI HẠN DƯỚI, không phải con số thật — và lý do rất quan trọng.** Khảo sát chỉ
+> nhìn được phần **mã nguồn được bàn giao**, mà nhiều đội **không đóng gói project kiểm thử cùng sản
+> phẩm** khi giao cho khách hàng: test nằm trong kho mã nguồn nội bộ, bản giao đi chỉ có phần chạy
+> máy. Vì vậy một dự án "không thấy test" hoàn toàn có thể là một dự án **có test đầy đủ**. Đọc bảng
+> trên như *"ít nhất một dự án làm việc này nghiêm túc và đây là cách họ làm"*, đừng đọc như *"chỉ 8%
+> dự án trong ngành có test"*. Xem thêm ghi chú chung về bộ mẫu ở Chương 1 mục 1.3.1.
+
+Dù vậy, phần phân tích bên dưới vẫn giữ nguyên giá trị, vì nó không dựa vào tỷ lệ mà dựa vào **quan
+hệ nhân quả**: nhìn vào dự án có test và hỏi *điều gì khiến nó test được*. Và ngược lại, khi tiếp quản một dự án không có test nào, đó là
 tình huống bình thường chứ không phải dấu hiệu đội cũ yếu kém — nó phản ánh những áp lực rất thật:
 máy phải giao đúng hạn, phần cứng đến muộn, và mọi thứ cần "chạy được trước đã".
 

@@ -330,6 +330,53 @@ chịu trách nhiệm cho khối IPC ở trên cùng.
 
 ---
 
+### 1.3.1 Đối chiếu thực tế — máy phi tiêu chuẩn thật sự nối với phần cứng bằng gì
+
+Mục trên trình bày các thành phần của một hệ PC-Based. Trước khi sang chương sau, một đoạn số liệu để
+bạn biết **cái gì sẽ gặp trước** khi vào làm. Khảo sát **13 dự án phần mềm máy thật** đang hoặc đã
+chạy sản xuất trong nhà máy điện tử:
+
+**Bảng 1.5b — Cách phần mềm máy nối xuống phần cứng, đo trên 13 dự án**
+
+| Cách nối | Số dự án | Ghi chú |
+|---|---|---|
+| **Gọi thẳng SDK của card qua P/Invoke** | **13 / 13** | Card chuyển động, card vào-ra, cảm biến — không dự án nào không có |
+| **Giao thức của hãng PLC / Modbus** | 11 / 13 | Chủ yếu để nói chuyện với PLC của **dây chuyền**, không phải của chính máy |
+| **OPC UA** | **0 / 13** | Không dự án nào — kiểm tra cả theo tên thư viện lẫn theo vùng tên |
+
+Con số cuối cần được giải thích cẩn thận, vì nó dễ bị hiểu sai theo cả hai chiều.
+
+**OPC UA không phải là công nghệ thất bại.** Nó là chuẩn thật, được dùng rộng rãi — nhưng ở **tầng
+khác**: nối dây chuyền với hệ thống nhà máy, nối SCADA với nhiều máy, nối máy do các hãng lớn chế tạo
+sẵn (nơi PLC đã có sẵn máy chủ OPC UA bên trong). Đó là **tầng dây chuyền và nhà máy**.
+
+**Còn ở tầng một cỗ máy phi tiêu chuẩn — chủ đề của cuốn sách này — bức tranh khác hẳn.** Máy phi
+tiêu chuẩn thường **không có PLC làm chủ**; máy tính công nghiệp trực tiếp điều khiển card chuyển
+động và card vào-ra. Không có PLC thì cũng không có máy chủ OPC UA để nối vào. Phần mềm nói chuyện
+với phần cứng bằng **SDK của hãng card** (Phụ lục A mục A.3), và chỉ dùng Modbus hoặc giao thức hãng
+PLC khi cần bắt tay với **băng tải hoặc robot của dây chuyền** bên ngoài máy.
+
+> 📌 **Điều này nghĩa là gì với bạn — người mới vào nghề.** Thứ bạn gặp trong tuần đầu gần như chắc
+> chắn là: một thư mục chứa mấy file `.dll` của hãng card, một file `.cs` vài trăm dòng khai báo
+> `[DllImport]`, và một bảng Excel ánh xạ tên tín hiệu sang số chân. **Không phải** một máy chủ OPC UA
+> với cây địa chỉ đẹp đẽ. Vì vậy:
+> - Đọc **Phụ lục A mục A.3** (đọc file khai báo P/Invoke) **sớm** — đó là kỹ năng dùng ngay.
+> - Chương 14 mục 14.1.1 (OPC UA) vẫn đáng học, nhưng hãy đặt nó đúng chỗ: bạn sẽ cần nó khi **nối
+>   máy của mình lên hệ thống nhà máy**, hoặc khi làm việc với máy mua sẵn của hãng lớn — không phải
+>   khi điều khiển trục của chính máy mình.
+>
+> Nói cách khác: **OPC UA là cách máy nói chuyện với nhà máy; SDK của card là cách phần mềm nói chuyện
+> với cỗ máy.** Cuốn sách này dạy cả hai, nhưng thứ tự bạn dùng đến chúng trong thực tế thường là cái
+> thứ hai trước.
+
+> 💡 **Một hệ quả cho quyết định thiết kế.** Vì phần nối phần cứng gần như luôn là SDK riêng của một
+> hãng, **rủi ro phụ thuộc hãng là có thật và xảy ra thường xuyên** — hãng ngừng bán dòng card, hoặc
+> khách hàng thứ hai yêu cầu hãng khác. Đó là lý do Chương 13 nhấn mạnh đặt một lớp trừu tượng ngay
+> tại ranh giới thiết bị. Khảo sát cũng cho thấy hệ quả của việc **không** làm điều đó: một dự án có
+> **bốn** họ card khác nhau và gần **16.000 dòng** code gần trùng nhau, mỗi họ một bản chép riêng.
+
+---
+
 ## 1.4 Xu hướng IT/OT Convergence
 
 <!--idx:IT/OT Convergence-->
@@ -3468,6 +3515,55 @@ Lợi ích rất cụ thể: màn hình Jog tay chỉ cần `IMovable + IEnablea
 
 ---
 
+### 4.2.4  Đối chiếu thực tế — interface được dùng nhiều đến đâu
+
+Mục 4.2.2 nói interface là "trái tim của hệ thống tốt". Đó là lời khuyên đúng, nhưng nếu bạn mở một
+dự án máy thật ngày mai và **không thấy interface nào**, đừng vội kết luận đội cũ làm ẩu. Số liệu
+dưới đây giúp bạn đọc tình huống cho đúng.
+
+Đếm số file có khai báo `interface IXxx` trong **13 dự án phần mềm máy thật**:
+
+**Bảng 4.4b — Mức dùng interface, sắp theo nhóm**
+
+| Nhóm dự án | Số file khai báo interface | Đặc điểm chung |
+|---|---|---|
+| **Ba dự án dạng *framework*** (viết để dùng lại cho nhiều máy) | **82, 54, 41** | Có tầng trừu tượng thiết bị rõ ràng |
+| **Mười dự án dạng *một máy cụ thể*** | **0 – 8** (năm dự án có **đúng 0**) | Gọi thẳng SDK/card từ nơi cần dùng |
+
+Sự phân hoá này rất rõ, và nó **không ngẫu nhiên**. Ba dự án nhiều interface nhất cũng chính là:
+
+- **dự án duy nhất có kiểm thử tự động đang chạy** (Chương 18 mục 18.6.4), và
+- **ba dự án duy nhất dùng Repository** để tách truy cập dữ liệu (Chương 11 mục 11.3.4).
+
+Ba dấu hiệu ấy đi cùng nhau vì chúng là **cùng một quyết định kiến trúc nhìn từ ba phía**: đặt thiết
+bị và dữ liệu sau interface là điều kiện để thay bằng bản giả lập, và thay được bằng bản giả lập là
+điều kiện để test. Không có interface thì không có test — không phải vì thiếu kỷ luật, mà vì **không
+thể**.
+
+> 📌 **Cách đọc con số này cho đúng — và câu hỏi nên tự hỏi trước khi thêm interface.** Interface có
+> chi phí: thêm một tệp, thêm một tầng khi lần theo code, và với người mới thì thêm một bước "đi tìm
+> ai thực sự làm việc này". Chi phí đó **được hoàn lại khi có ít nhất một trong ba nhu cầu** sau:
+> 1. **Sẽ có nhiều hơn một triển khai** — đổi hãng card, hoặc cần bản giả lập chạy không cần phần cứng.
+> 2. **Muốn viết test** cho phần logic phía trên thiết bị.
+> 3. **Nhiều máy dùng chung** phần code đó.
+>
+> Nếu **cả ba đều không** — ví dụ một máy đơn lẻ, một hãng card, giao trong bốn tháng, không ai định
+> viết test — thì gọi thẳng lớp cụ thể là lựa chọn hợp lý, và mười dự án trong bảng trên đã chọn như
+> vậy một cách có lý do.
+>
+> Nhưng lưu ý một điều: nhu cầu (1) hay xuất hiện **muộn và đột ngột** — hãng ngừng bán card, hoặc
+> khách hàng thứ hai muốn dùng hãng khác. Lúc đó, dự án đã đặt thiết bị sau interface chỉ phải viết
+> thêm một lớp; dự án chưa đặt thì phải sửa mọi chỗ gọi. Đó là lý do lời khuyên mặc định của sách vẫn
+> là **đặt interface ở ranh giới thiết bị** (Chương 13) — không phải ở mọi class.
+
+> ⚠️ **Đừng suy ra "dự án không có interface là dự án tệ".** Một trong các dự án 0 interface là phần
+> mềm chạy sản xuất nhiều năm, có xử lý an toàn cẩn thận và nhật ký đầy đủ. Thứ nó phải trả giá không
+> phải chất lượng hằng ngày, mà là **khả năng thay đổi**: đổi hãng thiết bị hoặc viết test đều tốn
+> gấp nhiều lần. Khi tiếp quản một dự án như vậy, đừng bắt đầu bằng việc "interface hoá toàn bộ" —
+> hãy chỉ đặt interface **ở đúng ranh giới bạn sắp phải thay đổi**.
+
+---
+
 ## 4.3  Kế thừa, đa hình, và "ưu tiên Composition"
 
 Sách OOP truyền thống thường dạy **kế thừa (inheritance)** đầu tiên và xem nó là tính năng trung tâm. Đó là một định hướng sai dẫn đến vô số hệ thống khó bảo trì. Chúng ta đi theo thứ tự đúng: composition trước, kế thừa sau và chỉ khi thật cần.
@@ -3757,6 +3853,34 @@ axis.PositionChanged += (sender, e) => hmi.UpdatePosition(e.AxisId, e.Position);
 Đây là **Observer Pattern** ở dạng cơ bản nhất — Chương 16 đặt tên và mở rộng nó thành ba biến thể (`event`, `IEventPublisher`, `IObservable<T>`). Ở đây chỉ cần nắm cơ chế nền.
 
 > ⚠️ **Cảnh báo — quên `-=` gây memory leak:** Đăng ký event bằng `+=` thì event giữ tham chiếu tới handler. Nếu object nghe "chết" mà không `-=`, nó không được GC thu hồi, và event vẫn bắn vào handler cũ → rò bộ nhớ + lỗi "ma" khó truy. Luôn `-=` trong `Dispose()`/shutdown. `Dispose()` là method theo pattern `IDisposable` — tương tự destructor trong C++, được gọi khi object không còn dùng (Chương 5 trình bày `IDisposable` và `using`); ở đây chỉ cần nắm: khi màn hình HMI đóng, gọi `axis.PositionChanged -= handler` để tránh memory leak. Ngoài ra: handler không được làm việc nặng hay chặn luồng điều khiển — event để *báo hiệu*, không để *chạy logic điều khiển*.
+
+---
+
+### 4.4.4  Một số liệu bất ngờ: `event` phổ biến hơn `interface`
+
+Cùng khảo sát trên, đếm số file có dùng `event`/`EventHandler`:
+
+**Bảng 4.5b — `event` so với `interface` trong cùng 13 dự án**
+
+| | Số dự án dùng ở mức đáng kể | Ghi chú |
+|---|---|---|
+| `List<T>` / `Dictionary<K,V>` | **13 / 13** | Không dự án nào không dùng — generic collection là nền, không cần bàn |
+| **`event`** | **13 / 13** | Có dự án dùng `event` trong **132 file** nhưng khai báo **0 interface** |
+| `interface` | 3 / 13 ở mức cao | Xem Bảng 4.4b |
+
+Điều này đáng chú ý vì nó ngược với thứ tự ưu tiên mà nhiều tài liệu lập trình ngầm định. Với phần
+mềm máy, `event` là **cơ chế phổ biến nhất** để nối các phần với nhau, và lý do rất tự nhiên: máy là
+một hệ thống đầy **sự kiện bất đồng bộ** — tín hiệu vào đổi trạng thái, thiết bị báo xong, cảnh báo
+phát sinh, người vận hành bấm nút. Không có `event` thì mọi thứ phải hỏi vòng (polling).
+
+Hai hệ quả cho bạn:
+
+- **Học `event` cho thật chắc** (mục 4.4.3), kể cả phần dễ bỏ qua: huỷ đăng ký khi không dùng nữa
+  (nếu không sẽ rò rỉ bộ nhớ — Chương 8), và **một handler ném exception có thể chặn các handler còn
+  lại** (Chương 16 mục 16.1 giải thích vì sao đó là lý do chuyển sang `IEventPublisher` cho thông báo
+  giữa các module).
+- Khi đọc code lạ mà không tìm thấy chỗ gọi một hàm nào đó, **hãy tìm nó trong danh sách đăng ký
+  event** — đây là lý do phổ biến nhất khiến "Find All References" trông như không có ai gọi.
 
 ---
 
@@ -5087,6 +5211,62 @@ cloud — nhưng không bao giờ ở lõi điều khiển máy.
 > giải thích tại sao C# không thay thế được EtherCAT Master cho vòng điều khiển
 > chuyển động. Tìm hiểu thêm: "Hard real-time vs Soft real-time .NET",
 > "EtherCAT real-time motion control".
+
+---
+
+### 6.1.6  Đối chiếu thực tế — ba mô hình đó thật sự được dùng thế nào
+
+Mục 6.1.2 trình bày ba mô hình lập trình trong điều khiển máy. Mục này cho biết tỷ lệ thật, đo trên
+**13 dự án phần mềm máy đang hoặc đã chạy sản xuất** trong nhà máy điện tử.
+
+**Bảng 6.4b — Phong cách xử lý thời gian và đồng thời trong 13 dự án thật**
+
+| Kỹ thuật | Số dự án dùng | Nhận xét |
+|---|---|---|
+| **`Thread.Sleep`** | **12 / 13** | Gần như phổ quát — kể cả trong các dự án hiện đại |
+| **Luồng riêng** (`new Thread` / `Task.Run`) | **13 / 13** | Mọi dự án đều có luồng nền riêng cho quy trình |
+| **`Timer`** | **13 / 13** | Dùng cho làm tươi giao diện và quét trạng thái định kỳ |
+| **`async` / `await`** | **3 / 13 ở mức đáng kể** (104, 97, 27 file); **năm dự án dùng ĐÚNG 0** | Phân hoá rất mạnh |
+
+Ba kết luận, và cái thứ ba là quan trọng nhất:
+
+**1. Mô hình chủ đạo trong phần mềm máy vẫn là "một luồng riêng cho mỗi việc dài, đồng bộ với nhau
+bằng cờ".** Không phải vì người viết không biết `async` — mà vì mô hình đó **ánh xạ rất tự nhiên** từ
+tư duy PLC: một trạm là một luồng chạy vòng lặp riêng, y như một chương trình PLC chạy vòng quét
+riêng. Đọc code máy mà thấy `while(true)` + `Thread.Sleep(20)` thì đó không phải dấu hiệu người viết
+kém — đó là vòng quét được viết lại bằng C#.
+
+**2. `Thread.Sleep` xuất hiện gần như ở mọi nơi, và không phải lúc nào cũng sai.** Chương 5 dạy đúng
+rằng `await Task.Delay` tốt hơn cho code async. Nhưng trong một luồng nền **chỉ chuyên làm một việc**
+và không phục vụ giao diện, `Thread.Sleep` không gây hại gì — nó chỉ nhường CPU. Chỗ nó thật sự sai
+là khi nằm trong luồng giao diện (làm treo màn hình — Chương 8) hoặc trong một `Task` chạy trên nhóm
+luồng dùng chung (chiếm chỗ của việc khác). Khi đọc code cũ, hãy hỏi **`Sleep` này nằm ở luồng nào**
+trước khi đánh giá.
+
+**3. Điều bất ngờ nhất: dự án dễ kiểm thử nhất KHÔNG dùng `async`.** Dự án duy nhất có kiểm thử tự
+động đang chạy (192 test — Chương 18 mục 18.6.4) chỉ có **một** file dùng `async`. Nó dùng mô hình
+**luồng riêng + hộp thư nhắn tin** giữa các thành phần, chứ không dùng `async`/`await`.
+
+Điều này bác bỏ một suy nghĩ dễ mắc: *"muốn code sạch và test được thì phải viết async"*. Không phải.
+Thứ làm nên khả năng kiểm thử của dự án đó là **thiết bị nằm sau interface** và **chế độ giả lập ở
+cấp hệ thống** (Chương 4 mục 4.2.4, Chương 13 mục 13.2.5) — hai điều **độc lập hoàn toàn** với việc
+chọn `async` hay luồng.
+
+> 📌 **Vậy có nên học và dùng `async` không? Có — nhưng vì lý do đúng.** `async`/`await` giải quyết
+> rất tốt một nhóm bài toán cụ thể: chờ **nhiều** thao tác vào-ra cùng lúc mà không tốn một luồng cho
+> mỗi thao tác (đọc nhiều thiết bị mạng song song, gọi hệ MES trong khi máy vẫn chạy), và huỷ lệnh
+> gọn gàng bằng `CancellationToken` (Chương 5). Ba dự án dùng `async` nhiều nhất trong bảng trên đều
+> là dự án có **nhiều thiết bị mạng và tích hợp hệ thống trên** — đúng nhóm bài toán đó.
+>
+> Ngược lại, với một trạm cơ khí chạy tuần tự trên luồng riêng của nó, viết lại bằng `async` **không
+> làm nó nhanh hơn hay đúng hơn** — chỉ làm code khó đọc hơn với người đến từ nền PLC. Chọn theo bài
+> toán, đừng chọn theo "cái nào hiện đại hơn".
+
+> ⚠️ **Nhưng đừng TRỘN hai mô hình trong cùng một tầng.** Đây mới là chỗ thật sự gây lỗi: một phần
+> quy trình chạy trên luồng riêng và dừng bằng cờ, phần khác chạy `async` và dừng bằng
+> `CancellationToken` — khi bấm Dừng, sẽ có một nửa dừng và một nửa chạy tiếp. Nếu cần chuyển sang
+> `async`, chuyển **trọn một tầng hoặc trọn một trạm** một lần, và chạy thử đủ các tình huống dừng
+> (xem thêm Chương 3 mục 3.5.4 về việc trộn hai cơ chế huỷ lệnh).
 
 ---
 
@@ -15004,6 +15184,13 @@ function code gì để đọc/ghi thanh ghi, SECS/GEM trao đổi message ra sa
 ## 14.1  OPC UA, Modbus TCP và TCP/IP tuỳ chỉnh
 
 ### 14.1.1  OPC UA — giao thức tích hợp IT/OT
+
+> 📌 **Đặt OPC UA đúng chỗ trước khi đọc mục này.** Khảo sát 13 dự án máy phi tiêu chuẩn thật cho thấy
+> **không dự án nào dùng OPC UA** (Chương 1 mục 1.3.1) — vì máy phi tiêu chuẩn thường không có PLC làm
+> chủ, nên cũng không có máy chủ OPC UA để nối vào. OPC UA là cách **máy nói chuyện với nhà máy** (hệ
+> giám sát, hệ điều độ, máy mua sẵn của hãng lớn), không phải cách phần mềm nói chuyện với card chuyển
+> động của chính máy mình. Học mục này để làm phần tích hợp lên trên; còn để điều khiển thiết bị của
+> máy, phần bạn cần là SDK của card (Phụ lục A mục A.3) và Modbus (mục 14.1.2).
 
 **Máy nào dùng OPC UA?** PLC Siemens S7-1500/1200 (TIA Portal bật OPC UA server), Beckhoff
 TwinCAT 3, Mitsubishi MELSEC iQ-R, máy CNC Fanuc 30i trở lên, robot ABB/KUKA, và ngày

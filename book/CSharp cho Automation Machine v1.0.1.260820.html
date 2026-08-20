@@ -6481,6 +6481,60 @@ khí (limit switch, nút nhấn vật lý) — không cần thiết cho tín hi�
 chục mili-giây, nên đưa vào tham số cấu hình (Chương 13) thay vì hardcode, vì mỗi
 loại cảm biến/dây cáp có đặc tính rung khác nhau.</p>
 <blockquote>
+<p>📌 <strong>Tín hiệu ANALOG cần thứ khác: lọc nhiễu.</strong> Chống dội ở trên dành cho tín hiệu <strong>số</strong> (bật/tắt).
+Với tín hiệu <strong>analog</strong> — áp suất, lực, nhiệt độ, khoảng cách, lưu lượng — vấn đề không phải &quot;dội&quot;
+mà là <strong>nhiễu</strong>: giá trị đọc được dao động liên tục quanh giá trị thật vài phần trăm, do nhiễu điện
+từ động cơ, do rung cơ khí, do chính bộ chuyển đổi. Nếu đem giá trị thô đi so ngưỡng, kết quả phán
+định sẽ nhảy qua nhảy lại ở vùng biên.</p>
+<p>Ba bộ lọc thường gặp, xếp theo độ phức tạp — và trong một dự án tham khảo, cả ba đều tồn tại như ba
+lựa chọn cấu hình được cho từng kênh đo:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bộ lọc</th>
+<th>Làm gì</th>
+<th>Mạnh ở</th>
+<th>Yếu ở</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Trung bình trượt</strong> (moving average)</td>
+<td>Lấy trung bình N mẫu gần nhất</td>
+<td>Đơn giản nhất; làm mượt nhiễu ngẫu nhiên</td>
+<td><strong>Bị kéo lệch bởi một giá trị đột biến</strong>; làm chậm phản ứng khi giá trị thật thay đổi</td>
+</tr>
+<tr>
+<td><strong>Trung vị</strong> (median)</td>
+<td>Sắp N mẫu gần nhất, lấy giá trị <strong>ở giữa</strong></td>
+<td><strong>Loại hẳn giá trị đột biến</strong> (một mẫu rác không ảnh hưởng)</td>
+<td>Tốn hơn một chút; vẫn làm chậm phản ứng</td>
+</tr>
+<tr>
+<td><strong>Kalman</strong></td>
+<td>Ước lượng giá trị thật từ mô hình + đo, có tính tới độ tin cậy của mỗi bên</td>
+<td>Mượt mà <strong>không</strong> chậm nhiều; tốt khi đại lượng biến thiên theo quy luật (vị trí, tốc độ)</td>
+<td>Phải chỉnh tham số; khó giải thích khi kết quả bất thường</td>
+</tr>
+</tbody></table></div>
+<p><strong>Chọn thế nào cho thực dụng:</strong> gặp <strong>giá trị đột biến lẻ tẻ</strong> (một mẫu rác giữa dãy tốt — rất phổ
+biến với nhiễu điện) thì <strong>trung vị</strong> là lựa chọn đúng, và trung bình trượt là lựa chọn <em>sai</em> vì
+đúng một mẫu rác cũng kéo lệch kết quả. Gặp <strong>nhiễu đều, biên độ nhỏ</strong> thì trung bình trượt là đủ.
+Chỉ dùng Kalman khi hai cái kia không đủ và bạn hiểu đại lượng đang đo biến thiên thế nào.</p>
+<p>⚠️ <strong>Ba điều phải nhớ khi lọc, vì lọc sai nguy hiểm hơn không lọc:</strong></p>
+<ol>
+<li><strong>Lọc làm CHẬM phản ứng.</strong> Trung bình trượt 10 mẫu ở chu kỳ 10 ms nghĩa là giá trị bạn thấy trễ
+khoảng 50 ms so với thực tế. Với hiển thị thì không sao; với <strong>ngắt bảo vệ khi quá lực</strong> thì 50 ms
+có thể là hỏng sản phẩm. Nguyên tắc: <strong>đường bảo vệ dùng giá trị thô hoặc lọc rất nhẹ; đường hiển
+thị và phán định chất lượng mới dùng lọc mạnh.</strong></li>
+<li><strong>Lưu giá trị THÔ, không chỉ giá trị đã lọc.</strong> Khi cần chẩn đoán về sau, dữ liệu đã lọc đã mất
+thông tin — không phân biệt được &quot;cảm biến nhiễu&quot; với &quot;sản phẩm thật sự dao động&quot; (Phụ lục B mục
+B.3.1 về ghi bằng chứng).</li>
+<li><strong>Lọc không thay thế được ngưỡng có trễ.</strong> Đây là hai lớp khác nhau: lọc xử lý <em>tín hiệu</em>, còn
+deadband/hysteresis xử lý <em>quyết định</em> (Chương 15). Cần cả hai — lọc rồi vẫn phải đặt hai ngưỡng
+khác nhau cho bật và tắt cảnh báo.</li>
+</ol>
+</blockquote>
+<blockquote>
 <p>💡 <strong>Mẫu thiết kế đi kèm: tính sẵn cạnh lên/cạnh xuống ngay trong vòng quét.</strong> PLC có sẵn lệnh phát
 hiện cạnh (<code>R_TRIG</code>/<code>F_TRIG</code>); C# thì không, nên mỗi chỗ cần biết &quot;tín hiệu vừa mới bật&quot; phải tự nhớ
 giá trị lần quét trước. Làm rải rác ở nhiều nơi thì mỗi nơi nhớ một kiểu, và nơi nào quét chậm hơn
@@ -26861,6 +26915,78 @@ cơ chạy đồ thị cần <em>cầm</em> kết quả để quyết định đ
 được ở nhiều quy trình khác nhau mà không cần biết ai đứng trước nó.</li>
 <li><strong>Thêm loại hành động mới = thêm một class</strong>, không sửa đồ thị nào đã dựng, không sửa động cơ.</li>
 </ol>
+<p><strong>Một thư viện nút hoàn chỉnh trông như thế nào.</strong> Khi mới nghĩ về mẫu này, người ta thường hình
+dung thư viện nút chỉ gồm các hành động thiết bị: chạy trục, bật van, chụp ảnh. Thư viện nút của một
+dự án thật có <strong>hơn 200 lớp</strong> chia thành hơn 20 nhóm, và phần lớn <strong>không phải</strong> hành động thiết bị:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Ví dụ nút</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hành động thiết bị</strong></td>
+<td>Chạy tuyệt đối, chạy tương đối, về gốc, đổi tốc độ, đọc vị trí, chụp ảnh</td>
+<td>Phần ai cũng nghĩ tới — nhưng chỉ chiếm khoảng một phần năm</td>
+</tr>
+<tr>
+<td><strong>Tính toán và dữ liệu</strong></td>
+<td>Phép toán, thao tác bit ↔ word, đọc/ghi biến toàn cục, ngày giờ, JSON, CSV</td>
+<td><strong>Đây là thứ biến đồ thị thành một ngôn ngữ</strong>, không chỉ một danh sách lệnh</td>
+</tr>
+<tr>
+<td><strong>Lọc tín hiệu</strong></td>
+<td>Trung vị, trung bình trượt, Kalman, lọc nhiều kênh</td>
+<td>Chọn được bộ lọc cho từng kênh đo (Chương 6)</td>
+</tr>
+<tr>
+<td><strong>Trạng thái máy</strong></td>
+<td>Đổi trạng thái máy, đánh dấu khởi tạo xong</td>
+<td>Nút tác động lên máy trạng thái (Chương 12)</td>
+</tr>
+<tr>
+<td><strong>Cảnh báo</strong></td>
+<td>Bật alarm, alarm có nội dung, hộp thoại hỏi người vận hành</td>
+<td>Chương 15, Chương 10</td>
+</tr>
+<tr>
+<td><strong>Dữ liệu sản xuất</strong></td>
+<td>Ghi bản ghi, đo thời gian chu kỳ, đếm sản lượng vào/ra</td>
+<td>Chương 13, Phụ lục B mục B.2.5</td>
+</tr>
+<tr>
+<td><strong>Tích hợp ngoài</strong></td>
+<td>Gửi sự kiện lên host, gọi HTTP, tải dữ liệu lên hệ MES</td>
+<td>Chương 14</td>
+</tr>
+<tr>
+<td><strong>Quản lý khay/chồng</strong></td>
+<td>Lấy vị trí ô tiếp theo, quản lý trạng thái từng ô</td>
+<td>Chương 13 mục 13.2.4c (mẫu &quot;dạy một, sinh nhiều&quot;)</td>
+</tr>
+</tbody></table></div>
+<p>Bảng này đáng xem kỹ khi bạn định tự làm một hệ như vậy, vì nó cho biết <strong>khối lượng thật</strong>: phần
+khó không phải viết nút chạy trục, mà là bộ nút tính toán, biến, và luồng dữ liệu — thứ quyết định đồ
+thị có diễn đạt nổi quy trình thật hay không.</p>
+<p><strong>Và đây là điều quyết định hệ thống có dùng được không, nhưng hầu như không ai nói tới: trình soạn
+tham số cho từng nút.</strong></p>
+<p>Một nút &quot;chạy tới điểm&quot; có tham số là <em>điểm nào</em>. Nếu ô nhập tham số đó là một <strong>ô văn bản trống</strong>,
+kỹ sư phải gõ đúng tên điểm — gõ sai thì đồ thị vẫn lưu được, vẫn chạy được, và hỏng lúc vận hành.
+Trong dự án tham khảo, mỗi loại tham số <strong>có một trình soạn riêng</strong>: chọn điểm đã dạy từ danh sách,
+chọn trục từ danh sách trục đã khai báo, chọn sự kiện host từ danh sách sự kiện đã định nghĩa. Các
+nút phức tạp còn có <strong>hẳn một màn hình cấu hình riêng</strong> thay vì một bảng thuộc tính.</p>
+<blockquote>
+<p>💡 <strong>Vì sao chi tiết này quyết định thành bại.</strong> Toàn bộ lý do tồn tại của con đường 3 là <em>&quot;kỹ sư
+tại chỗ sửa được quy trình mà không cần lập trình viên&quot;</em>. Nếu cấu hình nút vẫn là gõ chuỗi tự do,
+bạn chỉ đổi một ngôn ngữ lập trình lấy một ngôn ngữ lập trình khác — vẫn gõ sai, vẫn không có ai
+kiểm tra, chỉ khác là bây giờ <strong>không còn trình biên dịch bắt lỗi giúp</strong>. Ngược lại, khi mọi tham
+số đều là <strong>chọn từ danh sách</strong>, cả một lớp lỗi biến mất, và người không biết lập trình thật sự dùng
+được.</p>
+<p>Nói cách khác: trong một hệ cấu hình dạng dữ liệu, <strong>trình soạn tham số chính là &quot;trình biên dịch&quot;
+của bạn</strong> — nó là nơi duy nhất còn bắt được lỗi trước khi máy chạy. Hãy đầu tư vào nó tương xứng.</p>
+</blockquote>
 <p><strong>Cái giá phải trả — nói thẳng để không ai bất ngờ:</strong> làm được đến mức này cần một khoản đầu tư ban
 đầu thật sự (động cơ chạy đồ thị, màn hình dựng đồ thị, cơ chế lưu/nạp, gỡ rối từng nút). Nó <strong>không</strong>
 đáng cho một máy đơn lẻ. Nó đáng khi bạn làm <strong>nhiều máy cùng họ</strong> và mỗi khách hàng lại muốn khác

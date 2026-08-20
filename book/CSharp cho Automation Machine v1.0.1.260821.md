@@ -9723,6 +9723,142 @@ Hai chi tiết trong `OperatorChoice` không được bỏ:
 
 ---
 
+### 10.1.6 Nhập liệu trên màn hình cảm ứng — bàn phím ảo
+
+Máy tính công nghiệp trong xưởng thường **không có bàn phím**, hoặc có nhưng nằm trong tủ điện khoá
+lại. Mọi ô nhập số và nhập chữ trên giao diện vì vậy phải mở một **bàn phím ảo** khi người dùng chạm
+vào. Đây là thành phần nhỏ nhưng có mặt trong **mọi** dự án tham khảo có màn hình cảm ứng, và nó có
+nhiều quyết định thiết kế hơn vẻ ngoài.
+
+**Ba loại bàn phím ảo, đừng dùng một loại cho mọi chỗ:**
+
+| Loại | Dùng cho | Đặc điểm cần có |
+|---|---|---|
+| **Bàn phím số** | Tham số recipe, toạ độ, ngưỡng — chiếm đa số ô nhập trên máy | Phím to, có dấu thập phân và dấu âm, hiển thị **đơn vị** |
+| **Bàn phím chữ** | Tên công thức, mã lô, ghi chú | Bố cục quen thuộc; cần cả chữ hoa/thường |
+| **Bàn phím mật khẩu** | Đăng nhập | Che ký tự; **không** hiển thị ký tự vừa gõ dù trong chốc lát |
+
+**Bốn điều làm nên một bàn phím ảo dùng được:**
+
+**1. Hiển thị giá trị CŨ bên cạnh giá trị đang nhập.** Người vận hành cần biết mình đang thay đổi từ
+đâu sang đâu. Một dự án tham khảo làm đúng điều này — có hai ô, một ô "hiện tại" và một ô "giá trị
+mới" — và đó là chi tiết nhỏ nhưng ngăn được loại lỗi phổ biến nhất: sửa nhầm ô, hoặc gõ tiếp vào
+giá trị cũ thay vì thay thế nó.
+
+**2. Kẹp giá trị theo dải cho phép — ngay tại chỗ nhập.** Ô nhập tốc độ nên biết tốc độ hợp lệ là từ
+bao nhiêu đến bao nhiêu, và **từ chối ngay** khi người dùng bấm OK với giá trị ngoài dải, kèm câu nói
+rõ dải hợp lệ. Nếu để giá trị sai đi tiếp vào tầng dưới, nơi bắt được nó sẽ là một alarm khó hiểu
+giữa chu kỳ, hoặc tệ hơn là không ai bắt.
+
+> ⚠️ **Đây là chỗ dễ làm dở nhất, và có ví dụ thật.** Trong một dự án tham khảo, lớp bàn phím số **có
+> sẵn hai trường `m_minValue`/`m_maxValue`** nhưng hàm đặt giá trị cho chúng **bị comment lại** — tức
+> là ý định kiểm tra dải đã có, nhưng chưa bao giờ được nối vào. Kết quả: một ô nhập trông như có
+> kiểm tra, thực tế nhận mọi giá trị. Khi tiếp quản một dự án, đây là loại chi tiết đáng kiểm tra
+> thật thay vì tin vào tên trường (Chương 19: "code tồn tại không đồng nghĩa code đang hoạt động").
+
+**3. Hiển thị đơn vị và số chữ số thập phân.** Ô nhập "0.5" là 0,5 mi-li-mét hay 0,5 mét? Bàn phím số
+nên nhận và hiển thị **đơn vị** cùng **số chữ số sau dấu phẩy** lấy từ khai báo tham số — cùng nguồn
+với dải hợp lệ. Điều này cũng giúp tránh một lỗi rất khó tìm ở nhà máy nước ngoài: **dấu thập phân là
+dấu chấm hay dấu phẩy** tuỳ vùng miền của Windows (Chương 19). Bàn phím ảo tự vẽ ra phím thập phân
+nên bạn kiểm soát được điều này; ô nhập thường thì không.
+
+**4. Phím đủ to cho ngón tay đeo găng.** Công nhân trong xưởng điện tử thường đeo găng chống tĩnh
+điện. Kích thước phím theo hướng dẫn chạm ở mục 10.2 là mức tối thiểu; với bàn phím ảo nên rộng rãi
+hơn nữa vì người dùng bấm nhanh và liên tiếp.
+
+> 💡 **Đừng tự viết logic xử lý phím từ đầu cho mỗi màn hình.** Nghe đơn giản, nhưng xử lý chuỗi khi
+> gõ có nhiều trường hợp biên hơn dự đoán: xoá lùi tới khi rỗng, dấu âm bấm hai lần, dấu thập phân
+> thứ hai, chuỗi chỉ có `"-"` hoặc `"."`, số `0` đứng đầu. Trong dự án tham khảo, riêng phần này đã
+> chiếm hơn trăm dòng — và đó là **một** bàn phím. Viết **một** lớp dùng chung, kiểm thử nó cho kỹ
+> (đây đúng là loại logic thuần dễ viết test nhất — Chương 18, bậc 2), rồi mọi màn hình dùng lại.
+
+> 📌 **Một lựa chọn thay thế đáng cân nhắc: bàn phím ảo của hệ điều hành.** Windows có sẵn bàn phím
+> cảm ứng, và dùng nó thì không phải viết gì. Cái giá: bạn không kiểm soát được bố cục, cỡ phím, dấu
+> thập phân theo vùng miền, và nó có thể che mất phần màn hình đang nhập. Với máy giao cho nhiều nước
+> hoặc có yêu cầu về giao diện thống nhất, tự viết một lớp dùng chung thường vẫn đáng hơn — nhưng
+> **chỉ một lớp**, không phải mỗi màn hình một bản.
+
+---
+
+### 10.1.7 Khi nào dùng luồng hướng dẫn từng bước thay vì một màn hình đầy ô nhập
+
+Phần lớn màn hình cấu hình trong phần mềm máy là **một bảng nhiều ô nhập**: mở ra, sửa ô nào cần sửa,
+bấm Lưu. Đó là cách đúng cho công việc **quen thuộc và làm thường xuyên** — người dùng đã biết ô nào
+ở đâu, và họ chỉ muốn sửa nhanh một giá trị.
+
+Nhưng có một nhóm công việc mà bảng ô nhập là lựa chọn tệ, và nhóm đó có ba đặc điểm chung:
+
+- **Làm không thường xuyên** — vài tháng một lần, nên không ai nhớ thứ tự.
+- **Có thứ tự bắt buộc** — bước sau phụ thuộc kết quả bước trước.
+- **Sai thì tốn kém** — phải làm lại từ đầu, hoặc gây va chạm cơ khí.
+
+Ví dụ điển hình trong phần mềm máy: **dạy toàn bộ vị trí cho một mã sản phẩm mới**, **thêm một trục
+vào cấu hình**, **chạy hiệu chuẩn** (Chương 13), **lắp đặt lần đầu**. Với những việc này, một **luồng
+hướng dẫn từng bước** phù hợp hơn hẳn — mỗi màn hình hỏi đúng một thứ, có nút Tiếp và Quay lại, và
+chỉ cho đi tiếp khi bước hiện tại đã hợp lệ.
+
+**Code 10.3b — Khung của một luồng hướng dẫn từng bước**
+
+```csharp
+namespace MeoFrame.Presentation.Wizards;
+
+public enum TeachStep { ChonTruc, DatToaDo, DatTocDo, ChayThu, XacNhan }
+
+public partial class TeachPointWizardViewModel : ObservableObject
+{
+    [ObservableProperty] private TeachStep currentStep = TeachStep.ChonTruc;
+
+    // Chỉ cho đi tiếp khi bước hiện tại đã hợp lệ — đây là điểm khác biệt lớn nhất
+    // so với một bảng ô nhập, nơi người dùng bấm Lưu lúc nào cũng được.
+    private bool CanGoNext() => currentStep switch
+    {
+        TeachStep.ChonTruc  => SelectedAxis is not null,
+        TeachStep.DatToaDo  => PositionMm is >= 0 and <= MaxTravelMm,
+        TeachStep.DatTocDo  => SpeedRatio is > 0 and <= 1.0,
+        TeachStep.ChayThu   => TestRunPassed,          // BẮT BUỘC chạy thử mới được xác nhận
+        _ => true
+    };
+
+    [RelayCommand(CanExecute = nameof(CanGoNext))]
+    private void Next() { if (CurrentStep < TeachStep.XacNhan) CurrentStep++; }
+
+    [RelayCommand]
+    private void Previous() { if (CurrentStep > TeachStep.ChonTruc) CurrentStep--; }
+
+    // Kết quả chỉ được tạo ở bước cuối — không ghi gì vào hệ thống trước đó
+    public TaughtPoint Result => new(Name, SelectedAxis!.Name, PositionMm, SpeedRatio);
+}
+```
+
+Bốn quyết định trong đoạn trên, và cả bốn đều là lý do luồng từng bước an toàn hơn cho nhóm công việc
+này:
+
+1. **Chặn đi tiếp khi bước hiện tại chưa hợp lệ.** Ở bảng ô nhập, người dùng bấm Lưu lúc nào cũng
+   được và lỗi được phát hiện *sau*. Ở luồng từng bước, lỗi được chặn *ngay tại bước gây ra nó*, khi
+   người dùng còn đang nghĩ về đúng thứ đó.
+2. **Bắt buộc có bước chạy thử trước bước xác nhận.** Đây là điểm đáng giá nhất khi áp dụng cho máy:
+   dạy một điểm xong thì **chạy tới điểm đó ở tốc độ chậm** rồi mới cho lưu. Một bảng ô nhập không có
+   chỗ tự nhiên nào để ép việc này.
+3. **Không ghi gì vào hệ thống cho tới bước cuối.** Người dùng bỏ giữa chừng thì không để lại cấu
+   hình dở dang — trạng thái máy vẫn như trước khi mở luồng.
+4. **Cho phép quay lại.** Việc này hiếm khi làm đúng ngay lần đầu; quay lại sửa bước trước mà không
+   mất các bước đã nhập là điều kiện để người dùng dám thử.
+
+> ⚠️ **Đừng lạm dụng.** Luồng từng bước chậm hơn hẳn bảng ô nhập cho công việc quen thuộc — bắt kỹ sư
+> bấm Tiếp năm lần để đổi một con số tốc độ là cách chắc chắn khiến họ ghét phần mềm của bạn. Quy tắc
+> phân biệt: **làm hằng ngày → bảng ô nhập; làm vài tháng một lần và sai thì tốn kém → luồng từng
+> bước.** Với những màn hình ở giữa, cách thường dùng là bảng ô nhập là chính, kèm một nút "Hướng dẫn
+> tôi" mở luồng từng bước cho người chưa quen.
+
+> 💡 **Một biến thể rất hợp với máy: luồng từng bước cho quy trình lắp đặt lần đầu.** Khi giao máy,
+> có một chuỗi việc phải làm đúng thứ tự — kiểm tra kết nối thiết bị, về gốc từng trục, hiệu chuẩn
+> camera, dạy điểm, chạy thử một chu kỳ, nạp công thức đầu tiên. Gói chuỗi đó thành một luồng có đánh
+> dấu hoàn thành từng bước biến việc "nhớ làm gì" thành việc "làm theo màn hình", và để lại một **hồ
+> sơ lắp đặt** ghi rõ bước nào đã làm, lúc nào, ai làm — thứ rất có giá trị khi bàn giao và khi máy có
+> sự cố ở tuần đầu.
+
+---
+
 ## 10.2 Bảng màu & Hệ thống phân cấp theo ISA-101
 
 <!--idx:Bảng màu ISA-101-->
@@ -23880,6 +24016,8 @@ sản xuất đều cần — thiếu là không bàn giao được.
 | **Hộp thoại hỏi người vận hành** | ✔ | Operator | Câu hỏi giữa quy trình, có thể gán nút cứng (Ch10 mục 10.1.5) |
 | **Biểu đồ theo dõi trực tiếp** | | Operator, Kỹ sư | Đường cong đại lượng đo của chi tiết vừa xử lý (lực, áp suất, mô-men) |
 | **Trợ giúp / hướng dẫn thao tác** | | Operator | Ảnh minh hoạ cách xử lý các tình huống dừng máy thường gặp |
+| **Bàn phím ảo** (số / chữ / mật khẩu) | ✔ (nếu cảm ứng) | Tất cả | Máy tính trong xưởng thường không có bàn phím — mọi ô nhập cần một bàn phím ảo (Ch10 mục 10.1.6) |
+| **Luồng hướng dẫn từng bước** | | Kỹ sư | Cho việc làm không thường xuyên và sai thì tốn kém: dạy điểm cho mã hàng mới, hiệu chuẩn, lắp đặt lần đầu (Ch10 mục 10.1.7) |
 
 > 💡 **Màn hình "kết quả gần nhất" bị bỏ quên nhiều nhất.** Operator cần biết *chi tiết vừa rồi đạt
 > hay không, và nếu không thì vì sao* — trong vòng vài giây, không phải mở báo cáo. Một khối nhỏ trên

@@ -23940,6 +23940,106 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 
 ---
 
+## B.8 Khi máy của bạn không phải máy lắp ráp
+
+Cần nói rõ nguồn gốc của phụ lục này: danh mục ở các mục trên được rút chủ yếu từ **máy lắp ráp và
+máy kiểm tra** — máy gắp đặt, máy bonding, máy siết vít, máy kiểm bằng thị giác. Đó là nhóm phổ biến
+nhất, nhưng không phải tất cả. Mục này bổ sung hai nhóm khác cũng rất thường gặp trong nhà máy điện
+tử, và nêu **cái gì thay đổi** so với danh mục trên.
+
+### B.8.1 Máy nạp dữ liệu vào sản phẩm
+
+Rất nhiều sản phẩm điện tử rời khỏi dây chuyền với **dữ liệu đã được ghi vào bên trong chúng**: số
+sê-ri, mã định danh mạng, hệ số hiệu chuẩn của cảm biến, tham số bù nhiệt độ, khoá bảo mật. Máy làm
+việc đó thường không lắp ráp gì cả — nó tiếp xúc điện với sản phẩm, ghi dữ liệu, đọc lại để kiểm, rồi
+báo kết quả.
+
+**Cái gì khác so với máy lắp ráp:**
+
+| | Máy lắp ráp | Máy nạp dữ liệu |
+|---|---|---|
+| Kết quả của một chu kỳ | Chi tiết được lắp đúng vị trí | **Một khối dữ liệu nằm trong bộ nhớ sản phẩm** |
+| Nguồn của "cái đúng" | Recipe + toạ độ đã dạy | **Hệ MES cấp dữ liệu cho từng sản phẩm** — mỗi sản phẩm một giá trị khác nhau |
+| Cách xác nhận đạt | Cảm biến vị trí, ảnh kiểm tra | **Đọc lại và so từng byte** |
+| Hậu quả khi sai | Chi tiết lệch, thấy được | **Không thấy được** — sản phẩm trông bình thường nhưng mang dữ liệu sai |
+
+Điểm cuối là lý do nhóm máy này đòi hỏi kỷ luật cao hơn hẳn: **lỗi không có biểu hiện vật lý**. Một
+lô hàng ghi sai hệ số hiệu chuẩn vẫn chạy qua mọi trạm kiểm ngoại quan, và chỉ lộ ra khi tới tay
+khách hàng.
+
+**Bốn thành phần đặc thù, không có trong danh mục ở mục B.2:**
+
+**1. Bản đồ bộ nhớ (memory map) là một file dữ liệu, không phải code.** Mỗi trường cần ghi được mô tả
+bằng **địa chỉ, kích thước, và định dạng**, thường để trong một file bảng tính hoặc CSV mà kỹ sư sản
+phẩm cung cấp:
+
+```
+ADDRESS   DATA_SIZE   DATA_FORMAT      Ý nghĩa
+0x0000    16          ASCII            Số sê-ri
+0x0010    4           UINT32_LE        Mã sản phẩm
+0x0020    8           FLOAT64_BE       Hệ số hiệu chuẩn
+0x0030    2           CRC16            Mã kiểm tra cho vùng 0x0000-0x002F
+```
+
+Đưa bản đồ này vào code là sai lầm tốn kém: nó thay đổi theo **đời sản phẩm**, và người biết nó là kỹ
+sư sản phẩm chứ không phải bạn.
+
+**2. Chuyển đổi định dạng là nơi lỗi tập trung.** Hệ MES trả về một **chuỗi**; thiết bị cần một dãy
+**byte**. Giữa hai thứ đó là ba câu hỏi phải trả lời cho *từng trường*: chuỗi này là số thập phân hay
+đã là hex? Thứ tự byte xuôi hay ngược? Thiếu độ dài thì đệm bằng gì và đệm bên nào? Trả lời sai bất
+kỳ câu nào cũng cho ra dữ liệu **ghi thành công nhưng sai nội dung**.
+
+Vì vậy hàm chuyển đổi nên nhận đủ các tham số đó một cách tường minh, và — quan trọng hơn — **phải có
+test**. Đây là một trong số ít chỗ trong phần mềm máy mà kiểm thử tự động dễ viết và có lợi ích tức
+thì: đầu vào là chuỗi, đầu ra là mảng byte, không cần phần cứng nào (đúng bậc 2 của Bảng 18.8b). Một
+dự án tham khảo có hẳn hai hàm tự kiểm tra riêng cho thứ tự byte và cho phép tính mã kiểm tra — dấu
+hiệu tác giả đã từng bị đúng hai lỗi đó.
+
+**3. Mã kiểm tra: thường có nhiều hơn một loại, chọn theo từng trường.** Cùng một sản phẩm có thể dùng
+mã kiểm tra 8 bit cho vùng này, 16 bit cho vùng kia, và một phép cộng đơn giản cho vùng thứ ba — vì
+mỗi vùng do một nhóm thiết kế khác nhau quy định. Phần mềm phải **chọn thuật toán theo trường**, lấy
+từ cột định dạng trong bản đồ bộ nhớ, không giả định cả sản phẩm dùng chung một loại.
+
+**4. Ghi xong phải đọc lại — không có ngoại lệ.**
+
+```
+Ghi  →  Đọc lại  →  So từng byte với giá trị mong đợi  →  Đạt/Không đạt
+```
+
+Không bao giờ tin giá trị trả về của lệnh ghi. Lệnh ghi báo "thành công" chỉ nghĩa là **thiết bị đã
+nhận lệnh**, không phải bộ nhớ đã đúng — tiếp xúc chập chờn, nguồn sụt giữa chừng, hoặc vùng nhớ bị
+khoá đều cho kết quả "ghi được mà không đúng". Và khi so sánh, hãy ghi vào nhật ký **cả hai giá trị**
+(mong đợi và đọc được) cho trường bị lệch đầu tiên — đó là thứ duy nhất giúp chẩn đoán về sau.
+
+### B.8.2 Máy test điện (handler)
+
+Nhóm thứ hai: máy đưa sản phẩm vào tiếp xúc với một bộ đo, chạy một loạt phép đo điện, phân loại theo
+kết quả, rồi đưa sản phẩm vào đúng khay theo hạng. Trong ngành hay gọi là **handler**.
+
+**Cái gì khác:**
+
+- **Phần "làm" rất đơn giản, phần "đo và phân loại" rất phức tạp.** Cơ khí thường chỉ là gắp–đặt–ép
+  tiếp xúc. Nhưng một sản phẩm có thể qua vài chục phép đo, mỗi phép có dải chấp nhận riêng, và kết
+  quả không phải đạt/không đạt mà là **một hạng** trong nhiều hạng.
+- **Phân loại nhiều mức, không phải hai mức.** Sản phẩm được chia thành nhiều nhóm chất lượng và đưa
+  vào các khay khác nhau — nghĩa là bảng ánh xạ *"kết quả đo → hạng → khay đích"* là **dữ liệu thuộc
+  recipe**, và nó thay đổi theo đơn hàng.
+- **Bộ đo thường là thiết bị của hãng khác**, giao tiếp qua một giao thức lệnh riêng, và **chính nó**
+  quyết định đạt/không đạt chứ không phải phần mềm máy. Vai trò của bạn giống hệt vai trò với thư viện
+  thị giác ở Chương 13 mục 13.2.4c: **đặt hàng phép đo, nhận kết quả, ra quyết định cơ khí** — không
+  tự viết thuật toán đo.
+- **Tiếp xúc điện là bộ phận hao mòn.** Kim tiếp xúc mòn dần và gây ra lỗi đo giả tăng dần theo số
+  lần dùng. Vì vậy máy nhóm này gần như luôn cần **đếm số lần sử dụng của đồ gá tiếp xúc** và cảnh báo
+  khi tới hạn — hạng mục đã có trong Bảng B.7 nhưng ở đây nó là **bắt buộc**, không phải tuỳ chọn.
+
+> 💡 **Điểm chung của cả hai nhóm, và là lý do chúng đáng có mục riêng:** với máy lắp ráp, sản phẩm
+> lỗi thường **nhìn thấy được**. Với hai nhóm trên, sản phẩm lỗi trông y hệt sản phẩm tốt — bằng chứng
+> duy nhất là **dữ liệu mà máy ghi lại**. Hệ quả: mọi thứ thuộc nhóm "truy xuất nguồn gốc" ở mục B.3.1
+> và B.4 chuyển từ *nên có* thành *bắt buộc*, và phần "báo kết quả cho hệ thống nhà máy" (Chương 14)
+> chiếm tỷ trọng công sức lớn hơn hẳn so với máy lắp ráp.
+
+---
+
 ## Tổng kết phụ lục
 
 - Một phần mềm máy tự động hoá tách được thành **sáu tầng** (Bảng B.1); ánh xạ project vào tầng là
@@ -23958,6 +24058,9 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
   nửa chừng.
 - Thứ tự xây dựng (mục B.6) đặt phần khó sửa nhất lên trước: trừu tượng thiết bị và bảng tên IO
   quyết định chi phí của mọi việc còn lại.
+- Danh mục ở đây rút từ **máy lắp ráp và máy kiểm tra**. Nếu máy của bạn là **máy nạp dữ liệu vào
+  sản phẩm** hoặc **máy test điện** (mục B.8), điểm khác biệt lớn nhất là: sản phẩm lỗi **trông y hệt**
+  sản phẩm tốt, nên truy xuất nguồn gốc chuyển từ *nên có* thành *bắt buộc*.
 - Muốn luyện kỹ năng đọc code mà chưa có dự án thật trong tay: mục B.7 liệt kê các dự án **mã nguồn
   mở** đọc được ngay, kèm mục tiêu học cho từng dự án — và một cảnh báo về giấy phép, vì phần mềm máy
   được **phân phối cùng cỗ máy** nên nghĩa vụ giấy phép có hiệu lực thật.

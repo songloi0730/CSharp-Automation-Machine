@@ -442,6 +442,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#b5-danh-mc-kim-trưc-khi-bàn-giao">B.5 Danh mục kiểm trước khi bàn giao</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b6-th-t-xây-dng-khi-làm-mt-máy-mi">B.6 Thứ tự xây dựng khi làm một máy mới</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b7-đc-code-mã-ngun-m-đ-luyn-tp">B.7 Đọc code mã nguồn mở để luyện tập</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#b8-khi-máy-ca-bn-không-phi-máy-lp-ráp">B.8 Khi máy của bạn không phải máy lắp ráp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-ph-lc-2">Tổng kết phụ lục</a></li>
   <li><a href="#ph-lc-c-bng-thut-ng">Phụ lục C: Bảng thuật ngữ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#quy-ưc-đnh-dng-mi-mc">Quy ước định dạng mỗi mục</a></li>
@@ -26802,6 +26803,108 @@ trên GitHub theo ngôn ngữ và chủ đề, sắp xếp theo số sao — ví
 <code>language:csharp modbus</code>, <code>language:csharp scada</code>.</p>
 </blockquote>
 <hr>
+<h2 id="b8-khi-máy-ca-bn-không-phi-máy-lp-ráp">B.8 Khi máy của bạn không phải máy lắp ráp</h2>
+<p>Cần nói rõ nguồn gốc của phụ lục này: danh mục ở các mục trên được rút chủ yếu từ <strong>máy lắp ráp và
+máy kiểm tra</strong> — máy gắp đặt, máy bonding, máy siết vít, máy kiểm bằng thị giác. Đó là nhóm phổ biến
+nhất, nhưng không phải tất cả. Mục này bổ sung hai nhóm khác cũng rất thường gặp trong nhà máy điện
+tử, và nêu <strong>cái gì thay đổi</strong> so với danh mục trên.</p>
+<h3>B.8.1 Máy nạp dữ liệu vào sản phẩm</h3>
+<p>Rất nhiều sản phẩm điện tử rời khỏi dây chuyền với <strong>dữ liệu đã được ghi vào bên trong chúng</strong>: số
+sê-ri, mã định danh mạng, hệ số hiệu chuẩn của cảm biến, tham số bù nhiệt độ, khoá bảo mật. Máy làm
+việc đó thường không lắp ráp gì cả — nó tiếp xúc điện với sản phẩm, ghi dữ liệu, đọc lại để kiểm, rồi
+báo kết quả.</p>
+<p><strong>Cái gì khác so với máy lắp ráp:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Máy lắp ráp</th>
+<th>Máy nạp dữ liệu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kết quả của một chu kỳ</td>
+<td>Chi tiết được lắp đúng vị trí</td>
+<td><strong>Một khối dữ liệu nằm trong bộ nhớ sản phẩm</strong></td>
+</tr>
+<tr>
+<td>Nguồn của &quot;cái đúng&quot;</td>
+<td>Recipe + toạ độ đã dạy</td>
+<td><strong>Hệ MES cấp dữ liệu cho từng sản phẩm</strong> — mỗi sản phẩm một giá trị khác nhau</td>
+</tr>
+<tr>
+<td>Cách xác nhận đạt</td>
+<td>Cảm biến vị trí, ảnh kiểm tra</td>
+<td><strong>Đọc lại và so từng byte</strong></td>
+</tr>
+<tr>
+<td>Hậu quả khi sai</td>
+<td>Chi tiết lệch, thấy được</td>
+<td><strong>Không thấy được</strong> — sản phẩm trông bình thường nhưng mang dữ liệu sai</td>
+</tr>
+</tbody></table></div>
+<p>Điểm cuối là lý do nhóm máy này đòi hỏi kỷ luật cao hơn hẳn: <strong>lỗi không có biểu hiện vật lý</strong>. Một
+lô hàng ghi sai hệ số hiệu chuẩn vẫn chạy qua mọi trạm kiểm ngoại quan, và chỉ lộ ra khi tới tay
+khách hàng.</p>
+<p><strong>Bốn thành phần đặc thù, không có trong danh mục ở mục B.2:</strong></p>
+<p><strong>1. Bản đồ bộ nhớ (memory map) là một file dữ liệu, không phải code.</strong> Mỗi trường cần ghi được mô tả
+bằng <strong>địa chỉ, kích thước, và định dạng</strong>, thường để trong một file bảng tính hoặc CSV mà kỹ sư sản
+phẩm cung cấp:</p>
+<pre><code>ADDRESS   DATA_SIZE   DATA_FORMAT      Ý nghĩa
+0x0000    16          ASCII            Số sê-ri
+0x0010    4           UINT32_LE        Mã sản phẩm
+0x0020    8           FLOAT64_BE       Hệ số hiệu chuẩn
+0x0030    2           CRC16            Mã kiểm tra cho vùng 0x0000-0x002F
+</code></pre>
+<p>Đưa bản đồ này vào code là sai lầm tốn kém: nó thay đổi theo <strong>đời sản phẩm</strong>, và người biết nó là kỹ
+sư sản phẩm chứ không phải bạn.</p>
+<p><strong>2. Chuyển đổi định dạng là nơi lỗi tập trung.</strong> Hệ MES trả về một <strong>chuỗi</strong>; thiết bị cần một dãy
+<strong>byte</strong>. Giữa hai thứ đó là ba câu hỏi phải trả lời cho <em>từng trường</em>: chuỗi này là số thập phân hay
+đã là hex? Thứ tự byte xuôi hay ngược? Thiếu độ dài thì đệm bằng gì và đệm bên nào? Trả lời sai bất
+kỳ câu nào cũng cho ra dữ liệu <strong>ghi thành công nhưng sai nội dung</strong>.</p>
+<p>Vì vậy hàm chuyển đổi nên nhận đủ các tham số đó một cách tường minh, và — quan trọng hơn — <strong>phải có
+test</strong>. Đây là một trong số ít chỗ trong phần mềm máy mà kiểm thử tự động dễ viết và có lợi ích tức
+thì: đầu vào là chuỗi, đầu ra là mảng byte, không cần phần cứng nào (đúng bậc 2 của Bảng 18.8b). Một
+dự án tham khảo có hẳn hai hàm tự kiểm tra riêng cho thứ tự byte và cho phép tính mã kiểm tra — dấu
+hiệu tác giả đã từng bị đúng hai lỗi đó.</p>
+<p><strong>3. Mã kiểm tra: thường có nhiều hơn một loại, chọn theo từng trường.</strong> Cùng một sản phẩm có thể dùng
+mã kiểm tra 8 bit cho vùng này, 16 bit cho vùng kia, và một phép cộng đơn giản cho vùng thứ ba — vì
+mỗi vùng do một nhóm thiết kế khác nhau quy định. Phần mềm phải <strong>chọn thuật toán theo trường</strong>, lấy
+từ cột định dạng trong bản đồ bộ nhớ, không giả định cả sản phẩm dùng chung một loại.</p>
+<p><strong>4. Ghi xong phải đọc lại — không có ngoại lệ.</strong></p>
+<pre><code>Ghi  →  Đọc lại  →  So từng byte với giá trị mong đợi  →  Đạt/Không đạt
+</code></pre>
+<p>Không bao giờ tin giá trị trả về của lệnh ghi. Lệnh ghi báo &quot;thành công&quot; chỉ nghĩa là <strong>thiết bị đã
+nhận lệnh</strong>, không phải bộ nhớ đã đúng — tiếp xúc chập chờn, nguồn sụt giữa chừng, hoặc vùng nhớ bị
+khoá đều cho kết quả &quot;ghi được mà không đúng&quot;. Và khi so sánh, hãy ghi vào nhật ký <strong>cả hai giá trị</strong>
+(mong đợi và đọc được) cho trường bị lệch đầu tiên — đó là thứ duy nhất giúp chẩn đoán về sau.</p>
+<h3>B.8.2 Máy test điện (handler)</h3>
+<p>Nhóm thứ hai: máy đưa sản phẩm vào tiếp xúc với một bộ đo, chạy một loạt phép đo điện, phân loại theo
+kết quả, rồi đưa sản phẩm vào đúng khay theo hạng. Trong ngành hay gọi là <strong>handler</strong>.</p>
+<p><strong>Cái gì khác:</strong></p>
+<ul>
+<li><strong>Phần &quot;làm&quot; rất đơn giản, phần &quot;đo và phân loại&quot; rất phức tạp.</strong> Cơ khí thường chỉ là gắp–đặt–ép
+tiếp xúc. Nhưng một sản phẩm có thể qua vài chục phép đo, mỗi phép có dải chấp nhận riêng, và kết
+quả không phải đạt/không đạt mà là <strong>một hạng</strong> trong nhiều hạng.</li>
+<li><strong>Phân loại nhiều mức, không phải hai mức.</strong> Sản phẩm được chia thành nhiều nhóm chất lượng và đưa
+vào các khay khác nhau — nghĩa là bảng ánh xạ <em>&quot;kết quả đo → hạng → khay đích&quot;</em> là <strong>dữ liệu thuộc
+recipe</strong>, và nó thay đổi theo đơn hàng.</li>
+<li><strong>Bộ đo thường là thiết bị của hãng khác</strong>, giao tiếp qua một giao thức lệnh riêng, và <strong>chính nó</strong>
+quyết định đạt/không đạt chứ không phải phần mềm máy. Vai trò của bạn giống hệt vai trò với thư viện
+thị giác ở Chương 13 mục 13.2.4c: <strong>đặt hàng phép đo, nhận kết quả, ra quyết định cơ khí</strong> — không
+tự viết thuật toán đo.</li>
+<li><strong>Tiếp xúc điện là bộ phận hao mòn.</strong> Kim tiếp xúc mòn dần và gây ra lỗi đo giả tăng dần theo số
+lần dùng. Vì vậy máy nhóm này gần như luôn cần <strong>đếm số lần sử dụng của đồ gá tiếp xúc</strong> và cảnh báo
+khi tới hạn — hạng mục đã có trong Bảng B.7 nhưng ở đây nó là <strong>bắt buộc</strong>, không phải tuỳ chọn.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Điểm chung của cả hai nhóm, và là lý do chúng đáng có mục riêng:</strong> với máy lắp ráp, sản phẩm
+lỗi thường <strong>nhìn thấy được</strong>. Với hai nhóm trên, sản phẩm lỗi trông y hệt sản phẩm tốt — bằng chứng
+duy nhất là <strong>dữ liệu mà máy ghi lại</strong>. Hệ quả: mọi thứ thuộc nhóm &quot;truy xuất nguồn gốc&quot; ở mục B.3.1
+và B.4 chuyển từ <em>nên có</em> thành <em>bắt buộc</em>, và phần &quot;báo kết quả cho hệ thống nhà máy&quot; (Chương 14)
+chiếm tỷ trọng công sức lớn hơn hẳn so với máy lắp ráp.</p>
+</blockquote>
+<hr>
 <h2 id="tng-kt-ph-lc-2">Tổng kết phụ lục</h2>
 <ul>
 <li>Một phần mềm máy tự động hoá tách được thành <strong>sáu tầng</strong> (Bảng B.1); ánh xạ project vào tầng là
@@ -26820,6 +26923,9 @@ sinh mã nguồn và cho người dùng viết kịch bản đều đắt hơn n
 nửa chừng.</li>
 <li>Thứ tự xây dựng (mục B.6) đặt phần khó sửa nhất lên trước: trừu tượng thiết bị và bảng tên IO
 quyết định chi phí của mọi việc còn lại.</li>
+<li>Danh mục ở đây rút từ <strong>máy lắp ráp và máy kiểm tra</strong>. Nếu máy của bạn là <strong>máy nạp dữ liệu vào
+sản phẩm</strong> hoặc <strong>máy test điện</strong> (mục B.8), điểm khác biệt lớn nhất là: sản phẩm lỗi <strong>trông y hệt</strong>
+sản phẩm tốt, nên truy xuất nguồn gốc chuyển từ <em>nên có</em> thành <em>bắt buộc</em>.</li>
 <li>Muốn luyện kỹ năng đọc code mà chưa có dự án thật trong tay: mục B.7 liệt kê các dự án <strong>mã nguồn
 mở</strong> đọc được ngay, kèm mục tiêu học cho từng dự án — và một cảnh báo về giấy phép, vì phần mềm máy
 được <strong>phân phối cùng cỗ máy</strong> nên nghĩa vụ giấy phép có hiệu lực thật.</li>

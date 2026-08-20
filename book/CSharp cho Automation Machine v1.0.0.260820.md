@@ -12236,6 +12236,120 @@ Hai trạng thái dễ nhầm lẫn:
 
 > ⚠️ **Cảnh báo — Khi nào KHÔNG cần PackML đầy đủ:** PackML 17 trạng thái thiết kế cho máy sản xuất kết nối MES/SCADA cần ngôn ngữ chung với các hệ thống khác. Không cần áp dụng đầy đủ khi: máy đơn giản dưới 5 trạng thái và không có kế hoạch tích hợp MES; prototype hoặc thiết bị thử nghiệm không vào sản xuất; hệ thống standalone không kết nối với bất kỳ hệ thống nào cần đọc trạng thái máy. Áp dụng chuẩn nặng hơn cần thiết là dạng over-engineering — tương tự như bài học DDD ở Chương 11, chỉ dùng khi vấn đề thực sự đòi hỏi.
 
+### 12.2.4  Chạy tiếp sau khi tạm dừng — việc khó hơn vẻ ngoài rất nhiều
+
+Bảng chuyển trạng thái nói rằng từ `Held` bấm Unhold là quay lại `Execute`. Về mặt máy trạng thái,
+đúng. Nhưng về mặt **máy vật lý**, giữa lúc dừng và lúc chạy tiếp có thể đã xảy ra rất nhiều chuyện:
+
+- Kỹ thuật viên vào jog một trục để lấy phôi kẹt ra, rồi **quên trả trục về chỗ cũ**.
+- Ai đó tắt chân không để gỡ chi tiết, rồi không bật lại.
+- Có người bấm dừng khẩn, nguồn servo bị cắt, trục **rơi xuống theo trọng lực** vài mi-li-mét.
+- Ca sau vào làm và bấm Chạy tiếp mà không biết ca trước đã dừng ở giữa bước nào.
+
+Nếu phần mềm chạy tiếp từ đúng bước đã dừng mà **không kiểm tra gì**, bước tiếp theo sẽ được thực
+hiện trong một thế giới khác với thế giới lúc nó dừng — và đó là một trong những cách gây va chạm cơ
+khí phổ biến nhất.
+
+#### Nguyên tắc: chạy tiếp = xác minh, không phải "bấm play lại"
+
+Cách làm đúng gồm hai nửa, và nửa thứ hai mới là phần quan trọng:
+
+**Nửa 1 — lúc DỪNG, chụp lại ảnh trạng thái vật lý.** Không chỉ ghi "đang ở bước 17", mà ghi lại
+**thế giới đang như thế nào**: vị trí từng trục, trạng thái từng van/chân không liên quan.
+
+**Nửa 2 — lúc CHẠY TIẾP, đối chiếu thế giới hiện tại với ảnh đã chụp.** Khác thì **từ chối chạy
+tiếp**, kèm hướng dẫn cụ thể phải làm gì.
+
+**Code 12.9b — Chụp trạng thái lúc dừng và xác minh trước khi chạy tiếp**
+
+```csharp
+namespace MeoFrame.Application.Sequencing;
+
+public sealed record AxisSnapshot(string AxisName, double PositionMm);
+public sealed record OutputSnapshot(string TagName, bool State);
+
+public sealed class ResumeGuard
+{
+    private const double AllowedAxisGapMm = 0.1;      // dung sai — đưa vào cấu hình, không hardcode
+    private readonly List<AxisSnapshot>   _axes    = new();
+    private readonly List<OutputSnapshot> _outputs = new();
+
+    /// <summary>Gọi khi máy chuyển sang trạng thái tạm dừng.</summary>
+    public async Task CaptureAsync(CancellationToken ct)
+    {
+        _axes.Clear(); _outputs.Clear();
+
+        foreach (var axis in _machine.RelevantAxes)
+        {
+            // Quan trọng: CHỜ trục dừng hẳn rồi mới ghi — ghi lúc đang chạy là ghi một con số vô nghĩa
+            if (axis.IsMoving) await axis.WaitMotionDoneAsync(ct).ConfigureAwait(false);
+            _axes.Add(new AxisSnapshot(axis.Name, axis.CurrentPositionMm));
+            _log.LogInformation("Ghi vị trí {Axis} = {Pos:0.000} mm", axis.Name, axis.CurrentPositionMm);
+        }
+        foreach (var o in _machine.RelevantOutputs)
+            _outputs.Add(new OutputSnapshot(o.TagName, o.State));
+    }
+
+    /// <summary>Gọi TRƯỚC khi cho phép chạy tiếp. Trả về lý do từ chối, hoặc rỗng nếu được phép.</summary>
+    public string CheckCanResume()
+    {
+        foreach (var a in _axes)
+        {
+            var axis = _machine.GetAxis(a.AxisName);
+            if (axis.IsMoving)
+                return $"Trục {a.AxisName} còn đang chuyển động — đợi dừng hẳn rồi thử lại.";
+
+            double gap = Math.Abs(a.PositionMm - axis.CurrentPositionMm);
+            if (gap >= AllowedAxisGapMm)
+                return $"Trục {a.AxisName} đang ở {axis.CurrentPositionMm:0.000} mm, " +
+                       $"cần đưa về {a.PositionMm:0.000} mm rồi thử lại (dung sai {AllowedAxisGapMm:0.000} mm).";
+        }
+        foreach (var o in _outputs)
+        {
+            if (_machine.GetOutput(o.TagName).State != o.State)
+                return $"Tín hiệu {o.TagName} đang {(o.State ? "TẮT" : "BẬT")}, " +
+                       $"cần đưa về {(o.State ? "BẬT" : "TẮT")} rồi thử lại.";
+        }
+        return string.Empty;
+    }
+}
+```
+
+Bốn chi tiết trong đoạn này đều là quyết định có lý do, và cả bốn đều lấy từ một hiện thực thật:
+
+1. **Chờ trục dừng hẳn rồi mới ghi vị trí.** Ghi lúc trục đang chạy là ghi một con số đã lỗi thời
+   ngay khi ghi xong — và lần chạy tiếp sẽ báo lệch vị trí một cách khó hiểu.
+2. **So sánh có dung sai, không so bằng.** Trục servo luôn dao động quanh vị trí đích vài phần trăm
+   mi-li-mét; so bằng thì không bao giờ chạy tiếp được. Dung sai phải là **tham số cấu hình** — trục
+   nâng hạ nặng và trục vi chỉnh có dung sai rất khác nhau.
+3. **Thông báo từ chối phải nói rõ phải làm gì**: tên thiết bị, giá trị hiện tại, giá trị cần đưa về,
+   và dung sai. So sánh hai câu: *"không thể chạy tiếp"* và *"trục Z đang ở 12,400 mm, cần đưa về
+   50,000 mm rồi thử lại (dung sai 0,100 mm)"*. Câu thứ hai để người vận hành tự xử lý trong mười
+   giây; câu thứ nhất là một cuộc gọi cho kỹ thuật.
+4. **Kiểm tra cả tín hiệu ra, không chỉ trục.** Chân không và xi-lanh là thứ người ta hay tắt bằng
+   tay để gỡ phôi rồi quên bật lại — và đó chính là lúc bước tiếp theo làm rơi chi tiết.
+
+> ⚠️ **Chạy tiếp sau MẤT ĐIỆN là bài toán khác, khó hơn hẳn.** Cơ chế trên chỉ dùng được khi phần mềm
+> vẫn đang chạy (dừng có chủ ý, hoặc dừng khẩn). Khi mất điện, ảnh trạng thái nằm trong RAM đã biến
+> mất cùng tiến trình, và tệ hơn: sau khi bật lại, **trục chưa về gốc nên phần mềm không biết mình
+> đang ở đâu** — giá trị vị trí đọc được từ card có thể là 0 hoặc là rác, tuỳ loại encoder.
+>
+> Với đa số máy, câu trả lời đúng và trung thực là: **không chạy tiếp được — phải dọn máy bằng tay,
+> về gốc, rồi chạy lại từ đầu chu kỳ.** Điều đó chấp nhận được. Thứ **không** chấp nhận được là phần
+> mềm khởi động lại rồi im lặng chạy tiếp như chưa có gì xảy ra. Tối thiểu, sau mỗi lần khởi động
+> phần mềm phải:
+> - Ghi vào nhật ký rằng lần chạy trước kết thúc **bất thường** (dùng một cờ "đang chạy" ghi xuống
+>   đĩa lúc bắt đầu và xoá lúc thoát bình thường — thấy cờ còn sót nghĩa là lần trước chết giữa chừng).
+> - **Chặn chế độ tự động** cho tới khi người vận hành xác nhận đã dọn máy và máy đã về gốc.
+> - Hiển thị rõ chu kỳ dở dang thuộc mã sản phẩm nào, để chi tiết đó bị loại bỏ đúng cách thay vì lẫn
+>   vào hàng đạt.
+>
+> Máy dùng encoder tuyệt đối (absolute encoder) có lợi thế lớn ở đây: sau khi bật lại, trục **biết
+> ngay** mình đang ở đâu mà không cần về gốc. Đây là một trong những lý do đáng để trả thêm tiền cho
+> loại encoder này ở các trục có nguy cơ va chạm.
+
+---
+
 ## 12.3  Map class C# vào PackML state model
 
 ### 12.3.1  Mở rộng MachineState từ Chương 11
@@ -15708,7 +15822,8 @@ Với protocol binary hoặc payload phức tạp hơn, **length-prefix là lự
 
 EtherNet/IP, Profinet, EtherCAT và CC-Link IE hoạt động chủ yếu ở **tầng thiết bị** — kết
 nối PLC với servo drive, I/O module và thiết bị field. Kỹ sư C# viết ứng dụng cấp trên
-(MES, SCADA, điều khiển máy) thường **không giao tiếp trực tiếp** với các giao thức này.
+(MES, SCADA, giám sát) thường **không giao tiếp trực tiếp** với các giao thức này — nhưng có một
+ngoại lệ quan trọng khi chính máy tính đóng vai chủ bus, trình bày ở cuối mục này.
 Thay vào đó, PLC/controller bên dưới expose dữ liệu lên qua OPC UA server hoặc Modbus
 gateway — và ứng dụng C# kết nối vào điểm đó.
 
@@ -15724,6 +15839,87 @@ gateway — và ứng dụng C# kết nối vào điểm đó.
 Đây là lý do chương tập trung vào OPC UA, Modbus TCP, SECS/GEM và TCP custom — đây là các
 giao thức ứng dụng C# **tương tác trực tiếp**, không phải fieldbus tầng dưới mà PLC/controller
 đã đảm nhiệm.
+
+#### Con đường thứ ba: khi chính máy tính là EtherCAT master
+
+Phần trên đúng cho kiến trúc phổ biến nhất — PLC làm chủ fieldbus, C# đứng trên nói OPC UA. Nhưng
+khảo sát mã nguồn các dự án máy thật cho thấy một kiến trúc thứ ba đủ phổ biến để cần biết: **3 trong
+13 dự án gọi hàm EtherCAT trực tiếp từ C#**.
+
+Chuyện gì xảy ra ở đó? Máy **không có PLC**. Thay vào đó, một **card chuyển động cắm trong máy tính
+đóng vai EtherCAT master**, và servo drive, module I/O, bộ đọc encoder là các slave trên bus. Phần
+mềm C# gọi API của card — và API đó lộ thẳng các khái niệm EtherCAT ra ngoài:
+
+```csharp
+// Mẫu rút gọn từ một dự án tham khảo (tên hàm giữ nguyên tinh thần của SDK card)
+[DllImport("ecat_motion.dll")]
+public static extern short M_LoadEcatConfigPath(string ecatCfgPath, short card = 0);
+
+[DllImport("ecat_motion.dll")]
+public static extern short M_EcatSDOWrite(short slave, short index, short subindex,
+                                          uint data, short dataSize, short card);
+[DllImport("ecat_motion.dll")]
+public static extern short M_EcatSDORead(short slave, short index, short subindex,
+                                         short dataSize, out uint buf, short count, short card);
+```
+
+Đây là kiến trúc **PC-based motion control** đã nhắc ở Chương 1: máy tính vừa chạy giao diện, vừa
+chạy quy trình, vừa là chủ bus thời gian thực. Nó phổ biến ở máy phi tiêu chuẩn Trung Quốc/Đài Loan
+vì rẻ hơn một PLC chuyển động cao cấp, và vì hãng card cung cấp sẵn SDK cho C#.
+
+#### Hai kiểu trao đổi dữ liệu trên EtherCAT: PDO và SDO
+
+Nếu bạn gặp kiến trúc trên, đây là cặp khái niệm **bắt buộc** phải phân biệt — chúng xuất hiện trong
+mọi tài liệu và mọi tên hàm, và nhầm chúng dẫn tới thiết kế sai ngay từ đầu.
+
+**Bảng 14.6b — PDO và SDO**
+
+| | **PDO** (Process Data Object) | **SDO** (Service Data Object) |
+|---|---|---|
+| Nghĩa | Dữ liệu **quy trình**, trao đổi **mỗi chu kỳ bus** | Dữ liệu **tham số**, trao đổi **khi cần** |
+| Tần suất | Cố định, ví dụ mỗi 1 ms — mọi chu kỳ, không hỏi | Bất thường, do phần mềm chủ động gọi |
+| Chứa gì | Vị trí hiện tại, tốc độ, lệnh chuyển động, bit trạng thái, bit I/O | Cấu hình drive, giới hạn dòng, chế độ vận hành, mã lỗi chi tiết |
+| Độ trễ | Rất thấp và **tất định** | Cao hơn và **không tất định** — một lệnh có thể mất vài chu kỳ |
+| Dùng khi | Vòng điều khiển: đọc vị trí, ra lệnh chạy | Lúc khởi động: nạp tham số; lúc có lỗi: đọc mã lỗi của drive |
+
+> ⚠️ **Sai lầm kinh điển: gọi SDO trong vòng điều khiển.** SDO là kênh "hỏi–đáp" không tất định; gọi
+> nó mỗi chu kỳ để đọc vị trí sẽ làm chu kỳ giãn ra thất thường, và trong trường hợp xấu làm mất nhịp
+> bus. Vị trí và trạng thái **luôn** đã có sẵn trong PDO — nếu bạn thấy mình phải gọi SDO để lấy một
+> giá trị mà quy trình cần mỗi chu kỳ, nghĩa là bản đồ PDO đang cấu hình thiếu, và việc cần làm là
+> **sửa cấu hình bus**, không phải gọi SDO nhiều hơn.
+>
+> Ngược lại cũng đúng: đừng cố nhét mọi tham số vào PDO. PDO tốn băng thông mỗi chu kỳ, nên chỉ chứa
+> thứ thật sự cần liên tục.
+
+#### Ba hệ quả thực tế cho phần mềm C#
+
+**1. Cấu hình bus nằm trong một file, không trong code.** Hàm nạp cấu hình
+(`M_LoadEcatConfigPath(...)`) cho thấy sơ đồ mạng — có bao nhiêu slave, mỗi slave loại gì, PDO nào
+ánh xạ vào đâu — được mô tả trong một **file cấu hình** do công cụ của hãng sinh ra. Hệ quả: file này
+là **một phần của cấu hình máy** và phải được sao lưu cùng recipe và bảng điểm (Phụ lục B mục B.4).
+Mất nó thì máy không khởi động được, và nó không nằm trong mã nguồn nên rất dễ bị quên khi bàn giao.
+
+**2. Lỗi bus trở thành alarm mà người vận hành phải đọc được.** Trong một dự án tham khảo, bảng mã
+alarm có hẳn một nhóm dành cho lỗi bus, với hướng dẫn xử lý viết cho **thợ điện**, không phải cho lập
+trình viên: *"kiểm tra dây truyền thông đã cắm đúng chưa; kiểm tra dây bus có lỏng hoặc đứt không"*.
+Đây là ví dụ tốt cho nguyên tắc ở Chương 15: alarm phải nói bằng ngôn ngữ của người xử lý nó. Đứt một
+đầu dây mạng ở giữa chuỗi slave là sự cố rất thường gặp, và người ra hiện trường lúc 2 giờ sáng cần
+biết đi kiểm tra cái gì.
+
+**3. Thứ tự slave trên bus chính là "địa chỉ".** Hầu hết API định danh slave bằng **số thứ tự trên
+chuỗi** (`short slave`). Đây là cùng loại bẫy với việc định danh camera bằng chỉ số (Chương 13 mục
+13.2.4c): cắm thêm một module I/O vào giữa chuỗi làm **mọi slave phía sau dịch số**, và phần mềm điều
+khiển nhầm thiết bị mà không có lỗi nào. Hai biện pháp: luôn thêm thiết bị mới **vào cuối chuỗi**, và
+lúc khởi động **kiểm tra chéo** số lượng cùng mã sản phẩm của từng slave với cấu hình mong đợi, sai
+thì dừng máy với thông báo rõ ràng thay vì chạy tiếp.
+
+> 💡 **Nếu muốn tìm hiểu sâu hơn mà không có card của hãng:** có các bộ EtherCAT master **mã nguồn mở**
+> chạy trên máy tính thường (bộ phổ biến nhất là SOEM — Simple Open EtherCAT Master, viết bằng C, có
+> lớp bọc cho .NET). Chúng không đủ tính thời gian thực cho vòng điều khiển servo tốc độ cao trên
+> Windows thường, nhưng **rất tốt để học**: bạn thấy được toàn bộ quá trình dò slave, chuyển trạng
+> thái bus (Init → PreOp → SafeOp → Op), và ánh xạ PDO — những thứ mà SDK thương mại giấu đi sau một
+> lời gọi hàm duy nhất. Xem thêm gợi ý ở Phụ lục B mục B.7.
+
 
 > 🔍 **Đào sâu thêm — nếu có ngày cần đọc trực tiếp một file ESI:** dù ứng
 > dụng C# hiếm khi tự đọc EtherCAT, thỉnh thoảng vẫn cần mở file cấu hình
@@ -23543,6 +23739,8 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 | **S7CommPlusDriver**, **Sharp7**, `siemens/simatic-s7-webserver-api` | Ba cách **khác nhau** để nói chuyện với cùng một dòng PLC Siemens: driver giao thức tự viết, thư viện cộng đồng, và API chính thức của hãng | Bài tập đối chiếu rất tốt: cùng một bài toán, ba mức trừu tượng, ba đánh đổi. Liên hệ Chương 14 |
 | **MewtocolNet** | Giao thức của một hãng PLC **ít phổ biến hơn** (Panasonic), qua cả TCP lẫn Serial | Đọc để thấy: khi hãng không có SDK .NET, người ta tự viết lớp giao thức như thế nào. Liên hệ Chương 14 mục 14.1.5 |
 | **tinyua** | Một stack **OPC UA** client viết lại từ đầu cho .NET, không phụ thuộc SDK của tổ chức chuẩn | Đọc nếu muốn hiểu OPC UA thật sự làm gì bên dưới lớp SDK ở Chương 14 mục 14.1.1 |
+| **SOEM** (`OpenEtherCATsociety/SOEM`) + lớp bọc .NET | Một **EtherCAT master** mã nguồn mở: dò slave, chuyển trạng thái bus, ánh xạ PDO — những thứ SDK thương mại giấu sau một lời gọi hàm | Đọc để hiểu Chương 14 mục 14.1.4. Không đủ tính thời gian thực cho servo tốc độ cao trên Windows thường, **nhưng rất tốt để học** |
+| **TcOpen** (đã nêu ở trên) | Cũng là nơi xem cách một khung .NET nối với thế giới EtherCAT/TwinCAT | — |
 
 ### B.7.1 Cách đọc một dự án mã nguồn mở cho hiệu quả
 

@@ -22835,6 +22835,7 @@ rà soát thành danh mục riêng trước khi bàn giao:
 |---|---|---|
 | Mở một chức năng thì báo không tìm thấy file | Đường dẫn đi ngược từ thư mục chạy tới thư mục **mã nguồn**: `AppDomain.CurrentDomain.BaseDirectory + "..\..\DuAn\File.cs"` — đúng khi chạy từ `bin\Debug`, không tồn tại trên máy đã cài đặt | Mọi tài nguyên phải nằm **trong** thư mục cài đặt; đặt "Copy to Output Directory" cho file cần thiết |
 | Ghi cấu hình/log thất bại, hoặc mất khi khởi động lại | Ghi vào `Program Files` — Windows chặn ghi, hoặc chuyển hướng âm thầm | Dữ liệu ghi được phải nằm ở `ProgramData` hoặc một thư mục dữ liệu cấu hình được |
+| Máy mới cài xong không chạy được, hoặc chạy nhưng không thấy nhật ký đâu | **Đường dẫn ghi cứng theo ổ đĩa**: `E:\Log\`, `D:\EVMS\Log\Step` — gặp ở nhiều dự án tham khảo. Máy mới không có ổ `E:` là hỏng; máy có ổ `E:` nhưng là ổ USB thì nhật ký biến mất khi rút | Đường dẫn gốc là **một tham số cấu hình**, mặc định trỏ vào thư mục dữ liệu bên cạnh ứng dụng; kiểm tra ghi thử được lúc khởi động và báo rõ nếu không |
 | `DllNotFoundException` ngay khi mở phần mềm | DLL của hãng thiết bị không được copy cạnh file `.exe` | Kiểm tra danh sách file khi đóng gói; xem Phụ lục A mục A.3 |
 | `BadImageFormatException` khi khởi động | Ứng dụng chạy 64 bit nhưng SDK card chỉ có bản 32 bit | Đặt `PlatformTarget = x86` — Chương 2 và Phụ lục A |
 | Số thập phân đọc/ghi sai, hoặc lỗi phân tích chuỗi số | Máy hiện trường đặt vùng miền khác: dấu phẩy làm dấu thập phân | Dùng `CultureInfo.InvariantCulture` cho mọi dữ liệu **máy đọc máy** (file, giao thức), chỉ dùng vùng miền cho phần **người đọc** |
@@ -23235,6 +23236,43 @@ này, không bind trực tiếp vào một thư viện cụ thể như Serilog h
 **Serilog** đóng vai trò *sink provider* — cắm vào interface chuẩn để
 quyết định log đi đâu (file xoay vòng theo ngày/kích thước, Event
 Viewer, database).
+
+> 📌 **Bạn sẽ gặp thư viện log nào ngoài thực tế — và một mùi code hay lặp lại.** Khảo sát các dự án
+> tham khảo cho thấy phân bố khá rõ:
+>
+> | Thư viện | Số dự án | Ghi chú |
+> |---|---|---|
+> | **log4net** | 5 | Phổ biến nhất trong code kế thừa; cấu hình bằng file XML, API `ILog` + `LogManager.GetLogger(...)` |
+> | **Serilog** | 1 | Dự án mới nhất trong nhóm — cũng là dự án duy nhất dùng log có cấu trúc đúng nghĩa |
+> | **NLog** | 2 | Thường đi cùng một thư viện khác trong cùng dự án (xem cảnh báo dưới) |
+> | **Tự viết** | 6 | Một lớp `LogHelper`/`LogMgr` ghi thẳng ra file text |
+>
+> Hai điều đáng rút ra:
+>
+> **1. `log4net` là thứ bạn sẽ gặp, `Serilog` là thứ bạn nên viết mới.** Nếu tiếp quản dự án cũ, khả
+> năng cao là log4net — nhận diện bằng dòng khai báo lặp ở đầu mỗi file:
+> ```csharp
+> private static readonly log4net.ILog log =
+>     log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+> ```
+> Nó hoạt động tốt, không cần vội thay. Nhưng nó ghi **chuỗi văn bản**, không phải log có cấu trúc —
+> nên mọi lợi ích ở mục này (truy vấn theo trường, lọc theo `AxisName`) đều không dùng được cho tới
+> khi chuyển sang mô hình có cấu trúc.
+>
+> **2. ⚠️ Hai thư viện log trong cùng một dự án — gặp ở HAI dự án khác nhau.** Cả hai đều có log4net
+> **và** NLog cùng lúc, mỗi thư viện được một nhóm file dùng. Đây là cùng một mùi đã nêu ở Chương 14
+> ("hai con đường Modbus song song"): không phải quyết định thiết kế, mà là **hai giai đoạn phát triển
+> chồng lên nhau** — người sau thêm thư viện quen tay thay vì dùng cái đã có.
+>
+> Hậu quả rất cụ thể, và tệ hơn trường hợp Modbus: **log của cùng một sự cố nằm ở hai file khác nhau,
+> hai định dạng khác nhau, và hai chính sách xoay vòng khác nhau.** Khi cần dựng lại trình tự sự việc
+> lúc 2 giờ sáng, bạn phải ghép tay hai dòng thời gian — mà đồng hồ của hai thư viện chưa chắc ghi
+> cùng định dạng.
+>
+> Cách xử lý khi tiếp quản: **đừng vội thay hết**. Bọc cả hai sau `ILogger<T>` (mục này) ở những chỗ
+> đang sửa, rồi để phần còn lại tự rút dần. Việc đáng làm ngay và rẻ nhất là **thống nhất nơi ghi**:
+> cho cả hai cùng ghi vào một thư mục với quy ước tên file giống nhau — như vậy ít nhất người đọc log
+> biết phải tìm ở đâu.
 
 **Code 19.7 — Cấu hình Serilog cơ bản cho ứng dụng automation**
 

@@ -25494,6 +25494,11 @@ rà soát thành danh mục riêng trước khi bàn giao:</p>
 <td>Dữ liệu ghi được phải nằm ở <code>ProgramData</code> hoặc một thư mục dữ liệu cấu hình được</td>
 </tr>
 <tr>
+<td>Máy mới cài xong không chạy được, hoặc chạy nhưng không thấy nhật ký đâu</td>
+<td><strong>Đường dẫn ghi cứng theo ổ đĩa</strong>: <code>E:\Log\</code>, <code>D:\EVMS\Log\Step</code> — gặp ở nhiều dự án tham khảo. Máy mới không có ổ <code>E:</code> là hỏng; máy có ổ <code>E:</code> nhưng là ổ USB thì nhật ký biến mất khi rút</td>
+<td>Đường dẫn gốc là <strong>một tham số cấu hình</strong>, mặc định trỏ vào thư mục dữ liệu bên cạnh ứng dụng; kiểm tra ghi thử được lúc khởi động và báo rõ nếu không</td>
+</tr>
+<tr>
 <td><code>DllNotFoundException</code> ngay khi mở phần mềm</td>
 <td>DLL của hãng thiết bị không được copy cạnh file <code>.exe</code></td>
 <td>Kiểm tra danh sách file khi đóng gói; xem Phụ lục A mục A.3</td>
@@ -25896,6 +25901,60 @@ này, không bind trực tiếp vào một thư viện cụ thể như Serilog h
 <strong>Serilog</strong> đóng vai trò <em>sink provider</em> — cắm vào interface chuẩn để
 quyết định log đi đâu (file xoay vòng theo ngày/kích thước, Event
 Viewer, database).</p>
+<blockquote>
+<p>📌 <strong>Bạn sẽ gặp thư viện log nào ngoài thực tế — và một mùi code hay lặp lại.</strong> Khảo sát các dự án
+tham khảo cho thấy phân bố khá rõ:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thư viện</th>
+<th>Số dự án</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>log4net</strong></td>
+<td>5</td>
+<td>Phổ biến nhất trong code kế thừa; cấu hình bằng file XML, API <code>ILog</code> + <code>LogManager.GetLogger(...)</code></td>
+</tr>
+<tr>
+<td><strong>Serilog</strong></td>
+<td>1</td>
+<td>Dự án mới nhất trong nhóm — cũng là dự án duy nhất dùng log có cấu trúc đúng nghĩa</td>
+</tr>
+<tr>
+<td><strong>NLog</strong></td>
+<td>2</td>
+<td>Thường đi cùng một thư viện khác trong cùng dự án (xem cảnh báo dưới)</td>
+</tr>
+<tr>
+<td><strong>Tự viết</strong></td>
+<td>6</td>
+<td>Một lớp <code>LogHelper</code>/<code>LogMgr</code> ghi thẳng ra file text</td>
+</tr>
+</tbody></table></div>
+<p>Hai điều đáng rút ra:</p>
+<p><strong>1. <code>log4net</code> là thứ bạn sẽ gặp, <code>Serilog</code> là thứ bạn nên viết mới.</strong> Nếu tiếp quản dự án cũ, khả
+năng cao là log4net — nhận diện bằng dòng khai báo lặp ở đầu mỗi file:</p>
+<pre><code class="language-csharp">private static readonly log4net.ILog log =
+    log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+</code></pre>
+<p>Nó hoạt động tốt, không cần vội thay. Nhưng nó ghi <strong>chuỗi văn bản</strong>, không phải log có cấu trúc —
+nên mọi lợi ích ở mục này (truy vấn theo trường, lọc theo <code>AxisName</code>) đều không dùng được cho tới
+khi chuyển sang mô hình có cấu trúc.</p>
+<p><strong>2. ⚠️ Hai thư viện log trong cùng một dự án — gặp ở HAI dự án khác nhau.</strong> Cả hai đều có log4net
+<strong>và</strong> NLog cùng lúc, mỗi thư viện được một nhóm file dùng. Đây là cùng một mùi đã nêu ở Chương 14
+(&quot;hai con đường Modbus song song&quot;): không phải quyết định thiết kế, mà là <strong>hai giai đoạn phát triển
+chồng lên nhau</strong> — người sau thêm thư viện quen tay thay vì dùng cái đã có.</p>
+<p>Hậu quả rất cụ thể, và tệ hơn trường hợp Modbus: <strong>log của cùng một sự cố nằm ở hai file khác nhau,
+hai định dạng khác nhau, và hai chính sách xoay vòng khác nhau.</strong> Khi cần dựng lại trình tự sự việc
+lúc 2 giờ sáng, bạn phải ghép tay hai dòng thời gian — mà đồng hồ của hai thư viện chưa chắc ghi
+cùng định dạng.</p>
+<p>Cách xử lý khi tiếp quản: <strong>đừng vội thay hết</strong>. Bọc cả hai sau <code>ILogger&lt;T&gt;</code> (mục này) ở những chỗ
+đang sửa, rồi để phần còn lại tự rút dần. Việc đáng làm ngay và rẻ nhất là <strong>thống nhất nơi ghi</strong>:
+cho cả hai cùng ghi vào một thư mục với quy ước tên file giống nhau — như vậy ít nhất người đọc log
+biết phải tìm ở đâu.</p>
+</blockquote>
 <p><strong>Code 19.7 — Cấu hình Serilog cơ bản cho ứng dụng automation</strong></p>
 <pre><code class="language-csharp">Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()

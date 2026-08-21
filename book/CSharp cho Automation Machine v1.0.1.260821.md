@@ -13545,6 +13545,154 @@ Ba ràng buộc phải viết ra ngay từ đầu, vì thiếu chúng thì máy 
 > chuyển giai đoạn là gì. Đọc chi tiết từng bước sau, vì các bước thường lặp lại gần giống nhau giữa
 > các giai đoạn, chỉ khác công thức tính lượng tác động.
 
+## 12.5  Đếm sản lượng và OEE — chỗ trạng thái máy biến thành con số cho nhà máy
+
+Bảng 12.3 đã nói PackML ánh xạ sang phân loại OEE. Mục này đi tiếp một bước, và là bước mà mọi dự án
+đều phải làm nhưng ít tài liệu nào mô tả: **biến chuỗi trạng thái của máy thành báo cáo mà quản đốc
+đọc mỗi sáng**. Hai dự án tham khảo làm việc này theo hai cách cách nhau rất xa, và khoảng cách đó là
+bài học chính của mục.
+
+### 12.5.1  Cách đơn giản — và bốn chỗ nó hỏng
+
+Cách gặp nhiều nhất, vì viết trong mười phút:
+
+```csharp
+private int  m_outputCount = 0;
+private List<long> m_tactTimeList = new List<long>();
+
+public void   AddOutputCount(int n) => m_outputCount += n;
+public int    OutputCount()   => m_outputCount;
+public double LastCycleTime() => m_tactTimeList.Last();
+public double AvgCycleTime()  => m_tactTimeList.Average();
+```
+
+và bộ đếm được xoá đầu ca bằng cách so đồng hồ treo tường, ngay trong hàm xử lý đồng hồ đếm nhịp của
+màn hình:
+
+```csharp
+string dateNow = DateTime.Now.ToString("HHmm");
+if (dateNow == "0800" || dateNow == "2000") { /* xoá bộ đếm một lần */ }
+```
+
+Nó chạy, và nhiều máy đang chạy như vậy. Nhưng có bốn chỗ hỏng, và cả bốn đều hỏng **âm thầm** — con
+số vẫn hiện, vẫn nhảy, chỉ là sai:
+
+**1. Bộ đếm nằm trong bộ nhớ thì chết cùng ứng dụng.** Phần mềm khởi động lại giữa ca — vì cập nhật,
+vì treo, vì mất điện — là sản lượng ca đó về 0. Không có cảnh báo nào, và người vận hành thường phát
+hiện bằng cách... nhớ ra.
+
+**2. Ranh giới ca đóng cứng trong code, và chỉ đúng khi phần mềm đang chạy.** Giờ đổi ca là **thông tin
+của nhà máy**, không phải của phần mềm: nhà máy đổi sang ba ca, hay lùi giờ ca đêm 30 phút, là phải sửa
+code. Tệ hơn: nếu máy không chạy đúng vào phút 08:00 (đang bảo trì, vừa khởi động lúc 08:03) thì lần
+xoá đó **không bao giờ xảy ra**, và ca sáng cộng dồn vào ca đêm.
+
+**3. "Trung bình" tính trên danh sách không bao giờ xoá.** Sau tám tiếng, `Average()` là trung bình của
+mọi chu kỳ từ lúc mở phần mềm — nó **không còn phản ánh máy đang chạy thế nào**. Nếu máy chậm dần trong
+hai giờ cuối, con số trung bình gần như không nhúc nhích. Và danh sách đó lớn mãi.
+
+**4. Đếm được *bao nhiêu*, nhưng không biết *vì sao ít*.** Đây là chỗ hỏng lớn nhất. Bộ đếm nói ca này
+ra 820 sản phẩm; nó không nói 820 vì máy chỉ chạy được 5 tiếng, hay vì máy chạy đủ 8 tiếng nhưng chậm,
+hay vì hỏng 12% phải làm lại. Ba nguyên nhân đó cần ba hành động hoàn toàn khác nhau — và cả ba đều
+cho ra cùng một con số 820.
+
+Ba lỗi đầu sửa nhanh:
+
+| Chỗ hỏng | Sửa |
+|---|---|
+| Bộ đếm trong RAM | Ghi xuống nơi bền (CSDL/file) mỗi khi tăng; nạp lại khi khởi động |
+| Giờ đổi ca trong code | Đưa vào cấu hình; và **xoá theo mốc ca đã trôi qua**, không theo "phút hiện tại bằng đúng 0800" |
+| Trung bình từ lúc mở máy | Giữ **cửa sổ trượt** (ví dụ 50 chu kỳ gần nhất) cho màn hình, và thống kê theo ca cho báo cáo |
+
+Chỗ hỏng thứ tư không sửa bằng vá — nó cần một mô hình khác.
+
+### 12.5.2  Mô hình đúng: mỗi phút của máy đều phải có một lý do
+
+Dự án tham khảo làm việc này nghiêm túc nhất tổ chức OEE quanh đúng **một bất biến**:
+
+> **Tại mọi thời điểm, máy đang ở đúng một "trạng thái có lý do", và mọi lần đổi lý do đều được ghi lại
+> kèm mốc thời gian.**
+
+Từ đó, mọi con số OEE không được *đếm* mà được **suy ra**: cộng thời lượng, gom theo nhóm lý do. Không
+có bộ đếm nào cho "thời gian chờ vật liệu" cả — nó là tổng các khoảng mà lý do hiện hành là *chờ vật
+liệu*.
+
+Điều quan trọng cần thấy: **"trạng thái có lý do" KHÔNG phải trạng thái của máy trạng thái điều khiển.**
+Máy trạng thái ở mục 12.1–12.3 trả lời *máy đang làm gì*; sổ lý do trả lời *vì sao máy không sản xuất*.
+Cùng một trạng thái `Idle` của bộ điều khiển có thể là nghỉ giữa ca, chờ vật liệu, chờ thợ tới, hay
+đang chạy hàng mẫu đầu ca — bốn lý do dẫn tới bốn hành động cải tiến khác nhau.
+
+Danh mục lý do trong dự án đó, sau khi bỏ những mục đặc thù sản phẩm, là một danh sách rất đáng dùng
+làm điểm khởi đầu cho máy của bạn:
+
+| Nhóm | Lý do | Tính vào đâu |
+|---|---|---|
+| Không tính vào thời gian khả dụng | Tắt máy; **nghỉ theo kế hoạch** | Trừ khỏi mẫu số |
+| Dừng không kế hoạch | Chờ vật liệu; **để không** (có vật liệu nhưng không chạy) | Giảm *tỉ lệ khả dụng* |
+| | Bảo trì; **cơ khí**; **khí nén**; **điện/điều khiển**; hiệu chỉnh | Giảm *tỉ lệ khả dụng* |
+| | Thay vật tư tiêu hao; thay linh kiện | Giảm *tỉ lệ khả dụng* |
+| Chạy nhưng chưa ra hàng tốt | **Hàng mẫu đầu ca** | Thường tách riêng |
+| Chạy | Đang sản xuất | Tử số |
+
+> 💡 **Chia nhỏ theo "hỏng ở đâu" chứ không chỉ "có hỏng không".** Chú ý ba dòng *cơ khí / khí nén /
+> điện–điều khiển*: đó không phải phân loại cho vui. Cuối tháng, biết máy dừng 14 tiếng vì khí nén
+> **nói thẳng nên gọi ai và sửa cái gì**; biết máy dừng 14 tiếng vì "lỗi" thì không nói được gì. Đây
+> cũng là lý do báo cáo trong dự án đó kết thúc bằng **mười lý do dừng nhiều nhất** — biểu đồ Pareto
+> là thứ duy nhất trong cả báo cáo trực tiếp chỉ ra việc phải làm tuần sau.
+
+### 12.5.3  Bốn chi tiết triển khai mà chỉ code thật mới dạy được
+
+**1. Thứ tự ưu tiên khi nhiều lý do cùng đúng — và nó là quyết định chính sách.** Máy đang chờ vật
+liệu, đồng thời đang trong giờ nghỉ ca, đồng thời có một cảnh báo chưa xoá. Ghi lý do nào? Vòng giám
+sát trong dự án đó xét theo đúng một thứ tự cố định:
+
+```
+nghỉ theo kế hoạch  →  có cảnh báo  →  chờ vật liệu  →  để không  →  hàng mẫu  →  đang chạy
+```
+
+Thứ tự này **không phải chuyện kỹ thuật**: nó quyết định con số cuối tháng. Đặt "nghỉ kế hoạch" lên
+đầu nghĩa là giờ nghỉ không bao giờ bị tính thành hỏng máy — hợp lý. Nhưng nếu đặt "chờ vật liệu"
+trước "có cảnh báo" thì mọi lần máy vừa lỗi vừa hết liệu sẽ được ghi là lỗi hậu cần, và đội bảo trì
+trông sạch sẽ hơn thực tế. **Hãy viết thứ tự này ra giấy và cho người chịu trách nhiệm sản xuất duyệt**,
+đừng để nó nằm ngầm trong một chuỗi `else if`.
+
+**2. Phần mềm không biết vì sao máy dừng — người vận hành phải sửa lại được.** Máy chỉ biết *nó dừng*.
+Dừng vì nghỉ trưa, vì chờ thợ điện, vì đang thay khuôn — chỉ người đứng đó mới biết. Vì vậy màn hình
+OEE trong dự án đó có một ô chọn **lý do dừng thủ công** và một nút áp lý do đó cho khoảng đang mở,
+kèm một ô đánh dấu **"giữ nguyên lý do tôi chọn"** để vòng giám sát tự động không ghi đè.
+
+Chi tiết cái ô đánh dấu ấy quan trọng hơn vẻ ngoài của nó: thiếu nó, người vận hành chọn "thay khuôn",
+200 mili-giây sau máy tự ghi đè thành "để không", và sau hai lần như vậy thì **không ai dùng tính năng
+phân loại nữa** — báo cáo OEE trở thành thứ trang trí. Bất kỳ chỗ nào phần mềm và con người cùng ghi
+vào một trường, đều phải trả lời câu *ai thắng, và trong bao lâu*.
+
+**3. Khoảng thời gian đang mở phải sống sót qua lần khởi động lại.** Khi phần mềm mở lên, việc đầu
+tiên của bộ quản lý OEE trong dự án đó là **đọc lại trạng thái cuối cùng từ cơ sở dữ liệu**: nếu lúc
+tắt máy đang ở một lý do thủ công (đang nghỉ, đang bảo trì), nó khôi phục cả lý do lẫn *thời điểm bắt
+đầu*, rồi chạy tiếp khoảng đó.
+
+Không có bước này, mỗi lần khởi động lại sẽ cắt một khoảng dừng thành hai — và nửa trước rơi vào loại
+"không rõ". Vì khởi động lại hay xảy ra **đúng lúc đang sửa máy**, đây chính là chỗ thời gian dừng bị
+mất nhiều nhất.
+
+**4. Sổ lý do và báo cáo là hai thứ khác nhau, lưu khác nhau.** Sổ ghi từng lần đổi lý do (nhiều dòng,
+chỉ ghi thêm, không sửa) nằm trong cơ sở dữ liệu; báo cáo tổng hợp theo ngày/theo cả đợt sản xuất được
+**tính ra khi cần** rồi xuất thành bảng cho nhà máy. Đừng cộng dồn thẳng vào ô tổng: khi phát hiện một
+khoảng bị phân loại sai và cần sửa, chỉ mô hình "ghi sổ rồi tính lại" mới sửa được.
+
+> ⚠️ **Đừng chép nguyên danh mục lý do của một khách hàng vào máy của khách hàng khác.** Danh mục ở
+> Bảng trên là điểm khởi đầu, nhưng cách chia nhóm và cách tính thường do **khách hàng quy định** — có
+> nơi tính hàng mẫu đầu ca vào thời gian chạy, có nơi trừ hẳn ra; có nơi bảo trì kế hoạch không nằm
+> trong mẫu số. Hai máy cùng dữ liệu có thể ra hai con số OEE khác nhau mà **cả hai đều đúng theo định
+> nghĩa của nơi mình**. Việc của bạn là hỏi rõ định nghĩa ngay khi khảo sát, ghi nó vào tài liệu, và
+> **để công thức ở dạng đọc được từ cấu hình** — vì nó sẽ đổi.
+
+> 📌 **Nếu máy của bạn còn nhỏ và chưa cần OEE**, hãy vẫn làm phần rẻ nhất ngay từ đầu: **ghi lại mọi
+> lần máy đổi trạng thái, kèm mốc thời gian, vào một bảng chỉ-ghi-thêm**. Đó là toàn bộ dữ liệu thô mà
+> mọi báo cáo về sau cần; bảng thống kê, biểu đồ Pareto, tỉ lệ khả dụng đều tính ra được sau — nhưng
+> chỉ khi dữ liệu đã được ghi từ đầu. Dữ liệu của tháng trước không thể tạo ra lại được.
+
+---
+
 ## Tổng kết chương
 
 Nhìn từ góc độ bảo trì dài hạn, sự khác biệt giữa if/else và State Pattern trở nên rõ ràng hơn khi máy đã chạy sản xuất được 2–3 năm: kỹ sư mới được giao xử lý lỗi trong đêm cần hiểu ngay "máy đang ở trạng thái nào, lệnh nào còn hợp lệ" — nếu logic nằm trong một class 300 dòng với if/else chồng chéo, câu hỏi đó tốn vài giờ để trả lời. Với State Pattern và Transition Table, câu trả lời nằm ở hai chỗ duy nhất: class State tương ứng (logic riêng) và bảng Transitions (toàn bộ quan hệ state–command). PackML bổ sung thêm lớp đảm bảo: khi kỹ sư mới viết một State mới, chuẩn nói rõ Abort phải nằm ở đó — không phụ thuộc vào kinh nghiệm hay trí nhớ cá nhân.
@@ -13563,6 +13711,9 @@ State machine if/else là lối đi tự nhiên nhất — và cũng là nguồn
 | Cùng quy trình nhưng lúc chạy hàng, lúc chạy thử, lúc hiệu chuẩn | Chế độ chạy (mục 12.4) + Template Method: 1 điểm rẽ ở lớp cơ sở |
 | Dữ liệu chạy thử lẫn vào báo cáo chất lượng | Ghi cột `RunMode` vào TỪNG bản ghi, không tin "chế độ thử thì không ghi" |
 | Máy phải đo–tính–thử lại vì không biết trước đích | State machine 2 tầng (giai đoạn/bước) + 3 ràng buộc: giới hạn số lần lặp, kẹp biên độ tác động, lưu toàn bộ chuỗi đo |
+| Đếm được sản lượng nhưng không giải thích được vì sao ít | Sổ lý do (mục 12.5): mỗi phút của máy có một lý do, ghi mọi lần đổi kèm mốc thời gian |
+| Bộ đếm ca nằm trong RAM, mất khi khởi động lại | Ghi xuống nơi bền và nạp lại lúc khởi động; khoảng dừng đang mở cũng phải khôi phục |
+| Nhiều lý do dừng cùng đúng, ghi cái nào? | Thứ tự ưu tiên là **chính sách** — viết ra và cho sản xuất duyệt, đừng để ngầm trong chuỗi else-if |
 
 Một hướng mở rộng từ State Machine là **Actor Model** — mỗi Actor là một đơn vị độc lập có state machine riêng, giao tiếp với nhau hoàn toàn qua message (không chia sẻ state trực tiếp). Trong máy automation phức tạp nhiều cơ cấu độc lập (nhiều trục, nhiều camera, nhiều station), Actor Model giúp phân tách rõ trách nhiệm: `AxisActor`, `CameraActor`, `TransferActor` hoạt động song song, phối hợp qua message thay vì được điều phối tập trung. Đây là hướng thiết kế nâng cao, thường thấy trong framework automation thương mại phức tạp — nền tảng State Machine và PackML vừa học trong chương này là bước khởi đầu để hiểu Actor Model khi cần mở rộng.
 

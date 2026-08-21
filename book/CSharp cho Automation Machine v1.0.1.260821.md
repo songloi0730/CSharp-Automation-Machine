@@ -12803,6 +12803,11 @@ Bốn chi tiết trong đoạn này đều là quyết định có lý do, và c
 4. **Kiểm tra cả tín hiệu ra, không chỉ trục.** Chân không và xi-lanh là thứ người ta hay tắt bằng
    tay để gỡ phôi rồi quên bật lại — và đó chính là lúc bước tiếp theo làm rơi chi tiết.
 
+> 📌 **Cùng nguyên tắc này áp cho mất kết nối thiết bị.** Khi một thiết bị mất liên lạc rồi nối lại
+> giữa chu kỳ, lớp truyền thông chỉ khôi phục **đường truyền** — trạng thái vật lý ở đầu kia có thể đã
+> đổi (trục tự nhả mô-men, PLC tự chạy trình tự an toàn của nó, thiết bị bị tắt bật nguồn). Xác minh
+> trước khi chạy tiếp, đúng như mục này; chi tiết ở Chương 13 mục 13.3.5.
+
 > ⚠️ **Chạy tiếp sau MẤT ĐIỆN là bài toán khác, khó hơn hẳn.** Cơ chế trên chỉ dùng được khi phần mềm
 > vẫn đang chạy (dừng có chủ ý, hoặc dừng khẩn). Khi mất điện, ảnh trạng thái nằm trong RAM đã biến
 > mất cùng tiến trình, và tệ hơn: sau khi bật lại, **trục chưa về gốc nên phần mềm không biết mình
@@ -15633,6 +15638,87 @@ public sealed class HealthMonitor : IAsyncDisposable
 
 ---
 
+### 13.3.5  Kết nối lại — bốn câu hỏi chính sách, và một bẫy an toàn
+
+Mục 13.3.4 nói về **phát hiện** thiết bị mất kết nối. Mục này nói về việc khó hơn: **làm gì tiếp
+theo**. Đây là chỗ các dự án thật khác nhau rõ rệt, và cũng là chỗ một quyết định trông thuần kỹ
+thuật lại có hệ quả an toàn.
+
+#### Trước hết: đặt việc kết nối lại ở tầng nào
+
+Hai dự án tham khảo đặt nó ở hai nơi hoàn toàn khác nhau, và chỗ đặt quyết định mọi thứ còn lại:
+
+| | Đặt trong **tầng trừu tượng thiết bị** | Đặt trong **màn hình** |
+|---|---|---|
+| Ở đâu trong mã nguồn | Interface của client + lớp cài đặt | Một nút trên màn hình kỹ thuật |
+| Ai kích hoạt | Tự động, theo chính sách | **Người vận hành bấm** |
+| Tầng quy trình có biết không | Không cần biết — nó chỉ thấy "kết nối" hoặc "không" | Có, vì mất kết nối là hỏng ngay |
+| Điểm mạnh | Sự cố mạng thoáng qua tự khỏi, không làm dừng chu kỳ | **Không bao giờ tự làm gì sau lưng người vận hành** |
+| Điểm yếu | Dễ giấu mất một vấn đề mạng đang tệ dần | Sự cố nhỏ cũng phải có người can thiệp |
+
+Cách thứ nhất là lựa chọn đúng cho **hầu hết thiết bị**; nhưng cách thứ hai không phải là làm ẩu —
+với vài loại thiết bị nó lại đúng hơn (xem bẫy ở cuối mục).
+
+#### Bốn câu hỏi chính sách
+
+Một lớp kết nối lại viết tốt trong dự án tham khảo lộ ra đúng bốn quyết định:
+
+```csharp
+public bool AutoReconnect      { get; set; } = false;   // ← mặc định TẮT
+public int  ReconnectInterval  { get; set; } = 5000;    // ms giữa hai lần thử
+private CancellationTokenSource _reconnectCts;          // ← vòng thử có thể huỷ
+
+// Vòng thử lại: ba điều kiện thoát, không phải một
+while (!cts.IsCancellationRequested && AutoReconnect && Status != ClientStatus.Connected)
+{
+    await Task.Delay(ReconnectInterval, cts.Token);
+    // ... thử kết nối ...
+}
+```
+
+**1. Bật hay tắt theo mặc định?** Ở đây là **tắt**, và đó là mặc định đúng cho phần mềm máy: tự động
+kết nối lại là hành vi có hệ quả, nên phải là thứ người viết máy **chủ động bật cho từng thiết bị**,
+không phải thứ tự nhiên xảy ra.
+
+**2. Bao lâu thử một lần, và có tăng dần không?** Ở đây là khoảng cố định vài giây. Với thiết bị trong
+cùng tủ điện, khoảng cố định hợp lý hơn cách tăng dần thường thấy ở phần mềm mạng — vì nguyên nhân
+mất kết nối ở đây thường là **dây hoặc nguồn**, sửa xong là kết nối lại được ngay, và một khoảng chờ
+đã giãn ra thành hàng phút chỉ làm người sửa phải chờ vô cớ.
+
+**3. Dừng thử khi nào?** Ba điều kiện thoát trong vòng lặp trên, và điều kiện quan trọng nhất là điều
+kiện thứ hai: khi **người dùng chủ động ngắt kết nối**, cờ tự-kết-nối-lại phải bị tắt. Thiếu điều đó,
+vòng thử lại **chống lại chính lệnh Ngắt kết nối** của người vận hành — bấm Ngắt xong vài giây sau
+thấy nó tự nối lại, và không ai hiểu vì sao.
+
+**4. Kết nối lại có được làm âm thầm không?** Không. Dù tự động hay bằng tay, mỗi lần mất kết nối và
+mỗi lần nối lại đều phải **vào nhật ký kèm thời điểm**, và trạng thái hiện tại phải hiện trên chip
+kết nối ở màn hình (Chương 10). Lý do rất thực tế: một đường mạng đang hỏng dần sẽ biểu hiện thành
+**mất kết nối vài giây mỗi vài chục phút** — tự động kết nối lại che kín triệu chứng đó, và đến khi
+nó hỏng hẳn thì không ai biết nó đã tệ từ bao giờ. Một dòng đếm *"số lần mất kết nối trong ca"* trên
+màn hình chẩn đoán là cách rẻ nhất để triệu chứng đó không bị giấu đi.
+
+> ⚠️ **Bẫy an toàn: nối lại được KHÔNG có nghĩa là chạy tiếp được.** Đây là điểm quan trọng nhất của
+> mục này. Lớp kết nối lại chỉ khôi phục **đường truyền**; nó không biết gì về **trạng thái vật lý**
+> của thiết bị ở đầu kia. Trong khoảng thời gian mất kết nối:
+>
+> - Bộ điều khiển trục có thể đã **tự dừng và nhả mô-men** khi mất liên lạc với máy tính — trục thẳng
+>   đứng đã rơi.
+> - PLC có thể đã **tự chạy trình tự an toàn của nó** và đưa cơ cấu về vị trí khác.
+> - Thiết bị có thể đã được **tắt nguồn và bật lại**, nên mọi tham số nạp lúc khởi động đã mất.
+>
+> Vì vậy sau khi nối lại, quy trình **không được đơn giản chạy tiếp từ chỗ đang dở**. Việc phải làm
+> giống hệt phần "chạy tiếp sau tạm dừng" ở Chương 12 mục 12.2.4: **xác minh trạng thái vật lý trước
+> đã** — trục có còn ở vị trí ta nghĩ không, tham số thiết bị có còn đúng không, cơ cấu kẹp có còn giữ
+> không. Nếu không xác minh được, đưa máy về trạng thái an toàn và yêu cầu người vận hành xử lý, chứ
+> đừng đoán.
+>
+> Và đây chính là lý do **vài loại thiết bị nên để người vận hành bấm nối lại** thay vì tự động: với
+> thiết bị mà việc mất kết nối gần như chắc chắn kéo theo thay đổi trạng thái vật lý — bộ điều khiển
+> trục là ví dụ rõ nhất — tự động nối lại chỉ tạo ra ảo giác đã khôi phục. Tự động nối lại hợp với
+> thiết bị **chỉ đọc dữ liệu**: đầu đọc mã, cảm biến đo, cổng nối hệ MES.
+
+---
+
 ## Sơ đồ kiến trúc tổng hợp
 
 Dưới đây là bức tranh đầy đủ: mỗi lớp trong sơ đồ tương ứng với một pattern đã học,
@@ -15700,6 +15786,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
+| Kết nối lại (13.3.5) | Thiết bị mất kết nối rồi có lại — làm gì tiếp | Bốn câu hỏi chính sách; và **nối lại được ≠ chạy tiếp được**: phải xác minh trạng thái vật lý trước |
 | Connection Pool (13.3.2) | Nhiều device chia sẻ một session vật lý, reconnect tập trung | Giảm số kết nối, quản lý tài nguyên nhất quán |
 | Retry Policy (13.3.3) | Phân loại thao tác: chỉ retry những gì an toàn | Không retry lệnh nguy hiểm; không spam thiết bị |
 | Health Monitor (13.3.4) | Phát hiện suy giảm trước khi "đứt" hẳn | HMI chip trạng thái; quyết định an toàn dựa trên health |

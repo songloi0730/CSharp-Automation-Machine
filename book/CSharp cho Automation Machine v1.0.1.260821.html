@@ -13984,6 +13984,12 @@ giây; câu thứ nhất là một cuộc gọi cho kỹ thuật.</li>
 tay để gỡ phôi rồi quên bật lại — và đó chính là lúc bước tiếp theo làm rơi chi tiết.</li>
 </ol>
 <blockquote>
+<p>📌 <strong>Cùng nguyên tắc này áp cho mất kết nối thiết bị.</strong> Khi một thiết bị mất liên lạc rồi nối lại
+giữa chu kỳ, lớp truyền thông chỉ khôi phục <strong>đường truyền</strong> — trạng thái vật lý ở đầu kia có thể đã
+đổi (trục tự nhả mô-men, PLC tự chạy trình tự an toàn của nó, thiết bị bị tắt bật nguồn). Xác minh
+trước khi chạy tiếp, đúng như mục này; chi tiết ở Chương 13 mục 13.3.5.</p>
+</blockquote>
+<blockquote>
 <p>⚠️ <strong>Chạy tiếp sau MẤT ĐIỆN là bài toán khác, khó hơn hẳn.</strong> Cơ chế trên chỉ dùng được khi phần mềm
 vẫn đang chạy (dừng có chủ ý, hoặc dừng khẩn). Khi mất điện, ảnh trạng thái nằm trong RAM đã biến
 mất cùng tiến trình, và tệ hơn: sau khi bật lại, <strong>trục chưa về gốc nên phần mềm không biết mình
@@ -16921,6 +16927,99 @@ Healthy/Degraded/Unhealthy, HMI có thể hiển thị chip trạng thái màu x
 từng thiết bị.</p>
 </blockquote>
 <hr>
+<h3>13.3.5  Kết nối lại — bốn câu hỏi chính sách, và một bẫy an toàn</h3>
+<p>Mục 13.3.4 nói về <strong>phát hiện</strong> thiết bị mất kết nối. Mục này nói về việc khó hơn: <strong>làm gì tiếp
+theo</strong>. Đây là chỗ các dự án thật khác nhau rõ rệt, và cũng là chỗ một quyết định trông thuần kỹ
+thuật lại có hệ quả an toàn.</p>
+<h4>Trước hết: đặt việc kết nối lại ở tầng nào</h4>
+<p>Hai dự án tham khảo đặt nó ở hai nơi hoàn toàn khác nhau, và chỗ đặt quyết định mọi thứ còn lại:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Đặt trong <strong>tầng trừu tượng thiết bị</strong></th>
+<th>Đặt trong <strong>màn hình</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ở đâu trong mã nguồn</td>
+<td>Interface của client + lớp cài đặt</td>
+<td>Một nút trên màn hình kỹ thuật</td>
+</tr>
+<tr>
+<td>Ai kích hoạt</td>
+<td>Tự động, theo chính sách</td>
+<td><strong>Người vận hành bấm</strong></td>
+</tr>
+<tr>
+<td>Tầng quy trình có biết không</td>
+<td>Không cần biết — nó chỉ thấy &quot;kết nối&quot; hoặc &quot;không&quot;</td>
+<td>Có, vì mất kết nối là hỏng ngay</td>
+</tr>
+<tr>
+<td>Điểm mạnh</td>
+<td>Sự cố mạng thoáng qua tự khỏi, không làm dừng chu kỳ</td>
+<td><strong>Không bao giờ tự làm gì sau lưng người vận hành</strong></td>
+</tr>
+<tr>
+<td>Điểm yếu</td>
+<td>Dễ giấu mất một vấn đề mạng đang tệ dần</td>
+<td>Sự cố nhỏ cũng phải có người can thiệp</td>
+</tr>
+</tbody></table></div>
+<p>Cách thứ nhất là lựa chọn đúng cho <strong>hầu hết thiết bị</strong>; nhưng cách thứ hai không phải là làm ẩu —
+với vài loại thiết bị nó lại đúng hơn (xem bẫy ở cuối mục).</p>
+<h4>Bốn câu hỏi chính sách</h4>
+<p>Một lớp kết nối lại viết tốt trong dự án tham khảo lộ ra đúng bốn quyết định:</p>
+<pre><code class="language-csharp">public bool AutoReconnect      { get; set; } = false;   // ← mặc định TẮT
+public int  ReconnectInterval  { get; set; } = 5000;    // ms giữa hai lần thử
+private CancellationTokenSource _reconnectCts;          // ← vòng thử có thể huỷ
+
+// Vòng thử lại: ba điều kiện thoát, không phải một
+while (!cts.IsCancellationRequested &amp;&amp; AutoReconnect &amp;&amp; Status != ClientStatus.Connected)
+{
+    await Task.Delay(ReconnectInterval, cts.Token);
+    // ... thử kết nối ...
+}
+</code></pre>
+<p><strong>1. Bật hay tắt theo mặc định?</strong> Ở đây là <strong>tắt</strong>, và đó là mặc định đúng cho phần mềm máy: tự động
+kết nối lại là hành vi có hệ quả, nên phải là thứ người viết máy <strong>chủ động bật cho từng thiết bị</strong>,
+không phải thứ tự nhiên xảy ra.</p>
+<p><strong>2. Bao lâu thử một lần, và có tăng dần không?</strong> Ở đây là khoảng cố định vài giây. Với thiết bị trong
+cùng tủ điện, khoảng cố định hợp lý hơn cách tăng dần thường thấy ở phần mềm mạng — vì nguyên nhân
+mất kết nối ở đây thường là <strong>dây hoặc nguồn</strong>, sửa xong là kết nối lại được ngay, và một khoảng chờ
+đã giãn ra thành hàng phút chỉ làm người sửa phải chờ vô cớ.</p>
+<p><strong>3. Dừng thử khi nào?</strong> Ba điều kiện thoát trong vòng lặp trên, và điều kiện quan trọng nhất là điều
+kiện thứ hai: khi <strong>người dùng chủ động ngắt kết nối</strong>, cờ tự-kết-nối-lại phải bị tắt. Thiếu điều đó,
+vòng thử lại <strong>chống lại chính lệnh Ngắt kết nối</strong> của người vận hành — bấm Ngắt xong vài giây sau
+thấy nó tự nối lại, và không ai hiểu vì sao.</p>
+<p><strong>4. Kết nối lại có được làm âm thầm không?</strong> Không. Dù tự động hay bằng tay, mỗi lần mất kết nối và
+mỗi lần nối lại đều phải <strong>vào nhật ký kèm thời điểm</strong>, và trạng thái hiện tại phải hiện trên chip
+kết nối ở màn hình (Chương 10). Lý do rất thực tế: một đường mạng đang hỏng dần sẽ biểu hiện thành
+<strong>mất kết nối vài giây mỗi vài chục phút</strong> — tự động kết nối lại che kín triệu chứng đó, và đến khi
+nó hỏng hẳn thì không ai biết nó đã tệ từ bao giờ. Một dòng đếm <em>&quot;số lần mất kết nối trong ca&quot;</em> trên
+màn hình chẩn đoán là cách rẻ nhất để triệu chứng đó không bị giấu đi.</p>
+<blockquote>
+<p>⚠️ <strong>Bẫy an toàn: nối lại được KHÔNG có nghĩa là chạy tiếp được.</strong> Đây là điểm quan trọng nhất của
+mục này. Lớp kết nối lại chỉ khôi phục <strong>đường truyền</strong>; nó không biết gì về <strong>trạng thái vật lý</strong>
+của thiết bị ở đầu kia. Trong khoảng thời gian mất kết nối:</p>
+<ul>
+<li>Bộ điều khiển trục có thể đã <strong>tự dừng và nhả mô-men</strong> khi mất liên lạc với máy tính — trục thẳng
+đứng đã rơi.</li>
+<li>PLC có thể đã <strong>tự chạy trình tự an toàn của nó</strong> và đưa cơ cấu về vị trí khác.</li>
+<li>Thiết bị có thể đã được <strong>tắt nguồn và bật lại</strong>, nên mọi tham số nạp lúc khởi động đã mất.</li>
+</ul>
+<p>Vì vậy sau khi nối lại, quy trình <strong>không được đơn giản chạy tiếp từ chỗ đang dở</strong>. Việc phải làm
+giống hệt phần &quot;chạy tiếp sau tạm dừng&quot; ở Chương 12 mục 12.2.4: <strong>xác minh trạng thái vật lý trước
+đã</strong> — trục có còn ở vị trí ta nghĩ không, tham số thiết bị có còn đúng không, cơ cấu kẹp có còn giữ
+không. Nếu không xác minh được, đưa máy về trạng thái an toàn và yêu cầu người vận hành xử lý, chứ
+đừng đoán.</p>
+<p>Và đây chính là lý do <strong>vài loại thiết bị nên để người vận hành bấm nối lại</strong> thay vì tự động: với
+thiết bị mà việc mất kết nối gần như chắc chắn kéo theo thay đổi trạng thái vật lý — bộ điều khiển
+trục là ví dụ rõ nhất — tự động nối lại chỉ tạo ra ảo giác đã khôi phục. Tự động nối lại hợp với
+thiết bị <strong>chỉ đọc dữ liệu</strong>: đầu đọc mã, cảm biến đo, cổng nối hệ MES.</p>
+</blockquote>
+<hr>
 <h2 id="sơ-đ-kin-trúc-tng-hp">Sơ đồ kiến trúc tổng hợp</h2>
 <p>Dưới đây là bức tranh đầy đủ: mỗi lớp trong sơ đồ tương ứng với một pattern đã học,
 và mỗi mũi tên &quot;→&quot; là ranh giới abstraction mà bên trên không cần biết bên dưới dùng
@@ -17037,6 +17136,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Device Manager (13.3.1)</td>
 <td>Quản lý vòng đời + dependency ordering + snapshot HMI</td>
 <td>Khởi động/dừng có kiểm soát, không phân tán</td>
+</tr>
+<tr>
+<td>Kết nối lại (13.3.5)</td>
+<td>Thiết bị mất kết nối rồi có lại — làm gì tiếp</td>
+<td>Bốn câu hỏi chính sách; và <strong>nối lại được ≠ chạy tiếp được</strong>: phải xác minh trạng thái vật lý trước</td>
 </tr>
 <tr>
 <td>Connection Pool (13.3.2)</td>

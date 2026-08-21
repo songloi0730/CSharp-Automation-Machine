@@ -20135,6 +20135,147 @@ chặn lệnh move nếu bit <code>ORG</code> chưa từng được set từ lú
 <p>Trình tự về gốc đầy đủ, sáu tham số cấu hình của nó, và <strong>bẫy quên bật lại giới hạn mềm sau khi
 về gốc</strong> — xem Chương 13 mục 13.2.4d.</p>
 </blockquote>
+<h3>15.1.2b  Định nghĩa alarm ở đâu — năm cách, và cách chọn</h3>
+<p>Mục trên dùng <code>AlarmCode</code> là một số nguyên. Câu hỏi tiếp theo, và là câu mọi dự án đều phải trả lời:
+<strong>danh mục alarm — mã, nội dung, mức độ, hướng dẫn xử lý — được cất ở đâu?</strong></p>
+<p>Đây là chỗ các dự án thật khác nhau nhiều nhất. Khảo sát các dự án tham khảo cho ra <strong>năm cách</strong>, và
+chúng không phải năm mức độ tốt/xấu mà là năm điểm đánh đổi khác nhau:</p>
+<p><strong>Bảng 15.2b — Năm cách định nghĩa danh mục alarm</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Trình biên dịch kiểm được gì</th>
+<th>Sửa nội dung ngoài hiện trường</th>
+<th>Hợp khi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Attribute trên hằng số</strong></td>
+<td><strong>Nhiều nhất</strong> — gõ sai tên mã là lỗi build; nội dung đi liền mã</td>
+<td>❌ phải build lại</td>
+<td>Đội tự làm chủ mã nguồn, nội dung alarm ổn định</td>
+</tr>
+<tr>
+<td><strong>2. Lớp exception riêng cho từng loại lỗi</strong></td>
+<td><strong>Nhiều nhất</strong> — kiểu là mã</td>
+<td>❌</td>
+<td>Khung dùng lại nhiều máy; muốn <code>catch</code> theo loại lỗi</td>
+</tr>
+<tr>
+<td><strong>3. File dữ liệu (XML/CSV/YAML)</strong></td>
+<td>Không gì</td>
+<td>✅ sửa bằng Notepad</td>
+<td>Khách hàng quy định mã; cần đổi nội dung không build lại</td>
+</tr>
+<tr>
+<td><strong>4. Cơ sở dữ liệu</strong></td>
+<td>Không gì</td>
+<td>✅ có màn hình quản lý</td>
+<td>Nhiều máy dùng chung danh mục; cần phân quyền sửa</td>
+</tr>
+<tr>
+<td><strong>5. File INI đơn giản</strong></td>
+<td>Không gì</td>
+<td>✅</td>
+<td>Máy nhỏ, ít alarm</td>
+</tr>
+</tbody></table></div>
+<h4>Cách 1 — attribute trên hằng số: nhiều thông tin hơn bạn nghĩ</h4>
+<p>Một dự án tham khảo gắn attribute lên từng hằng số mã alarm, và điều đáng học là <strong>attribute đó chứa
+gì</strong>:</p>
+<pre><code class="language-csharp">[AttributeUsage(AttributeTargets.Field)]
+public sealed class AlarmInfoAttribute : Attribute
+{
+    public string  Category  { get; }   // &quot;lỗi phần cứng&quot; / &quot;lỗi hệ thống&quot; / &quot;lỗi công nghệ&quot;
+    public string  Message   { get; }   // nội dung hiển thị
+    public AlarmSeverity Severity { get; }
+    public string  Solution  { get; }   // ← HƯỚNG DẪN XỬ LÝ từng bước cho người vận hành
+    public string? ImagePath { get; }   // ← ẢNH MINH HOẠ
+}
+</code></pre>
+<p>Hai trường cuối là thứ phân biệt một danh mục alarm dùng được với một danh mục chỉ để đếm. Người vận
+hành lúc 2 giờ sáng không cần biết <em>&quot;lỗi mã 10014&quot;</em> — họ cần biết <strong>làm gì tiếp theo</strong>, và một tấm
+ảnh chỉ đúng cái van cần kiểm tra còn nhanh hơn ba dòng chữ.</p>
+<blockquote>
+<p>💡 <strong>Nếu bạn chỉ lấy một ý từ mục này:</strong> trường <strong>hướng dẫn xử lý</strong> phải là <strong>bắt buộc</strong> khi khai
+báo một alarm mới, không phải tuỳ chọn. Ràng buộc đơn giản nhất là để nó là tham số bắt buộc của
+constructor attribute — người thêm alarm mới <strong>không thể</strong> bỏ trống mà vẫn build được. Đây là cách
+rẻ nhất để cả đội buộc phải nghĩ &quot;người nhận alarm này sẽ làm gì&quot; ngay lúc viết nó.</p>
+</blockquote>
+<h4>Cách 3 — file dữ liệu: khi khách hàng quy định mã</h4>
+<p>Một dự án tham khảo khác đặt toàn bộ danh mục trong một file XML, mỗi dòng như sau (dịch tên trường):</p>
+<pre><code class="language-xml">&lt;ErrorCode SoThuTu=&quot;1&quot;
+           NoiDung=&quot;Nút dừng khẩn bị nhấn&quot;
+           NoiDungTiengAnh=&quot;E-Stop pressed&quot;
+           MaAlarm=&quot;F01SCOO-01-10&quot;
+           MucDo=&quot;critical&quot; /&gt;
+</code></pre>
+<p>Hai điều đáng chú ý:</p>
+<p><strong>Mã alarm không phải một con số</strong> mà là một <strong>chuỗi có cấu trúc</strong> do khách hàng quy định — các trường
+trong chuỗi mã hoá nhóm thiết bị, phân hệ, và mức độ. Đây là tình huống rất thực tế trong nhà máy
+điện tử: hệ MES của khách hàng đã có quy ước mã alarm riêng, và máy của bạn <strong>phải theo</strong>. Hệ quả cho
+thiết kế: đừng giả định <code>AlarmCode</code> là <code>int</code>. Nếu có khả năng phải theo mã của khách, hãy để <strong>mã nội
+bộ là số</strong> (dễ so sánh, dễ đánh dải như Bảng 15.2) và thêm <strong>một trường mã xuất ra ngoài</strong> dạng chuỗi,
+ánh xạ trong danh mục. Tách hai thứ này từ đầu rẻ hơn nhiều so với đổi kiểu về sau.</p>
+<p><strong>Song ngữ nằm ngay trong bản ghi</strong> — hai cột nội dung thay vì cơ chế tài nguyên đa ngôn ngữ của .NET
+(Chương 10 mục 10.4.2). Cách này thô hơn nhưng có một ưu điểm thật trong bối cảnh nhà máy: <strong>người
+sửa bản dịch là kỹ sư tại chỗ, không phải lập trình viên</strong>, và họ sửa được bằng một trình soạn thảo
+bảng tính. Đánh đổi: thêm ngôn ngữ thứ ba là phải thêm cột và sửa code đọc.</p>
+<h4>Điều quan trọng nhất, và không dự án nào nói ra: alarm có HAI NGUỒN</h4>
+<p>Trong cùng dự án đó, cạnh file XML danh mục alarm của phần mềm, có một file thứ hai — một bảng CSV
+ánh xạ <strong>địa chỉ thanh ghi PLC và số thứ tự bit</strong> sang nội dung alarm:</p>
+<pre><code>Địa chỉ thanh ghi , Loại , Bit , Nội dung
+D3000             , PLC  , 0   , Cụm chặn phía trước chưa về gốc
+                  , PLC  , 1   , Cụm đẩy phía trước chưa về gốc
+                  , PLC  , 2   , Trục 3 chưa về gốc
+</code></pre>
+<p>Đây là <strong>cơ chế hoàn toàn khác</strong> cho một <strong>nguồn hoàn toàn khác</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Alarm của phần mềm máy</th>
+<th>Alarm đến từ PLC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ai phát hiện</td>
+<td>Code C# của bạn</td>
+<td>Chương trình PLC</td>
+</tr>
+<tr>
+<td>Định nghĩa ở đâu</td>
+<td>Danh mục alarm (một trong năm cách trên)</td>
+<td><strong>Bảng ánh xạ thanh ghi + bit → nội dung</strong></td>
+</tr>
+<tr>
+<td>Ai viết nội dung</td>
+<td>Bạn</td>
+<td>Bạn, nhưng <strong>số bit do bên PLC quyết định</strong></td>
+</tr>
+<tr>
+<td>Khi nào thay đổi</td>
+<td>Khi bạn thêm kiểm tra mới</td>
+<td><strong>Khi bên PLC sửa chương trình</strong> — bạn không kiểm soát</td>
+</tr>
+</tbody></table></div>
+<p>Hai hệ quả thực tế:</p>
+<ol>
+<li><strong>Phần mềm phải quét vùng thanh ghi alarm của PLC theo chu kỳ</strong> và biến từng bit bật thành một
+alarm — đúng mẫu phát hiện cạnh lên đã nêu ở Chương 6, áp cho hàng trăm bit cùng lúc.</li>
+<li><strong>Bảng ánh xạ này là một bảng tag</strong> (Chương 14 mục 14.1.2b) và chịu đúng rủi ro của bảng tag: bên
+PLC chèn thêm một bit vào giữa là <strong>toàn bộ nội dung alarm phía sau lệch đi một dòng</strong>, và máy sẽ
+báo sai tên sự cố. Cách phòng giống hệt cảnh báo về enum ở Chương 3: <strong>chỉ thêm bit mới ở cuối</strong>,
+và ghi số phiên bản của bảng ánh xạ vào cả hai phía.</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Đừng gộp hai nguồn vào một danh mục rồi tưởng đã xong.</strong> Chúng khác nhau ở chỗ <strong>ai kiểm soát
+sự thay đổi</strong>. Danh mục alarm phần mềm đổi khi bạn quyết định; bảng ánh xạ alarm PLC đổi khi <strong>người
+khác</strong> quyết định, thường là giữa giai đoạn chạy thử và thường không ai báo bạn. Vì vậy bảng ánh xạ
+PLC cần: một nguồn sự thật dùng chung giữa hai bên, số phiên bản, và một phép kiểm tra lúc khởi động
+— ít nhất là so số lượng bit khai báo với vùng thanh ghi mà PLC thật sự dùng.</p>
+</blockquote>
 <h3>15.1.3  IAlarmService — hợp đồng xử lý alarm</h3>
 <p><code>IAlarmService</code> là interface nằm ở <code>MeoFrame.Core.Abstractions</code> — tất cả code domain và sequence chỉ gọi qua interface này, không biết implementation.</p>
 <p><strong>Code 15.2 — IAlarmService interface</strong></p>

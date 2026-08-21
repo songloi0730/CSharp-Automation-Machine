@@ -18082,6 +18082,112 @@ Liên hệ với PackML (Chương 12): `AlarmSeverity.Critical` tương ứng v�
 > Trình tự về gốc đầy đủ, sáu tham số cấu hình của nó, và **bẫy quên bật lại giới hạn mềm sau khi
 > về gốc** — xem Chương 13 mục 13.2.4d.
 
+### 15.1.2b  Định nghĩa alarm ở đâu — năm cách, và cách chọn
+
+Mục trên dùng `AlarmCode` là một số nguyên. Câu hỏi tiếp theo, và là câu mọi dự án đều phải trả lời:
+**danh mục alarm — mã, nội dung, mức độ, hướng dẫn xử lý — được cất ở đâu?**
+
+Đây là chỗ các dự án thật khác nhau nhiều nhất. Khảo sát các dự án tham khảo cho ra **năm cách**, và
+chúng không phải năm mức độ tốt/xấu mà là năm điểm đánh đổi khác nhau:
+
+**Bảng 15.2b — Năm cách định nghĩa danh mục alarm**
+
+| Cách | Trình biên dịch kiểm được gì | Sửa nội dung ngoài hiện trường | Hợp khi |
+|---|---|---|---|
+| **1. Attribute trên hằng số** | **Nhiều nhất** — gõ sai tên mã là lỗi build; nội dung đi liền mã | ❌ phải build lại | Đội tự làm chủ mã nguồn, nội dung alarm ổn định |
+| **2. Lớp exception riêng cho từng loại lỗi** | **Nhiều nhất** — kiểu là mã | ❌ | Khung dùng lại nhiều máy; muốn `catch` theo loại lỗi |
+| **3. File dữ liệu (XML/CSV/YAML)** | Không gì | ✅ sửa bằng Notepad | Khách hàng quy định mã; cần đổi nội dung không build lại |
+| **4. Cơ sở dữ liệu** | Không gì | ✅ có màn hình quản lý | Nhiều máy dùng chung danh mục; cần phân quyền sửa |
+| **5. File INI đơn giản** | Không gì | ✅ | Máy nhỏ, ít alarm |
+
+#### Cách 1 — attribute trên hằng số: nhiều thông tin hơn bạn nghĩ
+
+Một dự án tham khảo gắn attribute lên từng hằng số mã alarm, và điều đáng học là **attribute đó chứa
+gì**:
+
+```csharp
+[AttributeUsage(AttributeTargets.Field)]
+public sealed class AlarmInfoAttribute : Attribute
+{
+    public string  Category  { get; }   // "lỗi phần cứng" / "lỗi hệ thống" / "lỗi công nghệ"
+    public string  Message   { get; }   // nội dung hiển thị
+    public AlarmSeverity Severity { get; }
+    public string  Solution  { get; }   // ← HƯỚNG DẪN XỬ LÝ từng bước cho người vận hành
+    public string? ImagePath { get; }   // ← ẢNH MINH HOẠ
+}
+```
+
+Hai trường cuối là thứ phân biệt một danh mục alarm dùng được với một danh mục chỉ để đếm. Người vận
+hành lúc 2 giờ sáng không cần biết *"lỗi mã 10014"* — họ cần biết **làm gì tiếp theo**, và một tấm
+ảnh chỉ đúng cái van cần kiểm tra còn nhanh hơn ba dòng chữ.
+
+> 💡 **Nếu bạn chỉ lấy một ý từ mục này:** trường **hướng dẫn xử lý** phải là **bắt buộc** khi khai
+> báo một alarm mới, không phải tuỳ chọn. Ràng buộc đơn giản nhất là để nó là tham số bắt buộc của
+> constructor attribute — người thêm alarm mới **không thể** bỏ trống mà vẫn build được. Đây là cách
+> rẻ nhất để cả đội buộc phải nghĩ "người nhận alarm này sẽ làm gì" ngay lúc viết nó.
+
+#### Cách 3 — file dữ liệu: khi khách hàng quy định mã
+
+Một dự án tham khảo khác đặt toàn bộ danh mục trong một file XML, mỗi dòng như sau (dịch tên trường):
+
+```xml
+<ErrorCode SoThuTu="1"
+           NoiDung="Nút dừng khẩn bị nhấn"
+           NoiDungTiengAnh="E-Stop pressed"
+           MaAlarm="F01SCOO-01-10"
+           MucDo="critical" />
+```
+
+Hai điều đáng chú ý:
+
+**Mã alarm không phải một con số** mà là một **chuỗi có cấu trúc** do khách hàng quy định — các trường
+trong chuỗi mã hoá nhóm thiết bị, phân hệ, và mức độ. Đây là tình huống rất thực tế trong nhà máy
+điện tử: hệ MES của khách hàng đã có quy ước mã alarm riêng, và máy của bạn **phải theo**. Hệ quả cho
+thiết kế: đừng giả định `AlarmCode` là `int`. Nếu có khả năng phải theo mã của khách, hãy để **mã nội
+bộ là số** (dễ so sánh, dễ đánh dải như Bảng 15.2) và thêm **một trường mã xuất ra ngoài** dạng chuỗi,
+ánh xạ trong danh mục. Tách hai thứ này từ đầu rẻ hơn nhiều so với đổi kiểu về sau.
+
+**Song ngữ nằm ngay trong bản ghi** — hai cột nội dung thay vì cơ chế tài nguyên đa ngôn ngữ của .NET
+(Chương 10 mục 10.4.2). Cách này thô hơn nhưng có một ưu điểm thật trong bối cảnh nhà máy: **người
+sửa bản dịch là kỹ sư tại chỗ, không phải lập trình viên**, và họ sửa được bằng một trình soạn thảo
+bảng tính. Đánh đổi: thêm ngôn ngữ thứ ba là phải thêm cột và sửa code đọc.
+
+#### Điều quan trọng nhất, và không dự án nào nói ra: alarm có HAI NGUỒN
+
+Trong cùng dự án đó, cạnh file XML danh mục alarm của phần mềm, có một file thứ hai — một bảng CSV
+ánh xạ **địa chỉ thanh ghi PLC và số thứ tự bit** sang nội dung alarm:
+
+```
+Địa chỉ thanh ghi , Loại , Bit , Nội dung
+D3000             , PLC  , 0   , Cụm chặn phía trước chưa về gốc
+                  , PLC  , 1   , Cụm đẩy phía trước chưa về gốc
+                  , PLC  , 2   , Trục 3 chưa về gốc
+```
+
+Đây là **cơ chế hoàn toàn khác** cho một **nguồn hoàn toàn khác**:
+
+| | Alarm của phần mềm máy | Alarm đến từ PLC |
+|---|---|---|
+| Ai phát hiện | Code C# của bạn | Chương trình PLC |
+| Định nghĩa ở đâu | Danh mục alarm (một trong năm cách trên) | **Bảng ánh xạ thanh ghi + bit → nội dung** |
+| Ai viết nội dung | Bạn | Bạn, nhưng **số bit do bên PLC quyết định** |
+| Khi nào thay đổi | Khi bạn thêm kiểm tra mới | **Khi bên PLC sửa chương trình** — bạn không kiểm soát |
+
+Hai hệ quả thực tế:
+
+1. **Phần mềm phải quét vùng thanh ghi alarm của PLC theo chu kỳ** và biến từng bit bật thành một
+   alarm — đúng mẫu phát hiện cạnh lên đã nêu ở Chương 6, áp cho hàng trăm bit cùng lúc.
+2. **Bảng ánh xạ này là một bảng tag** (Chương 14 mục 14.1.2b) và chịu đúng rủi ro của bảng tag: bên
+   PLC chèn thêm một bit vào giữa là **toàn bộ nội dung alarm phía sau lệch đi một dòng**, và máy sẽ
+   báo sai tên sự cố. Cách phòng giống hệt cảnh báo về enum ở Chương 3: **chỉ thêm bit mới ở cuối**,
+   và ghi số phiên bản của bảng ánh xạ vào cả hai phía.
+
+> ⚠️ **Đừng gộp hai nguồn vào một danh mục rồi tưởng đã xong.** Chúng khác nhau ở chỗ **ai kiểm soát
+> sự thay đổi**. Danh mục alarm phần mềm đổi khi bạn quyết định; bảng ánh xạ alarm PLC đổi khi **người
+> khác** quyết định, thường là giữa giai đoạn chạy thử và thường không ai báo bạn. Vì vậy bảng ánh xạ
+> PLC cần: một nguồn sự thật dùng chung giữa hai bên, số phiên bản, và một phép kiểm tra lúc khởi động
+> — ít nhất là so số lượng bit khai báo với vùng thanh ghi mà PLC thật sự dùng.
+
 ### 15.1.3  IAlarmService — hợp đồng xử lý alarm
 
 `IAlarmService` là interface nằm ở `MeoFrame.Core.Abstractions` — tất cả code domain và sequence chỉ gọi qua interface này, không biết implementation.

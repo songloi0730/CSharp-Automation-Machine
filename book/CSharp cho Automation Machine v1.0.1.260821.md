@@ -4810,8 +4810,10 @@ cùng lúc — hai tiến trình cùng mở kết nối PLC/servo có thể gử
 [STAThread]
 static void Main()
 {
-    // "Local\\" giới hạn phạm vi trong session người dùng hiện tại
-    using var singleInstance = new Mutex(initiallyOwned: true, "Local\\MeoFrameMachineApp",
+    // "Global\\" = toàn máy, mọi phiên đăng nhập — xem callout dưới về vì sao KHÔNG dùng "Local\\"
+    // Tên phải DUY NHẤT trên máy: kèm một GUID sinh một lần cho ứng dụng của bạn
+    using var singleInstance = new Mutex(initiallyOwned: true,
+        "Global\\MeoFrameMachineApp-{8F3A1C42-7B95-4E10-9D6E-2C4A7B1E5F80}",
         out bool createdNew);
 
     if (!createdNew)
@@ -4829,6 +4831,27 @@ sau đều nhận `createdNew = false` (Mutex đã tồn tại) và nên thoát 
 code kế thừa (không dùng `Mutex`) là tự đếm số tiến trình cùng tên qua
 `Process.GetProcessesByName(...)` — hoạt động được nhưng cần tự so sánh đường dẫn file thực thi để
 tránh nhầm với tiến trình khác trùng tên, phức tạp hơn `Mutex` mà không có lợi ích rõ ràng.
+
+> ⚠️ **Ba chi tiết quyết định Mutex có thật sự chặn được hay không — cả ba đều nằm ở cái tên.**
+>
+> **1. `Global\` chứ không phải `Local\`.** Tiền tố `Local\` giới hạn Mutex trong **phiên đăng
+> nhập hiện tại**. Nghe vô hại, cho tới tình huống rất thường gặp ở nhà máy: người vận hành đang đăng
+> nhập tại chỗ và phần mềm đang chạy, rồi kỹ thuật viên **kết nối từ xa vào chính máy đó** để xem xét
+> — đó là một phiên khác, nên Mutex `Local\` không thấy bản đang chạy và bản thứ hai khởi động bình
+> thường. Kết quả đúng bằng thứ ta muốn tránh: hai tiến trình cùng mở kết nối tới card và PLC. Với
+> phần mềm điều khiển máy, gần như luôn phải là `Global\`.
+>
+> **2. Tên phải DUY NHẤT trên toàn máy.** Tên Mutex thật gặp trong các dự án tham khảo: một dự án
+> dùng đúng chuỗi `"AA"`, một dự án dùng `"se_base"`, một dự án dùng tên sản phẩm, và một dự án dùng
+> `Global\` kèm một **GUID**. Chỉ dự án cuối là an toàn. Tên chung chung hỏng theo hai chiều, và
+> chiều thứ hai khó chẩn đoán hơn nhiều: một phần mềm khác trên cùng máy tình cờ đặt trùng tên sẽ
+> khiến **phần mềm của bạn không khởi động được**, với thông báo "đang chạy rồi" trong khi nó không
+> hề chạy. Sinh một GUID một lần rồi ghép vào tên là cách rẻ nhất để loại hẳn rủi ro này.
+>
+> **3. Giữ đối tượng Mutex sống suốt vòng đời ứng dụng.** Nếu `Mutex` là biến cục bộ và không còn
+> được tham chiếu, bộ thu gom rác có thể huỷ nó **trong khi ứng dụng vẫn đang chạy**, và khoá được
+> nhả ra. `using` như Code 5.8a (sống tới hết `Main`) hoặc một trường `static` đều đủ; thứ cần tránh
+> là để nó thành biến cục bộ trong một hàm kết thúc sớm.
 
 > ⚠️ **Named Mutex là tài nguyên theo TÊN trên toàn hệ thống, không theo instance.** Code 5.8a dùng
 > đúng 1 Mutex cho cả ứng dụng — hợp lý. Nhưng nếu bạn cần một khoá RIÊNG cho từng object (ví dụ mỗi
@@ -13896,6 +13919,98 @@ lại. `Suggestion` (ví dụ: một tham số chưa dùng deadband trong khi c�
 dùng) chỉ là gợi ý, không phải lỗi. Phân ba mức tránh được cả hai cực đoan: chặn quá
 mức (không ai dùng được recipe hợp lệ nhưng khác thường một chút) và không chặn gì cả
 (recipe sai nghiêm trọng vẫn chạy được).
+
+---
+
+### 13.1.4b  File tham số tự mô tả — và bệnh phình file cấu hình
+
+Mục trên bàn về phiên bản và kiểm tra hợp lệ của recipe. Mục này bàn về **hình dạng của chính file
+tham số**, dựa trên hai quan sát từ mã nguồn thật: một mẫu rất đáng học, và một căn bệnh rất đáng
+tránh.
+
+#### Mẫu đáng học: mỗi tham số mang theo mọi thứ màn hình cần
+
+Trong một dự án tham khảo, mỗi dòng tham số trong file cấu hình trông như sau (đã dịch tên trường):
+
+```xml
+<Param Khoa="VisionEnable"
+       GiaTri="1"
+       DonVi="/"
+       MoTa="Có bật camera không (1: bật, 0: tắt)"
+       MoTaTiengAnh="Enable vision (1: Enable, 0: Disable)"
+       Min="0" Max="1"
+       Quyen="3" />
+```
+
+Bảy trường, và mỗi trường trả lời một câu hỏi mà **màn hình sửa tham số** cần biết:
+
+| Trường | Màn hình dùng để làm gì |
+|---|---|
+| Khoá | Tên tra cứu trong code |
+| Giá trị | Hiển thị và cho sửa |
+| **Đơn vị** | Hiện cạnh ô nhập — chống nhầm mm với µm |
+| **Mô tả** (kèm bản dịch) | Nhãn và chú thích, không cần bảng tra riêng |
+| **Min / Max** | **Chặn nhập sai ngay tại ô**, không đợi tới lúc chạy |
+| **Quyền** | Tham số này ai được xem, ai được sửa |
+
+Kết quả: **màn hình sửa tham số không cần biết gì về từng tham số cụ thể**. Nó đọc file, và với mỗi
+dòng thì dựng một nhãn, một ô nhập có giới hạn, một đơn vị, và ẩn đi nếu người đang đăng nhập không
+đủ quyền. Thêm một tham số mới = thêm một dòng vào file, **không sửa code, không build lại**. Đây
+chính là "giao diện do dữ liệu điều khiển" đã nêu ở Phụ lục B mục B.2.2, áp cho màn hình tham số.
+
+Hai chi tiết nhỏ nhưng đáng bắt chước:
+
+**Quyền theo TỪNG tham số, không phải theo cả màn hình.** Cách thường thấy là "màn hình tham số cần
+quyền Kỹ sư" — nhưng thực tế một màn hình chứa lẫn lộn: vài tham số vận hành viên cần đổi hằng ngày
+(tốc độ băng tải), vài tham số chỉ kỹ sư được đụng (hệ số hiệu chuẩn), và vài tham số chỉ nhà cung
+cấp được đụng (bù cơ khí). Đặt quyền ở từng dòng cho phép **một màn hình phục vụ cả ba nhóm** thay vì
+làm ba màn hình.
+
+**Dòng phân nhóm nằm ngay trong dữ liệu.** File đó có những dòng giá trị rỗng, phần mô tả chỉ là một
+dòng gạch ngang và tên nhóm (`-----------Tham số gỡ rối-----------`). Màn hình gặp dòng như vậy thì
+vẽ một tiêu đề nhóm. Cách này hơi thô, nhưng nó giữ được nguyên tắc quan trọng: **thứ tự và cách chia
+nhóm của màn hình cũng là dữ liệu**, nên người sắp xếp lại màn hình không cần lập trình viên.
+
+> 💡 **Nếu bạn viết mới bằng C# hiện đại**, cùng thông tin đó thường được đặt bằng **attribute** trên
+> property của lớp tham số, rồi màn hình dựng bằng reflection:
+> ```csharp
+> [ParamView("Bật camera", unit: "", min: 0, max: 1, group: "Thị giác", level: UserLevel.Engineer)]
+> public int VisionEnable { get; set; } = 1;
+> ```
+> Đánh đổi so với để trong file: attribute được **trình biên dịch kiểm tra** và đi liền với property
+> (không lệch nhau được), nhưng **đổi dải min/max phải build lại**. Chọn theo cùng tiêu chí đã dùng
+> nhiều lần trong sách: ai là người sẽ đổi, và họ đổi ở đâu.
+
+#### Bệnh cần tránh: cấu hình phình ra thành nhiều file, nhiều định dạng
+
+Cũng chính dự án đó, thư mục chạy chứa **bảy file cấu hình ở ba định dạng khác nhau**: hai file INI,
+bốn file XML, cộng một bản sao lưu. Tên file cho thấy chúng chồng lấn nhau — có file "tham số hệ
+thống" dạng INI **và** một file "tham số hệ thống" dạng XML cùng tồn tại.
+
+Điều này gần như không bao giờ là quyết định thiết kế. Nó là **kết quả tích tụ**: mỗi lần thêm một
+tính năng, người viết thêm một file mới thay vì mở rộng file có sẵn — vì mở rộng file có sẵn thì phải
+hiểu code đọc nó, còn thêm file mới thì không. Sau ba năm là bảy file.
+
+Ba hậu quả thật, xếp theo mức đau tăng dần:
+
+1. **Không ai biết đủ danh sách file cần sao lưu.** Sao lưu thiếu một file thì lần khôi phục sau máy
+   chạy sai mà không rõ vì sao.
+2. **Cùng một khái niệm bị lưu ở hai nơi** và lệch nhau — đúng vấn đề "hai nguồn sự thật" ở mục 13.2.6.
+3. **Không biết file nào thuộc loại nào**: recipe (đổi theo mã hàng), tham số hệ thống (thuộc về máy),
+   hay cấu hình phần cứng (thuộc về lần lắp đặt). Trộn ba loại là lỗi đã nêu ở Phụ lục B mục B.2.3, và
+   khi file đã phình ra thì việc tách lại rất tốn.
+
+> ⚠️ **Cách phòng, rẻ và làm được ngay từ đầu:** viết một trang tài liệu — hoặc tốt hơn, **một file
+> kê khai** trong chính thư mục cấu hình — liệt kê từng file: nó chứa gì, thuộc loại nào trong ba
+> loại, ai được sửa, có cần sao lưu không. Mười lăm phút lúc bắt đầu dự án, và nó là thứ duy nhất
+> ngăn được việc file thứ tám xuất hiện mà không ai biết. Khi bàn giao, chính file kê khai đó trở
+> thành danh mục sao lưu.
+
+> 📌 **Về bản sao lưu.** Dự án đó có một file `...Bak.xml` nằm cạnh file chính — tức là có ý thức về
+> rủi ro mất cấu hình. Nhưng một bản sao **cùng thư mục, cùng ổ đĩa** chỉ chống được lỗi ghi hỏng,
+> không chống được hỏng ổ đĩa hay xoá nhầm thư mục. Đủ dùng thì cần thêm: ghi kiểu an toàn (ghi file
+> tạm rồi đổi tên — Chương 3 mục 3.6.1), giữ **vài** bản cũ chứ không phải một, và một bản nằm **ngoài
+> máy** (thư mục mạng hoặc USB khi bàn giao).
 
 ---
 

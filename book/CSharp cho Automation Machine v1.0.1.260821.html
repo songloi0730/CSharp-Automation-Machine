@@ -5436,8 +5436,10 @@ cùng lúc — hai tiến trình cùng mở kết nối PLC/servo có thể gử
 <pre><code class="language-csharp">[STAThread]
 static void Main()
 {
-    // &quot;Local\\&quot; giới hạn phạm vi trong session người dùng hiện tại
-    using var singleInstance = new Mutex(initiallyOwned: true, &quot;Local\\MeoFrameMachineApp&quot;,
+    // &quot;Global\\&quot; = toàn máy, mọi phiên đăng nhập — xem callout dưới về vì sao KHÔNG dùng &quot;Local\\&quot;
+    // Tên phải DUY NHẤT trên máy: kèm một GUID sinh một lần cho ứng dụng của bạn
+    using var singleInstance = new Mutex(initiallyOwned: true,
+        &quot;Global\\MeoFrameMachineApp-{8F3A1C42-7B95-4E10-9D6E-2C4A7B1E5F80}&quot;,
         out bool createdNew);
 
     if (!createdNew)
@@ -5454,6 +5456,25 @@ sau đều nhận <code>createdNew = false</code> (Mutex đã tồn tại) và n
 code kế thừa (không dùng <code>Mutex</code>) là tự đếm số tiến trình cùng tên qua
 <code>Process.GetProcessesByName(...)</code> — hoạt động được nhưng cần tự so sánh đường dẫn file thực thi để
 tránh nhầm với tiến trình khác trùng tên, phức tạp hơn <code>Mutex</code> mà không có lợi ích rõ ràng.</p>
+<blockquote>
+<p>⚠️ <strong>Ba chi tiết quyết định Mutex có thật sự chặn được hay không — cả ba đều nằm ở cái tên.</strong></p>
+<p><strong>1. <code>Global\</code> chứ không phải <code>Local\</code>.</strong> Tiền tố <code>Local\</code> giới hạn Mutex trong **phiên đăng
+nhập hiện tại**. Nghe vô hại, cho tới tình huống rất thường gặp ở nhà máy: người vận hành đang đăng
+nhập tại chỗ và phần mềm đang chạy, rồi kỹ thuật viên **kết nối từ xa vào chính máy đó** để xem xét
+— đó là một phiên khác, nên Mutex <code>Local\</code> không thấy bản đang chạy và bản thứ hai khởi động bình
+thường. Kết quả đúng bằng thứ ta muốn tránh: hai tiến trình cùng mở kết nối tới card và PLC. Với
+phần mềm điều khiển máy, gần như luôn phải là <code>Global\</code>.</p>
+<p><strong>2. Tên phải DUY NHẤT trên toàn máy.</strong> Tên Mutex thật gặp trong các dự án tham khảo: một dự án
+dùng đúng chuỗi <code>&quot;AA&quot;</code>, một dự án dùng <code>&quot;se_base&quot;</code>, một dự án dùng tên sản phẩm, và một dự án dùng
+<code>Global\</code> kèm một <strong>GUID</strong>. Chỉ dự án cuối là an toàn. Tên chung chung hỏng theo hai chiều, và
+chiều thứ hai khó chẩn đoán hơn nhiều: một phần mềm khác trên cùng máy tình cờ đặt trùng tên sẽ
+khiến <strong>phần mềm của bạn không khởi động được</strong>, với thông báo &quot;đang chạy rồi&quot; trong khi nó không
+hề chạy. Sinh một GUID một lần rồi ghép vào tên là cách rẻ nhất để loại hẳn rủi ro này.</p>
+<p><strong>3. Giữ đối tượng Mutex sống suốt vòng đời ứng dụng.</strong> Nếu <code>Mutex</code> là biến cục bộ và không còn
+được tham chiếu, bộ thu gom rác có thể huỷ nó <strong>trong khi ứng dụng vẫn đang chạy</strong>, và khoá được
+nhả ra. <code>using</code> như Code 5.8a (sống tới hết <code>Main</code>) hoặc một trường <code>static</code> đều đủ; thứ cần tránh
+là để nó thành biến cục bộ trong một hàm kết thúc sớm.</p>
+</blockquote>
 <blockquote>
 <p>⚠️ <strong>Named Mutex là tài nguyên theo TÊN trên toàn hệ thống, không theo instance.</strong> Code 5.8a dùng
 đúng 1 Mutex cho cả ứng dụng — hợp lý. Nhưng nếu bạn cần một khoá RIÊNG cho từng object (ví dụ mỗi
@@ -15140,6 +15161,108 @@ lại. <code>Suggestion</code> (ví dụ: một tham số chưa dùng deadband t
 dùng) chỉ là gợi ý, không phải lỗi. Phân ba mức tránh được cả hai cực đoan: chặn quá
 mức (không ai dùng được recipe hợp lệ nhưng khác thường một chút) và không chặn gì cả
 (recipe sai nghiêm trọng vẫn chạy được).</p>
+<hr>
+<h3>13.1.4b  File tham số tự mô tả — và bệnh phình file cấu hình</h3>
+<p>Mục trên bàn về phiên bản và kiểm tra hợp lệ của recipe. Mục này bàn về <strong>hình dạng của chính file
+tham số</strong>, dựa trên hai quan sát từ mã nguồn thật: một mẫu rất đáng học, và một căn bệnh rất đáng
+tránh.</p>
+<h4>Mẫu đáng học: mỗi tham số mang theo mọi thứ màn hình cần</h4>
+<p>Trong một dự án tham khảo, mỗi dòng tham số trong file cấu hình trông như sau (đã dịch tên trường):</p>
+<pre><code class="language-xml">&lt;Param Khoa=&quot;VisionEnable&quot;
+       GiaTri=&quot;1&quot;
+       DonVi=&quot;/&quot;
+       MoTa=&quot;Có bật camera không (1: bật, 0: tắt)&quot;
+       MoTaTiengAnh=&quot;Enable vision (1: Enable, 0: Disable)&quot;
+       Min=&quot;0&quot; Max=&quot;1&quot;
+       Quyen=&quot;3&quot; /&gt;
+</code></pre>
+<p>Bảy trường, và mỗi trường trả lời một câu hỏi mà <strong>màn hình sửa tham số</strong> cần biết:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trường</th>
+<th>Màn hình dùng để làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Khoá</td>
+<td>Tên tra cứu trong code</td>
+</tr>
+<tr>
+<td>Giá trị</td>
+<td>Hiển thị và cho sửa</td>
+</tr>
+<tr>
+<td><strong>Đơn vị</strong></td>
+<td>Hiện cạnh ô nhập — chống nhầm mm với µm</td>
+</tr>
+<tr>
+<td><strong>Mô tả</strong> (kèm bản dịch)</td>
+<td>Nhãn và chú thích, không cần bảng tra riêng</td>
+</tr>
+<tr>
+<td><strong>Min / Max</strong></td>
+<td><strong>Chặn nhập sai ngay tại ô</strong>, không đợi tới lúc chạy</td>
+</tr>
+<tr>
+<td><strong>Quyền</strong></td>
+<td>Tham số này ai được xem, ai được sửa</td>
+</tr>
+</tbody></table></div>
+<p>Kết quả: <strong>màn hình sửa tham số không cần biết gì về từng tham số cụ thể</strong>. Nó đọc file, và với mỗi
+dòng thì dựng một nhãn, một ô nhập có giới hạn, một đơn vị, và ẩn đi nếu người đang đăng nhập không
+đủ quyền. Thêm một tham số mới = thêm một dòng vào file, <strong>không sửa code, không build lại</strong>. Đây
+chính là &quot;giao diện do dữ liệu điều khiển&quot; đã nêu ở Phụ lục B mục B.2.2, áp cho màn hình tham số.</p>
+<p>Hai chi tiết nhỏ nhưng đáng bắt chước:</p>
+<p><strong>Quyền theo TỪNG tham số, không phải theo cả màn hình.</strong> Cách thường thấy là &quot;màn hình tham số cần
+quyền Kỹ sư&quot; — nhưng thực tế một màn hình chứa lẫn lộn: vài tham số vận hành viên cần đổi hằng ngày
+(tốc độ băng tải), vài tham số chỉ kỹ sư được đụng (hệ số hiệu chuẩn), và vài tham số chỉ nhà cung
+cấp được đụng (bù cơ khí). Đặt quyền ở từng dòng cho phép <strong>một màn hình phục vụ cả ba nhóm</strong> thay vì
+làm ba màn hình.</p>
+<p><strong>Dòng phân nhóm nằm ngay trong dữ liệu.</strong> File đó có những dòng giá trị rỗng, phần mô tả chỉ là một
+dòng gạch ngang và tên nhóm (<code>-----------Tham số gỡ rối-----------</code>). Màn hình gặp dòng như vậy thì
+vẽ một tiêu đề nhóm. Cách này hơi thô, nhưng nó giữ được nguyên tắc quan trọng: <strong>thứ tự và cách chia
+nhóm của màn hình cũng là dữ liệu</strong>, nên người sắp xếp lại màn hình không cần lập trình viên.</p>
+<blockquote>
+<p>💡 <strong>Nếu bạn viết mới bằng C# hiện đại</strong>, cùng thông tin đó thường được đặt bằng <strong>attribute</strong> trên
+property của lớp tham số, rồi màn hình dựng bằng reflection:</p>
+<pre><code class="language-csharp">[ParamView(&quot;Bật camera&quot;, unit: &quot;&quot;, min: 0, max: 1, group: &quot;Thị giác&quot;, level: UserLevel.Engineer)]
+public int VisionEnable { get; set; } = 1;
+</code></pre>
+<p>Đánh đổi so với để trong file: attribute được <strong>trình biên dịch kiểm tra</strong> và đi liền với property
+(không lệch nhau được), nhưng <strong>đổi dải min/max phải build lại</strong>. Chọn theo cùng tiêu chí đã dùng
+nhiều lần trong sách: ai là người sẽ đổi, và họ đổi ở đâu.</p>
+</blockquote>
+<h4>Bệnh cần tránh: cấu hình phình ra thành nhiều file, nhiều định dạng</h4>
+<p>Cũng chính dự án đó, thư mục chạy chứa <strong>bảy file cấu hình ở ba định dạng khác nhau</strong>: hai file INI,
+bốn file XML, cộng một bản sao lưu. Tên file cho thấy chúng chồng lấn nhau — có file &quot;tham số hệ
+thống&quot; dạng INI <strong>và</strong> một file &quot;tham số hệ thống&quot; dạng XML cùng tồn tại.</p>
+<p>Điều này gần như không bao giờ là quyết định thiết kế. Nó là <strong>kết quả tích tụ</strong>: mỗi lần thêm một
+tính năng, người viết thêm một file mới thay vì mở rộng file có sẵn — vì mở rộng file có sẵn thì phải
+hiểu code đọc nó, còn thêm file mới thì không. Sau ba năm là bảy file.</p>
+<p>Ba hậu quả thật, xếp theo mức đau tăng dần:</p>
+<ol>
+<li><strong>Không ai biết đủ danh sách file cần sao lưu.</strong> Sao lưu thiếu một file thì lần khôi phục sau máy
+chạy sai mà không rõ vì sao.</li>
+<li><strong>Cùng một khái niệm bị lưu ở hai nơi</strong> và lệch nhau — đúng vấn đề &quot;hai nguồn sự thật&quot; ở mục 13.2.6.</li>
+<li><strong>Không biết file nào thuộc loại nào</strong>: recipe (đổi theo mã hàng), tham số hệ thống (thuộc về máy),
+hay cấu hình phần cứng (thuộc về lần lắp đặt). Trộn ba loại là lỗi đã nêu ở Phụ lục B mục B.2.3, và
+khi file đã phình ra thì việc tách lại rất tốn.</li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Cách phòng, rẻ và làm được ngay từ đầu:</strong> viết một trang tài liệu — hoặc tốt hơn, <strong>một file
+kê khai</strong> trong chính thư mục cấu hình — liệt kê từng file: nó chứa gì, thuộc loại nào trong ba
+loại, ai được sửa, có cần sao lưu không. Mười lăm phút lúc bắt đầu dự án, và nó là thứ duy nhất
+ngăn được việc file thứ tám xuất hiện mà không ai biết. Khi bàn giao, chính file kê khai đó trở
+thành danh mục sao lưu.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Về bản sao lưu.</strong> Dự án đó có một file <code>...Bak.xml</code> nằm cạnh file chính — tức là có ý thức về
+rủi ro mất cấu hình. Nhưng một bản sao <strong>cùng thư mục, cùng ổ đĩa</strong> chỉ chống được lỗi ghi hỏng,
+không chống được hỏng ổ đĩa hay xoá nhầm thư mục. Đủ dùng thì cần thêm: ghi kiểu an toàn (ghi file
+tạm rồi đổi tên — Chương 3 mục 3.6.1), giữ <strong>vài</strong> bản cũ chứ không phải một, và một bản nằm <strong>ngoài
+máy</strong> (thư mục mạng hoặc USB khi bàn giao).</p>
+</blockquote>
 <hr>
 <h2 id="132-factory-adapter-pattern-cho-thit-b-đa-chng-loi">13.2 Factory &amp; Adapter Pattern cho thiết bị đa chủng loại</h2>
 <p>Một dự án máy thực tế có thể có hàng chục thiết bị từ nhiều hãng, giao tiếp qua nhiều

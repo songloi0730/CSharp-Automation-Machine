@@ -10651,6 +10651,260 @@ sơ lắp đặt</strong> ghi rõ bước nào đã làm, lúc nào, ai làm —
 sự cố ở tuần đầu.</p>
 </blockquote>
 <hr>
+<h3>10.1.8 Màn hình vận hành thật trông như thế nào — sáu dự án, sáu kiểu</h3>
+<p>Các mục trên nói về <em>nguyên tắc</em>. Mục này đối chiếu nguyên tắc với <strong>thực tế</strong>: mở màn hình chạy tự
+động của sáu dự án máy thật ra và xem trên đó có gì. Đây là màn hình người vận hành nhìn 8 tiếng mỗi
+ca, nên nó là bài kiểm tra thật nhất cho mọi thứ đã bàn.</p>
+<h4>Trên màn hình vận hành thật có gì</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm nội dung</th>
+<th>Có mặt ở mấy dự án</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Trạng thái máy</strong> (một chỗ, dễ thấy)</td>
+<td>6/6</td>
+<td>Đèn/nhãn Manual–Ready–Auto–Pause–Dừng khẩn</td>
+</tr>
+<tr>
+<td><strong>Nút Bắt đầu / Dừng</strong></td>
+<td>6/6</td>
+<td>Luôn là cặp; xem phần &quot;bao nhiêu nút&quot; bên dưới</td>
+</tr>
+<tr>
+<td><strong>Nút Khởi tạo (về gốc) và Reset lỗi</strong></td>
+<td>5/6</td>
+<td>Dự án còn lại đưa vào màn hình kỹ thuật</td>
+</tr>
+<tr>
+<td><strong>Sản lượng &amp; tỉ lệ lỗi</strong></td>
+<td>6/6</td>
+<td>Đếm tổng, đếm NG; vài nơi có nút xoá bộ đếm</td>
+</tr>
+<tr>
+<td><strong>Nhịp máy (tact time)</strong></td>
+<td>5/6</td>
+<td>Thường có cả <em>nhịp lần cuối</em> và <em>nhịp trung bình</em></td>
+</tr>
+<tr>
+<td><strong>Bước hiện tại của từng trạm</strong></td>
+<td>4/6</td>
+<td>Ở máy nhiều trạm, đây là thứ giá trị nhất — xem dưới</td>
+</tr>
+<tr>
+<td><strong>Chọn chế độ chạy</strong> (Thật / Chạy khô / Gỡ rối)</td>
+<td>4/6</td>
+<td>Chương 12 mục 12.4</td>
+</tr>
+<tr>
+<td><strong>Trạng thái an toàn</strong> (cửa, dừng khẩn, đèn tháp)</td>
+<td>3/6</td>
+<td>Ba dự án còn lại chỉ hiện khi có lỗi</td>
+</tr>
+<tr>
+<td><strong>Mã lô / mã khay / mã sản phẩm hiện tại</strong></td>
+<td>3/6</td>
+<td>Chỉ ở máy có nối hệ MES hoặc chạy theo khay</td>
+</tr>
+<tr>
+<td><strong>Biểu đồ dữ liệu quá trình</strong></td>
+<td>2/6</td>
+<td>Ở máy mà đường cong <em>là</em> kết quả (lực, mô-men)</td>
+</tr>
+</tbody></table></div>
+<p>Sáu màn hình khác nhau rất nhiều về hình thức, nhưng nếu hỏi <em>&quot;màn hình này trả lời câu hỏi gì cho
+người vận hành&quot;</em> thì cả sáu đều hội tụ về <strong>năm câu</strong>, và đó là danh sách đáng dùng khi bạn thiết kế
+màn hình mới:</p>
+<ol>
+<li><strong>Máy đang ở trạng thái nào, và tôi được bấm gì bây giờ?</strong></li>
+<li><strong>Máy đang làm gì lúc này?</strong> — bước hiện tại, không phải chỉ &quot;đang chạy&quot;.</li>
+<li><strong>Có ổn không?</strong> — sản lượng, tỉ lệ lỗi, nhịp máy so với bình thường.</li>
+<li><strong>Nếu không ổn thì vì sao?</strong> — cảnh báo hiện hành, đủ để biết gọi ai.</li>
+<li><strong>Vật liệu nào đang ở trong máy?</strong> — với máy có truy xuất nguồn gốc.</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Câu số 2 là câu hay bị bỏ sót nhất, và là câu người vận hành cần nhất.</strong> Bốn trong sáu dự án
+dành hẳn một bảng trên màn hình chạy: <strong>mỗi trạm một dòng</strong>, gồm <em>thời điểm — tên trạm — số bước và
+tên bước đang chạy</em>. Cách này rẻ đến bất ngờ (một hàng lưới, cập nhật khi bước đổi) nhưng đổi hẳn
+chất lượng vận hành: khi máy đứng, người vận hành đọc một dòng là biết <strong>nó đứng ở đâu</strong>, thay vì
+gọi kỹ sư đến mở nhật ký. Nếu máy của bạn có nhiều hơn một trạm, hãy làm bảng này trước khi làm bất
+cứ thứ trang trí nào khác.</p>
+</blockquote>
+<h4>Hai cách cập nhật màn hình — và cái giá của mỗi cách</h4>
+<p>Sáu dự án chia thành đúng hai trường phái:</p>
+<p><strong>Cách 1 — đồng hồ đếm nhịp, vẽ lại tất cả.</strong> Một <code>Timer</code> chạy mỗi 100–500 ms, và trong hàm xử lý là
+một khối dài đọc hiện trạng rồi gán cho <strong>mọi</strong> nhãn, mọi màu nền trên màn hình:</p>
+<pre><code class="language-csharp">private void uiTimer_Tick(object sender, EventArgs e)
+{
+    startButton.BackColor = main.isAuto() ? Color.Lime  : Color.White;
+    stopButton.BackColor  = main.isAuto() ? Color.White : Color.Red;
+    modeButton.Text       = main.state().ToString();
+    totalCountLabel.Text  = main.outputCount().ToString();
+    lastTactLabel.Text    = (main.getLastCycleTime() / 1000.0).ToString(&quot;0.0&quot;) + &quot; s&quot;;
+    towerR.BackColor      = main.output(OUTPUT.TOWER_R) ? Color.DarkRed : Color.White;
+    // ... vài chục dòng nữa, mỗi lần tick đều chạy hết
+}
+</code></pre>
+<p><strong>Cách 2 — đăng ký sự kiện, chỉ đổi thứ vừa đổi.</strong> Tầng dưới phát sự kiện (<em>trạng thái trạm đổi</em>,
+<em>có sản phẩm ra</em>, <em>có cảnh báo</em>), màn hình gắn vào và chỉ cập nhật phần liên quan; ở WPF thì phần lớn
+việc này do ràng buộc dữ liệu tự làm.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Đếm nhịp, vẽ lại tất cả</th>
+<th>Đăng ký sự kiện</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Viết lần đầu</td>
+<td><strong>Rất nhanh</strong>, không cần sửa tầng dưới</td>
+<td>Chậm hơn: tầng dưới phải phát sự kiện</td>
+</tr>
+<tr>
+<td>Bỏ sót cập nhật</td>
+<td><strong>Không thể</strong> — mọi thứ vẽ lại liên tục</td>
+<td>Có: quên phát một sự kiện là màn hình đứng số</td>
+</tr>
+<tr>
+<td>Chi phí lúc chạy</td>
+<td>Vẽ lại cả màn hình 5–10 lần/giây kể cả khi máy đứng yên</td>
+<td>Gần như bằng 0 khi không có gì đổi</td>
+</tr>
+<tr>
+<td>Độ trễ</td>
+<td>Tới <strong>một nhịp đồng hồ</strong> — sự kiện ngắn hơn nhịp có thể <strong>không bao giờ hiện ra</strong></td>
+<td>Tức thời, không bỏ sót</td>
+</tr>
+<tr>
+<td>Tách tầng</td>
+<td>Màn hình phải <em>biết</em> mọi thứ nó vẽ, kéo theo phụ thuộc</td>
+<td>Màn hình chỉ biết dữ liệu được đẩy tới</td>
+</tr>
+</tbody></table></div>
+<p>Cách 1 mang tiếng xấu, nhưng nó thắng ở đúng một điểm rất đáng giá trong phần mềm máy: <strong>không bao giờ
+hiển thị sai vì quên cập nhật</strong>. Đây là lý do nó vẫn sống dai trong mã nguồn thật, và không nên chê nó
+chỉ vì nó cũ.</p>
+<p>Đổi lại, nó có một điểm mù thật sự cần biết: <strong>thứ gì xuất hiện rồi biến mất nhanh hơn một nhịp đồng
+hồ thì màn hình sẽ không bao giờ thấy</strong>. Một tín hiệu cảm biến nháy 50 ms, một cảnh báo tự phục hồi —
+người vận hành không thấy gì, còn nhật ký thì có ghi, và bạn mất buổi chiều để giải thích sự lệch đó.</p>
+<blockquote>
+<p><strong>Cách phối hợp mà dự án viết tốt nhất trong nhóm đang dùng:</strong> <em>sự kiện cho việc đổi trạng thái, đồng
+hồ cho các con số chạy.</em> Trạng thái trạm, cảnh báo, có sản phẩm ra — những thứ <strong>không được phép bỏ
+sót</strong> — đi bằng sự kiện. Vị trí trục, giá trị analog, thời gian chu kỳ đang trôi — những thứ đổi liên
+tục và chỉ cần gần đúng — do một đồng hồ 200–500 ms đọc. Được cả hai mặt, và ranh giới rất dễ nhớ:
+<strong>bỏ sót có hại thì dùng sự kiện; bỏ sót vô hại thì dùng đồng hồ.</strong></p>
+</blockquote>
+<blockquote>
+<p>⚠️ Dù chọn cách nào, mọi cập nhật đến từ luồng khác <strong>phải chuyển về luồng giao diện</strong> (<code>BeginInvoke</code>
+ở WinForms, <code>Dispatcher</code> ở WPF). Đây là lỗi số một khi lần đầu nối tầng máy vào màn hình — xem
+Chương 8 mục 8.1.2.</p>
+</blockquote>
+<h4>Bao nhiêu nút thì đủ trên màn hình vận hành</h4>
+<p>Một dự án trong nhóm có màn hình chạy với <strong>hơn hai mươi nút</strong>, trong đó có <em>kiểm tra cảnh báo</em>, <em>giả
+lập truyền thông</em>, <em>đặt tốc độ băng tải</em>, <em>xoá thư mục cũ</em>. Đó không phải màn hình vận hành nữa — đó
+là màn hình kỹ thuật đội lốt.</p>
+<p>Tiêu chí phân loại rất đơn giản và dùng được ngay: <strong>một nút chỉ ở lại màn hình vận hành nếu người vận
+hành cần bấm nó trong ca bình thường.</strong> Chiếu theo đó, danh sách còn lại thường chỉ có:</p>
+<ul>
+<li>Bắt đầu, Dừng, (Tạm dừng nếu máy có trạng thái này)</li>
+<li>Khởi tạo / về gốc — vì đầu ca nào cũng bấm</li>
+<li>Xác nhận &amp; xoá cảnh báo</li>
+<li>Xoá bộ đếm sản lượng — đầu ca hoặc đổi lô</li>
+<li>Chọn chế độ chạy, nếu vận hành viên được phép đổi</li>
+</ul>
+<p>Mọi thứ khác chuyển sang màn hình kỹ thuật sau đăng nhập. Không phải vì vận hành viên &quot;không đủ trình&quot;,
+mà vì <strong>mỗi nút thừa là một nút bấm nhầm được</strong>, và vì một màn hình ít nút thì lúc khẩn cấp mắt tìm
+được nút Dừng nhanh hơn.</p>
+<blockquote>
+<p>⚠️ <strong>Nút Bắt đầu phải có điều kiện tiên quyết, và điều kiện đó không được phép &quot;tạm bỏ&quot;.</strong> Trong một
+dự án tham khảo, hàm xử lý nút Bắt đầu kiểm tra máy đã về gốc xong chưa — đúng và cần. Nhưng ngay
+dưới đó, đoạn kiểm tra an toàn trước khi chuyển động <strong>bị chú thích lại toàn bộ</strong> và ở nguyên như vậy
+trong mã nguồn giao cho khách. Gần như chắc chắn nó bị tắt tạm lúc chạy thử rồi không ai bật lại.</p>
+<p>Đây là một trong những cách nguy hiểm nhất mà an toàn bị mất: không ai quyết định bỏ nó, nó chỉ đơn
+giản là <strong>không được bật lại</strong>. Hai thói quen rẻ tiền chặn được: (1) <strong>không bao giờ tắt kiểm tra an
+toàn bằng cách chú thích</strong> — thay bằng một cờ gỡ rối chạy được, sẽ ghi vào nhật ký ầm ĩ mỗi lần dùng
+và <strong>không thể bật ở chế độ chạy thật</strong>; (2) trước khi bàn giao, tìm toàn bộ mã nguồn bằng từ khoá
+<em>safety</em>, <em>interlock</em>, <em>check</em> trong các dòng đã chú thích. Việc thứ hai mất mười phút.</p>
+</blockquote>
+<h4>Hai lỗi hiển thị mà bạn sẽ tự mắc, kèm cách tránh</h4>
+<p>Hai lỗi dưới đây đến từ mã nguồn thật, cùng một dự án, và cùng một nguyên nhân gốc: <strong>trạng thái hiển
+thị được gán tay ở nhiều nhánh thay vì tính ra ở một chỗ.</strong></p>
+<p><strong>Lỗi 1 — đèn trạng thái sáng nhầm.</strong> Màn hình có năm đèn Manual / Ready / Auto / Pause / Dừng khẩn, và
+hàm xử lý đổi trạng thái là một <code>switch</code> mà <strong>mỗi nhánh gán tay cả năm đèn</strong>:</p>
+<pre><code class="language-csharp">case StationState.Ready:
+    lampAuto.ImageIndex   = 1;   // ← sai: trạng thái Ready lại bật đèn Auto
+    lampReady.ImageIndex  = 0;   // ← và tắt chính đèn Ready
+    lampManual.ImageIndex = 0;
+    // ...
+</code></pre>
+<p>Năm trạng thái × năm đèn = hai mươi lăm dòng gán, chép qua chép lại giữa các nhánh — sai một dòng là
+màn hình nói dối, và <strong>không có gì trong máy phát hiện được</strong>. Cách viết đúng loại bỏ hẳn khả năng sai:</p>
+<pre><code class="language-csharp">// Một nguồn sự thật: đèn nào sáng suy ra TỪ trạng thái, không gán tay từng cái
+void ShowState(StationState state)
+{
+    foreach (var (lampState, lamp) in _lamps)
+        lamp.IsOn = (lampState == state);
+}
+</code></pre>
+<p>Ở WPF, cùng ý đó viết bằng một <code>DataTrigger</code> hoặc một bộ chuyển đổi so trạng thái với tham số — và khi
+thêm trạng thái thứ sáu, bạn sửa <strong>một chỗ</strong>, không phải sáu nhánh.</p>
+<p><strong>Lỗi 2 — hai ô số, một nguồn.</strong> Trên cùng màn hình, ô <em>đếm NG</em> và ô <em>đếm tổng</em> đều được gán từ <strong>cùng
+một hàm đếm sản lượng</strong>. Người vận hành thấy tỉ lệ lỗi bằng 100% mãi mãi, và vì con số vẫn nhảy nên
+không ai nghĩ nó hỏng. Lỗi này sinh ra từ việc chép dòng trên xuống dòng dưới rồi đổi tên nhãn mà quên
+đổi nguồn — và nó <strong>sống rất lâu</strong> vì màn hình trông vẫn &quot;chạy&quot;.</p>
+<blockquote>
+<p>💡 <strong>Cách kiểm tra rẻ nhất cho cả hai lỗi, làm được trong mười lăm phút:</strong> chạy máy ở chế độ giả lập,
+ép lần lượt từng trạng thái và từng con số sang một giá trị <strong>khác biệt rõ rệt</strong> (ví dụ tổng = 100,
+NG = 7), rồi nhìn màn hình đọc lại. Bất kỳ ô nào không đổi, hoặc đổi giống ô bên cạnh, là một lỗi
+vừa bị bắt. Đây cũng chính là lý do nên có chế độ giả lập (Chương 18 mục 18.6.4): nó không chỉ để chạy thử
+trình tự, nó là <strong>cách duy nhất kiểm tra được màn hình mà không cần vật liệu thật</strong>.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Một chi tiết nhỏ về đặt tên, nhưng nó là gốc của lỗi 2.</strong> Trong mã nguồn thật bạn sẽ gặp rất
+nhiều <code>button3_Click</code>, <code>roundButton3_Click_1</code>, <code>label12</code> — tên do trình thiết kế giao diện tự sinh và
+không ai đổi. Với màn hình có hơn trăm điều khiển, đây không chỉ xấu: nó làm <strong>việc đọc lại để soát
+lỗi trở nên bất khả thi</strong>, vì bạn không thể nhìn <code>label12.Text = ...</code> mà biết dòng đó có đúng không.
+Đổi tên ngay lúc kéo thả điều khiển tốn năm giây; đổi tên sau khi màn hình đã xong thì không ai làm
+nữa. Quy ước đủ dùng: <code>&lt;loại&gt;&lt;nội dung&gt;</code> — <code>lblTotalCount</code>, <code>btnStart</code>, <code>gridStationStep</code>.</p>
+</blockquote>
+<h4>Màn hình biết càng ít càng tốt</h4>
+<p>Điểm cuối, và là điểm phân biệt rõ nhất giữa các dự án trong nhóm. Hãy so hai lớp hậu thuẫn màn hình
+vận hành:</p>
+<p>Ở đầu nặng nề, lớp màn hình <strong>giữ tham chiếu tới đối tượng máy chính</strong> và gọi thẳng vào nó
+(<code>main.isAuto()</code>, <code>main.frenic()</code>, <code>main.output(...)</code>) — màn hình biết máy có bao nhiêu trục, bao nhiêu
+biến tần, cổng ra nào nối vào đèn tháp.</p>
+<p>Ở đầu nhẹ nhất, lớp hậu thuẫn màn hình vận hành của dự án hiện đại nhất trong nhóm <strong>dài chưa tới 80
+dòng</strong> và chỉ có đúng hai dữ liệu riêng: <em>có được bấm Bắt đầu không</em> và <em>có được bấm Dừng không</em>. Nút
+bấm không gọi hàm nào của máy — nó <strong>gửi một thông điệp</strong> (<code>_start</code>, <code>_stop</code>, <code>_resetError</code>); trạng
+thái đi ngược lại cũng bằng thông điệp, và màn hình chỉ đọc ra hai giá trị đúng/sai kia.</p>
+<pre><code class="language-csharp">// Nút bấm: chỉ gửi ý định đi, không tự quyết định gì
+[RelayCommand] private void Start() =&gt; _syncer.Send(new Message(_ui, &quot;_start&quot;));
+[RelayCommand] private void Stop()  =&gt; _syncer.Send(new Message(_ui, &quot;_stop&quot;));
+
+// Trạng thái đi ngược về: màn hình chỉ tính ra &quot;được bấm gì&quot;
+CanStart = payload.GetValueOrDefault(&quot;_ready&quot;)    is true;
+CanStop  = payload.GetValueOrDefault(&quot;_stopping&quot;) is not true;
+</code></pre>
+<p>Lợi ích không phải là &quot;code đẹp&quot;. Nó rất cụ thể:</p>
+<ul>
+<li><strong>Quyết định được bấm hay không nằm ở một chỗ duy nhất</strong> — tầng điều khiển. Màn hình không thể cho
+phép một thao tác mà tầng dưới đang cấm, vì nó không có thẩm quyền đó.</li>
+<li><strong>Thêm một màn hình thứ hai gần như miễn phí</strong> — màn hình từ xa, màn hình phụ ở đầu chuyền: chúng
+nhận cùng thông điệp trạng thái và gửi cùng thông điệp lệnh.</li>
+<li><strong>Nút bấm không bị treo.</strong> Nút chỉ gửi đi rồi trả quyền điều khiển ngay; việc nặng chạy ở tầng dưới.
+Đây là cách sạch nhất để không bao giờ gặp lỗi giao diện đơ đã nói ở Chương 5 mục 5.1.1.</li>
+</ul>
+<blockquote>
+<p><strong>Rút lại thành một câu để nhớ:</strong> <em>màn hình vận hành nên biết cách hỏi, không nên biết câu trả lời.</em>
+Nó gửi đi ý định của người vận hành và hiển thị thứ được đẩy về; mọi phán xét — có được chạy không,
+có an toàn không, bây giờ được bấm gì — thuộc về tầng điều khiển, nơi có đủ thông tin để phán xét
+đúng.</p>
+</blockquote>
+<hr>
 <h2 id="102-bng-màu-h-thng-phân-cp-theo-isa-101">10.2 Bảng màu &amp; Hệ thống phân cấp theo ISA-101</h2>
 <!--idx:Bảng màu ISA-101--><h3>10.2.1 Nền trung tính — màu chỉ dành cho bất thường</h3>
 <p>Nguyên tắc nền tảng của bảng màu ISA-101: <strong>nền màn hình phải trung tính</strong>
@@ -12273,6 +12527,14 @@ trùng nhau.</li>
 <strong>hiệu ứng hiển thị</strong> (nhấp nháy hay tĩnh) — hai trục độc lập.</li>
 <li>Alarm Banner ở chương này chỉ vẽ — mọi logic (acknowledge, escalation,
 triết lý ISA-18.2) thuộc về Chương 15; không lặp lại nội dung đó.</li>
+<li><strong>Màn hình vận hành (10.1.8)</strong> trả lời năm câu: đang ở trạng thái nào, đang
+làm bước gì, có ổn không, nếu không thì vì sao, và vật liệu nào đang trong
+máy. Câu thứ hai — <strong>bước hiện tại của từng trạm</strong> — hay bị bỏ sót nhất.</li>
+<li>Cập nhật màn hình: <strong>bỏ sót có hại thì dùng sự kiện; bỏ sót vô hại thì dùng
+đồng hồ đếm nhịp</strong>. Cách vẽ lại tất cả theo nhịp không sai, nhưng mù với mọi
+thứ ngắn hơn một nhịp.</li>
+<li><strong>Màn hình nên biết cách hỏi, không nên biết câu trả lời</strong>: nút gửi ý định
+đi, tầng điều khiển phán xét được phép hay không và đẩy trạng thái về.</li>
 <li>Đa ngôn ngữ (<code>.resx</code> + CSV override) và accessibility (High Contrast, tab
 order, screen reader) không phải tính năng phụ — ảnh hưởng trực tiếp đến
 an toàn vận hành khi nhiều ca kíp, nhiều thao tác viên khác nhau.</li>

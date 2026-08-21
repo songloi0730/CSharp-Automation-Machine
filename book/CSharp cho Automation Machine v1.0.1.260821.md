@@ -22835,12 +22835,41 @@ rà soát thành danh mục riêng trước khi bàn giao:
 |---|---|---|
 | Mở một chức năng thì báo không tìm thấy file | Đường dẫn đi ngược từ thư mục chạy tới thư mục **mã nguồn**: `AppDomain.CurrentDomain.BaseDirectory + "..\..\DuAn\File.cs"` — đúng khi chạy từ `bin\Debug`, không tồn tại trên máy đã cài đặt | Mọi tài nguyên phải nằm **trong** thư mục cài đặt; đặt "Copy to Output Directory" cho file cần thiết |
 | Ghi cấu hình/log thất bại, hoặc mất khi khởi động lại | Ghi vào `Program Files` — Windows chặn ghi, hoặc chuyển hướng âm thầm | Dữ liệu ghi được phải nằm ở `ProgramData` hoặc một thư mục dữ liệu cấu hình được |
-| Máy mới cài xong không chạy được, hoặc chạy nhưng không thấy nhật ký đâu | **Đường dẫn ghi cứng theo ổ đĩa**: `E:\Log\`, `D:\EVMS\Log\Step` — gặp ở nhiều dự án tham khảo. Máy mới không có ổ `E:` là hỏng; máy có ổ `E:` nhưng là ổ USB thì nhật ký biến mất khi rút | Đường dẫn gốc là **một tham số cấu hình**, mặc định trỏ vào thư mục dữ liệu bên cạnh ứng dụng; kiểm tra ghi thử được lúc khởi động và báo rõ nếu không |
 | `DllNotFoundException` ngay khi mở phần mềm | DLL của hãng thiết bị không được copy cạnh file `.exe` | Kiểm tra danh sách file khi đóng gói; xem Phụ lục A mục A.3 |
 | `BadImageFormatException` khi khởi động | Ứng dụng chạy 64 bit nhưng SDK card chỉ có bản 32 bit | Đặt `PlatformTarget = x86` — Chương 2 và Phụ lục A |
 | Số thập phân đọc/ghi sai, hoặc lỗi phân tích chuỗi số | Máy hiện trường đặt vùng miền khác: dấu phẩy làm dấu thập phân | Dùng `CultureInfo.InvariantCulture` cho mọi dữ liệu **máy đọc máy** (file, giao thức), chỉ dùng vùng miền cho phần **người đọc** |
 | Đường dẫn có ký tự lạ, hoặc quá dài | Tên máy/tên lô hàng theo ngôn ngữ bản địa | Dùng `Path.Combine`, không nối chuỗi; kiểm tra độ dài đường dẫn |
 | Đồng hồ lệch, dữ liệu truy xuất không khớp giữa các máy | Máy hiện trường không đồng bộ giờ | Đồng bộ NTP; lưu mốc thời gian dạng UTC trong cơ sở dữ liệu |
+
+> 📌 **Đường dẫn cố định theo ổ đĩa — trong phần mềm máy, đây thường KHÔNG phải lỗi.** Đọc mã nguồn
+> các dự án tham khảo sẽ gặp rất nhiều đường dẫn kiểu `E:\Log\`, `D:\<TênMáy>\Log\Step`,
+> `E:\<TênDựÁn>\RunLog\`. Với phần mềm chạy trên máy tính của người dùng bất kỳ thì đó là mùi code;
+> với **máy công nghiệp thì thường là một quyết định thiết kế có chủ ý**, và là quyết định đúng.
+>
+> Lý do: máy tính công nghiệp là **môi trường được đặc tả**. Cấu hình ổ đĩa nằm trong danh mục vật tư
+> của máy, mọi máy xuất xưởng đều giống nhau, và việc chuẩn bị hoặc lắp thêm ổ là một phần bình thường
+> của quá trình lắp đặt. Trong bối cảnh đó, **tách ổ hệ điều hành khỏi ổ dữ liệu là thực hành tốt**:
+>
+> - Nhật ký và dữ liệu sản xuất ghi liên tục **không làm đầy phân vùng hệ điều hành** — thứ có thể
+>   làm Windows ngừng hoạt động chứ không chỉ làm hỏng phần mềm của bạn.
+> - **Cài lại hệ điều hành không mất dữ liệu sản xuất**, vì nó nằm ở phân vùng khác. Với máy đã chạy
+>   vài năm, đây là khác biệt giữa "cài lại trong hai giờ" và "mất toàn bộ dữ liệu truy xuất".
+> - Ổ dữ liệu chọn được loại phù hợp với đặc tính **ghi nhiều** — điều đáng quan tâm khi máy ghi liên
+>   tục suốt nhiều năm.
+>
+> **Hai việc nhỏ nên làm thêm, không mâu thuẫn gì với quy ước cố định đó:**
+>
+> 1. **Để đường dẫn gốc là một tham số cấu hình, lấy quy ước của bạn làm giá trị mặc định.** Máy thật
+>    vẫn dùng đúng `D:\...` như thiết kế; nhưng máy phát triển, máy chạy thử ở văn phòng, hay một máy
+>    thay thế được dựng lại theo cấu hình khác thì chỉ cần sửa một dòng thay vì sửa code.
+> 2. **Kiểm tra ghi thử được ngay lúc khởi động và báo rõ nếu không.** Thông báo *"Không ghi được vào
+>    `D:\MayA\Log` — kiểm tra ổ dữ liệu đã gắn chưa và còn dung lượng không"* biến một sự cố khó hiểu
+>    (phần mềm chạy nhưng không có nhật ký) thành một việc người kỹ thuật xử lý được ngay.
+>
+> Điểm cần rút ra rộng hơn một chi tiết đường dẫn: **nhiều thứ trông như mùi code trong phần mềm thông
+> thường lại là quy ước hợp lý trong phần mềm máy**, vì môi trường chạy được kiểm soát chặt hơn nhiều.
+> Trước khi kết luận một cách làm là sai, hãy hỏi *"môi trường chạy của nó có được đặc tả không"* —
+> câu trả lời thường đổi hẳn kết luận.
 
 > 💡 **Cách rẻ nhất để bắt gần hết nhóm này trước khi ra hiện trường:** cài phần mềm
 > lên **một máy tính trống** (hoặc máy ảo sạch) — không có Visual Studio, không có

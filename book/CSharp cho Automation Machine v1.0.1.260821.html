@@ -16074,6 +16074,148 @@ Dùng chúng <strong>bên trong</strong> adapter thị giác là bình thường
 quan tới thị giác</strong> (đo thời gian chạy, ghi log) là tự trói mình vào hãng ở những nơi lẽ
 ra không cần — đúng thứ mà Bridge/Adapter ở mục 13.2.4 sinh ra để tránh.</p>
 </blockquote>
+<h3>13.2.4d Về gốc — cùng một việc, hai cách tổ chức rất khác nhau</h3>
+<p>Về gốc (homing) là việc <strong>mọi máy có trục servo đều phải làm</strong>, và vì ai cũng phải làm nên nó là ví
+dụ tốt nhất để thấy cùng một bài toán được tổ chức khác nhau ra sao. Mục này đối chiếu hai cách làm
+lấy từ hai dự án thật, rồi rút ra phần <strong>chung</strong> — thứ bạn cần dù chọn cách nào.</p>
+<h4>Phần chung: sáu tham số, không nhiều hơn</h4>
+<p>Dù tổ chức thế nào, một trục về gốc cần đúng sáu con số. Điều thú vị là <strong>cả hai dự án đều dùng đúng
+sáu tham số này</strong>, chỉ khác chỗ cất chúng:</p>
+<p><strong>Bảng 13.10b — Sáu tham số của một lần về gốc</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th>Nghĩa</th>
+<th>Sai thì hậu quả gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hướng và quãng đường dò</strong></td>
+<td>Chạy về phía nào, tối đa bao xa để tìm cảm biến gốc</td>
+<td>Sai hướng → trục lao vào giới hạn cơ khí</td>
+</tr>
+<tr>
+<td><strong>Tốc độ giai đoạn 1</strong></td>
+<td>Dò nhanh để tìm thấy cảm biến</td>
+<td>Nhanh quá → vượt qua cảm biến, hoặc va chạm mạnh</td>
+</tr>
+<tr>
+<td><strong>Tốc độ giai đoạn 2</strong></td>
+<td>Bò chậm để dừng chính xác</td>
+<td>Nhanh quá → điểm gốc lệch mỗi lần một khác</td>
+</tr>
+<tr>
+<td><strong>Khoảng lùi sau khi bắt được cảm biến</strong></td>
+<td>Lùi ra khỏi cảm biến rồi vào lại chậm</td>
+<td>Thiếu → điểm gốc phụ thuộc quán tính</td>
+</tr>
+<tr>
+<td><strong>Khoảng cách từ giới hạn tới gốc</strong></td>
+<td>Dùng khi lấy công tắc giới hạn làm mốc</td>
+<td>Sai → dò mãi không thấy</td>
+</tr>
+<tr>
+<td><strong>Offset sau khi về gốc</strong></td>
+<td>Vị trí cảm biến hiếm khi trùng điểm 0 mong muốn của quy trình</td>
+<td>Sai → toàn bộ toạ độ đã dạy lệch đi một lượng cố định</td>
+</tr>
+</tbody></table></div>
+<p>Tham số cuối là thứ người mới hay bỏ qua, và nó giải thích một hiện tượng hay gặp: <strong>sau khi thay
+cảm biến gốc, mọi điểm đã dạy đều lệch</strong> — vì cảm biến mới lắp lệch vài mi-li-mét so với cái cũ. Sửa
+đúng chỗ là chỉnh <strong>một</strong> offset, không phải dạy lại hàng trăm điểm.</p>
+<h4>Cách A — tham số nằm trong code</h4>
+<pre><code class="language-csharp">// Rút gọn từ một dự án thật: một file 1400 dòng chỉ để gán tham số về gốc
+Tools.HomeSearchDist[0, 4]  = 1000;   // quãng đường dò
+Tools.HomeOffsetDist[0, 4]  = -5;     // lùi sau khi bắt được cảm biến
+Tools.LimToHomeDist[0, 4]   = -30;    // từ giới hạn tới gốc
+Tools.HomeOffset[0, 4]      = -2;     // offset sau khi về gốc
+Tools.HomeVal_1[0, 4]       = 10;     // tốc độ giai đoạn 1
+Tools.HomeVal_2[0, 4]       = 1;      // tốc độ giai đoạn 2
+</code></pre>
+<p>Hai chỉ số <code>[0, 4]</code> là <em>trạm số 0, trục số 4</em> — và bạn chỉ biết trục số 4 là trục nào nhờ <strong>dòng chú
+thích</strong> phía trên. Nhân sáu dòng như vậy cho vài chục trục ra một file 1400 dòng.</p>
+<p>Nhìn thẳng vào đánh đổi: cách này <strong>đơn giản và chạy được</strong> — không cần file cấu hình, không cần đọc
+ghi, không có gì hỏng lúc chạy. Nhưng đổi một con số phải sửa code, build lại, và triển khai lại toàn
+bộ phần mềm; người chỉnh máy ngoài hiện trường <strong>không tự làm được</strong>; và không có gì ngăn hai chỗ dùng
+nhầm chỉ số của nhau.</p>
+<h4>Cách B — về gốc là một đối tượng có cấu hình tiêm vào</h4>
+<pre><code class="language-csharp">public class InitializeSequence(
+    IAxis axis,
+    Variable&lt;SpeedProfile&gt; initSpeed,      // tốc độ, lấy từ cấu hình
+    Variable&lt;Position1D&gt;   homePosition,   // vị trí gốc, lấy từ cấu hình
+    AxisSensorType sensorType,             // loại cảm biến gốc
+    AxisDirection  direction               // hướng dò
+) : IInitializeSequence
+</code></pre>
+<p><code>AxisSensorType</code> có <strong>năm</strong> giá trị, tương ứng năm cách một trục có thể tìm ra điểm gốc: cảm biến gốc
+riêng, công tắc giới hạn âm, công tắc giới hạn dương, xung Z của bộ mã hoá, hoặc <strong>để chính drive tự
+về gốc</strong>. Loại thứ năm đáng biết: nhiều servo drive hiện đại có sẵn chức năng về gốc bên trong, và
+khi dùng nó thì phần mềm chỉ ra lệnh rồi chờ — nhanh và chính xác hơn tự điều khiển từ máy tính.</p>
+<p>Cách này đắt hơn để dựng, nhưng đổi tham số không cần build lại, và <strong>thêm một trục mới không phải
+viết thêm code về gốc</strong> — chỉ thêm một mục cấu hình.</p>
+<blockquote>
+<p>💡 <strong>Chọn cách nào?</strong> Cùng tiêu chí đã dùng cho interface ở Chương 4 mục 4.2.4: nếu máy chỉ có vài
+trục, một biến thể, giao xong là hết — cách A không sai. Nếu bạn làm <strong>nhiều máy cùng họ</strong>, hoặc
+người chỉnh máy cần tự sửa tham số ngoài hiện trường, cách B hoàn vốn nhanh. Điều <strong>không</strong> nên làm
+là cách A nhưng rải rác: tham số về gốc nằm mỗi chỗ một ít, vừa trong code vừa trong file cấu hình.</p>
+</blockquote>
+<h4>Ba việc trong trình tự về gốc mà cả hai cách đều phải làm đúng</h4>
+<p><strong>1. Tắt giới hạn mềm trước khi về gốc, và nhớ bật lại.</strong></p>
+<pre><code class="language-csharp">axis.SetSoftwareLimit(false, 0.0, 0.0);   // TẮT — vì chưa biết mình đang ở đâu
+// ... chạy trình tự về gốc ...
+axis.ClearPosition();                      // đặt lại gốc toạ độ
+axis.SetSoftwareLimit(true, min, max);     // BẬT LẠI — bắt buộc
+</code></pre>
+<p>Giới hạn mềm là hai con số chặn trục đi quá hành trình cho phép, do phần mềm kiểm tra. Trước khi về
+gốc, <strong>toạ độ hiện tại chưa có nghĩa</strong> — có thể là 0, có thể là giá trị sót lại từ lần chạy trước —
+nên giới hạn mềm dựa trên nó cũng vô nghĩa và sẽ chặn nhầm. Vì vậy phải tắt.</p>
+<blockquote>
+<p>⚠️ <strong>Và đây là chỗ nguy hiểm: quên bật lại.</strong> Trục về gốc xong, chạy sản xuất cả ca <strong>không còn lớp
+bảo vệ phần mềm nào</strong> — chỉ còn công tắc giới hạn cứng, tức là đã va tới nơi mới dừng. Lỗi này không
+có biểu hiện gì cho tới lần đầu một lệnh sai đưa trục ra ngoài hành trình. Cách phòng: đặt việc bật
+lại trong khối <code>finally</code>, và thêm một phép kiểm tra &quot;mọi trục đã bật giới hạn mềm chưa&quot; vào điều
+kiện cho phép vào chế độ tự động.</p>
+</blockquote>
+<p><strong>2. Xoá cảnh báo và bật lại servo trước khi bắt đầu.</strong> Trình tự <code>ClearAlarm()</code> → <code>Enable(false)</code> →
+<code>Enable(true)</code> có lý do: nhiều loại lỗi drive bị <strong>chốt lại</strong> và chỉ xoá được bằng một chu kỳ tắt–bật.
+Về gốc là lúc hợp lý để làm việc đó, vì dù sao trục cũng sắp mất vị trí hiện tại.</p>
+<p><strong>3. Ba điểm quá giờ, ba nguyên nhân khác nhau.</strong> Trình tự về gốc ba pha có ba chỗ có thể treo, và
+gộp chung một thông báo &quot;về gốc quá giờ&quot; là bỏ phí thông tin chẩn đoán:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Pha</th>
+<th>Quá giờ nghĩa là gì</th>
+<th>Đi kiểm tra cái gì trước</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Dò tới cảm biến</strong></td>
+<td>Chạy hết quãng đường dò mà không thấy cảm biến</td>
+<td>Cảm biến hỏng/lệch, sai hướng dò, quãng đường dò quá ngắn</td>
+</tr>
+<tr>
+<td><strong>Lùi ra khỏi cảm biến</strong></td>
+<td>Vào rồi mà không ra được</td>
+<td>Cảm biến dính (luôn báo có), khoảng lùi quá ngắn</td>
+</tr>
+<tr>
+<td><strong>Vào lại chậm</strong></td>
+<td>Ra rồi mà không vào lại được</td>
+<td>Trục bị kẹt cơ khí, tốc độ giai đoạn 2 quá nhỏ so với ma sát</td>
+</tr>
+</tbody></table></div>
+<p>Một dự án tham khảo có <strong>ba hộp thoại riêng</strong> cho ba trường hợp này. Đó là chi tiết nhỏ nhưng đúng
+tinh thần Chương 15: thông báo phải nói cho người xử lý biết <strong>đi kiểm tra cái gì trước</strong>, không chỉ
+báo rằng có lỗi.</p>
+<blockquote>
+<p>📌 <strong>Thứ tự nhiều trục.</strong> Về gốc <strong>không được</strong> chạy tất cả các trục cùng lúc trừ khi chắc chắn
+chúng không thể va nhau. Quy tắc gần như phổ quát: <strong>trục thẳng đứng lên vị trí an toàn trước</strong>,
+rồi mới tới các trục ngang. Trong mô hình miền của Chương 11, đây chính là một <strong>bất biến cấp máy</strong> —
+nó thuộc về đối tượng máy, không phải về từng trục, vì không trục nào tự biết trục kia đang ở đâu.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -19990,6 +20132,8 @@ sequence) — quy trình tìm lại điểm gốc vật lý sau mỗi lần mấ
 (vị trí sensor thường không trùng đúng điểm 0 mong muốn của quy trình). Trục CHƯA home xong thì
 mọi lệnh move tuyệt đối (<code>AbsMove</code>) đều dựa trên toạ độ không đáng tin — nhiều driver chủ động
 chặn lệnh move nếu bit <code>ORG</code> chưa từng được set từ lúc khởi động.</p>
+<p>Trình tự về gốc đầy đủ, sáu tham số cấu hình của nó, và <strong>bẫy quên bật lại giới hạn mềm sau khi
+về gốc</strong> — xem Chương 13 mục 13.2.4d.</p>
 </blockquote>
 <h3>15.1.3  IAlarmService — hợp đồng xử lý alarm</h3>
 <p><code>IAlarmService</code> là interface nằm ở <code>MeoFrame.Core.Abstractions</code> — tất cả code domain và sequence chỉ gọi qua interface này, không biết implementation.</p>

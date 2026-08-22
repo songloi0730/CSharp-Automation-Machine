@@ -19522,6 +19522,91 @@ bộ là số** (dễ so sánh, dễ đánh dải như Bảng 15.2) và thêm **
 sửa bản dịch là kỹ sư tại chỗ, không phải lập trình viên**, và họ sửa được bằng một trình soạn thảo
 bảng tính. Đánh đổi: thêm ngôn ngữ thứ ba là phải thêm cột và sửa code đọc.
 
+#### Cách thứ sáu — sinh mã alarm từ danh mục thiết bị
+
+Năm cách trong Bảng 15.2b đều giả định có người **viết ra** từng alarm. Nhưng phần lớn alarm trong một
+cỗ máy lại rất đều đặn: **mỗi trục** có báo lỗi servo, chạm giới hạn dương, chạm giới hạn âm; **mỗi tín
+hiệu vào** có hết giờ chờ. Máy mười hai trục và tám mươi tín hiệu vào là **116 alarm** — viết tay từng
+cái vừa tốn thời gian vừa chắc chắn sót.
+
+Một dự án tham khảo giải quyết bằng cách **sinh chúng ra lúc khởi động**, từ chính bảng khai báo trục và
+bảng tên tín hiệu vào mà phần mềm đã có:
+
+```csharp
+// Duyệt danh sách trục đã khai báo, mỗi trục sinh ba alarm
+foreach (var (soTruc, tenTruc) in _bangTruc)
+{
+    ThemAlarm($"{_tenMay}-Motion-{soTruc}-1", MaTiepTheo(nhom), "Error",
+              $"{_tenMay} > Trục > {tenTruc}: báo lỗi");
+    ThemAlarm($"{_tenMay}-Motion-{soTruc}-2", MaTiepTheo(nhom), "Error",
+              $"{_tenMay} > Trục > {tenTruc}: chạm giới hạn dương");
+    ThemAlarm($"{_tenMay}-Motion-{soTruc}-3", MaTiepTheo(nhom), "Error",
+              $"{_tenMay} > Trục > {tenTruc}: chạm giới hạn âm");
+}
+```
+
+Ba lợi ích, và lợi ích thứ ba mới là lý do thật:
+
+1. **Không sót.** Thêm trục thứ mười ba vào bảng khai báo là **tự nhiên có** ba alarm của nó.
+2. **Nội dung nhất quán.** Mọi alarm cùng loại có cùng cách diễn đạt, vì chúng cùng ra từ một dòng code.
+3. **Nội dung alarm mang theo tên thật của thiết bị.** Vì tên trục lấy từ bảng khai báo, thông báo là
+   *"Trục nâng Z2: chạm giới hạn dương"* chứ không phải *"Lỗi trục số 7"*. Người vận hành đọc xong biết
+   đi tới chỗ nào của máy — điều mà một con số không bao giờ làm được.
+
+Chú ý cách viết thông báo trong ví dụ: **dạng đường dẫn**, `Máy > Cụm > Chi tiết`. Với máy nhiều trạm,
+quy ước này rẻ và hiệu quả hơn hẳn việc cố nhét mọi thứ vào một câu.
+
+> ⚠️ **Nhưng đừng phân loại bằng cách dò chuỗi trong tên.** Cài đặt trong dự án đó chọn nhóm mã cho
+> alarm trục bằng cách kiểm tra tên trục *có chứa chữ X hay không*, rồi Y, rồi Z. Nó chạy đúng cho tới
+> khi ai đó đặt tên trục là `XY_Gantry` (lọt vào nhóm X), `ZX_Slide` (cũng lọt vào nhóm X vì X được xét
+> trước), hay một cái tên tiếng Việt không có chữ nào trong ba chữ đó. Phân loại là **thuộc tính phải
+> khai báo** trong bảng trục, không phải thứ đoán ra từ tên.
+
+> 💡 **Cách này phối hợp tốt với năm cách kia, không thay thế.** Chia làm hai nhóm: alarm **đều đặn theo
+> thiết bị** thì sinh tự động; alarm **thuộc về nghiệp vụ của máy** (*"mã sản phẩm không khớp công
+> thức"*, *"kết quả đo vượt dung sai"*) thì viết tay bằng một trong năm cách trên, vì mỗi cái một khác
+> và cần hướng dẫn xử lý riêng. Ranh giới dễ nhớ: **cái gì suy ra được từ danh mục phần cứng thì để máy
+> sinh; cái gì cần con người nghĩ thì con người viết.**
+
+#### Một cây phân loại, hai mục đích: mã alarm cũng là lý do dừng máy
+
+Đây là ý tưởng đáng giá nhất trong dự án đó, và hầu như không tài liệu nào nói ra. Mã alarm của họ không
+phải một số chạy tuần tự mà là **một chuỗi có cấu trúc ba tầng**:
+
+```
+    60      09      003
+    ↑       ↑        ↑
+  nhóm    tiểu     số thứ tự
+  lớn     nhóm     trong tiểu nhóm
+```
+
+Và danh sách **nhóm lớn** chính là danh mục lý do dừng máy đã gặp ở Chương 12 mục 12.5:
+
+| Nhóm lớn | Ý nghĩa | Có phải sự cố không |
+|---|---|---|
+| Đang chạy · Chờ vật liệu · Để không · Hàng mẫu | Trạng thái tự động | Không |
+| Tắt máy · Nghỉ kế hoạch · Bảo trì · Hiệu chỉnh · Thay vật tư · Thay linh kiện | Trạng thái thủ công | Không |
+| **Cơ khí · Khí nén · Điện–điều khiển** | Hỏng hóc | **Có** |
+
+Hệ quả rất thực dụng: **từ mã alarm, cắt hai chữ số đầu là ra ngay nhóm lý do dừng máy.** Không cần một
+bảng tra thứ hai, không có nguy cơ hai bảng lệch nhau, và mọi alarm mới đều **tự động** rơi đúng vào ô
+thống kê của nó.
+
+Đặt ngược lại vấn đề để thấy vì sao điều này đáng làm: nếu mã alarm và danh mục lý do dừng máy là hai
+hệ độc lập, bạn sẽ phải duy trì một bảng ánh xạ giữa chúng — và bảng ánh xạ đó là thứ **luôn luôn bị
+quên cập nhật** khi ai đó thêm một alarm mới. Kết quả là báo cáo cuối tháng có một ô *"không rõ nguyên
+nhân"* ngày càng phình to, mà không ai biết vì sao.
+
+> 📌 **Nếu bạn đang thiết kế mã alarm cho máy mới, hãy quyết ba điều này trước khi gõ dòng code đầu
+> tiên**, vì đổi về sau rất tốn (dữ liệu lịch sử đã mang mã cũ):
+>
+> 1. **Chữ số đầu mang nghĩa gì** — nên là *nhóm lý do dừng máy*, để dùng được cho cả cảnh báo lẫn báo
+>    cáo hiệu suất.
+> 2. **Chừa đủ chỗ.** Ví dụ trên dùng 2 + 2 + 3 chữ số: tối đa 99 nhóm lớn, 99 tiểu nhóm, 999 mã chi
+>    tiết. Rộng rãi, và **rộng rãi là đúng** — hết chỗ giữa đời máy thì không có cách sửa nào đẹp.
+> 3. **Ai là chủ của danh mục nhóm lớn.** Nếu khách hàng có sẵn danh mục lý do dừng máy của họ (nhiều
+>    nhà máy điện tử có), hãy dùng đúng danh mục đó ngay từ đầu thay vì tự nghĩ ra rồi ánh xạ sau.
+
 #### Điều quan trọng nhất, và không dự án nào nói ra: alarm có HAI NGUỒN
 
 Trong cùng dự án đó, cạnh file XML danh mục alarm của phần mềm, có một file thứ hai — một bảng CSV
@@ -20834,6 +20919,10 @@ Chương này xây dựng hai tầng bảo vệ cho hệ thống automation:
 - Domain Events `AlarmRaised/AlarmAcknowledged/AlarmCleared` (pattern từ Chương 11) tách biệt publisher và subscriber.
 - Flood Prevention: root cause alarm, suppression theo machine state, rate limiting.
 - Shelving (operator, tạm thời) và Inhibition (logic, tự động) — không áp dụng cho Safety alarm.
+- **Alarm đều đặn theo thiết bị nên được SINH RA** từ bảng trục và bảng tên tín hiệu (mục 15.1.2b),
+  không viết tay: không sót, nhất quán, và thông báo mang tên thật của cơ cấu.
+- **Mã alarm nên dùng chung cây phân loại với lý do dừng máy** (Chương 12 mục 12.5): cắt hai chữ số
+  đầu là ra nhóm thống kê, khỏi phải duy trì một bảng ánh xạ — thứ luôn bị quên cập nhật.
 
 **Tầng 2 — Safety Interlock & Guard (mục 15.2):**
 - E-Stop là phần cứng, Interlock là software, Safety Function là cả hai — không lẫn lộn.

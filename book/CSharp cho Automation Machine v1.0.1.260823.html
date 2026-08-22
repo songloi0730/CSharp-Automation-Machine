@@ -21788,6 +21788,100 @@ bộ là số</strong> (dễ so sánh, dễ đánh dải như Bảng 15.2) và t
 (Chương 10 mục 10.4.2). Cách này thô hơn nhưng có một ưu điểm thật trong bối cảnh nhà máy: <strong>người
 sửa bản dịch là kỹ sư tại chỗ, không phải lập trình viên</strong>, và họ sửa được bằng một trình soạn thảo
 bảng tính. Đánh đổi: thêm ngôn ngữ thứ ba là phải thêm cột và sửa code đọc.</p>
+<h4>Cách thứ sáu — sinh mã alarm từ danh mục thiết bị</h4>
+<p>Năm cách trong Bảng 15.2b đều giả định có người <strong>viết ra</strong> từng alarm. Nhưng phần lớn alarm trong một
+cỗ máy lại rất đều đặn: <strong>mỗi trục</strong> có báo lỗi servo, chạm giới hạn dương, chạm giới hạn âm; <strong>mỗi tín
+hiệu vào</strong> có hết giờ chờ. Máy mười hai trục và tám mươi tín hiệu vào là <strong>116 alarm</strong> — viết tay từng
+cái vừa tốn thời gian vừa chắc chắn sót.</p>
+<p>Một dự án tham khảo giải quyết bằng cách <strong>sinh chúng ra lúc khởi động</strong>, từ chính bảng khai báo trục và
+bảng tên tín hiệu vào mà phần mềm đã có:</p>
+<pre><code class="language-csharp">// Duyệt danh sách trục đã khai báo, mỗi trục sinh ba alarm
+foreach (var (soTruc, tenTruc) in _bangTruc)
+{
+    ThemAlarm($&quot;{_tenMay}-Motion-{soTruc}-1&quot;, MaTiepTheo(nhom), &quot;Error&quot;,
+              $&quot;{_tenMay} &gt; Trục &gt; {tenTruc}: báo lỗi&quot;);
+    ThemAlarm($&quot;{_tenMay}-Motion-{soTruc}-2&quot;, MaTiepTheo(nhom), &quot;Error&quot;,
+              $&quot;{_tenMay} &gt; Trục &gt; {tenTruc}: chạm giới hạn dương&quot;);
+    ThemAlarm($&quot;{_tenMay}-Motion-{soTruc}-3&quot;, MaTiepTheo(nhom), &quot;Error&quot;,
+              $&quot;{_tenMay} &gt; Trục &gt; {tenTruc}: chạm giới hạn âm&quot;);
+}
+</code></pre>
+<p>Ba lợi ích, và lợi ích thứ ba mới là lý do thật:</p>
+<ol>
+<li><strong>Không sót.</strong> Thêm trục thứ mười ba vào bảng khai báo là <strong>tự nhiên có</strong> ba alarm của nó.</li>
+<li><strong>Nội dung nhất quán.</strong> Mọi alarm cùng loại có cùng cách diễn đạt, vì chúng cùng ra từ một dòng code.</li>
+<li><strong>Nội dung alarm mang theo tên thật của thiết bị.</strong> Vì tên trục lấy từ bảng khai báo, thông báo là
+<em>&quot;Trục nâng Z2: chạm giới hạn dương&quot;</em> chứ không phải <em>&quot;Lỗi trục số 7&quot;</em>. Người vận hành đọc xong biết
+đi tới chỗ nào của máy — điều mà một con số không bao giờ làm được.</li>
+</ol>
+<p>Chú ý cách viết thông báo trong ví dụ: <strong>dạng đường dẫn</strong>, <code>Máy &gt; Cụm &gt; Chi tiết</code>. Với máy nhiều trạm,
+quy ước này rẻ và hiệu quả hơn hẳn việc cố nhét mọi thứ vào một câu.</p>
+<blockquote>
+<p>⚠️ <strong>Nhưng đừng phân loại bằng cách dò chuỗi trong tên.</strong> Cài đặt trong dự án đó chọn nhóm mã cho
+alarm trục bằng cách kiểm tra tên trục <em>có chứa chữ X hay không</em>, rồi Y, rồi Z. Nó chạy đúng cho tới
+khi ai đó đặt tên trục là <code>XY_Gantry</code> (lọt vào nhóm X), <code>ZX_Slide</code> (cũng lọt vào nhóm X vì X được xét
+trước), hay một cái tên tiếng Việt không có chữ nào trong ba chữ đó. Phân loại là <strong>thuộc tính phải
+khai báo</strong> trong bảng trục, không phải thứ đoán ra từ tên.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Cách này phối hợp tốt với năm cách kia, không thay thế.</strong> Chia làm hai nhóm: alarm <strong>đều đặn theo
+thiết bị</strong> thì sinh tự động; alarm <strong>thuộc về nghiệp vụ của máy</strong> (<em>&quot;mã sản phẩm không khớp công
+thức&quot;</em>, <em>&quot;kết quả đo vượt dung sai&quot;</em>) thì viết tay bằng một trong năm cách trên, vì mỗi cái một khác
+và cần hướng dẫn xử lý riêng. Ranh giới dễ nhớ: <strong>cái gì suy ra được từ danh mục phần cứng thì để máy
+sinh; cái gì cần con người nghĩ thì con người viết.</strong></p>
+</blockquote>
+<h4>Một cây phân loại, hai mục đích: mã alarm cũng là lý do dừng máy</h4>
+<p>Đây là ý tưởng đáng giá nhất trong dự án đó, và hầu như không tài liệu nào nói ra. Mã alarm của họ không
+phải một số chạy tuần tự mà là <strong>một chuỗi có cấu trúc ba tầng</strong>:</p>
+<pre><code>    60      09      003
+    ↑       ↑        ↑
+  nhóm    tiểu     số thứ tự
+  lớn     nhóm     trong tiểu nhóm
+</code></pre>
+<p>Và danh sách <strong>nhóm lớn</strong> chính là danh mục lý do dừng máy đã gặp ở Chương 12 mục 12.5:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm lớn</th>
+<th>Ý nghĩa</th>
+<th>Có phải sự cố không</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đang chạy · Chờ vật liệu · Để không · Hàng mẫu</td>
+<td>Trạng thái tự động</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Tắt máy · Nghỉ kế hoạch · Bảo trì · Hiệu chỉnh · Thay vật tư · Thay linh kiện</td>
+<td>Trạng thái thủ công</td>
+<td>Không</td>
+</tr>
+<tr>
+<td><strong>Cơ khí · Khí nén · Điện–điều khiển</strong></td>
+<td>Hỏng hóc</td>
+<td><strong>Có</strong></td>
+</tr>
+</tbody></table></div>
+<p>Hệ quả rất thực dụng: <strong>từ mã alarm, cắt hai chữ số đầu là ra ngay nhóm lý do dừng máy.</strong> Không cần một
+bảng tra thứ hai, không có nguy cơ hai bảng lệch nhau, và mọi alarm mới đều <strong>tự động</strong> rơi đúng vào ô
+thống kê của nó.</p>
+<p>Đặt ngược lại vấn đề để thấy vì sao điều này đáng làm: nếu mã alarm và danh mục lý do dừng máy là hai
+hệ độc lập, bạn sẽ phải duy trì một bảng ánh xạ giữa chúng — và bảng ánh xạ đó là thứ <strong>luôn luôn bị
+quên cập nhật</strong> khi ai đó thêm một alarm mới. Kết quả là báo cáo cuối tháng có một ô <em>&quot;không rõ nguyên
+nhân&quot;</em> ngày càng phình to, mà không ai biết vì sao.</p>
+<blockquote>
+<p>📌 <strong>Nếu bạn đang thiết kế mã alarm cho máy mới, hãy quyết ba điều này trước khi gõ dòng code đầu
+tiên</strong>, vì đổi về sau rất tốn (dữ liệu lịch sử đã mang mã cũ):</p>
+<ol>
+<li><strong>Chữ số đầu mang nghĩa gì</strong> — nên là <em>nhóm lý do dừng máy</em>, để dùng được cho cả cảnh báo lẫn báo
+cáo hiệu suất.</li>
+<li><strong>Chừa đủ chỗ.</strong> Ví dụ trên dùng 2 + 2 + 3 chữ số: tối đa 99 nhóm lớn, 99 tiểu nhóm, 999 mã chi
+tiết. Rộng rãi, và <strong>rộng rãi là đúng</strong> — hết chỗ giữa đời máy thì không có cách sửa nào đẹp.</li>
+<li><strong>Ai là chủ của danh mục nhóm lớn.</strong> Nếu khách hàng có sẵn danh mục lý do dừng máy của họ (nhiều
+nhà máy điện tử có), hãy dùng đúng danh mục đó ngay từ đầu thay vì tự nghĩ ra rồi ánh xạ sau.</li>
+</ol>
+</blockquote>
 <h4>Điều quan trọng nhất, và không dự án nào nói ra: alarm có HAI NGUỒN</h4>
 <p>Trong cùng dự án đó, cạnh file XML danh mục alarm của phần mềm, có một file thứ hai — một bảng CSV
 ánh xạ <strong>địa chỉ thanh ghi PLC và số thứ tự bit</strong> sang nội dung alarm:</p>
@@ -23221,6 +23315,10 @@ một chuỗi leo thang duy nhất, từ lỗi tạm thời vô hại đến d�
 <li>Domain Events <code>AlarmRaised/AlarmAcknowledged/AlarmCleared</code> (pattern từ Chương 11) tách biệt publisher và subscriber.</li>
 <li>Flood Prevention: root cause alarm, suppression theo machine state, rate limiting.</li>
 <li>Shelving (operator, tạm thời) và Inhibition (logic, tự động) — không áp dụng cho Safety alarm.</li>
+<li><strong>Alarm đều đặn theo thiết bị nên được SINH RA</strong> từ bảng trục và bảng tên tín hiệu (mục 15.1.2b),
+không viết tay: không sót, nhất quán, và thông báo mang tên thật của cơ cấu.</li>
+<li><strong>Mã alarm nên dùng chung cây phân loại với lý do dừng máy</strong> (Chương 12 mục 12.5): cắt hai chữ số
+đầu là ra nhóm thống kê, khỏi phải duy trì một bảng ánh xạ — thứ luôn bị quên cập nhật.</li>
 </ul>
 <p><strong>Tầng 2 — Safety Interlock &amp; Guard (mục 15.2):</strong></p>
 <ul>

@@ -24841,6 +24841,81 @@ không ai đọc kịp, và bản thân việc ghi log tần suất cao cũng t�
 I/O — quy tắc thực dụng: `Information` trở lên chạy thường trực, `Debug`
 chỉ bật tạm thời khi đang điều tra một sự cố cụ thể.
 
+### Bão nhật ký — khi một sự cố sinh ra mười nghìn dòng giống nhau
+
+Mục trên chọn **mức** cho từng dòng nhật ký. Mục này giải quyết một vấn đề khác, và là vấn đề bạn chỉ
+gặp khi phần mềm đã chạy thật: **một sự cố duy nhất sinh ra hàng chục nghìn dòng giống hệt nhau**.
+
+Kịch bản rất quen: cáp mạng tới PLC bị lỏng. Vòng đọc chạy mỗi 100 ms, mỗi lần thất bại ghi một dòng
+`Đọc PLC thất bại: không kết nối được`. Sau một đêm là **864 nghìn dòng**. Hậu quả không chỉ là tốn đĩa:
+
+- **Thông tin thật bị chôn vùi.** Dòng cảnh báo quan trọng lúc 3 giờ sáng nằm lẫn giữa nửa triệu dòng
+  giống nhau, và không ai tìm ra.
+- **Bản thân việc ghi nhật ký trở thành nút thắt.** Mười lần ghi mỗi giây vào cơ sở dữ liệu hoặc vào
+  đĩa, kéo dài hàng giờ.
+- **Chính sách xoay vòng nhật ký phản tác dụng.** Nếu bạn giữ 100 MB gần nhất, cơn bão đêm đó sẽ **đẩy
+  ra ngoài toàn bộ nhật ký của mấy ngày trước** — đúng phần bạn cần để so sánh.
+
+#### Cách xử lý: gộp theo cửa sổ thời gian
+
+Một hệ thu thập dữ liệu thiết bị mã nguồn mở giải bài này bằng một *đích ghi nhật ký* tự viết, chèn vào
+giữa thư viện log và nơi lưu. Ý tưởng gọn trong bốn bước:
+
+1. Mỗi dòng nhật ký được quy về một **khoá**: mức + nội dung + vị trí gọi trong mã nguồn.
+2. **Lần đầu tiên** thấy khoá đó: **ghi ngay lập tức**, và mở một cửa sổ đếm (ví dụ 30 giây).
+3. Mọi lần lặp lại trong cửa sổ: **chỉ tăng bộ đếm**, không ghi.
+4. Hết cửa sổ: nếu đếm được nhiều hơn một, ghi **một dòng tổng kết** — *"thông báo này xuất hiện 300
+   lần trong 30 giây qua; lần đầu: …"*.
+
+Kết quả: 864 nghìn dòng thành khoảng **2 nghìn dòng**, mà **không mất thông tin nào quan trọng** — bạn
+vẫn thấy sự cố bắt đầu lúc nào (dòng ghi ngay), vẫn thấy nó kéo dài bao lâu và dày đặc thế nào (các
+dòng tổng kết).
+
+Chi tiết **ghi ngay lần đầu** là chi tiết quan trọng nhất, và dễ làm sai nhất. Cách làm sai là gom tất
+cả rồi chỉ ghi khi hết cửa sổ — như vậy mọi sự cố đều bị **báo trễ 30 giây**, kể cả sự cố nghiêm trọng
+xảy ra đúng một lần.
+
+> 💡 **Tài liệu thiết kế của dự án đó có một phần đáng học riêng: nó liệt kê cả nhược điểm.** Ba điều
+> họ tự nêu — *phức tạp hơn khi triển khai*, *mất tính tức thời với các lần lặp*, *tốn bộ nhớ giữ bộ
+> đếm*. Một tài liệu thiết kế nêu được nhược điểm của chính giải pháp mình chọn thì đáng tin hơn hẳn
+> tài liệu chỉ liệt kê ưu điểm — và đó cũng là cách bạn nên viết ghi chú thiết kế cho máy của mình.
+
+#### Ba điều phải sửa nếu bạn chép ý tưởng này
+
+**1. Đặt khoá theo KHUÔN thông báo, không theo thông báo đã ghép chuỗi.** Đây là lỗi nghiêm trọng nhất
+và rất dễ mắc. Nếu khoá được tính từ chuỗi đã ghép:
+
+```csharp
+// ❌ mỗi lần một giá trị khác nhau → khoá luôn khác nhau → gộp KHÔNG hoạt động,
+//    và bộ nhớ đệm phình vô hạn vì khoá nào cũng là "lần đầu"
+_logger.LogWarning($"Áp suất bất thường: {pressure:F2} bar");
+```
+
+thì cơn bão gồm những dòng chỉ khác nhau ở con số sẽ **hoàn toàn lọt qua** cơ chế gộp. Đây chính là lý
+do phải dùng **nhật ký có cấu trúc** (đã bàn ở đầu mục 19.4): giữ khuôn và tham số tách nhau, rồi lấy
+**khuôn** làm khoá:
+
+```csharp
+// ✅ khuôn là hằng số → khoá ổn định → gộp hoạt động, và vẫn giữ được giá trị thật
+_logger.LogWarning("Áp suất bất thường: {Pressure} bar", pressure);
+```
+
+**2. Đừng tạo một bộ đếm giờ cho mỗi khoá.** Cài đặt trong dự án đó mở một `Timer` riêng cho từng dòng
+nhật ký khác nhau. Với vài chục loại thông báo thì không sao; với vài nghìn thì bạn có vài nghìn bộ đếm
+giờ. Cách rẻ hơn và dễ đoán hơn: **một bộ đếm giờ duy nhất quét toàn bộ bộ nhớ đệm** mỗi vài giây, kết
+sổ những khoá đã hết hạn.
+
+**3. Việc ghi xuống nơi lưu phải nằm ngoài luồng gọi.** Mục tiêu ban đầu là *"ghi nhật ký không được
+chặn nghiệp vụ"*, nhưng nếu hàm ghi gọi thẳng xuống cơ sở dữ liệu ngay trong lời gọi log thì mục tiêu
+đó không đạt — và tệ hơn, một cơ sở dữ liệu chậm sẽ **kéo chậm vòng điều khiển**. Đưa vào hàng đợi rồi
+để một luồng nền ghi; mọi thư viện log phổ biến đều có sẵn lớp bọc bất đồng bộ cho việc này.
+
+> ⚠️ **Đừng áp cơ chế gộp cho nhật ký kiểm toán và cho cảnh báo.** Gộp là đúng với *nhật ký chẩn đoán*
+> — thứ bạn đọc khi đi tìm nguyên nhân. Nó **sai** với hai loại khác: **nhật ký thao tác người dùng**
+> (ai đổi tham số, ai bỏ qua cảnh báo — mỗi lần đều phải có một dòng riêng, đây là bằng chứng) và
+> **cảnh báo trên màn hình** (đã có cơ chế riêng, chống lũ theo cách khác — Chương 15 mục 15.1.6).
+> Ba dòng dữ liệu này phục vụ ba mục đích khác nhau và phải có ba chính sách khác nhau.
+
 ### OpenTelemetry — khi log/Correlation ID không còn đủ
 
 Seq và Correlation ID (mục trên) đủ dùng khi hệ thống còn gọn — một vài
@@ -25051,6 +25126,12 @@ tăng dần hay không.
 - Memory dump (`dotnet-dump`) là công cụ đúng khi ứng dụng treo hoặc rò
   rỉ bộ nhớ tích luỹ qua nhiều giờ — chụp một lần, phân tích offline,
   không cần dừng máy lâu.
+- **Bão nhật ký** — một sự cố sinh ra hàng trăm nghìn dòng giống nhau — xử
+  lý bằng cách gộp theo cửa sổ: ghi ngay lần đầu, đếm các lần lặp, hết cửa
+  sổ ghi một dòng tổng kết. Khoá gộp phải là **khuôn thông báo**, không phải
+  chuỗi đã ghép — nếu không, các dòng chỉ khác nhau ở con số sẽ lọt hết.
+- Gộp là chính sách cho **nhật ký chẩn đoán**; nhật ký thao tác người dùng
+  và cảnh báo trên màn hình phải giữ chính sách riêng.
 - Deadlock trong automation thường xảy ra giữa luồng UI và luồng đọc
   thiết bị nền tranh chấp cùng một `lock`; rò rỉ bộ nhớ thường do event
   handler/subscription không được huỷ đăng ký, không phải do GC "quên"

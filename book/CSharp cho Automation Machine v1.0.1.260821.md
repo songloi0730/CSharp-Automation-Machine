@@ -21722,6 +21722,17 @@ mà mọi bước phải nhớ kiểm tra — cách này không thể "quên ki�
 trạng thái chặn/không chặn; nhiều nút cùng tham chiếu **một** `Block` thì chặn một chỗ là chặn cả nhóm.
 Đây là cách gọn để biểu diễn *"khi cửa an toàn mở thì cả nhánh này không được chạy"*.
 
+> ⚠️ **Một chi tiết ngữ nghĩa phải quyết rõ, và khung đó quyết theo hướng nguy hiểm: *chặn* nghĩa là
+> BỎ QUA hay là CHỜ?** Trong cài đặt đó, nút bị chặn thì **không chạy và trình tự đi tiếp nút sau**.
+> Với phần mềm máy, đây gần như luôn là ngữ nghĩa sai: câu *"trạm chưa sẵn sàng"*, *"cửa an toàn đang
+> mở"*, *"chưa có phôi"* đều có nghĩa là **chờ đến khi điều kiện thoả**, không phải *bỏ qua bước này*.
+> Bỏ qua bước hạ xuống rồi vẫn chạy bước hút là kịch bản hỏng sản phẩm hoặc hỏng đầu gắp.
+>
+> Nếu bạn dựng mô hình này, hãy tách hẳn **hai loại điều kiện** và đặt tên khác nhau: *điều kiện chờ*
+> (chờ, kèm thời gian chờ tối đa rồi phát cảnh báo — quy tắc ở mục 16.2b) và *điều kiện bỏ qua* (bước
+> tuỳ chọn theo mã hàng, ví dụ trạm dán nhãn không dùng cho sản phẩm này). Đừng để một cơ chế duy nhất
+> phục vụ cả hai ý nghĩa: người viết trình tự sẽ chọn nhầm, và nhầm về phía nguy hiểm.
+
 ### Khi nào nên dùng, khi nào không
 
 | | Danh sách bước phẳng | Cây tác vụ |

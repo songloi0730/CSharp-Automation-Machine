@@ -26605,6 +26605,71 @@ trạm sản xuất, được bật/tắt bằng chính cơ chế bắt tay đã
 > trị đo nằm sát ngưỡng. Kèm theo đó là chính sách xoá tự động theo tuổi — và chính sách này phải là
 > tham số cấu hình, vì mỗi khách hàng yêu cầu lưu một thời hạn khác nhau.
 
+#### Chính sách xoá — chỗ gần như dự án nào cũng làm dở dang
+
+Câu cuối của callout trên — *"kèm theo đó là chính sách xoá tự động theo tuổi"* — nghe như một dòng phụ.
+Thực tế nó là phần **hay hỏng nhất** của cả nhóm chức năng này, và hỏng theo cách rất khó phát hiện. Mục
+này nói cụ thể vì sao.
+
+**Chuyện đã xảy ra trong một dự án tham khảo.** Phần mềm lưu ảnh vào **thư mục theo ngày** (`20260815/`,
+`20260816/`…), và có hẳn một cơ chế dọn dẹp viết khá cẩn thận: chạy nền để không làm treo giao diện, bắt
+lỗi cho **từng thư mục** để một thư mục đang bị khoá không chặn phần còn lại, ghi một dòng nhật ký cho
+mỗi lần xoá, và một bộ đếm giờ tự đặt lại lịch mỗi ngày một lần.
+
+Chỉ có một vấn đề: **hàm dọn dẹp không được gọi từ đâu cả.** Bộ đếm giờ hằng ngày, khi tới giờ, chỉ làm
+đúng một việc — **đặt lại lịch cho ngày hôm sau**:
+
+```csharp
+private void OnTimedEvent()
+{
+    SetDailyTimer();       // ← đặt lại lịch… và hết. Không có lời gọi dọn dẹp nào.
+}
+```
+
+Tìm toàn bộ mã nguồn, hàm xoá thư mục cũ có **không lời gọi nào**. Nghĩa là ổ đĩa đầy dần cho tới ngày
+nó đầy hẳn — và khi đó máy không lưu được ảnh nữa, có thể không ghi được cả nhật ký lẫn dữ liệu sản
+xuất, vào một thời điểm không ai đoán trước.
+
+Điều đáng sợ của loại lỗi này là **nó đọc qua thì trông đúng**. Có hàm dọn dẹp, có bộ đếm giờ hằng ngày,
+có ghi nhật ký. Người đọc code lướt qua sẽ tick vào ô *"đã có cơ chế dọn ổ đĩa"* và đi tiếp. Đây đúng là
+trường hợp Chương 19 mô tả trong mục *"code tồn tại không đồng nghĩa code đang chạy"* — và cách kiểm tra
+cũng đúng như ở đó: **đừng đọc, hãy xác nhận**. Với chức năng này, việc xác nhận rẻ đến mức không có lý
+do gì để bỏ qua: tạo một thư mục tên là ngày của một năm trước, để máy chạy qua đêm, sáng hôm sau xem nó
+còn không.
+
+**Bốn điều một chính sách xoá dùng được phải có:**
+
+**1. Xoá theo tuổi là chưa đủ — phải nhìn cả dung lượng còn trống.** Giữ 30 ngày là hợp lý cho một ngày
+bình thường. Nhưng ngày máy chạy hàng khó với tỉ lệ lỗi cao gấp mười, số ảnh cũng gấp mười — và 30 ngày
+đó không còn vừa ổ đĩa nữa. Chính sách đúng gồm **hai điều kiện**: xoá thứ quá hạn, **và** nếu dung
+lượng trống xuống dưới ngưỡng thì xoá tiếp thứ cũ nhất cho tới khi đủ.
+
+**2. Phải có ngưỡng cảnh báo trước khi hết chỗ.** Khi dung lượng trống xuống dưới một mức (ví dụ 10%),
+báo một cảnh báo mức thấp lên màn hình. Người kỹ thuật xử lý được trong giờ hành chính, thay vì máy dừng
+lúc 2 giờ sáng.
+
+**3. Phải trả lời được câu: lưu bằng chứng thất bại thì máy làm gì?** Đây là câu hỏi chính sách, không
+phải câu hỏi kỹ thuật, và nó phải được người phụ trách chất lượng quyết định:
+> - Với máy **bắt buộc truy xuất nguồn gốc** (hàng y tế, hàng ô tô, hàng có yêu cầu của khách): không
+>   lưu được bằng chứng nghĩa là **không được phép sản xuất tiếp** — phải dừng và báo cảnh báo.
+> - Với máy khác: ghi cảnh báo, tiếp tục chạy, nhưng **đánh dấu vào bản ghi sản xuất** rằng các chi tiết
+>   trong khoảng đó không có ảnh kèm.
+>
+> Điều tệ nhất — và cũng là điều mặc định nếu không ai quyết — là **âm thầm bỏ qua**: lệnh lưu ảnh thất
+> bại, ngoại lệ bị nuốt, máy chạy tiếp, và ba tuần sau khi khách hàng khiếu nại thì không có gì để xem.
+
+**4. Việc xoá không được chen vào lúc máy đang chạy.** Xoá đệ quy vài chục nghìn tệp làm nghẽn ổ đĩa
+hàng phút. Hẹn nó vào lúc giao ca, hoặc chỉ chạy khi máy đang ở trạng thái rảnh, và xoá **từng phần**
+thay vì một lần cho hết.
+
+> ⚠️ **Một chi tiết nhỏ trong cùng đoạn code đó, nhưng là bài học chung cho mọi quy ước đặt tên.** Vòng
+> dọn dẹp thử phân tích tên thư mục theo **hai định dạng ngày khác nhau** (`yyyyMMdd` và `yyMMdd`) — dấu
+> vết của việc quy ước đặt tên đã đổi giữa đời máy. Người viết đã xử lý đúng: chấp nhận cả hai. Nhưng
+> điều đáng rút ra là **dữ liệu cũ không tự đổi tên theo bạn**: mỗi lần đổi quy ước đặt tên tệp hay thư
+> mục, bạn tạo ra một nghĩa vụ đọc-được-cả-hai kéo dài đúng bằng thời hạn lưu trữ. Vì vậy hãy chọn quy
+> ước **rộng rãi ngay từ đầu** — dùng đủ bốn chữ số cho năm, đặt thời gian trước tên, và tránh dấu cách
+> cùng ký tự có dấu trong tên tệp bằng chứng.
+
 ### B.3.2 "Cho khách tự sửa quy trình" — ba con đường và con đường nên chọn
 
 Máy phi tiêu chuẩn có một áp lực đặc trưng: mỗi khách hàng muốn quy trình khác nhau một chút, và
@@ -27542,6 +27607,9 @@ Ba câu hỏi nên tự trả lời cho máy của mình, vì bỏ qua thì hậ
 - Phần chìm là các **dịch vụ nền** (Bảng B.9): vòng quét IO, giám sát an toàn, quản lý cảnh báo,
   hàng đợi gửi MES, xoay vòng nhật ký, khôi phục sau mất điện — thiếu chúng thì phần mềm chạy được
   trong buổi nghiệm thu nhưng không sống được qua vài tháng sản xuất.
+- **Chính sách xoá dữ liệu bằng chứng (mục B.3.1) là chỗ gần như dự án nào cũng làm dở dang.** Phải có
+  đủ bốn thứ: xoá theo tuổi **và** theo dung lượng trống, cảnh báo trước khi hết chỗ, quyết định rõ
+  *lưu bằng chứng thất bại thì máy làm gì*, và không xoá lúc máy đang chạy.
 - Ba quyết định khó sửa nhất, phải làm đúng từ đầu: **tách ba loại tham số** (công thức / hệ thống /
   phần cứng), **mã định danh duy nhất cho từng chi tiết**, và **ghi chế độ chạy vào từng bản ghi**.
 - Khi có nhu cầu "cho khách tự sửa quy trình", chọn **con đường cấu hình dạng dữ liệu** (mục B.3.2) —

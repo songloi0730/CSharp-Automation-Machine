@@ -29742,6 +29742,62 @@ ta cần xem lại gần như luôn là chi tiết có vấn đề. Cách làm t
 trị đo nằm sát ngưỡng. Kèm theo đó là chính sách xoá tự động theo tuổi — và chính sách này phải là
 tham số cấu hình, vì mỗi khách hàng yêu cầu lưu một thời hạn khác nhau.</p>
 </blockquote>
+<h4>Chính sách xoá — chỗ gần như dự án nào cũng làm dở dang</h4>
+<p>Câu cuối của callout trên — <em>&quot;kèm theo đó là chính sách xoá tự động theo tuổi&quot;</em> — nghe như một dòng phụ.
+Thực tế nó là phần <strong>hay hỏng nhất</strong> của cả nhóm chức năng này, và hỏng theo cách rất khó phát hiện. Mục
+này nói cụ thể vì sao.</p>
+<p><strong>Chuyện đã xảy ra trong một dự án tham khảo.</strong> Phần mềm lưu ảnh vào <strong>thư mục theo ngày</strong> (<code>20260815/</code>,
+<code>20260816/</code>…), và có hẳn một cơ chế dọn dẹp viết khá cẩn thận: chạy nền để không làm treo giao diện, bắt
+lỗi cho <strong>từng thư mục</strong> để một thư mục đang bị khoá không chặn phần còn lại, ghi một dòng nhật ký cho
+mỗi lần xoá, và một bộ đếm giờ tự đặt lại lịch mỗi ngày một lần.</p>
+<p>Chỉ có một vấn đề: <strong>hàm dọn dẹp không được gọi từ đâu cả.</strong> Bộ đếm giờ hằng ngày, khi tới giờ, chỉ làm
+đúng một việc — <strong>đặt lại lịch cho ngày hôm sau</strong>:</p>
+<pre><code class="language-csharp">private void OnTimedEvent()
+{
+    SetDailyTimer();       // ← đặt lại lịch… và hết. Không có lời gọi dọn dẹp nào.
+}
+</code></pre>
+<p>Tìm toàn bộ mã nguồn, hàm xoá thư mục cũ có <strong>không lời gọi nào</strong>. Nghĩa là ổ đĩa đầy dần cho tới ngày
+nó đầy hẳn — và khi đó máy không lưu được ảnh nữa, có thể không ghi được cả nhật ký lẫn dữ liệu sản
+xuất, vào một thời điểm không ai đoán trước.</p>
+<p>Điều đáng sợ của loại lỗi này là <strong>nó đọc qua thì trông đúng</strong>. Có hàm dọn dẹp, có bộ đếm giờ hằng ngày,
+có ghi nhật ký. Người đọc code lướt qua sẽ tick vào ô <em>&quot;đã có cơ chế dọn ổ đĩa&quot;</em> và đi tiếp. Đây đúng là
+trường hợp Chương 19 mô tả trong mục <em>&quot;code tồn tại không đồng nghĩa code đang chạy&quot;</em> — và cách kiểm tra
+cũng đúng như ở đó: <strong>đừng đọc, hãy xác nhận</strong>. Với chức năng này, việc xác nhận rẻ đến mức không có lý
+do gì để bỏ qua: tạo một thư mục tên là ngày của một năm trước, để máy chạy qua đêm, sáng hôm sau xem nó
+còn không.</p>
+<p><strong>Bốn điều một chính sách xoá dùng được phải có:</strong></p>
+<p><strong>1. Xoá theo tuổi là chưa đủ — phải nhìn cả dung lượng còn trống.</strong> Giữ 30 ngày là hợp lý cho một ngày
+bình thường. Nhưng ngày máy chạy hàng khó với tỉ lệ lỗi cao gấp mười, số ảnh cũng gấp mười — và 30 ngày
+đó không còn vừa ổ đĩa nữa. Chính sách đúng gồm <strong>hai điều kiện</strong>: xoá thứ quá hạn, <strong>và</strong> nếu dung
+lượng trống xuống dưới ngưỡng thì xoá tiếp thứ cũ nhất cho tới khi đủ.</p>
+<p><strong>2. Phải có ngưỡng cảnh báo trước khi hết chỗ.</strong> Khi dung lượng trống xuống dưới một mức (ví dụ 10%),
+báo một cảnh báo mức thấp lên màn hình. Người kỹ thuật xử lý được trong giờ hành chính, thay vì máy dừng
+lúc 2 giờ sáng.</p>
+<p><strong>3. Phải trả lời được câu: lưu bằng chứng thất bại thì máy làm gì?</strong> Đây là câu hỏi chính sách, không
+phải câu hỏi kỹ thuật, và nó phải được người phụ trách chất lượng quyết định:</p>
+<blockquote>
+<ul>
+<li>Với máy <strong>bắt buộc truy xuất nguồn gốc</strong> (hàng y tế, hàng ô tô, hàng có yêu cầu của khách): không
+lưu được bằng chứng nghĩa là <strong>không được phép sản xuất tiếp</strong> — phải dừng và báo cảnh báo.</li>
+<li>Với máy khác: ghi cảnh báo, tiếp tục chạy, nhưng <strong>đánh dấu vào bản ghi sản xuất</strong> rằng các chi tiết
+trong khoảng đó không có ảnh kèm.</li>
+</ul>
+<p>Điều tệ nhất — và cũng là điều mặc định nếu không ai quyết — là <strong>âm thầm bỏ qua</strong>: lệnh lưu ảnh thất
+bại, ngoại lệ bị nuốt, máy chạy tiếp, và ba tuần sau khi khách hàng khiếu nại thì không có gì để xem.</p>
+</blockquote>
+<p><strong>4. Việc xoá không được chen vào lúc máy đang chạy.</strong> Xoá đệ quy vài chục nghìn tệp làm nghẽn ổ đĩa
+hàng phút. Hẹn nó vào lúc giao ca, hoặc chỉ chạy khi máy đang ở trạng thái rảnh, và xoá <strong>từng phần</strong>
+thay vì một lần cho hết.</p>
+<blockquote>
+<p>⚠️ <strong>Một chi tiết nhỏ trong cùng đoạn code đó, nhưng là bài học chung cho mọi quy ước đặt tên.</strong> Vòng
+dọn dẹp thử phân tích tên thư mục theo <strong>hai định dạng ngày khác nhau</strong> (<code>yyyyMMdd</code> và <code>yyMMdd</code>) — dấu
+vết của việc quy ước đặt tên đã đổi giữa đời máy. Người viết đã xử lý đúng: chấp nhận cả hai. Nhưng
+điều đáng rút ra là <strong>dữ liệu cũ không tự đổi tên theo bạn</strong>: mỗi lần đổi quy ước đặt tên tệp hay thư
+mục, bạn tạo ra một nghĩa vụ đọc-được-cả-hai kéo dài đúng bằng thời hạn lưu trữ. Vì vậy hãy chọn quy
+ước <strong>rộng rãi ngay từ đầu</strong> — dùng đủ bốn chữ số cho năm, đặt thời gian trước tên, và tránh dấu cách
+cùng ký tự có dấu trong tên tệp bằng chứng.</p>
+</blockquote>
 <h3>B.3.2 &quot;Cho khách tự sửa quy trình&quot; — ba con đường và con đường nên chọn</h3>
 <p>Máy phi tiêu chuẩn có một áp lực đặc trưng: mỗi khách hàng muốn quy trình khác nhau một chút, và
 không ai muốn chờ nhà cung cấp build lại phần mềm cho mỗi thay đổi nhỏ. Nhu cầu &quot;cho phép sửa quy
@@ -30874,6 +30930,9 @@ của nhóm đông nhất đó.</li>
 <li>Phần chìm là các <strong>dịch vụ nền</strong> (Bảng B.9): vòng quét IO, giám sát an toàn, quản lý cảnh báo,
 hàng đợi gửi MES, xoay vòng nhật ký, khôi phục sau mất điện — thiếu chúng thì phần mềm chạy được
 trong buổi nghiệm thu nhưng không sống được qua vài tháng sản xuất.</li>
+<li><strong>Chính sách xoá dữ liệu bằng chứng (mục B.3.1) là chỗ gần như dự án nào cũng làm dở dang.</strong> Phải có
+đủ bốn thứ: xoá theo tuổi <strong>và</strong> theo dung lượng trống, cảnh báo trước khi hết chỗ, quyết định rõ
+<em>lưu bằng chứng thất bại thì máy làm gì</em>, và không xoá lúc máy đang chạy.</li>
 <li>Ba quyết định khó sửa nhất, phải làm đúng từ đầu: <strong>tách ba loại tham số</strong> (công thức / hệ thống /
 phần cứng), <strong>mã định danh duy nhất cho từng chi tiết</strong>, và <strong>ghi chế độ chạy vào từng bản ghi</strong>.</li>
 <li>Khi có nhu cầu &quot;cho khách tự sửa quy trình&quot;, chọn <strong>con đường cấu hình dạng dữ liệu</strong> (mục B.3.2) —

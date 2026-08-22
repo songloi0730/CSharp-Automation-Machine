@@ -18971,6 +18971,154 @@ cùng nội dung đó vào một file <code>README.md</code> trong thư mục c�
 <strong>đi cùng mã nguồn</strong>, không phải nó nằm ở định dạng nào.</p>
 </blockquote>
 <hr>
+<h3>14.1.2c  Ba cách thiết kế một thư viện đọc/ghi PLC — và cách bạn nên bọc chúng lại</h3>
+<p>Mục 14.1.2b bàn về <strong>tầng giao tiếp PLC bạn tự viết</strong>. Mục này nhìn xuống một bậc: <strong>thư viện bạn dùng
+bên dưới tầng đó trông như thế nào</strong>. Ba thư viện mã nguồn mở đang được dùng thật đưa ra ba câu trả lời
+khác hẳn nhau cho cùng một việc — <em>đọc một giá trị từ PLC</em>. So ba cái là cách nhanh nhất để hiểu mình
+đang chọn gì khi thêm một gói NuGet.</p>
+<h4>Cách A — địa chỉ là một ĐỐI TƯỢNG, đọc/ghi theo lô</h4>
+<pre><code class="language-csharp">// Địa chỉ + kiểu + giá trị gói chung trong một &quot;mục PLC&quot;
+var item = new Utf8PlcItem(dataBlock: 0, position: 4, length: 10, identifier: &quot;MaSanPham&quot;);
+
+// hoặc dựng bằng builder cho dễ đọc
+var item2 = builder.ConstructUtf8PlcItem(&quot;MaSanPham&quot;)
+                   .AtDatablock(0).AtPosition(4).WithLength(10).Build();
+
+// API CHÍNH nhận cả một tập — gom lô là mặc định, không phải tính năng thêm
+Task       ReadItemsAsync (ICollection&lt;IPlcItem&gt; items, CancellationToken ct = default);
+Task&lt;bool&gt; WriteItemsAsync(ICollection&lt;IPlcItem&gt; items, CancellationToken ct = default);
+</code></pre>
+<p>Ba điểm thiết kế đáng học, cả ba đều là vấn đề bạn sẽ gặp:</p>
+<p><strong>1. Gom lô là hình dạng mặc định của API.</strong> Hàm nhận <em>một tập</em> mục; đọc một mục là hàm mở rộng gọi lại
+hàm tập. Ngược hẳn với thói quen viết <code>ReadBit(...)</code> rồi sau này mới đi tối ưu. Vì chi phí lớn nhất khi
+nói chuyện với PLC là <strong>số lần đi–về</strong>, chứ không phải số byte, thiết kế đặt lô làm mặc định sẽ ngăn
+được một lớp lỗi hiệu năng ngay từ đầu (xem mục 14.1.2b về gộp vùng địa chỉ).</p>
+<p><strong>2. Thất bại một phần là khái niệm hạng nhất.</strong> Khi đọc mười mục mà ba mục hỏng, thư viện ném một ngoại
+lệ <strong>mang theo hai danh sách</strong>: mục nào thành công, mục nào thất bại kèm lý do. Đây là chi tiết mà rất
+nhiều thư viện bỏ qua — và khi bỏ qua thì người gọi chỉ biết <em>&quot;đọc hỏng&quot;</em>, phải đọc lại từng cái để tìm
+ra thủ phạm.</p>
+<p><strong>3. Có sẵn một bản PLC giả lập chạy trong bộ nhớ</strong>, phát hành như một gói riêng. Đúng nguyên tắc &quot;song
+song thật/giả lập&quot; ở Chương 17 — và điều đáng chú ý là <strong>tác giả thư viện làm sẵn</strong>, thay vì để mỗi dự
+án tự viết lấy một bản.</p>
+<p>Một tiện ích nhỏ của thư viện này đáng bắt chước vào tầng của bạn: <strong>ghi kèm đọc lại để xác nhận</strong>
+(<code>WriteItemWithValidationAsync</code>). Với những giá trị mà ghi sai thì hậu quả nặng — chọn công thức, đặt
+giới hạn, cho phép chạy — ghi rồi đọc lại so sánh là mười dòng code đổi lấy sự yên tâm.</p>
+<blockquote>
+<p>⚠️ <strong>Nhưng cùng thư viện đó có một quyết định bạn phải biết trước khi dùng:</strong> nếu gọi đọc/ghi khi
+<strong>chưa kết nối</strong>, lệnh đó <strong>không báo lỗi mà bị giữ lại</strong> — <code>await</code> sẽ không trả về cho tới khi kết
+nối được thiết lập. Ý định thì tốt (mất kết nối thoáng qua không làm hỏng luồng), nhưng hệ quả trong
+phần mềm máy rất nguy hiểm: <strong>một bước trình tự treo vô hạn, không có lỗi, không có cảnh báo</strong>. Người
+vận hành chỉ thấy máy đứng im ở bước 7.</p>
+<p>Nếu dùng thư viện có hành vi kiểu này — và nhiều thư viện có — thì bắt buộc phải <strong>bọc mọi lời gọi
+trong thời gian chờ tối đa của riêng bạn</strong> (Chương 5 mục 5.2), rồi biến hết giờ thành một cảnh báo có
+nội dung. Nguyên tắc chung: <em>một thao tác trong trình tự máy không bao giờ được phép chờ vô hạn.</em></p>
+</blockquote>
+<h4>Cách B — mỗi địa chỉ là một DÒNG SỰ KIỆN</h4>
+<pre><code class="language-csharp">var plc = new Sharp7Plc(&quot;10.30.3.10&quot;, rack: 0, slot: 2);
+await plc.InitializeConnection();
+
+await plc.SetValue&lt;bool&gt;(&quot;DB2.DBX0.4&quot;, true);
+var value = await plc.GetValue&lt;short&gt;(&quot;DB2.Int4&quot;);
+
+// và điểm khác biệt thật sự: đăng ký một dòng thông báo khi giá trị đổi
+var sub = plc.CreateNotification&lt;bool&gt;(&quot;DB1.DBX0.2&quot;, TransmissionMode.OnChange)
+             .Where(b =&gt; b)                  // chỉ lấy sườn lên
+             .Do(_ =&gt; XuLyKhiCoPhoi())
+             .Subscribe();
+</code></pre>
+<p>Ở đây địa chỉ là <strong>một chuỗi theo cú pháp của hãng</strong>, và giá trị được mô hình hoá thành <em>dòng dữ liệu
+theo thời gian</em> — lọc, gộp, chống dội đều là các phép biến đổi trên dòng đó (Chương 16 mục 16.1.2 đã
+giới thiệu mô hình này cho telemetry).</p>
+<p>Ba nhận xét:</p>
+<ul>
+<li><strong>Sườn lên/sườn xuống trở thành một dòng code.</strong> <code>.Where(b =&gt; b)</code> chính là &quot;khi tín hiệu chuyển từ
+0 lên 1&quot;. Trong cách A và C, bạn phải tự nhớ giá trị cũ để so.</li>
+<li>Thư viện này tồn tại vì thư viện gốc mà nó bọc <strong>không an toàn đa luồng</strong> — và đó là một bài học
+riêng: khi đánh giá một thư viện giao tiếp, câu hỏi <em>&quot;gọi từ nhiều luồng có an toàn không&quot;</em> phải hỏi
+sớm, vì trong phần mềm máy chắc chắn sẽ có nhiều luồng cùng đụng vào PLC.</li>
+<li>Địa chỉ là <strong>chuỗi</strong>, nên gõ sai chỉ lộ ra lúc chạy. Đây là cái giá của sự gọn.</li>
+</ul>
+<h4>Cách C — gắn địa chỉ vào THUỘC TÍNH bằng attribute, để thư viện tự hỏi vòng</h4>
+<pre><code class="language-csharp">public class ThanhGhiMay : RegisterCollection
+{
+    [Register(&quot;R100&quot;)]        public bool   DangChay      { get; private set; }
+    [Register(&quot;DDT7012&quot;)]     public int    SoLuongDaLam  { get; private set; }
+    [Register(&quot;DT1101&quot;, &quot;STRING[4]&quot;)]
+                              public string MaLo          { get; private set; }
+}
+
+// gắn vào kết nối, kèm một bộ hỏi vòng
+var plc = Mewtocol.Ethernet(&quot;192.168.1.55&quot;)
+    .WithRegisterCollections(c =&gt; registers = c.AddCollection&lt;ThanhGhiMay&gt;())
+    .WithPoller()
+    .Build();
+</code></pre>
+<p>Code nghiệp vụ chỉ đọc <code>registers.SoLuongDaLam</code> như một thuộc tính C# bình thường; thư viện lo việc hỏi
+vòng, và <strong>tự gộp các vùng địa chỉ gần nhau thành ít khung truyền nhất</strong>. Nó còn cho khai báo <strong>mức ưu
+tiên hỏi vòng</strong> khác nhau cho từng nhóm thanh ghi — thứ cần đọc mỗi 100 ms và thứ chỉ cần mỗi 5 giây
+không nên tốn như nhau.</p>
+<p>Đây là cách dễ dùng nhất trong ba cách, và cũng là cách <strong>giấu nhiều nhất</strong>: bạn không thấy được lúc
+nào một lần truyền xảy ra. Với dữ liệu giám sát thì tuyệt; với <strong>lệnh điều khiển</strong> thì phải cẩn thận —
+ghi một thuộc tính rồi cho rằng PLC đã nhận là một giả định nguy hiểm.</p>
+<h4>So sánh, và lời khuyên thực dụng</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>A — mục PLC + lô</th>
+<th>B — dòng sự kiện</th>
+<th>C — thuộc tính + hỏi vòng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hình dạng địa chỉ</td>
+<td>Đối tượng có kiểu</td>
+<td>Chuỗi cú pháp hãng</td>
+<td>Attribute trên property</td>
+</tr>
+<tr>
+<td>Gom lô</td>
+<td><strong>Mặc định</strong></td>
+<td>Theo từng lời gọi</td>
+<td><strong>Thư viện tự gộp vùng</strong></td>
+</tr>
+<tr>
+<td>Biết khi giá trị đổi</td>
+<td>Tự so</td>
+<td><strong>Có sẵn, lọc được</strong></td>
+<td>Sự kiện đổi thuộc tính</td>
+</tr>
+<tr>
+<td>Thất bại một phần</td>
+<td><strong>Có mô hình rõ</strong></td>
+<td>Theo từng lời gọi</td>
+<td>Bị giấu trong bộ hỏi vòng</td>
+</tr>
+<tr>
+<td>Dễ dùng cho người mới</td>
+<td>Trung bình</td>
+<td>Cần biết mô hình dòng</td>
+<td><strong>Dễ nhất</strong></td>
+</tr>
+<tr>
+<td>Rủi ro chính</td>
+<td>Lời gọi có thể chờ vô hạn</td>
+<td>Sai địa chỉ chỉ lộ lúc chạy</td>
+<td>Không thấy thời điểm truyền</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Và đây là điều quan trọng hơn việc chọn thư viện nào: đừng để kiểu dữ liệu của thư viện lan vào
+code nghiệp vụ.</strong> Dù chọn A, B hay C, hãy bọc nó sau <strong>interface của riêng bạn</strong> (mục 14.1.2b) — thứ
+mà tầng quy trình nhìn thấy phải là <code>Task&lt;bool&gt; DocCoPhoiAsync(int tram, CancellationToken ct)</code>, chứ
+không phải <code>IPlcItem</code>, <code>IObservable&lt;bool&gt;</code> hay một thuộc tính có attribute.</p>
+<p>Lý do rất cụ thể và bạn sẽ gặp: thư viện có thể <strong>ngừng được bảo trì</strong>, khách hàng có thể <strong>đổi hãng
+PLC</strong>, hoặc bạn phát hiện thư viện không an toàn đa luồng sau khi đã dùng ở hai trăm chỗ. Nếu kiểu dữ
+liệu của nó đã lan khắp nơi, đổi là viết lại; nếu nó nằm sau một interface, đổi là viết một lớp cài
+đặt mới. Đây chính là lý do tồn tại của tầng trừu tượng ở Chương 13 — và giao tiếp PLC là chỗ nó trả
+công nhanh nhất.</p>
+</blockquote>
+<hr>
 <h3>14.1.3  TCP/IP tuỳ chỉnh — thiết kế hợp đồng ranh giới</h3>
 <blockquote>
 <p>📌 <strong>Lưu ý:</strong> TCP/IP tuỳ chỉnh không phải giao thức công nghiệp chuẩn — đây là giải pháp
@@ -21023,6 +21171,12 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 <td>P/Invoke SDK card + máy trạng thái servo</td>
 <td>SDK của hãng card</td>
 <td>Phân biệt dữ liệu chu kỳ và tham số; không gọi tham số trong vòng điều khiển</td>
+</tr>
+<tr>
+<td>Chọn thư viện PLC (14.1.2c)</td>
+<td>Bọc sau interface của riêng bạn — <strong>luôn luôn</strong></td>
+<td>Data.Plc / Sharp7.Rx / Mewtocol.NET…</td>
+<td>Ba mô hình: mục-PLC theo lô · dòng sự kiện · thuộc tính + hỏi vòng. <strong>Mọi lời gọi phải có thời gian chờ tối đa của bạn</strong></td>
 </tr>
 <tr>
 <td>Web service SOAP (14.2.9)</td>
@@ -29680,6 +29834,11 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 <td><strong>MewtocolNet</strong></td>
 <td>Giao thức của một hãng PLC <strong>ít phổ biến hơn</strong> (Panasonic), qua cả TCP lẫn Serial</td>
 <td>Đọc để thấy: khi hãng không có SDK .NET, người ta tự viết lớp giao thức như thế nào. Liên hệ Chương 14 mục 14.1.5</td>
+</tr>
+<tr>
+<td><strong>Data.Plc</strong> (<code>LittleGitPhoenix/Data.Plc</code>) + <strong>Sharp7Reactive</strong> (<code>evopro-ag/Sharp7Reactive</code>)</td>
+<td>Ba cách thiết kế thư viện đọc/ghi PLC, đọc cùng lúc với MewtocolNet ở dòng trên</td>
+<td>Bài tập đối chiếu ngắn và rất bổ ích: cùng một việc <em>đọc một giá trị từ PLC</em>, ba mô hình khác hẳn nhau — xem Chương 14 mục 14.1.2c. Chú ý hành vi <strong>giữ lệnh lại khi chưa kết nối</strong> của Data.Plc</td>
 </tr>
 <tr>
 <td><strong>tinyua</strong></td>

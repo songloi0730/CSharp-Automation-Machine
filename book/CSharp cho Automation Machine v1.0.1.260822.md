@@ -17218,6 +17218,138 @@ như số thật** — loại lỗi tốn nhiều ngày nhất để tìm ra.
 
 ---
 
+### 14.1.2c  Ba cách thiết kế một thư viện đọc/ghi PLC — và cách bạn nên bọc chúng lại
+
+Mục 14.1.2b bàn về **tầng giao tiếp PLC bạn tự viết**. Mục này nhìn xuống một bậc: **thư viện bạn dùng
+bên dưới tầng đó trông như thế nào**. Ba thư viện mã nguồn mở đang được dùng thật đưa ra ba câu trả lời
+khác hẳn nhau cho cùng một việc — *đọc một giá trị từ PLC*. So ba cái là cách nhanh nhất để hiểu mình
+đang chọn gì khi thêm một gói NuGet.
+
+#### Cách A — địa chỉ là một ĐỐI TƯỢNG, đọc/ghi theo lô
+
+```csharp
+// Địa chỉ + kiểu + giá trị gói chung trong một "mục PLC"
+var item = new Utf8PlcItem(dataBlock: 0, position: 4, length: 10, identifier: "MaSanPham");
+
+// hoặc dựng bằng builder cho dễ đọc
+var item2 = builder.ConstructUtf8PlcItem("MaSanPham")
+                   .AtDatablock(0).AtPosition(4).WithLength(10).Build();
+
+// API CHÍNH nhận cả một tập — gom lô là mặc định, không phải tính năng thêm
+Task       ReadItemsAsync (ICollection<IPlcItem> items, CancellationToken ct = default);
+Task<bool> WriteItemsAsync(ICollection<IPlcItem> items, CancellationToken ct = default);
+```
+
+Ba điểm thiết kế đáng học, cả ba đều là vấn đề bạn sẽ gặp:
+
+**1. Gom lô là hình dạng mặc định của API.** Hàm nhận *một tập* mục; đọc một mục là hàm mở rộng gọi lại
+hàm tập. Ngược hẳn với thói quen viết `ReadBit(...)` rồi sau này mới đi tối ưu. Vì chi phí lớn nhất khi
+nói chuyện với PLC là **số lần đi–về**, chứ không phải số byte, thiết kế đặt lô làm mặc định sẽ ngăn
+được một lớp lỗi hiệu năng ngay từ đầu (xem mục 14.1.2b về gộp vùng địa chỉ).
+
+**2. Thất bại một phần là khái niệm hạng nhất.** Khi đọc mười mục mà ba mục hỏng, thư viện ném một ngoại
+lệ **mang theo hai danh sách**: mục nào thành công, mục nào thất bại kèm lý do. Đây là chi tiết mà rất
+nhiều thư viện bỏ qua — và khi bỏ qua thì người gọi chỉ biết *"đọc hỏng"*, phải đọc lại từng cái để tìm
+ra thủ phạm.
+
+**3. Có sẵn một bản PLC giả lập chạy trong bộ nhớ**, phát hành như một gói riêng. Đúng nguyên tắc "song
+song thật/giả lập" ở Chương 17 — và điều đáng chú ý là **tác giả thư viện làm sẵn**, thay vì để mỗi dự
+án tự viết lấy một bản.
+
+Một tiện ích nhỏ của thư viện này đáng bắt chước vào tầng của bạn: **ghi kèm đọc lại để xác nhận**
+(`WriteItemWithValidationAsync`). Với những giá trị mà ghi sai thì hậu quả nặng — chọn công thức, đặt
+giới hạn, cho phép chạy — ghi rồi đọc lại so sánh là mười dòng code đổi lấy sự yên tâm.
+
+> ⚠️ **Nhưng cùng thư viện đó có một quyết định bạn phải biết trước khi dùng:** nếu gọi đọc/ghi khi
+> **chưa kết nối**, lệnh đó **không báo lỗi mà bị giữ lại** — `await` sẽ không trả về cho tới khi kết
+> nối được thiết lập. Ý định thì tốt (mất kết nối thoáng qua không làm hỏng luồng), nhưng hệ quả trong
+> phần mềm máy rất nguy hiểm: **một bước trình tự treo vô hạn, không có lỗi, không có cảnh báo**. Người
+> vận hành chỉ thấy máy đứng im ở bước 7.
+>
+> Nếu dùng thư viện có hành vi kiểu này — và nhiều thư viện có — thì bắt buộc phải **bọc mọi lời gọi
+> trong thời gian chờ tối đa của riêng bạn** (Chương 5 mục 5.2), rồi biến hết giờ thành một cảnh báo có
+> nội dung. Nguyên tắc chung: *một thao tác trong trình tự máy không bao giờ được phép chờ vô hạn.*
+
+#### Cách B — mỗi địa chỉ là một DÒNG SỰ KIỆN
+
+```csharp
+var plc = new Sharp7Plc("10.30.3.10", rack: 0, slot: 2);
+await plc.InitializeConnection();
+
+await plc.SetValue<bool>("DB2.DBX0.4", true);
+var value = await plc.GetValue<short>("DB2.Int4");
+
+// và điểm khác biệt thật sự: đăng ký một dòng thông báo khi giá trị đổi
+var sub = plc.CreateNotification<bool>("DB1.DBX0.2", TransmissionMode.OnChange)
+             .Where(b => b)                  // chỉ lấy sườn lên
+             .Do(_ => XuLyKhiCoPhoi())
+             .Subscribe();
+```
+
+Ở đây địa chỉ là **một chuỗi theo cú pháp của hãng**, và giá trị được mô hình hoá thành *dòng dữ liệu
+theo thời gian* — lọc, gộp, chống dội đều là các phép biến đổi trên dòng đó (Chương 16 mục 16.1.2 đã
+giới thiệu mô hình này cho telemetry).
+
+Ba nhận xét:
+
+- **Sườn lên/sườn xuống trở thành một dòng code.** `.Where(b => b)` chính là "khi tín hiệu chuyển từ
+  0 lên 1". Trong cách A và C, bạn phải tự nhớ giá trị cũ để so.
+- Thư viện này tồn tại vì thư viện gốc mà nó bọc **không an toàn đa luồng** — và đó là một bài học
+  riêng: khi đánh giá một thư viện giao tiếp, câu hỏi *"gọi từ nhiều luồng có an toàn không"* phải hỏi
+  sớm, vì trong phần mềm máy chắc chắn sẽ có nhiều luồng cùng đụng vào PLC.
+- Địa chỉ là **chuỗi**, nên gõ sai chỉ lộ ra lúc chạy. Đây là cái giá của sự gọn.
+
+#### Cách C — gắn địa chỉ vào THUỘC TÍNH bằng attribute, để thư viện tự hỏi vòng
+
+```csharp
+public class ThanhGhiMay : RegisterCollection
+{
+    [Register("R100")]        public bool   DangChay      { get; private set; }
+    [Register("DDT7012")]     public int    SoLuongDaLam  { get; private set; }
+    [Register("DT1101", "STRING[4]")]
+                              public string MaLo          { get; private set; }
+}
+
+// gắn vào kết nối, kèm một bộ hỏi vòng
+var plc = Mewtocol.Ethernet("192.168.1.55")
+    .WithRegisterCollections(c => registers = c.AddCollection<ThanhGhiMay>())
+    .WithPoller()
+    .Build();
+```
+
+Code nghiệp vụ chỉ đọc `registers.SoLuongDaLam` như một thuộc tính C# bình thường; thư viện lo việc hỏi
+vòng, và **tự gộp các vùng địa chỉ gần nhau thành ít khung truyền nhất**. Nó còn cho khai báo **mức ưu
+tiên hỏi vòng** khác nhau cho từng nhóm thanh ghi — thứ cần đọc mỗi 100 ms và thứ chỉ cần mỗi 5 giây
+không nên tốn như nhau.
+
+Đây là cách dễ dùng nhất trong ba cách, và cũng là cách **giấu nhiều nhất**: bạn không thấy được lúc
+nào một lần truyền xảy ra. Với dữ liệu giám sát thì tuyệt; với **lệnh điều khiển** thì phải cẩn thận —
+ghi một thuộc tính rồi cho rằng PLC đã nhận là một giả định nguy hiểm.
+
+#### So sánh, và lời khuyên thực dụng
+
+| | A — mục PLC + lô | B — dòng sự kiện | C — thuộc tính + hỏi vòng |
+|---|---|---|---|
+| Hình dạng địa chỉ | Đối tượng có kiểu | Chuỗi cú pháp hãng | Attribute trên property |
+| Gom lô | **Mặc định** | Theo từng lời gọi | **Thư viện tự gộp vùng** |
+| Biết khi giá trị đổi | Tự so | **Có sẵn, lọc được** | Sự kiện đổi thuộc tính |
+| Thất bại một phần | **Có mô hình rõ** | Theo từng lời gọi | Bị giấu trong bộ hỏi vòng |
+| Dễ dùng cho người mới | Trung bình | Cần biết mô hình dòng | **Dễ nhất** |
+| Rủi ro chính | Lời gọi có thể chờ vô hạn | Sai địa chỉ chỉ lộ lúc chạy | Không thấy thời điểm truyền |
+
+> 💡 **Và đây là điều quan trọng hơn việc chọn thư viện nào: đừng để kiểu dữ liệu của thư viện lan vào
+> code nghiệp vụ.** Dù chọn A, B hay C, hãy bọc nó sau **interface của riêng bạn** (mục 14.1.2b) — thứ
+> mà tầng quy trình nhìn thấy phải là `Task<bool> DocCoPhoiAsync(int tram, CancellationToken ct)`, chứ
+> không phải `IPlcItem`, `IObservable<bool>` hay một thuộc tính có attribute.
+>
+> Lý do rất cụ thể và bạn sẽ gặp: thư viện có thể **ngừng được bảo trì**, khách hàng có thể **đổi hãng
+> PLC**, hoặc bạn phát hiện thư viện không an toàn đa luồng sau khi đã dùng ở hai trăm chỗ. Nếu kiểu dữ
+> liệu của nó đã lan khắp nơi, đổi là viết lại; nếu nó nằm sau một interface, đổi là viết một lớp cài
+> đặt mới. Đây chính là lý do tồn tại của tầng trừu tượng ở Chương 13 — và giao tiếp PLC là chỗ nó trả
+> công nhanh nhất.
+
+---
+
 ### 14.1.3  TCP/IP tuỳ chỉnh — thiết kế hợp đồng ranh giới
 
 > 📌 **Lưu ý:** TCP/IP tuỳ chỉnh không phải giao thức công nghiệp chuẩn — đây là giải pháp
@@ -18880,6 +19012,7 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 | TCP custom | Process isolation + IPC contract | System.Net.Sockets | Payload trung lập, heartbeat, reconnect bắt buộc |
 | Giao tiếp PLC (14.1.2b) | Bản sao trong bộ nhớ + gộp địa chỉ thành khối | Thư viện của hãng PLC | C# ghi vào bit nhớ nội bộ (ý định), **không ghi thẳng đầu ra** |
 | EtherCAT khi PC là master (14.1.4) | P/Invoke SDK card + máy trạng thái servo | SDK của hãng card | Phân biệt dữ liệu chu kỳ và tham số; không gọi tham số trong vòng điều khiển |
+| Chọn thư viện PLC (14.1.2c) | Bọc sau interface của riêng bạn — **luôn luôn** | Data.Plc / Sharp7.Rx / Mewtocol.NET… | Ba mô hình: mục-PLC theo lô · dòng sự kiện · thuộc tính + hỏi vòng. **Mọi lời gọi phải có thời gian chờ tối đa của bạn** |
 | Web service SOAP (14.2.9) | Sinh mã client từ mô tả dịch vụ | System.ServiceModel.* | Đừng tự dựng XML; thử sớm nếu có kế hoạch nâng cấp .NET |
 
 Bảng trên gộp cả các ranh giới đã bổ sung ở mục 14.1.2b (giao tiếp PLC cho kiến trúc "PLC điều khiển,
@@ -26378,6 +26511,7 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 | **TcOpen** (`TcOpenGroup/TcOpen`, `Inxton/TcOpen`) | Khung ứng dụng cho máy tự động hoá nối **PLC Beckhoff/TwinCAT** với .NET; có mô hình thành phần, sinh mã, và giao diện | Gần với chủ đề sách nhất trong danh sách. Đọc cách họ ánh xạ **biến PLC ↔ đối tượng C#** — vấn đề Chương 14 mô tả |
 | **S7CommPlusDriver**, **Sharp7**, `siemens/simatic-s7-webserver-api` | Ba cách **khác nhau** để nói chuyện với cùng một dòng PLC Siemens: driver giao thức tự viết, thư viện cộng đồng, và API chính thức của hãng | Bài tập đối chiếu rất tốt: cùng một bài toán, ba mức trừu tượng, ba đánh đổi. Liên hệ Chương 14 |
 | **MewtocolNet** | Giao thức của một hãng PLC **ít phổ biến hơn** (Panasonic), qua cả TCP lẫn Serial | Đọc để thấy: khi hãng không có SDK .NET, người ta tự viết lớp giao thức như thế nào. Liên hệ Chương 14 mục 14.1.5 |
+| **Data.Plc** (`LittleGitPhoenix/Data.Plc`) + **Sharp7Reactive** (`evopro-ag/Sharp7Reactive`) | Ba cách thiết kế thư viện đọc/ghi PLC, đọc cùng lúc với MewtocolNet ở dòng trên | Bài tập đối chiếu ngắn và rất bổ ích: cùng một việc *đọc một giá trị từ PLC*, ba mô hình khác hẳn nhau — xem Chương 14 mục 14.1.2c. Chú ý hành vi **giữ lệnh lại khi chưa kết nối** của Data.Plc |
 | **tinyua** | Một stack **OPC UA** client viết lại từ đầu cho .NET, không phụ thuộc SDK của tổ chức chuẩn | Đọc nếu muốn hiểu OPC UA thật sự làm gì bên dưới lớp SDK ở Chương 14 mục 14.1.1 |
 | **SOEM** (`OpenEtherCATsociety/SOEM`) + lớp bọc .NET | Một **EtherCAT master** mã nguồn mở: dò slave, chuyển trạng thái bus, ánh xạ PDO — những thứ SDK thương mại giấu sau một lời gọi hàm | Đọc để hiểu Chương 14 mục 14.1.4. Không đủ tính thời gian thực cho servo tốc độ cao trên Windows thường, **nhưng rất tốt để học** |
 | **TcOpen** (đã nêu ở trên) | Cũng là nơi xem cách một khung .NET nối với thế giới EtherCAT/TwinCAT | — |

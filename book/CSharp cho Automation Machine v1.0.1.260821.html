@@ -15992,6 +15992,137 @@ và quy trình dạy điểm phải <strong>bắt buộc chạy thử tới đi�
 bước &quot;chạy thử&quot; bắt buộc trong luồng dạy điểm ở Chương 10 mục 10.1.7.</p>
 </blockquote>
 <hr>
+<h3>13.1.4d  Công thức là một lớp, hay là một tập biến có tên?</h3>
+<p>Mục 13.1.4 bàn về phiên bản và kiểm tra hợp lệ của công thức; mục 13.1.4b bàn về hình dạng tệp tham
+số. Mục này bàn về câu hỏi nằm trước cả hai: <strong>trong code, công thức là cái gì?</strong> Hai dự án tham khảo
+trả lời theo hai cách đối lập, và lựa chọn giữa chúng ảnh hưởng tới việc thêm một tham số mới tốn năm
+phút hay tốn cả một lần cập nhật phần mềm.</p>
+<h4>Cách A — công thức là một lớp có kiểu</h4>
+<pre><code class="language-csharp">public abstract class RecipeParamBase
+{
+    [Required, MinLength(1)]
+    public string   RecipeName { get; set; }
+    public DateTime CreateTime { get; set; } = DateTime.Now;
+    public DateTime UpdateTime { get; set; } = DateTime.Now;
+
+    public virtual bool Validate(out string err) { /* dùng DataAnnotations */ }
+    public string ToJson();
+    public static T FromJson&lt;T&gt;(string json) where T : RecipeParamBase;
+    public abstract RecipeParamBase DeepClone();     // buộc lớp con phải nghĩ tới sao chép sâu
+}
+
+public interface IRecipeService&lt;T&gt; where T : RecipeParamBase
+{
+    Task&lt;T&gt;    RecipeParam(string recipeName, CancellationToken ct = default);
+    Task&lt;T&gt;    RecipeParam(string? requestedPpid);          // ← host gọi tên công thức theo mã của nó
+    Task&lt;bool&gt; RecipeChangedAsync(T recipe, CancellationToken ct = default);   // đổi công thức đang chạy
+    Task&lt;T&gt;    CopyRecipeAsync(string newName, T source, CancellationToken ct = default);
+    // ... thêm/sửa/xoá/đổi tên/xuất
+}
+</code></pre>
+<p>Ba chi tiết trong đoạn trên đáng chú ý hơn phần CRUD:</p>
+<ul>
+<li><strong><code>DeepClone()</code> là <code>abstract</code>, không phải <code>virtual</code>.</strong> Nghĩa là mọi lớp công thức cụ thể <strong>buộc phải</strong>
+viết sao chép sâu. Lý do rất thực tế: màn hình sửa công thức phải cho người dùng sửa rồi <em>huỷ bỏ</em>,
+và cách duy nhất an toàn là sửa trên một bản sao. Nếu <code>DeepClone</code> chỉ là <code>virtual</code> với cài đặt mặc
+định kiểu sao chép nông, một lớp con có danh sách con bên trong sẽ <strong>sửa thẳng vào bản gốc</strong> mà không
+ai phát hiện — cho tới khi người dùng bấm Huỷ và thấy giá trị đã đổi.</li>
+<li><strong>Có một hàm tra công thức theo mã của hệ thống chủ.</strong> Đây là dấu hiệu máy có nối host: host không
+gọi tên công thức theo cách người vận hành gọi, nó gửi một mã. Tách hai hàm tra cứu (theo tên người
+dùng, theo mã host) rõ ràng hơn là nhét cả hai vào một hàm.</li>
+<li><strong>Có một hàm riêng cho việc &quot;đổi công thức đang chạy&quot;</strong>, tách khỏi hàm đọc công thức. Đọc là vô hại;
+đổi công thức đang sản xuất thì không — nó cần điều kiện tiên quyết và cần ghi vết.</li>
+</ul>
+<h4>Cách B — công thức là một tập biến có tên</h4>
+<p>Dự án còn lại không có lớp công thức nào cả. Thay vào đó, <strong>mọi tham số của máy được đăng ký làm một
+&quot;biến&quot;</strong>, định danh bằng cặp <em>(tên khối chức năng, đường dẫn trong khối)</em>; và toàn bộ máy có một
+<strong>tên tập biến đang dùng</strong> — chính là tên công thức:</p>
+<pre><code class="language-csharp">// Mỗi biến tự khai báo mình thuộc khối nào, đường dẫn nào
+_variables[(variable.ActorName, variable.ItemPath)] = variable;
+
+public string   LocalName  { get; }        // tên tập biến đang dùng = tên công thức
+public string[] LocalNames { get; }        // danh sách công thức có sẵn
+
+public void Load(string? localName = null);   // nạp cả tập
+public void Save(string? localName = null);   // lưu cả tập (Save(name) = &quot;lưu thành công thức mới&quot;)
+public void Delete(string localName);
+public void RenameLocalName(string source, string target);
+</code></pre>
+<p>Cách này nghe trừu tượng, nhưng nó mở ra ba thứ mà cách A phải tự làm thêm:</p>
+<p><strong>1. Thêm một tham số mới không đụng tới lược đồ dữ liệu.</strong> Khối chức năng khai báo thêm một biến là
+xong — không sửa lớp công thức, không viết bước chuyển đổi dữ liệu cho các công thức cũ. Với máy còn
+đang chỉnh ở hiện trường, nơi mỗi tuần lại phát sinh một tham số cần chỉnh được, đây là khác biệt rất
+lớn.</p>
+<p><strong>2. Mỗi biến có &quot;phạm vi&quot;, nên phân biệt được cái gì thuộc công thức và cái gì không.</strong> Trong dự án
+đó có một phạm vi tên là <em>tạm thời</em>: biến chạy trong lúc làm việc nhưng <strong>không</strong> được lưu vào công
+thức. Đây chính là ranh giới ba loại tham số ở Phụ lục B mục B.2.3, nhưng được thi hành bằng code chứ
+không bằng kỷ luật — mỗi biến khai báo phạm vi của mình một lần, và cơ chế lưu tự làm đúng.</p>
+<p><strong>3. Lịch sử thay đổi có sẵn, cho mọi tham số, không phải viết riêng.</strong> Vì mọi tham số đi qua cùng một
+cơ chế, dự án đó lưu được <strong>giá trị cũ, vị trí trong cấu trúc, và người thực hiện</strong> cho từng lần đổi,
+rồi cho truy vấn lại. Đây đúng là thứ mà mục 13.1.4c phải khuyên làm thủ công cho bảng điểm — ở đây nó
+là hệ quả miễn phí của kiến trúc.</p>
+<blockquote>
+<p>💡 <strong>Và một chi tiết nhỏ dễ bỏ sót nhưng rất đáng bắt chước:</strong> khi đổi sang công thức khác, dự án đó
+<strong>nạp luôn bộ công việc thị giác tương ứng</strong>. Vì sao quan trọng: tham số thị giác thường nằm trong
+phần mềm của hãng camera chứ không nằm trong công thức của bạn (mục 13.2.4c), nên rất dễ rơi vào
+tình trạng <em>đổi công thức rồi mà camera vẫn đang chạy công việc của mã hàng cũ</em>. Máy chạy bình
+thường, không lỗi gì, và kết quả kiểm tra sai hàng loạt. <strong>Đổi công thức phải là một thao tác nguyên
+tử trên TẤT CẢ các hệ thống con</strong> — trục, thị giác, thiết bị ngoài — chứ không chỉ trên tệp tham số
+của bạn.</p>
+</blockquote>
+<h4>Chọn cách nào</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>A — lớp có kiểu</th>
+<th>B — tập biến có tên</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Thêm tham số mới</td>
+<td>Sửa lớp, build lại, xử lý công thức cũ thiếu trường</td>
+<td><strong>Khai báo một biến, xong</strong></td>
+</tr>
+<tr>
+<td>Trình biên dịch bắt lỗi</td>
+<td><strong>Có</strong> — gõ sai tên tham số là lỗi biên dịch</td>
+<td>Không — sai đường dẫn là lỗi lúc chạy</td>
+</tr>
+<tr>
+<td>Đọc code để biết công thức có gì</td>
+<td><strong>Dễ</strong> — mở một lớp là thấy hết</td>
+<td>Khó — phải đi khắp các khối chức năng</td>
+</tr>
+<tr>
+<td>Lịch sử thay đổi, phân quyền theo tham số</td>
+<td>Phải tự viết</td>
+<td><strong>Có sẵn, đồng nhất</strong></td>
+</tr>
+<tr>
+<td>Kiểm tra hợp lệ</td>
+<td>Dùng thuộc tính khai báo ngay trên property</td>
+<td>Phải gắn quy tắc vào từng biến</td>
+</tr>
+</tbody></table></div>
+<p>Cách chọn nhanh: <strong>máy làm một loại sản phẩm với bộ tham số ổn định → cách A</strong>; <strong>máy còn đang phát
+triển, hoặc một khung dùng lại cho nhiều máy khác nhau → cách B</strong>. Và có một lối đi giữa mà vài dự án
+dùng: lớp có kiểu cho phần lõi ổn định (tốc độ, thời gian, ngưỡng phán định), cộng thêm một túi
+<em>(tên → giá trị)</em> cho phần mở rộng của từng máy. Túi mở rộng đó phải có kỷ luật riêng, nếu không sau
+hai năm nó chứa mọi thứ và bạn quay lại đúng bệnh phình cấu hình ở mục 13.1.4b.</p>
+<blockquote>
+<p>⚠️ <strong>Dù chọn cách nào, &quot;đổi công thức&quot; phải có điều kiện tiên quyết.</strong> Đây là điểm chung mà cả hai
+dự án đều xử lý, và là thứ người mới hay bỏ qua vì nghĩ đổi công thức chỉ là nạp lại vài con số:</p>
+<ol>
+<li><strong>Máy phải không đang chạy.</strong> Đổi giữa chừng nghĩa là sản phẩm đang trong máy được xử lý bằng
+tham số của hai mã hàng khác nhau ở hai trạm khác nhau.</li>
+<li><strong>Trong máy phải không còn phôi.</strong> Đây là lý do tồn tại của trình tự <em>dọn máy</em> ở Chương 12 mục
+12.4.1 — chạy hết phôi còn sót ra ngoài rồi mới đổi.</li>
+<li><strong>Đổi xong phải ghi vết</strong>: công thức cũ, công thức mới, ai đổi, lúc nào. Khi lô hàng bị khiếu nại
+ba tuần sau, dòng nhật ký này là thứ trả lời được câu <em>&quot;lúc đó máy đang chạy tham số nào&quot;</em>.</li>
+</ol>
+</blockquote>
+<hr>
 <h2 id="132-factory-adapter-pattern-cho-thit-b-đa-chng-loi">13.2 Factory &amp; Adapter Pattern cho thiết bị đa chủng loại</h2>
 <p>Một dự án máy thực tế có thể có hàng chục thiết bị từ nhiều hãng, giao tiếp qua nhiều
 protocol khác nhau. Factory, Strategy và Bridge là ba pattern phối hợp, mỗi cái giải
@@ -17858,6 +17989,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Device Manager (13.3.1)</td>
 <td>Quản lý vòng đời + dependency ordering + snapshot HMI</td>
 <td>Khởi động/dừng có kiểm soát, không phân tán</td>
+</tr>
+<tr>
+<td>Mô hình công thức (13.1.4d)</td>
+<td>Công thức là lớp có kiểu hay tập biến có tên</td>
+<td>Lớp: trình biên dịch bắt lỗi; tập biến: thêm tham số không đổi lược đồ, có sẵn lịch sử sửa. Đổi công thức phải <strong>nguyên tử trên mọi hệ thống con</strong></td>
 </tr>
 <tr>
 <td>Bảng điểm (13.1.4c)</td>

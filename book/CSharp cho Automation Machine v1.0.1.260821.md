@@ -14606,6 +14606,124 @@ quá một buổi:
 
 ---
 
+### 13.1.4d  Công thức là một lớp, hay là một tập biến có tên?
+
+Mục 13.1.4 bàn về phiên bản và kiểm tra hợp lệ của công thức; mục 13.1.4b bàn về hình dạng tệp tham
+số. Mục này bàn về câu hỏi nằm trước cả hai: **trong code, công thức là cái gì?** Hai dự án tham khảo
+trả lời theo hai cách đối lập, và lựa chọn giữa chúng ảnh hưởng tới việc thêm một tham số mới tốn năm
+phút hay tốn cả một lần cập nhật phần mềm.
+
+#### Cách A — công thức là một lớp có kiểu
+
+```csharp
+public abstract class RecipeParamBase
+{
+    [Required, MinLength(1)]
+    public string   RecipeName { get; set; }
+    public DateTime CreateTime { get; set; } = DateTime.Now;
+    public DateTime UpdateTime { get; set; } = DateTime.Now;
+
+    public virtual bool Validate(out string err) { /* dùng DataAnnotations */ }
+    public string ToJson();
+    public static T FromJson<T>(string json) where T : RecipeParamBase;
+    public abstract RecipeParamBase DeepClone();     // buộc lớp con phải nghĩ tới sao chép sâu
+}
+
+public interface IRecipeService<T> where T : RecipeParamBase
+{
+    Task<T>    RecipeParam(string recipeName, CancellationToken ct = default);
+    Task<T>    RecipeParam(string? requestedPpid);          // ← host gọi tên công thức theo mã của nó
+    Task<bool> RecipeChangedAsync(T recipe, CancellationToken ct = default);   // đổi công thức đang chạy
+    Task<T>    CopyRecipeAsync(string newName, T source, CancellationToken ct = default);
+    // ... thêm/sửa/xoá/đổi tên/xuất
+}
+```
+
+Ba chi tiết trong đoạn trên đáng chú ý hơn phần CRUD:
+
+- **`DeepClone()` là `abstract`, không phải `virtual`.** Nghĩa là mọi lớp công thức cụ thể **buộc phải**
+  viết sao chép sâu. Lý do rất thực tế: màn hình sửa công thức phải cho người dùng sửa rồi *huỷ bỏ*,
+  và cách duy nhất an toàn là sửa trên một bản sao. Nếu `DeepClone` chỉ là `virtual` với cài đặt mặc
+  định kiểu sao chép nông, một lớp con có danh sách con bên trong sẽ **sửa thẳng vào bản gốc** mà không
+  ai phát hiện — cho tới khi người dùng bấm Huỷ và thấy giá trị đã đổi.
+- **Có một hàm tra công thức theo mã của hệ thống chủ.** Đây là dấu hiệu máy có nối host: host không
+  gọi tên công thức theo cách người vận hành gọi, nó gửi một mã. Tách hai hàm tra cứu (theo tên người
+  dùng, theo mã host) rõ ràng hơn là nhét cả hai vào một hàm.
+- **Có một hàm riêng cho việc "đổi công thức đang chạy"**, tách khỏi hàm đọc công thức. Đọc là vô hại;
+  đổi công thức đang sản xuất thì không — nó cần điều kiện tiên quyết và cần ghi vết.
+
+#### Cách B — công thức là một tập biến có tên
+
+Dự án còn lại không có lớp công thức nào cả. Thay vào đó, **mọi tham số của máy được đăng ký làm một
+"biến"**, định danh bằng cặp *(tên khối chức năng, đường dẫn trong khối)*; và toàn bộ máy có một
+**tên tập biến đang dùng** — chính là tên công thức:
+
+```csharp
+// Mỗi biến tự khai báo mình thuộc khối nào, đường dẫn nào
+_variables[(variable.ActorName, variable.ItemPath)] = variable;
+
+public string   LocalName  { get; }        // tên tập biến đang dùng = tên công thức
+public string[] LocalNames { get; }        // danh sách công thức có sẵn
+
+public void Load(string? localName = null);   // nạp cả tập
+public void Save(string? localName = null);   // lưu cả tập (Save(name) = "lưu thành công thức mới")
+public void Delete(string localName);
+public void RenameLocalName(string source, string target);
+```
+
+Cách này nghe trừu tượng, nhưng nó mở ra ba thứ mà cách A phải tự làm thêm:
+
+**1. Thêm một tham số mới không đụng tới lược đồ dữ liệu.** Khối chức năng khai báo thêm một biến là
+xong — không sửa lớp công thức, không viết bước chuyển đổi dữ liệu cho các công thức cũ. Với máy còn
+đang chỉnh ở hiện trường, nơi mỗi tuần lại phát sinh một tham số cần chỉnh được, đây là khác biệt rất
+lớn.
+
+**2. Mỗi biến có "phạm vi", nên phân biệt được cái gì thuộc công thức và cái gì không.** Trong dự án
+đó có một phạm vi tên là *tạm thời*: biến chạy trong lúc làm việc nhưng **không** được lưu vào công
+thức. Đây chính là ranh giới ba loại tham số ở Phụ lục B mục B.2.3, nhưng được thi hành bằng code chứ
+không bằng kỷ luật — mỗi biến khai báo phạm vi của mình một lần, và cơ chế lưu tự làm đúng.
+
+**3. Lịch sử thay đổi có sẵn, cho mọi tham số, không phải viết riêng.** Vì mọi tham số đi qua cùng một
+cơ chế, dự án đó lưu được **giá trị cũ, vị trí trong cấu trúc, và người thực hiện** cho từng lần đổi,
+rồi cho truy vấn lại. Đây đúng là thứ mà mục 13.1.4c phải khuyên làm thủ công cho bảng điểm — ở đây nó
+là hệ quả miễn phí của kiến trúc.
+
+> 💡 **Và một chi tiết nhỏ dễ bỏ sót nhưng rất đáng bắt chước:** khi đổi sang công thức khác, dự án đó
+> **nạp luôn bộ công việc thị giác tương ứng**. Vì sao quan trọng: tham số thị giác thường nằm trong
+> phần mềm của hãng camera chứ không nằm trong công thức của bạn (mục 13.2.4c), nên rất dễ rơi vào
+> tình trạng *đổi công thức rồi mà camera vẫn đang chạy công việc của mã hàng cũ*. Máy chạy bình
+> thường, không lỗi gì, và kết quả kiểm tra sai hàng loạt. **Đổi công thức phải là một thao tác nguyên
+> tử trên TẤT CẢ các hệ thống con** — trục, thị giác, thiết bị ngoài — chứ không chỉ trên tệp tham số
+> của bạn.
+
+#### Chọn cách nào
+
+| | A — lớp có kiểu | B — tập biến có tên |
+|---|---|---|
+| Thêm tham số mới | Sửa lớp, build lại, xử lý công thức cũ thiếu trường | **Khai báo một biến, xong** |
+| Trình biên dịch bắt lỗi | **Có** — gõ sai tên tham số là lỗi biên dịch | Không — sai đường dẫn là lỗi lúc chạy |
+| Đọc code để biết công thức có gì | **Dễ** — mở một lớp là thấy hết | Khó — phải đi khắp các khối chức năng |
+| Lịch sử thay đổi, phân quyền theo tham số | Phải tự viết | **Có sẵn, đồng nhất** |
+| Kiểm tra hợp lệ | Dùng thuộc tính khai báo ngay trên property | Phải gắn quy tắc vào từng biến |
+
+Cách chọn nhanh: **máy làm một loại sản phẩm với bộ tham số ổn định → cách A**; **máy còn đang phát
+triển, hoặc một khung dùng lại cho nhiều máy khác nhau → cách B**. Và có một lối đi giữa mà vài dự án
+dùng: lớp có kiểu cho phần lõi ổn định (tốc độ, thời gian, ngưỡng phán định), cộng thêm một túi
+*(tên → giá trị)* cho phần mở rộng của từng máy. Túi mở rộng đó phải có kỷ luật riêng, nếu không sau
+hai năm nó chứa mọi thứ và bạn quay lại đúng bệnh phình cấu hình ở mục 13.1.4b.
+
+> ⚠️ **Dù chọn cách nào, "đổi công thức" phải có điều kiện tiên quyết.** Đây là điểm chung mà cả hai
+> dự án đều xử lý, và là thứ người mới hay bỏ qua vì nghĩ đổi công thức chỉ là nạp lại vài con số:
+>
+> 1. **Máy phải không đang chạy.** Đổi giữa chừng nghĩa là sản phẩm đang trong máy được xử lý bằng
+>    tham số của hai mã hàng khác nhau ở hai trạm khác nhau.
+> 2. **Trong máy phải không còn phôi.** Đây là lý do tồn tại của trình tự *dọn máy* ở Chương 12 mục
+>    12.4.1 — chạy hết phôi còn sót ra ngoài rồi mới đổi.
+> 3. **Đổi xong phải ghi vết**: công thức cũ, công thức mới, ai đổi, lúc nào. Khi lô hàng bị khiếu nại
+>    ba tuần sau, dòng nhật ký này là thứ trả lời được câu *"lúc đó máy đang chạy tham số nào"*.
+
+---
+
 ## 13.2 Factory & Adapter Pattern cho thiết bị đa chủng loại
 
 Một dự án máy thực tế có thể có hàng chục thiết bị từ nhiều hãng, giao tiếp qua nhiều
@@ -16373,6 +16491,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
+| Mô hình công thức (13.1.4d) | Công thức là lớp có kiểu hay tập biến có tên | Lớp: trình biên dịch bắt lỗi; tập biến: thêm tham số không đổi lược đồ, có sẵn lịch sử sửa. Đổi công thức phải **nguyên tử trên mọi hệ thống con** |
 | Bảng điểm (13.1.4c) | Toạ độ dạy được, lưu ra tệp | Bốn cách lưu; biên dạng chuyển động thuộc về **điểm**, không thuộc chỗ gọi; đơn vị kỹ thuật ở mọi nơi trừ lớp sát driver |
 | Kết nối lại (13.3.5) | Thiết bị mất kết nối rồi có lại — làm gì tiếp | Bốn câu hỏi chính sách; và **nối lại được ≠ chạy tiếp được**: phải xác minh trạng thái vật lý trước |
 | Connection Pool (13.3.2) | Nhiều device chia sẻ một session vật lý, reconnect tập trung | Giảm số kết nối, quản lý tài nguyên nhất quán |

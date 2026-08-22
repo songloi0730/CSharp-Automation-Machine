@@ -14410,6 +14410,136 @@ Ba hậu quả thật, xếp theo mức đau tăng dần:
 
 ---
 
+### 13.1.4c  Bảng điểm — tệp dữ liệu nhỏ nhất, nhưng sai thì máy đâm
+
+Chương 10 mục 10.1.7 đã bàn *giao diện* dạy điểm. Mục này bàn thứ nằm dưới nó: **điểm được lưu ra sao**.
+Đây là tệp dữ liệu nhỏ nhất trong cả phần mềm — vài chục dòng số — nhưng cũng là tệp mà một con số sai
+sẽ làm đầu gắp đâm vào đồ gá. Bốn dự án tham khảo lưu nó theo bốn kiểu khác nhau, và so bốn kiểu đó
+dạy được gần như mọi thứ cần biết.
+
+#### Trước hết: một máy cần những loại điểm nào
+
+Đọc tên các điểm trong một tệp thật cho ra một danh mục đáng ngạc nhiên là ổn định giữa các máy:
+
+| Loại điểm | Dùng để làm gì | Ghi chú |
+|---|---|---|
+| **Điểm an toàn** | Vị trí lùi về mà chắc chắn không va vào gì | Gần như luôn là điểm đầu tiên trong danh sách, và là đích của mọi thao tác "về vị trí an toàn" |
+| **Điểm chụp ảnh** | Nơi trục dừng để camera chụp | Phải lặp lại chính xác, nếu không kết quả thị giác lệch theo |
+| **Điểm làm việc** | Gắp, đặt, lắp, bắt vít… | Thường là điểm hay phải chỉnh lại nhất |
+| **Điểm hiệu chuẩn** | Vị trí dùng khi chạy quy trình hiệu chuẩn | Khác điểm làm việc dù toạ độ gần nhau — đừng gộp |
+| **Điểm tránh va** | Điểm trung gian bắt buộc đi qua để không quét vào vật cản | Thường theo cặp trái/phải, trước/sau |
+
+> 💡 **Điểm hiệu chuẩn và điểm làm việc trông giống nhau nhưng phải tách.** Trong tệp thật, hai điểm này
+> lệch nhau vài phần mười milimét — đủ gần để một người mới nghĩ rằng gộp lại cho gọn. Đừng: chúng
+> **đổi vì những lý do khác nhau**. Điểm làm việc đổi khi đổi mã hàng hoặc chỉnh đồ gá; điểm hiệu chuẩn
+> đổi khi thay camera hoặc chỉnh cơ khí. Gộp lại thì mỗi lần chỉnh cái này sẽ âm thầm phá cái kia — và
+> triệu chứng xuất hiện muộn, ở một quy trình hoàn toàn khác.
+
+#### Bốn cách lưu, và cách nào hợp với máy nào
+
+**Cách 1 — một điểm là một "tư thế" của cả trạm.** Tệp XML chia theo trạm; mỗi điểm là một dòng có tên
+và **toạ độ của toàn bộ trục trong trạm**, với số ô trục cố định:
+
+```xml
+<TramBatVit>
+  <Point index="1" name="Điểm an toàn"   x="190.76" y="97.93"  z="11.04" u="0" a="0" b="0" c="0" d="0" />
+  <Point index="2" name="Điểm chụp ảnh"  x="190.76" y="318.61" z="11.04" u="0" a="0" b="0" c="0" d="0" />
+</TramBatVit>
+```
+
+Hợp với máy mà các trục **di chuyển phối hợp tới cùng một vị trí** (gantry XYZ, tay gắp nhiều bậc):
+"về điểm chụp ảnh" là một lệnh duy nhất, đọc một dòng là biết cả tư thế. Cái giá: **số ô trục cố định**
+— trạm chỉ có 3 trục vẫn mang theo 5 ô rỗng, và trạm cần trục thứ 9 thì phải sửa cả định dạng lẫn code
+đọc.
+
+**Cách 2 — một điểm là một mục tiêu của một trục, kèm cả cách đi tới đó.** Điểm là một đối tượng có
+tên, và ngoài vị trí còn mang theo **biên dạng chuyển động**:
+
+```csharp
+public class AxisPoint
+{
+    public string Name           { get; set; }   // "Vị trí lấy phôi"
+    public double TargetPosition { get; set; }   // vị trí tuyệt đối, đơn vị kỹ thuật (mm)
+    public double Speed          { get; set; }   // tốc độ khuyến nghị
+    public double Acc            { get; set; }   // gia tốc
+    public double Dec            { get; set; }   // giảm tốc
+    public double STime          { get; set; }   // thời gian đoạn S (làm mềm điểm đầu/cuối)
+    public string Description    { get; set; }   // ghi chú cho người sau
+    public int    SortOrder      { get; set; }   // thứ tự hiện trên màn hình
+}
+```
+
+Ý tưởng cốt lõi được ghi thẳng trong chú thích của dự án đó, và đáng chép lại: *đừng viết cứng toạ độ
+trong code nghiệp vụ, hãy tham chiếu theo tên* — nhờ vậy quy trình và toạ độ tách rời nhau.
+
+Nhưng điểm đáng học hơn là việc **biên dạng chuyển động được lưu cùng điểm**. Nghe nhỏ, hệ quả lớn: tốc
+độ và gia tốc để tới một điểm là **thuộc tính của điểm đó**, không phải của chỗ gọi lệnh. Điểm hạ xuống
+mặt sản phẩm phải đi chậm và mềm; điểm lùi về vị trí chờ có thể đi nhanh. Nếu tốc độ nằm ở chỗ gọi,
+cùng một điểm sẽ được đi tới bằng năm tốc độ khác nhau từ năm chỗ trong code, và **chỉnh cho an toàn ở
+một chỗ không sửa được bốn chỗ kia**.
+
+**Cách 3 — mảng theo trục, giao diện tự ẩn ô thừa.** Gần cách 1 nhưng lưu theo dạng mảng `{giá trị, tốc
+độ}` cho từng trục của trạm; màn hình dựng sẵn số ô tối đa rồi **ẩn bớt ô của những trục trạm này không
+có**. Cách này giữ được ưu điểm "một dòng là một tư thế" mà màn hình vẫn gọn — và là cách rẻ nhất để
+một màn hình dùng chung cho mọi trạm (Phụ lục B mục B.2.2).
+
+**Cách 4 — điểm không nằm trong phần mềm của bạn.** Với máy dùng robot có bộ điều khiển riêng, danh sách
+điểm nằm **trong bộ điều khiển robot**, dưới định dạng của hãng; phần mềm C# chỉ gọi *"chạy tới điểm số
+12"*. Đây không phải thiếu sót mà là ranh giới trách nhiệm hợp lý — nhưng nó tạo ra ba hệ quả phải biết:
+điểm **không nằm trong bản sao lưu phần mềm của bạn**; đổi điểm phải làm bằng công cụ của hãng; và
+**số hiệu điểm trở thành một giao ước ngầm** giữa hai hệ thống — đổi thứ tự điểm trong robot là làm
+hỏng chương trình C# mà không có lỗi biên dịch nào cảnh báo.
+
+| | Cách 1 (tư thế/XML) | Cách 2 (điểm + biên dạng) | Cách 3 (mảng theo trục) | Cách 4 (trong bộ điều khiển) |
+|---|---|---|---|---|
+| Hợp với | Trục phối hợp, nhiều trạm giống nhau | Trục độc lập, cần tốc độ riêng cho từng điểm | Nhiều trạm khác số trục | Máy dùng robot có sẵn |
+| Điểm mạnh | Đọc một dòng biết cả tư thế | Tốc độ/gia tốc đi cùng điểm | Một màn hình cho mọi trạm | Không phải viết lại thứ hãng làm tốt hơn |
+| Điểm yếu | Số ô trục cố định | Không thấy ngay tư thế toàn trạm | Vẫn cố định số ô, chỉ ẩn đi | Nằm ngoài sao lưu; số hiệu điểm là giao ước ngầm |
+
+#### Ba cái bẫy chung cho cả bốn cách
+
+**Bẫy 1 — đơn vị của từng trường không được ghi ở đâu cả.** Trong một dự án, khi lưu điểm thì **tốc độ
+được nhân với hệ số quy đổi xung/đơn-vị, còn vị trí thì không**. Nghĩa là trong cùng một bản ghi, một
+trường đã ở đơn vị của card, một trường còn ở đơn vị kỹ thuật. Nó chạy đúng — cho tới khi người sau đọc
+tệp và tưởng cả hai cùng đơn vị.
+
+Cách phòng rẻ nhất: **đặt đơn vị vào tên trường hoặc vào một dòng chú thích ngay đầu tệp** —
+`TargetPositionMm`, `SpeedMmPerSec`. Và quy ước đáng theo cho toàn bộ phần mềm: **mọi thứ lưu ra đĩa và
+mọi thứ hiện trên màn hình đều ở đơn vị kỹ thuật; quy đổi sang xung chỉ xảy ra ở lớp sát trình điều
+khiển** (Chương 13 mục 13.2). Một chỗ quy đổi, một hướng, dễ kiểm tra.
+
+**Bẫy 2 — tên điểm vừa là khoá tra cứu, vừa là nhãn hiển thị.** Trong tệp XML ở cách 1, trường `name`
+chứa ba ngôn ngữ ghép bằng dấu gạch chéo (`"安全点/Safe Point/Điểm an toàn"`), và màn hình cắt chuỗi ra
+theo ngôn ngữ đang chọn. Cách này giải quyết được vấn đề trước mắt, nhưng nó trộn hai vai trò: **sửa một
+lỗi chính tả trong bản dịch là đổi luôn khoá** — và nếu ở đâu đó trong code có so sánh theo tên, việc
+sửa chính tả sẽ làm hỏng chức năng.
+
+Cách đúng tách hai vai: điểm có **mã định danh không đổi** (`P_SAFE`, hoặc chính số `index`) dùng để tra
+cứu, và tên hiển thị lấy từ bảng dịch (Chương 10 mục 10.4.2). Nếu bạn tiếp quản một tệp đã trộn, việc
+đáng làm ngay là **chỉ tra cứu theo `index`**, để trường tên trở thành thuần hiển thị.
+
+**Bẫy 3 — không ai biết điểm đã bị đổi lúc nào và bởi ai.** Tệp điểm bị sửa từ màn hình, ngay trên máy,
+bởi bất kỳ ai vào được màn hình dạy điểm. Khi máy đột nhiên đâm hoặc kết quả lệch, câu hỏi đầu tiên
+luôn là *"hôm qua có ai chỉnh điểm không"* — và nếu chỉ có một tệp bị ghi đè, không ai trả lời được.
+
+Trong các dự án tham khảo, cách xử lý phổ biến nhất là **một tệp `.bak` nằm cạnh tệp chính** — có còn
+hơn không, nhưng chỉ giữ được đúng một đời trước. Ba việc nhỏ nâng hẳn mức an toàn, không cái nào tốn
+quá một buổi:
+
+1. **Ghi kiểu an toàn** (ghi tệp tạm rồi đổi tên — Chương 3 mục 3.6.1), để mất điện giữa lúc lưu không
+   làm hỏng cả bảng điểm.
+2. **Giữ vài đời cũ**, đặt tên theo thời điểm, và tự xoá bản quá cũ.
+3. **Ghi một dòng nhật ký cho mỗi lần sửa**: điểm nào, giá trị cũ → giá trị mới, ai, lúc nào. Đây là
+   thứ trả lời được câu hỏi phía trên, và nó rẻ hơn nhiều so với việc dựng cả cơ chế phiên bản.
+
+> ⚠️ **Và luôn kiểm tra giới hạn hành trình khi lưu, không phải khi chạy.** Một toạ độ gõ nhầm dấu thập
+> phân sẽ nằm im trong tệp cho tới lần chạy tự động tiếp theo, lúc đó nó thành một lệnh di chuyển hết
+> hành trình ở tốc độ sản xuất. Màn hình dạy điểm phải chặn ngay lúc nhập bằng giới hạn mềm của trục,
+> và quy trình dạy điểm phải **bắt buộc chạy thử tới điểm ở tốc độ thấp** trước khi cho lưu — đúng như
+> bước "chạy thử" bắt buộc trong luồng dạy điểm ở Chương 10 mục 10.1.7.
+
+---
+
 ## 13.2 Factory & Adapter Pattern cho thiết bị đa chủng loại
 
 Một dự án máy thực tế có thể có hàng chục thiết bị từ nhiều hãng, giao tiếp qua nhiều
@@ -16177,6 +16307,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
+| Bảng điểm (13.1.4c) | Toạ độ dạy được, lưu ra tệp | Bốn cách lưu; biên dạng chuyển động thuộc về **điểm**, không thuộc chỗ gọi; đơn vị kỹ thuật ở mọi nơi trừ lớp sát driver |
 | Kết nối lại (13.3.5) | Thiết bị mất kết nối rồi có lại — làm gì tiếp | Bốn câu hỏi chính sách; và **nối lại được ≠ chạy tiếp được**: phải xác minh trạng thái vật lý trước |
 | Connection Pool (13.3.2) | Nhiều device chia sẻ một session vật lý, reconnect tập trung | Giảm số kết nối, quản lý tài nguyên nhất quán |
 | Retry Policy (13.3.3) | Phân loại thao tác: chỉ retry những gì an toàn | Không retry lệnh nguy hiểm; không spam thiết bị |

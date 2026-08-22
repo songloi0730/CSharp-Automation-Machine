@@ -26625,6 +26625,72 @@ Bốn điểm thiết kế đáng chú ý trong khuôn này, và cả bốn đ�
    được ở nhiều quy trình khác nhau mà không cần biết ai đứng trước nó.
 4. **Thêm loại hành động mới = thêm một class**, không sửa đồ thị nào đã dựng, không sửa động cơ.
 
+**Khi viết thật, một nút còn cần bốn thứ nữa.** Khuôn trên là phần lõi. Mở một thư viện nút thật của
+một dự án đang chạy sản xuất — mỗi nút khoảng 150–200 dòng, phần lớn là khai báo — sẽ thấy thêm bốn thứ,
+và mỗi thứ giải quyết một vấn đề rất cụ thể:
+
+```csharp
+[DisplayName("Điều khiển nguồn sáng")]                     // ← tên hiện trong danh mục nút
+[Description("Bật/tắt và đặt độ sáng cho bộ điều khiển đèn")]
+[Serializable, DataContract]
+[CustomImplClz("MayA.Nodes.LightOperator", "MayA.Plugin.Motion")]   // ← (1) trỏ tới lớp thực thi BẰNG CHUỖI
+public class LightOperatorProfile : GeneralOperatorProfile
+{
+    public override bool IsLockInputPorts  => true;        // nút này không cho thêm cổng
+    public override bool IsLockOutputPorts => true;
+
+    protected override void CheckAndInitializeParameters() // ← (2) chạy mỗi lần NẠP
+    {
+        base.CheckAndInitializeParameters();
+        if (OutputParameter.Length == 0)                   //   thiếu cổng thì tự thêm
+            AddOutputParameter(new BooleanPortProfile("KetQua"));
+    }
+
+    public override INodeCloneAble Clone()                 // ← (3) sao chép nút
+    { var other = new LightOperatorProfile(); other.CopyFrom(this, deepClone: true); return other; }
+
+    [DataMember]                                           // ← (4) attribute vừa để LƯU vừa để VẼ màn hình
+    [DisplayName("Độ sáng")] [Category("Bộ điều khiển đèn")] [OrderIndex(522)]
+    public int DoSang { get => _doSang; set => SetProperty(ref _doSang, value); }
+    private int _doSang = 100;
+}
+```
+
+**(1) Hồ sơ trỏ tới lớp thực thi bằng tên chuỗi, không bằng tham chiếu kiểu.** Nghe như một sự thụt lùi,
+nhưng đây là lựa chọn có chủ đích và nó mở ra thứ quan trọng nhất của cả kiến trúc: **trình soạn thảo
+quy trình chỉ cần nạp hồ sơ, không cần nạp code thực thi**. Nhờ vậy kỹ sư mở, sửa, kiểm tra và lưu một
+quy trình **trên máy tính văn phòng**, không có card, không có thư viện của hãng, không có máy.
+
+Cái giá phải trả rất cụ thể và bạn phải phòng: **đổi tên lớp hoặc đổi tên assembly sẽ làm hỏng mọi tệp
+quy trình đã lưu**, và trình biên dịch không cảnh báo gì vì nó chỉ là một chuỗi. Hai việc bắt buộc: coi
+chuỗi đó là **hợp đồng không được đổi** (đổi thì phải viết bước chuyển đổi cho tệp cũ), và cho bộ kiểm
+tra cấu hình (phần dưới) báo lỗi rõ ràng khi không tìm thấy lớp thực thi — thay vì đổ vỡ giữa chu kỳ.
+
+**(2) Hàm khởi tạo tham số chạy mỗi lần nạp — đây là cách nâng cấp tệp quy trình cũ.** Sang năm bạn thêm
+một cổng ra mới cho nút này. Mọi tệp quy trình khách hàng đã lưu đều **thiếu cổng đó**. Nếu nút chỉ tạo
+cổng lúc khởi tạo mới, các quy trình cũ sẽ hỏng. Vì hàm này chạy sau khi giải tuần tự hoá và **chỉ thêm
+những gì còn thiếu**, tệp cũ tự nâng cấp khi mở lên.
+
+Đây là kỹ thuật tương thích ngược rẻ nhất cho mọi cấu hình dạng dữ liệu, không riêng đồ thị nút: **cho
+phép thiếu, điền mặc định khi nạp, và không bao giờ đổi ý nghĩa của một trường đã có**.
+
+**(3) Mọi nút phải sao chép được, và sao chép sâu.** Cần cho ba việc trong trình soạn thảo: chép–dán một
+nút, nhân bản cả một nhánh quy trình, và — quan trọng nhất — **cho sửa trên một bản sao rồi cho phép
+Huỷ**. Nếu sao chép nông, sửa bản sao là sửa luôn bản gốc, và nút Huỷ trở thành nút nói dối. Cùng lý do
+với `DeepClone()` bắt buộc ở mô hình công thức, Chương 13 mục 13.1.4d.
+
+**(4) Attribute làm hai việc cùng lúc.** `[DataMember]` quyết định **cái gì được lưu**; `[DisplayName]`,
+`[Category]`, `[OrderIndex]` quyết định **màn hình tham số trông thế nào** — nhãn nào, nhóm nào, thứ tự
+nào. Không có màn hình nào được vẽ tay cho từng nút; bảng thuộc tính tự dựng từ khai báo. Đây chính là
+mô hình "giao diện do dữ liệu điều khiển" ở mục B.2.2, và là lý do một nút mới có ngay màn hình cấu hình
+mà không tốn thêm công.
+
+> ⚠️ **Một mùi code đáng nhận ra ngay trong ví dụ thật đó:** nút điều khiển đèn có năm thuộc tính
+> `Kênh1`, `Kênh2`, … `Kênh5` — năm khai báo gần như giống hệt nhau, chép lại năm lần. Máy nào cần kênh
+> thứ sáu là phải sửa code và phát hành lại thư viện nút. Thuộc tính đánh số lặp lại gần như luôn là dấu
+> hiệu **cần một danh sách** kèm một bộ soạn thảo riêng cho danh sách đó. Tốn hơn một buổi lúc đầu, và
+> tránh được việc phát hành lại chỉ để thêm một kênh.
+
 **Một thư viện nút hoàn chỉnh trông như thế nào.** Khi mới nghĩ về mẫu này, người ta thường hình
 dung thư viện nút chỉ gồm các hành động thiết bị: chạy trục, bật van, chụp ảnh. Thư viện nút của một
 dự án thật có **hơn 200 lớp** chia thành hơn 20 nhóm, và phần lớn **không phải** hành động thiết bị:

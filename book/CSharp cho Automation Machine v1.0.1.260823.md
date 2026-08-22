@@ -5466,6 +5466,126 @@ chọn `async` hay luồng.
 
 ---
 
+### 6.1.7  Vòng điều khiển kín — khi nào viết trong C#, và bảy điều dễ sai
+
+Mọi phần trước của chương nói về **điều khiển tuần tự**: làm bước này, chờ xong, làm bước sau. Nhưng máy
+thật còn một loại điều khiển khác: **giữ một đại lượng ở giá trị mong muốn** — nhiệt độ đầu hàn, áp suất
+buồng hút, lực ép, sức căng băng vật liệu. Đây là điều khiển vòng kín, và câu hỏi đầu tiên không phải
+*"viết PID thế nào"* mà là **"vòng này có nên nằm trong phần mềm C# không"**.
+
+#### Câu hỏi đầu tiên: vòng này thuộc về đâu
+
+| Chu kỳ vòng lặp cần | Đặt ở đâu | Vì sao |
+|---|---|---|
+| Dưới ~10 ms | **Bộ điều khiển chuyên dụng** (bộ điều nhiệt, driver servo, card chuyển động) | Mục 6.1.1b: đồng hồ Windows không mịn tới đó, và không có bảo đảm về giới hạn trên |
+| ~10–100 ms | **PLC**, hoặc C# nếu không có PLC | PLC có vòng quét đều; C# làm được nhưng phải chấp nhận dao động |
+| Trên ~100 ms, quán tính lớn | **C# hoàn toàn hợp lý** | Nhiệt độ, áp suất bình lớn, mức chất lỏng — hằng số thời gian tính bằng giây |
+| Bất kể chu kỳ, nếu **hỏng vòng là mất an toàn** | **Phần cứng, luôn luôn** | Quá nhiệt phải có rơ-le nhiệt độc lập, không phụ thuộc phần mềm |
+
+Nói thẳng: **phần lớn vòng điều khiển trong máy lắp ráp không nên viết bằng C#.** Bộ điều nhiệt rời giá
+vài trăm nghìn đã có sẵn PID chỉnh tay, tự dò tham số, và **vẫn chạy khi máy tính treo**. Lý do chính
+đáng để viết trong C# thường là: đại lượng cần điều khiển được tính từ **nhiều nguồn** (ví dụ lực suy ra
+từ ảnh và từ cảm biến), hoặc điểm đặt thay đổi theo **công thức sản phẩm** một cách phức tạp, hoặc đơn
+giản là máy không có PLC và quán tính đủ chậm.
+
+#### Nếu đúng là phải viết: hình dạng tối thiểu
+
+```csharp
+public sealed class PidLoop
+{
+    private double _integral, _lastMeasurement;
+
+    public double Kp { get; set; }
+    public double Ki { get; set; }          // đơn vị: /giây
+    public double Kd { get; set; }          // đơn vị: giây
+    public double OutMin { get; set; }
+    public double OutMax { get; set; }
+    public double SetPoint { get; set; }
+
+    /// <param name="measurement">Giá trị đo được</param>
+    /// <param name="dt">Khoảng thời gian THẬT kể từ lần gọi trước, tính bằng giây</param>
+    public double Update(double measurement, double dt)
+    {
+        double error = SetPoint - measurement;
+
+        double p = Kp * error;
+
+        _integral += Ki * error * dt;
+        _integral = Math.Clamp(_integral, OutMin, OutMax);        // (2) chống tích luỹ tràn
+
+        double d = -Kd * (measurement - _lastMeasurement) / dt;    // (3) đạo hàm theo GIÁ TRỊ ĐO
+        _lastMeasurement = measurement;
+
+        return Math.Clamp(p + _integral + d, OutMin, OutMax);      // (1) chỉ ghi ra MỘT lần, đã kẹp
+    }
+}
+```
+
+Ba chỗ đánh số ở trên là ba trong bảy điều dễ sai. Dưới đây là cả bảy, rút từ một cài đặt PID thật trong
+một khung máy mã nguồn mở — cài đặt đó có những ý tưởng đúng, và cũng đủ bảy lỗi để làm bài học.
+
+**1. Ghi giá trị chưa kẹp ra thiết bị.** Cài đặt đó viết:
+
+```csharp
+uk.Value = proportionalTerm + integralTerm - derivativeTerm;   // ← ghi lần 1: CHƯA kẹp
+uk.Value = Clamp(uk.Value);                                    // ← ghi lần 2: đã kẹp
+```
+
+Nếu `Value` là một kênh đẩy thẳng xuống cổng ra analog (mục 13.2.4e), thì **giá trị vượt giới hạn đã
+thật sự ra tới thiết bị** trong khoảng thời gian giữa hai dòng. Với một bộ gia nhiệt hay một van tỉ lệ,
+đó là một xung quá mức. Quy tắc: **tính xong, kẹp xong, rồi mới ghi — ghi đúng một lần.**
+
+**2. Chống tích luỹ tràn (windup).** Khi cơ cấu chấp hành đã chạm hết cỡ mà sai lệch vẫn còn, thành phần
+tích phân cứ cộng dồn mãi. Đến lúc giá trị đo vượt qua điểm đặt, nó phải "xả" hết phần đã tích — máy vọt
+lố rất lâu. Cài đặt đó **có kẹp thành phần tích phân** và đó là bản năng đúng. Đây là lỗi số một của
+người tự viết PID lần đầu, và triệu chứng rất dễ nhận: *nhiệt độ vọt lố mỗi lần khởi động lạnh*.
+
+**3. Đạo hàm phải là đạo hàm của một cái gì đó — và nên là của giá trị đo.** Cài đặt đó tính "thành phần
+đạo hàm" từ **chính thành phần tích phân**, không dùng hiệu số nào theo thời gian; ngay bên trên còn một
+dòng bị chú thích cho thấy ý định ban đầu là lấy hiệu giá trị đo. Kết quả: nó không phải PID, mà là PI
+kèm một số hạng lạ — và **chia cho `Ki`**, nên đặt `Ki = 0` (cấu hình P hoặc PD hoàn toàn bình thường)
+là chia cho không.
+
+Chi tiết đáng học: lấy đạo hàm theo **giá trị đo** chứ không theo **sai lệch**. Vì sai lệch nhảy bậc mỗi
+lần người vận hành đổi điểm đặt, đạo hàm theo sai lệch sẽ sinh ra một cú giật rất lớn ở đầu ra ngay lúc
+đổi — hiện tượng quen thuộc tên là *cú đá đạo hàm*.
+
+**4. `dt` phải là thời gian THẬT, và lần đầu không có `dt`.** Đừng dùng hằng số "chu kỳ mong muốn" trong
+công thức — hãy đo bằng `Stopwatch` và truyền vào. Và **bỏ qua lần cập nhật đầu tiên** (chưa có mốc
+trước để so), thay vì tính với `dt = 0` rồi chia cho không.
+
+**5. Vòng lặp phải dừng được.** Cài đặt đó là `while (true)` không có thẻ huỷ, và hàm "khởi động lại" cố
+`Dispose()` một tác vụ chưa bao giờ kết thúc. Hệ quả: gọi khởi động lần thứ hai sinh ra **vòng lặp thứ
+hai cùng ghi vào một cổng ra**, và cái cũ không bao giờ chết. Vòng điều khiển là thứ **bắt buộc** phải
+nhận `CancellationToken` (Chương 5 mục 5.2) — đây không phải chuyện sạch sẽ mà là chuyện an toàn.
+
+**6. Chuyển tay ↔ tự động phải êm.** Người vận hành chỉnh tay công suất lên 40%, rồi bật tự động: nếu
+thành phần tích phân đang bằng 0, đầu ra rơi thẳng xuống giá trị của thành phần tỉ lệ và cơ cấu giật một
+cái. Cách xử lý gọn: **khi chuyển sang tự động, gán thành phần tích phân bằng giá trị đầu ra đang có
+trừ đi thành phần tỉ lệ** — vòng bắt đầu đúng ở chỗ nó đang đứng.
+
+**7. Vòng phải tự biết mình hỏng.** Ba tình huống phải phát hiện được và báo cảnh báo, vì cả ba đều xảy
+ra thật: **cảm biến chết** (giá trị đo đứng im hoàn toàn qua nhiều chu kỳ, hoặc ngoài dải hợp lệ);
+**không bao giờ tới đích** (sai lệch vượt ngưỡng liên tục quá lâu — đứt dây gia nhiệt, hở đường khí); và
+**đầu ra chạm biên kéo dài** (cơ cấu chấp hành đã hết cỡ mà vẫn không đủ). Không có ba kiểm tra này,
+vòng điều khiển sẽ **im lặng chạy sai** — nó vẫn tính, vẫn ghi ra, và không ai biết gì cho tới khi mở
+sản phẩm ra xem.
+
+> 💡 **Hai việc nên làm ngay khi có vòng điều khiển trong C#, đều rẻ.** Thứ nhất, **ghi lại chuỗi
+> (thời điểm, giá trị đo, điểm đặt, đầu ra)** và vẽ được nó lên màn hình — không có đồ thị này thì việc
+> chỉnh tham số là mò mẫm, còn có nó thì nhìn hình là biết đang vọt lố hay đang chậm. Thứ hai, **tách
+> phần tính toán ra khỏi phần đọc/ghi thiết bị** như hàm `Update(measurement, dt)` ở trên: nhờ vậy bạn
+> **kiểm thử được vòng điều khiển bằng dữ liệu giả**, cho chạy một mô hình đơn giản của lò nhiệt trong
+> unit test và xem nó có vọt lố không — trước khi thử trên máy thật (Chương 18).
+
+> ⚠️ **Và điều không bao giờ được quên: vòng điều khiển trong phần mềm KHÔNG phải lớp an toàn.** Phần
+> mềm có thể treo, có thể bị dừng để cập nhật, có thể đang chờ một tác vụ khác. Mọi đại lượng mà vượt
+> ngưỡng thì gây hại — nhiệt độ, áp suất, lực — đều phải có **một lớp bảo vệ phần cứng độc lập** cắt
+> nguồn mà không cần hỏi phần mềm (Chương 15 mục 15.2.1). Vòng PID của bạn giữ cho quá trình *đúng*;
+> rơ-le nhiệt giữ cho nó *không cháy*. Hai việc khác nhau, hai cơ chế khác nhau.
+
+---
+
 ## 6.2  Ánh xạ khái niệm từ PLC sang lập trình PC
 
 <!--idx:ánh xạ khái niệm PLC-->
@@ -5735,6 +5855,15 @@ sở thích cá nhân hay xu hướng công nghệ.
 
 - **Scan Cycle** là khác biệt căn bản: PLC có vòng quét ngầm định; PC-Based phải
   thiết kế tường minh — thường là State Machine hoặc Sequence Engine (Chương 12).
+
+- **Vòng điều khiển kín (mục 6.1.7)**: câu hỏi đầu tiên không phải "viết PID thế
+  nào" mà "vòng này có nên nằm trong C# không". Dưới ~10 ms → bộ điều khiển chuyên
+  dụng; liên quan an toàn → phần cứng, luôn luôn. C# hợp với quá trình quán tính
+  lớn (nhiệt, áp suất) hoặc khi điểm đặt phụ thuộc công thức phức tạp.
+- Bảy lỗi kinh điển khi tự viết PID: ghi giá trị **chưa kẹp** ra thiết bị · thiếu
+  chống tích luỹ tràn · đạo hàm sai (phải lấy theo **giá trị đo**, không theo sai
+  lệch) · dùng chu kỳ danh nghĩa thay cho `dt` thật · vòng lặp không dừng được ·
+  chuyển tay↔tự động bị giật · vòng không tự phát hiện được cảm biến chết.
 
 - **Đồng hồ Windows mặc định đập ~15,6 ms** (mục 6.1.1b): `Task.Delay(1)` cho ra
   ~15 ms, và vòng lặp `Delay(1)` chạy ~64 vòng/giây chứ không phải 1000. Cần độ

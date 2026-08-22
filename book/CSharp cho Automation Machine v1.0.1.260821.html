@@ -401,6 +401,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#161-observer-pub-sub-pattern-cho-event-telemetry">16.1  Observer / Pub-Sub Pattern cho Event & Telemetry</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#162-command-pattern-cho-command-queue-gi-lnh-xung-plc">16.2  Command Pattern cho Command Queue gửi lệnh xuống PLC</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#162b-shared-tag-table-bt-tay-gia-các-trm-bng-bng-c-dùng-chung">16.2b  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#162c-cây-tác-v-t-chc-trình-t-bng-composite">16.2c  Cây tác vụ — tổ chức trình tự bằng Composite</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#163-bn-đ-pattern-toàn-h-thng">16.3  Bản đồ Pattern toàn hệ thống</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-16">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-16">Lỗi thường gặp</a></li>
@@ -17198,6 +17199,100 @@ rồi mới tới các trục ngang. Trong mô hình miền của Chương 11, �
 nó thuộc về đối tượng máy, không phải về từng trục, vì không trục nào tự biết trục kia đang ở đâu.</p>
 </blockquote>
 <hr>
+<h3>13.2.4e  Ba cách để code nghiệp vụ chạm tới một tín hiệu</h3>
+<p>Các mục trên trừu tượng hoá <strong>thiết bị</strong> (<code>IAxis</code>, <code>ICamera</code>). Nhưng phần lớn thời gian, code nghiệp vụ
+không nói chuyện với cả một thiết bị — nó cần <strong>một tín hiệu</strong>: <em>cảm biến có phôi ở trạm 2</em>, <em>áp suất
+buồng hút</em>, <em>van kẹp</em>. Cách bạn cho nó chạm tới tín hiệu đó quyết định việc đổi card IO hoặc đổi PLC
+sau này tốn một buổi hay tốn một tháng.</p>
+<p>Ba cách, xếp theo mức tách rời tăng dần:</p>
+<p><strong>Cách 1 — gọi thẳng theo địa chỉ.</strong> <code>_io.ReadBit(cardIndex: 0, bit: 12)</code>. Viết nhanh nhất, và là thứ
+bạn sẽ gặp nhiều nhất trong mã nguồn thật. Cái giá: <strong>địa chỉ phần cứng nằm rải khắp code nghiệp vụ</strong>.
+Kỹ thuật viên đấu lại một dây sang chân khác là bạn phải tìm trong toàn bộ mã nguồn, và không có gì
+đảm bảo bạn tìm hết.</p>
+<p><strong>Cách 2 — bảng tên tín hiệu.</strong> Một tệp ánh xạ <em>tên → địa chỉ</em>, code nghiệp vụ chỉ dùng tên:
+<code>_io.Read(&quot;S2.CoPhoi&quot;)</code>. Đấu lại dây thì sửa một dòng trong tệp. Đây là mức tối thiểu nên có, và Phụ
+lục B mục B.6 xếp nó vào nhóm quyết định phải làm đúng từ đầu.</p>
+<p><strong>Cách 3 — nối kênh vào thuộc tính.</strong> Cách này ít gặp hơn nhưng đáng biết, vì nó giải quyết thêm mấy
+vấn đề mà cách 2 không đụng tới. Một khung máy mã nguồn mở tổ chức như sau:</p>
+<pre><code class="language-csharp">public interface IResource                    // một đường truyền: Modbus, OPC UA, TCP, CAN…
+{
+    Bag&lt;IChannel&gt; Channels { get; }
+    EnumParameter&lt;ResourceStatus&gt; Status { get; }   // Stopped/Starting/Executing/Stopping/Failure
+    IFailure LastFailure { get; }
+    Task Start();  void Stop();  Task Restart();
+}
+
+public interface IChannel : IProperty         // một tín hiệu trên đường truyền đó
+{
+    void ConnectTo(IProperty property);                          // nối thẳng
+    void ConnectTo(IProperty property, IConverter converter);    // nối qua một phép biến đổi
+    event EventHandler&lt;ValueChangedEventArgs&gt; ValueChanged;
+}
+</code></pre>
+<p>Code nghiệp vụ <strong>không đọc kênh</strong>. Lúc khởi động, bạn <em>nối dây trong phần mềm</em>: kênh analog của card
+được nối tới một thuộc tính tên <code>ApSuatBuongHut</code>, qua một bộ biến đổi. Từ đó trở đi, nghiệp vụ chỉ đọc
+<code>ApSuatBuongHut</code> — nó không biết giá trị đó đến từ Modbus hay từ card cắm trong máy.</p>
+<p>Bốn thứ mà mô hình này làm được mà bảng tên không làm:</p>
+<p><strong>1. Đơn vị và định dạng thuộc về kênh.</strong> Kênh mang theo đơn vị đo và cách hiển thị của chính nó. Đây
+chính là thuốc cho cái bẫy ở mục 13.1.4c — <em>đơn vị của từng trường không được ghi ở đâu cả</em>: ở đây đơn
+vị không thể lạc, vì nó đi cùng tín hiệu.</p>
+<p><strong>2. Lọc nhiễu là một mắt xích trên đường nối, không phải code trong nghiệp vụ.</strong> Khung đó có sẵn các
+bộ biến đổi kiểu <em>trung bình trượt</em>, <em>trung bình trượt hàm mũ</em>, <em>trung bình luỹ tiến</em>. Muốn làm mượt một
+cảm biến áp suất, bạn nối nó qua một bộ trung bình trượt — <strong>không sửa dòng nào trong logic quy trình</strong>,
+và đổi hằng số lọc là đổi cấu hình. So với việc rải phép lọc vào chỗ đọc giá trị, khác biệt lớn nhất là:
+lọc trở thành thứ <strong>thử được và đổi được độc lập</strong>.</p>
+<p><strong>3. Tách bit khỏi thanh ghi cũng là một mắt xích.</strong> Có sẵn một bộ biến đổi <em>lấy bit thứ n</em>. Đây là việc
+phải làm liên tục khi đọc PLC hoặc Modbus — một thanh ghi 16 bit chứa mười sáu tín hiệu số. Ở cách 1 và
+2, phép dịch bit ấy nằm rải rác trong code; ở đây nó nằm trên đường nối, khai báo một lần.</p>
+<p><strong>4. Đường truyền có vòng đời và trạng thái tường minh.</strong> <code>IResource</code> có năm trạng thái và một
+<code>Restart()</code> nằm ngay trong hợp đồng — tức là <strong>kết nối lại là trách nhiệm của tầng thiết bị</strong>, đúng như
+kết luận ở mục 13.3.5.</p>
+<h4>Cái giá của cách 3, nói thẳng</h4>
+<p>Đừng chọn nó chỉ vì nó &quot;sạch hơn&quot;. Nó có một nhược điểm thật và khá đau:</p>
+<blockquote>
+<p>⚠️ <strong>Đường đi của dữ liệu biến mất khỏi code.</strong> Với cách 1 và 2, muốn biết một giá trị từ đâu ra thì
+bạn đọc ngược lời gọi hàm — trình soạn thảo làm được việc đó. Với cách 3, quan hệ <em>kênh → thuộc tính</em>
+được thiết lập <strong>lúc chạy</strong>, ở một chỗ hoàn toàn khác trong mã nguồn. Khi một giá trị sai, bạn không
+có ngăn xếp lời gọi để lần theo, mà phải đi tìm chỗ nối dây. Với người mới tiếp quản dự án, đây là
+khác biệt giữa &quot;mất mười phút&quot; và &quot;mất một ngày&quot;.</p>
+<p>Hai việc làm giảm hẳn cái giá đó: <strong>gom toàn bộ chỗ nối dây vào một nơi duy nhất</strong> (một tệp cấu hình,
+hoặc một hàm khởi tạo — đừng rải ra nhiều nơi), và <strong>làm một màn hình liệt kê các đường nối đang có</strong>:
+tín hiệu nào từ đường truyền nào, qua bộ biến đổi nào, tới thuộc tính nào. Màn hình đó mất một buổi
+để làm và trả lại công sức ngay lần gỡ rối đầu tiên.</p>
+</blockquote>
+<h4>Chọn thế nào</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bối cảnh</th>
+<th>Cách nên dùng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Máy một trạm, một loại card IO, không định đổi</td>
+<td><strong>Cách 2</strong> — bảng tên là đủ, đừng làm phức tạp hơn</td>
+</tr>
+<tr>
+<td>Có tín hiệu analog cần lọc, cần quy đổi đơn vị</td>
+<td>Cách 2 <strong>+ một lớp quy đổi/lọc riêng</strong>, hoặc cách 3</td>
+</tr>
+<tr>
+<td>Một khung dùng lại cho nhiều máy, nhiều loại đường truyền</td>
+<td><strong>Cách 3</strong> — đây đúng là bài toán nó sinh ra để giải</td>
+</tr>
+<tr>
+<td>Đang có cách 1 và muốn cải thiện</td>
+<td>Chuyển sang <strong>cách 2 trước</strong> — rẻ, ít rủi ro, và đã giải quyết phần lớn vấn đề</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Một thói quen đáng học từ chính kho mã nguồn đó, không liên quan tới kiến trúc.</strong> Tệp README của
+nó chia các thành phần thành ba nhóm rõ ràng: <em>đã thử với phần cứng thật</em>, <em>đã thử nhưng chưa có phần
+cứng</em>, và phần còn lại (chưa thử). Với người đọc, đây là thông tin quý hơn bất kỳ sơ đồ kiến trúc
+nào — nó nói thẳng chỗ nào tin được, chỗ nào phải tự kiểm chứng. Với khung máy dùng chung trong công
+ty bạn, viết ba dòng đó vào README tốn năm phút và tiết kiệm cho đồng nghiệp hàng ngày công.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -17989,6 +18084,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Device Manager (13.3.1)</td>
 <td>Quản lý vòng đời + dependency ordering + snapshot HMI</td>
 <td>Khởi động/dừng có kiểm soát, không phân tán</td>
+</tr>
+<tr>
+<td>Chạm tới một tín hiệu (13.2.4e)</td>
+<td>Nghiệp vụ cần một tín hiệu, không cần cả thiết bị</td>
+<td>Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối</td>
 </tr>
 <tr>
 <td>Mô hình công thức (13.1.4d)</td>
@@ -23955,6 +24055,133 @@ mô hình &quot;mảng có chỉ số&quot; khớp 1:1 với vùng nhớ PLC, c�
 không có cả hai nhu cầu đó, <code>ManualResetEventSlim</code> gọn hơn và không cần vòng quét.</p>
 </blockquote>
 <hr>
+<h2 id="162c-cây-tác-v-t-chc-trình-t-bng-composite">16.2c  Cây tác vụ — tổ chức trình tự bằng Composite</h2>
+<p>Mục 16.2 dùng Command Pattern cho <strong>một lệnh</strong>. Mục này dùng <strong>Composite</strong> cho <strong>cả một trình tự</strong>: thay
+vì một danh sách bước phẳng chạy từ trên xuống, trình tự được dựng thành <strong>một cây</strong> — nhánh chứa nhánh
+con, lá là công việc thật. Đây là cách thứ tư để tổ chức trình tự, bên cạnh danh sách bước (Chương 12),
+máy trạng thái (mục 12.1) và đồ thị nút (Phụ lục B mục B.3.2) — và nó xuất hiện trong một khung máy mã
+nguồn mở đủ trưởng thành để đáng đọc.</p>
+<h3>Hình dạng của nó</h3>
+<p>Chỉ có hai loại nút, và một API dựng cây kiểu nối chuỗi:</p>
+<pre><code class="language-csharp">public abstract class WorkerBase                 // nút bất kỳ
+{
+    public abstract Task&lt;bool&gt; DoWorkAsync();
+    public virtual  WorkerBase SetActionBeforeWork(Action a);  // việc làm trước khi vào nút
+    public virtual  WorkerBase SetBlock(Block b);              // điều kiện chặn nút này
+}
+
+public class Leaf : WorkerBase                   // lá = một công việc thật
+{
+    public Leaf(Func&lt;Task&gt; work);
+}
+
+public class Sequence : WorkerBase               // nhánh = một chuỗi nút con
+{
+    public Sequence Hire(WorkerBase worker);     // ← dựng cây bằng cách &quot;thuê&quot; nút con
+}
+</code></pre>
+<p>Dựng một trình tự trông như thế này:</p>
+<pre><code class="language-csharp">var chuKy = new Sequence()
+    .Hire(new Leaf(() =&gt; _gap.VeViTriChoAsync()))
+    .Hire(new Sequence()                       // một trạm = một nhánh con
+        .Hire(new Leaf(() =&gt; _gap.HaXuongAsync()))
+        .Hire(new Leaf(() =&gt; _gap.HutAsync()))
+        .Hire(new Leaf(() =&gt; _gap.NangLenAsync())))
+    .Hire(new Leaf(() =&gt; _camera.ChupAsync()));
+</code></pre>
+<h3>Ba thứ cấu trúc cây cho không</h3>
+<p><strong>1. Mỗi nút tự biết vị trí của mình trong cây.</strong> Khi một nhánh nhận nút con, nó đặt tên con theo tên
+mình cộng số thứ tự — nút thứ hai trong nhánh thứ ba sẽ mang tên <code>3.2</code>. Không ai phải đánh số bước bằng
+tay, và khi chèn thêm một bước ở giữa thì số của các bước sau tự dịch theo.</p>
+<p>Đây chính là thứ mà màn hình vận hành cần cho ô <em>&quot;đang chạy bước nào&quot;</em> (Chương 10 mục 10.1.8), và trong
+mô hình danh sách phẳng bạn phải tự duy trì nó.</p>
+<p><strong>2. Tạm dừng và dừng lan xuống toàn cây bằng sự kiện, không bằng cờ rải khắp nơi.</strong> Nhánh phát sự kiện
+xuống mọi nút con; nút lá tự quyết định phản ứng. So với cách quen thuộc — một biến <code>_isPaused</code> toàn cục
+mà mọi bước phải nhớ kiểm tra — cách này không thể &quot;quên kiểm tra ở một bước&quot;.</p>
+<p><strong>3. Điều kiện chặn gắn được vào bất kỳ nút nào, và dùng chung được.</strong> <code>Block</code> là một đối tượng có
+trạng thái chặn/không chặn; nhiều nút cùng tham chiếu <strong>một</strong> <code>Block</code> thì chặn một chỗ là chặn cả nhóm.
+Đây là cách gọn để biểu diễn <em>&quot;khi cửa an toàn mở thì cả nhánh này không được chạy&quot;</em>.</p>
+<h3>Khi nào nên dùng, khi nào không</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Danh sách bước phẳng</th>
+<th>Cây tác vụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đọc để hiểu trình tự</td>
+<td><strong>Rất dễ</strong> — đọc từ trên xuống</td>
+<td>Phải dựng lại cây trong đầu</td>
+</tr>
+<tr>
+<td>Nhóm các bước thuộc cùng một cơ cấu</td>
+<td>Chỉ bằng quy ước đặt tên</td>
+<td><strong>Tự nhiên</strong> — một nhánh</td>
+</tr>
+<tr>
+<td>Đánh số bước, chèn bước giữa chừng</td>
+<td>Sửa tay, dễ lệch</td>
+<td><strong>Tự động</strong></td>
+</tr>
+<tr>
+<td>Tạm dừng/dừng</td>
+<td>Mỗi bước tự kiểm tra</td>
+<td><strong>Lan xuống cả nhánh</strong></td>
+</tr>
+<tr>
+<td>Chạy song song nhiều nhánh</td>
+<td>Phải tự viết</td>
+<td>Thêm một loại nút <em>song song</em> là xong</td>
+</tr>
+<tr>
+<td>Người mới tiếp quản</td>
+<td>Hiểu ngay</td>
+<td>Phải học mô hình trước</td>
+</tr>
+</tbody></table></div>
+<p>Kết luận thực dụng: <strong>máy một trạm, trình tự dưới ba mươi bước → danh sách phẳng vẫn là lựa chọn đúng.</strong>
+Cây tác vụ bắt đầu trả công khi máy có nhiều cơ cấu chạy song song, hoặc khi cùng một nhóm bước được
+dùng lại ở nhiều chỗ.</p>
+<h3>Và một lỗi trong chính khung đó, đáng học hơn cả phần thiết kế</h3>
+<p>Nút lá bắt mọi ngoại lệ và trả về <code>false</code>:</p>
+<pre><code class="language-csharp">try { await _myWork(); }
+catch (Exception) { return false; }        // ← nuốt lỗi, chỉ báo bằng giá trị trả về
+</code></pre>
+<p>Còn nhánh chạy các nút con như sau:</p>
+<pre><code class="language-csharp">foreach (var worker in _workers)
+{
+    var res = await worker.DoWorkAsync();   // ← `res` không được dùng ở đâu cả
+}
+</code></pre>
+<p>Ghép hai đoạn lại: <strong>một bước hỏng sẽ bị bỏ qua trong im lặng và trình tự chạy tiếp</strong>. Với phần mềm
+máy, đây là kịch bản tệ nhất có thể — bước hút chân không thất bại, và bước nâng lên vẫn chạy với một
+tay gắp rỗng; hoặc tệ hơn, với một chi tiết chưa được giữ.</p>
+<p>Ba bài học, và cả ba đều tổng quát hơn cái khung này:</p>
+<ol>
+<li><strong>Báo lỗi bằng giá trị trả về chỉ an toàn khi trình biên dịch bắt bạn dùng nó.</strong> C# không bắt. Nếu
+một hàm báo lỗi bằng <code>bool</code> hay bằng đối tượng kết quả (Phụ lục B mục B.3.2), thì <strong>phải có ai đó
+kiểm tra</strong> — và cách chắc chắn nhất là đừng báo lỗi bằng giá trị trả về: ném ngoại lệ, hoặc nếu đã
+trót dùng giá trị trả về thì bật cảnh báo trình biên dịch về giá trị trả về bị bỏ.</li>
+<li><strong><code>catch (Exception)</code> rồi trả về <code>false</code> là xoá bằng chứng.</strong> Ngay cả khi người gọi có kiểm tra, họ
+chỉ biết <em>&quot;hỏng&quot;</em> chứ không biết <em>hỏng cái gì</em> — mất trắng thông tin cần để xử lý. Nếu buộc phải bắt,
+ít nhất hãy ghi ngoại lệ vào nhật ký trước (Chương 19).</li>
+<li><strong>Đọc code lạ: mỗi lời gọi có giá trị trả về mà không ai dùng đều là một câu hỏi.</strong> Đôi khi nó vô
+hại; trong trình tự máy thì gần như luôn là lỗi. Đây là cùng loại phát hiện với một dự án tham khảo
+khác, nơi hàm chạy một bước trả về trạng thái máy và giá trị đó bị bỏ qua hoàn toàn.</li>
+</ol>
+<blockquote>
+<p>📌 <strong>Hai chi tiết nhỏ khác trong cùng file, hữu ích khi bạn tự đọc mã nguồn mở.</strong> Thứ nhất, đầu file
+có <code>using Microsoft.VisualStudio.Workspace;</code> — một <code>using</code> do trình soạn thảo tự thêm khi gợi ý sai
+tên, hoàn toàn không liên quan; nó kéo theo một phụ thuộc thừa. Thứ hai, thẻ huỷ được tạo ra và bị
+huỷ khi có lệnh dừng, nhưng công việc ở nút lá là một hàm <strong>không nhận thẻ huỷ</strong> — nên lệnh dừng
+không dừng được việc đang chạy, chỉ ngăn việc <em>tiếp theo</em>. Đây đúng là điều Chương 5 mục 5.2 cảnh
+báo: có <code>CancellationToken</code> trong code không đồng nghĩa với việc huỷ được thật.</p>
+<p>Cả hai đều là lý do nên đọc mã nguồn mở một cách <strong>phản biện</strong>: dự án này có nhiều ý tưởng thiết kế
+tốt và đáng học, nhưng &quot;có trên GitHub&quot; không phải chứng nhận chất lượng.</p>
+</blockquote>
+<hr>
 <h2 id="163-bn-đ-pattern-toàn-h-thng">16.3  Bản đồ Pattern toàn hệ thống</h2>
 <p>Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automation đã tích luỹ hơn mười pattern. Mục này đặt tất cả vào đúng vị trí trong kiến trúc layered để không nhầm lẫn giữa các pattern có tên tương tự hoặc giải quyết vấn đề tương tự ở các tầng khác nhau.</p>
 <h3>16.3.1  Kiến trúc layered và vị trí từng Pattern</h3>
@@ -24265,6 +24492,13 @@ với nhau qua một bảng cờ dùng chung, không trạm nào gọi hàm tr�
 (trình biên dịch không phát hiện được cờ mồ côi) để lấy tính song song thật và khả năng quan sát trạng
 thái đồng bộ trực tiếp từ HMI. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng cờ
 trước mỗi lần Start; mọi lần chờ phải có thời gian chờ tối đa kèm alarm; tên cờ phải mô tả ý định.</p>
+<p><strong>Cây tác vụ (Composite)</strong> là cách thứ tư để tổ chức trình tự, bên cạnh danh sách bước, máy trạng thái
+và đồ thị nút. Cấu trúc cây cho không ba thứ: <strong>đánh số bước tự động theo vị trí trong cây</strong> (<code>3.2</code>),
+<strong>tạm dừng/dừng lan xuống cả nhánh</strong> bằng sự kiện thay vì cờ rải khắp nơi, và <strong>điều kiện chặn dùng
+chung</strong> cho cả nhóm nút. Đổi lại, trình tự khó đọc hơn danh sách phẳng — chỉ đáng dùng khi máy có nhiều
+cơ cấu chạy song song hoặc nhóm bước được dùng lại nhiều chỗ. Cùng mục này có một ví dụ lỗi rất đáng
+nhớ từ mã nguồn mở thật: bước con báo lỗi bằng giá trị trả về, nhánh cha <strong>không kiểm tra giá trị đó</strong> —
+bước hỏng bị bỏ qua trong im lặng và trình tự chạy tiếp.</p>
 <p><strong>Bản đồ Pattern toàn hệ thống</strong> đặt 16 pattern đã học vào đúng tầng kiến trúc — từ HMI xuống Hardware — và cung cấp decision guide để chọn pattern đúng theo bài toán thực tế.</p>
 <p>Kết thúc Phần V (Chương 11–16), kiến trúc lõi của hệ thống automation đã hoàn chỉnh. Phần VI chuyển sang vận hành: quản lý mã nguồn, kiểm thử, và debug trên máy production.</p>
 <hr>

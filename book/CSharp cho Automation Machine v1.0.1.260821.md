@@ -19600,6 +19600,32 @@ dạy lại một điểm.
 > họ tự xử lý được trong mười giây. Cùng một interlock, khác nhau ở một chuỗi thông báo
 > — và chênh lệch là hàng chục phút dừng máy mỗi lần.
 
+> 📌 **Dạng thứ ba, ít gặp hơn: điều kiện là một ĐỐI TƯỢNG.** Một khung máy mã nguồn mở (Phụ lục B
+> Bảng B.11) đi xa hơn cả hai cột trên: điều kiện an toàn ở đó là một *thuộc tính kiểu bool tự cập
+> nhật* — nó đăng ký vào nguồn dữ liệu và tự tính lại mỗi khi nguồn đổi giá trị:
+>
+> ```csharp
+> public interface ICondition : IProperty<bool> { }
+>
+> // hai điều kiện lá dựng sẵn
+> new PropertyValueInRange("Z.AnToan", zPosition, minimum: 50, maximum: 400);
+> new PropertyValueEqualTo("Kep.DaMo",  clampState, value: 0);
+>
+> // và ghép được với nhau, mỗi lần ghép sinh ra một điều kiện MỚI CÓ TÊN
+> var choPhepDiNgang = zAnToan.And(kepDaMo);       // tên tự sinh: "Z.AnToan.And.Kep.DaMo"
+> ```
+>
+> Lợi ích lớn nhất **không** phải cú pháp gọn, mà là: vì mỗi điều kiện — kể cả điều kiện ghép — đều có
+> **tên và giá trị hiện tại đọc được**, bạn làm được một màn hình liệt kê *toàn bộ điều kiện đang chặn
+> và điều kiện con nào trong đó đang sai*. Đây chính là thứ mà callout 💡 phía trên đòi hỏi, nhưng có
+> sẵn cho **mọi** interlock thay vì phải viết chuỗi thông báo cho từng cái.
+>
+> ⚠️ **Và một cái bẫy đi kèm mô hình này, phải biết trước khi dùng:** điều kiện chỉ tính lại **khi
+> nguồn phát sự kiện đổi giá trị**. Một tín hiệu không đổi kể từ lúc khởi động sẽ **không phát gì cả**,
+> nên điều kiện giữ nguyên giá trị khởi tạo. Vì vậy: (1) giá trị khởi tạo phải là **phía an toàn**
+> (chưa biết thì coi như chặn), và (2) sau khi nối dây xong lúc khởi động, phải **ép tính lại toàn bộ
+> điều kiện một lượt** trước khi cho máy chạy — đừng chờ sự kiện đầu tiên.
+
 ### 15.2.2  Vai trò C# trong hệ thống Safety
 
 C# trong hệ thống có Safety PLC đóng bốn vai trò, không hơn:

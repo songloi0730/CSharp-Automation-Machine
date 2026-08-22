@@ -21864,6 +21864,29 @@ làm gì được ngoài gọi kỹ thuật. Khi nó báo <em>&quot;trục Z đa
 họ tự xử lý được trong mười giây. Cùng một interlock, khác nhau ở một chuỗi thông báo
 — và chênh lệch là hàng chục phút dừng máy mỗi lần.</p>
 </blockquote>
+<blockquote>
+<p>📌 <strong>Dạng thứ ba, ít gặp hơn: điều kiện là một ĐỐI TƯỢNG.</strong> Một khung máy mã nguồn mở (Phụ lục B
+Bảng B.11) đi xa hơn cả hai cột trên: điều kiện an toàn ở đó là một <em>thuộc tính kiểu bool tự cập
+nhật</em> — nó đăng ký vào nguồn dữ liệu và tự tính lại mỗi khi nguồn đổi giá trị:</p>
+<pre><code class="language-csharp">public interface ICondition : IProperty&lt;bool&gt; { }
+
+// hai điều kiện lá dựng sẵn
+new PropertyValueInRange(&quot;Z.AnToan&quot;, zPosition, minimum: 50, maximum: 400);
+new PropertyValueEqualTo(&quot;Kep.DaMo&quot;,  clampState, value: 0);
+
+// và ghép được với nhau, mỗi lần ghép sinh ra một điều kiện MỚI CÓ TÊN
+var choPhepDiNgang = zAnToan.And(kepDaMo);       // tên tự sinh: &quot;Z.AnToan.And.Kep.DaMo&quot;
+</code></pre>
+<p>Lợi ích lớn nhất <strong>không</strong> phải cú pháp gọn, mà là: vì mỗi điều kiện — kể cả điều kiện ghép — đều có
+<strong>tên và giá trị hiện tại đọc được</strong>, bạn làm được một màn hình liệt kê <em>toàn bộ điều kiện đang chặn
+và điều kiện con nào trong đó đang sai</em>. Đây chính là thứ mà callout 💡 phía trên đòi hỏi, nhưng có
+sẵn cho <strong>mọi</strong> interlock thay vì phải viết chuỗi thông báo cho từng cái.</p>
+<p>⚠️ <strong>Và một cái bẫy đi kèm mô hình này, phải biết trước khi dùng:</strong> điều kiện chỉ tính lại <strong>khi
+nguồn phát sự kiện đổi giá trị</strong>. Một tín hiệu không đổi kể từ lúc khởi động sẽ <strong>không phát gì cả</strong>,
+nên điều kiện giữ nguyên giá trị khởi tạo. Vì vậy: (1) giá trị khởi tạo phải là <strong>phía an toàn</strong>
+(chưa biết thì coi như chặn), và (2) sau khi nối dây xong lúc khởi động, phải <strong>ép tính lại toàn bộ
+điều kiện một lượt</strong> trước khi cho máy chạy — đừng chờ sự kiện đầu tiên.</p>
+</blockquote>
 <h3>15.2.2  Vai trò C# trong hệ thống Safety</h3>
 <p>C# trong hệ thống có Safety PLC đóng bốn vai trò, không hơn:</p>
 <ol>

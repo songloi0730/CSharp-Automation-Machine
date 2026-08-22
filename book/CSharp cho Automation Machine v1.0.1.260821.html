@@ -444,6 +444,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#b6-th-t-xây-dng-khi-làm-mt-máy-mi">B.6 Thứ tự xây dựng khi làm một máy mới</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b7-đc-code-mã-ngun-m-đ-luyn-tp">B.7 Đọc code mã nguồn mở để luyện tập</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b8-khi-máy-ca-bn-không-phi-máy-lp-ráp">B.8 Khi máy của bạn không phải máy lắp ráp</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#b9-trình-t-khi-đng-bn-mc-lc-ca-c-chương-trình">B.9 Trình tự khởi động — bản mục lục của cả chương trình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-ph-lc-2">Tổng kết phụ lục</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-21">Lỗi thường gặp</a></li>
   <li><a href="#ph-lc-c-bng-thut-ng">Phụ lục C: Bảng thuật ngữ</a></li>
@@ -27610,6 +27611,8 @@ sáu tầng. Nếu có project không thuộc tầng nào, hoặc một project 
 chỗ cần chú ý trước tiên, vì nó thường là nơi tích tụ nợ kỹ thuật. Đây cũng là cách nhanh nhất để
 phát hiện vi phạm Dependency Rule (Ch7 mục 7.3.2): một project tầng 1 mà <code>using</code> thẳng namespace
 của tầng 5 nghĩa là giao diện đang gọi trực tiếp xuống card.</p>
+<p>Và trước cả bảng này: <strong>đọc hàm khởi động</strong> (mục B.9). Nó liệt kê sẵn cho bạn các khối lớn của
+phần mềm theo đúng thứ tự phụ thuộc — nhanh hơn mọi cách khác để biết trong dự án có những gì.</p>
 </blockquote>
 <hr>
 <h2 id="b2-danh-mc-màn-hình">B.2 Danh mục màn hình</h2>
@@ -29010,6 +29013,161 @@ và B.4 chuyển từ <em>nên có</em> thành <em>bắt buộc</em>, và phần
 chiếm tỷ trọng công sức lớn hơn hẳn so với máy lắp ráp.</p>
 </blockquote>
 <hr>
+<h2 id="b9-trình-t-khi-đng-bn-mc-lc-ca-c-chương-trình">B.9 Trình tự khởi động — bản mục lục của cả chương trình</h2>
+<p>Mục này để ở cuối phụ lục nhưng nên đọc <strong>trước tiên</strong> khi bạn được giao một dự án lạ. Lý do rất đơn
+giản: hàm khởi động là chỗ duy nhất trong toàn bộ mã nguồn mà <strong>mọi thành phần của phần mềm đều phải
+đi qua</strong>. Đọc nó, bạn có ngay danh sách các khối lớn và thứ tự phụ thuộc giữa chúng — thứ mà đọc ngẫu
+nhiên vài chục file cũng không dựng ra được.</p>
+<blockquote>
+<p>💡 <strong>Cách vào một dự án lạ trong ba mươi phút.</strong> Mở <code>Program.cs</code> (WinForms) hoặc <code>App.xaml.cs</code> (WPF).
+Đọc từ trên xuống, mỗi lần thấy một lời gọi lạ thì <strong>chỉ ghi tên nó ra giấy, đừng nhảy vào</strong>. Hết
+hàm, bạn có một danh sách 10–20 mục — đó là <strong>mục lục của phần mềm</strong>. Bây giờ mới chọn mục nào cần
+hiểu trước mà đi sâu. Đây là cách đọc hiệu quả hơn hẳn việc mở thư mục và đọc theo thứ tự bảng chữ
+cái.</p>
+</blockquote>
+<h3>B.9.1 Năm giai đoạn, và thứ tự giữa chúng có lý do</h3>
+<p>Gom các dự án tham khảo lại, trình tự khởi động của phần mềm máy luôn rơi vào năm giai đoạn dưới đây.
+Tên gọi khác nhau, nhưng thứ tự thì gần như không đổi — và mỗi mũi tên đều có lý do:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Giai đoạn</th>
+<th>Làm gì</th>
+<th>Vì sao phải ở vị trí này</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Chặn chạy hai lần</strong></td>
+<td>Bảo đảm chỉ có một tiến trình</td>
+<td>Hai tiến trình cùng mở card chuyển động = tranh nhau điều khiển máy</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Dựng khung</strong></td>
+<td>Đăng ký DI, mở nhật ký, mở cơ sở dữ liệu, nạp ngôn ngữ</td>
+<td>Mọi thứ sau đó cần ghi log được và báo lỗi bằng ngôn ngữ đúng</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Nạp cấu hình</strong></td>
+<td>File cấu hình hệ thống → tham số → điểm/toạ độ → định nghĩa trạm</td>
+<td>Phụ thuộc dây chuyền: file cấu hình nói <em>tên file tham số</em>, tham số nói <em>có bao nhiêu trạm</em>, trạm mới biết <em>cần điểm nào</em></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Mở giao diện</strong></td>
+<td>Hiện màn hình chính</td>
+<td>Đặt <strong>trước</strong> bước 5 để lỗi phần cứng còn có chỗ hiển thị</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Nối phần cứng</strong></td>
+<td>Card chuyển động, card IO, PLC, camera, cổng truyền thông</td>
+<td>Chậm nhất, hay hỏng nhất, và là thứ duy nhất cần người xử lý tại chỗ</td>
+</tr>
+</tbody></table></div>
+<p>Hai chỗ trong bảng này đáng dừng lại:</p>
+<p><strong>Vì sao giai đoạn 3 phải theo đúng dây chuyền đó.</strong> Trong một dự án tham khảo, thứ tự nạp là: file cấu
+hình hệ thống cho biết <strong>tên</strong> của file tham số → nạp tham số → nạp file điểm → dựng danh sách trạm →
+sau cùng mới <strong>ghép tên trục với trạm</strong>. Không thể đảo: bạn không biết cần nạp bao nhiêu trục trước khi
+biết có bao nhiêu trạm. Khi đọc code lạ mà thấy một thứ tự nạp trông lộn xộn, gần như luôn có một dây
+chuyền phụ thuộc như vậy phía sau — hỏi trước khi sắp xếp lại.</p>
+<p><strong>Vì sao giao diện phải mở trước phần cứng.</strong> Nếu nối phần cứng trước rồi mới mở màn hình, thì khi card
+chuyển động không nhận, người dùng nhìn thấy… không gì cả — hoặc một hộp thoại lỗi trần trụi không có
+ngữ cảnh. Mở màn hình trước, kèm một màn hình chờ có thanh tiến trình ghi rõ đang làm gì, thì cùng sự
+cố đó biến thành <em>&quot;Đang khởi tạo card chuyển động… thất bại&quot;</em> — người kỹ thuật biết đi kiểm tra cái gì.</p>
+<blockquote>
+<p>⚠️ <strong>Nhưng &quot;mở giao diện trước&quot; không có nghĩa là &quot;cho bấm nút trước&quot;.</strong> Trong khoảng giữa bước 4 và
+khi bước 5 xong, màn hình đã hiện nhưng máy <strong>chưa sẵn sàng</strong>. Nút Bắt đầu, nút chạy tay, nút về gốc
+phải bị khoá trong khoảng đó, và trạng thái máy phải là <em>chưa khởi tạo</em> chứ không phải <em>sẵn sàng</em>.
+Nếu không, một cú bấm sớm sẽ gọi xuống một trình điều khiển chưa mở — và cái nhận được thường là một
+lỗi khó hiểu từ thư viện của hãng, chứ không phải một thông báo tử tế.</p>
+</blockquote>
+<h3>B.9.2 Chặn chạy hai lần — hai cách, và cách thứ hai tử tế hơn hẳn</h3>
+<p>Đây là việc nhỏ nhưng bắt buộc: mở phần mềm máy hai lần là hai tiến trình cùng giành card điều khiển,
+và hậu quả nằm ở mức &quot;máy chạy loạn&quot; chứ không phải &quot;phần mềm báo lỗi&quot;. Hai cách gặp trong mã nguồn
+thật:</p>
+<pre><code class="language-csharp">// Cách 1 — mutex có tên: chặn được, nhưng chỉ nói &quot;đang chạy rồi&quot;
+static Mutex mutex = new Mutex(true, &quot;TenPhanMemCuaBan&quot;);
+if (!mutex.WaitOne(TimeSpan.Zero, true))
+{
+    MessageBox.Show(&quot;Phần mềm đang chạy rồi.&quot;);
+    return;
+}
+</code></pre>
+<pre><code class="language-csharp">// Cách 2 — tìm tiến trình cũ và ĐƯA NÓ RA TRƯỚC, rồi mình thoát
+var old = FindExistingInstance();
+if (old != null)
+{
+    if (IsIconic(old.MainWindowHandle))            // đang thu nhỏ thì khôi phục
+        ShowWindowAsync(old.MainWindowHandle, SW_RESTORE);
+    SetForegroundWindow(old.MainWindowHandle);      // đưa cửa sổ cũ lên trên
+    Application.Exit();
+    return;
+}
+</code></pre>
+<p>Cách 2 tốt hơn vì nó đúng với <strong>điều người dùng thật sự muốn</strong>: họ bấm biểu tượng lần nữa không phải
+để mở bản thứ hai, mà vì <strong>không tìm thấy cửa sổ đang chạy</strong> — nó bị thu nhỏ, hoặc nằm sau một cửa sổ
+khác trên máy tính công nghiệp không có thanh tác vụ. Cách 1 chặn đúng nhưng để người dùng tự đi tìm;
+cách 2 giải quyết luôn vấn đề của họ.</p>
+<blockquote>
+<p>📌 <strong>Ba chi tiết của mutex mà bỏ qua thì nó chặn hụt</strong> — đã bàn kỹ ở Chương 5: đặt tiền tố <code>Global\</code>
+để chặn cả khi có nhiều phiên đăng nhập, kèm một GUID vào tên để không trùng với phần mềm khác, và
+**giữ mutex sống** bằng cách để nó ở một trường của lớp chứ không phải biến cục bộ — biến cục bộ bị
+bộ dọn rác thu hồi thì khoá cũng biến mất. Một dự án tham khảo làm đúng cả ba, và giải phóng trong
+<code>OnExit</code>; hai dự án khác dùng biến <code>static</code> không có <code>Global\</code> — chặn được trong đa số trường hợp,
+nhưng không phải mọi trường hợp.</p>
+</blockquote>
+<h3>B.9.3 Ba cái bẫy trong hàm khởi động, cả ba đều gặp trong mã nguồn thật</h3>
+<p><strong>Bẫy 1 — nối phần cứng bằng một tác vụ nền không ai theo dõi.</strong> Một dự án đẩy toàn bộ việc khởi tạo
+card chuyển động và card IO vào một <code>Task</code> chạy nền rồi… thôi. Không ai <code>await</code>, không ai gắn xử lý
+lỗi. Hệ quả: nếu card không nhận, <strong>ngoại lệ bị nuốt trọn</strong> — thanh tiến trình dừng ở 80%, màn hình
+chính vẫn mở ra bình thường, và máy trông như sẵn sàng. Lỗi chỉ lộ ra khi ai đó bấm chạy.</p>
+<p>Nếu bạn cố ý muốn khởi tạo phần cứng chạy nền để giao diện lên nhanh (một ý định hợp lý), thì phải kèm
+đủ ba thứ: <strong>báo tiến trình ra màn hình chờ</strong>, <strong>bắt lỗi và hiện lỗi đó</strong>, và <strong>một trạng thái &quot;chưa
+sẵn sàng&quot;</strong> chặn mọi nút cho tới khi xong.</p>
+<p><strong>Bẫy 2 — chờ mà không chờ.</strong> Ngay trong tác vụ nền ấy có dòng:</p>
+<pre><code class="language-csharp">Task.Delay(1000);      // ← chú thích ghi: &quot;chờ 1 giây để cửa sổ kịp nhận ngoại lệ khởi tạo&quot;
+</code></pre>
+<p>Câu lệnh này <strong>không chờ gì cả</strong> — nó tạo ra một <code>Task</code> rồi vứt đi (thiếu <code>await</code>). Ý định trong chú
+thích là đúng; hiệu quả bằng không. Đây là loại lỗi trình biên dịch có cảnh báo được (Chương 5, mục
+<em>Lỗi thường gặp</em>) nhưng cảnh báo đó thường bị tắt đi trong dự án cũ. Khi đọc code lạ, <strong>mọi dòng
+<code>Task.Something(...)</code> đứng một mình không có <code>await</code> đều đáng nghi</strong>.</p>
+<p><strong>Bẫy 3 — hàm khởi động nói nó làm một việc mà nó không còn làm.</strong> Một dự án khác có màn hình chờ ghi
+<em>&quot;Đang thử kết nối thiết bị…&quot;</em> ở mốc 50%, nhưng đoạn vòng lặp chờ tất cả thiết bị kết nối xong <strong>đã bị
+chú thích lại</strong>, chỉ còn dòng biến cờ vô dụng phía trên. Phần mềm hiện dòng chữ ấy rồi đi tiếp ngay.</p>
+<p>Đây là cùng một hiện tượng đã gặp ở Chương 10 mục 10.1.8 với đoạn kiểm tra an toàn bị chú thích: <strong>một
+thứ bị tắt tạm lúc chạy thử rồi không ai bật lại</strong>, và cái vỏ bên ngoài — dòng chữ trên màn hình chờ —
+vẫn nói như cũ. Nguy hiểm của nó không nằm ở chỗ thiếu tính năng, mà ở chỗ <strong>nó nói dối người đọc</strong>:
+người kỹ thuật tin rằng máy đã kiểm tra kết nối, nên khi có sự cố họ đi tìm ở chỗ khác.</p>
+<blockquote>
+<p><strong>Quy tắc rẻ tiền, chặn được cả ba bẫy:</strong> khi bạn chú thích một bước trong trình tự khởi động, <strong>hãy
+chú thích luôn dòng thông báo tương ứng của nó</strong>, hoặc đổi dòng thông báo thành <em>&quot;(đã tắt)&quot;</em>. Màn
+hình chờ là lời khai của phần mềm về việc nó đang làm gì — lời khai đó phải đúng.</p>
+</blockquote>
+<h3>B.9.4 Và đừng quên chiều ngược lại: trình tự tắt</h3>
+<p>Trình tự khởi động thường được chăm chút; trình tự tắt thì hay bị bỏ trống. Trong các dự án tham khảo,
+phần đóng lại tối thiểu gồm: <strong>ngắt kết nối card chuyển động và card IO</strong>, dừng các luồng giám sát, và
+đóng kết nối truyền thông. Thứ tự là <strong>ngược lại</strong> thứ tự mở.</p>
+<p>Ba câu hỏi nên tự trả lời cho máy của mình, vì bỏ qua thì hậu quả rơi vào ca sau:</p>
+<ol>
+<li><strong>Trục có đang bật mô-men không, và tắt phần mềm thì có nên nhả không?</strong> Với trục thẳng đứng, nhả
+mô-men khi tắt phần mềm nghĩa là <strong>trục rơi</strong>. Đây phải là quyết định có ý thức, ghi rõ trong tài
+liệu, không phải hệ quả tình cờ của việc thư viện tự dọn dẹp.</li>
+<li><strong>Có khoảng dừng nào đang mở trong sổ ghi nhận không?</strong> Nếu máy đang trong một khoảng &quot;đang bảo
+trì&quot; (mục 12.5), khoảng đó phải được ghi lại trạng thái để lần khởi động sau nối tiếp được.</li>
+<li><strong>Dữ liệu đang ghi dở đã đóng file chưa?</strong> Nhật ký, bản ghi sản xuất, file kết quả đo — thứ đang
+nằm trong bộ đệm mà chưa ghi xuống đĩa sẽ mất, và mất đúng vào lần tắt máy bất thường.</li>
+</ol>
+<blockquote>
+<p>📌 <strong>Và phải tính cả trường hợp không có trình tự tắt nào chạy:</strong> mất điện, người dùng tắt nguồn
+bằng công tắc, phần mềm bị treo và bị kết thúc cưỡng bức. Trình tự tắt tử tế là <strong>đường tốt nhất</strong>,
+không phải đường duy nhất — nên mọi dữ liệu quan trọng vẫn phải được ghi ngay lúc phát sinh (Chương
+12 mục 12.5, Chương 13), chứ không phải dồn lại tới lúc thoát.</p>
+</blockquote>
+<hr>
 <h2 id="tng-kt-ph-lc-2">Tổng kết phụ lục</h2>
 <ul>
 <li>Một phần mềm máy tự động hoá tách được thành <strong>sáu tầng</strong> (Bảng B.1); ánh xạ project vào tầng là
@@ -29031,6 +29189,13 @@ quyết định chi phí của mọi việc còn lại.</li>
 <li>Danh mục ở đây rút từ <strong>máy lắp ráp và máy kiểm tra</strong>. Nếu máy của bạn là <strong>máy nạp dữ liệu vào
 sản phẩm</strong> hoặc <strong>máy test điện</strong> (mục B.8), điểm khác biệt lớn nhất là: sản phẩm lỗi <strong>trông y hệt</strong>
 sản phẩm tốt, nên truy xuất nguồn gốc chuyển từ <em>nên có</em> thành <em>bắt buộc</em>.</li>
+<li><strong>Vào một dự án lạ thì bắt đầu từ hàm khởi động</strong> (mục B.9): nó là chỗ duy nhất mọi thành phần đều
+đi qua, nên nó chính là mục lục của phần mềm. Năm giai đoạn chuẩn: chặn chạy hai lần → dựng khung →
+nạp cấu hình theo dây chuyền phụ thuộc → <strong>mở giao diện</strong> → <strong>nối phần cứng sau cùng</strong>.</li>
+<li>Giao diện mở trước phần cứng để lỗi còn có chỗ hiển thị — nhưng trong khoảng đó <strong>mọi nút phải bị
+khoá</strong>, và trạng thái máy là <em>chưa khởi tạo</em>, không phải <em>sẵn sàng</em>.</li>
+<li>Trình tự tắt là <strong>đường tốt nhất, không phải đường duy nhất</strong>: mất điện và tắt cưỡng bức vẫn xảy ra,
+nên dữ liệu quan trọng phải được ghi ngay lúc phát sinh.</li>
 <li>Muốn luyện kỹ năng đọc code mà chưa có dự án thật trong tay: mục B.7 liệt kê các dự án <strong>mã nguồn
 mở</strong> đọc được ngay, kèm mục tiêu học cho từng dự án — và một cảnh báo về giấy phép, vì phần mềm máy
 được <strong>phân phối cùng cỗ máy</strong> nên nghĩa vụ giấy phép có hiệu lực thật.</li>

@@ -29592,7 +29592,7 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 <td>—</td>
 </tr>
 <tr>
-<td><strong>Framework</strong> (<code>FrancescoMerlin/Framework</code> và các bản rẽ nhánh)</td>
+<td><strong>Framework</strong> (<code>si95mo/Framework</code>)</td>
 <td>Một <strong>khung máy</strong> .NET đầy đủ tầng: <code>IResource</code> (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch</td>
 <td>Đọc <code>Hardware/IResource.cs</code> + <code>IChannel.cs</code> trước — đây là mô hình &quot;nối kênh vào thuộc tính&quot; ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README <strong>chia thành phần theo mức đã kiểm chứng</strong> (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử)</td>
 </tr>
@@ -29629,6 +29629,14 @@ thái, trừu tượng hoá driver, ghi nhật ký có cấu trúc), rồi đọ
 quyết nó. Bạn sẽ thấy ngay điều mà không sách nào dạy được: không có một cách đúng duy nhất, chỉ có
 những đánh đổi khác nhau — và nhận ra được đánh đổi chính là khác biệt giữa người mới và người có
 kinh nghiệm.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Kho không có tệp giấy phép là kho bạn KHÔNG được chép.</strong> Trong ba dự án vừa thêm ở trên, hai
+kho <strong>không khai báo giấy phép nào</strong>. Mặc định của luật bản quyền khi không có giấy phép là <em>bảo lưu
+mọi quyền</em> — nghĩa là đọc để học thì được, nhưng chép mã nguồn vào sản phẩm thương mại thì không, kể
+cả khi kho đó công khai và không có dòng cảnh báo nào. Nhiều người hiểu ngược: thấy công khai là
+tưởng dùng thoải mái. Trước khi lấy dù chỉ một class, hãy tìm tệp <code>LICENSE</code>; không có thì hoặc hỏi
+tác giả, hoặc tự viết lại từ ý tưởng chứ đừng chép mã.</p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Giấy phép là chuyện nghiêm túc khi bạn bán máy, không phải chi tiết pháp lý vụn vặt.</strong> Phần

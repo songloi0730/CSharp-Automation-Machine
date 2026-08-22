@@ -26256,7 +26256,7 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 | **tinyua** | Một stack **OPC UA** client viết lại từ đầu cho .NET, không phụ thuộc SDK của tổ chức chuẩn | Đọc nếu muốn hiểu OPC UA thật sự làm gì bên dưới lớp SDK ở Chương 14 mục 14.1.1 |
 | **SOEM** (`OpenEtherCATsociety/SOEM`) + lớp bọc .NET | Một **EtherCAT master** mã nguồn mở: dò slave, chuyển trạng thái bus, ánh xạ PDO — những thứ SDK thương mại giấu sau một lời gọi hàm | Đọc để hiểu Chương 14 mục 14.1.4. Không đủ tính thời gian thực cho servo tốc độ cao trên Windows thường, **nhưng rất tốt để học** |
 | **TcOpen** (đã nêu ở trên) | Cũng là nơi xem cách một khung .NET nối với thế giới EtherCAT/TwinCAT | — |
-| **Framework** (`FrancescoMerlin/Framework` và các bản rẽ nhánh) | Một **khung máy** .NET đầy đủ tầng: `IResource` (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch | Đọc `Hardware/IResource.cs` + `IChannel.cs` trước — đây là mô hình "nối kênh vào thuộc tính" ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README **chia thành phần theo mức đã kiểm chứng** (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử) |
+| **Framework** (`si95mo/Framework`) | Một **khung máy** .NET đầy đủ tầng: `IResource` (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch | Đọc `Hardware/IResource.cs` + `IChannel.cs` trước — đây là mô hình "nối kênh vào thuộc tính" ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README **chia thành phần theo mức đã kiểm chứng** (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử) |
 | **MachineClassLibrary** (`SerjDrob/MachineClassLibrary`) | Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá **biến tần trục chính** với hai hãng + một bản giả lập, thu hình, hình học | Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.2c — **kể cả lỗi trong đó** (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về "có trên GitHub không phải chứng nhận chất lượng" |
 | **WCF — nền tảng điều khiển chuyển động bằng kịch bản** (`jiliwei/WCF`) | Một hiện thực đầy đủ của **con đường "quy trình là dữ liệu"**: nhiệm vụ + bước lưu trong bảng quan hệ, biến cục bộ/dùng chung tách bảng, xuất nhập bằng bảng tính, từ vựng bằng tiếng mẹ đẻ | Đọc lược đồ bảng trước (mục B.3.2). Nhỏ, một người viết, WinForms — đọc được hết trong vài buổi, và là mẫu gần nhất với thứ bạn sẽ tự làm |
 
@@ -26282,6 +26282,13 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 > quyết nó. Bạn sẽ thấy ngay điều mà không sách nào dạy được: không có một cách đúng duy nhất, chỉ có
 > những đánh đổi khác nhau — và nhận ra được đánh đổi chính là khác biệt giữa người mới và người có
 > kinh nghiệm.
+
+> 📌 **Kho không có tệp giấy phép là kho bạn KHÔNG được chép.** Trong ba dự án vừa thêm ở trên, hai
+> kho **không khai báo giấy phép nào**. Mặc định của luật bản quyền khi không có giấy phép là *bảo lưu
+> mọi quyền* — nghĩa là đọc để học thì được, nhưng chép mã nguồn vào sản phẩm thương mại thì không, kể
+> cả khi kho đó công khai và không có dòng cảnh báo nào. Nhiều người hiểu ngược: thấy công khai là
+> tưởng dùng thoải mái. Trước khi lấy dù chỉ một class, hãy tìm tệp `LICENSE`; không có thì hoặc hỏi
+> tác giả, hoặc tự viết lại từ ý tưởng chứ đừng chép mã.
 
 > ⚠️ **Giấy phép là chuyện nghiêm túc khi bạn bán máy, không phải chi tiết pháp lý vụn vặt.** Phần
 > mềm máy được **giao cho khách hàng cùng cỗ máy** — tức là bạn đang *phân phối* phần mềm, và nghĩa vụ

@@ -20907,6 +20907,88 @@ public readonly record struct EncoderSample(
 
 ---
 
+### 16.1.4  Chuỗi xử lý giá trị — điều gì xảy ra sau khi đọc được một con số
+
+Ba biến thể ở trên trả lời câu *"ai được báo khi có giá trị mới"*. Còn một câu nữa, và nó là chỗ code
+hay rối nhất trong phần mềm máy: **với mỗi giá trị đọc về, phải làm bao nhiêu việc?**
+
+Đếm thử cho một cảm biến áp suất duy nhất: đổi từ dữ liệu thô sang số thực → quy đổi theo công thức
+hiệu chuẩn → cập nhật giá trị hiện tại cho màn hình → ghi vào lịch sử nếu tín hiệu này bật lưu lịch sử
+→ so với ngưỡng để phát cảnh báo → đẩy lên hệ thống bên ngoài. **Sáu việc, cho một con số.** Nhân với
+hai trăm tín hiệu.
+
+Cách viết đầu tiên ai cũng nghĩ ra là nhét cả sáu việc vào chỗ nhận giá trị. Nó hỏng nhanh: hàm đó
+phình ra, mọi việc dính chặt nhau, và muốn thêm việc thứ bảy (ví dụ gửi lên hệ thống nhắn tin của nhà
+máy) là phải sửa đúng cái hàm mà mọi tín hiệu đều đi qua.
+
+#### Cách tổ chức: một chuỗi các bộ xử lý
+
+Một hệ thu thập dữ liệu thiết bị mã nguồn mở giải bài này bằng **Chain of Responsibility**: giá trị mới
+được gói vào một *ngữ cảnh*, rồi đi lần lượt qua các bộ xử lý — mỗi bộ làm đúng một việc:
+
+```csharp
+public interface IValueProcessor
+{
+    Task ProcessAsync(ValueContext ctx, CancellationToken ct);
+}
+
+// Đăng ký một lần, thứ tự chính là thứ tự chạy
+services.AddValuePipeline(
+    new ConvertProcessor(),     // 1. thô → số thực, rồi áp công thức quy đổi
+    new CurrentValueProcessor(),// 2. cập nhật giá trị hiện tại (gom lô rồi ghi)
+    new HistoryProcessor(),     // 3. ghi lịch sử, nếu tín hiệu này bật lưu lịch sử
+    new AlarmProcessor(),       // 4. so ngưỡng, phát cảnh báo
+    new PublishProcessor());    // 5. đẩy ra hệ thống ngoài
+```
+
+Bốn thứ mô hình này cho lại, và cả bốn đều là vấn đề thật:
+
+**1. Thêm một việc mới = thêm một bộ xử lý.** Không sửa dòng nào trong bốn bộ đang chạy — đúng nguyên
+tắc mở-đóng ở Chương 7, nhưng ở dạng cụ thể nhất mà bạn sẽ gặp.
+
+**2. Mỗi bộ xử lý test được riêng.** Bộ so ngưỡng cảnh báo là một hàm nhận ngữ cảnh và trả kết quả —
+không cần thiết bị, không cần cơ sở dữ liệu. So với việc test một hàm sáu việc dính nhau, đây là khác
+biệt giữa *viết được test* và *không viết được test* (Chương 18).
+
+**3. Công thức quy đổi trở thành dữ liệu, không phải code.** Trong hệ thống đó, mỗi tín hiệu có một
+chuỗi công thức kiểu `x * 10 + 5` lưu trong cơ sở dữ liệu, và bộ chuyển đổi diễn giải nó. Nhờ vậy hiệu
+chuẩn lại một cảm biến là **sửa một ô trong bảng**, không phải build lại phần mềm.
+
+> ⚠️ Nhưng công thức dạng chuỗi kéo theo một nghĩa vụ: **phải kiểm tra công thức ngay lúc lưu**, không
+> phải lúc chạy. Một công thức gõ sai mà chỉ đổ vỡ vào 2 giờ sáng thì tệ hơn hẳn so với việc màn hình
+> từ chối lưu ngay lúc kỹ sư gõ. Và nên **giới hạn cú pháp** ở bốn phép tính cộng trừ nhân chia — đừng
+> nhúng một trình thông dịch đầy đủ vào đường đi của mọi giá trị, vì lý do đã nói ở Phụ lục B mục B.3.2.
+
+**4. Ghi xuống cơ sở dữ liệu được gom lô ở đúng một chỗ.** Hai bộ xử lý ghi dữ liệu đều không ghi ngay
+mà đưa vào hàng đợi, rồi ghi một lượt khi đủ số lượng hoặc đủ thời gian. Điều này quan trọng hơn vẻ
+ngoài: hai trăm tín hiệu đổi vài lần mỗi giây mà mỗi lần một câu lệnh ghi thì cơ sở dữ liệu sẽ là nút
+thắt trước cả phần cứng. Gom lô ở trong bộ xử lý nghĩa là **phần còn lại của phần mềm không cần biết
+tới chuyện đó**.
+
+#### Ba điều phải quyết trước khi dùng
+
+**Thứ tự có ý nghĩa, và nó là quyết định thiết kế.** Quy đổi phải chạy trước so ngưỡng — nếu không, bạn
+đang so ngưỡng kỹ thuật với giá trị thô. Hãy viết thứ tự ra và ghi rõ lý do, đừng để nó là hệ quả tình
+cờ của thứ tự đăng ký.
+
+**Một bộ xử lý hỏng thì chuỗi đi tiếp hay dừng?** Câu trả lời khác nhau theo từng bộ, và phải quyết
+từng cái: mất kết nối tới hệ thống bên ngoài **không được** làm hỏng việc phát cảnh báo; nhưng quy đổi
+thất bại thì các bộ phía sau đang xử lý một con số vô nghĩa và **nên** dừng. Mặc định an toàn: bọc mỗi
+bộ trong một `try`, ghi nhật ký, và **chỉ những bộ đã tuyên bố là bắt buộc mới được phép chặn chuỗi**.
+
+**Chuỗi này nằm trên đường đi của mọi giá trị, nên nó là chỗ nhạy cảm về hiệu năng.** Đừng đặt việc
+chậm (gọi mạng, ghi đĩa đồng bộ) trực tiếp trong chuỗi — đưa vào hàng đợi rồi để một luồng khác làm,
+đúng như hai bộ ghi cơ sở dữ liệu ở trên. Một lời gọi mạng chờ ba giây trong chuỗi sẽ làm nghẽn toàn
+bộ việc thu thập dữ liệu.
+
+> 💡 **So với "bộ biến đổi trên đường nối" ở Chương 13 mục 13.2.4e:** hai mô hình bù nhau chứ không
+> thay thế nhau. Bộ biến đổi trên đường nối thuộc về **một tín hiệu cụ thể** (cảm biến này cần lọc
+> nhiễu, thanh ghi kia cần tách bit). Chuỗi xử lý ở đây thuộc về **mọi tín hiệu** (giá trị nào cũng
+> phải được lưu, so ngưỡng, đẩy đi). Nếu phải chọn một để làm trước: làm chuỗi trước, vì nó xoá được
+> đoạn code sáu việc dính nhau mà gần như dự án nào cũng có.
+
+---
+
 ## 16.2  Command Pattern cho Command Queue gửi lệnh xuống PLC
 
 ### 16.2.1  Bài toán: chuỗi lệnh thiết bị cần queue, log và retry
@@ -21840,6 +21922,12 @@ Chi phí áp dụng = thời gian học + độ phức tạp code + overhead tes
 Chương 16 hoàn thiện bộ pattern cho hệ thống automation với ba pattern còn thiếu sau Ch11–Ch15:
 
 **Observer / Pub-Sub Pattern** giải quyết bài toán "nguồn phát biết quá nhiều về subscriber". Ba biến thể phục vụ ba nhu cầu khác nhau: C# `event` cho UI binding đơn giản in-process; `IEventPublisher` cho Domain Event và cross-module notification — đây là cơ chế đã dùng ẩn danh từ Chương 11 và 12; `IObservable<T>` cho telemetry liên tục tần suất cao cần filter/throttle.
+
+**Chuỗi xử lý giá trị (Chain of Responsibility)** trả lời câu hỏi đi liền sau Observer: *với mỗi giá
+trị đọc về thì phải làm bao nhiêu việc?* Thay vì một hàm sáu việc dính nhau, mỗi việc là một bộ xử lý
+trong chuỗi — thêm việc mới không sửa việc cũ, và mỗi bộ test được riêng. Ba quyết định phải làm rõ:
+**thứ tự** (quy đổi trước so ngưỡng), **bộ nào được phép chặn chuỗi khi hỏng**, và **không đặt việc
+chậm trực tiếp trong chuỗi** vì mọi giá trị đều đi qua đây.
 
 **Command Pattern** đóng gói mỗi lệnh thiết bị thành đối tượng có `ExecuteAsync`, `UndoAsync`, và `Name`. `CommandDispatcher` thực thi queue với log từng lệnh, retry có thể cấu hình, và phát Domain Event khi thất bại. Case study Pick-and-Place cho thấy sequence phức tạp trở nên dễ đọc và dễ mở rộng khi từng bước được đóng gói thành `IDeviceCommand`.
 
@@ -26285,6 +26373,7 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 | **Framework** (`si95mo/Framework`) | Một **khung máy** .NET đầy đủ tầng: `IResource` (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch | Đọc `Hardware/IResource.cs` + `IChannel.cs` trước — đây là mô hình "nối kênh vào thuộc tính" ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README **chia thành phần theo mức đã kiểm chứng** (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử) |
 | **MachineClassLibrary** (`SerjDrob/MachineClassLibrary`) | Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá **biến tần trục chính** với hai hãng + một bản giả lập, thu hình, hình học | Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.2c — **kể cả lỗi trong đó** (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về "có trên GitHub không phải chứng nhận chất lượng" |
 | **WCF — nền tảng điều khiển chuyển động bằng kịch bản** (`jiliwei/WCF`) | Một hiện thực đầy đủ của **con đường "quy trình là dữ liệu"**: nhiệm vụ + bước lưu trong bảng quan hệ, biến cục bộ/dùng chung tách bảng, xuất nhập bằng bảng tính, từ vựng bằng tiếng mẹ đẻ | Đọc lược đồ bảng trước (mục B.3.2). Nhỏ, một người viết, WinForms — đọc được hết trong vài buổi, và là mẫu gần nhất với thứ bạn sẽ tự làm |
+| **DMS — hệ thu thập và giám sát dữ liệu thiết bị** (`pgw2025/DMS`) | Một hệ **giám sát thiết bị** (khác phần mềm điều khiển máy): thu dữ liệu S7/OPC UA, **chuỗi xử lý giá trị** kiểu Chain of Responsibility, gom lô khi ghi CSDL, công thức quy đổi lưu trong bảng, menu sinh từ cấu hình | Đọc thư mục tài liệu thiết kế trước rồi mới đọc code — dự án hiếm hoi **có tài liệu thiết kế đi kèm mã nguồn**. Chuỗi xử lý đối chiếu Chương 16 mục 16.1.4 |
 
 ### B.7.1 Cách đọc một dự án mã nguồn mở cho hiệu quả
 

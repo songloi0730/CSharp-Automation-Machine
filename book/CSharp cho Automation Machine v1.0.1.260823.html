@@ -402,6 +402,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#162-command-pattern-cho-command-queue-gi-lnh-xung-plc">16.2  Command Pattern cho Command Queue gửi lệnh xuống PLC</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#162b-shared-tag-table-bt-tay-gia-các-trm-bng-bng-c-dùng-chung">16.2b  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#162c-cây-tác-v-t-chc-trình-t-bng-composite">16.2c  Cây tác vụ — tổ chức trình tự bằng Composite</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#162d-lnh-ch-điu-kin-nguyên-thu-nh-nht-và-b-vit-li-nhiu-ln-nht">16.2d  Lệnh "chờ điều kiện" — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#163-bn-đ-pattern-toàn-h-thng">16.3  Bản đồ Pattern toàn hệ thống</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-16">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-16">Lỗi thường gặp</a></li>
@@ -5579,6 +5580,33 @@ public async Task ProcessLoopAsync(CancellationToken ct)
     }
 }
 </code></pre>
+<blockquote>
+<p>📌 <strong>Khi có nhiều pipeline: &quot;bus kênh&quot; đặt tên thay cho việc chuyền <code>Channel&lt;T&gt;</code> qua constructor.</strong>
+Ví dụ trên có một hàng đợi và hai bên biết nhau. Khi phần mềm lớn lên — thu thập dữ liệu, xử lý, ghi
+nhật ký, đẩy lên hệ thống ngoài — việc chuyền từng <code>Channel&lt;T&gt;</code> qua constructor trở nên rối. Một hệ
+giám sát thiết bị mã nguồn mở giải bằng một dịch vụ đăng ký kênh <strong>theo tên</strong>:</p>
+<pre><code class="language-csharp">public interface IChannelBus
+{
+    ChannelWriter&lt;T&gt; GetWriter&lt;T&gt;(string channelName);   // chưa có thì tự tạo
+    ChannelReader&lt;T&gt; GetReader&lt;T&gt;(string channelName);
+}
+</code></pre>
+<p>Bên sinh và bên tiêu <strong>không còn tham chiếu tới nhau</strong>, chỉ cùng biết một cái tên. Vòng đời mọi kênh
+do một chỗ quản lý, và trong unit test chỉ cần thay thế <code>IChannelBus</code>.</p>
+<p>⚠️ Cái giá phải trả, và chính tài liệu thiết kế của họ nêu ra: <strong>hợp đồng giờ là &quot;tên + kiểu&quot;, mà
+trình biên dịch không kiểm tra được</strong>. Gõ sai tên kênh, hoặc một bên đổi <code>T</code> — không có lỗi build, chỉ
+có một kênh im lặng không ai đọc. Cách phòng bắt buộc: <strong>khai báo tên kênh và kiểu dữ liệu cùng một
+chỗ</strong>, và không bao giờ viết chuỗi tên kênh trực tiếp tại nơi gọi:</p>
+<pre><code class="language-csharp">public static class Kenh   // một nơi duy nhất định nghĩa hợp đồng
+{
+    public const string XuLyGiaTri = &quot;XuLyGiaTri&quot;;      // kiểu: GiaTriDoDuoc
+    public const string GuiLenHost = &quot;GuiLenHost&quot;;      // kiểu: BanGhiSanXuat
+}
+</code></pre>
+<p>Và điểm mù thứ hai: <strong>luồng dữ liệu biến mất khỏi code</strong> — muốn biết ai đọc một kênh phải đi tìm theo
+tên chuỗi. Cùng loại đánh đổi với mô hình nối kênh ở Chương 13 mục 13.2.4e, và cùng cách giảm đau:
+gom khai báo về một chỗ, và làm một màn hình liệt kê các kênh đang hoạt động.</p>
+</blockquote>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến — Channel hay BlockingCollection?</strong> <code>BlockingCollection&lt;T&gt;</code> (Chương 3 dùng cho Logger) <em>chặn một thread</em> khi <code>Take()</code> chờ dữ liệu — ổn khi consumer là một thread nền chuyên dụng. <code>Channel&lt;T&gt;</code> <em>không chặn thread nào</em> (await khi chờ) — tốt hơn khi pipeline nằm trong code async và bạn không muốn &quot;đốt&quot; thread cho việc đợi. Với hệ thống nhiều pipeline async (vision, telemetry, command), <code>Channel&lt;T&gt;</code> thường là lựa chọn hiện đại hơn. <code>CommandQueue</code> ở Chương 16 cũng là biến thể của mẫu này.</p>
 </blockquote>
@@ -14504,6 +14532,19 @@ giây; câu thứ nhất là một cuộc gọi cho kỹ thuật.</li>
 tay để gỡ phôi rồi quên bật lại — và đó chính là lúc bước tiếp theo làm rơi chi tiết.</li>
 </ol>
 <blockquote>
+<p>💡 <strong>Một cải tiến nhỏ đáng làm: liệt kê TẤT CẢ chỗ lệch, đừng chỉ báo cái đầu tiên.</strong> Hàm ở trên trả
+về lý do đầu tiên rồi dừng — người vận hành sửa xong trục Z, bấm Chạy tiếp, lại bị báo tiếp về chân
+không, sửa xong bấm lại, lại báo tiếp về một trục khác. Ba vòng cho một việc.</p>
+<p>Hiện thực thật mà đoạn code này rút ra dựng hẳn một <strong>cửa sổ liệt kê mọi mục đang lệch</strong> — mỗi dòng
+một thiết bị, kèm giá trị hiện tại và giá trị cần đưa về. Người vận hành nhìn một lần, xử lý một lượt,
+bấm Chạy tiếp một lần. Sửa đổi trong code chỉ là <strong>gom vào một danh sách thay vì <code>return</code> sớm</strong> — và
+nó đổi hẳn trải nghiệm ở chỗ mà mỗi phút dừng máy đều được tính.</p>
+<p>Chi tiết thứ hai đáng học từ hiện thực đó: <strong>phạm vi chụp ảnh trạng thái được suy ra từ cấu hình</strong>,
+không viết cứng. Nó duyệt danh sách thiết bị mà quy trình đang dùng rồi tự lấy ra các trục, các van
+kẹp và các cổng chân không. Nhờ vậy thêm một cơ cấu mới vào máy là <strong>tự động</strong> được đưa vào ảnh chụp,
+không ai phải nhớ bổ sung.</p>
+</blockquote>
+<blockquote>
 <p>📌 <strong>Cùng nguyên tắc này áp cho mất kết nối thiết bị.</strong> Khi một thiết bị mất liên lạc rồi nối lại
 giữa chu kỳ, lớp truyền thông chỉ khôi phục <strong>đường truyền</strong> — trạng thái vật lý ở đầu kia có thể đã
 đổi (trục tự nhả mô-men, PLC tự chạy trình tự an toàn của nó, thiết bị bị tắt bật nguồn). Xác minh
@@ -19204,6 +19245,19 @@ là bộ đôi không thể thiếu khi debug frame thực tế trên dây.</p>
 toàn; C# lo giao diện, thị giác, dữ liệu và tích hợp hệ thống trên. Mục này đi vào phần khó nhất của
 kiến trúc đó — <strong>tầng giao tiếp giữa hai bên</strong> — dựa trên một tầng giao tiếp PLC thật (khoảng 8000
 dòng, một lớp cơ sở dùng chung và bốn lớp cài đặt cho bốn hãng khác nhau).</p>
+<blockquote>
+<p>💡 <strong>Một quyết định nhỏ ở đầu chương trình tiết kiệm rất nhiều về sau: cho <em>địa chỉ</em> trở thành một
+kiểu dữ liệu có thể SO SÁNH.</strong> Trong một hệ SCADA mã nguồn mở, địa chỉ thiết bị là một <code>struct</code> gồm
+vùng nhớ, số khối, vị trí bắt đầu, số bit, kiểu dữ liệu — và nó cài <code>IComparable</code>, so lần lượt theo
+vùng → khối → vị trí → bit.</p>
+<p>Nhờ vậy việc <strong>gộp các địa chỉ liền nhau thành một lần đọc khối</strong> (phần quan trọng nhất của mục này)
+trở thành: sắp xếp danh sách địa chỉ, rồi duyệt một lượt gom những cái nằm sát nhau. Nếu địa chỉ chỉ
+là một chuỗi <code>&quot;D200&quot;</code> thì bạn phải phân tích chuỗi lại ở mọi chỗ cần so sánh.</p>
+<p>Cùng <code>struct</code> đó còn mang theo <strong>thứ tự byte</strong> của chính nó. Đây là chỗ đặt đúng: thứ tự byte là thuộc
+tính của <strong>một địa chỉ cụ thể trên một thiết bị cụ thể</strong>, không phải của cả trình điều khiển — trong
+một máy có thể có hai thiết bị của hai hãng với hai quy ước khác nhau. Đặt nó ở địa chỉ thì đọc một
+số thực không bao giờ ra giá trị vô lý nữa.</p>
+</blockquote>
 <h4>Từ vựng phải quen: thiết bị nhớ của PLC</h4>
 <p>Trước khi viết dòng code nào, phải quen bốn nhóm biến mà mọi PLC đều có (tên chữ cái khác nhau chút
 ít giữa các hãng, nhưng khái niệm thì chung):</p>
@@ -21209,6 +21263,33 @@ Infrastructure duy nhất (ví dụ <code>LegacyGateMesClient : IMesClient</code
 interface đã định kiểu (<code>CheckRouteAsync</code>, <code>ReportResultAsync</code>...) và không bao giờ nhìn thấy
 <code>Opcode</code> hay chuỗi JSON lồng. Nếu sau này nhà máy đổi sang một MES khác nói REST sạch, chỉ cần
 viết <code>IMesClient</code> implementation mới — phần Step/Sequence không đổi một dòng.</p>
+<hr>
+<h3>14.2.8b  Một tín hiệu, nhiều tên: bí danh thuộc về QUAN HỆ, không thuộc về tín hiệu</h3>
+<p>Khi máy nối ra ngoài, một vấn đề rất nhỏ nhưng gây rất nhiều sửa đổi vụn vặt sẽ xuất hiện: <strong>cùng một
+đại lượng có tên khác nhau ở mỗi hệ thống</strong>. Trong máy, nó là <code>Tram2.ApSuatHut</code>. Trên hệ MES của nhà
+máy, trường đó tên <code>VAC_PRESS_02</code>. Trên hệ giám sát của khách hàng, nó là <code>line3/st2/vacuum</code>. Và khi
+máy được bán cho nhà máy thứ hai, danh sách tên lại khác nữa.</p>
+<p>Phản xạ đầu tiên là thêm một cột <code>TenTrenMes</code> vào bảng tín hiệu. Nó chạy được — cho tới khi có <strong>hệ
+thống ngoài thứ hai</strong>, và lúc đó bạn thêm cột thứ hai, rồi thứ ba.</p>
+<p>Cách đúng đã được một hệ giám sát thiết bị mã nguồn mở nêu rất rõ: <strong>bí danh không phải thuộc tính của
+tín hiệu, cũng không phải thuộc tính của hệ thống ngoài — nó là thuộc tính của MỐI QUAN HỆ giữa hai
+cái.</strong> Vì vậy nó cần một bảng riêng:</p>
+<pre><code>TinHieu(Id, Ten, KieuDuLieu, DiaChi, …)
+HeThongNgoai(Id, Ten, LoaiKetNoi, …)
+BiDanh(Id, TinHieuId, HeThongNgoaiId, TenBenNgoai)   ← bảng quan hệ, MANG THEO thuộc tính riêng
+</code></pre>
+<p>Với cấu trúc này, thêm một hệ thống ngoài là <strong>thêm dữ liệu</strong>, không phải thêm cột và sửa code. Và mỗi
+quan hệ có thể mang thêm thuộc tính riêng khi cần: có gửi trường này cho hệ đó không, gửi với đơn vị
+nào, tần suất bao nhiêu.</p>
+<blockquote>
+<p>💡 <strong>Dấu hiệu nhận ra bạn đang cần một bảng quan hệ:</strong> khi bạn định thêm cột thứ hai có tên kiểu
+<code>TenTrenHeThongX</code>, hoặc khi bạn thấy mình giải thích <em>&quot;cái này chỉ đúng khi tín hiệu A đi với hệ
+thống B&quot;</em>. Thuộc tính nào chỉ có nghĩa khi <strong>cả hai bên cùng có mặt</strong> thì nó thuộc về mối quan hệ.</p>
+<p>Cái giá — và tài liệu thiết kế của họ cũng nói thẳng: thêm một bảng, một thực thể, một kho dữ liệu,
+và câu truy vấn phải nối bảng. Với máy chỉ nối đúng một hệ MES và chắc chắn không có hệ thứ hai, một
+cột duy nhất vẫn là lựa chọn đúng. Đừng dựng sẵn cấu trúc cho tương lai chưa chắc tới — nhưng hãy
+<strong>nhận ra dấu hiệu</strong> để đổi kịp lúc.</p>
+</blockquote>
 <hr>
 <h3>14.2.9  Web service kiểu SOAP — cách nhiều hệ MES đời cũ vẫn nói chuyện</h3>
 <p>Mục 14.2.7 trình bày tích hợp MES kiểu nhẹ bằng HTTP + JSON, mục 14.2.8 là kiểu &quot;cổng lệnh&quot; độc
@@ -24976,6 +25057,107 @@ báo: có <code>CancellationToken</code> trong code không đồng nghĩa với 
 tốt và đáng học, nhưng &quot;có trên GitHub&quot; không phải chứng nhận chất lượng.</p>
 </blockquote>
 <hr>
+<h2 id="162d-lnh-ch-điu-kin-nguyên-thu-nh-nht-và-b-vit-li-nhiu-ln-nht">16.2d  Lệnh &quot;chờ điều kiện&quot; — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất</h2>
+<p>Đọc bất kỳ trình tự máy nào, bạn sẽ thấy cùng một đoạn code lặp lại hàng chục lần với vài biến thể:
+<em>chờ cảm biến báo có phôi</em>, <em>chờ áp suất đủ</em>, <em>chờ trục về đích</em>, <em>chờ trạm sau báo rảnh</em>. Mỗi lần lại
+một vòng <code>while</code> với một <code>Task.Delay</code> bên trong, và <strong>mỗi lần một kiểu xử lý hết giờ khác nhau</strong> — chỗ
+thì ném ngoại lệ, chỗ thì trả <code>false</code>, chỗ thì quên hẳn.</p>
+<p>Đây là ứng cử viên số một để <strong>đóng gói thành một lệnh dùng chung</strong>. Một khung máy mã nguồn mở làm đúng
+việc đó, và bản khai báo của nó cho thấy một lệnh chờ tử tế cần <strong>năm</strong> tham số, không phải hai:</p>
+<pre><code class="language-csharp">new WaitForCondition(
+    timeout:         TimeSpan.FromSeconds(5),    // 1. hết giờ thì thất bại
+    conditionTime:   TimeSpan.FromMilliseconds(100), // 2. phải GIỮ đúng trong bao lâu
+    firstValue:      apSuatDo,                   // 3-4. hai giá trị đem so
+    secondValue:     apSuatNguong,
+    operand:         Operand.GreaterOrEqual,     // 5. so kiểu gì
+    pollingInterval: 50);                        //    (nhịp hỏi lại)
+</code></pre>
+<h3>Tham số quan trọng nhất là cái ít người nghĩ tới: &quot;phải giữ đúng trong bao lâu&quot;</h3>
+<p>Ba tham số quen thuộc — hết giờ, hai vế so sánh, phép so. Tham số thứ hai mới là thứ phân biệt một lệnh
+chờ dùng được với một lệnh chờ gây lỗi ngẫu nhiên: <strong>điều kiện phải đúng và GIỮ đúng liên tục trong một
+khoảng</strong>, chứ không phải đúng ở đúng một lần hỏi.</p>
+<p>Vì sao cần: tín hiệu thật không sạch. Cảm biến quang chớp một nhịp khi phôi đi ngang; công tắc hành
+trình nảy vài mili-giây khi chạm; áp suất dao động quanh ngưỡng. Nếu vòng chờ hỏi mỗi 50 ms và <strong>chỉ cần
+thấy đúng một lần là đi tiếp</strong>, thì sớm muộn nó sẽ bắt đúng một cái nháy — và bước sau chạy trong khi
+phôi chưa thật sự vào vị trí. Lỗi này rất khó tái hiện, xảy ra vài lần một ca, và thường bị đổ cho
+&quot;nhiễu điện&quot;.</p>
+<p>Đây chính là <strong>chống dội, nhưng đặt ở tầng trình tự</strong> thay vì tầng tín hiệu — và nó cần thiết ngay cả
+khi bạn đã lọc ở tầng tín hiệu, vì điều kiện ở đây có thể là một biểu thức ghép nhiều nguồn.</p>
+<p>Quy tắc chọn giá trị, đủ dùng cho hầu hết trường hợp:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại điều kiện</th>
+<th>Thời gian giữ nên đặt</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cảm biến có/không có vật</td>
+<td>50–100 ms</td>
+</tr>
+<tr>
+<td>Công tắc hành trình cơ khí</td>
+<td>20–50 ms (đã có lọc phần cứng thì ít hơn)</td>
+</tr>
+<tr>
+<td>Đại lượng analog vượt ngưỡng</td>
+<td>100–500 ms, tuỳ quán tính</td>
+</tr>
+<tr>
+<td>Cờ bắt tay giữa các trạm (mục 16.2b)</td>
+<td><strong>0</strong> — cờ phần mềm không dội</td>
+</tr>
+</tbody></table></div>
+<h3>Ba điều nữa mà cài đặt đó dạy được — hai điều đúng, một điều sai</h3>
+<p><strong>Đúng 1 — mỗi lệnh tự ghi thời điểm bắt đầu và kết thúc.</strong> Lớp cơ sở của lệnh có sẵn <code>StartTime</code> và
+<code>StopTime</code>. Nghĩa là <strong>mọi bước trong máy đều tự đo thời gian của mình</strong>, miễn phí. Đây là nguồn dữ liệu
+cho ô <em>&quot;đang chạy bước nào&quot;</em> trên màn hình vận hành (Chương 10 mục 10.1.8), cho việc tìm bước nào làm
+chậm nhịp máy, và cho việc phát hiện một cơ cấu đang mòn dần (Chương 13 mục 13.2.1b).</p>
+<p><strong>Đúng 2 — kết quả là <em>dữ liệu quan sát được</em>, không phải giá trị trả về.</strong> Lệnh có hai thuộc tính
+<code>Succeeded</code> và <code>Failed</code> mà chỗ khác đăng ký theo dõi được, thay vì chỉ trả về <code>bool</code> cho người gọi. Nhờ
+vậy màn hình và bộ ghi nhật ký biết kết quả của từng bước mà không cần ai chuyển tiếp thủ công.</p>
+<p><strong>Sai — và đây là lỗi đáng nhớ nhất trong cả mục này.</strong> Vòng lặp kiểm tra &quot;giữ đúng trong bao lâu&quot; được
+viết như sau:</p>
+<pre><code class="language-csharp">while (sw.Elapsed.TotalMilliseconds &lt; conditionTime.TotalMilliseconds != !TestCondition())
+    await Task.Delay(pollingInterval);
+</code></pre>
+<p>Trông như một điều kiện ghép, nhưng <code>!=</code> ở đây đang <strong>so sánh hai giá trị đúng/sai</strong> với nhau. Kết quả:
+khi điều kiện đang đúng, vòng lặp chờ như mong muốn; nhưng <strong>ngay khi điều kiện rớt xuống sai giữa
+chừng, vòng lặp thoát ra và lệnh báo THÀNH CÔNG</strong>. Nghĩa là một tín hiệu chỉ nháy lên rồi tắt sẽ <strong>vượt
+qua</strong> đúng cái cơ chế sinh ra để chặn nó.</p>
+<p>Cách viết đúng, và nên viết tách ra cho đọc được:</p>
+<pre><code class="language-csharp">// Chờ điều kiện đúng, rồi phải GIỮ đúng đủ lâu; rớt giữa chừng thì đếm lại từ đầu.
+var sw = Stopwatch.StartNew();
+while (sw.Elapsed &lt; conditionTime)
+{
+    if (!TestCondition())
+        sw.Restart();                      // ← rớt thì đặt lại đồng hồ, KHÔNG thoát
+    await Task.Delay(pollingInterval, ct).ConfigureAwait(false);
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Bài học chung, đáng giá hơn cả cái lỗi:</strong> một biểu thức điều kiện ghép nhiều phép so sánh và phủ
+định trong một dòng là chỗ <strong>không thể soát bằng mắt</strong>. Với code điều khiển máy, hãy tách thành các
+biến có tên (<code>bool conDangDung = TestCondition();</code>) rồi ghép — dài hơn hai dòng, nhưng người sau đọc
+là hiểu, và người viết cũng khó viết sai. Đây là cùng loại với lỗi đèn trạng thái ở Chương 10 mục
+10.1.8: cả hai đều <strong>chạy được</strong>, đều <strong>trông đúng khi đọc lướt</strong>, và đều sai theo cách không có gì
+phát hiện được.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Hai chi tiết nữa phải sửa nếu bạn dựng lệnh chờ theo mẫu này.</strong> Thứ nhất, vòng hỏi lại phải nhận
+<strong>thẻ huỷ</strong> — không có nó, bấm Dừng khi đang chờ 30 giây thì vẫn phải chờ hết. Thứ hai, khi hết giờ,
+<strong>tác vụ đang chờ phải được huỷ</strong>; cài đặt đó chạy đua giữa tác vụ chờ và một <code>Task.Delay(timeout)</code>,
+nhưng khi hết giờ thì tác vụ chờ <strong>vẫn tiếp tục hỏi vòng mãi mãi</strong> — mỗi lần hết giờ để lại một vòng
+lặp sống sót, tích luỹ dần suốt ca sản xuất.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Và một cái bẫy riêng của phép so sánh bằng.</strong> Lệnh này cho phép chọn phép so <code>==</code> trên <strong>số
+thực</strong>. Với giá trị analog đọc từ cảm biến, <code>a == b</code> gần như <strong>không bao giờ đúng</strong> — chờ áp suất
+&quot;bằng đúng 5,00 bar&quot; là chờ mãi mãi. Với số thực, chỉ nên cho phép các phép so <strong>lớn hơn / nhỏ hơn</strong>,
+hoặc nếu thật sự cần &quot;bằng&quot; thì phải là <em>bằng trong dung sai</em> — đúng như cách so vị trí trục ở Chương
+12 mục 12.2.4.</p>
+</blockquote>
+<hr>
 <h2 id="163-bn-đ-pattern-toàn-h-thng">16.3  Bản đồ Pattern toàn hệ thống</h2>
 <p>Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automation đã tích luỹ hơn mười pattern. Mục này đặt tất cả vào đúng vị trí trong kiến trúc layered để không nhầm lẫn giữa các pattern có tên tương tự hoặc giải quyết vấn đề tương tự ở các tầng khác nhau.</p>
 <h3>16.3.1  Kiến trúc layered và vị trí từng Pattern</h3>
@@ -25303,6 +25485,12 @@ chung</strong> cho cả nhóm nút. Đổi lại, trình tự khó đọc hơn d
 cơ cấu chạy song song hoặc nhóm bước được dùng lại nhiều chỗ. Cùng mục này có một ví dụ lỗi rất đáng
 nhớ từ mã nguồn mở thật: bước con báo lỗi bằng giá trị trả về, nhánh cha <strong>không kiểm tra giá trị đó</strong> —
 bước hỏng bị bỏ qua trong im lặng và trình tự chạy tiếp.</p>
+<p><strong>Lệnh &quot;chờ điều kiện&quot;</strong> (mục 16.2d) là nguyên thuỷ nhỏ nhất của mọi trình tự và là đoạn code bị viết
+lại nhiều lần nhất. Một lệnh chờ tử tế cần <strong>năm</strong> tham số, trong đó tham số ít người nghĩ tới lại quan
+trọng nhất: <strong>điều kiện phải GIỮ đúng trong bao lâu</strong> — thiếu nó, một cái nháy của cảm biến sẽ cho trình
+tự đi tiếp khi phôi chưa vào vị trí. Mục này cũng phân tích một lỗi biểu thức đúng-sai trong mã nguồn
+thật làm <strong>vô hiệu hoá chính cơ chế đó</strong>, và rút ra quy tắc: điều kiện ghép nhiều phép so sánh phải tách
+thành biến có tên, không viết dồn một dòng.</p>
 <p><strong>Bản đồ Pattern toàn hệ thống</strong> đặt 16 pattern đã học vào đúng tầng kiến trúc — từ HMI xuống Hardware — và cung cấp decision guide để chọn pattern đúng theo bài toán thực tế.</p>
 <p>Kết thúc Phần V (Chương 11–16), kiến trúc lõi của hệ thống automation đã hoàn chỉnh. Phần VI chuyển sang vận hành: quản lý mã nguồn, kiểm thử, và debug trên máy production.</p>
 <hr>
@@ -30438,6 +30626,15 @@ chỗ trống cho nó từ bước 9</strong>, đừng để phải sửa lại 
 ngay từ đầu giúp mọi màn hình, mọi log, mọi tài liệu về sau đều nói cùng một ngôn ngữ với người đấu
 điện. Ngược lại, nếu bước 1–2 làm ẩu thì mọi bước sau đều phải trả giá, và không có cách nào bù lại
 bằng cách viết code cẩn thận hơn ở tầng trên.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Nếu khung của bạn dùng cho nhiều máy: hãy phát hành kèm một project MẪU TRỐNG.</strong> Một khung máy
+mã nguồn mở mô hình hoá &quot;một máy&quot; đúng bằng ba túi — <strong>thiết bị, tham số, và các lệnh</strong> — rồi kèm sẵn
+một project mẫu chứa đúng ba thư mục đó với một lệnh giả để chạy thử.</p>
+<p>Người làm máy mới <strong>chép project mẫu, đổi tên, rồi điền vào</strong>. Nghe tầm thường, nhưng nó quyết định
+hai thứ: mọi máy trong công ty có <strong>cùng một cấu trúc thư mục</strong> nên người này đọc được code của người
+kia; và người mới không phải đoán <em>&quot;bắt đầu từ đâu&quot;</em> — câu hỏi tốn nhiều thời gian nhất khi tiếp nhận
+một khung lạ. Chi phí: một buổi làm mẫu, cộng kỷ luật cập nhật mẫu mỗi khi khung đổi.</p>
 </blockquote>
 <h3>B.6.1 Một sản phẩm, nhiều khách hàng: kiến trúc plugin</h3>
 <p>Mục B.6 giả định bạn làm <strong>một</strong> máy. Nếu công ty bạn bán <strong>nhiều máy cùng họ</strong> cho nhiều khách hàng,

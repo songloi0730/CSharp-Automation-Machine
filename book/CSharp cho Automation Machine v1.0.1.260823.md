@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260822 |
+| **Phiên bản** | v1.0.1.260823 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -22028,6 +22028,114 @@ bình thường, chỉ là máy đứng im hoặc chạy vượt bước. Ba bi�
 
 ---
 
+### 16.2b.5  Bảng cờ trong một máy tám trạm — bốn chi tiết từ mã nguồn thật
+
+Bốn quy tắc ở trên rút ra từ nguyên tắc. Mục này mở một bảng cờ thật của máy tám trạm đang chạy sản
+xuất, và lấy ra bốn chi tiết mà chỉ đọc code mới thấy.
+
+#### 1. Tách bảng theo KIỂU dữ liệu, không gộp một bảng cho tất cả
+
+Dự án đó không có một bảng cờ duy nhất mà có **bốn bảng, mỗi bảng một kiểu**:
+
+```csharp
+public enum ThanhGhiBit    { … }   // cờ đúng/sai — phần lớn việc bắt tay nằm ở đây
+public enum ThanhGhiSo     { … }   // số nguyên: phần trăm tiến độ, số khay, số lần làm lại
+public enum ThanhGhiThuc   { … }   // số thực: nhịp máy
+public enum ThanhGhiChuoi  { … }   // chuỗi: mã đơn hàng, mã sản phẩm, chế độ làm việc
+```
+
+Đổi lại việc phải nhớ *"tên này nằm ở bảng nào"*, bạn được hai thứ đáng giá: **trình biên dịch không cho
+bạn đọc một cờ đúng/sai như một con số**, và mỗi bảng có thể có cách lưu, cách hiển thị, cách ghi nhật
+ký riêng. Với bảng chuỗi thì việc so sánh và ghi vết khác hẳn bảng bit — gộp chung sẽ phải kiểm tra kiểu
+ở mọi nơi.
+
+> 💡 **Và đây là chỗ đáng dừng lại: bảng cờ không chỉ chứa cờ.** Trong ví dụ trên, *phần trăm tiến độ
+> của trạm* và *mã sản phẩm đang chạy* cũng nằm trong bảng dùng chung. Hoá ra bảng cờ đang làm hai việc:
+> **đồng bộ giữa các trạm** (cờ bit) và **chia sẻ ngữ cảnh sản xuất hiện tại** (số và chuỗi). Việc thứ
+> hai hợp lý và tiện, nhưng phải ý thức được nó, vì hai việc đó có vòng đời khác nhau: cờ đồng bộ **xoá
+> mỗi chu kỳ** (Quy tắc 1 và 2), còn mã đơn hàng thì **không được xoá** giữa chừng. Nếu bạn viết một hàm
+> "xoá sạch bảng" mà quét cả bốn bảng, bạn vừa xoá mất mã sản phẩm đang chạy.
+
+#### 2. Chỉ số thanh ghi chính là thứ tự khai báo — và đó là một quả mìn
+
+Trong cài đặt đó, thanh ghi được truy cập bằng cách ép kiểu tên sang số:
+
+```csharp
+GhiThanhGhiChuoi((int)ThanhGhiChuoi.CheDoLamViec, "Chế độ kỹ sư");
+```
+
+Nghĩa là **vị trí trong enum quyết định ô nhớ nào được ghi**. Chừng nào cả hệ thống nằm gọn trong một
+chương trình và luôn được biên dịch lại cùng nhau thì không sao. Nó thành vấn đề ngay khi có một trong
+ba điều sau:
+
+- **Chèn một tên mới vào giữa danh sách** — việc rất tự nhiên, vì các tên được nhóm theo trạm bằng chú
+  thích, nên người thêm cờ cho trạm 3 sẽ chèn vào giữa nhóm trạm 3. Mọi chỉ số phía sau **dịch đi một**.
+- **Có thứ gì đó lưu chỉ số dạng số** — tệp cấu hình, bản ghi nhật ký cũ, một màn hình gỡ rối cho gõ số
+  thanh ghi. Tất cả bỗng trỏ sai chỗ, **không có lỗi biên dịch nào**.
+- **Phía bên kia là một chương trình khác** (PLC, phần mềm giám sát) đã thoả thuận theo số.
+
+Hai cách phòng, chọn theo mức độ hệ thống của bạn mở ra bên ngoài:
+
+```csharp
+// Cách rẻ: gán giá trị tường minh, và chỉ được thêm vào CUỐI mỗi nhóm
+public enum ThanhGhiBit
+{
+    ChuaDung          = 0,     // ← chừa ô 0, xem chi tiết 3
+    BaoTramCapPhoiLay = 1,
+    TramCapPhoiXong   = 2,
+    // thêm mới: LUÔN lấy số tiếp theo chưa dùng, không chèn vào giữa
+}
+
+// Cách chắc chắn: tra cứu theo TÊN, chỉ số là chi tiết bên trong
+_bangCo.Set("TramCapPhoi.DaLayXong", true);
+```
+
+#### 3. Ô số 0 được chừa lại có chủ đích
+
+Phần tử đầu tiên trong bảng cờ thật là một cái tên vô nghĩa, giữ chỗ. Nhìn qua tưởng là rác, nhưng nó
+giải quyết một vấn đề thật: trong C#, **giá trị mặc định của mọi enum là 0**. Một biến thanh ghi chưa
+được gán, một trường đọc từ tệp cấu hình bị thiếu, một phần tử mảng chưa khởi tạo — tất cả đều mang giá
+trị 0. Nếu ô 0 là một cờ có ý nghĩa, những trường hợp đó sẽ **âm thầm trỏ vào cờ đó** và bạn sẽ đi tìm
+rất lâu.
+
+Nguyên tắc tổng quát, dùng được cho mọi enum trong phần mềm máy chứ không riêng bảng cờ: **giá trị 0
+phải là "chưa xác định" hoặc "không hợp lệ"**, không bao giờ là một giá trị có nghĩa. Cùng lý do vì sao
+mã cảnh báo không nên bắt đầu từ 0.
+
+#### 4. Một trạm làm cầu nối tới PLC, các trạm khác không biết PLC tồn tại
+
+Đọc danh sách cờ sẽ thấy hai nhóm tên nằm cạnh nhau:
+
+```
+BaoPlcCapPhoi          BaoPlcLayPhoiRa          ← trạm khác đặt cờ
+PlcCapPhoiXong         PlcLayPhoiXong           ← có một trạm đặt lại
+TramCauNoiPlcSanSang
+```
+
+Nghĩa là trong máy có **một trạm chuyên trách nói chuyện với PLC**. Các trạm còn lại không mở kết nối,
+không biết địa chỉ thanh ghi, không biết hãng PLC nào — chúng chỉ đặt một cờ *"nhờ cấp phôi"* rồi chờ
+cờ *"đã cấp xong"*, y hệt cách chúng bắt tay với các trạm C# khác.
+
+Đây là một quyết định kiến trúc tốt và nên bắt chước, vì ba lý do:
+
+- **Kiến thức về PLC gom vào một chỗ.** Đổi hãng PLC, đổi bản đồ địa chỉ, đổi cách gộp vùng đọc — sửa
+  một trạm (Chương 14 mục 14.1.2b).
+- **Tầng quy trình chỉ có một mô hình bắt tay để học**, không phải hai (một cho trạm C#, một cho PLC).
+- **Chạy giả lập trở nên dễ**: thay trạm cầu nối bằng một bản giả lập đặt cờ hoàn thành sau vài trăm
+  mili-giây, và toàn bộ phần còn lại của máy chạy được mà không cần PLC (Chương 12 mục 12.4.3, chế độ
+  chạy độc lập).
+
+> 📌 **Và một mẹo đọc code: bảng cờ chính là sơ đồ cộng tác của cả cỗ máy.** Trong dự án đó, một tệp
+> khoảng một trăm dòng liệt kê đủ tám trạm và mọi tương tác giữa chúng — vì mỗi cờ là một câu *"ai nhờ
+> ai làm gì"* và *"ai báo đã xong việc gì"*. Đọc nó mất mười phút và cho bạn bức tranh mà đọc rải rác
+> tám trạm cả ngày cũng không dựng ra được.
+>
+> Đặt cạnh mẹo ở Phụ lục B mục B.9 (đọc hàm khởi động để biết phần mềm có những khối gì), bạn có hai
+> tệp nên mở đầu tiên khi nhận một dự án lạ: **hàm khởi động** cho biết *có những gì*, **bảng cờ** cho
+> biết *chúng nói chuyện với nhau ra sao*.
+
+---
+
 ## 16.2c  Cây tác vụ — tổ chức trình tự bằng Composite
 
 Mục 16.2 dùng Command Pattern cho **một lệnh**. Mục này dùng **Composite** cho **cả một trình tự**: thay
@@ -22313,6 +22421,12 @@ với nhau qua một bảng cờ dùng chung, không trạm nào gọi hàm tr�
 (trình biên dịch không phát hiện được cờ mồ côi) để lấy tính song song thật và khả năng quan sát trạng
 thái đồng bộ trực tiếp từ HMI. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng cờ
 trước mỗi lần Start; mọi lần chờ phải có thời gian chờ tối đa kèm alarm; tên cờ phải mô tả ý định.
+
+Mục 16.2b.5 bổ sung bốn chi tiết từ bảng cờ của một máy tám trạm đang chạy thật: **tách bảng theo kiểu
+dữ liệu**; **chỉ số bằng thứ tự khai báo là một quả mìn** khi có ai đó chèn tên vào giữa; **chừa ô số 0**
+vì `default` của mọi enum là 0; và **một trạm chuyên trách nói chuyện với PLC** để các trạm còn lại chỉ
+cần học một mô hình bắt tay duy nhất. Kèm một mẹo đọc code: bảng cờ chính là **sơ đồ cộng tác** của cả
+cỗ máy.
 
 **Cây tác vụ (Composite)** là cách thứ tư để tổ chức trình tự, bên cạnh danh sách bước, máy trạng thái
 và đồ thị nút. Cấu trúc cây cho không ba thứ: **đánh số bước tự động theo vị trí trong cây** (`3.2`),

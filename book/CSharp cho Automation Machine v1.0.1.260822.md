@@ -5191,6 +5191,81 @@ trọng nhất khi sang PC.
 > chính là scan cycle của PC-Based, viết tường minh bằng async/await. Chương 12
 > (Sequence Engine) xây dựng đầy đủ pattern này.
 
+### 6.1.1b  Đồng hồ của Windows không mịn như bạn tưởng — con số 15,6 ms
+
+Bảng 6.1 ghi *"soft real-time"* ở dòng đảm bảo timing. Mục này đưa ra **con số cụ thể** đằng sau chữ đó,
+vì đây là chỗ người từ PLC sang C# hiểu sai nhiều nhất — trong PLC, vòng quét 1 ms là chuyện bình
+thường, nên người ta mặc nhiên cho rằng viết `await Task.Delay(1)` sẽ được điều tương tự.
+
+Không được. Mặc định, **bộ đếm ngắt của Windows đập khoảng 64 lần mỗi giây — tức mỗi nhịp ~15,6 ms**.
+Mọi hàm chờ dựa trên bộ đếm đó đều bị làm tròn lên theo nhịp này. Hệ quả rất cụ thể:
+
+| Bạn viết | Bạn nghĩ mình được | Thực tế thường gặp |
+|---|---|---|
+| `await Task.Delay(1)` | 1 ms | **~15,6 ms** |
+| `await Task.Delay(5)` | 5 ms | ~15,6 ms |
+| `await Task.Delay(20)` | 20 ms | ~31 ms (làm tròn lên 2 nhịp) |
+| Vòng lặp `while { …; await Task.Delay(1); }` | ~1000 vòng/giây | **~64 vòng/giây** |
+
+Một thư viện khung máy mã nguồn mở ghi thẳng con số này vào tài liệu của hàm chờ: *"cài đặt này có độ
+chính xác khoảng 15,6 ms"*. Đó là cách làm đúng — **ghi giới hạn thật vào chỗ người ta sẽ đọc**, thay
+vì để mỗi người tự phát hiện bằng cách gỡ lỗi.
+
+#### Ba hệ quả bạn sẽ gặp ngoài hiện trường
+
+**1. Xung ra ngắn không ngắn như bạn nghĩ.** Đoạn code kiểu *bật cuộn van, chờ 2 ms, tắt* sẽ tạo ra một
+xung dài khoảng 15 ms. Với đèn chớp đồng bộ camera, với van tốc độ cao, với xung kích một bộ đếm — sai
+số đó đủ để hỏng chức năng. Kết luận: **thứ gì cần độ rộng xung chính xác thì phải do phần cứng tạo ra**
+(ngõ ra xung của card, bộ định thời của PLC, mạch chuyên dụng), không phải do vòng lặp C# tạo ra.
+
+**2. Chống dội và bộ lọc theo thời gian bị lệch.** Một bộ chống dội cảm biến khai báo 5 ms thực chất
+đang lọc ở 15 ms. Thường thì vô hại — nhưng nếu bạn *đo* thời gian bằng số lần lặp (`đếm đủ 5 vòng là
+5 ms`) thì con số bạn tính ra sai gấp ba. Luôn đo bằng `Stopwatch`, đừng suy ra từ số vòng lặp.
+
+**3. Nhịp máy thực tế cao hơn tính toán trên giấy.** Một chu kỳ có mười lần chờ nhỏ rải rác sẽ cộng
+thêm hàng trăm mili-giây so với dự tính. Khi nhịp máy không đạt cam kết, đây là một trong những chỗ
+đáng kiểm tra sớm, và kiểm tra rất rẻ: ghi thời gian thật của từng bước rồi so với thời gian khai báo.
+
+#### Có cách tăng độ mịn, và có cái giá của nó
+
+Windows cho phép **yêu cầu tạm thời một nhịp đồng hồ mịn hơn** qua hai hàm hệ thống trong `winmm.dll`.
+Cùng thư viện nói trên gọi chúng bằng P/Invoke (Phụ lục A):
+
+```csharp
+[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+internal static extern uint SetTimeBeginPeriod(uint milliseconds);
+
+[DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+internal static extern uint SetTimeEndPeriod(uint milliseconds);
+
+// dùng theo cặp, luôn luôn trả lại
+SetTimeBeginPeriod(1);
+try     { await ChoAsync(interval); }
+finally { SetTimeEndPeriod(1); }
+```
+
+Bốn điều phải biết trước khi dùng:
+
+- **Phải trả lại đúng bằng một lời gọi kết thúc.** Xin mà không trả là để máy chạy ở nhịp đồng hồ cao
+  suốt thời gian phần mềm sống — đúng cái mà mục dưới nói là tốn kém.
+- **Nó tốn điện và tăng số lần đánh thức CPU.** Trên máy tính công nghiệp cắm điện thì đây không phải
+  vấn đề lớn, nhưng nó **làm nóng máy hơn** — và trong tủ điện kín thì nhiệt là chuyện thật.
+- **Hành vi của hai hàm này đã thay đổi giữa các phiên bản Windows** (phạm vi ảnh hưởng là toàn hệ
+  thống hay chỉ tiến trình gọi). Vì vậy: **đo trên đúng máy sẽ giao hàng**, đừng tin con số đọc được
+  trên máy phát triển.
+- **Mịn hơn không có nghĩa là bảo đảm.** Ngay cả ở nhịp 1 ms, bạn vẫn có thể bị bộ dọn rác dừng vài
+  chục mili-giây, bị hệ điều hành xếp lịch cho luồng khác, bị trình quét vi-rút chen ngang. Bạn mua
+  được *độ mịn trung bình*, không mua được *giới hạn trên*.
+
+> ⚠️ **Và đây mới là kết luận quan trọng nhất của mục này.** Nếu bạn thấy mình đang cần vòng lặp C#
+> chạy đều dưới 5 ms, đó gần như luôn là dấu hiệu **chức năng đó đang nằm sai tầng**. Việc cần thời
+> gian chặt phải nằm ở nơi có bảo đảm thời gian thực: **card chuyển động, PLC, hoặc bộ điều khiển
+> chuyên dụng**. Phần mềm C# ra lệnh và giám sát; nó không phải là nơi đếm mili-giây.
+>
+> Ranh giới thực dụng cho phần mềm máy viết bằng C#: vòng đọc trạng thái **50–200 ms**, vòng cập nhật
+> màn hình **100–500 ms**, vòng an toàn phần mềm **10–50 ms** (và luôn có một lớp an toàn phần cứng
+> phía dưới — Chương 15). Thiết kế trong dải đó thì con số 15,6 ms không bao giờ làm phiền bạn.
+
 ### 6.1.2  Ba mô hình lập trình trong điều khiển máy
 
 <!--idx:lập trình tuần tự--><!--idx:lập trình song song--><!--idx:lập trình hướng sự kiện-->
@@ -5660,6 +5735,14 @@ sở thích cá nhân hay xu hướng công nghệ.
 
 - **Scan Cycle** là khác biệt căn bản: PLC có vòng quét ngầm định; PC-Based phải
   thiết kế tường minh — thường là State Machine hoặc Sequence Engine (Chương 12).
+
+- **Đồng hồ Windows mặc định đập ~15,6 ms** (mục 6.1.1b): `Task.Delay(1)` cho ra
+  ~15 ms, và vòng lặp `Delay(1)` chạy ~64 vòng/giây chứ không phải 1000. Cần độ
+  rộng xung chính xác thì phải để **phần cứng** tạo, không phải vòng lặp C#.
+
+- Nếu bạn cần vòng lặp C# đều dưới 5 ms, đó là dấu hiệu **chức năng nằm sai tầng**.
+  Dải thiết kế an toàn: đọc trạng thái 50–200 ms, cập nhật màn hình 100–500 ms,
+  vòng an toàn phần mềm 10–50 ms (luôn có lớp an toàn phần cứng bên dưới).
 
 - **Ba mô hình** — tuần tự, song song, hướng sự kiện — không có mô hình nào đúng
   cho mọi tình huống; một hệ thống tốt phối hợp cả ba đúng chỗ.

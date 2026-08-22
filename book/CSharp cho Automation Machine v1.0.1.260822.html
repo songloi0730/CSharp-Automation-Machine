@@ -16241,6 +16241,131 @@ hoặc &quot;dữ liệu không chắc&quot; trong môi trường công nghiệp
 giải phóng tài nguyên bất đồng bộ (đóng socket, gửi gói tin tắt qua mạng) mà không
 chặn luồng. Tìm hiểu thêm: &quot;IAsyncDisposable C#&quot;, &quot;await using pattern&quot;.</p>
 </blockquote>
+<h3>13.2.1b  Thiết bị đơn giản nhất — xi-lanh khí nén, và bảy điều dễ làm sai</h3>
+<p>Trước khi trừu tượng hoá trục hay camera, hãy làm cho được <strong>thứ đơn giản nhất</strong>: một xi-lanh khí nén.
+Đây là cơ cấu phổ biến nhất trong máy lắp ráp — một cái máy tầm trung có ba mươi cái — và nó là bài tập
+gọn nhất để hiểu vì sao &quot;trừu tượng hoá thiết bị&quot; không phải chuyện lý thuyết.</p>
+<h4>Mô hình đúng thì rất ngắn</h4>
+<p>Về phần cứng, một xi-lanh hai chiều thông thường gồm bốn tín hiệu: <strong>hai cuộn van</strong> (đẩy ra, thu về) và
+<strong>hai cảm biến vị trí</strong> (đã ra hết, đã về hết). Vậy lớp mô tả nó cũng chỉ cần bốn tín hiệu đó:</p>
+<pre><code class="language-csharp">public sealed class Cylinder
+{
+    private readonly IDigitalOutput _solExtend, _solRetract;
+    private readonly IDigitalInput  _lsExtended, _lsRetracted;
+
+    public Cylinder(string name, IDigitalOutput solExtend, IDigitalOutput solRetract,
+                    IDigitalInput lsExtended, IDigitalInput lsRetracted) { /* ... */ }
+
+    public bool IsExtended  =&gt; _lsExtended.IsOn  &amp;&amp; _lsRetracted.IsOff;
+    public bool IsRetracted =&gt; _lsRetracted.IsOn &amp;&amp; _lsExtended.IsOff;
+}
+</code></pre>
+<p>Hai điều đã đúng ngay ở đây, và cả hai đều quan trọng hơn vẻ ngoài:</p>
+<p><strong>Trạng thái được suy ra từ CẢM BIẾN, không phải từ lệnh đã gửi.</strong> <code>IsExtended</code> không phải là <em>&quot;tôi vừa
+ra lệnh đẩy ra&quot;</em> mà là <em>&quot;cảm biến đầu ngoài đang báo có, và cảm biến đầu trong đang báo không&quot;</em>. Nghe
+hiển nhiên, nhưng cách viết sai — nhớ lệnh cuối cùng đã gửi rồi coi đó là trạng thái — rất phổ biến, và
+nó nói dối đúng vào lúc bạn cần sự thật nhất: khi ống hơi tuột, khi kẹt phôi, khi mất khí nén.</p>
+<p><strong>Kiểm tra CẢ HAI cảm biến, không chỉ một.</strong> Nếu chỉ hỏi <em>&quot;cảm biến đầu ngoài có sáng không&quot;</em>, bạn không
+phân biệt được ba tình huống khác nhau: xi-lanh đã ra hết, xi-lanh đang ở giữa (cả hai cảm biến tắt), và
+<strong>một cảm biến hỏng dính</strong> (cả hai cùng sáng — trạng thái vật lý bất khả thi). Trạng thái thứ ba đáng
+được báo thành cảnh báo riêng chứ không phải im lặng.</p>
+<h4>Bảy điều dễ làm sai</h4>
+<p>Đoạn dưới là một cài đặt thật của cùng lớp này, viết theo cách rất tự nhiên với người mới. Nó <strong>chạy
+được trên máy</strong>, và đó chính là lý do nó nguy hiểm:</p>
+<pre><code class="language-csharp">public void Ford()                                  // ← (1) trả về void
+{
+    if (running) return;                            // ← (4) kiểm-rồi-làm, không khoá
+    running = true;
+    Task.Run(() =&gt;
+    {
+        SolFord.Value = true;
+        SolBack.Value = false;
+        uint count = 0;
+        while (count &lt; 100)
+        {
+            if (LSFord.IsOn) { SolFord.Value = false; break; }   // ← (6) buông cuộn van khi tới nơi
+            Thread.Sleep(100);                                   // ← (2) chặn luồng, (3) không huỷ được
+            count++;
+        }
+        running = false;
+        if (count &gt;= 100) { Log.Warning($&quot;ALARM FORD {Name}&quot;); alarmFord = true; }  // ← (5)(7)
+    });
+}
+</code></pre>
+<p><strong>1. Một hành động mất thời gian vật lý mà trả về <code>void</code>.</strong> Đây là lỗi gốc, sinh ra mọi thứ còn lại.
+Hàm trả về <strong>ngay lập tức</strong>, trong khi xi-lanh mới bắt đầu di chuyển. Trình tự gọi <code>Ford()</code> rồi chạy
+tiếp bước sau — với xi-lanh còn đang ở giữa hành trình. Chữ ký đúng phải nói rõ đây là việc cần chờ:</p>
+<pre><code class="language-csharp">public async Task ExtendAsync(CancellationToken ct = default)
+</code></pre>
+<p><strong>2. <code>Thread.Sleep</code> bên trong <code>Task.Run</code>.</strong> Mỗi lần chờ chiếm một luồng của hệ thống suốt vài giây. Một
+máy có ba mươi xi-lanh chạy song song sẽ chiếm ba mươi luồng chỉ để <strong>ngồi chờ</strong>. Thay bằng
+<code>await Task.Delay(100, ct)</code> — Chương 5 mục 5.1.2.</p>
+<p><strong>3. Không có thẻ huỷ.</strong> Người vận hành bấm dừng khẩn; vòng chờ này vẫn chạy nốt mười giây của nó. Mọi
+hành động thiết bị phải nhận <code>CancellationToken</code> (Chương 5 mục 5.2).</p>
+<p><strong>4. <code>if (running) return;</code> là kiểm-rồi-làm trên biến không được bảo vệ.</strong> Hai lời gọi gần nhau từ hai
+luồng có thể <strong>cùng đi qua</strong> cửa kiểm tra, rồi cùng bật van. Với biến trạng thái đọc/ghi từ nhiều luồng,
+tối thiểu phải là <code>Interlocked</code>, hoặc dùng một <code>SemaphoreSlim(1,1)</code> cho mỗi cơ cấu.</p>
+<p><strong>5. Hết giờ mà chỉ ghi nhật ký và bật một cờ.</strong> Người gọi <strong>không được báo gì cả</strong> — hàm đã trả về từ
+lâu. Trình tự chạy tiếp, tin rằng xi-lanh đã ra. Bước sau có thể là hạ đầu ép xuống một chi tiết chưa
+được kẹp. Hết giờ chờ cảm biến là <strong>lỗi thiết bị</strong>, phải ném ngoại lệ có mã cảnh báo để trình tự dừng
+lại (Chương 15).</p>
+<p><strong>6. Buông cuộn van khi cảm biến báo tới nơi — chỉ đúng với MỘT loại van.</strong> Với van xung hai cuộn (loại
+giữ nguyên vị trí khi mất điện), cắt điện cuộn sau khi đã tới nơi là <strong>đúng và nên làm</strong>: cuộn không bị
+nóng, tuổi thọ cao hơn. Nhưng với van một cuộn lò xo hồi vị, cắt điện nghĩa là <strong>xi-lanh tự thu về ngay
+lập tức</strong> — đúng cái ngược lại với ý định.</p>
+<blockquote>
+<p>Đây là ví dụ rõ nhất về một giả định phần cứng <strong>không được viết ra ở đâu cả</strong>. Cùng một đoạn code,
+chạy đúng trên máy này và gây tai nạn trên máy kia. Bắt buộc phải để loại van thành <strong>một tham số
+khai báo</strong> của xi-lanh (<code>GiuKhiMatDien</code> / <code>LoXoHoiVi</code>), và hành vi buông cuộn phụ thuộc tham số đó.</p>
+</blockquote>
+<p><strong>7. Khi hết giờ, cuộn van bị bỏ mặc ở trạng thái đang có điện.</strong> Vì lệnh <code>break</code> không chạy tới, dòng
+tắt cuộn cũng không chạy. Xi-lanh nằm đó <strong>đẩy mãi vào vật cản</strong> — làm nóng cuộn, và làm hỏng thứ đang
+bị kẹt. Xử lý lỗi phải <strong>đưa cơ cấu về trạng thái an toàn trước khi báo lỗi</strong>, đúng theo mẫu <code>try/finally</code>.</p>
+<h4>Viết lại cho đúng — vẫn ngắn</h4>
+<pre><code class="language-csharp">public async Task ExtendAsync(CancellationToken ct = default)
+{
+    await _gate.WaitAsync(ct).ConfigureAwait(false);          // (4) mỗi cơ cấu một cửa
+    try
+    {
+        _solRetract.Value = false;
+        _solExtend.Value  = true;
+
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        cts.CancelAfter(_timeoutMs);                          // (3) huỷ được, và có hạn
+        try
+        {
+            await WaitUntilAsync(() =&gt; _lsExtended.IsOn, cts.Token).ConfigureAwait(false);  // (2) không chặn luồng
+            if (_valveType == ValveType.GiuKhiMatDien)        // (6) hành vi theo loại van
+                _solExtend.Value = false;
+        }
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        {
+            _solExtend.Value = false;                         // (7) về trạng thái an toàn TRƯỚC khi báo
+            throw new AlarmException(AlarmCodes.CylinderTimeout, Name,
+                $&quot;Xi-lanh {Name} không tới vị trí ra sau {_timeoutMs} ms&quot;);   // (5) người gọi buộc phải biết
+        }
+    }
+    finally { _gate.Release(); }
+}
+</code></pre>
+<p>Dài hơn bản đầu khoảng mười lăm dòng, và mười lăm dòng đó chính là khác biệt giữa một cơ cấu <strong>dùng
+được trong trình tự tự động</strong> và một cơ cấu chỉ dùng được khi có người đứng nhìn.</p>
+<blockquote>
+<p>💡 <strong>Hai thứ đáng thêm khi bạn đã có lớp này, đều rẻ.</strong> Thứ nhất, <strong>đếm số lần tác động</strong> của từng
+xi-lanh và lưu lại — đây là dữ liệu bảo trì dự đoán rẻ nhất trong cả cỗ máy (Phụ lục B mục B.2.6).
+Thứ hai, <strong>ghi lại thời gian hành trình thực tế</strong> của mỗi lần: một xi-lanh đang mòn hoặc một bộ tiết
+lưu bị nghẹt sẽ chậm dần <strong>hàng tuần trước khi</strong> nó chậm tới mức hết giờ chờ và làm dừng máy. Một cột
+&quot;thời gian hành trình trung bình 100 lần gần nhất&quot; trên màn hình chẩn đoán biến một sự cố dừng máy
+thành một việc bảo trì có kế hoạch.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Và cùng một khuôn này áp cho mọi cơ cấu hai trạng thái</strong>: kẹp/nhả, hút/xả chân không, nâng/hạ
+chốt, cửa che đóng/mở. Trong dự án tham khảo nói trên, cùng thư mục còn có lớp cho <strong>băng tải</strong> và
+<strong>servo</strong> viết theo đúng khuôn đó, mỗi lớp đi kèm <strong>một điều khiển giao diện dùng lại được</strong> — nên
+màn hình chạy tay của một trạm mới chỉ là việc xếp các điều khiển ấy lại, không phải vẽ lại từ đầu
+(Phụ lục B mục B.2.2).</p>
+</blockquote>
+<hr>
 <h3>13.2.2 Factory Pattern cho Device Creation</h3>
 <p>Nếu không có Factory, code khởi động máy phải tự tạo device bằng switch-case:</p>
 <pre><code class="language-csharp">// Không có Factory — phải tự quản lý hàng chục case
@@ -18084,6 +18209,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Device Manager (13.3.1)</td>
 <td>Quản lý vòng đời + dependency ordering + snapshot HMI</td>
 <td>Khởi động/dừng có kiểm soát, không phân tán</td>
+</tr>
+<tr>
+<td>Xi-lanh khí nén (13.2.1b)</td>
+<td>Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp</td>
+<td>Trạng thái suy từ <strong>cả hai cảm biến</strong>; hành động phải <code>async</code> + có thẻ huỷ + hết giờ thì <strong>ném lỗi</strong> sau khi về an toàn; loại van là <strong>tham số khai báo</strong></td>
 </tr>
 <tr>
 <td>Chạm tới một tín hiệu (13.2.4e)</td>

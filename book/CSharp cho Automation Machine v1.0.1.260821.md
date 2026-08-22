@@ -4385,6 +4385,32 @@ UploadLogAsync().Forget(_logger);
 
 `ContinueWith` vẫn chạy được nhưng dài dòng và ít phổ biến trong .NET 6+ — `Task.Run` với async lambda gọn và rõ hơn.
 
+> 📌 **Ca thứ hai mà `async void` là bắt buộc: ghi đè phương thức khởi động của ứng dụng.** Trong một
+> dự án tham khảo, toàn bộ trình tự khởi động — nạp cơ sở dữ liệu, nạp công thức, mở dịch vụ truyền
+> thông — nằm trong `protected override async void OnStartup(StartupEventArgs e)`. Chữ ký của phương
+> thức được ghi đè trả `void`, nên không có cách nào khác. Nhưng hệ quả thì y hệt: **mọi ngoại lệ sau
+> lệnh `await` đầu tiên trở thành ngoại lệ không ai bắt**, và cái người dùng thấy là phần mềm tắt ngay
+> sau màn hình chờ, không thông báo gì.
+>
+> Cách xử lý cho trường hợp này — và cho mọi `async void` bắt buộc khác:
+> ```csharp
+> protected override async void OnStartup(StartupEventArgs e)
+> {
+>     base.OnStartup(e);
+>     try { await StartUpAsync(e); }          // toàn bộ việc thật nằm trong một Task bọc kín
+>     catch (Exception ex)
+>     {
+>         _logger.LogCritical(ex, "Khởi động thất bại");
+>         MessageBox.Show($"Không khởi động được phần mềm:
+{ex.Message}", "Lỗi khởi động");
+>         Shutdown(exitCode: 1);              // thoát có kiểm soát, không để treo nửa vời
+>     }
+> }
+> ```
+> Ba điểm của mẫu này: **một `try` bọc trọn**, **ghi nhật ký trước khi hiện hộp thoại** (vì hộp thoại
+> có thể không hiện được nếu giao diện chưa dựng xong), và **thoát có mã lỗi** thay vì để ứng dụng
+> sống tiếp trong trạng thái dở dang. Xem thêm Phụ lục B mục B.9 về thứ tự các giai đoạn khởi động.
+
 > ⚠️ **Biến thể nguy hiểm hơn: fire-and-forget NGAY TRONG CONSTRUCTOR.** `_ = UploadLogAsync();` ở ví
 > dụ trên ít nhất còn chạy sau khi object đã khởi tạo xong. Gặp đúng dòng `_ = SomeAsyncMethod();` bên
 > trong **constructor** thì rủi ro cao hơn: object có thể chưa hoàn toàn sẵn sàng (field khác chưa gán
@@ -23393,6 +23419,36 @@ lịch sử vẫn còn trong Git), không để lại "phòng khi cần" lẫn v
 > chỉ tự tham chiếu chính nó → 0 lượt gọi tên class → 0 lượt import namespace
 > → giải pháp thay thế có sẵn cũng không được dùng) mới đủ thuyết phục để kết
 > luận chắc chắn, không phải suy đoán từ 1 dấu hiệu đơn lẻ.
+
+> ⚠️ **Họ hàng gần: mẹo gỡ rối viết tạm, rồi đi theo máy ra hiện trường.** Khác với dòng bị chú thích
+> ở trên — thứ *làm ít hơn* code nói — loại này *làm khác hẳn* code nói, nên khó phát hiện hơn nhiều.
+> Một dự án tham khảo nhận tham số dòng lệnh để chọn cấp quyền lúc khởi động, và đoạn xử lý là:
+>
+> ```csharp
+> if (args.Length > 1)
+> {
+>     args[0] = "3";                 // ← dòng thêm vào lúc gỡ rối, không ai xoá
+>     switch (args[0])
+>     {
+>         case "1": ChuyenSangCheDoKyThuatVienHang(args[1]); break;   // không bao giờ chạy
+>         case "2": ChuyenSangCheDoHieuChinh(args[1]);       break;   // không bao giờ chạy
+>         case "3": ChuyenSangCheDoKySu(args[1]);            break;   // luôn luôn chạy
+>     }
+> }
+> ```
+>
+> Một dòng gán đè làm **hai nhánh chết hẳn**, và phần mềm luôn vào cấp quyền cao nhất trong ba lựa
+> chọn. Không có lỗi, không có cảnh báo, và `switch` phía dưới trông vẫn rất hợp lý khi đọc lướt —
+> mắt người đọc code quen bỏ qua một phép gán đơn giản ngay trước một `switch`.
+>
+> Ba cách phòng, xếp theo thứ tự nên làm:
+> 1. **Đừng bao giờ gỡ rối bằng cách gán đè dữ liệu đầu vào.** Cần ép một giá trị thì ép ở *chỗ chạy
+>    thử* (biến môi trường, tham số khi chạy trong máy phát triển), không phải trong code.
+> 2. **Bật cảnh báo trình biên dịch về nhánh không thể tới và tham số bị gán đè**, rồi coi cảnh báo
+>    là lỗi — chính trình biên dịch phát hiện được ca này.
+> 3. **Trước khi bàn giao, tìm mã nguồn bằng các từ khoá của chính bạn** — `//test`, `//tam`, `//debug`,
+>    `TODO`, `HACK` — và mọi phép gán vào tham số đầu vào. Mất mười phút, và nó thuộc cùng danh sách
+>    với việc tìm các dòng kiểm tra an toàn bị chú thích (Chương 10 mục 10.1.8).
 
 **Bảng 19.1 — Chọn công cụ theo triệu chứng**
 

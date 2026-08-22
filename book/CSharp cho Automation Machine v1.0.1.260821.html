@@ -5052,6 +5052,35 @@ UploadLogAsync().Forget(_logger);
 </code></pre>
 <p><code>ContinueWith</code> vẫn chạy được nhưng dài dòng và ít phổ biến trong .NET 6+ — <code>Task.Run</code> với async lambda gọn và rõ hơn.</p>
 <blockquote>
+<p>📌 <strong>Ca thứ hai mà <code>async void</code> là bắt buộc: ghi đè phương thức khởi động của ứng dụng.</strong> Trong một
+dự án tham khảo, toàn bộ trình tự khởi động — nạp cơ sở dữ liệu, nạp công thức, mở dịch vụ truyền
+thông — nằm trong <code>protected override async void OnStartup(StartupEventArgs e)</code>. Chữ ký của phương
+thức được ghi đè trả <code>void</code>, nên không có cách nào khác. Nhưng hệ quả thì y hệt: <strong>mọi ngoại lệ sau
+lệnh <code>await</code> đầu tiên trở thành ngoại lệ không ai bắt</strong>, và cái người dùng thấy là phần mềm tắt ngay
+sau màn hình chờ, không thông báo gì.</p>
+<p>Cách xử lý cho trường hợp này — và cho mọi <code>async void</code> bắt buộc khác:</p>
+<pre><code class="language-csharp">protected override async void OnStartup(StartupEventArgs e)
+{
+    base.OnStartup(e);
+    try { await StartUpAsync(e); }          // toàn bộ việc thật nằm trong một Task bọc kín
+    catch (Exception ex)
+    {
+        _logger.LogCritical(ex, &quot;Khởi động thất bại&quot;);
+        MessageBox.Show($&quot;Không khởi động được phần mềm:
+</code></pre>
+</blockquote>
+<p>{ex.Message}&quot;, &quot;Lỗi khởi động&quot;);</p>
+<blockquote>
+<pre><code>    Shutdown(exitCode: 1);              // thoát có kiểm soát, không để treo nửa vời
+}
+</code></pre>
+<p>}</p>
+<pre><code>Ba điểm của mẫu này: **một `try` bọc trọn**, **ghi nhật ký trước khi hiện hộp thoại** (vì hộp thoại
+có thể không hiện được nếu giao diện chưa dựng xong), và **thoát có mã lỗi** thay vì để ứng dụng
+sống tiếp trong trạng thái dở dang. Xem thêm Phụ lục B mục B.9 về thứ tự các giai đoạn khởi động.
+</code></pre>
+</blockquote>
+<blockquote>
 <p>⚠️ <strong>Biến thể nguy hiểm hơn: fire-and-forget NGAY TRONG CONSTRUCTOR.</strong> <code>_ = UploadLogAsync();</code> ở ví
 dụ trên ít nhất còn chạy sau khi object đã khởi tạo xong. Gặp đúng dòng <code>_ = SomeAsyncMethod();</code> bên
 trong <strong>constructor</strong> thì rủi ro cao hơn: object có thể chưa hoàn toàn sẵn sàng (field khác chưa gán
@@ -26162,6 +26191,35 @@ code chết, đừng dừng ở 1 lần grep — chuỗi bằng chứng (namespa
 chỉ tự tham chiếu chính nó → 0 lượt gọi tên class → 0 lượt import namespace
 → giải pháp thay thế có sẵn cũng không được dùng) mới đủ thuyết phục để kết
 luận chắc chắn, không phải suy đoán từ 1 dấu hiệu đơn lẻ.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Họ hàng gần: mẹo gỡ rối viết tạm, rồi đi theo máy ra hiện trường.</strong> Khác với dòng bị chú thích
+ở trên — thứ <em>làm ít hơn</em> code nói — loại này <em>làm khác hẳn</em> code nói, nên khó phát hiện hơn nhiều.
+Một dự án tham khảo nhận tham số dòng lệnh để chọn cấp quyền lúc khởi động, và đoạn xử lý là:</p>
+<pre><code class="language-csharp">if (args.Length &gt; 1)
+{
+    args[0] = &quot;3&quot;;                 // ← dòng thêm vào lúc gỡ rối, không ai xoá
+    switch (args[0])
+    {
+        case &quot;1&quot;: ChuyenSangCheDoKyThuatVienHang(args[1]); break;   // không bao giờ chạy
+        case &quot;2&quot;: ChuyenSangCheDoHieuChinh(args[1]);       break;   // không bao giờ chạy
+        case &quot;3&quot;: ChuyenSangCheDoKySu(args[1]);            break;   // luôn luôn chạy
+    }
+}
+</code></pre>
+<p>Một dòng gán đè làm <strong>hai nhánh chết hẳn</strong>, và phần mềm luôn vào cấp quyền cao nhất trong ba lựa
+chọn. Không có lỗi, không có cảnh báo, và <code>switch</code> phía dưới trông vẫn rất hợp lý khi đọc lướt —
+mắt người đọc code quen bỏ qua một phép gán đơn giản ngay trước một <code>switch</code>.</p>
+<p>Ba cách phòng, xếp theo thứ tự nên làm:</p>
+<ol>
+<li><strong>Đừng bao giờ gỡ rối bằng cách gán đè dữ liệu đầu vào.</strong> Cần ép một giá trị thì ép ở <em>chỗ chạy
+thử</em> (biến môi trường, tham số khi chạy trong máy phát triển), không phải trong code.</li>
+<li><strong>Bật cảnh báo trình biên dịch về nhánh không thể tới và tham số bị gán đè</strong>, rồi coi cảnh báo
+là lỗi — chính trình biên dịch phát hiện được ca này.</li>
+<li><strong>Trước khi bàn giao, tìm mã nguồn bằng các từ khoá của chính bạn</strong> — <code>//test</code>, <code>//tam</code>, <code>//debug</code>,
+<code>TODO</code>, <code>HACK</code> — và mọi phép gán vào tham số đầu vào. Mất mười phút, và nó thuộc cùng danh sách
+với việc tìm các dòng kiểm tra an toàn bị chú thích (Chương 10 mục 10.1.8).</li>
+</ol>
 </blockquote>
 <p><strong>Bảng 19.1 — Chọn công cụ theo triệu chứng</strong></p>
 <div class="table-wrap"><table>

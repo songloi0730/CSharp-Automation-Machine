@@ -13571,6 +13571,70 @@ Ba ràng buộc phải viết ra ngay từ đầu, vì thiếu chúng thì máy 
 > chuyển giai đoạn là gì. Đọc chi tiết từng bước sau, vì các bước thường lặp lại gần giống nhau giữa
 > các giai đoạn, chỉ khác công thức tính lượng tác động.
 
+### 12.4.3  Trục thứ hai: nối tuyến hay chạy độc lập — và dấu hiệu bạn đã tách trục sai
+
+Bảng 12.7b trả lời *"chạy sản xuất theo kiểu nào"*. Nhưng mở một máy thật đang chạy trong chuyền, bạn
+sẽ thấy trên màn hình có **hai ô chế độ chứ không phải một**, và hai ô đó không thay thế được cho nhau.
+Ô thứ hai trả lời một câu hỏi khác hẳn: **máy đang làm việc trong hoàn cảnh nào**.
+
+Trong một dự án tham khảo, trục thứ hai này có bảy giá trị. Dịch và bỏ phần đặc thù, chúng gom thành
+ba nhóm:
+
+| Nhóm | Giá trị | Nghĩa và ảnh hưởng tới phần mềm |
+|---|---|---|
+| **Quan hệ với chuyền** | **Nối tuyến** | Bắt tay với trạm trước/sau và với hệ MES; nhận lệnh, báo kết quả, chờ tín hiệu cho phép |
+| | **Chạy độc lập** | Bỏ qua toàn bộ bắt tay ngoài; tự nạp phôi, tự kết thúc. Dùng khi chuyền dừng, khi chạy thử, khi máy đứng riêng |
+| **Loại lô đang chạy** | **Hàng mẫu đầu ca** | Chạy vài sản phẩm đầu để xác nhận máy đúng; kết quả **không** vào thống kê sản lượng bình thường |
+| | **Hàng làm lại** | Chạy lại sản phẩm đã bị loại ở công đoạn sau; phải đánh dấu riêng trong dữ liệu, và thường bỏ qua vài bước |
+| **Ai đang dùng máy** | **Vận hành bình thường** / **gỡ rối** / **kỹ sư** | Quyết định nút nào mở, cảnh báo nào bỏ qua được, dữ liệu có tính không |
+
+Ba nhóm này **thật sự độc lập với trục ở Bảng 12.7b**: bạn có thể chạy sản xuất nối tuyến, chạy sản
+xuất độc lập, chạy khô nối tuyến, hay chạy khô độc lập — bốn tổ hợp đều có nghĩa và đều gặp trong thực
+tế.
+
+> 💡 **"Nối tuyến hay độc lập" là chế độ bị người mới đánh giá thấp nhất, và là chế độ được dùng nhiều
+> nhất trong giai đoạn lắp máy.** Khi máy còn ở xưởng, chưa có trạm trước và trạm sau, mọi bắt tay đều
+> không có ai trả lời — nếu phần mềm không có chế độ độc lập thì **không thể chạy thử được gì cả**, và
+> đội lắp máy sẽ tự chế ra cách lách: đấu tắt tín hiệu bằng dây, hoặc sửa code tạm. Cả hai cách lách đó
+> đều có khả năng đi thẳng ra hiện trường (xem Chương 19). Làm sẵn chế độ độc lập ngay từ đầu rẻ hơn
+> nhiều so với việc dọn hậu quả sau.
+
+> ⚠️ **Hai chế độ đặc biệt nguy hiểm cho dữ liệu chất lượng: hàng mẫu đầu ca và hàng làm lại.** Cả hai
+> đều tạo ra sản phẩm thật, chạy quy trình thật, ghi dữ liệu thật — nên nếu không đánh dấu, chúng lẫn
+> vào thống kê và làm sai lệch mọi con số: hàng mẫu đầu ca làm tỉ lệ lỗi đầu ca cao giả tạo; hàng làm
+> lại được **tính hai lần** vào sản lượng nếu lần chạy đầu cũng đã được ghi. Đây chính là lý do quy tắc
+> ở mục 12.4.1 — **ghi chế độ vào TỪNG bản ghi** — không phải chuyện hình thức: nó là thứ duy nhất cho
+> phép tách các con số ra về sau.
+
+#### Dấu hiệu bạn đã tách trục sai
+
+Hai trục chỉ có ích khi chúng **vuông góc** — mọi tổ hợp đều có nghĩa. Trong dự án tham khảo nói trên,
+hai trục lại chồng lấn: *chạy khô* xuất hiện **ở cả hai trục** (một giá trị của trục thứ nhất, và hai
+giá trị *chạy khô nối tuyến* / *chạy khô độc lập* ở trục thứ hai). Hậu quả lộ ra ngay trong đoạn code
+cập nhật ô hiển thị chế độ: một `switch` theo trục thứ nhất, và bên trong mỗi nhánh lại là một chuỗi
+sáu `else if` theo trục thứ hai — hơn tám mươi dòng chỉ để quyết định **một dòng chữ và một màu nền**.
+
+Nguyên nhân gần như luôn giống nhau: trục thứ hai được thêm vào sau, khi trục thứ nhất đã có sẵn giá
+trị *chạy khô*, và người thêm không dám bỏ giá trị cũ vì sợ vỡ chỗ khác.
+
+Ba câu hỏi kiểm tra trước khi thêm một chế độ mới — trả lời được cả ba thì trục của bạn còn sạch:
+
+1. **Chế độ mới này có nghĩa với MỌI giá trị của trục kia không?** Nếu chỉ có nghĩa với một giá trị,
+   nó không phải một trục mới — nó là một giá trị con của trục kia.
+2. **Nó có trùng nghĩa với giá trị nào đang có không?** Trùng thì hoặc mở rộng giá trị cũ, hoặc bỏ giá
+   trị cũ đi — đừng để hai chỗ cùng nói một điều.
+3. **Nó ảnh hưởng tới cái gì?** Nếu chỉ ảnh hưởng tới *quyền được bấm*, đó là phân quyền chứ không phải
+   chế độ (Chương 15). Chế độ là thứ làm **quy trình chạy khác đi** hoặc **dữ liệu được ghi khác đi**.
+
+> 📌 **Và dù có bao nhiêu trục, màn hình vẫn phải trả lời được trong một cái liếc mắt: "bây giờ máy
+> đang chạy kiểu gì".** Dự án tham khảo làm đúng phần này: mỗi chế độ có **một màu nền riêng** trên ô
+> hiển thị — sản xuất bình thường màu xanh nhạt, hàng làm lại màu vàng, chế độ kỹ sư màu đỏ, hàng mẫu
+> màu xám. Người vận hành đi ngang máy là biết ngay có gì bất thường, không cần đọc chữ. Đây là một
+> trong số ít chỗ mà dùng màu mạnh trên màn hình HMI là **đúng** (Chương 10 mục 10.2.1): chế độ không
+> bình thường *là* một tình trạng bất thường cần nổi bật.
+
+---
+
 ## 12.5  Đếm sản lượng và OEE — chỗ trạng thái máy biến thành con số cho nhà máy
 
 Bảng 12.3 đã nói PackML ánh xạ sang phân loại OEE. Mục này đi tiếp một bước, và là bước mà mọi dự án
@@ -13737,6 +13801,8 @@ State machine if/else là lối đi tự nhiên nhất — và cũng là nguồn
 | Cùng quy trình nhưng lúc chạy hàng, lúc chạy thử, lúc hiệu chuẩn | Chế độ chạy (mục 12.4) + Template Method: 1 điểm rẽ ở lớp cơ sở |
 | Dữ liệu chạy thử lẫn vào báo cáo chất lượng | Ghi cột `RunMode` vào TỪNG bản ghi, không tin "chế độ thử thì không ghi" |
 | Máy phải đo–tính–thử lại vì không biết trước đích | State machine 2 tầng (giai đoạn/bước) + 3 ràng buộc: giới hạn số lần lặp, kẹp biên độ tác động, lưu toàn bộ chuỗi đo |
+| Chế độ chạy nhiều hơn một trục, code rẽ nhánh lồng nhau | Kiểm tra hai trục có **vuông góc** không (mục 12.4.3): mọi tổ hợp phải có nghĩa, không giá trị nào trùng nghĩa |
+| Máy chưa có trạm trước/sau nên không chạy thử được | Chế độ **chạy độc lập** làm sẵn từ đầu — rẻ hơn việc đội lắp máy tự đấu tắt tín hiệu |
 | Đếm được sản lượng nhưng không giải thích được vì sao ít | Sổ lý do (mục 12.5): mỗi phút của máy có một lý do, ghi mọi lần đổi kèm mốc thời gian |
 | Bộ đếm ca nằm trong RAM, mất khi khởi động lại | Ghi xuống nơi bền và nạp lại lúc khởi động; khoảng dừng đang mở cũng phải khôi phục |
 | Nhiều lý do dừng cùng đúng, ghi cái nào? | Thứ tự ưu tiên là **chính sách** — viết ra và cho sản xuất duyệt, đừng để ngầm trong chuỗi else-if |

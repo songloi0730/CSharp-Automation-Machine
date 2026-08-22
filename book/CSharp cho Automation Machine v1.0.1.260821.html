@@ -14851,6 +14851,91 @@ sequence tuyến tính. Đọc <strong>biến đếm giai đoạn trước</stro
 chuyển giai đoạn là gì. Đọc chi tiết từng bước sau, vì các bước thường lặp lại gần giống nhau giữa
 các giai đoạn, chỉ khác công thức tính lượng tác động.</p>
 </blockquote>
+<h3>12.4.3  Trục thứ hai: nối tuyến hay chạy độc lập — và dấu hiệu bạn đã tách trục sai</h3>
+<p>Bảng 12.7b trả lời <em>&quot;chạy sản xuất theo kiểu nào&quot;</em>. Nhưng mở một máy thật đang chạy trong chuyền, bạn
+sẽ thấy trên màn hình có <strong>hai ô chế độ chứ không phải một</strong>, và hai ô đó không thay thế được cho nhau.
+Ô thứ hai trả lời một câu hỏi khác hẳn: <strong>máy đang làm việc trong hoàn cảnh nào</strong>.</p>
+<p>Trong một dự án tham khảo, trục thứ hai này có bảy giá trị. Dịch và bỏ phần đặc thù, chúng gom thành
+ba nhóm:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Giá trị</th>
+<th>Nghĩa và ảnh hưởng tới phần mềm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Quan hệ với chuyền</strong></td>
+<td><strong>Nối tuyến</strong></td>
+<td>Bắt tay với trạm trước/sau và với hệ MES; nhận lệnh, báo kết quả, chờ tín hiệu cho phép</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Chạy độc lập</strong></td>
+<td>Bỏ qua toàn bộ bắt tay ngoài; tự nạp phôi, tự kết thúc. Dùng khi chuyền dừng, khi chạy thử, khi máy đứng riêng</td>
+</tr>
+<tr>
+<td><strong>Loại lô đang chạy</strong></td>
+<td><strong>Hàng mẫu đầu ca</strong></td>
+<td>Chạy vài sản phẩm đầu để xác nhận máy đúng; kết quả <strong>không</strong> vào thống kê sản lượng bình thường</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Hàng làm lại</strong></td>
+<td>Chạy lại sản phẩm đã bị loại ở công đoạn sau; phải đánh dấu riêng trong dữ liệu, và thường bỏ qua vài bước</td>
+</tr>
+<tr>
+<td><strong>Ai đang dùng máy</strong></td>
+<td><strong>Vận hành bình thường</strong> / <strong>gỡ rối</strong> / <strong>kỹ sư</strong></td>
+<td>Quyết định nút nào mở, cảnh báo nào bỏ qua được, dữ liệu có tính không</td>
+</tr>
+</tbody></table></div>
+<p>Ba nhóm này <strong>thật sự độc lập với trục ở Bảng 12.7b</strong>: bạn có thể chạy sản xuất nối tuyến, chạy sản
+xuất độc lập, chạy khô nối tuyến, hay chạy khô độc lập — bốn tổ hợp đều có nghĩa và đều gặp trong thực
+tế.</p>
+<blockquote>
+<p>💡 <strong>&quot;Nối tuyến hay độc lập&quot; là chế độ bị người mới đánh giá thấp nhất, và là chế độ được dùng nhiều
+nhất trong giai đoạn lắp máy.</strong> Khi máy còn ở xưởng, chưa có trạm trước và trạm sau, mọi bắt tay đều
+không có ai trả lời — nếu phần mềm không có chế độ độc lập thì <strong>không thể chạy thử được gì cả</strong>, và
+đội lắp máy sẽ tự chế ra cách lách: đấu tắt tín hiệu bằng dây, hoặc sửa code tạm. Cả hai cách lách đó
+đều có khả năng đi thẳng ra hiện trường (xem Chương 19). Làm sẵn chế độ độc lập ngay từ đầu rẻ hơn
+nhiều so với việc dọn hậu quả sau.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Hai chế độ đặc biệt nguy hiểm cho dữ liệu chất lượng: hàng mẫu đầu ca và hàng làm lại.</strong> Cả hai
+đều tạo ra sản phẩm thật, chạy quy trình thật, ghi dữ liệu thật — nên nếu không đánh dấu, chúng lẫn
+vào thống kê và làm sai lệch mọi con số: hàng mẫu đầu ca làm tỉ lệ lỗi đầu ca cao giả tạo; hàng làm
+lại được <strong>tính hai lần</strong> vào sản lượng nếu lần chạy đầu cũng đã được ghi. Đây chính là lý do quy tắc
+ở mục 12.4.1 — <strong>ghi chế độ vào TỪNG bản ghi</strong> — không phải chuyện hình thức: nó là thứ duy nhất cho
+phép tách các con số ra về sau.</p>
+</blockquote>
+<h4>Dấu hiệu bạn đã tách trục sai</h4>
+<p>Hai trục chỉ có ích khi chúng <strong>vuông góc</strong> — mọi tổ hợp đều có nghĩa. Trong dự án tham khảo nói trên,
+hai trục lại chồng lấn: <em>chạy khô</em> xuất hiện <strong>ở cả hai trục</strong> (một giá trị của trục thứ nhất, và hai
+giá trị <em>chạy khô nối tuyến</em> / <em>chạy khô độc lập</em> ở trục thứ hai). Hậu quả lộ ra ngay trong đoạn code
+cập nhật ô hiển thị chế độ: một <code>switch</code> theo trục thứ nhất, và bên trong mỗi nhánh lại là một chuỗi
+sáu <code>else if</code> theo trục thứ hai — hơn tám mươi dòng chỉ để quyết định <strong>một dòng chữ và một màu nền</strong>.</p>
+<p>Nguyên nhân gần như luôn giống nhau: trục thứ hai được thêm vào sau, khi trục thứ nhất đã có sẵn giá
+trị <em>chạy khô</em>, và người thêm không dám bỏ giá trị cũ vì sợ vỡ chỗ khác.</p>
+<p>Ba câu hỏi kiểm tra trước khi thêm một chế độ mới — trả lời được cả ba thì trục của bạn còn sạch:</p>
+<ol>
+<li><strong>Chế độ mới này có nghĩa với MỌI giá trị của trục kia không?</strong> Nếu chỉ có nghĩa với một giá trị,
+nó không phải một trục mới — nó là một giá trị con của trục kia.</li>
+<li><strong>Nó có trùng nghĩa với giá trị nào đang có không?</strong> Trùng thì hoặc mở rộng giá trị cũ, hoặc bỏ giá
+trị cũ đi — đừng để hai chỗ cùng nói một điều.</li>
+<li><strong>Nó ảnh hưởng tới cái gì?</strong> Nếu chỉ ảnh hưởng tới <em>quyền được bấm</em>, đó là phân quyền chứ không phải
+chế độ (Chương 15). Chế độ là thứ làm <strong>quy trình chạy khác đi</strong> hoặc <strong>dữ liệu được ghi khác đi</strong>.</li>
+</ol>
+<blockquote>
+<p>📌 <strong>Và dù có bao nhiêu trục, màn hình vẫn phải trả lời được trong một cái liếc mắt: &quot;bây giờ máy
+đang chạy kiểu gì&quot;.</strong> Dự án tham khảo làm đúng phần này: mỗi chế độ có <strong>một màu nền riêng</strong> trên ô
+hiển thị — sản xuất bình thường màu xanh nhạt, hàng làm lại màu vàng, chế độ kỹ sư màu đỏ, hàng mẫu
+màu xám. Người vận hành đi ngang máy là biết ngay có gì bất thường, không cần đọc chữ. Đây là một
+trong số ít chỗ mà dùng màu mạnh trên màn hình HMI là <strong>đúng</strong> (Chương 10 mục 10.2.1): chế độ không
+bình thường <em>là</em> một tình trạng bất thường cần nổi bật.</p>
+</blockquote>
+<hr>
 <h2 id="125-đm-sn-lưng-và-oee-ch-trng-thái-máy-bin-thành-con-s-cho-nhà-máy">12.5  Đếm sản lượng và OEE — chỗ trạng thái máy biến thành con số cho nhà máy</h2>
 <p>Bảng 12.3 đã nói PackML ánh xạ sang phân loại OEE. Mục này đi tiếp một bước, và là bước mà mọi dự án
 đều phải làm nhưng ít tài liệu nào mô tả: <strong>biến chuỗi trạng thái của máy thành báo cáo mà quản đốc
@@ -15057,6 +15142,14 @@ chỉ khi dữ liệu đã được ghi từ đầu. Dữ liệu của tháng tr
 <tr>
 <td>Máy phải đo–tính–thử lại vì không biết trước đích</td>
 <td>State machine 2 tầng (giai đoạn/bước) + 3 ràng buộc: giới hạn số lần lặp, kẹp biên độ tác động, lưu toàn bộ chuỗi đo</td>
+</tr>
+<tr>
+<td>Chế độ chạy nhiều hơn một trục, code rẽ nhánh lồng nhau</td>
+<td>Kiểm tra hai trục có <strong>vuông góc</strong> không (mục 12.4.3): mọi tổ hợp phải có nghĩa, không giá trị nào trùng nghĩa</td>
+</tr>
+<tr>
+<td>Máy chưa có trạm trước/sau nên không chạy thử được</td>
+<td>Chế độ <strong>chạy độc lập</strong> làm sẵn từ đầu — rẻ hơn việc đội lắp máy tự đấu tắt tín hiệu</td>
 </tr>
 <tr>
 <td>Đếm được sản lượng nhưng không giải thích được vì sao ít</td>

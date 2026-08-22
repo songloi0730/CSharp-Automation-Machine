@@ -25890,6 +25890,59 @@ nút phức tạp còn có **hẳn một màn hình cấu hình riêng** thay v�
 
 
 
+#### Lưu quy trình ở đâu, và lược đồ bảng trông ra sao
+
+Hai con đường trên bàn về *hình dạng* của quy trình. Còn một câu hỏi rất thực tế mà tài liệu hiếm khi
+trả lời: **quy trình đó nằm ở đâu trên đĩa?** Đa số dự án chọn tệp JSON hoặc XML. Nhưng có một nền tảng
+điều khiển chuyển động mã nguồn mở chọn khác — **lưu thẳng vào cơ sở dữ liệu quan hệ**, và lược đồ của
+nó đáng chép lại vì nó gọn và giải quyết đúng những việc cần:
+
+```sql
+CREATE TABLE Task  (ID, NumOrder DOUBLE, TaskName, TaskType);           -- nhiệm vụ
+CREATE TABLE Step  (ID, TaskID, NumOrder DOUBLE,
+                    StepIdFather,                                        -- bước cha
+                    StepName, StepDetails);                              -- lệnh + tham số
+CREATE TABLE TaskPrivate (ID, NumOrder, TaskID, Name);                   -- biến cục bộ của nhiệm vụ
+CREATE TABLE TaskPublic  (ID, NumOrder, Name);                           -- biến dùng chung
+CREATE TABLE TaskState   (ID, NumOrder, TaskID, Name);                   -- trạng thái của nhiệm vụ
+```
+
+Bốn quyết định trong năm bảng đó:
+
+**1. `NumOrder` kiểu số thực, không phải số nguyên.** Một mẹo nhỏ nhưng cứu rất nhiều công: muốn chèn
+một bước giữa bước 3 và bước 4 thì đặt nó là 3.5 — **không phải đánh số lại toàn bộ các bước phía sau**.
+Với bảng vài trăm bước và người dùng đang sửa trực tiếp, khác biệt này rất lớn. (Cùng ý tưởng dùng được
+cho mọi danh sách có thứ tự do người dùng sắp xếp.)
+
+**2. Bước có bước cha, nên quy trình là một cây chứ không phải một danh sách phẳng.** Đây chính là mô
+hình cây tác vụ ở Chương 16 mục 16.2c, nhưng biểu diễn dưới dạng dữ liệu: một cột khoá ngoại trỏ về
+chính bảng đó.
+
+**3. Biến cục bộ và biến dùng chung nằm ở hai bảng khác nhau.** Phạm vi biến được thi hành bằng **lược
+đồ**, không bằng quy ước đặt tên. Đây là thứ mà con đường 2 "làm đúng cách" ở trên đòi hỏi, và ở đây nó
+là hai bảng.
+
+**4. Quy trình nằm trong cơ sở dữ liệu thì việc xuất/nhập ra bảng tính là chuyện hiển nhiên.** Chính
+người làm nền tảng đó quảng cáo tính năng này như một điểm mạnh, và họ đúng: **chuyển quy trình từ máy
+này sang máy khác** trở thành xuất một bảng rồi nhập vào máy kia. Nếu quy trình nằm trong một tệp JSON
+lồng nhau nhiều tầng, việc đó khó hơn hẳn và không sửa được bằng công cụ quen thuộc của người vận hành.
+
+> ⚠️ **Nhưng một cột duy nhất chứa "chi tiết bước" là chỗ yếu nhất của lược đồ này.** Toàn bộ lệnh và
+> tham số của một bước bị dồn vào một cột văn bản tự do. Hệ quả: **không có lược đồ cho phần quan trọng
+> nhất**, nên gõ sai tên lệnh hay thiếu một tham số chỉ lộ ra lúc chạy — đúng cái mà bộ kiểm tra cấu
+> hình ở phần dưới sinh ra để chặn.
+>
+> Cách sửa không tốn kém: giữ nguyên lược đồ, nhưng **tách cột chi tiết thành cột `Lệnh` + một bảng
+> `ThamSo(BướcID, Tên, GiáTrị)`**. Khi đó trình soạn thảo gợi ý được danh sách lệnh, bộ kiểm tra đối
+> chiếu được tham số với khai báo của lệnh, và câu hỏi *"quy trình nào đang dùng lệnh Hút chân không"*
+> trở thành một câu truy vấn thay vì một lần tìm chuỗi.
+
+> 💡 **Một điểm nữa đáng chú ý ở nền tảng đó, và nó xác nhận điều mục trên đã nói:** toàn bộ từ vựng
+> lệnh của nó viết bằng **tiếng mẹ đẻ của người dùng**, và tác giả đặt đó làm điểm bán hàng số một —
+> *"ai cũng đọc hiểu được"*. Nếu bạn làm một ngôn ngữ hẹp cho máy ở Việt Nam, hãy đặt từ vựng bằng tiếng
+> Việt. Người sửa quy trình là kỹ thuật viên và kỹ sư cơ khí, không phải lập trình viên — và người đọc
+> lại quy trình sau sáu tháng cũng là họ.
+
 #### Nửa còn lại của an toàn: kiểm tra cấu hình trước khi chạy
 
 Trình soạn tham số ngăn người dùng nhập sai **một ô**. Nhưng còn những lỗi chỉ lộ ra khi nhìn **toàn
@@ -26203,6 +26256,9 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 | **tinyua** | Một stack **OPC UA** client viết lại từ đầu cho .NET, không phụ thuộc SDK của tổ chức chuẩn | Đọc nếu muốn hiểu OPC UA thật sự làm gì bên dưới lớp SDK ở Chương 14 mục 14.1.1 |
 | **SOEM** (`OpenEtherCATsociety/SOEM`) + lớp bọc .NET | Một **EtherCAT master** mã nguồn mở: dò slave, chuyển trạng thái bus, ánh xạ PDO — những thứ SDK thương mại giấu sau một lời gọi hàm | Đọc để hiểu Chương 14 mục 14.1.4. Không đủ tính thời gian thực cho servo tốc độ cao trên Windows thường, **nhưng rất tốt để học** |
 | **TcOpen** (đã nêu ở trên) | Cũng là nơi xem cách một khung .NET nối với thế giới EtherCAT/TwinCAT | — |
+| **Framework** (`FrancescoMerlin/Framework` và các bản rẽ nhánh) | Một **khung máy** .NET đầy đủ tầng: `IResource` (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch | Đọc `Hardware/IResource.cs` + `IChannel.cs` trước — đây là mô hình "nối kênh vào thuộc tính" ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README **chia thành phần theo mức đã kiểm chứng** (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử) |
+| **MachineClassLibrary** (`SerjDrob/MachineClassLibrary`) | Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá **biến tần trục chính** với hai hãng + một bản giả lập, thu hình, hình học | Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.2c — **kể cả lỗi trong đó** (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về "có trên GitHub không phải chứng nhận chất lượng" |
+| **WCF — nền tảng điều khiển chuyển động bằng kịch bản** (`jiliwei/WCF`) | Một hiện thực đầy đủ của **con đường "quy trình là dữ liệu"**: nhiệm vụ + bước lưu trong bảng quan hệ, biến cục bộ/dùng chung tách bảng, xuất nhập bằng bảng tính, từ vựng bằng tiếng mẹ đẻ | Đọc lược đồ bảng trước (mục B.3.2). Nhỏ, một người viết, WinForms — đọc được hết trong vài buổi, và là mẫu gần nhất với thứ bạn sẽ tự làm |
 
 ### B.7.1 Cách đọc một dự án mã nguồn mở cho hiệu quả
 

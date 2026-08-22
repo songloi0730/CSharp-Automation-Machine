@@ -29089,6 +29089,51 @@ số đều là <strong>chọn từ danh sách</strong>, cả một lớp lỗi 
 <p>Nói cách khác: trong một hệ cấu hình dạng dữ liệu, <strong>trình soạn tham số chính là &quot;trình biên dịch&quot;
 của bạn</strong> — nó là nơi duy nhất còn bắt được lỗi trước khi máy chạy. Hãy đầu tư vào nó tương xứng.</p>
 </blockquote>
+<h4>Lưu quy trình ở đâu, và lược đồ bảng trông ra sao</h4>
+<p>Hai con đường trên bàn về <em>hình dạng</em> của quy trình. Còn một câu hỏi rất thực tế mà tài liệu hiếm khi
+trả lời: <strong>quy trình đó nằm ở đâu trên đĩa?</strong> Đa số dự án chọn tệp JSON hoặc XML. Nhưng có một nền tảng
+điều khiển chuyển động mã nguồn mở chọn khác — <strong>lưu thẳng vào cơ sở dữ liệu quan hệ</strong>, và lược đồ của
+nó đáng chép lại vì nó gọn và giải quyết đúng những việc cần:</p>
+<pre><code class="language-sql">CREATE TABLE Task  (ID, NumOrder DOUBLE, TaskName, TaskType);           -- nhiệm vụ
+CREATE TABLE Step  (ID, TaskID, NumOrder DOUBLE,
+                    StepIdFather,                                        -- bước cha
+                    StepName, StepDetails);                              -- lệnh + tham số
+CREATE TABLE TaskPrivate (ID, NumOrder, TaskID, Name);                   -- biến cục bộ của nhiệm vụ
+CREATE TABLE TaskPublic  (ID, NumOrder, Name);                           -- biến dùng chung
+CREATE TABLE TaskState   (ID, NumOrder, TaskID, Name);                   -- trạng thái của nhiệm vụ
+</code></pre>
+<p>Bốn quyết định trong năm bảng đó:</p>
+<p><strong>1. <code>NumOrder</code> kiểu số thực, không phải số nguyên.</strong> Một mẹo nhỏ nhưng cứu rất nhiều công: muốn chèn
+một bước giữa bước 3 và bước 4 thì đặt nó là 3.5 — <strong>không phải đánh số lại toàn bộ các bước phía sau</strong>.
+Với bảng vài trăm bước và người dùng đang sửa trực tiếp, khác biệt này rất lớn. (Cùng ý tưởng dùng được
+cho mọi danh sách có thứ tự do người dùng sắp xếp.)</p>
+<p><strong>2. Bước có bước cha, nên quy trình là một cây chứ không phải một danh sách phẳng.</strong> Đây chính là mô
+hình cây tác vụ ở Chương 16 mục 16.2c, nhưng biểu diễn dưới dạng dữ liệu: một cột khoá ngoại trỏ về
+chính bảng đó.</p>
+<p><strong>3. Biến cục bộ và biến dùng chung nằm ở hai bảng khác nhau.</strong> Phạm vi biến được thi hành bằng <strong>lược
+đồ</strong>, không bằng quy ước đặt tên. Đây là thứ mà con đường 2 &quot;làm đúng cách&quot; ở trên đòi hỏi, và ở đây nó
+là hai bảng.</p>
+<p><strong>4. Quy trình nằm trong cơ sở dữ liệu thì việc xuất/nhập ra bảng tính là chuyện hiển nhiên.</strong> Chính
+người làm nền tảng đó quảng cáo tính năng này như một điểm mạnh, và họ đúng: <strong>chuyển quy trình từ máy
+này sang máy khác</strong> trở thành xuất một bảng rồi nhập vào máy kia. Nếu quy trình nằm trong một tệp JSON
+lồng nhau nhiều tầng, việc đó khó hơn hẳn và không sửa được bằng công cụ quen thuộc của người vận hành.</p>
+<blockquote>
+<p>⚠️ <strong>Nhưng một cột duy nhất chứa &quot;chi tiết bước&quot; là chỗ yếu nhất của lược đồ này.</strong> Toàn bộ lệnh và
+tham số của một bước bị dồn vào một cột văn bản tự do. Hệ quả: <strong>không có lược đồ cho phần quan trọng
+nhất</strong>, nên gõ sai tên lệnh hay thiếu một tham số chỉ lộ ra lúc chạy — đúng cái mà bộ kiểm tra cấu
+hình ở phần dưới sinh ra để chặn.</p>
+<p>Cách sửa không tốn kém: giữ nguyên lược đồ, nhưng <strong>tách cột chi tiết thành cột <code>Lệnh</code> + một bảng
+<code>ThamSo(BướcID, Tên, GiáTrị)</code></strong>. Khi đó trình soạn thảo gợi ý được danh sách lệnh, bộ kiểm tra đối
+chiếu được tham số với khai báo của lệnh, và câu hỏi <em>&quot;quy trình nào đang dùng lệnh Hút chân không&quot;</em>
+trở thành một câu truy vấn thay vì một lần tìm chuỗi.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Một điểm nữa đáng chú ý ở nền tảng đó, và nó xác nhận điều mục trên đã nói:</strong> toàn bộ từ vựng
+lệnh của nó viết bằng <strong>tiếng mẹ đẻ của người dùng</strong>, và tác giả đặt đó làm điểm bán hàng số một —
+<em>&quot;ai cũng đọc hiểu được&quot;</em>. Nếu bạn làm một ngôn ngữ hẹp cho máy ở Việt Nam, hãy đặt từ vựng bằng tiếng
+Việt. Người sửa quy trình là kỹ thuật viên và kỹ sư cơ khí, không phải lập trình viên — và người đọc
+lại quy trình sau sáu tháng cũng là họ.</p>
+</blockquote>
 <h4>Nửa còn lại của an toàn: kiểm tra cấu hình trước khi chạy</h4>
 <p>Trình soạn tham số ngăn người dùng nhập sai <strong>một ô</strong>. Nhưng còn những lỗi chỉ lộ ra khi nhìn <strong>toàn
 bộ quy trình</strong>: hai bước trùng mã, một bước nhảy tới mã không tồn tại, một vòng lặp có bước nhảy bằng
@@ -29545,6 +29590,21 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 <td><strong>TcOpen</strong> (đã nêu ở trên)</td>
 <td>Cũng là nơi xem cách một khung .NET nối với thế giới EtherCAT/TwinCAT</td>
 <td>—</td>
+</tr>
+<tr>
+<td><strong>Framework</strong> (<code>FrancescoMerlin/Framework</code> và các bản rẽ nhánh)</td>
+<td>Một <strong>khung máy</strong> .NET đầy đủ tầng: <code>IResource</code> (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch</td>
+<td>Đọc <code>Hardware/IResource.cs</code> + <code>IChannel.cs</code> trước — đây là mô hình &quot;nối kênh vào thuộc tính&quot; ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README <strong>chia thành phần theo mức đã kiểm chứng</strong> (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử)</td>
+</tr>
+<tr>
+<td><strong>MachineClassLibrary</strong> (<code>SerjDrob/MachineClassLibrary</code>)</td>
+<td>Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá <strong>biến tần trục chính</strong> với hai hãng + một bản giả lập, thu hình, hình học</td>
+<td>Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.2c — <strong>kể cả lỗi trong đó</strong> (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về &quot;có trên GitHub không phải chứng nhận chất lượng&quot;</td>
+</tr>
+<tr>
+<td><strong>WCF — nền tảng điều khiển chuyển động bằng kịch bản</strong> (<code>jiliwei/WCF</code>)</td>
+<td>Một hiện thực đầy đủ của <strong>con đường &quot;quy trình là dữ liệu&quot;</strong>: nhiệm vụ + bước lưu trong bảng quan hệ, biến cục bộ/dùng chung tách bảng, xuất nhập bằng bảng tính, từ vựng bằng tiếng mẹ đẻ</td>
+<td>Đọc lược đồ bảng trước (mục B.3.2). Nhỏ, một người viết, WinForms — đọc được hết trong vài buổi, và là mẫu gần nhất với thứ bạn sẽ tự làm</td>
 </tr>
 </tbody></table></div>
 <h3>B.7.1 Cách đọc một dự án mã nguồn mở cho hiệu quả</h3>

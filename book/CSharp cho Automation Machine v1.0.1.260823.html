@@ -23076,6 +23076,41 @@ public sealed class AuthenticationService : IAuthenticationService
 <blockquote>
 <p>⚠️ <strong>&quot;Cửa sau&quot; khác với break-glass:</strong> Một hệ thống có lối vào cấp cao nhất suy ra được từ công thức dựa trên giờ hệ thống — không log riêng, không ai biết nó tồn tại ngoài người viết code — là lỗ hổng bảo mật, không phải tính năng khẩn cấp. Khác hẳn một quy trình <strong>break-glass</strong><!--idx:Break-glass--> có chủ đích: tài khoản khẩn cấp được ghi nhận rõ ràng, mọi lần dùng đều tạo log/cảnh báo riêng biệt cho quản lý biết ngay, và không nằm trong flow đăng nhập thông thường. Nguyên tắc bảo mật nhà máy xuyên suốt sách: không lockout, ưu tiên khả dụng — nhưng khả dụng không có nghĩa là <em>âm thầm</em>. Đường thoát khẩn cấp phải tồn tại, nhưng phải ồn ào.</p>
 </blockquote>
+<p><strong>Tự động đăng xuất khi không thao tác — và cái bẫy an toàn nằm ngay trong nó.</strong> Phiên đăng nhập cấp
+cao bị bỏ quên là lỗ hổng thường gặp nhất trong nhà máy: kỹ sư đăng nhập để chỉnh tham số, có việc gọi
+đi, và màn hình đứng ở quyền Kỹ sư suốt ca. Vì vậy gần như mọi phần mềm máy nghiêm túc đều có bộ đếm
+thời gian không thao tác — một dự án tham khảo đặt 15 phút, kiểm tra mỗi phút một lần, và <strong>bỏ qua nếu
+người đang đăng nhập vốn đã ở mức thấp nhất</strong>.</p>
+<blockquote>
+<p>⚠️ <strong>Nhưng &quot;đăng xuất&quot; trong phần mềm máy không được hiểu như đăng xuất một trang web.</strong> Nếu hết giờ
+mà phần mềm rơi về trạng thái <em>không có ai đăng nhập</em> và trạng thái đó <strong>khoá cả nút Dừng</strong>, bạn vừa
+tạo ra một tình huống nguy hiểm: máy đang chạy, người vận hành muốn dừng, và màn hình đòi mật khẩu.</p>
+<p>Nguyên tắc đúng: tự động đăng xuất là <strong>hạ xuống mức quyền thấp nhất</strong>, không phải khoá máy lại. Ở mức
+đó, những thao tác vận hành cơ bản — Dừng, xác nhận cảnh báo, xem trạng thái — vẫn phải làm được mà
+không cần đăng nhập. Đây là cùng một tinh thần với nguyên tắc <em>không khoá tài khoản, ưu tiên khả dụng</em>
+ở callout trên.</p>
+<p>Và <strong>không bao giờ đăng xuất giữa chừng một thao tác có bảo vệ</strong>: đang mở cửa sổ chạy tay, đang dạy
+điểm, đang trong quy trình hiệu chuẩn. Bộ đếm phải tạm dừng trong những khoảng đó, nếu không người
+dùng sẽ mất việc đang làm dở — và họ sẽ phản ứng bằng cách tìm cách tắt hẳn tính năng này.</p>
+</blockquote>
+<p>Hai chi tiết triển khai đáng cân nhắc, vì cả hai đều dễ chọn sai:</p>
+<p><strong>1. Lấy tín hiệu &quot;còn thao tác&quot; từ đâu.</strong> Dự án nói trên cài <strong>móc bàn phím và chuột ở cấp hệ thống</strong>
+(Win32 hook). Nó bắt được mọi hoạt động, kể cả ngoài ứng dụng — nhưng đây là công cụ rất nặng tay: phần
+mềm diệt vi-rút hay chặn, nó cần vòng lặp thông điệp chạy đều, và nó là một trong những nguyên nhân quen
+thuộc khiến máy tính công nghiệp &quot;cảm giác chậm&quot;. Với một ứng dụng chạy toàn màn hình trên máy chuyên
+dụng — đúng bối cảnh của phần mềm máy — <strong>sự kiện đầu vào ở cấp cửa sổ chính là đủ</strong>, và rẻ hơn nhiều.</p>
+<p><strong>2. &quot;Có thao tác&quot; không đồng nghĩa &quot;có người&quot;.</strong> Một con chuột hỏng rung nhẹ, hay một vật đè lên bàn
+phím, giữ phiên sống mãi mãi. Ngược lại, người vận hành đứng nhìn máy chạy hai mươi phút không chạm gì
+sẽ bị đăng xuất giữa lúc đang theo dõi. Nếu cần chặt hơn, hãy ghép thêm <strong>điều kiện theo ngữ cảnh</strong> thay
+vì chỉ đếm thời gian: hạ quyền khi máy đã trở về trạng thái chạy tự động bình thường, hoặc khi không còn
+màn hình cấp cao nào đang mở.</p>
+<blockquote>
+<p>📌 <strong>Một chi tiết nhỏ dễ bỏ qua: đừng đo khoảng thời gian bằng <code>DateTime.Now</code>.</strong> Đồng hồ hệ thống có
+thể bị đổi — đồng bộ giờ mạng, đổi giờ mùa, hoặc kỹ thuật viên chỉnh tay — và khi đó khoảng &quot;không
+thao tác&quot; tính ra có thể âm hoặc nhảy vọt. Với mọi phép đo <em>khoảng thời gian trôi qua</em>, dùng đồng hồ
+đơn điệu (<code>Stopwatch</code>, <code>Environment.TickCount64</code>); <code>DateTime</code> chỉ dùng để <strong>ghi lại thời điểm</strong> cho
+nhật ký và bản ghi sản xuất.</p>
+</blockquote>
 <p><strong>Audit trail không thay thế được authentication.</strong> Có audit trail ghi đầy đủ lịch sử thay đổi tham số (giá trị cũ/mới/người dùng, tự phát sinh ngay tại tầng lưu trữ — không phải trách nhiệm tầng gọi phải nhớ ghi log) là một thiết kế tốt, nhưng đó là một mối quan tâm khác hẳn với authentication. Một hệ thống có audit trail rất chi tiết cho từng thay đổi tham số vẫn có thể tồn tại song song một mật khẩu hard-code hoặc một cửa sau âm thầm — biết <em>ai đã đổi gì</em> không có nghĩa là <em>chỉ đúng người được phép mới đổi được</em>. Cả hai lớp phòng thủ đều cần, không lớp nào thay thế lớp kia.</p>
 <p><strong>Bảng 15.5b — MachineMode (Chương 3) và RiskTier (mục 15.2.3) — hai khái niệm độc lập, thường đi cùng nhau trên thực tế vận hành</strong></p>
 <div class="table-wrap"><table>
@@ -23690,6 +23725,9 @@ một chuỗi leo thang duy nhất, từ lỗi tạm thời vô hại đến d�
 <li>Domain Events <code>AlarmRaised/AlarmAcknowledged/AlarmCleared</code> (pattern từ Chương 11) tách biệt publisher và subscriber.</li>
 <li>Flood Prevention: root cause alarm, suppression theo machine state, rate limiting.</li>
 <li>Shelving (operator, tạm thời) và Inhibition (logic, tự động) — không áp dụng cho Safety alarm.</li>
+<li><strong>Tự động đăng xuất khi không thao tác</strong> (mục 15.2.4) là <strong>hạ xuống mức quyền thấp nhất</strong>, không phải
+khoá máy — thao tác vận hành cơ bản (Dừng, xác nhận cảnh báo) phải luôn làm được; và không bao giờ
+đăng xuất giữa chừng một thao tác có bảo vệ.</li>
 <li><strong>Alarm đều đặn theo thiết bị nên được SINH RA</strong> từ bảng trục và bảng tên tín hiệu (mục 15.1.2b),
 không viết tay: không sót, nhất quán, và thông báo mang tên thật của cơ cấu.</li>
 <li><strong>Mã alarm nên dùng chung cây phân loại với lý do dừng máy</strong> (Chương 12 mục 12.5): cắt hai chữ số

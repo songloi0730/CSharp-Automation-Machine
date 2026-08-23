@@ -734,6 +734,59 @@ Với dự án mới bắt đầu, không cần thiết lập đầy đủ bốn
 team Automation) sẽ dựa vào đúng bộ tệp này để đảm bảo mọi thành viên
 build ra kết quả giống nhau.
 
+### Khi bạn mở một dự án và thấy ba mươi dòng tắt cảnh báo
+
+Phần trên nhắc `Directory.Build.props` như nơi đặt cấu hình build dùng chung. Trong mã nguồn thật, đó
+cũng là nơi bạn hay gặp một danh sách rất dài các mã cảnh báo bị **tắt cho toàn bộ solution**. Một khung
+máy tham khảo tắt khoảng ba mươi mã, gồm:
+
+| Nhóm bị tắt | Cảnh báo đó nói gì | Mất gì khi tắt |
+|---|---|---|
+| Toàn bộ họ `CS86xx` (kiểu tham chiếu nullable) | "Chỗ này có thể là null" | **Tính năng nullable trở thành trang trí** — bạn khai báo `string?` mà không ai kiểm tra giúp |
+| `CS0108` (ẩn thành viên lớp cha, thiếu `new`) | "Bạn đang che method của lớp cha" | Đúng cái bẫy đa hình ở Chương 4 mục 4.3.3 — giờ nó **im lặng** |
+| `CS0168` / `CS0169` / `CS0414` | Biến/field khai báo mà không dùng, hoặc gán mà không đọc | Mã chết tích tụ không ai thấy |
+| `CS0649` | "Field không bao giờ được gán, sẽ giữ null" | Một `NullReferenceException` đang chờ, được báo trước mà bị bịt miệng |
+| `CS0618` | "Bạn đang gọi một API đã bị đánh dấu lỗi thời" | Không bao giờ biết thư viện đã khuyến cáo đổi cách dùng |
+
+Vì sao người ta làm vậy thì rất dễ hiểu, và không phải do lười: **bật lên thì có hàng nghìn cảnh báo**.
+Một dự án chạy vài năm, chuyển từ .NET Framework sang .NET đời mới, bật nullable lên là màn hình đỏ rực.
+Ai đó phải làm cho build sạch để còn nhìn thấy lỗi thật, và cách nhanh nhất là tắt hết.
+
+Vấn đề là **tắt xong thì không ai bật lại**, và từ đó trở đi trình biên dịch — công cụ soát lỗi rẻ nhất
+và nhanh nhất bạn có — không còn nói gì nữa.
+
+> 💡 **Cách thoát khỏi đống cảnh báo mà không phải mù: bật theo từng project, không bật cả solution.**
+> Quy trình này làm được trong vài buổi rải rác và không chặn ai:
+>
+> 1. **Giữ danh sách tắt ở cấp solution như hiện trạng** — đừng bật hết rồi để cả nhóm không build được.
+> 2. **Chọn một project nhỏ và quan trọng** (thường là project lõi/abstraction), rồi trong chính file
+>    project đó **bật lại** một nhóm cảnh báo: `<WarningsNotAsErrors>` để chúng hiện ra mà chưa chặn
+>    build, hoặc `<NoWarn></NoWarn>` để xoá phần kế thừa từ cấp trên.
+> 3. **Sửa hết trong project đó**, rồi chuyển nó sang mức chặt: cảnh báo thành lỗi.
+> 4. Lặp lại với project tiếp theo. Mỗi lần xong một project là **một vùng đã sạch vĩnh viễn**, vì cảnh
+>    báo mới không lọt vào được nữa.
+>
+> Thứ tự nên đi: **project abstraction → service → hardware → UI**. Đúng chiều phụ thuộc, và cũng đúng
+> thứ tự mức độ thiệt hại khi có lỗi null.
+
+> ⚠️ **Ba mã cảnh báo mà tôi khuyên đừng bao giờ tắt trong phần mềm máy**, kể cả khi phải tắt phần còn
+> lại:
+> - **`CS0649` (field không bao giờ được gán).** Nó chỉ đúng vào những chỗ sẽ ném lỗi lúc chạy — và
+>   trong phần mềm máy, "lúc chạy" nghĩa là giữa chu kỳ sản xuất.
+> - **`CS0108` (che thành viên lớp cha).** Chương 4 mục 4.3.3 giải thích vì sao nó âm thầm phá đa hình;
+>   đây là loại lỗi mà đọc code không phát hiện được.
+> - **`CS4014` (gọi hàm trả `Task` mà không `await`).** Chương 5 mục *Lỗi thường gặp* đã nêu: câu lệnh
+>   trở thành vô tác dụng, hoặc chạy song song ngoài ý muốn, và không có exception nào cả.
+>
+> Ba mã này gần như không bao giờ là "cảnh báo giả". Mỗi lần chúng xuất hiện đều đáng dừng lại đọc.
+
+> 📌 **Và một lời khuyên khi bạn là người ĐỌC chứ không phải người sửa:** danh sách `NoWarn` ở đầu
+> solution là một **thông tin có ích về dự án**, không chỉ là cấu hình. Nó cho bạn biết trình biên dịch
+> đang không bảo vệ bạn ở những mặt nào, tức là những chỗ bạn phải **tự cẩn thận hơn** khi đọc: nếu họ
+> tắt cả họ nullable, đừng tin rằng một tham chiếu nào đó chắc chắn khác null chỉ vì code không kiểm
+> tra. Đọc file này trong ba mươi giây, ngay sau khi mở solution lần đầu — cùng lúc với việc đọc hàm
+> khởi động (Phụ lục B mục B.9).
+
 ### Extension hữu ích — nhưng đừng lạm dụng
 
 Visual Studio có hệ sinh thái extension phong phú. Một vài loại đáng cân

@@ -4418,6 +4418,43 @@ một class có ý định cho kế thừa và override, LUÔN đánh dấu meth
 báo biên dịch &quot;ẩn thành viên kế thừa, cần dùng <code>new</code>&quot; (CS0108/CS0114), dừng lại đọc kỹ — đó là dấu
 hiệu thiết kế lớp cha thiếu <code>virtual</code> chứ không phải một lựa chọn cú pháp vô hại.</p>
 </blockquote>
+<blockquote>
+<p>🔍 <strong>Hệ quả quan trọng của bẫy trên: đừng KẾ THỪA từ một collection của .NET để thêm hành vi.</strong> Đây
+là chỗ cái bẫy <code>new</code> chuyển từ &quot;lỗi do quên <code>virtual</code>&quot; thành <strong>&quot;không có cách nào làm đúng&quot;</strong> — vì
+<code>Queue&lt;T&gt;</code>, <code>List&lt;T&gt;</code>, <code>Dictionary&lt;K,V&gt;</code> của .NET <strong>không đánh dấu <code>virtual</code></strong> cho <code>Enqueue</code>, <code>Add</code>,
+<code>Remove</code>. Bạn không quên gì cả; ngôn ngữ chỉ còn để lại đúng một lựa chọn, và đó là lựa chọn sai.</p>
+<p>Trong một khung máy mã nguồn mở có đúng đoạn code này — một hàng đợi phát sự kiện mỗi khi có phần tử
+vào/ra, để chỗ khác biết mà xử lý:</p>
+<pre><code class="language-csharp">public class ActionQueue&lt;T&gt; : Queue&lt;T&gt;
+{
+    public event EventHandler Enqueued;
+    public new void Enqueue(T item)          // ← buộc phải &quot;new&quot;: Queue&lt;T&gt;.Enqueue không virtual
+    {
+        base.Enqueue(item);
+        Enqueued?.Invoke(this, null);
+    }
+}
+</code></pre>
+<p>Ý tưởng hợp lý, và nó <strong>chạy đúng</strong> — miễn là mọi nơi đều cầm đối tượng dưới kiểu <code>ActionQueue&lt;T&gt;</code>.
+Nhưng chỉ cần một hàm nhận tham số kiểu <code>Queue&lt;T&gt;</code> (hoặc <code>IEnumerable</code>, hoặc một API cũ nào đó), thì
+lời gọi <code>Enqueue</code> bên trong hàm đó <strong>chạy phiên bản của lớp cha và sự kiện không bao giờ phát</strong>. Không
+có lỗi, không có cảnh báo — chỉ là chỗ đăng ký sự kiện im lặng không nhận được gì.</p>
+<p><strong>Cách đúng là composition</strong> (mục 4.3.1): bọc hàng đợi lại thay vì kế thừa nó, và <strong>chỉ để lộ ra
+những thao tác bạn kiểm soát được</strong>:</p>
+<pre><code class="language-csharp">public sealed class ActionQueue&lt;T&gt;                 // KHÔNG kế thừa Queue&lt;T&gt;
+{
+    private readonly Queue&lt;T&gt; _items = new();      // ← giữ bên trong
+    public event EventHandler&lt;T&gt;? Enqueued;
+
+    public int  Count =&gt; _items.Count;
+    public void Enqueue(T item) { _items.Enqueue(item); Enqueued?.Invoke(this, item); }
+    public bool TryDequeue(out T item) =&gt; _items.TryDequeue(out item!);
+}
+</code></pre>
+<p>Dài hơn vài dòng, nhưng <strong>không có đường nào đi vòng qua sự kiện</strong>: người dùng lớp này không cầm được
+<code>Queue&lt;T&gt;</code> bên trong, nên không thể thêm phần tử mà bạn không biết. Nguyên tắc chung, dùng được cho
+mọi trường hợp: <em>khi cần thêm hành vi vào một kiểu bạn không sở hữu, hãy bọc nó — đừng kế thừa nó.</em></p>
+</blockquote>
 <h3>4.3.4  Abstract class hay Interface?</h3>
 <p>Hai công cụ dễ lẫn. Quy tắc chọn:</p>
 <p><strong>Bảng 4.2 — Abstract class vs Interface: chọn cái nào</strong></p>
@@ -5081,6 +5118,33 @@ sau màn hình chờ, không thông báo gì.</p>
 có thể không hiện được nếu giao diện chưa dựng xong), và **thoát có mã lỗi** thay vì để ứng dụng
 sống tiếp trong trạng thái dở dang. Xem thêm Phụ lục B mục B.9 về thứ tự các giai đoạn khởi động.
 </code></pre>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Họ hàng gần, không phải async nhưng cùng một gốc bệnh: đối tượng TỰ ĐĂNG KÝ MÌNH trong
+constructor.</strong> Trong một khung máy mã nguồn mở, lớp cơ sở của mọi &quot;kịch bản&quot; kết thúc constructor bằng
+một dòng:</p>
+<pre><code class="language-csharp">protected Script(string code)
+{
+    this.code = code;
+    ServiceBroker.Add&lt;IScript&gt;(this);   // ← đưa CHÍNH MÌNH vào một sổ đăng ký toàn cục
+}
+</code></pre>
+<p>Tiện: tạo một đối tượng là nó tự có mặt trong danh sách, không ai phải nhớ đăng ký. Nhưng nó kéo theo
+ba vấn đề rất thật:</p>
+<ul>
+<li><strong>Đối tượng thoát ra ngoài trước khi dựng xong.</strong> Constructor của lớp cha chạy <strong>trước</strong> constructor
+lớp con, nên tại thời điểm <code>Add(this)</code>, các field của lớp con vẫn còn là giá trị mặc định. Nếu có
+luồng khác duyệt sổ đăng ký ngay lúc đó, nó thấy một đối tượng <strong>chưa hoàn chỉnh</strong>.</li>
+<li><strong>Không tạo được một cái để dùng riêng.</strong> Viết unit test cho một kịch bản là làm bẩn sổ đăng ký
+toàn cục; chạy hai test liên tiếp thì sổ có hai bản.</li>
+<li><strong>Thứ tự khởi tạo trở thành thứ tự trong sổ</strong>, và không ai khai báo thứ tự đó ở đâu cả — nó là hệ
+quả tình cờ của thứ tự các dòng <code>new</code> trong hàm khởi động.</li>
+</ul>
+<p>Cách thay thế rẻ và rõ ràng hơn: <strong>constructor chỉ dựng đối tượng; việc đăng ký do nơi lắp ráp làm
+tường minh</strong> — <code>registry.Add(new KichBanA());</code>. Dài hơn một chút ở chỗ khởi động, nhưng bạn đọc được
+<strong>ai có mặt và theo thứ tự nào</strong> ngay tại đó, thay vì phải đi tìm khắp mã nguồn xem lớp nào tự thêm
+mình vào. Nguyên tắc chung dùng được cho cả <code>_ = SomeAsync()</code> ở trên: <strong>constructor không làm gì có
+tác dụng phụ ra bên ngoài đối tượng.</strong></p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Biến thể nguy hiểm hơn: fire-and-forget NGAY TRONG CONSTRUCTOR.</strong> <code>_ = UploadLogAsync();</code> ở ví

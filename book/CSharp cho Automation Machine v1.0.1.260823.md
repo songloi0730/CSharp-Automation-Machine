@@ -3769,6 +3769,48 @@ foreach (var axis in axes)
 > báo biên dịch "ẩn thành viên kế thừa, cần dùng `new`" (CS0108/CS0114), dừng lại đọc kỹ — đó là dấu
 > hiệu thiết kế lớp cha thiếu `virtual` chứ không phải một lựa chọn cú pháp vô hại.
 
+> 🔍 **Hệ quả quan trọng của bẫy trên: đừng KẾ THỪA từ một collection của .NET để thêm hành vi.** Đây
+> là chỗ cái bẫy `new` chuyển từ "lỗi do quên `virtual`" thành **"không có cách nào làm đúng"** — vì
+> `Queue<T>`, `List<T>`, `Dictionary<K,V>` của .NET **không đánh dấu `virtual`** cho `Enqueue`, `Add`,
+> `Remove`. Bạn không quên gì cả; ngôn ngữ chỉ còn để lại đúng một lựa chọn, và đó là lựa chọn sai.
+>
+> Trong một khung máy mã nguồn mở có đúng đoạn code này — một hàng đợi phát sự kiện mỗi khi có phần tử
+> vào/ra, để chỗ khác biết mà xử lý:
+>
+> ```csharp
+> public class ActionQueue<T> : Queue<T>
+> {
+>     public event EventHandler Enqueued;
+>     public new void Enqueue(T item)          // ← buộc phải "new": Queue<T>.Enqueue không virtual
+>     {
+>         base.Enqueue(item);
+>         Enqueued?.Invoke(this, null);
+>     }
+> }
+> ```
+> Ý tưởng hợp lý, và nó **chạy đúng** — miễn là mọi nơi đều cầm đối tượng dưới kiểu `ActionQueue<T>`.
+> Nhưng chỉ cần một hàm nhận tham số kiểu `Queue<T>` (hoặc `IEnumerable`, hoặc một API cũ nào đó), thì
+> lời gọi `Enqueue` bên trong hàm đó **chạy phiên bản của lớp cha và sự kiện không bao giờ phát**. Không
+> có lỗi, không có cảnh báo — chỉ là chỗ đăng ký sự kiện im lặng không nhận được gì.
+>
+> **Cách đúng là composition** (mục 4.3.1): bọc hàng đợi lại thay vì kế thừa nó, và **chỉ để lộ ra
+> những thao tác bạn kiểm soát được**:
+>
+> ```csharp
+> public sealed class ActionQueue<T>                 // KHÔNG kế thừa Queue<T>
+> {
+>     private readonly Queue<T> _items = new();      // ← giữ bên trong
+>     public event EventHandler<T>? Enqueued;
+>
+>     public int  Count => _items.Count;
+>     public void Enqueue(T item) { _items.Enqueue(item); Enqueued?.Invoke(this, item); }
+>     public bool TryDequeue(out T item) => _items.TryDequeue(out item!);
+> }
+> ```
+> Dài hơn vài dòng, nhưng **không có đường nào đi vòng qua sự kiện**: người dùng lớp này không cầm được
+> `Queue<T>` bên trong, nên không thể thêm phần tử mà bạn không biết. Nguyên tắc chung, dùng được cho
+> mọi trường hợp: *khi cần thêm hành vi vào một kiểu bạn không sở hữu, hãy bọc nó — đừng kế thừa nó.*
+
 ### 4.3.4  Abstract class hay Interface?
 
 Hai công cụ dễ lẫn. Quy tắc chọn:
@@ -4410,6 +4452,32 @@ UploadLogAsync().Forget(_logger);
 > Ba điểm của mẫu này: **một `try` bọc trọn**, **ghi nhật ký trước khi hiện hộp thoại** (vì hộp thoại
 > có thể không hiện được nếu giao diện chưa dựng xong), và **thoát có mã lỗi** thay vì để ứng dụng
 > sống tiếp trong trạng thái dở dang. Xem thêm Phụ lục B mục B.9 về thứ tự các giai đoạn khởi động.
+
+> ⚠️ **Họ hàng gần, không phải async nhưng cùng một gốc bệnh: đối tượng TỰ ĐĂNG KÝ MÌNH trong
+> constructor.** Trong một khung máy mã nguồn mở, lớp cơ sở của mọi "kịch bản" kết thúc constructor bằng
+> một dòng:
+> ```csharp
+> protected Script(string code)
+> {
+>     this.code = code;
+>     ServiceBroker.Add<IScript>(this);   // ← đưa CHÍNH MÌNH vào một sổ đăng ký toàn cục
+> }
+> ```
+> Tiện: tạo một đối tượng là nó tự có mặt trong danh sách, không ai phải nhớ đăng ký. Nhưng nó kéo theo
+> ba vấn đề rất thật:
+> - **Đối tượng thoát ra ngoài trước khi dựng xong.** Constructor của lớp cha chạy **trước** constructor
+>   lớp con, nên tại thời điểm `Add(this)`, các field của lớp con vẫn còn là giá trị mặc định. Nếu có
+>   luồng khác duyệt sổ đăng ký ngay lúc đó, nó thấy một đối tượng **chưa hoàn chỉnh**.
+> - **Không tạo được một cái để dùng riêng.** Viết unit test cho một kịch bản là làm bẩn sổ đăng ký
+>   toàn cục; chạy hai test liên tiếp thì sổ có hai bản.
+> - **Thứ tự khởi tạo trở thành thứ tự trong sổ**, và không ai khai báo thứ tự đó ở đâu cả — nó là hệ
+>   quả tình cờ của thứ tự các dòng `new` trong hàm khởi động.
+>
+> Cách thay thế rẻ và rõ ràng hơn: **constructor chỉ dựng đối tượng; việc đăng ký do nơi lắp ráp làm
+> tường minh** — `registry.Add(new KichBanA());`. Dài hơn một chút ở chỗ khởi động, nhưng bạn đọc được
+> **ai có mặt và theo thứ tự nào** ngay tại đó, thay vì phải đi tìm khắp mã nguồn xem lớp nào tự thêm
+> mình vào. Nguyên tắc chung dùng được cho cả `_ = SomeAsync()` ở trên: **constructor không làm gì có
+> tác dụng phụ ra bên ngoài đối tượng.**
 
 > ⚠️ **Biến thể nguy hiểm hơn: fire-and-forget NGAY TRONG CONSTRUCTOR.** `_ = UploadLogAsync();` ở ví
 > dụ trên ít nhất còn chạy sau khi object đã khởi tạo xong. Gặp đúng dòng `_ = SomeAsyncMethod();` bên

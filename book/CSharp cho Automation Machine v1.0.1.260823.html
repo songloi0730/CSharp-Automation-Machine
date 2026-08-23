@@ -20528,6 +20528,127 @@ chung, nên ghi rõ trong tài liệu/code review checklist rằng thiết bị 
 sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo thói quen riêng.</p>
 </blockquote>
 <hr>
+<h3>14.1.6  Robot có bộ điều khiển riêng — ba kênh, và một ranh giới trách nhiệm</h3>
+<p>Rất nhiều máy trong nhà máy điện tử không tự làm chuyển động mà <strong>mua một cánh tay robot</strong> — SCARA, sáu
+trục, hoặc robot cộng tác — rồi để phần mềm C# điều phối. Đây là tình huống khác hẳn với việc điều khiển
+card trục ở các mục trên, và người mới hay mang thói quen từ card trục sang, dẫn tới những thiết kế sai
+ngay từ đầu.</p>
+<h4>Ranh giới trách nhiệm: ai giữ cái gì</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thứ</th>
+<th>Thuộc về</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Quỹ đạo, nội suy, giới hạn khớp, động học</td>
+<td><strong>Bộ điều khiển robot</strong></td>
+<td>Hãng làm việc này tốt hơn bạn, và đó là thứ bạn đã trả tiền</td>
+</tr>
+<tr>
+<td>Chương trình chuyển động (gắp ở đâu, đặt ở đâu)</td>
+<td><strong>Bộ điều khiển robot</strong></td>
+<td>Dạy bằng tay cầm dạy học của hãng, lưu trong robot</td>
+</tr>
+<tr>
+<td>Danh sách điểm</td>
+<td><strong>Bộ điều khiển robot</strong> (mục 13.1.4c, cách 4)</td>
+<td>Cùng lý do</td>
+</tr>
+<tr>
+<td><em>Khi nào</em> chạy, chạy chương trình nào, với dữ liệu gì</td>
+<td><strong>Phần mềm C#</strong></td>
+<td>Đây là điều phối sản xuất, không phải chuyển động</td>
+</tr>
+<tr>
+<td>Kết quả, truy xuất nguồn gốc, giao tiếp hệ MES</td>
+<td><strong>Phần mềm C#</strong></td>
+<td>Robot không biết gì về lô hàng và mã sản phẩm</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Đừng cố điều khiển từng bước chuyển động của robot từ C#.</strong> Cám dỗ rất lớn: gửi từng lệnh &quot;đi tới
+toạ độ này&quot; qua socket để giữ toàn quyền trong phần mềm. Nhưng mỗi lệnh phải đi qua mạng, và <strong>thời
+gian đi–về không xác định</strong> — bạn mất khả năng nội suy mượt giữa các điểm, mất tối ưu quỹ đạo của
+hãng, và tạo ra một hệ thống mà mỗi lần mạng chậm là robot khựng lại giữa đường. Cách đúng: <strong>chương
+trình chạy trong robot, C# gọi cả chương trình</strong> rồi chờ báo xong.</p>
+</blockquote>
+<h4>Ba kênh, không phải một</h4>
+<p>Điểm mà người mới hay bất ngờ nhất: nói chuyện với một robot thường cần <strong>ba đường khác nhau</strong>, mỗi
+đường một mục đích. Một thư viện tích hợp robot cộng tác trong dự án tham khảo mô hình hoá đúng ba loại:</p>
+<p><strong>1. Kênh điều khiển máy</strong> — cổng nhận lệnh dạng văn bản để bật/tắt và điều khiển vòng đời robot. Danh
+sách lệnh của nó chính là danh sách những việc phần mềm máy phải làm được với robot:</p>
+<pre><code>Bật nguồn động cơ · Tắt nguồn động cơ · NHẢ PHANH
+Nạp dự án · Nạp chương trình
+Chạy · Tạm dừng · Dừng · Reset lỗi
+Thoát ứng dụng · Tắt bộ điều khiển
+Hỏi trạng thái: động cơ · lỗi · đang chạy · an toàn
+</code></pre>
+<p><strong>2. Kênh nạp chương trình</strong> — gửi thẳng đoạn lệnh chuyển động cho robot chạy ngay. Hữu ích cho việc dạy
+và gỡ rối, nhưng xem cảnh báo ở cuối mục.</p>
+<p><strong>3. Kênh dữ liệu</strong> — trao đổi giá trị với chương trình <strong>đang chạy</strong> trong robot: gửi vào toạ độ bù sau
+khi căn chỉnh (mục 13.2.4f), số thứ tự ô trong khay, mã sản phẩm; nhận về kết quả và tín hiệu đã xong.</p>
+<blockquote>
+<p>💡 <strong>Ba kênh này khác nhau về vòng đời, nên đừng gộp thành một lớp.</strong> Kênh điều khiển máy chỉ dùng lúc
+khởi động và khi có sự cố. Kênh dữ liệu chạy suốt trong chu kỳ sản xuất. Gộp chung, bạn sẽ có một lớp
+mà một nửa số hàm chỉ hợp lệ ở nửa số thời điểm — đúng thứ mà nguyên tắc <em>tách interface theo năng
+lực</em> ở Chương 4 mục 4.2.3 muốn tránh.</p>
+</blockquote>
+<h4>Vòng đời bật máy: robot không &quot;sẵn sàng&quot; ngay như một card trục</h4>
+<p>Một trục nối vào card thì mở card xong là dùng được. Robot thì có <strong>một chuỗi bắt buộc</strong>, và bỏ sót một
+bước là lệnh sau thất bại với thông báo khó hiểu:</p>
+<pre><code>kết nối → bật nguồn động cơ → nhả phanh → (chờ trạng thái sẵn sàng)
+        → nạp chương trình → chạy
+</code></pre>
+<p>Hai điều phải làm trong code:</p>
+<ul>
+<li><strong>Chờ trạng thái, đừng chờ thời gian.</strong> Sau mỗi bước, <strong>hỏi lại trạng thái</strong> cho tới khi đúng, kèm hạn
+chờ (Chương 16 mục 16.2d). Chèn <code>Task.Delay(3000)</code> giữa các bước là cách viết sẽ hỏng vào ngày robot
+khởi động chậm hơn bình thường.</li>
+<li><strong>Nhả phanh là thao tác có hệ quả vật lý.</strong> Với cánh tay đang giữ vật ở tư thế nào đó, nhả phanh có thể
+làm nó <strong>sụp xuống theo trọng lực</strong>. Đây phải là bước có điều kiện tiên quyết và có ghi nhật ký, không
+phải một dòng trong hàm khởi tạo chạy lặng lẽ.</li>
+</ul>
+<h4>Bốn cái bẫy đặc trưng</h4>
+<p><strong>1. Trả lời là văn bản, và bạn phải phân tích chuỗi.</strong> Kênh điều khiển máy thường trả về những chuỗi
+kiểu <em>&quot;đã nạp xong&quot;</em> / <em>&quot;lỗi&quot;</em>. Hệ quả: mã của bạn phụ thuộc vào <strong>chuỗi ký tự của một phiên bản phần
+mềm robot</strong> — nâng cấp phiên bản có thể đổi câu chữ. Hãy gom toàn bộ việc phân tích chuỗi vào <strong>một
+lớp duy nhất</strong>, và cho nó ghi nhật ký nguyên văn chuỗi nhận được khi không khớp, thay vì im lặng coi là
+thất bại.</p>
+<p><strong>2. Không có sự kiện đẩy về — phải hỏi vòng.</strong> Phần lớn các cổng này không tự báo khi trạng thái đổi;
+bạn phải hỏi định kỳ. Chọn nhịp hỏi theo nguyên tắc ở Chương 6 mục 6.1.1b, và <strong>đừng hỏi trạng thái an
+toàn bằng cách hỏi vòng</strong> — xem bẫy 4.</p>
+<p><strong>3. Chương trình robot KHÔNG nằm trong bản sao lưu phần mềm của bạn.</strong> Đây là hệ quả trực tiếp của bảng
+trách nhiệm ở đầu mục, và nó gây mất mát thật: ổ cứng máy tính hỏng thì bạn khôi phục được phần mềm,
+nhưng nếu bộ điều khiển robot hỏng thì <strong>chương trình và toàn bộ điểm đã dạy mất theo</strong>. Quy trình bàn
+giao phải có một bước riêng: <strong>xuất chương trình + điểm từ robot ra tệp, lưu cùng bộ cài đặt máy</strong>, và
+lặp lại sau mỗi lần chỉnh điểm. Việc này không tự động xảy ra, nên nó phải nằm trong danh mục kiểm ở Phụ
+lục B mục B.5.</p>
+<p><strong>4. Gửi lệnh dừng không phải là đã dừng — và dừng khẩn không đi qua phần mềm.</strong> Lệnh <em>Dừng</em> trên kênh
+điều khiển máy là một yêu cầu; nó có thể mất, có thể tới chậm, có thể bị từ chối vì robot đang ở trạng
+thái không nhận lệnh. Vì vậy:</p>
+<ul>
+<li>Sau khi gửi Dừng, <strong>phải xác nhận bằng trạng thái</strong>, y như mọi bước khác.</li>
+<li>Và mạch <strong>dừng khẩn phải nối cứng</strong> vào đầu vào an toàn của bộ điều khiển robot, không bao giờ đi qua
+phần mềm C# — đúng nguyên tắc ở Chương 15 mục 15.2.1. Phần mềm chỉ <em>biết</em> rằng dừng khẩn đã kích hoạt;
+nó không phải là thứ <em>thực hiện</em> việc dừng.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Về kênh nạp chương trình: mạnh, và vì thế nguy hiểm.</strong> Gửi được một đoạn lệnh chuyển động chạy
+ngay nghĩa là <strong>bất cứ ai chạm được vào cổng đó đều điều khiển được cánh tay</strong>. Ba việc tối thiểu: chỉ
+mở kênh này khi máy ở chế độ kỹ thuật (Chương 12 mục 12.4.3), giới hạn tốc độ ở mức dạy học, và <strong>ghi
+nhật ký nguyên văn mọi đoạn lệnh đã gửi kèm người đang đăng nhập</strong>. Nếu không cần cho vận hành bình
+thường, tốt nhất là <strong>không mở nó trong bản giao khách</strong>.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Robot cộng tác không có nghĩa là không cần đánh giá an toàn.</strong> Loại robot làm việc cạnh người vẫn
+phải qua đánh giá rủi ro cho <strong>cả ứng dụng</strong>, không chỉ cho cánh tay: dụng cụ đầu tay có sắc không, vật
+đang cầm có nặng không, tốc độ và lực đã giới hạn đúng chưa. Đó là việc của người thiết kế máy và bộ
+phận an toàn; phần mềm C# <strong>không phải chỗ để bù đắp</strong> cho một đánh giá thiếu.</p>
+</blockquote>
+<hr>
 <h2 id="142-secsgem-xương-sng-ngành-bán-dn-và-smt">14.2  SECS/GEM — xương sống ngành bán dẫn và SMT</h2>
 <blockquote>
 <p>📌 <strong>Lưu ý về phạm vi:</strong> SECS/GEM là giao thức chuyên biệt cho ngành bán dẫn và SMT.
@@ -21768,6 +21889,12 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 <td>P/Invoke SDK card + máy trạng thái servo</td>
 <td>SDK của hãng card</td>
 <td>Phân biệt dữ liệu chu kỳ và tham số; không gọi tham số trong vòng điều khiển</td>
+</tr>
+<tr>
+<td>Robot có bộ điều khiển riêng (14.1.6)</td>
+<td>Ba kênh: điều khiển máy · nạp chương trình · dữ liệu</td>
+<td>Chương trình và điểm thuộc về robot — <strong>và không nằm trong bản sao lưu phần mềm của bạn</strong>; gửi Dừng ≠ đã dừng</td>
+<td></td>
 </tr>
 <tr>
 <td>Chọn thư viện PLC (14.1.2c)</td>
@@ -30779,7 +30906,10 @@ thức của công ty — nó bắt những thứ hay bị quên.</p>
 <ul>
 <li><input disabled="" type="checkbox"> Mỗi chi tiết một bản ghi, có mã định danh duy nhất và có cột chế độ chạy</li>
 <li><input disabled="" type="checkbox"> Mất kết nối MES không làm mất dữ liệu — có hàng đợi và gửi lại được</li>
-<li><input disabled="" type="checkbox"> Nhật ký tự xoay vòng, ổ cứng không đầy sau ba tháng chạy liên tục</li>
+<li><input disabled="" type="checkbox"> Nhật ký tự xoay vòng, ổ cứng không đầy sau ba tháng chạy</li>
+<li><input disabled="" type="checkbox"> <strong>Đã xuất và lưu những thứ KHÔNG nằm trong phần mềm của bạn</strong>: chương trình + điểm trong bộ điều
+khiển robot, job thị giác trong phần mềm camera, tham số trong biến tần/driver servo. Ổ cứng máy
+tính hỏng thì khôi phục được phần mềm; những thứ này thì không (Ch14 mục 14.1.6) liên tục</li>
 <li><input disabled="" type="checkbox"> Có cách sao lưu và khôi phục công thức + cấu hình, và <strong>đã thử khôi phục thật một lần</strong></li>
 </ul>
 <p><strong>Vận hành</strong></p>

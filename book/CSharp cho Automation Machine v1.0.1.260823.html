@@ -17749,6 +17749,97 @@ nào — nó nói thẳng chỗ nào tin được, chỗ nào phải tự kiểm
 ty bạn, viết ba dòng đó vào README tốn năm phút và tiết kiệm cho đồng nghiệp hàng ngày công.</p>
 </blockquote>
 <hr>
+<h3>13.2.4f  Căn chỉnh phôi — bài toán XYθ, và ba cái bẫy đơn vị</h3>
+<p>Mục 13.2.4c dừng ở chỗ <em>&quot;toạ độ ảnh không dùng để ra lệnh trục được&quot;</em> và giới thiệu việc hiệu chuẩn.
+Mục này đi nốt phần còn lại: sau khi đã có toạ độ thật của các dấu căn chỉnh, <strong>tính ra lượng bù cho
+trục</strong> như thế nào. Đây là chức năng gần như mọi máy in, máy gắn, máy dán, máy hàn trong ngành điện tử
+đều có, và là chỗ người mới hay tính sai theo những cách rất giống nhau.</p>
+<h4>Hai mức bài toán</h4>
+<p><strong>Một dấu — chỉ sửa được vị trí.</strong> Phôi vào lệch nhưng <strong>không xoay</strong> (hoặc đồ gá đã chặn xoay). Đo được
+một dấu, lượng bù là hiệu số đơn giản:</p>
+<pre><code class="language-csharp">dx = xDay - xDo;        // &quot;dạy&quot; = vị trí dấu khi phôi nằm đúng, học một lần
+dy = yDay - yDo;
+</code></pre>
+<p><strong>Hai dấu — sửa được cả vị trí lẫn góc.</strong> Đây mới là trường hợp thường gặp. Với hai dấu, bạn có đủ thông
+tin để tách <strong>xoay</strong> ra khỏi <strong>tịnh tiến</strong>, và <strong>thứ tự tính là điều quan trọng nhất của cả mục này</strong>:</p>
+<pre><code class="language-csharp">// Bước 1: góc lệch = góc của ĐƯỜNG NỐI hai dấu, đo lúc dạy so với đo bây giờ
+double gocDay = Math.Atan2(xDayPhai - xDayTrai,  yDayTrai - yDayPhai);
+double gocDo  = Math.Atan2(xDoPhai  - xDoTrai,   yDoTrai  - yDoPhai);
+double theta  = gocDay - gocDo;                       // radian
+
+// Bước 2: XOAY điểm đo quanh tâm xoay theo theta, RỒI mới lấy hiệu với điểm dạy
+double xSauXoay = xDo * Math.Cos(theta) - yDo * Math.Sin(theta);
+double ySauXoay = xDo * Math.Sin(theta) + yDo * Math.Cos(theta);
+double dx = xDay - xSauXoay;
+double dy = yDay - ySauXoay;
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Sai lầm phổ biến nhất: lấy trung bình hai lượng lệch.</strong> Người mới thường tính hiệu số ở dấu trái
+và dấu phải rồi lấy trung bình làm lượng tịnh tiến, tính góc riêng, rồi ra lệnh cả hai. Nó <strong>gần đúng
+khi góc rất nhỏ</strong>, và sai lớn dần khi góc tăng — vì phép xoay quanh tâm xoay của bàn đã tự nó làm đổi
+vị trí của mọi điểm. Phải <strong>xoay trước, rồi mới đo phần còn lại là tịnh tiến</strong>, đúng như hai bước ở
+trên. Triệu chứng khi làm sai: máy căn chỉnh tốt với phôi hơi lệch, và <strong>càng lệch nhiều càng sai
+nhiều</strong> — nhưng vẫn &quot;chạy được&quot;, nên rất lâu mới bị phát hiện.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Tâm xoay là một tham số, không phải gốc toạ độ.</strong> Công thức trên xoay quanh gốc (0,0). Trên máy
+thật, bàn xoay có <strong>tâm cơ khí riêng</strong>, và tâm đó gần như không bao giờ trùng gốc toạ độ trục. Trước
+khi xoay phải dời hệ về tâm xoay, xoay, rồi dời về. Tâm xoay được xác định bằng một quy trình hiệu
+chuẩn riêng (xoay bàn vài góc đã biết, chụp một dấu, khớp vòng tròn) và <strong>lưu như một tham số máy</strong>,
+thuộc nhóm <em>cấu hình phần cứng</em> chứ không phải công thức sản phẩm (mục 13.1.4b).</p>
+</blockquote>
+<h4>Ba cái bẫy đơn vị, cả ba đều có thật trong cùng một thư viện</h4>
+<p>Đoạn code căn chỉnh mà mục này rút ra từ một thư viện thị giác thật — được viết bởi người có kinh nghiệm
+nhiều năm trong ngành — và nó vẫn dính đủ ba bẫy đơn vị. Điều đó nói lên rằng đây không phải chuyện cẩu
+thả, mà là chỗ <strong>rất dễ trượt</strong>:</p>
+<p><strong>Bẫy 1 — độ và radian trong cùng một dòng chảy tính toán.</strong> Hàm tính góc trả về kết quả của <code>Math.Atan2</code>,
+tức là <strong>radian</strong>. Hàm tính lượng tịnh tiến nhận góc đó và mở đầu bằng <code>theta *= Math.PI / 180.0</code> — tức
+là nó tin rằng mình đang nhận <strong>độ</strong>. Một trong hai đầu phải sai. Đây là bẫy quen thuộc nhất của mọi
+phép tính hình học trong phần mềm máy, vì thư viện toán của .NET dùng radian còn con người, tài liệu cơ
+khí và màn hình HMI đều dùng độ.</p>
+<blockquote>
+<p>Cách chặn hiệu quả nhất không phải là &quot;cẩn thận hơn&quot; mà là <strong>đưa đơn vị vào tên</strong>: <code>thetaRad</code>,
+<code>thetaDeg</code>, <code>dxMm</code>, <code>dxPixel</code>. Quy đổi chỉ xảy ra ở đúng một chỗ, và chỗ đó có tên nói rõ nó làm gì.
+Nghiêm túc hơn nữa thì dùng kiểu riêng cho góc (<code>readonly struct Goc</code> với hai property <code>Do</code> và <code>Radian</code>)
+— lúc đó trình biên dịch không cho bạn cộng một góc vào một số mét nữa.</p>
+</blockquote>
+<p><strong>Bẫy 2 — nhân hệ số tỉ lệ vào một đại lượng không có tỉ lệ đó.</strong> Hàm căn chỉnh nhận một <code>scale</code> để đổi
+điểm ảnh sang mi-li-mét, và nó nhân <code>scale</code> vào <strong>cả góc</strong>. Góc thì không đổi khi đổi đơn vị chiều dài —
+một hình xoay 5 độ vẫn xoay 5 độ dù bạn đo bằng pixel hay bằng mm. Nhân hệ số vào góc là một phép tính
+<strong>không có nghĩa vật lý</strong>, và nó chỉ vô hại khi <code>scale</code> tình cờ bằng 1.</p>
+<blockquote>
+<p>Quy tắc kiểm tra rất nhanh, dùng được cho mọi công thức trong máy: <strong>nhìn vào đơn vị của hai vế</strong>. Nếu
+vế trái là <em>độ</em> mà vế phải là <em>độ × (mm/pixel)</em>, công thức sai bất kể nó chạy ra số đẹp thế nào.</p>
+</blockquote>
+<p><strong>Bẫy 3 — dùng một con số làm cờ báo lỗi.</strong> Khi không tính được (hai dấu trùng nhau, thị giác không tìm
+thấy dấu), hàm trả về hằng số <code>-1000.0</code> cho cả X, Y và góc. Nó &quot;an toàn&quot; theo nghĩa <strong>-1000 mm là lượng
+bù phi lý nên chắc chắn sai ngay</strong>, nhưng đó chính là vấn đề:</p>
+<blockquote>
+<ul>
+<li>Người gọi <strong>có thể quên kiểm tra</strong>, và khi đó -1000 được gửi thẳng xuống trục.</li>
+<li>Phép so sánh phải viết là <code>Math.Abs(theta - (-1000.0)) &lt; 0.00001</code> — so số thực với hằng số bằng dung
+sai, một dòng mà người đọc sau không hiểu ngay là đang kiểm tra lỗi.</li>
+<li>Và nếu một ngày nào đó có một máy mà -1000 là giá trị hợp lệ, mọi thứ sụp.</li>
+</ul>
+<p>Đây đúng là lý do tồn tại của <strong>đối tượng kết quả</strong> đã nêu ở Chương 3 mục 3.5.4: hàm trả về <em>&quot;có thành
+công không, nếu không thì vì sao, nếu có thì giá trị là bao nhiêu&quot;</em> trong một kiểu duy nhất, và người
+gọi <strong>không lấy được giá trị mà không đi qua phần kiểm tra</strong>.</p>
+</blockquote>
+<h4>Hai điều phải có trước khi cho lượng bù xuống trục</h4>
+<p><strong>1. Kẹp biên độ.</strong> Lượng bù hợp lệ của một máy nằm trong một khoảng biết trước — vài mi-li-mét và vài
+độ. Bất cứ kết quả nào vượt khoảng đó <strong>không phải là &quot;phôi lệch nhiều&quot;</strong> mà gần như chắc chắn là <em>thị
+giác bắt nhầm dấu</em>, <em>phôi nạp sai chiều</em>, hoặc <em>hiệu chuẩn đã hỏng</em>. Kẹp và báo cảnh báo, đừng chạy.</p>
+<p><strong>2. Kiểm tra lại sau khi bù.</strong> Sau khi trục đã bù xong, <strong>chụp lại và đo lại</strong>. Nếu sai lệch còn lại
+vẫn vượt dung sai thì có gì đó sai ở mức hệ thống — chiều dấu bị đảo, hệ số hiệu chuẩn sai dấu, tâm
+xoay lệch. Một vòng kiểm tra lại tốn thêm vài trăm mili-giây mỗi phôi và là thứ <strong>phát hiện sớm</strong> những
+lỗi mà nếu không có nó thì cả lô hàng đã chạy xong mới biết.</p>
+<blockquote>
+<p>💡 <strong>Và một mẹo gỡ rối rất hiệu quả cho căn chỉnh:</strong> ghi lại <strong>cả ba bộ số</strong> cho mỗi lần căn chỉnh —
+toạ độ dấu lúc dạy, toạ độ dấu đo được, và lượng bù đã ra lệnh. Khi có nghi ngờ, ba bộ số này cho
+phép tính lại bằng tay trên giấy để biết sai ở khâu nào: đo sai, tính sai, hay trục đi không tới.
+Không có chúng thì bạn chỉ có một kết luận vô dụng là <em>&quot;máy căn chỉnh không chuẩn&quot;</em>.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -18545,6 +18636,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Xi-lanh khí nén (13.2.1b)</td>
 <td>Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp</td>
 <td>Trạng thái suy từ <strong>cả hai cảm biến</strong>; hành động phải <code>async</code> + có thẻ huỷ + hết giờ thì <strong>ném lỗi</strong> sau khi về an toàn; loại van là <strong>tham số khai báo</strong></td>
+</tr>
+<tr>
+<td>Căn chỉnh phôi (13.2.4f)</td>
+<td>Đo dấu rồi bù XYθ cho trục</td>
+<td><strong>Xoay trước, tịnh tiến sau</strong> — đừng lấy trung bình hai lượng lệch; tâm xoay là tham số; kẹp biên độ và đo lại sau khi bù</td>
 </tr>
 <tr>
 <td>Chạm tới một tín hiệu (13.2.4e)</td>

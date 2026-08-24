@@ -18229,6 +18229,121 @@ hoặc khi bạn nghi ngờ hàm cắt chuỗi có vấn đề, chuỗi thô là
 đọc sai</strong> và <strong>phần mềm xử lý sai</strong> — hai nguyên nhân rất khác nhau mà nhìn kết quả cuối thì giống hệt.</p>
 </blockquote>
 <hr>
+<h3>13.2.4i  Bản đồ khay — khi máy làm việc với một mảng vị trí</h3>
+<p>Chương 14 mục 14.2.6b nói về <strong>bản đồ khay như một cấu trúc dữ liệu gửi cho hệ thống chủ</strong>. Mục này nói
+về phía còn lại, phía máy: <strong>phần mềm theo dõi một khay như thế nào trong lúc làm việc</strong>. Đây là mô hình
+dữ liệu khác hẳn <em>&quot;một sản phẩm mỗi lần&quot;</em>, và rất phổ biến trong ngành điện tử — khay nhựa định hình,
+băng cuốn, đế chứa nhiều ô.</p>
+<h4>Trạng thái một ô KHÔNG phải đúng/sai</h4>
+<p>Sai lầm đầu tiên và tốn kém nhất là khai báo <code>bool[,] daXuLy</code>. Trong một máy kiểm tra khay thật, mỗi ô
+được chạy qua <strong>bốn công cụ thị giác khác nhau</strong>: tìm dấu chuẩn ở hướng 0°, tìm dấu chuẩn ở hướng 180°,
+dò một loại khuyết tật, và dò <strong>ô trống</strong>. Bốn công cụ đó tồn tại vì có bốn kết luận khác nhau cần phân
+biệt — và mỗi kết luận dẫn tới một hành động khác:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trạng thái ô</th>
+<th>Nghĩa</th>
+<th>Máy làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Trống</strong></td>
+<td>Không có gì trong ô</td>
+<td>Bỏ qua, <strong>không tính là lỗi</strong></td>
+</tr>
+<tr>
+<td><strong>Chưa xử lý</strong></td>
+<td>Có phôi, chưa tới lượt</td>
+<td>Xếp vào hàng chờ</td>
+</tr>
+<tr>
+<td><strong>Đạt</strong></td>
+<td>Đã xử lý, kết quả tốt</td>
+<td>Đếm vào sản lượng</td>
+</tr>
+<tr>
+<td><strong>Không đạt</strong> + mã lý do</td>
+<td>Đã xử lý, kết quả xấu</td>
+<td>Đếm vào lỗi, <strong>theo từng mã lý do</strong></td>
+</tr>
+<tr>
+<td><strong>Đặt sai chiều</strong></td>
+<td>Có phôi nhưng xoay 180°</td>
+<td>Không phải phôi lỗi — là <strong>lỗi nạp liệu</strong></td>
+</tr>
+<tr>
+<td><strong>Bỏ qua theo khai báo</strong></td>
+<td>Ô hỏng cơ khí, hoặc người vận hành đánh dấu bỏ</td>
+<td>Không gắp, không tính vào mẫu số</td>
+</tr>
+<tr>
+<td><strong>Không kết luận được</strong></td>
+<td>Thị giác không chắc</td>
+<td>Dừng và hỏi người, đừng đoán</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Tách &quot;đặt sai chiều&quot; ra khỏi &quot;lỗi&quot; là chi tiết đáng giá nhất trong bảng trên.</strong> Hai thứ trông
+giống nhau trên màn hình nhưng nguyên nhân hoàn toàn khác: phôi lỗi là vấn đề của công đoạn trước;
+phôi đặt ngược là vấn đề của người nạp khay hoặc của máy cấp liệu. Nếu gộp chung, biểu đồ Pareto cuối
+tháng sẽ chỉ nói <em>&quot;tỉ lệ lỗi cao&quot;</em> mà không chỉ ra được đi sửa cái gì (Chương 12 mục 12.5).</p>
+<p>Và &quot;ô trống&quot; cũng phải tách khỏi &quot;lỗi&quot; — khay lẻ cuối lô là chuyện bình thường, không phải sự cố.</p>
+</blockquote>
+<h4>Đánh số ô: quy ước phải thống nhất với người ngoài, không phải với code</h4>
+<p>Máy đánh số ô theo <strong>thứ tự nó gắp</strong>; bản vẽ của khách hàng đánh số theo <strong>cách họ nhìn khay</strong>; hệ thống
+chủ lại có quy ước riêng. Ba cách đánh số cho cùng một khay là chuyện bình thường, và nếu không thống
+nhất từ đầu thì bản ghi <em>&quot;ô số 7 lỗi&quot;</em> trở nên vô nghĩa — không ai biết là ô số 7 của ai.</p>
+<p>Bốn câu phải hỏi khách hàng ngay khi khảo sát, và ghi vào tài liệu:</p>
+<ol>
+<li><strong>Gốc ở góc nào</strong> khi nhìn khay theo chiều nạp vào máy?</li>
+<li><strong>Đi theo hàng trước hay cột trước</strong>, và có kiểu &quot;rắn bò&quot; (hàng chẵn đi ngược) không?</li>
+<li><strong>Bắt đầu từ 0 hay từ 1?</strong></li>
+<li>Khay có thể <strong>nạp xoay 180°</strong> không, và nếu có thì đánh số theo khay hay theo máy?</li>
+</ol>
+<p>Câu 4 là câu hay bị bỏ sót nhất, và hậu quả nặng nhất: nếu khay nạp ngược mà phần mềm vẫn đánh số theo
+vị trí vật lý trong máy, thì <strong>mọi ô đều bị gán nhầm</strong> — sản phẩm ở ô 1 được ghi hồ sơ của ô cuối. Cách
+xử lý: nhận biết chiều khay bằng một dấu chuẩn bất đối xứng, rồi <strong>quy đổi về hệ toạ độ của khay</strong> ngay
+tại chỗ đọc, để mọi phần còn lại của phần mềm chỉ làm việc với số ô theo khay.</p>
+<blockquote>
+<p>📌 <strong>Trong code, hãy để số ô là một kiểu riêng, đừng để nó là <code>int</code> trần.</strong> Một <code>record ViTriO(int Hang, int Cot)</code> với một hàm chuyển sang chỉ số tuyến tính khiến việc nhầm hàng với cột trở thành lỗi biên
+dịch thay vì một lỗi im lặng. Đây là cùng lý do với việc đưa đơn vị vào tên biến ở mục 13.2.4f.</p>
+</blockquote>
+<h4>Từ số ô ra toạ độ vật lý — đừng cộng dồn</h4>
+<p>Cám dỗ: chạy vòng lặp, mỗi ô cộng thêm một bước. Đừng — sai số bước tích luỹ qua mười hai cột thành sai
+số thấy được. Tính thẳng từ gốc:</p>
+<pre><code class="language-csharp">var diem = goc + new Vector(cot * buocX, hang * buocY);
+</code></pre>
+<p>Nhưng ngay cả công thức đó cũng chỉ đúng nếu khay nằm <strong>hoàn hảo</strong>. Khay thật thì cong, lệch, và đồ gá
+có dung sai. Cách làm đúng trong máy nghiêm túc: <strong>đo vài dấu chuẩn trên khay rồi nội suy</strong> — hai dấu
+cho phép bù lệch và xoay (đúng bài toán ở mục 13.2.4f), bốn dấu ở bốn góc cho phép bù cả méo hình thang.
+Với khay lớn hoặc yêu cầu chính xác cao, đây không phải tuỳ chọn.</p>
+<h4>Ba chi tiết vận hành mà bản thiết kế hay quên</h4>
+<p><strong>1. Không phải cả khay dùng chung một bộ tham số.</strong> Trong máy tham khảo, các công cụ thị giác được khai
+báo kèm <strong>khoảng hàng và khoảng cột mà chúng áp dụng</strong>, cộng một công cụ mặc định cho phần còn lại. Lý do
+rất thực tế: chiếu sáng không đều giữa giữa khay và mép khay, hoặc khay có hai vùng chứa hai loại chi
+tiết. Nếu bạn thiết kế bản đồ khay với giả định &quot;mọi ô như nhau&quot;, việc bổ sung sau này sẽ rất gượng.</p>
+<p><strong>2. Ô bỏ qua phải là dữ liệu, không phải code.</strong> Khay dùng lâu sẽ có ô méo, ô mất chốt định vị. Người
+vận hành cần đánh dấu <em>&quot;đừng dùng ô này&quot;</em> ngay trên màn hình, và đánh dấu đó phải <strong>theo khay cụ thể</strong>
+(gắn với mã khay) chứ không phải theo mã sản phẩm. Ô bỏ qua <strong>không được tính vào mẫu số</strong> khi tính tỉ lệ
+đạt — nếu tính, tỉ lệ đạt của khay cũ sẽ thấp giả tạo.</p>
+<p><strong>3. Bản đồ khay phải sống sót qua sự cố.</strong> Máy đang xử lý ô thứ 40 trong 60 thì mất điện hoặc có cảnh
+báo. Khi chạy lại, phần mềm cần biết ô nào đã xong. Vì vậy trạng thái từng ô nên được <strong>ghi xuống nơi bền
+sau mỗi ô</strong>, không giữ trong bộ nhớ tới cuối khay. Cách rẻ: một bản ghi cho mỗi ô ngay khi xử lý xong —
+đằng nào cũng cần cho truy xuất nguồn gốc.</p>
+<blockquote>
+<p>Và khi chạy lại, đừng tự động chạy tiếp: <strong>hiển thị bản đồ khay cho người vận hành xác nhận</strong> trước.
+Trong lúc dừng, có thể người ta đã lấy vài chi tiết ra khỏi khay — đúng tinh thần &quot;chạy tiếp = xác
+minh&quot; ở Chương 12 mục 12.2.4.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Cuối cùng: bản đồ khay của bạn và bản đồ khay của hệ thống chủ phải khớp nhau, và đó là một hợp
+đồng.</strong> Nếu máy gửi kết quả theo từng ô lên hệ MES (Chương 14 mục 14.2.6b), thì quy ước đánh số, tập
+mã lý do lỗi, và cách biểu diễn ô trống <strong>phải được thống nhất bằng văn bản</strong> trước khi viết code. Đây
+là loại hợp đồng mà sửa sau khi máy đã chạy sẽ kéo theo sửa cả dữ liệu lịch sử — rất tốn, và thường
+không sửa được.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -19025,6 +19140,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Xi-lanh khí nén (13.2.1b)</td>
 <td>Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp</td>
 <td>Trạng thái suy từ <strong>cả hai cảm biến</strong>; hành động phải <code>async</code> + có thẻ huỷ + hết giờ thì <strong>ném lỗi</strong> sau khi về an toàn; loại van là <strong>tham số khai báo</strong></td>
+</tr>
+<tr>
+<td>Bản đồ khay (13.2.4i)</td>
+<td>Máy làm việc với một mảng vị trí, không phải một sản phẩm</td>
+<td>Trạng thái ô là <strong>enum nhiều giá trị</strong>, không phải bool; quy ước đánh số phải thống nhất với khách/MES; ghi trạng thái từng ô xuống nơi bền</td>
 </tr>
 <tr>
 <td>Mã định danh sản phẩm (13.2.4h)</td>

@@ -16808,6 +16808,102 @@ một cách có kiểm soát:
 
 ---
 
+### 13.2.4i  Bản đồ khay — khi máy làm việc với một mảng vị trí
+
+Chương 14 mục 14.2.6b nói về **bản đồ khay như một cấu trúc dữ liệu gửi cho hệ thống chủ**. Mục này nói
+về phía còn lại, phía máy: **phần mềm theo dõi một khay như thế nào trong lúc làm việc**. Đây là mô hình
+dữ liệu khác hẳn *"một sản phẩm mỗi lần"*, và rất phổ biến trong ngành điện tử — khay nhựa định hình,
+băng cuốn, đế chứa nhiều ô.
+
+#### Trạng thái một ô KHÔNG phải đúng/sai
+
+Sai lầm đầu tiên và tốn kém nhất là khai báo `bool[,] daXuLy`. Trong một máy kiểm tra khay thật, mỗi ô
+được chạy qua **bốn công cụ thị giác khác nhau**: tìm dấu chuẩn ở hướng 0°, tìm dấu chuẩn ở hướng 180°,
+dò một loại khuyết tật, và dò **ô trống**. Bốn công cụ đó tồn tại vì có bốn kết luận khác nhau cần phân
+biệt — và mỗi kết luận dẫn tới một hành động khác:
+
+| Trạng thái ô | Nghĩa | Máy làm gì |
+|---|---|---|
+| **Trống** | Không có gì trong ô | Bỏ qua, **không tính là lỗi** |
+| **Chưa xử lý** | Có phôi, chưa tới lượt | Xếp vào hàng chờ |
+| **Đạt** | Đã xử lý, kết quả tốt | Đếm vào sản lượng |
+| **Không đạt** + mã lý do | Đã xử lý, kết quả xấu | Đếm vào lỗi, **theo từng mã lý do** |
+| **Đặt sai chiều** | Có phôi nhưng xoay 180° | Không phải phôi lỗi — là **lỗi nạp liệu** |
+| **Bỏ qua theo khai báo** | Ô hỏng cơ khí, hoặc người vận hành đánh dấu bỏ | Không gắp, không tính vào mẫu số |
+| **Không kết luận được** | Thị giác không chắc | Dừng và hỏi người, đừng đoán |
+
+> 💡 **Tách "đặt sai chiều" ra khỏi "lỗi" là chi tiết đáng giá nhất trong bảng trên.** Hai thứ trông
+> giống nhau trên màn hình nhưng nguyên nhân hoàn toàn khác: phôi lỗi là vấn đề của công đoạn trước;
+> phôi đặt ngược là vấn đề của người nạp khay hoặc của máy cấp liệu. Nếu gộp chung, biểu đồ Pareto cuối
+> tháng sẽ chỉ nói *"tỉ lệ lỗi cao"* mà không chỉ ra được đi sửa cái gì (Chương 12 mục 12.5).
+>
+> Và "ô trống" cũng phải tách khỏi "lỗi" — khay lẻ cuối lô là chuyện bình thường, không phải sự cố.
+
+#### Đánh số ô: quy ước phải thống nhất với người ngoài, không phải với code
+
+Máy đánh số ô theo **thứ tự nó gắp**; bản vẽ của khách hàng đánh số theo **cách họ nhìn khay**; hệ thống
+chủ lại có quy ước riêng. Ba cách đánh số cho cùng một khay là chuyện bình thường, và nếu không thống
+nhất từ đầu thì bản ghi *"ô số 7 lỗi"* trở nên vô nghĩa — không ai biết là ô số 7 của ai.
+
+Bốn câu phải hỏi khách hàng ngay khi khảo sát, và ghi vào tài liệu:
+
+1. **Gốc ở góc nào** khi nhìn khay theo chiều nạp vào máy?
+2. **Đi theo hàng trước hay cột trước**, và có kiểu "rắn bò" (hàng chẵn đi ngược) không?
+3. **Bắt đầu từ 0 hay từ 1?**
+4. Khay có thể **nạp xoay 180°** không, và nếu có thì đánh số theo khay hay theo máy?
+
+Câu 4 là câu hay bị bỏ sót nhất, và hậu quả nặng nhất: nếu khay nạp ngược mà phần mềm vẫn đánh số theo
+vị trí vật lý trong máy, thì **mọi ô đều bị gán nhầm** — sản phẩm ở ô 1 được ghi hồ sơ của ô cuối. Cách
+xử lý: nhận biết chiều khay bằng một dấu chuẩn bất đối xứng, rồi **quy đổi về hệ toạ độ của khay** ngay
+tại chỗ đọc, để mọi phần còn lại của phần mềm chỉ làm việc với số ô theo khay.
+
+> 📌 **Trong code, hãy để số ô là một kiểu riêng, đừng để nó là `int` trần.** Một `record ViTriO(int Hang,
+> int Cot)` với một hàm chuyển sang chỉ số tuyến tính khiến việc nhầm hàng với cột trở thành lỗi biên
+> dịch thay vì một lỗi im lặng. Đây là cùng lý do với việc đưa đơn vị vào tên biến ở mục 13.2.4f.
+
+#### Từ số ô ra toạ độ vật lý — đừng cộng dồn
+
+Cám dỗ: chạy vòng lặp, mỗi ô cộng thêm một bước. Đừng — sai số bước tích luỹ qua mười hai cột thành sai
+số thấy được. Tính thẳng từ gốc:
+
+```csharp
+var diem = goc + new Vector(cot * buocX, hang * buocY);
+```
+
+Nhưng ngay cả công thức đó cũng chỉ đúng nếu khay nằm **hoàn hảo**. Khay thật thì cong, lệch, và đồ gá
+có dung sai. Cách làm đúng trong máy nghiêm túc: **đo vài dấu chuẩn trên khay rồi nội suy** — hai dấu
+cho phép bù lệch và xoay (đúng bài toán ở mục 13.2.4f), bốn dấu ở bốn góc cho phép bù cả méo hình thang.
+Với khay lớn hoặc yêu cầu chính xác cao, đây không phải tuỳ chọn.
+
+#### Ba chi tiết vận hành mà bản thiết kế hay quên
+
+**1. Không phải cả khay dùng chung một bộ tham số.** Trong máy tham khảo, các công cụ thị giác được khai
+báo kèm **khoảng hàng và khoảng cột mà chúng áp dụng**, cộng một công cụ mặc định cho phần còn lại. Lý do
+rất thực tế: chiếu sáng không đều giữa giữa khay và mép khay, hoặc khay có hai vùng chứa hai loại chi
+tiết. Nếu bạn thiết kế bản đồ khay với giả định "mọi ô như nhau", việc bổ sung sau này sẽ rất gượng.
+
+**2. Ô bỏ qua phải là dữ liệu, không phải code.** Khay dùng lâu sẽ có ô méo, ô mất chốt định vị. Người
+vận hành cần đánh dấu *"đừng dùng ô này"* ngay trên màn hình, và đánh dấu đó phải **theo khay cụ thể**
+(gắn với mã khay) chứ không phải theo mã sản phẩm. Ô bỏ qua **không được tính vào mẫu số** khi tính tỉ lệ
+đạt — nếu tính, tỉ lệ đạt của khay cũ sẽ thấp giả tạo.
+
+**3. Bản đồ khay phải sống sót qua sự cố.** Máy đang xử lý ô thứ 40 trong 60 thì mất điện hoặc có cảnh
+báo. Khi chạy lại, phần mềm cần biết ô nào đã xong. Vì vậy trạng thái từng ô nên được **ghi xuống nơi bền
+sau mỗi ô**, không giữ trong bộ nhớ tới cuối khay. Cách rẻ: một bản ghi cho mỗi ô ngay khi xử lý xong —
+đằng nào cũng cần cho truy xuất nguồn gốc.
+>
+> Và khi chạy lại, đừng tự động chạy tiếp: **hiển thị bản đồ khay cho người vận hành xác nhận** trước.
+> Trong lúc dừng, có thể người ta đã lấy vài chi tiết ra khỏi khay — đúng tinh thần "chạy tiếp = xác
+> minh" ở Chương 12 mục 12.2.4.
+
+> ⚠️ **Cuối cùng: bản đồ khay của bạn và bản đồ khay của hệ thống chủ phải khớp nhau, và đó là một hợp
+> đồng.** Nếu máy gửi kết quả theo từng ô lên hệ MES (Chương 14 mục 14.2.6b), thì quy ước đánh số, tập
+> mã lý do lỗi, và cách biểu diễn ô trống **phải được thống nhất bằng văn bản** trước khi viết code. Đây
+> là loại hợp đồng mà sửa sau khi máy đã chạy sẽ kéo theo sửa cả dữ liệu lịch sử — rất tốn, và thường
+> không sửa được.
+
+---
+
 ### 13.2.5 Simulator Driver
 
 Mỗi `IMotionAxisDriver` đều có đối tác `SimulatedAxisDriver` — driver giả lập không cần
@@ -17532,6 +17628,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
 | Xi-lanh khí nén (13.2.1b) | Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp | Trạng thái suy từ **cả hai cảm biến**; hành động phải `async` + có thẻ huỷ + hết giờ thì **ném lỗi** sau khi về an toàn; loại van là **tham số khai báo** |
+| Bản đồ khay (13.2.4i) | Máy làm việc với một mảng vị trí, không phải một sản phẩm | Trạng thái ô là **enum nhiều giá trị**, không phải bool; quy ước đánh số phải thống nhất với khách/MES; ghi trạng thái từng ô xuống nơi bền |
 | Mã định danh sản phẩm (13.2.4h) | Chuỗi quét được đi đâu, kiểm thế nào, sai thì sao | Bẫy tiêu điểm của đầu đọc giả lập bàn phím; 4 tầng kiểm tra; **ba nguyên nhân mã trùng, ba chính sách**; nhập tay phải có cờ đánh dấu |
 | Ảnh và bộ nhớ (13.2.4g) | Ảnh tốn bộ nhớ **không quản lý** mà bộ dọn rác không thấy | `using` hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh; tên tệp dùng `HH` không phải `hh` |
 | Căn chỉnh phôi (13.2.4f) | Đo dấu rồi bù XYθ cho trục | **Xoay trước, tịnh tiến sau** — đừng lấy trung bình hai lượng lệch; tâm xoay là tham số; kẹp biên độ và đo lại sau khi bù |

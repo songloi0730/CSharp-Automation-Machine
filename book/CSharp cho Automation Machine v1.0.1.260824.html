@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260823</title>
+<title>C# cho Automation Machine — v1.0.1.260824</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -494,7 +494,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260823</td>
+<td>v1.0.1.260824</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -17867,6 +17867,56 @@ khi xoay phải dời hệ về tâm xoay, xoay, rồi dời về. Tâm xoay đ�
 chuẩn riêng (xoay bàn vài góc đã biết, chụp một dấu, khớp vòng tròn) và <strong>lưu như một tham số máy</strong>,
 thuộc nhóm <em>cấu hình phần cứng</em> chứ không phải công thức sản phẩm (mục 13.1.4b).</p>
 </blockquote>
+<h4>Tìm tâm xoay, và hai tham số ai cũng quên khai báo</h4>
+<p>Callout ở trên nói <em>&quot;tâm xoay được xác định bằng một quy trình hiệu chuẩn riêng&quot;</em> rồi để đó. Mục này nói
+quy trình đó là gì, vì nó khá đơn giản và hầu như máy nào có bàn xoay cũng cần.</p>
+<p><strong>Ý tưởng:</strong> một điểm bất kỳ trên bàn, khi bàn xoay quanh tâm của nó, sẽ <strong>vẽ ra một cung tròn</strong>. Tâm của
+cung đó chính là tâm xoay. Vậy nên:</p>
+<ol>
+<li>Đặt một dấu (hoặc dùng luôn dấu căn chỉnh) trong tầm nhìn camera. Chụp, ghi lại toạ độ.</li>
+<li><strong>Xoay bàn một góc đã biết</strong> — ví dụ +5°. Chụp lại, ghi toạ độ mới.</li>
+<li>Lặp lại vài góc nữa, cả chiều dương lẫn chiều âm.</li>
+<li><strong>Khớp một vòng tròn</strong> qua các điểm thu được. Tâm vòng tròn là tâm xoay, tính theo hệ toạ độ máy.</li>
+</ol>
+<p>Ba điều khiến quy trình này chạy được hay không:</p>
+<ul>
+<li><strong>Góc phải đủ lớn để cung nhìn thấy được, và đủ nhỏ để dấu không ra khỏi khung hình.</strong> Vài độ thường là
+vừa; nếu dấu ra khỏi khung, hãy dùng một dấu nằm gần tâm hơn.</li>
+<li><strong>Đo ở nhiều góc rồi khớp, đừng chỉ lấy hai điểm.</strong> Ba điểm là tối thiểu về mặt toán học, nhưng mỗi lần
+đo đều có sai số; năm tới bảy điểm rồi khớp bình phương tối thiểu cho kết quả ổn định hơn nhiều.</li>
+<li><strong>Phải có ngưỡng chấp nhận.</strong> Tính sai số khớp trung bình, và <strong>từ chối lưu</strong> nếu vượt ngưỡng — đúng
+nguyên tắc đã nêu ở mục 13.2.4c cho hiệu chuẩn thị giác. Một tâm xoay sai sẽ làm mọi lần căn chỉnh về
+sau sai theo, mà không có triệu chứng nào rõ ràng ngoài <em>&quot;máy căn chỉnh không chuẩn lắm&quot;</em>.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Chi tiết kiến trúc đáng học từ một thư viện hiệu chuẩn thật:</strong> lớp hiệu chuẩn ở đó <strong>không tự điều
+khiển trục và không tự chụp ảnh</strong>. Nó phát ra hai sự kiện — <em>&quot;hãy đưa cơ cấu tới tư thế này&quot;</em> và <em>&quot;hãy
+chụp một ảnh&quot;</em> — rồi chờ kết quả trả về qua một sự kiện khác. Nhờ vậy cùng một quy trình hiệu chuẩn
+dùng được cho máy dùng trục thường lẫn máy dùng robot, và <strong>chạy giả lập được</strong> mà không cần phần cứng.
+Đây là mẫu <em>đảo ngược phụ thuộc</em> ở Chương 7 áp cho một quy trình, không phải cho một lớp thiết bị.</p>
+</blockquote>
+<h4>Hai tham số ai cũng quên: chiều trục và hoán trục</h4>
+<p>Cùng thư viện đó có ba thuộc tính trông rất tầm thường nhưng lại là thứ tiết kiệm nhiều giờ nhất khi lắp
+máy:</p>
+<pre><code class="language-csharp">public bool IsReverseCoordinateX { get; set; }   // trục X của ảnh ngược chiều trục X của máy
+public bool IsReverseCoordinateY { get; set; }   // tương tự cho Y
+public bool IsFlipCoordinateXY   { get; set; }   // X của ảnh tương ứng Y của máy (camera lắp xoay 90°)
+</code></pre>
+<p>Vì sao cần: <strong>hệ toạ độ ảnh và hệ toạ độ máy gần như không bao giờ trùng chiều nhau.</strong> Ảnh có gốc ở góc
+trên bên trái và trục Y hướng <strong>xuống</strong>; máy thường có Y hướng ra xa hoặc lên trên. Thêm nữa, camera có
+thể được lắp xoay 90° vì lý do cơ khí, và người lắp máy sẽ không hỏi bạn trước.</p>
+<p>Nếu ba thứ này không phải là tham số khai báo, chuyện xảy ra tiếp theo luôn giống nhau: ai đó thấy trục
+chạy ngược chiều, bèn thêm một dấu trừ vào công thức. Rồi trạm khác lại cần dấu trừ ở chỗ khác. Sau vài
+tháng, mã nguồn có <strong>những dấu trừ rải rác mà không ai dám bỏ</strong>, và không ai nhớ cái nào bù cho cái gì.</p>
+<blockquote>
+<p>⚠️ <strong>Xác định ba tham số này ngay trong quy trình hiệu chuẩn, đừng đoán.</strong> Cách làm mất năm phút: cho
+trục chạy một đoạn <strong>đã biết theo chiều dương của X</strong>, chụp trước và sau, xem dấu vết trong ảnh dịch
+theo hướng nào và theo trục nào của ảnh. Lặp lại với Y. Ba câu trả lời đó chính là ba tham số ở trên,
+và chúng thuộc nhóm <strong>cấu hình phần cứng</strong> — gắn với lần lắp đặt này, không đi theo công thức sản phẩm
+(mục 13.1.4b).</p>
+<p>Và ghi chúng vào tài liệu bàn giao. Khi camera được tháo ra vệ sinh rồi lắp lại lệch 90°, người sửa cần
+biết có một chỗ để khai báo lại — thay vì đi tìm dấu trừ trong mã nguồn.</p>
+</blockquote>
 <h4>Ba cái bẫy đơn vị, cả ba đều có thật trong cùng một thư viện</h4>
 <p>Đoạn code căn chỉnh mà mục này rút ra từ một thư viện thị giác thật — được viết bởi người có kinh nghiệm
 nhiều năm trong ngành — và nó vẫn dính đủ ba bẫy đơn vị. Điều đó nói lên rằng đây không phải chuyện cẩu
@@ -26562,6 +26612,100 @@ xuất 24/7 rồi cũng sẽ có lúc báo lỗi lúc 2 giờ sáng, khi không 
 cạnh để đặt breakpoint như ở Chương 2. Ghi đủ log, đủ dấu vết để chẩn
 đoán từ xa — không cần đứng trước máy — là chủ đề của Chương 19.</p>
 <hr>
+<h3>Bộ cài đặt cho lần cài đầu tiên — thứ khác hẳn với cập nhật</h3>
+<p>Phần trên nói về <strong>cập nhật</strong> một máy đã chạy: đổi thư mục, giữ bản cũ để lùi lại. Nhưng lần <strong>cài đầu
+tiên trên một máy tính mới</strong> là một bài toán khác, và chép thư mục không giải quyết được nó: cần lối tắt
+ngoài màn hình, cần mục trong danh sách gỡ cài đặt, cần đăng ký dịch vụ chạy nền, cần kiểm tra máy đã có
+bộ chạy .NET chưa.</p>
+<p>Một khung máy tham khảo đóng gói phần này khá gọn: <strong>một bộ dựng dùng chung</strong> (script + kịch bản của công
+cụ tạo bộ cài) mà <strong>không ai được sửa</strong>, cộng <strong>một tệp cấu hình cho từng dự án</strong> — copy tệp cấu hình,
+điền thông tin máy của bạn, chạy một tệp bat. Cùng tinh thần với project mẫu ở Phụ lục B mục B.6: phần
+chung viết một lần, phần riêng là dữ liệu.</p>
+<p>Những gì tệp cấu hình đó hỏi chính là <strong>danh sách những quyết định bạn phải trả lời</strong> khi đóng gói phần
+mềm máy:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mục</th>
+<th>Vì sao nó ở đó</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tên phần mềm, nhà cung cấp, biểu tượng</td>
+<td>Hiện ở tiêu đề bộ cài, menu Start, danh sách gỡ cài đặt</td>
+</tr>
+<tr>
+<td><strong>Mã định danh ứng dụng (GUID)</strong></td>
+<td>Xem cảnh báo bên dưới — đây là mục dễ gây tai nạn nhất</td>
+</tr>
+<tr>
+<td>Phiên bản, và <strong>lấy phiên bản từ đâu</strong></td>
+<td>Đọc tự động từ tệp cấu hình build, hay điền tay</td>
+</tr>
+<tr>
+<td>Kiến trúc đích (<code>win-x64</code>…)</td>
+<td>Máy tính công nghiệp cũ vẫn còn bản 32 bit</td>
+</tr>
+<tr>
+<td><strong>Tự chứa bộ chạy .NET hay không</strong></td>
+<td>Xem phần dưới — quyết định quan trọng hơn vẻ ngoài</td>
+</tr>
+<tr>
+<td>Phiên bản bộ chạy .NET cần có</td>
+<td>Để bộ cài kiểm tra và báo nếu máy chưa có</td>
+</tr>
+<tr>
+<td><strong>Danh sách dịch vụ nền cần đăng ký</strong></td>
+<td>Tên dịch vụ, tên hiển thị, mô tả, thư mục con</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Mã định danh ứng dụng phải KHÁC NHAU cho từng phần mềm máy — và đây là chỗ rất dễ sai.</strong> Cách làm
+tự nhiên nhất khi làm máy thứ hai là chép thư mục bộ cài của máy thứ nhất rồi đổi tên. Nếu bạn quên đổi
+mã định danh, Windows coi <strong>hai phần mềm là một</strong>: cài máy B lên máy tính đã có máy A sẽ ghi đè mục gỡ
+cài đặt, và gỡ một cái có thể xoá mất cái kia. Trên máy tính văn phòng của kỹ sư — nơi hay cài vài phần
+mềm máy cùng lúc để so sánh — hậu quả xuất hiện rất nhanh.</p>
+<p>Chính tệp cấu hình của dự án đó ghi hẳn dòng nhắc <em>&quot;mỗi dự án phải khác nhau&quot;</em> kèm câu lệnh sinh mã
+mới. Đó là <strong>cách viết tài liệu đúng chỗ</strong>: lời cảnh báo nằm ngay tại nơi người ta sẽ sai, chứ không
+nằm trong một tài liệu riêng mà không ai mở.</p>
+</blockquote>
+<h4>Tự chứa bộ chạy .NET hay không — với máy công nghiệp, câu trả lời thường ngược với mặc định</h4>
+<p>Tệp cấu hình đó để mặc định là <strong>không tự chứa</strong> (nhỏ gọn, dùng bộ chạy .NET đã cài trên máy), và ghi chú
+rằng đó là lựa chọn &quot;khuyến nghị&quot;. Với phần mềm văn phòng thì đúng. Với <strong>phần mềm máy</strong> thì nên cân nhắc
+ngược lại, vì ba lý do rất cụ thể:</p>
+<ul>
+<li><strong>Mạng cách ly.</strong> Nhiều máy tính trong xưởng không ra được Internet (Chương 2, mục môi trường mạng cách
+ly). Bộ cài phát hiện thiếu bộ chạy .NET rồi <em>&quot;mời bạn lên trang chủ tải về&quot;</em> là một lời khuyên vô dụng
+ở đúng nơi cần nó nhất — người kỹ thuật đang đứng cạnh máy lúc nửa đêm.</li>
+<li><strong>Bạn muốn kiểm soát chính xác thứ đang chạy.</strong> Bộ chạy dùng chung có thể được cập nhật bởi hệ điều
+hành, bởi một phần mềm khác, hoặc bởi bộ phận công nghệ thông tin của nhà máy. Máy của bạn đã chạy ổn
+ba năm, rồi một bản vá làm đổi hành vi ở đâu đó. Bản tự chứa <strong>đóng băng</strong> cả bộ chạy cùng phần mềm.</li>
+<li><strong>Dung lượng không còn là vấn đề.</strong> Vài chục megabyte trên một ổ đĩa công nghiệp là không đáng kể, và
+máy tính đó cũng chỉ chạy đúng một phần mềm.</li>
+</ul>
+<p>Đổi lại: bản tự chứa <strong>không tự nhận bản vá bảo mật của bộ chạy</strong> — bạn phải phát hành lại phần mềm để
+cập nhật. Với máy nối mạng nhà máy, hãy để việc đó vào lịch bảo trì định kỳ thay vì bỏ qua.</p>
+<h4>Ba việc bộ cài phải làm mà chép thư mục không làm được</h4>
+<p><strong>1. Đăng ký dịch vụ nền.</strong> Nếu phần mềm có thành phần chạy nền — cổng nối hệ MES, dịch vụ giao thức —
+bộ cài phải đăng ký nó với Windows kèm tên hiển thị và mô tả, và <strong>gỡ đăng ký khi gỡ cài đặt</strong>. Tệp cấu
+hình trong ví dụ có sẵn phần khai báo cho nhiều dịch vụ, mỗi dịch vụ bảy dòng. Xem bảng so sánh dịch vụ
+nền / bộ lập lịch / chạy tay ở phần trên để chọn đúng dạng.</p>
+<p><strong>2. Đừng xoá dữ liệu khi gỡ cài đặt.</strong> Đây là quy tắc bất di bất dịch cho phần mềm máy: gỡ cài đặt được
+phép xoá <strong>chương trình</strong>, nhưng <strong>công thức, bảng điểm, nhật ký, dữ liệu sản xuất thì không</strong>. Người
+kỹ thuật gỡ cài để cài lại bản mới, không phải để xoá lịch sử sản xuất ba năm. Vì vậy dữ liệu nên nằm ở
+<strong>ổ/thư mục riêng ngoài thư mục cài đặt</strong> — đúng như lý do đã nêu ở Chương 19 về đường dẫn cố định theo
+ổ đĩa.</p>
+<p><strong>3. Nói rõ nó vừa làm gì.</strong> Sau khi cài xong, ghi lại phiên bản, thời điểm, và người cài vào một tệp
+trong thư mục dữ liệu. Ba tháng sau, khi cần biết <em>&quot;máy này đang chạy bản nào và ai cài&quot;</em>, đó là chỗ duy
+nhất trả lời được — chứ không phải trí nhớ của ai đó.</p>
+<blockquote>
+<p>💡 <strong>Và đừng quên bộ cài cũng cần được kiểm thử — trên một máy SẠCH.</strong> Bộ cài chạy tốt trên máy phát
+triển là chuyện đương nhiên: máy đó đã có sẵn mọi thứ. Cách kiểm tra thật là cài lên một máy ảo Windows
+mới tinh, <strong>không có .NET, không có thư viện của hãng card, không có gì cả</strong>, rồi xem phần mềm chạy tới
+đâu. Đây là cách rẻ nhất để phát hiện những phụ thuộc mà bạn không biết mình đang có — và nó luôn tìm
+ra ít nhất một cái.</p>
+</blockquote>
+<hr>
 <h2 id="174-đi-chiu-thc-t-ngành-cái-gì-tht-s-đưc-dùng-và-nên-bt-đu-t-đâu">17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu</h2>
 <p>Ba mục trên trình bày cách làm đúng. Mục này nói thẳng về khoảng cách giữa cách làm đúng và thực tế,
 vì biết trước sẽ giúp bạn chọn trận đánh — thay vì đề xuất một quy trình đầy đủ trong tuần đầu đi làm
@@ -26715,24 +26859,43 @@ bản. Ba bậc đó không đòi hỏi ai đổi thói quen ngoài bạn.</p>
 </blockquote>
 <h2 id="tng-kt-chương-17">Tổng kết chương</h2>
 <ul>
-<li>Git giải quyết đúng nỗi đau của quản lý phiên bản kiểu folder-copy:
-biết ai sửa gì, khi nào, và hợp nhất thay đổi thay vì ghi đè.</li>
-<li>Đội automation nhỏ không cần Gitflow đầy đủ — nhánh gọn (<code>main</code> +
-<code>feature/*</code> + <code>hotfix/*</code> xuất phát từ tag) là đủ.</li>
-<li>Tag đánh dấu phiên bản <em>đã chạy thật</em> trên một dây chuyền cụ thể
+<li><p>Git giải quyết đúng nỗi đau của quản lý phiên bản kiểu folder-copy:
+biết ai sửa gì, khi nào, và hợp nhất thay đổi thay vì ghi đè.</p>
+</li>
+<li><p>Đội automation nhỏ không cần Gitflow đầy đủ — nhánh gọn (<code>main</code> +
+<code>feature/*</code> + <code>hotfix/*</code> xuất phát từ tag) là đủ.</p>
+</li>
+<li><p>Tag đánh dấu phiên bản <em>đã chạy thật</em> trên một dây chuyền cụ thể
 (<code>machine-line-A-v2.1</code>); branch dùng khi còn đang sửa
-(<code>machine-B-hotfix</code>).</li>
-<li>File nhị phân vendor (TwinCAT, CODESYS) cần <code>.gitattributes</code> để Git
-không cố diff/merge sai cách.</li>
-<li>Nhà máy air-gapped vẫn dùng Git bình thường qua bare repository dựng
-trên server LAN nội bộ.</li>
-<li>CI/CD trong automation nghĩa là build + test + đóng gói tự động —
+(<code>machine-B-hotfix</code>).</p>
+</li>
+<li><p>File nhị phân vendor (TwinCAT, CODESYS) cần <code>.gitattributes</code> để Git
+không cố diff/merge sai cách.</p>
+</li>
+<li><p>Nhà máy air-gapped vẫn dùng Git bình thường qua bare repository dựng
+trên server LAN nội bộ.</p>
+</li>
+<li><p><strong>Lần cài đầu tiên khác hẳn cập nhật</strong> (mục 17.3): cần bộ cài thật — lối
+tắt, mục gỡ cài đặt, đăng ký dịch vụ nền, kiểm tra bộ chạy .NET. <strong>Mã định
+danh ứng dụng phải khác nhau cho từng máy</strong>, nếu không Windows coi hai phần
+mềm là một.</p>
+</li>
+<li><p>Với máy công nghiệp, <strong>tự chứa bộ chạy .NET thường là lựa chọn đúng</strong> dù
+trái với mặc định: mạng cách ly, và bạn muốn đóng băng chính xác thứ đang chạy.</p>
+</li>
+<li><p>Gỡ cài đặt xoá <strong>chương trình</strong>, không bao giờ xoá công thức/bảng điểm/nhật
+ký/dữ liệu sản xuất. Và bộ cài phải được thử trên một <strong>máy sạch</strong>.</p>
+</li>
+<li><p>CI/CD trong automation nghĩa là build + test + đóng gói tự động —
 <strong>không</strong> phải tự động deploy lên production; deploy vẫn là quyết
-định có kiểm soát của con người.</li>
-<li>Triển khai lên IPC theo kiểu Blue/Green thu gọn (đổi thư mục, giữ bản
-cũ để rollback tức thì) thay cho ghi đè trực tiếp.</li>
-<li>Chọn Windows Service/Task Scheduler/chạy tay theo đúng vai trò của
-từng thành phần (nền vs có giao diện), không theo thói quen.</li>
+định có kiểm soát của con người.</p>
+</li>
+<li><p>Triển khai lên IPC theo kiểu Blue/Green thu gọn (đổi thư mục, giữ bản
+cũ để rollback tức thì) thay cho ghi đè trực tiếp.</p>
+</li>
+<li><p>Chọn Windows Service/Task Scheduler/chạy tay theo đúng vai trò của
+từng thành phần (nền vs có giao diện), không theo thói quen.</p>
+</li>
 </ul>
 <h2 id="ph-lc-17a-lnh-git-thưng-dùng-tra-cu-nhanh">Phụ lục 17A — Lệnh Git thường dùng (tra cứu nhanh)</h2>
 <p>Bảng dưới không liệt kê lệnh Git theo nhóm chức năng (add/commit/push...

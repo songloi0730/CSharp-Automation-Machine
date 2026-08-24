@@ -15615,6 +15615,69 @@ mọi báo cáo về sau cần; bảng thống kê, biểu đồ Pareto, tỉ l�
 chỉ khi dữ liệu đã được ghi từ đầu. Dữ liệu của tháng trước không thể tạo ra lại được.</p>
 </blockquote>
 <hr>
+<h3>12.5.4  Hai chỉ số mà OEE không nói cho bạn: khoảng cách giữa hai lần dừng</h3>
+<p>Mục 12.5 xây dựng sổ lý do để tính OEE. Nhưng OEE có một điểm mù, và nó lớn hơn vẻ ngoài: <strong>OEE chỉ nói
+tổng thời gian dừng, không nói dừng bao nhiêu lần</strong>.</p>
+<p>Hai cỗ máy cùng dừng 60 phút trong ca:</p>
+<ul>
+<li>Máy A dừng <strong>một lần 60 phút</strong> — hỏng một bộ phận, sửa xong chạy tiếp.</li>
+<li>Máy B dừng <strong>ba mươi lần, mỗi lần 2 phút</strong> — kẹt phôi vặt, phải có người tới gạt.</li>
+</ul>
+<p>OEE của hai máy <strong>bằng nhau</strong>. Nhưng máy B tệ hơn nhiều: nó chiếm một người vận hành gần như toàn thời
+gian, nó không cho ai rời khỏi máy, và nó là loại vấn đề mà không ai buồn ghi vào báo cáo vì &quot;mỗi lần có
+2 phút thôi&quot;. Trên bảng OEE cuối tháng, máy B trông hoàn toàn bình thường.</p>
+<p>Vì vậy sách hướng dẫn của máy sản xuất thật dành <strong>hẳn một màn hình</strong> cho hai chỉ số đo đúng điểm mù đó:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chỉ số</th>
+<th>Nghĩa</th>
+<th>Trả lời câu hỏi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Thời gian trung bình giữa hai lần cần người can thiệp</strong></td>
+<td>Tổng thời gian chạy ÷ số lần <strong>người phải chạm vào máy</strong> (gạt phôi kẹt, nạp lại vật tư, xoá cảnh báo)</td>
+<td><em>Một người trông được mấy máy?</em></td>
+</tr>
+<tr>
+<td><strong>Thời gian trung bình giữa hai lần hỏng</strong></td>
+<td>Tổng thời gian chạy ÷ số lần <strong>phải gọi bảo trì</strong></td>
+<td><em>Máy có đáng tin không?</em></td>
+</tr>
+</tbody></table></div>
+<p>Khác biệt giữa hai chỉ số nằm ở chữ <strong>cần thợ hay không</strong>: kẹt phôi mà người vận hành gạt được trong hai
+phút là <em>can thiệp</em>; đứt dây gia nhiệt phải gọi thợ điện là <em>hỏng</em>. Trộn hai loại lại thì bạn mất khả
+năng phân biệt <em>&quot;máy hay vặt vãnh&quot;</em> với <em>&quot;máy hay hỏng&quot;</em> — hai vấn đề của hai bộ phận khác nhau.</p>
+<blockquote>
+<p>💡 <strong>Tin tốt: nếu bạn đã làm sổ lý do ở mục 12.5.2 thì hai chỉ số này gần như miễn phí.</strong> Bạn đã có
+danh sách các khoảng dừng kèm nhóm lý do và thời điểm. Việc còn lại chỉ là <strong>đếm số lần</strong> thay vì cộng
+thời lượng, và tách các nhóm lý do thành hai rổ:</p>
+<pre><code class="language-csharp">// Cả hai chỉ số đều là: thời gian chạy ÷ số lần, chỉ khác cách lọc
+double ThoiGianTrungBinhGiua(IEnumerable&lt;KhoangDung&gt; cac, Func&lt;KhoangDung, bool&gt; loc)
+{
+    var n = cac.Count(loc);
+    return n == 0 ? double.PositiveInfinity : TongThoiGianChayPhut / n;
+}
+</code></pre>
+<p>Điều quan trọng không phải công thức mà là <strong>phân loại lý do dừng thành &quot;cần thợ&quot; và &quot;không cần thợ&quot;</strong>
+— và việc đó phải làm ngay khi thiết kế danh mục lý do (mục 12.5.2), vì thêm vào sau nghĩa là dữ liệu
+cũ không phân loại được.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Con số nào là &quot;tốt&quot; thì tuỳ nhà máy, nhưng xu hướng thì luôn đọc được.</strong> Đừng mất thời gian tranh
+luận ngưỡng; hãy vẽ hai chỉ số này <strong>theo tuần</strong> và nhìn đường đi. Khoảng cách giữa hai lần can thiệp
+<strong>ngắn dần</strong> là dấu hiệu sớm nhất và rẻ nhất cho biết một cơ cấu đang mòn — sớm hơn hẳn so với chờ tới
+lúc nó hỏng hẳn. Đây cũng là chỗ nối với hai gợi ý ở Chương 13 mục 13.2.1b: đếm số lần tác động và ghi
+thời gian hành trình của từng cơ cấu.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Và một cái bẫy khi đếm: một sự cố sinh ra nhiều cảnh báo.</strong> Nếu bạn đếm <em>số cảnh báo</em> thay vì
+<em>số lần dừng</em>, một lần kẹt phôi kéo theo năm cảnh báo liên đới sẽ bị tính thành năm lần. Đếm phải dựa
+trên <strong>khoảng dừng</strong> trong sổ lý do — mỗi khoảng một lần — chứ không dựa trên bảng cảnh báo. Đây là
+cùng một vấn đề với việc chống lũ cảnh báo ở Chương 15 mục 15.1.6, nhìn từ phía thống kê.</p>
+</blockquote>
+<hr>
 <h2 id="tng-kt-chương-12">Tổng kết chương</h2>
 <p>Nhìn từ góc độ bảo trì dài hạn, sự khác biệt giữa if/else và State Pattern trở nên rõ ràng hơn khi máy đã chạy sản xuất được 2–3 năm: kỹ sư mới được giao xử lý lỗi trong đêm cần hiểu ngay &quot;máy đang ở trạng thái nào, lệnh nào còn hợp lệ&quot; — nếu logic nằm trong một class 300 dòng với if/else chồng chéo, câu hỏi đó tốn vài giờ để trả lời. Với State Pattern và Transition Table, câu trả lời nằm ở hai chỗ duy nhất: class State tương ứng (logic riêng) và bảng Transitions (toàn bộ quan hệ state–command). PackML bổ sung thêm lớp đảm bảo: khi kỹ sư mới viết một State mới, chuẩn nói rõ Abort phải nằm ở đó — không phụ thuộc vào kinh nghiệm hay trí nhớ cá nhân.</p>
 <p>State machine if/else là lối đi tự nhiên nhất — và cũng là nguồn gốc của nhiều bug khó tìm trong phần mềm máy công nghiệp. GoF State Pattern đưa trách nhiệm xử lý lệnh về đúng nơi: mỗi trạng thái tự quyết định phản ứng với từng lệnh, và <code>MachineContext</code> không cần biết logic của bất kỳ trạng thái cụ thể nào. PackML bổ sung thêm tầng chuẩn hoá — tên trạng thái, bất biến an toàn (Abort từ mọi nơi), và phân biệt rõ Hold (chủ động) vs Suspend (phản ứng). Kết hợp cả hai: code có cấu trúc, và máy nói cùng ngôn ngữ với MES/SCADA.</p>
@@ -15665,6 +15728,10 @@ chỉ khi dữ liệu đã được ghi từ đầu. Dữ liệu của tháng tr
 <tr>
 <td>Máy chưa có trạm trước/sau nên không chạy thử được</td>
 <td>Chế độ <strong>chạy độc lập</strong> làm sẵn từ đầu — rẻ hơn việc đội lắp máy tự đấu tắt tín hiệu</td>
+</tr>
+<tr>
+<td>OEE hai máy bằng nhau nhưng một máy chiếm hẳn một người</td>
+<td>Đo thêm <strong>khoảng cách giữa hai lần dừng</strong> (mục 12.5.4): tách <em>cần thợ</em> và <em>không cần thợ</em>, và phân loại đó phải có ngay từ khi thiết kế danh mục lý do</td>
 </tr>
 <tr>
 <td>Đếm được sản lượng nhưng không giải thích được vì sao ít</td>
@@ -27314,6 +27381,73 @@ mới tinh, <strong>không có .NET, không có thư viện của hãng card, kh
 ra ít nhất một cái.</p>
 </blockquote>
 <hr>
+<h3>Khôi phục máy tính công nghiệp — và câu chuyện phần mềm diệt vi-rút</h3>
+<p>Có một chi tiết đáng chú ý trong sách hướng dẫn của máy sản xuất thật: cuối tài liệu, sau phần mô tả
+giao diện và danh sách mã lỗi của driver servo, nhà cung cấp dành hẳn hai phụ lục cho <strong>quy trình sao
+lưu và phục hồi toàn bộ ổ đĩa</strong> và <strong>quy trình cập nhật phần mềm diệt vi-rút</strong>.</p>
+<p>Hai chủ đề đó nằm trong tài liệu <em>của máy</em>, không phải trong tài liệu công nghệ thông tin của nhà máy —
+và điều đó nói lên rằng nhà cung cấp coi chúng là <strong>một phần của việc bảo trì máy</strong>. Với người viết phần
+mềm máy, cả hai đều có hệ quả trực tiếp.</p>
+<h4>Sao lưu ở mức ảnh đĩa, không chỉ ở mức tệp</h4>
+<p>Các mục trên bàn về việc triển khai <em>phần mềm của bạn</em>. Nhưng khi ổ cứng của máy tính công nghiệp hỏng
+sau ba năm — chuyện xảy ra thường xuyên — thứ cần khôi phục <strong>không chỉ là phần mềm</strong>:</p>
+<ul>
+<li>Hệ điều hành với đúng bản vá và đúng cấu hình vùng miền;</li>
+<li><strong>Trình điều khiển của card chuyển động, card IO, khung ghép camera</strong> — thường là bản cũ, đôi khi
+không còn tải được từ trang chủ;</li>
+<li>Thư viện chạy của hãng thị giác, đôi khi kèm khoá bản quyền;</li>
+<li>Cấu hình mạng, tên máy, quy tắc tường lửa;</li>
+<li>Và những thứ ai đó đã cài mà không ghi lại.</li>
+</ul>
+<p>Dựng lại tất cả từ đầu trên một ổ đĩa mới có thể mất <strong>một tới hai ngày</strong> — với một cỗ máy đang dừng sản
+xuất. Vì vậy chiến lược khôi phục đúng ở mức máy là <strong>chụp ảnh toàn bộ ổ đĩa</strong> ngay sau khi máy chạy ổn
+định lúc bàn giao, rồi cất bản ảnh đó cùng hồ sơ máy.</p>
+<blockquote>
+<p>💡 <strong>Ba thời điểm nên chụp ảnh đĩa, và một quy tắc đặt tên.</strong> Chụp <strong>ngay sau nghiệm thu</strong> (bản gốc,
+quý nhất), <strong>sau mỗi lần nâng cấp lớn</strong> phần mềm hoặc trình điều khiển, và <strong>trước khi làm bất cứ việc
+gì đáng sợ</strong> trên máy tính đó. Đặt tên bản ảnh theo <em>mã máy + ngày + phiên bản phần mềm</em>, và ghi kèm
+một tệp văn bản liệt kê <strong>cái gì có trong ảnh này</strong> — vì hai năm sau, không ai nhớ bản ảnh nào chứa
+bản vá nào.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Nhưng ảnh đĩa KHÔNG thay thế được việc sao lưu dữ liệu.</strong> Ảnh đĩa là <strong>ảnh chụp một thời điểm</strong>;
+công thức, bảng điểm, dữ liệu sản xuất thì đổi mỗi ngày. Phục hồi bằng ảnh đĩa cũ sẽ đưa máy về đúng
+trạng thái phần mềm <strong>nhưng lùi dữ liệu về ngày chụp</strong>. Hai cơ chế cho hai mục đích:</p>
+<ul>
+<li><strong>Ảnh đĩa</strong> — khôi phục <em>cỗ máy tính</em>, tần suất theo mốc sự kiện.</li>
+<li><strong>Sao lưu dữ liệu</strong> — khôi phục <em>công việc</em>, tần suất theo ngày, ra một nơi khác ổ đĩa.</li>
+</ul>
+<p>Và đây chính là lý do thứ ba để <strong>dữ liệu nằm ở ổ/thư mục riêng ngoài thư mục cài đặt</strong> (hai lý do kia
+ở mục 19.1 và ở phần gỡ cài đặt phía trên): nó cho phép phục hồi hệ thống mà <strong>không đè lên dữ liệu</strong>.</p>
+</blockquote>
+<h4>Phần mềm diệt vi-rút trên máy tính chạy máy</h4>
+<p>Máy tính công nghiệp trong nhà máy hiện đại gần như luôn bị yêu cầu cài phần mềm diệt vi-rút — đó là
+chính sách an ninh của nhà máy, và thường không thương lượng được. Là người viết phần mềm máy, bạn cần
+biết ba hệ quả:</p>
+<p><strong>1. Quét theo lịch có thể làm hỏng nhịp máy.</strong> Một lần quét toàn ổ chiếm ổ đĩa và CPU hàng chục phút.
+Nếu phần mềm của bạn ghi nhật ký và dữ liệu sản xuất liên tục, việc ghi sẽ chậm lại — và nếu bạn ghi
+<strong>đồng bộ trong vòng điều khiển</strong> thay vì qua hàng đợi (Chương 19), nhịp máy chậm theo. Đây là một lý do
+nữa để mọi việc ghi đĩa đều đi qua hàng đợi.</p>
+<p><strong>2. Quét theo thời gian thực làm chậm việc mở tệp.</strong> Mỗi lần phần mềm ghi một tấm ảnh hay mở một tệp
+công thức, phần mềm diệt vi-rút kiểm tra tệp đó. Với máy lưu hàng nghìn ảnh mỗi ca, chi phí này thấy
+được. Cách xử lý chuẩn: <strong>xin bộ phận công nghệ thông tin loại trừ</strong> thư mục dữ liệu của máy và tệp
+thực thi của phần mềm khỏi phạm vi quét.</p>
+<p><strong>3. Phần mềm của bạn có thể bị cách ly.</strong> Một tệp thực thi không có chữ ký số, ghi vào cổng phần cứng,
+cài móc bàn phím (mục 15.2.4) — đó là mô tả của khá nhiều phần mềm máy, và cũng là mô tả của khá nhiều
+phần mềm độc hại. Việc bản cập nhật mới bị chặn hoặc bị xoá <strong>sau khi kỹ thuật viên đã về</strong> là chuyện có
+thật.</p>
+<blockquote>
+<p>📌 <strong>Ba việc nên làm, xếp theo thứ tự dễ trước.</strong> (1) <strong>Ký số tệp thực thi</strong> — tốn ít, giải quyết phần
+lớn trường hợp bị nghi ngờ, và cũng là thứ bộ phận công nghệ thông tin của khách hàng sẽ hỏi.
+(2) <strong>Đưa danh sách thư mục cần loại trừ vào tài liệu bàn giao</strong>, đừng để kỹ thuật viên tự xoay khi
+gặp vấn đề. (3) <strong>Kiểm tra ngày cập nhật mẫu vi-rút</strong> trong màn hình chẩn đoán của máy — nghe lạ,
+nhưng một máy tính không ra Internet nhiều tháng sẽ có mẫu vi-rút rất cũ, và đó là thông tin người
+phụ trách cần biết.</p>
+<p>Và điều <strong>không</strong> nên làm: tự ý tắt phần mềm diệt vi-rút để máy chạy nhanh hơn. Đó là quyết định của
+nhà máy, không phải của người viết phần mềm — nếu nó thật sự gây vấn đề, hãy đo và trình bày bằng số
+liệu, rồi để họ quyết.</p>
+</blockquote>
+<hr>
 <h2 id="174-đi-chiu-thc-t-ngành-cái-gì-tht-s-đưc-dùng-và-nên-bt-đu-t-đâu">17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu</h2>
 <p>Ba mục trên trình bày cách làm đúng. Mục này nói thẳng về khoảng cách giữa cách làm đúng và thực tế,
 vì biết trước sẽ giúp bạn chọn trận đánh — thay vì đề xuất một quy trình đầy đủ trong tuần đầu đi làm
@@ -27482,6 +27616,15 @@ không cố diff/merge sai cách.</p>
 </li>
 <li><p>Nhà máy air-gapped vẫn dùng Git bình thường qua bare repository dựng
 trên server LAN nội bộ.</p>
+</li>
+<li><p><strong>Khôi phục ở mức máy cần ẢNH ĐĨA, không chỉ sao lưu tệp</strong> (mục 17.3): hệ điều
+hành + trình điều khiển card + thư viện hãng + khoá bản quyền, dựng lại từ đầu
+mất 1–2 ngày máy dừng. Nhưng ảnh đĩa <strong>không thay</strong> sao lưu dữ liệu — hai cơ chế,
+hai mục đích.</p>
+</li>
+<li><p><strong>Phần mềm diệt vi-rút trên máy tính chạy máy</strong> là chính sách của nhà máy, không
+thương lượng được: ký số tệp thực thi, đưa danh sách thư mục loại trừ vào tài
+liệu bàn giao, và đừng tự ý tắt nó.</p>
 </li>
 <li><p><strong>Lần cài đầu tiên khác hẳn cập nhật</strong> (mục 17.3): cần bộ cài thật — lối
 tắt, mục gỡ cài đặt, đăng ký dịch vụ nền, kiểm tra bộ chạy .NET. <strong>Mã định
@@ -30994,6 +31137,51 @@ bộ đếm. Bước &quot;căn chỉnh lại&quot; là bước hay bị bỏ nh
 hai ngưỡng — chứ không phải một biến đếm rời rạc. Khi thay, <strong>kết thúc bản ghi cũ và mở bản ghi mới</strong>
 thay vì đặt bộ đếm về 0: nhờ vậy bạn giữ được lịch sử <em>&quot;lưỡi trước dùng được bao lâu&quot;</em>, và đó chính là
 dữ liệu để trả lời câu hỏi tuổi thọ thực tế có đúng như nhà cung cấp nói không.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Đối chiếu với danh mục màn hình của một máy sản xuất thật.</strong> Sách hướng dẫn sử dụng của một máy
+đóng gói bán dẫn chia màn hình thành <strong>năm nhóm cấp cao nhất</strong> — chạy tự động · thiết lập chung · thiết
+lập theo mã hàng · bảo trì · lịch sử — cộng một nhóm quản trị. Bảy nhóm của phụ lục này phủ được toàn
+bộ, nhưng có <strong>năm màn hình trong danh mục thật mà người mới hay quên</strong>, và cả năm đều đáng có:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Màn hình</th>
+<th>Thuộc nhóm</th>
+<th>Vì sao đáng có</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tuổi thọ vật tư và độ mòn cơ cấu</strong></td>
+<td>6</td>
+<td>Đã bàn ở callout trên — máy thật dành hẳn màn hình riêng</td>
+</tr>
+<tr>
+<td><strong>Truy vết theo lô</strong></td>
+<td>5</td>
+<td>Tra ngược từ mã lô ra mọi chi tiết và kết quả của lô đó, ngay trên máy</td>
+</tr>
+<tr>
+<td><strong>Khoảng cách giữa hai lần dừng</strong></td>
+<td>5</td>
+<td>Chỉ số bổ sung cho OEE — Chương 12 mục 12.5.4</td>
+</tr>
+<tr>
+<td><strong>Nhật ký truyền thông</strong></td>
+<td>6</td>
+<td>Bản ghi thô các bản tin trao đổi với hệ chủ/PLC; thứ đầu tiên cần khi hai bên đổ lỗi cho nhau</td>
+</tr>
+<tr>
+<td><strong>Cấu hình đèn tháp và còi</strong></td>
+<td>6</td>
+<td>Trạng thái nào bật đèn nào là <strong>cấu hình</strong>, không phải hằng số trong code</td>
+</tr>
+</tbody></table></div>
+<p>Hai màn hình cuối đáng nói thêm. <strong>Nhật ký truyền thông</strong> rẻ đến bất ngờ (ghi lại chuỗi gửi/nhận kèm
+thời điểm, hiện lên một bảng cuộn) và nó chấm dứt loại tranh cãi <em>&quot;máy không gửi&quot;</em> / <em>&quot;hệ thống không
+nhận&quot;</em> trong năm phút. <strong>Cấu hình đèn tháp</strong> thì mỗi nhà máy một quy ước — có nơi vàng là chờ vật liệu,
+có nơi vàng là sắp hết vật tư; để nó là bảng ánh xạ sửa được trên màn hình thì không phải build lại
+phần mềm cho từng khách hàng.</p>
 </blockquote>
 <h3>B.2.7 Nhóm 7 — Tích hợp bên ngoài</h3>
 <p><strong>Bảng B.8 — Màn hình nhóm tích hợp</strong></p>

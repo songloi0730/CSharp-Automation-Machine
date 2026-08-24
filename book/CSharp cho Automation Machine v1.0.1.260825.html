@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260824</title>
+<title>C# cho Automation Machine — v1.0.1.260825</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -401,10 +401,10 @@
   <li><a href="#chương-16-design-patterns-chuyên-bit-cho-automation">Chương 16: Design Patterns chuyên biệt cho Automation</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#161-observer-pub-sub-pattern-cho-event-telemetry">16.1  Observer / Pub-Sub Pattern cho Event & Telemetry</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#162-command-pattern-cho-command-queue-gi-lnh-xung-plc">16.2  Command Pattern cho Command Queue gửi lệnh xuống PLC</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#162b-shared-tag-table-bt-tay-gia-các-trm-bng-bng-c-dùng-chung">16.2b  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#162c-cây-tác-v-t-chc-trình-t-bng-composite">16.2c  Cây tác vụ — tổ chức trình tự bằng Composite</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#162d-lnh-ch-điu-kin-nguyên-thu-nh-nht-và-b-vit-li-nhiu-ln-nht">16.2d  Lệnh "chờ điều kiện" — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#163-bn-đ-pattern-toàn-h-thng">16.3  Bản đồ Pattern toàn hệ thống</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#163-shared-tag-table-bt-tay-gia-các-trm-bng-bng-c-dùng-chung">16.3  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#164-cây-tác-v-t-chc-trình-t-bng-composite">16.4  Cây tác vụ — tổ chức trình tự bằng Composite</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#165-lnh-ch-điu-kin-nguyên-thu-nh-nht-và-b-vit-li-nhiu-ln-nht">16.5  Lệnh "chờ điều kiện" — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#166-bn-đ-pattern-toàn-h-thng">16.6  Bản đồ Pattern toàn hệ thống</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-16">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-16">Lỗi thường gặp</a></li>
   <li><a href="#chương-17-qun-lý-mã-ngun-devops-cho-automation">Chương 17: Quản lý mã nguồn & DevOps cho Automation</a></li>
@@ -495,7 +495,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260824</td>
+<td>v1.0.1.260825</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -919,7 +919,7 @@ trình tự thì PLC giữ trạng thái, còn C# <strong>phản ánh lại</str
 trạng thái và cùng suy luận là nguồn của loại lỗi khó nhất: hai bên bất đồng về việc máy đang làm gì.</p>
 <p><strong>3. Bắt tay như thế nào?</strong> Cần một quy ước rõ ràng cho mỗi lệnh: ai đặt cờ yêu cầu, ai xoá, thời gian
 chờ tối đa là bao nhiêu, và <strong>làm gì khi quá thời gian</strong>. Đây chính là mẫu đã trình bày ở Chương 16
-mục 16.2b (bắt tay bằng bảng cờ), chỉ khác là bảng cờ nằm trong PLC thay vì trong bộ nhớ C#.</p>
+mục 16.3 (bắt tay bằng bảng cờ), chỉ khác là bảng cờ nằm trong PLC thay vì trong bộ nhớ C#.</p>
 <blockquote>
 <p>📌 <strong>Phần kỹ thuật chi tiết của ranh giới này nằm ở Chương 14 mục 14.1.2b</strong> — từ vựng thiết bị nhớ
 của PLC (X/Y/M/D), vì sao không được ghi thẳng vào đầu ra từ C#, kỹ thuật <strong>gộp địa chỉ thành khối</strong>
@@ -5355,12 +5355,16 @@ nhau — nhầm lẫn giữa chúng là nguồn gốc của cả hai bẫy vừa
 <p>Hai cách phản ứng với token: kiểm tra <code>ct.IsCancellationRequested</code> trong điều kiện vòng lặp (dừng êm ở ranh giới an toàn), hoặc gọi <code>ct.ThrowIfCancellationRequested()</code> để dừng ngay tại một điểm (ném <code>OperationCanceledException</code>). Truyền <code>ct</code> vào cả <code>Task.Delay</code>, <code>ReadAsync</code>, <code>WriteAsync</code> để chúng cũng nhả ra khi bị hủy.</p>
 <blockquote>
 <p>💡 <strong><code>PeriodicTimer</code> (từ .NET 6+) — tránh trôi thời gian (drift) khi polling liên tục.</strong>
-<code>Task.Delay(100, ct)</code> trong Code 5.5 chờ đúng 100ms tính từ <em>lúc gọi Delay</em>, không phải
+<code>Task.Delay(100, ct)</code> trong Code 5.5 đếm thời gian từ <em>lúc gọi Delay</em>, không phải
 tính từ đầu vòng lặp — nếu <code>ReadStatusAsync</code>/<code>Process</code> mỗi vòng tốn thêm vài ms, chu kỳ
 thực tế sẽ trôi dần khỏi 100ms mong muốn, tích luỹ sai số qua hàng nghìn vòng lặp.
 <code>PeriodicTimer</code> tính mốc tick tiếp theo dựa trên lịch cố định của chính nó thay vì cộng
 dồn từ thời gian xử lý mỗi vòng, giữ chu kỳ ổn định hơn cho polling tần suất cao chạy
 liên tục dài hạn:</p>
+<p>⚠️ Và lưu ý một giới hạn nằm bên dưới cả hai cách: trên Windows, <strong>không có cách chờ nào mịn hơn
+khoảng 15,6 ms</strong> theo mặc định, nên <code>Task.Delay(100)</code> thực tế thường là ~109 ms chứ không phải đúng
+100 ms. <code>PeriodicTimer</code> sửa được <strong>sai số tích luỹ</strong>, không sửa được <strong>độ phân giải</strong>. Chi tiết và
+cách xử lý ở Chương 6 mục 6.1.1b.</p>
 <pre><code class="language-csharp">using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
 try
 {
@@ -5771,7 +5775,7 @@ chỗ</strong>, và không bao giờ viết chuỗi tên kênh trực tiếp t�
 }
 </code></pre>
 <p>Và điểm mù thứ hai: <strong>luồng dữ liệu biến mất khỏi code</strong> — muốn biết ai đọc một kênh phải đi tìm theo
-tên chuỗi. Cùng loại đánh đổi với mô hình nối kênh ở Chương 13 mục 13.2.4e, và cùng cách giảm đau:
+tên chuỗi. Cùng loại đánh đổi với mô hình nối kênh ở Chương 13 mục 13.2.4d, và cùng cách giảm đau:
 gom khai báo về một chỗ, và làm một màn hình liệt kê các kênh đang hoạt động.</p>
 </blockquote>
 <blockquote>
@@ -6436,7 +6440,7 @@ một khung máy mã nguồn mở — cài đặt đó có những ý tưởng �
 <pre><code class="language-csharp">uk.Value = proportionalTerm + integralTerm - derivativeTerm;   // ← ghi lần 1: CHƯA kẹp
 uk.Value = Clamp(uk.Value);                                    // ← ghi lần 2: đã kẹp
 </code></pre>
-<p>Nếu <code>Value</code> là một kênh đẩy thẳng xuống cổng ra analog (mục 13.2.4e), thì <strong>giá trị vượt giới hạn đã
+<p>Nếu <code>Value</code> là một kênh đẩy thẳng xuống cổng ra analog (mục 13.2.4d), thì <strong>giá trị vượt giới hạn đã
 thật sự ra tới thiết bị</strong> trong khoảng thời gian giữa hai dòng. Với một bộ gia nhiệt hay một van tỉ lệ,
 đó là một xung quá mức. Quy tắc: <strong>tính xong, kẹp xong, rồi mới ghi — ghi đúng một lần.</strong></p>
 <p><strong>2. Chống tích luỹ tràn (windup).</strong> Khi cơ cấu chấp hành đã chạm hết cỡ mà sai lệch vẫn còn, thành phần
@@ -11414,7 +11418,7 @@ trục chạy là chuyện khác hẳn với một phím cứng bấm nhầm mà
 ánh xạ phím chức năng trong sách hướng dẫn chính là sơ đồ chức năng của phần mềm</strong> — nó liệt kê đủ các
 nhóm màn hình và quan hệ cấp bậc giữa chúng, thường gọn hơn bất kỳ tài liệu kỹ thuật nào. Đây là tệp
 thứ ba nên mở khi nhận một máy lạ, sau hàm khởi động (Phụ lục B mục B.9) và bảng cờ (Chương 16 mục
-16.2b.5) — và là tệp duy nhất trong ba tệp đó mà bạn có được <strong>khi không có mã nguồn</strong>.</p>
+16.3.5) — và là tệp duy nhất trong ba tệp đó mà bạn có được <strong>khi không có mã nguồn</strong>.</p>
 </blockquote>
 <hr>
 <h2 id="102-bng-màu-h-thng-phân-cp-theo-isa-101">10.2 Bảng màu &amp; Hệ thống phân cấp theo ISA-101</h2>
@@ -17290,7 +17294,7 @@ treo từ lâu. Nguyên tắc chung: health-check phải phản ánh trạng th�
 đo được, không phải giá trị mặc định lạc quan.</li>
 </ol>
 </blockquote>
-<h3>13.2.4d Về gốc — cùng một việc, hai cách tổ chức rất khác nhau</h3>
+<h3>13.2.4c Về gốc — cùng một việc, hai cách tổ chức rất khác nhau</h3>
 <p>Về gốc (homing) là việc <strong>mọi máy có trục servo đều phải làm</strong>, và vì ai cũng phải làm nên nó là ví
 dụ tốt nhất để thấy cùng một bài toán được tổ chức khác nhau ra sao. Mục này đối chiếu hai cách làm
 lấy từ hai dự án thật, rồi rút ra phần <strong>chung</strong> — thứ bạn cần dù chọn cách nào.</p>
@@ -17432,7 +17436,7 @@ rồi mới tới các trục ngang. Trong mô hình miền của Chương 11, �
 nó thuộc về đối tượng máy, không phải về từng trục, vì không trục nào tự biết trục kia đang ở đâu.</p>
 </blockquote>
 <hr>
-<h3>13.2.4e  Ba cách để code nghiệp vụ chạm tới một tín hiệu</h3>
+<h3>13.2.4d  Ba cách để code nghiệp vụ chạm tới một tín hiệu</h3>
 <p>Các mục trên trừu tượng hoá <strong>thiết bị</strong> (<code>IAxis</code>, <code>ICamera</code>). Nhưng phần lớn thời gian, code nghiệp vụ
 không nói chuyện với cả một thiết bị — nó cần <strong>một tín hiệu</strong>: <em>cảm biến có phôi ở trạm 2</em>, <em>áp suất
 buồng hút</em>, <em>van kẹp</em>. Cách bạn cho nó chạm tới tín hiệu đó quyết định việc đổi card IO hoặc đổi PLC
@@ -18195,6 +18199,15 @@ giống hệt phần &quot;chạy tiếp sau tạm dừng&quot; ở Chương 12 
 đã</strong> — trục có còn ở vị trí ta nghĩ không, tham số thiết bị có còn đúng không, cơ cấu kẹp có còn giữ
 không. Nếu không xác minh được, đưa máy về trạng thái an toàn và yêu cầu người vận hành xử lý, chứ
 đừng đoán.</p>
+<p>📌 <strong>Không mâu thuẫn với Chương 14, nhưng phải phân biệt hai thứ.</strong> Chương 14 mục 14.1.3 nói <em>&quot;heartbeat
+và kết nối lại là bắt buộc&quot;</em> cho kênh TCP tự định nghĩa — và đúng, vì kênh đó nối <strong>hai tiến trình phần
+mềm</strong> (ví dụ phần mềm máy với một tiến trình xử lý ảnh chạy riêng). Bên kia không có trạng thái vật lý:
+nối lại được là dùng lại được ngay, nên tự động là lựa chọn đúng và mặc định BẬT là hợp lý.</p>
+<p>Mục này nói về <strong>thiết bị</strong>, nơi bên kia đường truyền là một vật thể có vị trí, có mô-men, có áp suất.
+Đó là lý do mặc định ngược lại. Câu hỏi phân loại rất gọn: <strong>mất kết nối có thể làm đổi trạng thái vật
+lý ở đầu kia không?</strong> Không → tự động nối lại; có → phải xác minh, và thường nên để người bấm.</p>
+</blockquote>
+<blockquote>
 <p>Và đây chính là lý do <strong>vài loại thiết bị nên để người vận hành bấm nối lại</strong> thay vì tự động: với
 thiết bị mà việc mất kết nối gần như chắc chắn kéo theo thay đổi trạng thái vật lý — bộ điều khiển
 trục là ví dụ rõ nhất — tự động nối lại chỉ tạo ra ảo giác đã khôi phục. Tự động nối lại hợp với
@@ -18671,7 +18684,7 @@ acqFifo.TimeoutEnabled = false;   // ❌ đặt thời gian chờ rồi tắt n�
 Hai biện pháp đi cùng nhau:</p>
 <ol>
 <li><strong>Bật thời gian chờ cho mọi lệnh gọi thiết bị</strong> (nguyên tắc xuyên suốt Chương 5 và Chương 16 mục
-16.2b): thà báo lỗi sau 10 giây còn hơn treo mãi.</li>
+16.3): thà báo lỗi sau 10 giây còn hơn treo mãi.</li>
 <li><strong>Thêm một nhịp kiểm tra độc lập</strong> — một luồng nền nhẹ ping địa chỉ IP của thiết bị mỗi vài giây.
 Nó biết trước cả SDK, và nó phân biệt được &quot;mạng chết&quot; với &quot;thiết bị bận&quot;:</li>
 </ol>
@@ -19410,7 +19423,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Thay driver không ảnh hưởng tầng trên</td>
 </tr>
 <tr>
-<td>Chạm tới một tín hiệu (13.2.4e)</td>
+<td>Chạm tới một tín hiệu (13.2.4d)</td>
 <td>Nghiệp vụ cần một tín hiệu, không cần cả thiết bị</td>
 <td>Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối</td>
 </tr>
@@ -20378,7 +20391,7 @@ trong bộ nhớ; toàn bộ phần còn lại của ứng dụng (giao diện, 
 đó</strong>, không ai gọi thẳng xuống PLC. Ba lợi ích: số vòng hỏi–đáp không tăng khi thêm màn hình mới;
 mọi nơi thấy cùng một giá trị tại cùng một thời điểm; và khi mất kết nối, chỉ cần đánh dấu bản sao
 là &quot;cũ&quot; thay vì để hàng chục chỗ cùng ném lỗi. Đây chính là <strong>vòng quét</strong> của Chương 6 áp dụng cho
-ranh giới mạng, và nó cùng họ với mẫu bảng cờ ở Chương 16 mục 16.2b.</p>
+ranh giới mạng, và nó cùng họ với mẫu bảng cờ ở Chương 16 mục 16.3.</p>
 </blockquote>
 <h4>Đặt tên cho địa chỉ — và kiểm tra ngay khi khởi động</h4>
 <p>Địa chỉ thô (<code>D1250</code>, <code>M430</code>) rải khắp code là cách chắc chắn nhất để một lần đổi bên PLC làm hỏng
@@ -21472,7 +21485,7 @@ bước là lệnh sau thất bại với thông báo khó hiểu:</p>
 <p>Hai điều phải làm trong code:</p>
 <ul>
 <li><strong>Chờ trạng thái, đừng chờ thời gian.</strong> Sau mỗi bước, <strong>hỏi lại trạng thái</strong> cho tới khi đúng, kèm hạn
-chờ (Chương 16 mục 16.2d). Chèn <code>Task.Delay(3000)</code> giữa các bước là cách viết sẽ hỏng vào ngày robot
+chờ (Chương 16 mục 16.5). Chèn <code>Task.Delay(3000)</code> giữa các bước là cách viết sẽ hỏng vào ngày robot
 khởi động chậm hơn bình thường.</li>
 <li><strong>Nhả phanh là thao tác có hệ quả vật lý.</strong> Với cánh tay đang giữ vật ở tư thế nào đó, nhả phanh có thể
 làm nó <strong>sụp xuống theo trọng lực</strong>. Đây phải là bước có điều kiện tiên quyết và có ghi nhật ký, không
@@ -22743,7 +22756,7 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 <td>TCP custom</td>
 <td>Process isolation + IPC contract</td>
 <td>System.Net.Sockets</td>
-<td>Payload trung lập, heartbeat, reconnect bắt buộc</td>
+<td>Payload trung lập, heartbeat, reconnect bắt buộc — <strong>đây là kênh giữa hai tiến trình phần mềm</strong>, khác thiết bị có trạng thái vật lý (Ch13 mục 13.3.5)</td>
 </tr>
 <tr>
 <td>Giao tiếp PLC (14.1.2b)</td>
@@ -22825,7 +22838,7 @@ cho từng bài toán.</p>
 <td>Heartbeat/Ping-Pong mỗi 5s; đánh dấu Unhealthy + alarm dải 20xxx khi không phản hồi, reconnect nếu Ping timeout</td>
 </tr>
 <tr>
-<td>TCP custom: không retry/reconnect</td>
+<td>TCP custom <strong>(kênh giữa hai tiến trình)</strong>: không retry/reconnect</td>
 <td>Restart máy khi mạng bị ngắt thoáng qua</td>
 <td><code>EnsureConnectedAsync</code> với backoff + alarm trước khi stop sequence</td>
 </tr>
@@ -23098,7 +23111,7 @@ sequence) — quy trình tìm lại điểm gốc vật lý sau mỗi lần mấ
 mọi lệnh move tuyệt đối (<code>AbsMove</code>) đều dựa trên toạ độ không đáng tin — nhiều driver chủ động
 chặn lệnh move nếu bit <code>ORG</code> chưa từng được set từ lúc khởi động.</p>
 <p>Trình tự về gốc đầy đủ, sáu tham số cấu hình của nó, và <strong>bẫy quên bật lại giới hạn mềm sau khi
-về gốc</strong> — xem Chương 13 mục 13.2.4d.</p>
+về gốc</strong> — xem Chương 13 mục 13.2.4c.</p>
 </blockquote>
 <h3>15.1.2b  Định nghĩa alarm ở đâu — năm cách, và cách chọn</h3>
 <p>Mục trên dùng <code>AlarmCode</code> là một số nguyên. Câu hỏi tiếp theo, và là câu mọi dự án đều phải trả lời:
@@ -23155,10 +23168,18 @@ public sealed class AlarmInfoAttribute : Attribute
     public string  Category  { get; }   // &quot;lỗi phần cứng&quot; / &quot;lỗi hệ thống&quot; / &quot;lỗi công nghệ&quot;
     public string  Message   { get; }   // nội dung hiển thị
     public AlarmSeverity Severity { get; }
-    public string  Solution  { get; }   // ← HƯỚNG DẪN XỬ LÝ từng bước cho người vận hành
+    public string[] Solution { get; }   // ← HƯỚNG DẪN XỬ LÝ, mỗi phần tử một bước
     public string? ImagePath { get; }   // ← ẢNH MINH HOẠ
 }
 </code></pre>
+<blockquote>
+<p>📌 <strong>Vì sao <code>Solution</code> là một MẢNG chuỗi chứ không phải một chuỗi.</strong> Đây là chi tiết nhỏ nhưng nó
+quyết định chất lượng của cả danh mục: một chuỗi thì người viết dễ gõ đại một câu chung chung
+(<em>&quot;kiểm tra lại thiết bị&quot;</em>); một mảng buộc họ phải nghĩ <strong>theo từng bước</strong>, và màn hình hiện được
+thành danh sách đánh số. Phần &quot;Danh mục alarm của một máy thật lớn đến mức nào&quot; bên dưới cho thấy vì
+sao: trong tài liệu của máy sản xuất thật, mỗi mục alarm có <strong>một danh sách nguyên nhân</strong> và <strong>một
+danh sách bước kiểm tra</strong>, không phải hai câu.</p>
+</blockquote>
 <p>Hai trường cuối là thứ phân biệt một danh mục alarm dùng được với một danh mục chỉ để đếm. Người vận
 hành lúc 2 giờ sáng không cần biết <em>&quot;lỗi mã 10014&quot;</em> — họ cần biết <strong>làm gì tiếp theo</strong>, và một tấm
 ảnh chỉ đúng cái van cần kiểm tra còn nhanh hơn ba dòng chữ.</p>
@@ -23216,8 +23237,9 @@ nguyên tắc <strong>rẻ nhất và hay gặp nhất trước</strong>: nhìn 
 công tắc trước khi đo điện. Một danh sách xếp đúng thứ tự giúp người kỹ thuật giải quyết phần lớn
 trường hợp ở bước một hoặc hai; xếp sai thứ tự thì họ tháo máy ra rồi mới phát hiện chỉ là chưa bấm
 nút.</p>
-<p>Trong code, điều này nghĩa là trường hướng dẫn xử lý <strong>nên là một mảng chuỗi</strong>, không phải một chuỗi
-— để màn hình hiện thành danh sách đánh số, và để người viết buộc phải nghĩ theo từng bước.</p>
+<p>Đây chính là lý do trường <code>Solution</code> trong mẫu attribute ở đầu mục được khai là <strong>mảng chuỗi</strong>: mỗi
+phần tử một bước, hiện lên màn hình thành danh sách đánh số, và người viết alarm buộc phải nghĩ theo
+từng bước thay vì gõ một câu chung chung.</p>
 </blockquote>
 <blockquote>
 <p>📌 <strong>Danh mục alarm là một SẢN PHẨM BÀN GIAO, không phải một tệp nội bộ.</strong> Nhà cung cấp máy giao nó
@@ -25394,7 +25416,7 @@ chậm (gọi mạng, ghi đĩa đồng bộ) trực tiếp trong chuỗi — đ
 đúng như hai bộ ghi cơ sở dữ liệu ở trên. Một lời gọi mạng chờ ba giây trong chuỗi sẽ làm nghẽn toàn
 bộ việc thu thập dữ liệu.</p>
 <blockquote>
-<p>💡 <strong>So với &quot;bộ biến đổi trên đường nối&quot; ở Chương 13 mục 13.2.4e:</strong> hai mô hình bù nhau chứ không
+<p>💡 <strong>So với &quot;bộ biến đổi trên đường nối&quot; ở Chương 13 mục 13.2.4d:</strong> hai mô hình bù nhau chứ không
 thay thế nhau. Bộ biến đổi trên đường nối thuộc về <strong>một tín hiệu cụ thể</strong> (cảm biến này cần lọc
 nhiễu, thanh ghi kia cần tách bit). Chuỗi xử lý ở đây thuộc về <strong>mọi tín hiệu</strong> (giá trị nào cũng
 phải được lưu, so ngưỡng, đẩy đi). Nếu phải chọn một để làm trước: làm chuỗi trước, vì nó xoá được
@@ -25885,11 +25907,11 @@ queue.TryDequeue(out var next);   // next = EStopCommand, dù enqueue sau
 <p>📌 <strong>Lưu ý:</strong> Sequence Step từ Chương 12 là level CAO HƠN Command Pattern. Một Step thường gọi <code>CommandDispatcher.ExecuteSequenceAsync()</code> bên trong. Chúng không thay thế nhau — đây là hai tầng khác nhau trong cùng kiến trúc.</p>
 </blockquote>
 <hr>
-<h2 id="162b-shared-tag-table-bt-tay-gia-các-trm-bng-bng-c-dùng-chung">16.2b  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung</h2>
+<h2 id="163-shared-tag-table-bt-tay-gia-các-trm-bng-bng-c-dùng-chung">16.3  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung</h2>
 <p>Hai mục trên (Observer và Command) là pattern bạn sẽ <strong>viết</strong>. Mục này là pattern bạn sẽ <strong>đọc</strong> — vì
 nó có mặt trong gần như mọi phần mềm máy nhiều trạm do người xuất thân từ PLC viết, và nếu không nhận
 ra nó thì không đọc nổi một dòng nào của tầng quy trình.</p>
-<h3>16.2b.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai</h3>
+<h3>16.3.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai</h3>
 <p>Một máy phi tiêu chuẩn thường có nhiều trạm chạy <strong>đồng thời</strong>, mỗi trạm một luồng riêng, mỗi trạm một
 quy trình riêng. Trạm nạp phôi và trạm kiểm tra không làm việc tuần tự — chúng chạy song song, chỉ
 <strong>gặp nhau ở một vài điểm</strong> đồng bộ: &quot;phôi đã vào vị trí, mời anh kiểm tra&quot;, &quot;kiểm tra xong rồi, mời
@@ -25919,7 +25941,7 @@ ta có phụ thuộc vòng — thêm trạm thứ ba thì thành mạng nhện.<
 yêu cầu thêm trạm quét mã&quot;). Với cách gọi trực tiếp, mỗi lần thêm là mỗi lần sửa code trạm cũ đang
 chạy ổn định — điều tệ nhất có thể làm với phần mềm điều khiển máy.</li>
 </ol>
-<h3>16.2b.2  Giải pháp: một bảng cờ, hai thao tác</h3>
+<h3>16.3.2  Giải pháp: một bảng cờ, hai thao tác</h3>
 <p>Cách mà thế giới PLC đã dùng hàng chục năm: <strong>không ai gọi ai</strong>. Tất cả cùng đọc/ghi một bảng biến
 trạng thái dùng chung (trong PLC gọi là <em>tag table</em> hoặc vùng nhớ <code>M</code>), và mỗi bên chỉ làm hai việc —
 <strong>đặt cờ</strong> để yêu cầu, <strong>chờ cờ</strong> để biết việc đã xong.</p>
@@ -26004,7 +26026,7 @@ _flags.Set(StationFlag.RequestInspect, false);
 await DoInspectAsync(ct);
 _flags.Set(StationFlag.InspectDone, true);
 </code></pre>
-<h3>16.2b.3  Bốn quy tắc bắt buộc (mỗi quy tắc tương ứng một lỗi thật)</h3>
+<h3>16.3.3  Bốn quy tắc bắt buộc (mỗi quy tắc tương ứng một lỗi thật)</h3>
 <p><strong>Quy tắc 1 — Ai chờ cờ thì người đó xoá cờ.</strong> Cờ là tín hiệu một lần dùng cho <strong>một</strong> chu kỳ. Nếu
 bên đặt cờ cũng tự xoá, có nguy cơ xoá trước khi bên kia kịp thấy (mất tín hiệu). Nếu không ai xoá,
 chu kỳ sau thấy cờ vẫn <code>true</code> và <strong>chạy vượt bước ngay lập tức</strong> — sự cố kinh điển: máy chạy chu kỳ
@@ -26028,7 +26050,7 @@ im <strong>là</strong> trạng thái đúng.</p>
 <code>RequestInspect</code> tốt hơn <code>bFlag12</code>. Lý do không phải thẩm mỹ mà là <strong>kỹ thuật</strong>: đây là pattern duy
 nhất trong sách mà trình biên dịch <strong>không</strong> kiểm tra được tính đúng đắn cho bạn (xem mục tiếp), nên
 công cụ duy nhất còn lại để lần dấu là tìm kiếm toàn văn theo tên cờ.</p>
-<h3>16.2b.4  Nhược điểm phải biết trước khi chọn</h3>
+<h3>16.3.4  Nhược điểm phải biết trước khi chọn</h3>
 <p><strong>Bảng 16.3b — Gọi hàm trực tiếp, Event, và Shared Tag Table</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -26114,7 +26136,7 @@ mô hình &quot;mảng có chỉ số&quot; khớp 1:1 với vùng nhớ PLC, c�
 không có cả hai nhu cầu đó, <code>ManualResetEventSlim</code> gọn hơn và không cần vòng quét.</p>
 </blockquote>
 <hr>
-<h3>16.2b.5  Bảng cờ trong một máy tám trạm — bốn chi tiết từ mã nguồn thật</h3>
+<h3>16.3.5  Bảng cờ trong một máy tám trạm — bốn chi tiết từ mã nguồn thật</h3>
 <p>Bốn quy tắc ở trên rút ra từ nguyên tắc. Mục này mở một bảng cờ thật của máy tám trạm đang chạy sản
 xuất, và lấy ra bốn chi tiết mà chỉ đọc code mới thấy.</p>
 <h4>1. Tách bảng theo KIỂU dữ liệu, không gộp một bảng cho tất cả</h4>
@@ -26200,7 +26222,7 @@ tệp nên mở đầu tiên khi nhận một dự án lạ: <strong>hàm khởi
 biết <em>chúng nói chuyện với nhau ra sao</em>.</p>
 </blockquote>
 <hr>
-<h2 id="162c-cây-tác-v-t-chc-trình-t-bng-composite">16.2c  Cây tác vụ — tổ chức trình tự bằng Composite</h2>
+<h2 id="164-cây-tác-v-t-chc-trình-t-bng-composite">16.4  Cây tác vụ — tổ chức trình tự bằng Composite</h2>
 <p>Mục 16.2 dùng Command Pattern cho <strong>một lệnh</strong>. Mục này dùng <strong>Composite</strong> cho <strong>cả một trình tự</strong>: thay
 vì một danh sách bước phẳng chạy từ trên xuống, trình tự được dựng thành <strong>một cây</strong> — nhánh chứa nhánh
 con, lá là công việc thật. Đây là cách thứ tư để tổ chức trình tự, bên cạnh danh sách bước (Chương 12),
@@ -26253,7 +26275,7 @@ Với phần mềm máy, đây gần như luôn là ngữ nghĩa sai: câu <em>&
 mở&quot;</em>, <em>&quot;chưa có phôi&quot;</em> đều có nghĩa là <strong>chờ đến khi điều kiện thoả</strong>, không phải <em>bỏ qua bước này</em>.
 Bỏ qua bước hạ xuống rồi vẫn chạy bước hút là kịch bản hỏng sản phẩm hoặc hỏng đầu gắp.</p>
 <p>Nếu bạn dựng mô hình này, hãy tách hẳn <strong>hai loại điều kiện</strong> và đặt tên khác nhau: <em>điều kiện chờ</em>
-(chờ, kèm thời gian chờ tối đa rồi phát cảnh báo — quy tắc ở mục 16.2b) và <em>điều kiện bỏ qua</em> (bước
+(chờ, kèm thời gian chờ tối đa rồi phát cảnh báo — quy tắc ở mục 16.3) và <em>điều kiện bỏ qua</em> (bước
 tuỳ chọn theo mã hàng, ví dụ trạm dán nhãn không dùng cho sản phẩm này). Đừng để một cơ chế duy nhất
 phục vụ cả hai ý nghĩa: người viết trình tự sẽ chọn nhầm, và nhầm về phía nguy hiểm.</p>
 </blockquote>
@@ -26338,7 +26360,7 @@ báo: có <code>CancellationToken</code> trong code không đồng nghĩa với 
 tốt và đáng học, nhưng &quot;có trên GitHub&quot; không phải chứng nhận chất lượng.</p>
 </blockquote>
 <hr>
-<h2 id="162d-lnh-ch-điu-kin-nguyên-thu-nh-nht-và-b-vit-li-nhiu-ln-nht">16.2d  Lệnh &quot;chờ điều kiện&quot; — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất</h2>
+<h2 id="165-lnh-ch-điu-kin-nguyên-thu-nh-nht-và-b-vit-li-nhiu-ln-nht">16.5  Lệnh &quot;chờ điều kiện&quot; — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất</h2>
 <p>Đọc bất kỳ trình tự máy nào, bạn sẽ thấy cùng một đoạn code lặp lại hàng chục lần với vài biến thể:
 <em>chờ cảm biến báo có phôi</em>, <em>chờ áp suất đủ</em>, <em>chờ trục về đích</em>, <em>chờ trạm sau báo rảnh</em>. Mỗi lần lại
 một vòng <code>while</code> với một <code>Task.Delay</code> bên trong, và <strong>mỗi lần một kiểu xử lý hết giờ khác nhau</strong> — chỗ
@@ -26385,7 +26407,7 @@ khi bạn đã lọc ở tầng tín hiệu, vì điều kiện ở đây có th
 <td>100–500 ms, tuỳ quán tính</td>
 </tr>
 <tr>
-<td>Cờ bắt tay giữa các trạm (mục 16.2b)</td>
+<td>Cờ bắt tay giữa các trạm (mục 16.3)</td>
 <td><strong>0</strong> — cờ phần mềm không dội</td>
 </tr>
 </tbody></table></div>
@@ -26439,9 +26461,9 @@ hoặc nếu thật sự cần &quot;bằng&quot; thì phải là <em>bằng tro
 12 mục 12.2.4.</p>
 </blockquote>
 <hr>
-<h2 id="163-bn-đ-pattern-toàn-h-thng">16.3  Bản đồ Pattern toàn hệ thống</h2>
+<h2 id="166-bn-đ-pattern-toàn-h-thng">16.6  Bản đồ Pattern toàn hệ thống</h2>
 <p>Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automation đã tích luỹ hơn mười pattern. Mục này đặt tất cả vào đúng vị trí trong kiến trúc layered để không nhầm lẫn giữa các pattern có tên tương tự hoặc giải quyết vấn đề tương tự ở các tầng khác nhau.</p>
-<h3>16.3.1  Kiến trúc layered và vị trí từng Pattern</h3>
+<h3>16.6.1  Kiến trúc layered và vị trí từng Pattern</h3>
 <pre><code>┌──────────────────────────────────────────────────────────────────────────┐
 │  TẦNG UI / HMI  (Ch8–Ch10)                                               │
 │  WinForms MVP, WPF MVVM, ISA-101                                         │
@@ -26491,7 +26513,7 @@ hoặc nếu thật sự cần &quot;bằng&quot; thì phải là <em>bằng tro
 │  ← Safety path: E-Stop, STO — hardware mạch riêng, C# chỉ monitor        │
 └──────────────────────────────────────────────────────────────────────────┘
 </code></pre>
-<h3>16.3.2  Bảng tra cứu nhanh — tất cả Pattern đã học</h3>
+<h3>16.6.2  Bảng tra cứu nhanh — tất cả Pattern đã học</h3>
 <p><strong>Bảng 16.4 — Pattern toàn hệ thống: chương học, tầng áp dụng, khi nào dùng</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -26612,7 +26634,7 @@ ai bắt buộc, nhưng đặt tên đúng vai trò giúp người đọc nhận
 Khi tự thiết kế class mới, cân nhắc đặt tên theo đúng mẫu này nếu class đó
 thực sự đóng vai trò một pattern đã học.</p>
 </blockquote>
-<h3>16.3.3  Nguyên tắc chọn Pattern — câu hỏi quyết định nhanh</h3>
+<h3>16.6.3  Nguyên tắc chọn Pattern — câu hỏi quyết định nhanh</h3>
 <p><strong>Bảng 16.5 — Decision guide: khi nào nghĩ đến pattern nào</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -26754,7 +26776,7 @@ với nhau qua một bảng cờ dùng chung, không trạm nào gọi hàm tr�
 (trình biên dịch không phát hiện được cờ mồ côi) để lấy tính song song thật và khả năng quan sát trạng
 thái đồng bộ trực tiếp từ HMI. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng cờ
 trước mỗi lần Start; mọi lần chờ phải có thời gian chờ tối đa kèm alarm; tên cờ phải mô tả ý định.</p>
-<p>Mục 16.2b.5 bổ sung bốn chi tiết từ bảng cờ của một máy tám trạm đang chạy thật: <strong>tách bảng theo kiểu
+<p>Mục 16.3.5 bổ sung bốn chi tiết từ bảng cờ của một máy tám trạm đang chạy thật: <strong>tách bảng theo kiểu
 dữ liệu</strong>; <strong>chỉ số bằng thứ tự khai báo là một quả mìn</strong> khi có ai đó chèn tên vào giữa; <strong>chừa ô số 0</strong>
 vì <code>default</code> của mọi enum là 0; và <strong>một trạm chuyên trách nói chuyện với PLC</strong> để các trạm còn lại chỉ
 cần học một mô hình bắt tay duy nhất. Kèm một mẹo đọc code: bảng cờ chính là <strong>sơ đồ cộng tác</strong> của cả
@@ -26766,7 +26788,7 @@ chung</strong> cho cả nhóm nút. Đổi lại, trình tự khó đọc hơn d
 cơ cấu chạy song song hoặc nhóm bước được dùng lại nhiều chỗ. Cùng mục này có một ví dụ lỗi rất đáng
 nhớ từ mã nguồn mở thật: bước con báo lỗi bằng giá trị trả về, nhánh cha <strong>không kiểm tra giá trị đó</strong> —
 bước hỏng bị bỏ qua trong im lặng và trình tự chạy tiếp.</p>
-<p><strong>Lệnh &quot;chờ điều kiện&quot;</strong> (mục 16.2d) là nguyên thuỷ nhỏ nhất của mọi trình tự và là đoạn code bị viết
+<p><strong>Lệnh &quot;chờ điều kiện&quot;</strong> (mục 16.5) là nguyên thuỷ nhỏ nhất của mọi trình tự và là đoạn code bị viết
 lại nhiều lần nhất. Một lệnh chờ tử tế cần <strong>năm</strong> tham số, trong đó tham số ít người nghĩ tới lại quan
 trọng nhất: <strong>điều kiện phải GIỮ đúng trong bao lâu</strong> — thiếu nó, một cái nháy của cảm biến sẽ cho trình
 tự đi tiếp khi phôi chưa vào vị trí. Mục này cũng phân tích một lỗi biểu thức đúng-sai trong mã nguồn
@@ -26841,37 +26863,37 @@ thành biến có tên, không viết dồn một dòng.</p>
 <td><code>InMemoryEventPublisher</code> đủ dùng cho single-process; chỉ nâng cấp khi thực sự cần cross-process</td>
 </tr>
 <tr>
-<td><strong>Nhánh không kiểm tra giá trị trả về của nút con</strong> (16.2c)</td>
+<td><strong>Nhánh không kiểm tra giá trị trả về của nút con</strong> (16.4)</td>
 <td>Bước hỏng bị bỏ qua <strong>trong im lặng</strong> và trình tự chạy tiếp — hút chân không thất bại nhưng vẫn nâng lên</td>
 <td>Báo lỗi bằng ngoại lệ, hoặc bật cảnh báo trình biên dịch về giá trị trả về bị bỏ; đừng <code>catch (Exception)</code> rồi <code>return false</code></td>
 </tr>
 <tr>
-<td><strong>&quot;Chặn&quot; một nút hiểu là BỎ QUA thay vì CHỜ</strong> (16.2c)</td>
+<td><strong>&quot;Chặn&quot; một nút hiểu là BỎ QUA thay vì CHỜ</strong> (16.4)</td>
 <td>Bỏ qua bước hạ xuống rồi vẫn chạy bước hút — hỏng sản phẩm hoặc hỏng đầu gắp</td>
 <td>Tách hẳn hai loại: <em>điều kiện chờ</em> (có hạn chờ + cảnh báo) và <em>điều kiện bỏ qua</em> (bước tuỳ chọn theo mã hàng)</td>
 </tr>
 <tr>
-<td><strong>Lệnh chờ chỉ cần điều kiện đúng MỘT lần hỏi</strong> (16.2d)</td>
+<td><strong>Lệnh chờ chỉ cần điều kiện đúng MỘT lần hỏi</strong> (16.5)</td>
 <td>Bắt đúng một cái nháy của cảm biến ⇒ bước sau chạy khi phôi chưa vào vị trí; lỗi vài lần một ca, khó tái hiện, hay bị đổ cho &quot;nhiễu điện&quot;</td>
 <td>Thêm tham số <strong>thời gian phải giữ đúng</strong>; rớt giữa chừng thì <strong>đặt lại đồng hồ</strong>, không thoát</td>
 </tr>
 <tr>
-<td><strong>Biểu thức điều kiện ghép nhiều so sánh và phủ định trong một dòng</strong> (16.2d)</td>
+<td><strong>Biểu thức điều kiện ghép nhiều so sánh và phủ định trong một dòng</strong> (16.5)</td>
 <td>Không soát được bằng mắt — một lỗi <code>!=</code> giữa hai giá trị đúng/sai làm <strong>vô hiệu hoá</strong> chính cơ chế nó bảo vệ</td>
 <td>Tách thành biến có tên rồi mới ghép</td>
 </tr>
 <tr>
-<td><strong>Dùng <code>==</code> trên số thực trong lệnh chờ</strong> (16.2d)</td>
+<td><strong>Dùng <code>==</code> trên số thực trong lệnh chờ</strong> (16.5)</td>
 <td>Chờ áp suất &quot;bằng đúng 5,00 bar&quot; là chờ mãi mãi</td>
 <td>Với số thực chỉ cho phép lớn hơn/nhỏ hơn, hoặc <em>bằng trong dung sai</em></td>
 </tr>
 <tr>
-<td><strong>Chỉ số thanh ghi = thứ tự khai báo enum</strong> (16.2b.5)</td>
+<td><strong>Chỉ số thanh ghi = thứ tự khai báo enum</strong> (16.3.5)</td>
 <td>Người thêm cờ cho trạm 3 chèn vào giữa ⇒ mọi chỉ số sau dịch một, <strong>không có lỗi biên dịch</strong></td>
 <td>Gán giá trị tường minh + chỉ thêm vào cuối; hoặc tra cứu theo tên</td>
 </tr>
 <tr>
-<td><strong>Hàm &quot;xoá sạch bảng cờ&quot; quét cả bảng chuỗi/số</strong> (16.2b.5)</td>
+<td><strong>Hàm &quot;xoá sạch bảng cờ&quot; quét cả bảng chuỗi/số</strong> (16.3.5)</td>
 <td>Xoá mất mã đơn hàng và chế độ làm việc đang chạy</td>
 <td>Cờ đồng bộ xoá mỗi chu kỳ; <strong>ngữ cảnh sản xuất thì không</strong> — hai vòng đời khác nhau</td>
 </tr>
@@ -29247,6 +29269,11 @@ thay thế được dựng lại theo cấu hình khác thì chỉ cần sửa m
 <code>D:\MayA\Log</code> — kiểm tra ổ dữ liệu đã gắn chưa và còn dung lượng không&quot;</em> biến một sự cố khó hiểu
 (phần mềm chạy nhưng không có nhật ký) thành một việc người kỹ thuật xử lý được ngay.</li>
 </ol>
+<p>📌 <strong>Đừng lẫn hai chuyện khác nhau.</strong> <em>Quy ước ổ đĩa của máy đã lắp đặt</em> (mục này) là một quyết định
+triển khai hợp lý. Còn <em>hàm nạp cấu hình chỉ biết đọc từ một đường dẫn cố định</em> là một vấn đề khác
+hẳn — nó làm mất khả năng kiểm thử, vì test không dựng được bối cảnh riêng (Chương 18 mục 18.6.4).
+Hai việc này không mâu thuẫn và nên làm cả hai: <strong>API nạp cấu hình nhận một luồng dữ liệu bất kỳ</strong>,
+còn <em>nơi</em> lấy luồng đó ở môi trường thật thì theo quy ước ổ đĩa của máy.</p>
 <p>Điểm cần rút ra rộng hơn một chi tiết đường dẫn: <strong>nhiều thứ trông như mùi code trong phần mềm thông
 thường lại là quy ước hợp lý trong phần mềm máy</strong>, vì môi trường chạy được kiểm soát chặt hơn nhiều.
 Trước khi kết luận một cách làm là sai, hãy hỏi <em>&quot;môi trường chạy của nó có được đặc tả không&quot;</em> —
@@ -31868,7 +31895,7 @@ một bước giữa bước 3 và bước 4 thì đặt nó là 3.5 — <strong
 Với bảng vài trăm bước và người dùng đang sửa trực tiếp, khác biệt này rất lớn. (Cùng ý tưởng dùng được
 cho mọi danh sách có thứ tự do người dùng sắp xếp.)</p>
 <p><strong>2. Bước có bước cha, nên quy trình là một cây chứ không phải một danh sách phẳng.</strong> Đây chính là mô
-hình cây tác vụ ở Chương 16 mục 16.2c, nhưng biểu diễn dưới dạng dữ liệu: một cột khoá ngoại trỏ về
+hình cây tác vụ ở Chương 16 mục 16.4, nhưng biểu diễn dưới dạng dữ liệu: một cột khoá ngoại trỏ về
 chính bảng đó.</p>
 <p><strong>3. Biến cục bộ và biến dùng chung nằm ở hai bảng khác nhau.</strong> Phạm vi biến được thi hành bằng <strong>lược
 đồ</strong>, không bằng quy ước đặt tên. Đây là thứ mà con đường 2 &quot;làm đúng cách&quot; ở trên đòi hỏi, và ở đây nó
@@ -32199,7 +32226,7 @@ và trong dự án máy phi tiêu chuẩn, phần cơ khí luôn tới muộn (C
 <li><strong>Màn hình chạy tay.</strong> Trước cả quy trình tự động — vì lắp máy cần chạy tay, và khi quy trình tự
 động sai thì cũng phải chạy tay để dọn.</li>
 <li><strong>Quy trình từng trạm, chạy độc lập.</strong> Mỗi trạm chạy đúng một mình trước đã.</li>
-<li><strong>Đồng bộ giữa các trạm.</strong> Bây giờ mới ghép (Ch16 mục 16.2b).</li>
+<li><strong>Đồng bộ giữa các trạm.</strong> Bây giờ mới ghép (Ch16 mục 16.3).</li>
 <li><strong>Cảnh báo và an toàn.</strong> Đúng ra nên làm sớm hơn; thực tế thường làm ở bước này vì cần biết những
 lỗi nào thực sự xảy ra. Nhưng <strong>giám sát an toàn thì phải làm ngay từ bước 3</strong>, không được hoãn.</li>
 <li><strong>Công thức và tham số.</strong></li>
@@ -32371,12 +32398,12 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 <tr>
 <td><strong>Framework</strong> (<code>si95mo/Framework</code>)</td>
 <td>Một <strong>khung máy</strong> .NET đầy đủ tầng: <code>IResource</code> (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch</td>
-<td>Đọc <code>Hardware/IResource.cs</code> + <code>IChannel.cs</code> trước — đây là mô hình &quot;nối kênh vào thuộc tính&quot; ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README <strong>chia thành phần theo mức đã kiểm chứng</strong> (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử)</td>
+<td>Đọc <code>Hardware/IResource.cs</code> + <code>IChannel.cs</code> trước — đây là mô hình &quot;nối kênh vào thuộc tính&quot; ở Chương 13 mục 13.2.4d. Điểm đáng học ngoài code: README <strong>chia thành phần theo mức đã kiểm chứng</strong> (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử)</td>
 </tr>
 <tr>
 <td><strong>MachineClassLibrary</strong> (<code>SerjDrob/MachineClassLibrary</code>)</td>
 <td>Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá <strong>biến tần trục chính</strong> với hai hãng + một bản giả lập, thu hình, hình học</td>
-<td>Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.2c — <strong>kể cả lỗi trong đó</strong> (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về &quot;có trên GitHub không phải chứng nhận chất lượng&quot;</td>
+<td>Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.4 — <strong>kể cả lỗi trong đó</strong> (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về &quot;có trên GitHub không phải chứng nhận chất lượng&quot;</td>
 </tr>
 <tr>
 <td><strong>WCF — nền tảng điều khiển chuyển động bằng kịch bản</strong> (<code>jiliwei/WCF</code>)</td>
@@ -32756,7 +32783,7 @@ trường. Xếp theo nhóm để dễ dùng như một danh mục rà soát.</p
 <tbody><tr>
 <td><strong>Không xoá cờ bắt tay trước khi Start</strong></td>
 <td>Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước — tay gắp xuống trước khi phôi vào</td>
-<td>Xoá sạch bảng cờ trong luồng khởi động, trước khi bật luồng các trạm (Ch16 §16.2b)</td>
+<td>Xoá sạch bảng cờ trong luồng khởi động, trước khi bật luồng các trạm (Ch16 §16.3)</td>
 </tr>
 <tr>
 <td><strong>Chờ tín hiệu mà không có thời gian chờ tối đa</strong></td>
@@ -33740,7 +33767,7 @@ chính theo thứ tự bảng chữ cái ở lần rà soát Glossary tiếp the
 <p><strong>Bản đồ bộ nhớ (Memory Map)</strong> — File dữ liệu mô tả từng trường cần ghi vào bộ nhớ sản phẩm: địa chỉ, kích thước, định dạng. Thuộc về kỹ sư sản phẩm và thay đổi theo đời sản phẩm, nên <strong>không được đưa vào code</strong>. Dùng ở máy nạp dữ liệu vào sản phẩm. (→ xem EEPROM, Checksum)
 <em>Xuất hiện đầu tiên: Phụ lục B, mục B.8.1.</em></p>
 <p><strong>Bảng cờ dùng chung (Shared Tag Table)</strong> — Mẫu đồng bộ giữa nhiều trạm chạy song song: không trạm nào gọi hàm trạm nào, tất cả cùng đọc/ghi một bảng cờ chung, mỗi bên chỉ <strong>đặt cờ</strong> để yêu cầu và <strong>chờ cờ</strong> để biết việc đã xong. Đánh đổi: được tính song song thật và khả năng quan sát trạng thái từ HMI, mất khả năng để trình biên dịch phát hiện <strong>cờ mồ côi</strong>. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng trước mỗi lần Start; mọi lần chờ có thời gian chờ tối đa kèm alarm; tên cờ mô tả ý định. (→ xem Handshake, ManualResetEvent)
-<em>Xuất hiện đầu tiên: Chương 16, mục 16.2b.</em></p>
+<em>Xuất hiện đầu tiên: Chương 16, mục 16.3.</em></p>
 <p><strong>CiA 402</strong> — Chuẩn hồ sơ thiết bị truyền động cho servo drive nối qua fieldbus; quy định một <strong>máy trạng thái</strong> mà trục phải đi qua từng bước để được phép chuyển động (chưa cho phép bật → sẵn sàng → đã bật → đang vận hành), giao tiếp qua <em>từ điều khiển</em> và <em>từ trạng thái</em> nằm trong dữ liệu chu kỳ. Điểm dễ nhầm: trạng thái &quot;đã bật&quot; <strong>chưa</strong> giữ mô-men — trục thẳng đứng sẽ rơi nếu nhả phanh ở bước này. (→ xem PDO, SDO, EtherCAT, STO)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.4.</em></p>
 <p><strong>Gá toạ độ (Fixturing)</strong> — Kỹ thuật thị giác máy: dò một đặc trưng chuẩn dễ nhận trên phôi trước (mép khay, lỗ định vị), đo lượng lệch và xoay, rồi <strong>dời toàn bộ các vùng dò khác theo đúng lượng đó</strong>. Nhờ vậy chỉ phải dạy vùng dò một lần dù phôi vào lệch mỗi lần. <strong>Khác hiệu chuẩn</strong>: gá toạ độ làm lại <strong>mỗi lần chụp</strong>; hiệu chuẩn làm một lần khi lắp camera. (→ xem Calibration, ROI, Affine Transform)
@@ -33772,9 +33799,9 @@ chính theo thứ tự bảng chữ cái ở lần rà soát Glossary tiếp the
 <p><strong>Khoảng cách giữa hai lần dừng (MTBA / MTBF)</strong> — Hai chỉ số bù cho điểm mù của OEE: OEE chỉ nói <strong>tổng</strong> thời gian dừng, không nói <strong>số lần</strong> dừng. Tách theo tiêu chí <em>có cần thợ hay không</em>: dừng vặt mà người vận hành xử lý được, và hỏng phải gọi bảo trì. Khi đếm phải đếm <strong>khoảng dừng</strong>, không đếm số cảnh báo. (→ xem OEE, Sổ lý do dừng máy)
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.5.4.</em></p>
 <p><strong>Cây tác vụ (Task Tree)</strong> — Cách tổ chức trình tự bằng <strong>Composite</strong>: nhánh chứa nhánh con, lá là công việc thật. Cấu trúc cây cho không ba thứ: đánh số bước <strong>tự động theo vị trí</strong> (<code>3.2</code>), tạm dừng/dừng <strong>lan xuống cả nhánh</strong> bằng sự kiện, và điều kiện chặn <strong>dùng chung</strong> cho cả nhóm nút. Chỉ đáng dùng khi máy có nhiều cơ cấu chạy song song. (→ xem State Pattern, Đồ thị nút)
-<em>Xuất hiện đầu tiên: Chương 16, mục 16.2c.</em></p>
+<em>Xuất hiện đầu tiên: Chương 16, mục 16.4.</em></p>
 <p><strong>Điều kiện phải giữ đúng (Condition Hold Time)</strong> — Tham số của lệnh chờ, quy định điều kiện phải đúng <strong>liên tục</strong> trong bao lâu mới coi là thoả — không phải đúng ở một lần hỏi. Đây là <strong>chống dội đặt ở tầng trình tự</strong>: thiếu nó, một cái nháy 50 ms của cảm biến sẽ cho trình tự đi tiếp khi phôi chưa vào vị trí. (→ xem Debounce, Timeout)
-<em>Xuất hiện đầu tiên: Chương 16, mục 16.2d.</em></p>
+<em>Xuất hiện đầu tiên: Chương 16, mục 16.5.</em></p>
 <p><strong>Ảnh đĩa (Disk Image)</strong> — Bản chụp toàn bộ ổ đĩa của máy tính công nghiệp, dùng để khôi phục <strong>cỗ máy tính</strong> chứ không phải khôi phục <strong>công việc</strong>: nó chứa hệ điều hành, trình điều khiển card, thư viện hãng, khoá bản quyền — những thứ dựng lại từ đầu mất một tới hai ngày. <strong>Không thay thế</strong> việc sao lưu dữ liệu, vì công thức và dữ liệu sản xuất đổi mỗi ngày. (→ xem Blue/Green Deployment)
 <em>Xuất hiện đầu tiên: Chương 17, mục 17.3.</em></p>
 <p><strong>Vòng điều khiển kín (Closed-loop Control)</strong> — Vòng giữ một đại lượng ở giá trị mong muốn (nhiệt độ, áp suất, lực). Câu hỏi đầu tiên không phải <em>&quot;viết PID thế nào&quot;</em> mà <strong>&quot;vòng này có nên nằm trong C# không&quot;</strong>: dưới ~10 ms thuộc bộ điều khiển chuyên dụng; liên quan an toàn thì thuộc <strong>phần cứng, luôn luôn</strong>. PID của phần mềm giữ cho quá trình <em>đúng</em>; rơ-le nhiệt giữ cho nó <em>không cháy</em>. (→ xem Determinism, Interlock)

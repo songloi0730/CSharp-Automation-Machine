@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260824 |
+| **Phiên bản** | v1.0.1.260825 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -389,7 +389,7 @@ trạng thái và cùng suy luận là nguồn của loại lỗi khó nhất: h
 
 **3. Bắt tay như thế nào?** Cần một quy ước rõ ràng cho mỗi lệnh: ai đặt cờ yêu cầu, ai xoá, thời gian
 chờ tối đa là bao nhiêu, và **làm gì khi quá thời gian**. Đây chính là mẫu đã trình bày ở Chương 16
-mục 16.2b (bắt tay bằng bảng cờ), chỉ khác là bảng cờ nằm trong PLC thay vì trong bộ nhớ C#.
+mục 16.3 (bắt tay bằng bảng cờ), chỉ khác là bảng cờ nằm trong PLC thay vì trong bộ nhớ C#.
 
 > 📌 **Phần kỹ thuật chi tiết của ranh giới này nằm ở Chương 14 mục 14.1.2b** — từ vựng thiết bị nhớ
 > của PLC (X/Y/M/D), vì sao không được ghi thẳng vào đầu ra từ C#, kỹ thuật **gộp địa chỉ thành khối**
@@ -4668,12 +4668,17 @@ public async Task RunDeviceLoopAsync(CancellationToken ct)
 Hai cách phản ứng với token: kiểm tra `ct.IsCancellationRequested` trong điều kiện vòng lặp (dừng êm ở ranh giới an toàn), hoặc gọi `ct.ThrowIfCancellationRequested()` để dừng ngay tại một điểm (ném `OperationCanceledException`). Truyền `ct` vào cả `Task.Delay`, `ReadAsync`, `WriteAsync` để chúng cũng nhả ra khi bị hủy.
 
 > 💡 **`PeriodicTimer` (từ .NET 6+) — tránh trôi thời gian (drift) khi polling liên tục.**
-> `Task.Delay(100, ct)` trong Code 5.5 chờ đúng 100ms tính từ *lúc gọi Delay*, không phải
+> `Task.Delay(100, ct)` trong Code 5.5 đếm thời gian từ *lúc gọi Delay*, không phải
 > tính từ đầu vòng lặp — nếu `ReadStatusAsync`/`Process` mỗi vòng tốn thêm vài ms, chu kỳ
 > thực tế sẽ trôi dần khỏi 100ms mong muốn, tích luỹ sai số qua hàng nghìn vòng lặp.
 > `PeriodicTimer` tính mốc tick tiếp theo dựa trên lịch cố định của chính nó thay vì cộng
 > dồn từ thời gian xử lý mỗi vòng, giữ chu kỳ ổn định hơn cho polling tần suất cao chạy
 > liên tục dài hạn:
+>
+> ⚠️ Và lưu ý một giới hạn nằm bên dưới cả hai cách: trên Windows, **không có cách chờ nào mịn hơn
+> khoảng 15,6 ms** theo mặc định, nên `Task.Delay(100)` thực tế thường là ~109 ms chứ không phải đúng
+> 100 ms. `PeriodicTimer` sửa được **sai số tích luỹ**, không sửa được **độ phân giải**. Chi tiết và
+> cách xử lý ở Chương 6 mục 6.1.1b.
 >
 > ```csharp
 > using var timer = new PeriodicTimer(TimeSpan.FromMilliseconds(100));
@@ -5139,7 +5144,7 @@ public async Task ProcessLoopAsync(CancellationToken ct)
 > }
 > ```
 > Và điểm mù thứ hai: **luồng dữ liệu biến mất khỏi code** — muốn biết ai đọc một kênh phải đi tìm theo
-> tên chuỗi. Cùng loại đánh đổi với mô hình nối kênh ở Chương 13 mục 13.2.4e, và cùng cách giảm đau:
+> tên chuỗi. Cùng loại đánh đổi với mô hình nối kênh ở Chương 13 mục 13.2.4d, và cùng cách giảm đau:
 > gom khai báo về một chỗ, và làm một màn hình liệt kê các kênh đang hoạt động.
 
 > 💡 **Mẹo thực chiến — Channel hay BlockingCollection?** `BlockingCollection<T>` (Chương 3 dùng cho Logger) *chặn một thread* khi `Take()` chờ dữ liệu — ổn khi consumer là một thread nền chuyên dụng. `Channel<T>` *không chặn thread nào* (await khi chờ) — tốt hơn khi pipeline nằm trong code async và bạn không muốn "đốt" thread cho việc đợi. Với hệ thống nhiều pipeline async (vision, telemetry, command), `Channel<T>` thường là lựa chọn hiện đại hơn. `CommandQueue` ở Chương 16 cũng là biến thể của mẫu này.
@@ -5713,7 +5718,7 @@ uk.Value = proportionalTerm + integralTerm - derivativeTerm;   // ← ghi lần 
 uk.Value = Clamp(uk.Value);                                    // ← ghi lần 2: đã kẹp
 ```
 
-Nếu `Value` là một kênh đẩy thẳng xuống cổng ra analog (mục 13.2.4e), thì **giá trị vượt giới hạn đã
+Nếu `Value` là một kênh đẩy thẳng xuống cổng ra analog (mục 13.2.4d), thì **giá trị vượt giới hạn đã
 thật sự ra tới thiết bị** trong khoảng thời gian giữa hai dòng. Với một bộ gia nhiệt hay một van tỉ lệ,
 đó là một xung quá mức. Quy tắc: **tính xong, kẹp xong, rồi mới ghi — ghi đúng một lần.**
 
@@ -10561,7 +10566,7 @@ một dải điều hướng bên trái? Nhưng với **máy sản xuất**, cá
 > ánh xạ phím chức năng trong sách hướng dẫn chính là sơ đồ chức năng của phần mềm** — nó liệt kê đủ các
 > nhóm màn hình và quan hệ cấp bậc giữa chúng, thường gọn hơn bất kỳ tài liệu kỹ thuật nào. Đây là tệp
 > thứ ba nên mở khi nhận một máy lạ, sau hàm khởi động (Phụ lục B mục B.9) và bảng cờ (Chương 16 mục
-> 16.2b.5) — và là tệp duy nhất trong ba tệp đó mà bạn có được **khi không có mã nguồn**.
+> 16.3.5) — và là tệp duy nhất trong ba tệp đó mà bạn có được **khi không có mã nguồn**.
 
 ---
 
@@ -15887,7 +15892,7 @@ scanner vật lý cắm vào máy.
 >    treo từ lâu. Nguyên tắc chung: health-check phải phản ánh trạng thái thật
 >    đo được, không phải giá trị mặc định lạc quan.
 
-### 13.2.4d Về gốc — cùng một việc, hai cách tổ chức rất khác nhau
+### 13.2.4c Về gốc — cùng một việc, hai cách tổ chức rất khác nhau
 
 Về gốc (homing) là việc **mọi máy có trục servo đều phải làm**, và vì ai cũng phải làm nên nó là ví
 dụ tốt nhất để thấy cùng một bài toán được tổ chức khác nhau ra sao. Mục này đối chiếu hai cách làm
@@ -16003,7 +16008,7 @@ báo rằng có lỗi.
 
 ---
 
-### 13.2.4e  Ba cách để code nghiệp vụ chạm tới một tín hiệu
+### 13.2.4d  Ba cách để code nghiệp vụ chạm tới một tín hiệu
 
 Các mục trên trừu tượng hoá **thiết bị** (`IAxis`, `ICamera`). Nhưng phần lớn thời gian, code nghiệp vụ
 không nói chuyện với cả một thiết bị — nó cần **một tín hiệu**: *cảm biến có phôi ở trạm 2*, *áp suất
@@ -16746,6 +16751,15 @@ màn hình chẩn đoán là cách rẻ nhất để triệu chứng đó không
 > không. Nếu không xác minh được, đưa máy về trạng thái an toàn và yêu cầu người vận hành xử lý, chứ
 > đừng đoán.
 >
+> 📌 **Không mâu thuẫn với Chương 14, nhưng phải phân biệt hai thứ.** Chương 14 mục 14.1.3 nói *"heartbeat
+> và kết nối lại là bắt buộc"* cho kênh TCP tự định nghĩa — và đúng, vì kênh đó nối **hai tiến trình phần
+> mềm** (ví dụ phần mềm máy với một tiến trình xử lý ảnh chạy riêng). Bên kia không có trạng thái vật lý:
+> nối lại được là dùng lại được ngay, nên tự động là lựa chọn đúng và mặc định BẬT là hợp lý.
+>
+> Mục này nói về **thiết bị**, nơi bên kia đường truyền là một vật thể có vị trí, có mô-men, có áp suất.
+> Đó là lý do mặc định ngược lại. Câu hỏi phân loại rất gọn: **mất kết nối có thể làm đổi trạng thái vật
+> lý ở đầu kia không?** Không → tự động nối lại; có → phải xác minh, và thường nên để người bấm.
+
 > Và đây chính là lý do **vài loại thiết bị nên để người vận hành bấm nối lại** thay vì tự động: với
 > thiết bị mà việc mất kết nối gần như chắc chắn kéo theo thay đổi trạng thái vật lý — bộ điều khiển
 > trục là ví dụ rõ nhất — tự động nối lại chỉ tạo ra ảo giác đã khôi phục. Tự động nối lại hợp với
@@ -17169,7 +17183,7 @@ Kết quả: quy trình treo vô hạn, không alarm, không thông báo — ng�
 Hai biện pháp đi cùng nhau:
 
 1. **Bật thời gian chờ cho mọi lệnh gọi thiết bị** (nguyên tắc xuyên suốt Chương 5 và Chương 16 mục
-   16.2b): thà báo lỗi sau 10 giây còn hơn treo mãi.
+   16.3): thà báo lỗi sau 10 giây còn hơn treo mãi.
 2. **Thêm một nhịp kiểm tra độc lập** — một luồng nền nhẹ ping địa chỉ IP của thiết bị mỗi vài giây.
    Nó biết trước cả SDK, và nó phân biệt được "mạng chết" với "thiết bị bận":
 
@@ -17869,7 +17883,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Factory Pattern (13.2.2) | Tập trung hoá tạo device, tránh coupling với vendor/protocol | Thay thiết bị = đổi config; không sửa logic máy |
 | Strategy Pattern (13.2.3) | Đổi protocol không sửa code driver | OPC UA → Modbus TCP → ADS bằng 1 dòng config |
 | Bridge Pattern (13.2.4) | Tách abstraction (Axis) khỏi implementor (Beckhoff/Siemens/Sim) | Thay driver không ảnh hưởng tầng trên |
-| Chạm tới một tín hiệu (13.2.4e) | Nghiệp vụ cần một tín hiệu, không cần cả thiết bị | Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối |
+| Chạm tới một tín hiệu (13.2.4d) | Nghiệp vụ cần một tín hiệu, không cần cả thiết bị | Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối |
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
@@ -18501,7 +18515,7 @@ giảm tải mạng rất nhiều mà người dùng không nhận ra khác bi�
 > đó**, không ai gọi thẳng xuống PLC. Ba lợi ích: số vòng hỏi–đáp không tăng khi thêm màn hình mới;
 > mọi nơi thấy cùng một giá trị tại cùng một thời điểm; và khi mất kết nối, chỉ cần đánh dấu bản sao
 > là "cũ" thay vì để hàng chục chỗ cùng ném lỗi. Đây chính là **vòng quét** của Chương 6 áp dụng cho
-> ranh giới mạng, và nó cùng họ với mẫu bảng cờ ở Chương 16 mục 16.2b.
+> ranh giới mạng, và nó cùng họ với mẫu bảng cờ ở Chương 16 mục 16.3.
 
 #### Đặt tên cho địa chỉ — và kiểm tra ngay khi khởi động
 
@@ -19485,7 +19499,7 @@ kết nối → bật nguồn động cơ → nhả phanh → (chờ trạng th�
 Hai điều phải làm trong code:
 
 - **Chờ trạng thái, đừng chờ thời gian.** Sau mỗi bước, **hỏi lại trạng thái** cho tới khi đúng, kèm hạn
-  chờ (Chương 16 mục 16.2d). Chèn `Task.Delay(3000)` giữa các bước là cách viết sẽ hỏng vào ngày robot
+  chờ (Chương 16 mục 16.5). Chèn `Task.Delay(3000)` giữa các bước là cách viết sẽ hỏng vào ngày robot
   khởi động chậm hơn bình thường.
 - **Nhả phanh là thao tác có hệ quả vật lý.** Với cánh tay đang giữ vật ở tư thế nào đó, nhả phanh có thể
   làm nó **sụp xuống theo trọng lực**. Đây phải là bước có điều kiện tiên quyết và có ghi nhật ký, không
@@ -20471,7 +20485,7 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 | OPC UA | `IProtocolClient` Strategy (Ch13) + Subscription | OPCFoundation.NetStandard.Opc.Ua | PKI certificate là checklist bắt buộc trước go-live |
 | Modbus TCP | `IProtocolClient` Strategy (Ch13) | FluentModbus / NModbus4 | Kiểm tra byte/word order khi đọc float |
 | SECS/GEM (HSMS) | GEM State Machine + Event Bus (Ch11) | secs4net | Primary/Secondary message, GEM compliance level |
-| TCP custom | Process isolation + IPC contract | System.Net.Sockets | Payload trung lập, heartbeat, reconnect bắt buộc |
+| TCP custom | Process isolation + IPC contract | System.Net.Sockets | Payload trung lập, heartbeat, reconnect bắt buộc — **đây là kênh giữa hai tiến trình phần mềm**, khác thiết bị có trạng thái vật lý (Ch13 mục 13.3.5) |
 | Giao tiếp PLC (14.1.2b) | Bản sao trong bộ nhớ + gộp địa chỉ thành khối | Thư viện của hãng PLC | C# ghi vào bit nhớ nội bộ (ý định), **không ghi thẳng đầu ra** |
 | EtherCAT khi PC là master (14.1.4) | P/Invoke SDK card + máy trạng thái servo | SDK của hãng card | Phân biệt dữ liệu chu kỳ và tham số; không gọi tham số trong vòng điều khiển |
 | Robot có bộ điều khiển riêng (14.1.6) | Ba kênh: điều khiển máy · nạp chương trình · dữ liệu | Chương trình và điểm thuộc về robot — **và không nằm trong bản sao lưu phần mềm của bạn**; gửi Dừng ≠ đã dừng |
@@ -20500,7 +20514,7 @@ cho từng bài toán.
 | SECS/GEM: gửi message trước khi hoàn tất HSMS Select + Communication State = COMMUNICATING | Message bị reject hoặc timeout không rõ nguyên nhân — bị drop phía thiết bị, không có error rõ ràng phía host | Luôn chờ SelectRsp OK, rồi đợi Communication State = COMMUNICATING, trước khi gửi bất kỳ Primary message SECS-II nào |
 | SECS/GEM: không handle S9F3/S9F5 | Host không biết equipment reject message, bug ẩn | Log tất cả S9 message; dùng để debug khi thiết bị không trả reply |
 | TCP custom: không có heartbeat định kỳ | Mất kết nối không phát hiện — socket "zombie" còn open nhưng peer đã offline, process con có thể chết âm thầm, phát hiện muộn hàng chục giây | Heartbeat/Ping-Pong mỗi 5s; đánh dấu Unhealthy + alarm dải 20xxx khi không phản hồi, reconnect nếu Ping timeout |
-| TCP custom: không retry/reconnect | Restart máy khi mạng bị ngắt thoáng qua | `EnsureConnectedAsync` với backoff + alarm trước khi stop sequence |
+| TCP custom **(kênh giữa hai tiến trình)**: không retry/reconnect | Restart máy khi mạng bị ngắt thoáng qua | `EnsureConnectedAsync` với backoff + alarm trước khi stop sequence |
 | OPC UA: namespace index thay đổi sau firmware update | Numeric NodeId cũ không còn hợp lệ, đọc ra `NodeNotFoundException` âm thầm | Dùng String NodeId (`ns=2;s="Motor1/Speed"`) thay Numeric; map bằng namespace URI, không phải index |
 | Để kiểu dữ liệu của thư viện PLC lan vào code nghiệp vụ (14.1.2c) | Thư viện ngừng bảo trì, khách đổi hãng PLC, hoặc phát hiện nó không an toàn đa luồng — đổi là viết lại | Luôn bọc sau interface của riêng bạn; tầng quy trình chỉ thấy `Task<bool> DocCoPhoiAsync(...)` |
 | Robot: coi "đã gửi lệnh Dừng" là "đã dừng" (14.1.6) | Lệnh có thể mất, tới chậm, hoặc bị từ chối vì robot đang ở trạng thái không nhận lệnh | **Xác nhận bằng trạng thái** sau khi gửi; và mạch dừng khẩn **nối cứng** vào đầu vào an toàn của bộ điều khiển robot |
@@ -20686,7 +20700,7 @@ Liên hệ với PackML (Chương 12): `AlarmSeverity.Critical` tương ứng v�
 > chặn lệnh move nếu bit `ORG` chưa từng được set từ lúc khởi động.
 >
 > Trình tự về gốc đầy đủ, sáu tham số cấu hình của nó, và **bẫy quên bật lại giới hạn mềm sau khi
-> về gốc** — xem Chương 13 mục 13.2.4d.
+> về gốc** — xem Chương 13 mục 13.2.4c.
 
 ### 15.1.2b  Định nghĩa alarm ở đâu — năm cách, và cách chọn
 
@@ -20718,10 +20732,17 @@ public sealed class AlarmInfoAttribute : Attribute
     public string  Category  { get; }   // "lỗi phần cứng" / "lỗi hệ thống" / "lỗi công nghệ"
     public string  Message   { get; }   // nội dung hiển thị
     public AlarmSeverity Severity { get; }
-    public string  Solution  { get; }   // ← HƯỚNG DẪN XỬ LÝ từng bước cho người vận hành
+    public string[] Solution { get; }   // ← HƯỚNG DẪN XỬ LÝ, mỗi phần tử một bước
     public string? ImagePath { get; }   // ← ẢNH MINH HOẠ
 }
 ```
+
+> 📌 **Vì sao `Solution` là một MẢNG chuỗi chứ không phải một chuỗi.** Đây là chi tiết nhỏ nhưng nó
+> quyết định chất lượng của cả danh mục: một chuỗi thì người viết dễ gõ đại một câu chung chung
+> (*"kiểm tra lại thiết bị"*); một mảng buộc họ phải nghĩ **theo từng bước**, và màn hình hiện được
+> thành danh sách đánh số. Phần "Danh mục alarm của một máy thật lớn đến mức nào" bên dưới cho thấy vì
+> sao: trong tài liệu của máy sản xuất thật, mỗi mục alarm có **một danh sách nguyên nhân** và **một
+> danh sách bước kiểm tra**, không phải hai câu.
 
 Hai trường cuối là thứ phân biệt một danh mục alarm dùng được với một danh mục chỉ để đếm. Người vận
 hành lúc 2 giờ sáng không cần biết *"lỗi mã 10014"* — họ cần biết **làm gì tiếp theo**, và một tấm
@@ -20767,8 +20788,9 @@ cái này trước, rồi cái này"*, chứ không phải một câu khuyên ch
 > trường hợp ở bước một hoặc hai; xếp sai thứ tự thì họ tháo máy ra rồi mới phát hiện chỉ là chưa bấm
 > nút.
 >
-> Trong code, điều này nghĩa là trường hướng dẫn xử lý **nên là một mảng chuỗi**, không phải một chuỗi
-> — để màn hình hiện thành danh sách đánh số, và để người viết buộc phải nghĩ theo từng bước.
+> Đây chính là lý do trường `Solution` trong mẫu attribute ở đầu mục được khai là **mảng chuỗi**: mỗi
+> phần tử một bước, hiện lên màn hình thành danh sách đánh số, và người viết alarm buộc phải nghĩ theo
+> từng bước thay vì gõ một câu chung chung.
 
 > 📌 **Danh mục alarm là một SẢN PHẨM BÀN GIAO, không phải một tệp nội bộ.** Nhà cung cấp máy giao nó
 > cho khách hàng như một tài liệu riêng, **dịch sang ngôn ngữ của nhà máy**. Hệ quả cho thiết kế: nội
@@ -22759,7 +22781,7 @@ chậm (gọi mạng, ghi đĩa đồng bộ) trực tiếp trong chuỗi — đ
 đúng như hai bộ ghi cơ sở dữ liệu ở trên. Một lời gọi mạng chờ ba giây trong chuỗi sẽ làm nghẽn toàn
 bộ việc thu thập dữ liệu.
 
-> 💡 **So với "bộ biến đổi trên đường nối" ở Chương 13 mục 13.2.4e:** hai mô hình bù nhau chứ không
+> 💡 **So với "bộ biến đổi trên đường nối" ở Chương 13 mục 13.2.4d:** hai mô hình bù nhau chứ không
 > thay thế nhau. Bộ biến đổi trên đường nối thuộc về **một tín hiệu cụ thể** (cảm biến này cần lọc
 > nhiễu, thanh ghi kia cần tách bit). Chuỗi xử lý ở đây thuộc về **mọi tín hiệu** (giá trị nào cũng
 > phải được lưu, so ngưỡng, đẩy đi). Nếu phải chọn một để làm trước: làm chuỗi trước, vì nó xoá được
@@ -23219,13 +23241,13 @@ So sánh với Code 16.5 (anti-pattern): `PickAndPlaceStep.ExecuteAsync` giờ:
 
 ---
 
-## 16.2b  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung
+## 16.3  Shared Tag Table — bắt tay giữa các trạm bằng bảng cờ dùng chung
 
 Hai mục trên (Observer và Command) là pattern bạn sẽ **viết**. Mục này là pattern bạn sẽ **đọc** — vì
 nó có mặt trong gần như mọi phần mềm máy nhiều trạm do người xuất thân từ PLC viết, và nếu không nhận
 ra nó thì không đọc nổi một dòng nào của tầng quy trình.
 
-### 16.2b.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai
+### 16.3.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai
 
 Một máy phi tiêu chuẩn thường có nhiều trạm chạy **đồng thời**, mỗi trạm một luồng riêng, mỗi trạm một
 quy trình riêng. Trạm nạp phôi và trạm kiểm tra không làm việc tuần tự — chúng chạy song song, chỉ
@@ -23261,7 +23283,7 @@ Ba vấn đề, đều nghiêm trọng với máy thật:
    yêu cầu thêm trạm quét mã"). Với cách gọi trực tiếp, mỗi lần thêm là mỗi lần sửa code trạm cũ đang
    chạy ổn định — điều tệ nhất có thể làm với phần mềm điều khiển máy.
 
-### 16.2b.2  Giải pháp: một bảng cờ, hai thao tác
+### 16.3.2  Giải pháp: một bảng cờ, hai thao tác
 
 Cách mà thế giới PLC đã dùng hàng chục năm: **không ai gọi ai**. Tất cả cùng đọc/ghi một bảng biến
 trạng thái dùng chung (trong PLC gọi là *tag table* hoặc vùng nhớ `M`), và mỗi bên chỉ làm hai việc —
@@ -23359,7 +23381,7 @@ await DoInspectAsync(ct);
 _flags.Set(StationFlag.InspectDone, true);
 ```
 
-### 16.2b.3  Bốn quy tắc bắt buộc (mỗi quy tắc tương ứng một lỗi thật)
+### 16.3.3  Bốn quy tắc bắt buộc (mỗi quy tắc tương ứng một lỗi thật)
 
 **Quy tắc 1 — Ai chờ cờ thì người đó xoá cờ.** Cờ là tín hiệu một lần dùng cho **một** chu kỳ. Nếu
 bên đặt cờ cũng tự xoá, có nguy cơ xoá trước khi bên kia kịp thấy (mất tín hiệu). Nếu không ai xoá,
@@ -23391,7 +23413,7 @@ im **là** trạng thái đúng.
 nhất trong sách mà trình biên dịch **không** kiểm tra được tính đúng đắn cho bạn (xem mục tiếp), nên
 công cụ duy nhất còn lại để lần dấu là tìm kiếm toàn văn theo tên cờ.
 
-### 16.2b.4  Nhược điểm phải biết trước khi chọn
+### 16.3.4  Nhược điểm phải biết trước khi chọn
 
 **Bảng 16.3b — Gọi hàm trực tiếp, Event, và Shared Tag Table**
 
@@ -23440,7 +23462,7 @@ bình thường, chỉ là máy đứng im hoặc chạy vượt bước. Ba bi�
 
 ---
 
-### 16.2b.5  Bảng cờ trong một máy tám trạm — bốn chi tiết từ mã nguồn thật
+### 16.3.5  Bảng cờ trong một máy tám trạm — bốn chi tiết từ mã nguồn thật
 
 Bốn quy tắc ở trên rút ra từ nguyên tắc. Mục này mở một bảng cờ thật của máy tám trạm đang chạy sản
 xuất, và lấy ra bốn chi tiết mà chỉ đọc code mới thấy.
@@ -23548,7 +23570,7 @@ cờ *"đã cấp xong"*, y hệt cách chúng bắt tay với các trạm C# kh
 
 ---
 
-## 16.2c  Cây tác vụ — tổ chức trình tự bằng Composite
+## 16.4  Cây tác vụ — tổ chức trình tự bằng Composite
 
 Mục 16.2 dùng Command Pattern cho **một lệnh**. Mục này dùng **Composite** cho **cả một trình tự**: thay
 vì một danh sách bước phẳng chạy từ trên xuống, trình tự được dựng thành **một cây** — nhánh chứa nhánh
@@ -23615,7 +23637,7 @@ trạng thái chặn/không chặn; nhiều nút cùng tham chiếu **một** `B
 > Bỏ qua bước hạ xuống rồi vẫn chạy bước hút là kịch bản hỏng sản phẩm hoặc hỏng đầu gắp.
 >
 > Nếu bạn dựng mô hình này, hãy tách hẳn **hai loại điều kiện** và đặt tên khác nhau: *điều kiện chờ*
-> (chờ, kèm thời gian chờ tối đa rồi phát cảnh báo — quy tắc ở mục 16.2b) và *điều kiện bỏ qua* (bước
+> (chờ, kèm thời gian chờ tối đa rồi phát cảnh báo — quy tắc ở mục 16.3) và *điều kiện bỏ qua* (bước
 > tuỳ chọn theo mã hàng, ví dụ trạm dán nhãn không dùng cho sản phẩm này). Đừng để một cơ chế duy nhất
 > phục vụ cả hai ý nghĩa: người viết trình tự sẽ chọn nhầm, và nhầm về phía nguy hiểm.
 
@@ -23681,7 +23703,7 @@ Ba bài học, và cả ba đều tổng quát hơn cái khung này:
 
 ---
 
-## 16.2d  Lệnh "chờ điều kiện" — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất
+## 16.5  Lệnh "chờ điều kiện" — nguyên thuỷ nhỏ nhất, và bị viết lại nhiều lần nhất
 
 Đọc bất kỳ trình tự máy nào, bạn sẽ thấy cùng một đoạn code lặp lại hàng chục lần với vài biến thể:
 *chờ cảm biến báo có phôi*, *chờ áp suất đủ*, *chờ trục về đích*, *chờ trạm sau báo rảnh*. Mỗi lần lại
@@ -23723,7 +23745,7 @@ Quy tắc chọn giá trị, đủ dùng cho hầu hết trường hợp:
 | Cảm biến có/không có vật | 50–100 ms |
 | Công tắc hành trình cơ khí | 20–50 ms (đã có lọc phần cứng thì ít hơn) |
 | Đại lượng analog vượt ngưỡng | 100–500 ms, tuỳ quán tính |
-| Cờ bắt tay giữa các trạm (mục 16.2b) | **0** — cờ phần mềm không dội |
+| Cờ bắt tay giữa các trạm (mục 16.3) | **0** — cờ phần mềm không dội |
 
 ### Ba điều nữa mà cài đặt đó dạy được — hai điều đúng, một điều sai
 
@@ -23783,11 +23805,11 @@ while (sw.Elapsed < conditionTime)
 
 ---
 
-## 16.3  Bản đồ Pattern toàn hệ thống
+## 16.6  Bản đồ Pattern toàn hệ thống
 
 Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automation đã tích luỹ hơn mười pattern. Mục này đặt tất cả vào đúng vị trí trong kiến trúc layered để không nhầm lẫn giữa các pattern có tên tương tự hoặc giải quyết vấn đề tương tự ở các tầng khác nhau.
 
-### 16.3.1  Kiến trúc layered và vị trí từng Pattern
+### 16.6.1  Kiến trúc layered và vị trí từng Pattern
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -23840,7 +23862,7 @@ Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automati
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 16.3.2  Bảng tra cứu nhanh — tất cả Pattern đã học
+### 16.6.2  Bảng tra cứu nhanh — tất cả Pattern đã học
 
 **Bảng 16.4 — Pattern toàn hệ thống: chương học, tầng áp dụng, khi nào dùng**
 
@@ -23876,7 +23898,7 @@ Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automati
 > Khi tự thiết kế class mới, cân nhắc đặt tên theo đúng mẫu này nếu class đó
 > thực sự đóng vai trò một pattern đã học.
 
-### 16.3.3  Nguyên tắc chọn Pattern — câu hỏi quyết định nhanh
+### 16.6.3  Nguyên tắc chọn Pattern — câu hỏi quyết định nhanh
 
 **Bảng 16.5 — Decision guide: khi nào nghĩ đến pattern nào**
 
@@ -23936,7 +23958,7 @@ với nhau qua một bảng cờ dùng chung, không trạm nào gọi hàm tr�
 thái đồng bộ trực tiếp từ HMI. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng cờ
 trước mỗi lần Start; mọi lần chờ phải có thời gian chờ tối đa kèm alarm; tên cờ phải mô tả ý định.
 
-Mục 16.2b.5 bổ sung bốn chi tiết từ bảng cờ của một máy tám trạm đang chạy thật: **tách bảng theo kiểu
+Mục 16.3.5 bổ sung bốn chi tiết từ bảng cờ của một máy tám trạm đang chạy thật: **tách bảng theo kiểu
 dữ liệu**; **chỉ số bằng thứ tự khai báo là một quả mìn** khi có ai đó chèn tên vào giữa; **chừa ô số 0**
 vì `default` của mọi enum là 0; và **một trạm chuyên trách nói chuyện với PLC** để các trạm còn lại chỉ
 cần học một mô hình bắt tay duy nhất. Kèm một mẹo đọc code: bảng cờ chính là **sơ đồ cộng tác** của cả
@@ -23950,7 +23972,7 @@ cơ cấu chạy song song hoặc nhóm bước được dùng lại nhiều ch�
 nhớ từ mã nguồn mở thật: bước con báo lỗi bằng giá trị trả về, nhánh cha **không kiểm tra giá trị đó** —
 bước hỏng bị bỏ qua trong im lặng và trình tự chạy tiếp.
 
-**Lệnh "chờ điều kiện"** (mục 16.2d) là nguyên thuỷ nhỏ nhất của mọi trình tự và là đoạn code bị viết
+**Lệnh "chờ điều kiện"** (mục 16.5) là nguyên thuỷ nhỏ nhất của mọi trình tự và là đoạn code bị viết
 lại nhiều lần nhất. Một lệnh chờ tử tế cần **năm** tham số, trong đó tham số ít người nghĩ tới lại quan
 trọng nhất: **điều kiện phải GIỮ đúng trong bao lâu** — thiếu nó, một cái nháy của cảm biến sẽ cho trình
 tự đi tiếp khi phôi chưa vào vị trí. Mục này cũng phân tích một lỗi biểu thức đúng-sai trong mã nguồn
@@ -23980,13 +24002,13 @@ Kết thúc Phần V (Chương 11–16), kiến trúc lõi của hệ thống au
 | **Không xoá bảng cờ trước khi Start** | Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước (tay gắp xuống trước khi phôi vào) | `ResetAll()` toàn bộ cờ trong luồng khởi động, TRƯỚC khi bật luồng các trạm |
 | **Chèn thành viên vào giữa enum cờ** | Mọi trạm bắt đầu chờ sai cờ sau một lần "sửa nhỏ" | Chỉ thêm ở cuối enum, hoặc gán giá trị tường minh ngay từ đầu |
 | **Message Bus quá phức tạp cho hệ thống đơn giản** | Dùng RabbitMQ/Azure Service Bus cho IPC duy nhất không cần HA | `InMemoryEventPublisher` đủ dùng cho single-process; chỉ nâng cấp khi thực sự cần cross-process |
-| **Nhánh không kiểm tra giá trị trả về của nút con** (16.2c) | Bước hỏng bị bỏ qua **trong im lặng** và trình tự chạy tiếp — hút chân không thất bại nhưng vẫn nâng lên | Báo lỗi bằng ngoại lệ, hoặc bật cảnh báo trình biên dịch về giá trị trả về bị bỏ; đừng `catch (Exception)` rồi `return false` |
-| **"Chặn" một nút hiểu là BỎ QUA thay vì CHỜ** (16.2c) | Bỏ qua bước hạ xuống rồi vẫn chạy bước hút — hỏng sản phẩm hoặc hỏng đầu gắp | Tách hẳn hai loại: *điều kiện chờ* (có hạn chờ + cảnh báo) và *điều kiện bỏ qua* (bước tuỳ chọn theo mã hàng) |
-| **Lệnh chờ chỉ cần điều kiện đúng MỘT lần hỏi** (16.2d) | Bắt đúng một cái nháy của cảm biến ⇒ bước sau chạy khi phôi chưa vào vị trí; lỗi vài lần một ca, khó tái hiện, hay bị đổ cho "nhiễu điện" | Thêm tham số **thời gian phải giữ đúng**; rớt giữa chừng thì **đặt lại đồng hồ**, không thoát |
-| **Biểu thức điều kiện ghép nhiều so sánh và phủ định trong một dòng** (16.2d) | Không soát được bằng mắt — một lỗi `!=` giữa hai giá trị đúng/sai làm **vô hiệu hoá** chính cơ chế nó bảo vệ | Tách thành biến có tên rồi mới ghép |
-| **Dùng `==` trên số thực trong lệnh chờ** (16.2d) | Chờ áp suất "bằng đúng 5,00 bar" là chờ mãi mãi | Với số thực chỉ cho phép lớn hơn/nhỏ hơn, hoặc *bằng trong dung sai* |
-| **Chỉ số thanh ghi = thứ tự khai báo enum** (16.2b.5) | Người thêm cờ cho trạm 3 chèn vào giữa ⇒ mọi chỉ số sau dịch một, **không có lỗi biên dịch** | Gán giá trị tường minh + chỉ thêm vào cuối; hoặc tra cứu theo tên |
-| **Hàm "xoá sạch bảng cờ" quét cả bảng chuỗi/số** (16.2b.5) | Xoá mất mã đơn hàng và chế độ làm việc đang chạy | Cờ đồng bộ xoá mỗi chu kỳ; **ngữ cảnh sản xuất thì không** — hai vòng đời khác nhau |
+| **Nhánh không kiểm tra giá trị trả về của nút con** (16.4) | Bước hỏng bị bỏ qua **trong im lặng** và trình tự chạy tiếp — hút chân không thất bại nhưng vẫn nâng lên | Báo lỗi bằng ngoại lệ, hoặc bật cảnh báo trình biên dịch về giá trị trả về bị bỏ; đừng `catch (Exception)` rồi `return false` |
+| **"Chặn" một nút hiểu là BỎ QUA thay vì CHỜ** (16.4) | Bỏ qua bước hạ xuống rồi vẫn chạy bước hút — hỏng sản phẩm hoặc hỏng đầu gắp | Tách hẳn hai loại: *điều kiện chờ* (có hạn chờ + cảnh báo) và *điều kiện bỏ qua* (bước tuỳ chọn theo mã hàng) |
+| **Lệnh chờ chỉ cần điều kiện đúng MỘT lần hỏi** (16.5) | Bắt đúng một cái nháy của cảm biến ⇒ bước sau chạy khi phôi chưa vào vị trí; lỗi vài lần một ca, khó tái hiện, hay bị đổ cho "nhiễu điện" | Thêm tham số **thời gian phải giữ đúng**; rớt giữa chừng thì **đặt lại đồng hồ**, không thoát |
+| **Biểu thức điều kiện ghép nhiều so sánh và phủ định trong một dòng** (16.5) | Không soát được bằng mắt — một lỗi `!=` giữa hai giá trị đúng/sai làm **vô hiệu hoá** chính cơ chế nó bảo vệ | Tách thành biến có tên rồi mới ghép |
+| **Dùng `==` trên số thực trong lệnh chờ** (16.5) | Chờ áp suất "bằng đúng 5,00 bar" là chờ mãi mãi | Với số thực chỉ cho phép lớn hơn/nhỏ hơn, hoặc *bằng trong dung sai* |
+| **Chỉ số thanh ghi = thứ tự khai báo enum** (16.3.5) | Người thêm cờ cho trạm 3 chèn vào giữa ⇒ mọi chỉ số sau dịch một, **không có lỗi biên dịch** | Gán giá trị tường minh + chỉ thêm vào cuối; hoặc tra cứu theo tên |
+| **Hàm "xoá sạch bảng cờ" quét cả bảng chuỗi/số** (16.3.5) | Xoá mất mã đơn hàng và chế độ làm việc đang chạy | Cờ đồng bộ xoá mỗi chu kỳ; **ngữ cảnh sản xuất thì không** — hai vòng đời khác nhau |
 | **Đặt việc chậm trực tiếp trong chuỗi xử lý giá trị** (16.1.4) | Một lời gọi mạng chờ ba giây làm nghẽn **toàn bộ** việc thu thập dữ liệu | Đưa vào hàng đợi cho luồng khác làm; và quyết rõ **bộ xử lý nào được phép chặn chuỗi khi hỏng** |
 
 <!-- SECTION: Chapter_17_DevOps -->
@@ -26187,6 +26209,12 @@ rà soát thành danh mục riêng trước khi bàn giao:
 > 2. **Kiểm tra ghi thử được ngay lúc khởi động và báo rõ nếu không.** Thông báo *"Không ghi được vào
 >    `D:\MayA\Log` — kiểm tra ổ dữ liệu đã gắn chưa và còn dung lượng không"* biến một sự cố khó hiểu
 >    (phần mềm chạy nhưng không có nhật ký) thành một việc người kỹ thuật xử lý được ngay.
+>
+> 📌 **Đừng lẫn hai chuyện khác nhau.** *Quy ước ổ đĩa của máy đã lắp đặt* (mục này) là một quyết định
+> triển khai hợp lý. Còn *hàm nạp cấu hình chỉ biết đọc từ một đường dẫn cố định* là một vấn đề khác
+> hẳn — nó làm mất khả năng kiểm thử, vì test không dựng được bối cảnh riêng (Chương 18 mục 18.6.4).
+> Hai việc này không mâu thuẫn và nên làm cả hai: **API nạp cấu hình nhận một luồng dữ liệu bất kỳ**,
+> còn *nơi* lấy luồng đó ở môi trường thật thì theo quy ước ổ đĩa của máy.
 >
 > Điểm cần rút ra rộng hơn một chi tiết đường dẫn: **nhiều thứ trông như mùi code trong phần mềm thông
 > thường lại là quy ước hợp lý trong phần mềm máy**, vì môi trường chạy được kiểm soát chặt hơn nhiều.
@@ -28474,7 +28502,7 @@ Với bảng vài trăm bước và người dùng đang sửa trực tiếp, kh
 cho mọi danh sách có thứ tự do người dùng sắp xếp.)
 
 **2. Bước có bước cha, nên quy trình là một cây chứ không phải một danh sách phẳng.** Đây chính là mô
-hình cây tác vụ ở Chương 16 mục 16.2c, nhưng biểu diễn dưới dạng dữ liệu: một cột khoá ngoại trỏ về
+hình cây tác vụ ở Chương 16 mục 16.4, nhưng biểu diễn dưới dạng dữ liệu: một cột khoá ngoại trỏ về
 chính bảng đó.
 
 **3. Biến cục bộ và biến dùng chung nằm ở hai bảng khác nhau.** Phạm vi biến được thi hành bằng **lược
@@ -28713,7 +28741,7 @@ cách các dự án thật tiến hành, và quan trọng là **thứ tự này 
 4. **Màn hình chạy tay.** Trước cả quy trình tự động — vì lắp máy cần chạy tay, và khi quy trình tự
    động sai thì cũng phải chạy tay để dọn.
 5. **Quy trình từng trạm, chạy độc lập.** Mỗi trạm chạy đúng một mình trước đã.
-6. **Đồng bộ giữa các trạm.** Bây giờ mới ghép (Ch16 mục 16.2b).
+6. **Đồng bộ giữa các trạm.** Bây giờ mới ghép (Ch16 mục 16.3).
 7. **Cảnh báo và an toàn.** Đúng ra nên làm sớm hơn; thực tế thường làm ở bước này vì cần biết những
    lỗi nào thực sự xảy ra. Nhưng **giám sát an toàn thì phải làm ngay từ bước 3**, không được hoãn.
 8. **Công thức và tham số.**
@@ -28828,8 +28856,8 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
 | **tinyua** | Một stack **OPC UA** client viết lại từ đầu cho .NET, không phụ thuộc SDK của tổ chức chuẩn | Đọc nếu muốn hiểu OPC UA thật sự làm gì bên dưới lớp SDK ở Chương 14 mục 14.1.1 |
 | **SOEM** (`OpenEtherCATsociety/SOEM`) + lớp bọc .NET | Một **EtherCAT master** mã nguồn mở: dò slave, chuyển trạng thái bus, ánh xạ PDO — những thứ SDK thương mại giấu sau một lời gọi hàm | Đọc để hiểu Chương 14 mục 14.1.4. Không đủ tính thời gian thực cho servo tốc độ cao trên Windows thường, **nhưng rất tốt để học** |
 | **TcOpen** (đã nêu ở trên) | Cũng là nơi xem cách một khung .NET nối với thế giới EtherCAT/TwinCAT | — |
-| **Framework** (`si95mo/Framework`) | Một **khung máy** .NET đầy đủ tầng: `IResource` (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch | Đọc `Hardware/IResource.cs` + `IChannel.cs` trước — đây là mô hình "nối kênh vào thuộc tính" ở Chương 13 mục 13.2.4e. Điểm đáng học ngoài code: README **chia thành phần theo mức đã kiểm chứng** (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử) |
-| **MachineClassLibrary** (`SerjDrob/MachineClassLibrary`) | Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá **biến tần trục chính** với hai hãng + một bản giả lập, thu hình, hình học | Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.2c — **kể cả lỗi trong đó** (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về "có trên GitHub không phải chứng nhận chất lượng" |
+| **Framework** (`si95mo/Framework`) | Một **khung máy** .NET đầy đủ tầng: `IResource` (Modbus/OPC UA/TCP/CAN/S7/TwinCAT) → kênh chuyên biệt → kênh chung, cộng bộ biến đổi, PID, logic mờ, xử lý tín hiệu, lập lịch | Đọc `Hardware/IResource.cs` + `IChannel.cs` trước — đây là mô hình "nối kênh vào thuộc tính" ở Chương 13 mục 13.2.4d. Điểm đáng học ngoài code: README **chia thành phần theo mức đã kiểm chứng** (đã thử với phần cứng thật / đã thử không phần cứng / chưa thử) |
+| **MachineClassLibrary** (`SerjDrob/MachineClassLibrary`) | Một thư viện máy thật: cây tác vụ để tổ chức trình tự, trừu tượng hoá **biến tần trục chính** với hai hãng + một bản giả lập, thu hình, hình học | Đọc thư mục cây tác vụ để đối chiếu Chương 16 mục 16.4 — **kể cả lỗi trong đó** (bước con báo lỗi bằng giá trị trả về, nhánh cha không kiểm tra) cũng là bài học. Ví dụ tốt về "có trên GitHub không phải chứng nhận chất lượng" |
 | **WCF — nền tảng điều khiển chuyển động bằng kịch bản** (`jiliwei/WCF`) | Một hiện thực đầy đủ của **con đường "quy trình là dữ liệu"**: nhiệm vụ + bước lưu trong bảng quan hệ, biến cục bộ/dùng chung tách bảng, xuất nhập bằng bảng tính, từ vựng bằng tiếng mẹ đẻ | Đọc lược đồ bảng trước (mục B.3.2). Nhỏ, một người viết, WinForms — đọc được hết trong vài buổi, và là mẫu gần nhất với thứ bạn sẽ tự làm |
 | **DMS — hệ thu thập và giám sát dữ liệu thiết bị** (`pgw2025/DMS`) | Một hệ **giám sát thiết bị** (khác phần mềm điều khiển máy): thu dữ liệu S7/OPC UA, **chuỗi xử lý giá trị** kiểu Chain of Responsibility, gom lô khi ghi CSDL, công thức quy đổi lưu trong bảng, menu sinh từ cấu hình | Đọc thư mục tài liệu thiết kế trước rồi mới đọc code — dự án hiếm hoi **có tài liệu thiết kế đi kèm mã nguồn**. Chuỗi xử lý đối chiếu Chương 16 mục 16.1.4 |
 
@@ -29179,7 +29207,7 @@ trường. Xếp theo nhóm để dễ dùng như một danh mục rà soát.
 
 | Lỗi | Biểu hiện ngoài hiện trường | Cách phòng |
 |---|---|---|
-| **Không xoá cờ bắt tay trước khi Start** | Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước — tay gắp xuống trước khi phôi vào | Xoá sạch bảng cờ trong luồng khởi động, trước khi bật luồng các trạm (Ch16 §16.2b) |
+| **Không xoá cờ bắt tay trước khi Start** | Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước — tay gắp xuống trước khi phôi vào | Xoá sạch bảng cờ trong luồng khởi động, trước khi bật luồng các trạm (Ch16 §16.3) |
 | **Chờ tín hiệu mà không có thời gian chờ tối đa** | Máy đứng im vô hạn, không báo gì — người vận hành không biết máy hỏng hay đang làm việc | Mọi lần chờ đều có thời gian chờ và một alarm tương ứng; ngoại lệ duy nhất là vòng chờ lệnh Start |
 | **Tín hiệu bị cưỡng bức (force) mà không hiển thị** | Một tín hiệu bị force âm thầm suốt ca; phần mềm ra quyết định trên dữ liệu giả | Hiển thị thường trực danh sách đang force; tự huỷ toàn bộ khi vào chế độ tự động (§B.2.2) |
 | **Chế độ chạy thử ghi dữ liệu lẫn vào dữ liệu sản xuất** | Báo cáo chất lượng gửi khách hàng chứa số liệu chạy thử | Ghi cột chế độ chạy vào **từng bản ghi**, đừng tin "chế độ thử thì không ghi gì" (Ch12 §12.4) |
@@ -30535,7 +30563,7 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 *Xuất hiện đầu tiên: Phụ lục B, mục B.8.1.*
 
 **Bảng cờ dùng chung (Shared Tag Table)** — Mẫu đồng bộ giữa nhiều trạm chạy song song: không trạm nào gọi hàm trạm nào, tất cả cùng đọc/ghi một bảng cờ chung, mỗi bên chỉ **đặt cờ** để yêu cầu và **chờ cờ** để biết việc đã xong. Đánh đổi: được tính song song thật và khả năng quan sát trạng thái từ HMI, mất khả năng để trình biên dịch phát hiện **cờ mồ côi**. Bốn quy tắc bắt buộc: ai chờ thì người đó xoá cờ; xoá sạch bảng trước mỗi lần Start; mọi lần chờ có thời gian chờ tối đa kèm alarm; tên cờ mô tả ý định. (→ xem Handshake, ManualResetEvent)
-*Xuất hiện đầu tiên: Chương 16, mục 16.2b.*
+*Xuất hiện đầu tiên: Chương 16, mục 16.3.*
 
 **CiA 402** — Chuẩn hồ sơ thiết bị truyền động cho servo drive nối qua fieldbus; quy định một **máy trạng thái** mà trục phải đi qua từng bước để được phép chuyển động (chưa cho phép bật → sẵn sàng → đã bật → đang vận hành), giao tiếp qua *từ điều khiển* và *từ trạng thái* nằm trong dữ liệu chu kỳ. Điểm dễ nhầm: trạng thái "đã bật" **chưa** giữ mô-men — trục thẳng đứng sẽ rơi nếu nhả phanh ở bước này. (→ xem PDO, SDO, EtherCAT, STO)
 *Xuất hiện đầu tiên: Chương 14, mục 14.1.4.*
@@ -30583,10 +30611,10 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 *Xuất hiện đầu tiên: Chương 12, mục 12.5.4.*
 
 **Cây tác vụ (Task Tree)** — Cách tổ chức trình tự bằng **Composite**: nhánh chứa nhánh con, lá là công việc thật. Cấu trúc cây cho không ba thứ: đánh số bước **tự động theo vị trí** (`3.2`), tạm dừng/dừng **lan xuống cả nhánh** bằng sự kiện, và điều kiện chặn **dùng chung** cho cả nhóm nút. Chỉ đáng dùng khi máy có nhiều cơ cấu chạy song song. (→ xem State Pattern, Đồ thị nút)
-*Xuất hiện đầu tiên: Chương 16, mục 16.2c.*
+*Xuất hiện đầu tiên: Chương 16, mục 16.4.*
 
 **Điều kiện phải giữ đúng (Condition Hold Time)** — Tham số của lệnh chờ, quy định điều kiện phải đúng **liên tục** trong bao lâu mới coi là thoả — không phải đúng ở một lần hỏi. Đây là **chống dội đặt ở tầng trình tự**: thiếu nó, một cái nháy 50 ms của cảm biến sẽ cho trình tự đi tiếp khi phôi chưa vào vị trí. (→ xem Debounce, Timeout)
-*Xuất hiện đầu tiên: Chương 16, mục 16.2d.*
+*Xuất hiện đầu tiên: Chương 16, mục 16.5.*
 
 **Ảnh đĩa (Disk Image)** — Bản chụp toàn bộ ổ đĩa của máy tính công nghiệp, dùng để khôi phục **cỗ máy tính** chứ không phải khôi phục **công việc**: nó chứa hệ điều hành, trình điều khiển card, thư viện hãng, khoá bản quyền — những thứ dựng lại từ đầu mất một tới hai ngày. **Không thay thế** việc sao lưu dữ liệu, vì công thức và dữ liệu sản xuất đổi mỗi ngày. (→ xem Blue/Green Deployment)
 *Xuất hiện đầu tiên: Chương 17, mục 17.3.*

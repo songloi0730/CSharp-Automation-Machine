@@ -30531,7 +30531,7 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 *Xuất hiện đầu tiên: Chương 14, mục 14.1.4.*
 
 **Gá toạ độ (Fixturing)** — Kỹ thuật thị giác máy: dò một đặc trưng chuẩn dễ nhận trên phôi trước (mép khay, lỗ định vị), đo lượng lệch và xoay, rồi **dời toàn bộ các vùng dò khác theo đúng lượng đó**. Nhờ vậy chỉ phải dạy vùng dò một lần dù phôi vào lệch mỗi lần. **Khác hiệu chuẩn**: gá toạ độ làm lại **mỗi lần chụp**; hiệu chuẩn làm một lần khi lắp camera. (→ xem Calibration, ROI, Affine Transform)
-*Xuất hiện đầu tiên: Chương 13, mục 13.2.4c.*
+*Xuất hiện đầu tiên: Chương 13, mục 13.4.2.*
 
 **GR&R (Gage Repeatability & Reproducibility)** — Phép đánh giá xem sai lệch trong kết quả đo đến từ **sản phẩm** hay từ **chính hệ đo**: cho máy đo lặp lại một bộ mẫu nhiều lần với nhiều người vận hành, rồi tách phương sai thành Repeatability (cùng người, đo lại) và Reproducibility (đổi người). Vượt ngưỡng cho phép thì hệ đo bị coi là không đủ tin cậy để phán định OK/NG. Về phía phần mềm, chế độ GR&R phải ghi **toàn bộ giá trị đo thô** và **không** phán định OK/NG. (→ xem Chế độ chạy, Calibration)
 *Xuất hiện đầu tiên: Chương 12, mục 12.4.1.*
@@ -30553,4 +30553,34 @@ trả `false` dù đang gọi từ luồng nền, dẫn tới cập nhật contr
 
 **Bộ kiểm tra cấu hình (Config Validator)** — Thành phần kiểm tra một quy trình dạng dữ liệu **trước khi cho nạp**, bắt các lỗi mà trình soạn từng ô không thấy: trùng mã, nhảy tới bước không tồn tại, vòng lặp bước nhảy bằng 0, giới hạn dưới lớn hơn trên. Nên có **ba mức** (lỗi chặn nạp / cảnh báo cho nạp nhưng phải xem / gợi ý), vì các trường hợp nguy hiểm nhất lại là những quy trình **chạy được** nhưng không phán định được kết quả. (→ xem Cấu hình dạng dữ liệu, NodeOperator)
 *Xuất hiện đầu tiên: Phụ lục B, mục B.3.2.*
+
+**Bảng điểm (Point Table)** — Tệp dữ liệu chứa toạ độ các vị trí đã dạy cho từng trục. Bốn cách lưu gặp trong mã nguồn thật: một dòng là **tư thế của cả trạm**, một điểm là **mục tiêu của một trục kèm biên dạng chuyển động**, mảng theo trục, hoặc điểm nằm **trong bộ điều khiển robot**. Nguyên tắc quan trọng nhất: tốc độ và gia tốc là thuộc tính **của điểm**, không phải của chỗ gọi lệnh. (→ xem Teach, Bản đồ khay)
+*Xuất hiện đầu tiên: Chương 13, mục 13.4.1.*
+
+**Căn chỉnh (Alignment)** — Đo vị trí các dấu chuẩn trên phôi rồi tính lượng bù XYθ cho trục. Với hai dấu, thứ tự tính là điều quyết định: tính góc từ **đường nối hai dấu**, **xoay điểm đo theo góc đó**, rồi mới lấy hiệu ra lượng tịnh tiến — **không** lấy trung bình hai lượng lệch. Tâm xoay là một **tham số phần cứng** phải hiệu chuẩn riêng, không phải gốc toạ độ. (→ xem Gá toạ độ, Calibration)
+*Xuất hiện đầu tiên: Chương 13, mục 13.4.3.*
+
+**Bản đồ khay (Tray Map)** — Mô hình dữ liệu cho máy làm việc với một **mảng vị trí** thay vì một sản phẩm mỗi lần. Trạng thái mỗi ô **không phải đúng/sai** mà là một enum nhiều giá trị: trống · chưa xử lý · đạt · không đạt kèm mã lý do · **đặt sai chiều** · bỏ qua theo khai báo · không kết luận được. Quy ước đánh số ô là **hợp đồng bằng văn bản** với khách hàng và hệ thống chủ. (→ xem Bảng điểm, SECS/GEM)
+*Xuất hiện đầu tiên: Chương 13, mục 13.4.6.*
+
+**Dải bảo vệ (Guard Band)** — Khoảng thu hẹp ngưỡng phán định của máy so với quy cách của khách hàng, đúng bằng (hoặc một phần) sai số của chính hệ đo. Đánh đổi có chủ đích: **loại nhầm một ít hàng tốt còn hơn để lọt hàng xấu**. Phải là tham số trong công thức và phải **ghi vào bản ghi sản phẩm**, không được tự ý đặt. (→ xem GR&R, Phán định OK/NG)
+*Xuất hiện đầu tiên: Chương 13, mục 13.4.7.*
+
+**Sổ lý do dừng máy (Downtime Reason Ledger)** — Mô hình thay cho bộ đếm rời rạc khi tính OEE: **tại mọi thời điểm máy ở đúng một trạng thái có lý do**, mỗi lần đổi lý do đều ghi kèm mốc thời gian, và mọi con số OEE được **suy ra** bằng cách cộng thời lượng theo nhóm. Lưu ý: "trạng thái có lý do" **khác** trạng thái của máy trạng thái điều khiển. (→ xem OEE, PackML)
+*Xuất hiện đầu tiên: Chương 12, mục 12.5.2.*
+
+**Khoảng cách giữa hai lần dừng (MTBA / MTBF)** — Hai chỉ số bù cho điểm mù của OEE: OEE chỉ nói **tổng** thời gian dừng, không nói **số lần** dừng. Tách theo tiêu chí *có cần thợ hay không*: dừng vặt mà người vận hành xử lý được, và hỏng phải gọi bảo trì. Khi đếm phải đếm **khoảng dừng**, không đếm số cảnh báo. (→ xem OEE, Sổ lý do dừng máy)
+*Xuất hiện đầu tiên: Chương 12, mục 12.5.4.*
+
+**Cây tác vụ (Task Tree)** — Cách tổ chức trình tự bằng **Composite**: nhánh chứa nhánh con, lá là công việc thật. Cấu trúc cây cho không ba thứ: đánh số bước **tự động theo vị trí** (`3.2`), tạm dừng/dừng **lan xuống cả nhánh** bằng sự kiện, và điều kiện chặn **dùng chung** cho cả nhóm nút. Chỉ đáng dùng khi máy có nhiều cơ cấu chạy song song. (→ xem State Pattern, Đồ thị nút)
+*Xuất hiện đầu tiên: Chương 16, mục 16.2c.*
+
+**Điều kiện phải giữ đúng (Condition Hold Time)** — Tham số của lệnh chờ, quy định điều kiện phải đúng **liên tục** trong bao lâu mới coi là thoả — không phải đúng ở một lần hỏi. Đây là **chống dội đặt ở tầng trình tự**: thiếu nó, một cái nháy 50 ms của cảm biến sẽ cho trình tự đi tiếp khi phôi chưa vào vị trí. (→ xem Debounce, Timeout)
+*Xuất hiện đầu tiên: Chương 16, mục 16.2d.*
+
+**Ảnh đĩa (Disk Image)** — Bản chụp toàn bộ ổ đĩa của máy tính công nghiệp, dùng để khôi phục **cỗ máy tính** chứ không phải khôi phục **công việc**: nó chứa hệ điều hành, trình điều khiển card, thư viện hãng, khoá bản quyền — những thứ dựng lại từ đầu mất một tới hai ngày. **Không thay thế** việc sao lưu dữ liệu, vì công thức và dữ liệu sản xuất đổi mỗi ngày. (→ xem Blue/Green Deployment)
+*Xuất hiện đầu tiên: Chương 17, mục 17.3.*
+
+**Vòng điều khiển kín (Closed-loop Control)** — Vòng giữ một đại lượng ở giá trị mong muốn (nhiệt độ, áp suất, lực). Câu hỏi đầu tiên không phải *"viết PID thế nào"* mà **"vòng này có nên nằm trong C# không"**: dưới ~10 ms thuộc bộ điều khiển chuyên dụng; liên quan an toàn thì thuộc **phần cứng, luôn luôn**. PID của phần mềm giữ cho quá trình *đúng*; rơ-le nhiệt giữ cho nó *không cháy*. (→ xem Determinism, Interlock)
+*Xuất hiện đầu tiên: Chương 6, mục 6.1.7.*
 

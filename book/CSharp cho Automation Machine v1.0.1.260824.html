@@ -18113,6 +18113,122 @@ vẫn chạy. Đây là bản rẻ tiền của khuyến nghị ở Chương 19 
 tham số cấu hình, nhưng đã tốt hơn hẳn một chuỗi cố định.</p>
 </blockquote>
 <hr>
+<h3>13.2.4h  Mã định danh sản phẩm — từ lúc quét tới lúc dùng</h3>
+<p>Mục 13.2.4b lo phần <strong>trình điều khiển</strong> đầu đọc mã: mở cổng, gửi lệnh chụp, tách dòng. Mục này lo phần
+sau đó, và là phần gây sự cố nhiều hơn hẳn: <strong>chuỗi vừa đọc được đi đâu, được kiểm tra thế nào, và làm gì
+khi nó sai</strong>. Với máy có truy xuất nguồn gốc, mã định danh là thứ <strong>quan trọng ngang kết quả đo</strong> — bản
+ghi gắn nhầm mã còn tệ hơn không có bản ghi.</p>
+<h4>Ba cách đầu đọc mã nối vào phần mềm</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách nối</th>
+<th>Phần mềm nhận thế nào</th>
+<th>Ưu</th>
+<th>Nhược nghiêm trọng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Giả lập bàn phím</strong></td>
+<td>Đầu đọc &quot;gõ&quot; chuỗi vào ô đang có tiêu điểm rồi gửi Enter</td>
+<td>Không phải viết driver; cắm là chạy</td>
+<td><strong>Phụ thuộc hoàn toàn vào tiêu điểm</strong> — xem dưới</td>
+</tr>
+<tr>
+<td><strong>Cổng nối tiếp</strong></td>
+<td>Đọc từ cổng COM</td>
+<td>Rõ ràng ai nhận, không dính tiêu điểm</td>
+<td>Thêm dây, thêm cấu hình tốc độ</td>
+</tr>
+<tr>
+<td><strong>Mạng TCP</strong></td>
+<td>Phần mềm gửi lệnh chụp, nhận kết quả (mục 13.2.4b)</td>
+<td><strong>Chủ động chụp đúng lúc</strong>, biết chụp thất bại</td>
+<td>Cần cấu hình mạng, driver phức tạp hơn</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Cách giả lập bàn phím dễ nhất và nguy hiểm nhất, vì chuỗi rơi vào bất cứ ô nào đang có tiêu
+điểm.</strong> Nếu người vận hành vừa mở màn hình tham số và ô &quot;tốc độ trục&quot; đang có tiêu điểm, thì mã sản
+phẩm vừa quét sẽ <strong>được gõ vào ô tốc độ</strong>, và Enter có thể xác nhận luôn. Nghe như chuyện đùa, nhưng
+đây là sự cố có thật và rất khó tái hiện vì nó phụ thuộc vào việc người dùng đang mở màn hình nào.</p>
+<p>Một dự án tham khảo xử lý bằng cách cho ô quét mã một hàm <strong>tự đòi tiêu điểm</strong>, và màn hình gọi hàm đó
+mỗi khi được kích hoạt. Đó là mức tối thiểu. Ba việc nên làm thêm nếu buộc phải dùng cách này:</p>
+<ul>
+<li><strong>Khoá cửa sổ khác khi đang chờ quét</strong> — hoặc ít nhất không cho ô nhập số nào nhận tiêu điểm.</li>
+<li><strong>Nhận chuỗi ở cấp cửa sổ</strong>, không ở cấp ô nhập: bắt sự kiện bàn phím của cửa sổ chính, nhận diện
+chuỗi ký tự đến rất nhanh rồi kết thúc bằng Enter (người gõ tay không nhanh như vậy), và <strong>tự định
+tuyến</strong> nó tới nơi cần.</li>
+<li>Nếu có thể chọn lại phần cứng: <strong>dùng cách nối tiếp hoặc mạng</strong>. Vấn đề tiêu điểm biến mất hoàn toàn.</li>
+</ul>
+</blockquote>
+<h4>Kiểm tra trước khi dùng — bốn tầng, làm đủ mất mười phút</h4>
+<p>Chuỗi đọc được <strong>chưa phải là mã sản phẩm</strong> cho tới khi qua kiểm tra:</p>
+<ol>
+<li><strong>Cắt khoảng trắng và ký tự xuống dòng.</strong> Đầu đọc thường thêm CR/LF, có loại thêm dấu cách. Một mã
+<code>&quot;SN12345\r&quot;</code> khác <code>&quot;SN12345&quot;</code> khi so sánh chuỗi và khi ghi vào cơ sở dữ liệu.</li>
+<li><strong>Độ dài và định dạng.</strong> Mã của mỗi khách hàng có quy tắc riêng — độ dài cố định, tiền tố, phần ngày
+sản xuất. Kiểm tra bằng một biểu thức khai báo trong <strong>công thức sản phẩm</strong>, không viết cứng trong
+code (mã đổi theo mã hàng, không theo máy).</li>
+<li><strong>Ký tự hợp lệ.</strong> Đây cũng là lớp phòng thủ cho việc ghi cơ sở dữ liệu — chuỗi từ đầu đọc là <strong>dữ liệu
+từ bên ngoài</strong>, và callout về chèn câu lệnh SQL ở mục 13.1 áp dụng thẳng vào đây.</li>
+<li><strong>Trùng lặp</strong> — phần dưới.</li>
+</ol>
+<p>Điều quan trọng hơn cả bốn tầng: <strong>thất bại ở bất kỳ tầng nào cũng phải dừng lại và hỏi người</strong>, không
+được âm thầm dùng chuỗi rác hay âm thầm thay bằng chuỗi rỗng. Một bản ghi có mã rỗng là một bản ghi mồ
+côi — không truy ngược được về sản phẩm nào, và nó sẽ nằm đó cho tới ngày có khiếu nại.</p>
+<h4>Mã trùng: ba nguyên nhân, và bạn phải chọn chính sách cho từng cái</h4>
+<p>Đầu đọc trả về một mã mà máy <strong>đã xử lý rồi</strong>. Không có câu trả lời đúng chung — nhưng có ba nguyên nhân
+rõ ràng, và mỗi cái cần một phản ứng khác nhau:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nguyên nhân</th>
+<th>Dấu hiệu nhận ra</th>
+<th>Phản ứng hợp lý</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Đầu đọc bắn hai lần</strong></td>
+<td>Cùng mã, cách nhau vài trăm mili-giây, chưa có phôi mới vào</td>
+<td><strong>Bỏ qua lần thứ hai</strong> trong một cửa sổ thời gian ngắn</td>
+</tr>
+<tr>
+<td><strong>Sản phẩm quay lại sau khi sửa (làm lại)</strong></td>
+<td>Cùng mã, cách nhau hàng giờ; máy đang ở chế độ hàng làm lại</td>
+<td><strong>Cho phép</strong>, nhưng ghi bản ghi mới có đánh dấu làm lại (Chương 12 mục 12.4.3)</td>
+</tr>
+<tr>
+<td><strong>Nhãn trùng thật, hoặc quét nhầm sản phẩm bên cạnh</strong></td>
+<td>Cùng mã, chế độ sản xuất bình thường</td>
+<td><strong>Từ chối và báo cảnh báo</strong> — đây là lỗi chất lượng, không phải lỗi phần mềm</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Đừng để &quot;không kiểm tra trùng&quot; là lựa chọn mặc định vì chưa ai nghĩ tới.</strong> Cách rẻ nhất để bắt đầu:
+giữ trong bộ nhớ một tập các mã đã xử lý <strong>trong ca hiện tại</strong>, và tra cứu cơ sở dữ liệu cho khoảng xa
+hơn. Tra trong bộ nhớ mất vài micro-giây và bắt được đúng nguyên nhân phổ biến nhất — bắn hai lần và
+quét nhầm sản phẩm liền kề.</p>
+<p>Và <strong>quyết định này phải do bộ phận chất lượng duyệt</strong>, không phải do lập trình viên tự chọn: cho chạy
+tiếp một sản phẩm trùng mã nghĩa là hai sản phẩm khác nhau sẽ có chung một hồ sơ truy xuất.</p>
+</blockquote>
+<h4>Khi không đọc được mã</h4>
+<p>Nhãn bị xước, nhãn dán lệch, đầu đọc bẩn — chuyện xảy ra hằng ngày. Ba lựa chọn, và máy nên hỗ trợ cả ba
+một cách có kiểm soát:</p>
+<ul>
+<li><strong>Thử lại</strong>: chụp lại vài lần trước khi kết luận. Rẻ và giải quyết phần lớn trường hợp.</li>
+<li><strong>Loại sản phẩm ra</strong>: an toàn nhất, nhưng nếu tỉ lệ đọc hỏng cao thì tốn.</li>
+<li><strong>Nhập tay</strong> — hữu ích nhưng phải có ràng buộc: cần quyền cao hơn vận hành viên thường, phải <strong>ghi vào
+nhật ký thao tác ai nhập và nhập gì</strong>, và bản ghi sản phẩm phải mang <strong>cờ &quot;mã nhập tay&quot;</strong>. Không có cờ
+đó, một mã gõ nhầm sẽ trông y hệt một mã quét được, và cả hệ thống truy xuất mất giá trị.</li>
+</ul>
+<blockquote>
+<p>📌 <strong>Một mẹo nhỏ nhưng cứu rất nhiều lần: lưu lại chuỗi THÔ.</strong> Ngoài mã đã qua xử lý, hãy ghi thêm
+nguyên văn chuỗi mà đầu đọc trả về, ít nhất trong nhật ký. Khi khách hàng nói <em>&quot;mã này sai định dạng&quot;</em>
+hoặc khi bạn nghi ngờ hàm cắt chuỗi có vấn đề, chuỗi thô là thứ duy nhất phân xử được giữa <strong>đầu đọc
+đọc sai</strong> và <strong>phần mềm xử lý sai</strong> — hai nguyên nhân rất khác nhau mà nhìn kết quả cuối thì giống hệt.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -18909,6 +19025,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Xi-lanh khí nén (13.2.1b)</td>
 <td>Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp</td>
 <td>Trạng thái suy từ <strong>cả hai cảm biến</strong>; hành động phải <code>async</code> + có thẻ huỷ + hết giờ thì <strong>ném lỗi</strong> sau khi về an toàn; loại van là <strong>tham số khai báo</strong></td>
+</tr>
+<tr>
+<td>Mã định danh sản phẩm (13.2.4h)</td>
+<td>Chuỗi quét được đi đâu, kiểm thế nào, sai thì sao</td>
+<td>Bẫy tiêu điểm của đầu đọc giả lập bàn phím; 4 tầng kiểm tra; <strong>ba nguyên nhân mã trùng, ba chính sách</strong>; nhập tay phải có cờ đánh dấu</td>
 </tr>
 <tr>
 <td>Ảnh và bộ nhớ (13.2.4g)</td>

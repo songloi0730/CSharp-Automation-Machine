@@ -16726,6 +16726,88 @@ nhau; và **kết quả nằm trong tên** nên lọc ảnh lỗi chỉ cần t�
 
 ---
 
+### 13.2.4h  Mã định danh sản phẩm — từ lúc quét tới lúc dùng
+
+Mục 13.2.4b lo phần **trình điều khiển** đầu đọc mã: mở cổng, gửi lệnh chụp, tách dòng. Mục này lo phần
+sau đó, và là phần gây sự cố nhiều hơn hẳn: **chuỗi vừa đọc được đi đâu, được kiểm tra thế nào, và làm gì
+khi nó sai**. Với máy có truy xuất nguồn gốc, mã định danh là thứ **quan trọng ngang kết quả đo** — bản
+ghi gắn nhầm mã còn tệ hơn không có bản ghi.
+
+#### Ba cách đầu đọc mã nối vào phần mềm
+
+| Cách nối | Phần mềm nhận thế nào | Ưu | Nhược nghiêm trọng |
+|---|---|---|---|
+| **Giả lập bàn phím** | Đầu đọc "gõ" chuỗi vào ô đang có tiêu điểm rồi gửi Enter | Không phải viết driver; cắm là chạy | **Phụ thuộc hoàn toàn vào tiêu điểm** — xem dưới |
+| **Cổng nối tiếp** | Đọc từ cổng COM | Rõ ràng ai nhận, không dính tiêu điểm | Thêm dây, thêm cấu hình tốc độ |
+| **Mạng TCP** | Phần mềm gửi lệnh chụp, nhận kết quả (mục 13.2.4b) | **Chủ động chụp đúng lúc**, biết chụp thất bại | Cần cấu hình mạng, driver phức tạp hơn |
+
+> ⚠️ **Cách giả lập bàn phím dễ nhất và nguy hiểm nhất, vì chuỗi rơi vào bất cứ ô nào đang có tiêu
+> điểm.** Nếu người vận hành vừa mở màn hình tham số và ô "tốc độ trục" đang có tiêu điểm, thì mã sản
+> phẩm vừa quét sẽ **được gõ vào ô tốc độ**, và Enter có thể xác nhận luôn. Nghe như chuyện đùa, nhưng
+> đây là sự cố có thật và rất khó tái hiện vì nó phụ thuộc vào việc người dùng đang mở màn hình nào.
+>
+> Một dự án tham khảo xử lý bằng cách cho ô quét mã một hàm **tự đòi tiêu điểm**, và màn hình gọi hàm đó
+> mỗi khi được kích hoạt. Đó là mức tối thiểu. Ba việc nên làm thêm nếu buộc phải dùng cách này:
+> - **Khoá cửa sổ khác khi đang chờ quét** — hoặc ít nhất không cho ô nhập số nào nhận tiêu điểm.
+> - **Nhận chuỗi ở cấp cửa sổ**, không ở cấp ô nhập: bắt sự kiện bàn phím của cửa sổ chính, nhận diện
+>   chuỗi ký tự đến rất nhanh rồi kết thúc bằng Enter (người gõ tay không nhanh như vậy), và **tự định
+>   tuyến** nó tới nơi cần.
+> - Nếu có thể chọn lại phần cứng: **dùng cách nối tiếp hoặc mạng**. Vấn đề tiêu điểm biến mất hoàn toàn.
+
+#### Kiểm tra trước khi dùng — bốn tầng, làm đủ mất mười phút
+
+Chuỗi đọc được **chưa phải là mã sản phẩm** cho tới khi qua kiểm tra:
+
+1. **Cắt khoảng trắng và ký tự xuống dòng.** Đầu đọc thường thêm CR/LF, có loại thêm dấu cách. Một mã
+   `"SN12345\r"` khác `"SN12345"` khi so sánh chuỗi và khi ghi vào cơ sở dữ liệu.
+2. **Độ dài và định dạng.** Mã của mỗi khách hàng có quy tắc riêng — độ dài cố định, tiền tố, phần ngày
+   sản xuất. Kiểm tra bằng một biểu thức khai báo trong **công thức sản phẩm**, không viết cứng trong
+   code (mã đổi theo mã hàng, không theo máy).
+3. **Ký tự hợp lệ.** Đây cũng là lớp phòng thủ cho việc ghi cơ sở dữ liệu — chuỗi từ đầu đọc là **dữ liệu
+   từ bên ngoài**, và callout về chèn câu lệnh SQL ở mục 13.1 áp dụng thẳng vào đây.
+4. **Trùng lặp** — phần dưới.
+
+Điều quan trọng hơn cả bốn tầng: **thất bại ở bất kỳ tầng nào cũng phải dừng lại và hỏi người**, không
+được âm thầm dùng chuỗi rác hay âm thầm thay bằng chuỗi rỗng. Một bản ghi có mã rỗng là một bản ghi mồ
+côi — không truy ngược được về sản phẩm nào, và nó sẽ nằm đó cho tới ngày có khiếu nại.
+
+#### Mã trùng: ba nguyên nhân, và bạn phải chọn chính sách cho từng cái
+
+Đầu đọc trả về một mã mà máy **đã xử lý rồi**. Không có câu trả lời đúng chung — nhưng có ba nguyên nhân
+rõ ràng, và mỗi cái cần một phản ứng khác nhau:
+
+| Nguyên nhân | Dấu hiệu nhận ra | Phản ứng hợp lý |
+|---|---|---|
+| **Đầu đọc bắn hai lần** | Cùng mã, cách nhau vài trăm mili-giây, chưa có phôi mới vào | **Bỏ qua lần thứ hai** trong một cửa sổ thời gian ngắn |
+| **Sản phẩm quay lại sau khi sửa (làm lại)** | Cùng mã, cách nhau hàng giờ; máy đang ở chế độ hàng làm lại | **Cho phép**, nhưng ghi bản ghi mới có đánh dấu làm lại (Chương 12 mục 12.4.3) |
+| **Nhãn trùng thật, hoặc quét nhầm sản phẩm bên cạnh** | Cùng mã, chế độ sản xuất bình thường | **Từ chối và báo cảnh báo** — đây là lỗi chất lượng, không phải lỗi phần mềm |
+
+> 💡 **Đừng để "không kiểm tra trùng" là lựa chọn mặc định vì chưa ai nghĩ tới.** Cách rẻ nhất để bắt đầu:
+> giữ trong bộ nhớ một tập các mã đã xử lý **trong ca hiện tại**, và tra cứu cơ sở dữ liệu cho khoảng xa
+> hơn. Tra trong bộ nhớ mất vài micro-giây và bắt được đúng nguyên nhân phổ biến nhất — bắn hai lần và
+> quét nhầm sản phẩm liền kề.
+>
+> Và **quyết định này phải do bộ phận chất lượng duyệt**, không phải do lập trình viên tự chọn: cho chạy
+> tiếp một sản phẩm trùng mã nghĩa là hai sản phẩm khác nhau sẽ có chung một hồ sơ truy xuất.
+
+#### Khi không đọc được mã
+
+Nhãn bị xước, nhãn dán lệch, đầu đọc bẩn — chuyện xảy ra hằng ngày. Ba lựa chọn, và máy nên hỗ trợ cả ba
+một cách có kiểm soát:
+
+- **Thử lại**: chụp lại vài lần trước khi kết luận. Rẻ và giải quyết phần lớn trường hợp.
+- **Loại sản phẩm ra**: an toàn nhất, nhưng nếu tỉ lệ đọc hỏng cao thì tốn.
+- **Nhập tay** — hữu ích nhưng phải có ràng buộc: cần quyền cao hơn vận hành viên thường, phải **ghi vào
+  nhật ký thao tác ai nhập và nhập gì**, và bản ghi sản phẩm phải mang **cờ "mã nhập tay"**. Không có cờ
+  đó, một mã gõ nhầm sẽ trông y hệt một mã quét được, và cả hệ thống truy xuất mất giá trị.
+
+> 📌 **Một mẹo nhỏ nhưng cứu rất nhiều lần: lưu lại chuỗi THÔ.** Ngoài mã đã qua xử lý, hãy ghi thêm
+> nguyên văn chuỗi mà đầu đọc trả về, ít nhất trong nhật ký. Khi khách hàng nói *"mã này sai định dạng"*
+> hoặc khi bạn nghi ngờ hàm cắt chuỗi có vấn đề, chuỗi thô là thứ duy nhất phân xử được giữa **đầu đọc
+> đọc sai** và **phần mềm xử lý sai** — hai nguyên nhân rất khác nhau mà nhìn kết quả cuối thì giống hệt.
+
+---
+
 ### 13.2.5 Simulator Driver
 
 Mỗi `IMotionAxisDriver` đều có đối tác `SimulatedAxisDriver` — driver giả lập không cần
@@ -17450,6 +17532,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
 | Xi-lanh khí nén (13.2.1b) | Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp | Trạng thái suy từ **cả hai cảm biến**; hành động phải `async` + có thẻ huỷ + hết giờ thì **ném lỗi** sau khi về an toàn; loại van là **tham số khai báo** |
+| Mã định danh sản phẩm (13.2.4h) | Chuỗi quét được đi đâu, kiểm thế nào, sai thì sao | Bẫy tiêu điểm của đầu đọc giả lập bàn phím; 4 tầng kiểm tra; **ba nguyên nhân mã trùng, ba chính sách**; nhập tay phải có cờ đánh dấu |
 | Ảnh và bộ nhớ (13.2.4g) | Ảnh tốn bộ nhớ **không quản lý** mà bộ dọn rác không thấy | `using` hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh; tên tệp dùng `HH` không phải `hh` |
 | Căn chỉnh phôi (13.2.4f) | Đo dấu rồi bù XYθ cho trục | **Xoay trước, tịnh tiến sau** — đừng lấy trung bình hai lượng lệch; tâm xoay là tham số; kẹp biên độ và đo lại sau khi bù |
 | Chạm tới một tín hiệu (13.2.4e) | Nghiệp vụ cần một tín hiệu, không cần cả thiết bị | Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối |

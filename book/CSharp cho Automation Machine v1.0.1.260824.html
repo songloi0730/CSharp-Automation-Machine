@@ -15788,6 +15788,51 @@ cùng một vấn đề với việc chống lũ cảnh báo ở Chương 15 m�
 <td>Bỏ qua event publish, logging, validate transition — state machine &quot;vỡ&quot; dần khi code phình to</td>
 <td>Mọi thay đổi trạng thái PHẢI đi qua <code>Send()</code>; không bao giờ set field state trực tiếp từ bên ngoài class</td>
 </tr>
+<tr>
+<td>Bộ đếm sản lượng nằm trong RAM (12.5.1)</td>
+<td>Khởi động lại giữa ca là mất sản lượng ca đó — không cảnh báo, người vận hành phát hiện bằng cách <em>nhớ ra</em></td>
+<td>Ghi xuống nơi bền mỗi khi tăng; nạp lại lúc khởi động; khoảng dừng đang mở cũng phải khôi phục</td>
+</tr>
+<tr>
+<td>Xoá bộ đếm bằng cách so chuỗi <code>&quot;HHmm&quot; == &quot;0800&quot;</code> trong hàm tick màn hình (12.5.1)</td>
+<td>Máy bật lúc 08:03 thì lần xoá đó <strong>không bao giờ xảy ra</strong> — ca sáng cộng dồn vào ca đêm</td>
+<td>Giờ đổi ca là <strong>cấu hình</strong>; xoá theo <strong>mốc ca đã trôi qua</strong>, không theo &quot;phút hiện tại bằng đúng 0800&quot;</td>
+</tr>
+<tr>
+<td><code>Average()</code> trên danh sách chu kỳ không bao giờ xoá (12.5.1)</td>
+<td>Sau 8 tiếng là &quot;trung bình từ lúc mở phần mềm&quot; — che mất việc máy chậm dần; danh sách lớn mãi</td>
+<td><strong>Cửa sổ trượt</strong> cho màn hình, thống kê theo ca cho báo cáo</td>
+</tr>
+<tr>
+<td>Đếm được sản lượng nhưng không ghi <strong>lý do</strong> cho từng phút dừng (12.5.2)</td>
+<td>820 sản phẩm có thể do chạy 5 tiếng, do chạy chậm, hay do hỏng 12% — ba nguyên nhân, ba hành động, cùng một con số</td>
+<td>Sổ lý do: mọi thời điểm máy ở đúng <strong>một</strong> trạng thái có lý do; mọi con số OEE <strong>suy ra</strong> bằng cách cộng thời lượng</td>
+</tr>
+<tr>
+<td>Thứ tự ưu tiên khi nhiều lý do dừng cùng đúng nằm ngầm trong chuỗi <code>else if</code> (12.5.3)</td>
+<td>Đổi thứ tự là đổi con số cuối tháng; đội bảo trì có thể trông sạch sẽ hơn thực tế mà không ai biết</td>
+<td>Viết thứ tự ra và cho <strong>người phụ trách sản xuất duyệt</strong></td>
+</tr>
+<tr>
+<td>Vòng giám sát tự động ghi đè lý do dừng mà người vận hành vừa chọn (12.5.3)</td>
+<td>Người vận hành chọn &quot;thay khuôn&quot;, 200 ms sau máy đổi thành &quot;để không&quot; — sau hai lần thì <strong>không ai dùng tính năng phân loại nữa</strong></td>
+<td>Có ô &quot;giữ nguyên lựa chọn của tôi&quot;; mọi chỗ phần mềm và người cùng ghi một trường đều phải trả lời <em>ai thắng, trong bao lâu</em></td>
+</tr>
+<tr>
+<td>Hàng mẫu đầu ca và hàng làm lại không được đánh dấu (12.4.3)</td>
+<td>Chúng tạo sản phẩm thật, ghi dữ liệu thật ⇒ hàng làm lại <strong>bị tính hai lần</strong> vào sản lượng</td>
+<td>Ghi <strong>chế độ chạy vào từng bản ghi</strong>, không dựa vào &quot;chế độ thử thì không ghi&quot;</td>
+</tr>
+<tr>
+<td>Đếm số <strong>cảnh báo</strong> thay vì số <strong>khoảng dừng</strong> khi tính chỉ số độ tin cậy (12.5.4)</td>
+<td>Một lần kẹt phôi kéo theo năm cảnh báo liên đới bị tính thành năm lần dừng</td>
+<td>Đếm dựa trên <strong>khoảng dừng trong sổ lý do</strong>, không dựa trên bảng cảnh báo</td>
+</tr>
+<tr>
+<td>Hai trục chế độ chạy không vuông góc (12.4.3)</td>
+<td><em>Chạy khô</em> nằm ở cả hai trục ⇒ hơn 80 dòng <code>switch</code> lồng <code>else if</code> chỉ để chọn một dòng chữ và một màu nền</td>
+<td>Ba câu kiểm tra trước khi thêm chế độ: có nghĩa với mọi giá trị trục kia không · có trùng nghĩa cái cũ không · nó đổi <em>quy trình/dữ liệu</em> hay chỉ đổi <em>quyền bấm</em></td>
+</tr>
 </tbody></table></div>
 <!-- SECTION: Chapter_13_DAL -->
 <hr>
@@ -19485,6 +19530,61 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Tăng tải PLC; làm chậm bus giao tiếp</td>
 <td>Dùng telemetry sẵn có (latency, quality); ping chỉ khi cần confirm</td>
 </tr>
+<tr>
+<td>Thư viện đọc/ghi PLC <strong>giữ lệnh lại</strong> khi chưa kết nối thay vì báo lỗi (13.2.4c)</td>
+<td>Một bước trình tự <strong>treo vô hạn</strong> — không lỗi, không cảnh báo, người vận hành chỉ thấy máy đứng ở bước 7</td>
+<td>Bọc <strong>mọi</strong> lời gọi thiết bị trong thời gian chờ tối đa của riêng bạn; hết giờ thì thành cảnh báo có nội dung</td>
+</tr>
+<tr>
+<td>Nối lại được đường truyền rồi chạy tiếp ngay (13.3.5)</td>
+<td>Trục đã nhả mô-men và rơi, PLC đã chạy trình tự an toàn riêng, thiết bị đã mất tham số — bước sau chạy trong một thế giới khác</td>
+<td><strong>Nối lại ≠ chạy tiếp</strong>: xác minh trạng thái vật lý trước, y như chạy tiếp sau tạm dừng (Ch12 mục 12.2.4)</td>
+</tr>
+<tr>
+<td>Hành động của cơ cấu hai trạng thái trả về <code>void</code> (13.2.1b)</td>
+<td>Trình tự chạy tiếp khi xi-lanh mới đi được nửa hành trình</td>
+<td><code>async Task</code> + thẻ huỷ + thời gian chờ; hết giờ thì <strong>về trạng thái an toàn rồi mới ném lỗi</strong></td>
+</tr>
+<tr>
+<td>Buông cuộn van khi cảm biến báo tới nơi, không xét loại van (13.2.1b)</td>
+<td>Đúng với van xung hai cuộn; với van một cuộn lò xo hồi vị thì <strong>xi-lanh tự thu về</strong></td>
+<td>Loại van là <strong>tham số khai báo</strong> của cơ cấu, không phải giả định ngầm trong code</td>
+</tr>
+<tr>
+<td>Toạ độ và tốc độ trong bảng điểm lưu ở hai hệ đơn vị khác nhau (13.4.1)</td>
+<td>Người sau đọc tệp hiểu sai; sửa một giá trị thành sai cả hai</td>
+<td>Đơn vị kỹ thuật ở mọi nơi, quy đổi <strong>chỉ</strong> ở lớp sát trình điều khiển; đưa đơn vị vào tên trường</td>
+</tr>
+<tr>
+<td>Lấy trung bình hai lượng lệch khi căn chỉnh hai dấu (13.4.3)</td>
+<td>Gần đúng khi góc nhỏ, <strong>sai lớn dần khi góc tăng</strong> — mà máy vẫn &quot;chạy được&quot; nên rất lâu mới bị phát hiện</td>
+<td><strong>Xoay trước, tịnh tiến sau</strong>: tính góc từ đường nối hai dấu, xoay điểm đo, rồi mới lấy hiệu</td>
+</tr>
+<tr>
+<td>Gán ảnh mới đè lên biến ảnh cũ mà không giải phóng (13.4.4)</td>
+<td>Bộ nhớ <strong>không quản lý</strong> phình dần; bộ đếm bộ nhớ .NET vẫn thấp nên không ai nghi ngờ</td>
+<td><code>using</code>, hoặc <strong>một chủ sở hữu duy nhất</strong> chịu trách nhiệm giải phóng; bản ghi kết quả giữ <strong>đường dẫn</strong>, không giữ ảnh</td>
+</tr>
+<tr>
+<td>Đặt tên tệp ảnh bằng <code>hh</code> (giờ hệ 12) không kèm SA/CH (13.4.4)</td>
+<td>Ảnh 09:15 và 21:15 <strong>cùng một tên</strong> — cái sau đè cái trước, im lặng, mỗi ngày mất một phần bằng chứng</td>
+<td>Dùng <code>yyyyMMdd_HHmmss_fff</code> và đặt thời gian <strong>đứng trước</strong> trong tên tệp</td>
+</tr>
+<tr>
+<td>Trạng thái một ô trên khay khai báo bằng <code>bool</code> (13.4.6)</td>
+<td>Không phân biệt được <em>trống</em> · <em>đặt sai chiều</em> · <em>bỏ qua theo khai báo</em> · <em>không kết luận được</em> — Pareto cuối tháng chỉ nói &quot;tỉ lệ lỗi cao&quot;</td>
+<td>Enum nhiều giá trị; đặc biệt tách <strong>đặt sai chiều</strong> khỏi <strong>lỗi</strong>, và <strong>ô trống</strong> khỏi <strong>lỗi</strong></td>
+</tr>
+<tr>
+<td>Phán định OK/NG trên giá trị <strong>đã làm tròn</strong> (13.4.7)</td>
+<td>Bạn vừa nới quy cách thêm nửa đơn vị hiển thị mà không ai quyết định điều đó</td>
+<td>Phán định trên <strong>giá trị thô</strong>, hiển thị làm tròn, <strong>lưu cả hai</strong></td>
+</tr>
+<tr>
+<td>Gộp <em>&quot;không đo được&quot;</em> vào <em>&quot;không đạt&quot;</em> (13.4.7)</td>
+<td>Một đầu đo hỏng hiện lên báo cáo thành một đợt hàng kém chất lượng — người ta đi tìm nguyên nhân sai chỗ</td>
+<td><strong>Ba</strong> kết luận, không phải hai; sản phẩm không đo được thì giữ lại đo lại và cảnh báo khi tỉ lệ vượt ngưỡng</td>
+</tr>
 </tbody></table></div>
 <!-- SECTION: Chapter_14_Protocols -->
 <hr>
@@ -22723,6 +22823,36 @@ cho từng bài toán.</p>
 <td>OPC UA: namespace index thay đổi sau firmware update</td>
 <td>Numeric NodeId cũ không còn hợp lệ, đọc ra <code>NodeNotFoundException</code> âm thầm</td>
 <td>Dùng String NodeId (<code>ns=2;s=&quot;Motor1/Speed&quot;</code>) thay Numeric; map bằng namespace URI, không phải index</td>
+</tr>
+<tr>
+<td>Để kiểu dữ liệu của thư viện PLC lan vào code nghiệp vụ (14.1.2c)</td>
+<td>Thư viện ngừng bảo trì, khách đổi hãng PLC, hoặc phát hiện nó không an toàn đa luồng — đổi là viết lại</td>
+<td>Luôn bọc sau interface của riêng bạn; tầng quy trình chỉ thấy <code>Task&lt;bool&gt; DocCoPhoiAsync(...)</code></td>
+</tr>
+<tr>
+<td>Robot: coi &quot;đã gửi lệnh Dừng&quot; là &quot;đã dừng&quot; (14.1.6)</td>
+<td>Lệnh có thể mất, tới chậm, hoặc bị từ chối vì robot đang ở trạng thái không nhận lệnh</td>
+<td><strong>Xác nhận bằng trạng thái</strong> sau khi gửi; và mạch dừng khẩn <strong>nối cứng</strong> vào đầu vào an toàn của bộ điều khiển robot</td>
+</tr>
+<tr>
+<td>Robot: chèn <code>Task.Delay</code> cố định giữa các bước bật máy (14.1.6)</td>
+<td>Hỏng vào ngày robot khởi động chậm hơn bình thường</td>
+<td><strong>Chờ trạng thái, đừng chờ thời gian</strong> — hỏi lại tới khi đúng, kèm hạn chờ</td>
+</tr>
+<tr>
+<td>Quên rằng chương trình và điểm nằm <strong>trong bộ điều khiển robot</strong> (14.1.6)</td>
+<td>Bộ điều khiển hỏng là mất toàn bộ chương trình và điểm đã dạy — bản sao lưu phần mềm không cứu được</td>
+<td>Quy trình bàn giao phải có bước <strong>xuất chương trình + điểm ra tệp</strong>, lặp lại sau mỗi lần chỉnh</td>
+</tr>
+<tr>
+<td>Thêm cột <code>TenTrenMes</code> cho mỗi hệ thống ngoài (14.2.8b)</td>
+<td>Có hệ thứ hai là thêm cột thứ hai, rồi thứ ba; và mỗi lần thêm là sửa code</td>
+<td>Bí danh thuộc về <strong>mối quan hệ</strong> giữa tín hiệu và hệ thống ngoài ⇒ một bảng riêng, thêm hệ mới là <strong>thêm dữ liệu</strong></td>
+</tr>
+<tr>
+<td>Thứ tự byte coi là thuộc tính của cả trình điều khiển (14.1.2b)</td>
+<td>Một máy có hai thiết bị hai hãng với hai quy ước ⇒ đọc số thực ra giá trị vô lý</td>
+<td>Thứ tự byte là thuộc tính của <strong>một địa chỉ trên một thiết bị</strong>; cho địa chỉ thành kiểu so sánh được để gộp khối đọc cũng dễ hơn</td>
 </tr>
 </tbody></table></div>
 <!-- SECTION: Chapter_15_Safety -->
@@ -26699,6 +26829,46 @@ thành biến có tên, không viết dồn một dòng.</p>
 <td><strong>Message Bus quá phức tạp cho hệ thống đơn giản</strong></td>
 <td>Dùng RabbitMQ/Azure Service Bus cho IPC duy nhất không cần HA</td>
 <td><code>InMemoryEventPublisher</code> đủ dùng cho single-process; chỉ nâng cấp khi thực sự cần cross-process</td>
+</tr>
+<tr>
+<td><strong>Nhánh không kiểm tra giá trị trả về của nút con</strong> (16.2c)</td>
+<td>Bước hỏng bị bỏ qua <strong>trong im lặng</strong> và trình tự chạy tiếp — hút chân không thất bại nhưng vẫn nâng lên</td>
+<td>Báo lỗi bằng ngoại lệ, hoặc bật cảnh báo trình biên dịch về giá trị trả về bị bỏ; đừng <code>catch (Exception)</code> rồi <code>return false</code></td>
+</tr>
+<tr>
+<td><strong>&quot;Chặn&quot; một nút hiểu là BỎ QUA thay vì CHỜ</strong> (16.2c)</td>
+<td>Bỏ qua bước hạ xuống rồi vẫn chạy bước hút — hỏng sản phẩm hoặc hỏng đầu gắp</td>
+<td>Tách hẳn hai loại: <em>điều kiện chờ</em> (có hạn chờ + cảnh báo) và <em>điều kiện bỏ qua</em> (bước tuỳ chọn theo mã hàng)</td>
+</tr>
+<tr>
+<td><strong>Lệnh chờ chỉ cần điều kiện đúng MỘT lần hỏi</strong> (16.2d)</td>
+<td>Bắt đúng một cái nháy của cảm biến ⇒ bước sau chạy khi phôi chưa vào vị trí; lỗi vài lần một ca, khó tái hiện, hay bị đổ cho &quot;nhiễu điện&quot;</td>
+<td>Thêm tham số <strong>thời gian phải giữ đúng</strong>; rớt giữa chừng thì <strong>đặt lại đồng hồ</strong>, không thoát</td>
+</tr>
+<tr>
+<td><strong>Biểu thức điều kiện ghép nhiều so sánh và phủ định trong một dòng</strong> (16.2d)</td>
+<td>Không soát được bằng mắt — một lỗi <code>!=</code> giữa hai giá trị đúng/sai làm <strong>vô hiệu hoá</strong> chính cơ chế nó bảo vệ</td>
+<td>Tách thành biến có tên rồi mới ghép</td>
+</tr>
+<tr>
+<td><strong>Dùng <code>==</code> trên số thực trong lệnh chờ</strong> (16.2d)</td>
+<td>Chờ áp suất &quot;bằng đúng 5,00 bar&quot; là chờ mãi mãi</td>
+<td>Với số thực chỉ cho phép lớn hơn/nhỏ hơn, hoặc <em>bằng trong dung sai</em></td>
+</tr>
+<tr>
+<td><strong>Chỉ số thanh ghi = thứ tự khai báo enum</strong> (16.2b.5)</td>
+<td>Người thêm cờ cho trạm 3 chèn vào giữa ⇒ mọi chỉ số sau dịch một, <strong>không có lỗi biên dịch</strong></td>
+<td>Gán giá trị tường minh + chỉ thêm vào cuối; hoặc tra cứu theo tên</td>
+</tr>
+<tr>
+<td><strong>Hàm &quot;xoá sạch bảng cờ&quot; quét cả bảng chuỗi/số</strong> (16.2b.5)</td>
+<td>Xoá mất mã đơn hàng và chế độ làm việc đang chạy</td>
+<td>Cờ đồng bộ xoá mỗi chu kỳ; <strong>ngữ cảnh sản xuất thì không</strong> — hai vòng đời khác nhau</td>
+</tr>
+<tr>
+<td><strong>Đặt việc chậm trực tiếp trong chuỗi xử lý giá trị</strong> (16.1.4)</td>
+<td>Một lời gọi mạng chờ ba giây làm nghẽn <strong>toàn bộ</strong> việc thu thập dữ liệu</td>
+<td>Đưa vào hàng đợi cho luồng khác làm; và quyết rõ <strong>bộ xử lý nào được phép chặn chuỗi khi hỏng</strong></td>
 </tr>
 </tbody></table></div>
 <!-- SECTION: Chapter_17_DevOps -->

@@ -14365,6 +14365,15 @@ Một hướng mở rộng từ State Machine là **Actor Model** — mỗi Acto
 | Dùng string thô cho state/command | Typo im lặng: "started" vs "Starting" | Dùng `PackMlState` và `PackMlCommand` enum — compiler phát hiện lỗi |
 | Nhầm Hold với Suspend | Operator Unhold máy khi lý do Suspend chưa được giải quyết | Hold = operator chủ động; Suspend = điều kiện ngoài → luôn phân biệt nguồn phát lệnh |
 | Gán `_state = ...` trực tiếp ở nhiều nơi thay vì qua `Send()` | Bỏ qua event publish, logging, validate transition — state machine "vỡ" dần khi code phình to | Mọi thay đổi trạng thái PHẢI đi qua `Send()`; không bao giờ set field state trực tiếp từ bên ngoài class |
+| Bộ đếm sản lượng nằm trong RAM (12.5.1) | Khởi động lại giữa ca là mất sản lượng ca đó — không cảnh báo, người vận hành phát hiện bằng cách *nhớ ra* | Ghi xuống nơi bền mỗi khi tăng; nạp lại lúc khởi động; khoảng dừng đang mở cũng phải khôi phục |
+| Xoá bộ đếm bằng cách so chuỗi `"HHmm" == "0800"` trong hàm tick màn hình (12.5.1) | Máy bật lúc 08:03 thì lần xoá đó **không bao giờ xảy ra** — ca sáng cộng dồn vào ca đêm | Giờ đổi ca là **cấu hình**; xoá theo **mốc ca đã trôi qua**, không theo "phút hiện tại bằng đúng 0800" |
+| `Average()` trên danh sách chu kỳ không bao giờ xoá (12.5.1) | Sau 8 tiếng là "trung bình từ lúc mở phần mềm" — che mất việc máy chậm dần; danh sách lớn mãi | **Cửa sổ trượt** cho màn hình, thống kê theo ca cho báo cáo |
+| Đếm được sản lượng nhưng không ghi **lý do** cho từng phút dừng (12.5.2) | 820 sản phẩm có thể do chạy 5 tiếng, do chạy chậm, hay do hỏng 12% — ba nguyên nhân, ba hành động, cùng một con số | Sổ lý do: mọi thời điểm máy ở đúng **một** trạng thái có lý do; mọi con số OEE **suy ra** bằng cách cộng thời lượng |
+| Thứ tự ưu tiên khi nhiều lý do dừng cùng đúng nằm ngầm trong chuỗi `else if` (12.5.3) | Đổi thứ tự là đổi con số cuối tháng; đội bảo trì có thể trông sạch sẽ hơn thực tế mà không ai biết | Viết thứ tự ra và cho **người phụ trách sản xuất duyệt** |
+| Vòng giám sát tự động ghi đè lý do dừng mà người vận hành vừa chọn (12.5.3) | Người vận hành chọn "thay khuôn", 200 ms sau máy đổi thành "để không" — sau hai lần thì **không ai dùng tính năng phân loại nữa** | Có ô "giữ nguyên lựa chọn của tôi"; mọi chỗ phần mềm và người cùng ghi một trường đều phải trả lời *ai thắng, trong bao lâu* |
+| Hàng mẫu đầu ca và hàng làm lại không được đánh dấu (12.4.3) | Chúng tạo sản phẩm thật, ghi dữ liệu thật ⇒ hàng làm lại **bị tính hai lần** vào sản lượng | Ghi **chế độ chạy vào từng bản ghi**, không dựa vào "chế độ thử thì không ghi" |
+| Đếm số **cảnh báo** thay vì số **khoảng dừng** khi tính chỉ số độ tin cậy (12.5.4) | Một lần kẹt phôi kéo theo năm cảnh báo liên đới bị tính thành năm lần dừng | Đếm dựa trên **khoảng dừng trong sổ lý do**, không dựa trên bảng cảnh báo |
+| Hai trục chế độ chạy không vuông góc (12.4.3) | *Chạy khô* nằm ở cả hai trục ⇒ hơn 80 dòng `switch` lồng `else if` chỉ để chọn một dòng chữ và một màu nền | Ba câu kiểm tra trước khi thêm chế độ: có nghĩa với mọi giá trị trục kia không · có trùng nghĩa cái cũ không · nó đổi *quy trình/dữ liệu* hay chỉ đổi *quyền bấm* |
 
 <!-- SECTION: Chapter_13_DAL -->
 ---
@@ -17881,6 +17890,17 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | DeviceManager không có dependency ordering | Vision khởi động trước PLC → handshake I/O thất bại | Cấu hình `DependsOn`; khởi động theo topological order |
 | Pool không có reference counting | Dispose connection đang được dùng bởi device khác | Dùng `ConnectionPool<T>` với refcount + `SemaphoreSlim` |
 | Health loop ping thiết bị tần suất cao | Tăng tải PLC; làm chậm bus giao tiếp | Dùng telemetry sẵn có (latency, quality); ping chỉ khi cần confirm |
+| Thư viện đọc/ghi PLC **giữ lệnh lại** khi chưa kết nối thay vì báo lỗi (13.2.4c) | Một bước trình tự **treo vô hạn** — không lỗi, không cảnh báo, người vận hành chỉ thấy máy đứng ở bước 7 | Bọc **mọi** lời gọi thiết bị trong thời gian chờ tối đa của riêng bạn; hết giờ thì thành cảnh báo có nội dung |
+| Nối lại được đường truyền rồi chạy tiếp ngay (13.3.5) | Trục đã nhả mô-men và rơi, PLC đã chạy trình tự an toàn riêng, thiết bị đã mất tham số — bước sau chạy trong một thế giới khác | **Nối lại ≠ chạy tiếp**: xác minh trạng thái vật lý trước, y như chạy tiếp sau tạm dừng (Ch12 mục 12.2.4) |
+| Hành động của cơ cấu hai trạng thái trả về `void` (13.2.1b) | Trình tự chạy tiếp khi xi-lanh mới đi được nửa hành trình | `async Task` + thẻ huỷ + thời gian chờ; hết giờ thì **về trạng thái an toàn rồi mới ném lỗi** |
+| Buông cuộn van khi cảm biến báo tới nơi, không xét loại van (13.2.1b) | Đúng với van xung hai cuộn; với van một cuộn lò xo hồi vị thì **xi-lanh tự thu về** | Loại van là **tham số khai báo** của cơ cấu, không phải giả định ngầm trong code |
+| Toạ độ và tốc độ trong bảng điểm lưu ở hai hệ đơn vị khác nhau (13.4.1) | Người sau đọc tệp hiểu sai; sửa một giá trị thành sai cả hai | Đơn vị kỹ thuật ở mọi nơi, quy đổi **chỉ** ở lớp sát trình điều khiển; đưa đơn vị vào tên trường |
+| Lấy trung bình hai lượng lệch khi căn chỉnh hai dấu (13.4.3) | Gần đúng khi góc nhỏ, **sai lớn dần khi góc tăng** — mà máy vẫn "chạy được" nên rất lâu mới bị phát hiện | **Xoay trước, tịnh tiến sau**: tính góc từ đường nối hai dấu, xoay điểm đo, rồi mới lấy hiệu |
+| Gán ảnh mới đè lên biến ảnh cũ mà không giải phóng (13.4.4) | Bộ nhớ **không quản lý** phình dần; bộ đếm bộ nhớ .NET vẫn thấp nên không ai nghi ngờ | `using`, hoặc **một chủ sở hữu duy nhất** chịu trách nhiệm giải phóng; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh |
+| Đặt tên tệp ảnh bằng `hh` (giờ hệ 12) không kèm SA/CH (13.4.4) | Ảnh 09:15 và 21:15 **cùng một tên** — cái sau đè cái trước, im lặng, mỗi ngày mất một phần bằng chứng | Dùng `yyyyMMdd_HHmmss_fff` và đặt thời gian **đứng trước** trong tên tệp |
+| Trạng thái một ô trên khay khai báo bằng `bool` (13.4.6) | Không phân biệt được *trống* · *đặt sai chiều* · *bỏ qua theo khai báo* · *không kết luận được* — Pareto cuối tháng chỉ nói "tỉ lệ lỗi cao" | Enum nhiều giá trị; đặc biệt tách **đặt sai chiều** khỏi **lỗi**, và **ô trống** khỏi **lỗi** |
+| Phán định OK/NG trên giá trị **đã làm tròn** (13.4.7) | Bạn vừa nới quy cách thêm nửa đơn vị hiển thị mà không ai quyết định điều đó | Phán định trên **giá trị thô**, hiển thị làm tròn, **lưu cả hai** |
+| Gộp *"không đo được"* vào *"không đạt"* (13.4.7) | Một đầu đo hỏng hiện lên báo cáo thành một đợt hàng kém chất lượng — người ta đi tìm nguyên nhân sai chỗ | **Ba** kết luận, không phải hai; sản phẩm không đo được thì giữ lại đo lại và cảnh báo khi tỉ lệ vượt ngưỡng |
 
 <!-- SECTION: Chapter_14_Protocols -->
 ---
@@ -20472,6 +20492,12 @@ cho từng bài toán.
 | TCP custom: không có heartbeat định kỳ | Mất kết nối không phát hiện — socket "zombie" còn open nhưng peer đã offline, process con có thể chết âm thầm, phát hiện muộn hàng chục giây | Heartbeat/Ping-Pong mỗi 5s; đánh dấu Unhealthy + alarm dải 20xxx khi không phản hồi, reconnect nếu Ping timeout |
 | TCP custom: không retry/reconnect | Restart máy khi mạng bị ngắt thoáng qua | `EnsureConnectedAsync` với backoff + alarm trước khi stop sequence |
 | OPC UA: namespace index thay đổi sau firmware update | Numeric NodeId cũ không còn hợp lệ, đọc ra `NodeNotFoundException` âm thầm | Dùng String NodeId (`ns=2;s="Motor1/Speed"`) thay Numeric; map bằng namespace URI, không phải index |
+| Để kiểu dữ liệu của thư viện PLC lan vào code nghiệp vụ (14.1.2c) | Thư viện ngừng bảo trì, khách đổi hãng PLC, hoặc phát hiện nó không an toàn đa luồng — đổi là viết lại | Luôn bọc sau interface của riêng bạn; tầng quy trình chỉ thấy `Task<bool> DocCoPhoiAsync(...)` |
+| Robot: coi "đã gửi lệnh Dừng" là "đã dừng" (14.1.6) | Lệnh có thể mất, tới chậm, hoặc bị từ chối vì robot đang ở trạng thái không nhận lệnh | **Xác nhận bằng trạng thái** sau khi gửi; và mạch dừng khẩn **nối cứng** vào đầu vào an toàn của bộ điều khiển robot |
+| Robot: chèn `Task.Delay` cố định giữa các bước bật máy (14.1.6) | Hỏng vào ngày robot khởi động chậm hơn bình thường | **Chờ trạng thái, đừng chờ thời gian** — hỏi lại tới khi đúng, kèm hạn chờ |
+| Quên rằng chương trình và điểm nằm **trong bộ điều khiển robot** (14.1.6) | Bộ điều khiển hỏng là mất toàn bộ chương trình và điểm đã dạy — bản sao lưu phần mềm không cứu được | Quy trình bàn giao phải có bước **xuất chương trình + điểm ra tệp**, lặp lại sau mỗi lần chỉnh |
+| Thêm cột `TenTrenMes` cho mỗi hệ thống ngoài (14.2.8b) | Có hệ thứ hai là thêm cột thứ hai, rồi thứ ba; và mỗi lần thêm là sửa code | Bí danh thuộc về **mối quan hệ** giữa tín hiệu và hệ thống ngoài ⇒ một bảng riêng, thêm hệ mới là **thêm dữ liệu** |
+| Thứ tự byte coi là thuộc tính của cả trình điều khiển (14.1.2b) | Một máy có hai thiết bị hai hãng với hai quy ước ⇒ đọc số thực ra giá trị vô lý | Thứ tự byte là thuộc tính của **một địa chỉ trên một thiết bị**; cho địa chỉ thành kiểu so sánh được để gộp khối đọc cũng dễ hơn |
 
 <!-- SECTION: Chapter_15_Safety -->
 ---
@@ -23944,6 +23970,14 @@ Kết thúc Phần V (Chương 11–16), kiến trúc lõi của hệ thống au
 | **Không xoá bảng cờ trước khi Start** | Chu kỳ đầu đúng, chu kỳ hai chạy vượt bước (tay gắp xuống trước khi phôi vào) | `ResetAll()` toàn bộ cờ trong luồng khởi động, TRƯỚC khi bật luồng các trạm |
 | **Chèn thành viên vào giữa enum cờ** | Mọi trạm bắt đầu chờ sai cờ sau một lần "sửa nhỏ" | Chỉ thêm ở cuối enum, hoặc gán giá trị tường minh ngay từ đầu |
 | **Message Bus quá phức tạp cho hệ thống đơn giản** | Dùng RabbitMQ/Azure Service Bus cho IPC duy nhất không cần HA | `InMemoryEventPublisher` đủ dùng cho single-process; chỉ nâng cấp khi thực sự cần cross-process |
+| **Nhánh không kiểm tra giá trị trả về của nút con** (16.2c) | Bước hỏng bị bỏ qua **trong im lặng** và trình tự chạy tiếp — hút chân không thất bại nhưng vẫn nâng lên | Báo lỗi bằng ngoại lệ, hoặc bật cảnh báo trình biên dịch về giá trị trả về bị bỏ; đừng `catch (Exception)` rồi `return false` |
+| **"Chặn" một nút hiểu là BỎ QUA thay vì CHỜ** (16.2c) | Bỏ qua bước hạ xuống rồi vẫn chạy bước hút — hỏng sản phẩm hoặc hỏng đầu gắp | Tách hẳn hai loại: *điều kiện chờ* (có hạn chờ + cảnh báo) và *điều kiện bỏ qua* (bước tuỳ chọn theo mã hàng) |
+| **Lệnh chờ chỉ cần điều kiện đúng MỘT lần hỏi** (16.2d) | Bắt đúng một cái nháy của cảm biến ⇒ bước sau chạy khi phôi chưa vào vị trí; lỗi vài lần một ca, khó tái hiện, hay bị đổ cho "nhiễu điện" | Thêm tham số **thời gian phải giữ đúng**; rớt giữa chừng thì **đặt lại đồng hồ**, không thoát |
+| **Biểu thức điều kiện ghép nhiều so sánh và phủ định trong một dòng** (16.2d) | Không soát được bằng mắt — một lỗi `!=` giữa hai giá trị đúng/sai làm **vô hiệu hoá** chính cơ chế nó bảo vệ | Tách thành biến có tên rồi mới ghép |
+| **Dùng `==` trên số thực trong lệnh chờ** (16.2d) | Chờ áp suất "bằng đúng 5,00 bar" là chờ mãi mãi | Với số thực chỉ cho phép lớn hơn/nhỏ hơn, hoặc *bằng trong dung sai* |
+| **Chỉ số thanh ghi = thứ tự khai báo enum** (16.2b.5) | Người thêm cờ cho trạm 3 chèn vào giữa ⇒ mọi chỉ số sau dịch một, **không có lỗi biên dịch** | Gán giá trị tường minh + chỉ thêm vào cuối; hoặc tra cứu theo tên |
+| **Hàm "xoá sạch bảng cờ" quét cả bảng chuỗi/số** (16.2b.5) | Xoá mất mã đơn hàng và chế độ làm việc đang chạy | Cờ đồng bộ xoá mỗi chu kỳ; **ngữ cảnh sản xuất thì không** — hai vòng đời khác nhau |
+| **Đặt việc chậm trực tiếp trong chuỗi xử lý giá trị** (16.1.4) | Một lời gọi mạng chờ ba giây làm nghẽn **toàn bộ** việc thu thập dữ liệu | Đưa vào hàng đợi cho luồng khác làm; và quyết rõ **bộ xử lý nào được phép chặn chuỗi khi hỏng** |
 
 <!-- SECTION: Chapter_17_DevOps -->
 ---

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260822</title>
+  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260824</title>
   <style>
 
 html {
@@ -240,7 +240,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <body>
 <header id="title-block-header">
 <h1 class="title">Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá
-— v1.0.0.260822</h1>
+— v1.0.0.260824</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -369,7 +369,7 @@ khi đấu máy, sửa máy, hoặc mua vật tư.</p>
 <tbody>
 <tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260822</td>
+<td>v1.0.0.260824</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -3105,7 +3105,7 @@ mục tra cứu theo triệu chứng</a></strong></td>
 </table>
 <blockquote>
 <p>⭐ <strong>Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng <a href="#phan-pl-e-chi-muc-trieu-chung">Phụ lục E</a>.</strong> Nó gom
-<strong>toàn bộ 547 dòng triệu chứng</strong> của cả sách vào một chỗ,
+<strong>toàn bộ 560 dòng triệu chứng</strong> của cả sách vào một chỗ,
 có bảng quyết định <em>&quot;bạn quan sát thấy gì → mở chương nào&quot;</em>, một
 mục riêng cho <strong>triệu chứng liên quan an toàn</strong>, và chỉ mục
 đầy đủ để <code>Ctrl+F</code>.</p>
@@ -17328,7 +17328,296 @@ nhiều trục cùng lúc). Tính bước này <strong>trước khi chọn vi
 bước</strong>, nếu không sẽ phát hiện ra khi máy đã lắp xong.</p>
 </blockquote>
 <hr />
-<h3 id="115-chọn-nguồn-cấp">11.5 Chọn nguồn cấp</h3>
+<h3 id="115-vận-hành--mô-men-theo-tốc-độ-tăng-tốc-và-cộng-hưởng">11.5
+Vận hành — mô-men theo tốc độ, tăng tốc, và cộng hưởng</h3>
+<p>Bốn mục trước lo <strong>đấu đúng và cài đúng</strong>. Mục này lo
+chuyện xảy ra sau đó: máy chạy được rồi nhưng <strong>mất bước</strong>,
+<strong>rung dữ ở một dải tốc độ</strong>, hoặc <strong>kêu mà không
+quay</strong>.</p>
+<p>⚠ Đây là phần khác biệt lớn nhất giữa động cơ bước và servo. Servo
+<strong>biết mình đang ở đâu</strong> và tự bù. Động cơ bước vòng hở thì
+<strong>không</strong> — nó chỉ đếm xung, và khi mô-men không đủ, nó
+<strong>âm thầm bỏ bước mà không báo gì</strong>. Mọi thứ trong mục này
+đều xoay quanh một câu hỏi duy nhất: <em><strong>mô-men còn đủ
+không?</strong></em></p>
+<h4 id="1151-starstar-mô-men-giảm-theo-tốc-độ--sự-thật-nền-tảng-bị-bỏ-qua-nhiều-nhất">11.5.1
+⭐⭐ Mô-men GIẢM theo tốc độ — sự thật nền tảng bị bỏ qua nhiều
+nhất</h4>
+<p>Con số <strong>mô-men giữ (holding torque)</strong> in trên nhãn động
+cơ là mô-men <strong>khi đứng yên</strong>. Khi động cơ quay, mô-men
+<strong>giảm dần theo tốc độ</strong> — và ở tốc độ cao thì giảm rất
+mạnh.</p>
+<p><strong>Vì sao:</strong> cuộn dây động cơ có <strong>điện
+cảm</strong>. Mỗi bước, driver phải đảo dòng trong cuộn; điện cảm chống
+lại sự thay đổi đó, nên <strong>dòng cần thời gian để lên tới giá trị
+đặt</strong>. Chạy càng nhanh thì thời gian mỗi bước càng ngắn, dòng
+<strong>càng chưa kịp lên đủ</strong> trước khi phải đảo — và mô-men tỉ
+lệ với dòng.</p>
+<p>Hệ quả thực tế, gặp thường xuyên:</p>
+<blockquote>
+<p>Cơ cấu nâng chạy tốt ở tốc độ thấp lúc chạy thử. Lên tốc độ sản xuất
+thì <strong>rơi xuống hoặc mất bước</strong>. Không ai đụng vào cơ khí,
+không ai đổi tải — chỉ đổi tốc độ.</p>
+</blockquote>
+<p>⭐ <strong>Vì vậy phải đọc ĐƯỜNG CONG mô-men–tốc độ trong datasheet,
+không phải mỗi con số mô-men giữ.</strong> Chọn động cơ theo mô-men giữ
+là cách chọn sai kinh điển.</p>
+<p><strong>Ba cách lấy lại mô-men ở tốc độ cao</strong>, theo thứ tự
+hiệu quả:</p>
+<table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Vì sao có tác dụng</th>
+<th>Đánh đổi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⭐ <strong>Tăng điện áp nguồn cấp cho driver</strong></td>
+<td>Áp cao đẩy dòng lên nhanh hơn, dòng kịp đạt giá trị đặt ở tần số cao
+hơn</td>
+<td>⚠ Không vượt giới hạn driver; nóng hơn; xem 11.6</td>
+</tr>
+<tr>
+<td><strong>Đấu cuộn dây kiểu song song</strong> (loại 8 dây)</td>
+<td>Điện cảm thấp hơn ⇒ dòng lên nhanh hơn</td>
+<td>Cần dòng driver lớn hơn (xem 11.2.3)</td>
+</tr>
+<tr>
+<td><strong>Giảm tốc độ yêu cầu</strong>, bù bằng tỉ số truyền</td>
+<td>Động cơ chạy ở vùng còn nhiều mô-men</td>
+<td>Thêm hộp số / đai</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 Đây là lý do hai máy giống hệt nhau, một cái dùng nguồn 24 V một
+cái 48 V, lại <strong>chạy khác nhau ở tốc độ cao</strong> dù cùng động
+cơ, cùng driver, cùng cài đặt.</p>
+</blockquote>
+<h4 id="1152-tần-số-khởi-động-và-tăng-tốc--không-được-nhảy-thẳng-vào-tốc-độ-cao">11.5.2
+Tần số khởi động và tăng tốc — không được nhảy thẳng vào tốc độ cao</h4>
+<p>Động cơ bước có hai giới hạn tốc độ khác nhau, và nhầm chúng là lỗi
+rất hay gặp:</p>
+<table>
+<thead>
+<tr>
+<th>Giới hạn</th>
+<th>Nghĩa là</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tần số khởi động</strong> (pull-in)</td>
+<td>Tốc độ cao nhất mà động cơ <strong>khởi động thẳng được</strong> từ
+đứng yên, không cần dốc</td>
+</tr>
+<tr>
+<td><strong>Tốc độ chạy tối đa</strong> (pull-out)</td>
+<td>Tốc độ cao nhất <strong>giữ được</strong> nếu đã tăng tốc dần
+lên</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Tốc độ chạy tối đa luôn cao hơn tần số khởi động, thường
+cao hơn nhiều.</strong> Muốn dùng tốc độ cao thì <strong>bắt buộc phải
+có đoạn dốc tăng tốc</strong>.</p>
+<blockquote>
+<p>⚠ <strong>Triệu chứng đặc trưng:</strong> ra lệnh chạy tốc độ cao thì
+động cơ <strong>chỉ kêu è è và rung tại chỗ, không quay</strong>. Đây
+gần như luôn là <em>ra lệnh vượt tần số khởi động mà không có dốc tăng
+tốc</em> — không phải động cơ yếu, không phải driver hỏng.</p>
+</blockquote>
+<p>Ba tham số phải chốt trong bộ điều khiển và <strong>ghi vào hồ sơ
+máy</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th>Lưu ý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tốc độ khởi động</strong></td>
+<td>Đặt dưới tần số khởi động của động cơ (tra đường cong)</td>
+</tr>
+<tr>
+<td><strong>Thời gian / độ dốc tăng tốc</strong></td>
+<td>Dốc quá gấp là mất bước ngay lúc tăng tốc</td>
+</tr>
+<tr>
+<td><strong>Thời gian giảm tốc</strong></td>
+<td>⚠ Tải quán tính lớn mà dừng gấp thì <strong>quán tính đẩy rotor vượt
+qua</strong> — cũng mất bước</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1153-star-cộng-hưởng--vì-sao-động-cơ-bước-rung-dữ-ở-một-dải-tốc-độ-nhất-định">11.5.3
+⭐ Cộng hưởng — vì sao động cơ bước rung dữ ở một dải tốc độ nhất
+định</h4>
+<p>Động cơ bước về bản chất là một <strong>hệ lò xo – khối
+lượng</strong>: mỗi bước, rotor bị &quot;kéo&quot; về vị trí cân bằng mới và
+<strong>dao động quanh vị trí đó</strong> trước khi ổn định. Khi tần số
+bước trùng tần số dao động riêng, hai thứ cộng hưởng — động cơ
+<strong>rung mạnh, kêu to, và rất dễ mất bước</strong>.</p>
+<p>⭐ Điểm nhận dạng: hiện tượng chỉ xảy ra ở <strong>một dải tốc độ
+hẹp</strong>. Chạy chậm hơn: êm. Chạy nhanh hơn: cũng êm. Đúng dải đó:
+rung dữ.</p>
+<p><strong>Năm cách xử lý</strong>, thường phải kết hợp:</p>
+<table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Vì sao có tác dụng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⭐ <strong>Dùng vi bước</strong></td>
+<td>Chia nhỏ mỗi bước ⇒ mỗi lần &quot;giật&quot; nhỏ đi ⇒ kích thích dao động yếu
+hơn. Đây là lý do vi bước <strong>giúp chạy êm</strong> dù nó
+<em>không</em> làm tăng độ chính xác (xem 11.4.3)</td>
+</tr>
+<tr>
+<td><strong>Đi nhanh qua dải cộng hưởng</strong></td>
+<td>Lập trình sao cho tốc độ không <strong>dừng lại</strong> trong dải
+đó, chỉ lướt qua khi tăng/giảm tốc</td>
+</tr>
+<tr>
+<td><strong>Thêm quán tính hoặc bộ giảm chấn</strong> vào trục</td>
+<td>Đổi tần số dao động riêng, dịch dải cộng hưởng ra khỏi vùng làm
+việc</td>
+</tr>
+<tr>
+<td><strong>Đổi dòng đặt</strong></td>
+<td>Dòng đổi thì lực kéo về đổi ⇒ tần số riêng dịch đi</td>
+</tr>
+<tr>
+<td><strong>Dùng loại 5 pha thay 2 pha</strong></td>
+<td>Góc bước nhỏ hơn, dao động mỗi bước nhẹ hơn hẳn (xem 11.1.1)</td>
+</tr>
+</tbody>
+</table>
+<p>⚠ <strong>Đừng chữa cộng hưởng bằng cách tăng dòng.</strong> Nó có
+thể làm rung mạnh hơn, và chắc chắn làm động cơ nóng hơn.</p>
+<h4 id="1154-star-bảng-ảnh-hưởng-của-từng-tham-số">11.5.4 ⭐ Bảng ảnh
+hưởng của từng tham số</h4>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th><strong>Tăng</strong> thì ĐƯỢC</th>
+<th><strong>Tăng</strong> thì MẤT</th>
+<th>Dấu hiệu QUÁ CAO</th>
+<th>Dấu hiệu QUÁ THẤP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dòng đặt</strong></td>
+<td>Mô-men lớn hơn, ít mất bước khi tải nặng</td>
+<td>⚠ Động cơ <strong>nóng</strong> rất nhanh; rung có thể mạnh hơn</td>
+<td>Vỏ động cơ nóng bỏng tay; mùi khét cách điện</td>
+<td>Mất bước khi tải nặng hoặc tăng tốc</td>
+</tr>
+<tr>
+<td><strong>Dòng khi đứng yên</strong></td>
+<td>Giữ vị trí chắc hơn khi dừng</td>
+<td>Nóng ngay cả lúc máy nghỉ</td>
+<td>Động cơ nóng dù máy đứng cả ca</td>
+<td>Trục bị đẩy lệch khi dừng; mất vị trí</td>
+</tr>
+<tr>
+<td><strong>Vi bước</strong></td>
+<td>Chạy <strong>êm</strong> hơn, đỡ cộng hưởng, đỡ ồn</td>
+<td>⭐ <strong>Không</strong> tăng độ chính xác; cần tần số xung cao hơn
+nhiều</td>
+<td>Bộ điều khiển không phát đủ xung ⇒ tốc độ tối đa tụt</td>
+<td>Chạy giật, ồn, dễ cộng hưởng</td>
+</tr>
+<tr>
+<td><strong>Điện áp nguồn</strong></td>
+<td>⭐ <strong>Mô-men ở tốc độ cao tốt hơn hẳn</strong></td>
+<td>Nóng hơn; ⚠ vượt giới hạn driver là <strong>hỏng
+driver</strong></td>
+<td>Driver báo quá áp hoặc hỏng</td>
+<td>Mô-men rớt sớm, mất bước ở tốc độ cao</td>
+</tr>
+<tr>
+<td><strong>Thời gian tăng tốc</strong> <em>(tăng = chậm hơn)</em></td>
+<td>Không mất bước lúc tăng tốc</td>
+<td>Nhịp máy dài ra</td>
+<td>Nhịp máy chậm không cần thiết</td>
+<td>⚠ Mất bước đúng lúc tăng tốc</td>
+</tr>
+<tr>
+<td><strong>Tốc độ khởi động</strong></td>
+<td>Khởi động nhanh hơn, đỡ tốn thời gian dốc</td>
+<td>Vượt tần số khởi động là <strong>kêu mà không quay</strong></td>
+<td>Động cơ rung tại chỗ khi bắt đầu</td>
+<td>Chu kỳ dài ra không cần thiết</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1155-chẩn-đoán-mất-bước--theo-thời-điểm">11.5.5 Chẩn đoán mất
+bước — theo thời điểm</h4>
+<table>
+<thead>
+<tr>
+<th>Mất bước LÚC NÀO</th>
+<th>Nghi trước hết</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Khi tăng tốc</strong></td>
+<td>Dốc quá gấp, hoặc dòng đặt thấp</td>
+<td>11.5.2 · 11.5.4</td>
+</tr>
+<tr>
+<td><strong>Khi giảm tốc / dừng gấp</strong></td>
+<td>Quán tính tải đẩy vượt qua</td>
+<td>11.5.2</td>
+</tr>
+<tr>
+<td><strong>Ở tốc độ cao</strong>, tốc độ thấp thì tốt</td>
+<td>⭐ <strong>Mô-men giảm theo tốc độ</strong> — tăng áp nguồn</td>
+<td>11.5.1</td>
+</tr>
+<tr>
+<td><strong>Chỉ ở một dải tốc độ</strong>, kèm rung mạnh</td>
+<td>⭐ <strong>Cộng hưởng</strong></td>
+<td>11.5.3</td>
+</tr>
+<tr>
+<td><strong>Ngẫu nhiên, không theo quy luật</strong></td>
+<td>Nhiễu vào dây xung, hoặc sai thời gian
+<code>DIR</code>–<code>PUL</code></td>
+<td>11.3.4</td>
+</tr>
+<tr>
+<td><strong>Sau vài tháng chạy tốt</strong></td>
+<td>⚠ Cơ khí nặng dần — đừng tăng dòng để &quot;chữa&quot;</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Chỉ khi máy khác cùng tủ khởi động</strong></td>
+<td>Sụt áp nguồn chung</td>
+<td><a href="#phan-ch03-nguon-phan-phoi-dien">Ch.3</a></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Cái bẫy chung với servo (12.11.10):</strong> khi máy bắt
+đầu mất bước sau thời gian chạy tốt, phản xạ là <strong>tăng dòng cho
+khoẻ hơn</strong>. Làm vậy là che mất triệu chứng của cơ khí đang xuống
+cấp, và đổi lại là động cơ nóng hơn — hỏng nhanh hơn theo cả hai
+đường.</p>
+</blockquote>
+<h3 id="116-chọn-nguồn-cấp">11.6 Chọn nguồn cấp</h3>
 <p><strong>Từ manual DM542:</strong> dải nguồn <strong>20–50
 VDC</strong>.</p>
 <table>
@@ -17369,7 +17658,7 @@ xung, chọn loại có dải rộng và <strong>chừa biên độ</strong>: đ
 chạy ở 36 V thì đừng dùng nguồn 48 V sát giới hạn 50 V của driver.</p>
 </blockquote>
 <hr />
-<h3 id="116-chọn-mua">11.6 Chọn mua</h3>
+<h3 id="117-chọn-mua">11.7 Chọn mua</h3>
 <blockquote>
 <p>⚠ Trừ các thông số DM542 đã dẫn nguồn ở trên, mã dưới đây ở
 <strong>cấp dòng sản phẩm</strong>, chưa phải mã đặt hàng.</p>
@@ -17458,7 +17747,7 @@ rất nhiều dây</td>
 </tbody>
 </table>
 <hr />
-<h3 id="117-sai-lầm-thường-gặp">11.7 Sai lầm thường gặp</h3>
+<h3 id="118-sai-lầm-thường-gặp">11.8 Sai lầm thường gặp</h3>
 <table>
 <thead>
 <tr>
@@ -17468,6 +17757,47 @@ rất nhiều dây</td>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐⭐ Nâng tốt ở tốc độ thấp, <strong>mất bước / rơi khi lên tốc độ
+sản xuất</strong></td>
+<td><strong>Mô-men giảm theo tốc độ</strong> — chọn động cơ theo mô-men
+GIỮ thay vì theo đường cong</td>
+<td>Tăng điện áp nguồn driver; hoặc đấu song song; hoặc giảm tốc độ +
+thêm tỉ số truyền. Xem 11.5.1</td>
+</tr>
+<tr>
+<td>Ra lệnh tốc độ cao thì động cơ <strong>chỉ kêu è è, rung tại chỗ,
+không quay</strong></td>
+<td>Vượt <strong>tần số khởi động</strong> mà không có dốc tăng tốc</td>
+<td>Thêm đoạn tăng tốc; hạ tốc độ khởi động. Xem 11.5.2 — <strong>không
+phải</strong> động cơ yếu hay driver hỏng</td>
+</tr>
+<tr>
+<td>Rung dữ và mất bước <strong>chỉ ở một dải tốc độ hẹp</strong>, nhanh
+hơn hoặc chậm hơn đều êm</td>
+<td>⭐ <strong>Cộng hưởng</strong></td>
+<td>Dùng vi bước; lập trình <strong>lướt qua</strong> dải đó; thêm quán
+tính / bộ giảm chấn. Xem 11.5.3</td>
+</tr>
+<tr>
+<td>Hai máy giống hệt nhau <strong>chạy khác nhau ở tốc độ
+cao</strong></td>
+<td>Điện áp nguồn driver khác nhau (24 V so với 48 V)</td>
+<td>Áp cao đẩy dòng lên nhanh hơn ⇒ giữ mô-men tới tốc độ cao hơn. Xem
+11.5.1</td>
+</tr>
+<tr>
+<td>Mất bước <strong>đúng lúc dừng gấp</strong></td>
+<td>Quán tính tải đẩy rotor vượt qua vị trí</td>
+<td>Kéo dài thời gian giảm tốc. Xem 11.5.2</td>
+</tr>
+<tr>
+<td>⚠ Máy chạy tốt vài tháng rồi mất bước, <strong>tăng dòng lên thì
+hết</strong></td>
+<td>Cơ khí nặng dần — tăng dòng chỉ <strong>che triệu chứng</strong> và
+làm động cơ nóng hơn</td>
+<td>Tìm nguyên nhân cơ khí. Xem 11.5.5</td>
+</tr>
 <tr>
 <td>Động cơ <strong>rung tại chỗ, không quay</strong></td>
 <td>Đảo nhầm dây <strong>giữa hai cuộn</strong></td>
@@ -18740,6 +19070,282 @@ mất pin encoder tuyệt đối, dây encoder đứt — thì toạ độ
 </tr>
 </tbody>
 </table>
+<h4 id="12119-starstar-bảng-ảnh-hưởng-của-từng-tham-số--vặn-núm-này-thì-được-gì-mất-gì">12.11.9
+⭐⭐ Bảng ảnh hưởng của từng tham số — vặn núm này thì được gì, mất
+gì</h4>
+<p>Mục 12.11.3 nói <em>triệu chứng nào chỉnh cái gì</em>. Bảng dưới đây
+đi theo chiều ngược lại, và là thứ bạn cần khi <strong>đang cầm tay
+lái</strong>: mỗi tham số, <strong>tăng lên thì được gì và mất
+gì</strong>.</p>
+<p>⚠ <strong>Tên tham số mỗi hãng mỗi khác</strong> (<code>PA</code>,
+<code>Pn</code>, <code>P1-xx</code>, <code>Gn</code>…). Bảng này gọi
+theo <strong>chức năng</strong> — tra manual để biết hãng bạn đặt tên
+gì.</p>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th><strong>Tăng</strong> thì ĐƯỢC</th>
+<th><strong>Tăng</strong> thì MẤT</th>
+<th>Dấu hiệu đã QUÁ CAO</th>
+<th>Dấu hiệu đang QUÁ THẤP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Độ lợi vòng vị trí</strong></td>
+<td>Bám lệnh sát hơn, sai lệch bám nhỏ, định vị nhanh</td>
+<td>Dễ vọt lố và rung khi dừng</td>
+<td>Dừng xong <strong>lắc vài nhịp</strong>, kêu ở điểm dừng</td>
+<td>Trục <strong>ì</strong>, tới chậm, &quot;mềm&quot;, sai lệch bám lớn</td>
+</tr>
+<tr>
+<td><strong>Độ lợi vòng tốc độ</strong></td>
+<td>Cứng hơn, kháng nhiễu tải tốt hơn, hết lắc dư</td>
+<td>⚠ Khuếch đại cả <strong>rung cơ khí</strong> và nhiễu encoder</td>
+<td><strong>Rít cao tần</strong> cả khi đứng yên; nóng động cơ</td>
+<td>Lắc dư sau khi dừng; tải nặng là bị kéo lệch</td>
+</tr>
+<tr>
+<td><strong>Hằng số tích phân vòng tốc độ</strong> <em>(tăng = tích phân
+CHẬM hơn)</em></td>
+<td>Ổn định hơn, ít vọt lố</td>
+<td>Sai số tĩnh lâu về 0, đáp ứng chậm</td>
+<td>—</td>
+<td>Rung tần số thấp, &quot;bơi&quot; quanh vị trí đích</td>
+</tr>
+<tr>
+<td><strong>Bộ lọc lệnh / làm trơn</strong></td>
+<td>Chuyển động mượt, đỡ sốc cơ khí, đỡ rung tải mềm</td>
+<td>⭐ <strong>Thêm trễ</strong> — máy phản ứng chậm hơn</td>
+<td>Nhịp máy dài ra mà không rõ vì sao</td>
+<td>Giật khi khởi động/kết thúc, tải mềm đung đưa</td>
+</tr>
+<tr>
+<td><strong>Bộ lọc chặn dải (notch)</strong></td>
+<td>Diệt đúng dải tần cộng hưởng mà <strong>giữ nguyên độ
+lợi</strong></td>
+<td>Nếu đặt sai tần số thì vô dụng; nhiều bộ lọc làm chậm vòng điều
+khiển</td>
+<td>Phải bật 2–3 bộ mới êm ⇒ ⚠ <strong>lỗi cơ khí</strong>, không phải
+tham số</td>
+<td>Rít ở một dải tốc độ cố định</td>
+</tr>
+<tr>
+<td><strong>Tỉ số quán tính khai báo</strong></td>
+<td>Driver tính đúng nội lực, tự chỉnh chính xác hơn</td>
+<td>Khai <strong>cao hơn thực</strong> làm đáp ứng ì; khai <strong>thấp
+hơn thực</strong> làm rung</td>
+<td>Khai quá cao: máy ì bất thường dù độ lợi cao</td>
+<td>Khai quá thấp: rung dù độ lợi vừa phải</td>
+</tr>
+<tr>
+<td><strong>Giới hạn mô-men</strong></td>
+<td>Kéo được tải nặng, vượt ma sát khi khởi động</td>
+<td>⚠⚠ <strong>Mất lớp bảo vệ cơ khí</strong> khi kẹt</td>
+<td>Kẹt là <strong>gãy cữ / cong trục vít</strong> thay vì báo lỗi</td>
+<td>Báo quá tải khi tăng tốc; về gốc không tới nơi</td>
+</tr>
+<tr>
+<td><strong>Thời gian tăng/giảm tốc</strong> <em>(tăng = chậm
+hơn)</em></td>
+<td>Êm, đỡ sốc, dòng đỉnh thấp, đỡ báo quá dòng</td>
+<td>Nhịp máy dài ra</td>
+<td>Nhịp máy chậm không cần thiết</td>
+<td>Báo <strong>quá dòng</strong> khi tăng tốc, <strong>quá áp</strong>
+khi giảm tốc</td>
+</tr>
+<tr>
+<td><strong>Cửa sổ định vị xong</strong> <em>(tăng = rộng hơn)</em></td>
+<td>Báo xong sớm, nhịp máy nhanh</td>
+<td>⚠ Bước sau chạy khi trục <strong>còn đang lắc</strong></td>
+<td>Gắp trượt, đo sai, va nhẹ</td>
+<td>Máy <strong>đứng chờ</strong> hoặc timeout dù vị trí đã đủ tốt</td>
+</tr>
+<tr>
+<td><strong>Ngưỡng sai lệch bám</strong> <em>(tăng = rộng hơn)</em></td>
+<td>Ít báo lỗi giả khi tăng tốc mạnh</td>
+<td>⚠⚠ Mất cảnh báo sớm — servo <strong>cố kéo tới cùng</strong> khi
+kẹt</td>
+<td>Kẹt mà không báo, tới lúc biết thì đã hỏng cơ khí</td>
+<td>Báo lỗi giả mỗi lần tăng tốc, rồi bị người vận hành nới bỏ</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⭐ <strong>Ba nguyên tắc khi vặn:</strong></p>
+<ol type="1">
+<li><strong>Mỗi lần đổi MỘT tham số.</strong> Đổi hai cái rồi máy êm thì
+bạn không biết nhờ cái nào.</li>
+<li><strong>Ghi lại giá trị trước khi đổi.</strong> Nghe thì thừa, nhưng
+đây là lý do phổ biến nhất khiến một buổi chỉnh kết thúc tệ hơn lúc bắt
+đầu.</li>
+<li><strong>Chỉnh từ trong ra ngoài</strong>: vòng tốc độ trước, vòng vị
+trí sau. Chỉnh ngược lại là đuổi theo cái bóng của mình.</li>
+</ol>
+</blockquote>
+<h4 id="121110-starstar-rung-và-tiếng-động--chẩn-đoán-theo-thời-điểm-nó-xuất-hiện">12.11.10
+⭐⭐ Rung và tiếng động — chẩn đoán theo THỜI ĐIỂM nó xuất hiện</h4>
+<p><em>&quot;Động cơ kêu&quot;</em> không phải một triệu chứng — nó là <strong>cả
+chục triệu chứng khác nhau</strong>. Thứ phân biệt chúng không phải âm
+thanh nghe thế nào, mà là <strong>nó xuất hiện lúc nào</strong>.</p>
+<h5 id="bốn-phép-thử-phân-biệt--làm-trước-đoán-sau">Bốn phép thử phân
+biệt — làm trước, đoán sau</h5>
+<p>Bốn phép thử này tách được <strong>lỗi cơ khí</strong> khỏi
+<strong>lỗi vòng điều khiển</strong> trong vài phút. Đừng vặn tham số
+trước khi làm chúng.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Phép thử</th>
+<th>Nếu tiếng động <strong>CÒN</strong></th>
+<th>Nếu tiếng động <strong>HẾT</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Tắt servo (servo OFF)</strong>, quay trục bằng tay</td>
+<td>Cơ khí: vòng bi, ray, trục vít, khớp nối</td>
+<td>⭐ Vòng điều khiển — sang phép thử 3</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Tháo khớp nối</strong>, cho động cơ chạy <strong>không
+tải</strong></td>
+<td>Nằm <strong>trong động cơ</strong> (vòng bi, encoder)</td>
+<td>Ở <strong>tải hoặc khớp nối</strong> — nghi lệch tâm, khe hở</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Giảm độ lợi còn một nửa</strong></td>
+<td>Không phải do độ lợi — nghi cộng hưởng hoặc sóng mang</td>
+<td>⭐ <strong>Độ lợi quá cao</strong> — đây là nguyên nhân phổ biến
+nhất</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Đổi tốc độ chạy</strong></td>
+<td>Tần số tiếng động <strong>đổi theo</strong> ⇒ cơ khí quay (vòng bi,
+bánh răng)</td>
+<td>Tần số <strong>không đổi</strong> ⇒ cộng hưởng, hoặc tần số sóng
+mang</td>
+</tr>
+</tbody>
+</table>
+<h5 id="bảng-chẩn-đoán-theo-thời-điểm">Bảng chẩn đoán theo thời
+điểm</h5>
+<table>
+<thead>
+<tr>
+<th>Kêu / rung LÚC NÀO</th>
+<th>Nghi trước hết</th>
+<th>Xử lý</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Đứng yên, servo ON</strong> (rít nhỏ liên tục)</td>
+<td>Độ lợi vòng tốc độ quá cao</td>
+<td>Giảm độ lợi; nếu vẫn rít thì nghi cộng hưởng (12.11.4)</td>
+</tr>
+<tr>
+<td><strong>Đứng yên</strong>, tiếng ù trầm đều</td>
+<td>Tần số sóng mang thấp</td>
+<td>Tăng tần số sóng mang — ⚠ đổi lại driver nóng hơn</td>
+</tr>
+<tr>
+<td><strong>Tốc độ thấp</strong>, chạy giật cục như răng cưa</td>
+<td>⭐ <strong>Cogging</strong> — mô-men răng của động cơ, rõ nhất ở tốc
+độ rất thấp</td>
+<td>Tăng độ lợi vòng tốc độ; hoặc dùng động cơ có bù cogging; hoặc
+<strong>tránh chạy ở dải tốc độ đó</strong></td>
+</tr>
+<tr>
+<td><strong>Tốc độ thấp</strong>, gằn không đều theo vòng quay</td>
+<td>Vòng bi hỏng, hoặc <strong>lệch tâm khớp nối</strong></td>
+<td>Kiểm đồng tâm động cơ–tải; phép thử 2</td>
+</tr>
+<tr>
+<td><strong>Một dải tốc độ nhất định</strong> mới rung</td>
+<td>⭐ <strong>Cộng hưởng cơ khí</strong></td>
+<td>Bộ lọc chặn dải (12.11.4); hoặc <strong>lập trình đi nhanh qua dải
+đó</strong></td>
+</tr>
+<tr>
+<td><strong>Tốc độ cao</strong>, rít tăng theo tốc độ</td>
+<td>Bánh răng hộp số, hoặc bi trục vít</td>
+<td>Cơ khí — không phải tham số</td>
+</tr>
+<tr>
+<td><strong>Khi tăng tốc</strong> mới kêu, chạy đều thì êm</td>
+<td>Tăng tốc quá gấp; hoặc thiếu bộ lọc lệnh</td>
+<td>Kéo dài thời gian tăng tốc; bật làm trơn lệnh</td>
+</tr>
+<tr>
+<td>⭐ <strong>Khi ĐẢO CHIỀU</strong> nghe &quot;cạch&quot;</td>
+<td><strong>Khe hở (backlash)</strong> ở khớp nối / hộp số / đai</td>
+<td>Cơ khí. ⚠ Tăng độ lợi để &quot;ép&quot; cho hết khe hở là <strong>làm hỏng
+nhanh hơn</strong></td>
+</tr>
+<tr>
+<td><strong>Vừa dừng thì lắc vài nhịp</strong> rồi mới yên</td>
+<td>Độ lợi vòng vị trí quá cao, hoặc vòng tốc độ chưa đủ tắt dần</td>
+<td>Xem bảng 12.11.9</td>
+</tr>
+<tr>
+<td><strong>Rung tần số thấp, &quot;bơi&quot; quanh đích</strong></td>
+<td>Tích phân vòng tốc độ quá mạnh</td>
+<td>Làm tích phân chậm lại</td>
+</tr>
+<tr>
+<td>Rung xuất hiện <strong>sau vài tháng chạy tốt</strong></td>
+<td>⚠ <strong>Cơ khí xuống cấp</strong> — vòng bi mòn, mất mỡ, ốc gá
+lỏng</td>
+<td>Đừng chỉnh lại tham số để &quot;chữa&quot;. So <strong>sai lệch bám</strong>
+với giá trị lúc máy mới (12.11.5)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Cái bẫy lớn nhất của cả mục này:</strong> khi máy bắt đầu
+rung sau một thời gian chạy tốt, phản xạ tự nhiên là <strong>vặn lại
+tham số cho hết rung</strong>. Làm vậy là <strong>xoá mất triệu
+chứng</strong> của một hỏng hóc cơ khí đang tiến triển — và lần sau nó
+xuất hiện lại thì đã muộn hơn nhiều.</p>
+<p>⭐ <strong>Nguyên tắc:</strong> tham số đã chỉnh đúng một lần thì
+<strong>không tự dưng sai đi</strong>. Máy đang êm mà thành rung nghĩa
+là <strong>có thứ khác đã đổi</strong> — hầu như luôn là cơ khí.</p>
+</blockquote>
+<h5 id="khi-nào-ngừng-chỉnh-và-quay-sang-sửa-cơ-khí">Khi nào ngừng chỉnh
+và quay sang sửa cơ khí</h5>
+<p>Ba dấu hiệu cho biết bạn đang cố chữa lỗi cơ khí bằng tham số —
+<strong>dừng lại</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Dấu hiệu</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phải bật <strong>2–3 bộ lọc chặn dải</strong> mới êm</td>
+<td>Hệ có quá nhiều điểm cộng hưởng ⇒ gá không đủ cứng hoặc khớp nối quá
+mềm</td>
+</tr>
+<tr>
+<td>Chỉnh êm được nhưng <strong>máy ì tới mức không đạt
+nhịp</strong></td>
+<td>Đang phải hạ độ lợi để né rung — bản chất là hệ chưa đủ cứng</td>
+</tr>
+<tr>
+<td>Tuần sau <strong>phải chỉnh lại</strong></td>
+<td>Tham số không tự đổi. Có thứ đang lỏng dần</td>
+</tr>
+</tbody>
+</table>
 <h3 id="1212-quy-trình-chạy-thử-an-toàn--làm-đúng-thứ-tự-này">12.12 Quy
 trình chạy thử an toàn — làm đúng thứ tự này</h3>
 <blockquote>
@@ -18896,6 +19502,53 @@ thêm hộp giảm tốc</li>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐ Động cơ <strong>rít nhỏ liên tục ngay cả khi đứng
+yên</strong></td>
+<td>Độ lợi vòng tốc độ quá cao</td>
+<td>Giảm độ lợi; còn rít thì nghi cộng hưởng. Làm <strong>4 phép thử
+phân biệt</strong> ở 12.11.10 trước khi vặn</td>
+</tr>
+<tr>
+<td>Chạy <strong>giật cục như răng cưa ở tốc độ rất thấp</strong></td>
+<td><strong>Cogging</strong> — mô-men răng của động cơ</td>
+<td>Tăng độ lợi vòng tốc độ, hoặc tránh chạy ở dải tốc độ đó. Xem
+12.11.10</td>
+</tr>
+<tr>
+<td>Nghe <strong>&quot;cạch&quot; mỗi lần đảo chiều</strong></td>
+<td><strong>Khe hở (backlash)</strong> ở khớp nối / hộp số / đai</td>
+<td>⚠ Đây là lỗi cơ khí. Tăng độ lợi để &quot;ép&quot; cho hết khe hở làm
+<strong>hỏng nhanh hơn</strong></td>
+</tr>
+<tr>
+<td>Rung <strong>gằn không đều theo vòng quay</strong> ở tốc độ
+thấp</td>
+<td>Vòng bi hỏng, hoặc <strong>lệch tâm khớp nối</strong></td>
+<td>Tháo khớp nối chạy không tải (phép thử 2, mục 12.11.10); kiểm đồng
+tâm</td>
+</tr>
+<tr>
+<td>⚠⚠ Máy chạy êm nhiều tháng rồi <strong>bắt đầu rung</strong>, vặn
+lại tham số thì hết</td>
+<td><strong>Cơ khí đang xuống cấp</strong> — và bạn vừa xoá mất triệu
+chứng của nó</td>
+<td>Tham số đã đúng thì không tự sai đi. So <strong>sai lệch
+bám</strong> với giá trị lúc máy mới (12.11.5)</td>
+</tr>
+<tr>
+<td>Chỉnh mãi: tăng độ lợi thì rung, giảm thì ì, <strong>không có điểm
+nào vừa</strong></td>
+<td>Tỉ số quán tính quá cao, hoặc hệ chưa đủ cứng</td>
+<td>Sửa <strong>cơ khí</strong>: thêm hộp số (quán tính quy đổi giảm
+theo <strong>bình phương</strong> tỉ số truyền). Xem 12.11.1</td>
+</tr>
+<tr>
+<td>Phải bật <strong>2–3 bộ lọc chặn dải</strong> mới êm</td>
+<td>Gá không đủ cứng, khớp nối quá mềm</td>
+<td>Dấu hiệu phải ngừng chỉnh và quay sang cơ khí — xem cuối
+12.11.10</td>
+</tr>
 <tr>
 <td>⭐ <strong>Servo không quay</strong>, không có alarm</td>
 <td><strong>EM2 / LSP / LSN chưa đấu</strong> hoặc dùng tiếp điểm thường
@@ -43244,7 +43897,7 @@ tra cứu theo triệu chứng</h2>
 <p><strong>Phụ lục này giải quyết đúng một tình huống:</strong> bạn đang
 đứng trước cái máy, <strong>chỉ biết nó đang bị gì</strong>, và không
 biết mở chương nào.</p>
-<p>Sách có <strong>547 dòng triệu chứng</strong> nằm rải rác trong 29
+<p>Sách có <strong>560 dòng triệu chứng</strong> nằm rải rác trong 29
 bảng <em>&quot;Sai lầm thường gặp&quot;</em>. Nếu không có chỉ mục này thì bạn
 phải <strong>đoán xem là chương nào</strong> — đúng cái mà người đang
 sửa máy lúc 2 giờ sáng không có thời gian làm.</p>
@@ -43757,8 +44410,8 @@ script là chỉ mục tự cập nhật.</p>
 </blockquote>
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-<h3 id="e4-chỉ-mục-đầy-đủ--547-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
-đủ — <strong>547 triệu chứng</strong> theo chương</h3>
+<h3 id="e4-chỉ-mục-đầy-đủ--560-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
+đủ — <strong>560 triệu chứng</strong> theo chương</h3>
 <blockquote>
 <p>💡 <strong>Cách dùng nhanh nhất: <code>Ctrl+F</code> rồi gõ đúng từ
 bạn quan sát được</strong> — ví dụ <code>chập chờn</code>,
@@ -44464,7 +45117,7 @@ suất, chân không, nhiệt độ, lưu lượng, lực</a> · 26 triệu ch�
 </tr>
 </tbody>
 </table>
-<h4 id="chương-11--động-cơ-bước--driver--17-triệu-chứng">Chương 11 — <a href="#phan-ch11-dong-co-buoc">Động cơ bước &amp; driver</a> · 17 triệu
+<h4 id="chương-11--động-cơ-bước--driver--23-triệu-chứng">Chương 11 — <a href="#phan-ch11-dong-co-buoc">Động cơ bước &amp; driver</a> · 23 triệu
 chứng</h4>
 <table>
 <thead>
@@ -44474,6 +45127,35 @@ chứng</h4>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐⭐ Nâng tốt ở tốc độ thấp, mất bước / rơi khi lên tốc độ sản
+xuất</td>
+<td>Mô-men giảm theo tốc độ — chọn động cơ theo mô-men GIỮ thay vì theo
+đường cong</td>
+</tr>
+<tr>
+<td>Ra lệnh tốc độ cao thì động cơ chỉ kêu è è, rung tại chỗ, không
+quay</td>
+<td>Vượt tần số khởi động mà không có dốc tăng tốc</td>
+</tr>
+<tr>
+<td>Rung dữ và mất bước chỉ ở một dải tốc độ hẹp, nhanh hơn hoặc chậm
+hơn đều êm</td>
+<td>⭐ Cộng hưởng</td>
+</tr>
+<tr>
+<td>Hai máy giống hệt nhau chạy khác nhau ở tốc độ cao</td>
+<td>Điện áp nguồn driver khác nhau (24 V so với 48 V)</td>
+</tr>
+<tr>
+<td>Mất bước đúng lúc dừng gấp</td>
+<td>Quán tính tải đẩy rotor vượt qua vị trí</td>
+</tr>
+<tr>
+<td>⚠ Máy chạy tốt vài tháng rồi mất bước, tăng dòng lên thì hết</td>
+<td>Cơ khí nặng dần — tăng dòng chỉ che triệu chứng và làm động cơ nóng
+hơn</td>
+</tr>
 <tr>
 <td>Động cơ rung tại chỗ, không quay</td>
 <td>Đảo nhầm dây giữa hai cuộn</td>
@@ -44545,7 +45227,7 @@ xoắn/không chống nhiễu</td>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-12--servo-ac--19-triệu-chứng">Chương 12 — <a href="#phan-ch12-servo-ac">Servo AC</a> · 19 triệu chứng</h4>
+<h4 id="chương-12--servo-ac--26-triệu-chứng">Chương 12 — <a href="#phan-ch12-servo-ac">Servo AC</a> · 26 triệu chứng</h4>
 <table>
 <thead>
 <tr>
@@ -44554,6 +45236,36 @@ xoắn/không chống nhiễu</td>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐ Động cơ rít nhỏ liên tục ngay cả khi đứng yên</td>
+<td>Độ lợi vòng tốc độ quá cao</td>
+</tr>
+<tr>
+<td>Chạy giật cục như răng cưa ở tốc độ rất thấp</td>
+<td>Cogging — mô-men răng của động cơ</td>
+</tr>
+<tr>
+<td>Nghe &quot;cạch&quot; mỗi lần đảo chiều</td>
+<td>Khe hở (backlash) ở khớp nối / hộp số / đai</td>
+</tr>
+<tr>
+<td>Rung gằn không đều theo vòng quay ở tốc độ thấp</td>
+<td>Vòng bi hỏng, hoặc lệch tâm khớp nối</td>
+</tr>
+<tr>
+<td>⚠⚠ Máy chạy êm nhiều tháng rồi bắt đầu rung, vặn lại tham số thì
+hết</td>
+<td>Cơ khí đang xuống cấp — và bạn vừa xoá mất triệu chứng của nó</td>
+</tr>
+<tr>
+<td>Chỉnh mãi: tăng độ lợi thì rung, giảm thì ì, không có điểm nào
+vừa</td>
+<td>Tỉ số quán tính quá cao, hoặc hệ chưa đủ cứng</td>
+</tr>
+<tr>
+<td>Phải bật 2–3 bộ lọc chặn dải mới êm</td>
+<td>Gá không đủ cứng, khớp nối quá mềm</td>
+</tr>
 <tr>
 <td>⭐ Servo không quay, không có alarm</td>
 <td>EM2 / LSP / LSN chưa đấu hoặc dùng tiếp điểm thường hở</td>
@@ -46666,6 +47378,33 @@ hạn cứng</strong></td>
 <td>Đặt dòng cao là nóng; vi bước <strong>không tăng độ chính
 xác</strong></td>
 <td><a href="#phan-ch11-dong-co-buoc">11</a></td>
+</tr>
+<tr>
+<td>⭐ <strong>Điện áp nguồn driver động cơ bước</strong></td>
+<td>Quyết định <strong>mô-men còn lại ở tốc độ cao</strong> — nguyên
+nhân số 1 của mất bước khi lên tốc độ sản xuất</td>
+<td><a href="#phan-ch11-dong-co-buoc">11.5.1</a></td>
+</tr>
+<tr>
+<td><strong>Tốc độ khởi động và dốc tăng tốc</strong> (động cơ
+bước)</td>
+<td>Vượt tần số khởi động là <strong>kêu mà không quay</strong>; dốc gấp
+là mất bước</td>
+<td><a href="#phan-ch11-dong-co-buoc">11.5.2</a></td>
+</tr>
+<tr>
+<td><strong>Dải tốc độ cộng hưởng phải tránh</strong> (động cơ
+bước)</td>
+<td>Rung dữ và mất bước ở đúng dải đó — lập trình lướt qua, đừng dừng
+trong dải</td>
+<td><a href="#phan-ch11-dong-co-buoc">11.5.3</a></td>
+</tr>
+<tr>
+<td>⭐ <strong>Bộ độ lợi và bộ lọc chặn dải</strong> của servo — ghi lại
+giá trị đã chốt</td>
+<td>Máy đang êm mà thành rung nghĩa là <strong>cơ khí đã đổi</strong>,
+không phải tham số tự sai</td>
+<td><a href="#phan-ch12-servo-ac">12.11.9</a> · <a href="#phan-ch12-servo-ac">12.11.10</a></td>
 </tr>
 </tbody>
 </table>

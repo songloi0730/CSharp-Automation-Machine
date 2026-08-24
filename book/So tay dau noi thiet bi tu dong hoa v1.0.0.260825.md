@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260824 |
+| **Phiên bản** | v1.0.0.260825 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
 | **Nội dung** | 30 chương + 6 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
@@ -678,7 +678,7 @@ an toàn.
 | Chỉ biết **triệu chứng** ("cảm biến báo ON giả") | ⭐ **[Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)** |
 
 > ⭐ **Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng [Phụ lục E](#phan-pl-e-chi-muc-trieu-chung).**
-> Nó gom **toàn bộ 560 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
+> Nó gom **toàn bộ 569 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
 > *"bạn quan sát thấy gì → mở chương nào"*, một mục riêng cho **triệu chứng liên quan an toàn**,
 > và chỉ mục đầy đủ để `Ctrl+F`.
 >
@@ -7730,7 +7730,140 @@ tương đương):
 
 ---
 
-### 13.4 Trục điện (electric actuator)
+### 13.4 Chỉnh biến tần — sau khi đã quay được, trước khi giao máy
+
+Mục 13.3.7 chỉ đưa biến tần tới chỗ **quay được**. Phần dưới đây là những tham số quyết định máy
+chạy **êm, đủ lực, và dừng đúng cách** — và cũng là chỗ hay bị bỏ qua nhất vì "máy chạy rồi mà".
+
+⚠ **Tên tham số mỗi hãng mỗi khác** (`Pr.`, `P`, `F`, `b`, `E`…). Mục này gọi theo **chức năng** —
+tra manual để biết hãng bạn đặt tên gì và số hiệu bao nhiêu.
+
+#### 13.4.1 ⭐ Tự dò thông số động cơ — bước quyết định chất lượng chế độ vector
+
+Chế độ **vector không cảm biến** tính mô-men dựa trên một **mô hình toán của động cơ**. Mô hình đó
+cần biết điện trở stator, điện cảm, dòng từ hoá — những thứ **không có trên nhãn động cơ**.
+
+⭐ **Vector mà không chạy tự dò thì thường tệ hơn cả V/F.** Biến tần dùng giá trị mặc định của một
+động cơ "trung bình", và càng lệch với động cơ thật thì càng sai.
+
+Hai kiểu tự dò, chọn theo tình huống:
+
+| Kiểu | Cách chạy | Dùng khi |
+|---|---|---|
+| **Tự dò tĩnh** | Động cơ **không quay**, biến tần bơm dòng đo điện trở/điện cảm | ⭐ Động cơ **đã nối tải**, không tháo ra được — tình huống thường gặp nhất |
+| **Tự dò quay** | Động cơ **quay tự do** vài chục giây | Tháo được tải, hoặc tải nhẹ và quay tự do vô hại — cho kết quả **chính xác hơn** |
+
+> ⚠⚠ **Trước khi chạy tự dò quay: kiểm tra tải có quay tự do được không.** Cơ cấu nâng, băng tải có
+> vật, trục có cữ chặn — tự dò quay ở những chỗ đó là **cho máy chạy mất kiểm soát**.
+
+⚠ Chạy lại tự dò **mỗi khi đổi động cơ**, kể cả đổi sang động cơ "cùng công suất".
+
+#### 13.4.2 Tăng mô-men khởi động (boost) — và cái giá phải trả
+
+Ở chế độ **V/F**, biến tần giữ tỉ lệ điện áp/tần số không đổi. Nhưng ở **tần số rất thấp**, điện áp
+cấp ra cũng rất thấp, mà một phần trong đó bị **điện trở cuộn stator "ăn" mất** — phần còn lại để
+sinh từ trường không đủ, nên **mô-men khởi động yếu**.
+
+**Tăng mô-men khởi động** chính là cộng thêm một ít điện áp ở dải tần thấp để bù phần hao đó.
+
+| Đặt | Hậu quả |
+|---|---|
+| **Quá thấp** | Không kéo nổi tải lúc khởi động; báo quá dòng khi bắt đầu; động cơ ù mà không quay |
+| ⚠ **Quá cao** | Động cơ **quá kích từ** ⇒ **nóng rất nhanh ở tốc độ thấp**, dòng không tải cao bất thường, có thể báo quá dòng |
+
+⭐ **Cách đặt thực dụng:** tăng dần **từng nấc nhỏ** tới khi tải khởi động được, rồi **dừng lại** —
+đừng cộng thêm "cho chắc". Nếu phải đẩy boost lên rất cao mới kéo nổi, vấn đề nằm ở **chọn sai cỡ
+động cơ** hoặc **tải quá nặng**, không phải ở tham số.
+
+> 💡 Nhiều biến tần có **boost tự động**: nó đo dòng và tự cộng thêm khi cần. Ưu tiên dùng chế độ
+> này thay vì đặt tay — trừ khi tải có đặc tính rất lạ.
+
+#### 13.4.3 Bù trượt — giữ tốc độ khi tải thay đổi
+
+Động cơ không đồng bộ **chạy chậm hơn tần số cấp** một chút, và **càng nặng tải càng chậm thêm** —
+đó là **trượt**. Hệ quả: đặt 50 Hz, không tải quay gần đúng, có tải thì tụt xuống thấy rõ.
+
+**Bù trượt** làm biến tần **tự nâng tần số lên một chút khi thấy dòng tăng**, để giữ tốc độ gần như
+không đổi.
+
+| Đặt | Hậu quả |
+|---|---|
+| **Quá thấp / tắt** | Tốc độ tụt khi tải nặng — thấy rõ ở băng tải, bơm, máy cuốn |
+| ⚠ **Quá cao** | ⭐ **Săn tốc độ (hunting)**: tốc độ dao động lên xuống liên tục, nghe như động cơ "thở" |
+
+#### 13.4.4 ⚠ Tần số nhảy — tránh cộng hưởng cơ khí
+
+Giống hệt bài toán cộng hưởng của động cơ bước (11.5.3), nhưng ở đây cộng hưởng nằm ở **máy**:
+khung, quạt, bơm, đường ống. Chạy đúng một dải tần nào đó là **cả máy rung và kêu**.
+
+**Tần số nhảy** cho phép khai báo một hoặc vài **dải tần cấm**. Biến tần vẫn **đi xuyên qua** dải đó
+khi tăng/giảm tốc, nhưng **không bao giờ dừng lại** trong dải.
+
+⭐ **Cách tìm dải cấm:** cho chạy tay, tăng tần số **từ từ** từ thấp lên cao, ghi lại khoảng nào máy
+rung/kêu rõ. Đặt dải cấm rộng hơn khoảng đó một chút về hai phía.
+
+⚠ Đây là **cách chữa đúng** cho rung do cộng hưởng. Giảm tốc độ toàn máy để né rung là hy sinh
+năng suất một cách không cần thiết.
+
+#### 13.4.5 Hãm — ba cách dừng, chọn đúng cách
+
+| Cách dừng | Chuyện gì xảy ra | Dùng khi |
+|---|---|---|
+| **Thả trôi** (free-run) | Cắt điện, động cơ **quay theo quán tính** tới khi tự dừng | Quạt, hoặc khi dừng chậm không sao |
+| **Giảm tốc theo dốc** | Biến tần chủ động hãm theo thời gian giảm tốc đã đặt | ⭐ Mặc định cho hầu hết máy |
+| **Hãm bằng dòng một chiều** | Bơm dòng DC vào stator ở cuối hành trình để **giữ trục đứng yên** | Cần dừng dứt khoát, chống trôi |
+
+Ba tham số của hãm DC phải chốt: **tần số bắt đầu hãm**, **mức dòng hãm**, và **thời gian hãm**.
+
+> ⚠⚠ **Hãm DC làm nóng động cơ** — toàn bộ năng lượng biến thành nhiệt **trong chính động cơ**,
+> mà lúc đó động cơ **đứng yên nên quạt gắn trục không thổi**. Đặt thời gian dài hoặc dòng cao,
+> lặp lại nhiều lần mỗi phút, là **cháy động cơ**. Chỉ dùng đủ để giữ, không dùng để hãm cả quán tính.
+
+Với tải **quán tính lớn** hoặc **hạ tải xuống** (cơ cấu nâng), năng lượng chạy ngược về biến tần
+làm **quá áp bus DC** — lúc đó cần **điện trở hãm** (xem 13.3.7 mục 8), không phải hãm DC.
+
+#### 13.4.6 Giới hạn dòng và chống mất tốc — vì sao thời gian tăng tốc "không đúng như đặt"
+
+Biến tần có chức năng **tự bảo vệ**: khi dòng vượt ngưỡng lúc tăng tốc, nó **tự kéo dài thời gian
+tăng tốc** thay vì báo lỗi ngay.
+
+⭐ **Triệu chứng đặc trưng — nhận ra cái này thì đỡ mất buổi:** bạn đặt thời gian tăng tốc 2 giây,
+nhưng đo thực tế **luôn 5–6 giây**, và không có báo lỗi nào. Đó **không phải** biến tần cài sai —
+đó là **chống mất tốc đang can thiệp**, vì tải nặng hơn khả năng tăng tốc trong 2 giây.
+
+Cách xử lý đúng theo thứ tự: **chấp nhận thời gian dài hơn** · hoặc **giảm tải / thêm tỉ số truyền**
+· hoặc **chọn biến tần và động cơ lớn hơn**. Tắt chống mất tốc để "ép cho đúng 2 giây" chỉ đổi
+triệu chứng thành **báo lỗi quá dòng**.
+
+#### 13.4.7 ⭐ Bảng ảnh hưởng của từng tham số
+
+| Tham số | **Tăng** thì ĐƯỢC | **Tăng** thì MẤT | Dấu hiệu QUÁ CAO | Dấu hiệu QUÁ THẤP |
+|---|---|---|---|---|
+| **Tăng mô-men khởi động (boost)** | Khởi động khoẻ, kéo được tải nặng từ 0 Hz | ⚠ Quá kích từ ở tốc độ thấp | Động cơ **nóng nhanh khi chạy chậm**; dòng không tải cao | Không kéo nổi lúc khởi động; ù mà không quay |
+| **Bù trượt** | Giữ tốc độ ổn định khi tải đổi | Dễ mất ổn định | ⭐ **Săn tốc độ** — tốc độ "thở" lên xuống | Tốc độ tụt rõ khi tải nặng |
+| **Tần số sóng mang** | Chạy **êm và ít ồn** hơn | ⚠ Biến tần **nóng hơn**, nhiễu nhiều hơn, ăn mòn vòng bi | Biến tần báo quá nhiệt; nhiễu vào analog và mạng | Động cơ kêu rít the thé nghe rõ |
+| **Thời gian tăng tốc** *(tăng = chậm hơn)* | Không báo quá dòng, đỡ sốc cơ khí | Nhịp máy dài ra | Nhịp chậm không cần thiết | ⚠ Báo **quá dòng** khi tăng tốc |
+| **Thời gian giảm tốc** *(tăng = chậm hơn)* | Không báo quá áp, đỡ sốc | Dừng lâu, có thể vượt vị trí | Dừng chậm quá | ⚠ Báo **quá áp** khi giảm tốc — cần điện trở hãm |
+| **Dòng hãm DC / thời gian hãm DC** | Giữ trục chắc hơn khi dừng | ⚠⚠ **Nhiệt sinh trong động cơ, lúc quạt không thổi** | Động cơ nóng bất thường dù chạy nhẹ | Trục còn trôi sau khi dừng |
+| **Tần số tối đa** | Chạy nhanh hơn | ⚠ Vượt tần số định mức thì **mô-men tụt** (vùng công suất không đổi) | Máy chạy nhanh nhưng **yếu**, dễ mất tốc | Không đạt năng suất thiết kế |
+| **Bảo vệ nhiệt động cơ** *(tăng = nới lỏng)* | Ít báo lỗi giả | ⚠⚠ **Mất lớp bảo vệ động cơ** | Động cơ cháy mà không có cảnh báo | Báo quá tải giả liên tục |
+
+#### 13.4.8 Chẩn đoán — triệu chứng nào ứng với cái gì
+
+| Triệu chứng | Nghi trước hết | Mục |
+|---|---|---|
+| Báo **quá dòng** ngay khi khởi động | Thời gian tăng tốc quá ngắn, hoặc boost quá cao | 13.4.2 · 13.4.7 |
+| Báo **quá áp** khi giảm tốc | Giảm tốc quá gấp; tải quán tính lớn thiếu **điện trở hãm** | 13.4.5 |
+| ⭐ Đặt tăng tốc 2 s nhưng **thực tế luôn 5–6 s**, không báo lỗi | **Chống mất tốc đang can thiệp** — tải nặng hơn khả năng | 13.4.6 |
+| Tốc độ **dao động lên xuống, nghe như "thở"** | **Bù trượt quá cao** | 13.4.3 |
+| Máy rung/kêu **chỉ ở một dải tần nhất định** | Cộng hưởng cơ khí — dùng **tần số nhảy** | 13.4.4 |
+| Động cơ **nóng bất thường khi chạy chậm** | Boost quá cao, hoặc hãm DC quá mạnh/quá lâu | 13.4.2 · 13.4.5 |
+| Động cơ kêu **rít the thé** | Tần số sóng mang thấp | 13.4.7 |
+| Chạy vector mà **mô-men yếu, không ổn định** | ⭐ **Chưa chạy tự dò thông số động cơ** | 13.4.1 |
+| Tốc độ **tụt rõ khi có tải** | Bù trượt tắt hoặc quá thấp | 13.4.3 |
+| Chạy trên tần số định mức thì **yếu, dễ mất tốc** | Vùng công suất không đổi — mô-men giảm theo tần số | 13.4.7 |
+
+### 13.5 Trục điện (electric actuator)
 
 Xy lanh điện thay xy lanh khí khi cần **dừng ở nhiều vị trí**, **điều chỉnh lực**, hoặc **không có
 khí nén**.
@@ -7765,10 +7898,19 @@ thay thế hơn khi hỏng, và bộ điều khiển chịu rung/nhiệt của m
 
 ---
 
-### 13.5 Sai lầm thường gặp
+### 13.6 Sai lầm thường gặp
 
 | Triệu chứng | Nguyên nhân có khả năng nhất | Cách xử lý |
 |---|---|---|
+| ⭐ Đặt tăng tốc 2 s nhưng thực tế **luôn 5–6 s**, mà **không có báo lỗi nào** | **Chống mất tốc đang can thiệp** — biến tần tự kéo dài dốc vì dòng vượt ngưỡng | Không phải cài sai. Giảm tải / thêm tỉ số truyền / chọn cỡ lớn hơn. Xem 13.4.6 |
+| Tốc độ **dao động lên xuống, nghe như động cơ "thở"** | **Bù trượt đặt quá cao** | Giảm bù trượt từng nấc. Xem 13.4.3 |
+| Tốc độ **tụt rõ khi có tải**, không tải thì đúng | Bù trượt tắt hoặc quá thấp | Bật/tăng bù trượt. Xem 13.4.3 |
+| Động cơ **nóng nhanh khi chạy chậm**, dòng không tải cao bất thường | ⚠ **Tăng mô-men khởi động (boost) quá cao** ⇒ quá kích từ | Hạ boost xuống mức vừa đủ kéo tải; ưu tiên boost tự động. Xem 13.4.2 |
+| Khởi động **ù mà không quay**, hoặc báo quá dòng lúc bắt đầu | Boost quá thấp, hoặc tải nặng hơn cỡ động cơ | Tăng boost từng nấc nhỏ; nếu phải đẩy rất cao thì **chọn sai cỡ động cơ** |
+| Chạy chế độ vector mà **mô-men yếu, không ổn định** | ⭐ **Chưa chạy tự dò thông số động cơ** | Chạy tự dò (tĩnh nếu không tháo được tải). ⚠ Vector không tự dò thường **tệ hơn cả V/F**. Xem 13.4.1 |
+| Máy rung và kêu **chỉ ở một dải tần nhất định** | Cộng hưởng cơ khí của khung/quạt/bơm | Khai báo **tần số nhảy** để biến tần không dừng trong dải đó. Xem 13.4.4 |
+| ⚠⚠ Động cơ nóng bất thường dù tải nhẹ, máy dừng nhiều lần mỗi phút | **Hãm DC quá mạnh hoặc quá lâu** — nhiệt sinh trong động cơ lúc quạt trục **không thổi** | Chỉ hãm DC đủ để GIỮ, không dùng để hãm cả quán tính. Quán tính lớn thì dùng **điện trở hãm**. Xem 13.4.5 |
+| Chạy trên tần số định mức thì **nhanh nhưng yếu, dễ mất tốc** | Vùng công suất không đổi — **mô-men giảm khi vượt tần số định mức** | Không phải lỗi. Tính lại tỉ số truyền nếu cần cả nhanh lẫn khoẻ |
 | Động cơ 1 pha **ù mà không quay** | **Tụ chạy hỏng** | Thay tụ đúng trị số (µF) và điện áp |
 | Lắp biến tần cho động cơ 1 pha → **nóng, yếu, cháy** | Động cơ 1 pha có tụ **không chạy được với biến tần** | Phải đổi sang **động cơ 3 pha** |
 | ⚠ Biến tần **ngắt bảo vệ liên tục**, hoặc tụ nổ | **Tụ bù / chống sét lắp ở phía RA** (thường sót lại khi cải tạo máy cũ) | **Tháo ngay**. Muốn bù công suất thì lắp cuộn kháng phía vào |
@@ -17134,7 +17276,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 > **Phụ lục này giải quyết đúng một tình huống:** bạn đang đứng trước cái máy, **chỉ biết nó đang
 > bị gì**, và không biết mở chương nào.
 >
-> Sách có **560 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
+> Sách có **569 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
 > chỉ mục này thì bạn phải **đoán xem là chương nào** — đúng cái mà người đang sửa máy lúc 2 giờ
 > sáng không có thời gian làm.
 
@@ -17280,7 +17422,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-### E.4 Chỉ mục đầy đủ — **560 triệu chứng** theo chương
+### E.4 Chỉ mục đầy đủ — **569 triệu chứng** theo chương
 
 > 💡 **Cách dùng nhanh nhất: `Ctrl+F` rồi gõ đúng từ bạn quan sát được** —
 > ví dụ `chập chờn`, `không quay`, `nóng`, `PASS`, `trôi`, `rơi`, `nhảy`.
@@ -17538,10 +17680,19 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | Chân trên máy không giống manual | Người trước đã gán lại I/O bằng tham số PD |
 | Va chạm phá cơ khí ngay lần chạy thử đầu | Không đặt giới hạn mô-men thấp, không tháo khớp nối |
 
-#### Chương 13 — [Động cơ giảm tốc, BLDC, biến tần & trục điện](#phan-ch13-giam-toc-bldc-bien-tan) · 18 triệu chứng
+#### Chương 13 — [Động cơ giảm tốc, BLDC, biến tần & trục điện](#phan-ch13-giam-toc-bldc-bien-tan) · 27 triệu chứng
 
 | Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
 |---|---|
+| ⭐ Đặt tăng tốc 2 s nhưng thực tế luôn 5–6 s, mà không có báo lỗi nào | Chống mất tốc đang can thiệp — biến tần tự kéo dài dốc vì dòng vượt ngưỡng |
+| Tốc độ dao động lên xuống, nghe như động cơ "thở" | Bù trượt đặt quá cao |
+| Tốc độ tụt rõ khi có tải, không tải thì đúng | Bù trượt tắt hoặc quá thấp |
+| Động cơ nóng nhanh khi chạy chậm, dòng không tải cao bất thường | ⚠ Tăng mô-men khởi động (boost) quá cao ⇒ quá kích từ |
+| Khởi động ù mà không quay, hoặc báo quá dòng lúc bắt đầu | Boost quá thấp, hoặc tải nặng hơn cỡ động cơ |
+| Chạy chế độ vector mà mô-men yếu, không ổn định | ⭐ Chưa chạy tự dò thông số động cơ |
+| Máy rung và kêu chỉ ở một dải tần nhất định | Cộng hưởng cơ khí của khung/quạt/bơm |
+| ⚠⚠ Động cơ nóng bất thường dù tải nhẹ, máy dừng nhiều lần mỗi phút | Hãm DC quá mạnh hoặc quá lâu — nhiệt sinh trong động cơ lúc quạt trục không thổi |
+| Chạy trên tần số định mức thì nhanh nhưng yếu, dễ mất tốc | Vùng công suất không đổi — mô-men giảm khi vượt tần số định mức |
 | Động cơ 1 pha ù mà không quay | Tụ chạy hỏng |
 | Lắp biến tần cho động cơ 1 pha → nóng, yếu, cháy | Động cơ 1 pha có tụ không chạy được với biến tần |
 | ⚠ Biến tần ngắt bảo vệ liên tục, hoặc tụ nổ | Tụ bù / chống sét lắp ở phía RA (thường sót lại khi cải tạo máy cũ) |
@@ -18082,8 +18233,13 @@ con số lúc máy còn tốt thì không ai chứng minh được là nó đã 
 | **Giới hạn mềm** — và xác nhận vẫn **có đủ giới hạn cứng** | Giới hạn mềm mất tác dụng đúng lúc toạ độ sai | [12.11.8](#phan-ch12-servo-ac) |
 | **Điện trở xả** — có cần không, đặt bao nhiêu | Trục đứng hoặc quán tính lớn mà thiếu là báo lỗi quá áp | [12.8](#phan-ch12-servo-ac) |
 | **Trình tự thời gian phanh** | Nhả phanh trước khi có mô-men = **trục rơi một đoạn** | [12.6.2](#phan-ch12-servo-ac) |
-| **Tần số sóng mang** biến tần | Cao thì êm nhưng nóng và nhiễu hơn, ăn mòn vòng bi | [13.3](#phan-ch13-giam-toc-bldc-bien-tan) |
-| **Thời gian tăng/giảm tốc** biến tần | Quá ngắn là báo lỗi quá dòng / quá áp | [13.3](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Tần số sóng mang** biến tần | Cao thì êm nhưng nóng và nhiễu hơn, ăn mòn vòng bi | [13.4.7](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Thời gian tăng/giảm tốc** biến tần | Quá ngắn là báo lỗi quá dòng / quá áp | [13.4.7](#phan-ch13-giam-toc-bldc-bien-tan) |
+| ⭐ **Đã chạy tự dò thông số động cơ chưa** (biến tần chế độ vector) | Vector mà không tự dò thường **tệ hơn cả V/F** | [13.4.1](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Tăng mô-men khởi động (boost)** | Quá cao là động cơ **nóng nhanh khi chạy chậm** | [13.4.2](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Bù trượt** | Quá cao là tốc độ **dao động "thở"**; quá thấp là tụt tốc khi tải nặng | [13.4.3](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Dải tần nhảy (skip)** — đã khai báo chưa | Chống cộng hưởng cơ khí của khung/quạt/bơm | [13.4.4](#phan-ch13-giam-toc-bldc-bien-tan) |
+| ⚠⚠ **Dòng và thời gian hãm DC** | Nhiệt sinh **trong động cơ** lúc quạt trục không thổi | [13.4.5](#phan-ch13-giam-toc-bldc-bien-tan) |
 | **Dòng đặt và vi bước** của driver động cơ bước | Đặt dòng cao là nóng; vi bước **không tăng độ chính xác** | [11](#phan-ch11-dong-co-buoc) |
 | ⭐ **Điện áp nguồn driver động cơ bước** | Quyết định **mô-men còn lại ở tốc độ cao** — nguyên nhân số 1 của mất bước khi lên tốc độ sản xuất | [11.5.1](#phan-ch11-dong-co-buoc) |
 | **Tốc độ khởi động và dốc tăng tốc** (động cơ bước) | Vượt tần số khởi động là **kêu mà không quay**; dốc gấp là mất bước | [11.5.2](#phan-ch11-dong-co-buoc) |

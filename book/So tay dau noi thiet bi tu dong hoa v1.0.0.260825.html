@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260824</title>
+  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260825</title>
   <style>
 
 html {
@@ -240,7 +240,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <body>
 <header id="title-block-header">
 <h1 class="title">Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá
-— v1.0.0.260824</h1>
+— v1.0.0.260825</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -369,7 +369,7 @@ khi đấu máy, sửa máy, hoặc mua vật tư.</p>
 <tbody>
 <tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260824</td>
+<td>v1.0.0.260825</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -3105,7 +3105,7 @@ mục tra cứu theo triệu chứng</a></strong></td>
 </table>
 <blockquote>
 <p>⭐ <strong>Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng <a href="#phan-pl-e-chi-muc-trieu-chung">Phụ lục E</a>.</strong> Nó gom
-<strong>toàn bộ 560 dòng triệu chứng</strong> của cả sách vào một chỗ,
+<strong>toàn bộ 569 dòng triệu chứng</strong> của cả sách vào một chỗ,
 có bảng quyết định <em>&quot;bạn quan sát thấy gì → mở chương nào&quot;</em>, một
 mục riêng cho <strong>triệu chứng liên quan an toàn</strong>, và chỉ mục
 đầy đủ để <code>Ctrl+F</code>.</p>
@@ -20357,7 +20357,343 @@ cũ hoặc không rõ lịch sử. Tham số ai đó đặt trước có thể l
 bất ngờ.</p>
 </blockquote>
 <hr />
-<h3 id="134-trục-điện-electric-actuator">13.4 Trục điện (electric
+<h3 id="134-chỉnh-biến-tần--sau-khi-đã-quay-được-trước-khi-giao-máy">13.4
+Chỉnh biến tần — sau khi đã quay được, trước khi giao máy</h3>
+<p>Mục 13.3.7 chỉ đưa biến tần tới chỗ <strong>quay được</strong>. Phần
+dưới đây là những tham số quyết định máy chạy <strong>êm, đủ lực, và
+dừng đúng cách</strong> — và cũng là chỗ hay bị bỏ qua nhất vì &quot;máy chạy
+rồi mà&quot;.</p>
+<p>⚠ <strong>Tên tham số mỗi hãng mỗi khác</strong> (<code>Pr.</code>,
+<code>P</code>, <code>F</code>, <code>b</code>, <code>E</code>…). Mục
+này gọi theo <strong>chức năng</strong> — tra manual để biết hãng bạn
+đặt tên gì và số hiệu bao nhiêu.</p>
+<h4 id="1341-star-tự-dò-thông-số-động-cơ--bước-quyết-định-chất-lượng-chế-độ-vector">13.4.1
+⭐ Tự dò thông số động cơ — bước quyết định chất lượng chế độ
+vector</h4>
+<p>Chế độ <strong>vector không cảm biến</strong> tính mô-men dựa trên
+một <strong>mô hình toán của động cơ</strong>. Mô hình đó cần biết điện
+trở stator, điện cảm, dòng từ hoá — những thứ <strong>không có trên nhãn
+động cơ</strong>.</p>
+<p>⭐ <strong>Vector mà không chạy tự dò thì thường tệ hơn cả
+V/F.</strong> Biến tần dùng giá trị mặc định của một động cơ &quot;trung
+bình&quot;, và càng lệch với động cơ thật thì càng sai.</p>
+<p>Hai kiểu tự dò, chọn theo tình huống:</p>
+<table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Cách chạy</th>
+<th>Dùng khi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tự dò tĩnh</strong></td>
+<td>Động cơ <strong>không quay</strong>, biến tần bơm dòng đo điện
+trở/điện cảm</td>
+<td>⭐ Động cơ <strong>đã nối tải</strong>, không tháo ra được — tình
+huống thường gặp nhất</td>
+</tr>
+<tr>
+<td><strong>Tự dò quay</strong></td>
+<td>Động cơ <strong>quay tự do</strong> vài chục giây</td>
+<td>Tháo được tải, hoặc tải nhẹ và quay tự do vô hại — cho kết quả
+<strong>chính xác hơn</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Trước khi chạy tự dò quay: kiểm tra tải có quay tự do được
+không.</strong> Cơ cấu nâng, băng tải có vật, trục có cữ chặn — tự dò
+quay ở những chỗ đó là <strong>cho máy chạy mất kiểm soát</strong>.</p>
+</blockquote>
+<p>⚠ Chạy lại tự dò <strong>mỗi khi đổi động cơ</strong>, kể cả đổi sang
+động cơ &quot;cùng công suất&quot;.</p>
+<h4 id="1342-tăng-mô-men-khởi-động-boost--và-cái-giá-phải-trả">13.4.2
+Tăng mô-men khởi động (boost) — và cái giá phải trả</h4>
+<p>Ở chế độ <strong>V/F</strong>, biến tần giữ tỉ lệ điện áp/tần số
+không đổi. Nhưng ở <strong>tần số rất thấp</strong>, điện áp cấp ra cũng
+rất thấp, mà một phần trong đó bị <strong>điện trở cuộn stator &quot;ăn&quot;
+mất</strong> — phần còn lại để sinh từ trường không đủ, nên
+<strong>mô-men khởi động yếu</strong>.</p>
+<p><strong>Tăng mô-men khởi động</strong> chính là cộng thêm một ít điện
+áp ở dải tần thấp để bù phần hao đó.</p>
+<table>
+<thead>
+<tr>
+<th>Đặt</th>
+<th>Hậu quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Quá thấp</strong></td>
+<td>Không kéo nổi tải lúc khởi động; báo quá dòng khi bắt đầu; động cơ ù
+mà không quay</td>
+</tr>
+<tr>
+<td>⚠ <strong>Quá cao</strong></td>
+<td>Động cơ <strong>quá kích từ</strong> ⇒ <strong>nóng rất nhanh ở tốc
+độ thấp</strong>, dòng không tải cao bất thường, có thể báo quá
+dòng</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Cách đặt thực dụng:</strong> tăng dần <strong>từng nấc
+nhỏ</strong> tới khi tải khởi động được, rồi <strong>dừng lại</strong> —
+đừng cộng thêm &quot;cho chắc&quot;. Nếu phải đẩy boost lên rất cao mới kéo nổi,
+vấn đề nằm ở <strong>chọn sai cỡ động cơ</strong> hoặc <strong>tải quá
+nặng</strong>, không phải ở tham số.</p>
+<blockquote>
+<p>💡 Nhiều biến tần có <strong>boost tự động</strong>: nó đo dòng và tự
+cộng thêm khi cần. Ưu tiên dùng chế độ này thay vì đặt tay — trừ khi tải
+có đặc tính rất lạ.</p>
+</blockquote>
+<h4 id="1343-bù-trượt--giữ-tốc-độ-khi-tải-thay-đổi">13.4.3 Bù trượt —
+giữ tốc độ khi tải thay đổi</h4>
+<p>Động cơ không đồng bộ <strong>chạy chậm hơn tần số cấp</strong> một
+chút, và <strong>càng nặng tải càng chậm thêm</strong> — đó là
+<strong>trượt</strong>. Hệ quả: đặt 50 Hz, không tải quay gần đúng, có
+tải thì tụt xuống thấy rõ.</p>
+<p><strong>Bù trượt</strong> làm biến tần <strong>tự nâng tần số lên một
+chút khi thấy dòng tăng</strong>, để giữ tốc độ gần như không đổi.</p>
+<table>
+<thead>
+<tr>
+<th>Đặt</th>
+<th>Hậu quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Quá thấp / tắt</strong></td>
+<td>Tốc độ tụt khi tải nặng — thấy rõ ở băng tải, bơm, máy cuốn</td>
+</tr>
+<tr>
+<td>⚠ <strong>Quá cao</strong></td>
+<td>⭐ <strong>Săn tốc độ (hunting)</strong>: tốc độ dao động lên xuống
+liên tục, nghe như động cơ &quot;thở&quot;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1344--tần-số-nhảy--tránh-cộng-hưởng-cơ-khí">13.4.4 ⚠ Tần số nhảy
+— tránh cộng hưởng cơ khí</h4>
+<p>Giống hệt bài toán cộng hưởng của động cơ bước (11.5.3), nhưng ở đây
+cộng hưởng nằm ở <strong>máy</strong>: khung, quạt, bơm, đường ống. Chạy
+đúng một dải tần nào đó là <strong>cả máy rung và kêu</strong>.</p>
+<p><strong>Tần số nhảy</strong> cho phép khai báo một hoặc vài
+<strong>dải tần cấm</strong>. Biến tần vẫn <strong>đi xuyên qua</strong>
+dải đó khi tăng/giảm tốc, nhưng <strong>không bao giờ dừng lại</strong>
+trong dải.</p>
+<p>⭐ <strong>Cách tìm dải cấm:</strong> cho chạy tay, tăng tần số
+<strong>từ từ</strong> từ thấp lên cao, ghi lại khoảng nào máy rung/kêu
+rõ. Đặt dải cấm rộng hơn khoảng đó một chút về hai phía.</p>
+<p>⚠ Đây là <strong>cách chữa đúng</strong> cho rung do cộng hưởng. Giảm
+tốc độ toàn máy để né rung là hy sinh năng suất một cách không cần
+thiết.</p>
+<h4 id="1345-hãm--ba-cách-dừng-chọn-đúng-cách">13.4.5 Hãm — ba cách
+dừng, chọn đúng cách</h4>
+<table>
+<thead>
+<tr>
+<th>Cách dừng</th>
+<th>Chuyện gì xảy ra</th>
+<th>Dùng khi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Thả trôi</strong> (free-run)</td>
+<td>Cắt điện, động cơ <strong>quay theo quán tính</strong> tới khi tự
+dừng</td>
+<td>Quạt, hoặc khi dừng chậm không sao</td>
+</tr>
+<tr>
+<td><strong>Giảm tốc theo dốc</strong></td>
+<td>Biến tần chủ động hãm theo thời gian giảm tốc đã đặt</td>
+<td>⭐ Mặc định cho hầu hết máy</td>
+</tr>
+<tr>
+<td><strong>Hãm bằng dòng một chiều</strong></td>
+<td>Bơm dòng DC vào stator ở cuối hành trình để <strong>giữ trục đứng
+yên</strong></td>
+<td>Cần dừng dứt khoát, chống trôi</td>
+</tr>
+</tbody>
+</table>
+<p>Ba tham số của hãm DC phải chốt: <strong>tần số bắt đầu hãm</strong>,
+<strong>mức dòng hãm</strong>, và <strong>thời gian hãm</strong>.</p>
+<blockquote>
+<p>⚠⚠ <strong>Hãm DC làm nóng động cơ</strong> — toàn bộ năng lượng biến
+thành nhiệt <strong>trong chính động cơ</strong>, mà lúc đó động cơ
+<strong>đứng yên nên quạt gắn trục không thổi</strong>. Đặt thời gian
+dài hoặc dòng cao, lặp lại nhiều lần mỗi phút, là <strong>cháy động
+cơ</strong>. Chỉ dùng đủ để giữ, không dùng để hãm cả quán tính.</p>
+</blockquote>
+<p>Với tải <strong>quán tính lớn</strong> hoặc <strong>hạ tải
+xuống</strong> (cơ cấu nâng), năng lượng chạy ngược về biến tần làm
+<strong>quá áp bus DC</strong> — lúc đó cần <strong>điện trở
+hãm</strong> (xem 13.3.7 mục 8), không phải hãm DC.</p>
+<h4 id="1346-giới-hạn-dòng-và-chống-mất-tốc--vì-sao-thời-gian-tăng-tốc-không-đúng-như-đặt">13.4.6
+Giới hạn dòng và chống mất tốc — vì sao thời gian tăng tốc &quot;không đúng
+như đặt&quot;</h4>
+<p>Biến tần có chức năng <strong>tự bảo vệ</strong>: khi dòng vượt
+ngưỡng lúc tăng tốc, nó <strong>tự kéo dài thời gian tăng tốc</strong>
+thay vì báo lỗi ngay.</p>
+<p>⭐ <strong>Triệu chứng đặc trưng — nhận ra cái này thì đỡ mất
+buổi:</strong> bạn đặt thời gian tăng tốc 2 giây, nhưng đo thực tế
+<strong>luôn 5–6 giây</strong>, và không có báo lỗi nào. Đó
+<strong>không phải</strong> biến tần cài sai — đó là <strong>chống mất
+tốc đang can thiệp</strong>, vì tải nặng hơn khả năng tăng tốc trong 2
+giây.</p>
+<p>Cách xử lý đúng theo thứ tự: <strong>chấp nhận thời gian dài
+hơn</strong> · hoặc <strong>giảm tải / thêm tỉ số truyền</strong> · hoặc
+<strong>chọn biến tần và động cơ lớn hơn</strong>. Tắt chống mất tốc để
+&quot;ép cho đúng 2 giây&quot; chỉ đổi triệu chứng thành <strong>báo lỗi quá
+dòng</strong>.</p>
+<h4 id="1347-star-bảng-ảnh-hưởng-của-từng-tham-số">13.4.7 ⭐ Bảng ảnh
+hưởng của từng tham số</h4>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th><strong>Tăng</strong> thì ĐƯỢC</th>
+<th><strong>Tăng</strong> thì MẤT</th>
+<th>Dấu hiệu QUÁ CAO</th>
+<th>Dấu hiệu QUÁ THẤP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tăng mô-men khởi động (boost)</strong></td>
+<td>Khởi động khoẻ, kéo được tải nặng từ 0 Hz</td>
+<td>⚠ Quá kích từ ở tốc độ thấp</td>
+<td>Động cơ <strong>nóng nhanh khi chạy chậm</strong>; dòng không tải
+cao</td>
+<td>Không kéo nổi lúc khởi động; ù mà không quay</td>
+</tr>
+<tr>
+<td><strong>Bù trượt</strong></td>
+<td>Giữ tốc độ ổn định khi tải đổi</td>
+<td>Dễ mất ổn định</td>
+<td>⭐ <strong>Săn tốc độ</strong> — tốc độ &quot;thở&quot; lên xuống</td>
+<td>Tốc độ tụt rõ khi tải nặng</td>
+</tr>
+<tr>
+<td><strong>Tần số sóng mang</strong></td>
+<td>Chạy <strong>êm và ít ồn</strong> hơn</td>
+<td>⚠ Biến tần <strong>nóng hơn</strong>, nhiễu nhiều hơn, ăn mòn vòng
+bi</td>
+<td>Biến tần báo quá nhiệt; nhiễu vào analog và mạng</td>
+<td>Động cơ kêu rít the thé nghe rõ</td>
+</tr>
+<tr>
+<td><strong>Thời gian tăng tốc</strong> <em>(tăng = chậm hơn)</em></td>
+<td>Không báo quá dòng, đỡ sốc cơ khí</td>
+<td>Nhịp máy dài ra</td>
+<td>Nhịp chậm không cần thiết</td>
+<td>⚠ Báo <strong>quá dòng</strong> khi tăng tốc</td>
+</tr>
+<tr>
+<td><strong>Thời gian giảm tốc</strong> <em>(tăng = chậm hơn)</em></td>
+<td>Không báo quá áp, đỡ sốc</td>
+<td>Dừng lâu, có thể vượt vị trí</td>
+<td>Dừng chậm quá</td>
+<td>⚠ Báo <strong>quá áp</strong> khi giảm tốc — cần điện trở hãm</td>
+</tr>
+<tr>
+<td><strong>Dòng hãm DC / thời gian hãm DC</strong></td>
+<td>Giữ trục chắc hơn khi dừng</td>
+<td>⚠⚠ <strong>Nhiệt sinh trong động cơ, lúc quạt không
+thổi</strong></td>
+<td>Động cơ nóng bất thường dù chạy nhẹ</td>
+<td>Trục còn trôi sau khi dừng</td>
+</tr>
+<tr>
+<td><strong>Tần số tối đa</strong></td>
+<td>Chạy nhanh hơn</td>
+<td>⚠ Vượt tần số định mức thì <strong>mô-men tụt</strong> (vùng công
+suất không đổi)</td>
+<td>Máy chạy nhanh nhưng <strong>yếu</strong>, dễ mất tốc</td>
+<td>Không đạt năng suất thiết kế</td>
+</tr>
+<tr>
+<td><strong>Bảo vệ nhiệt động cơ</strong> <em>(tăng = nới
+lỏng)</em></td>
+<td>Ít báo lỗi giả</td>
+<td>⚠⚠ <strong>Mất lớp bảo vệ động cơ</strong></td>
+<td>Động cơ cháy mà không có cảnh báo</td>
+<td>Báo quá tải giả liên tục</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1348-chẩn-đoán--triệu-chứng-nào-ứng-với-cái-gì">13.4.8 Chẩn đoán
+— triệu chứng nào ứng với cái gì</h4>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Nghi trước hết</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Báo <strong>quá dòng</strong> ngay khi khởi động</td>
+<td>Thời gian tăng tốc quá ngắn, hoặc boost quá cao</td>
+<td>13.4.2 · 13.4.7</td>
+</tr>
+<tr>
+<td>Báo <strong>quá áp</strong> khi giảm tốc</td>
+<td>Giảm tốc quá gấp; tải quán tính lớn thiếu <strong>điện trở
+hãm</strong></td>
+<td>13.4.5</td>
+</tr>
+<tr>
+<td>⭐ Đặt tăng tốc 2 s nhưng <strong>thực tế luôn 5–6 s</strong>, không
+báo lỗi</td>
+<td><strong>Chống mất tốc đang can thiệp</strong> — tải nặng hơn khả
+năng</td>
+<td>13.4.6</td>
+</tr>
+<tr>
+<td>Tốc độ <strong>dao động lên xuống, nghe như &quot;thở&quot;</strong></td>
+<td><strong>Bù trượt quá cao</strong></td>
+<td>13.4.3</td>
+</tr>
+<tr>
+<td>Máy rung/kêu <strong>chỉ ở một dải tần nhất định</strong></td>
+<td>Cộng hưởng cơ khí — dùng <strong>tần số nhảy</strong></td>
+<td>13.4.4</td>
+</tr>
+<tr>
+<td>Động cơ <strong>nóng bất thường khi chạy chậm</strong></td>
+<td>Boost quá cao, hoặc hãm DC quá mạnh/quá lâu</td>
+<td>13.4.2 · 13.4.5</td>
+</tr>
+<tr>
+<td>Động cơ kêu <strong>rít the thé</strong></td>
+<td>Tần số sóng mang thấp</td>
+<td>13.4.7</td>
+</tr>
+<tr>
+<td>Chạy vector mà <strong>mô-men yếu, không ổn định</strong></td>
+<td>⭐ <strong>Chưa chạy tự dò thông số động cơ</strong></td>
+<td>13.4.1</td>
+</tr>
+<tr>
+<td>Tốc độ <strong>tụt rõ khi có tải</strong></td>
+<td>Bù trượt tắt hoặc quá thấp</td>
+<td>13.4.3</td>
+</tr>
+<tr>
+<td>Chạy trên tần số định mức thì <strong>yếu, dễ mất tốc</strong></td>
+<td>Vùng công suất không đổi — mô-men giảm theo tần số</td>
+<td>13.4.7</td>
+</tr>
+</tbody>
+</table>
+<h3 id="135-trục-điện-electric-actuator">13.5 Trục điện (electric
 actuator)</h3>
 <p>Xy lanh điện thay xy lanh khí khi cần <strong>dừng ở nhiều vị
 trí</strong>, <strong>điều chỉnh lực</strong>, hoặc <strong>không có khí
@@ -20447,7 +20783,7 @@ bộ điều khiển chịu rung/nhiệt của môi trường máy.</p>
 Oriental Motor <code>EAC</code> · 🇹🇼 Toyo, Hiwin — ⚠ cấp dòng sản
 phẩm.</p>
 <hr />
-<h3 id="135-sai-lầm-thường-gặp">13.5 Sai lầm thường gặp</h3>
+<h3 id="136-sai-lầm-thường-gặp">13.6 Sai lầm thường gặp</h3>
 <table>
 <thead>
 <tr>
@@ -20457,6 +20793,68 @@ phẩm.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐ Đặt tăng tốc 2 s nhưng thực tế <strong>luôn 5–6 s</strong>, mà
+<strong>không có báo lỗi nào</strong></td>
+<td><strong>Chống mất tốc đang can thiệp</strong> — biến tần tự kéo dài
+dốc vì dòng vượt ngưỡng</td>
+<td>Không phải cài sai. Giảm tải / thêm tỉ số truyền / chọn cỡ lớn hơn.
+Xem 13.4.6</td>
+</tr>
+<tr>
+<td>Tốc độ <strong>dao động lên xuống, nghe như động cơ
+&quot;thở&quot;</strong></td>
+<td><strong>Bù trượt đặt quá cao</strong></td>
+<td>Giảm bù trượt từng nấc. Xem 13.4.3</td>
+</tr>
+<tr>
+<td>Tốc độ <strong>tụt rõ khi có tải</strong>, không tải thì đúng</td>
+<td>Bù trượt tắt hoặc quá thấp</td>
+<td>Bật/tăng bù trượt. Xem 13.4.3</td>
+</tr>
+<tr>
+<td>Động cơ <strong>nóng nhanh khi chạy chậm</strong>, dòng không tải
+cao bất thường</td>
+<td>⚠ <strong>Tăng mô-men khởi động (boost) quá cao</strong> ⇒ quá kích
+từ</td>
+<td>Hạ boost xuống mức vừa đủ kéo tải; ưu tiên boost tự động. Xem
+13.4.2</td>
+</tr>
+<tr>
+<td>Khởi động <strong>ù mà không quay</strong>, hoặc báo quá dòng lúc
+bắt đầu</td>
+<td>Boost quá thấp, hoặc tải nặng hơn cỡ động cơ</td>
+<td>Tăng boost từng nấc nhỏ; nếu phải đẩy rất cao thì <strong>chọn sai
+cỡ động cơ</strong></td>
+</tr>
+<tr>
+<td>Chạy chế độ vector mà <strong>mô-men yếu, không ổn
+định</strong></td>
+<td>⭐ <strong>Chưa chạy tự dò thông số động cơ</strong></td>
+<td>Chạy tự dò (tĩnh nếu không tháo được tải). ⚠ Vector không tự dò
+thường <strong>tệ hơn cả V/F</strong>. Xem 13.4.1</td>
+</tr>
+<tr>
+<td>Máy rung và kêu <strong>chỉ ở một dải tần nhất định</strong></td>
+<td>Cộng hưởng cơ khí của khung/quạt/bơm</td>
+<td>Khai báo <strong>tần số nhảy</strong> để biến tần không dừng trong
+dải đó. Xem 13.4.4</td>
+</tr>
+<tr>
+<td>⚠⚠ Động cơ nóng bất thường dù tải nhẹ, máy dừng nhiều lần mỗi
+phút</td>
+<td><strong>Hãm DC quá mạnh hoặc quá lâu</strong> — nhiệt sinh trong
+động cơ lúc quạt trục <strong>không thổi</strong></td>
+<td>Chỉ hãm DC đủ để GIỮ, không dùng để hãm cả quán tính. Quán tính lớn
+thì dùng <strong>điện trở hãm</strong>. Xem 13.4.5</td>
+</tr>
+<tr>
+<td>Chạy trên tần số định mức thì <strong>nhanh nhưng yếu, dễ mất
+tốc</strong></td>
+<td>Vùng công suất không đổi — <strong>mô-men giảm khi vượt tần số định
+mức</strong></td>
+<td>Không phải lỗi. Tính lại tỉ số truyền nếu cần cả nhanh lẫn khoẻ</td>
+</tr>
 <tr>
 <td>Động cơ 1 pha <strong>ù mà không quay</strong></td>
 <td><strong>Tụ chạy hỏng</strong></td>
@@ -43897,7 +44295,7 @@ tra cứu theo triệu chứng</h2>
 <p><strong>Phụ lục này giải quyết đúng một tình huống:</strong> bạn đang
 đứng trước cái máy, <strong>chỉ biết nó đang bị gì</strong>, và không
 biết mở chương nào.</p>
-<p>Sách có <strong>560 dòng triệu chứng</strong> nằm rải rác trong 29
+<p>Sách có <strong>569 dòng triệu chứng</strong> nằm rải rác trong 29
 bảng <em>&quot;Sai lầm thường gặp&quot;</em>. Nếu không có chỉ mục này thì bạn
 phải <strong>đoán xem là chương nào</strong> — đúng cái mà người đang
 sửa máy lúc 2 giờ sáng không có thời gian làm.</p>
@@ -44410,8 +44808,8 @@ script là chỉ mục tự cập nhật.</p>
 </blockquote>
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-<h3 id="e4-chỉ-mục-đầy-đủ--560-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
-đủ — <strong>560 triệu chứng</strong> theo chương</h3>
+<h3 id="e4-chỉ-mục-đầy-đủ--569-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
+đủ — <strong>569 triệu chứng</strong> theo chương</h3>
 <blockquote>
 <p>💡 <strong>Cách dùng nhanh nhất: <code>Ctrl+F</code> rồi gõ đúng từ
 bạn quan sát được</strong> — ví dụ <code>chập chờn</code>,
@@ -45344,9 +45742,9 @@ vừa</td>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-13--động-cơ-giảm-tốc-bldc-biến-tần--trục-điện--18-triệu-chứng">Chương
+<h4 id="chương-13--động-cơ-giảm-tốc-bldc-biến-tần--trục-điện--27-triệu-chứng">Chương
 13 — <a href="#phan-ch13-giam-toc-bldc-bien-tan">Động cơ giảm tốc, BLDC,
-biến tần &amp; trục điện</a> · 18 triệu chứng</h4>
+biến tần &amp; trục điện</a> · 27 triệu chứng</h4>
 <table>
 <thead>
 <tr>
@@ -45355,6 +45753,46 @@ biến tần &amp; trục điện</a> · 18 triệu chứng</h4>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐ Đặt tăng tốc 2 s nhưng thực tế luôn 5–6 s, mà không có báo lỗi
+nào</td>
+<td>Chống mất tốc đang can thiệp — biến tần tự kéo dài dốc vì dòng vượt
+ngưỡng</td>
+</tr>
+<tr>
+<td>Tốc độ dao động lên xuống, nghe như động cơ &quot;thở&quot;</td>
+<td>Bù trượt đặt quá cao</td>
+</tr>
+<tr>
+<td>Tốc độ tụt rõ khi có tải, không tải thì đúng</td>
+<td>Bù trượt tắt hoặc quá thấp</td>
+</tr>
+<tr>
+<td>Động cơ nóng nhanh khi chạy chậm, dòng không tải cao bất thường</td>
+<td>⚠ Tăng mô-men khởi động (boost) quá cao ⇒ quá kích từ</td>
+</tr>
+<tr>
+<td>Khởi động ù mà không quay, hoặc báo quá dòng lúc bắt đầu</td>
+<td>Boost quá thấp, hoặc tải nặng hơn cỡ động cơ</td>
+</tr>
+<tr>
+<td>Chạy chế độ vector mà mô-men yếu, không ổn định</td>
+<td>⭐ Chưa chạy tự dò thông số động cơ</td>
+</tr>
+<tr>
+<td>Máy rung và kêu chỉ ở một dải tần nhất định</td>
+<td>Cộng hưởng cơ khí của khung/quạt/bơm</td>
+</tr>
+<tr>
+<td>⚠⚠ Động cơ nóng bất thường dù tải nhẹ, máy dừng nhiều lần mỗi
+phút</td>
+<td>Hãm DC quá mạnh hoặc quá lâu — nhiệt sinh trong động cơ lúc quạt
+trục không thổi</td>
+</tr>
+<tr>
+<td>Chạy trên tần số định mức thì nhanh nhưng yếu, dễ mất tốc</td>
+<td>Vùng công suất không đổi — mô-men giảm khi vượt tần số định mức</td>
+</tr>
 <tr>
 <td>Động cơ 1 pha ù mà không quay</td>
 <td>Tụ chạy hỏng</td>
@@ -47366,12 +47804,40 @@ hạn cứng</strong></td>
 <tr>
 <td><strong>Tần số sóng mang</strong> biến tần</td>
 <td>Cao thì êm nhưng nóng và nhiễu hơn, ăn mòn vòng bi</td>
-<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.3</a></td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.7</a></td>
 </tr>
 <tr>
 <td><strong>Thời gian tăng/giảm tốc</strong> biến tần</td>
 <td>Quá ngắn là báo lỗi quá dòng / quá áp</td>
-<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.3</a></td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.7</a></td>
+</tr>
+<tr>
+<td>⭐ <strong>Đã chạy tự dò thông số động cơ chưa</strong> (biến tần
+chế độ vector)</td>
+<td>Vector mà không tự dò thường <strong>tệ hơn cả V/F</strong></td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.1</a></td>
+</tr>
+<tr>
+<td><strong>Tăng mô-men khởi động (boost)</strong></td>
+<td>Quá cao là động cơ <strong>nóng nhanh khi chạy chậm</strong></td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.2</a></td>
+</tr>
+<tr>
+<td><strong>Bù trượt</strong></td>
+<td>Quá cao là tốc độ <strong>dao động &quot;thở&quot;</strong>; quá thấp là tụt
+tốc khi tải nặng</td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.3</a></td>
+</tr>
+<tr>
+<td><strong>Dải tần nhảy (skip)</strong> — đã khai báo chưa</td>
+<td>Chống cộng hưởng cơ khí của khung/quạt/bơm</td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.4</a></td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Dòng và thời gian hãm DC</strong></td>
+<td>Nhiệt sinh <strong>trong động cơ</strong> lúc quạt trục không
+thổi</td>
+<td><a href="#phan-ch13-giam-toc-bldc-bien-tan">13.4.5</a></td>
 </tr>
 <tr>
 <td><strong>Dòng đặt và vi bước</strong> của driver động cơ bước</td>

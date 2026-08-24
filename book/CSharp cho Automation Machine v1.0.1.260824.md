@@ -5670,6 +5670,7 @@ giản là máy không có PLC và quán tính đủ chậm.
 public sealed class PidLoop
 {
     private double _integral, _lastMeasurement;
+    private bool   _hasPrevious;            // lần gọi đầu chưa có mốc để lấy đạo hàm
 
     public double Kp { get; set; }
     public double Ki { get; set; }          // đơn vị: /giây
@@ -5682,6 +5683,8 @@ public sealed class PidLoop
     /// <param name="dt">Khoảng thời gian THẬT kể từ lần gọi trước, tính bằng giây</param>
     public double Update(double measurement, double dt)
     {
+        if (dt <= 0) return Math.Clamp(Kp * (SetPoint - measurement) + _integral, OutMin, OutMax);
+
         double error = SetPoint - measurement;
 
         double p = Kp * error;
@@ -5689,8 +5692,11 @@ public sealed class PidLoop
         _integral += Ki * error * dt;
         _integral = Math.Clamp(_integral, OutMin, OutMax);        // (2) chống tích luỹ tràn
 
-        double d = -Kd * (measurement - _lastMeasurement) / dt;    // (3) đạo hàm theo GIÁ TRỊ ĐO
+        // (4) lần gọi ĐẦU TIÊN chưa có mốc trước → bỏ qua thành phần đạo hàm,
+        //     đừng tính với _lastMeasurement = 0 (sẽ ra một cú giật rất lớn)
+        double d = _hasPrevious ? -Kd * (measurement - _lastMeasurement) / dt : 0.0;
         _lastMeasurement = measurement;
+        _hasPrevious     = true;
 
         return Math.Clamp(p + _integral + d, OutMin, OutMax);      // (1) chỉ ghi ra MỘT lần, đã kẹp
     }
@@ -15271,6 +15277,10 @@ public sealed class Cylinder
 {
     private readonly IDigitalOutput _solExtend, _solRetract;
     private readonly IDigitalInput  _lsExtended, _lsRetracted;
+    private readonly SemaphoreSlim  _gate = new(1, 1);     // mỗi cơ cấu một cửa
+    private readonly int            _timeoutMs;
+    private readonly ValveType      _valveType;            // GiuKhiMatDien | LoXoHoiVi
+    public  string                  Name { get; }
 
     public Cylinder(string name, IDigitalOutput solExtend, IDigitalOutput solRetract,
                     IDigitalInput lsExtended, IDigitalInput lsRetracted) { /* ... */ }

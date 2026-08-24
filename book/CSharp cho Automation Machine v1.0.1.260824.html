@@ -4311,6 +4311,29 @@ public sealed class LinearAxis : IMovable, IHomeable, IEnableable { /* ... */ }
 <p>Lưu ý: <code>IMovable</code> ở đây có signature <code>MoveAbsoluteAsync(double pos, double vel, ...)</code> — khác <code>IMotionController</code> (mục 4.2.1) vốn có thêm tham số <code>int axis</code> để điều phối nhiều trục. Đây là hai hợp đồng cho hai cấp độ khác nhau (một trục đơn lẻ vs bộ điều khiển nhiều trục), không phải mâu thuẫn.</p>
 <p>Lợi ích rất cụ thể: màn hình Jog tay chỉ cần <code>IMovable + IEnableable</code>; chu trình Auto cần thêm <code>IHomeable</code>; một cơ cấu chỉ đóng/mở (không home, không move) thì chỉ implement <code>IEnableable</code>. Mỗi nơi phụ thuộc đúng năng lực nó dùng — đây là <em>Interface Segregation</em>, một nguyên lý SOLID khác, áp dụng tự nhiên.</p>
 <blockquote>
+<p>⚠️ <strong>Phản ví dụ đáng xem: một interface gom cả ba loại đường truyền.</strong> Trong một thư viện máy tham
+khảo có một interface truyền thông duy nhất, dùng chung cho <strong>TCP client, TCP server và cổng nối tiếp</strong>:</p>
+<pre><code class="language-csharp">public interface IComm : IDisposable
+{
+    string Address { get; set; }      // ← cổng nối tiếp không có &quot;địa chỉ&quot;
+    string Port    { get; set; }      // ← ở cổng nối tiếp thì đây là &quot;COM3&quot;? còn tốc độ baud để đâu?
+    bool   IsConnected { get; }       // ← với TCP server thì &quot;đã kết nối&quot; nghĩa là gì? có 0 hay 5 client?
+    bool   Open();  void Close();
+    bool   Send(string s);  bool Send(byte[] b);
+    // …
+}
+</code></pre>
+<p>Ý tưởng ban đầu hợp lý: chỗ gọi chỉ cần <code>Open</code> rồi <code>Send</code>, không cần biết bên dưới là gì. Nhưng nhét ba
+thứ khác nhau vào một hợp đồng làm <strong>một phần hợp đồng trở nên vô nghĩa với từng loại</strong>: cổng nối tiếp
+bị ép có <code>Address</code>, còn tốc độ baud và bit dừng thì không có chỗ; TCP server có <code>IsConnected</code> mà không
+diễn tả được <em>&quot;đang có mấy client&quot;</em>.</p>
+<p>Dấu hiệu nhận ra: <strong>một triển khai phải để trống, bỏ qua, hoặc ném &quot;không hỗ trợ&quot; cho vài thành viên</strong>.
+Khi thấy vậy, hãy tách theo đúng nguyên tắc của mục này — một interface nhỏ cho phần <strong>thật sự chung</strong>
+(<code>Open/Close/Send/nhận dữ liệu</code>), và phần riêng của từng loại nằm ở kiểu cụ thể hoặc ở một interface
+riêng. Trừu tượng hoá quá rộng không phải là trừu tượng hoá tốt hơn; nó chỉ đẩy sự khác biệt xuống chỗ
+khó thấy hơn.</p>
+</blockquote>
+<blockquote>
 <p>🔍 <strong>Đào sâu thêm:</strong> C# 8.0+ cho phép interface có <em>default interface method</em> (method có sẵn code). Hữu ích để thêm method mới mà không phá mọi class đang implement. Nhưng trong automation nên dè dặt: logic nằm trong interface khó truy vết hơn trong class — giữ rule an toàn ở abstract class hoặc service layer. Tìm hiểu thêm: &quot;C# default interface methods&quot;.</p>
 </blockquote>
 <hr>
@@ -12591,6 +12614,29 @@ không cần build lại — phù hợp thay đổi tại hiện trường.</p>
         : _resx.GetString(key) ?? $&quot;[[{key}]]&quot;;
 }
 </code></pre>
+<blockquote>
+<p>📌 <strong>Cách thứ ba bạn sẽ gặp trong mã nguồn thật: một CLASS với mỗi nhãn một field.</strong> Thay vì tra cứu
+theo khoá chuỗi, một dự án tham khảo khai báo hẳn một lớp ngôn ngữ, mỗi phần tử giao diện một trường,
+tên trường ghép từ <strong>tên màn hình + tên điều khiển</strong> — rồi nạp giá trị cho lớp đó theo ngôn ngữ đang
+chọn (dự án đó có ba thứ tiếng, gồm cả tiếng Việt):</p>
+<pre><code class="language-csharp">public class NgonNgu
+{
+    public string FormMain_PassCount  = &quot;&quot;;
+    public string FormMain_FailCount  = &quot;&quot;;
+    public string FormMain_CountClear = &quot;&quot;;
+    // … một dòng cho mỗi nhãn trên mọi màn hình
+}
+</code></pre>
+<p><strong>Ưu điểm thật, và không nhỏ:</strong> gõ sai tên là <strong>lỗi biên dịch</strong>, không phải một ô trống lúc chạy; và
+trình soạn thảo gợi ý được danh sách nhãn. So với tra cứu theo chuỗi khoá, đây là điểm nó thắng.</p>
+<p><strong>Cái giá:</strong> thêm một nhãn = sửa code + build lại + phát hành lại — tức là <strong>người dịch không tự làm
+được</strong>, phải qua lập trình viên. Với máy đã bàn giao mà khách muốn sửa một câu chữ cho đúng thuật ngữ
+nhà máy, đó là khác biệt giữa <em>&quot;sửa một dòng trong file&quot;</em> và <em>&quot;chờ bản phát hành sau&quot;</em>.</p>
+<p>Chọn thế nào: nếu tập nhãn <strong>ổn định và do bạn kiểm soát</strong>, cách này gọn và an toàn. Nếu khách hàng sẽ
+muốn chỉnh chữ, hoặc sẽ có thêm ngôn ngữ sau khi bàn giao, hãy dùng cơ chế tra cứu theo khoá ở trên.
+Và dù chọn cách nào, <strong>đừng để chuỗi hiển thị nằm rải rác trong code</strong> — đó mới là điều cả ba cách đang
+cùng chống lại.</p>
+</blockquote>
 <blockquote>
 <p>📌 <strong><code>this[string key]</code> là INDEXER:</strong> cho phép dùng cú pháp dấu ngoặc vuông
 (<code>TranslationService.Instance[&quot;UI.Home.StartButton&quot;]</code>) thay vì gọi method

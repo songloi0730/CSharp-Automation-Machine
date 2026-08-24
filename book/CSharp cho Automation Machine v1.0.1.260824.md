@@ -3624,6 +3624,31 @@ Lưu ý: `IMovable` ở đây có signature `MoveAbsoluteAsync(double pos, doubl
 
 Lợi ích rất cụ thể: màn hình Jog tay chỉ cần `IMovable + IEnableable`; chu trình Auto cần thêm `IHomeable`; một cơ cấu chỉ đóng/mở (không home, không move) thì chỉ implement `IEnableable`. Mỗi nơi phụ thuộc đúng năng lực nó dùng — đây là *Interface Segregation*, một nguyên lý SOLID khác, áp dụng tự nhiên.
 
+> ⚠️ **Phản ví dụ đáng xem: một interface gom cả ba loại đường truyền.** Trong một thư viện máy tham
+> khảo có một interface truyền thông duy nhất, dùng chung cho **TCP client, TCP server và cổng nối tiếp**:
+>
+> ```csharp
+> public interface IComm : IDisposable
+> {
+>     string Address { get; set; }      // ← cổng nối tiếp không có "địa chỉ"
+>     string Port    { get; set; }      // ← ở cổng nối tiếp thì đây là "COM3"? còn tốc độ baud để đâu?
+>     bool   IsConnected { get; }       // ← với TCP server thì "đã kết nối" nghĩa là gì? có 0 hay 5 client?
+>     bool   Open();  void Close();
+>     bool   Send(string s);  bool Send(byte[] b);
+>     // …
+> }
+> ```
+> Ý tưởng ban đầu hợp lý: chỗ gọi chỉ cần `Open` rồi `Send`, không cần biết bên dưới là gì. Nhưng nhét ba
+> thứ khác nhau vào một hợp đồng làm **một phần hợp đồng trở nên vô nghĩa với từng loại**: cổng nối tiếp
+> bị ép có `Address`, còn tốc độ baud và bit dừng thì không có chỗ; TCP server có `IsConnected` mà không
+> diễn tả được *"đang có mấy client"*.
+>
+> Dấu hiệu nhận ra: **một triển khai phải để trống, bỏ qua, hoặc ném "không hỗ trợ" cho vài thành viên**.
+> Khi thấy vậy, hãy tách theo đúng nguyên tắc của mục này — một interface nhỏ cho phần **thật sự chung**
+> (`Open/Close/Send/nhận dữ liệu`), và phần riêng của từng loại nằm ở kiểu cụ thể hoặc ở một interface
+> riêng. Trừu tượng hoá quá rộng không phải là trừu tượng hoá tốt hơn; nó chỉ đẩy sự khác biệt xuống chỗ
+> khó thấy hơn.
+
 > 🔍 **Đào sâu thêm:** C# 8.0+ cho phép interface có *default interface method* (method có sẵn code). Hữu ích để thêm method mới mà không phá mọi class đang implement. Nhưng trong automation nên dè dặt: logic nằm trong interface khó truy vết hơn trong class — giữ rule an toàn ở abstract class hoặc service layer. Tìm hiểu thêm: "C# default interface methods".
 
 ---
@@ -11549,6 +11574,31 @@ public sealed class TranslationService : INotifyPropertyChanged
         : _resx.GetString(key) ?? $"[[{key}]]";
 }
 ```
+
+> 📌 **Cách thứ ba bạn sẽ gặp trong mã nguồn thật: một CLASS với mỗi nhãn một field.** Thay vì tra cứu
+> theo khoá chuỗi, một dự án tham khảo khai báo hẳn một lớp ngôn ngữ, mỗi phần tử giao diện một trường,
+> tên trường ghép từ **tên màn hình + tên điều khiển** — rồi nạp giá trị cho lớp đó theo ngôn ngữ đang
+> chọn (dự án đó có ba thứ tiếng, gồm cả tiếng Việt):
+> ```csharp
+> public class NgonNgu
+> {
+>     public string FormMain_PassCount  = "";
+>     public string FormMain_FailCount  = "";
+>     public string FormMain_CountClear = "";
+>     // … một dòng cho mỗi nhãn trên mọi màn hình
+> }
+> ```
+> **Ưu điểm thật, và không nhỏ:** gõ sai tên là **lỗi biên dịch**, không phải một ô trống lúc chạy; và
+> trình soạn thảo gợi ý được danh sách nhãn. So với tra cứu theo chuỗi khoá, đây là điểm nó thắng.
+>
+> **Cái giá:** thêm một nhãn = sửa code + build lại + phát hành lại — tức là **người dịch không tự làm
+> được**, phải qua lập trình viên. Với máy đã bàn giao mà khách muốn sửa một câu chữ cho đúng thuật ngữ
+> nhà máy, đó là khác biệt giữa *"sửa một dòng trong file"* và *"chờ bản phát hành sau"*.
+>
+> Chọn thế nào: nếu tập nhãn **ổn định và do bạn kiểm soát**, cách này gọn và an toàn. Nếu khách hàng sẽ
+> muốn chỉnh chữ, hoặc sẽ có thêm ngôn ngữ sau khi bàn giao, hãy dùng cơ chế tra cứu theo khoá ở trên.
+> Và dù chọn cách nào, **đừng để chuỗi hiển thị nằm rải rác trong code** — đó mới là điều cả ba cách đang
+> cùng chống lại.
 
 > 📌 **`this[string key]` là INDEXER:** cho phép dùng cú pháp dấu ngoặc vuông
 > (`TranslationService.Instance["UI.Home.StartButton"]`) thay vì gọi method

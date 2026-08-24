@@ -18015,6 +18015,104 @@ phép tính lại bằng tay trên giấy để biết sai ở khâu nào: đo s
 Không có chúng thì bạn chỉ có một kết luận vô dụng là <em>&quot;máy căn chỉnh không chuẩn&quot;</em>.</p>
 </blockquote>
 <hr>
+<h3>13.2.4g  Ảnh — thứ tốn bộ nhớ nhất trong máy, và ba cách làm hỏng nó</h3>
+<p>Mục 13.2.4c bàn về <strong>kết quả</strong> thị giác. Mục này bàn về <strong>chính tấm ảnh</strong>: nó sống bao lâu, ai giải
+phóng, lưu ở đâu, đặt tên thế nào. Nghe như chuyện vặt, nhưng đây là nguyên nhân của phần lớn các sự cố
+kiểu <em>&quot;máy chạy hai ngày thì chậm dần rồi treo&quot;</em> trong máy có camera.</p>
+<h4>Vì sao ảnh khác mọi đối tượng khác trong C#</h4>
+<p>Một tấm ảnh 5 megapixel đơn sắc là <strong>5 MB</strong>. Ảnh màu là 15 MB. Máy chạy 3 giây một chu kỳ, hai camera,
+là <strong>10 MB mỗi 3 giây</strong> — 12 GB mỗi giờ đi qua bộ nhớ.</p>
+<p>Nhưng vấn đề không nằm ở con số đó, mà ở chỗ <strong>bộ dọn rác của .NET không nhìn thấy phần lớn khối lượng
+ấy</strong>. Đối tượng ảnh của .NET và của các thư viện thị giác chỉ là một cái vỏ nhỏ trong bộ nhớ có quản lý,
+còn dữ liệu điểm ảnh nằm trong <strong>bộ nhớ không quản lý</strong> do thư viện cấp phát. Bộ dọn rác thấy vài trăm
+byte và kết luận &quot;chưa cần dọn&quot;, trong khi thực tế đã có vài gigabyte điểm ảnh nằm đó.</p>
+<p>Hệ quả rất cụ thể, và nó giải thích một triệu chứng quen thuộc: <strong>màn hình quản lý tác vụ báo bộ nhớ tăng
+đều mà bộ đếm bộ nhớ của .NET vẫn thấp</strong>. Đây là loại rò rỉ khác với loại đã nói ở Chương 19 (quên huỷ
+đăng ký sự kiện) — ở đó đối tượng còn sống vì còn tham chiếu; ở đây đối tượng đã mất tham chiếu nhưng
+<strong>tài nguyên không quản lý của nó chưa được trả lại</strong>.</p>
+<h4>Cách 1 làm hỏng: gán đè lên biến ảnh mà không giải phóng</h4>
+<p>Đoạn dưới rút từ một máy kiểm tra khay đang chạy sản xuất. <code>img1</code> và <code>img2</code> là <strong>field của lớp</strong>, không
+phải biến cục bộ:</p>
+<pre><code class="language-csharp">Image img1;                 // ← field, sống suốt đời đối tượng
+Image img2;
+
+// … trong vòng xử lý MỖI khay:
+img1 = display1.CreateContentBitmap(...);      // tạo ảnh MỚI, đè lên tham chiếu cũ
+img2 = display2.CreateContentBitmap(...);      // ảnh cũ mất tham chiếu — nhưng CHƯA được giải phóng
+
+if (batLuuAnhGoRoi || khayLoi)                 // ← chỉ LƯU khi gỡ rối hoặc khay lỗi…
+    img1.Save(duongDan);                       //    …nhưng TẠO thì tạo mọi chu kỳ
+</code></pre>
+<p>Ba vấn đề chồng lên nhau:</p>
+<ol>
+<li><strong>Không có <code>Dispose</code>, không có <code>using</code>.</strong> Ảnh cũ chờ bộ dọn rác chạy tới, rồi chờ hàng đợi hoàn thiện
+xử lý nốt — có thể là hàng phút sau, hoặc không bao giờ nếu bộ nhớ có quản lý chưa đủ áp lực.</li>
+<li><strong>Ảnh được tạo mọi chu kỳ, dù phần lớn chu kỳ không dùng đến nó.</strong> Điều kiện <em>&quot;chỉ lưu khi lỗi&quot;</em> đặt
+sau khi tạo, nên máy chạy tốt vẫn phải trả chi phí đầy đủ. Kiểm tra điều kiện <strong>trước khi tạo</strong> là
+một dòng code, và nó bỏ đi toàn bộ chi phí ở trạng thái bình thường.</li>
+<li><strong>Dùng field thay vì biến cục bộ.</strong> Không có lý do gì để hai tấm ảnh này sống ngoài phạm vi vòng xử
+lý; để chúng làm field chỉ khiến chúng sống lâu hơn cần thiết và khiến người đọc không biết ai sở hữu.</li>
+</ol>
+<p>Viết lại đúng, ngắn hơn bản gốc:</p>
+<pre><code class="language-csharp">if (batLuuAnhGoRoi || khayLoi)                       // quyết định TRƯỚC
+{
+    using var anh = display1.CreateContentBitmap(...); // giải phóng chắc chắn khi ra khỏi khối
+    anh.Save(duongDan);
+}
+</code></pre>
+<blockquote>
+<p>📌 <strong>Quy tắc rút gọn cho mọi thứ liên quan tới ảnh: <code>using</code>, hoặc một chủ sở hữu duy nhất.</strong> Đối tượng
+ảnh — dù của .NET hay của thư viện thị giác — gần như luôn cài <code>IDisposable</code> (Chương 5 mục 5.5). Nếu
+tấm ảnh chỉ dùng trong một hàm: <code>using</code>. Nếu nó phải sống lâu hơn (để hiển thị, để lưu ở luồng khác):
+phải có <strong>đúng một nơi chịu trách nhiệm giải phóng</strong>, và nơi đó phải được ghi rõ trong tên hoặc trong
+chú thích.</p>
+</blockquote>
+<h4>Cách 2 làm hỏng: giữ ảnh trong bản ghi kết quả</h4>
+<p>Cám dỗ rất tự nhiên: bản ghi kết quả kiểm tra có sẵn rồi, cho luôn tấm ảnh vào đó cho tiện.</p>
+<pre><code class="language-csharp">public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, Image AnhGoc);  // ❌
+</code></pre>
+<p>Nếu bạn giữ một trăm bản ghi gần nhất để hiện lên màn hình lịch sử, bạn vừa giữ luôn <strong>một trăm tấm
+ảnh</strong> — một gigabyte rưỡi. Và vì bản ghi trông vô hại, không ai nghĩ tới việc giải phóng chúng.</p>
+<p>Cách đúng: bản ghi kết quả giữ <strong>đường dẫn tới tệp ảnh</strong>, không giữ tấm ảnh. Khi người dùng bấm vào một
+dòng lịch sử thì mới nạp ảnh lên, và giải phóng khi đóng.</p>
+<pre><code class="language-csharp">public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, string DuongDanAnh);  // ✅
+</code></pre>
+<h4>Cách 3 làm hỏng: lưu ảnh ở luồng khác mà không rõ ai sở hữu</h4>
+<p>Ghi một tấm ảnh xuống đĩa mất vài chục mili-giây — đủ để làm chậm nhịp máy, nên người ta đẩy sang luồng
+nền. Nhưng nếu bạn đưa <strong>chính đối tượng ảnh</strong> vào hàng đợi rồi giải phóng nó ở luồng chính, luồng nền sẽ
+ghi một tấm ảnh đã bị huỷ. Còn nếu không giải phóng, hàng đợi đầy lên là bộ nhớ đầy theo.</p>
+<p>Hai cách xử lý, chọn theo tình huống:</p>
+<ul>
+<li><strong>Chuyển quyền sở hữu</strong>: luồng chính đưa ảnh vào hàng đợi rồi <strong>không đụng vào nữa</strong>; luồng nền ghi
+xong thì giải phóng. Đơn giản và đủ dùng cho hầu hết máy.</li>
+<li><strong>Chuyển sang dạng byte trước</strong>: nén thành JPEG/PNG ngay ở luồng chính rồi chỉ đưa mảng byte vào hàng
+đợi. Tốn một chút CPU ở luồng chính nhưng <strong>giải phóng ảnh sớm nhất có thể</strong>.</li>
+</ul>
+<p>Và trong cả hai cách: hàng đợi phải <strong>có giới hạn</strong> (Chương 5 mục 5.4). Khi đĩa chậm hoặc đầy, thà bỏ
+bớt ảnh gỡ rối còn hơn để bộ nhớ phình tới lúc treo máy.</p>
+<h4>Đặt tên tệp ảnh — một chi tiết nhỏ làm mất dữ liệu</h4>
+<p>Cùng dự án nói trên đặt tên tệp ảnh theo mẫu:</p>
+<pre><code class="language-csharp">maKhay + &quot;-&quot; + DateTime.Now.ToString(&quot;MMddThhmmss&quot;) + &quot;-a.bmp&quot;
+</code></pre>
+<p>Có một lỗi nằm gọn trong bốn ký tự: <strong><code>hh</code> là giờ theo hệ 12 giờ</strong>, và trong chuỗi này <strong>không có phần
+SA/CH</strong>. Nghĩa là ảnh chụp lúc 09:15 và ảnh chụp lúc 21:15 cùng ngày sinh ra <strong>đúng một tên tệp</strong> — cái
+sau ghi đè cái trước, im lặng. Với máy chạy hai ca, mỗi ngày mất một phần dữ liệu bằng chứng, và không
+có gì báo cho bạn biết.</p>
+<p>Chuỗi định dạng đúng dùng <strong><code>HH</code></strong> (24 giờ). Nhân đây, một quy ước đặt tên tệp bằng chứng đủ dùng cho
+mọi máy:</p>
+<pre><code>yyyyMMdd_HHmmss_fff  _  &lt;mã sản phẩm&gt;  _  &lt;trạm&gt;  _  &lt;OK|NG&gt;  .png
+20260824_211530_412_SN12345_Tram2_NG.png
+</code></pre>
+<p>Bốn lý do cho thứ tự đó: <strong>thời gian đứng trước</strong> nên sắp xếp theo tên là sắp xếp theo thời gian; <strong>có
+năm và giờ 24</strong> nên không bao giờ trùng; <strong>có phần mili-giây</strong> nên hai ảnh trong cùng một giây không đè
+nhau; và <strong>kết quả nằm trong tên</strong> nên lọc ảnh lỗi chỉ cần tìm theo chuỗi, không phải mở từng tấm.</p>
+<blockquote>
+<p>💡 <strong>Một điểm cùng dự án đó làm ĐÚNG và đáng nhắc:</strong> đường dẫn lưu ảnh được ghép từ <strong>ổ đĩa đang chứa
+chính phần mềm</strong>, thay vì viết cứng một chữ cái ổ đĩa. Nhờ vậy cài phần mềm sang máy có cấu hình ổ khác
+vẫn chạy. Đây là bản rẻ tiền của khuyến nghị ở Chương 19 — chưa bằng việc đưa hẳn đường dẫn gốc ra
+tham số cấu hình, nhưng đã tốt hơn hẳn một chuỗi cố định.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -18811,6 +18909,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Xi-lanh khí nén (13.2.1b)</td>
 <td>Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp</td>
 <td>Trạng thái suy từ <strong>cả hai cảm biến</strong>; hành động phải <code>async</code> + có thẻ huỷ + hết giờ thì <strong>ném lỗi</strong> sau khi về an toàn; loại van là <strong>tham số khai báo</strong></td>
+</tr>
+<tr>
+<td>Ảnh và bộ nhớ (13.2.4g)</td>
+<td>Ảnh tốn bộ nhớ <strong>không quản lý</strong> mà bộ dọn rác không thấy</td>
+<td><code>using</code> hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ <strong>đường dẫn</strong>, không giữ ảnh; tên tệp dùng <code>HH</code> không phải <code>hh</code></td>
 </tr>
 <tr>
 <td>Căn chỉnh phôi (13.2.4f)</td>

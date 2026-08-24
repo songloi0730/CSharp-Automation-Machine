@@ -16597,6 +16597,135 @@ lỗi mà nếu không có nó thì cả lô hàng đã chạy xong mới biết
 
 ---
 
+### 13.2.4g  Ảnh — thứ tốn bộ nhớ nhất trong máy, và ba cách làm hỏng nó
+
+Mục 13.2.4c bàn về **kết quả** thị giác. Mục này bàn về **chính tấm ảnh**: nó sống bao lâu, ai giải
+phóng, lưu ở đâu, đặt tên thế nào. Nghe như chuyện vặt, nhưng đây là nguyên nhân của phần lớn các sự cố
+kiểu *"máy chạy hai ngày thì chậm dần rồi treo"* trong máy có camera.
+
+#### Vì sao ảnh khác mọi đối tượng khác trong C#
+
+Một tấm ảnh 5 megapixel đơn sắc là **5 MB**. Ảnh màu là 15 MB. Máy chạy 3 giây một chu kỳ, hai camera,
+là **10 MB mỗi 3 giây** — 12 GB mỗi giờ đi qua bộ nhớ.
+
+Nhưng vấn đề không nằm ở con số đó, mà ở chỗ **bộ dọn rác của .NET không nhìn thấy phần lớn khối lượng
+ấy**. Đối tượng ảnh của .NET và của các thư viện thị giác chỉ là một cái vỏ nhỏ trong bộ nhớ có quản lý,
+còn dữ liệu điểm ảnh nằm trong **bộ nhớ không quản lý** do thư viện cấp phát. Bộ dọn rác thấy vài trăm
+byte và kết luận "chưa cần dọn", trong khi thực tế đã có vài gigabyte điểm ảnh nằm đó.
+
+Hệ quả rất cụ thể, và nó giải thích một triệu chứng quen thuộc: **màn hình quản lý tác vụ báo bộ nhớ tăng
+đều mà bộ đếm bộ nhớ của .NET vẫn thấp**. Đây là loại rò rỉ khác với loại đã nói ở Chương 19 (quên huỷ
+đăng ký sự kiện) — ở đó đối tượng còn sống vì còn tham chiếu; ở đây đối tượng đã mất tham chiếu nhưng
+**tài nguyên không quản lý của nó chưa được trả lại**.
+
+#### Cách 1 làm hỏng: gán đè lên biến ảnh mà không giải phóng
+
+Đoạn dưới rút từ một máy kiểm tra khay đang chạy sản xuất. `img1` và `img2` là **field của lớp**, không
+phải biến cục bộ:
+
+```csharp
+Image img1;                 // ← field, sống suốt đời đối tượng
+Image img2;
+
+// … trong vòng xử lý MỖI khay:
+img1 = display1.CreateContentBitmap(...);      // tạo ảnh MỚI, đè lên tham chiếu cũ
+img2 = display2.CreateContentBitmap(...);      // ảnh cũ mất tham chiếu — nhưng CHƯA được giải phóng
+
+if (batLuuAnhGoRoi || khayLoi)                 // ← chỉ LƯU khi gỡ rối hoặc khay lỗi…
+    img1.Save(duongDan);                       //    …nhưng TẠO thì tạo mọi chu kỳ
+```
+
+Ba vấn đề chồng lên nhau:
+
+1. **Không có `Dispose`, không có `using`.** Ảnh cũ chờ bộ dọn rác chạy tới, rồi chờ hàng đợi hoàn thiện
+   xử lý nốt — có thể là hàng phút sau, hoặc không bao giờ nếu bộ nhớ có quản lý chưa đủ áp lực.
+2. **Ảnh được tạo mọi chu kỳ, dù phần lớn chu kỳ không dùng đến nó.** Điều kiện *"chỉ lưu khi lỗi"* đặt
+   sau khi tạo, nên máy chạy tốt vẫn phải trả chi phí đầy đủ. Kiểm tra điều kiện **trước khi tạo** là
+   một dòng code, và nó bỏ đi toàn bộ chi phí ở trạng thái bình thường.
+3. **Dùng field thay vì biến cục bộ.** Không có lý do gì để hai tấm ảnh này sống ngoài phạm vi vòng xử
+   lý; để chúng làm field chỉ khiến chúng sống lâu hơn cần thiết và khiến người đọc không biết ai sở hữu.
+
+Viết lại đúng, ngắn hơn bản gốc:
+
+```csharp
+if (batLuuAnhGoRoi || khayLoi)                       // quyết định TRƯỚC
+{
+    using var anh = display1.CreateContentBitmap(...); // giải phóng chắc chắn khi ra khỏi khối
+    anh.Save(duongDan);
+}
+```
+
+> 📌 **Quy tắc rút gọn cho mọi thứ liên quan tới ảnh: `using`, hoặc một chủ sở hữu duy nhất.** Đối tượng
+> ảnh — dù của .NET hay của thư viện thị giác — gần như luôn cài `IDisposable` (Chương 5 mục 5.5). Nếu
+> tấm ảnh chỉ dùng trong một hàm: `using`. Nếu nó phải sống lâu hơn (để hiển thị, để lưu ở luồng khác):
+> phải có **đúng một nơi chịu trách nhiệm giải phóng**, và nơi đó phải được ghi rõ trong tên hoặc trong
+> chú thích.
+
+#### Cách 2 làm hỏng: giữ ảnh trong bản ghi kết quả
+
+Cám dỗ rất tự nhiên: bản ghi kết quả kiểm tra có sẵn rồi, cho luôn tấm ảnh vào đó cho tiện.
+
+```csharp
+public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, Image AnhGoc);  // ❌
+```
+
+Nếu bạn giữ một trăm bản ghi gần nhất để hiện lên màn hình lịch sử, bạn vừa giữ luôn **một trăm tấm
+ảnh** — một gigabyte rưỡi. Và vì bản ghi trông vô hại, không ai nghĩ tới việc giải phóng chúng.
+
+Cách đúng: bản ghi kết quả giữ **đường dẫn tới tệp ảnh**, không giữ tấm ảnh. Khi người dùng bấm vào một
+dòng lịch sử thì mới nạp ảnh lên, và giải phóng khi đóng.
+
+```csharp
+public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, string DuongDanAnh);  // ✅
+```
+
+#### Cách 3 làm hỏng: lưu ảnh ở luồng khác mà không rõ ai sở hữu
+
+Ghi một tấm ảnh xuống đĩa mất vài chục mili-giây — đủ để làm chậm nhịp máy, nên người ta đẩy sang luồng
+nền. Nhưng nếu bạn đưa **chính đối tượng ảnh** vào hàng đợi rồi giải phóng nó ở luồng chính, luồng nền sẽ
+ghi một tấm ảnh đã bị huỷ. Còn nếu không giải phóng, hàng đợi đầy lên là bộ nhớ đầy theo.
+
+Hai cách xử lý, chọn theo tình huống:
+- **Chuyển quyền sở hữu**: luồng chính đưa ảnh vào hàng đợi rồi **không đụng vào nữa**; luồng nền ghi
+  xong thì giải phóng. Đơn giản và đủ dùng cho hầu hết máy.
+- **Chuyển sang dạng byte trước**: nén thành JPEG/PNG ngay ở luồng chính rồi chỉ đưa mảng byte vào hàng
+  đợi. Tốn một chút CPU ở luồng chính nhưng **giải phóng ảnh sớm nhất có thể**.
+
+Và trong cả hai cách: hàng đợi phải **có giới hạn** (Chương 5 mục 5.4). Khi đĩa chậm hoặc đầy, thà bỏ
+bớt ảnh gỡ rối còn hơn để bộ nhớ phình tới lúc treo máy.
+
+#### Đặt tên tệp ảnh — một chi tiết nhỏ làm mất dữ liệu
+
+Cùng dự án nói trên đặt tên tệp ảnh theo mẫu:
+
+```csharp
+maKhay + "-" + DateTime.Now.ToString("MMddThhmmss") + "-a.bmp"
+```
+
+Có một lỗi nằm gọn trong bốn ký tự: **`hh` là giờ theo hệ 12 giờ**, và trong chuỗi này **không có phần
+SA/CH**. Nghĩa là ảnh chụp lúc 09:15 và ảnh chụp lúc 21:15 cùng ngày sinh ra **đúng một tên tệp** — cái
+sau ghi đè cái trước, im lặng. Với máy chạy hai ca, mỗi ngày mất một phần dữ liệu bằng chứng, và không
+có gì báo cho bạn biết.
+
+Chuỗi định dạng đúng dùng **`HH`** (24 giờ). Nhân đây, một quy ước đặt tên tệp bằng chứng đủ dùng cho
+mọi máy:
+
+```
+yyyyMMdd_HHmmss_fff  _  <mã sản phẩm>  _  <trạm>  _  <OK|NG>  .png
+20260824_211530_412_SN12345_Tram2_NG.png
+```
+
+Bốn lý do cho thứ tự đó: **thời gian đứng trước** nên sắp xếp theo tên là sắp xếp theo thời gian; **có
+năm và giờ 24** nên không bao giờ trùng; **có phần mili-giây** nên hai ảnh trong cùng một giây không đè
+nhau; và **kết quả nằm trong tên** nên lọc ảnh lỗi chỉ cần tìm theo chuỗi, không phải mở từng tấm.
+
+> 💡 **Một điểm cùng dự án đó làm ĐÚNG và đáng nhắc:** đường dẫn lưu ảnh được ghép từ **ổ đĩa đang chứa
+> chính phần mềm**, thay vì viết cứng một chữ cái ổ đĩa. Nhờ vậy cài phần mềm sang máy có cấu hình ổ khác
+> vẫn chạy. Đây là bản rẻ tiền của khuyến nghị ở Chương 19 — chưa bằng việc đưa hẳn đường dẫn gốc ra
+> tham số cấu hình, nhưng đã tốt hơn hẳn một chuỗi cố định.
+
+---
+
 ### 13.2.5 Simulator Driver
 
 Mỗi `IMotionAxisDriver` đều có đối tác `SimulatedAxisDriver` — driver giả lập không cần
@@ -17321,6 +17450,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
 | Xi-lanh khí nén (13.2.1b) | Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp | Trạng thái suy từ **cả hai cảm biến**; hành động phải `async` + có thẻ huỷ + hết giờ thì **ném lỗi** sau khi về an toàn; loại van là **tham số khai báo** |
+| Ảnh và bộ nhớ (13.2.4g) | Ảnh tốn bộ nhớ **không quản lý** mà bộ dọn rác không thấy | `using` hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh; tên tệp dùng `HH` không phải `hh` |
 | Căn chỉnh phôi (13.2.4f) | Đo dấu rồi bù XYθ cho trục | **Xoay trước, tịnh tiến sau** — đừng lấy trung bình hai lượng lệch; tâm xoay là tham số; kẹp biên độ và đo lại sau khi bù |
 | Chạm tới một tín hiệu (13.2.4e) | Nghiệp vụ cần một tín hiệu, không cần cả thiết bị | Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối |
 | Mô hình công thức (13.1.4d) | Công thức là lớp có kiểu hay tập biến có tên | Lớp: trình biên dịch bắt lỗi; tập biến: thêm tham số không đổi lược đồ, có sẵn lịch sử sửa. Đổi công thức phải **nguyên tử trên mọi hệ thống con** |

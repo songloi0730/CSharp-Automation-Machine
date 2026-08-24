@@ -10502,6 +10502,63 @@ Lợi ích không phải là "code đẹp". Nó rất cụ thể:
 
 ---
 
+### 10.1.9 Điều hướng cấp cao nhất: phím cứng F1–F8, không phải menu
+
+Mở tài liệu hướng dẫn sử dụng của một máy bán dẫn đang chạy trong nhà máy, phần "tổng quan giao diện"
+không phải là một sơ đồ menu mà là **một bảng ánh xạ phím chức năng**:
+
+```
+F1  Chạy tự động
+F2  Vận hành tay        (dạy sản phẩm · kiểm tra căn chỉnh · chạy cắt · dạy đồ gá · …)
+F4  Bảo trì cơ cấu      (điều khiển động cơ)
+F5  Dữ liệu công thức
+F6  Kỹ thuật            (chỉnh tiêu cự camera)
+F7  Bảo trì vật tư tiêu hao
+F8  Thiết lập nền       (tham số thiết bị)
+```
+
+Một người quen làm phần mềm văn phòng sẽ thấy đây là thiết kế cũ kỹ — sao không dùng thanh menu, hay
+một dải điều hướng bên trái? Nhưng với **máy sản xuất**, cách này thắng ở bốn điểm rất cụ thể:
+
+1. **Người vận hành đeo găng và đứng, không ngồi.** Bấm một phím cứng trên bàn phím màng chính xác hơn
+   hẳn việc nhắm vào một mục menu — kể cả trên màn hình cảm ứng.
+2. **Nó trở thành trí nhớ cơ bắp.** Sau một tuần, người vận hành bấm F2 mà không cần nhìn. Menu thì luôn
+   phải đọc.
+3. **Ánh xạ ổn định giữa các đời máy và các model.** Cùng một hãng, F1 luôn là chạy tự động. Người
+   chuyển từ máy này sang máy khác không phải học lại — đây là lợi ích mà nhà máy nhiều loại máy quý
+   hơn cả sự đẹp đẽ của giao diện.
+4. **Nó ép bạn giới hạn số màn hình cấp cao nhất.** Chỉ có tám phím, nên không thể có mười lăm mục cấp
+   một. Ràng buộc đó là một **tính năng**, không phải hạn chế: nó buộc bạn quyết định cái gì thật sự
+   thuộc cấp cao nhất, và đẩy phần còn lại xuống cấp hai đúng như bốn cấp thông tin của ISA-101
+   (mục 10.1.2).
+
+> 💡 **Cách áp dụng nếu bạn viết phần mềm mới trên nền WPF/WinForms:** giữ nguyên ý tưởng, không cần bàn
+> phím cứng. Gắn phím tắt `F1`–`F8` vào các lệnh điều hướng cấp một, **hiện số phím ngay trên nhãn nút**
+> (`F2 · Vận hành tay`), và giữ ánh xạ **cố định giữa mọi máy công ty bạn làm**. Chi phí gần bằng không,
+> và nó cho bạn cả ba lợi ích đầu.
+>
+> ```xml
+> <Window.InputBindings>
+>     <KeyBinding Key="F1" Command="{Binding MoManChayTuDongCommand}"/>
+>     <KeyBinding Key="F2" Command="{Binding MoManVanHanhTayCommand}"/>
+>     <!-- … -->
+> </Window.InputBindings>
+> ```
+
+> ⚠️ **Hai ràng buộc bắt buộc đi kèm.** Thứ nhất, **phím tắt phải bị vô hiệu khi không được phép**: F2 mở
+> màn hình vận hành tay thì vẫn phải qua đúng cửa kiểm tra quyền và trạng thái máy như khi bấm nút
+> (Chương 15 mục 15.2.3) — phím tắt là lối vào nhanh, **không phải lối đi vòng**. Thứ hai, đừng gán phím
+> chức năng cho **thao tác gây chuyển động**; chỉ gán cho **điều hướng**. Một phím cứng bấm nhầm mà làm
+> trục chạy là chuyện khác hẳn với một phím cứng bấm nhầm mà chỉ mở sai màn hình.
+
+> 📌 **Một quan sát về cách đọc tài liệu máy.** Nếu bạn tiếp quản một máy mà không có mã nguồn, **bảng
+> ánh xạ phím chức năng trong sách hướng dẫn chính là sơ đồ chức năng của phần mềm** — nó liệt kê đủ các
+> nhóm màn hình và quan hệ cấp bậc giữa chúng, thường gọn hơn bất kỳ tài liệu kỹ thuật nào. Đây là tệp
+> thứ ba nên mở khi nhận một máy lạ, sau hàm khởi động (Phụ lục B mục B.9) và bảng cờ (Chương 16 mục
+> 16.2b.5) — và là tệp duy nhất trong ba tệp đó mà bạn có được **khi không có mã nguồn**.
+
+---
+
 ## 10.2 Bảng màu & Hệ thống phân cấp theo ISA-101
 
 <!--idx:Bảng màu ISA-101-->
@@ -11931,6 +11988,11 @@ dialog...) để operator học một lần, dùng được ở mọi nơi.
   **hiệu ứng hiển thị** (nhấp nháy hay tĩnh) — hai trục độc lập.
 - Alarm Banner ở chương này chỉ vẽ — mọi logic (acknowledge, escalation,
   triết lý ISA-18.2) thuộc về Chương 15; không lặp lại nội dung đó.
+- **Điều hướng cấp cao nhất bằng phím cứng F1–F8** (10.1.9) là quy ước của máy
+  sản xuất, không phải thiết kế cũ kỹ: người vận hành đeo găng, trí nhớ cơ bắp,
+  ánh xạ ổn định giữa các đời máy, và chỉ tám phím nên buộc phải giới hạn số màn
+  hình cấp một. Phím tắt là **lối vào nhanh, không phải lối đi vòng** — vẫn qua
+  đủ cửa kiểm tra quyền.
 - **Màn hình vận hành (10.1.8)** trả lời năm câu: đang ở trạng thái nào, đang
   làm bước gì, có ổn không, nếu không thì vì sao, và vật liệu nào đang trong
   máy. Câu thứ hai — **bước hiện tại của từng trạm** — hay bị bỏ sót nhất.
@@ -20563,6 +20625,51 @@ hành lúc 2 giờ sáng không cần biết *"lỗi mã 10014"* — họ cần 
 > constructor attribute — người thêm alarm mới **không thể** bỏ trống mà vẫn build được. Đây là cách
 > rẻ nhất để cả đội buộc phải nghĩ "người nhận alarm này sẽ làm gì" ngay lúc viết nó.
 
+#### Danh mục alarm của một máy thật lớn đến mức nào, và một mục gồm những gì
+
+Trước khi thiết kế, cần một cảm giác đúng về **quy mô**. Danh mục sự cố đi kèm một máy đóng gói bán dẫn
+đang chạy sản xuất — loại tài liệu nhà cung cấp giao cho khách hàng cùng cỗ máy — chứa **khoảng một
+nghìn một trăm mục**, chia thành gần **bốn mươi họ mã** theo cụm chức năng, trong đó vài họ có tới
+80–100 mục (một họ cho mỗi trạm hoặc mỗi nhóm trục).
+
+Con số đó nói hai điều:
+
+- **Danh mục alarm không phải một tệp bạn gõ tay trong một buổi.** Nếu máy của bạn có mười hai trục và
+  tám mươi tín hiệu vào, phần lớn nghìn mục đó phải được **sinh ra** từ danh mục thiết bị (phần trên).
+  Chỉ phần alarm nghiệp vụ mới viết tay.
+- **Sắp xếp theo họ mã là bắt buộc, không phải trang trí.** Với một nghìn mục, người kỹ thuật tra cứu
+  bằng cách nhìn hai chữ số đầu để biết *"đây là chuyện của cụm nào"* trước khi đọc chi tiết.
+
+**Và một mục trong danh mục đó có bốn phần, không phải hai:**
+
+| Phần | Nội dung |
+|---|---|
+| **Mã** | Số có cấu trúc (phần trên) |
+| **Tên ngắn** | Một dòng, đủ để hiện trên băng cảnh báo |
+| **Các trường hợp có thể xảy ra** | **Một danh sách đánh số**, không phải một câu |
+| **Các bước kiểm tra** | **Một danh sách đánh số**, xếp theo thứ tự nên làm |
+
+Khác biệt so với mẫu attribute ở trên nằm ở chữ **danh sách**. Một alarm mất nguồn thiết bị có thể do
+nguồn chính, do nút dừng khẩn, do chưa bấm nút cấp nguồn, hoặc do một trong vài rơ-le an toàn — **bốn
+nguyên nhân khác nhau**, và tài liệu liệt kê đủ bốn. Phần hướng dẫn cũng vậy: nó là các bước *"kiểm tra
+cái này trước, rồi cái này"*, chứ không phải một câu khuyên chung chung.
+
+> 💡 **Thứ tự các bước kiểm tra là phần có giá trị nhất, và cũng là phần bị làm ẩu nhất.** Xếp theo
+> nguyên tắc **rẻ nhất và hay gặp nhất trước**: nhìn một cái đèn báo trước khi tháo vỏ; kiểm tra một
+> công tắc trước khi đo điện. Một danh sách xếp đúng thứ tự giúp người kỹ thuật giải quyết phần lớn
+> trường hợp ở bước một hoặc hai; xếp sai thứ tự thì họ tháo máy ra rồi mới phát hiện chỉ là chưa bấm
+> nút.
+>
+> Trong code, điều này nghĩa là trường hướng dẫn xử lý **nên là một mảng chuỗi**, không phải một chuỗi
+> — để màn hình hiện thành danh sách đánh số, và để người viết buộc phải nghĩ theo từng bước.
+
+> 📌 **Danh mục alarm là một SẢN PHẨM BÀN GIAO, không phải một tệp nội bộ.** Nhà cung cấp máy giao nó
+> cho khách hàng như một tài liệu riêng, **dịch sang ngôn ngữ của nhà máy**. Hệ quả cho thiết kế: nội
+> dung alarm phải **xuất ra được** thành một bảng đọc được (bảng tính, PDF) mà không cần lập trình viên,
+> và cơ chế đa ngôn ngữ (Chương 10 mục 10.4.2) phải phủ cả phần hướng dẫn xử lý — không chỉ phủ nhãn
+> trên màn hình. Nếu bạn để hướng dẫn xử lý nằm cứng trong mã nguồn bằng tiếng Anh, đến lúc bàn giao
+> mới phát hiện là không dịch được.
+
 #### Cách 3 — file dữ liệu: khi khách hàng quy định mã
 
 Một dự án tham khảo khác đặt toàn bộ danh mục trong một file XML, mỗi dòng như sau (dịch tên trường):
@@ -27717,6 +27824,31 @@ Chúng không sinh ra sản phẩm nào, nhưng **quyết định thời gian d�
 | **Kiểm tra kết nối thiết bị** | ✔ | Kỹ thuật viên | Trạng thái từng thiết bị, nút thử kết nối lại |
 | **Thông tin phiên bản phần mềm** | ✔ | Tất cả | Phiên bản, ngày build — câu hỏi đầu tiên khi hỗ trợ từ xa |
 | **Màn hình gỡ rối cho nhà cung cấp** | | Nhà cung cấp | Truy cập thẳng xuống thiết bị, ẩn sau quyền cao nhất |
+| **Quản lý vật tư tiêu hao** | | Kỹ thuật viên | Từng loại vật tư: **ngày lắp**, lượng đã dùng, ngưỡng thay, và **quy trình thay** — xem dưới |
+
+> 💡 **Dòng cuối bảng đáng được nói riêng, vì nó hay bị xem là chuyện của cơ khí.** Trong sách hướng dẫn
+> sử dụng của một máy bán dẫn thật, **bảo trì vật tư tiêu hao chiếm hẳn một mục cấp cao nhất** — ngang
+> hàng với chạy tự động, vận hành tay và công thức. Không phải vì nó phức tạp, mà vì nó là việc người
+> vận hành **làm thường xuyên** và làm sai thì hỏng hàng loạt.
+>
+> Vật tư tiêu hao có ở gần như mọi máy: lưỡi cắt, đầu hút, mũi hàn, kim bơm keo, tấm lọc, băng dính, đầu
+> dò. Bốn thứ màn hình này cần có, và cả bốn đều là **dữ liệu bạn phải chủ động lưu**, không tự có:
+>
+> 1. **Ngày lắp và mã của vật tư đang dùng.** Nghe tầm thường cho tới khi có một lô hàng nghi ngờ và câu
+>    hỏi là *"lúc đó máy đang dùng lưỡi nào"*.
+> 2. **Lượng đã dùng theo đúng đơn vị của vật tư đó.** Lưỡi cắt tính theo **chiều dài đã cắt**, đầu hút
+>    tính theo **số lần hút**, mũi hàn tính theo **số mối** hoặc **giờ ở nhiệt độ**. Đếm sai đơn vị thì
+>    cảnh báo thay thế trở nên vô nghĩa.
+> 3. **Hai ngưỡng, không phải một**: một ngưỡng *sắp hết* để đặt hàng và lên kế hoạch, một ngưỡng *phải
+>    thay* để chặn chạy tiếp. Chỉ có ngưỡng thứ hai thì máy sẽ dừng đúng lúc đang chạy lô gấp.
+> 4. **Quy trình thay ngay trên màn hình**, và nó thường là một luồng hướng dẫn từng bước (mục 10.1.7):
+>    đưa cơ cấu về vị trí thay → xác nhận đã tháo → lắp mới → **chạy quy trình căn chỉnh lại** → đặt lại
+>    bộ đếm. Bước "căn chỉnh lại" là bước hay bị bỏ nhất, và là bước quyết định chất lượng sau khi thay.
+>
+> Trong code, hãy mô hình hoá vật tư tiêu hao thành **một thực thể có vòng đời** — mã, ngày lắp, bộ đếm,
+> hai ngưỡng — chứ không phải một biến đếm rời rạc. Khi thay, **kết thúc bản ghi cũ và mở bản ghi mới**
+> thay vì đặt bộ đếm về 0: nhờ vậy bạn giữ được lịch sử *"lưỡi trước dùng được bao lâu"*, và đó chính là
+> dữ liệu để trả lời câu hỏi tuổi thọ thực tế có đúng như nhà cung cấp nói không.
 
 ### B.2.7 Nhóm 7 — Tích hợp bên ngoài
 

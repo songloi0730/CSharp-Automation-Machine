@@ -15020,136 +15020,6 @@ Ba hậu quả thật, xếp theo mức đau tăng dần:
 
 ---
 
-### 13.1.4c  Bảng điểm — tệp dữ liệu nhỏ nhất, nhưng sai thì máy đâm
-
-Chương 10 mục 10.1.7 đã bàn *giao diện* dạy điểm. Mục này bàn thứ nằm dưới nó: **điểm được lưu ra sao**.
-Đây là tệp dữ liệu nhỏ nhất trong cả phần mềm — vài chục dòng số — nhưng cũng là tệp mà một con số sai
-sẽ làm đầu gắp đâm vào đồ gá. Bốn dự án tham khảo lưu nó theo bốn kiểu khác nhau, và so bốn kiểu đó
-dạy được gần như mọi thứ cần biết.
-
-#### Trước hết: một máy cần những loại điểm nào
-
-Đọc tên các điểm trong một tệp thật cho ra một danh mục đáng ngạc nhiên là ổn định giữa các máy:
-
-| Loại điểm | Dùng để làm gì | Ghi chú |
-|---|---|---|
-| **Điểm an toàn** | Vị trí lùi về mà chắc chắn không va vào gì | Gần như luôn là điểm đầu tiên trong danh sách, và là đích của mọi thao tác "về vị trí an toàn" |
-| **Điểm chụp ảnh** | Nơi trục dừng để camera chụp | Phải lặp lại chính xác, nếu không kết quả thị giác lệch theo |
-| **Điểm làm việc** | Gắp, đặt, lắp, bắt vít… | Thường là điểm hay phải chỉnh lại nhất |
-| **Điểm hiệu chuẩn** | Vị trí dùng khi chạy quy trình hiệu chuẩn | Khác điểm làm việc dù toạ độ gần nhau — đừng gộp |
-| **Điểm tránh va** | Điểm trung gian bắt buộc đi qua để không quét vào vật cản | Thường theo cặp trái/phải, trước/sau |
-
-> 💡 **Điểm hiệu chuẩn và điểm làm việc trông giống nhau nhưng phải tách.** Trong tệp thật, hai điểm này
-> lệch nhau vài phần mười milimét — đủ gần để một người mới nghĩ rằng gộp lại cho gọn. Đừng: chúng
-> **đổi vì những lý do khác nhau**. Điểm làm việc đổi khi đổi mã hàng hoặc chỉnh đồ gá; điểm hiệu chuẩn
-> đổi khi thay camera hoặc chỉnh cơ khí. Gộp lại thì mỗi lần chỉnh cái này sẽ âm thầm phá cái kia — và
-> triệu chứng xuất hiện muộn, ở một quy trình hoàn toàn khác.
-
-#### Bốn cách lưu, và cách nào hợp với máy nào
-
-**Cách 1 — một điểm là một "tư thế" của cả trạm.** Tệp XML chia theo trạm; mỗi điểm là một dòng có tên
-và **toạ độ của toàn bộ trục trong trạm**, với số ô trục cố định:
-
-```xml
-<TramBatVit>
-  <Point index="1" name="Điểm an toàn"   x="190.76" y="97.93"  z="11.04" u="0" a="0" b="0" c="0" d="0" />
-  <Point index="2" name="Điểm chụp ảnh"  x="190.76" y="318.61" z="11.04" u="0" a="0" b="0" c="0" d="0" />
-</TramBatVit>
-```
-
-Hợp với máy mà các trục **di chuyển phối hợp tới cùng một vị trí** (gantry XYZ, tay gắp nhiều bậc):
-"về điểm chụp ảnh" là một lệnh duy nhất, đọc một dòng là biết cả tư thế. Cái giá: **số ô trục cố định**
-— trạm chỉ có 3 trục vẫn mang theo 5 ô rỗng, và trạm cần trục thứ 9 thì phải sửa cả định dạng lẫn code
-đọc.
-
-**Cách 2 — một điểm là một mục tiêu của một trục, kèm cả cách đi tới đó.** Điểm là một đối tượng có
-tên, và ngoài vị trí còn mang theo **biên dạng chuyển động**:
-
-```csharp
-public class AxisPoint
-{
-    public string Name           { get; set; }   // "Vị trí lấy phôi"
-    public double TargetPosition { get; set; }   // vị trí tuyệt đối, đơn vị kỹ thuật (mm)
-    public double Speed          { get; set; }   // tốc độ khuyến nghị
-    public double Acc            { get; set; }   // gia tốc
-    public double Dec            { get; set; }   // giảm tốc
-    public double STime          { get; set; }   // thời gian đoạn S (làm mềm điểm đầu/cuối)
-    public string Description    { get; set; }   // ghi chú cho người sau
-    public int    SortOrder      { get; set; }   // thứ tự hiện trên màn hình
-}
-```
-
-Ý tưởng cốt lõi được ghi thẳng trong chú thích của dự án đó, và đáng chép lại: *đừng viết cứng toạ độ
-trong code nghiệp vụ, hãy tham chiếu theo tên* — nhờ vậy quy trình và toạ độ tách rời nhau.
-
-Nhưng điểm đáng học hơn là việc **biên dạng chuyển động được lưu cùng điểm**. Nghe nhỏ, hệ quả lớn: tốc
-độ và gia tốc để tới một điểm là **thuộc tính của điểm đó**, không phải của chỗ gọi lệnh. Điểm hạ xuống
-mặt sản phẩm phải đi chậm và mềm; điểm lùi về vị trí chờ có thể đi nhanh. Nếu tốc độ nằm ở chỗ gọi,
-cùng một điểm sẽ được đi tới bằng năm tốc độ khác nhau từ năm chỗ trong code, và **chỉnh cho an toàn ở
-một chỗ không sửa được bốn chỗ kia**.
-
-**Cách 3 — mảng theo trục, giao diện tự ẩn ô thừa.** Gần cách 1 nhưng lưu theo dạng mảng `{giá trị, tốc
-độ}` cho từng trục của trạm; màn hình dựng sẵn số ô tối đa rồi **ẩn bớt ô của những trục trạm này không
-có**. Cách này giữ được ưu điểm "một dòng là một tư thế" mà màn hình vẫn gọn — và là cách rẻ nhất để
-một màn hình dùng chung cho mọi trạm (Phụ lục B mục B.2.2).
-
-**Cách 4 — điểm không nằm trong phần mềm của bạn.** Với máy dùng robot có bộ điều khiển riêng, danh sách
-điểm nằm **trong bộ điều khiển robot**, dưới định dạng của hãng; phần mềm C# chỉ gọi *"chạy tới điểm số
-12"*. Đây không phải thiếu sót mà là ranh giới trách nhiệm hợp lý — nhưng nó tạo ra ba hệ quả phải biết:
-điểm **không nằm trong bản sao lưu phần mềm của bạn**; đổi điểm phải làm bằng công cụ của hãng; và
-**số hiệu điểm trở thành một giao ước ngầm** giữa hai hệ thống — đổi thứ tự điểm trong robot là làm
-hỏng chương trình C# mà không có lỗi biên dịch nào cảnh báo.
-
-| | Cách 1 (tư thế/XML) | Cách 2 (điểm + biên dạng) | Cách 3 (mảng theo trục) | Cách 4 (trong bộ điều khiển) |
-|---|---|---|---|---|
-| Hợp với | Trục phối hợp, nhiều trạm giống nhau | Trục độc lập, cần tốc độ riêng cho từng điểm | Nhiều trạm khác số trục | Máy dùng robot có sẵn |
-| Điểm mạnh | Đọc một dòng biết cả tư thế | Tốc độ/gia tốc đi cùng điểm | Một màn hình cho mọi trạm | Không phải viết lại thứ hãng làm tốt hơn |
-| Điểm yếu | Số ô trục cố định | Không thấy ngay tư thế toàn trạm | Vẫn cố định số ô, chỉ ẩn đi | Nằm ngoài sao lưu; số hiệu điểm là giao ước ngầm |
-
-#### Ba cái bẫy chung cho cả bốn cách
-
-**Bẫy 1 — đơn vị của từng trường không được ghi ở đâu cả.** Trong một dự án, khi lưu điểm thì **tốc độ
-được nhân với hệ số quy đổi xung/đơn-vị, còn vị trí thì không**. Nghĩa là trong cùng một bản ghi, một
-trường đã ở đơn vị của card, một trường còn ở đơn vị kỹ thuật. Nó chạy đúng — cho tới khi người sau đọc
-tệp và tưởng cả hai cùng đơn vị.
-
-Cách phòng rẻ nhất: **đặt đơn vị vào tên trường hoặc vào một dòng chú thích ngay đầu tệp** —
-`TargetPositionMm`, `SpeedMmPerSec`. Và quy ước đáng theo cho toàn bộ phần mềm: **mọi thứ lưu ra đĩa và
-mọi thứ hiện trên màn hình đều ở đơn vị kỹ thuật; quy đổi sang xung chỉ xảy ra ở lớp sát trình điều
-khiển** (Chương 13 mục 13.2). Một chỗ quy đổi, một hướng, dễ kiểm tra.
-
-**Bẫy 2 — tên điểm vừa là khoá tra cứu, vừa là nhãn hiển thị.** Trong tệp XML ở cách 1, trường `name`
-chứa ba ngôn ngữ ghép bằng dấu gạch chéo (`"安全点/Safe Point/Điểm an toàn"`), và màn hình cắt chuỗi ra
-theo ngôn ngữ đang chọn. Cách này giải quyết được vấn đề trước mắt, nhưng nó trộn hai vai trò: **sửa một
-lỗi chính tả trong bản dịch là đổi luôn khoá** — và nếu ở đâu đó trong code có so sánh theo tên, việc
-sửa chính tả sẽ làm hỏng chức năng.
-
-Cách đúng tách hai vai: điểm có **mã định danh không đổi** (`P_SAFE`, hoặc chính số `index`) dùng để tra
-cứu, và tên hiển thị lấy từ bảng dịch (Chương 10 mục 10.4.2). Nếu bạn tiếp quản một tệp đã trộn, việc
-đáng làm ngay là **chỉ tra cứu theo `index`**, để trường tên trở thành thuần hiển thị.
-
-**Bẫy 3 — không ai biết điểm đã bị đổi lúc nào và bởi ai.** Tệp điểm bị sửa từ màn hình, ngay trên máy,
-bởi bất kỳ ai vào được màn hình dạy điểm. Khi máy đột nhiên đâm hoặc kết quả lệch, câu hỏi đầu tiên
-luôn là *"hôm qua có ai chỉnh điểm không"* — và nếu chỉ có một tệp bị ghi đè, không ai trả lời được.
-
-Trong các dự án tham khảo, cách xử lý phổ biến nhất là **một tệp `.bak` nằm cạnh tệp chính** — có còn
-hơn không, nhưng chỉ giữ được đúng một đời trước. Ba việc nhỏ nâng hẳn mức an toàn, không cái nào tốn
-quá một buổi:
-
-1. **Ghi kiểu an toàn** (ghi tệp tạm rồi đổi tên — Chương 3 mục 3.6.1), để mất điện giữa lúc lưu không
-   làm hỏng cả bảng điểm.
-2. **Giữ vài đời cũ**, đặt tên theo thời điểm, và tự xoá bản quá cũ.
-3. **Ghi một dòng nhật ký cho mỗi lần sửa**: điểm nào, giá trị cũ → giá trị mới, ai, lúc nào. Đây là
-   thứ trả lời được câu hỏi phía trên, và nó rẻ hơn nhiều so với việc dựng cả cơ chế phiên bản.
-
-> ⚠️ **Và luôn kiểm tra giới hạn hành trình khi lưu, không phải khi chạy.** Một toạ độ gõ nhầm dấu thập
-> phân sẽ nằm im trong tệp cho tới lần chạy tự động tiếp theo, lúc đó nó thành một lệnh di chuyển hết
-> hành trình ở tốc độ sản xuất. Màn hình dạy điểm phải chặn ngay lúc nhập bằng giới hạn mềm của trục,
-> và quy trình dạy điểm phải **bắt buộc chạy thử tới điểm ở tốc độ thấp** trước khi cho lưu — đúng như
-> bước "chạy thử" bắt buộc trong luồng dạy điểm ở Chương 10 mục 10.1.7.
-
----
-
 ### 13.1.4d  Công thức là một lớp, hay là một tập biến có tên?
 
 Mục 13.1.4 bàn về phiên bản và kiểm tra hợp lệ của công thức; mục 13.1.4b bàn về hình dạng tệp tham
@@ -15229,12 +15099,12 @@ không bằng kỷ luật — mỗi biến khai báo phạm vi của mình một
 
 **3. Lịch sử thay đổi có sẵn, cho mọi tham số, không phải viết riêng.** Vì mọi tham số đi qua cùng một
 cơ chế, dự án đó lưu được **giá trị cũ, vị trí trong cấu trúc, và người thực hiện** cho từng lần đổi,
-rồi cho truy vấn lại. Đây đúng là thứ mà mục 13.1.4c phải khuyên làm thủ công cho bảng điểm — ở đây nó
+rồi cho truy vấn lại. Đây đúng là thứ mà mục 13.4.1 phải khuyên làm thủ công cho bảng điểm — ở đây nó
 là hệ quả miễn phí của kiến trúc.
 
 > 💡 **Và một chi tiết nhỏ dễ bỏ sót nhưng rất đáng bắt chước:** khi đổi sang công thức khác, dự án đó
 > **nạp luôn bộ công việc thị giác tương ứng**. Vì sao quan trọng: tham số thị giác thường nằm trong
-> phần mềm của hãng camera chứ không nằm trong công thức của bạn (mục 13.2.4c), nên rất dễ rơi vào
+> phần mềm của hãng camera chứ không nằm trong công thức của bạn (mục 13.4.2), nên rất dễ rơi vào
 > tình trạng *đổi công thức rồi mà camera vẫn đang chạy công việc của mã hàng cũ*. Máy chạy bình
 > thường, không lỗi gì, và kết quả kiểm tra sai hàng loạt. **Đổi công thức phải là một thao tác nguyên
 > tử trên TẤT CẢ các hệ thống con** — trục, thị giác, thiết bị ngoài — chứ không chỉ trên tệp tham số
@@ -15998,353 +15868,6 @@ scanner vật lý cắm vào máy.
 >    treo từ lâu. Nguyên tắc chung: health-check phải phản ánh trạng thái thật
 >    đo được, không phải giá trị mặc định lạc quan.
 
-### 13.2.4c Thị giác máy — thiết bị duy nhất mà phần mềm máy KHÔNG tự làm
-
-Mọi thiết bị đến giờ đều theo cùng một khuôn: bọc SDK vào interface, gọi lệnh, đọc kết
-quả. Thị giác máy phá khuôn đó, và người mới thường mất vài tháng mới nhận ra — thời
-gian đủ để đi sai hướng khá xa.
-
-**Sai lầm điển hình của người mới:** nghĩ rằng "máy cần kiểm tra linh kiện bằng camera"
-nghĩa là mình phải viết code xử lý ảnh trong C#. Thực tế trong hầu hết dự án công
-nghiệp: **bạn không viết thuật toán xử lý ảnh, và bạn cũng không nên**.
-
-#### Ai làm gì
-
-Công việc thị giác được chia cho hai người, hai công cụ, hai loại file:
-
-**Bảng 13.8b — Phân chia trách nhiệm khi máy có thị giác**
-
-| | Kỹ sư thị giác | Người viết phần mềm máy (bạn) |
-|---|---|---|
-| **Làm gì** | Ghép các công cụ xử lý ảnh thành một "công việc" (job): tìm mẫu, đo cạnh, đếm điểm ảnh, đọc mã | Nạp job đó, kích chụp đúng thời điểm, truyền tham số vào, lấy kết quả ra, quyết định cơ khí |
-| **Bằng công cụ** | Môi trường kéo-thả của hãng (Cognex VisionPro QuickBuild, Halcon HDevelop, phần mềm của hãng camera) | Visual Studio |
-| **Kết quả** | Một **file cấu hình** (`.vpp`, `.hdev`…) — là **dữ liệu**, không phải code | Mã C# của phần mềm máy |
-| **Đổi khi nào** | Khi đổi loại sản phẩm, đổi ánh sáng, tỷ lệ lỗi thay đổi | Khi đổi quy trình cơ khí |
-
-Điểm mấu chốt là dòng cuối: **hai bên đổi theo hai nhịp hoàn toàn khác nhau**. Job vision
-được chỉnh đi chỉnh lại hàng chục lần trong giai đoạn chạy thử, đôi khi ngay tại nhà máy
-lúc 2 giờ sáng. Nếu thuật toán nằm trong C#, mỗi lần chỉnh là một lần build và triển khai
-lại toàn bộ phần mềm máy. Vì vậy **job vision phải là dữ liệu**, và nó thuộc về **recipe**
-(Chương 11) chứ không phải mã nguồn.
-
-#### Chỗ nối — và vì sao nó dễ gãy
-
-Phần mềm máy nạp job rồi thò tay vào lấy từng công cụ **theo tên**:
-
-```csharp
-// Mẫu điển hình khi dùng thư viện thị giác thương mại
-var job = VisionJob.Load(recipe.VisionJobPath);           // nạp file do kỹ sư thị giác tạo
-var fixture   = job.Tools["TrayFixture"];                 // ← nối bằng CHUỖI
-var alignTool = job.Tools["PartAlign"];
-alignTool.Params["AcceptThreshold"] = recipe.MatchScoreMin;
-```
-
-`job.Tools["TrayFixture"]` là một **hợp đồng bằng chuỗi ký tự giữa hai công cụ khác
-nhau**. Kỹ sư thị giác đổi tên công cụ trong phần mềm của hãng — việc hoàn toàn hợp lý
-với họ — và code C# vẫn biên dịch bình thường, rồi hỏng lúc chạy, ngoài hiện trường, vào
-đúng lúc không ai đoán được nguyên nhân.
-
-Ba biện pháp, chi phí thấp, nên làm ngay từ đầu:
-
-```csharp
-// 1. Gom mọi tên vào MỘT nơi — không rải chuỗi khắp code
-internal static class VisionToolNames
-{
-    public const string TrayFixture = "TrayFixture";
-    public const string PartAlign   = "PartAlign";
-    public const string EmptyPocket = "EmptyPocketDetect";
-}
-
-// 2. Kiểm tra ngay khi NẠP, không đợi tới lúc chạy sản xuất
-public void LoadAndVerify(string jobPath)
-{
-    _job = VisionJob.Load(jobPath);
-    foreach (var name in VisionToolNames.All)
-        if (!_job.Tools.Contains(name))
-            throw new AlarmException(AlarmCodes.VisionJobMismatch, "VISION",
-                $"Job '{Path.GetFileName(jobPath)}' thiếu công cụ '{name}'. " +
-                $"Job hiện có: {string.Join(", ", _job.Tools.Select(t => t.Name))}");
-}
-
-// 3. Ghi phiên bản job vào TỪNG bản ghi sản xuất
-record InspectionRecord(string PartId, bool Passed, string FailReason,
-                        string VisionJobName, string VisionJobHash);
-```
-
-Biện pháp 3 hay bị bỏ qua nhưng cứu bạn khi có khiếu nại: câu hỏi *"lô hàng đó được kiểm
-bằng job phiên bản nào"* chỉ trả lời được nếu đã ghi lại từ đầu.
-
-#### Gá toạ độ (fixturing) — khái niệm quan trọng nhất
-
-Đây là thứ phân biệt một hệ thống thị giác chạy được ngoài hiện trường với một hệ thống
-chỉ chạy trong phòng thí nghiệm.
-
-Bài toán: bạn dạy phần mềm rằng "vùng cần kiểm tra nằm ở toạ độ ảnh (320, 180)". Nhưng
-phôi thật không bao giờ vào đúng một chỗ — nó lệch vài mi-li-mét và xoay vài độ mỗi lần.
-Vùng dò cố định sẽ trượt ra ngoài chi tiết.
-
-Cách giải: **hai bước, không phải một**.
-
-```
-Bước 1 — Tìm đặc trưng chuẩn:  dò một đặc trưng dễ nhận và luôn có mặt
-                               (mép khay, lỗ định vị, ký hiệu in sẵn)
-                               → biết phôi lệch bao nhiêu, xoay bao nhiêu
-
-Bước 2 — Gá toạ độ (fixture):  dời/xoay TOÀN BỘ các vùng dò còn lại theo đúng
-                               lượng lệch vừa đo được
-                               → mọi vùng dò "bám" theo phôi
-```
-
-Nhờ vậy bạn chỉ dạy vùng dò **một lần**, theo hệ toạ độ gắn với phôi, và chúng tự đúng ở
-mọi lần chụp sau. Về mặt toán học đây là một **phép biến đổi affine** (dời + xoay + co
-giãn); mọi thư viện thị giác thương mại đều có sẵn công cụ này, bạn không phải tự viết —
-nhưng bạn phải biết nó tồn tại để yêu cầu kỹ sư thị giác dùng nó.
-
-> ⚠️ **Đừng nhầm gá toạ độ với hiệu chuẩn.** Hai việc khác nhau, thường bị gộp: **hiệu
-> chuẩn** (calibration) trả lời *"1 điểm ảnh bằng bao nhiêu mi-li-mét, và ống kính méo bao
-> nhiêu"* — làm một lần khi lắp camera, làm lại khi camera bị va chạm. **Gá toạ độ**
-> (fixturing) trả lời *"phôi lần này lệch bao nhiêu so với lúc dạy"* — làm **lại mỗi lần
-> chụp**. Thiếu hiệu chuẩn thì toạ độ trả về là điểm ảnh, không dùng để ra lệnh cho trục
-> được. Thiếu gá toạ độ thì hệ thống chỉ chạy đúng khi phôi vào hoàn hảo.
-
-#### Hiệu chuẩn được làm như thế nào — và làm sao biết nó đạt
-
-Callout ở trên phân biệt hiệu chuẩn với gá toạ độ. Mục này nói về **quy trình hiệu chuẩn thật**, vì
-nó là một trong những màn hình bạn sẽ phải làm, và là chỗ người mới hay tưởng "chạy một lần là xong".
-
-Có hai cách hiệu chuẩn, dùng cho hai bài toán khác nhau, và một máy có camera thường cần **cả hai**:
-
-**Bảng 13.9b — Hai kiểu hiệu chuẩn thị giác**
-
-| | **Hiệu chuẩn camera** (dùng tấm bàn cờ) | **Hiệu chuẩn tay–mắt** (N điểm) |
-|---|---|---|
-| Trả lời câu hỏi | *"Một điểm ảnh bằng bao nhiêu mi-li-mét, và ống kính méo bao nhiêu?"* | *"Toạ độ trong ảnh tương ứng với toạ độ nào của **trục máy**?"* |
-| Cách làm | Đặt một **tấm in ô bàn cờ** kích thước đã biết dưới camera, chụp, công cụ tự tính | Cho trục chạy tới **N vị trí đã biết**, mỗi vị trí chụp một ảnh và ghi lại toạ độ ảnh của cùng một điểm đặc trưng |
-| Khi nào làm lại | Khi lắp/thay camera hoặc ống kính, khi camera bị va chạm, khi đổi khoảng cách chụp | Thêm cả khi **cơ khí bị chỉnh** — tháo lắp gá, thay đầu công tác |
-| Kết quả | Hệ số quy đổi + tham số bù méo ống kính | Phép biến đổi từ hệ toạ độ ảnh sang hệ toạ độ trục |
-
-Cách thứ hai là lý do màn hình hiệu chuẩn trong các dự án thật thường **gộp chung nút jog trục với
-nút chụp ảnh**: người vận hành chạy trục tới một điểm, bấm ghi, lặp lại N lần, rồi bấm tính. Nếu bạn
-thấy một màn hình tên kiểu "hiệu chuẩn + jog" thì đó chính là quy trình này.
-
-#### Hiệu chuẩn không phải "xong hay chưa xong" mà là "đạt tới mức nào"
-
-Đây là điểm quan trọng nhất và cũng là điểm hay bị bỏ qua nhất. Mọi công cụ hiệu chuẩn nghiêm túc đều
-trả về **một con số sai lệch** — thường là sai số bình phương trung bình giữa vị trí công cụ *dự
-đoán* và vị trí *đo được* của các điểm chuẩn. Con số đó chính là **chất lượng của lần hiệu chuẩn**:
-
-```csharp
-calibTool.Calibration.CalibrationImage = image;
-calibTool.Calibration.Calibrate();
-
-double rms = calibTool.Calibration.ComputedRMSError;      // đơn vị: điểm ảnh
-if (rms > recipe.CalibrationMaxRmsPixels)
-{
-    // KHÔNG được lưu kết quả hiệu chuẩn này
-    return OperateResult.Fail("CALIB_QUALITY",
-        $"Hiệu chuẩn sai lệch {rms:0.000} điểm ảnh, vượt ngưỡng cho phép " +
-        $"{recipe.CalibrationMaxRmsPixels:0.000}. Kiểm tra: tấm chuẩn có phẳng và sạch không, " +
-        $"ánh sáng có đều không, camera có đúng tiêu cự không.");
-}
-_calibrationStore.Save(cameraId, calibTool.Calibration, rms, DateTime.UtcNow, currentUser);
-```
-
-Ba việc phải làm quanh con số đó, và thiếu bất kỳ việc nào cũng dẫn tới hậu quả thật:
-
-1. **Có ngưỡng chấp nhận, và từ chối lưu nếu vượt.** Không có ngưỡng thì một lần hiệu chuẩn tồi —
-   tấm chuẩn bị cong, có vệt bẩn, đèn loá một góc — vẫn được lưu và dùng cho cả tháng sản xuất. Sai
-   lệch nhỏ ở bước hiệu chuẩn trở thành sai lệch có hệ thống ở mọi phép đo sau đó.
-2. **Lưu lại kết quả kèm sai lệch, thời điểm, và người thực hiện.** Khi có khiếu nại về kích thước
-   đo, câu hỏi đầu tiên sẽ là *"lần hiệu chuẩn gần nhất là khi nào và đạt bao nhiêu"*.
-3. **Kiểm tra "đã hiệu chuẩn chưa" trước khi cho chạy tự động.** Công cụ hiệu chuẩn có cờ trạng thái
-   cho biết nó đã được hiệu chuẩn hay chưa. Máy khởi động với camera chưa hiệu chuẩn phải **từ chối
-   vào chế độ tự động**, không phải chạy rồi trả toạ độ theo điểm ảnh.
-
-> ⚠️ **Hiệu chuẩn là thao tác có rủi ro cao, phải nằm sau quyền và phải ghi nhật ký.** Một lần hiệu
-> chuẩn sai không làm máy dừng — nó làm máy **tiếp tục chạy và cho ra kết quả sai một cách nhất
-> quán**, đúng loại lỗi khó phát hiện nhất (Phụ lục B mục B.8: sản phẩm lỗi trông y hệt sản phẩm
-> tốt). Đối xử với nó như với việc sửa recipe: yêu cầu quyền Kỹ sư, ghi ai làm và lúc nào, và **giữ
-> lại kết quả cũ** để còn quay về được nếu lần mới tệ hơn.
-
-> 💡 **Một mẹo vận hành đáng đưa vào máy: kiểm tra hiệu chuẩn định kỳ, không hiệu chuẩn lại định kỳ.**
-> Hiệu chuẩn lại thường xuyên nghe có vẻ cẩn thận nhưng thực ra làm tăng rủi ro — mỗi lần làm là một
-> cơ hội làm sai. Cách tốt hơn: định kỳ **đo một mẫu chuẩn đã biết kích thước** và so với giá trị
-> đúng; chỉ khi lệch vượt ngưỡng mới hiệu chuẩn lại. Cách này cũng phát hiện được những thứ mà hiệu
-> chuẩn lại không giải quyết được, ví dụ ống kính bị xê dịch dần hoặc gá bị lỏng.
-
-#### Nửa còn lại: chụp cho đúng
-
-Toàn bộ phần trên nói về **dò cho đúng** — vùng dò, gá toạ độ, ranh giới interface. Nhưng mọi thuật
-toán dò tốt nhất cũng vô dụng nếu bức ảnh đầu vào sai. Phần này thuộc trách nhiệm của **bạn**, không
-phải kỹ sư thị giác, và nó là nguyên nhân số một của câu than phiền kinh điển: *"hôm nay máy đọc sai
-mà hôm qua vẫn tốt"*.
-
-**Đèn chiếu là một thiết bị, không phải một món đồ lắp một lần.**
-
-Người mới thường coi đèn là phần cơ khí: lắp lên, chỉnh cho sáng, xong. Trong máy kiểm tra thật, bộ
-điều khiển đèn được nối vào phần mềm và có ba lý do rất cụ thể:
-
-- **Mỗi loại sản phẩm cần một cấu hình sáng khác nhau.** Sản phẩm sẫm màu cần sáng hơn; bề mặt bóng
-  cần góc chiếu khác để không bị loá. Vì vậy **độ sáng từng kênh đèn thuộc recipe**, đổi cùng lúc với
-  đổi mã hàng.
-- **Nhiều góc chiếu bật theo từng bước.** Máy thường có vài bộ đèn (đèn vòng, đèn xiên, đèn nền), và
-  mỗi phép kiểm tra dùng một tổ hợp khác nhau — bật/tắt **trong quy trình**, không bật suốt.
-- **Đèn LED giảm sáng dần theo thời gian sử dụng.** Đây là điều ít ai nói với người mới: sau vài
-  nghìn giờ, cùng một cấu hình cho ra ảnh tối hơn, ngưỡng phán định bắt đầu trượt, và tỷ lệ đánh sai
-  tăng từ từ trong nhiều tuần — không có sự kiện nào để lần theo.
-
-Cách phòng cho vấn đề thứ ba đơn giản đến bất ngờ, và hai dự án tham khảo độc lập đều làm giống nhau:
-**dùng chính bức ảnh để đo độ sáng**. Thêm một vùng dò cố định lên một chi tiết luôn có mặt (nền gá,
-mảng chuẩn trắng), tính độ sáng trung bình của vùng đó mỗi lần chụp, và cảnh báo khi nó trôi khỏi dải
-đã đặt:
-
-```csharp
-// Chạy cùng mỗi lần kiểm tra — rẻ, và bắt được thứ không có triệu chứng nào khác
-double brightness = MeasureMeanGray(image, _lightCheckRegion);
-if (brightness < recipe.LightCheckMin)
-    _alarms.Raise(AlarmCodes.LightDegraded, "VISION",
-        $"Độ sáng nền {brightness:0} dưới ngưỡng {recipe.LightCheckMin:0} — kiểm tra đèn/kính chắn");
-```
-
-Nó bắt được cả ba nguyên nhân cùng lúc: đèn yếu đi, kính chắn bám bụi, và ai đó vô tình xoay đèn.
-
-**Recipe của một trạm thị giác gồm ba nhóm, không phải một.**
-
-| Nhóm | Gồm gì | Ai chỉnh |
-|---|---|---|
-| **Tham số chụp** | Thời gian phơi sáng, độ sáng/tương phản, cấu hình từng kênh đèn | Kỹ sư (khi đổi mã hàng hoặc đổi đèn) |
-| **Tham số dò** | Vùng dò, mẫu chuẩn, điểm chấp nhận của phép dò | Kỹ sư thị giác |
-| **Tham số phán định** | Dải kích thước cho phép, số lỗi tối đa, mã lý do không đạt | Kỹ sư chất lượng |
-
-Ba nhóm này do ba vai trò khác nhau chỉnh, vào những lúc khác nhau — nên tách bạch chúng trong cấu
-trúc recipe (và trong màn hình sửa recipe) sẽ tránh được rất nhiều nhầm lẫn về sau.
-
-**Hai loại ROI, đừng nhầm.**
-
-| | ROI **phần cứng** | ROI **phần mềm** (vùng dò) |
-|---|---|---|
-| Ai thực thi | Camera — chỉ truyền về phần ảnh đó | Phần mềm — chỉ tìm trong phần ảnh đó |
-| Tác dụng chính | Giảm băng thông mạng, **tăng tốc độ khung hình** | Tăng tốc xử lý, tránh nhiễu từ vùng không liên quan |
-| Đặt ở đâu | Cấu hình camera | Job vision / recipe |
-
-Cắt ROI phần cứng là cách rẻ nhất để tăng tốc một máy đang chậm vì truyền ảnh — nhưng nhớ rằng nó đổi
-**hệ toạ độ ảnh**, nên mọi vùng dò đã dạy trước đó sẽ lệch nếu bạn đổi ROI phần cứng sau khi dạy.
-
-**Định danh thiết bị bằng số sê-ri, không bằng chỉ số.**
-
-Đoạn code dưới đây trông vô hại và là cách viết tự nhiên nhất:
-
-```csharp
-var camera = grabbers[0];      // ❌ camera thứ nhất trong danh sách
-```
-
-Nhưng thứ tự trong danh sách phụ thuộc vào thứ tự thiết bị trả lời trên mạng. Thêm một camera, đổi
-thứ tự bật nguồn, hay thay card mạng là **camera trái thành camera phải** — và máy vẫn chạy bình
-thường, chỉ là kết quả kiểm tra bị gán nhầm phía. Không có lỗi nào để phát hiện.
-
-```csharp
-// ✅ Khớp theo số sê-ri lấy từ cấu hình — camera nào là camera nào không bao giờ đổi
-var camera = grabbers.FirstOrDefault(g => g.SerialNumber == config.LeftCameraSerial)
-    ?? throw new AlarmException(AlarmCodes.DeviceNotFound, "CAM_L",
-        $"Không thấy camera S/N {config.LeftCameraSerial}. Đang thấy: " +
-        string.Join(", ", grabbers.Select(g => g.SerialNumber)));
-```
-
-Nguyên tắc này áp dụng cho **mọi thiết bị liệt kê được**, không riêng camera: cổng COM (dùng mô tả
-thiết bị thay vì `COM3`), card chuyển động (số sê-ri card thay vì chỉ số 0), đầu đọc mã. Và thông báo
-lỗi nên **liệt kê những gì đang thấy** — nhờ vậy người ở hiện trường tự đối chiếu được ngay thay vì
-phải gọi về.
-
-**Thiết bị nối qua mạng cần một kênh kiểm tra độc lập với SDK.**
-
-Đây là bài học đắt từ một dự án tham khảo. Camera GigE nối qua Ethernet, và mạng thì rớt — nhưng SDK
-**không phải lúc nào cũng báo**: đối tượng camera trong bộ nhớ vẫn còn, lệnh chụp vẫn gọi được, nó
-chỉ **không bao giờ trả về**. Dự án đó còn làm tình hình tệ hơn bằng hai dòng liền nhau:
-
-```csharp
-acqFifo.Timeout = 10000;
-acqFifo.TimeoutEnabled = false;   // ❌ đặt thời gian chờ rồi tắt nó đi
-```
-
-Kết quả: quy trình treo vô hạn, không alarm, không thông báo — người vận hành chỉ thấy máy đứng im.
-Hai biện pháp đi cùng nhau:
-
-1. **Bật thời gian chờ cho mọi lệnh gọi thiết bị** (nguyên tắc xuyên suốt Chương 5 và Chương 16 mục
-   16.2b): thà báo lỗi sau 10 giây còn hơn treo mãi.
-2. **Thêm một nhịp kiểm tra độc lập** — một luồng nền nhẹ ping địa chỉ IP của thiết bị mỗi vài giây.
-   Nó biết trước cả SDK, và nó phân biệt được "mạng chết" với "thiết bị bận":
-
-```csharp
-// Đặt IsBackground = true để luồng không giữ ứng dụng sống khi đóng phần mềm.
-// Dừng bằng CancellationToken, KHÔNG bằng Thread.Abort (Chương 5).
-private async Task HeartbeatLoopAsync(CancellationToken ct)
-{
-    using var ping = new Ping();
-    while (!ct.IsCancellationRequested)
-    {
-        var reply = await ping.SendPingAsync(_cameraIp, timeout: 1000).ConfigureAwait(false);
-        _health.Report(reply.Status == IPStatus.Success ? DeviceHealth.Healthy
-                                                        : DeviceHealth.Unhealthy);
-        await Task.Delay(TimeSpan.FromSeconds(2.5), ct).ConfigureAwait(false);
-    }
-}
-```
-
-Trạng thái này nối thẳng vào chip kết nối trên màn hình (Chương 10) — người vận hành nhìn thấy camera
-mất kết nối **trước khi** chu kỳ tiếp theo treo.
-
-> 🔍 **Đào sâu thêm — vài thiết lập mạng quyết định camera GigE chạy ổn hay không.** Ba thứ nằm ngoài
-> mã nguồn nhưng thường là nguyên nhân thật của "ảnh bị rách" hoặc "mất khung hình": camera nên nối
-> vào một **card mạng riêng** (không dùng chung với mạng nhà máy); card đó nên bật **khung dữ liệu
-> lớn** (jumbo frame) nếu camera hỗ trợ, để giảm số gói tin phải xử lý; và **kích thước gói tin** cấu
-> hình trên camera phải nhỏ hơn hoặc bằng mức card mạng và switch chấp nhận được. Đây là kiến thức
-> lắp đặt, không phải lập trình — nhưng khi máy chạy tốt ở phòng thử rồi lỗi ở nhà máy, đây là chỗ
-> nên kiểm tra trước khi đọc lại code.
-
-#### Interface nên đặt ranh giới ở đâu
-
-Áp dụng đúng nguyên tắc của chương này (interface theo **năng lực**, mục 13.2.1): interface
-thị giác **không** nên lộ ra bất kỳ kiểu dữ liệu nào của hãng.
-
-**Code 13.14b — Ranh giới thị giác: đi vào bằng lệnh, đi ra bằng kết quả**
-
-```csharp
-namespace MeoFrame.Domain.Devices;
-
-/// <summary>Kết quả kiểm tra — toàn bộ bằng kiểu của MIỀN, không phải kiểu của hãng.</summary>
-public sealed record VisionResult(
-    bool     Passed,
-    string   FailReason,          // mã lý do, phục vụ biểu đồ Pareto (Phụ lục B mục B.2.5)
-    double   Score,
-    PointMm? FoundPositionMm,     // đã quy đổi sang mm — trục dùng được ngay
-    double   AngleDeg,
-    string   EvidenceImagePath);  // đường dẫn ảnh đã lưu, rỗng nếu không lưu
-
-public interface IVisionInspector
-{
-    Task LoadJobAsync(string jobPath, CancellationToken ct = default);
-    Task<VisionResult> InspectAsync(string recipeName, CancellationToken ct = default);
-}
-```
-
-Không có kiểu nào của hãng trong chữ ký. Nhờ vậy: tầng quy trình test được bằng một
-`SimulatedVisionInspector` (mục 13.2.5); đổi hãng thị giác chỉ phải viết một adapter mới;
-và quan trọng nhất — **tầng quy trình không thể vô tình phụ thuộc vào chi tiết của hãng**.
-
-> 💡 **Một dấu hiệu để tự kiểm tra thiết kế:** nếu tầng quy trình của bạn có dòng nào
-> `using` vùng tên của hãng thị giác, ranh giới đã bị thủng. Trong một dự án tham khảo,
-> class kiểm tra khay vừa kế thừa lớp quy trình của khung máy, vừa là ViewModel cho giao
-> diện, vừa được lưu ra XML làm recipe — 1051 dòng gánh ba vai với ba nhịp thay đổi khác
-> nhau. Hệ quả không phải "code xấu" trừu tượng, mà rất cụ thể: **không test được phần nào
-> mà không dựng cả ba**.
-
-> 🔍 **Đào sâu thêm — vì sao thư viện hãng có bản riêng cho những kiểu .NET đã có.** Đọc
-> code thị giác sẽ gặp bản riêng của hãng cho đồng hồ bấm giờ, hình chữ nhật, màu sắc.
-> Chúng tồn tại vì thư viện cần chạy trên nhiều nền và cần tích hợp với hệ hiển thị riêng.
-> Dùng chúng **bên trong** adapter thị giác là bình thường; dùng chúng ở chỗ **không liên
-> quan tới thị giác** (đo thời gian chạy, ghi log) là tự trói mình vào hãng ở những nơi lẽ
-> ra không cần — đúng thứ mà Bridge/Adapter ở mục 13.2.4 sinh ra để tránh.
-
 ### 13.2.4d Về gốc — cùng một việc, hai cách tổ chức rất khác nhau
 
 Về gốc (homing) là việc **mọi máy có trục servo đều phải làm**, và vì ai cũng phải làm nên nó là ví
@@ -16506,7 +16029,7 @@ Code nghiệp vụ **không đọc kênh**. Lúc khởi động, bạn *nối d�
 Bốn thứ mà mô hình này làm được mà bảng tên không làm:
 
 **1. Đơn vị và định dạng thuộc về kênh.** Kênh mang theo đơn vị đo và cách hiển thị của chính nó. Đây
-chính là thuốc cho cái bẫy ở mục 13.1.4c — *đơn vị của từng trường không được ghi ở đâu cả*: ở đây đơn
+chính là thuốc cho cái bẫy ở mục 13.4.1 — *đơn vị của từng trường không được ghi ở đâu cả*: ở đây đơn
 vị không thể lạc, vì nó đi cùng tín hiệu.
 
 **2. Lọc nhiễu là một mắt xích trên đường nối, không phải code trong nghiệp vụ.** Khung đó có sẵn các
@@ -16552,565 +16075,6 @@ kết luận ở mục 13.3.5.
 > cứng*, và phần còn lại (chưa thử). Với người đọc, đây là thông tin quý hơn bất kỳ sơ đồ kiến trúc
 > nào — nó nói thẳng chỗ nào tin được, chỗ nào phải tự kiểm chứng. Với khung máy dùng chung trong công
 > ty bạn, viết ba dòng đó vào README tốn năm phút và tiết kiệm cho đồng nghiệp hàng ngày công.
-
----
-
-### 13.2.4f  Căn chỉnh phôi — bài toán XYθ, và ba cái bẫy đơn vị
-
-Mục 13.2.4c dừng ở chỗ *"toạ độ ảnh không dùng để ra lệnh trục được"* và giới thiệu việc hiệu chuẩn.
-Mục này đi nốt phần còn lại: sau khi đã có toạ độ thật của các dấu căn chỉnh, **tính ra lượng bù cho
-trục** như thế nào. Đây là chức năng gần như mọi máy in, máy gắn, máy dán, máy hàn trong ngành điện tử
-đều có, và là chỗ người mới hay tính sai theo những cách rất giống nhau.
-
-#### Hai mức bài toán
-
-**Một dấu — chỉ sửa được vị trí.** Phôi vào lệch nhưng **không xoay** (hoặc đồ gá đã chặn xoay). Đo được
-một dấu, lượng bù là hiệu số đơn giản:
-
-```csharp
-dx = xDay - xDo;        // "dạy" = vị trí dấu khi phôi nằm đúng, học một lần
-dy = yDay - yDo;
-```
-
-**Hai dấu — sửa được cả vị trí lẫn góc.** Đây mới là trường hợp thường gặp. Với hai dấu, bạn có đủ thông
-tin để tách **xoay** ra khỏi **tịnh tiến**, và **thứ tự tính là điều quan trọng nhất của cả mục này**:
-
-```csharp
-// Bước 1: góc lệch = góc của ĐƯỜNG NỐI hai dấu, đo lúc dạy so với đo bây giờ
-double gocDay = Math.Atan2(xDayPhai - xDayTrai,  yDayTrai - yDayPhai);
-double gocDo  = Math.Atan2(xDoPhai  - xDoTrai,   yDoTrai  - yDoPhai);
-double theta  = gocDay - gocDo;                       // radian
-
-// Bước 2: XOAY điểm đo quanh tâm xoay theo theta, RỒI mới lấy hiệu với điểm dạy
-double xSauXoay = xDo * Math.Cos(theta) - yDo * Math.Sin(theta);
-double ySauXoay = xDo * Math.Sin(theta) + yDo * Math.Cos(theta);
-double dx = xDay - xSauXoay;
-double dy = yDay - ySauXoay;
-```
-
-> ⚠️ **Sai lầm phổ biến nhất: lấy trung bình hai lượng lệch.** Người mới thường tính hiệu số ở dấu trái
-> và dấu phải rồi lấy trung bình làm lượng tịnh tiến, tính góc riêng, rồi ra lệnh cả hai. Nó **gần đúng
-> khi góc rất nhỏ**, và sai lớn dần khi góc tăng — vì phép xoay quanh tâm xoay của bàn đã tự nó làm đổi
-> vị trí của mọi điểm. Phải **xoay trước, rồi mới đo phần còn lại là tịnh tiến**, đúng như hai bước ở
-> trên. Triệu chứng khi làm sai: máy căn chỉnh tốt với phôi hơi lệch, và **càng lệch nhiều càng sai
-> nhiều** — nhưng vẫn "chạy được", nên rất lâu mới bị phát hiện.
-
-> 📌 **Tâm xoay là một tham số, không phải gốc toạ độ.** Công thức trên xoay quanh gốc (0,0). Trên máy
-> thật, bàn xoay có **tâm cơ khí riêng**, và tâm đó gần như không bao giờ trùng gốc toạ độ trục. Trước
-> khi xoay phải dời hệ về tâm xoay, xoay, rồi dời về. Tâm xoay được xác định bằng một quy trình hiệu
-> chuẩn riêng (xoay bàn vài góc đã biết, chụp một dấu, khớp vòng tròn) và **lưu như một tham số máy**,
-> thuộc nhóm *cấu hình phần cứng* chứ không phải công thức sản phẩm (mục 13.1.4b).
-
-#### Tìm tâm xoay, và hai tham số ai cũng quên khai báo
-
-Callout ở trên nói *"tâm xoay được xác định bằng một quy trình hiệu chuẩn riêng"* rồi để đó. Mục này nói
-quy trình đó là gì, vì nó khá đơn giản và hầu như máy nào có bàn xoay cũng cần.
-
-**Ý tưởng:** một điểm bất kỳ trên bàn, khi bàn xoay quanh tâm của nó, sẽ **vẽ ra một cung tròn**. Tâm của
-cung đó chính là tâm xoay. Vậy nên:
-
-1. Đặt một dấu (hoặc dùng luôn dấu căn chỉnh) trong tầm nhìn camera. Chụp, ghi lại toạ độ.
-2. **Xoay bàn một góc đã biết** — ví dụ +5°. Chụp lại, ghi toạ độ mới.
-3. Lặp lại vài góc nữa, cả chiều dương lẫn chiều âm.
-4. **Khớp một vòng tròn** qua các điểm thu được. Tâm vòng tròn là tâm xoay, tính theo hệ toạ độ máy.
-
-Ba điều khiến quy trình này chạy được hay không:
-
-- **Góc phải đủ lớn để cung nhìn thấy được, và đủ nhỏ để dấu không ra khỏi khung hình.** Vài độ thường là
-  vừa; nếu dấu ra khỏi khung, hãy dùng một dấu nằm gần tâm hơn.
-- **Đo ở nhiều góc rồi khớp, đừng chỉ lấy hai điểm.** Ba điểm là tối thiểu về mặt toán học, nhưng mỗi lần
-  đo đều có sai số; năm tới bảy điểm rồi khớp bình phương tối thiểu cho kết quả ổn định hơn nhiều.
-- **Phải có ngưỡng chấp nhận.** Tính sai số khớp trung bình, và **từ chối lưu** nếu vượt ngưỡng — đúng
-  nguyên tắc đã nêu ở mục 13.2.4c cho hiệu chuẩn thị giác. Một tâm xoay sai sẽ làm mọi lần căn chỉnh về
-  sau sai theo, mà không có triệu chứng nào rõ ràng ngoài *"máy căn chỉnh không chuẩn lắm"*.
-
-> 💡 **Chi tiết kiến trúc đáng học từ một thư viện hiệu chuẩn thật:** lớp hiệu chuẩn ở đó **không tự điều
-> khiển trục và không tự chụp ảnh**. Nó phát ra hai sự kiện — *"hãy đưa cơ cấu tới tư thế này"* và *"hãy
-> chụp một ảnh"* — rồi chờ kết quả trả về qua một sự kiện khác. Nhờ vậy cùng một quy trình hiệu chuẩn
-> dùng được cho máy dùng trục thường lẫn máy dùng robot, và **chạy giả lập được** mà không cần phần cứng.
-> Đây là mẫu *đảo ngược phụ thuộc* ở Chương 7 áp cho một quy trình, không phải cho một lớp thiết bị.
-
-#### Hai tham số ai cũng quên: chiều trục và hoán trục
-
-Cùng thư viện đó có ba thuộc tính trông rất tầm thường nhưng lại là thứ tiết kiệm nhiều giờ nhất khi lắp
-máy:
-
-```csharp
-public bool IsReverseCoordinateX { get; set; }   // trục X của ảnh ngược chiều trục X của máy
-public bool IsReverseCoordinateY { get; set; }   // tương tự cho Y
-public bool IsFlipCoordinateXY   { get; set; }   // X của ảnh tương ứng Y của máy (camera lắp xoay 90°)
-```
-
-Vì sao cần: **hệ toạ độ ảnh và hệ toạ độ máy gần như không bao giờ trùng chiều nhau.** Ảnh có gốc ở góc
-trên bên trái và trục Y hướng **xuống**; máy thường có Y hướng ra xa hoặc lên trên. Thêm nữa, camera có
-thể được lắp xoay 90° vì lý do cơ khí, và người lắp máy sẽ không hỏi bạn trước.
-
-Nếu ba thứ này không phải là tham số khai báo, chuyện xảy ra tiếp theo luôn giống nhau: ai đó thấy trục
-chạy ngược chiều, bèn thêm một dấu trừ vào công thức. Rồi trạm khác lại cần dấu trừ ở chỗ khác. Sau vài
-tháng, mã nguồn có **những dấu trừ rải rác mà không ai dám bỏ**, và không ai nhớ cái nào bù cho cái gì.
-
-> ⚠️ **Xác định ba tham số này ngay trong quy trình hiệu chuẩn, đừng đoán.** Cách làm mất năm phút: cho
-> trục chạy một đoạn **đã biết theo chiều dương của X**, chụp trước và sau, xem dấu vết trong ảnh dịch
-> theo hướng nào và theo trục nào của ảnh. Lặp lại với Y. Ba câu trả lời đó chính là ba tham số ở trên,
-> và chúng thuộc nhóm **cấu hình phần cứng** — gắn với lần lắp đặt này, không đi theo công thức sản phẩm
-> (mục 13.1.4b).
->
-> Và ghi chúng vào tài liệu bàn giao. Khi camera được tháo ra vệ sinh rồi lắp lại lệch 90°, người sửa cần
-> biết có một chỗ để khai báo lại — thay vì đi tìm dấu trừ trong mã nguồn.
-
-#### Ba cái bẫy đơn vị, cả ba đều có thật trong cùng một thư viện
-
-Đoạn code căn chỉnh mà mục này rút ra từ một thư viện thị giác thật — được viết bởi người có kinh nghiệm
-nhiều năm trong ngành — và nó vẫn dính đủ ba bẫy đơn vị. Điều đó nói lên rằng đây không phải chuyện cẩu
-thả, mà là chỗ **rất dễ trượt**:
-
-**Bẫy 1 — độ và radian trong cùng một dòng chảy tính toán.** Hàm tính góc trả về kết quả của `Math.Atan2`,
-tức là **radian**. Hàm tính lượng tịnh tiến nhận góc đó và mở đầu bằng `theta *= Math.PI / 180.0` — tức
-là nó tin rằng mình đang nhận **độ**. Một trong hai đầu phải sai. Đây là bẫy quen thuộc nhất của mọi
-phép tính hình học trong phần mềm máy, vì thư viện toán của .NET dùng radian còn con người, tài liệu cơ
-khí và màn hình HMI đều dùng độ.
->
-> Cách chặn hiệu quả nhất không phải là "cẩn thận hơn" mà là **đưa đơn vị vào tên**: `thetaRad`,
-> `thetaDeg`, `dxMm`, `dxPixel`. Quy đổi chỉ xảy ra ở đúng một chỗ, và chỗ đó có tên nói rõ nó làm gì.
-> Nghiêm túc hơn nữa thì dùng kiểu riêng cho góc (`readonly struct Goc` với hai property `Do` và `Radian`)
-> — lúc đó trình biên dịch không cho bạn cộng một góc vào một số mét nữa.
-
-**Bẫy 2 — nhân hệ số tỉ lệ vào một đại lượng không có tỉ lệ đó.** Hàm căn chỉnh nhận một `scale` để đổi
-điểm ảnh sang mi-li-mét, và nó nhân `scale` vào **cả góc**. Góc thì không đổi khi đổi đơn vị chiều dài —
-một hình xoay 5 độ vẫn xoay 5 độ dù bạn đo bằng pixel hay bằng mm. Nhân hệ số vào góc là một phép tính
-**không có nghĩa vật lý**, và nó chỉ vô hại khi `scale` tình cờ bằng 1.
->
-> Quy tắc kiểm tra rất nhanh, dùng được cho mọi công thức trong máy: **nhìn vào đơn vị của hai vế**. Nếu
-> vế trái là *độ* mà vế phải là *độ × (mm/pixel)*, công thức sai bất kể nó chạy ra số đẹp thế nào.
-
-**Bẫy 3 — dùng một con số làm cờ báo lỗi.** Khi không tính được (hai dấu trùng nhau, thị giác không tìm
-thấy dấu), hàm trả về hằng số `-1000.0` cho cả X, Y và góc. Nó "an toàn" theo nghĩa **-1000 mm là lượng
-bù phi lý nên chắc chắn sai ngay**, nhưng đó chính là vấn đề:
->
-> - Người gọi **có thể quên kiểm tra**, và khi đó -1000 được gửi thẳng xuống trục.
-> - Phép so sánh phải viết là `Math.Abs(theta - (-1000.0)) < 0.00001` — so số thực với hằng số bằng dung
->   sai, một dòng mà người đọc sau không hiểu ngay là đang kiểm tra lỗi.
-> - Và nếu một ngày nào đó có một máy mà -1000 là giá trị hợp lệ, mọi thứ sụp.
->
-> Đây đúng là lý do tồn tại của **đối tượng kết quả** đã nêu ở Chương 3 mục 3.5.4: hàm trả về *"có thành
-> công không, nếu không thì vì sao, nếu có thì giá trị là bao nhiêu"* trong một kiểu duy nhất, và người
-> gọi **không lấy được giá trị mà không đi qua phần kiểm tra**.
-
-#### Hai điều phải có trước khi cho lượng bù xuống trục
-
-**1. Kẹp biên độ.** Lượng bù hợp lệ của một máy nằm trong một khoảng biết trước — vài mi-li-mét và vài
-độ. Bất cứ kết quả nào vượt khoảng đó **không phải là "phôi lệch nhiều"** mà gần như chắc chắn là *thị
-giác bắt nhầm dấu*, *phôi nạp sai chiều*, hoặc *hiệu chuẩn đã hỏng*. Kẹp và báo cảnh báo, đừng chạy.
-
-**2. Kiểm tra lại sau khi bù.** Sau khi trục đã bù xong, **chụp lại và đo lại**. Nếu sai lệch còn lại
-vẫn vượt dung sai thì có gì đó sai ở mức hệ thống — chiều dấu bị đảo, hệ số hiệu chuẩn sai dấu, tâm
-xoay lệch. Một vòng kiểm tra lại tốn thêm vài trăm mili-giây mỗi phôi và là thứ **phát hiện sớm** những
-lỗi mà nếu không có nó thì cả lô hàng đã chạy xong mới biết.
-
-> 💡 **Và một mẹo gỡ rối rất hiệu quả cho căn chỉnh:** ghi lại **cả ba bộ số** cho mỗi lần căn chỉnh —
-> toạ độ dấu lúc dạy, toạ độ dấu đo được, và lượng bù đã ra lệnh. Khi có nghi ngờ, ba bộ số này cho
-> phép tính lại bằng tay trên giấy để biết sai ở khâu nào: đo sai, tính sai, hay trục đi không tới.
-> Không có chúng thì bạn chỉ có một kết luận vô dụng là *"máy căn chỉnh không chuẩn"*.
-
----
-
-### 13.2.4g  Ảnh — thứ tốn bộ nhớ nhất trong máy, và ba cách làm hỏng nó
-
-Mục 13.2.4c bàn về **kết quả** thị giác. Mục này bàn về **chính tấm ảnh**: nó sống bao lâu, ai giải
-phóng, lưu ở đâu, đặt tên thế nào. Nghe như chuyện vặt, nhưng đây là nguyên nhân của phần lớn các sự cố
-kiểu *"máy chạy hai ngày thì chậm dần rồi treo"* trong máy có camera.
-
-#### Vì sao ảnh khác mọi đối tượng khác trong C#
-
-Một tấm ảnh 5 megapixel đơn sắc là **5 MB**. Ảnh màu là 15 MB. Máy chạy 3 giây một chu kỳ, hai camera,
-là **10 MB mỗi 3 giây** — 12 GB mỗi giờ đi qua bộ nhớ.
-
-Nhưng vấn đề không nằm ở con số đó, mà ở chỗ **bộ dọn rác của .NET không nhìn thấy phần lớn khối lượng
-ấy**. Đối tượng ảnh của .NET và của các thư viện thị giác chỉ là một cái vỏ nhỏ trong bộ nhớ có quản lý,
-còn dữ liệu điểm ảnh nằm trong **bộ nhớ không quản lý** do thư viện cấp phát. Bộ dọn rác thấy vài trăm
-byte và kết luận "chưa cần dọn", trong khi thực tế đã có vài gigabyte điểm ảnh nằm đó.
-
-Hệ quả rất cụ thể, và nó giải thích một triệu chứng quen thuộc: **màn hình quản lý tác vụ báo bộ nhớ tăng
-đều mà bộ đếm bộ nhớ của .NET vẫn thấp**. Đây là loại rò rỉ khác với loại đã nói ở Chương 19 (quên huỷ
-đăng ký sự kiện) — ở đó đối tượng còn sống vì còn tham chiếu; ở đây đối tượng đã mất tham chiếu nhưng
-**tài nguyên không quản lý của nó chưa được trả lại**.
-
-#### Cách 1 làm hỏng: gán đè lên biến ảnh mà không giải phóng
-
-Đoạn dưới rút từ một máy kiểm tra khay đang chạy sản xuất. `img1` và `img2` là **field của lớp**, không
-phải biến cục bộ:
-
-```csharp
-Image img1;                 // ← field, sống suốt đời đối tượng
-Image img2;
-
-// … trong vòng xử lý MỖI khay:
-img1 = display1.CreateContentBitmap(...);      // tạo ảnh MỚI, đè lên tham chiếu cũ
-img2 = display2.CreateContentBitmap(...);      // ảnh cũ mất tham chiếu — nhưng CHƯA được giải phóng
-
-if (batLuuAnhGoRoi || khayLoi)                 // ← chỉ LƯU khi gỡ rối hoặc khay lỗi…
-    img1.Save(duongDan);                       //    …nhưng TẠO thì tạo mọi chu kỳ
-```
-
-Ba vấn đề chồng lên nhau:
-
-1. **Không có `Dispose`, không có `using`.** Ảnh cũ chờ bộ dọn rác chạy tới, rồi chờ hàng đợi hoàn thiện
-   xử lý nốt — có thể là hàng phút sau, hoặc không bao giờ nếu bộ nhớ có quản lý chưa đủ áp lực.
-2. **Ảnh được tạo mọi chu kỳ, dù phần lớn chu kỳ không dùng đến nó.** Điều kiện *"chỉ lưu khi lỗi"* đặt
-   sau khi tạo, nên máy chạy tốt vẫn phải trả chi phí đầy đủ. Kiểm tra điều kiện **trước khi tạo** là
-   một dòng code, và nó bỏ đi toàn bộ chi phí ở trạng thái bình thường.
-3. **Dùng field thay vì biến cục bộ.** Không có lý do gì để hai tấm ảnh này sống ngoài phạm vi vòng xử
-   lý; để chúng làm field chỉ khiến chúng sống lâu hơn cần thiết và khiến người đọc không biết ai sở hữu.
-
-Viết lại đúng, ngắn hơn bản gốc:
-
-```csharp
-if (batLuuAnhGoRoi || khayLoi)                       // quyết định TRƯỚC
-{
-    using var anh = display1.CreateContentBitmap(...); // giải phóng chắc chắn khi ra khỏi khối
-    anh.Save(duongDan);
-}
-```
-
-> 📌 **Quy tắc rút gọn cho mọi thứ liên quan tới ảnh: `using`, hoặc một chủ sở hữu duy nhất.** Đối tượng
-> ảnh — dù của .NET hay của thư viện thị giác — gần như luôn cài `IDisposable` (Chương 5 mục 5.5). Nếu
-> tấm ảnh chỉ dùng trong một hàm: `using`. Nếu nó phải sống lâu hơn (để hiển thị, để lưu ở luồng khác):
-> phải có **đúng một nơi chịu trách nhiệm giải phóng**, và nơi đó phải được ghi rõ trong tên hoặc trong
-> chú thích.
-
-#### Cách 2 làm hỏng: giữ ảnh trong bản ghi kết quả
-
-Cám dỗ rất tự nhiên: bản ghi kết quả kiểm tra có sẵn rồi, cho luôn tấm ảnh vào đó cho tiện.
-
-```csharp
-public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, Image AnhGoc);  // ❌
-```
-
-Nếu bạn giữ một trăm bản ghi gần nhất để hiện lên màn hình lịch sử, bạn vừa giữ luôn **một trăm tấm
-ảnh** — một gigabyte rưỡi. Và vì bản ghi trông vô hại, không ai nghĩ tới việc giải phóng chúng.
-
-Cách đúng: bản ghi kết quả giữ **đường dẫn tới tệp ảnh**, không giữ tấm ảnh. Khi người dùng bấm vào một
-dòng lịch sử thì mới nạp ảnh lên, và giải phóng khi đóng.
-
-```csharp
-public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, string DuongDanAnh);  // ✅
-```
-
-#### Cách 3 làm hỏng: lưu ảnh ở luồng khác mà không rõ ai sở hữu
-
-Ghi một tấm ảnh xuống đĩa mất vài chục mili-giây — đủ để làm chậm nhịp máy, nên người ta đẩy sang luồng
-nền. Nhưng nếu bạn đưa **chính đối tượng ảnh** vào hàng đợi rồi giải phóng nó ở luồng chính, luồng nền sẽ
-ghi một tấm ảnh đã bị huỷ. Còn nếu không giải phóng, hàng đợi đầy lên là bộ nhớ đầy theo.
-
-Hai cách xử lý, chọn theo tình huống:
-- **Chuyển quyền sở hữu**: luồng chính đưa ảnh vào hàng đợi rồi **không đụng vào nữa**; luồng nền ghi
-  xong thì giải phóng. Đơn giản và đủ dùng cho hầu hết máy.
-- **Chuyển sang dạng byte trước**: nén thành JPEG/PNG ngay ở luồng chính rồi chỉ đưa mảng byte vào hàng
-  đợi. Tốn một chút CPU ở luồng chính nhưng **giải phóng ảnh sớm nhất có thể**.
-
-Và trong cả hai cách: hàng đợi phải **có giới hạn** (Chương 5 mục 5.4). Khi đĩa chậm hoặc đầy, thà bỏ
-bớt ảnh gỡ rối còn hơn để bộ nhớ phình tới lúc treo máy.
-
-#### Đặt tên tệp ảnh — một chi tiết nhỏ làm mất dữ liệu
-
-Cùng dự án nói trên đặt tên tệp ảnh theo mẫu:
-
-```csharp
-maKhay + "-" + DateTime.Now.ToString("MMddThhmmss") + "-a.bmp"
-```
-
-Có một lỗi nằm gọn trong bốn ký tự: **`hh` là giờ theo hệ 12 giờ**, và trong chuỗi này **không có phần
-SA/CH**. Nghĩa là ảnh chụp lúc 09:15 và ảnh chụp lúc 21:15 cùng ngày sinh ra **đúng một tên tệp** — cái
-sau ghi đè cái trước, im lặng. Với máy chạy hai ca, mỗi ngày mất một phần dữ liệu bằng chứng, và không
-có gì báo cho bạn biết.
-
-Chuỗi định dạng đúng dùng **`HH`** (24 giờ). Nhân đây, một quy ước đặt tên tệp bằng chứng đủ dùng cho
-mọi máy:
-
-```
-yyyyMMdd_HHmmss_fff  _  <mã sản phẩm>  _  <trạm>  _  <OK|NG>  .png
-20260824_211530_412_SN12345_Tram2_NG.png
-```
-
-Bốn lý do cho thứ tự đó: **thời gian đứng trước** nên sắp xếp theo tên là sắp xếp theo thời gian; **có
-năm và giờ 24** nên không bao giờ trùng; **có phần mili-giây** nên hai ảnh trong cùng một giây không đè
-nhau; và **kết quả nằm trong tên** nên lọc ảnh lỗi chỉ cần tìm theo chuỗi, không phải mở từng tấm.
-
-> 💡 **Một điểm cùng dự án đó làm ĐÚNG và đáng nhắc:** đường dẫn lưu ảnh được ghép từ **ổ đĩa đang chứa
-> chính phần mềm**, thay vì viết cứng một chữ cái ổ đĩa. Nhờ vậy cài phần mềm sang máy có cấu hình ổ khác
-> vẫn chạy. Đây là bản rẻ tiền của khuyến nghị ở Chương 19 — chưa bằng việc đưa hẳn đường dẫn gốc ra
-> tham số cấu hình, nhưng đã tốt hơn hẳn một chuỗi cố định.
-
----
-
-### 13.2.4h  Mã định danh sản phẩm — từ lúc quét tới lúc dùng
-
-Mục 13.2.4b lo phần **trình điều khiển** đầu đọc mã: mở cổng, gửi lệnh chụp, tách dòng. Mục này lo phần
-sau đó, và là phần gây sự cố nhiều hơn hẳn: **chuỗi vừa đọc được đi đâu, được kiểm tra thế nào, và làm gì
-khi nó sai**. Với máy có truy xuất nguồn gốc, mã định danh là thứ **quan trọng ngang kết quả đo** — bản
-ghi gắn nhầm mã còn tệ hơn không có bản ghi.
-
-#### Ba cách đầu đọc mã nối vào phần mềm
-
-| Cách nối | Phần mềm nhận thế nào | Ưu | Nhược nghiêm trọng |
-|---|---|---|---|
-| **Giả lập bàn phím** | Đầu đọc "gõ" chuỗi vào ô đang có tiêu điểm rồi gửi Enter | Không phải viết driver; cắm là chạy | **Phụ thuộc hoàn toàn vào tiêu điểm** — xem dưới |
-| **Cổng nối tiếp** | Đọc từ cổng COM | Rõ ràng ai nhận, không dính tiêu điểm | Thêm dây, thêm cấu hình tốc độ |
-| **Mạng TCP** | Phần mềm gửi lệnh chụp, nhận kết quả (mục 13.2.4b) | **Chủ động chụp đúng lúc**, biết chụp thất bại | Cần cấu hình mạng, driver phức tạp hơn |
-
-> ⚠️ **Cách giả lập bàn phím dễ nhất và nguy hiểm nhất, vì chuỗi rơi vào bất cứ ô nào đang có tiêu
-> điểm.** Nếu người vận hành vừa mở màn hình tham số và ô "tốc độ trục" đang có tiêu điểm, thì mã sản
-> phẩm vừa quét sẽ **được gõ vào ô tốc độ**, và Enter có thể xác nhận luôn. Nghe như chuyện đùa, nhưng
-> đây là sự cố có thật và rất khó tái hiện vì nó phụ thuộc vào việc người dùng đang mở màn hình nào.
->
-> Một dự án tham khảo xử lý bằng cách cho ô quét mã một hàm **tự đòi tiêu điểm**, và màn hình gọi hàm đó
-> mỗi khi được kích hoạt. Đó là mức tối thiểu. Ba việc nên làm thêm nếu buộc phải dùng cách này:
-> - **Khoá cửa sổ khác khi đang chờ quét** — hoặc ít nhất không cho ô nhập số nào nhận tiêu điểm.
-> - **Nhận chuỗi ở cấp cửa sổ**, không ở cấp ô nhập: bắt sự kiện bàn phím của cửa sổ chính, nhận diện
->   chuỗi ký tự đến rất nhanh rồi kết thúc bằng Enter (người gõ tay không nhanh như vậy), và **tự định
->   tuyến** nó tới nơi cần.
-> - Nếu có thể chọn lại phần cứng: **dùng cách nối tiếp hoặc mạng**. Vấn đề tiêu điểm biến mất hoàn toàn.
-
-#### Kiểm tra trước khi dùng — bốn tầng, làm đủ mất mười phút
-
-Chuỗi đọc được **chưa phải là mã sản phẩm** cho tới khi qua kiểm tra:
-
-1. **Cắt khoảng trắng và ký tự xuống dòng.** Đầu đọc thường thêm CR/LF, có loại thêm dấu cách. Một mã
-   `"SN12345\r"` khác `"SN12345"` khi so sánh chuỗi và khi ghi vào cơ sở dữ liệu.
-2. **Độ dài và định dạng.** Mã của mỗi khách hàng có quy tắc riêng — độ dài cố định, tiền tố, phần ngày
-   sản xuất. Kiểm tra bằng một biểu thức khai báo trong **công thức sản phẩm**, không viết cứng trong
-   code (mã đổi theo mã hàng, không theo máy).
-3. **Ký tự hợp lệ.** Đây cũng là lớp phòng thủ cho việc ghi cơ sở dữ liệu — chuỗi từ đầu đọc là **dữ liệu
-   từ bên ngoài**, và callout về chèn câu lệnh SQL ở mục 13.1 áp dụng thẳng vào đây.
-4. **Trùng lặp** — phần dưới.
-
-Điều quan trọng hơn cả bốn tầng: **thất bại ở bất kỳ tầng nào cũng phải dừng lại và hỏi người**, không
-được âm thầm dùng chuỗi rác hay âm thầm thay bằng chuỗi rỗng. Một bản ghi có mã rỗng là một bản ghi mồ
-côi — không truy ngược được về sản phẩm nào, và nó sẽ nằm đó cho tới ngày có khiếu nại.
-
-#### Mã trùng: ba nguyên nhân, và bạn phải chọn chính sách cho từng cái
-
-Đầu đọc trả về một mã mà máy **đã xử lý rồi**. Không có câu trả lời đúng chung — nhưng có ba nguyên nhân
-rõ ràng, và mỗi cái cần một phản ứng khác nhau:
-
-| Nguyên nhân | Dấu hiệu nhận ra | Phản ứng hợp lý |
-|---|---|---|
-| **Đầu đọc bắn hai lần** | Cùng mã, cách nhau vài trăm mili-giây, chưa có phôi mới vào | **Bỏ qua lần thứ hai** trong một cửa sổ thời gian ngắn |
-| **Sản phẩm quay lại sau khi sửa (làm lại)** | Cùng mã, cách nhau hàng giờ; máy đang ở chế độ hàng làm lại | **Cho phép**, nhưng ghi bản ghi mới có đánh dấu làm lại (Chương 12 mục 12.4.3) |
-| **Nhãn trùng thật, hoặc quét nhầm sản phẩm bên cạnh** | Cùng mã, chế độ sản xuất bình thường | **Từ chối và báo cảnh báo** — đây là lỗi chất lượng, không phải lỗi phần mềm |
-
-> 💡 **Đừng để "không kiểm tra trùng" là lựa chọn mặc định vì chưa ai nghĩ tới.** Cách rẻ nhất để bắt đầu:
-> giữ trong bộ nhớ một tập các mã đã xử lý **trong ca hiện tại**, và tra cứu cơ sở dữ liệu cho khoảng xa
-> hơn. Tra trong bộ nhớ mất vài micro-giây và bắt được đúng nguyên nhân phổ biến nhất — bắn hai lần và
-> quét nhầm sản phẩm liền kề.
->
-> Và **quyết định này phải do bộ phận chất lượng duyệt**, không phải do lập trình viên tự chọn: cho chạy
-> tiếp một sản phẩm trùng mã nghĩa là hai sản phẩm khác nhau sẽ có chung một hồ sơ truy xuất.
-
-#### Khi không đọc được mã
-
-Nhãn bị xước, nhãn dán lệch, đầu đọc bẩn — chuyện xảy ra hằng ngày. Ba lựa chọn, và máy nên hỗ trợ cả ba
-một cách có kiểm soát:
-
-- **Thử lại**: chụp lại vài lần trước khi kết luận. Rẻ và giải quyết phần lớn trường hợp.
-- **Loại sản phẩm ra**: an toàn nhất, nhưng nếu tỉ lệ đọc hỏng cao thì tốn.
-- **Nhập tay** — hữu ích nhưng phải có ràng buộc: cần quyền cao hơn vận hành viên thường, phải **ghi vào
-  nhật ký thao tác ai nhập và nhập gì**, và bản ghi sản phẩm phải mang **cờ "mã nhập tay"**. Không có cờ
-  đó, một mã gõ nhầm sẽ trông y hệt một mã quét được, và cả hệ thống truy xuất mất giá trị.
-
-> 📌 **Một mẹo nhỏ nhưng cứu rất nhiều lần: lưu lại chuỗi THÔ.** Ngoài mã đã qua xử lý, hãy ghi thêm
-> nguyên văn chuỗi mà đầu đọc trả về, ít nhất trong nhật ký. Khi khách hàng nói *"mã này sai định dạng"*
-> hoặc khi bạn nghi ngờ hàm cắt chuỗi có vấn đề, chuỗi thô là thứ duy nhất phân xử được giữa **đầu đọc
-> đọc sai** và **phần mềm xử lý sai** — hai nguyên nhân rất khác nhau mà nhìn kết quả cuối thì giống hệt.
-
----
-
-### 13.2.4i  Bản đồ khay — khi máy làm việc với một mảng vị trí
-
-Chương 14 mục 14.2.6b nói về **bản đồ khay như một cấu trúc dữ liệu gửi cho hệ thống chủ**. Mục này nói
-về phía còn lại, phía máy: **phần mềm theo dõi một khay như thế nào trong lúc làm việc**. Đây là mô hình
-dữ liệu khác hẳn *"một sản phẩm mỗi lần"*, và rất phổ biến trong ngành điện tử — khay nhựa định hình,
-băng cuốn, đế chứa nhiều ô.
-
-#### Trạng thái một ô KHÔNG phải đúng/sai
-
-Sai lầm đầu tiên và tốn kém nhất là khai báo `bool[,] daXuLy`. Trong một máy kiểm tra khay thật, mỗi ô
-được chạy qua **bốn công cụ thị giác khác nhau**: tìm dấu chuẩn ở hướng 0°, tìm dấu chuẩn ở hướng 180°,
-dò một loại khuyết tật, và dò **ô trống**. Bốn công cụ đó tồn tại vì có bốn kết luận khác nhau cần phân
-biệt — và mỗi kết luận dẫn tới một hành động khác:
-
-| Trạng thái ô | Nghĩa | Máy làm gì |
-|---|---|---|
-| **Trống** | Không có gì trong ô | Bỏ qua, **không tính là lỗi** |
-| **Chưa xử lý** | Có phôi, chưa tới lượt | Xếp vào hàng chờ |
-| **Đạt** | Đã xử lý, kết quả tốt | Đếm vào sản lượng |
-| **Không đạt** + mã lý do | Đã xử lý, kết quả xấu | Đếm vào lỗi, **theo từng mã lý do** |
-| **Đặt sai chiều** | Có phôi nhưng xoay 180° | Không phải phôi lỗi — là **lỗi nạp liệu** |
-| **Bỏ qua theo khai báo** | Ô hỏng cơ khí, hoặc người vận hành đánh dấu bỏ | Không gắp, không tính vào mẫu số |
-| **Không kết luận được** | Thị giác không chắc | Dừng và hỏi người, đừng đoán |
-
-> 💡 **Tách "đặt sai chiều" ra khỏi "lỗi" là chi tiết đáng giá nhất trong bảng trên.** Hai thứ trông
-> giống nhau trên màn hình nhưng nguyên nhân hoàn toàn khác: phôi lỗi là vấn đề của công đoạn trước;
-> phôi đặt ngược là vấn đề của người nạp khay hoặc của máy cấp liệu. Nếu gộp chung, biểu đồ Pareto cuối
-> tháng sẽ chỉ nói *"tỉ lệ lỗi cao"* mà không chỉ ra được đi sửa cái gì (Chương 12 mục 12.5).
->
-> Và "ô trống" cũng phải tách khỏi "lỗi" — khay lẻ cuối lô là chuyện bình thường, không phải sự cố.
-
-#### Đánh số ô: quy ước phải thống nhất với người ngoài, không phải với code
-
-Máy đánh số ô theo **thứ tự nó gắp**; bản vẽ của khách hàng đánh số theo **cách họ nhìn khay**; hệ thống
-chủ lại có quy ước riêng. Ba cách đánh số cho cùng một khay là chuyện bình thường, và nếu không thống
-nhất từ đầu thì bản ghi *"ô số 7 lỗi"* trở nên vô nghĩa — không ai biết là ô số 7 của ai.
-
-Bốn câu phải hỏi khách hàng ngay khi khảo sát, và ghi vào tài liệu:
-
-1. **Gốc ở góc nào** khi nhìn khay theo chiều nạp vào máy?
-2. **Đi theo hàng trước hay cột trước**, và có kiểu "rắn bò" (hàng chẵn đi ngược) không?
-3. **Bắt đầu từ 0 hay từ 1?**
-4. Khay có thể **nạp xoay 180°** không, và nếu có thì đánh số theo khay hay theo máy?
-
-Câu 4 là câu hay bị bỏ sót nhất, và hậu quả nặng nhất: nếu khay nạp ngược mà phần mềm vẫn đánh số theo
-vị trí vật lý trong máy, thì **mọi ô đều bị gán nhầm** — sản phẩm ở ô 1 được ghi hồ sơ của ô cuối. Cách
-xử lý: nhận biết chiều khay bằng một dấu chuẩn bất đối xứng, rồi **quy đổi về hệ toạ độ của khay** ngay
-tại chỗ đọc, để mọi phần còn lại của phần mềm chỉ làm việc với số ô theo khay.
-
-> 📌 **Trong code, hãy để số ô là một kiểu riêng, đừng để nó là `int` trần.** Một `record ViTriO(int Hang,
-> int Cot)` với một hàm chuyển sang chỉ số tuyến tính khiến việc nhầm hàng với cột trở thành lỗi biên
-> dịch thay vì một lỗi im lặng. Đây là cùng lý do với việc đưa đơn vị vào tên biến ở mục 13.2.4f.
-
-#### Từ số ô ra toạ độ vật lý — đừng cộng dồn
-
-Cám dỗ: chạy vòng lặp, mỗi ô cộng thêm một bước. Đừng — sai số bước tích luỹ qua mười hai cột thành sai
-số thấy được. Tính thẳng từ gốc:
-
-```csharp
-var diem = goc + new Vector(cot * buocX, hang * buocY);
-```
-
-Nhưng ngay cả công thức đó cũng chỉ đúng nếu khay nằm **hoàn hảo**. Khay thật thì cong, lệch, và đồ gá
-có dung sai. Cách làm đúng trong máy nghiêm túc: **đo vài dấu chuẩn trên khay rồi nội suy** — hai dấu
-cho phép bù lệch và xoay (đúng bài toán ở mục 13.2.4f), bốn dấu ở bốn góc cho phép bù cả méo hình thang.
-Với khay lớn hoặc yêu cầu chính xác cao, đây không phải tuỳ chọn.
-
-#### Ba chi tiết vận hành mà bản thiết kế hay quên
-
-**1. Không phải cả khay dùng chung một bộ tham số.** Trong máy tham khảo, các công cụ thị giác được khai
-báo kèm **khoảng hàng và khoảng cột mà chúng áp dụng**, cộng một công cụ mặc định cho phần còn lại. Lý do
-rất thực tế: chiếu sáng không đều giữa giữa khay và mép khay, hoặc khay có hai vùng chứa hai loại chi
-tiết. Nếu bạn thiết kế bản đồ khay với giả định "mọi ô như nhau", việc bổ sung sau này sẽ rất gượng.
-
-**2. Ô bỏ qua phải là dữ liệu, không phải code.** Khay dùng lâu sẽ có ô méo, ô mất chốt định vị. Người
-vận hành cần đánh dấu *"đừng dùng ô này"* ngay trên màn hình, và đánh dấu đó phải **theo khay cụ thể**
-(gắn với mã khay) chứ không phải theo mã sản phẩm. Ô bỏ qua **không được tính vào mẫu số** khi tính tỉ lệ
-đạt — nếu tính, tỉ lệ đạt của khay cũ sẽ thấp giả tạo.
-
-**3. Bản đồ khay phải sống sót qua sự cố.** Máy đang xử lý ô thứ 40 trong 60 thì mất điện hoặc có cảnh
-báo. Khi chạy lại, phần mềm cần biết ô nào đã xong. Vì vậy trạng thái từng ô nên được **ghi xuống nơi bền
-sau mỗi ô**, không giữ trong bộ nhớ tới cuối khay. Cách rẻ: một bản ghi cho mỗi ô ngay khi xử lý xong —
-đằng nào cũng cần cho truy xuất nguồn gốc.
->
-> Và khi chạy lại, đừng tự động chạy tiếp: **hiển thị bản đồ khay cho người vận hành xác nhận** trước.
-> Trong lúc dừng, có thể người ta đã lấy vài chi tiết ra khỏi khay — đúng tinh thần "chạy tiếp = xác
-> minh" ở Chương 12 mục 12.2.4.
-
-> ⚠️ **Cuối cùng: bản đồ khay của bạn và bản đồ khay của hệ thống chủ phải khớp nhau, và đó là một hợp
-> đồng.** Nếu máy gửi kết quả theo từng ô lên hệ MES (Chương 14 mục 14.2.6b), thì quy ước đánh số, tập
-> mã lý do lỗi, và cách biểu diễn ô trống **phải được thống nhất bằng văn bản** trước khi viết code. Đây
-> là loại hợp đồng mà sửa sau khi máy đã chạy sẽ kéo theo sửa cả dữ liệu lịch sử — rất tốn, và thường
-> không sửa được.
-
----
-
-### 13.2.4j  Từ con số đo được tới chữ "Đạt" — phán định là một quyết định, không phải một phép so sánh
-
-Máy đo được 4,998 mm. Quy cách là *"không quá 5,00 mm"*. Đạt hay không đạt?
-
-Câu hỏi nghe như tầm thường, và đó chính là vấn đề: nó **trông** như một phép so sánh một dòng, nên
-thường được viết đúng như vậy — `if (giaTri <= nguong) return "OK";` — rồi ba tháng sau có một cuộc họp
-về việc *"vì sao máy đánh đạt mà khách hàng đo lại không đạt"*.
-
-#### Ba câu phải trả lời trước khi viết dấu `<=`
-
-**1. Quy cách tính theo đơn vị nào, và giá trị đo theo đơn vị nào?** Đây là bẫy đã nói ở mục 13.2.4f
-nhưng nó quay lại ở đây với hậu quả nặng hơn, vì kết quả là một phán định về chất lượng chứ không chỉ là
-một chuyển động sai. Đưa đơn vị vào tên biến và vào tên trường trong công thức.
-
-**2. So sánh trên giá trị THÔ hay giá trị đã làm tròn?** Giá trị đo là 5,004; màn hình hiển thị hai chữ
-số nên hiện *5,00*; quy cách là *"≤ 5,00"*. Nếu so trên giá trị hiển thị thì đạt; so trên giá trị thô thì
-không đạt. Hai câu trả lời khác nhau cho cùng một sản phẩm.
->
-> Quy tắc: **phán định trên giá trị thô, hiển thị bằng giá trị đã làm tròn, và lưu cả hai.** Khi khách
-> hàng thắc mắc *"sao ghi 5,00 mà đánh không đạt"*, giá trị thô là câu trả lời. Ngược lại — phán định
-> trên giá trị đã làm tròn — nghĩa là bạn vừa nới quy cách ra thêm nửa đơn vị hiển thị mà không ai quyết
-> định điều đó.
-
-**3. Biên có thuộc vùng đạt không?** *"≤ 5,00"* và *"< 5,00"* khác nhau đúng ở một sản phẩm nằm chính xác
-trên biên, và đó là câu hỏi dành cho **bộ phận chất lượng**, không phải cho lập trình viên. Hãy hỏi, và
-ghi câu trả lời vào tài liệu quy cách — đừng chọn `<=` chỉ vì nó gõ nhanh hơn.
-
-#### Ba kết luận, không phải hai
-
-Đây là chỗ mà một `bool` gây hại lâu dài. Kết quả của một phép đo có **ba** khả năng:
-
-| Kết luận | Nghĩa | Xử lý |
-|---|---|---|
-| **Đạt** | Đo được, nằm trong quy cách | Đếm vào sản lượng tốt |
-| **Không đạt** | Đo được, ngoài quy cách | Đếm vào lỗi, kèm **mã lý do** |
-| **Không đo được** | Cảm biến lỗi, mất tín hiệu, thị giác không tìm thấy đối tượng | **Không phải lỗi sản phẩm** |
-
-Gộp *"không đo được"* vào *"không đạt"* là sai lệch dữ liệu chất lượng: một đầu đo hỏng sẽ hiện lên báo
-cáo thành một đợt hàng kém chất lượng, và người ta sẽ đi tìm nguyên nhân ở công đoạn trước thay vì đi
-kiểm tra đầu đo. Với sản phẩm không đo được, xử lý đúng thường là **giữ lại để đo lại**, và **cảnh báo**
-nếu tỉ lệ không đo được vượt ngưỡng.
-
-#### Dải bảo vệ: khi chính hệ đo cũng có sai số
-
-Chương 12 mục 12.4.1 giới thiệu GR&R — cách định lượng sai số của bản thân hệ đo. Đây là chỗ con số đó
-được dùng: nếu hệ đo của bạn có sai số ±0,02 mm và quy cách là *"≤ 5,00"*, thì một sản phẩm đo được 4,99
-**có thể thật sự là 5,01**.
-
-Cách xử lý trong ngành là **dải bảo vệ**: ngưỡng dùng để phán định bên trong máy **chặt hơn** quy cách
-của khách hàng một khoảng bằng (hoặc một phần của) sai số hệ đo.
-
-```
-Quy cách khách hàng:      ≤ 5,00
-Ngưỡng máy dùng:          ≤ 4,98        ← dải bảo vệ 0,02
-```
-
-Đổi lại là **loại nhầm một ít hàng tốt** — và đó là đánh đổi có chủ đích: thà loại nhầm hàng tốt còn hơn
-để lọt hàng xấu. Mức dải bảo vệ là quyết định của bộ phận chất lượng, phải là **tham số trong công
-thức**, và phải được **ghi vào bản ghi sản phẩm** để về sau còn biết lô đó được phán định bằng ngưỡng nào.
-
-> ⚠️ **Đừng tự ý đặt dải bảo vệ mà không nói với ai.** Người vận hành thấy tỉ lệ lỗi tăng sẽ đi tìm
-> nguyên nhân ở máy, trong khi nguyên nhân nằm ở một hằng số bạn thêm vào cho "an toàn". Hoặc tệ hơn:
-> ai đó phát hiện ra và tự sửa lại thành đúng quy cách, xoá luôn lớp bảo vệ.
-
-#### Một sản phẩm, nhiều phép đo
-
-Sản phẩm thật thường có năm tới hai mươi phép đo. Hai quyết định:
-
-**Dừng ngay khi gặp phép đo không đạt, hay đo hết?** Dừng sớm **nhanh hơn** (tốt cho nhịp máy); đo hết
-cho **dữ liệu đầy đủ hơn** (tốt cho phân tích nguyên nhân). Lựa chọn thực dụng: dừng sớm ở chế độ sản
-xuất, đo hết ở chế độ gỡ rối và với hàng mẫu đầu ca — và để nó là **tham số**, không phải quyết định
-cứng trong code.
-
-**Ghi lại gì?** Bản ghi phải có **mã lý do lỗi chính** (phép đo đầu tiên không đạt — thứ dùng cho biểu đồ
-Pareto), và **toàn bộ giá trị đo** của các phép đã chạy. Chỉ ghi "NG" là vứt đi phần lớn giá trị của việc
-đo.
-
-> 📌 **Luôn lưu GIÁ TRỊ ĐO, không chỉ lưu kết luận.** Ba lý do, cái thứ ba là quan trọng nhất:
-> 1. Quy cách sẽ đổi. Có giá trị đo thì tính lại được tỉ lệ đạt theo quy cách mới cho dữ liệu cũ; chỉ có
->    kết luận thì không.
-> 2. Kiểm soát quá trình bằng thống kê cần **con số**, không cần chữ "Đạt".
-> 3. Giá trị đo **trôi dần** trước khi nó vượt ngưỡng. Một kích thước bò từ 4,90 lên 4,97 trong hai tuần
->    là cảnh báo sớm về dao mòn hay đồ gá lỏng — nhưng chỉ nhìn thấy được nếu bạn lưu số. Nếu chỉ lưu
->    "Đạt", tất cả những ngày đó trông giống hệt nhau cho tới ngày đầu tiên "Không đạt".
-
-> 💡 **Và ngưỡng phán định là dữ liệu có kiểm soát, không phải hằng số trong code.** Nó nằm trong công
-> thức sản phẩm; đổi nó cần quyền tương đương đổi công thức, phải **ghi vết ai đổi, từ giá trị nào sang
-> giá trị nào** (Chương 15 mục 15.2.4), và **không bao giờ được áp ngược** cho những sản phẩm đã chạy —
-> bản ghi cũ phải giữ ngưỡng đã dùng lúc đó. Đây là lý do bản ghi sản phẩm nên chứa cả ngưỡng, không chỉ
-> chứa giá trị đo và kết luận.
 
 ---
 
@@ -17770,6 +16734,1058 @@ màn hình chẩn đoán là cách rẻ nhất để triệu chứng đó không
 
 ---
 
+## 13.4  Các chức năng máy thường gặp
+
+Ba mục trên nói về **cách phần mềm chạm tới thiết bị**: kho dữ liệu, khuôn tạo thiết bị, vòng đời kết
+nối. Mục này nói về thứ nằm ngay trên đó — **những việc mà gần như máy nào trong ngành điện tử cũng
+phải làm**, bất kể nó là máy lắp ráp, máy kiểm tra hay máy đóng gói.
+
+Bảy chức năng dưới đây được xếp theo đúng dòng chảy của một chu kỳ: máy biết **đi đâu** (bảng điểm) →
+**nhìn** (thị giác) → **bù lệch** (căn chỉnh) → **giữ lại bằng chứng** (ảnh) → biết **đang làm cho sản
+phẩm nào** (mã định danh) → quản lý **một mảng vị trí** (bản đồ khay) → và cuối cùng **kết luận đạt hay
+không đạt**.
+
+Mỗi mục đều theo cùng một khuôn: bài toán thật, các cách làm gặp trong mã nguồn thật, và những chỗ dễ
+sai kèm cách phòng.
+
+### 13.4.1  Bảng điểm — tệp dữ liệu nhỏ nhất, nhưng sai thì máy đâm
+
+Chương 10 mục 10.1.7 đã bàn *giao diện* dạy điểm. Mục này bàn thứ nằm dưới nó: **điểm được lưu ra sao**.
+Đây là tệp dữ liệu nhỏ nhất trong cả phần mềm — vài chục dòng số — nhưng cũng là tệp mà một con số sai
+sẽ làm đầu gắp đâm vào đồ gá. Bốn dự án tham khảo lưu nó theo bốn kiểu khác nhau, và so bốn kiểu đó
+dạy được gần như mọi thứ cần biết.
+
+#### Trước hết: một máy cần những loại điểm nào
+
+Đọc tên các điểm trong một tệp thật cho ra một danh mục đáng ngạc nhiên là ổn định giữa các máy:
+
+| Loại điểm | Dùng để làm gì | Ghi chú |
+|---|---|---|
+| **Điểm an toàn** | Vị trí lùi về mà chắc chắn không va vào gì | Gần như luôn là điểm đầu tiên trong danh sách, và là đích của mọi thao tác "về vị trí an toàn" |
+| **Điểm chụp ảnh** | Nơi trục dừng để camera chụp | Phải lặp lại chính xác, nếu không kết quả thị giác lệch theo |
+| **Điểm làm việc** | Gắp, đặt, lắp, bắt vít… | Thường là điểm hay phải chỉnh lại nhất |
+| **Điểm hiệu chuẩn** | Vị trí dùng khi chạy quy trình hiệu chuẩn | Khác điểm làm việc dù toạ độ gần nhau — đừng gộp |
+| **Điểm tránh va** | Điểm trung gian bắt buộc đi qua để không quét vào vật cản | Thường theo cặp trái/phải, trước/sau |
+
+> 💡 **Điểm hiệu chuẩn và điểm làm việc trông giống nhau nhưng phải tách.** Trong tệp thật, hai điểm này
+> lệch nhau vài phần mười milimét — đủ gần để một người mới nghĩ rằng gộp lại cho gọn. Đừng: chúng
+> **đổi vì những lý do khác nhau**. Điểm làm việc đổi khi đổi mã hàng hoặc chỉnh đồ gá; điểm hiệu chuẩn
+> đổi khi thay camera hoặc chỉnh cơ khí. Gộp lại thì mỗi lần chỉnh cái này sẽ âm thầm phá cái kia — và
+> triệu chứng xuất hiện muộn, ở một quy trình hoàn toàn khác.
+
+#### Bốn cách lưu, và cách nào hợp với máy nào
+
+**Cách 1 — một điểm là một "tư thế" của cả trạm.** Tệp XML chia theo trạm; mỗi điểm là một dòng có tên
+và **toạ độ của toàn bộ trục trong trạm**, với số ô trục cố định:
+
+```xml
+<TramBatVit>
+  <Point index="1" name="Điểm an toàn"   x="190.76" y="97.93"  z="11.04" u="0" a="0" b="0" c="0" d="0" />
+  <Point index="2" name="Điểm chụp ảnh"  x="190.76" y="318.61" z="11.04" u="0" a="0" b="0" c="0" d="0" />
+</TramBatVit>
+```
+
+Hợp với máy mà các trục **di chuyển phối hợp tới cùng một vị trí** (gantry XYZ, tay gắp nhiều bậc):
+"về điểm chụp ảnh" là một lệnh duy nhất, đọc một dòng là biết cả tư thế. Cái giá: **số ô trục cố định**
+— trạm chỉ có 3 trục vẫn mang theo 5 ô rỗng, và trạm cần trục thứ 9 thì phải sửa cả định dạng lẫn code
+đọc.
+
+**Cách 2 — một điểm là một mục tiêu của một trục, kèm cả cách đi tới đó.** Điểm là một đối tượng có
+tên, và ngoài vị trí còn mang theo **biên dạng chuyển động**:
+
+```csharp
+public class AxisPoint
+{
+    public string Name           { get; set; }   // "Vị trí lấy phôi"
+    public double TargetPosition { get; set; }   // vị trí tuyệt đối, đơn vị kỹ thuật (mm)
+    public double Speed          { get; set; }   // tốc độ khuyến nghị
+    public double Acc            { get; set; }   // gia tốc
+    public double Dec            { get; set; }   // giảm tốc
+    public double STime          { get; set; }   // thời gian đoạn S (làm mềm điểm đầu/cuối)
+    public string Description    { get; set; }   // ghi chú cho người sau
+    public int    SortOrder      { get; set; }   // thứ tự hiện trên màn hình
+}
+```
+
+Ý tưởng cốt lõi được ghi thẳng trong chú thích của dự án đó, và đáng chép lại: *đừng viết cứng toạ độ
+trong code nghiệp vụ, hãy tham chiếu theo tên* — nhờ vậy quy trình và toạ độ tách rời nhau.
+
+Nhưng điểm đáng học hơn là việc **biên dạng chuyển động được lưu cùng điểm**. Nghe nhỏ, hệ quả lớn: tốc
+độ và gia tốc để tới một điểm là **thuộc tính của điểm đó**, không phải của chỗ gọi lệnh. Điểm hạ xuống
+mặt sản phẩm phải đi chậm và mềm; điểm lùi về vị trí chờ có thể đi nhanh. Nếu tốc độ nằm ở chỗ gọi,
+cùng một điểm sẽ được đi tới bằng năm tốc độ khác nhau từ năm chỗ trong code, và **chỉnh cho an toàn ở
+một chỗ không sửa được bốn chỗ kia**.
+
+**Cách 3 — mảng theo trục, giao diện tự ẩn ô thừa.** Gần cách 1 nhưng lưu theo dạng mảng `{giá trị, tốc
+độ}` cho từng trục của trạm; màn hình dựng sẵn số ô tối đa rồi **ẩn bớt ô của những trục trạm này không
+có**. Cách này giữ được ưu điểm "một dòng là một tư thế" mà màn hình vẫn gọn — và là cách rẻ nhất để
+một màn hình dùng chung cho mọi trạm (Phụ lục B mục B.2.2).
+
+**Cách 4 — điểm không nằm trong phần mềm của bạn.** Với máy dùng robot có bộ điều khiển riêng, danh sách
+điểm nằm **trong bộ điều khiển robot**, dưới định dạng của hãng; phần mềm C# chỉ gọi *"chạy tới điểm số
+12"*. Đây không phải thiếu sót mà là ranh giới trách nhiệm hợp lý — nhưng nó tạo ra ba hệ quả phải biết:
+điểm **không nằm trong bản sao lưu phần mềm của bạn**; đổi điểm phải làm bằng công cụ của hãng; và
+**số hiệu điểm trở thành một giao ước ngầm** giữa hai hệ thống — đổi thứ tự điểm trong robot là làm
+hỏng chương trình C# mà không có lỗi biên dịch nào cảnh báo.
+
+| | Cách 1 (tư thế/XML) | Cách 2 (điểm + biên dạng) | Cách 3 (mảng theo trục) | Cách 4 (trong bộ điều khiển) |
+|---|---|---|---|---|
+| Hợp với | Trục phối hợp, nhiều trạm giống nhau | Trục độc lập, cần tốc độ riêng cho từng điểm | Nhiều trạm khác số trục | Máy dùng robot có sẵn |
+| Điểm mạnh | Đọc một dòng biết cả tư thế | Tốc độ/gia tốc đi cùng điểm | Một màn hình cho mọi trạm | Không phải viết lại thứ hãng làm tốt hơn |
+| Điểm yếu | Số ô trục cố định | Không thấy ngay tư thế toàn trạm | Vẫn cố định số ô, chỉ ẩn đi | Nằm ngoài sao lưu; số hiệu điểm là giao ước ngầm |
+
+#### Ba cái bẫy chung cho cả bốn cách
+
+**Bẫy 1 — đơn vị của từng trường không được ghi ở đâu cả.** Trong một dự án, khi lưu điểm thì **tốc độ
+được nhân với hệ số quy đổi xung/đơn-vị, còn vị trí thì không**. Nghĩa là trong cùng một bản ghi, một
+trường đã ở đơn vị của card, một trường còn ở đơn vị kỹ thuật. Nó chạy đúng — cho tới khi người sau đọc
+tệp và tưởng cả hai cùng đơn vị.
+
+Cách phòng rẻ nhất: **đặt đơn vị vào tên trường hoặc vào một dòng chú thích ngay đầu tệp** —
+`TargetPositionMm`, `SpeedMmPerSec`. Và quy ước đáng theo cho toàn bộ phần mềm: **mọi thứ lưu ra đĩa và
+mọi thứ hiện trên màn hình đều ở đơn vị kỹ thuật; quy đổi sang xung chỉ xảy ra ở lớp sát trình điều
+khiển** (Chương 13 mục 13.2). Một chỗ quy đổi, một hướng, dễ kiểm tra.
+
+**Bẫy 2 — tên điểm vừa là khoá tra cứu, vừa là nhãn hiển thị.** Trong tệp XML ở cách 1, trường `name`
+chứa ba ngôn ngữ ghép bằng dấu gạch chéo (`"安全点/Safe Point/Điểm an toàn"`), và màn hình cắt chuỗi ra
+theo ngôn ngữ đang chọn. Cách này giải quyết được vấn đề trước mắt, nhưng nó trộn hai vai trò: **sửa một
+lỗi chính tả trong bản dịch là đổi luôn khoá** — và nếu ở đâu đó trong code có so sánh theo tên, việc
+sửa chính tả sẽ làm hỏng chức năng.
+
+Cách đúng tách hai vai: điểm có **mã định danh không đổi** (`P_SAFE`, hoặc chính số `index`) dùng để tra
+cứu, và tên hiển thị lấy từ bảng dịch (Chương 10 mục 10.4.2). Nếu bạn tiếp quản một tệp đã trộn, việc
+đáng làm ngay là **chỉ tra cứu theo `index`**, để trường tên trở thành thuần hiển thị.
+
+**Bẫy 3 — không ai biết điểm đã bị đổi lúc nào và bởi ai.** Tệp điểm bị sửa từ màn hình, ngay trên máy,
+bởi bất kỳ ai vào được màn hình dạy điểm. Khi máy đột nhiên đâm hoặc kết quả lệch, câu hỏi đầu tiên
+luôn là *"hôm qua có ai chỉnh điểm không"* — và nếu chỉ có một tệp bị ghi đè, không ai trả lời được.
+
+Trong các dự án tham khảo, cách xử lý phổ biến nhất là **một tệp `.bak` nằm cạnh tệp chính** — có còn
+hơn không, nhưng chỉ giữ được đúng một đời trước. Ba việc nhỏ nâng hẳn mức an toàn, không cái nào tốn
+quá một buổi:
+
+1. **Ghi kiểu an toàn** (ghi tệp tạm rồi đổi tên — Chương 3 mục 3.6.1), để mất điện giữa lúc lưu không
+   làm hỏng cả bảng điểm.
+2. **Giữ vài đời cũ**, đặt tên theo thời điểm, và tự xoá bản quá cũ.
+3. **Ghi một dòng nhật ký cho mỗi lần sửa**: điểm nào, giá trị cũ → giá trị mới, ai, lúc nào. Đây là
+   thứ trả lời được câu hỏi phía trên, và nó rẻ hơn nhiều so với việc dựng cả cơ chế phiên bản.
+
+> ⚠️ **Và luôn kiểm tra giới hạn hành trình khi lưu, không phải khi chạy.** Một toạ độ gõ nhầm dấu thập
+> phân sẽ nằm im trong tệp cho tới lần chạy tự động tiếp theo, lúc đó nó thành một lệnh di chuyển hết
+> hành trình ở tốc độ sản xuất. Màn hình dạy điểm phải chặn ngay lúc nhập bằng giới hạn mềm của trục,
+> và quy trình dạy điểm phải **bắt buộc chạy thử tới điểm ở tốc độ thấp** trước khi cho lưu — đúng như
+> bước "chạy thử" bắt buộc trong luồng dạy điểm ở Chương 10 mục 10.1.7.
+
+---
+
+### 13.4.2 Thị giác máy — thiết bị duy nhất mà phần mềm máy KHÔNG tự làm
+
+Mọi thiết bị đến giờ đều theo cùng một khuôn: bọc SDK vào interface, gọi lệnh, đọc kết
+quả. Thị giác máy phá khuôn đó, và người mới thường mất vài tháng mới nhận ra — thời
+gian đủ để đi sai hướng khá xa.
+
+**Sai lầm điển hình của người mới:** nghĩ rằng "máy cần kiểm tra linh kiện bằng camera"
+nghĩa là mình phải viết code xử lý ảnh trong C#. Thực tế trong hầu hết dự án công
+nghiệp: **bạn không viết thuật toán xử lý ảnh, và bạn cũng không nên**.
+
+#### Ai làm gì
+
+Công việc thị giác được chia cho hai người, hai công cụ, hai loại file:
+
+**Bảng 13.8b — Phân chia trách nhiệm khi máy có thị giác**
+
+| | Kỹ sư thị giác | Người viết phần mềm máy (bạn) |
+|---|---|---|
+| **Làm gì** | Ghép các công cụ xử lý ảnh thành một "công việc" (job): tìm mẫu, đo cạnh, đếm điểm ảnh, đọc mã | Nạp job đó, kích chụp đúng thời điểm, truyền tham số vào, lấy kết quả ra, quyết định cơ khí |
+| **Bằng công cụ** | Môi trường kéo-thả của hãng (Cognex VisionPro QuickBuild, Halcon HDevelop, phần mềm của hãng camera) | Visual Studio |
+| **Kết quả** | Một **file cấu hình** (`.vpp`, `.hdev`…) — là **dữ liệu**, không phải code | Mã C# của phần mềm máy |
+| **Đổi khi nào** | Khi đổi loại sản phẩm, đổi ánh sáng, tỷ lệ lỗi thay đổi | Khi đổi quy trình cơ khí |
+
+Điểm mấu chốt là dòng cuối: **hai bên đổi theo hai nhịp hoàn toàn khác nhau**. Job vision
+được chỉnh đi chỉnh lại hàng chục lần trong giai đoạn chạy thử, đôi khi ngay tại nhà máy
+lúc 2 giờ sáng. Nếu thuật toán nằm trong C#, mỗi lần chỉnh là một lần build và triển khai
+lại toàn bộ phần mềm máy. Vì vậy **job vision phải là dữ liệu**, và nó thuộc về **recipe**
+(Chương 11) chứ không phải mã nguồn.
+
+#### Chỗ nối — và vì sao nó dễ gãy
+
+Phần mềm máy nạp job rồi thò tay vào lấy từng công cụ **theo tên**:
+
+```csharp
+// Mẫu điển hình khi dùng thư viện thị giác thương mại
+var job = VisionJob.Load(recipe.VisionJobPath);           // nạp file do kỹ sư thị giác tạo
+var fixture   = job.Tools["TrayFixture"];                 // ← nối bằng CHUỖI
+var alignTool = job.Tools["PartAlign"];
+alignTool.Params["AcceptThreshold"] = recipe.MatchScoreMin;
+```
+
+`job.Tools["TrayFixture"]` là một **hợp đồng bằng chuỗi ký tự giữa hai công cụ khác
+nhau**. Kỹ sư thị giác đổi tên công cụ trong phần mềm của hãng — việc hoàn toàn hợp lý
+với họ — và code C# vẫn biên dịch bình thường, rồi hỏng lúc chạy, ngoài hiện trường, vào
+đúng lúc không ai đoán được nguyên nhân.
+
+Ba biện pháp, chi phí thấp, nên làm ngay từ đầu:
+
+```csharp
+// 1. Gom mọi tên vào MỘT nơi — không rải chuỗi khắp code
+internal static class VisionToolNames
+{
+    public const string TrayFixture = "TrayFixture";
+    public const string PartAlign   = "PartAlign";
+    public const string EmptyPocket = "EmptyPocketDetect";
+}
+
+// 2. Kiểm tra ngay khi NẠP, không đợi tới lúc chạy sản xuất
+public void LoadAndVerify(string jobPath)
+{
+    _job = VisionJob.Load(jobPath);
+    foreach (var name in VisionToolNames.All)
+        if (!_job.Tools.Contains(name))
+            throw new AlarmException(AlarmCodes.VisionJobMismatch, "VISION",
+                $"Job '{Path.GetFileName(jobPath)}' thiếu công cụ '{name}'. " +
+                $"Job hiện có: {string.Join(", ", _job.Tools.Select(t => t.Name))}");
+}
+
+// 3. Ghi phiên bản job vào TỪNG bản ghi sản xuất
+record InspectionRecord(string PartId, bool Passed, string FailReason,
+                        string VisionJobName, string VisionJobHash);
+```
+
+Biện pháp 3 hay bị bỏ qua nhưng cứu bạn khi có khiếu nại: câu hỏi *"lô hàng đó được kiểm
+bằng job phiên bản nào"* chỉ trả lời được nếu đã ghi lại từ đầu.
+
+#### Gá toạ độ (fixturing) — khái niệm quan trọng nhất
+
+Đây là thứ phân biệt một hệ thống thị giác chạy được ngoài hiện trường với một hệ thống
+chỉ chạy trong phòng thí nghiệm.
+
+Bài toán: bạn dạy phần mềm rằng "vùng cần kiểm tra nằm ở toạ độ ảnh (320, 180)". Nhưng
+phôi thật không bao giờ vào đúng một chỗ — nó lệch vài mi-li-mét và xoay vài độ mỗi lần.
+Vùng dò cố định sẽ trượt ra ngoài chi tiết.
+
+Cách giải: **hai bước, không phải một**.
+
+```
+Bước 1 — Tìm đặc trưng chuẩn:  dò một đặc trưng dễ nhận và luôn có mặt
+                               (mép khay, lỗ định vị, ký hiệu in sẵn)
+                               → biết phôi lệch bao nhiêu, xoay bao nhiêu
+
+Bước 2 — Gá toạ độ (fixture):  dời/xoay TOÀN BỘ các vùng dò còn lại theo đúng
+                               lượng lệch vừa đo được
+                               → mọi vùng dò "bám" theo phôi
+```
+
+Nhờ vậy bạn chỉ dạy vùng dò **một lần**, theo hệ toạ độ gắn với phôi, và chúng tự đúng ở
+mọi lần chụp sau. Về mặt toán học đây là một **phép biến đổi affine** (dời + xoay + co
+giãn); mọi thư viện thị giác thương mại đều có sẵn công cụ này, bạn không phải tự viết —
+nhưng bạn phải biết nó tồn tại để yêu cầu kỹ sư thị giác dùng nó.
+
+> ⚠️ **Đừng nhầm gá toạ độ với hiệu chuẩn.** Hai việc khác nhau, thường bị gộp: **hiệu
+> chuẩn** (calibration) trả lời *"1 điểm ảnh bằng bao nhiêu mi-li-mét, và ống kính méo bao
+> nhiêu"* — làm một lần khi lắp camera, làm lại khi camera bị va chạm. **Gá toạ độ**
+> (fixturing) trả lời *"phôi lần này lệch bao nhiêu so với lúc dạy"* — làm **lại mỗi lần
+> chụp**. Thiếu hiệu chuẩn thì toạ độ trả về là điểm ảnh, không dùng để ra lệnh cho trục
+> được. Thiếu gá toạ độ thì hệ thống chỉ chạy đúng khi phôi vào hoàn hảo.
+
+#### Hiệu chuẩn được làm như thế nào — và làm sao biết nó đạt
+
+Callout ở trên phân biệt hiệu chuẩn với gá toạ độ. Mục này nói về **quy trình hiệu chuẩn thật**, vì
+nó là một trong những màn hình bạn sẽ phải làm, và là chỗ người mới hay tưởng "chạy một lần là xong".
+
+Có hai cách hiệu chuẩn, dùng cho hai bài toán khác nhau, và một máy có camera thường cần **cả hai**:
+
+**Bảng 13.9b — Hai kiểu hiệu chuẩn thị giác**
+
+| | **Hiệu chuẩn camera** (dùng tấm bàn cờ) | **Hiệu chuẩn tay–mắt** (N điểm) |
+|---|---|---|
+| Trả lời câu hỏi | *"Một điểm ảnh bằng bao nhiêu mi-li-mét, và ống kính méo bao nhiêu?"* | *"Toạ độ trong ảnh tương ứng với toạ độ nào của **trục máy**?"* |
+| Cách làm | Đặt một **tấm in ô bàn cờ** kích thước đã biết dưới camera, chụp, công cụ tự tính | Cho trục chạy tới **N vị trí đã biết**, mỗi vị trí chụp một ảnh và ghi lại toạ độ ảnh của cùng một điểm đặc trưng |
+| Khi nào làm lại | Khi lắp/thay camera hoặc ống kính, khi camera bị va chạm, khi đổi khoảng cách chụp | Thêm cả khi **cơ khí bị chỉnh** — tháo lắp gá, thay đầu công tác |
+| Kết quả | Hệ số quy đổi + tham số bù méo ống kính | Phép biến đổi từ hệ toạ độ ảnh sang hệ toạ độ trục |
+
+Cách thứ hai là lý do màn hình hiệu chuẩn trong các dự án thật thường **gộp chung nút jog trục với
+nút chụp ảnh**: người vận hành chạy trục tới một điểm, bấm ghi, lặp lại N lần, rồi bấm tính. Nếu bạn
+thấy một màn hình tên kiểu "hiệu chuẩn + jog" thì đó chính là quy trình này.
+
+#### Hiệu chuẩn không phải "xong hay chưa xong" mà là "đạt tới mức nào"
+
+Đây là điểm quan trọng nhất và cũng là điểm hay bị bỏ qua nhất. Mọi công cụ hiệu chuẩn nghiêm túc đều
+trả về **một con số sai lệch** — thường là sai số bình phương trung bình giữa vị trí công cụ *dự
+đoán* và vị trí *đo được* của các điểm chuẩn. Con số đó chính là **chất lượng của lần hiệu chuẩn**:
+
+```csharp
+calibTool.Calibration.CalibrationImage = image;
+calibTool.Calibration.Calibrate();
+
+double rms = calibTool.Calibration.ComputedRMSError;      // đơn vị: điểm ảnh
+if (rms > recipe.CalibrationMaxRmsPixels)
+{
+    // KHÔNG được lưu kết quả hiệu chuẩn này
+    return OperateResult.Fail("CALIB_QUALITY",
+        $"Hiệu chuẩn sai lệch {rms:0.000} điểm ảnh, vượt ngưỡng cho phép " +
+        $"{recipe.CalibrationMaxRmsPixels:0.000}. Kiểm tra: tấm chuẩn có phẳng và sạch không, " +
+        $"ánh sáng có đều không, camera có đúng tiêu cự không.");
+}
+_calibrationStore.Save(cameraId, calibTool.Calibration, rms, DateTime.UtcNow, currentUser);
+```
+
+Ba việc phải làm quanh con số đó, và thiếu bất kỳ việc nào cũng dẫn tới hậu quả thật:
+
+1. **Có ngưỡng chấp nhận, và từ chối lưu nếu vượt.** Không có ngưỡng thì một lần hiệu chuẩn tồi —
+   tấm chuẩn bị cong, có vệt bẩn, đèn loá một góc — vẫn được lưu và dùng cho cả tháng sản xuất. Sai
+   lệch nhỏ ở bước hiệu chuẩn trở thành sai lệch có hệ thống ở mọi phép đo sau đó.
+2. **Lưu lại kết quả kèm sai lệch, thời điểm, và người thực hiện.** Khi có khiếu nại về kích thước
+   đo, câu hỏi đầu tiên sẽ là *"lần hiệu chuẩn gần nhất là khi nào và đạt bao nhiêu"*.
+3. **Kiểm tra "đã hiệu chuẩn chưa" trước khi cho chạy tự động.** Công cụ hiệu chuẩn có cờ trạng thái
+   cho biết nó đã được hiệu chuẩn hay chưa. Máy khởi động với camera chưa hiệu chuẩn phải **từ chối
+   vào chế độ tự động**, không phải chạy rồi trả toạ độ theo điểm ảnh.
+
+> ⚠️ **Hiệu chuẩn là thao tác có rủi ro cao, phải nằm sau quyền và phải ghi nhật ký.** Một lần hiệu
+> chuẩn sai không làm máy dừng — nó làm máy **tiếp tục chạy và cho ra kết quả sai một cách nhất
+> quán**, đúng loại lỗi khó phát hiện nhất (Phụ lục B mục B.8: sản phẩm lỗi trông y hệt sản phẩm
+> tốt). Đối xử với nó như với việc sửa recipe: yêu cầu quyền Kỹ sư, ghi ai làm và lúc nào, và **giữ
+> lại kết quả cũ** để còn quay về được nếu lần mới tệ hơn.
+
+> 💡 **Một mẹo vận hành đáng đưa vào máy: kiểm tra hiệu chuẩn định kỳ, không hiệu chuẩn lại định kỳ.**
+> Hiệu chuẩn lại thường xuyên nghe có vẻ cẩn thận nhưng thực ra làm tăng rủi ro — mỗi lần làm là một
+> cơ hội làm sai. Cách tốt hơn: định kỳ **đo một mẫu chuẩn đã biết kích thước** và so với giá trị
+> đúng; chỉ khi lệch vượt ngưỡng mới hiệu chuẩn lại. Cách này cũng phát hiện được những thứ mà hiệu
+> chuẩn lại không giải quyết được, ví dụ ống kính bị xê dịch dần hoặc gá bị lỏng.
+
+#### Nửa còn lại: chụp cho đúng
+
+Toàn bộ phần trên nói về **dò cho đúng** — vùng dò, gá toạ độ, ranh giới interface. Nhưng mọi thuật
+toán dò tốt nhất cũng vô dụng nếu bức ảnh đầu vào sai. Phần này thuộc trách nhiệm của **bạn**, không
+phải kỹ sư thị giác, và nó là nguyên nhân số một của câu than phiền kinh điển: *"hôm nay máy đọc sai
+mà hôm qua vẫn tốt"*.
+
+**Đèn chiếu là một thiết bị, không phải một món đồ lắp một lần.**
+
+Người mới thường coi đèn là phần cơ khí: lắp lên, chỉnh cho sáng, xong. Trong máy kiểm tra thật, bộ
+điều khiển đèn được nối vào phần mềm và có ba lý do rất cụ thể:
+
+- **Mỗi loại sản phẩm cần một cấu hình sáng khác nhau.** Sản phẩm sẫm màu cần sáng hơn; bề mặt bóng
+  cần góc chiếu khác để không bị loá. Vì vậy **độ sáng từng kênh đèn thuộc recipe**, đổi cùng lúc với
+  đổi mã hàng.
+- **Nhiều góc chiếu bật theo từng bước.** Máy thường có vài bộ đèn (đèn vòng, đèn xiên, đèn nền), và
+  mỗi phép kiểm tra dùng một tổ hợp khác nhau — bật/tắt **trong quy trình**, không bật suốt.
+- **Đèn LED giảm sáng dần theo thời gian sử dụng.** Đây là điều ít ai nói với người mới: sau vài
+  nghìn giờ, cùng một cấu hình cho ra ảnh tối hơn, ngưỡng phán định bắt đầu trượt, và tỷ lệ đánh sai
+  tăng từ từ trong nhiều tuần — không có sự kiện nào để lần theo.
+
+Cách phòng cho vấn đề thứ ba đơn giản đến bất ngờ, và hai dự án tham khảo độc lập đều làm giống nhau:
+**dùng chính bức ảnh để đo độ sáng**. Thêm một vùng dò cố định lên một chi tiết luôn có mặt (nền gá,
+mảng chuẩn trắng), tính độ sáng trung bình của vùng đó mỗi lần chụp, và cảnh báo khi nó trôi khỏi dải
+đã đặt:
+
+```csharp
+// Chạy cùng mỗi lần kiểm tra — rẻ, và bắt được thứ không có triệu chứng nào khác
+double brightness = MeasureMeanGray(image, _lightCheckRegion);
+if (brightness < recipe.LightCheckMin)
+    _alarms.Raise(AlarmCodes.LightDegraded, "VISION",
+        $"Độ sáng nền {brightness:0} dưới ngưỡng {recipe.LightCheckMin:0} — kiểm tra đèn/kính chắn");
+```
+
+Nó bắt được cả ba nguyên nhân cùng lúc: đèn yếu đi, kính chắn bám bụi, và ai đó vô tình xoay đèn.
+
+**Recipe của một trạm thị giác gồm ba nhóm, không phải một.**
+
+| Nhóm | Gồm gì | Ai chỉnh |
+|---|---|---|
+| **Tham số chụp** | Thời gian phơi sáng, độ sáng/tương phản, cấu hình từng kênh đèn | Kỹ sư (khi đổi mã hàng hoặc đổi đèn) |
+| **Tham số dò** | Vùng dò, mẫu chuẩn, điểm chấp nhận của phép dò | Kỹ sư thị giác |
+| **Tham số phán định** | Dải kích thước cho phép, số lỗi tối đa, mã lý do không đạt | Kỹ sư chất lượng |
+
+Ba nhóm này do ba vai trò khác nhau chỉnh, vào những lúc khác nhau — nên tách bạch chúng trong cấu
+trúc recipe (và trong màn hình sửa recipe) sẽ tránh được rất nhiều nhầm lẫn về sau.
+
+**Hai loại ROI, đừng nhầm.**
+
+| | ROI **phần cứng** | ROI **phần mềm** (vùng dò) |
+|---|---|---|
+| Ai thực thi | Camera — chỉ truyền về phần ảnh đó | Phần mềm — chỉ tìm trong phần ảnh đó |
+| Tác dụng chính | Giảm băng thông mạng, **tăng tốc độ khung hình** | Tăng tốc xử lý, tránh nhiễu từ vùng không liên quan |
+| Đặt ở đâu | Cấu hình camera | Job vision / recipe |
+
+Cắt ROI phần cứng là cách rẻ nhất để tăng tốc một máy đang chậm vì truyền ảnh — nhưng nhớ rằng nó đổi
+**hệ toạ độ ảnh**, nên mọi vùng dò đã dạy trước đó sẽ lệch nếu bạn đổi ROI phần cứng sau khi dạy.
+
+**Định danh thiết bị bằng số sê-ri, không bằng chỉ số.**
+
+Đoạn code dưới đây trông vô hại và là cách viết tự nhiên nhất:
+
+```csharp
+var camera = grabbers[0];      // ❌ camera thứ nhất trong danh sách
+```
+
+Nhưng thứ tự trong danh sách phụ thuộc vào thứ tự thiết bị trả lời trên mạng. Thêm một camera, đổi
+thứ tự bật nguồn, hay thay card mạng là **camera trái thành camera phải** — và máy vẫn chạy bình
+thường, chỉ là kết quả kiểm tra bị gán nhầm phía. Không có lỗi nào để phát hiện.
+
+```csharp
+// ✅ Khớp theo số sê-ri lấy từ cấu hình — camera nào là camera nào không bao giờ đổi
+var camera = grabbers.FirstOrDefault(g => g.SerialNumber == config.LeftCameraSerial)
+    ?? throw new AlarmException(AlarmCodes.DeviceNotFound, "CAM_L",
+        $"Không thấy camera S/N {config.LeftCameraSerial}. Đang thấy: " +
+        string.Join(", ", grabbers.Select(g => g.SerialNumber)));
+```
+
+Nguyên tắc này áp dụng cho **mọi thiết bị liệt kê được**, không riêng camera: cổng COM (dùng mô tả
+thiết bị thay vì `COM3`), card chuyển động (số sê-ri card thay vì chỉ số 0), đầu đọc mã. Và thông báo
+lỗi nên **liệt kê những gì đang thấy** — nhờ vậy người ở hiện trường tự đối chiếu được ngay thay vì
+phải gọi về.
+
+**Thiết bị nối qua mạng cần một kênh kiểm tra độc lập với SDK.**
+
+Đây là bài học đắt từ một dự án tham khảo. Camera GigE nối qua Ethernet, và mạng thì rớt — nhưng SDK
+**không phải lúc nào cũng báo**: đối tượng camera trong bộ nhớ vẫn còn, lệnh chụp vẫn gọi được, nó
+chỉ **không bao giờ trả về**. Dự án đó còn làm tình hình tệ hơn bằng hai dòng liền nhau:
+
+```csharp
+acqFifo.Timeout = 10000;
+acqFifo.TimeoutEnabled = false;   // ❌ đặt thời gian chờ rồi tắt nó đi
+```
+
+Kết quả: quy trình treo vô hạn, không alarm, không thông báo — người vận hành chỉ thấy máy đứng im.
+Hai biện pháp đi cùng nhau:
+
+1. **Bật thời gian chờ cho mọi lệnh gọi thiết bị** (nguyên tắc xuyên suốt Chương 5 và Chương 16 mục
+   16.2b): thà báo lỗi sau 10 giây còn hơn treo mãi.
+2. **Thêm một nhịp kiểm tra độc lập** — một luồng nền nhẹ ping địa chỉ IP của thiết bị mỗi vài giây.
+   Nó biết trước cả SDK, và nó phân biệt được "mạng chết" với "thiết bị bận":
+
+```csharp
+// Đặt IsBackground = true để luồng không giữ ứng dụng sống khi đóng phần mềm.
+// Dừng bằng CancellationToken, KHÔNG bằng Thread.Abort (Chương 5).
+private async Task HeartbeatLoopAsync(CancellationToken ct)
+{
+    using var ping = new Ping();
+    while (!ct.IsCancellationRequested)
+    {
+        var reply = await ping.SendPingAsync(_cameraIp, timeout: 1000).ConfigureAwait(false);
+        _health.Report(reply.Status == IPStatus.Success ? DeviceHealth.Healthy
+                                                        : DeviceHealth.Unhealthy);
+        await Task.Delay(TimeSpan.FromSeconds(2.5), ct).ConfigureAwait(false);
+    }
+}
+```
+
+Trạng thái này nối thẳng vào chip kết nối trên màn hình (Chương 10) — người vận hành nhìn thấy camera
+mất kết nối **trước khi** chu kỳ tiếp theo treo.
+
+> 🔍 **Đào sâu thêm — vài thiết lập mạng quyết định camera GigE chạy ổn hay không.** Ba thứ nằm ngoài
+> mã nguồn nhưng thường là nguyên nhân thật của "ảnh bị rách" hoặc "mất khung hình": camera nên nối
+> vào một **card mạng riêng** (không dùng chung với mạng nhà máy); card đó nên bật **khung dữ liệu
+> lớn** (jumbo frame) nếu camera hỗ trợ, để giảm số gói tin phải xử lý; và **kích thước gói tin** cấu
+> hình trên camera phải nhỏ hơn hoặc bằng mức card mạng và switch chấp nhận được. Đây là kiến thức
+> lắp đặt, không phải lập trình — nhưng khi máy chạy tốt ở phòng thử rồi lỗi ở nhà máy, đây là chỗ
+> nên kiểm tra trước khi đọc lại code.
+
+#### Interface nên đặt ranh giới ở đâu
+
+Áp dụng đúng nguyên tắc của chương này (interface theo **năng lực**, mục 13.2.1): interface
+thị giác **không** nên lộ ra bất kỳ kiểu dữ liệu nào của hãng.
+
+**Code 13.14b — Ranh giới thị giác: đi vào bằng lệnh, đi ra bằng kết quả**
+
+```csharp
+namespace MeoFrame.Domain.Devices;
+
+/// <summary>Kết quả kiểm tra — toàn bộ bằng kiểu của MIỀN, không phải kiểu của hãng.</summary>
+public sealed record VisionResult(
+    bool     Passed,
+    string   FailReason,          // mã lý do, phục vụ biểu đồ Pareto (Phụ lục B mục B.2.5)
+    double   Score,
+    PointMm? FoundPositionMm,     // đã quy đổi sang mm — trục dùng được ngay
+    double   AngleDeg,
+    string   EvidenceImagePath);  // đường dẫn ảnh đã lưu, rỗng nếu không lưu
+
+public interface IVisionInspector
+{
+    Task LoadJobAsync(string jobPath, CancellationToken ct = default);
+    Task<VisionResult> InspectAsync(string recipeName, CancellationToken ct = default);
+}
+```
+
+Không có kiểu nào của hãng trong chữ ký. Nhờ vậy: tầng quy trình test được bằng một
+`SimulatedVisionInspector` (mục 13.2.5); đổi hãng thị giác chỉ phải viết một adapter mới;
+và quan trọng nhất — **tầng quy trình không thể vô tình phụ thuộc vào chi tiết của hãng**.
+
+> 💡 **Một dấu hiệu để tự kiểm tra thiết kế:** nếu tầng quy trình của bạn có dòng nào
+> `using` vùng tên của hãng thị giác, ranh giới đã bị thủng. Trong một dự án tham khảo,
+> class kiểm tra khay vừa kế thừa lớp quy trình của khung máy, vừa là ViewModel cho giao
+> diện, vừa được lưu ra XML làm recipe — 1051 dòng gánh ba vai với ba nhịp thay đổi khác
+> nhau. Hệ quả không phải "code xấu" trừu tượng, mà rất cụ thể: **không test được phần nào
+> mà không dựng cả ba**.
+
+> 🔍 **Đào sâu thêm — vì sao thư viện hãng có bản riêng cho những kiểu .NET đã có.** Đọc
+> code thị giác sẽ gặp bản riêng của hãng cho đồng hồ bấm giờ, hình chữ nhật, màu sắc.
+> Chúng tồn tại vì thư viện cần chạy trên nhiều nền và cần tích hợp với hệ hiển thị riêng.
+> Dùng chúng **bên trong** adapter thị giác là bình thường; dùng chúng ở chỗ **không liên
+> quan tới thị giác** (đo thời gian chạy, ghi log) là tự trói mình vào hãng ở những nơi lẽ
+> ra không cần — đúng thứ mà Bridge/Adapter ở mục 13.2.4 sinh ra để tránh.
+
+---
+
+### 13.4.3  Căn chỉnh phôi — bài toán XYθ, và ba cái bẫy đơn vị
+
+Mục 13.4.2 dừng ở chỗ *"toạ độ ảnh không dùng để ra lệnh trục được"* và giới thiệu việc hiệu chuẩn.
+Mục này đi nốt phần còn lại: sau khi đã có toạ độ thật của các dấu căn chỉnh, **tính ra lượng bù cho
+trục** như thế nào. Đây là chức năng gần như mọi máy in, máy gắn, máy dán, máy hàn trong ngành điện tử
+đều có, và là chỗ người mới hay tính sai theo những cách rất giống nhau.
+
+#### Hai mức bài toán
+
+**Một dấu — chỉ sửa được vị trí.** Phôi vào lệch nhưng **không xoay** (hoặc đồ gá đã chặn xoay). Đo được
+một dấu, lượng bù là hiệu số đơn giản:
+
+```csharp
+dx = xDay - xDo;        // "dạy" = vị trí dấu khi phôi nằm đúng, học một lần
+dy = yDay - yDo;
+```
+
+**Hai dấu — sửa được cả vị trí lẫn góc.** Đây mới là trường hợp thường gặp. Với hai dấu, bạn có đủ thông
+tin để tách **xoay** ra khỏi **tịnh tiến**, và **thứ tự tính là điều quan trọng nhất của cả mục này**:
+
+```csharp
+// Bước 1: góc lệch = góc của ĐƯỜNG NỐI hai dấu, đo lúc dạy so với đo bây giờ
+double gocDay = Math.Atan2(xDayPhai - xDayTrai,  yDayTrai - yDayPhai);
+double gocDo  = Math.Atan2(xDoPhai  - xDoTrai,   yDoTrai  - yDoPhai);
+double theta  = gocDay - gocDo;                       // radian
+
+// Bước 2: XOAY điểm đo quanh tâm xoay theo theta, RỒI mới lấy hiệu với điểm dạy
+double xSauXoay = xDo * Math.Cos(theta) - yDo * Math.Sin(theta);
+double ySauXoay = xDo * Math.Sin(theta) + yDo * Math.Cos(theta);
+double dx = xDay - xSauXoay;
+double dy = yDay - ySauXoay;
+```
+
+> ⚠️ **Sai lầm phổ biến nhất: lấy trung bình hai lượng lệch.** Người mới thường tính hiệu số ở dấu trái
+> và dấu phải rồi lấy trung bình làm lượng tịnh tiến, tính góc riêng, rồi ra lệnh cả hai. Nó **gần đúng
+> khi góc rất nhỏ**, và sai lớn dần khi góc tăng — vì phép xoay quanh tâm xoay của bàn đã tự nó làm đổi
+> vị trí của mọi điểm. Phải **xoay trước, rồi mới đo phần còn lại là tịnh tiến**, đúng như hai bước ở
+> trên. Triệu chứng khi làm sai: máy căn chỉnh tốt với phôi hơi lệch, và **càng lệch nhiều càng sai
+> nhiều** — nhưng vẫn "chạy được", nên rất lâu mới bị phát hiện.
+
+> 📌 **Tâm xoay là một tham số, không phải gốc toạ độ.** Công thức trên xoay quanh gốc (0,0). Trên máy
+> thật, bàn xoay có **tâm cơ khí riêng**, và tâm đó gần như không bao giờ trùng gốc toạ độ trục. Trước
+> khi xoay phải dời hệ về tâm xoay, xoay, rồi dời về. Tâm xoay được xác định bằng một quy trình hiệu
+> chuẩn riêng (xoay bàn vài góc đã biết, chụp một dấu, khớp vòng tròn) và **lưu như một tham số máy**,
+> thuộc nhóm *cấu hình phần cứng* chứ không phải công thức sản phẩm (mục 13.1.4b).
+
+#### Tìm tâm xoay, và hai tham số ai cũng quên khai báo
+
+Callout ở trên nói *"tâm xoay được xác định bằng một quy trình hiệu chuẩn riêng"* rồi để đó. Mục này nói
+quy trình đó là gì, vì nó khá đơn giản và hầu như máy nào có bàn xoay cũng cần.
+
+**Ý tưởng:** một điểm bất kỳ trên bàn, khi bàn xoay quanh tâm của nó, sẽ **vẽ ra một cung tròn**. Tâm của
+cung đó chính là tâm xoay. Vậy nên:
+
+1. Đặt một dấu (hoặc dùng luôn dấu căn chỉnh) trong tầm nhìn camera. Chụp, ghi lại toạ độ.
+2. **Xoay bàn một góc đã biết** — ví dụ +5°. Chụp lại, ghi toạ độ mới.
+3. Lặp lại vài góc nữa, cả chiều dương lẫn chiều âm.
+4. **Khớp một vòng tròn** qua các điểm thu được. Tâm vòng tròn là tâm xoay, tính theo hệ toạ độ máy.
+
+Ba điều khiến quy trình này chạy được hay không:
+
+- **Góc phải đủ lớn để cung nhìn thấy được, và đủ nhỏ để dấu không ra khỏi khung hình.** Vài độ thường là
+  vừa; nếu dấu ra khỏi khung, hãy dùng một dấu nằm gần tâm hơn.
+- **Đo ở nhiều góc rồi khớp, đừng chỉ lấy hai điểm.** Ba điểm là tối thiểu về mặt toán học, nhưng mỗi lần
+  đo đều có sai số; năm tới bảy điểm rồi khớp bình phương tối thiểu cho kết quả ổn định hơn nhiều.
+- **Phải có ngưỡng chấp nhận.** Tính sai số khớp trung bình, và **từ chối lưu** nếu vượt ngưỡng — đúng
+  nguyên tắc đã nêu ở mục 13.4.2 cho hiệu chuẩn thị giác. Một tâm xoay sai sẽ làm mọi lần căn chỉnh về
+  sau sai theo, mà không có triệu chứng nào rõ ràng ngoài *"máy căn chỉnh không chuẩn lắm"*.
+
+> 💡 **Chi tiết kiến trúc đáng học từ một thư viện hiệu chuẩn thật:** lớp hiệu chuẩn ở đó **không tự điều
+> khiển trục và không tự chụp ảnh**. Nó phát ra hai sự kiện — *"hãy đưa cơ cấu tới tư thế này"* và *"hãy
+> chụp một ảnh"* — rồi chờ kết quả trả về qua một sự kiện khác. Nhờ vậy cùng một quy trình hiệu chuẩn
+> dùng được cho máy dùng trục thường lẫn máy dùng robot, và **chạy giả lập được** mà không cần phần cứng.
+> Đây là mẫu *đảo ngược phụ thuộc* ở Chương 7 áp cho một quy trình, không phải cho một lớp thiết bị.
+
+#### Hai tham số ai cũng quên: chiều trục và hoán trục
+
+Cùng thư viện đó có ba thuộc tính trông rất tầm thường nhưng lại là thứ tiết kiệm nhiều giờ nhất khi lắp
+máy:
+
+```csharp
+public bool IsReverseCoordinateX { get; set; }   // trục X của ảnh ngược chiều trục X của máy
+public bool IsReverseCoordinateY { get; set; }   // tương tự cho Y
+public bool IsFlipCoordinateXY   { get; set; }   // X của ảnh tương ứng Y của máy (camera lắp xoay 90°)
+```
+
+Vì sao cần: **hệ toạ độ ảnh và hệ toạ độ máy gần như không bao giờ trùng chiều nhau.** Ảnh có gốc ở góc
+trên bên trái và trục Y hướng **xuống**; máy thường có Y hướng ra xa hoặc lên trên. Thêm nữa, camera có
+thể được lắp xoay 90° vì lý do cơ khí, và người lắp máy sẽ không hỏi bạn trước.
+
+Nếu ba thứ này không phải là tham số khai báo, chuyện xảy ra tiếp theo luôn giống nhau: ai đó thấy trục
+chạy ngược chiều, bèn thêm một dấu trừ vào công thức. Rồi trạm khác lại cần dấu trừ ở chỗ khác. Sau vài
+tháng, mã nguồn có **những dấu trừ rải rác mà không ai dám bỏ**, và không ai nhớ cái nào bù cho cái gì.
+
+> ⚠️ **Xác định ba tham số này ngay trong quy trình hiệu chuẩn, đừng đoán.** Cách làm mất năm phút: cho
+> trục chạy một đoạn **đã biết theo chiều dương của X**, chụp trước và sau, xem dấu vết trong ảnh dịch
+> theo hướng nào và theo trục nào của ảnh. Lặp lại với Y. Ba câu trả lời đó chính là ba tham số ở trên,
+> và chúng thuộc nhóm **cấu hình phần cứng** — gắn với lần lắp đặt này, không đi theo công thức sản phẩm
+> (mục 13.1.4b).
+>
+> Và ghi chúng vào tài liệu bàn giao. Khi camera được tháo ra vệ sinh rồi lắp lại lệch 90°, người sửa cần
+> biết có một chỗ để khai báo lại — thay vì đi tìm dấu trừ trong mã nguồn.
+
+#### Ba cái bẫy đơn vị, cả ba đều có thật trong cùng một thư viện
+
+Đoạn code căn chỉnh mà mục này rút ra từ một thư viện thị giác thật — được viết bởi người có kinh nghiệm
+nhiều năm trong ngành — và nó vẫn dính đủ ba bẫy đơn vị. Điều đó nói lên rằng đây không phải chuyện cẩu
+thả, mà là chỗ **rất dễ trượt**:
+
+**Bẫy 1 — độ và radian trong cùng một dòng chảy tính toán.** Hàm tính góc trả về kết quả của `Math.Atan2`,
+tức là **radian**. Hàm tính lượng tịnh tiến nhận góc đó và mở đầu bằng `theta *= Math.PI / 180.0` — tức
+là nó tin rằng mình đang nhận **độ**. Một trong hai đầu phải sai. Đây là bẫy quen thuộc nhất của mọi
+phép tính hình học trong phần mềm máy, vì thư viện toán của .NET dùng radian còn con người, tài liệu cơ
+khí và màn hình HMI đều dùng độ.
+>
+> Cách chặn hiệu quả nhất không phải là "cẩn thận hơn" mà là **đưa đơn vị vào tên**: `thetaRad`,
+> `thetaDeg`, `dxMm`, `dxPixel`. Quy đổi chỉ xảy ra ở đúng một chỗ, và chỗ đó có tên nói rõ nó làm gì.
+> Nghiêm túc hơn nữa thì dùng kiểu riêng cho góc (`readonly struct Goc` với hai property `Do` và `Radian`)
+> — lúc đó trình biên dịch không cho bạn cộng một góc vào một số mét nữa.
+
+**Bẫy 2 — nhân hệ số tỉ lệ vào một đại lượng không có tỉ lệ đó.** Hàm căn chỉnh nhận một `scale` để đổi
+điểm ảnh sang mi-li-mét, và nó nhân `scale` vào **cả góc**. Góc thì không đổi khi đổi đơn vị chiều dài —
+một hình xoay 5 độ vẫn xoay 5 độ dù bạn đo bằng pixel hay bằng mm. Nhân hệ số vào góc là một phép tính
+**không có nghĩa vật lý**, và nó chỉ vô hại khi `scale` tình cờ bằng 1.
+>
+> Quy tắc kiểm tra rất nhanh, dùng được cho mọi công thức trong máy: **nhìn vào đơn vị của hai vế**. Nếu
+> vế trái là *độ* mà vế phải là *độ × (mm/pixel)*, công thức sai bất kể nó chạy ra số đẹp thế nào.
+
+**Bẫy 3 — dùng một con số làm cờ báo lỗi.** Khi không tính được (hai dấu trùng nhau, thị giác không tìm
+thấy dấu), hàm trả về hằng số `-1000.0` cho cả X, Y và góc. Nó "an toàn" theo nghĩa **-1000 mm là lượng
+bù phi lý nên chắc chắn sai ngay**, nhưng đó chính là vấn đề:
+>
+> - Người gọi **có thể quên kiểm tra**, và khi đó -1000 được gửi thẳng xuống trục.
+> - Phép so sánh phải viết là `Math.Abs(theta - (-1000.0)) < 0.00001` — so số thực với hằng số bằng dung
+>   sai, một dòng mà người đọc sau không hiểu ngay là đang kiểm tra lỗi.
+> - Và nếu một ngày nào đó có một máy mà -1000 là giá trị hợp lệ, mọi thứ sụp.
+>
+> Đây đúng là lý do tồn tại của **đối tượng kết quả** đã nêu ở Chương 3 mục 3.5.4: hàm trả về *"có thành
+> công không, nếu không thì vì sao, nếu có thì giá trị là bao nhiêu"* trong một kiểu duy nhất, và người
+> gọi **không lấy được giá trị mà không đi qua phần kiểm tra**.
+
+#### Hai điều phải có trước khi cho lượng bù xuống trục
+
+**1. Kẹp biên độ.** Lượng bù hợp lệ của một máy nằm trong một khoảng biết trước — vài mi-li-mét và vài
+độ. Bất cứ kết quả nào vượt khoảng đó **không phải là "phôi lệch nhiều"** mà gần như chắc chắn là *thị
+giác bắt nhầm dấu*, *phôi nạp sai chiều*, hoặc *hiệu chuẩn đã hỏng*. Kẹp và báo cảnh báo, đừng chạy.
+
+**2. Kiểm tra lại sau khi bù.** Sau khi trục đã bù xong, **chụp lại và đo lại**. Nếu sai lệch còn lại
+vẫn vượt dung sai thì có gì đó sai ở mức hệ thống — chiều dấu bị đảo, hệ số hiệu chuẩn sai dấu, tâm
+xoay lệch. Một vòng kiểm tra lại tốn thêm vài trăm mili-giây mỗi phôi và là thứ **phát hiện sớm** những
+lỗi mà nếu không có nó thì cả lô hàng đã chạy xong mới biết.
+
+> 💡 **Và một mẹo gỡ rối rất hiệu quả cho căn chỉnh:** ghi lại **cả ba bộ số** cho mỗi lần căn chỉnh —
+> toạ độ dấu lúc dạy, toạ độ dấu đo được, và lượng bù đã ra lệnh. Khi có nghi ngờ, ba bộ số này cho
+> phép tính lại bằng tay trên giấy để biết sai ở khâu nào: đo sai, tính sai, hay trục đi không tới.
+> Không có chúng thì bạn chỉ có một kết luận vô dụng là *"máy căn chỉnh không chuẩn"*.
+
+---
+
+### 13.4.4  Ảnh — thứ tốn bộ nhớ nhất trong máy, và ba cách làm hỏng nó
+
+Mục 13.4.2 bàn về **kết quả** thị giác. Mục này bàn về **chính tấm ảnh**: nó sống bao lâu, ai giải
+phóng, lưu ở đâu, đặt tên thế nào. Nghe như chuyện vặt, nhưng đây là nguyên nhân của phần lớn các sự cố
+kiểu *"máy chạy hai ngày thì chậm dần rồi treo"* trong máy có camera.
+
+#### Vì sao ảnh khác mọi đối tượng khác trong C#
+
+Một tấm ảnh 5 megapixel đơn sắc là **5 MB**. Ảnh màu là 15 MB. Máy chạy 3 giây một chu kỳ, hai camera,
+là **10 MB mỗi 3 giây** — 12 GB mỗi giờ đi qua bộ nhớ.
+
+Nhưng vấn đề không nằm ở con số đó, mà ở chỗ **bộ dọn rác của .NET không nhìn thấy phần lớn khối lượng
+ấy**. Đối tượng ảnh của .NET và của các thư viện thị giác chỉ là một cái vỏ nhỏ trong bộ nhớ có quản lý,
+còn dữ liệu điểm ảnh nằm trong **bộ nhớ không quản lý** do thư viện cấp phát. Bộ dọn rác thấy vài trăm
+byte và kết luận "chưa cần dọn", trong khi thực tế đã có vài gigabyte điểm ảnh nằm đó.
+
+Hệ quả rất cụ thể, và nó giải thích một triệu chứng quen thuộc: **màn hình quản lý tác vụ báo bộ nhớ tăng
+đều mà bộ đếm bộ nhớ của .NET vẫn thấp**. Đây là loại rò rỉ khác với loại đã nói ở Chương 19 (quên huỷ
+đăng ký sự kiện) — ở đó đối tượng còn sống vì còn tham chiếu; ở đây đối tượng đã mất tham chiếu nhưng
+**tài nguyên không quản lý của nó chưa được trả lại**.
+
+#### Cách 1 làm hỏng: gán đè lên biến ảnh mà không giải phóng
+
+Đoạn dưới rút từ một máy kiểm tra khay đang chạy sản xuất. `img1` và `img2` là **field của lớp**, không
+phải biến cục bộ:
+
+```csharp
+Image img1;                 // ← field, sống suốt đời đối tượng
+Image img2;
+
+// … trong vòng xử lý MỖI khay:
+img1 = display1.CreateContentBitmap(...);      // tạo ảnh MỚI, đè lên tham chiếu cũ
+img2 = display2.CreateContentBitmap(...);      // ảnh cũ mất tham chiếu — nhưng CHƯA được giải phóng
+
+if (batLuuAnhGoRoi || khayLoi)                 // ← chỉ LƯU khi gỡ rối hoặc khay lỗi…
+    img1.Save(duongDan);                       //    …nhưng TẠO thì tạo mọi chu kỳ
+```
+
+Ba vấn đề chồng lên nhau:
+
+1. **Không có `Dispose`, không có `using`.** Ảnh cũ chờ bộ dọn rác chạy tới, rồi chờ hàng đợi hoàn thiện
+   xử lý nốt — có thể là hàng phút sau, hoặc không bao giờ nếu bộ nhớ có quản lý chưa đủ áp lực.
+2. **Ảnh được tạo mọi chu kỳ, dù phần lớn chu kỳ không dùng đến nó.** Điều kiện *"chỉ lưu khi lỗi"* đặt
+   sau khi tạo, nên máy chạy tốt vẫn phải trả chi phí đầy đủ. Kiểm tra điều kiện **trước khi tạo** là
+   một dòng code, và nó bỏ đi toàn bộ chi phí ở trạng thái bình thường.
+3. **Dùng field thay vì biến cục bộ.** Không có lý do gì để hai tấm ảnh này sống ngoài phạm vi vòng xử
+   lý; để chúng làm field chỉ khiến chúng sống lâu hơn cần thiết và khiến người đọc không biết ai sở hữu.
+
+Viết lại đúng, ngắn hơn bản gốc:
+
+```csharp
+if (batLuuAnhGoRoi || khayLoi)                       // quyết định TRƯỚC
+{
+    using var anh = display1.CreateContentBitmap(...); // giải phóng chắc chắn khi ra khỏi khối
+    anh.Save(duongDan);
+}
+```
+
+> 📌 **Quy tắc rút gọn cho mọi thứ liên quan tới ảnh: `using`, hoặc một chủ sở hữu duy nhất.** Đối tượng
+> ảnh — dù của .NET hay của thư viện thị giác — gần như luôn cài `IDisposable` (Chương 5 mục 5.5). Nếu
+> tấm ảnh chỉ dùng trong một hàm: `using`. Nếu nó phải sống lâu hơn (để hiển thị, để lưu ở luồng khác):
+> phải có **đúng một nơi chịu trách nhiệm giải phóng**, và nơi đó phải được ghi rõ trong tên hoặc trong
+> chú thích.
+
+#### Cách 2 làm hỏng: giữ ảnh trong bản ghi kết quả
+
+Cám dỗ rất tự nhiên: bản ghi kết quả kiểm tra có sẵn rồi, cho luôn tấm ảnh vào đó cho tiện.
+
+```csharp
+public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, Image AnhGoc);  // ❌
+```
+
+Nếu bạn giữ một trăm bản ghi gần nhất để hiện lên màn hình lịch sử, bạn vừa giữ luôn **một trăm tấm
+ảnh** — một gigabyte rưỡi. Và vì bản ghi trông vô hại, không ai nghĩ tới việc giải phóng chúng.
+
+Cách đúng: bản ghi kết quả giữ **đường dẫn tới tệp ảnh**, không giữ tấm ảnh. Khi người dùng bấm vào một
+dòng lịch sử thì mới nạp ảnh lên, và giải phóng khi đóng.
+
+```csharp
+public record KetQuaKiemTra(string MaSanPham, bool Dat, double DiemSo, string DuongDanAnh);  // ✅
+```
+
+#### Cách 3 làm hỏng: lưu ảnh ở luồng khác mà không rõ ai sở hữu
+
+Ghi một tấm ảnh xuống đĩa mất vài chục mili-giây — đủ để làm chậm nhịp máy, nên người ta đẩy sang luồng
+nền. Nhưng nếu bạn đưa **chính đối tượng ảnh** vào hàng đợi rồi giải phóng nó ở luồng chính, luồng nền sẽ
+ghi một tấm ảnh đã bị huỷ. Còn nếu không giải phóng, hàng đợi đầy lên là bộ nhớ đầy theo.
+
+Hai cách xử lý, chọn theo tình huống:
+- **Chuyển quyền sở hữu**: luồng chính đưa ảnh vào hàng đợi rồi **không đụng vào nữa**; luồng nền ghi
+  xong thì giải phóng. Đơn giản và đủ dùng cho hầu hết máy.
+- **Chuyển sang dạng byte trước**: nén thành JPEG/PNG ngay ở luồng chính rồi chỉ đưa mảng byte vào hàng
+  đợi. Tốn một chút CPU ở luồng chính nhưng **giải phóng ảnh sớm nhất có thể**.
+
+Và trong cả hai cách: hàng đợi phải **có giới hạn** (Chương 5 mục 5.4). Khi đĩa chậm hoặc đầy, thà bỏ
+bớt ảnh gỡ rối còn hơn để bộ nhớ phình tới lúc treo máy.
+
+#### Đặt tên tệp ảnh — một chi tiết nhỏ làm mất dữ liệu
+
+Cùng dự án nói trên đặt tên tệp ảnh theo mẫu:
+
+```csharp
+maKhay + "-" + DateTime.Now.ToString("MMddThhmmss") + "-a.bmp"
+```
+
+Có một lỗi nằm gọn trong bốn ký tự: **`hh` là giờ theo hệ 12 giờ**, và trong chuỗi này **không có phần
+SA/CH**. Nghĩa là ảnh chụp lúc 09:15 và ảnh chụp lúc 21:15 cùng ngày sinh ra **đúng một tên tệp** — cái
+sau ghi đè cái trước, im lặng. Với máy chạy hai ca, mỗi ngày mất một phần dữ liệu bằng chứng, và không
+có gì báo cho bạn biết.
+
+Chuỗi định dạng đúng dùng **`HH`** (24 giờ). Nhân đây, một quy ước đặt tên tệp bằng chứng đủ dùng cho
+mọi máy:
+
+```
+yyyyMMdd_HHmmss_fff  _  <mã sản phẩm>  _  <trạm>  _  <OK|NG>  .png
+20260824_211530_412_SN12345_Tram2_NG.png
+```
+
+Bốn lý do cho thứ tự đó: **thời gian đứng trước** nên sắp xếp theo tên là sắp xếp theo thời gian; **có
+năm và giờ 24** nên không bao giờ trùng; **có phần mili-giây** nên hai ảnh trong cùng một giây không đè
+nhau; và **kết quả nằm trong tên** nên lọc ảnh lỗi chỉ cần tìm theo chuỗi, không phải mở từng tấm.
+
+> 💡 **Một điểm cùng dự án đó làm ĐÚNG và đáng nhắc:** đường dẫn lưu ảnh được ghép từ **ổ đĩa đang chứa
+> chính phần mềm**, thay vì viết cứng một chữ cái ổ đĩa. Nhờ vậy cài phần mềm sang máy có cấu hình ổ khác
+> vẫn chạy. Đây là bản rẻ tiền của khuyến nghị ở Chương 19 — chưa bằng việc đưa hẳn đường dẫn gốc ra
+> tham số cấu hình, nhưng đã tốt hơn hẳn một chuỗi cố định.
+
+---
+
+### 13.4.5  Mã định danh sản phẩm — từ lúc quét tới lúc dùng
+
+Mục 13.2.4b lo phần **trình điều khiển** đầu đọc mã: mở cổng, gửi lệnh chụp, tách dòng. Mục này lo phần
+sau đó, và là phần gây sự cố nhiều hơn hẳn: **chuỗi vừa đọc được đi đâu, được kiểm tra thế nào, và làm gì
+khi nó sai**. Với máy có truy xuất nguồn gốc, mã định danh là thứ **quan trọng ngang kết quả đo** — bản
+ghi gắn nhầm mã còn tệ hơn không có bản ghi.
+
+#### Ba cách đầu đọc mã nối vào phần mềm
+
+| Cách nối | Phần mềm nhận thế nào | Ưu | Nhược nghiêm trọng |
+|---|---|---|---|
+| **Giả lập bàn phím** | Đầu đọc "gõ" chuỗi vào ô đang có tiêu điểm rồi gửi Enter | Không phải viết driver; cắm là chạy | **Phụ thuộc hoàn toàn vào tiêu điểm** — xem dưới |
+| **Cổng nối tiếp** | Đọc từ cổng COM | Rõ ràng ai nhận, không dính tiêu điểm | Thêm dây, thêm cấu hình tốc độ |
+| **Mạng TCP** | Phần mềm gửi lệnh chụp, nhận kết quả (mục 13.2.4b) | **Chủ động chụp đúng lúc**, biết chụp thất bại | Cần cấu hình mạng, driver phức tạp hơn |
+
+> ⚠️ **Cách giả lập bàn phím dễ nhất và nguy hiểm nhất, vì chuỗi rơi vào bất cứ ô nào đang có tiêu
+> điểm.** Nếu người vận hành vừa mở màn hình tham số và ô "tốc độ trục" đang có tiêu điểm, thì mã sản
+> phẩm vừa quét sẽ **được gõ vào ô tốc độ**, và Enter có thể xác nhận luôn. Nghe như chuyện đùa, nhưng
+> đây là sự cố có thật và rất khó tái hiện vì nó phụ thuộc vào việc người dùng đang mở màn hình nào.
+>
+> Một dự án tham khảo xử lý bằng cách cho ô quét mã một hàm **tự đòi tiêu điểm**, và màn hình gọi hàm đó
+> mỗi khi được kích hoạt. Đó là mức tối thiểu. Ba việc nên làm thêm nếu buộc phải dùng cách này:
+> - **Khoá cửa sổ khác khi đang chờ quét** — hoặc ít nhất không cho ô nhập số nào nhận tiêu điểm.
+> - **Nhận chuỗi ở cấp cửa sổ**, không ở cấp ô nhập: bắt sự kiện bàn phím của cửa sổ chính, nhận diện
+>   chuỗi ký tự đến rất nhanh rồi kết thúc bằng Enter (người gõ tay không nhanh như vậy), và **tự định
+>   tuyến** nó tới nơi cần.
+> - Nếu có thể chọn lại phần cứng: **dùng cách nối tiếp hoặc mạng**. Vấn đề tiêu điểm biến mất hoàn toàn.
+
+#### Kiểm tra trước khi dùng — bốn tầng, làm đủ mất mười phút
+
+Chuỗi đọc được **chưa phải là mã sản phẩm** cho tới khi qua kiểm tra:
+
+1. **Cắt khoảng trắng và ký tự xuống dòng.** Đầu đọc thường thêm CR/LF, có loại thêm dấu cách. Một mã
+   `"SN12345\r"` khác `"SN12345"` khi so sánh chuỗi và khi ghi vào cơ sở dữ liệu.
+2. **Độ dài và định dạng.** Mã của mỗi khách hàng có quy tắc riêng — độ dài cố định, tiền tố, phần ngày
+   sản xuất. Kiểm tra bằng một biểu thức khai báo trong **công thức sản phẩm**, không viết cứng trong
+   code (mã đổi theo mã hàng, không theo máy).
+3. **Ký tự hợp lệ.** Đây cũng là lớp phòng thủ cho việc ghi cơ sở dữ liệu — chuỗi từ đầu đọc là **dữ liệu
+   từ bên ngoài**, và callout về chèn câu lệnh SQL ở mục 13.1 áp dụng thẳng vào đây.
+4. **Trùng lặp** — phần dưới.
+
+Điều quan trọng hơn cả bốn tầng: **thất bại ở bất kỳ tầng nào cũng phải dừng lại và hỏi người**, không
+được âm thầm dùng chuỗi rác hay âm thầm thay bằng chuỗi rỗng. Một bản ghi có mã rỗng là một bản ghi mồ
+côi — không truy ngược được về sản phẩm nào, và nó sẽ nằm đó cho tới ngày có khiếu nại.
+
+#### Mã trùng: ba nguyên nhân, và bạn phải chọn chính sách cho từng cái
+
+Đầu đọc trả về một mã mà máy **đã xử lý rồi**. Không có câu trả lời đúng chung — nhưng có ba nguyên nhân
+rõ ràng, và mỗi cái cần một phản ứng khác nhau:
+
+| Nguyên nhân | Dấu hiệu nhận ra | Phản ứng hợp lý |
+|---|---|---|
+| **Đầu đọc bắn hai lần** | Cùng mã, cách nhau vài trăm mili-giây, chưa có phôi mới vào | **Bỏ qua lần thứ hai** trong một cửa sổ thời gian ngắn |
+| **Sản phẩm quay lại sau khi sửa (làm lại)** | Cùng mã, cách nhau hàng giờ; máy đang ở chế độ hàng làm lại | **Cho phép**, nhưng ghi bản ghi mới có đánh dấu làm lại (Chương 12 mục 12.4.3) |
+| **Nhãn trùng thật, hoặc quét nhầm sản phẩm bên cạnh** | Cùng mã, chế độ sản xuất bình thường | **Từ chối và báo cảnh báo** — đây là lỗi chất lượng, không phải lỗi phần mềm |
+
+> 💡 **Đừng để "không kiểm tra trùng" là lựa chọn mặc định vì chưa ai nghĩ tới.** Cách rẻ nhất để bắt đầu:
+> giữ trong bộ nhớ một tập các mã đã xử lý **trong ca hiện tại**, và tra cứu cơ sở dữ liệu cho khoảng xa
+> hơn. Tra trong bộ nhớ mất vài micro-giây và bắt được đúng nguyên nhân phổ biến nhất — bắn hai lần và
+> quét nhầm sản phẩm liền kề.
+>
+> Và **quyết định này phải do bộ phận chất lượng duyệt**, không phải do lập trình viên tự chọn: cho chạy
+> tiếp một sản phẩm trùng mã nghĩa là hai sản phẩm khác nhau sẽ có chung một hồ sơ truy xuất.
+
+#### Khi không đọc được mã
+
+Nhãn bị xước, nhãn dán lệch, đầu đọc bẩn — chuyện xảy ra hằng ngày. Ba lựa chọn, và máy nên hỗ trợ cả ba
+một cách có kiểm soát:
+
+- **Thử lại**: chụp lại vài lần trước khi kết luận. Rẻ và giải quyết phần lớn trường hợp.
+- **Loại sản phẩm ra**: an toàn nhất, nhưng nếu tỉ lệ đọc hỏng cao thì tốn.
+- **Nhập tay** — hữu ích nhưng phải có ràng buộc: cần quyền cao hơn vận hành viên thường, phải **ghi vào
+  nhật ký thao tác ai nhập và nhập gì**, và bản ghi sản phẩm phải mang **cờ "mã nhập tay"**. Không có cờ
+  đó, một mã gõ nhầm sẽ trông y hệt một mã quét được, và cả hệ thống truy xuất mất giá trị.
+
+> 📌 **Một mẹo nhỏ nhưng cứu rất nhiều lần: lưu lại chuỗi THÔ.** Ngoài mã đã qua xử lý, hãy ghi thêm
+> nguyên văn chuỗi mà đầu đọc trả về, ít nhất trong nhật ký. Khi khách hàng nói *"mã này sai định dạng"*
+> hoặc khi bạn nghi ngờ hàm cắt chuỗi có vấn đề, chuỗi thô là thứ duy nhất phân xử được giữa **đầu đọc
+> đọc sai** và **phần mềm xử lý sai** — hai nguyên nhân rất khác nhau mà nhìn kết quả cuối thì giống hệt.
+
+---
+
+### 13.4.6  Bản đồ khay — khi máy làm việc với một mảng vị trí
+
+Chương 14 mục 14.2.6b nói về **bản đồ khay như một cấu trúc dữ liệu gửi cho hệ thống chủ**. Mục này nói
+về phía còn lại, phía máy: **phần mềm theo dõi một khay như thế nào trong lúc làm việc**. Đây là mô hình
+dữ liệu khác hẳn *"một sản phẩm mỗi lần"*, và rất phổ biến trong ngành điện tử — khay nhựa định hình,
+băng cuốn, đế chứa nhiều ô.
+
+#### Trạng thái một ô KHÔNG phải đúng/sai
+
+Sai lầm đầu tiên và tốn kém nhất là khai báo `bool[,] daXuLy`. Trong một máy kiểm tra khay thật, mỗi ô
+được chạy qua **bốn công cụ thị giác khác nhau**: tìm dấu chuẩn ở hướng 0°, tìm dấu chuẩn ở hướng 180°,
+dò một loại khuyết tật, và dò **ô trống**. Bốn công cụ đó tồn tại vì có bốn kết luận khác nhau cần phân
+biệt — và mỗi kết luận dẫn tới một hành động khác:
+
+| Trạng thái ô | Nghĩa | Máy làm gì |
+|---|---|---|
+| **Trống** | Không có gì trong ô | Bỏ qua, **không tính là lỗi** |
+| **Chưa xử lý** | Có phôi, chưa tới lượt | Xếp vào hàng chờ |
+| **Đạt** | Đã xử lý, kết quả tốt | Đếm vào sản lượng |
+| **Không đạt** + mã lý do | Đã xử lý, kết quả xấu | Đếm vào lỗi, **theo từng mã lý do** |
+| **Đặt sai chiều** | Có phôi nhưng xoay 180° | Không phải phôi lỗi — là **lỗi nạp liệu** |
+| **Bỏ qua theo khai báo** | Ô hỏng cơ khí, hoặc người vận hành đánh dấu bỏ | Không gắp, không tính vào mẫu số |
+| **Không kết luận được** | Thị giác không chắc | Dừng và hỏi người, đừng đoán |
+
+> 💡 **Tách "đặt sai chiều" ra khỏi "lỗi" là chi tiết đáng giá nhất trong bảng trên.** Hai thứ trông
+> giống nhau trên màn hình nhưng nguyên nhân hoàn toàn khác: phôi lỗi là vấn đề của công đoạn trước;
+> phôi đặt ngược là vấn đề của người nạp khay hoặc của máy cấp liệu. Nếu gộp chung, biểu đồ Pareto cuối
+> tháng sẽ chỉ nói *"tỉ lệ lỗi cao"* mà không chỉ ra được đi sửa cái gì (Chương 12 mục 12.5).
+>
+> Và "ô trống" cũng phải tách khỏi "lỗi" — khay lẻ cuối lô là chuyện bình thường, không phải sự cố.
+
+#### Đánh số ô: quy ước phải thống nhất với người ngoài, không phải với code
+
+Máy đánh số ô theo **thứ tự nó gắp**; bản vẽ của khách hàng đánh số theo **cách họ nhìn khay**; hệ thống
+chủ lại có quy ước riêng. Ba cách đánh số cho cùng một khay là chuyện bình thường, và nếu không thống
+nhất từ đầu thì bản ghi *"ô số 7 lỗi"* trở nên vô nghĩa — không ai biết là ô số 7 của ai.
+
+Bốn câu phải hỏi khách hàng ngay khi khảo sát, và ghi vào tài liệu:
+
+1. **Gốc ở góc nào** khi nhìn khay theo chiều nạp vào máy?
+2. **Đi theo hàng trước hay cột trước**, và có kiểu "rắn bò" (hàng chẵn đi ngược) không?
+3. **Bắt đầu từ 0 hay từ 1?**
+4. Khay có thể **nạp xoay 180°** không, và nếu có thì đánh số theo khay hay theo máy?
+
+Câu 4 là câu hay bị bỏ sót nhất, và hậu quả nặng nhất: nếu khay nạp ngược mà phần mềm vẫn đánh số theo
+vị trí vật lý trong máy, thì **mọi ô đều bị gán nhầm** — sản phẩm ở ô 1 được ghi hồ sơ của ô cuối. Cách
+xử lý: nhận biết chiều khay bằng một dấu chuẩn bất đối xứng, rồi **quy đổi về hệ toạ độ của khay** ngay
+tại chỗ đọc, để mọi phần còn lại của phần mềm chỉ làm việc với số ô theo khay.
+
+> 📌 **Trong code, hãy để số ô là một kiểu riêng, đừng để nó là `int` trần.** Một `record ViTriO(int Hang,
+> int Cot)` với một hàm chuyển sang chỉ số tuyến tính khiến việc nhầm hàng với cột trở thành lỗi biên
+> dịch thay vì một lỗi im lặng. Đây là cùng lý do với việc đưa đơn vị vào tên biến ở mục 13.4.3.
+
+#### Từ số ô ra toạ độ vật lý — đừng cộng dồn
+
+Cám dỗ: chạy vòng lặp, mỗi ô cộng thêm một bước. Đừng — sai số bước tích luỹ qua mười hai cột thành sai
+số thấy được. Tính thẳng từ gốc:
+
+```csharp
+var diem = goc + new Vector(cot * buocX, hang * buocY);
+```
+
+Nhưng ngay cả công thức đó cũng chỉ đúng nếu khay nằm **hoàn hảo**. Khay thật thì cong, lệch, và đồ gá
+có dung sai. Cách làm đúng trong máy nghiêm túc: **đo vài dấu chuẩn trên khay rồi nội suy** — hai dấu
+cho phép bù lệch và xoay (đúng bài toán ở mục 13.4.3), bốn dấu ở bốn góc cho phép bù cả méo hình thang.
+Với khay lớn hoặc yêu cầu chính xác cao, đây không phải tuỳ chọn.
+
+#### Ba chi tiết vận hành mà bản thiết kế hay quên
+
+**1. Không phải cả khay dùng chung một bộ tham số.** Trong máy tham khảo, các công cụ thị giác được khai
+báo kèm **khoảng hàng và khoảng cột mà chúng áp dụng**, cộng một công cụ mặc định cho phần còn lại. Lý do
+rất thực tế: chiếu sáng không đều giữa giữa khay và mép khay, hoặc khay có hai vùng chứa hai loại chi
+tiết. Nếu bạn thiết kế bản đồ khay với giả định "mọi ô như nhau", việc bổ sung sau này sẽ rất gượng.
+
+**2. Ô bỏ qua phải là dữ liệu, không phải code.** Khay dùng lâu sẽ có ô méo, ô mất chốt định vị. Người
+vận hành cần đánh dấu *"đừng dùng ô này"* ngay trên màn hình, và đánh dấu đó phải **theo khay cụ thể**
+(gắn với mã khay) chứ không phải theo mã sản phẩm. Ô bỏ qua **không được tính vào mẫu số** khi tính tỉ lệ
+đạt — nếu tính, tỉ lệ đạt của khay cũ sẽ thấp giả tạo.
+
+**3. Bản đồ khay phải sống sót qua sự cố.** Máy đang xử lý ô thứ 40 trong 60 thì mất điện hoặc có cảnh
+báo. Khi chạy lại, phần mềm cần biết ô nào đã xong. Vì vậy trạng thái từng ô nên được **ghi xuống nơi bền
+sau mỗi ô**, không giữ trong bộ nhớ tới cuối khay. Cách rẻ: một bản ghi cho mỗi ô ngay khi xử lý xong —
+đằng nào cũng cần cho truy xuất nguồn gốc.
+>
+> Và khi chạy lại, đừng tự động chạy tiếp: **hiển thị bản đồ khay cho người vận hành xác nhận** trước.
+> Trong lúc dừng, có thể người ta đã lấy vài chi tiết ra khỏi khay — đúng tinh thần "chạy tiếp = xác
+> minh" ở Chương 12 mục 12.2.4.
+
+> ⚠️ **Cuối cùng: bản đồ khay của bạn và bản đồ khay của hệ thống chủ phải khớp nhau, và đó là một hợp
+> đồng.** Nếu máy gửi kết quả theo từng ô lên hệ MES (Chương 14 mục 14.2.6b), thì quy ước đánh số, tập
+> mã lý do lỗi, và cách biểu diễn ô trống **phải được thống nhất bằng văn bản** trước khi viết code. Đây
+> là loại hợp đồng mà sửa sau khi máy đã chạy sẽ kéo theo sửa cả dữ liệu lịch sử — rất tốn, và thường
+> không sửa được.
+
+---
+
+### 13.4.7  Từ con số đo được tới chữ "Đạt" — phán định là một quyết định, không phải một phép so sánh
+
+Máy đo được 4,998 mm. Quy cách là *"không quá 5,00 mm"*. Đạt hay không đạt?
+
+Câu hỏi nghe như tầm thường, và đó chính là vấn đề: nó **trông** như một phép so sánh một dòng, nên
+thường được viết đúng như vậy — `if (giaTri <= nguong) return "OK";` — rồi ba tháng sau có một cuộc họp
+về việc *"vì sao máy đánh đạt mà khách hàng đo lại không đạt"*.
+
+#### Ba câu phải trả lời trước khi viết dấu `<=`
+
+**1. Quy cách tính theo đơn vị nào, và giá trị đo theo đơn vị nào?** Đây là bẫy đã nói ở mục 13.4.3
+nhưng nó quay lại ở đây với hậu quả nặng hơn, vì kết quả là một phán định về chất lượng chứ không chỉ là
+một chuyển động sai. Đưa đơn vị vào tên biến và vào tên trường trong công thức.
+
+**2. So sánh trên giá trị THÔ hay giá trị đã làm tròn?** Giá trị đo là 5,004; màn hình hiển thị hai chữ
+số nên hiện *5,00*; quy cách là *"≤ 5,00"*. Nếu so trên giá trị hiển thị thì đạt; so trên giá trị thô thì
+không đạt. Hai câu trả lời khác nhau cho cùng một sản phẩm.
+>
+> Quy tắc: **phán định trên giá trị thô, hiển thị bằng giá trị đã làm tròn, và lưu cả hai.** Khi khách
+> hàng thắc mắc *"sao ghi 5,00 mà đánh không đạt"*, giá trị thô là câu trả lời. Ngược lại — phán định
+> trên giá trị đã làm tròn — nghĩa là bạn vừa nới quy cách ra thêm nửa đơn vị hiển thị mà không ai quyết
+> định điều đó.
+
+**3. Biên có thuộc vùng đạt không?** *"≤ 5,00"* và *"< 5,00"* khác nhau đúng ở một sản phẩm nằm chính xác
+trên biên, và đó là câu hỏi dành cho **bộ phận chất lượng**, không phải cho lập trình viên. Hãy hỏi, và
+ghi câu trả lời vào tài liệu quy cách — đừng chọn `<=` chỉ vì nó gõ nhanh hơn.
+
+#### Ba kết luận, không phải hai
+
+Đây là chỗ mà một `bool` gây hại lâu dài. Kết quả của một phép đo có **ba** khả năng:
+
+| Kết luận | Nghĩa | Xử lý |
+|---|---|---|
+| **Đạt** | Đo được, nằm trong quy cách | Đếm vào sản lượng tốt |
+| **Không đạt** | Đo được, ngoài quy cách | Đếm vào lỗi, kèm **mã lý do** |
+| **Không đo được** | Cảm biến lỗi, mất tín hiệu, thị giác không tìm thấy đối tượng | **Không phải lỗi sản phẩm** |
+
+Gộp *"không đo được"* vào *"không đạt"* là sai lệch dữ liệu chất lượng: một đầu đo hỏng sẽ hiện lên báo
+cáo thành một đợt hàng kém chất lượng, và người ta sẽ đi tìm nguyên nhân ở công đoạn trước thay vì đi
+kiểm tra đầu đo. Với sản phẩm không đo được, xử lý đúng thường là **giữ lại để đo lại**, và **cảnh báo**
+nếu tỉ lệ không đo được vượt ngưỡng.
+
+#### Dải bảo vệ: khi chính hệ đo cũng có sai số
+
+Chương 12 mục 12.4.1 giới thiệu GR&R — cách định lượng sai số của bản thân hệ đo. Đây là chỗ con số đó
+được dùng: nếu hệ đo của bạn có sai số ±0,02 mm và quy cách là *"≤ 5,00"*, thì một sản phẩm đo được 4,99
+**có thể thật sự là 5,01**.
+
+Cách xử lý trong ngành là **dải bảo vệ**: ngưỡng dùng để phán định bên trong máy **chặt hơn** quy cách
+của khách hàng một khoảng bằng (hoặc một phần của) sai số hệ đo.
+
+```
+Quy cách khách hàng:      ≤ 5,00
+Ngưỡng máy dùng:          ≤ 4,98        ← dải bảo vệ 0,02
+```
+
+Đổi lại là **loại nhầm một ít hàng tốt** — và đó là đánh đổi có chủ đích: thà loại nhầm hàng tốt còn hơn
+để lọt hàng xấu. Mức dải bảo vệ là quyết định của bộ phận chất lượng, phải là **tham số trong công
+thức**, và phải được **ghi vào bản ghi sản phẩm** để về sau còn biết lô đó được phán định bằng ngưỡng nào.
+
+> ⚠️ **Đừng tự ý đặt dải bảo vệ mà không nói với ai.** Người vận hành thấy tỉ lệ lỗi tăng sẽ đi tìm
+> nguyên nhân ở máy, trong khi nguyên nhân nằm ở một hằng số bạn thêm vào cho "an toàn". Hoặc tệ hơn:
+> ai đó phát hiện ra và tự sửa lại thành đúng quy cách, xoá luôn lớp bảo vệ.
+
+#### Một sản phẩm, nhiều phép đo
+
+Sản phẩm thật thường có năm tới hai mươi phép đo. Hai quyết định:
+
+**Dừng ngay khi gặp phép đo không đạt, hay đo hết?** Dừng sớm **nhanh hơn** (tốt cho nhịp máy); đo hết
+cho **dữ liệu đầy đủ hơn** (tốt cho phân tích nguyên nhân). Lựa chọn thực dụng: dừng sớm ở chế độ sản
+xuất, đo hết ở chế độ gỡ rối và với hàng mẫu đầu ca — và để nó là **tham số**, không phải quyết định
+cứng trong code.
+
+**Ghi lại gì?** Bản ghi phải có **mã lý do lỗi chính** (phép đo đầu tiên không đạt — thứ dùng cho biểu đồ
+Pareto), và **toàn bộ giá trị đo** của các phép đã chạy. Chỉ ghi "NG" là vứt đi phần lớn giá trị của việc
+đo.
+
+> 📌 **Luôn lưu GIÁ TRỊ ĐO, không chỉ lưu kết luận.** Ba lý do, cái thứ ba là quan trọng nhất:
+> 1. Quy cách sẽ đổi. Có giá trị đo thì tính lại được tỉ lệ đạt theo quy cách mới cho dữ liệu cũ; chỉ có
+>    kết luận thì không.
+> 2. Kiểm soát quá trình bằng thống kê cần **con số**, không cần chữ "Đạt".
+> 3. Giá trị đo **trôi dần** trước khi nó vượt ngưỡng. Một kích thước bò từ 4,90 lên 4,97 trong hai tuần
+>    là cảnh báo sớm về dao mòn hay đồ gá lỏng — nhưng chỉ nhìn thấy được nếu bạn lưu số. Nếu chỉ lưu
+>    "Đạt", tất cả những ngày đó trông giống hệt nhau cho tới ngày đầu tiên "Không đạt".
+
+> 💡 **Và ngưỡng phán định là dữ liệu có kiểm soát, không phải hằng số trong code.** Nó nằm trong công
+> thức sản phẩm; đổi nó cần quyền tương đương đổi công thức, phải **ghi vết ai đổi, từ giá trị nào sang
+> giá trị nào** (Chương 15 mục 15.2.4), và **không bao giờ được áp ngược** cho những sản phẩm đã chạy —
+> bản ghi cũ phải giữ ngưỡng đã dùng lúc đó. Đây là lý do bản ghi sản phẩm nên chứa cả ngưỡng, không chỉ
+> chứa giá trị đo và kết luận.
+
+---
+
 ## Sơ đồ kiến trúc tổng hợp
 
 Dưới đây là bức tranh đầy đủ: mỗi lớp trong sơ đồ tương ứng với một pattern đã học,
@@ -17828,28 +17844,28 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Unit of Work + Outbox (13.1.2) | Commit nhiều repository trong một transaction; không mất event khi crash | Nhất quán dữ liệu + domain event đảm bảo gửi |
 | Specification Pattern (13.1.3) | Đóng gói điều kiện truy vấn vào object tái sử dụng | Không lặp LINQ; test logic query độc lập |
 | Recipe Versioning + Validator 3 mức (13.1.4) | Đổi schema recipe không vỡ dữ liệu cũ; phân biệt lỗi chặn/cảnh báo/gợi ý | Migration nhẹ theo version; recipe khác thường vẫn chạy được nếu không phải Error |
+| Mô hình công thức (13.1.4d) | Công thức là lớp có kiểu hay tập biến có tên | Lớp: trình biên dịch bắt lỗi; tập biến: thêm tham số không đổi lược đồ, có sẵn lịch sử sửa. Đổi công thức phải **nguyên tử trên mọi hệ thống con** |
 | Capability Interface (13.2.1) | Tách vòng đời thiết bị khỏi capability cụ thể (IO/motion/vision) | Tầng trên phụ thuộc đúng những gì nó dùng |
+| Xi-lanh khí nén (13.2.1b) | Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp | Trạng thái suy từ **cả hai cảm biến**; hành động phải `async` + có thẻ huỷ + hết giờ thì **ném lỗi** sau khi về an toàn; loại van là **tham số khai báo** |
 | Factory Pattern (13.2.2) | Tập trung hoá tạo device, tránh coupling với vendor/protocol | Thay thiết bị = đổi config; không sửa logic máy |
 | Strategy Pattern (13.2.3) | Đổi protocol không sửa code driver | OPC UA → Modbus TCP → ADS bằng 1 dòng config |
 | Bridge Pattern (13.2.4) | Tách abstraction (Axis) khỏi implementor (Beckhoff/Siemens/Sim) | Thay driver không ảnh hưởng tầng trên |
-| Thị giác máy (13.2.4c) | Job vision là **dữ liệu** do kỹ sư thị giác tạo, không phải code C# | Chỉnh nhận dạng không cần build lại; interface không lộ kiểu của hãng |
-| Gá toạ độ + hiệu chuẩn (13.2.4c) | Phôi lệch/xoay mỗi lần vào; toạ độ ảnh không dùng ra lệnh trục được | Dạy vùng dò **một lần**; hiệu chuẩn có ngưỡng chấp nhận nên không lưu kết quả tồi |
-| Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
-| Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
-| Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
-| Xi-lanh khí nén (13.2.1b) | Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp | Trạng thái suy từ **cả hai cảm biến**; hành động phải `async` + có thẻ huỷ + hết giờ thì **ném lỗi** sau khi về an toàn; loại van là **tham số khai báo** |
-| Phán định OK/NG (13.2.4j) | Con số đo được thành kết luận chất lượng | Phán định trên **giá trị thô**, hiển thị làm tròn; **ba** kết luận (kể cả *không đo được*); dải bảo vệ theo sai số hệ đo; **luôn lưu giá trị đo** |
-| Bản đồ khay (13.2.4i) | Máy làm việc với một mảng vị trí, không phải một sản phẩm | Trạng thái ô là **enum nhiều giá trị**, không phải bool; quy ước đánh số phải thống nhất với khách/MES; ghi trạng thái từng ô xuống nơi bền |
-| Mã định danh sản phẩm (13.2.4h) | Chuỗi quét được đi đâu, kiểm thế nào, sai thì sao | Bẫy tiêu điểm của đầu đọc giả lập bàn phím; 4 tầng kiểm tra; **ba nguyên nhân mã trùng, ba chính sách**; nhập tay phải có cờ đánh dấu |
-| Ảnh và bộ nhớ (13.2.4g) | Ảnh tốn bộ nhớ **không quản lý** mà bộ dọn rác không thấy | `using` hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh; tên tệp dùng `HH` không phải `hh` |
-| Căn chỉnh phôi (13.2.4f) | Đo dấu rồi bù XYθ cho trục | **Xoay trước, tịnh tiến sau** — đừng lấy trung bình hai lượng lệch; tâm xoay là tham số; kẹp biên độ và đo lại sau khi bù |
 | Chạm tới một tín hiệu (13.2.4e) | Nghiệp vụ cần một tín hiệu, không cần cả thiết bị | Ba cách: gọi theo địa chỉ / bảng tên / nối kênh vào thuộc tính. Bảng tên là mức tối thiểu; nối kênh đưa được đơn vị và bộ lọc lên đường nối |
-| Mô hình công thức (13.1.4d) | Công thức là lớp có kiểu hay tập biến có tên | Lớp: trình biên dịch bắt lỗi; tập biến: thêm tham số không đổi lược đồ, có sẵn lịch sử sửa. Đổi công thức phải **nguyên tử trên mọi hệ thống con** |
-| Bảng điểm (13.1.4c) | Toạ độ dạy được, lưu ra tệp | Bốn cách lưu; biên dạng chuyển động thuộc về **điểm**, không thuộc chỗ gọi; đơn vị kỹ thuật ở mọi nơi trừ lớp sát driver |
-| Kết nối lại (13.3.5) | Thiết bị mất kết nối rồi có lại — làm gì tiếp | Bốn câu hỏi chính sách; và **nối lại được ≠ chạy tiếp được**: phải xác minh trạng thái vật lý trước |
+| Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
+| Biến thể máy (13.2.6) | Nhiều máy cùng họ khác nhau vài chi tiết vật lý | Một bộ mã nguồn, khác nhau ở cấu hình — không phải fork |
+| Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
 | Connection Pool (13.3.2) | Nhiều device chia sẻ một session vật lý, reconnect tập trung | Giảm số kết nối, quản lý tài nguyên nhất quán |
 | Retry Policy (13.3.3) | Phân loại thao tác: chỉ retry những gì an toàn | Không retry lệnh nguy hiểm; không spam thiết bị |
 | Health Monitor (13.3.4) | Phát hiện suy giảm trước khi "đứt" hẳn | HMI chip trạng thái; quyết định an toàn dựa trên health |
+| Kết nối lại (13.3.5) | Thiết bị mất kết nối rồi có lại — làm gì tiếp | Bốn câu hỏi chính sách; và **nối lại được ≠ chạy tiếp được**: phải xác minh trạng thái vật lý trước |
+| Bảng điểm (13.4.1) | Toạ độ dạy được, lưu ra tệp | Bốn cách lưu; biên dạng chuyển động thuộc về **điểm**, không thuộc chỗ gọi; đơn vị kỹ thuật ở mọi nơi trừ lớp sát driver |
+| Thị giác máy (13.4.2) | Job vision là **dữ liệu** do kỹ sư thị giác tạo, không phải code C# | Chỉnh nhận dạng không cần build lại; interface không lộ kiểu của hãng |
+| Gá toạ độ + hiệu chuẩn (13.4.2) | Phôi lệch/xoay mỗi lần vào; toạ độ ảnh không dùng ra lệnh trục được | Dạy vùng dò **một lần**; hiệu chuẩn có ngưỡng chấp nhận nên không lưu kết quả tồi |
+| Căn chỉnh phôi (13.4.3) | Đo dấu rồi bù XYθ cho trục | **Xoay trước, tịnh tiến sau** — đừng lấy trung bình hai lượng lệch; tâm xoay là tham số; kẹp biên độ và đo lại sau khi bù |
+| Ảnh và bộ nhớ (13.4.4) | Ảnh tốn bộ nhớ **không quản lý** mà bộ dọn rác không thấy | `using` hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh; tên tệp dùng `HH` không phải `hh` |
+| Mã định danh sản phẩm (13.4.5) | Chuỗi quét được đi đâu, kiểm thế nào, sai thì sao | Bẫy tiêu điểm của đầu đọc giả lập bàn phím; 4 tầng kiểm tra; **ba nguyên nhân mã trùng, ba chính sách**; nhập tay phải có cờ đánh dấu |
+| Bản đồ khay (13.4.6) | Máy làm việc với một mảng vị trí, không phải một sản phẩm | Trạng thái ô là **enum nhiều giá trị**, không phải bool; quy ước đánh số phải thống nhất với khách/MES; ghi trạng thái từng ô xuống nơi bền |
+| Phán định OK/NG (13.4.7) | Con số đo được thành kết luận chất lượng | Phán định trên **giá trị thô**, hiển thị làm tròn; **ba** kết luận (kể cả *không đo được*); dải bảo vệ theo sai số hệ đo; **luôn lưu giá trị đo** |
 
 ## Lỗi thường gặp
 
@@ -19164,7 +19180,7 @@ biết đi kiểm tra cái gì.
 
 **3. Thứ tự slave trên bus chính là "địa chỉ".** Hầu hết API định danh slave bằng **số thứ tự trên
 chuỗi** (`short slave`). Đây là cùng loại bẫy với việc định danh camera bằng chỉ số (Chương 13 mục
-13.2.4c): cắm thêm một module I/O vào giữa chuỗi làm **mọi slave phía sau dịch số**, và phần mềm điều
+13.4.2): cắm thêm một module I/O vào giữa chuỗi làm **mọi slave phía sau dịch số**, và phần mềm điều
 khiển nhầm thiết bị mà không có lỗi nào. Hai biện pháp: luôn thêm thiết bị mới **vào cuối chuỗi**, và
 lúc khởi động **kiểm tra chéo** số lượng cùng mã sản phẩm của từng slave với cấu hình mong đợi, sai
 thì dừng máy với thông báo rõ ràng thay vì chạy tiếp.
@@ -19389,7 +19405,7 @@ ngay từ đầu.
 |---|---|---|
 | Quỹ đạo, nội suy, giới hạn khớp, động học | **Bộ điều khiển robot** | Hãng làm việc này tốt hơn bạn, và đó là thứ bạn đã trả tiền |
 | Chương trình chuyển động (gắp ở đâu, đặt ở đâu) | **Bộ điều khiển robot** | Dạy bằng tay cầm dạy học của hãng, lưu trong robot |
-| Danh sách điểm | **Bộ điều khiển robot** (mục 13.1.4c, cách 4) | Cùng lý do |
+| Danh sách điểm | **Bộ điều khiển robot** (mục 13.4.1, cách 4) | Cùng lý do |
 | *Khi nào* chạy, chạy chương trình nào, với dữ liệu gì | **Phần mềm C#** | Đây là điều phối sản xuất, không phải chuyển động |
 | Kết quả, truy xuất nguồn gốc, giao tiếp hệ MES | **Phần mềm C#** | Robot không biết gì về lô hàng và mã sản phẩm |
 
@@ -19419,7 +19435,7 @@ Hỏi trạng thái: động cơ · lỗi · đang chạy · an toàn
 và gỡ rối, nhưng xem cảnh báo ở cuối mục.
 
 **3. Kênh dữ liệu** — trao đổi giá trị với chương trình **đang chạy** trong robot: gửi vào toạ độ bù sau
-khi căn chỉnh (mục 13.2.4f), số thứ tự ô trong khay, mã sản phẩm; nhận về kết quả và tín hiệu đã xong.
+khi căn chỉnh (mục 13.4.3), số thứ tự ô trong khay, mã sản phẩm; nhận về kết quả và tín hiệu đã xong.
 
 > 💡 **Ba kênh này khác nhau về vòng đời, nên đừng gộp thành một lớp.** Kênh điều khiển máy chỉ dùng lúc
 > khởi động và khi có sự cố. Kênh dữ liệu chạy suốt trong chu kỳ sản xuất. Gộp chung, bạn sẽ có một lớp
@@ -28362,7 +28378,7 @@ dự án thật có **hơn 200 lớp** chia thành hơn 20 nhóm, và phần l�
 | **Cảnh báo** | Bật alarm, alarm có nội dung, hộp thoại hỏi người vận hành | Chương 15, Chương 10 |
 | **Dữ liệu sản xuất** | Ghi bản ghi, đo thời gian chu kỳ, đếm sản lượng vào/ra | Chương 13, Phụ lục B mục B.2.5 |
 | **Tích hợp ngoài** | Gửi sự kiện lên host, gọi HTTP, tải dữ liệu lên hệ MES | Chương 14 |
-| **Quản lý khay/chồng** | Lấy vị trí ô tiếp theo, quản lý trạng thái từng ô | Chương 13 mục 13.2.4c (mẫu "dạy một, sinh nhiều") |
+| **Quản lý khay/chồng** | Lấy vị trí ô tiếp theo, quản lý trạng thái từng ô | Chương 13 mục 13.4.2 (mẫu "dạy một, sinh nhiều") |
 
 Bảng này đáng xem kỹ khi bạn định tự làm một hệ như vậy, vì nó cho biết **khối lượng thật**: phần
 khó không phải viết nút chạy trục, mà là bộ nút tính toán, biến, và luồng dữ liệu — thứ quyết định đồ
@@ -28914,7 +28930,7 @@ kết quả, rồi đưa sản phẩm vào đúng khay theo hạng. Trong ngành
   recipe**, và nó thay đổi theo đơn hàng.
 - **Bộ đo thường là thiết bị của hãng khác**, giao tiếp qua một giao thức lệnh riêng, và **chính nó**
   quyết định đạt/không đạt chứ không phải phần mềm máy. Vai trò của bạn giống hệt vai trò với thư viện
-  thị giác ở Chương 13 mục 13.2.4c: **đặt hàng phép đo, nhận kết quả, ra quyết định cơ khí** — không
+  thị giác ở Chương 13 mục 13.4.2: **đặt hàng phép đo, nhận kết quả, ra quyết định cơ khí** — không
   tự viết thuật toán đo.
 - **Tiếp xúc điện là bộ phận hao mòn.** Kim tiếp xúc mòn dần và gây ra lỗi đo giả tăng dần theo số
   lần dùng. Vì vậy máy nhóm này gần như luôn cần **đếm số lần sử dụng của đồ gá tiếp xúc** và cảnh báo
@@ -29126,7 +29142,7 @@ trường. Xếp theo nhóm để dễ dùng như một danh mục rà soát.
 | **Không có mã định danh duy nhất cho từng chi tiết** | Có khiếu nại nhưng không truy ngược được; không ghép được dữ liệu giữa các máy trên chuyền | Quyết định từ lúc thiết kế bảng dữ liệu — rất khó bổ sung về sau (§B.4) |
 | **Phán định NG mà không ghi mã lý do** | Biết tỷ lệ hỏng nhưng không biết cải tiến cái gì trước | Mỗi lần NG kèm một mã lý do; đây là điều kiện để có biểu đồ Pareto (§B.2.5) |
 | **Hiệu chuẩn không có ngưỡng chấp nhận** | Một lần hiệu chuẩn tồi được lưu và dùng cả tháng; mọi phép đo lệch có hệ thống | Từ chối lưu nếu sai lệch vượt ngưỡng; lưu kèm sai lệch, thời điểm, người làm (Ch13) |
-| **Định danh thiết bị bằng chỉ số thay vì số sê-ri** | Thêm một camera là "trái thành phải"; máy vẫn chạy, kết quả gán nhầm phía | Khớp theo số sê-ri lấy từ cấu hình; thông báo lỗi liệt kê những gì đang thấy (Ch13 §13.2.4c) |
+| **Định danh thiết bị bằng chỉ số thay vì số sê-ri** | Thêm một camera là "trái thành phải"; máy vẫn chạy, kết quả gán nhầm phía | Khớp theo số sê-ri lấy từ cấu hình; thông báo lỗi liệt kê những gì đang thấy (Ch13 §13.4.2) |
 | **Plugin/module nạp hỏng chỉ ghi log** | Máy chạy **thiếu chức năng** trong khi giao diện trông bình thường | Hiển thị thường trực danh sách module nạp hỏng trên màn hình chính (§B.6.1) |
 | **Không có bộ bắt lỗi toàn cục** | Ứng dụng biến mất khỏi màn hình, không log, không thông báo — máy còn phôi bên trong | Đăng ký hai bộ bắt lỗi ngay đầu `Main()` và **ép đẩy log xuống đĩa** (Ch8) |
 | **Chạy tiếp sau tạm dừng mà không xác minh** | Ai đó jog trục hoặc tắt chân không lúc dừng; bước tiếp theo gây va chạm | Chụp trạng thái lúc dừng, đối chiếu có dung sai lúc chạy tiếp, từ chối kèm hướng dẫn cụ thể (Ch12 §12.2.4) |

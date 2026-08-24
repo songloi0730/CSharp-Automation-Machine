@@ -16904,6 +16904,99 @@ sau mỗi ô**, không giữ trong bộ nhớ tới cuối khay. Cách rẻ: m�
 
 ---
 
+### 13.2.4j  Từ con số đo được tới chữ "Đạt" — phán định là một quyết định, không phải một phép so sánh
+
+Máy đo được 4,998 mm. Quy cách là *"không quá 5,00 mm"*. Đạt hay không đạt?
+
+Câu hỏi nghe như tầm thường, và đó chính là vấn đề: nó **trông** như một phép so sánh một dòng, nên
+thường được viết đúng như vậy — `if (giaTri <= nguong) return "OK";` — rồi ba tháng sau có một cuộc họp
+về việc *"vì sao máy đánh đạt mà khách hàng đo lại không đạt"*.
+
+#### Ba câu phải trả lời trước khi viết dấu `<=`
+
+**1. Quy cách tính theo đơn vị nào, và giá trị đo theo đơn vị nào?** Đây là bẫy đã nói ở mục 13.2.4f
+nhưng nó quay lại ở đây với hậu quả nặng hơn, vì kết quả là một phán định về chất lượng chứ không chỉ là
+một chuyển động sai. Đưa đơn vị vào tên biến và vào tên trường trong công thức.
+
+**2. So sánh trên giá trị THÔ hay giá trị đã làm tròn?** Giá trị đo là 5,004; màn hình hiển thị hai chữ
+số nên hiện *5,00*; quy cách là *"≤ 5,00"*. Nếu so trên giá trị hiển thị thì đạt; so trên giá trị thô thì
+không đạt. Hai câu trả lời khác nhau cho cùng một sản phẩm.
+>
+> Quy tắc: **phán định trên giá trị thô, hiển thị bằng giá trị đã làm tròn, và lưu cả hai.** Khi khách
+> hàng thắc mắc *"sao ghi 5,00 mà đánh không đạt"*, giá trị thô là câu trả lời. Ngược lại — phán định
+> trên giá trị đã làm tròn — nghĩa là bạn vừa nới quy cách ra thêm nửa đơn vị hiển thị mà không ai quyết
+> định điều đó.
+
+**3. Biên có thuộc vùng đạt không?** *"≤ 5,00"* và *"< 5,00"* khác nhau đúng ở một sản phẩm nằm chính xác
+trên biên, và đó là câu hỏi dành cho **bộ phận chất lượng**, không phải cho lập trình viên. Hãy hỏi, và
+ghi câu trả lời vào tài liệu quy cách — đừng chọn `<=` chỉ vì nó gõ nhanh hơn.
+
+#### Ba kết luận, không phải hai
+
+Đây là chỗ mà một `bool` gây hại lâu dài. Kết quả của một phép đo có **ba** khả năng:
+
+| Kết luận | Nghĩa | Xử lý |
+|---|---|---|
+| **Đạt** | Đo được, nằm trong quy cách | Đếm vào sản lượng tốt |
+| **Không đạt** | Đo được, ngoài quy cách | Đếm vào lỗi, kèm **mã lý do** |
+| **Không đo được** | Cảm biến lỗi, mất tín hiệu, thị giác không tìm thấy đối tượng | **Không phải lỗi sản phẩm** |
+
+Gộp *"không đo được"* vào *"không đạt"* là sai lệch dữ liệu chất lượng: một đầu đo hỏng sẽ hiện lên báo
+cáo thành một đợt hàng kém chất lượng, và người ta sẽ đi tìm nguyên nhân ở công đoạn trước thay vì đi
+kiểm tra đầu đo. Với sản phẩm không đo được, xử lý đúng thường là **giữ lại để đo lại**, và **cảnh báo**
+nếu tỉ lệ không đo được vượt ngưỡng.
+
+#### Dải bảo vệ: khi chính hệ đo cũng có sai số
+
+Chương 12 mục 12.4.1 giới thiệu GR&R — cách định lượng sai số của bản thân hệ đo. Đây là chỗ con số đó
+được dùng: nếu hệ đo của bạn có sai số ±0,02 mm và quy cách là *"≤ 5,00"*, thì một sản phẩm đo được 4,99
+**có thể thật sự là 5,01**.
+
+Cách xử lý trong ngành là **dải bảo vệ**: ngưỡng dùng để phán định bên trong máy **chặt hơn** quy cách
+của khách hàng một khoảng bằng (hoặc một phần của) sai số hệ đo.
+
+```
+Quy cách khách hàng:      ≤ 5,00
+Ngưỡng máy dùng:          ≤ 4,98        ← dải bảo vệ 0,02
+```
+
+Đổi lại là **loại nhầm một ít hàng tốt** — và đó là đánh đổi có chủ đích: thà loại nhầm hàng tốt còn hơn
+để lọt hàng xấu. Mức dải bảo vệ là quyết định của bộ phận chất lượng, phải là **tham số trong công
+thức**, và phải được **ghi vào bản ghi sản phẩm** để về sau còn biết lô đó được phán định bằng ngưỡng nào.
+
+> ⚠️ **Đừng tự ý đặt dải bảo vệ mà không nói với ai.** Người vận hành thấy tỉ lệ lỗi tăng sẽ đi tìm
+> nguyên nhân ở máy, trong khi nguyên nhân nằm ở một hằng số bạn thêm vào cho "an toàn". Hoặc tệ hơn:
+> ai đó phát hiện ra và tự sửa lại thành đúng quy cách, xoá luôn lớp bảo vệ.
+
+#### Một sản phẩm, nhiều phép đo
+
+Sản phẩm thật thường có năm tới hai mươi phép đo. Hai quyết định:
+
+**Dừng ngay khi gặp phép đo không đạt, hay đo hết?** Dừng sớm **nhanh hơn** (tốt cho nhịp máy); đo hết
+cho **dữ liệu đầy đủ hơn** (tốt cho phân tích nguyên nhân). Lựa chọn thực dụng: dừng sớm ở chế độ sản
+xuất, đo hết ở chế độ gỡ rối và với hàng mẫu đầu ca — và để nó là **tham số**, không phải quyết định
+cứng trong code.
+
+**Ghi lại gì?** Bản ghi phải có **mã lý do lỗi chính** (phép đo đầu tiên không đạt — thứ dùng cho biểu đồ
+Pareto), và **toàn bộ giá trị đo** của các phép đã chạy. Chỉ ghi "NG" là vứt đi phần lớn giá trị của việc
+đo.
+
+> 📌 **Luôn lưu GIÁ TRỊ ĐO, không chỉ lưu kết luận.** Ba lý do, cái thứ ba là quan trọng nhất:
+> 1. Quy cách sẽ đổi. Có giá trị đo thì tính lại được tỉ lệ đạt theo quy cách mới cho dữ liệu cũ; chỉ có
+>    kết luận thì không.
+> 2. Kiểm soát quá trình bằng thống kê cần **con số**, không cần chữ "Đạt".
+> 3. Giá trị đo **trôi dần** trước khi nó vượt ngưỡng. Một kích thước bò từ 4,90 lên 4,97 trong hai tuần
+>    là cảnh báo sớm về dao mòn hay đồ gá lỏng — nhưng chỉ nhìn thấy được nếu bạn lưu số. Nếu chỉ lưu
+>    "Đạt", tất cả những ngày đó trông giống hệt nhau cho tới ngày đầu tiên "Không đạt".
+
+> 💡 **Và ngưỡng phán định là dữ liệu có kiểm soát, không phải hằng số trong code.** Nó nằm trong công
+> thức sản phẩm; đổi nó cần quyền tương đương đổi công thức, phải **ghi vết ai đổi, từ giá trị nào sang
+> giá trị nào** (Chương 15 mục 15.2.4), và **không bao giờ được áp ngược** cho những sản phẩm đã chạy —
+> bản ghi cũ phải giữ ngưỡng đã dùng lúc đó. Đây là lý do bản ghi sản phẩm nên chứa cả ngưỡng, không chỉ
+> chứa giá trị đo và kết luận.
+
+---
+
 ### 13.2.5 Simulator Driver
 
 Mỗi `IMotionAxisDriver` đều có đối tác `SimulatedAxisDriver` — driver giả lập không cần
@@ -17628,6 +17721,7 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 | Simulator Driver (13.2.5) | FAT, CI/CD, unit test mà không cần phần cứng thật | Toàn bộ sequence test được từ ngày đầu dự án |
 | Device Manager (13.3.1) | Quản lý vòng đời + dependency ordering + snapshot HMI | Khởi động/dừng có kiểm soát, không phân tán |
 | Xi-lanh khí nén (13.2.1b) | Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp | Trạng thái suy từ **cả hai cảm biến**; hành động phải `async` + có thẻ huỷ + hết giờ thì **ném lỗi** sau khi về an toàn; loại van là **tham số khai báo** |
+| Phán định OK/NG (13.2.4j) | Con số đo được thành kết luận chất lượng | Phán định trên **giá trị thô**, hiển thị làm tròn; **ba** kết luận (kể cả *không đo được*); dải bảo vệ theo sai số hệ đo; **luôn lưu giá trị đo** |
 | Bản đồ khay (13.2.4i) | Máy làm việc với một mảng vị trí, không phải một sản phẩm | Trạng thái ô là **enum nhiều giá trị**, không phải bool; quy ước đánh số phải thống nhất với khách/MES; ghi trạng thái từng ô xuống nơi bền |
 | Mã định danh sản phẩm (13.2.4h) | Chuỗi quét được đi đâu, kiểm thế nào, sai thì sao | Bẫy tiêu điểm của đầu đọc giả lập bàn phím; 4 tầng kiểm tra; **ba nguyên nhân mã trùng, ba chính sách**; nhập tay phải có cờ đánh dấu |
 | Ảnh và bộ nhớ (13.2.4g) | Ảnh tốn bộ nhớ **không quản lý** mà bộ dọn rác không thấy | `using` hoặc một chủ sở hữu duy nhất; bản ghi kết quả giữ **đường dẫn**, không giữ ảnh; tên tệp dùng `HH` không phải `hh` |

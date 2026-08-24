@@ -18344,6 +18344,102 @@ là loại hợp đồng mà sửa sau khi máy đã chạy sẽ kéo theo sửa
 không sửa được.</p>
 </blockquote>
 <hr>
+<h3>13.2.4j  Từ con số đo được tới chữ &quot;Đạt&quot; — phán định là một quyết định, không phải một phép so sánh</h3>
+<p>Máy đo được 4,998 mm. Quy cách là <em>&quot;không quá 5,00 mm&quot;</em>. Đạt hay không đạt?</p>
+<p>Câu hỏi nghe như tầm thường, và đó chính là vấn đề: nó <strong>trông</strong> như một phép so sánh một dòng, nên
+thường được viết đúng như vậy — <code>if (giaTri &lt;= nguong) return &quot;OK&quot;;</code> — rồi ba tháng sau có một cuộc họp
+về việc <em>&quot;vì sao máy đánh đạt mà khách hàng đo lại không đạt&quot;</em>.</p>
+<h4>Ba câu phải trả lời trước khi viết dấu <code>&lt;=</code></h4>
+<p><strong>1. Quy cách tính theo đơn vị nào, và giá trị đo theo đơn vị nào?</strong> Đây là bẫy đã nói ở mục 13.2.4f
+nhưng nó quay lại ở đây với hậu quả nặng hơn, vì kết quả là một phán định về chất lượng chứ không chỉ là
+một chuyển động sai. Đưa đơn vị vào tên biến và vào tên trường trong công thức.</p>
+<p><strong>2. So sánh trên giá trị THÔ hay giá trị đã làm tròn?</strong> Giá trị đo là 5,004; màn hình hiển thị hai chữ
+số nên hiện <em>5,00</em>; quy cách là <em>&quot;≤ 5,00&quot;</em>. Nếu so trên giá trị hiển thị thì đạt; so trên giá trị thô thì
+không đạt. Hai câu trả lời khác nhau cho cùng một sản phẩm.</p>
+<blockquote>
+<p>Quy tắc: <strong>phán định trên giá trị thô, hiển thị bằng giá trị đã làm tròn, và lưu cả hai.</strong> Khi khách
+hàng thắc mắc <em>&quot;sao ghi 5,00 mà đánh không đạt&quot;</em>, giá trị thô là câu trả lời. Ngược lại — phán định
+trên giá trị đã làm tròn — nghĩa là bạn vừa nới quy cách ra thêm nửa đơn vị hiển thị mà không ai quyết
+định điều đó.</p>
+</blockquote>
+<p><strong>3. Biên có thuộc vùng đạt không?</strong> <em>&quot;≤ 5,00&quot;</em> và <em>&quot;&lt; 5,00&quot;</em> khác nhau đúng ở một sản phẩm nằm chính xác
+trên biên, và đó là câu hỏi dành cho <strong>bộ phận chất lượng</strong>, không phải cho lập trình viên. Hãy hỏi, và
+ghi câu trả lời vào tài liệu quy cách — đừng chọn <code>&lt;=</code> chỉ vì nó gõ nhanh hơn.</p>
+<h4>Ba kết luận, không phải hai</h4>
+<p>Đây là chỗ mà một <code>bool</code> gây hại lâu dài. Kết quả của một phép đo có <strong>ba</strong> khả năng:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kết luận</th>
+<th>Nghĩa</th>
+<th>Xử lý</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Đạt</strong></td>
+<td>Đo được, nằm trong quy cách</td>
+<td>Đếm vào sản lượng tốt</td>
+</tr>
+<tr>
+<td><strong>Không đạt</strong></td>
+<td>Đo được, ngoài quy cách</td>
+<td>Đếm vào lỗi, kèm <strong>mã lý do</strong></td>
+</tr>
+<tr>
+<td><strong>Không đo được</strong></td>
+<td>Cảm biến lỗi, mất tín hiệu, thị giác không tìm thấy đối tượng</td>
+<td><strong>Không phải lỗi sản phẩm</strong></td>
+</tr>
+</tbody></table></div>
+<p>Gộp <em>&quot;không đo được&quot;</em> vào <em>&quot;không đạt&quot;</em> là sai lệch dữ liệu chất lượng: một đầu đo hỏng sẽ hiện lên báo
+cáo thành một đợt hàng kém chất lượng, và người ta sẽ đi tìm nguyên nhân ở công đoạn trước thay vì đi
+kiểm tra đầu đo. Với sản phẩm không đo được, xử lý đúng thường là <strong>giữ lại để đo lại</strong>, và <strong>cảnh báo</strong>
+nếu tỉ lệ không đo được vượt ngưỡng.</p>
+<h4>Dải bảo vệ: khi chính hệ đo cũng có sai số</h4>
+<p>Chương 12 mục 12.4.1 giới thiệu GR&amp;R — cách định lượng sai số của bản thân hệ đo. Đây là chỗ con số đó
+được dùng: nếu hệ đo của bạn có sai số ±0,02 mm và quy cách là <em>&quot;≤ 5,00&quot;</em>, thì một sản phẩm đo được 4,99
+<strong>có thể thật sự là 5,01</strong>.</p>
+<p>Cách xử lý trong ngành là <strong>dải bảo vệ</strong>: ngưỡng dùng để phán định bên trong máy <strong>chặt hơn</strong> quy cách
+của khách hàng một khoảng bằng (hoặc một phần của) sai số hệ đo.</p>
+<pre><code>Quy cách khách hàng:      ≤ 5,00
+Ngưỡng máy dùng:          ≤ 4,98        ← dải bảo vệ 0,02
+</code></pre>
+<p>Đổi lại là <strong>loại nhầm một ít hàng tốt</strong> — và đó là đánh đổi có chủ đích: thà loại nhầm hàng tốt còn hơn
+để lọt hàng xấu. Mức dải bảo vệ là quyết định của bộ phận chất lượng, phải là <strong>tham số trong công
+thức</strong>, và phải được <strong>ghi vào bản ghi sản phẩm</strong> để về sau còn biết lô đó được phán định bằng ngưỡng nào.</p>
+<blockquote>
+<p>⚠️ <strong>Đừng tự ý đặt dải bảo vệ mà không nói với ai.</strong> Người vận hành thấy tỉ lệ lỗi tăng sẽ đi tìm
+nguyên nhân ở máy, trong khi nguyên nhân nằm ở một hằng số bạn thêm vào cho &quot;an toàn&quot;. Hoặc tệ hơn:
+ai đó phát hiện ra và tự sửa lại thành đúng quy cách, xoá luôn lớp bảo vệ.</p>
+</blockquote>
+<h4>Một sản phẩm, nhiều phép đo</h4>
+<p>Sản phẩm thật thường có năm tới hai mươi phép đo. Hai quyết định:</p>
+<p><strong>Dừng ngay khi gặp phép đo không đạt, hay đo hết?</strong> Dừng sớm <strong>nhanh hơn</strong> (tốt cho nhịp máy); đo hết
+cho <strong>dữ liệu đầy đủ hơn</strong> (tốt cho phân tích nguyên nhân). Lựa chọn thực dụng: dừng sớm ở chế độ sản
+xuất, đo hết ở chế độ gỡ rối và với hàng mẫu đầu ca — và để nó là <strong>tham số</strong>, không phải quyết định
+cứng trong code.</p>
+<p><strong>Ghi lại gì?</strong> Bản ghi phải có <strong>mã lý do lỗi chính</strong> (phép đo đầu tiên không đạt — thứ dùng cho biểu đồ
+Pareto), và <strong>toàn bộ giá trị đo</strong> của các phép đã chạy. Chỉ ghi &quot;NG&quot; là vứt đi phần lớn giá trị của việc
+đo.</p>
+<blockquote>
+<p>📌 <strong>Luôn lưu GIÁ TRỊ ĐO, không chỉ lưu kết luận.</strong> Ba lý do, cái thứ ba là quan trọng nhất:</p>
+<ol>
+<li>Quy cách sẽ đổi. Có giá trị đo thì tính lại được tỉ lệ đạt theo quy cách mới cho dữ liệu cũ; chỉ có
+kết luận thì không.</li>
+<li>Kiểm soát quá trình bằng thống kê cần <strong>con số</strong>, không cần chữ &quot;Đạt&quot;.</li>
+<li>Giá trị đo <strong>trôi dần</strong> trước khi nó vượt ngưỡng. Một kích thước bò từ 4,90 lên 4,97 trong hai tuần
+là cảnh báo sớm về dao mòn hay đồ gá lỏng — nhưng chỉ nhìn thấy được nếu bạn lưu số. Nếu chỉ lưu
+&quot;Đạt&quot;, tất cả những ngày đó trông giống hệt nhau cho tới ngày đầu tiên &quot;Không đạt&quot;.</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Và ngưỡng phán định là dữ liệu có kiểm soát, không phải hằng số trong code.</strong> Nó nằm trong công
+thức sản phẩm; đổi nó cần quyền tương đương đổi công thức, phải <strong>ghi vết ai đổi, từ giá trị nào sang
+giá trị nào</strong> (Chương 15 mục 15.2.4), và <strong>không bao giờ được áp ngược</strong> cho những sản phẩm đã chạy —
+bản ghi cũ phải giữ ngưỡng đã dùng lúc đó. Đây là lý do bản ghi sản phẩm nên chứa cả ngưỡng, không chỉ
+chứa giá trị đo và kết luận.</p>
+</blockquote>
+<hr>
 <h3>13.2.5 Simulator Driver</h3>
 <p>Mỗi <code>IMotionAxisDriver</code> đều có đối tác <code>SimulatedAxisDriver</code> — driver giả lập không cần
 phần cứng thật. Điều này quan trọng vì bốn lý do thực tế:</p>
@@ -19140,6 +19236,11 @@ xong, tầng sequence không còn biết Factory tồn tại — chỉ nhìn th�
 <td>Xi-lanh khí nén (13.2.1b)</td>
 <td>Cơ cấu hai trạng thái phổ biến nhất trong máy lắp ráp</td>
 <td>Trạng thái suy từ <strong>cả hai cảm biến</strong>; hành động phải <code>async</code> + có thẻ huỷ + hết giờ thì <strong>ném lỗi</strong> sau khi về an toàn; loại van là <strong>tham số khai báo</strong></td>
+</tr>
+<tr>
+<td>Phán định OK/NG (13.2.4j)</td>
+<td>Con số đo được thành kết luận chất lượng</td>
+<td>Phán định trên <strong>giá trị thô</strong>, hiển thị làm tròn; <strong>ba</strong> kết luận (kể cả <em>không đo được</em>); dải bảo vệ theo sai số hệ đo; <strong>luôn lưu giá trị đo</strong></td>
 </tr>
 <tr>
 <td>Bản đồ khay (13.2.4i)</td>

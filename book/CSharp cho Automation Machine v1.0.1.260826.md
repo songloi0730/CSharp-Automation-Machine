@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260825 |
+| **Phiên bản** | v1.0.1.260826 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -694,6 +694,13 @@ biến bật" luôn trễ một khoảng bằng chu kỳ đọc của bạn.
 > Function theo ISO 13849-1, không thay được cảm biến cửa loại an toàn, không thay được Safe
 > Torque Off. Hai thứ trông giống nhau trên sơ đồ đấu dây nhưng thuộc hai thế giới khác nhau về
 > cấp tin cậy.
+
+> 💡 **Tin tốt cho người chưa có card trong tay: nhiều hãng phát hành kèm một "thiết bị ảo".**
+> Đó là một driver giả cài vào máy tính, để SDK thật chạy được khi không cắm card nào cả — bạn viết
+> và chạy được phần lớn mã điều khiển **trước khi phần cứng về tới nơi**. Nếu bạn đang học nghề này
+> mà không có máy để nghịch, đây là con đường vào rẻ nhất. Cách khai thác nó cho việc kiểm thử nằm ở
+> Chương 13 mục 13.2.5 và Chương 18 mục 18.1.3; giới hạn của nó thì rất đơn giản và rất quan trọng:
+> **thiết bị ảo không có cơ khí**, nên nó chấp nhận cả những lệnh sẽ làm hỏng máy thật.
 
 > 💡 **Cách nhận ra một máy dùng card chuyển động khi bạn chưa có tài liệu.** Ba chỗ, theo thứ tự
 > nhanh dần: (1) mở **Device Manager** của Windows trên IPC — card PCI của hãng hiện ra dưới một
@@ -16460,6 +16467,89 @@ kết luận ở mục 13.3.5.
 
 ---
 
+### 13.2.4e  SDK kiểu "túi thuộc tính" — khi hãng không cho bạn hàm, chỉ cho bạn số hiệu
+
+Ba mục trên giả định SDK của hãng cho bạn **hàm có tên**: `SetVelocity(axis, 300)`,
+`GetPosition(axis)`. Nhưng có một họ SDK rất phổ biến làm khác hẳn, và nếu chưa gặp bao giờ
+thì lần đầu mở tài liệu ra sẽ thấy hoang mang: **toàn bộ cấu hình đi qua đúng hai hàm**.
+
+```c
+// Hình dạng chung của SDK kiểu túi thuộc tính (property bag) — không phải một hãng cụ thể
+Acm_SetProperty(handle, propertyId, pValue, size);
+Acm_GetProperty(handle, propertyId, pValue, &size);
+```
+
+Muốn đặt tốc độ? Đó là một `propertyId`. Muốn đổi chế độ xung? Một `propertyId` khác. Muốn
+biết card có mấy trục? Cũng là một `propertyId`. Toàn bộ "API" thật sự nằm trong một file
+header dài dằng dặc chứa vài trăm hằng số, và tài liệu là bảng tra ý nghĩa từng số đó.
+
+Kiểm chứng trên SDK điều khiển chuyển động của một hãng phổ biến (bộ header đi kèm driver):
+**460 số hiệu thuộc tính**, chia làm ba lớp có tiền tố khác nhau, và chính cách chia ba lớp
+đó là thứ đáng học:
+
+**Bảng 13.6b — Ba lớp thuộc tính trong một SDK kiểu túi thuộc tính**
+
+| Lớp | Số lượng | Ý nghĩa | Ghi được không |
+|---|---|---|---|
+| **Đặc tính** (feature) | ~70 | Phần cứng này **làm được gì**: mấy trục, có bù khe hở không, có so sánh vị trí không | **Chỉ đọc** |
+| **Tham số** (parameter) | ~60 | Giá trị vận hành **đang** dùng: tốc độ, gia tốc, giới hạn | Đọc/ghi lúc chạy |
+| **Cấu hình** (configuration) | ~332 | Cách trục được **thiết lập**: chế độ xung, cực tính tín hiệu, tỉ lệ encoder | Ghi lúc khởi tạo |
+
+> 📌 **Vì sao lớp "đặc tính" quan trọng hơn vẻ ngoài của nó.** Đây là cách phần cứng **tự mô
+> tả năng lực của mình** — đúng khái niệm mà mục 13.2.1 gọi là *interface theo năng lực*,
+> nhưng ở tầng SDK. Nhờ nó, phần mềm có thể hỏi card *"anh có mấy trục, có hỗ trợ so sánh vị
+> trí không"* thay vì bắt người cài đặt gõ tay vào file cấu hình rồi gõ sai. Nếu SDK bạn đang
+> dùng có lớp này, **hãy đọc nó lúc khởi động và đối chiếu với file cấu hình của bạn** — lệch
+> nhau thì dừng ngay với thông báo rõ ràng, đừng chạy tiếp với giả định sai.
+
+#### Bọc nó lại như thế nào
+
+Cám dỗ đầu tiên là để nguyên: chỗ nào cần thì gọi `SetProperty(handle, 0x1F3, ...)`. Đừng.
+Ba lý do, xếp theo mức độ đau tăng dần:
+
+1. **Không ai đọc được.** `0x1F3` không nói lên điều gì; sáu tháng sau chính bạn cũng phải
+   tra bảng.
+2. **Không có kiểu.** Hàm nhận con trỏ `void*` — truyền nhầm `int` vào chỗ cần `double` thì
+   trình biên dịch im lặng, còn trục thì chạy sai tốc độ.
+3. **Không test được.** Mọi lời gọi đều dính chặt vào DLL của hãng.
+
+Cách bọc gọn nhất giữ đúng nguyên tắc của chương này — **một chỗ duy nhất biết số hiệu**:
+
+```csharp
+// Một chỗ duy nhất trong toàn dự án biết tới số hiệu thuộc tính của hãng
+internal static class AxisProp
+{
+    public const uint CmdVelocity = 0x1F3;   // tên do TA đặt, số do hãng đặt
+    public const uint PulseMode   = 0x204;
+    public const uint AxisCount   = 0x005;   // thuộc lớp "đặc tính" — chỉ đọc
+}
+
+// Lớp bọc: đổi "số hiệu + con trỏ" thành "thuộc tính có tên, có kiểu"
+public sealed class VendorAxis : IMotionAxis
+{
+    private readonly IVendorSdk _sdk;        // interface, để test được
+    private readonly IntPtr     _handle;
+
+    public double CommandVelocity
+    {
+        get => _sdk.GetF64(_handle, AxisProp.CmdVelocity);
+        set
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+            _sdk.SetF64(_handle, AxisProp.CmdVelocity, value);
+        }
+    }
+}
+```
+
+> 💡 **Mẹo khi tiếp quản code cũ dùng SDK kiểu này.** Tìm toàn văn tên hàm `SetProperty` —
+> **số lượng kết quả cho bạn biết ngay dự án có tầng trừu tượng hay không**. Vài chục kết quả
+> rải khắp nơi nghĩa là số hiệu thuộc tính đã rò ra toàn bộ mã nguồn, và đổi hãng card sẽ là
+> một dự án riêng chứ không phải một thay đổi. Đúng một chỗ gọi nghĩa là người viết trước đã
+> làm việc mà mục này vừa mô tả — hãy giữ nguyên cấu trúc đó.
+
+---
+
 ### 13.2.5 Simulator Driver
 
 Mỗi `IMotionAxisDriver` đều có đối tác `SimulatedAxisDriver` — driver giả lập không cần
@@ -16541,6 +16631,20 @@ cả hai implement cùng `IMotionAxisDriver`.
 > đúng driver theo `DeviceConfig.Vendor`. Cách rẽ nhánh trong hàm gọn hơn khi chỉ có vài chỗ cần giả
 > lập, nhưng nếu lặp lại ở hàng chục method, logic thật và logic giả lập trộn lẫn trong cùng 1 hàm —
 > khó đọc dần, và code giả lập vẫn tồn tại (dù không chạy) trong bản build production.
+
+> 💡 **Trước khi tự viết bản giả lập: kiểm tra xem hãng đã cho sẵn chưa.** Một số hãng card
+> chuyển động phát hành kèm **thiết bị ảo** (virtual device) — một driver giả cài vào máy để
+> SDK thật chạy được mà không cần cắm card. Khi có nó, bạn được bản giả lập ở **đúng biên
+> SDK**: mã nguồn không đổi một dòng nào, vẫn gọi đúng hàm của hãng, chỉ khác là bên dưới
+> không có phần cứng. Đây là con đường rẻ nhất để đạt điều mà mục 13.5 cho thấy chỉ 5/13 dự
+> án làm được — và nó **không loại trừ** `SimulatedAxisDriver` ở trên: thiết bị ảo giúp bạn
+> chạy *toàn bộ tầng driver thật*, còn bản giả lập trong mã nguồn giúp bạn chạy *unit test*
+> nhanh và không phụ thuộc máy cài gì.
+>
+> ⚠️ Và giới hạn phải nhớ: **chạy được trên thiết bị ảo không có nghĩa là an toàn trên máy
+> thật.** Thiết bị ảo chấp nhận những lệnh mà cơ khí thật sẽ không chịu nổi — nó không biết
+> hành trình trục dài bao nhiêu, không biết đồ gá đang ở đâu. Thứ tự đúng luôn là: thiết bị
+> ảo → máy thật **chạy chậm, không tải** → mới tới tốc độ sản xuất.
 
 ### 13.2.6 Biến thể máy — một bộ mã nguồn, nhiều cấu hình vật lý
 
@@ -21461,6 +21565,29 @@ Hai hệ quả thực tế:
 > PLC cần: một nguồn sự thật dùng chung giữa hai bên, số phiên bản, và một phép kiểm tra lúc khởi động
 > — ít nhất là so số lượng bit khai báo với vùng thanh ghi mà PLC thật sự dùng.
 
+> 💡 **Một danh mục mã lỗi thật của hãng trông như thế nào — và ba điều học được từ nó.**
+> Mở file mã lỗi đi kèm SDK của một hãng card chuyển động phổ biến, ta thấy khoảng **690 mã**
+> được tổ chức như sau:
+>
+> - **Mã lỗi = mã gốc của nhóm + số thứ tự trong nhóm.** Mỗi nhóm có một hằng số gốc
+>   (`CommError`, `MotionError`, `DaqError`…), các mã cụ thể được viết là *gốc + n*. Đây đúng
+>   là ý tưởng dải mã mà mục trên đề xuất, chỉ khác là hãng viết nó tường minh trong mã nguồn
+>   thay vì để trong tài liệu.
+> - **Chữ số cao nhất mang ý nghĩa mức độ**, không phải mã lỗi: `0` là thành công, `1` là
+>   cảnh báo, `8` là lỗi. Nhờ vậy phần mềm phân biệt được *cảnh báo* với *lỗi* bằng một phép
+>   so sánh, trước cả khi tra bảng tên mã.
+> - **Nhóm mới được thêm vào theo năm tháng, và luôn thêm ở dải mới.** Trong file đó, các
+>   nhóm liên quan tới EtherCAT nằm ở một dải riêng hoàn toàn (`0x83…`) và mang chú thích ghi
+>   năm chúng được thêm — cách nhau nhiều năm so với các nhóm gốc. Đó là bằng chứng sống cho
+>   nguyên tắc mà chương này lặp lại nhiều lần: **chỉ thêm mã ở cuối dải, không bao giờ chèn
+>   vào giữa và không bao giờ đổi ý nghĩa một mã đã phát hành**.
+>
+> Bài học vận dụng: **đừng dùng thẳng mã lỗi của hãng làm mã cảnh báo của máy bạn.** Hai hệ
+> đánh số phục vụ hai mục đích — của hãng mô tả *SDK gặp chuyện gì*, của bạn mô tả *người vận
+> hành cần làm gì*. Hãy dịch: mỗi mã của hãng ánh xạ sang một mã cảnh báo trong dải của bạn,
+> **nhưng luôn ghi kèm mã gốc và câu mô tả gốc của hãng vào nhật ký**. Khi phải gọi hỗ trợ kỹ
+> thuật của hãng lúc 2 giờ sáng, mã gốc là thứ duy nhất họ hiểu.
+
 ### 15.1.3  IAlarmService — hợp đồng xử lý alarm
 
 `IAlarmService` là interface nằm ở `MeoFrame.Core.Abstractions` — tất cả code domain và sequence chỉ gọi qua interface này, không biết implementation.
@@ -25782,6 +25909,30 @@ Sự khác biệt quan trọng: unit test *không mất thêm thời gian sau l�
 
 ---
 
+Còn một con đường thứ ba nằm giữa hai cách trên, và nó thường bị bỏ qua: **thiết bị ảo do
+chính hãng phần cứng cung cấp**. Một số hãng card chuyển động phát hành kèm một driver giả
+lập cài vào máy, để SDK thật chạy được khi không có card. Với người viết test, nó lấp đúng
+khoảng trống mà mock không lấp được:
+
+| | Mock/stub trong test | Thiết bị ảo của hãng | Máy thật |
+|---|---|---|---|
+| Kiểm được logic của bạn | ✅ | ✅ | ✅ |
+| Kiểm được **cách bạn gọi SDK** (thứ tự, tham số, mã lỗi trả về) | ❌ | ✅ | ✅ |
+| Chạy trong CI, không cần phần cứng | ✅ | ⚠️ cần cài driver trên máy chạy CI | ❌ |
+| Bắt được lỗi cơ khí (va chạm, quá hành trình) | ❌ | ❌ | ✅ |
+
+Dòng thứ hai là lý do đáng dùng nó: mock luôn trả về đúng thứ **bạn nghĩ** SDK sẽ trả về —
+nên mock không bao giờ phát hiện được việc bạn hiểu sai SDK. Thiết bị ảo thì chạy chính lớp
+SDK thật, nên nó bắt được lỗi gọi sai thứ tự hoặc quên khởi tạo.
+
+> ⚠️ **Nhưng đừng để nó tạo cảm giác an toàn giả.** Dòng cuối bảng trên là dòng quan trọng
+> nhất: thiết bị ảo **không có cơ khí**. Nó vui vẻ nhận lệnh chạy tới toạ độ nằm ngoài hành
+> trình thật, đâm vào đồ gá, hay chạy khi cửa đang mở. Trình tự bắt buộc khi lên máy thật vẫn
+> là **chậm, không tải, có người đứng cạnh nút dừng khẩn cấp** — không có bản giả lập nào rút
+> ngắn được bước đó.
+
+---
+
 ## 18.2  xUnit cơ bản — `[Fact]`, `[Theory]`, `[InlineData]`
 
 Mọi test method trong chương này áp dụng **nguyên tắc AAA — Arrange, Act, Assert**: (1) *Arrange* — chuẩn bị dữ liệu và mock dependency; (2) *Act* — gọi method cần test; (3) *Assert* — kiểm tra kết quả. Comment `// Arrange`, `// Act`, `// Assert` xuất hiện xuyên suốt code để làm rõ ranh giới từng bước.
@@ -28372,7 +28523,8 @@ thấy tên file quen quen.
 | Leadshine (雷赛) DMC/LTDMC | `LTDMC.dll` | `dmc_` | Khai báo đầy đủ `EntryPoint` + `CharSet` + `CallingConvention`; có cả card PCI và bộ điều khiển EtherCAT |
 | ADLINK (凌華) APS | `APS168.dll` | `APS_` | Kèm một file hằng số rất dài (`APS_Define.cs`) — đó là bảng tra tham số, không phải code |
 | ADLINK PCI-8254 / DMC | `PCI_DMC.dll` | `_8254_` | Thường đi cùng file mã lỗi riêng (`PCI_DMC_ERR.cs`) |
-| Advantech (研華) DAQ | `Dask.dll` | `DRV_` | Là card **thu thập dữ liệu** (AI/AO/DI/DO), không phải card điều khiển trục |
+| Advantech (研華) Common Motion | `ADVMOT.dll`, `AdvMotAPI.dll` | `Acm_` | Bộ header đi kèm: `AdvMotApi.h` (~480 hàm), `AdvMotErr.h` (mã lỗi), `AdvMotPropID.h` (số hiệu thuộc tính). Cấu hình bằng **số hiệu thuộc tính** chứ không bằng hàm có tên — xem Chương 13 mục 13.2.4e. Có bản **thiết bị ảo** chạy không cần card |
+| Advantech (研華) DAQ | `Dask.dll` | `DRV_` | Cùng hãng nhưng là bộ SDK **khác hẳn**: card **thu thập dữ liệu** (AI/AO/DI/DO), không điều khiển trục |
 | Inovance (匯川) EtherCAT | — | `Ecat` | Cấu hình qua file `eni.xml` (mô tả mạng EtherCAT), không cấu hình từng trục trong code |
 | National Instruments | `nicaiu.dll` | (qua `NationalInstruments.DAQmx`) | **Đã có** .NET wrapper chính thức — không cần P/Invoke, thêm reference là dùng |
 
@@ -28380,6 +28532,11 @@ thấy tên file quen quen.
 > thể dùng **hai họ card cùng lúc** (ví dụ card điều khiển trục của một hãng + card thu thập dữ liệu
 > analog của hãng khác) — khi đó số hiệu trục và số hiệu kênh analog là hai hệ đánh số hoàn toàn độc
 > lập, đừng lẫn.
+>
+> Và lưu ý cái bẫy nằm ở hai dòng Advantech trong bảng: **một hãng có thể phát hành nhiều bộ SDK
+> không liên quan gì tới nhau**, mỗi bộ một DLL, một tiền tố hàm, một hệ mã lỗi riêng. Biết "máy này
+> dùng card của hãng X" chưa đủ để đoán ra API — phải nhìn **tên DLL và tiền tố hàm**, vì đó mới là
+> thứ xác định bộ SDK. Cùng lý do đó, đừng giả định một hãng chỉ làm một loại card.
 
 ### A.3.5  Ba việc cần làm khi *thêm* một hàm SDK chưa được khai báo
 

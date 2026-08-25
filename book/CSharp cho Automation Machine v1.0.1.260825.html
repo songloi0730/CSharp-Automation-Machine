@@ -13767,24 +13767,47 @@ public interface IMachineRepository
 </blockquote>
 <p>Dependency Inversion áp dụng ở đây: Domain layer phụ thuộc vào interface, Infrastructure layer phụ thuộc vào cả interface lẫn thư viện cụ thể (EF Core, SQLite). Không bao giờ ngược lại — Domain không được import namespace của Infrastructure.</p>
 <h3>11.3.3  Checklist chất lượng cho Business Logic Layer</h3>
-<p><strong>Checklist 11.6 — Chất lượng BLL trong tự động hoá</strong></p>
-<p>Tính đúng (Correctness):</p>
-<ul>
-<li>✓ Chưa Homed thì không Move</li>
-<li>✓ Fault thì không Start</li>
-<li>✓ E-Stop khoá mọi hành động nguy hiểm</li>
-<li>✓ Hàm domain idempotent: gọi Start() nhiều lần không phá vỡ trạng thái</li>
-</ul>
-<p>Tính an toàn (Safety):</p>
-<ul>
-<li>✓ Interlock kiểm tra tại Aggregate Root trước khi thay đổi trạng thái</li>
-<li>✓ Lỗi Fault/Emergency phát ErrorOccurred + chuyển MachineState phù hợp</li>
-</ul>
-<p>Quan sát &amp; truy vết (Observability):</p>
-<ul>
-<li>✓ Domain Event đủ dữ liệu: ai, lúc nào, thao tác gì, mã lỗi gì</li>
-<li>✓ Log/Audit tách khỏi domain bằng event handlers — domain không gọi ILogger trực tiếp</li>
-</ul>
+<p><strong>Bảng 11.6 — Checklist chất lượng tầng nghiệp vụ (BLL) trong tự động hoá</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm tiêu chí</th>
+<th>Điều phải đúng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tính đúng</strong> (Correctness)</td>
+<td>Chưa Homed thì không Move</td>
+</tr>
+<tr>
+<td></td>
+<td>Fault thì không Start</td>
+</tr>
+<tr>
+<td></td>
+<td>E-Stop khoá mọi hành động nguy hiểm</td>
+</tr>
+<tr>
+<td></td>
+<td>Hàm domain idempotent: gọi <code>Start()</code> nhiều lần không phá vỡ trạng thái</td>
+</tr>
+<tr>
+<td><strong>Tính an toàn</strong> (Safety)</td>
+<td>Interlock kiểm tra tại Aggregate Root <strong>trước khi</strong> thay đổi trạng thái</td>
+</tr>
+<tr>
+<td></td>
+<td>Lỗi Fault/Emergency phát <code>ErrorOccurred</code> + chuyển <code>MachineState</code> phù hợp</td>
+</tr>
+<tr>
+<td><strong>Quan sát &amp; truy vết</strong> (Observability)</td>
+<td>Domain Event đủ dữ liệu: ai, lúc nào, thao tác gì, mã lỗi gì</td>
+</tr>
+<tr>
+<td></td>
+<td>Log/Audit tách khỏi domain bằng event handler — domain không gọi <code>ILogger</code> trực tiếp</td>
+</tr>
+</tbody></table></div>
 <p><strong>Hình 11.1 — Quan hệ giữa các khái niệm DDD trong chương</strong></p>
 <pre><code>Machine  (Aggregate Root)
 │
@@ -28250,8 +28273,8 @@ toàn bộ file.</p>
 <h3>18.2.1  Tạo test project</h3>
 <p>Mỗi project cần test thường có một project test song song. Cấu trúc chuẩn:</p>
 <pre><code>Solution/
-  AM.WorkStation.Demo/           ← project chứa code cần test
-  AM.WorkStation.Demo.Tests/     ← project test — tham chiếu project trên
+  MeoFrame.Domain/               ← project chứa code cần test
+  MeoFrame.Domain.Tests/         ← project test — tham chiếu project trên
 </code></pre>
 <p>Package NuGet cần thêm vào project Tests:</p>
 <pre><code>xunit                            ← framework chính

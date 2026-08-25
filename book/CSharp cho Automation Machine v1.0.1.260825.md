@@ -12704,21 +12704,18 @@ Dependency Inversion áp dụng ở đây: Domain layer phụ thuộc vào inter
 
 ### 11.3.3  Checklist chất lượng cho Business Logic Layer
 
-**Checklist 11.6 — Chất lượng BLL trong tự động hoá**
+**Bảng 11.6 — Checklist chất lượng tầng nghiệp vụ (BLL) trong tự động hoá**
 
-Tính đúng (Correctness):
-- ✓ Chưa Homed thì không Move
-- ✓ Fault thì không Start
-- ✓ E-Stop khoá mọi hành động nguy hiểm
-- ✓ Hàm domain idempotent: gọi Start() nhiều lần không phá vỡ trạng thái
-
-Tính an toàn (Safety):
-- ✓ Interlock kiểm tra tại Aggregate Root trước khi thay đổi trạng thái
-- ✓ Lỗi Fault/Emergency phát ErrorOccurred + chuyển MachineState phù hợp
-
-Quan sát & truy vết (Observability):
-- ✓ Domain Event đủ dữ liệu: ai, lúc nào, thao tác gì, mã lỗi gì
-- ✓ Log/Audit tách khỏi domain bằng event handlers — domain không gọi ILogger trực tiếp
+| Nhóm tiêu chí | Điều phải đúng |
+|---|---|
+| **Tính đúng** (Correctness) | Chưa Homed thì không Move |
+| | Fault thì không Start |
+| | E-Stop khoá mọi hành động nguy hiểm |
+| | Hàm domain idempotent: gọi `Start()` nhiều lần không phá vỡ trạng thái |
+| **Tính an toàn** (Safety) | Interlock kiểm tra tại Aggregate Root **trước khi** thay đổi trạng thái |
+| | Lỗi Fault/Emergency phát `ErrorOccurred` + chuyển `MachineState` phù hợp |
+| **Quan sát & truy vết** (Observability) | Domain Event đủ dữ liệu: ai, lúc nào, thao tác gì, mã lỗi gì |
+| | Log/Audit tách khỏi domain bằng event handler — domain không gọi `ILogger` trực tiếp |
 
 **Hình 11.1 — Quan hệ giữa các khái niệm DDD trong chương**
 
@@ -25188,8 +25185,8 @@ Mỗi project cần test thường có một project test song song. Cấu trúc
 
 ```
 Solution/
-  AM.WorkStation.Demo/           ← project chứa code cần test
-  AM.WorkStation.Demo.Tests/     ← project test — tham chiếu project trên
+  MeoFrame.Domain/               ← project chứa code cần test
+  MeoFrame.Domain.Tests/         ← project test — tham chiếu project trên
 ```
 
 Package NuGet cần thêm vào project Tests:

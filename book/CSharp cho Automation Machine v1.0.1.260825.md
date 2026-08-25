@@ -10324,7 +10324,7 @@ ca, nên nó là bài kiểm tra thật nhất cho mọi thứ đã bàn.
 | **Nhịp máy (tact time)** | 5/6 | Thường có cả *nhịp lần cuối* và *nhịp trung bình* |
 | **Bước hiện tại của từng trạm** | 4/6 | Ở máy nhiều trạm, đây là thứ giá trị nhất — xem dưới |
 | **Chọn chế độ chạy** (Thật / Chạy khô / Gỡ rối) | 4/6 | Chương 12 mục 12.4 |
-| **Trạng thái an toàn** (cửa, dừng khẩn, đèn tháp) | 3/6 | Ba dự án còn lại chỉ hiện khi có lỗi |
+| **Trạng thái an toàn** (cửa, dừng khẩn cấp, đèn tháp) | 3/6 | Ba dự án còn lại chỉ hiện khi có lỗi |
 | **Mã lô / mã khay / mã sản phẩm hiện tại** | 3/6 | Chỉ ở máy có nối hệ MES hoặc chạy theo khay |
 | **Biểu đồ dữ liệu quá trình** | 2/6 | Ở máy mà đường cong *là* kết quả (lực, mô-men) |
 
@@ -14405,8 +14405,9 @@ giờ biết đến địa chỉ register hay tên SDK hãng.
 
 ---
 
-Chương này bao gồm hai mảng tưởng không liên quan nhưng thực ra giải quyết cùng
-một vấn đề gốc — "che giấu chi tiết nguồn dữ liệu sau interface":
+Chương này gom **ba mạch** tưởng không liên quan nhưng thực ra dựa lên nhau. Hai mạch đầu
+giải quyết cùng một vấn đề gốc — *"che giấu chi tiết nguồn dữ liệu sau interface"* — còn mạch
+thứ ba là những gì bạn **dựng lên trên** hai mạch đó:
 
 ```
 [Tầng điều khiển / Sequence]
@@ -14428,20 +14429,40 @@ một vấn đề gốc — "che giấu chi tiết nguồn dữ liệu sau inter
 │   Repository (IMachineRepository, IAlarmRepository…)          │
 │       └→ EF Core                                              │
 │               └→ SQLite                                       │
+│                                                               │
+│   Nhánh 3 — Chức năng máy (dựng TRÊN hai nhánh trên)          │
+│                                                               │
+│   Bảng điểm · Thị giác · Căn chỉnh XYθ · Ảnh · Mã định danh   │
+│   Bản đồ khay · Phán định OK/NG                               │
+│       └→ chạm thiết bị qua Nhánh 1                            │
+│               └→ lưu lại qua Nhánh 2                          │
 └───────────────────────────────────────────────────────────────┘
 ```
 
-**Device Access** đọc/ghi thiết bị vật lý theo thời gian thực — latency tính bằng
-millisecond, dữ liệu không cần lưu DB. **Data Persistence** lưu trữ dữ liệu nghiệp
-vụ lâu dài — recipe, alarm history, audit trail — vào SQLite qua EF Core.
+**Device Access** (mục 13.2 và 13.3) đọc/ghi thiết bị vật lý theo thời gian thực — latency
+tính bằng millisecond, dữ liệu không cần lưu DB. **Data Persistence** (mục 13.1) lưu trữ dữ
+liệu nghiệp vụ lâu dài — recipe, alarm history, audit trail — vào SQLite qua EF Core.
 Tách rõ hai nhánh giúp tránh nhầm lẫn phổ biến: Repository trong chương này
 **không** dùng để query PLC; để đọc trạng thái servo, phải đi qua Device Access.
+
+**Chức năng máy** (mục 13.4) là mạch thứ ba, và nó **không** phải phần phụ lục cho đủ bộ: bảng
+điểm, thị giác, căn chỉnh XYθ, ảnh, mã định danh, bản đồ khay, phán định OK/NG là những thứ
+gần như máy nào cũng có. Chúng được đặt ở đây chứ không tách ra chương riêng vì mỗi chức năng
+đều là **một lát cắt xuyên qua cả hai nhánh trên**: chạm thiết bị qua capability interface,
+rồi lưu kết quả qua repository. Đọc chúng trước khi nắm hai nhánh đầu sẽ không thấy được vì
+sao chúng được thiết kế như vậy.
+
+> 📌 **Bản đồ chương — đọc theo thứ tự này.** 13.1 dữ liệu bền vững → 13.2 trừu tượng hoá
+> thiết bị → 13.3 vòng đời thiết bị → 13.4 chức năng máy dựng trên ba mục trước. Chương dài,
+> nhưng bốn mục độc lập về mặt tra cứu: quay lại tra một chức năng cụ thể ở 13.4 không cần
+> đọc lại 13.1–13.3.
 
 > **Sau chương này, bạn sẽ:**
 > - Tách rõ Device Access (real-time, ms) khỏi Data Persistence (recipe, alarm, audit)
 > - Triển khai Repository & Unit of Work Pattern đúng cho dữ liệu bền vững qua EF Core
 > - Xây Capability Interface (IMotionAxis, IDigitalInput...) che giấu SDK vendor cụ thể
 > - Quản lý versioning cho recipe và dữ liệu cấu hình theo thời gian
+> - Nhận ra bảy chức năng máy thường gặp và biết mỗi chức năng ăn vào hai nhánh trên ở đâu
 
 ---
 
@@ -15344,7 +15365,7 @@ public async Task ExtendAsync(CancellationToken ct = default)
 máy có ba mươi xi-lanh chạy song song sẽ chiếm ba mươi luồng chỉ để **ngồi chờ**. Thay bằng
 `await Task.Delay(100, ct)` — Chương 5 mục 5.1.2.
 
-**3. Không có thẻ huỷ.** Người vận hành bấm dừng khẩn; vòng chờ này vẫn chạy nốt mười giây của nó. Mọi
+**3. Không có thẻ huỷ.** Người vận hành bấm dừng khẩn cấp; vòng chờ này vẫn chạy nốt mười giây của nó. Mọi
 hành động thiết bị phải nhận `CancellationToken` (Chương 5 mục 5.2).
 
 **4. `if (running) return;` là kiểm-rồi-làm trên biến không được bảo vệ.** Hai lời gọi gần nhau từ hai
@@ -19473,8 +19494,8 @@ ushort[] registers = master.ReadHoldingRegisters(slaveAddress: 1, startAddress: 
 
 Rất nhiều máy trong nhà máy điện tử không tự làm chuyển động mà **mua một cánh tay robot** — SCARA, sáu
 trục, hoặc robot cộng tác — rồi để phần mềm C# điều phối. Đây là tình huống khác hẳn với việc điều khiển
-card trục ở các mục trên, và người mới hay mang thói quen từ card trục sang, dẫn tới những thiết kế sai
-ngay từ đầu.
+card chuyển động ở các mục trên, và người mới hay mang nguyên thói quen từ đó sang, dẫn tới những
+thiết kế sai ngay từ đầu.
 
 #### Ranh giới trách nhiệm: ai giữ cái gì
 
@@ -19519,7 +19540,7 @@ khi căn chỉnh (mục 13.4.3), số thứ tự ô trong khay, mã sản phẩm
 > mà một nửa số hàm chỉ hợp lệ ở nửa số thời điểm — đúng thứ mà nguyên tắc *tách interface theo năng
 > lực* ở Chương 4 mục 4.2.3 muốn tránh.
 
-#### Vòng đời bật máy: robot không "sẵn sàng" ngay như một card trục
+#### Vòng đời bật máy: robot không "sẵn sàng" ngay như một card chuyển động
 
 Một trục nối vào card thì mở card xong là dùng được. Robot thì có **một chuỗi bắt buộc**, và bỏ sót một
 bước là lệnh sau thất bại với thông báo khó hiểu:
@@ -19557,7 +19578,7 @@ giao phải có một bước riêng: **xuất chương trình + điểm từ ro
 lặp lại sau mỗi lần chỉnh điểm. Việc này không tự động xảy ra, nên nó phải nằm trong danh mục kiểm ở Phụ
 lục B mục B.5.
 
-**4. Gửi lệnh dừng không phải là đã dừng — và dừng khẩn không đi qua phần mềm.** Lệnh *Dừng* trên kênh
+**4. Gửi lệnh dừng không phải là đã dừng — và dừng khẩn cấp không đi qua phần mềm.** Lệnh *Dừng* trên kênh
 điều khiển máy là một yêu cầu; nó có thể mất, có thể tới chậm, có thể bị từ chối vì robot đang ở trạng
 thái không nhận lệnh. Vì vậy:
 - Sau khi gửi Dừng, **phải xác nhận bằng trạng thái**, y như mọi bước khác.
@@ -20811,7 +20832,7 @@ Con số đó nói hai điều:
 | **Các bước kiểm tra** | **Một danh sách đánh số**, xếp theo thứ tự nên làm |
 
 Khác biệt so với mẫu attribute ở trên nằm ở chữ **danh sách**. Một alarm mất nguồn thiết bị có thể do
-nguồn chính, do nút dừng khẩn, do chưa bấm nút cấp nguồn, hoặc do một trong vài rơ-le an toàn — **bốn
+nguồn chính, do nút dừng khẩn cấp, do chưa bấm nút cấp nguồn, hoặc do một trong vài rơ-le an toàn — **bốn
 nguyên nhân khác nhau**, và tài liệu liệt kê đủ bốn. Phần hướng dẫn cũng vậy: nó là các bước *"kiểm tra
 cái này trước, rồi cái này"*, chứ không phải một câu khuyên chung chung.
 
@@ -23289,6 +23310,12 @@ So sánh với Code 16.5 (anti-pattern): `PickAndPlaceStep.ExecuteAsync` giờ:
 Hai mục trên (Observer và Command) là pattern bạn sẽ **viết**. Mục này là pattern bạn sẽ **đọc** — vì
 nó có mặt trong gần như mọi phần mềm máy nhiều trạm do người xuất thân từ PLC viết, và nếu không nhận
 ra nó thì không đọc nổi một dòng nào của tầng quy trình.
+
+> ⚠️ **Đừng nhầm "bảng cờ" ở đây với "bảng tag" ở Chương 14 và 15 — hai thứ khác hẳn nhau, dù tên
+> tiếng Anh đều có chữ *tag*.** *Bảng tag* (Chương 14 mục 14.1.2b) là danh sách ánh xạ **tên ↔ địa chỉ
+> ↔ kiểu dữ liệu** giữa phần mềm và PLC — nó mô tả *một biến nằm ở đâu*. *Bảng cờ* (Shared Tag Table)
+> trong mục này là vùng trạng thái dùng chung **giữa các trạm trong chính phần mềm của bạn** — nó mô tả
+> *trạm nào đang chờ ai*. Một máy hoàn toàn có thể có cả hai, và hỏng vì hai lý do hoàn toàn khác nhau.
 
 ### 16.3.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai
 
@@ -28161,7 +28188,7 @@ chỉ phát hiện ra chúng khi chúng **thiếu**.
 | Dịch vụ | Vì sao cần | Chương |
 |---|---|---|
 | **Vòng quét IO** | Đọc toàn bộ tín hiệu vào theo chu kỳ cố định, một nguồn dữ liệu duy nhất cho mọi nơi | Ch6, Ch13 |
-| **Giám sát an toàn** | Cửa an toàn, nút dừng khẩn, rèm sáng — kiểm tra ở mức ưu tiên cao nhất, độc lập với quy trình | Ch15 |
+| **Giám sát an toàn** | Cửa an toàn, nút dừng khẩn cấp, rèm sáng — kiểm tra ở mức ưu tiên cao nhất, độc lập với quy trình | Ch15 |
 | **Quản lý cảnh báo** | Nhận, phân loại, chống dội, lưu lịch sử, phát tín hiệu ra đèn/còi | Ch15 |
 | **Điều khiển đèn tháp và còi** | Ánh xạ trạng thái máy sang tín hiệu vật lý mà người ở xa nhìn thấy | Ch15 |
 | **Ghi nhật ký có xoay vòng** | Nhật ký phải tự xoá bản cũ, nếu không ổ cứng đầy sau vài tháng và máy dừng | Ch17, Ch19 |

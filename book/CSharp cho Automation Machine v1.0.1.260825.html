@@ -11163,7 +11163,7 @@ ca, nên nó là bài kiểm tra thật nhất cho mọi thứ đã bàn.</p>
 <td>Chương 12 mục 12.4</td>
 </tr>
 <tr>
-<td><strong>Trạng thái an toàn</strong> (cửa, dừng khẩn, đèn tháp)</td>
+<td><strong>Trạng thái an toàn</strong> (cửa, dừng khẩn cấp, đèn tháp)</td>
 <td>3/6</td>
 <td>Ba dự án còn lại chỉ hiện khi có lỗi</td>
 </tr>
@@ -15883,8 +15883,9 @@ tượng nào giữa SDK vendor và logic máy. Device Abstraction Layer (DAL) g
 đúng vấn đề này: tầng điều khiển chỉ làm việc với interface capability, không bao
 giờ biết đến địa chỉ register hay tên SDK hãng.</p>
 <hr>
-<p>Chương này bao gồm hai mảng tưởng không liên quan nhưng thực ra giải quyết cùng
-một vấn đề gốc — &quot;che giấu chi tiết nguồn dữ liệu sau interface&quot;:</p>
+<p>Chương này gom <strong>ba mạch</strong> tưởng không liên quan nhưng thực ra dựa lên nhau. Hai mạch đầu
+giải quyết cùng một vấn đề gốc — <em>&quot;che giấu chi tiết nguồn dữ liệu sau interface&quot;</em> — còn mạch
+thứ ba là những gì bạn <strong>dựng lên trên</strong> hai mạch đó:</p>
 <pre><code>[Tầng điều khiển / Sequence]
           │
           ▼
@@ -15904,13 +15905,32 @@ một vấn đề gốc — &quot;che giấu chi tiết nguồn dữ liệu sau 
 │   Repository (IMachineRepository, IAlarmRepository…)          │
 │       └→ EF Core                                              │
 │               └→ SQLite                                       │
+│                                                               │
+│   Nhánh 3 — Chức năng máy (dựng TRÊN hai nhánh trên)          │
+│                                                               │
+│   Bảng điểm · Thị giác · Căn chỉnh XYθ · Ảnh · Mã định danh   │
+│   Bản đồ khay · Phán định OK/NG                               │
+│       └→ chạm thiết bị qua Nhánh 1                            │
+│               └→ lưu lại qua Nhánh 2                          │
 └───────────────────────────────────────────────────────────────┘
 </code></pre>
-<p><strong>Device Access</strong> đọc/ghi thiết bị vật lý theo thời gian thực — latency tính bằng
-millisecond, dữ liệu không cần lưu DB. <strong>Data Persistence</strong> lưu trữ dữ liệu nghiệp
-vụ lâu dài — recipe, alarm history, audit trail — vào SQLite qua EF Core.
+<p><strong>Device Access</strong> (mục 13.2 và 13.3) đọc/ghi thiết bị vật lý theo thời gian thực — latency
+tính bằng millisecond, dữ liệu không cần lưu DB. <strong>Data Persistence</strong> (mục 13.1) lưu trữ dữ
+liệu nghiệp vụ lâu dài — recipe, alarm history, audit trail — vào SQLite qua EF Core.
 Tách rõ hai nhánh giúp tránh nhầm lẫn phổ biến: Repository trong chương này
 <strong>không</strong> dùng để query PLC; để đọc trạng thái servo, phải đi qua Device Access.</p>
+<p><strong>Chức năng máy</strong> (mục 13.4) là mạch thứ ba, và nó <strong>không</strong> phải phần phụ lục cho đủ bộ: bảng
+điểm, thị giác, căn chỉnh XYθ, ảnh, mã định danh, bản đồ khay, phán định OK/NG là những thứ
+gần như máy nào cũng có. Chúng được đặt ở đây chứ không tách ra chương riêng vì mỗi chức năng
+đều là <strong>một lát cắt xuyên qua cả hai nhánh trên</strong>: chạm thiết bị qua capability interface,
+rồi lưu kết quả qua repository. Đọc chúng trước khi nắm hai nhánh đầu sẽ không thấy được vì
+sao chúng được thiết kế như vậy.</p>
+<blockquote>
+<p>📌 <strong>Bản đồ chương — đọc theo thứ tự này.</strong> 13.1 dữ liệu bền vững → 13.2 trừu tượng hoá
+thiết bị → 13.3 vòng đời thiết bị → 13.4 chức năng máy dựng trên ba mục trước. Chương dài,
+nhưng bốn mục độc lập về mặt tra cứu: quay lại tra một chức năng cụ thể ở 13.4 không cần
+đọc lại 13.1–13.3.</p>
+</blockquote>
 <blockquote>
 <p><strong>Sau chương này, bạn sẽ:</strong></p>
 <ul>
@@ -15918,6 +15938,7 @@ Tách rõ hai nhánh giúp tránh nhầm lẫn phổ biến: Repository trong ch
 <li>Triển khai Repository &amp; Unit of Work Pattern đúng cho dữ liệu bền vững qua EF Core</li>
 <li>Xây Capability Interface (IMotionAxis, IDigitalInput...) che giấu SDK vendor cụ thể</li>
 <li>Quản lý versioning cho recipe và dữ liệu cấu hình theo thời gian</li>
+<li>Nhận ra bảy chức năng máy thường gặp và biết mỗi chức năng ăn vào hai nhánh trên ở đâu</li>
 </ul>
 </blockquote>
 <hr>
@@ -16805,7 +16826,7 @@ tiếp bước sau — với xi-lanh còn đang ở giữa hành trình. Chữ k
 <p><strong>2. <code>Thread.Sleep</code> bên trong <code>Task.Run</code>.</strong> Mỗi lần chờ chiếm một luồng của hệ thống suốt vài giây. Một
 máy có ba mươi xi-lanh chạy song song sẽ chiếm ba mươi luồng chỉ để <strong>ngồi chờ</strong>. Thay bằng
 <code>await Task.Delay(100, ct)</code> — Chương 5 mục 5.1.2.</p>
-<p><strong>3. Không có thẻ huỷ.</strong> Người vận hành bấm dừng khẩn; vòng chờ này vẫn chạy nốt mười giây của nó. Mọi
+<p><strong>3. Không có thẻ huỷ.</strong> Người vận hành bấm dừng khẩn cấp; vòng chờ này vẫn chạy nốt mười giây của nó. Mọi
 hành động thiết bị phải nhận <code>CancellationToken</code> (Chương 5 mục 5.2).</p>
 <p><strong>4. <code>if (running) return;</code> là kiểm-rồi-làm trên biến không được bảo vệ.</strong> Hai lời gọi gần nhau từ hai
 luồng có thể <strong>cùng đi qua</strong> cửa kiểm tra, rồi cùng bật van. Với biến trạng thái đọc/ghi từ nhiều luồng,
@@ -21488,8 +21509,8 @@ sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo t
 <h3>14.1.6  Robot có bộ điều khiển riêng — ba kênh, và một ranh giới trách nhiệm</h3>
 <p>Rất nhiều máy trong nhà máy điện tử không tự làm chuyển động mà <strong>mua một cánh tay robot</strong> — SCARA, sáu
 trục, hoặc robot cộng tác — rồi để phần mềm C# điều phối. Đây là tình huống khác hẳn với việc điều khiển
-card trục ở các mục trên, và người mới hay mang thói quen từ card trục sang, dẫn tới những thiết kế sai
-ngay từ đầu.</p>
+card chuyển động ở các mục trên, và người mới hay mang nguyên thói quen từ đó sang, dẫn tới những
+thiết kế sai ngay từ đầu.</p>
 <h4>Ranh giới trách nhiệm: ai giữ cái gì</h4>
 <div class="table-wrap"><table>
 <thead>
@@ -21553,7 +21574,7 @@ khởi động và khi có sự cố. Kênh dữ liệu chạy suốt trong chu 
 mà một nửa số hàm chỉ hợp lệ ở nửa số thời điểm — đúng thứ mà nguyên tắc <em>tách interface theo năng
 lực</em> ở Chương 4 mục 4.2.3 muốn tránh.</p>
 </blockquote>
-<h4>Vòng đời bật máy: robot không &quot;sẵn sàng&quot; ngay như một card trục</h4>
+<h4>Vòng đời bật máy: robot không &quot;sẵn sàng&quot; ngay như một card chuyển động</h4>
 <p>Một trục nối vào card thì mở card xong là dùng được. Robot thì có <strong>một chuỗi bắt buộc</strong>, và bỏ sót một
 bước là lệnh sau thất bại với thông báo khó hiểu:</p>
 <pre><code>kết nối → bật nguồn động cơ → nhả phanh → (chờ trạng thái sẵn sàng)
@@ -21583,7 +21604,7 @@ nhưng nếu bộ điều khiển robot hỏng thì <strong>chương trình và 
 giao phải có một bước riêng: <strong>xuất chương trình + điểm từ robot ra tệp, lưu cùng bộ cài đặt máy</strong>, và
 lặp lại sau mỗi lần chỉnh điểm. Việc này không tự động xảy ra, nên nó phải nằm trong danh mục kiểm ở Phụ
 lục B mục B.5.</p>
-<p><strong>4. Gửi lệnh dừng không phải là đã dừng — và dừng khẩn không đi qua phần mềm.</strong> Lệnh <em>Dừng</em> trên kênh
+<p><strong>4. Gửi lệnh dừng không phải là đã dừng — và dừng khẩn cấp không đi qua phần mềm.</strong> Lệnh <em>Dừng</em> trên kênh
 điều khiển máy là một yêu cầu; nó có thể mất, có thể tới chậm, có thể bị từ chối vì robot đang ở trạng
 thái không nhận lệnh. Vì vậy:</p>
 <ul>
@@ -23305,7 +23326,7 @@ bằng cách nhìn hai chữ số đầu để biết <em>&quot;đây là chuy�
 </tr>
 </tbody></table></div>
 <p>Khác biệt so với mẫu attribute ở trên nằm ở chữ <strong>danh sách</strong>. Một alarm mất nguồn thiết bị có thể do
-nguồn chính, do nút dừng khẩn, do chưa bấm nút cấp nguồn, hoặc do một trong vài rơ-le an toàn — <strong>bốn
+nguồn chính, do nút dừng khẩn cấp, do chưa bấm nút cấp nguồn, hoặc do một trong vài rơ-le an toàn — <strong>bốn
 nguyên nhân khác nhau</strong>, và tài liệu liệt kê đủ bốn. Phần hướng dẫn cũng vậy: nó là các bước <em>&quot;kiểm tra
 cái này trước, rồi cái này&quot;</em>, chứ không phải một câu khuyên chung chung.</p>
 <blockquote>
@@ -25998,6 +26019,13 @@ queue.TryDequeue(out var next);   // next = EStopCommand, dù enqueue sau
 <p>Hai mục trên (Observer và Command) là pattern bạn sẽ <strong>viết</strong>. Mục này là pattern bạn sẽ <strong>đọc</strong> — vì
 nó có mặt trong gần như mọi phần mềm máy nhiều trạm do người xuất thân từ PLC viết, và nếu không nhận
 ra nó thì không đọc nổi một dòng nào của tầng quy trình.</p>
+<blockquote>
+<p>⚠️ <strong>Đừng nhầm &quot;bảng cờ&quot; ở đây với &quot;bảng tag&quot; ở Chương 14 và 15 — hai thứ khác hẳn nhau, dù tên
+tiếng Anh đều có chữ <em>tag</em>.</strong> <em>Bảng tag</em> (Chương 14 mục 14.1.2b) là danh sách ánh xạ <strong>tên ↔ địa chỉ
+↔ kiểu dữ liệu</strong> giữa phần mềm và PLC — nó mô tả <em>một biến nằm ở đâu</em>. <em>Bảng cờ</em> (Shared Tag Table)
+trong mục này là vùng trạng thái dùng chung <strong>giữa các trạm trong chính phần mềm của bạn</strong> — nó mô tả
+<em>trạm nào đang chờ ai</em>. Một máy hoàn toàn có thể có cả hai, và hỏng vì hai lý do hoàn toàn khác nhau.</p>
+</blockquote>
 <h3>16.3.1  Bài toán: 8 trạm chạy song song, không ai gọi hàm của ai</h3>
 <p>Một máy phi tiêu chuẩn thường có nhiều trạm chạy <strong>đồng thời</strong>, mỗi trạm một luồng riêng, mỗi trạm một
 quy trình riêng. Trạm nạp phôi và trạm kiểm tra không làm việc tuần tự — chúng chạy song song, chỉ
@@ -31551,7 +31579,7 @@ chỉ phát hiện ra chúng khi chúng <strong>thiếu</strong>.</p>
 </tr>
 <tr>
 <td><strong>Giám sát an toàn</strong></td>
-<td>Cửa an toàn, nút dừng khẩn, rèm sáng — kiểm tra ở mức ưu tiên cao nhất, độc lập với quy trình</td>
+<td>Cửa an toàn, nút dừng khẩn cấp, rèm sáng — kiểm tra ở mức ưu tiên cao nhất, độc lập với quy trình</td>
 <td>Ch15</td>
 </tr>
 <tr>

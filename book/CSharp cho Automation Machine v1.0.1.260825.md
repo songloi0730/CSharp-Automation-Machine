@@ -113,7 +113,7 @@ Bài toán Pick & Place của kỹ sư A khớp chính xác với mô hình này
 gắp-đặt tốc độ cao vẫn có thể để motion controller đảm nhiệm, còn xử lý
 ảnh, đọc MES, và màn hình vận hành chuyển sang C# chạy trên IPC.
 
-### PLC, PC-Based, và PAC — ba lựa chọn, không phải một cuộc thi
+### 1.1.1  PLC, PC-Based, và PAC — ba lựa chọn, không phải một cuộc thi
 
 Bên cạnh PLC và PC-Based, còn một lựa chọn trung gian đáng nhắc tới: PAC
 (Programmable Automation Controller) — một "controller công nghiệp thế hệ
@@ -688,7 +688,7 @@ nhỏ hơn, chỉ đủ để *chạy* ứng dụng đã build sẵn (cài trên
 không cần VS hay SDK đầy đủ). **Visual Studio** là IDE trực quan bao gồm
 SDK bên trong — khi cài VS, .NET SDK tự động được cài kèm.
 
-### Cài đặt Visual Studio và chọn Workload
+### 2.1.1  Cài đặt Visual Studio và chọn Workload
 
 Visual Studio cài đặt theo **workload** — mỗi workload là một bộ công cụ
 cho một nhóm công nghệ. Với automation, ba workload sau là đủ cho phần
@@ -712,7 +712,7 @@ hưởng khi có bản vá bảo mật. Với hầu hết chương trong sách n
 > Bỏ qua trừ khi dự án có yêu cầu cụ thể (hiển thị đồ hoạ 3D phức tạp,
 > hoặc công cụ vận hành đa nền tảng di động).
 
-### Golden Configuration — chuẩn hoá môi trường cho cả nhóm
+### 2.1.2  Golden Configuration — chuẩn hoá môi trường cho cả nhóm
 
 Một mình bạn cài Visual Studio thế nào không quan trọng bằng việc **cả
 nhóm cài giống nhau**. Trong môi trường công nghiệp — nơi máy chạy nhiều
@@ -734,7 +734,7 @@ Với dự án mới bắt đầu, không cần thiết lập đầy đủ bốn
 team Automation) sẽ dựa vào đúng bộ tệp này để đảm bảo mọi thành viên
 build ra kết quả giống nhau.
 
-### Khi bạn mở một dự án và thấy ba mươi dòng tắt cảnh báo
+### 2.1.3  Khi bạn mở một dự án và thấy ba mươi dòng tắt cảnh báo
 
 Phần trên nhắc `Directory.Build.props` như nơi đặt cấu hình build dùng chung. Trong mã nguồn thật, đó
 cũng là nơi bạn hay gặp một danh sách rất dài các mã cảnh báo bị **tắt cho toàn bộ solution**. Một khung
@@ -787,7 +787,7 @@ và nhanh nhất bạn có — không còn nói gì nữa.
 > tra. Đọc file này trong ba mươi giây, ngay sau khi mở solution lần đầu — cùng lúc với việc đọc hàm
 > khởi động (Phụ lục B mục B.9).
 
-### Extension hữu ích — nhưng đừng lạm dụng
+### 2.1.4  Extension hữu ích — nhưng đừng lạm dụng
 
 Visual Studio có hệ sinh thái extension phong phú. Một vài loại đáng cân
 nhắc cho công việc automation, phân theo mức độ cần thiết:
@@ -805,7 +805,7 @@ nhắc cho công việc automation, phân theo mức độ cần thiết:
 > ở trên) không bắt buộc để theo kịp nội dung sách — mọi ví dụ đều chạy
 > được với Visual Studio Community miễn phí và bộ công cụ có sẵn.
 
-### Môi trường mạng cách ly (Air-Gapped)
+### 2.1.5  Môi trường mạng cách ly (Air-Gapped)
 
 Nhiều nhà máy hạn chế hoặc cấm hoàn toàn kết nối Internet tại máy trạm
 sản xuất vì lý do bảo mật. Nếu bạn triển khai trong môi trường này, chuẩn
@@ -818,7 +818,7 @@ thiết từ NuGet feed về máy. Thiết lập này càng quan trọng khi d�
 phát hiện thiếu package lúc build trên máy sản xuất, không có mạng để tải
 bù, là một tình huống mất thời gian hoàn toàn có thể tránh trước.
 
-### Xác nhận môi trường hoạt động
+### 2.1.6  Xác nhận môi trường hoạt động
 
 Sau khi cài xong, tạo project Console Application và chạy thử để xác nhận
 môi trường hoạt động:
@@ -846,7 +846,7 @@ biết có bao nhiêu project và project nào tham chiếu project nào. Projec
 mới là nơi chứa file code `.cs`, cấu hình build, và NuGet package. Khi mở
 Visual Studio, bạn mở Solution — VS tự load tất cả project bên trong.
 
-### Chọn đúng loại project
+### 2.2.1  Chọn đúng loại project
 
 Visual Studio hỗ trợ nhiều loại project — bốn loại sau xuất hiện thường
 xuyên nhất trong dự án automation:
@@ -897,7 +897,7 @@ Hai loại tham chiếu phổ biến nhất — Project và Package — sống t
 </ItemGroup>
 ```
 
-### Giới thiệu MeoFrame — dự án mẫu xuyên suốt cuốn sách
+### 2.2.2  Giới thiệu MeoFrame — dự án mẫu xuyên suốt cuốn sách
 
 Từ đây trở đi, mọi ví dụ cấu trúc solution trong sách dùng chung một tên
 bí danh: **MeoFrame** — không phải tên một framework cố định, mà là
@@ -954,7 +954,7 @@ Thiết lập đúng cấu trúc nhiều project **ngay từ đầu**, dù hệ 
 nhỏ, tiết kiệm rất nhiều công sức refactor về sau — tách một class ra
 khỏi một project khổng lồ khó hơn nhiều so với đặt nó đúng chỗ từ đầu.
 
-### Build Configuration: Debug/Release và Platform Target
+### 2.2.3  Build Configuration: Debug/Release và Platform Target
 
 Hai lựa chọn cấu hình build ảnh hưởng trực tiếp đến hành vi ứng dụng khi
 chạy trên máy thật:
@@ -1032,7 +1032,7 @@ Debug là kỹ năng dùng hằng ngày, không phải thứ chỉ cần khi có
 trọng. Ba công cụ sau đủ để giải quyết phần lớn tình huống debug thường
 gặp khi mới bắt đầu.
 
-### Breakpoint — không chỉ có một loại
+### 2.3.1  Breakpoint — không chỉ có một loại
 
 Breakpoint (điểm dừng) tạm dừng chương trình tại một dòng code, cho phép
 kiểm tra trạng thái ứng dụng ngay lúc đó. Đặt breakpoint thường (nhấp
@@ -1058,7 +1058,7 @@ vì nhiều lỗi chỉ xuất hiện sau nhiều chu kỳ lặp (vòng quay má
 công hàng trăm lần, là khác biệt giữa debug trong 5 phút và debug trong
 nửa ngày.
 
-### Các cửa sổ debug — nhìn vào trạng thái chương trình
+### 2.3.2  Các cửa sổ debug — nhìn vào trạng thái chương trình
 
 Khi chương trình đang dừng tại breakpoint, các cửa sổ sau (mở qua menu
 **Debug → Windows**) cho biết đầy đủ trạng thái hiện tại:
@@ -1125,7 +1125,7 @@ không có nghĩa là không hiểu được **logic** — hai công cụ dướ
 cùng Breakpoint/Watch/Locals vừa học ở mục 2.3, cho phép lần theo hành vi
 thực tế của code mà không phụ thuộc vào việc đọc hiểu tên gọi.
 
-### Go To Definition (F12) — nhảy tới nơi định nghĩa
+### 2.4.1  Go To Definition (F12) — nhảy tới nơi định nghĩa
 
 Đặt con trỏ vào bất kỳ symbol (tên class, method, enum, field...) rồi nhấn
 **F12** (hoặc chuột phải → **Go To Definition**): Visual Studio nhảy thẳng
@@ -1141,7 +1141,7 @@ trong một cửa sổ nhỏ nổi ngay tại chỗ, không rời khỏi dòng c
 tiện khi chỉ cần liếc nhanh rồi quay lại, không cần điều hướng qua lại
 nhiều file.
 
-### Find All References (Shift+F12) — tìm mọi nơi symbol được dùng
+### 2.4.2  Find All References (Shift+F12) — tìm mọi nơi symbol được dùng
 
 Chuột phải vào một symbol → **Find All References** (hoặc **Shift+F12**):
 liệt kê *mọi* vị trí trong solution có gọi/dùng symbol đó. Đây là công cụ
@@ -1156,7 +1156,7 @@ quan trọng nhất khi tên gọi không đọc được, vì suy luận ý ngh
   `Start`: rất có thể là bước "khởi tạo cấu hình" nằm giữa hai bước quen
   thuộc).
 
-### Kết hợp với debugger để suy luận nghĩa qua HÀNH VI, không qua TÊN
+### 2.4.3  Kết hợp với debugger để suy luận nghĩa qua HÀNH VI, không qua TÊN
 
 Đặt breakpoint đúng đoạn nghi ngờ (mục 2.3), chạy máy thật hoặc simulator
 qua đúng bước cần hiểu, rồi đối chiếu hai nguồn thông tin cùng lúc:
@@ -1183,7 +1183,7 @@ qua đúng bước cần hiểu, rồi đối chiếu hai nguồn thông tin cù
 > ai nhớ rõ lý do thiết kế. Đây là kỹ năng đọc code nói chung, không riêng
 > tình huống rào cản ngôn ngữ.
 
-### Hai mẹo cho file quá dài để đọc hết
+### 2.4.4  Hai mẹo cho file quá dài để đọc hết
 
 Hai công cụ trên giải quyết bài toán "không đọc được tên". Còn bài toán thứ
 hai, gặp thường xuyên không kém: file dài **3000 dòng**, đọc tuần tự thì mất
@@ -1258,7 +1258,7 @@ là thứ bạn nên viết theo khi thêm code mới**. Mục này dạy cách 
 những dạng cũ tương đương để đọc hiểu, không nhầm chúng với thứ hoàn toàn
 xa lạ.
 
-### Bảng đối chiếu: dạng cũ hay gặp ↔ khái niệm đã học
+### 2.5.1  Bảng đối chiếu: dạng cũ hay gặp ↔ khái niệm đã học
 
 **Bảng 2.5 — Nhận diện pattern cũ qua khái niệm hiện đại tương ứng**
 
@@ -1335,7 +1335,7 @@ xa lạ.
 > khác trong mục này, mà là "đã xác nhận sai, cố ý giữ nguyên". Khi sửa code quanh biến này, đọc kỹ ý
 > nghĩa THẬT (qua cách nó được dùng) trước khi đổi giá trị, đừng suy luận từ tên.
 
-### Khi cả file cấu hình cũng dùng ngôn ngữ khác, không chỉ tên biến
+### 2.5.2  Khi cả file cấu hình cũng dùng ngôn ngữ khác, không chỉ tên biến
 
 Trường hợp khó nhất: không phải chỉ tên biến C# khó đọc, mà chính **tên
 trường trong file cấu hình** (XML/INI/JSON định nghĩa IO, recipe...) cũng
@@ -1351,7 +1351,7 @@ gán từ chuỗi đó** (nếu đã đặt tên tiếng Anh/Việt) hoặc **c�
 dùng tiếp theo** (so sánh với gì, hiển thị lên đâu, điều khiển IO nào) để
 suy luận ý nghĩa, giống hệt cách dùng ngữ cảnh đã học ở mục 2.4.
 
-### Đừng tin comment hay tên hàm tuyệt đối — chỉ hành vi mới đáng tin
+### 2.5.3  Đừng tin comment hay tên hàm tuyệt đối — chỉ hành vi mới đáng tin
 
 Comment và cả tên hàm **có thể sai**: một hàm được copy-paste từ hàm khác
 rồi đổi vài dòng logic bên trong nhưng quên đổi tên/comment, hoặc comment
@@ -1392,7 +1392,7 @@ nhiều năm tuổi, nhiều người sửa.
 > không phải bằng chứng cuối cùng về hành vi thật — đúng tinh thần "đừng tin tuyệt đối", chỉ mở rộng
 > từ cấp dòng code lên cấp tài liệu module.
 
-### Đọc một file rất dài (hàng nghìn dòng)
+### 2.5.4  Đọc một file rất dài (hàng nghìn dòng)
 
 Code kế thừa nhiều năm tuổi có thể dồn cả nghìn dòng vào một file/class
 duy nhất — đọc từ trên xuống dưới không khả thi. Hai công cụ Visual Studio
@@ -1705,13 +1705,13 @@ Sự khác biệt này quyết định trực tiếp hành vi điều khiển. H
 
 ```csharp
 // struct = value type: mỗi lần gán là một bản sao độc lập
-public struct AxisSnapshot
+public struct AxisReading
 {
     public double PositionMm;
     public bool   ServoOn;
 }
 
-var current = new AxisSnapshot { PositionMm = 120.5, ServoOn = true };
+var current = new AxisReading { PositionMm = 120.5, ServoOn = true };
 var copy = current;          // COPY toàn bộ giá trị
 copy.PositionMm = 999.0;     // chỉ đổi bản sao
 // current.PositionMm vẫn = 120.5 — an toàn, không ai sửa ngầm
@@ -5844,7 +5844,7 @@ Trong PLC, mỗi trạng thái máy gắn với một địa chỉ bit hoặc wo
 Trong C#, trạng thái đó là **thuộc tính của một object** với kiểm soát truy cập:
 
 ```csharp
-public class AxisState
+public class AxisRuntimeState
 {
     public bool ServoOn    { get; private set; }
     public double Position { get; private set; }   // mm
@@ -5852,7 +5852,7 @@ public class AxisState
 }
 ```
 
-`private set` đảm bảo chỉ class `AxisState` tự cập nhật thuộc tính của mình —
+`private set` đảm bảo chỉ class `AxisRuntimeState` tự cập nhật thuộc tính của mình —
 không ai bên ngoài được ghi trực tiếp. Trong PLC, không có cơ chế này; trong C#
 tốt, chỉ **State Machine hoặc Sequence mới được phép thay đổi trạng thái máy**.
 
@@ -10390,6 +10390,7 @@ người vận hành không thấy gì, còn nhật ký thì có ghi, và bạn 
 > sót** — đi bằng sự kiện. Vị trí trục, giá trị analog, thời gian chu kỳ đang trôi — những thứ đổi liên
 > tục và chỉ cần gần đúng — do một đồng hồ 200–500 ms đọc. Được cả hai mặt, và ranh giới rất dễ nhớ:
 > **bỏ sót có hại thì dùng sự kiện; bỏ sót vô hại thì dùng đồng hồ.**
+> (Cơ chế phát/nhận sự kiện — ai gọi ai, gỡ đăng ký ra sao để không rò bộ nhớ — nằm ở Chương 16 mục 16.1.)
 
 > ⚠️ Dù chọn cách nào, mọi cập nhật đến từ luồng khác **phải chuyển về luồng giao diện** (`BeginInvoke`
 > ở WinForms, `Dispatcher` ở WPF). Đây là lỗi số một khi lần đầu nối tầng máy vào màn hình — xem
@@ -16533,6 +16534,10 @@ Retry trong tự động hoá không thể mù. Phân loại thao tác trước 
 Command chỉ được phép retry khi có cơ chế command idempotency hoặc sequence number —
 kỹ thuật dùng trong robot/AGV/MES để đảm bảo lệnh trùng lặp không gây hành động lần 2.
 
+Retry là mắt xích đầu của một chuỗi ba lớp chịu lỗi; hai mắt xích còn lại — *Circuit Breaker* (ngắt
+khi thiết bị lỗi kéo dài) và *Bulkhead* (cách ly để một thiết bị hỏng không kéo theo phần còn lại) —
+nằm ở Chương 15 mục 15.2.5, cùng với cách một chuỗi retry thất bại chuyển thành cảnh báo cho người vận hành.
+
 **Code 13.12 — RetryPolicy, CommunicationException và Resilience.ExecuteWithRetryAsync**
 
 ```csharp
@@ -18774,6 +18779,20 @@ hơn — `SEHException` native **không bắt được bằng try/catch C# thôn
 kéo sập toàn bộ process điều khiển máy. Theo nguyên tắc R01 (Safety-First), một đường
 code có khả năng crash native không được phép nằm trong process điều khiển máy.
 
+> ⚠️ **Câu trên KHÔNG có nghĩa "cấm mọi mã native trong process điều khiển".** Nếu hiểu như vậy thì
+> Phụ lục A — cách gọi SDK C++ của card chuyển động bằng P/Invoke và C++/CLI — sẽ mâu thuẫn với chính
+> chương này. Ranh giới nằm ở chỗ khác, và nó có ba tiêu chí:
+>
+> | Câu hỏi | Nạp SDK card chuyển động (Phụ lục A) | Nạp `.vpp` in-process (mục này) |
+> |---|---|---|
+> | Có đường thay thế không? | **Không** — muốn điều khiển trục thì phải gọi SDK của hãng | **Có** — tách process, giao tiếp qua IPC |
+> | Rủi ro đã biết trước hay chưa? | Biết và **chặn được tại biên**: sai quy ước gọi, sai marshalling là lỗi *của bạn*, sửa được (Phụ lục A mục A.3.3) | Đã đo và **không sửa được từ phía bạn** — nằm trong thư viện của hãng trên nền .NET mới |
+> | Hỏng thì mất gì? | Mất khả năng điều khiển — nhưng đó là chức năng cốt lõi, không có nó thì máy vô nghĩa | Mất **cả** phần điều khiển vì một chức năng *phụ trợ* kéo sập theo |
+>
+> Nguyên tắc rút gọn để nhớ: **mã native bắt buộc thì đưa vào, nhưng phải làm đúng ở biên; mã native
+> tuỳ chọn mà đã biết có đường crash thì đẩy ra process riêng.** Cùng một nguyên tắc R01, hai kết luận
+> khác nhau vì hai bối cảnh khác nhau — không phải hai lời khuyên đối chọi.
+
 > 📌 **`SoapFormatter` — cùng họ với `BinaryFormatter`, còn cũ/nguy hiểm hơn.** Code .NET Framework
 > kế thừa đôi khi dùng `System.Runtime.Serialization.Formatters.Soap.SoapFormatter` (serialize object
 > ra XML theo chuẩn SOAP cũ) cho cùng mục đích DeepCopy/lưu file mà `BinaryFormatter` hay được dùng —
@@ -18812,12 +18831,13 @@ code có khả năng crash native không được phép nằm trong process đi�
 Điểm mấu chốt của kiến trúc tách process là **hợp đồng ranh giới trung lập** — payload
 không phụ thuộc vào implementation của cả hai phía:
 
-**Code 14.4 — VisionResult — payload trung lập giữa hai process**
+**Code 14.4 — VisionResultDto — payload trung lập giữa hai process**
 
 ```csharp
 // Đặt trong MeoFrame.Core (chia sẻ cho cả hai process)
 // Không reference bất cứ thư viện vendor nào
-public sealed record VisionResult(
+// Đây là DTO ĐƯỜNG TRUYỀN — KHÁC với record miền VisionResult ở Chương 13 mục 13.4.2
+public sealed record VisionResultDto(
     bool    Passed,
     double  Score,            // 0.0 – 1.0
     double  X,                // mm trong frame thống nhất (đã hiệu chuẩn px→mm)
@@ -18832,6 +18852,22 @@ public sealed record CheckResult(
     string Name, double Value, string Unit,
     double Low, double High, bool Passed);
 ```
+
+> 📌 **Vì sao không dùng thẳng `VisionResult` của Chương 13 (mục 13.4.2) làm payload?** Nhìn qua thì
+> tiếc: hai record chứa gần như cùng thông tin, gộp lại còn đỡ phải chuyển đổi. Nhưng chúng phục vụ
+> hai mục đích khác nhau, và trộn vào một kiểu là cách tự trói tay:
+>
+> - **`VisionResult` (miền)** dùng cho *quyết định trong máy*: nó nói `FoundPositionMm` là mi-li-mét ở
+>   hệ toạ độ máy, `FailReason` là mã lý do đã chuẩn hoá để vẽ Pareto. Nó được phép đổi khi *logic máy*
+>   đổi.
+> - **`VisionResultDto` (đường truyền)** là **hợp đồng giữa hai tiến trình** có thể chạy hai phiên bản
+>   .NET khác nhau và **cập nhật lệch nhau về thời gian**. Đổi nó là đổi giao thức: phải giữ tương
+>   thích ngược, phải nghĩ tới bên kia đang chạy bản cũ.
+>
+> Gộp hai thứ lại nghĩa là mỗi lần đổi logic hiển thị bên trong máy, bạn vô tình phá giao thức với
+> tiến trình thị giác — và triệu chứng sẽ là "sau khi cập nhật phần điều khiển thì thị giác trả về
+> rỗng". Một hàm ánh xạ ngắn giữa hai kiểu là cái giá rất rẻ để mua lấy quyền đổi mỗi bên độc lập.
+> Đây cũng chính là ranh giới mà mục 14.2.8b gọi là *bí danh — quan hệ, không phải tên gọi*.
 
 **Code 14.5 — IPC client: gửi lệnh, chờ kết quả, tự reconnect**
 
@@ -18850,7 +18886,7 @@ public sealed class VisionIpcClient : IAsyncDisposable
         _logger = logger;
     }
 
-    public async Task<VisionResult> InspectAsync(
+    public async Task<VisionResultDto> InspectAsync(
         string jobName, string correlationId,
         CancellationToken ct = default)
     {
@@ -18874,7 +18910,7 @@ public sealed class VisionIpcClient : IAsyncDisposable
             var line = await _reader!.ReadLineAsync(toCts.Token).ConfigureAwait(false)
                        ?? throw new IOException("Vision host closed connection");
 
-            return JsonSerializer.Deserialize<VisionResult>(line, JsonOptions)
+            return JsonSerializer.Deserialize<VisionResultDto>(line, JsonOptions)
                    ?? throw new InvalidDataException("Empty vision result");
         }
         finally { _lock.Release(); }
@@ -21773,10 +21809,20 @@ Hệ thống automation chạy 24/7 phải chịu được lỗi tạm thời �
 
 Thử lại thao tác thất bại với thời gian chờ tăng dần — tránh làm quá tải thiết bị bằng retry liên tục:
 
+> 📌 **Đây là bản rút gọn của cùng một thứ đã dựng đầy đủ ở Chương 13 mục 13.3.3 — cố ý.** Chương 13
+> xây `RetryPolicy` như một *đối tượng chính sách* (phân loại ngoại lệ nào đáng thử lại, giới hạn trần
+> chờ, thêm jitter) vì ở đó vấn đề là **driver thiết bị**. Ở đây ta chỉ cần đúng phần *nhịp chờ tăng
+> dần* để ghép nó vào bộ ba chịu lỗi Retry → Circuit Breaker → Bulkhead. Trong dự án mẫu chỉ tồn tại
+> **một** lớp `RetryPolicy` — bản của Chương 13; đoạn dưới là phần lõi của nó viết gọn cho dễ đọc.
+>
+> Và ràng buộc quan trọng nhất không nằm trong đoạn mã này mà ở **Bảng 13.3**: *lệnh gây chuyển động
+> vật lý thì không được retry* dù backoff có đẹp đến đâu. Retry chỉ dành cho đọc trạng thái và cho lỗi
+> giao tiếp tạm thời.
+
 **Code 15.9 — Retry với Exponential Backoff — an toàn cho hardware communication**
 
 ```csharp
-// MeoFrame.Infrastructure/Resilience/RetryPolicy.cs
+// Lõi backoff của MeoFrame.Infrastructure/Resilience/RetryPolicy.cs (bản đầy đủ: Chương 13 mục 13.3.3)
 public static class RetryPolicy
 {
     /// <summary>Retry tối đa maxRetries lần, backoff nhân đôi mỗi lần.</summary>
@@ -23578,7 +23624,7 @@ con, lá là công việc thật. Đây là cách thứ tư để tổ chức tr
 máy trạng thái (mục 12.1) và đồ thị nút (Phụ lục B mục B.3.2) — và nó xuất hiện trong một khung máy mã
 nguồn mở đủ trưởng thành để đáng đọc.
 
-### Hình dạng của nó
+### 16.4.1  Hình dạng của nó
 
 Chỉ có hai loại nút, và một API dựng cây kiểu nối chuỗi:
 
@@ -23613,7 +23659,7 @@ var chuKy = new Sequence()
     .Hire(new Leaf(() => _camera.ChupAsync()));
 ```
 
-### Ba thứ cấu trúc cây cho không
+### 16.4.2  Ba thứ cấu trúc cây cho không
 
 **1. Mỗi nút tự biết vị trí của mình trong cây.** Khi một nhánh nhận nút con, nó đặt tên con theo tên
 mình cộng số thứ tự — nút thứ hai trong nhánh thứ ba sẽ mang tên `3.2`. Không ai phải đánh số bước bằng
@@ -23641,7 +23687,7 @@ trạng thái chặn/không chặn; nhiều nút cùng tham chiếu **một** `B
 > tuỳ chọn theo mã hàng, ví dụ trạm dán nhãn không dùng cho sản phẩm này). Đừng để một cơ chế duy nhất
 > phục vụ cả hai ý nghĩa: người viết trình tự sẽ chọn nhầm, và nhầm về phía nguy hiểm.
 
-### Khi nào nên dùng, khi nào không
+### 16.4.3  Khi nào nên dùng, khi nào không
 
 | | Danh sách bước phẳng | Cây tác vụ |
 |---|---|---|
@@ -23656,7 +23702,7 @@ Kết luận thực dụng: **máy một trạm, trình tự dưới ba mươi b
 Cây tác vụ bắt đầu trả công khi máy có nhiều cơ cấu chạy song song, hoặc khi cùng một nhóm bước được
 dùng lại ở nhiều chỗ.
 
-### Và một lỗi trong chính khung đó, đáng học hơn cả phần thiết kế
+### 16.4.4  Và một lỗi trong chính khung đó, đáng học hơn cả phần thiết kế
 
 Nút lá bắt mọi ngoại lệ và trả về `false`:
 
@@ -23723,7 +23769,7 @@ new WaitForCondition(
     pollingInterval: 50);                        //    (nhịp hỏi lại)
 ```
 
-### Tham số quan trọng nhất là cái ít người nghĩ tới: "phải giữ đúng trong bao lâu"
+### 16.5.1  Tham số quan trọng nhất là cái ít người nghĩ tới: "phải giữ đúng trong bao lâu"
 
 Ba tham số quen thuộc — hết giờ, hai vế so sánh, phép so. Tham số thứ hai mới là thứ phân biệt một lệnh
 chờ dùng được với một lệnh chờ gây lỗi ngẫu nhiên: **điều kiện phải đúng và GIỮ đúng liên tục trong một
@@ -23747,7 +23793,7 @@ Quy tắc chọn giá trị, đủ dùng cho hầu hết trường hợp:
 | Đại lượng analog vượt ngưỡng | 100–500 ms, tuỳ quán tính |
 | Cờ bắt tay giữa các trạm (mục 16.3) | **0** — cờ phần mềm không dội |
 
-### Ba điều nữa mà cài đặt đó dạy được — hai điều đúng, một điều sai
+### 16.5.2  Ba điều nữa mà cài đặt đó dạy được — hai điều đúng, một điều sai
 
 **Đúng 1 — mỗi lệnh tự ghi thời điểm bắt đầu và kết thúc.** Lớp cơ sở của lệnh có sẵn `StartTime` và
 `StopTime`. Nghĩa là **mọi bước trong máy đều tự đo thời gian của mình**, miễn phí. Đây là nguồn dữ liệu
@@ -24063,7 +24109,7 @@ thế restart".
 
 ## 17.1 Git Workflow cho team Automation
 
-### Nhắc nhanh: Git quản lý gì
+### 17.1.1  Nhắc nhanh: Git quản lý gì
 
 Ba khái niệm đủ dùng cho phần còn lại của chương:
 
@@ -24085,7 +24131,7 @@ môi trường nhà máy vốn không phải lúc nào cũng có Internet.
 > tiếp — có rất nhiều hướng dẫn miễn phí, và không có gì đặc thù
 > automation trong những lệnh đó.
 
-### Mô hình nhánh cho đội nhỏ — không cần Gitflow đầy đủ
+### 17.1.2  Mô hình nhánh cho đội nhỏ — không cần Gitflow đầy đủ
 
 <!--idx:Branch-->
 
@@ -24153,7 +24199,7 @@ commit lại bình thường. Đây cũng là lý do mỗi thành phần quan tr
 (Axis, Recipe, Alarm) nên tách thành file riêng — giảm xác suất hai
 người cùng sửa cùng một file cùng lúc.
 
-### Theo dõi nhiều phiên bản máy bằng tag và nhánh
+### 17.1.3  Theo dõi nhiều phiên bản máy bằng tag và nhánh
 
 <!--idx:Tag-->
 
@@ -24211,7 +24257,7 @@ vẫn là bản chạy sản xuất cho đến khi hotfix được duyệt và t
 > phù hợp với đội nhỏ 2-5 kỹ sư đã mô tả ở đầu chương — mô hình một repo
 > + tag/branch vẫn là lựa chọn mặc định cho quy mô đó.
 
-### File nhị phân của TwinCAT/CODESYS: `.gitattributes`
+### 17.1.4  File nhị phân của TwinCAT/CODESYS: `.gitattributes`
 
 Git vốn thiết kế cho file text — nó so sánh (diff) và hợp nhất (merge)
 theo dòng. Nhiều công cụ automation (TwinCAT XAE, CODESYS) lưu project ở
@@ -24278,7 +24324,7 @@ GitHub cung cấp sẵn template `.gitignore` cho .NET (tìm "VisualStudio.gitig
 trong kho `github/gitignore`) — dùng làm điểm khởi đầu rồi bổ sung theo
 nhu cầu riêng của dự án.
 
-### Git khi IPC không có Internet (air-gapped)
+### 17.1.5  Git khi IPC không có Internet (air-gapped)
 
 <!--idx:Air-gapped-->
 
@@ -24368,7 +24414,7 @@ lại phải nhớ "lần trước mình làm kiểu gì".
 
 <!--idx:CI/CD-->
 
-### Hiểu đúng CI/CD cho automation — không phải "deploy lên cloud"
+### 17.2.1  Hiểu đúng CI/CD cho automation — không phải "deploy lên cloud"
 
 Nghe "CI/CD", nhiều người hình dung ngay Docker, Kubernetes, tự động
 deploy lên AWS mỗi khi push code — đúng với phần mềm web, nhưng sai hoàn
@@ -24396,7 +24442,7 @@ CI/CD làm tốt nhất là đảm bảo *cái sắp triển khai đã được 
 cách và đã qua kiểm tra tự động* — nó không quyết định *khi nào* triển
 khai.
 
-### Chọn công cụ theo quy mô đội
+### 17.2.2  Chọn công cụ theo quy mô đội
 
 <!--idx:Gitea-->
 
@@ -24453,7 +24499,7 @@ Bước `test` chạy được bao nhiêu và có ý nghĩa đến đâu phụ t
 toàn vào cách bạn viết unit test cho code điều khiển — đó là chủ đề
 trọn vẹn của Chương 18.
 
-### Artifact: đóng gói một lần, dùng cho mọi môi trường
+### 17.2.3  Artifact: đóng gói một lần, dùng cho mọi môi trường
 
 <!--idx:Artifact-->
 
@@ -24508,7 +24554,7 @@ nhất, cần một cách tiếp cận khác hẳn so với deploy web.
 
 ## 17.3 Deployment lên máy trạm công nghiệp
 
-### Vì sao IPC không triển khai như server cloud
+### 17.3.1  Vì sao IPC không triển khai như server cloud
 
 Khi deploy một web service, restart vài giây không ai để ý. Với IPC chạy
 HMI cho một dây chuyền đang sản xuất, restart đồng nghĩa: dừng máy, có
@@ -24523,7 +24569,7 @@ Start trở lại. Ba khác biệt cốt lõi:
 3. **Rollback phải nhanh và chắc chắn** — nếu bản mới lỗi giữa ca sản
    xuất, mỗi phút downtime đều có giá trị đo được bằng tiền.
 
-### Chiến lược kiểu Blue/Green — bằng một thao tác đổi thư mục
+### 17.3.2  Chiến lược kiểu Blue/Green — bằng một thao tác đổi thư mục
 
 <!--idx:Blue/Green Deployment-->
 
@@ -24591,7 +24637,7 @@ Giữ tối thiểu **hai phiên bản** trên đĩa (bản đang chạy + bản
 là đủ cho đa số trường hợp — không cần giữ toàn bộ lịch sử version trên
 IPC, artifact cũ hơn đã có bản lưu ở kho artifact mạng (mục 17.2).
 
-### Đưa file lên máy: từ xa và tại chỗ
+### 17.3.3  Đưa file lên máy: từ xa và tại chỗ
 
 - **Có VPN/mạng nội bộ tới được IPC**: `robocopy` (đáng tin cậy hơn copy
   thường vì có retry, log, và chỉ copy phần đã đổi) hoặc `scp` nếu IPC
@@ -24607,7 +24653,7 @@ Get-FileHash D:\MeoFrame_v2.4.2.zip -Algorithm SHA256
 # Đối chiếu với MeoFrame_v2.4.2.zip.sha256 sinh ra lúc build (mục 17.2)
 ```
 
-### Windows Service, Task Scheduler, hay chạy tay?
+### 17.3.4  Windows Service, Task Scheduler, hay chạy tay?
 
 <!--idx:Windows Service-->
 
@@ -24649,7 +24695,7 @@ cạnh để đặt breakpoint như ở Chương 2. Ghi đủ log, đủ dấu v
 
 ---
 
-### Bộ cài đặt cho lần cài đầu tiên — thứ khác hẳn với cập nhật
+### 17.3.5  Bộ cài đặt cho lần cài đầu tiên — thứ khác hẳn với cập nhật
 
 Phần trên nói về **cập nhật** một máy đã chạy: đổi thư mục, giữ bản cũ để lùi lại. Nhưng lần **cài đầu
 tiên trên một máy tính mới** là một bài toán khác, và chép thư mục không giải quyết được nó: cần lối tắt
@@ -24727,7 +24773,7 @@ nhất trả lời được — chứ không phải trí nhớ của ai đó.
 
 ---
 
-### Khôi phục máy tính công nghiệp — và câu chuyện phần mềm diệt vi-rút
+### 17.3.6  Khôi phục máy tính công nghiệp — và câu chuyện phần mềm diệt vi-rút
 
 Có một chi tiết đáng chú ý trong sách hướng dẫn của máy sản xuất thật: cuối tài liệu, sau phần mô tả
 giao diện và danh sách mã lỗi của driver servo, nhà cung cấp dành hẳn hai phụ lục cho **quy trình sao
@@ -24808,16 +24854,16 @@ Ba mục trên trình bày cách làm đúng. Mục này nói thẳng về kho�
 vì biết trước sẽ giúp bạn chọn trận đánh — thay vì đề xuất một quy trình đầy đủ trong tuần đầu đi làm
 rồi bị từ chối và mất luôn cơ hội cải thiện.
 
-Khảo sát **12 dự án phần mềm máy tự động hoá thật** trong nhà máy điện tử:
+Khảo sát **13 dự án phần mềm máy tự động hoá thật** trong nhà máy điện tử:
 
 **Bảng 17.6b — Thực trạng quản lý mã nguồn và tự động hoá build**
 
 | Hạng mục | Kết quả |
 |---|---|
-| Có kho Git | **8** / 12 (4 dự án chỉ có thư mục chép tay) |
+| Có kho Git | **9** / 13 (4 dự án chỉ có thư mục chép tay) |
 | Số commit | Trải rất rộng: **6** commit ở dự án ít nhất, **739** ở dự án nhiều nhất |
-| Có dùng **tag** để đánh dấu phiên bản đã giao | **0** / 12 |
-| Có CI tự động | **1** / 12 |
+| Có dùng **tag** để đánh dấu phiên bản đã giao | **0** / 13 |
+| Có CI tự động | **1** / 13 |
 | CI đó có chạy test | Không — chỉ `restore` + `build` |
 
 
@@ -24874,7 +24920,7 @@ khả năng biết mình vừa sửa gì.
 > Xoá hẳn, commit với thông điệp nói rõ vì sao xoá. Nếu lo quên, gắn thêm một tag hoặc ghi số commit
 > vào tài liệu — vẫn gọn hơn là để code chết trong file đang đọc hằng ngày.
 
-### Bậc thang áp dụng — theo thứ tự lợi ích trên công sức
+### 17.4.1  Bậc thang áp dụng — theo thứ tự lợi ích trên công sức
 
 **Bảng 17.7b — Nên làm gì trước khi đội chưa có gì**
 
@@ -25809,18 +25855,18 @@ dotnet test --filter "Category=Integration"  # Chạy thủ công trên lab mach
 Cả chương này trình bày cách viết test đúng. Trước khi khép lại, cần một đoạn trung thực về điều bạn
 sẽ thật sự gặp khi vào làm, vì khoảng cách giữa hai thứ đó rất lớn và biết trước sẽ đỡ hụt hẫng.
 
-Khảo sát **12 dự án phần mềm máy tự động hoá thật** đang hoặc đã chạy trong nhà máy điện tử (máy lắp
+Khảo sát **13 dự án phần mềm máy tự động hoá thật** đang hoặc đã chạy trong nhà máy điện tử (máy lắp
 ráp nhiều trạm, máy bonding, máy kiểm tra thị giác, máy hiệu chỉnh có phản hồi lực, và vài framework
 dùng chung), tìm dấu vết của các thuộc tính test (`[Fact]`, `[Test]`, `[TestMethod]`, `[Theory]`):
 
-**Bảng 18.7b — Kiểm thử tự động trong 12 dự án phần mềm máy thật**
+**Bảng 18.7b — Kiểm thử tự động trong 13 dự án phần mềm máy thật**
 
 | Tình trạng | Số dự án |
 |---|---|
-| Có test viết bằng **khung kiểm thử** (xUnit), 192 phép kiểm | **1** / 12 |
-| Có test **tự viết không dùng khung**, 31 phép kiểm — cách đếm ở trên bỏ sót (xem mục ngay dưới) | **1** / 12 |
-| Có test project nhưng **rỗng** — dựng lên rồi bỏ | 2 / 12 |
-| Không tìm thấy gì | 8 / 12 |
+| Có test viết bằng **khung kiểm thử** (xUnit), 192 phép kiểm | **1** / 13 |
+| Có test **tự viết không dùng khung**, 31 phép kiểm — cách đếm ở trên bỏ sót (xem mục ngay dưới) | **1** / 13 |
+| Có test project nhưng **rỗng** — dựng lên rồi bỏ | 2 / 13 |
+| Không tìm thấy gì | 9 / 13 |
 
 > ⚠️ **Con số này là GIỚI HẠN DƯỚI, không phải con số thật — và lý do rất quan trọng.** Khảo sát chỉ
 > nhìn được phần **mã nguồn được bàn giao**, mà nhiều đội **không đóng gói project kiểm thử cùng sản
@@ -25956,7 +26002,7 @@ bậc, và bạn dừng ở bất kỳ bậc nào cũng vẫn có lãi:
 > Nó cũng là nơi bắt được lỗi có hậu quả nặng nhất — một trạng thái quên xử lý lệnh Dừng khẩn thì
 > không có cách nào phát hiện bằng chạy thử tay, vì bạn không bao giờ thử đủ tổ hợp.
 
-> ⚠️ **Test project rỗng còn tệ hơn không có.** Hai trong 12 dự án có sẵn một project test nhưng
+> ⚠️ **Test project rỗng còn tệ hơn không có.** Hai trong 13 dự án có sẵn một project test nhưng
 > không chứa test nào — dựng lên trong tuần đầu rồi bỏ. Nó tạo ấn tượng sai cho người mới tiếp quản
 > ("dự án này có test"), và làm hỏng luôn thói quen chạy `dotnet test` vì lệnh đó luôn báo xanh mà
 > không kiểm tra gì. Hoặc viết test thật, hoặc xoá project đó đi.
@@ -25966,7 +26012,7 @@ bậc, và bạn dừng ở bất kỳ bậc nào cũng vẫn có lãi:
 ## Tổng kết chương
 
 - **Chi phí lỗi automation** tăng theo cấp số nhân từ dev đến production — unit test là lớp phòng thủ rẻ nhất và chạy mỗi commit.
-- **Khả năng test là hệ quả của kiến trúc, không phải của kỷ luật** (mục 18.6.4): khảo sát 12 dự án máy thật cho thấy chỉ 1 có test đang chạy — và đó là dự án duy nhất có chế độ giả lập ở cấp hệ thống, thiết bị sau interface, và cấu hình nạp được từ luồng dữ liệu bất kỳ. Nếu hôm nay bạn có 0 test, bắt đầu từ bảng chuyển trạng thái (bậc 1) — một buổi, không cần đổi kiến trúc.
+- **Khả năng test là hệ quả của kiến trúc, không phải của kỷ luật** (mục 18.6.4): khảo sát 13 dự án máy thật cho thấy chỉ 1 có test đang chạy — và đó là dự án duy nhất có chế độ giả lập ở cấp hệ thống, thiết bị sau interface, và cấu hình nạp được từ luồng dữ liệu bất kỳ. Nếu hôm nay bạn có 0 test, bắt đầu từ bảng chuyển trạng thái (bậc 1) — một buổi, không cần đổi kiến trúc.
 - **xUnit** với `[Fact]` và `[Theory]` + `[InlineData]` là bộ công cụ chuẩn hiện đại cho .NET; `[Theory]` đặc biệt phù hợp với bảng transition state machine.
 - **Moq** mock interface (không phải class cụ thể) — cho phép test `Axis`, `GuardEngine`, `AlarmService` hoàn toàn không cần phần cứng, bằng cách hoán đổi driver thật bằng mock.
 - **Async test:** khai báo `async Task` là đủ — tuyệt đối không dùng `.Result` hay `.Wait()` trong test code.
@@ -26044,7 +26090,7 @@ nữa (19.4).
 
 ## 19.1 Production Debugging — khi không có Visual Studio
 
-### Vì sao breakpoint không phải câu trả lời
+### 19.1.1  Vì sao breakpoint không phải câu trả lời
 
 Đặt breakpoint tạm dừng đúng một luồng (thread) — nhưng trong một ứng
 dụng automation, các luồng không độc lập với nhau:
@@ -26063,7 +26109,7 @@ hơn. Bộ công cụ dòng lệnh dưới đây thay thế bằng cách **quan 
 can thiệp**: đọc số liệu hoặc ghi lại sự kiện mà không dừng bất kỳ luồng
 nào.
 
-### `dotnet-counters` — xem chỉ số runtime theo thời gian thực
+### 19.1.2  `dotnet-counters` — xem chỉ số runtime theo thời gian thực
 
 `dotnet-counters` là công cụ dòng lệnh của .NET (cài qua
 `dotnet tool install --global dotnet-counters`), chạy trực tiếp trên
@@ -26097,7 +26143,7 @@ ngay đang nghẽn ở CPU, memory, hay thread pool, thay vì đoán mò.
 > trong các con số này. Nếu nghi ngờ rò rỉ ở tầng native, cần Task
 > Manager hoặc Process Explorer để xem tổng memory thật của process.
 
-### `dotnet-trace` — ghi lại một khoảng thời gian để phân tích sau
+### 19.1.3  `dotnet-trace` — ghi lại một khoảng thời gian để phân tích sau
 
 <!--idx:dotnet-trace-->
 
@@ -26139,7 +26185,7 @@ Studio (CPU Usage tool đọc được cả trace ngoại nhập, không chỉ t
 thu) — đúng mô hình "thu tại hiện trường, phân tích tại phòng dev" mà
 không cần cài IDE nặng nề lên máy sản xuất.
 
-### Windows Event Viewer và log file — điểm khởi đầu rẻ nhất
+### 19.1.4  Windows Event Viewer và log file — điểm khởi đầu rẻ nhất
 
 Trước khi chạm tới hai công cụ trên, luôn kiểm tra hai nguồn miễn phí có
 sẵn:
@@ -26166,7 +26212,7 @@ Get-WinEvent -LogName Application -MaxEvents 20 |
 > còn Event Viewer với một dòng .NET Runtime khô khan, không có ngữ cảnh máy. Đây là
 > việc phải làm **trước khi** máy ra hiện trường, không phải sau khi gặp sự cố.
 
-### Lớp lỗi chỉ xuất hiện ngoài hiện trường: đường dẫn và môi trường
+### 19.1.5  Lớp lỗi chỉ xuất hiện ngoài hiện trường: đường dẫn và môi trường
 
 Một nhóm lỗi rất đặc trưng của phần mềm máy: **chạy hoàn hảo trên máy lập trình
 viên, hỏng ngay trên máy công nghiệp** — và không phải vì logic sai, mà vì môi
@@ -26227,7 +26273,7 @@ rà soát thành danh mục riêng trước khi bàn giao:
 > lỗi trong bảng trên lộ ra ngay trong mười phút đầu. Đây cũng chính là mục cuối
 > trong danh mục kiểm bàn giao ở Phụ lục B mục B.5.
 
-### Code tồn tại không đồng nghĩa code đang hoạt động
+### 19.1.6  Code tồn tại không đồng nghĩa code đang hoạt động
 
 Một trong những bài học khó chấp nhận nhất khi debug production: đọc
 source code thấy đầy đủ logic giám sát an toàn (kiểm tra E-Stop, cửa an
@@ -26342,7 +26388,7 @@ lịch sử vẫn còn trong Git), không để lại "phòng khi cần" lẫn v
 
 <!--idx:dotnet-dump-->
 
-### Khi nào cần dump
+### 19.2.1  Khi nào cần dump
 
 Ba tình huống dump là công cụ đúng, còn `dotnet-counters`/`dotnet-trace`
 không đủ:
@@ -26376,7 +26422,7 @@ dotnet tool install --global dotnet-dump
 dotnet-dump collect --process-id 4821 --output MeoFrame_2026-07-05.dmp
 ```
 
-### Phân tích: tìm deadlock giữa các luồng
+### 19.2.2  Phân tích: tìm deadlock giữa các luồng
 
 Tình huống rất điển hình trong automation: luồng UI (cập nhật HMI) và
 luồng nền (đọc PLC theo chu kỳ) tranh chấp cùng một `lock`, mỗi luồng
@@ -26426,7 +26472,7 @@ Chương 5.
 > nhưng đòi hỏi làm quen với cú pháp lệnh riêng, nằm ngoài phạm vi nhập
 > môn của chương này.
 
-### Rò rỉ bộ nhớ thường gặp trong automation
+### 19.2.3  Rò rỉ bộ nhớ thường gặp trong automation
 
 `dumpheap -stat` cho danh sách object theo số lượng và tổng kích thước:
 
@@ -26476,7 +26522,7 @@ không cần nữa**:
 
 ## 19.3 Profiling & Performance Tuning
 
-### GC pressure — thủ phạm quen thuộc trong vòng điều khiển
+### 19.3.1  GC pressure — thủ phạm quen thuộc trong vòng điều khiển
 
 Chương 3 và Chương 5 đã giải thích Garbage Collector và GC pause; ở đây
 chỉ nhắc lại hệ quả trực tiếp: mỗi lần cấp phát object mới trên heap
@@ -26517,7 +26563,7 @@ giảm allocation trong hot path: `SustainedLowLatency` giảm tần suất và
 > phù hợp nhất; đo lại bằng `dotnet-counters` (mục 19.1) sau khi đổi để
 > xác nhận số lần GC Gen2 giảm thật, không chỉ tin theo lý thuyết.
 
-### Đo trước khi tối ưu
+### 19.3.2  Đo trước khi tối ưu
 
 Cách sai phổ biến nhất: tối ưu theo cảm tính ("chắc do LINQ") mà không
 đo. Hai công cụ đúng việc:
@@ -26588,7 +26634,7 @@ public void Setup() =>
 public void Cleanup() => _recipeRepository?.Dispose();
 ```
 
-### Kỹ thuật giảm allocation trong hot path
+### 19.3.3  Kỹ thuật giảm allocation trong hot path
 
 Khi đã xác định đúng chỗ (không đoán), ba kỹ thuật thường dùng cho vòng
 điều khiển tần suất cao:
@@ -26619,7 +26665,7 @@ finally
 }
 ```
 
-### Bẫy thường gặp cần nhớ
+### 19.3.4  Bẫy thường gặp cần nhớ
 
 - **JSON serialize/deserialize trong đường dữ liệu thời gian thực** —
   mỗi lần serialize là một loạt allocation; nếu tần suất cao, cân nhắc
@@ -26635,7 +26681,7 @@ finally
 
 ## 19.4 Logging & Tracing chuẩn công nghiệp
 
-### Structured logging — log để query được, không phải để đọc bằng mắt
+### 19.4.1  Structured logging — log để query được, không phải để đọc bằng mắt
 
 <!--idx:Structured Logging-->
 
@@ -26747,7 +26793,7 @@ là lọc ra được toàn bộ hành trình của một thao tác cụ thể x
 thành phần, thay vì phải đối chiếu thời gian giữa nhiều file log rời
 rạc.
 
-### Log level — đúng mức, không phải càng nhiều càng tốt
+### 19.4.2  Log level — đúng mức, không phải càng nhiều càng tốt
 
 **Bảng 19.3 — Log level cho phần mềm automation**
 
@@ -26764,7 +26810,7 @@ không ai đọc kịp, và bản thân việc ghi log tần suất cao cũng t�
 I/O — quy tắc thực dụng: `Information` trở lên chạy thường trực, `Debug`
 chỉ bật tạm thời khi đang điều tra một sự cố cụ thể.
 
-### Bão nhật ký — khi một sự cố sinh ra mười nghìn dòng giống nhau
+### 19.4.3  Bão nhật ký — khi một sự cố sinh ra mười nghìn dòng giống nhau
 
 Mục trên chọn **mức** cho từng dòng nhật ký. Mục này giải quyết một vấn đề khác, và là vấn đề bạn chỉ
 gặp khi phần mềm đã chạy thật: **một sự cố duy nhất sinh ra hàng chục nghìn dòng giống hệt nhau**.
@@ -26839,7 +26885,7 @@ chặn nghiệp vụ"*, nhưng nếu hàm ghi gọi thẳng xuống cơ sở d�
 > **cảnh báo trên màn hình** (đã có cơ chế riêng, chống lũ theo cách khác — Chương 15 mục 15.1.6).
 > Ba dòng dữ liệu này phục vụ ba mục đích khác nhau và phải có ba chính sách khác nhau.
 
-### OpenTelemetry — khi log/Correlation ID không còn đủ
+### 19.4.4  OpenTelemetry — khi log/Correlation ID không còn đủ
 
 Seq và Correlation ID (mục trên) đủ dùng khi hệ thống còn gọn — một vài
 service, log tập trung về một nơi. Khi quy mô lớn hơn (nhiều máy, nhiều
@@ -26877,7 +26923,7 @@ correlation tự động giữa nhiều máy trong cùng dây chuyền — khôn
 thiết cho một dự án đơn lẻ, và là chủ đề đủ lớn cho một tài liệu riêng,
 nằm ngoài phạm vi cuốn sách này.
 
-### Health Check endpoint — để hệ thống giám sát tự hỏi thay người
+### 19.4.5  Health Check endpoint — để hệ thống giám sát tự hỏi thay người
 
 <!--idx:Health Check-->
 
@@ -26965,7 +27011,7 @@ biết để can thiệp trước khi nó chuyển thành Unhealthy giữa ca.
 > tag chỉ để trả lời "còn sống không". Bản thân health check không được
 > trở thành nguồn tải thêm cho hệ thống nó đang giám sát.
 
-### Watchdog cấp tiến trình — phát hiện GC pause dài hoặc OS treo thread
+### 19.4.6  Watchdog cấp tiến trình — phát hiện GC pause dài hoặc OS treo thread
 
 Health Check ở trên (Code 19.10) trả lời "PLC còn phản hồi không" — một
 câu hỏi hướng ra ngoài. Có một câu hỏi hướng vào trong ít được hỏi hơn
@@ -27340,7 +27386,7 @@ P/Invoke        ▼
         wrapper đó    (mục A.2)
 ```
 
-### Vì sao P/Invoke không xử lý được thư viện C++ class
+### A.1.1  Vì sao P/Invoke không xử lý được thư viện C++ class
 
 `[DllImport]` được thiết kế cho hàm C thuần — một chữ ký hàm với kiểu
 dữ liệu đơn giản, không có khái niệm "đối tượng". Ba lý do khiến nó bó
@@ -27411,7 +27457,7 @@ Phần này chỉ dạy đúng lượng cú pháp C++/CLI cần để viết m�
 không phải giáo trình C++/CLI đầy đủ (kiểu dữ liệu, exception, STL/CLR
 nằm ngoài phạm vi automation, tự tra tài liệu C++/CLI khi cần).
 
-### Bốn thứ cần biết trước khi viết wrapper
+### A.2.1  Bốn thứ cần biết trước khi viết wrapper
 
 - **`ref class`** — khai báo một class managed (sống trên .NET heap, do
   GC quản lý); đây là kiểu bạn dùng để lộ API ra ngoài cho C#.
@@ -27428,7 +27474,7 @@ nằm ngoài phạm vi automation, tự tra tài liệu C++/CLI khi cần).
   buffer lớn (frame ảnh, mẫu DAQ) từ native sang managed array — cả hai
   đều được minh hoạ trong Code A.2b bên dưới.
 
-### Ví dụ: wrap một SDK camera C++ thành `ICameraDriver`
+### A.2.2  Ví dụ: wrap một SDK camera C++ thành `ICameraDriver`
 
 **Code A.2 — `CameraWrapper.h` (project C++/CLI, .NET Class Library)**
 
@@ -27564,7 +27610,7 @@ khảo dùng cho cuốn sách này, tổng số dòng `[DllImport]` vượt **20
 chúng do hãng card phát hành kèm SDK, hoặc do người tiền nhiệm chép về. Việc của bạn là **đọc được**,
 đủ để biết một hàm nhận gì, trả gì, và vì sao gọi nó lại ra giá trị lạ.
 
-### Giải phẫu một dòng khai báo
+### A.3.1  Giải phẫu một dòng khai báo
 
 Bắt đầu từ dạng đơn giản nhất — thường thấy ở SDK card của Googol (họ GTS):
 
@@ -27591,7 +27637,7 @@ public static extern short GT_Open(short cardNum, short channel, short param);
    `int`: SDK viết bằng C dùng `short`/`WORD` để tiết kiệm, và **kiểu phải khớp chính xác** với chữ ký
    hàm gốc, nếu không dữ liệu bị lệch byte trên stack.
 
-### Bốn tuỳ chọn hay gặp trong `[DllImport]`
+### A.3.2  Bốn tuỳ chọn hay gặp trong `[DllImport]`
 
 Dạng đầy đủ hơn — thường thấy ở SDK card của Leadshine (họ DMC/LTDMC):
 
@@ -27621,7 +27667,7 @@ Cách biết chọn cái nào: **đọc header `.h` của hãng**. Nếu chữ k
 `WINAPI` → `StdCall`; nếu có `__cdecl` hoặc không ghi gì trong một thư viện C thuần → `Cdecl`. Không
 đoán: sai quy ước là loại lỗi *chạy được vài lần rồi crash*, cực khó chẩn đoán.
 
-### Marshalling: bốn tình huống khiến người mới sai
+### A.3.3  Marshalling: bốn tình huống khiến người mới sai
 
 **Tình huống 1 — `bool` không phải `bool`.**
 
@@ -27708,7 +27754,7 @@ field** khi truyền sang native:
 public struct TrapProfileParam { public double acc; public double dec; public short smoothTime; }
 ```
 
-### Các họ card chuyển động thường gặp ngoài hiện trường
+### A.3.4  Các họ card chuyển động thường gặp ngoài hiện trường
 
 Trường học hầu như không dạy phần này, mà hiện trường thì gặp hằng ngày. Bảng dưới liệt kê các họ card
 xuất hiện trong các dự án tham khảo của sách, để bạn nhận diện được ngay khi mở một solution lạ và
@@ -27731,7 +27777,7 @@ thấy tên file quen quen.
 > analog của hãng khác) — khi đó số hiệu trục và số hiệu kênh analog là hai hệ đánh số hoàn toàn độc
 > lập, đừng lẫn.
 
-### Ba việc cần làm khi *thêm* một hàm SDK chưa được khai báo
+### A.3.5  Ba việc cần làm khi *thêm* một hàm SDK chưa được khai báo
 
 Đây là nhiệm vụ thực tế hay gặp nhất: hàm bạn cần có trong tài liệu hãng nhưng chưa có trong file
 `.cs` mà người tiền nhiệm chép về.
@@ -28869,12 +28915,12 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
    thì đọc mã nguồn mở là hoạt động vô tận và không đọng lại gì.
 2. **Ánh xạ project vào sáu tầng** ở mục B.1 — biết mình đang đứng ở tầng nào trước khi đọc dòng nào.
 3. **Đọc test trước code, nếu dự án có test.** Đây là lợi thế lớn nhất của dự án mã nguồn mở so với
-   phần mềm máy trong công ty (mục 18.6.4 cho thấy chỉ 1/12 dự án máy thật có test): **test là tài
+   phần mềm máy trong công ty (mục 18.6.4 cho thấy chỉ 1/13 dự án máy thật có test): **test là tài
    liệu đặc tả chạy được**. Muốn biết một class dùng thế nào, mở file test của nó nhanh hơn đọc
    chính nó.
 4. **Đọc lịch sử thay đổi của một file hay sửa.** Lệnh `git log -p --follow <file>` cho thấy file đó
    đã sai những gì và được sửa ra sao — thứ mà mã nguồn ở trạng thái hiện tại không kể lại. Đây là
-   thứ hoàn toàn không có khi đọc mã nguồn chép tay không có Git (4/12 dự án máy thật, mục 17.4).
+   thứ hoàn toàn không có khi đọc mã nguồn chép tay không có Git (4/13 dự án máy thật, mục 17.4).
 5. **Đọc phần thảo luận (issue, pull request) của một tính năng bạn quan tâm.** Nó cho thấy các
    phương án đã được cân nhắc và lý do chọn — đúng loại thông tin mà code không bao giờ nói.
 

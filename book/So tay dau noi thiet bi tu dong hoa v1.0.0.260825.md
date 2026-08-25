@@ -12,7 +12,7 @@
 | **Phiên bản** | v1.0.0.260825 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
-| **Nội dung** | 30 chương + 6 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
+| **Nội dung** | 30 chương + 7 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
 | **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |
 
@@ -94,6 +94,7 @@
 - [Phụ lục D — Checklist trước khi cấp điện lần đầu](#phan-pl-d-checklist-cap-dien)
 - [Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)
 - [Phụ lục F — Tham số phải chốt khi dựng máy mới](#phan-pl-f-tham-so-may-moi)
+- [Phụ lục G — Thay thế thiết bị: cái khó không nằm ở phần cứng](#phan-pl-g-thay-the-thiet-bi)
 - [Tài liệu tham khảo — tổng hợp toàn sách](#phan-00c-tai-lieu-tham-khao)
 
 ---
@@ -678,7 +679,7 @@ an toàn.
 | Chỉ biết **triệu chứng** ("cảm biến báo ON giả") | ⭐ **[Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)** |
 
 > ⭐ **Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng [Phụ lục E](#phan-pl-e-chi-muc-trieu-chung).**
-> Nó gom **toàn bộ 569 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
+> Nó gom **toàn bộ 577 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
 > *"bạn quan sát thấy gì → mở chương nào"*, một mục riêng cho **triệu chứng liên quan an toàn**,
 > và chỉ mục đầy đủ để `Ctrl+F`.
 >
@@ -7356,7 +7357,120 @@ Ba dấu hiệu cho biết bạn đang cố chữa lỗi cơ khí bằng tham s�
 | Chỉnh êm được nhưng **máy ì tới mức không đạt nhịp** | Đang phải hạ độ lợi để né rung — bản chất là hệ chưa đủ cứng |
 | Tuần sau **phải chỉnh lại** | Tham số không tự đổi. Có thứ đang lỏng dần |
 
-### 12.12 Quy trình chạy thử an toàn — làm đúng thứ tự này
+### 12.12 Nhiều trục làm việc cùng nhau — đồng bộ, song song, và bắt vị trí
+
+Mọi thứ tới đây đều nói về **một trục**. Nhưng phần lớn máy thật có nhiều trục, và chúng phải
+**phối hợp** với nhau. Đây là vùng mà sai một chút là **hỏng cơ khí ngay**, chứ không chỉ chạy xấu.
+
+#### 12.12.1 Bốn kiểu "nhiều trục" — đừng gọi chung là đồng bộ
+
+| Kiểu | Quan hệ giữa các trục | Ví dụ điển hình |
+|---|---|---|
+| **Độc lập, bắt tay bằng tín hiệu** | Không có quan hệ liên tục; trục A xong thì báo cho trục B chạy | Gắp–đặt thông thường |
+| **Bánh răng điện tử** | Trục tớ bám trục chủ theo **một tỉ số cố định** | Cuốn/xả liệu, cấp phôi theo băng tải |
+| **Cam điện tử** | Trục tớ bám trục chủ theo **một bảng quan hệ**, không tuyến tính | Cắt bay, dán nhãn theo bước sản phẩm |
+| **Nội suy** | Nhiều trục cùng vẽ **một đường** (thẳng, cung tròn) | Bơm keo theo biên dạng, cắt |
+
+⭐ **Phân biệt quan trọng nhất là "bắt tay" và "đồng bộ liên tục".** Bắt tay chỉ cần I/O thường.
+Đồng bộ liên tục cần **trục chủ và trục tớ luôn biết vị trí của nhau ở mọi thời điểm** — và đó là
+lý do nó cần phần cứng riêng, không làm được bằng logic PLC thông thường.
+
+> ⚠ Đừng cố làm đồng bộ liên tục bằng cách **PLC đọc vị trí trục A mỗi vòng quét rồi ra lệnh cho
+> trục B**. Sai số bằng đúng **chu kỳ quét × tốc độ**: quét 5 ms, trục chạy 500 mm/s là **lệch 2,5
+> mm** — và lệch thay đổi liên tục theo tải của PLC.
+
+#### 12.12.2 Bánh răng điện tử — tín hiệu trục chủ lấy từ đâu
+
+| Nguồn trục chủ | Cách lấy | Ưu / nhược |
+|---|---|---|
+| **Encoder của chính trục chủ** | Driver trục chủ **chia lại xung** encoder ra ngoài, đưa sang trục tớ | Đơn giản nhất. ⚠ Trục tớ bám cả **rung** của trục chủ |
+| **Encoder ngoài gắn trên trục cơ khí** | Encoder riêng gắn trên trục truyền / con lăn | Bám **vật thật**, không bám lệnh — đúng khi vật có thể trượt |
+| ⭐ **Trục chủ ảo** | Bộ điều khiển sinh ra một vị trí ảo, **mọi trục đều là tớ** | Tốt nhất khi có **nhiều tớ**: tất cả bám cùng một gốc, không cộng dồn sai số |
+
+⚠⚠ **Cái bẫy chết người của bánh răng điện tử:** nếu tín hiệu trục chủ **mất** (đứt dây encoder,
+tuột đầu nối), trục tớ hiểu là *"trục chủ đứng yên"* và **đứng im — không báo lỗi gì**. Máy trông
+như đang chờ, trong khi thực ra đã mất tín hiệu.
+
+**Phải có** một trong hai lớp bảo vệ, tốt nhất là cả hai: **giám sát trục chủ có chuyển động không
+khi lẽ ra phải chuyển động**, và **giám sát sai lệch giữa chủ và tớ** với ngưỡng dừng máy.
+
+#### 12.12.3 ⚠⚠ Trục song song (gantry) — hai động cơ kéo MỘT khung
+
+Đây là phần nguy hiểm nhất mục này. Hai động cơ, hai vít me, nhưng **một khung cứng nối chúng lại**.
+Nếu hai bên lệch nhau, khung **bị vặn** — nhẹ thì kẹt, nặng thì **cong ray, gãy vít me, hỏng vòng bi**.
+
+**Bốn điều bắt buộc, không có ngoại lệ:**
+
+| # | Bắt buộc | Vì sao |
+|---|---|---|
+| 1 | **Giám sát sai lệch hai bên**, có ngưỡng **dừng máy** | Đây là lớp bảo vệ duy nhất chống vặn khung. Đặt ngưỡng theo dung sai cơ khí, không theo cảm tính |
+| 2 | ⚠ **Cấm jog riêng từng bên** ở chế độ vận hành thường | Một thao tác nhầm là vặn khung ngay. Chỉ mở khoá ở chế độ bảo trì có mật khẩu |
+| 3 | **Về gốc theo quy trình riêng của gantry** | Mỗi bên về gốc riêng, đo **độ lệch còn lại**, lưu thành **offset căn khung** |
+| 4 | ⚠⚠ **Thay động cơ / driver / encoder một bên ⇒ PHẢI căn khung lại** | Đây là chỗ sai nhiều nhất khi sửa máy — xem cảnh báo dưới |
+
+> ⚠⚠ **Cảnh báo cho người sửa máy.** Thay một bên gantry rồi cho chạy luôn là **vặn khung ngay lần
+> chạy đầu**. Trước khi cấp điện lại: kiểm **offset căn khung** đã lưu, kiểm chiều quay bên vừa thay,
+> và **chạy tay tốc độ thấp** với ngưỡng giám sát sai lệch đặt **chặt hơn bình thường**.
+>
+> Với encoder tuyệt đối, thay động cơ là **mất luôn vị trí gốc bên đó** — phải về gốc lại cả hai
+> bên rồi căn khung, không phải chỉ bên vừa thay.
+
+⭐ **Ghi offset căn khung vào hồ sơ máy** (xem [Phụ lục F](#phan-pl-f-tham-so-may-moi)). Không có con
+số đó thì lần thay tiếp theo phải căn lại từ đầu bằng đồng hồ so.
+
+#### 12.12.4 ⭐⭐ Bắt vị trí (latch) — làm việc chính xác mà máy không phải dừng
+
+Bài toán: cần biết **vị trí chính xác tại đúng khoảnh khắc** một tín hiệu xảy ra — cảm biến thấy
+dấu in, đầu dò chạm vật, cảm biến thấy mép sản phẩm.
+
+Cách sai mà rất nhiều người làm: **PLC đọc tín hiệu rồi đọc vị trí**. Sai số bằng chu kỳ quét:
+
+| Tốc độ trục | Chu kỳ quét 5 ms | Chu kỳ quét 10 ms |
+|---|---|---|
+| 100 mm/s | ±0,5 mm | ±1 mm |
+| 500 mm/s | ±2,5 mm | ±5 mm |
+| 1 000 mm/s | ±5 mm | ±10 mm |
+
+⭐ **Cách đúng: dùng ngõ vào bắt vị trí (latch / touch probe) của chính driver.** Driver **chốt lại
+vị trí bằng phần cứng** ngay tại cạnh tín hiệu — sai số cỡ **micro-giây**, không phụ thuộc PLC. Sau
+đó PLC đọc con số đã chốt lúc nào cũng được.
+
+| Dùng để | Cách làm |
+|---|---|
+| **Bám dấu in** (dán nhãn, cắt theo dấu) | Cảm biến thấy dấu → latch → bù lệch cho lần cắt sau |
+| **Đo bằng đầu dò** | Đầu dò chạm → latch → đọc kích thước, không cần dừng trục |
+| **Tìm mép sản phẩm** | Cảm biến thấy mép → latch → biết vật nằm đâu mà không phải dò từng bước |
+
+⚠ **Phải cắm vào đúng chân latch tốc độ cao của driver**, không phải một ngõ vào số thường. Ngõ vào
+thường có **lọc chống nhiễu vài mili-giây** — cắm vào đó là mất sạch lợi ích, mà nhìn bên ngoài
+không có gì khác biệt.
+
+#### 12.12.5 Ra tín hiệu theo vị trí — kích hoạt đúng chỗ, không phụ thuộc tốc độ
+
+Chiều ngược lại của 12.12.4: cần **phát một xung ra** khi trục đi qua một vị trí. Dùng để kích
+camera chụp, bật laser, bơm keo, thổi khí — **đúng vị trí**, bất kể trục đang chạy nhanh hay chậm.
+
+⚠ Làm bằng PLC (mỗi vòng quét so vị trí với ngưỡng) thì **thời điểm phát xung dao động đúng bằng
+chu kỳ quét** — cùng bảng sai số ở 12.12.4. Với camera thì đó là **ảnh chụp lệch vật**, và triệu
+chứng sẽ trông giống hệt lỗi chiếu sáng hoặc lỗi tiêu cự.
+
+⭐ Nhiều driver và bộ điều khiển chuyển động có sẵn chức năng **so sánh vị trí** phát xung bằng phần
+cứng. Nếu thiết bị có, hãy dùng — đây là khác biệt giữa *"chụp lúc gần tới nơi"* và *"chụp đúng chỗ"*.
+
+#### 12.12.6 Chẩn đoán
+
+| Triệu chứng | Nghi trước hết | Mục |
+|---|---|---|
+| Trục tớ **đứng im, máy không báo lỗi**, trục chủ vẫn chạy | ⚠⚠ **Mất tín hiệu trục chủ** — tớ hiểu là chủ đứng yên | 12.12.2 |
+| Hai trục đồng bộ **lệch dần theo thời gian** | Cộng dồn sai số; nên đổi sang **trục chủ ảo** | 12.12.2 |
+| Gantry **kẹt, kêu, nóng động cơ một bên** | Hai bên lệch nhau ⇒ khung đang bị vặn | 12.12.3 |
+| ⚠⚠ Gantry chạy bình thường tới khi **vừa thay một bên** thì kẹt ngay | **Chưa căn khung lại** sau khi thay | 12.12.3 |
+| Vị trí bắt được **dao động vài mm**, tốc độ càng cao càng lệch | Đang bắt bằng **PLC** thay vì latch phần cứng | 12.12.4 |
+| Cắm đúng latch rồi mà vẫn lệch | Cắm nhầm **ngõ vào số thường** (có lọc mili-giây) | 12.12.4 |
+| Ảnh camera **lệch vật khi chạy nhanh**, chậm thì đẹp | Kích camera bằng PLC thay vì **so sánh vị trí** | 12.12.5 |
+| Bám dấu in **trôi dần theo cuộn** | Trục chủ lấy từ lệnh thay vì từ **encoder trên vật thật** | 12.12.2 |
+
+### 12.13 Quy trình chạy thử an toàn — làm đúng thứ tự này
 
 > ⚠ Servo có mô-men đỉnh gấp 2–3 lần định mức và tăng tốc rất nhanh. Một trục servo lắp sai có thể
 > **phá cơ khí trong chưa tới một giây**.
@@ -7378,7 +7492,7 @@ Ba dấu hiệu cho biết bạn đang cố chữa lỗi cơ khí bằng tham s�
 
 ---
 
-### 12.13 Chọn mua
+### 12.14 Chọn mua
 
 > ⚠ Trừ số liệu MR-J4 đã dẫn nguồn, mã dưới đây ở **cấp dòng sản phẩm**, chưa phải mã đặt hàng.
 
@@ -7412,10 +7526,18 @@ Ba dấu hiệu cho biết bạn đang cố chữa lỗi cơ khí bằng tham s�
 
 ---
 
-### 12.14 Sai lầm thường gặp
+### 12.15 Sai lầm thường gặp
 
 | Triệu chứng | Nguyên nhân có khả năng nhất | Cách xử lý |
 |---|---|---|
+| ⚠⚠ Trục tớ **đứng im mà máy không báo lỗi gì**, trục chủ vẫn chạy | **Mất tín hiệu trục chủ** (đứt dây encoder, tuột đầu nối) — tớ hiểu là chủ đang đứng yên | Phải có **giám sát trục chủ có chuyển động không** và **giám sát sai lệch chủ–tớ** có ngưỡng dừng. Xem 12.12.2 |
+| ⚠⚠ Gantry **kẹt, kêu, một bên động cơ nóng** | Hai bên lệch nhau ⇒ **khung đang bị vặn** | Dừng ngay. Giám sát sai lệch hai bên là lớp bảo vệ duy nhất. Xem 12.12.3 |
+| ⚠⚠ Gantry chạy tốt tới khi **vừa thay một bên** thì kẹt ngay | **Chưa căn khung lại** sau khi thay động cơ/driver/encoder | Căn khung theo offset đã lưu; encoder tuyệt đối thì về gốc **cả hai bên**. Xem 12.12.3 và [Phụ lục G](#phan-pl-g-thay-the-thiet-bi) |
+| Vị trí bắt được **dao động vài mm**, chạy càng nhanh càng lệch | Đang bắt bằng **PLC** — sai số = chu kỳ quét × tốc độ | Dùng **ngõ vào bắt vị trí (latch)** của driver. Xem 12.12.4 |
+| Đã dùng latch mà vẫn lệch | Cắm nhầm vào **ngõ vào số thường** (có lọc vài ms) thay vì chân latch tốc độ cao | Nhìn bên ngoài không khác gì nhau — tra sơ đồ chân. Xem 12.12.4 |
+| Ảnh camera **lệch vật khi chạy nhanh**, chạy chậm thì đẹp | Kích camera bằng PLC thay vì **so sánh vị trí** phần cứng | ⚠ Triệu chứng trông giống lỗi chiếu sáng hoặc tiêu cự. Xem 12.12.5 |
+| Bám dấu in **trôi dần theo cuộn** | Trục chủ lấy từ **lệnh** thay vì từ encoder gắn trên **vật thật** (vật có thể trượt) | Xem 12.12.2 |
+| Hai trục đồng bộ **lệch dần theo thời gian** | Cộng dồn sai số khi nối tiếp chủ→tớ→tớ | Đổi sang **trục chủ ảo**, mọi trục cùng bám một gốc. Xem 12.12.2 |
 | ⭐ Động cơ **rít nhỏ liên tục ngay cả khi đứng yên** | Độ lợi vòng tốc độ quá cao | Giảm độ lợi; còn rít thì nghi cộng hưởng. Làm **4 phép thử phân biệt** ở 12.11.10 trước khi vặn |
 | Chạy **giật cục như răng cưa ở tốc độ rất thấp** | **Cogging** — mô-men răng của động cơ | Tăng độ lợi vòng tốc độ, hoặc tránh chạy ở dải tốc độ đó. Xem 12.11.10 |
 | Nghe **"cạch" mỗi lần đảo chiều** | **Khe hở (backlash)** ở khớp nối / hộp số / đai | ⚠ Đây là lỗi cơ khí. Tăng độ lợi để "ép" cho hết khe hở làm **hỏng nhanh hơn** |
@@ -7441,7 +7563,7 @@ Ba dấu hiệu cho biết bạn đang cố chữa lỗi cơ khí bằng tham s�
 | Mất vị trí gốc sau khi nghỉ dài | **Pin encoder tuyệt đối hết** | Đưa cảnh báo pin về HMI; thay pin **khi máy đang có điện**; đưa vào bảo trì định kỳ |
 | Encoder báo lỗi ngẫu nhiên khi trục tăng tốc | **Nhiễu** — cáp encoder đi chung máng với cáp động lực | Tách máng, kẹp màn chắn 360°, kiểm tra PE |
 | Chân trên máy **không giống manual** | Người trước đã **gán lại I/O** bằng tham số `PD` | Đọc tham số PD thực tế trong driver trước khi kết luận đấu sai |
-| Va chạm phá cơ khí ngay lần chạy thử đầu | Không đặt **giới hạn mô-men thấp**, không tháo khớp nối | Làm theo quy trình 12.12 |
+| Va chạm phá cơ khí ngay lần chạy thử đầu | Không đặt **giới hạn mô-men thấp**, không tháo khớp nối | Làm theo quy trình 12.13 |
 
 ---
 
@@ -17276,7 +17398,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 > **Phụ lục này giải quyết đúng một tình huống:** bạn đang đứng trước cái máy, **chỉ biết nó đang
 > bị gì**, và không biết mở chương nào.
 >
-> Sách có **569 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
+> Sách có **577 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
 > chỉ mục này thì bạn phải **đoán xem là chương nào** — đúng cái mà người đang sửa máy lúc 2 giờ
 > sáng không có thời gian làm.
 
@@ -17422,7 +17544,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-### E.4 Chỉ mục đầy đủ — **569 triệu chứng** theo chương
+### E.4 Chỉ mục đầy đủ — **577 triệu chứng** theo chương
 
 > 💡 **Cách dùng nhanh nhất: `Ctrl+F` rồi gõ đúng từ bạn quan sát được** —
 > ví dụ `chập chờn`, `không quay`, `nóng`, `PASS`, `trôi`, `rơi`, `nhảy`.
@@ -17649,10 +17771,18 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | Driver báo lỗi quá áp khi giảm tốc | Năng lượng hồi làm bus tăng; nguồn xung không hấp thụ được |
 | Driver lỗi mà máy vẫn chạy tiếp | Không đấu chân ALM về PLC |
 
-#### Chương 12 — [Servo AC](#phan-ch12-servo-ac) · 26 triệu chứng
+#### Chương 12 — [Servo AC](#phan-ch12-servo-ac) · 34 triệu chứng
 
 | Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
 |---|---|
+| ⚠⚠ Trục tớ đứng im mà máy không báo lỗi gì, trục chủ vẫn chạy | Mất tín hiệu trục chủ (đứt dây encoder, tuột đầu nối) — tớ hiểu là chủ đang đứng yên |
+| ⚠⚠ Gantry kẹt, kêu, một bên động cơ nóng | Hai bên lệch nhau ⇒ khung đang bị vặn |
+| ⚠⚠ Gantry chạy tốt tới khi vừa thay một bên thì kẹt ngay | Chưa căn khung lại sau khi thay động cơ/driver/encoder |
+| Vị trí bắt được dao động vài mm, chạy càng nhanh càng lệch | Đang bắt bằng PLC — sai số = chu kỳ quét × tốc độ |
+| Đã dùng latch mà vẫn lệch | Cắm nhầm vào ngõ vào số thường (có lọc vài ms) thay vì chân latch tốc độ cao |
+| Ảnh camera lệch vật khi chạy nhanh, chạy chậm thì đẹp | Kích camera bằng PLC thay vì so sánh vị trí phần cứng |
+| Bám dấu in trôi dần theo cuộn | Trục chủ lấy từ lệnh thay vì từ encoder gắn trên vật thật (vật có thể trượt) |
+| Hai trục đồng bộ lệch dần theo thời gian | Cộng dồn sai số khi nối tiếp chủ→tớ→tớ |
 | ⭐ Động cơ rít nhỏ liên tục ngay cả khi đứng yên | Độ lợi vòng tốc độ quá cao |
 | Chạy giật cục như răng cưa ở tốc độ rất thấp | Cogging — mô-men răng của động cơ |
 | Nghe "cạch" mỗi lần đảo chiều | Khe hở (backlash) ở khớp nối / hộp số / đai |
@@ -18303,6 +18433,131 @@ nên thường lọt qua nghiệm thu và phát tác vài tháng sau:
 
 > ⭐ Điểm chung của cả năm: **máy vẫn chạy bình thường lúc nghiệm thu**. Cách duy nhất bắt được là
 > **chủ động thử điều kiện xấu** — rút dây mạng, chạy lúc trời ẩm, đối chiếu số đo với ampe kìm.
+
+---
+
+
+---
+
+<a id="phan-pl-g-thay-the-thiet-bi"></a>
+
+## Phụ lục G — Thay thế thiết bị: cái khó không nằm ở phần cứng
+
+> **Phụ lục D** = làm theo thứ tự nào khi dựng máy. **Phụ lục F** = chốt con số nào.
+> Phụ lục này trả lời câu của người **sửa máy lúc 2 giờ sáng**:
+> ***"tôi vừa thay đúng con này, vì sao máy vẫn không chạy?"***
+
+**Luận điểm của cả phụ lục:** tháo con hỏng ra lắp con mới vào là phần **dễ nhất**. Phần khó là
+**trạng thái nằm bên trong thiết bị cũ** — tham số, hiệu chuẩn, gốc toạ độ, chương trình — những
+thứ **không đi theo phần cứng** và **không nhìn thấy được**.
+
+⭐ Con hàng mới ra khỏi hộp là một thiết bị **trắng trơn**. Nó không biết máy của bạn.
+
+---
+
+### G.1 ⭐⭐ Mỗi loại thiết bị mang theo "trạng thái" gì
+
+Đây là bảng quan trọng nhất của phụ lục. Cột giữa là thứ **mất đi cùng con thiết bị hỏng**.
+
+| Thiết bị | Trạng thái nằm bên trong | Thay mà không có nó thì | Chương |
+|---|---|---|---|
+| **PLC** | Chương trình · giá trị lưu (retentive) · đồng hồ thời gian thực | Máy không chạy chút nào — rõ ràng, dễ nhận ra | [5.7](#phan-ch05-bo-dieu-khien) |
+| ⚠ **Driver servo** | Toàn bộ tham số · bộ độ lợi đã chỉnh · bộ lọc chặn dải | Máy **chạy được nhưng rung / ì / sai nhịp** — nguy hiểm vì trông như vẫn ổn | [12.11](#phan-ch12-servo-ac) |
+| ⚠⚠ **Động cơ servo có encoder tuyệt đối** | **Vị trí gốc** | ⚠⚠ Toạ độ sai hoàn toàn — **giới hạn mềm mất tác dụng**, có thể đâm cữ | [12.5](#phan-ch12-servo-ac) · [12.11.8](#phan-ch12-servo-ac) |
+| ⚠⚠ **Một bên của trục gantry** | **Offset căn khung** | ⚠⚠ **Vặn khung ngay lần chạy đầu** | [12.12.3](#phan-ch12-servo-ac) |
+| **Biến tần** | Tham số · **kết quả tự dò thông số động cơ** · boost, bù trượt, tần số nhảy | Chạy được nhưng yếu, rung, hoặc kêu ở dải tần cũ vốn đã né được | [13.4](#phan-ch13-giam-toc-bldc-bien-tan) |
+| **Driver động cơ bước** | Vị trí **DIP switch** (dòng, vi bước) | Mất bước, hoặc nóng, hoặc sai tỉ lệ quãng đường | [11.4](#phan-ch11-dong-co-buoc) |
+| **Cảm biến áp / chân không dạng số** | Ngưỡng · trễ · chế độ so sánh · đơn vị | Ngõ ra sai thời điểm, hoặc rung ở ngưỡng | [10.1.4](#phan-ch10-cam-bien-qua-trinh) |
+| **Bộ điều khiển nhiệt** | PID · SP · cấu hình báo động · loại đầu dò | Vọt lố, hoặc không tới nhiệt, hoặc báo động sai | [10.4](#phan-ch10-cam-bien-qua-trinh) |
+| ⚠ **Loadcell / bộ khuếch đại** | **Hiệu chuẩn điểm 0 và span** | Số cân sai mà **vẫn ra số đẹp** — không có gì báo lỗi | [10.6.5](#phan-ch10-cam-bien-qua-trinh) |
+| ⚠ **Camera / cảm biến vision** | Job/recipe · vùng kiểm · ngưỡng · **hiệu chuẩn pixel→mm** | NG giả hàng loạt, hoặc **PASS hàng loạt** | [19](#phan-ch19-vision-chieu-sang) |
+| **Đầu đọc mã vạch / RFID** | Chế độ giao tiếp · loại mã bật/tắt · định dạng dữ liệu ra | Quét được mà phần mềm không nhận | [20](#phan-ch20-ma-vach-rfid) |
+| **Cảm biến quang** | **Độ nhạy đã căn** | Chập chờn theo bụi bẩn và ánh sáng môi trường | [8](#phan-ch08-cam-bien-quang) |
+| **Robot** | Điểm dạy · hiệu chuẩn tool và gốc phôi | Toạ độ lệch — ⚠⚠ có thể va chạm | [26](#phan-ch26-robot-chuyen-dong-dac-biet) |
+| **Remote I/O** | Địa chỉ trạm · trạng thái fail-safe khi mất mạng | Không lên mạng, hoặc lên mạng nhưng hành vi khi mất kết nối đã đổi | [6.7](#phan-ch06-module-io) |
+
+---
+
+### G.2 ⭐ Sao lưu TRƯỚC — mười phút cứu cả một ca sản xuất
+
+Mọi thứ ở bảng trên đều **sao lưu được**, và chỉ sao lưu được **khi thiết bị còn sống**. Sau khi nó
+chết thì mọi cách đều muộn.
+
+| Sao lưu cái gì | Bằng cách nào |
+|---|---|
+| Tham số driver / biến tần / bộ điều khiển nhiệt | Phần mềm của hãng, xuất ra file. Nhiều biến tần cho **chép sang bàn phím rời** rồi nạp sang con mới |
+| Chương trình PLC / robot | Xuất từ phần mềm lập trình, **kèm đúng phiên bản phần mềm** |
+| Job của camera | Xuất recipe **và** ảnh mẫu |
+| DIP switch, biến trở, cữ cơ khí | ⭐ **Chụp ảnh** — nhanh nhất và không sai |
+| Hiệu chuẩn loadcell, offset gantry, gốc toạ độ | Ghi số vào [Phụ lục F](#phan-pl-f-tham-so-may-moi) |
+
+> ⚠⚠ **Bản sao lưu nằm trên laptop của một kỹ sư thì KHÔNG phải bản sao lưu.** Người đó nghỉ việc,
+> laptop hỏng, hoặc đơn giản là hôm đó không có mặt. Đặt ở chỗ **cả nhóm truy cập được**, và
+> **để một bản in trong tủ điện** cho những thứ ngắn (DIP switch, địa chỉ trạm, offset).
+
+⭐ **Mẹo rẻ nhất:** ngay sau khi nghiệm thu máy, **chụp ảnh mọi màn hình cài đặt** — driver, biến
+tần, bộ điều khiển nhiệt, cảm biến số. Đặt tên theo ngày, bỏ chung một thư mục. Mất 15 phút, và
+nhiều lần nó là thứ duy nhất còn lại.
+
+---
+
+### G.3 Quy trình thay — tám bước
+
+| # | Bước | Ghi chú |
+|---|---|---|
+| 1 | **Cô lập nguồn (LOTO)** và chờ tụ xả | Biến tần và driver servo giữ điện sau khi ngắt | 
+| 2 | **Chụp ảnh hiện trạng** trước khi tháo bất cứ gì | Vị trí dây, số hiệu, hướng lắp, DIP switch |
+| 3 | **Đọc mã hàng đầy đủ trên con cũ**, cả hậu tố | Xem G.4 — hậu tố là chỗ sai nhiều nhất |
+| 4 | Lắp con mới, **đấu lại theo ảnh**, siết đúng lực | |
+| 5 | ⭐ **Nạp lại trạng thái** theo bảng G.1 | Đây là bước hay bị quên nhất |
+| 6 | **Kiểm nguội**: chiều quay, cực tính, địa chỉ, DIP | Trước khi cho cơ cấu chuyển động |
+| 7 | ⚠ **Chạy tay tốc độ thấp**, ngưỡng giám sát đặt **chặt hơn bình thường** | Xem [Phụ lục D bước 4](#phan-pl-d-checklist-cap-dien) |
+| 8 | **Chạy tải thật**, so số với giá trị ghi lúc máy mới | [Phụ lục F.1](#phan-pl-f-tham-so-may-moi) |
+
+---
+
+### G.4 ⚠ Bảy cái bẫy khi mua con thay thế
+
+| # | Bẫy | Vì sao đau |
+|---|---|---|
+| 1 | ⭐ **"Cùng mã hàng" nhưng khác hậu tố** | Hậu tố quyết định NPN/PNP, NO/NC, chiều ra cáp, loại đầu nối. Xem [2.12](#phan-ch02-ngon-ngu-chung) |
+| 2 | **Khác đời phần mềm (firmware)** | File tham số của đời cũ có thể **không nạp được** sang đời mới, hoặc nạp được nhưng đổi hành vi |
+| 3 | ⚠ **Động cơ và driver bán theo cặp** | Một số hãng ghép đôi động cơ–driver; đổi lẻ một bên là không nhận |
+| 4 | **Cùng công suất nhưng khác cỡ trục / mặt bích** | Lắp không vừa, hoặc vừa nhưng **quán tính khác** ⇒ phải chỉnh lại |
+| 5 | **Cảm biến cùng họ nhưng khác khoảng cách phát hiện** | Máy chạy được nhưng **biên độ dự trữ mỏng đi** — vài tháng sau thành chập chờn |
+| 6 | **Model đã ngừng sản xuất, hãng chỉ sang đời mới** | Đời mới thường **không tương thích chân răng** — ví dụ `TCW-315` → `TCW-415` ở [27.3.1](#phan-ch27-gia-cong-lien-ket) |
+| 7 | ⚠⚠ **Hàng "tương đương" của hãng khác** | Có thể đúng chức năng nhưng khác **thời gian đáp ứng**, khác dòng rò, khác hành vi khi mất điện |
+
+> ⭐ **Trước khi lên đơn hàng thay thế:** đối chiếu **tám điều** ở [Phụ lục C.5](#phan-pl-c-doi-chieu-hang).
+
+---
+
+### G.5 ⚠⚠ Bốn trường hợp thay xong PHẢI làm thêm việc — không được chạy luôn
+
+| Trường hợp | Bắt buộc làm gì | Nếu bỏ qua |
+|---|---|---|
+| **Động cơ có encoder tuyệt đối** | **Về gốc lại** rồi kiểm giới hạn mềm | ⚠⚠ Toạ độ sai, giới hạn mềm vô dụng, đâm cữ |
+| **Một bên trục gantry** | **Căn khung lại** theo offset đã lưu, chạy tay với ngưỡng lệch chặt | ⚠⚠ **Vặn khung ngay lần chạy đầu** |
+| **Loadcell / bộ khuếch đại** | **Hiệu chuẩn 0 và span** bằng quả chuẩn | Cân sai mà vẫn ra số đẹp, không có gì báo |
+| **Camera / cảm biến vision** | Nạp job **và** kiểm lại **hiệu chuẩn pixel→mm** | NG giả hàng loạt, hoặc tệ hơn: **PASS hàng loạt** |
+
+---
+
+### G.6 Vật tư dự phòng nên có sẵn
+
+Ưu tiên theo **thời gian máy chết nếu thiếu**, không theo giá:
+
+| Ưu tiên | Thứ nên có | Vì sao |
+|---|---|---|
+| ⭐ **Cao** | Cầu chì, đầu cos, ferrule, dây cùng loại | Rẻ, hay hỏng, thiếu là dừng máy vì chuyện vặt |
+| ⭐ **Cao** | **Pin PLC / pin encoder tuyệt đối** | Hết pin là mất chương trình hoặc mất gốc — mà pin có hạn dùng |
+| **Cao** | Cảm biến dùng nhiều nhất trên máy | Thường là loại hay va đập, hay bẩn |
+| **Vừa** | Rơ le, bộ nguồn 24 V | Hỏng là dừng cả tủ |
+| **Vừa** | Cáp encoder / cáp động lực servo (loại chịu uốn) | Đứt trong xích cáp là hỏng có kế hoạch trước, xem [23.7](#phan-ch23-dau-noi-day-ky-thuat-dau) |
+| **Thấp** | Driver servo, biến tần | Đắt; nhưng nếu máy chạy 3 ca thì tính lại theo thiệt hại mỗi giờ dừng |
+
+> 💡 **Không cần dự phòng vật lý mọi thứ** — nhưng **phải dự phòng THÔNG TIN cho mọi thứ**: mã hàng
+> đầy đủ, nhà cung cấp, thời gian giao hàng, và file sao lưu. Thông tin không tốn kho.
 
 ---
 

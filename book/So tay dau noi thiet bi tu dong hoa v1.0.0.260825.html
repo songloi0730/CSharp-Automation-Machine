@@ -3109,7 +3109,7 @@ mục tra cứu theo triệu chứng</a></strong></td>
 </table>
 <blockquote>
 <p>⭐ <strong>Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng <a href="#phan-pl-e-chi-muc-trieu-chung">Phụ lục E</a>.</strong> Nó gom
-<strong>toàn bộ 577 dòng triệu chứng</strong> của cả sách vào một chỗ,
+<strong>toàn bộ 596 dòng triệu chứng</strong> của cả sách vào một chỗ,
 có bảng quyết định <em>&quot;bạn quan sát thấy gì → mở chương nào&quot;</em>, một
 mục riêng cho <strong>triệu chứng liên quan an toàn</strong>, và chỉ mục
 đầy đủ để <code>Ctrl+F</code>.</p>
@@ -10124,7 +10124,234 @@ ON 7 ms, OFF 3 ms; tuổi thọ cơ 10⁸ lần, tuổi thọ điện ở 30 V/1
 </tbody>
 </table>
 <hr />
-<h3 id="69-io-link--nói-ngắn">6.9 IO-Link — nói ngắn</h3>
+<h3 id="69-starstar-ánh-xạ-dữ-liệu-remote-io--đọc-ra-số-sai-mà-không-đèn-nào-báo">6.9
+⭐⭐ Ánh xạ dữ liệu remote I/O — &quot;đọc ra số sai mà không đèn nào
+báo&quot;</h3>
+<p>Mục 6.8 lo <strong>remote I/O lên mạng được hay không</strong> — đó
+là phần có đèn báo, dễ thấy. Mục này lo phần sau đó: <strong>mạng thông
+rồi, nhưng bit và số đọc về không đúng chỗ</strong>.</p>
+<p>⚠ Đây cùng họ với lỗi ở <a href="#phan-ch21-truyen-thong-mang">21.4</a>: <strong>không có đèn nào
+báo</strong>. Đèn mạng xanh, không alarm, PLC vẫn chạy — chỉ là
+<code>X12</code> trong chương trình lại đang là cảm biến ở vị trí
+khác.</p>
+<h4 id="691-vùng-dữ-liệu-trao-đổi--bức-tranh-phải-hiểu-trước">6.9.1 Vùng
+dữ liệu trao đổi — bức tranh phải hiểu trước</h4>
+<p>Remote I/O không gửi từng tín hiệu riêng. Nó gộp tất cả vào
+<strong>một khối byte</strong> và trao đổi cả khối mỗi chu kỳ:</p>
+<table>
+<thead>
+<tr>
+<th>Chiều</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Trạm → PLC</strong> (ngõ vào)</td>
+<td>Trạng thái mọi DI · giá trị mọi AI · <strong>bit chẩn đoán của
+trạm</strong></td>
+</tr>
+<tr>
+<td><strong>PLC → trạm</strong> (ngõ ra)</td>
+<td>Trạng thái mọi DO · giá trị mọi AO</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Vị trí của từng thứ trong khối đó do CẤU HÌNH quyết
+định</strong>, không phải do bạn cắm dây vào đâu. Đó là lý do đấu dây
+đúng mà chương trình vẫn đọc sai.</p>
+<h4 id="692--ba-thứ-làm-lệch-ánh-xạ">6.9.2 ⚠ Ba thứ làm lệch ánh xạ</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Nguyên nhân</th>
+<th>Chuyện gì xảy ra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Thêm / bớt / đổi chỗ module</strong> trên trạm</td>
+<td>Mọi module <strong>phía sau</strong> nó bị <strong>dịch địa
+chỉ</strong> — chương trình cũ đọc trúng module khác</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Đổi module sang loại có số kênh khác</strong></td>
+<td>Ví dụ thay module 8 kênh bằng 16 kênh: chiếm gấp đôi chỗ, đẩy lệch
+phần sau</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>File cấu hình trong PLC không khớp phần cứng
+thật</strong></td>
+<td>Trạm gửi theo bố trí thật, PLC diễn giải theo bố trí trong file</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Cái bẫy khi sửa máy:</strong> module hỏng, thợ thay bằng
+module &quot;cùng chức năng&quot; nhưng <strong>khác số kênh</strong>, hoặc lắp
+<strong>nhầm khe</strong>. Mạng vẫn lên, đèn vẫn xanh — nhưng
+<strong>toàn bộ ngõ vào phía sau đã dịch đi vài bit</strong>. Máy chạy
+sai một cách khó hiểu, và không ai nghĩ tới module vừa thay vì <em>&quot;nó
+lên mạng bình thường mà&quot;</em>.</p>
+<p>Xem thêm <a href="#phan-pl-g-thay-the-thiet-bi">Phụ lục G</a>.</p>
+</blockquote>
+<h4 id="693-thứ-tự-bit-trong-byte-và-word--chỗ-đếm-nhầm">6.9.3 Thứ tự
+bit trong byte và word — chỗ đếm nhầm</h4>
+<table>
+<thead>
+<tr>
+<th>Phải biết</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kênh 0 nằm ở bit 0 hay bit 7</strong></td>
+<td>Hãng khác nhau đánh số khác nhau</td>
+</tr>
+<tr>
+<td><strong>Kênh thứ 9 trở đi nằm ở byte nào</strong></td>
+<td>Module 16 kênh chiếm 2 byte; kênh 8–15 ở byte thứ hai</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thứ tự byte của giá trị analog 16 bit</strong></td>
+<td>Cùng bài toán byte cao/thấp ở <a href="#phan-ch21-truyen-thong-mang">21.4.3</a></td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Cách kiểm chắc chắn nhất, không cần đọc tài liệu:</strong>
+tác động <strong>từng ngõ vào một</strong> bằng tay (đưa vật vào cảm
+biến, hoặc nối tắt chân), và xem <strong>bit nào trong PLC đổi</strong>.
+Ghi lại thành bảng.</p>
+<p>Mất 15 phút cho một trạm 16 kênh, và đó là <strong>bằng chứng
+thật</strong> thay vì tin vào tài liệu — vốn hay mô tả cấu hình mặc định
+chứ không phải cấu hình đang chạy.</p>
+<h4 id="694-giá-trị-analog-qua-remote-io--thêm-một-lớp-dễ-sai">6.9.4 Giá
+trị analog qua remote I/O — thêm một lớp dễ sai</h4>
+<p>Ngoài thứ tự byte, giá trị analog qua remote I/O còn ba chỗ nữa:</p>
+<table>
+<thead>
+<tr>
+<th>Phải chốt</th>
+<th>Cái bẫy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dải giá trị thô</strong></td>
+<td>0–4000 · 0–16000 · 0–27648 · −32768…32767 — mỗi hãng một kiểu</td>
+</tr>
+<tr>
+<td><strong>Có dấu hay không dấu</strong></td>
+<td>⚠ Cùng triệu chứng ở <a href="#phan-ch21-truyen-thong-mang">21.4.4</a>: xuống dưới 0 là
+<strong>nhảy vọt lên số rất lớn</strong></td>
+</tr>
+<tr>
+<td><strong>Giá trị báo lỗi kênh</strong></td>
+<td>Đứt dây / vượt dải thường trả về một <strong>giá trị đặc
+biệt</strong> — phải bắt riêng, đừng để nó đi thẳng vào phép tính</td>
+</tr>
+</tbody>
+</table>
+<p>⚠⚠ <strong>Đừng để giá trị lỗi chảy vào công thức.</strong> Kênh đứt
+dây trả về giá trị biên, phần mềm nhân với hệ số quy đổi rồi hiển thị ra
+một con số <strong>trông hợp lý</strong> — và không ai biết cảm biến đã
+chết.</p>
+<h4 id="695-star-bit-chẩn-đoán--thứ-có-sẵn-mà-hay-bị-bỏ-không-dùng">6.9.5 ⭐
+Bit chẩn đoán — thứ có sẵn mà hay bị bỏ không dùng</h4>
+<p>Gần như mọi trạm remote I/O đều gửi kèm <strong>bit trạng
+thái</strong> trong khối dữ liệu: mất nguồn phụ tải, đứt dây kênh
+analog, quá nhiệt, lỗi module.</p>
+<p>⭐ <strong>Chúng nằm sẵn trong dữ liệu bạn đã đọc về mỗi chu
+kỳ</strong> — chỉ là chương trình không ai đọc.</p>
+<p><strong>Nên làm:</strong> gom các bit chẩn đoán thành <strong>một
+cảnh báo chung</strong> hiện lên HMI, kèm thông tin trạm nào. Việc này
+tốn vài dòng chương trình, và biến một buổi mò dây thành một dòng chữ
+trên màn hình.</p>
+<h4 id="696-ba-việc-phải-làm-khi-bàn-giao--và-khi-thay-module">6.9.6 Ba
+việc phải làm khi bàn giao — và khi thay module</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Việc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>⭐ <strong>In bảng ánh xạ</strong> (kênh ↔︎ địa chỉ PLC ↔︎ tên tín
+hiệu) và <strong>dán trong tủ</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Sao lưu file cấu hình mạng</strong>, để chỗ cả nhóm truy cập
+được</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ Sau khi thay bất kỳ module nào: <strong>kiểm lại ánh xạ bằng cách
+tác động tay vài kênh</strong> trước khi cho máy chạy tự động</td>
+</tr>
+</tbody>
+</table>
+<h4 id="697-chẩn-đoán">6.9.7 Chẩn đoán</h4>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Nghi trước hết</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠⚠ Sau khi thay module, <strong>các ngõ vào phía sau đọc
+sai</strong>, mạng vẫn xanh</td>
+<td>Module thay <strong>khác số kênh</strong>, hoặc <strong>nhầm
+khe</strong> ⇒ dịch địa chỉ</td>
+<td>6.9.2</td>
+</tr>
+<tr>
+<td>Cảm biến tác động mà <strong>bit khác đổi</strong></td>
+<td>Ánh xạ lệch, hoặc đếm nhầm thứ tự bit</td>
+<td>6.9.3</td>
+</tr>
+<tr>
+<td>Giá trị analog <strong>nhảy vọt lên số rất lớn khi lẽ ra phải
+âm</strong></td>
+<td>Đọc <strong>không dấu</strong> thay vì có dấu</td>
+<td>6.9.4 · <a href="#phan-ch21-truyen-thong-mang">21.4.4</a></td>
+</tr>
+<tr>
+<td>Giá trị analog <strong>lệch đúng một hệ số tròn</strong></td>
+<td>Sai <strong>dải giá trị thô</strong> của hãng</td>
+<td>6.9.4</td>
+</tr>
+<tr>
+<td>Số đo <strong>trông hợp lý nhưng cảm biến đã chết</strong></td>
+<td>⚠⚠ Giá trị báo lỗi kênh chảy thẳng vào công thức</td>
+<td>6.9.4</td>
+</tr>
+<tr>
+<td>Mất cả buổi mò mà nguyên nhân chỉ là <strong>đứt một dây
+analog</strong></td>
+<td>Không ai đọc <strong>bit chẩn đoán</strong> vốn đã có sẵn</td>
+<td>6.9.5</td>
+</tr>
+<tr>
+<td>Chương trình chạy đúng ở máy này, <strong>sai ở máy giống
+hệt</strong></td>
+<td>File cấu hình mạng hai máy khác nhau</td>
+<td>6.9.2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="610-io-link--nói-ngắn">6.10 IO-Link — nói ngắn</h3>
 <p>IO-Link <strong>không phải fieldbus</strong>. Nó là một giao thức nối
 tiếp chạy trên <strong>chính sợi dây tín hiệu</strong> của cảm biến 3
 dây tiêu chuẩn, giữa một <strong>master</strong> (thường là module gắn
@@ -10210,7 +10437,7 @@ Nghĩa là mua cảm biến bản IO-Link không khoá bạn vào IO-Link.</p>
 <code>NU-EP1</code> <em>(⚠ cấp dòng sản phẩm — chưa đọc datasheet gốc;
 xem lại Ch.20/Ch.21 khi cần chi tiết cấu hình)</em>.</p>
 <hr />
-<h3 id="610-khối-terminal-chuyển-tiếp-relay-terminal--cáp-idc">6.10 Khối
+<h3 id="611-khối-terminal-chuyển-tiếp-relay-terminal--cáp-idc">6.11 Khối
 terminal chuyển tiếp (relay terminal / cáp IDC)</h3>
 <p>Module 32 và 64 điểm không dùng cầu đấu bắt vít — không đủ chỗ. Chúng
 dùng <strong>đầu nối dẹt 20 / 34 / 40 chân</strong> kiểu MIL/IDC. Muốn
@@ -10339,7 +10566,7 @@ cáp tự bấm thì rất dễ bấm lệch một hàng. Sau khi bấm, đo th�
 đương giá rẻ, rất phổ biến ở Việt Nam <em>(⚠ cấp dòng sản phẩm — chưa
 phải mã đặt hàng)</em>.</p>
 <hr />
-<h3 id="611-sai-lầm-thường-gặp">6.11 Sai lầm thường gặp</h3>
+<h3 id="612-sai-lầm-thường-gặp">6.12 Sai lầm thường gặp</h3>
 <table>
 <thead>
 <tr>
@@ -10349,6 +10576,44 @@ phải mã đặt hàng)</em>.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Thay module xong, <strong>các ngõ vào phía sau đọc sai</strong> —
+mạng vẫn xanh, không alarm</td>
+<td>Module thay <strong>khác số kênh</strong> hoặc lắp <strong>nhầm
+khe</strong> ⇒ <strong>dịch địa chỉ</strong> toàn bộ phần sau</td>
+<td>Tác động tay từng kênh, xem bit nào đổi. Xem 6.9.2</td>
+</tr>
+<tr>
+<td>Cảm biến tác động mà <strong>bit khác trong PLC đổi</strong></td>
+<td>Ánh xạ lệch, hoặc đếm nhầm thứ tự bit trong byte</td>
+<td>Lập bảng ánh xạ bằng cách thử tay. Xem 6.9.3</td>
+</tr>
+<tr>
+<td>Giá trị analog qua remote I/O <strong>lệch đúng một hệ số
+tròn</strong></td>
+<td>Sai <strong>dải giá trị thô</strong> của hãng (0–4000 · 0–16000 ·
+0–27648…)</td>
+<td>Xem 6.9.4</td>
+</tr>
+<tr>
+<td>⚠⚠ Số đo <strong>trông hợp lý nhưng cảm biến đã chết</strong></td>
+<td><strong>Giá trị báo lỗi kênh</strong> chảy thẳng vào công thức rồi
+nhân hệ số</td>
+<td>Bắt riêng giá trị lỗi trước khi tính. Xem 6.9.4</td>
+</tr>
+<tr>
+<td>Mất cả buổi mò dây mà nguyên nhân chỉ là <strong>đứt một dây
+analog</strong></td>
+<td>Không ai đọc <strong>bit chẩn đoán</strong> vốn đã có sẵn trong dữ
+liệu</td>
+<td>Gom bit chẩn đoán thành một cảnh báo trên HMI. Xem 6.9.5</td>
+</tr>
+<tr>
+<td>Chương trình chạy đúng máy này, <strong>sai ở máy giống
+hệt</strong></td>
+<td>File cấu hình mạng hai máy khác nhau</td>
+<td>Sao lưu và so file cấu hình. Xem 6.9.2 · 6.9.6</td>
+</tr>
 <tr>
 <td><strong>Đếm thiếu sản phẩm, thỉnh thoảng bỏ sót</strong></td>
 <td><strong>Bộ lọc ngõ vào mặc định 10 ms</strong> nuốt xung</td>
@@ -31682,7 +31947,332 @@ tra trang hãng trước khi lên BOM. Riêng <code>LDR2-48RD2-LA</code> ở
 19.7.6 là mã đầy đủ đã xác minh.</p>
 </blockquote>
 <hr />
-<h3 id="198-sai-lầm-thường-gặp">19.8 Sai lầm thường gặp</h3>
+<h3 id="198-starstar-chỉnh-tham-số-chụp--nơi-quyết-định-tỉ-lệ-ng-giả">19.8
+⭐⭐ Chỉnh tham số chụp — nơi quyết định tỉ lệ NG giả</h3>
+<p>Mọi thứ tới đây lo <strong>lắp và đấu</strong>. Mục này lo cái quyết
+định hệ vision <strong>dùng được hay không</strong>: bốn năm con số
+trong phần mềm camera. Chỉnh sai thì hệ vẫn chạy, vẫn ra kết quả — chỉ
+là kết quả <strong>sai một tỉ lệ nhỏ</strong>, mỗi ngày một ít.</p>
+<p>⚠ <strong>NG giả là tốn kém hơn NG thật.</strong> NG thật thì loại
+đúng hàng hỏng. NG giả thì loại <strong>hàng tốt</strong>, làm người vận
+hành mất tin vào máy, và sớm muộn có người <strong>nới ngưỡng cho đỡ
+phiền</strong> — lúc đó hệ vision thành đồ trang trí.</p>
+<h4 id="1981-star-thứ-tự-chỉnh--sai-thứ-tự-là-chỉnh-mãi-không-xong">19.8.1
+⭐ Thứ tự chỉnh — sai thứ tự là chỉnh mãi không xong</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Chỉnh cái gì</th>
+<th>Vì sao phải đúng thứ tự này</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Cơ khí</strong>: khoảng cách, góc đặt, che sáng ngoài</td>
+<td>Đổi khoảng cách là mọi thứ sau đó phải làm lại</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Chiếu sáng</strong> (xem 19.6)</td>
+<td>⭐ Đây là nơi tạo ra <strong>tương phản</strong>. Không có tương
+phản thì không tham số nào cứu được</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Lấy nét và khẩu độ</strong></td>
+<td>Quyết định độ sâu trường — xem 19.8.4</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Thời gian phơi sáng</strong></td>
+<td>Bù sáng bằng cách <strong>thu thêm ánh sáng thật</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Khuếch đại (gain)</strong> — ⚠ càng ít càng tốt</td>
+<td>Chỉ dùng khi bốn bước trên đã hết cách</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Ngưỡng</strong></td>
+<td>Chỉ có ý nghĩa khi ảnh đã ổn định</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Cách hỏng phổ biến nhất trong cả mục này:</strong> ảnh tối
+→ <strong>tăng gain cho sáng lên</strong> → xong. Ảnh sáng thật, nhưng
+<strong>nhiễu cũng sáng theo</strong>, và từ đó ngưỡng bắt đầu nhảy.
+Người chỉnh thấy &quot;được rồi&quot; và đi về; ba tuần sau NG giả bắt đầu xuất
+hiện, không ai nối được hai việc với nhau.</p>
+</blockquote>
+<h4 id="1982-thời-gian-phơi-sáng--ràng-buộc-cứng-với-tốc-độ-vật">19.8.2
+Thời gian phơi sáng — ràng buộc cứng với tốc độ vật</h4>
+<p>Nếu vật <strong>đang di chuyển</strong> lúc chụp, ảnh bị <strong>nhoè
+theo chiều chuyển động</strong>, và lượng nhoè tính được, không phải
+đoán:</p>
+<pre><code>nhoè (mm) = tốc độ vật (mm/s) × thời gian phơi sáng (s)</code></pre>
+<table>
+<thead>
+<tr>
+<th>Tốc độ vật</th>
+<th>Phơi 1 ms</th>
+<th>Phơi 5 ms</th>
+<th>Phơi 10 ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>100 mm/s</td>
+<td>0,1 mm</td>
+<td>0,5 mm</td>
+<td>1 mm</td>
+</tr>
+<tr>
+<td>500 mm/s</td>
+<td>0,5 mm</td>
+<td>2,5 mm</td>
+<td>5 mm</td>
+</tr>
+<tr>
+<td>1 000 mm/s</td>
+<td>1 mm</td>
+<td>5 mm</td>
+<td>10 mm</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Quy tắc thực dụng:</strong> nhoè phải <strong>nhỏ hơn kích
+thước chi tiết nhỏ nhất cần thấy</strong>. Cần phân biệt vết xước 0,2 mm
+mà nhoè 0,5 mm thì không có ngưỡng nào cứu được.</p>
+<p>Muốn <strong>phơi ngắn mà vẫn đủ sáng</strong>, thứ tự ưu tiên:
+<strong>thêm ánh sáng</strong> → <strong>mở khẩu độ</strong> → cuối cùng
+mới tăng gain. Đèn nhấp nháy đồng bộ (strobe) cho phép phơi rất ngắn mà
+vẫn sáng — xem 19.7.</p>
+<p>⚠ <strong>Cái bẫy PWM:</strong> nếu đèn điều độ sáng bằng PWM mà
+<strong>không đồng bộ với màn trập</strong>, thời gian phơi ngắn sẽ
+<strong>bắt trúng lúc đèn đang tắt</strong> — ảnh lúc sáng lúc tối
+<strong>dù vật đứng yên</strong>. Xem 19.7.</p>
+<h4 id="1983-khuếch-đại-gain--vì-sao-phải-dùng-ít-nhất-có-thể">19.8.3
+Khuếch đại (gain) — vì sao phải dùng ít nhất có thể</h4>
+<p>Gain <strong>không thêm thông tin</strong>. Nó nhân cả tín hiệu
+<strong>lẫn nhiễu</strong> lên cùng một hệ số.</p>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng của gain quá cao</th>
+<th>Hệ quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ảnh sáng nhưng <strong>&quot;sạn&quot;</strong>, nền không mịn</td>
+<td>Giá trị đo của cùng một vật <strong>dao động giữa các lần
+chụp</strong></td>
+</tr>
+<tr>
+<td>Vùng tối có <strong>đốm sáng ngẫu nhiên</strong></td>
+<td>Công cụ đếm/dò cạnh bắt nhầm</td>
+</tr>
+<tr>
+<td>Kết quả đo <strong>đổi khi trời nóng</strong></td>
+<td>Nhiễu cảm biến tăng theo nhiệt độ, và gain nhân nó lên</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Ghi lại mức gain đã dùng lúc máy mới.</strong> Nếu vài
+tháng sau có người phải <strong>tăng gain</strong> mới thấy rõ, đó là
+dấu hiệu <strong>đèn đang suy giảm</strong> hoặc <strong>ống kính
+bẩn</strong> — không phải camera cần chỉnh.</p>
+<h4 id="1984-khẩu-độ-và-độ-sâu-trường--cái-đánh-đổi-không-tránh-được">19.8.4
+Khẩu độ và độ sâu trường — cái đánh đổi không tránh được</h4>
+<table>
+<thead>
+<tr>
+<th>Khẩu độ</th>
+<th>Được</th>
+<th>Mất</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mở to</strong></td>
+<td>Sáng, phơi ngắn được</td>
+<td>⚠ <strong>Độ sâu trường mỏng</strong> — vật cao thấp khác nhau là
+mất nét</td>
+</tr>
+<tr>
+<td><strong>Khép nhỏ</strong></td>
+<td>Độ sâu trường dày, dung sai chiều cao lớn</td>
+<td>Tối, phải bù bằng đèn hoặc phơi lâu hơn</td>
+</tr>
+</tbody>
+</table>
+<p>⚠ <strong>Khép quá nhỏ cũng hại:</strong> qua một mức, hiện tượng
+nhiễu xạ làm ảnh <strong>mờ đi</strong> dù đã đúng nét. Không phải cứ
+khép hết là sắc nét nhất.</p>
+<p>⭐ <strong>Cách kiểm nhanh độ sâu trường có đủ không:</strong> đặt
+vật ở <strong>vị trí cao nhất</strong> và <strong>thấp nhất</strong> mà
+sản xuất thực tế có thể có, chụp cả hai. Nếu một trong hai mất nét thì
+phải khép khẩu thêm và bù sáng.</p>
+<h4 id="1985-starstar-ngưỡng-và-biên-độ-dự-trữ--nguồn-ng-giả-số-một">19.8.5
+⭐⭐ Ngưỡng và BIÊN ĐỘ DỰ TRỮ — nguồn NG giả số một</h4>
+<p>Đây là mục quan trọng nhất. Hầu hết công cụ vision cuối cùng đều quy
+về <strong>so một con số với một ngưỡng</strong>. Câu hỏi đúng không
+phải <em>&quot;đặt ngưỡng bao nhiêu&quot;</em> mà là:</p>
+<blockquote>
+<p><em><strong>Giá trị của hàng OK và hàng NG có tách nhau đủ xa
+không?</strong></em></p>
+</blockquote>
+<p><strong>Cách làm đúng, mất 20 phút và cứu cả năm:</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Bước</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Chạy <strong>ít nhất 30–50 vật OK</strong>, ghi lại giá trị công cụ
+trả về cho từng vật</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Chạy <strong>các loại NG thật</strong> đã gom được, ghi giá trị</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Vẽ hai nhóm số đó lên giấy — chỉ cần vạch trên một trục ngang</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⭐ Xem <strong>khoảng trống giữa hai nhóm</strong>. Đặt ngưỡng vào
+<strong>giữa khoảng trống</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Ghi lại cả hai dải giá trị</strong> vào hồ sơ máy (<a href="#phan-pl-f-tham-so-may-moi">Phụ lục F.1</a>)</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Khoảng trống đó chính là &quot;biên độ dự trữ&quot;.</strong> Nó cho
+biết hệ chịu được bao nhiêu thay đổi trước khi bắt đầu sai:</p>
+<table>
+<thead>
+<tr>
+<th>Hai nhóm</th>
+<th>Nghĩa là</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tách xa</strong></td>
+<td>Hệ khoẻ. Đèn suy giảm hay bụi bám một ít cũng chưa sai</td>
+</tr>
+<tr>
+<td><strong>Sát nhau</strong></td>
+<td>⚠ Chạy được <strong>hôm nay</strong>, nhưng đèn giảm 10 % là bắt đầu
+NG giả</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Chồng lên nhau</strong></td>
+<td><strong>Không có ngưỡng nào đúng cả.</strong> Đừng chỉnh ngưỡng nữa
+— quay lại <strong>chiếu sáng và quang học</strong> (bước 2–3 của
+19.8.1)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⭐ <strong>Đây là chỗ phân biệt người chỉnh vision có nghề với người
+mò.</strong> Người mò chỉnh ngưỡng tới khi lô hàng hôm nay chạy đúng.
+Người có nghề <strong>đo khoảng trống</strong> và biết hệ còn chịu được
+bao lâu.</p>
+</blockquote>
+<p><strong>Ngưỡng cố định hay ngưỡng thích nghi?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Dùng khi</th>
+<th>Cẩn thận</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cố định</strong></td>
+<td>Ánh sáng được che kín, ổn định</td>
+<td>Đơn giản, dễ chẩn đoán. Nên là lựa chọn mặc định</td>
+</tr>
+<tr>
+<td><strong>Thích nghi</strong> (tự tính theo ảnh)</td>
+<td>Nền thay đổi, không che hết sáng ngoài được</td>
+<td>⚠ <strong>Che mất triệu chứng</strong>: đèn suy giảm dần mà hệ tự
+bù, tới lúc hết bù nổi thì hỏng đột ngột</td>
+</tr>
+</tbody>
+</table>
+<h4 id="1986-chẩn-đoán-ng-giả">19.8.6 Chẩn đoán NG giả</h4>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Nghi trước hết</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NG giả <strong>tăng dần theo tuần/tháng</strong></td>
+<td>⭐ Đèn suy giảm, hoặc ống kính/cửa sổ bẩn dần</td>
+<td>19.6 · 19.8.3</td>
+</tr>
+<tr>
+<td>NG giả <strong>theo ca / theo giờ trong ngày</strong></td>
+<td>Ánh sáng ngoài lọt vào — che chưa kín</td>
+<td>19.8.1</td>
+</tr>
+<tr>
+<td>Cùng một vật <strong>đứng yên</strong> mà lúc OK lúc NG</td>
+<td>⚠ <strong>PWM đèn không đồng bộ màn trập</strong>, hoặc gain quá
+cao</td>
+<td>19.7 · 19.8.3</td>
+</tr>
+<tr>
+<td>NG giả <strong>chỉ với vật cao hơn / thấp hơn bình
+thường</strong></td>
+<td><strong>Độ sâu trường không đủ</strong></td>
+<td>19.8.4</td>
+</tr>
+<tr>
+<td>NG giả <strong>chỉ khi băng tải chạy nhanh</strong></td>
+<td><strong>Phơi sáng quá dài</strong> ⇒ nhoè</td>
+<td>19.8.2</td>
+</tr>
+<tr>
+<td>Ảnh nhìn đẹp nhưng số đo <strong>nhảy giữa các lần
+chụp</strong></td>
+<td>Gain cao ⇒ nhiễu; hoặc biên độ dự trữ quá mỏng</td>
+<td>19.8.3 · 19.8.5</td>
+</tr>
+<tr>
+<td>Chỉnh ngưỡng kiểu nào cũng <strong>không tách được OK và
+NG</strong></td>
+<td>⚠⚠ Hai phân bố <strong>chồng nhau</strong> — lỗi chiếu sáng/quang
+học, không phải ngưỡng</td>
+<td>19.8.5</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Tỉ lệ NG bỗng về 0</strong>, không loại con nào nữa</td>
+<td>Ngưỡng bị nới quá tay, hoặc công cụ trỏ sai vùng</td>
+<td>19.8.5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="199-sai-lầm-thường-gặp">19.9 Sai lầm thường gặp</h3>
 <table>
 <thead>
 <tr>
@@ -31692,6 +32282,45 @@ tra trang hãng trước khi lên BOM. Riêng <code>LDR2-48RD2-LA</code> ở
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐ NG giả <strong>tăng dần theo tuần/tháng</strong></td>
+<td>Đèn suy giảm hoặc ống kính bẩn dần — <strong>biên độ dự trữ</strong>
+mỏng đi</td>
+<td>Đo lại dải giá trị OK/NG, so với số ghi lúc máy mới. Xem 19.8.5</td>
+</tr>
+<tr>
+<td>⚠⚠ Chỉnh ngưỡng kiểu nào cũng <strong>không tách được OK và
+NG</strong></td>
+<td>Hai phân bố <strong>chồng lên nhau</strong></td>
+<td>Đừng chỉnh ngưỡng nữa — quay lại <strong>chiếu sáng và quang
+học</strong>. Xem 19.8.5</td>
+</tr>
+<tr>
+<td>Ảnh tối nên <strong>tăng gain cho sáng lên</strong> rồi thấy &quot;được
+rồi&quot;</td>
+<td>⚠⚠ Nhiễu sáng theo ⇒ số đo dao động giữa các lần chụp, vài tuần sau
+NG giả xuất hiện</td>
+<td>Thêm <strong>ánh sáng thật</strong> hoặc mở khẩu; gain là lựa chọn
+cuối. Xem 19.8.1 · 19.8.3</td>
+</tr>
+<tr>
+<td>NG giả <strong>chỉ khi băng tải chạy nhanh</strong></td>
+<td>Phơi sáng quá dài ⇒ <strong>nhoè</strong> = tốc độ × thời gian
+phơi</td>
+<td>Rút ngắn phơi, bù bằng đèn nhấp nháy. Xem 19.8.2</td>
+</tr>
+<tr>
+<td>NG giả <strong>chỉ với vật cao hơn / thấp hơn bình
+thường</strong></td>
+<td><strong>Độ sâu trường không đủ</strong></td>
+<td>Khép khẩu thêm và bù sáng; thử vật ở vị trí cao nhất và thấp nhất.
+Xem 19.8.4</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Tỉ lệ NG bỗng về 0</strong>, không loại con nào nữa</td>
+<td>Ngưỡng bị nới quá tay, hoặc công cụ trỏ sai vùng</td>
+<td>Kiểm bằng vật NG mẫu đã biết. Xem 19.8.5</td>
+</tr>
 <tr>
 <td>Camera <strong>rớt kết nối / tự reset</strong> khi servo hoặc biến
 tần chạy</td>
@@ -39142,7 +39771,283 @@ Và cần <strong>cảm biến trạng thái &quot;đang chuyển&quot;</strong>
 khác không lao vào lúc bàn đang xoay.</p>
 </blockquote>
 <hr />
-<h3 id="268-sai-lầm-thường-gặp">26.8 Sai lầm thường gặp</h3>
+<h3 id="268-star-chỉnh-chuyển-động-và-điểm-dạy--phần-quyết-định-nhịp-máy-và-độ-lặp-lại">26.8
+⭐ Chỉnh chuyển động và điểm dạy — phần quyết định nhịp máy và độ lặp
+lại</h3>
+<p>Bảy mục trước lo <strong>đấu nối và an toàn</strong>. Mục này lo phần
+người vận hành đụng vào hằng ngày: robot chạy <strong>nhanh hay
+chậm</strong>, <strong>êm hay giật</strong>, và <strong>gắp trúng hay
+trượt</strong>.</p>
+<h4 id="2681-ba-hệ-toạ-độ-phải-phân-biệt--nhầm-là-mọi-điểm-dạy-sai">26.8.1
+Ba hệ toạ độ phải phân biệt — nhầm là mọi điểm dạy sai</h4>
+<table>
+<thead>
+<tr>
+<th>Hệ</th>
+<th>Là gì</th>
+<th>Đổi nó thì sao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Gốc robot</strong></td>
+<td>Cố định trong thân robot</td>
+<td>Không đổi được</td>
+</tr>
+<tr>
+<td>⭐ <strong>Điểm công tác (tool)</strong></td>
+<td>Điểm làm việc thật ở <strong>đầu công cụ</strong> — mũi kim gắp, tâm
+giác hút</td>
+<td>⚠ Đổi tay gắp mà <strong>không khai lại tool</strong> ⇒ <strong>mọi
+điểm dạy lệch đi đúng bằng chênh lệch hình học</strong></td>
+</tr>
+<tr>
+<td><strong>Gốc phôi (base)</strong></td>
+<td>Gốc của đồ gá / mâm sản phẩm</td>
+<td>Dời đồ gá mà khai lại base thì <strong>giữ nguyên toàn bộ chương
+trình</strong></td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Đây là lý do nên dạy điểm theo gốc phôi, không theo gốc
+robot.</strong> Đồ gá bị va chạm phải chỉnh lại, hoặc chuyển sang máy
+khác — khai lại <strong>một</strong> gốc phôi là xong, thay vì dạy lại
+<strong>hàng chục điểm</strong>.</p>
+<p>⚠⚠ <strong>Khai tool sai là kiểu lỗi tệ nhất:</strong> robot vẫn
+chạy, quỹ đạo vẫn mượt, chỉ là <strong>mọi vị trí lệch một khoảng cố
+định</strong>. Không có báo lỗi nào.</p>
+<h4 id="2682-tải-trọng-và-trọng-tâm--hai-con-số-bắt-buộc-hay-bị-bỏ">26.8.2
+Tải trọng và trọng tâm — hai con số bắt buộc, hay bị bỏ</h4>
+<p>Robot tính mô-men từng khớp dựa trên <strong>khối lượng</strong> và
+<strong>vị trí trọng tâm</strong> của thứ gắn ở đầu tay. Cả hai đều phải
+<strong>khai báo</strong>, và <strong>trọng tâm quan trọng không kém
+khối lượng</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Khai sai kiểu</th>
+<th>Hậu quả</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Khai nhẹ hơn thực</strong></td>
+<td>⚠ Robot tăng tốc mạnh hơn khả năng ⇒ rung ở cuối hành trình, sai vị
+trí, hao khớp</td>
+</tr>
+<tr>
+<td><strong>Khai nặng hơn thực</strong></td>
+<td>Chạy chậm và ì hơn cần thiết — mất nhịp máy vô ích</td>
+</tr>
+<tr>
+<td>⚠ <strong>Quên trọng tâm khi tay gắp vươn dài</strong></td>
+<td>Mô-men thật lớn hơn nhiều so với robot tính ⇒ rung mạnh, có thể báo
+quá tải khớp</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Khai lại mỗi khi đổi tay gắp</strong> — kể cả khi khối
+lượng gần như cũ, vì hình học có thể khác. Nhiều robot có chức năng
+<strong>tự đo tải</strong>: cho chạy một chu trình ngắn rồi robot tự
+tính.</p>
+<h4 id="2683-tốc-độ-gia-tốc-và-giật-jerk">26.8.3 Tốc độ, gia tốc, và
+giật (jerk)</h4>
+<table>
+<thead>
+<tr>
+<th>Tham số</th>
+<th>Tăng thì ĐƯỢC</th>
+<th>Tăng thì MẤT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tốc độ</strong></td>
+<td>Nhịp máy nhanh hơn</td>
+<td>⚠ Rung ở điểm dừng; hao khớp; vật có thể văng khỏi giác hút</td>
+</tr>
+<tr>
+<td><strong>Gia tốc</strong></td>
+<td>⭐ <strong>Rút ngắn nhịp nhiều hơn cả tăng tốc độ</strong> với hành
+trình ngắn</td>
+<td>Rung mạnh hơn hẳn, tải khớp tăng nhanh</td>
+</tr>
+<tr>
+<td><strong>Giật (jerk / độ mượt)</strong> <em>(tăng = dốc
+hơn)</em></td>
+<td>Đáp ứng nhanh hơn</td>
+<td>Sốc cơ khí, vật xê dịch trên giác hút</td>
+</tr>
+</tbody>
+</table>
+<p>⭐ <strong>Với hành trình ngắn, gia tốc quyết định nhịp máy chứ không
+phải tốc độ tối đa</strong> — robot còn chưa kịp đạt tốc độ đặt thì đã
+phải giảm tốc. Tăng tốc độ tối đa trong trường hợp đó <strong>không rút
+ngắn được gì</strong>, chỉ làm rung thêm.</p>
+<p>⚠ <strong>Tốc độ toàn cục (override) không phải tham số vận
+hành.</strong> Nó là công cụ <strong>dạy và thử</strong>. Chạy sản xuất
+ở 50 % override rồi một hôm ai đó đặt về 100 % là <strong>mọi thứ đổi
+cùng lúc</strong> — quỹ đạo, lực quán tính, thời điểm bắt tay tín
+hiệu.</p>
+<h4 id="2684-làm-tròn-góc-blending--nhanh-hơn-nhưng-không-đi-qua-điểm-dạy">26.8.4
+Làm tròn góc (blending) — nhanh hơn nhưng KHÔNG đi qua điểm dạy</h4>
+<p>Robot đi qua nhiều điểm liên tiếp có hai cách:</p>
+<table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Chuyển động</th>
+<th>Đánh đổi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dừng đúng điểm</strong></td>
+<td>Tới điểm, dừng hẳn, rồi mới đi tiếp</td>
+<td>Chính xác, nhưng <strong>chậm và giật</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>Làm tròn (blending)</strong></td>
+<td>Cắt góc, không dừng lại</td>
+<td>Nhanh và mượt hơn nhiều</td>
+</tr>
+</tbody>
+</table>
+<p>⚠⚠ <strong>Điểm mấu chốt: khi làm tròn, robot KHÔNG đi qua điểm dạy
+nữa</strong> — nó đi tắt bên trong. Bán kính làm tròn càng lớn thì cắt
+càng sâu.</p>
+<p><strong>Hệ quả phải nhớ:</strong> điểm dạy để <strong>né vật
+cản</strong> mà bật làm tròn với bán kính lớn là <strong>đâm vào đúng
+vật cản đó</strong>. Và lỗi này xuất hiện <strong>chỉ khi chạy
+nhanh</strong> — dạy tay tốc độ thấp thì không thấy gì.</p>
+<h4 id="2685--điểm-kỳ-dị-singularity--robot-6-trục-dừng-hoặc-giật-đột-ngột">26.8.5
+⚠ Điểm kỳ dị (singularity) — robot 6 trục dừng hoặc giật đột ngột</h4>
+<p>Ở một số tư thế, robot <strong>mất một bậc tự do</strong>: hai khớp
+thẳng hàng nhau, và để đi tiếp theo đường thẳng thì một khớp phải quay
+<strong>cực nhanh</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Chuyện gì xảy ra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Robot <strong>dừng giữa chừng và báo lỗi</strong> khi chạy đường
+thẳng</td>
+<td>Đi qua vùng kỳ dị</td>
+</tr>
+<tr>
+<td>Một khớp <strong>quay vọt rất nhanh</strong> ở giữa hành trình</td>
+<td>Robot đang cố bù để giữ đường thẳng</td>
+</tr>
+<tr>
+<td>Chạy theo khớp thì được, <strong>chạy đường thẳng thì
+lỗi</strong></td>
+<td>Đúng dấu hiệu của kỳ dị</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cách tránh:</strong> dạy lại điểm trung gian để <strong>đi
+vòng qua</strong> vùng đó · hoặc đổi đoạn đó sang <strong>chuyển động
+theo khớp</strong> thay vì đường thẳng · hoặc <strong>xoay đồ
+gá</strong> để tư thế làm việc tránh vùng kỳ dị.</p>
+<p>⭐ Việc này phải tính <strong>từ lúc bố trí máy</strong>. Sửa bằng
+cách dạy lại điểm là chữa cháy, không phải cách gốc.</p>
+<h4 id="2686-điểm-dạy--thứ-dễ-mất-nhất-khi-sửa-máy">26.8.6 Điểm dạy —
+thứ dễ mất nhất khi sửa máy</h4>
+<p>Điểm dạy là <strong>thành quả nhiều giờ</strong>, và nó <strong>không
+nằm trong bản vẽ nào</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Phải làm</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⭐ <strong>Sao lưu chương trình + điểm dạy sau mỗi lần
+chỉnh</strong></td>
+<td>Xem <a href="#phan-pl-g-thay-the-thiet-bi">Phụ lục G</a></td>
+</tr>
+<tr>
+<td><strong>Dạy theo gốc phôi</strong>, không theo gốc robot</td>
+<td>Dời đồ gá chỉ phải khai lại một gốc</td>
+</tr>
+<tr>
+<td><strong>Ghi lại tool và base đang dùng</strong> cho từng chương
+trình</td>
+<td>Chạy nhầm tool là lệch toàn bộ</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Sau khi thay động cơ/encoder một khớp: kiểm lại điểm
+dạy</strong></td>
+<td>Encoder tuyệt đối thay là <strong>mất gốc khớp đó</strong> ⇒ mọi
+điểm sai</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2687-chẩn-đoán">26.8.7 Chẩn đoán</h4>
+<table>
+<thead>
+<tr>
+<th>Triệu chứng</th>
+<th>Nghi trước hết</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>⚠⚠ Mọi điểm <strong>lệch một khoảng cố định</strong> sau khi đổi tay
+gắp</td>
+<td><strong>Chưa khai lại tool</strong></td>
+<td>26.8.1</td>
+</tr>
+<tr>
+<td>Rung ở cuối hành trình, vật <strong>xê dịch trên giác
+hút</strong></td>
+<td>Gia tốc/giật quá cao, hoặc khai tải <strong>nhẹ hơn
+thực</strong></td>
+<td>26.8.2 · 26.8.3</td>
+</tr>
+<tr>
+<td>Robot <strong>ì, không đạt nhịp</strong> dù đặt tốc độ cao</td>
+<td>Khai tải <strong>nặng hơn thực</strong>; hoặc hành trình ngắn nên
+<strong>gia tốc mới là giới hạn</strong></td>
+<td>26.8.2 · 26.8.3</td>
+</tr>
+<tr>
+<td>⚠ <strong>Va chạm chỉ khi chạy nhanh</strong>, chạy chậm thì
+không</td>
+<td><strong>Làm tròn góc</strong> cắt qua điểm né vật cản</td>
+<td>26.8.4</td>
+</tr>
+<tr>
+<td>Dừng giữa chừng báo lỗi khi chạy <strong>đường thẳng</strong>, chạy
+khớp thì được</td>
+<td><strong>Điểm kỳ dị</strong></td>
+<td>26.8.5</td>
+</tr>
+<tr>
+<td>Một khớp <strong>quay vọt</strong> giữa hành trình</td>
+<td>Đi sát vùng kỳ dị</td>
+<td>26.8.5</td>
+</tr>
+<tr>
+<td>Chạy tốt ở 50 % override, <strong>lỗi khi lên 100 %</strong></td>
+<td>Nhịp bắt tay tín hiệu và quán tính đổi cùng lúc</td>
+<td>26.8.3</td>
+</tr>
+<tr>
+<td>Sau khi thay động cơ một khớp, <strong>mọi điểm sai</strong></td>
+<td>Mất gốc encoder tuyệt đối khớp đó</td>
+<td>26.8.6</td>
+</tr>
+</tbody>
+</table>
+<h3 id="269-sai-lầm-thường-gặp">26.9 Sai lầm thường gặp</h3>
 <table>
 <thead>
 <tr>
@@ -39152,6 +40057,54 @@ khác không lao vào lúc bàn đang xoay.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Đổi tay gắp xong, <strong>mọi điểm lệch một khoảng cố
+định</strong></td>
+<td><strong>Chưa khai lại điểm công tác (tool)</strong></td>
+<td>Robot vẫn chạy mượt, không báo lỗi gì — đây là kiểu lỗi tệ nhất. Xem
+26.8.1</td>
+</tr>
+<tr>
+<td>⚠ <strong>Va chạm chỉ khi chạy nhanh</strong>, chạy chậm thì không
+sao</td>
+<td><strong>Làm tròn góc (blending)</strong> cắt qua điểm dạy để né vật
+cản</td>
+<td>Giảm bán kính làm tròn ở đoạn đó, hoặc bắt dừng đúng điểm. Xem
+26.8.4</td>
+</tr>
+<tr>
+<td>Robot <strong>dừng giữa chừng báo lỗi</strong> khi chạy đường thẳng,
+chạy theo khớp thì được</td>
+<td><strong>Điểm kỳ dị (singularity)</strong></td>
+<td>Dạy điểm trung gian đi vòng, hoặc đổi sang chuyển động khớp. Xem
+26.8.5</td>
+</tr>
+<tr>
+<td>Vật <strong>xê dịch trên giác hút</strong> khi robot dừng</td>
+<td>Gia tốc/giật quá cao, hoặc khai tải <strong>nhẹ hơn
+thực</strong></td>
+<td>Khai lại tải <strong>và trọng tâm</strong>; giảm giật. Xem 26.8.2 ·
+26.8.3</td>
+</tr>
+<tr>
+<td>Robot <strong>ì, không đạt nhịp</strong> dù đã đặt tốc độ cao</td>
+<td>Hành trình ngắn ⇒ <strong>gia tốc mới là giới hạn</strong>, không
+phải tốc độ; hoặc khai tải nặng hơn thực</td>
+<td>Xem 26.8.3</td>
+</tr>
+<tr>
+<td>Chạy tốt ở 50 % override, <strong>lỗi khi lên 100 %</strong></td>
+<td>Override là công cụ <strong>dạy và thử</strong>, không phải tham số
+vận hành — lên 100 % là quán tính và nhịp bắt tay đổi cùng lúc</td>
+<td>Xem 26.8.3</td>
+</tr>
+<tr>
+<td>Sau khi thay động cơ một khớp, <strong>mọi điểm dạy
+sai</strong></td>
+<td>Encoder tuyệt đối thay là <strong>mất gốc khớp đó</strong></td>
+<td>Xem 26.8.6 và <a href="#phan-pl-g-thay-the-thiet-bi">Phụ lục
+G</a></td>
+</tr>
 <tr>
 <td>Robot 6 trục lắp xong thấy <strong>quá phức tạp cho việc đang
 làm</strong></td>
@@ -44645,7 +45598,7 @@ tra cứu theo triệu chứng</h2>
 <p><strong>Phụ lục này giải quyết đúng một tình huống:</strong> bạn đang
 đứng trước cái máy, <strong>chỉ biết nó đang bị gì</strong>, và không
 biết mở chương nào.</p>
-<p>Sách có <strong>577 dòng triệu chứng</strong> nằm rải rác trong 29
+<p>Sách có <strong>596 dòng triệu chứng</strong> nằm rải rác trong 29
 bảng <em>&quot;Sai lầm thường gặp&quot;</em>. Nếu không có chỉ mục này thì bạn
 phải <strong>đoán xem là chương nào</strong> — đúng cái mà người đang
 sửa máy lúc 2 giờ sáng không có thời gian làm.</p>
@@ -45158,8 +46111,8 @@ script là chỉ mục tự cập nhật.</p>
 </blockquote>
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-<h3 id="e4-chỉ-mục-đầy-đủ--577-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
-đủ — <strong>577 triệu chứng</strong> theo chương</h3>
+<h3 id="e4-chỉ-mục-đầy-đủ--596-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
+đủ — <strong>596 triệu chứng</strong> theo chương</h3>
 <blockquote>
 <p>💡 <strong>Cách dùng nhanh nhất: <code>Ctrl+F</code> rồi gõ đúng từ
 bạn quan sát được</strong> — ví dụ <code>chập chờn</code>,
@@ -45485,7 +46438,7 @@ motion controller</a> · 17 triệu chứng</h4>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-6--module-io--remote-io--19-triệu-chứng">Chương 6 — <a href="#phan-ch06-module-io">Module I/O &amp; remote I/O</a> · 19 triệu
+<h4 id="chương-6--module-io--remote-io--25-triệu-chứng">Chương 6 — <a href="#phan-ch06-module-io">Module I/O &amp; remote I/O</a> · 25 triệu
 chứng</h4>
 <table>
 <thead>
@@ -45495,6 +46448,32 @@ chứng</h4>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Thay module xong, các ngõ vào phía sau đọc sai — mạng vẫn xanh,
+không alarm</td>
+<td>Module thay khác số kênh hoặc lắp nhầm khe ⇒ dịch địa chỉ toàn bộ
+phần sau</td>
+</tr>
+<tr>
+<td>Cảm biến tác động mà bit khác trong PLC đổi</td>
+<td>Ánh xạ lệch, hoặc đếm nhầm thứ tự bit trong byte</td>
+</tr>
+<tr>
+<td>Giá trị analog qua remote I/O lệch đúng một hệ số tròn</td>
+<td>Sai dải giá trị thô của hãng (0–4000 · 0–16000 · 0–27648…)</td>
+</tr>
+<tr>
+<td>⚠⚠ Số đo trông hợp lý nhưng cảm biến đã chết</td>
+<td>Giá trị báo lỗi kênh chảy thẳng vào công thức rồi nhân hệ số</td>
+</tr>
+<tr>
+<td>Mất cả buổi mò dây mà nguyên nhân chỉ là đứt một dây analog</td>
+<td>Không ai đọc bit chẩn đoán vốn đã có sẵn trong dữ liệu</td>
+</tr>
+<tr>
+<td>Chương trình chạy đúng máy này, sai ở máy giống hệt</td>
+<td>File cấu hình mạng hai máy khác nhau</td>
+</tr>
 <tr>
 <td>Đếm thiếu sản phẩm, thỉnh thoảng bỏ sót</td>
 <td>Bộ lọc ngõ vào mặc định 10 ms nuốt xung</td>
@@ -46728,9 +47707,9 @@ contactor &amp; cầu đấu</a> · 18 triệu chứng</h4>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-19--vision--chiếu-sáng-máy--19-triệu-chứng">Chương 19 —
+<h4 id="chương-19--vision--chiếu-sáng-máy--25-triệu-chứng">Chương 19 —
 <a href="#phan-ch19-vision-chieu-sang">Vision &amp; chiếu sáng máy</a> ·
-19 triệu chứng</h4>
+25 triệu chứng</h4>
 <table>
 <thead>
 <tr>
@@ -46739,6 +47718,31 @@ contactor &amp; cầu đấu</a> · 18 triệu chứng</h4>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⭐ NG giả tăng dần theo tuần/tháng</td>
+<td>Đèn suy giảm hoặc ống kính bẩn dần — biên độ dự trữ mỏng đi</td>
+</tr>
+<tr>
+<td>⚠⚠ Chỉnh ngưỡng kiểu nào cũng không tách được OK và NG</td>
+<td>Hai phân bố chồng lên nhau</td>
+</tr>
+<tr>
+<td>Ảnh tối nên tăng gain cho sáng lên rồi thấy &quot;được rồi&quot;</td>
+<td>⚠⚠ Nhiễu sáng theo ⇒ số đo dao động giữa các lần chụp, vài tuần sau
+NG giả xuất hiện</td>
+</tr>
+<tr>
+<td>NG giả chỉ khi băng tải chạy nhanh</td>
+<td>Phơi sáng quá dài ⇒ nhoè = tốc độ × thời gian phơi</td>
+</tr>
+<tr>
+<td>NG giả chỉ với vật cao hơn / thấp hơn bình thường</td>
+<td>Độ sâu trường không đủ</td>
+</tr>
+<tr>
+<td>⚠⚠ Tỉ lệ NG bỗng về 0, không loại con nào nữa</td>
+<td>Ngưỡng bị nới quá tay, hoặc công cụ trỏ sai vùng</td>
+</tr>
 <tr>
 <td>Camera rớt kết nối / tự reset khi servo hoặc biến tần chạy</td>
 <td>Nối chung chân 5 (đất I/O) và chân 6 (đất nguồn) → mất cách ly</td>
@@ -47403,9 +48407,9 @@ liệu</a> · 18 triệu chứng</h4>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-26--robot--cơ-cấu-chuyển-động-đặc-biệt--23-triệu-chứng">Chương
+<h4 id="chương-26--robot--cơ-cấu-chuyển-động-đặc-biệt--30-triệu-chứng">Chương
 26 — <a href="#phan-ch26-robot-chuyen-dong-dac-biet">Robot &amp; cơ cấu
-chuyển động đặc biệt</a> · 23 triệu chứng</h4>
+chuyển động đặc biệt</a> · 30 triệu chứng</h4>
 <table>
 <thead>
 <tr>
@@ -47414,6 +48418,37 @@ chuyển động đặc biệt</a> · 23 triệu chứng</h4>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Đổi tay gắp xong, mọi điểm lệch một khoảng cố định</td>
+<td>Chưa khai lại điểm công tác (tool)</td>
+</tr>
+<tr>
+<td>⚠ Va chạm chỉ khi chạy nhanh, chạy chậm thì không sao</td>
+<td>Làm tròn góc (blending) cắt qua điểm dạy để né vật cản</td>
+</tr>
+<tr>
+<td>Robot dừng giữa chừng báo lỗi khi chạy đường thẳng, chạy theo khớp
+thì được</td>
+<td>Điểm kỳ dị (singularity)</td>
+</tr>
+<tr>
+<td>Vật xê dịch trên giác hút khi robot dừng</td>
+<td>Gia tốc/giật quá cao, hoặc khai tải nhẹ hơn thực</td>
+</tr>
+<tr>
+<td>Robot ì, không đạt nhịp dù đã đặt tốc độ cao</td>
+<td>Hành trình ngắn ⇒ gia tốc mới là giới hạn, không phải tốc độ; hoặc
+khai tải nặng hơn thực</td>
+</tr>
+<tr>
+<td>Chạy tốt ở 50 % override, lỗi khi lên 100 %</td>
+<td>Override là công cụ dạy và thử, không phải tham số vận hành — lên
+100 % là quán tính và nhịp bắt tay đổi cùng lúc</td>
+</tr>
+<tr>
+<td>Sau khi thay động cơ một khớp, mọi điểm dạy sai</td>
+<td>Encoder tuyệt đối thay là mất gốc khớp đó</td>
+</tr>
 <tr>
 <td>Robot 6 trục lắp xong thấy quá phức tạp cho việc đang làm</td>
 <td>Chọn 6 trục khi SCARA đủ</td>
@@ -50055,17 +51090,17 @@ tiếp</h3>
 <p>Datasheet công nghiệp thường là PDF nhiều cột, có khi mã hoá AES
 (Omron EU), và công cụ tóm tắt web hay trả về &quot;không đọc được nội dung&quot;.
 Cách vòng qua:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Cài một lần</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pypdf cryptography</span></code></pre></div>
-<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Trích toàn bộ text ra file</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pypdf <span class="im">import</span> PdfReader</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> PdfReader(<span class="vs">r&#39;&lt;đường dẫn PDF&gt;&#39;</span>)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="bu">open</span>(<span class="st">&#39;out.txt&#39;</span>, <span class="st">&#39;w&#39;</span>, encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>).write(</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>.join(<span class="st">&#39;=== PAGE </span><span class="sc">%d</span><span class="st"> ===</span><span class="ch">\n</span><span class="st">&#39;</span> <span class="op">%</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">+</span> (p.extract_text() <span class="kw">or</span> <span class="st">&#39;&#39;</span>)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>              <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(r.pages))</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="sourceCode" id="cb37"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Tìm đúng bảng cần trong file text</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-n</span> <span class="at">-i</span> <span class="at">-C</span> 5 <span class="st">&quot;Model Number Legend\|Ordering Information\|How to Order&quot;</span> out.txt</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Cài một lần</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pypdf cryptography</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Trích toàn bộ text ra file</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pypdf <span class="im">import</span> PdfReader</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> PdfReader(<span class="vs">r&#39;&lt;đường dẫn PDF&gt;&#39;</span>)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="bu">open</span>(<span class="st">&#39;out.txt&#39;</span>, <span class="st">&#39;w&#39;</span>, encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>).write(</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>.join(<span class="st">&#39;=== PAGE </span><span class="sc">%d</span><span class="st"> ===</span><span class="ch">\n</span><span class="st">&#39;</span> <span class="op">%</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">+</span> (p.extract_text() <span class="kw">or</span> <span class="st">&#39;&#39;</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>              <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(r.pages))</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Tìm đúng bảng cần trong file text</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-n</span> <span class="at">-i</span> <span class="at">-C</span> 5 <span class="st">&quot;Model Number Legend\|Ordering Information\|How to Order&quot;</span> out.txt</span></code></pre></div>
 <h3 id="e1b-star-bảng-nhiều-cột-pypdf-làm-hỏng--dùng-pdfplumber-chế-độ-giữ-layout">E.1b
 ⭐ Bảng nhiều cột: <code>pypdf</code> làm hỏng — dùng
 <code>pdfplumber</code> chế độ giữ layout</h3>
@@ -50104,13 +51139,13 @@ trong ô kẻ</td>
 kẻ dọc, nên thuật toán chia sai ô. <code>layout=True</code> thì không
 cần đường kẻ — nó dựng lại vị trí ký tự bằng toạ độ x/y, giữ nguyên
 khoảng trắng như trang giấy.</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pdfplumber        <span class="co"># cài một lần</span></span></code></pre></div>
-<div class="sourceCode" id="cb39"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pdfplumber</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pdfplumber.<span class="bu">open</span>(<span class="vs">r&#39;&lt;đường dẫn PDF&gt;&#39;</span>) <span class="im">as</span> pdf:</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">open</span>(<span class="st">&#39;out.txt&#39;</span>, <span class="st">&#39;w&#39;</span>, encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>).write(</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>.join(<span class="st">&#39;=== PAGE </span><span class="sc">%d</span><span class="st"> ===</span><span class="ch">\n</span><span class="st">&#39;</span> <span class="op">%</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">+</span> (p.extract_text(layout<span class="op">=</span><span class="va">True</span>) <span class="kw">or</span> <span class="st">&#39;&#39;</span>)</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(pdf.pages))</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pdfplumber        <span class="co"># cài một lần</span></span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pdfplumber</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> pdfplumber.<span class="bu">open</span>(<span class="vs">r&#39;&lt;đường dẫn PDF&gt;&#39;</span>) <span class="im">as</span> pdf:</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">open</span>(<span class="st">&#39;out.txt&#39;</span>, <span class="st">&#39;w&#39;</span>, encoding<span class="op">=</span><span class="st">&#39;utf-8&#39;</span>).write(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>.join(<span class="st">&#39;=== PAGE </span><span class="sc">%d</span><span class="st"> ===</span><span class="ch">\n</span><span class="st">&#39;</span> <span class="op">%</span> (i<span class="op">+</span><span class="dv">1</span>) <span class="op">+</span> (p.extract_text(layout<span class="op">=</span><span class="va">True</span>) <span class="kw">or</span> <span class="st">&#39;&#39;</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>                  <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(pdf.pages))</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    )</span></code></pre></div>
 <blockquote>
 <p>⚡ <strong>LƯU Ý</strong> — trên Windows, in tiếng Việt/ký tự đặc
 biệt ra console sẽ lỗi <code>UnicodeEncodeError: &#39;gbk&#39; codec</code>.

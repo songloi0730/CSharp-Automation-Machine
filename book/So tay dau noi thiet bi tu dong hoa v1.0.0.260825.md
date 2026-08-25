@@ -679,7 +679,7 @@ an toàn.
 | Chỉ biết **triệu chứng** ("cảm biến báo ON giả") | ⭐ **[Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)** |
 
 > ⭐ **Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng [Phụ lục E](#phan-pl-e-chi-muc-trieu-chung).**
-> Nó gom **toàn bộ 577 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
+> Nó gom **toàn bộ 596 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
 > *"bạn quan sát thấy gì → mở chương nào"*, một mục riêng cho **triệu chứng liên quan an toàn**,
 > và chỉ mục đầy đủ để `Ctrl+F`.
 >
@@ -3682,7 +3682,100 @@ Hãy đọc kỹ câu cuối: mặc định của FSV trong công cụ ấy là 
 
 ---
 
-### 6.9 IO-Link — nói ngắn
+### 6.9 ⭐⭐ Ánh xạ dữ liệu remote I/O — "đọc ra số sai mà không đèn nào báo"
+
+Mục 6.8 lo **remote I/O lên mạng được hay không** — đó là phần có đèn báo, dễ thấy. Mục này lo phần
+sau đó: **mạng thông rồi, nhưng bit và số đọc về không đúng chỗ**.
+
+⚠ Đây cùng họ với lỗi ở [21.4](#phan-ch21-truyen-thong-mang): **không có đèn nào báo**. Đèn mạng xanh,
+không alarm, PLC vẫn chạy — chỉ là `X12` trong chương trình lại đang là cảm biến ở vị trí khác.
+
+#### 6.9.1 Vùng dữ liệu trao đổi — bức tranh phải hiểu trước
+
+Remote I/O không gửi từng tín hiệu riêng. Nó gộp tất cả vào **một khối byte** và trao đổi cả khối
+mỗi chu kỳ:
+
+| Chiều | Nội dung |
+|---|---|
+| **Trạm → PLC** (ngõ vào) | Trạng thái mọi DI · giá trị mọi AI · **bit chẩn đoán của trạm** |
+| **PLC → trạm** (ngõ ra) | Trạng thái mọi DO · giá trị mọi AO |
+
+⭐ **Vị trí của từng thứ trong khối đó do CẤU HÌNH quyết định**, không phải do bạn cắm dây vào đâu.
+Đó là lý do đấu dây đúng mà chương trình vẫn đọc sai.
+
+#### 6.9.2 ⚠ Ba thứ làm lệch ánh xạ
+
+| # | Nguyên nhân | Chuyện gì xảy ra |
+|---|---|---|
+| 1 | **Thêm / bớt / đổi chỗ module** trên trạm | Mọi module **phía sau** nó bị **dịch địa chỉ** — chương trình cũ đọc trúng module khác |
+| 2 | **Đổi module sang loại có số kênh khác** | Ví dụ thay module 8 kênh bằng 16 kênh: chiếm gấp đôi chỗ, đẩy lệch phần sau |
+| 3 | **File cấu hình trong PLC không khớp phần cứng thật** | Trạm gửi theo bố trí thật, PLC diễn giải theo bố trí trong file |
+
+> ⚠⚠ **Cái bẫy khi sửa máy:** module hỏng, thợ thay bằng module "cùng chức năng" nhưng **khác số
+> kênh**, hoặc lắp **nhầm khe**. Mạng vẫn lên, đèn vẫn xanh — nhưng **toàn bộ ngõ vào phía sau đã
+> dịch đi vài bit**. Máy chạy sai một cách khó hiểu, và không ai nghĩ tới module vừa thay vì
+> *"nó lên mạng bình thường mà"*.
+>
+> Xem thêm [Phụ lục G](#phan-pl-g-thay-the-thiet-bi).
+
+#### 6.9.3 Thứ tự bit trong byte và word — chỗ đếm nhầm
+
+| Phải biết | Vì sao |
+|---|---|
+| **Kênh 0 nằm ở bit 0 hay bit 7** | Hãng khác nhau đánh số khác nhau |
+| **Kênh thứ 9 trở đi nằm ở byte nào** | Module 16 kênh chiếm 2 byte; kênh 8–15 ở byte thứ hai |
+| ⭐ **Thứ tự byte của giá trị analog 16 bit** | Cùng bài toán byte cao/thấp ở [21.4.3](#phan-ch21-truyen-thong-mang) |
+
+⭐ **Cách kiểm chắc chắn nhất, không cần đọc tài liệu:** tác động **từng ngõ vào một** bằng tay
+(đưa vật vào cảm biến, hoặc nối tắt chân), và xem **bit nào trong PLC đổi**. Ghi lại thành bảng.
+
+Mất 15 phút cho một trạm 16 kênh, và đó là **bằng chứng thật** thay vì tin vào tài liệu — vốn hay
+mô tả cấu hình mặc định chứ không phải cấu hình đang chạy.
+
+#### 6.9.4 Giá trị analog qua remote I/O — thêm một lớp dễ sai
+
+Ngoài thứ tự byte, giá trị analog qua remote I/O còn ba chỗ nữa:
+
+| Phải chốt | Cái bẫy |
+|---|---|
+| **Dải giá trị thô** | 0–4000 · 0–16000 · 0–27648 · −32768…32767 — mỗi hãng một kiểu |
+| **Có dấu hay không dấu** | ⚠ Cùng triệu chứng ở [21.4.4](#phan-ch21-truyen-thong-mang): xuống dưới 0 là **nhảy vọt lên số rất lớn** |
+| **Giá trị báo lỗi kênh** | Đứt dây / vượt dải thường trả về một **giá trị đặc biệt** — phải bắt riêng, đừng để nó đi thẳng vào phép tính |
+
+⚠⚠ **Đừng để giá trị lỗi chảy vào công thức.** Kênh đứt dây trả về giá trị biên, phần mềm nhân với
+hệ số quy đổi rồi hiển thị ra một con số **trông hợp lý** — và không ai biết cảm biến đã chết.
+
+#### 6.9.5 ⭐ Bit chẩn đoán — thứ có sẵn mà hay bị bỏ không dùng
+
+Gần như mọi trạm remote I/O đều gửi kèm **bit trạng thái** trong khối dữ liệu: mất nguồn phụ tải,
+đứt dây kênh analog, quá nhiệt, lỗi module.
+
+⭐ **Chúng nằm sẵn trong dữ liệu bạn đã đọc về mỗi chu kỳ** — chỉ là chương trình không ai đọc.
+
+**Nên làm:** gom các bit chẩn đoán thành **một cảnh báo chung** hiện lên HMI, kèm thông tin trạm nào.
+Việc này tốn vài dòng chương trình, và biến một buổi mò dây thành một dòng chữ trên màn hình.
+
+#### 6.9.6 Ba việc phải làm khi bàn giao — và khi thay module
+
+| # | Việc |
+|---|---|
+| 1 | ⭐ **In bảng ánh xạ** (kênh ↔ địa chỉ PLC ↔ tên tín hiệu) và **dán trong tủ** |
+| 2 | **Sao lưu file cấu hình mạng**, để chỗ cả nhóm truy cập được |
+| 3 | ⚠ Sau khi thay bất kỳ module nào: **kiểm lại ánh xạ bằng cách tác động tay vài kênh** trước khi cho máy chạy tự động |
+
+#### 6.9.7 Chẩn đoán
+
+| Triệu chứng | Nghi trước hết | Mục |
+|---|---|---|
+| ⚠⚠ Sau khi thay module, **các ngõ vào phía sau đọc sai**, mạng vẫn xanh | Module thay **khác số kênh**, hoặc **nhầm khe** ⇒ dịch địa chỉ | 6.9.2 |
+| Cảm biến tác động mà **bit khác đổi** | Ánh xạ lệch, hoặc đếm nhầm thứ tự bit | 6.9.3 |
+| Giá trị analog **nhảy vọt lên số rất lớn khi lẽ ra phải âm** | Đọc **không dấu** thay vì có dấu | 6.9.4 · [21.4.4](#phan-ch21-truyen-thong-mang) |
+| Giá trị analog **lệch đúng một hệ số tròn** | Sai **dải giá trị thô** của hãng | 6.9.4 |
+| Số đo **trông hợp lý nhưng cảm biến đã chết** | ⚠⚠ Giá trị báo lỗi kênh chảy thẳng vào công thức | 6.9.4 |
+| Mất cả buổi mò mà nguyên nhân chỉ là **đứt một dây analog** | Không ai đọc **bit chẩn đoán** vốn đã có sẵn | 6.9.5 |
+| Chương trình chạy đúng ở máy này, **sai ở máy giống hệt** | File cấu hình mạng hai máy khác nhau | 6.9.2 |
+
+### 6.10 IO-Link — nói ngắn
 
 IO-Link **không phải fieldbus**. Nó là một giao thức nối tiếp chạy trên **chính sợi dây tín hiệu**
 của cảm biến 3 dây tiêu chuẩn, giữa một **master** (thường là module gắn trên PLC hoặc trên remote
@@ -3723,7 +3816,7 @@ Thiết bị cố định ở một tốc độ; master tự nhận. Cáp tối 
 
 ---
 
-### 6.10 Khối terminal chuyển tiếp (relay terminal / cáp IDC)
+### 6.11 Khối terminal chuyển tiếp (relay terminal / cáp IDC)
 
 Module 32 và 64 điểm không dùng cầu đấu bắt vít — không đủ chỗ. Chúng dùng **đầu nối dẹt 20 / 34 /
 40 chân** kiểu MIL/IDC. Muốn đấu dây hiện trường vào đó, bạn cần **khối terminal chuyển tiếp**:
@@ -3776,10 +3869,16 @@ loại tương đương giá rẻ, rất phổ biến ở Việt Nam
 
 ---
 
-### 6.11 Sai lầm thường gặp
+### 6.12 Sai lầm thường gặp
 
 | Triệu chứng | Nguyên nhân có khả năng nhất | Cách xử lý |
 |---|---|---|
+| ⚠⚠ Thay module xong, **các ngõ vào phía sau đọc sai** — mạng vẫn xanh, không alarm | Module thay **khác số kênh** hoặc lắp **nhầm khe** ⇒ **dịch địa chỉ** toàn bộ phần sau | Tác động tay từng kênh, xem bit nào đổi. Xem 6.9.2 |
+| Cảm biến tác động mà **bit khác trong PLC đổi** | Ánh xạ lệch, hoặc đếm nhầm thứ tự bit trong byte | Lập bảng ánh xạ bằng cách thử tay. Xem 6.9.3 |
+| Giá trị analog qua remote I/O **lệch đúng một hệ số tròn** | Sai **dải giá trị thô** của hãng (0–4000 · 0–16000 · 0–27648…) | Xem 6.9.4 |
+| ⚠⚠ Số đo **trông hợp lý nhưng cảm biến đã chết** | **Giá trị báo lỗi kênh** chảy thẳng vào công thức rồi nhân hệ số | Bắt riêng giá trị lỗi trước khi tính. Xem 6.9.4 |
+| Mất cả buổi mò dây mà nguyên nhân chỉ là **đứt một dây analog** | Không ai đọc **bit chẩn đoán** vốn đã có sẵn trong dữ liệu | Gom bit chẩn đoán thành một cảnh báo trên HMI. Xem 6.9.5 |
+| Chương trình chạy đúng máy này, **sai ở máy giống hệt** | File cấu hình mạng hai máy khác nhau | Sao lưu và so file cấu hình. Xem 6.9.2 · 6.9.6 |
 | **Đếm thiếu sản phẩm, thỉnh thoảng bỏ sót** | **Bộ lọc ngõ vào mặc định 10 ms** nuốt xung | Đặt lại lọc theo từng điểm (6.2.6): 10–50 µs cho đếm nhanh |
 | **Encoder đếm sai / trôi dần** | Cắm vào **module DI mở rộng** thay vì điểm nhanh của CPU | Chuyển sang X0–X5 (200 kHz), hoặc dùng `FX5-16ET/ES-H` |
 | Encoder đếm sai chỉ khi chạy nhanh | Vượt **tần số tối đa** của điểm | Tính lại theo 6.7.3; giảm PPR, giảm hệ số nhân, hoặc đổi module |
@@ -12182,10 +12281,140 @@ Cấu trúc mã đọc được: `LDR2` = họ đèn vòng · `48` = **đường
 
 ---
 
-### 19.8 Sai lầm thường gặp
+### 19.8 ⭐⭐ Chỉnh tham số chụp — nơi quyết định tỉ lệ NG giả
+
+Mọi thứ tới đây lo **lắp và đấu**. Mục này lo cái quyết định hệ vision **dùng được hay không**:
+bốn năm con số trong phần mềm camera. Chỉnh sai thì hệ vẫn chạy, vẫn ra kết quả — chỉ là kết quả
+**sai một tỉ lệ nhỏ**, mỗi ngày một ít.
+
+⚠ **NG giả là tốn kém hơn NG thật.** NG thật thì loại đúng hàng hỏng. NG giả thì loại **hàng tốt**,
+làm người vận hành mất tin vào máy, và sớm muộn có người **nới ngưỡng cho đỡ phiền** — lúc đó hệ
+vision thành đồ trang trí.
+
+#### 19.8.1 ⭐ Thứ tự chỉnh — sai thứ tự là chỉnh mãi không xong
+
+| # | Chỉnh cái gì | Vì sao phải đúng thứ tự này |
+|---|---|---|
+| 1 | **Cơ khí**: khoảng cách, góc đặt, che sáng ngoài | Đổi khoảng cách là mọi thứ sau đó phải làm lại |
+| 2 | **Chiếu sáng** (xem 19.6) | ⭐ Đây là nơi tạo ra **tương phản**. Không có tương phản thì không tham số nào cứu được |
+| 3 | **Lấy nét và khẩu độ** | Quyết định độ sâu trường — xem 19.8.4 |
+| 4 | **Thời gian phơi sáng** | Bù sáng bằng cách **thu thêm ánh sáng thật** |
+| 5 | **Khuếch đại (gain)** — ⚠ càng ít càng tốt | Chỉ dùng khi bốn bước trên đã hết cách |
+| 6 | **Ngưỡng** | Chỉ có ý nghĩa khi ảnh đã ổn định |
+
+> ⚠⚠ **Cách hỏng phổ biến nhất trong cả mục này:** ảnh tối → **tăng gain cho sáng lên** → xong.
+> Ảnh sáng thật, nhưng **nhiễu cũng sáng theo**, và từ đó ngưỡng bắt đầu nhảy. Người chỉnh thấy
+> "được rồi" và đi về; ba tuần sau NG giả bắt đầu xuất hiện, không ai nối được hai việc với nhau.
+
+#### 19.8.2 Thời gian phơi sáng — ràng buộc cứng với tốc độ vật
+
+Nếu vật **đang di chuyển** lúc chụp, ảnh bị **nhoè theo chiều chuyển động**, và lượng nhoè tính
+được, không phải đoán:
+
+```
+nhoè (mm) = tốc độ vật (mm/s) × thời gian phơi sáng (s)
+```
+
+| Tốc độ vật | Phơi 1 ms | Phơi 5 ms | Phơi 10 ms |
+|---|---|---|---|
+| 100 mm/s | 0,1 mm | 0,5 mm | 1 mm |
+| 500 mm/s | 0,5 mm | 2,5 mm | 5 mm |
+| 1 000 mm/s | 1 mm | 5 mm | 10 mm |
+
+⭐ **Quy tắc thực dụng:** nhoè phải **nhỏ hơn kích thước chi tiết nhỏ nhất cần thấy**. Cần phân biệt
+vết xước 0,2 mm mà nhoè 0,5 mm thì không có ngưỡng nào cứu được.
+
+Muốn **phơi ngắn mà vẫn đủ sáng**, thứ tự ưu tiên: **thêm ánh sáng** → **mở khẩu độ** → cuối cùng
+mới tăng gain. Đèn nhấp nháy đồng bộ (strobe) cho phép phơi rất ngắn mà vẫn sáng — xem 19.7.
+
+⚠ **Cái bẫy PWM:** nếu đèn điều độ sáng bằng PWM mà **không đồng bộ với màn trập**, thời gian phơi
+ngắn sẽ **bắt trúng lúc đèn đang tắt** — ảnh lúc sáng lúc tối **dù vật đứng yên**. Xem 19.7.
+
+#### 19.8.3 Khuếch đại (gain) — vì sao phải dùng ít nhất có thể
+
+Gain **không thêm thông tin**. Nó nhân cả tín hiệu **lẫn nhiễu** lên cùng một hệ số.
+
+| Triệu chứng của gain quá cao | Hệ quả |
+|---|---|
+| Ảnh sáng nhưng **"sạn"**, nền không mịn | Giá trị đo của cùng một vật **dao động giữa các lần chụp** |
+| Vùng tối có **đốm sáng ngẫu nhiên** | Công cụ đếm/dò cạnh bắt nhầm |
+| Kết quả đo **đổi khi trời nóng** | Nhiễu cảm biến tăng theo nhiệt độ, và gain nhân nó lên |
+
+⭐ **Ghi lại mức gain đã dùng lúc máy mới.** Nếu vài tháng sau có người phải **tăng gain** mới thấy
+rõ, đó là dấu hiệu **đèn đang suy giảm** hoặc **ống kính bẩn** — không phải camera cần chỉnh.
+
+#### 19.8.4 Khẩu độ và độ sâu trường — cái đánh đổi không tránh được
+
+| Khẩu độ | Được | Mất |
+|---|---|---|
+| **Mở to** | Sáng, phơi ngắn được | ⚠ **Độ sâu trường mỏng** — vật cao thấp khác nhau là mất nét |
+| **Khép nhỏ** | Độ sâu trường dày, dung sai chiều cao lớn | Tối, phải bù bằng đèn hoặc phơi lâu hơn |
+
+⚠ **Khép quá nhỏ cũng hại:** qua một mức, hiện tượng nhiễu xạ làm ảnh **mờ đi** dù đã đúng nét.
+Không phải cứ khép hết là sắc nét nhất.
+
+⭐ **Cách kiểm nhanh độ sâu trường có đủ không:** đặt vật ở **vị trí cao nhất** và **thấp nhất** mà
+sản xuất thực tế có thể có, chụp cả hai. Nếu một trong hai mất nét thì phải khép khẩu thêm và bù sáng.
+
+#### 19.8.5 ⭐⭐ Ngưỡng và BIÊN ĐỘ DỰ TRỮ — nguồn NG giả số một
+
+Đây là mục quan trọng nhất. Hầu hết công cụ vision cuối cùng đều quy về **so một con số với một
+ngưỡng**. Câu hỏi đúng không phải *"đặt ngưỡng bao nhiêu"* mà là:
+
+> ***Giá trị của hàng OK và hàng NG có tách nhau đủ xa không?***
+
+**Cách làm đúng, mất 20 phút và cứu cả năm:**
+
+| # | Bước |
+|---|---|
+| 1 | Chạy **ít nhất 30–50 vật OK**, ghi lại giá trị công cụ trả về cho từng vật |
+| 2 | Chạy **các loại NG thật** đã gom được, ghi giá trị |
+| 3 | Vẽ hai nhóm số đó lên giấy — chỉ cần vạch trên một trục ngang |
+| 4 | ⭐ Xem **khoảng trống giữa hai nhóm**. Đặt ngưỡng vào **giữa khoảng trống** |
+| 5 | **Ghi lại cả hai dải giá trị** vào hồ sơ máy ([Phụ lục F.1](#phan-pl-f-tham-so-may-moi)) |
+
+⭐ **Khoảng trống đó chính là "biên độ dự trữ".** Nó cho biết hệ chịu được bao nhiêu thay đổi trước
+khi bắt đầu sai:
+
+| Hai nhóm | Nghĩa là |
+|---|---|
+| **Tách xa** | Hệ khoẻ. Đèn suy giảm hay bụi bám một ít cũng chưa sai |
+| **Sát nhau** | ⚠ Chạy được **hôm nay**, nhưng đèn giảm 10 % là bắt đầu NG giả |
+| ⚠⚠ **Chồng lên nhau** | **Không có ngưỡng nào đúng cả.** Đừng chỉnh ngưỡng nữa — quay lại **chiếu sáng và quang học** (bước 2–3 của 19.8.1) |
+
+> ⭐ **Đây là chỗ phân biệt người chỉnh vision có nghề với người mò.** Người mò chỉnh ngưỡng tới khi
+> lô hàng hôm nay chạy đúng. Người có nghề **đo khoảng trống** và biết hệ còn chịu được bao lâu.
+
+**Ngưỡng cố định hay ngưỡng thích nghi?**
+
+| Kiểu | Dùng khi | Cẩn thận |
+|---|---|---|
+| **Cố định** | Ánh sáng được che kín, ổn định | Đơn giản, dễ chẩn đoán. Nên là lựa chọn mặc định |
+| **Thích nghi** (tự tính theo ảnh) | Nền thay đổi, không che hết sáng ngoài được | ⚠ **Che mất triệu chứng**: đèn suy giảm dần mà hệ tự bù, tới lúc hết bù nổi thì hỏng đột ngột |
+
+#### 19.8.6 Chẩn đoán NG giả
+
+| Triệu chứng | Nghi trước hết | Mục |
+|---|---|---|
+| NG giả **tăng dần theo tuần/tháng** | ⭐ Đèn suy giảm, hoặc ống kính/cửa sổ bẩn dần | 19.6 · 19.8.3 |
+| NG giả **theo ca / theo giờ trong ngày** | Ánh sáng ngoài lọt vào — che chưa kín | 19.8.1 |
+| Cùng một vật **đứng yên** mà lúc OK lúc NG | ⚠ **PWM đèn không đồng bộ màn trập**, hoặc gain quá cao | 19.7 · 19.8.3 |
+| NG giả **chỉ với vật cao hơn / thấp hơn bình thường** | **Độ sâu trường không đủ** | 19.8.4 |
+| NG giả **chỉ khi băng tải chạy nhanh** | **Phơi sáng quá dài** ⇒ nhoè | 19.8.2 |
+| Ảnh nhìn đẹp nhưng số đo **nhảy giữa các lần chụp** | Gain cao ⇒ nhiễu; hoặc biên độ dự trữ quá mỏng | 19.8.3 · 19.8.5 |
+| Chỉnh ngưỡng kiểu nào cũng **không tách được OK và NG** | ⚠⚠ Hai phân bố **chồng nhau** — lỗi chiếu sáng/quang học, không phải ngưỡng | 19.8.5 |
+| ⚠⚠ **Tỉ lệ NG bỗng về 0**, không loại con nào nữa | Ngưỡng bị nới quá tay, hoặc công cụ trỏ sai vùng | 19.8.5 |
+
+### 19.9 Sai lầm thường gặp
 
 | Triệu chứng | Nguyên nhân hay gặp nhất | Cách xử lý |
 |---|---|---|
+| ⭐ NG giả **tăng dần theo tuần/tháng** | Đèn suy giảm hoặc ống kính bẩn dần — **biên độ dự trữ** mỏng đi | Đo lại dải giá trị OK/NG, so với số ghi lúc máy mới. Xem 19.8.5 |
+| ⚠⚠ Chỉnh ngưỡng kiểu nào cũng **không tách được OK và NG** | Hai phân bố **chồng lên nhau** | Đừng chỉnh ngưỡng nữa — quay lại **chiếu sáng và quang học**. Xem 19.8.5 |
+| Ảnh tối nên **tăng gain cho sáng lên** rồi thấy "được rồi" | ⚠⚠ Nhiễu sáng theo ⇒ số đo dao động giữa các lần chụp, vài tuần sau NG giả xuất hiện | Thêm **ánh sáng thật** hoặc mở khẩu; gain là lựa chọn cuối. Xem 19.8.1 · 19.8.3 |
+| NG giả **chỉ khi băng tải chạy nhanh** | Phơi sáng quá dài ⇒ **nhoè** = tốc độ × thời gian phơi | Rút ngắn phơi, bù bằng đèn nhấp nháy. Xem 19.8.2 |
+| NG giả **chỉ với vật cao hơn / thấp hơn bình thường** | **Độ sâu trường không đủ** | Khép khẩu thêm và bù sáng; thử vật ở vị trí cao nhất và thấp nhất. Xem 19.8.4 |
+| ⚠⚠ **Tỉ lệ NG bỗng về 0**, không loại con nào nữa | Ngưỡng bị nới quá tay, hoặc công cụ trỏ sai vùng | Kiểm bằng vật NG mẫu đã biết. Xem 19.8.5 |
 | Camera **rớt kết nối / tự reset** khi servo hoặc biến tần chạy | Nối chung chân 5 (đất I/O) và chân 6 (đất nguồn) → mất cách ly | Tách hai đất ra. Cáp I/O tách khỏi cáp động lực ≥ 10 cm |
 | **Rớt khung hình** ngẫu nhiên trên GigE | Chưa bật Jumbo Frame; dùng chung card mạng với mạng nhà máy | Bật MTU 9000 hai đầu, card mạng riêng, tăng receive buffer |
 | **Rớt khung hình** trên USB3 chỉ khi máy chạy tải | Nhiễu + cáp quá dài — bệnh cố hữu của USB3 trong tủ điện | Chuyển sang GigE. Rút ngắn cáp chỉ là chữa tạm |
@@ -15271,10 +15500,121 @@ dừng, xoay 90°, dừng…).
 
 ---
 
-### 26.8 Sai lầm thường gặp
+### 26.8 ⭐ Chỉnh chuyển động và điểm dạy — phần quyết định nhịp máy và độ lặp lại
+
+Bảy mục trước lo **đấu nối và an toàn**. Mục này lo phần người vận hành đụng vào hằng ngày: robot
+chạy **nhanh hay chậm**, **êm hay giật**, và **gắp trúng hay trượt**.
+
+#### 26.8.1 Ba hệ toạ độ phải phân biệt — nhầm là mọi điểm dạy sai
+
+| Hệ | Là gì | Đổi nó thì sao |
+|---|---|---|
+| **Gốc robot** | Cố định trong thân robot | Không đổi được |
+| ⭐ **Điểm công tác (tool)** | Điểm làm việc thật ở **đầu công cụ** — mũi kim gắp, tâm giác hút | ⚠ Đổi tay gắp mà **không khai lại tool** ⇒ **mọi điểm dạy lệch đi đúng bằng chênh lệch hình học** |
+| **Gốc phôi (base)** | Gốc của đồ gá / mâm sản phẩm | Dời đồ gá mà khai lại base thì **giữ nguyên toàn bộ chương trình** |
+
+⭐ **Đây là lý do nên dạy điểm theo gốc phôi, không theo gốc robot.** Đồ gá bị va chạm phải chỉnh
+lại, hoặc chuyển sang máy khác — khai lại **một** gốc phôi là xong, thay vì dạy lại **hàng chục điểm**.
+
+⚠⚠ **Khai tool sai là kiểu lỗi tệ nhất:** robot vẫn chạy, quỹ đạo vẫn mượt, chỉ là **mọi vị trí
+lệch một khoảng cố định**. Không có báo lỗi nào.
+
+#### 26.8.2 Tải trọng và trọng tâm — hai con số bắt buộc, hay bị bỏ
+
+Robot tính mô-men từng khớp dựa trên **khối lượng** và **vị trí trọng tâm** của thứ gắn ở đầu tay.
+Cả hai đều phải **khai báo**, và **trọng tâm quan trọng không kém khối lượng**.
+
+| Khai sai kiểu | Hậu quả |
+|---|---|
+| **Khai nhẹ hơn thực** | ⚠ Robot tăng tốc mạnh hơn khả năng ⇒ rung ở cuối hành trình, sai vị trí, hao khớp |
+| **Khai nặng hơn thực** | Chạy chậm và ì hơn cần thiết — mất nhịp máy vô ích |
+| ⚠ **Quên trọng tâm khi tay gắp vươn dài** | Mô-men thật lớn hơn nhiều so với robot tính ⇒ rung mạnh, có thể báo quá tải khớp |
+
+⭐ **Khai lại mỗi khi đổi tay gắp** — kể cả khi khối lượng gần như cũ, vì hình học có thể khác.
+Nhiều robot có chức năng **tự đo tải**: cho chạy một chu trình ngắn rồi robot tự tính.
+
+#### 26.8.3 Tốc độ, gia tốc, và giật (jerk)
+
+| Tham số | Tăng thì ĐƯỢC | Tăng thì MẤT |
+|---|---|---|
+| **Tốc độ** | Nhịp máy nhanh hơn | ⚠ Rung ở điểm dừng; hao khớp; vật có thể văng khỏi giác hút |
+| **Gia tốc** | ⭐ **Rút ngắn nhịp nhiều hơn cả tăng tốc độ** với hành trình ngắn | Rung mạnh hơn hẳn, tải khớp tăng nhanh |
+| **Giật (jerk / độ mượt)** *(tăng = dốc hơn)* | Đáp ứng nhanh hơn | Sốc cơ khí, vật xê dịch trên giác hút |
+
+⭐ **Với hành trình ngắn, gia tốc quyết định nhịp máy chứ không phải tốc độ tối đa** — robot còn
+chưa kịp đạt tốc độ đặt thì đã phải giảm tốc. Tăng tốc độ tối đa trong trường hợp đó **không rút
+ngắn được gì**, chỉ làm rung thêm.
+
+⚠ **Tốc độ toàn cục (override) không phải tham số vận hành.** Nó là công cụ **dạy và thử**. Chạy sản
+xuất ở 50 % override rồi một hôm ai đó đặt về 100 % là **mọi thứ đổi cùng lúc** — quỹ đạo, lực quán
+tính, thời điểm bắt tay tín hiệu.
+
+#### 26.8.4 Làm tròn góc (blending) — nhanh hơn nhưng KHÔNG đi qua điểm dạy
+
+Robot đi qua nhiều điểm liên tiếp có hai cách:
+
+| Cách | Chuyển động | Đánh đổi |
+|---|---|---|
+| **Dừng đúng điểm** | Tới điểm, dừng hẳn, rồi mới đi tiếp | Chính xác, nhưng **chậm và giật** |
+| ⭐ **Làm tròn (blending)** | Cắt góc, không dừng lại | Nhanh và mượt hơn nhiều |
+
+⚠⚠ **Điểm mấu chốt: khi làm tròn, robot KHÔNG đi qua điểm dạy nữa** — nó đi tắt bên trong. Bán kính
+làm tròn càng lớn thì cắt càng sâu.
+
+**Hệ quả phải nhớ:** điểm dạy để **né vật cản** mà bật làm tròn với bán kính lớn là **đâm vào đúng
+vật cản đó**. Và lỗi này xuất hiện **chỉ khi chạy nhanh** — dạy tay tốc độ thấp thì không thấy gì.
+
+#### 26.8.5 ⚠ Điểm kỳ dị (singularity) — robot 6 trục dừng hoặc giật đột ngột
+
+Ở một số tư thế, robot **mất một bậc tự do**: hai khớp thẳng hàng nhau, và để đi tiếp theo đường
+thẳng thì một khớp phải quay **cực nhanh**.
+
+| Triệu chứng | Chuyện gì xảy ra |
+|---|---|
+| Robot **dừng giữa chừng và báo lỗi** khi chạy đường thẳng | Đi qua vùng kỳ dị |
+| Một khớp **quay vọt rất nhanh** ở giữa hành trình | Robot đang cố bù để giữ đường thẳng |
+| Chạy theo khớp thì được, **chạy đường thẳng thì lỗi** | Đúng dấu hiệu của kỳ dị |
+
+**Cách tránh:** dạy lại điểm trung gian để **đi vòng qua** vùng đó · hoặc đổi đoạn đó sang **chuyển
+động theo khớp** thay vì đường thẳng · hoặc **xoay đồ gá** để tư thế làm việc tránh vùng kỳ dị.
+
+⭐ Việc này phải tính **từ lúc bố trí máy**. Sửa bằng cách dạy lại điểm là chữa cháy, không phải cách gốc.
+
+#### 26.8.6 Điểm dạy — thứ dễ mất nhất khi sửa máy
+
+Điểm dạy là **thành quả nhiều giờ**, và nó **không nằm trong bản vẽ nào**.
+
+| Phải làm | Vì sao |
+|---|---|
+| ⭐ **Sao lưu chương trình + điểm dạy sau mỗi lần chỉnh** | Xem [Phụ lục G](#phan-pl-g-thay-the-thiet-bi) |
+| **Dạy theo gốc phôi**, không theo gốc robot | Dời đồ gá chỉ phải khai lại một gốc |
+| **Ghi lại tool và base đang dùng** cho từng chương trình | Chạy nhầm tool là lệch toàn bộ |
+| ⚠⚠ **Sau khi thay động cơ/encoder một khớp: kiểm lại điểm dạy** | Encoder tuyệt đối thay là **mất gốc khớp đó** ⇒ mọi điểm sai |
+
+#### 26.8.7 Chẩn đoán
+
+| Triệu chứng | Nghi trước hết | Mục |
+|---|---|---|
+| ⚠⚠ Mọi điểm **lệch một khoảng cố định** sau khi đổi tay gắp | **Chưa khai lại tool** | 26.8.1 |
+| Rung ở cuối hành trình, vật **xê dịch trên giác hút** | Gia tốc/giật quá cao, hoặc khai tải **nhẹ hơn thực** | 26.8.2 · 26.8.3 |
+| Robot **ì, không đạt nhịp** dù đặt tốc độ cao | Khai tải **nặng hơn thực**; hoặc hành trình ngắn nên **gia tốc mới là giới hạn** | 26.8.2 · 26.8.3 |
+| ⚠ **Va chạm chỉ khi chạy nhanh**, chạy chậm thì không | **Làm tròn góc** cắt qua điểm né vật cản | 26.8.4 |
+| Dừng giữa chừng báo lỗi khi chạy **đường thẳng**, chạy khớp thì được | **Điểm kỳ dị** | 26.8.5 |
+| Một khớp **quay vọt** giữa hành trình | Đi sát vùng kỳ dị | 26.8.5 |
+| Chạy tốt ở 50 % override, **lỗi khi lên 100 %** | Nhịp bắt tay tín hiệu và quán tính đổi cùng lúc | 26.8.3 |
+| Sau khi thay động cơ một khớp, **mọi điểm sai** | Mất gốc encoder tuyệt đối khớp đó | 26.8.6 |
+
+### 26.9 Sai lầm thường gặp
 
 | Triệu chứng | Nguyên nhân hay gặp nhất | Cách xử lý |
 |---|---|---|
+| ⚠⚠ Đổi tay gắp xong, **mọi điểm lệch một khoảng cố định** | **Chưa khai lại điểm công tác (tool)** | Robot vẫn chạy mượt, không báo lỗi gì — đây là kiểu lỗi tệ nhất. Xem 26.8.1 |
+| ⚠ **Va chạm chỉ khi chạy nhanh**, chạy chậm thì không sao | **Làm tròn góc (blending)** cắt qua điểm dạy để né vật cản | Giảm bán kính làm tròn ở đoạn đó, hoặc bắt dừng đúng điểm. Xem 26.8.4 |
+| Robot **dừng giữa chừng báo lỗi** khi chạy đường thẳng, chạy theo khớp thì được | **Điểm kỳ dị (singularity)** | Dạy điểm trung gian đi vòng, hoặc đổi sang chuyển động khớp. Xem 26.8.5 |
+| Vật **xê dịch trên giác hút** khi robot dừng | Gia tốc/giật quá cao, hoặc khai tải **nhẹ hơn thực** | Khai lại tải **và trọng tâm**; giảm giật. Xem 26.8.2 · 26.8.3 |
+| Robot **ì, không đạt nhịp** dù đã đặt tốc độ cao | Hành trình ngắn ⇒ **gia tốc mới là giới hạn**, không phải tốc độ; hoặc khai tải nặng hơn thực | Xem 26.8.3 |
+| Chạy tốt ở 50 % override, **lỗi khi lên 100 %** | Override là công cụ **dạy và thử**, không phải tham số vận hành — lên 100 % là quán tính và nhịp bắt tay đổi cùng lúc | Xem 26.8.3 |
+| Sau khi thay động cơ một khớp, **mọi điểm dạy sai** | Encoder tuyệt đối thay là **mất gốc khớp đó** | Xem 26.8.6 và [Phụ lục G](#phan-pl-g-thay-the-thiet-bi) |
 | Robot 6 trục lắp xong thấy **quá phức tạp cho việc đang làm** | Chọn 6 trục khi SCARA đủ | Đánh giá lại: chỉ cần 6 trục khi phải nghiêng/xoay công cụ |
 | Rào an toàn phải làm **lớn hơn dự kiến** | Robot 6 trục với xa hơn theo mọi hướng | Tính vùng an toàn từ **tầm với thật + đầu công cụ**, ngay khi chọn robot |
 | **Rút tay dạy thì robot dừng khẩn** | Đúng thiết kế — rút là hở mạch dừng khẩn của tay dạy | Nếu hệ có phích giả thì **quản lý như chìa khoá**, không để trong hộp dụng cụ |
@@ -17398,7 +17738,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 > **Phụ lục này giải quyết đúng một tình huống:** bạn đang đứng trước cái máy, **chỉ biết nó đang
 > bị gì**, và không biết mở chương nào.
 >
-> Sách có **577 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
+> Sách có **596 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
 > chỉ mục này thì bạn phải **đoán xem là chương nào** — đúng cái mà người đang sửa máy lúc 2 giờ
 > sáng không có thời gian làm.
 
@@ -17544,7 +17884,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-### E.4 Chỉ mục đầy đủ — **577 triệu chứng** theo chương
+### E.4 Chỉ mục đầy đủ — **596 triệu chứng** theo chương
 
 > 💡 **Cách dùng nhanh nhất: `Ctrl+F` rồi gõ đúng từ bạn quan sát được** —
 > ví dụ `chập chờn`, `không quay`, `nóng`, `PASS`, `trôi`, `rơi`, `nhảy`.
@@ -17639,10 +17979,16 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | ⚠ PLC chết, thay con mới, không có bản chương trình mới nhất | Không lưu bản sao có phiên bản |
 | Module analog trôi giá trị | Đặt cạnh module ngõ ra công suất; hoặc nguồn rack quá tải |
 
-#### Chương 6 — [Module I/O & remote I/O](#phan-ch06-module-io) · 19 triệu chứng
+#### Chương 6 — [Module I/O & remote I/O](#phan-ch06-module-io) · 25 triệu chứng
 
 | Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
 |---|---|
+| ⚠⚠ Thay module xong, các ngõ vào phía sau đọc sai — mạng vẫn xanh, không alarm | Module thay khác số kênh hoặc lắp nhầm khe ⇒ dịch địa chỉ toàn bộ phần sau |
+| Cảm biến tác động mà bit khác trong PLC đổi | Ánh xạ lệch, hoặc đếm nhầm thứ tự bit trong byte |
+| Giá trị analog qua remote I/O lệch đúng một hệ số tròn | Sai dải giá trị thô của hãng (0–4000 · 0–16000 · 0–27648…) |
+| ⚠⚠ Số đo trông hợp lý nhưng cảm biến đã chết | Giá trị báo lỗi kênh chảy thẳng vào công thức rồi nhân hệ số |
+| Mất cả buổi mò dây mà nguyên nhân chỉ là đứt một dây analog | Không ai đọc bit chẩn đoán vốn đã có sẵn trong dữ liệu |
+| Chương trình chạy đúng máy này, sai ở máy giống hệt | File cấu hình mạng hai máy khác nhau |
 | Đếm thiếu sản phẩm, thỉnh thoảng bỏ sót | Bộ lọc ngõ vào mặc định 10 ms nuốt xung |
 | Encoder đếm sai / trôi dần | Cắm vào module DI mở rộng thay vì điểm nhanh của CPU |
 | Encoder đếm sai chỉ khi chạy nhanh | Vượt tần số tối đa của điểm |
@@ -17966,10 +18312,16 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | Dây tuột khỏi ferrule sau thời gian rung | Bấm bằng kìm sai loại |
 | PLC nóng bất thường, hay treo | Đặt dưới SSR/biến tần — hứng khí nóng |
 
-#### Chương 19 — [Vision & chiếu sáng máy](#phan-ch19-vision-chieu-sang) · 19 triệu chứng
+#### Chương 19 — [Vision & chiếu sáng máy](#phan-ch19-vision-chieu-sang) · 25 triệu chứng
 
 | Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
 |---|---|
+| ⭐ NG giả tăng dần theo tuần/tháng | Đèn suy giảm hoặc ống kính bẩn dần — biên độ dự trữ mỏng đi |
+| ⚠⚠ Chỉnh ngưỡng kiểu nào cũng không tách được OK và NG | Hai phân bố chồng lên nhau |
+| Ảnh tối nên tăng gain cho sáng lên rồi thấy "được rồi" | ⚠⚠ Nhiễu sáng theo ⇒ số đo dao động giữa các lần chụp, vài tuần sau NG giả xuất hiện |
+| NG giả chỉ khi băng tải chạy nhanh | Phơi sáng quá dài ⇒ nhoè = tốc độ × thời gian phơi |
+| NG giả chỉ với vật cao hơn / thấp hơn bình thường | Độ sâu trường không đủ |
+| ⚠⚠ Tỉ lệ NG bỗng về 0, không loại con nào nữa | Ngưỡng bị nới quá tay, hoặc công cụ trỏ sai vùng |
 | Camera rớt kết nối / tự reset khi servo hoặc biến tần chạy | Nối chung chân 5 (đất I/O) và chân 6 (đất nguồn) → mất cách ly |
 | Rớt khung hình ngẫu nhiên trên GigE | Chưa bật Jumbo Frame; dùng chung card mạng với mạng nhà máy |
 | Rớt khung hình trên USB3 chỉ khi máy chạy tải | Nhiễu + cáp quá dài — bệnh cố hữu của USB3 trong tủ điện |
@@ -18143,10 +18495,17 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 | Người bị bất ngờ vì băng tải tự chạy | MDR khởi động đột ngột và im lặng, khác hẳn băng tải AC |
 | Sau dừng khẩn, mất trạng thái tích luỹ, vật kẹt vị trí xấu | Dừng khẩn thiết kế đơn giản là cắt hết 24 V |
 
-#### Chương 26 — [Robot & cơ cấu chuyển động đặc biệt](#phan-ch26-robot-chuyen-dong-dac-biet) · 23 triệu chứng
+#### Chương 26 — [Robot & cơ cấu chuyển động đặc biệt](#phan-ch26-robot-chuyen-dong-dac-biet) · 30 triệu chứng
 
 | Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
 |---|---|
+| ⚠⚠ Đổi tay gắp xong, mọi điểm lệch một khoảng cố định | Chưa khai lại điểm công tác (tool) |
+| ⚠ Va chạm chỉ khi chạy nhanh, chạy chậm thì không sao | Làm tròn góc (blending) cắt qua điểm dạy để né vật cản |
+| Robot dừng giữa chừng báo lỗi khi chạy đường thẳng, chạy theo khớp thì được | Điểm kỳ dị (singularity) |
+| Vật xê dịch trên giác hút khi robot dừng | Gia tốc/giật quá cao, hoặc khai tải nhẹ hơn thực |
+| Robot ì, không đạt nhịp dù đã đặt tốc độ cao | Hành trình ngắn ⇒ gia tốc mới là giới hạn, không phải tốc độ; hoặc khai tải nặng hơn thực |
+| Chạy tốt ở 50 % override, lỗi khi lên 100 % | Override là công cụ dạy và thử, không phải tham số vận hành — lên 100 % là quán tính và nhịp bắt tay đổi cùng lúc |
+| Sau khi thay động cơ một khớp, mọi điểm dạy sai | Encoder tuyệt đối thay là mất gốc khớp đó |
 | Robot 6 trục lắp xong thấy quá phức tạp cho việc đang làm | Chọn 6 trục khi SCARA đủ |
 | Rào an toàn phải làm lớn hơn dự kiến | Robot 6 trục với xa hơn theo mọi hướng |
 | Rút tay dạy thì robot dừng khẩn | Đúng thiết kế — rút là hở mạch dừng khẩn của tay dạy |

@@ -285,6 +285,13 @@
 <div id="toc-backdrop" onclick="document.getElementById('toc').classList.remove('open')"></div>
 <nav id="toc"><h2>Mục lục</h2><ul>
   <li><a href="#c-cho-automation-machine">C# cho Automation Machine</a></li>
+  <li><a href="#trang-bn-quyn">Trang bản quyền</a></li>
+  <li><a href="#li-nói-đu">Lời nói đầu</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#cun-sách-này-ra-đi-t-mt-khong-trng">Cuốn sách này ra đời từ một khoảng trống</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#sách-đưc-kim-chng-bng-mã-ngun-tht-không-phi-bng-lý-thuyt">Sách được kiểm chứng bằng mã nguồn thật, không phải bằng lý thuyết</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#cách-đc">Cách đọc</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#bn-loi-hp-ghi-chú-và-ý-nghĩa-ca-chúng">Bốn loại hộp ghi chú, và ý nghĩa của chúng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#mt-li-cui-và-cũng-là-điu-quan-trng-nht">Một lời cuối, và cũng là điều quan trọng nhất</a></li>
   <li><a href="#chương-1-kin-trúc-pc-based-control-trong-t-đng-hoá">Chương 1: Kiến trúc PC-Based Control trong Tự động hoá</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#11-pc-based-control-vs-plc-khi-nào-plc-không-còn-đ">1.1 PC-Based Control vs PLC — khi nào PLC không còn đủ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#12-vai-trò-ca-c-trong-h-thng-điu-khin">1.2 Vai trò của C# trong hệ thống điều khiển</a></li>
@@ -361,6 +368,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#102-bng-màu-h-thng-phân-cp-theo-isa-101">10.2 Bảng màu & Hệ thống phân cấp theo ISA-101</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#103-alarm-banner-giao-din-hin-th">10.3 Alarm Banner (giao diện hiển thị)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#104-đa-ngôn-ng-và-kh-năng-tip-cn">10.4 Đa ngôn ngữ và khả năng tiếp cận</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#105-đi-chiu-thc-t-ngành-khung-giao-din-nào-tht-s-đang-chy">10.5 Đối chiếu thực tế ngành — khung giao diện nào thật sự đang chạy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#checklist-trưc-khi-đưa-màn-hình-hmi-lên-hin-trưng">Checklist trước khi đưa màn hình HMI lên hiện trường</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-10">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-10">Lỗi thường gặp</a></li>
@@ -383,6 +391,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#132-factory-adapter-pattern-cho-thit-b-đa-chng-loi">13.2 Factory & Adapter Pattern cho thiết bị đa chủng loại</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#133-device-manager-qun-lý-vòng-đi-thit-b">13.3 Device Manager — quản lý vòng đời thiết bị</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#134-các-chc-năng-máy-thưng-gp">13.4  Các chức năng máy thường gặp</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#135-đi-chiu-thc-t-ngành-tng-tru-tưng-này-có-tht-ngoài-đi-không">13.5 Đối chiếu thực tế ngành — tầng trừu tượng này có thật ngoài đời không?</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#sơ-đ-kin-trúc-tng-hp">Sơ đồ kiến trúc tổng hợp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-13">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-13">Lỗi thường gặp</a></li>
@@ -396,6 +405,8 @@
   <li style="padding-left:16px;font-size:13px"><a href="#151-alarm-management-system-logic-x-lý">15.1  Alarm Management System — logic xử lý</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#152-safety-interlock-emergency-stop">15.2  Safety Interlock & Emergency Stop</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#153-alarm-philosophy-theo-isa-182">15.3  Alarm Philosophy theo ISA-18.2</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#154-đi-chiu-thc-t-ngành-cnh-báo-thì-ai-cũng-làm-interlock-thì-không-ai-gi-tên">15.4 Đối chiếu thực tế ngành — cảnh báo thì ai cũng làm, interlock thì không ai gọi tên</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#155-mt-s-c-đi-ht-vòng-đi-servo-quá-nhit-t-cm-bin-ti-lúc-chy-li">15.5 Một sự cố đi hết vòng đời — servo quá nhiệt, từ cảm biến tới lúc chạy lại</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-15">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-15">Lỗi thường gặp</a></li>
   <li><a href="#chương-16-design-patterns-chuyên-bit-cho-automation">Chương 16: Design Patterns chuyên biệt cho Automation</a></li>
@@ -476,6 +487,33 @@
   <li style="padding-left:16px;font-size:13px"><a href="#x">X</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#y">Y</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b-sung-đt-202182026">Bổ sung đợt 20–21/8/2026</a></li>
+  <li><a href="#ph-lc-d-ch-mc-mc-lc-tra-cu">Phụ lục D: Chỉ mục (mục lục tra cứu)</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#a-2">A</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#b-2">B</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#c-2">C</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#d-2">D</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#e-2">E</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f-2">F</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#g-2">G</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h-2">H</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#i-2">I</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j-2">J</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k">K</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l-2">L</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m-2">M</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#n-2">N</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#o-2">O</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#p-2">P</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#q">Q</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#r-2">R</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#s-2">S</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#t-2">T</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#u-2">U</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#v-2">V</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#w-2">W</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#x-2">X</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#y-2">Y</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#section">#</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -514,6 +552,158 @@ lập trình phần mềm điều khiển máy</p>
 <h3>Góp ý và đánh giá</h3>
 <p>Quét mã QR hoặc truy cập: <a href="https://docs.google.com/forms/d/e/1FAIpQLSec734XvPwDWHGrfvk7gHs_sYFwV1jojxTKtJJOmp7-b-j8aA/viewform">docs.google.com/forms/.../viewform</a></p>
 <p><svg width="120" height="120" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><rect width="45" height="45" fill="#ffffff"/><path d="M2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM5,2H6V3H5zM6,2H7V3H6zM7,2H8V3H7zM8,2H9V3H8zM10,2H11V3H10zM11,2H12V3H11zM16,2H17V3H16zM20,2H21V3H20zM21,2H22V3H21zM24,2H25V3H24zM27,2H28V3H27zM31,2H32V3H31zM36,2H37V3H36zM37,2H38V3H37zM38,2H39V3H38zM39,2H40V3H39zM40,2H41V3H40zM41,2H42V3H41zM42,2H43V3H42zM2,3H3V4H2zM8,3H9V4H8zM10,3H11V4H10zM11,3H12V4H11zM12,3H13V4H12zM13,3H14V4H13zM17,3H18V4H17zM19,3H20V4H19zM21,3H22V4H21zM22,3H23V4H22zM24,3H25V4H24zM27,3H28V4H27zM32,3H33V4H32zM33,3H34V4H33zM34,3H35V4H34zM36,3H37V4H36zM42,3H43V4H42zM2,4H3V5H2zM4,4H5V5H4zM5,4H6V5H5zM6,4H7V5H6zM8,4H9V5H8zM10,4H11V5H10zM14,4H15V5H14zM15,4H16V5H15zM16,4H17V5H16zM17,4H18V5H17zM19,4H20V5H19zM20,4H21V5H20zM21,4H22V5H21zM22,4H23V5H22zM23,4H24V5H23zM25,4H26V5H25zM27,4H28V5H27zM28,4H29V5H28zM33,4H34V5H33zM36,4H37V5H36zM38,4H39V5H38zM39,4H40V5H39zM40,4H41V5H40zM42,4H43V5H42zM2,5H3V6H2zM4,5H5V6H4zM5,5H6V6H5zM6,5H7V6H6zM8,5H9V6H8zM12,5H13V6H12zM13,5H14V6H13zM14,5H15V6H14zM15,5H16V6H15zM16,5H17V6H16zM18,5H19V6H18zM24,5H25V6H24zM25,5H26V6H25zM27,5H28V6H27zM30,5H31V6H30zM33,5H34V6H33zM34,5H35V6H34zM36,5H37V6H36zM38,5H39V6H38zM39,5H40V6H39zM40,5H41V6H40zM42,5H43V6H42zM2,6H3V7H2zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM10,6H11V7H10zM12,6H13V7H12zM13,6H14V7H13zM15,6H16V7H15zM16,6H17V7H16zM20,6H21V7H20zM21,6H22V7H21zM23,6H24V7H23zM26,6H27V7H26zM29,6H30V7H29zM30,6H31V7H30zM31,6H32V7H31zM32,6H33V7H32zM36,6H37V7H36zM38,6H39V7H38zM39,6H40V7H39zM40,6H41V7H40zM42,6H43V7H42zM2,7H3V8H2zM8,7H9V8H8zM13,7H14V8H13zM16,7H17V8H16zM18,7H19V8H18zM25,7H26V8H25zM27,7H28V8H27zM28,7H29V8H28zM31,7H32V8H31zM34,7H35V8H34zM36,7H37V8H36zM42,7H43V8H42zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM10,8H11V9H10zM12,8H13V9H12zM14,8H15V9H14zM16,8H17V9H16zM18,8H19V9H18zM20,8H21V9H20zM22,8H23V9H22zM24,8H25V9H24zM26,8H27V9H26zM28,8H29V9H28zM30,8H31V9H30zM32,8H33V9H32zM34,8H35V9H34zM36,8H37V9H36zM37,8H38V9H37zM38,8H39V9H38zM39,8H40V9H39zM40,8H41V9H40zM41,8H42V9H41zM42,8H43V9H42zM14,9H15V10H14zM17,9H18V10H17zM21,9H22V10H21zM22,9H23V10H22zM24,9H25V10H24zM25,9H26V10H25zM27,9H28V10H27zM32,9H33V10H32zM33,9H34V10H33zM34,9H35V10H34zM2,10H3V11H2zM5,10H6V11H5zM6,10H7V11H6zM7,10H8V11H7zM8,10H9V11H8zM9,10H10V11H9zM10,10H11V11H10zM12,10H13V11H12zM14,10H15V11H14zM15,10H16V11H15zM16,10H17V11H16zM17,10H18V11H17zM18,10H19V11H18zM19,10H20V11H19zM21,10H22V11H21zM24,10H25V11H24zM26,10H27V11H26zM28,10H29V11H28zM29,10H30V11H29zM30,10H31V11H30zM31,10H32V11H31zM33,10H34V11H33zM35,10H36V11H35zM38,10H39V11H38zM40,10H41V11H40zM41,10H42V11H41zM42,10H43V11H42zM2,11H3V12H2zM9,11H10V12H9zM10,11H11V12H10zM13,11H14V12H13zM15,11H16V12H15zM18,11H19V12H18zM20,11H21V12H20zM21,11H22V12H21zM22,11H23V12H22zM24,11H25V12H24zM25,11H26V12H25zM27,11H28V12H27zM28,11H29V12H28zM29,11H30V12H29zM32,11H33V12H32zM33,11H34V12H33zM37,11H38V12H37zM38,11H39V12H38zM41,11H42V12H41zM2,12H3V13H2zM3,12H4V13H3zM4,12H5V13H4zM5,12H6V13H5zM6,12H7V13H6zM8,12H9V13H8zM12,12H13V13H12zM14,12H15V13H14zM15,12H16V13H15zM16,12H17V13H16zM25,12H26V13H25zM26,12H27V13H26zM29,12H30V13H29zM35,12H36V13H35zM37,12H38V13H37zM40,12H41V13H40zM3,13H4V14H3zM7,13H8V14H7zM12,13H13V14H12zM14,13H15V14H14zM16,13H17V14H16zM18,13H19V14H18zM19,13H20V14H19zM22,13H23V14H22zM25,13H26V14H25zM29,13H30V14H29zM31,13H32V14H31zM32,13H33V14H32zM33,13H34V14H33zM34,13H35V14H34zM38,13H39V14H38zM39,13H40V14H39zM41,13H42V14H41zM42,13H43V14H42zM5,14H6V15H5zM6,14H7V15H6zM7,14H8V15H7zM8,14H9V15H8zM9,14H10V15H9zM10,14H11V15H10zM11,14H12V15H11zM13,14H14V15H13zM15,14H16V15H15zM17,14H18V15H17zM19,14H20V15H19zM24,14H25V15H24zM26,14H27V15H26zM27,14H28V15H27zM30,14H31V15H30zM31,14H32V15H31zM34,14H35V15H34zM35,14H36V15H35zM36,14H37V15H36zM37,14H38V15H37zM2,15H3V16H2zM6,15H7V16H6zM9,15H10V16H9zM15,15H16V16H15zM16,15H17V16H16zM18,15H19V16H18zM19,15H20V16H19zM20,15H21V16H20zM21,15H22V16H21zM22,15H23V16H22zM23,15H24V16H23zM24,15H25V16H24zM25,15H26V16H25zM27,15H28V16H27zM29,15H30V16H29zM30,15H31V16H30zM32,15H33V16H32zM36,15H37V16H36zM38,15H39V16H38zM2,16H3V17H2zM5,16H6V17H5zM7,16H8V17H7zM8,16H9V17H8zM9,16H10V17H9zM11,16H12V17H11zM12,16H13V17H12zM13,16H14V17H13zM14,16H15V17H14zM17,16H18V17H17zM19,16H20V17H19zM20,16H21V17H20zM21,16H22V17H21zM22,16H23V17H22zM24,16H25V17H24zM26,16H27V17H26zM28,16H29V17H28zM29,16H30V17H29zM31,16H32V17H31zM32,16H33V17H32zM33,16H34V17H33zM35,16H36V17H35zM36,16H37V17H36zM38,16H39V17H38zM42,16H43V17H42zM6,17H7V18H6zM7,17H8V18H7zM15,17H16V18H15zM17,17H18V18H17zM18,17H19V18H18zM20,17H21V18H20zM22,17H23V18H22zM24,17H25V18H24zM25,17H26V18H25zM26,17H27V18H26zM30,17H31V18H30zM34,17H35V18H34zM35,17H36V18H35zM37,17H38V18H37zM38,17H39V18H38zM39,17H40V18H39zM40,17H41V18H40zM42,17H43V18H42zM2,18H3V19H2zM4,18H5V19H4zM7,18H8V19H7zM8,18H9V19H8zM10,18H11V19H10zM12,18H13V19H12zM13,18H14V19H13zM14,18H15V19H14zM15,18H16V19H15zM16,18H17V19H16zM17,18H18V19H17zM18,18H19V19H18zM19,18H20V19H19zM24,18H25V19H24zM25,18H26V19H25zM26,18H27V19H26zM31,18H32V19H31zM33,18H34V19H33zM34,18H35V19H34zM35,18H36V19H35zM39,18H40V19H39zM41,18H42V19H41zM42,18H43V19H42zM2,19H3V20H2zM3,19H4V20H3zM4,19H5V20H4zM6,19H7V20H6zM7,19H8V20H7zM9,19H10V20H9zM11,19H12V20H11zM13,19H14V20H13zM14,19H15V20H14zM15,19H16V20H15zM16,19H17V20H16zM18,19H19V20H18zM19,19H20V20H19zM20,19H21V20H20zM21,19H22V20H21zM22,19H23V20H22zM23,19H24V20H23zM28,19H29V20H28zM31,19H32V20H31zM34,19H35V20H34zM35,19H36V20H35zM38,19H39V20H38zM39,19H40V20H39zM2,20H3V21H2zM4,20H5V21H4zM5,20H6V21H5zM6,20H7V21H6zM7,20H8V21H7zM8,20H9V21H8zM11,20H12V21H11zM12,20H13V21H12zM14,20H15V21H14zM17,20H18V21H17zM18,20H19V21H18zM19,20H20V21H19zM20,20H21V21H20zM21,20H22V21H21zM25,20H26V21H25zM26,20H27V21H26zM29,20H30V21H29zM31,20H32V21H31zM32,20H33V21H32zM33,20H34V21H33zM37,20H38V21H37zM38,20H39V21H38zM42,20H43V21H42zM3,21H4V22H3zM5,21H6V22H5zM6,21H7V22H6zM9,21H10V22H9zM14,21H15V22H14zM15,21H16V22H15zM17,21H18V22H17zM22,21H23V22H22zM23,21H24V22H23zM25,21H26V22H25zM26,21H27V22H26zM27,21H28V22H27zM35,21H36V22H35zM36,21H37V22H36zM38,21H39V22H38zM40,21H41V22H40zM42,21H43V22H42zM4,22H5V23H4zM5,22H6V23H5zM7,22H8V23H7zM8,22H9V23H8zM9,22H10V23H9zM10,22H11V23H10zM11,22H12V23H11zM13,22H14V23H13zM14,22H15V23H14zM20,22H21V23H20zM22,22H23V23H22zM23,22H24V23H23zM25,22H26V23H25zM28,22H29V23H28zM31,22H32V23H31zM32,22H33V23H32zM33,22H34V23H33zM34,22H35V23H34zM36,22H37V23H36zM40,22H41V23H40zM41,22H42V23H41zM42,22H43V23H42zM4,23H5V24H4zM5,23H6V24H5zM6,23H7V24H6zM7,23H8V24H7zM9,23H10V24H9zM11,23H12V24H11zM13,23H14V24H13zM14,23H15V24H14zM16,23H17V24H16zM23,23H24V24H23zM24,23H25V24H24zM25,23H26V24H25zM26,23H27V24H26zM27,23H28V24H27zM28,23H29V24H28zM31,23H32V24H31zM32,23H33V24H32zM33,23H34V24H33zM34,23H35V24H34zM37,23H38V24H37zM38,23H39V24H38zM40,23H41V24H40zM8,24H9V25H8zM11,24H12V25H11zM14,24H15V25H14zM15,24H16V25H15zM16,24H17V25H16zM22,24H23V25H22zM24,24H25V25H24zM25,24H26V25H25zM27,24H28V25H27zM29,24H30V25H29zM35,24H36V25H35zM36,24H37V25H36zM38,24H39V25H38zM40,24H41V25H40zM3,25H4V26H3zM5,25H6V26H5zM6,25H7V26H6zM11,25H12V26H11zM13,25H14V26H13zM15,25H16V26H15zM17,25H18V26H17zM18,25H19V26H18zM19,25H20V26H19zM20,25H21V26H20zM21,25H22V26H21zM22,25H23V26H22zM24,25H25V26H24zM26,25H27V26H26zM28,25H29V26H28zM30,25H31V26H30zM31,25H32V26H31zM33,25H34V26H33zM34,25H35V26H34zM35,25H36V26H35zM41,25H42V26H41zM2,26H3V27H2zM5,26H6V27H5zM7,26H8V27H7zM8,26H9V27H8zM9,26H10V27H9zM13,26H14V27H13zM15,26H16V27H15zM16,26H17V27H16zM18,26H19V27H18zM21,26H22V27H21zM22,26H23V27H22zM25,26H26V27H25zM26,26H27V27H26zM29,26H30V27H29zM30,26H31V27H30zM34,26H35V27H34zM35,26H36V27H35zM36,26H37V27H36zM41,26H42V27H41zM42,26H43V27H42zM4,27H5V28H4zM7,27H8V28H7zM9,27H10V28H9zM10,27H11V28H10zM11,27H12V28H11zM15,27H16V28H15zM16,27H17V28H16zM17,27H18V28H17zM18,27H19V28H18zM20,27H21V28H20zM25,27H26V28H25zM27,27H28V28H27zM28,27H29V28H28zM29,27H30V28H29zM32,27H33V28H32zM34,27H35V28H34zM35,27H36V28H35zM36,27H37V28H36zM37,27H38V28H37zM38,27H39V28H38zM40,27H41V28H40zM42,27H43V28H42zM2,28H3V29H2zM5,28H6V29H5zM6,28H7V29H6zM7,28H8V29H7zM8,28H9V29H8zM11,28H12V29H11zM12,28H13V29H12zM13,28H14V29H13zM14,28H15V29H14zM17,28H18V29H17zM21,28H22V29H21zM22,28H23V29H22zM23,28H24V29H23zM29,28H30V29H29zM32,28H33V29H32zM33,28H34V29H33zM34,28H35V29H34zM39,28H40V29H39zM42,28H43V29H42zM3,29H4V30H3zM5,29H6V30H5zM11,29H12V30H11zM13,29H14V30H13zM16,29H17V30H16zM20,29H21V30H20zM21,29H22V30H21zM24,29H25V30H24zM25,29H26V30H25zM29,29H30V30H29zM30,29H31V30H30zM33,29H34V30H33zM35,29H36V30H35zM36,29H37V30H36zM37,29H38V30H37zM38,29H39V30H38zM39,29H40V30H39zM40,29H41V30H40zM41,29H42V30H41zM2,30H3V31H2zM5,30H6V31H5zM6,30H7V31H6zM8,30H9V31H8zM13,30H14V31H13zM14,30H15V31H14zM15,30H16V31H15zM16,30H17V31H16zM17,30H18V31H17zM18,30H19V31H18zM19,30H20V31H19zM21,30H22V31H21zM22,30H23V31H22zM23,30H24V31H23zM24,30H25V31H24zM25,30H26V31H25zM27,30H28V31H27zM29,30H30V31H29zM31,30H32V31H31zM33,30H34V31H33zM37,30H38V31H37zM39,30H40V31H39zM42,30H43V31H42zM2,31H3V32H2zM3,31H4V32H3zM10,31H11V32H10zM11,31H12V32H11zM13,31H14V32H13zM16,31H17V32H16zM18,31H19V32H18zM22,31H23V32H22zM23,31H24V32H23zM29,31H30V32H29zM32,31H33V32H32zM33,31H34V32H33zM38,31H39V32H38zM42,31H43V32H42zM2,32H3V33H2zM3,32H4V33H3zM4,32H5V33H4zM5,32H6V33H5zM6,32H7V33H6zM7,32H8V33H7zM8,32H9V33H8zM10,32H11V33H10zM11,32H12V33H11zM12,32H13V33H12zM13,32H14V33H13zM14,32H15V33H14zM18,32H19V33H18zM20,32H21V33H20zM22,32H23V33H22zM23,32H24V33H23zM24,32H25V33H24zM25,32H26V33H25zM29,32H30V33H29zM30,32H31V33H30zM33,32H34V33H33zM34,32H35V33H34zM35,32H36V33H35zM42,32H43V33H42zM2,33H3V34H2zM3,33H4V34H3zM4,33H5V34H4zM7,33H8V34H7zM9,33H10V34H9zM14,33H15V34H14zM15,33H16V34H15zM16,33H17V34H16zM18,33H19V34H18zM20,33H21V34H20zM25,33H26V34H25zM27,33H28V34H27zM28,33H29V34H28zM29,33H30V34H29zM30,33H31V34H30zM34,33H35V34H34zM36,33H37V34H36zM37,33H38V34H37zM39,33H40V34H39zM40,33H41V34H40zM41,33H42V34H41zM42,33H43V34H42zM2,34H3V35H2zM3,34H4V35H3zM4,34H5V35H4zM5,34H6V35H5zM6,34H7V35H6zM7,34H8V35H7zM8,34H9V35H8zM9,34H10V35H9zM13,34H14V35H13zM15,34H16V35H15zM16,34H17V35H16zM18,34H19V35H18zM23,34H24V35H23zM25,34H26V35H25zM26,34H27V35H26zM29,34H30V35H29zM31,34H32V35H31zM34,34H35V35H34zM35,34H36V35H35zM36,34H37V35H36zM37,34H38V35H37zM38,34H39V35H38zM39,34H40V35H39zM40,34H41V35H40zM42,34H43V35H42zM10,35H11V36H10zM12,35H13V36H12zM17,35H18V36H17zM18,35H19V36H18zM19,35H20V36H19zM20,35H21V36H20zM25,35H26V36H25zM31,35H32V36H31zM34,35H35V36H34zM38,35H39V36H38zM40,35H41V36H40zM41,35H42V36H41zM2,36H3V37H2zM3,36H4V37H3zM4,36H5V37H4zM5,36H6V37H5zM6,36H7V37H6zM7,36H8V37H7zM8,36H9V37H8zM10,36H11V37H10zM11,36H12V37H11zM14,36H15V37H14zM15,36H16V37H15zM16,36H17V37H16zM18,36H19V37H18zM22,36H23V37H22zM23,36H24V37H23zM25,36H26V37H25zM27,36H28V37H27zM29,36H30V37H29zM30,36H31V37H30zM33,36H34V37H33zM34,36H35V37H34zM36,36H37V37H36zM38,36H39V37H38zM2,37H3V38H2zM8,37H9V38H8zM10,37H11V38H10zM11,37H12V38H11zM12,37H13V38H12zM15,37H16V38H15zM20,37H21V38H20zM22,37H23V38H22zM25,37H26V38H25zM26,37H27V38H26zM29,37H30V38H29zM30,37H31V38H30zM31,37H32V38H31zM33,37H34V38H33zM34,37H35V38H34zM38,37H39V38H38zM39,37H40V38H39zM41,37H42V38H41zM2,38H3V39H2zM4,38H5V39H4zM5,38H6V39H5zM6,38H7V39H6zM8,38H9V39H8zM10,38H11V39H10zM11,38H12V39H11zM13,38H14V39H13zM18,38H19V39H18zM19,38H20V39H19zM21,38H22V39H21zM23,38H24V39H23zM24,38H25V39H24zM25,38H26V39H25zM26,38H27V39H26zM29,38H30V39H29zM33,38H34V39H33zM34,38H35V39H34zM35,38H36V39H35zM36,38H37V39H36zM37,38H38V39H37zM38,38H39V39H38zM39,38H40V39H39zM2,39H3V40H2zM4,39H5V40H4zM5,39H6V40H5zM6,39H7V40H6zM8,39H9V40H8zM10,39H11V40H10zM11,39H12V40H11zM16,39H17V40H16zM18,39H19V40H18zM19,39H20V40H19zM20,39H21V40H20zM24,39H25V40H24zM25,39H26V40H25zM28,39H29V40H28zM29,39H30V40H29zM30,39H31V40H30zM37,39H38V40H37zM40,39H41V40H40zM42,39H43V40H42zM2,40H3V41H2zM4,40H5V41H4zM5,40H6V41H5zM6,40H7V41H6zM8,40H9V41H8zM11,40H12V41H11zM16,40H17V41H16zM17,40H18V41H17zM21,40H22V41H21zM24,40H25V41H24zM28,40H29V41H28zM29,40H30V41H29zM31,40H32V41H31zM32,40H33V41H32zM35,40H36V41H35zM37,40H38V41H37zM38,40H39V41H38zM40,40H41V41H40zM42,40H43V41H42zM2,41H3V42H2zM8,41H9V42H8zM11,41H12V42H11zM13,41H14V42H13zM14,41H15V42H14zM18,41H19V42H18zM19,41H20V42H19zM20,41H21V42H20zM22,41H23V42H22zM30,41H31V42H30zM35,41H36V42H35zM36,41H37V42H36zM38,41H39V42H38zM40,41H41V42H40zM42,41H43V42H42zM2,42H3V43H2zM3,42H4V43H3zM4,42H5V43H4zM5,42H6V43H5zM6,42H7V43H6zM7,42H8V43H7zM8,42H9V43H8zM10,42H11V43H10zM12,42H13V43H12zM13,42H14V43H13zM16,42H17V43H16zM17,42H18V43H17zM19,42H20V43H19zM20,42H21V43H20zM21,42H22V43H21zM22,42H23V43H22zM24,42H25V43H24zM25,42H26V43H25zM26,42H27V43H26zM27,42H28V43H27zM30,42H31V43H30zM34,42H35V43H34zM38,42H39V43H38z" id="qr-path" fill="#000000" fill-opacity="1" fill-rule="nonzero" stroke="none"/></svg></p>
+<!-- SECTION: FrontMatter_BanQuyen -->
+<hr>
+<h1 id="trang-bn-quyn">Trang bản quyền</h1>
+<p><strong>C# cho Automation Machine</strong>
+<em>Sách chuyên khảo cho kỹ sư phần mềm điều khiển máy tự động hoá</em></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tác giả</strong></td>
+<td>songloi0730, biên soạn với sự hỗ trợ của trợ lý AI</td>
+</tr>
+<tr>
+<td><strong>Phiên bản</strong></td>
+<td>v1.0.1.260825</td>
+</tr>
+<tr>
+<td><strong>Lần xuất bản</strong></td>
+<td>Bản điện tử, 2026</td>
+</tr>
+<tr>
+<td><strong>Giấy phép</strong></td>
+<td><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> — được phép chia sẻ và chỉnh sửa phi thương mại, phải ghi nguồn và giữ nguyên giấy phép</td>
+</tr>
+</tbody></table></div>
+<p>© 2026. Bảo lưu các quyền không được giấy phép trên cho phép.</p>
+<hr>
+<blockquote>
+<p>⚠️ <strong>Miễn trừ trách nhiệm an toàn — đọc trước khi áp dụng bất kỳ dòng code nào.</strong></p>
+<p>Toàn bộ mã nguồn, sơ đồ và quy trình trong sách là <strong>ví dụ minh hoạ cho mục đích giảng
+giải</strong>. Chúng <strong>không</strong> được kiểm định theo bất kỳ chuẩn an toàn máy nào (ISO 12100,
+ISO 13849-1, IEC 62061, IEC 60204-1…) và <strong>không</strong> bảo đảm an toàn khi vận hành máy thật.</p>
+<p>Máy tự động hoá có thể gây thương tích nghiêm trọng hoặc chết người. Chức năng an toàn
+của một cỗ máy phải do <strong>phần cứng an toàn</strong> đảm nhiệm — mạch dừng khẩn cấp nối cứng,
+Safety PLC/Safety Relay, Safe Torque Off — và phải qua <strong>đánh giá rủi ro</strong> của người có
+thẩm quyền cho <strong>chính cỗ máy đó</strong>. Phần mềm ứng dụng viết bằng C# — kể cả khi làm đúng
+mọi điều sách này dạy — <strong>không bao giờ là lớp an toàn</strong>. Nguyên tắc này được nhắc lại
+nhiều lần trong sách vì nó là điều duy nhất không có ngoại lệ.</p>
+<p>Người đọc <strong>tự chịu trách nhiệm</strong> khi áp dụng nội dung sách vào máy thật. Tác giả không
+chịu trách nhiệm cho bất kỳ thiệt hại nào về người, thiết bị, sản phẩm hay dữ liệu phát
+sinh từ việc sử dụng nội dung này.</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>📌 <strong>Về nguồn gốc nội dung và cách sách trích dẫn.</strong></p>
+<p>Sách được biên soạn với sự hỗ trợ đáng kể của trợ lý AI, và điều đó dẫn tới hai quy tắc
+tự áp đặt mà người đọc nên biết:</p>
+<ol>
+<li><strong>Không bịa nguồn.</strong> Sách không có danh mục tài liệu tham khảo kiểu học thuật. Khi
+trích một chuẩn (SEMI E37, ISA-18.2, ISA-101, PackML/ISA-88…), sách ghi đúng số hiệu
+ngay tại chỗ để người đọc tự tra bản gốc — không dựng danh mục trích dẫn không kiểm
+chứng được.</li>
+<li><strong>Số liệu khảo sát nói rõ cỡ mẫu.</strong> Các con số dạng &quot;9/13 dự án có kho Git&quot; đến từ
+một bộ mẫu <strong>13 phần mềm máy thật</strong> mà tác giả đọc được mã nguồn. Đó là <em>&quot;những gì
+tồn tại thật trong bộ mẫu này&quot;</em>, <strong>không phải</strong> tỷ lệ của toàn ngành — xem giải thích
+đầy đủ ở Chương 1 mục 1.3.1.</li>
+</ol>
+<p><strong>Về tên riêng:</strong> mọi dự án, máy móc, công ty và phần mềm tham khảo đều đã được <strong>ẩn
+danh</strong>. Dự án mẫu xuyên suốt sách mang tên <code>MeoFrame</code> là tên hư cấu. Ngược lại, <strong>tên
+hãng phần cứng được giữ nguyên</strong> (Beckhoff, Siemens, Advantech, Cognex, Basler…) — vì
+với người mới, biết đúng tên một dòng card hay một hãng camera là thông tin có ích, và
+đó là thông tin công khai.</p>
+</blockquote>
+<!-- SECTION: FrontMatter_LoiNoiDau -->
+<hr>
+<h1 id="li-nói-đu">Lời nói đầu</h1>
+<h2 id="cun-sách-này-ra-đi-t-mt-khong-trng">Cuốn sách này ra đời từ một khoảng trống</h2>
+<p>Có rất nhiều sách dạy C#. Có rất nhiều tài liệu dạy PLC. Nhưng giữa hai thứ đó là một
+vùng gần như không ai viết: <strong>phần mềm chạy trên máy tính công nghiệp để điều khiển một
+cỗ máy thật</strong> — thứ phải khởi tạo trục, chờ cảm biến, gọi camera, xử lý cảnh báo, ghi dữ
+liệu sản xuất, và không được phép treo lúc hai giờ sáng khi không có ai ở đó.</p>
+<p>Người viết loại phần mềm này thường đến từ hai phía, và cả hai phía đều thiếu một nửa:</p>
+<ul>
+<li><strong>Người từ phía PLC</strong> hiểu máy, hiểu quy trình, hiểu vì sao một interlock tồn tại —
+nhưng gặp <code>async/await</code>, dependency injection hay MVVM thì như đọc ngoại ngữ.</li>
+<li><strong>Người từ phía phần mềm</strong> viết C# tốt, biết SOLID, biết unit test — nhưng không hiểu
+vì sao &quot;gửi lệnh dừng&quot; khác &quot;đã dừng&quot;, vì sao không được so sánh vị trí trục bằng <code>==</code>,
+và vì sao một vòng lặp <code>while</code> vô hại trên web lại là lỗi chết người trong máy.</li>
+</ul>
+<p>Sách này viết cho <strong>cả hai</strong>, và cố ý không giả định bạn thuộc phía nào.</p>
+<h2 id="sách-đưc-kim-chng-bng-mã-ngun-tht-không-phi-bng-lý-thuyt">Sách được kiểm chứng bằng mã nguồn thật, không phải bằng lý thuyết</h2>
+<p>Điều làm sách này khác với một cuốn dịch: gần như mọi lời khuyên trong đây đều được đối
+chiếu với <strong>13 phần mềm máy tự động hoá thật</strong> đang hoặc đã chạy trong nhà máy điện tử —
+máy lắp ráp nhiều trạm, máy bonding, máy kiểm tra thị giác, máy hiệu chỉnh có phản hồi
+lực, và vài framework dùng chung. Tác giả đọc mã nguồn của chúng, không đọc tài liệu
+quảng cáo của chúng.</p>
+<p>Vì vậy bạn sẽ gặp trong sách những con số hơi khó chịu: chỉ <strong>1 trong 13</strong> dự án có
+kiểm thử tự động đang chạy; <strong>4 trong 13</strong> không dùng Git mà chép tay thư mục; <strong>0 trong
+13</strong> dùng tag để đánh dấu phiên bản đã giao. Những con số đó không nhằm chê ai. Chúng ở
+đó để bạn biết <strong>khoảng cách giữa cách làm đúng và thực tế ngành lớn cỡ nào</strong> — và chọn
+trận đánh của mình cho khôn ngoan, thay vì đề xuất một quy trình hoàn hảo trong tuần đầu
+đi làm rồi bị từ chối và mất luôn cơ hội cải thiện.</p>
+<p>Cũng vì vậy, sách nhiều lần nói <em>&quot;đây là thứ bạn sẽ <strong>đọc</strong>, không phải thứ bạn nên
+<strong>viết</strong>&quot;</em>. Một phần công việc thật của nghề này là tiếp quản mã nguồn người khác để lại.</p>
+<h2 id="cách-đc">Cách đọc</h2>
+<p>Sách có 19 chương chia làm 6 phần. Bạn <strong>không cần</strong> đọc tuần tự từ đầu tới cuối.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bạn là ai</th>
+<th>Đường đọc gợi ý</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Kỹ sư PLC muốn viết phần mềm máy</strong></td>
+<td>Chương 1 → <strong>6</strong> (tư duy PLC vs PC — chương bản lề, đọc kỹ) → 3, 4, 5 (ngôn ngữ) → 12 (trình tự máy) → 13 (thiết bị) → 15 (an toàn &amp; cảnh báo)</td>
+</tr>
+<tr>
+<td><strong>Lập trình viên C# mới vào ngành máy</strong></td>
+<td>Chương 1 → <strong>6</strong> → 12 → 13 → 14 → 15, rồi quay lại 8/9/10 khi phải làm giao diện</td>
+</tr>
+<tr>
+<td><strong>Vừa được giao tiếp quản một máy đang chạy</strong></td>
+<td><strong>Phụ lục B</strong> (giải phẫu phần mềm máy — đọc trước tiên) → Chương 2 mục 2.4–2.5 (đọc code người khác) → 16 (nhận diện pattern trong mã cũ) → 19 (gỡ lỗi tại hiện trường)</td>
+</tr>
+<tr>
+<td><strong>Cần làm giao diện vận hành</strong></td>
+<td>Chương 9 → 10 (ISA-101) → 15 mục 15.1 (cảnh báo)</td>
+</tr>
+<tr>
+<td><strong>Đã biết nghề, tra cứu điểm cụ thể</strong></td>
+<td>Mục lục tra cứu (Index) và Bảng thuật ngữ ở cuối sách</td>
+</tr>
+</tbody></table></div>
+<p>Chương 6 xuất hiện trong hầu hết các đường đọc là có lý do: nó là chương <strong>chuyển đổi tư
+duy</strong>, và phần lớn lỗi thiết kế đắt giá nhất trong phần mềm máy đến từ việc mang nguyên
+thói quen của một thế giới sang thế giới kia.</p>
+<h2 id="bn-loi-hp-ghi-chú-và-ý-nghĩa-ca-chúng">Bốn loại hộp ghi chú, và ý nghĩa của chúng</h2>
+<blockquote>
+<p>📌 <strong>Lưu ý</strong> — điểm then chốt, bỏ qua là hiểu sai phần sau.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Cảnh báo</strong> — làm sai thì hỏng thiết bị, mất dữ liệu, hoặc gây nguy hiểm cho người.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Mẹo thực chiến</strong> — kinh nghiệm hiện trường, thường không có trong tài liệu chính thống.</p>
+</blockquote>
+<blockquote>
+<p>🔍 <strong>Đào sâu thêm</strong> — nội dung nâng cao, có thể bỏ qua ở lần đọc đầu mà không mất mạch.</p>
+</blockquote>
+<p>Nếu bạn chỉ có thời gian đọc một loại hộp, hãy đọc ⚠️.</p>
+<h2 id="mt-li-cui-và-cũng-là-điu-quan-trng-nht">Một lời cuối, và cũng là điều quan trọng nhất</h2>
+<p>Phần mềm bạn sắp viết điều khiển vật thể có khối lượng, chuyển động nhanh, và không biết
+thương người. Cuốn sách này sẽ dạy bạn viết code sạch hơn, kiến trúc tốt hơn, gỡ lỗi
+nhanh hơn. Nhưng nó <strong>không</strong> dạy bạn làm cho máy an toàn — an toàn là việc của phần cứng
+an toàn và của người có thẩm quyền đánh giá rủi ro cho chính cỗ máy đó. Xin đọc kỹ phần
+miễn trừ ở trang bản quyền, và giữ nguyên tắc đó trong đầu suốt cả cuốn sách.</p>
+<p>Chúc bạn có những cỗ máy chạy êm.</p>
 <!-- SECTION: Chapter_01_PCBasedControl -->
 <hr>
 <h1 id="chương-1-kin-trúc-pc-based-control-trong-t-đng-hoá">Chương 1: Kiến trúc PC-Based Control trong Tự động hoá</h1>
@@ -810,6 +1000,7 @@ liệu cho C#) vẫn giữ nguyên — chỉ là cả hai giờ chạy trên cù
 phần cứng.</p>
 <p>Ráp bốn thành phần lại, một kiến trúc PC-Based Control điển hình cho bài
 toán Pick &amp; Place của kỹ sư A trông như sau:</p>
+<p><strong>Hình 1.1 — Kiến trúc PC-Based điển hình cho bài toán Pick &amp; Place</strong></p>
 <pre><code>┌────────────────────────────────────────────────┐
 │ IPC (Windows) — chạy ứng dụng C#               │
 │ ├─ Sequence Engine (điều phối chu trình)       │
@@ -965,6 +1156,189 @@ của ngành. Chương 14 mục 14.1.1 dạy OPC UA đầy đủ; hãy học nó
 và học SDK card hoặc giao tiếp PLC trước khi bài toán của bạn là <strong>điều khiển</strong>.</p>
 </blockquote>
 <hr>
+<hr>
+<h3>1.3.2 Card điều khiển chuyển động — mảnh ghép ít được dạy nhất</h3>
+<p>Ai cũng biết PLC. Rất ít người mới biết <strong>card điều khiển chuyển động</strong><!--idx:Card điều khiển chuyển động--> — trong khi ở nhà máy điện tử, đây là thứ nằm trong một tỷ lệ lớn các máy lắp
+ráp, máy dán, máy kiểm tra và máy đóng gói chính xác. Trường học hầu như không dạy nó vì nó
+không phải &quot;môn học&quot;; nó là một tấm mạch cắm trong máy tính, và bạn chỉ gặp nó khi mở nắp một
+cỗ máy thật.</p>
+<p>Bỏ qua nó thì bạn không hiểu được vì sao <strong>kiến trúc A</strong> ở mục 1.3.1 — phần mềm C# điều khiển
+chuyển động trực tiếp — lại tồn tại, và cũng không đọc nổi phần lớn mã nguồn của các máy thuộc
+kiến trúc đó.</p>
+<h4>Nó là cái gì, về mặt vật lý</h4>
+<p>Một tấm mạch cắm khe PCI/PCIe bên trong IPC. Trên đó có bộ xử lý riêng — ASIC, FPGA hoặc DSP —
+và bộ xử lý đó làm đúng một việc: <strong>sinh tín hiệu điều khiển cho servo drive theo thời gian
+thực, và đọc phản hồi vị trí về</strong>.</p>
+<p>Điểm mấu chốt để hiểu mọi thứ còn lại: <strong>Windows không tham gia vào vòng lặp đó</strong>. Phần mềm C#
+của bạn chỉ ra một <em>mệnh lệnh mức cao</em> — &quot;đi tới toạ độ 125,4 mm với tốc độ 300 mm/s&quot; — rồi
+quay đi làm việc khác. Card tự lo phần gia tốc, chạy đều, giảm tốc, và sinh hàng chục nghìn
+xung mỗi giây với sai số thời gian cỡ micro giây. Chương 6 mục 6.1.1b giải thích vì sao Windows
+<strong>không thể</strong> làm việc đó: đồng hồ chờ của nó không mịn hơn khoảng 15,6 ms — chậm hơn yêu cầu
+cỡ một nghìn lần.</p>
+<p>Nói cách khác: card chuyển động tồn tại <strong>chính vì</strong> hệ điều hành đa nhiệm không xác định được
+về mặt thời gian. Nó là cách người ta mua lại tính xác định bằng phần cứng.</p>
+<h4>Ba cách điều khiển một trục — và vì sao chúng dẫn tới ba kiểu phần mềm khác nhau</h4>
+<p><strong>Bảng 1.3 — Ba kiến trúc điều khiển trục thường gặp</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>PLC + module motion</strong></th>
+<th><strong>IPC + card chuyển động</strong></th>
+<th><strong>IPC + master bus (EtherCAT…)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ai sinh quỹ đạo</td>
+<td>Module motion của PLC</td>
+<td>Card trong IPC</td>
+<td>Master phần mềm trên nhân thời gian thực</td>
+</tr>
+<tr>
+<td>C# nói chuyện bằng gì</td>
+<td><strong>Đọc/ghi tag</strong> qua fieldbus</td>
+<td><strong>Gọi hàm SDK</strong> của hãng (DLL C)</td>
+<td>Đọc/ghi biến của runtime (vd TwinCAT ADS)</td>
+</tr>
+<tr>
+<td>Ranh giới trách nhiệm</td>
+<td>Rõ: PLC lo trục, C# lo điều phối</td>
+<td><strong>Mờ: C# nằm trong chuỗi điều khiển</strong></td>
+<td>Rõ lại: nhân thời gian thực lo trục</td>
+</tr>
+<tr>
+<td>Đổi hãng servo</td>
+<td>Đổi cấu hình PLC</td>
+<td>Có thể phải <strong>viết lại lớp driver</strong></td>
+<td>Đổi file mô tả mạng</td>
+</tr>
+<tr>
+<td>Bàn ở đâu trong sách</td>
+<td>Chương 14</td>
+<td><strong>Phụ lục A</strong> + Chương 13</td>
+<td>Chương 14 mục 14.1.2c</td>
+</tr>
+</tbody></table></div>
+<p>Cột giữa là cột đáng lo nhất — và cũng là cột phổ biến nhất trong bộ mẫu 13 dự án của sách.
+Khi C# gọi thẳng SDK của card, <strong>tiến trình phần mềm của bạn trở thành một mắt xích trong chuỗi
+điều khiển chuyển động</strong>. Một <code>NullReferenceException</code> không được bắt lúc đó không còn nghĩa là
+&quot;ứng dụng bị đóng&quot; — nó là một cỗ máy đang có trục chạy dở.</p>
+<h4>Giải phẫu một card: cái gì nằm trên đó</h4>
+<p><strong>Hình 1.2 — Những khối chức năng có trên một card điều khiển chuyển động điển hình</strong></p>
+<pre><code>┌──────────────── CARD ĐIỀU KHIỂN CHUYỂN ĐỘNG (PCI/PCIe) ────────────────┐
+│                                                                        │
+│  Bộ sinh quỹ đạo (ASIC/FPGA/DSP) ─ nội suy, đường gia tốc thang/chữ S  │
+│         │                                                              │
+│         ├─► Ngõ ra lệnh, mỗi trục một kênh:                            │
+│         │      • Xung + chiều (pulse/direction) — phổ biến nhất        │
+│         │      • Analog ±10 V — servo đời cũ, chế độ tốc độ            │
+│         │                                                              │
+│         ├─◄ Ngõ vào encoder (A/B/Z) — vị trí phản hồi thật             │
+│         │                                                              │
+│         ├─◄ Chân chuyên dụng THEO TỪNG TRỤC (card tự xử lý,            │
+│         │   KHÔNG đi qua phần mềm):                                    │
+│         │      EL+ / EL−   giới hạn hành trình hai đầu                 │
+│         │      ORG         cảm biến gốc (home)                         │
+│         │      EZ          vạch chuẩn encoder, để về gốc chính xác     │
+│         │      ALM         báo lỗi từ servo drive                      │
+│         │      INP         drive báo &quot;đã vào vị trí&quot;                   │
+│         │      SVON / RDY  bật servo · drive sẵn sàng                  │
+│         │                                                              │
+│         ├─► DI/DO đa dụng — vài chục điểm dùng chung                   │
+│         │                                                              │
+│         └─► So sánh vị trí (compare) &amp; chốt vị trí (latch)             │
+│                • bắn trigger camera &quot;đang bay&quot; tại toạ độ định trước   │
+│                • chốt lại vị trí đúng lúc cảm biến tác động            │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>Ba điều trong sơ đồ trên đáng dừng lại:</p>
+<p><strong>1. Nhóm chân chuyên dụng theo từng trục là thứ phân biệt card chuyển động với một card I/O
+thường.</strong> Cảm biến giới hạn hành trình không đi vòng qua phần mềm của bạn rồi mới dừng trục —
+nó nối thẳng vào card, và card dừng trục <strong>trong phần cứng</strong>. Đây là lý do một máy dùng card
+vẫn dừng được trục ở giới hạn hành trình ngay cả khi ứng dụng C# đang bận. Cũng vì vậy, khi đọc
+mã nguồn một máy lạ mà không thấy chỗ nào xử lý cảm biến giới hạn, đừng vội kết luận người viết
+quên — nhiều khả năng việc đó đã được làm ở tầng dưới bạn.</p>
+<p><strong>2. So sánh vị trí (position compare)<!--idx:So sánh vị trí (position compare)--> là tính năng
+ít người biết nhưng đổi được cả thiết kế.</strong> Card có thể phát một xung ra chân trigger <strong>đúng tại
+toạ độ định trước</strong>, trong lúc trục vẫn đang chạy — không cần dừng lại, không cần phần mềm canh
+thời điểm. Đó là cách các máy chụp/quét &quot;bay&quot; làm việc: trục chạy đều, camera bị bắn trigger tại
+từng vị trí, ảnh về sau. Nếu bạn định canh thời điểm chụp bằng <code>Task.Delay</code> trong C#, hãy hỏi
+xem card có chức năng này không trước đã — độ chính xác chênh nhau vài bậc.</p>
+<p><strong>3. Chốt vị trí (latch)<!--idx:Chốt vị trí (latch)--> là cặp bài trùng của nó</strong>: cảm biến tác
+động thì card <strong>ghi lại ngay lập tức</strong> vị trí trục tại đúng khoảnh khắc đó. Phần mềm đọc con số
+sau cũng được, vì con số đã được chốt trong phần cứng. Không có nó, &quot;đọc vị trí khi thấy cảm
+biến bật&quot; luôn trễ một khoảng bằng chu kỳ đọc của bạn.</p>
+<h4>Bốn hệ quả cho phần mềm C# — và nơi sách bàn tiếp</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hệ quả</th>
+<th>Vì sao</th>
+<th>Bàn ở đâu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bạn sẽ gọi <strong>hàm C của hãng bằng P/Invoke</strong>, không phải một API .NET đẹp đẽ</td>
+<td>SDK của card gần như luôn là DLL viết bằng C/C++</td>
+<td><strong>Phụ lục A</strong> — cách khai báo, marshalling, và bảng nhận diện họ card qua tên DLL (mục A.3.4)</td>
+</tr>
+<tr>
+<td>Trục được đánh số bằng <strong>số nguyên trần</strong> (<code>axis 0, 1, 2…</code>), không có tên</td>
+<td>SDK không có khái niệm &quot;bảng tag&quot; như PLC</td>
+<td>Chương 13 mục 13.2 — bọc số hiệu trục sau một interface có tên nghĩa</td>
+</tr>
+<tr>
+<td><strong>Trạng thái thật nằm ở card</strong>, không nằm trong biến của bạn</td>
+<td>Card giữ nguyên vị trí, cờ lỗi, chế độ servo qua các lần khởi động lại ứng dụng</td>
+<td>Chương 11 — sau khi khởi động lại phải <strong>đồng bộ lại từ phần cứng</strong>, đừng tin trạng thái đã lưu</td>
+</tr>
+<tr>
+<td>Ứng dụng chết <strong>không</strong> làm trục dừng</td>
+<td>Card chạy độc lập với tiến trình Windows</td>
+<td>Chương 15 — và callout ngay dưới đây</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Đây là điều người từ phía PLC hay bất ngờ nhất: tắt phần mềm không có nghĩa là máy đã
+dừng.</strong> Với PLC, dừng chương trình là dừng chu kỳ quét, và ngõ ra về trạng thái an toàn. Với
+card chuyển động, <strong>card đã nhận lệnh &quot;đi tới toạ độ X&quot; và nó sẽ đi tới đó</strong> — cho dù tiến
+trình gọi lệnh đã biến mất khỏi Task Manager từ lâu. Hệ quả thực tế: sau một lần ứng dụng sập,
+trục vẫn hoàn thành nốt hành trình. Vì vậy mọi đường thoát của ứng dụng — kể cả đường thoát do
+lỗi — đều phải chủ động ra lệnh dừng trục và tắt servo; và <strong>mạch dừng khẩn cấp phải nối cứng
+vào drive</strong>, không đi qua card, càng không đi qua phần mềm (Chương 15 mục 15.2.1).</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Đừng nhầm chân EL với an toàn.</strong> Giới hạn hành trình trên card là <strong>giới hạn chức năng</strong> —
+nó bảo vệ cơ khí khỏi chạy quá tầm, ở mức tin cậy của một cảm biến thường. Nó không phải Safety
+Function theo ISO 13849-1, không thay được cảm biến cửa loại an toàn, không thay được Safe
+Torque Off. Hai thứ trông giống nhau trên sơ đồ đấu dây nhưng thuộc hai thế giới khác nhau về
+cấp tin cậy.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Cách nhận ra một máy dùng card chuyển động khi bạn chưa có tài liệu.</strong> Ba chỗ, theo thứ tự
+nhanh dần: (1) mở <strong>Device Manager</strong> của Windows trên IPC — card PCI của hãng hiện ra dưới một
+mục mang tên hãng; (2) tìm trong thư mục cài đặt các file <code>.dll</code> tên ngắn kiểu <code>gts.dll</code>,
+<code>LTDMC.dll</code>, <code>APS168.dll</code>; (3) tìm toàn văn <code>DllImport</code> trong mã nguồn — <strong>tiền tố tên hàm cho
+biết ngay đó là hãng nào</strong>, và Bảng A.3 ở Phụ lục A tra được. Không thấy gì trong cả ba chỗ thì
+nhiều khả năng máy thuộc kiến trúc B: chuyển động do PLC lo.</p>
+</blockquote>
+<h4>Khi nào chọn card, khi nào chọn bus</h4>
+<p>Không có câu trả lời chung, nhưng có một ranh giới thực dụng hay đúng:</p>
+<ul>
+<li><strong>Card chuyển động</strong> thắng khi số trục vừa phải, cần <strong>độ trễ thấp nhất giữa lệnh và chuyển
+động</strong>, cần các tính năng bám sát phần cứng như so sánh/chốt vị trí, và khi đội đã quen SDK của
+một hãng. Đổi lại: buộc chặt vào một hãng, và phần mềm của bạn nằm trong chuỗi điều khiển.</li>
+<li><strong>Master bus (EtherCAT…)</strong> thắng khi nhiều trục, nhiều loại thiết bị trên cùng một mạng, cần
+đấu dây gọn, và khi đã có sẵn một nhân thời gian thực (Soft-PLC) để ôm phần xác định. Đổi lại:
+thêm một tầng cấu hình mạng, và một hệ sinh thái phải học.</li>
+</ul>
+<blockquote>
+<p>📌 <strong>Nếu chỉ nhớ một câu từ mục này:</strong> với PLC, phần mềm của bạn <em>nói chuyện với</em> thứ đang điều
+khiển trục; với card chuyển động, phần mềm của bạn <strong>chính là</strong> thứ đang điều khiển trục. Toàn
+bộ sự cẩn thận mà sách đòi hỏi ở các chương sau — timeout cho mọi lệnh phần cứng, huỷ được bằng
+<code>CancellationToken</code>, không bao giờ nuốt ngoại lệ, luôn có đường dừng trục khi thoát — bắt nguồn
+từ đúng sự khác biệt đó.</p>
+</blockquote>
 <h2 id="14-xu-hưng-itot-convergence">1.4 Xu hướng IT/OT Convergence</h2>
 <!--idx:IT/OT Convergence--><p>Một ca sản xuất cụ thể: operator quét barcode lô hàng (OT) → C# gọi REST
 API lên MES (IT) → MES trả về recipe phù hợp → C# nạp recipe xuống PLC →
@@ -1460,6 +1834,7 @@ tầng và nguyên tắc đằng sau, không phải tên cụ thể. Dùng chung
 xuyên suốt giúp các chương sau tham chiếu tới nhau nhất quán, thay vì mỗi
 chương một ví dụ rời rạc.</p>
 <p>Cấu trúc solution chuẩn mà <strong>MeoFrame</strong> dùng xuyên suốt sách:</p>
+<p><strong>Hình 2.1 — Cấu trúc solution của dự án mẫu MeoFrame và chương tương ứng</strong></p>
 <pre><code>MeoFrame.sln
 ├── MeoFrame.Domain           (Chương 11, 12 — Entity, Value Object, State Machine)
 ├── MeoFrame.Application      (Chương 7, 12 — Use Case, Interface Port)
@@ -2363,6 +2738,7 @@ hại&quot;.</p>
 <hr>
 <h2 id="31-h-thng-kiu-và-b-cc-b-nh">3.1  Hệ thống kiểu và bố cục bộ nhớ</h2>
 <p>Phần lớn sự cố &quot;khó giải thích&quot; trong điều khiển bằng PC — như tình huống đầu chương — không đến từ thuật toán sai, mà từ cách dữ liệu được cấp phát và thu hồi trong bộ nhớ. C# che giấu rất nhiều chi tiết thấp tầng, nhưng cũng vì thế dễ tạo ra jitter (dao động thời gian) nếu dùng sai. Người làm tự động hoá cần hiểu hệ thống kiểu ở mức <em>vừa đủ để giữ hành vi điều khiển ổn định</em>.</p>
+<p><strong>Hình 3.1 — Phân loại kiểu dữ liệu trong C#</strong></p>
 <pre><code>Kiểu dữ liệu C#
 ├── Value Type (sống trên stack, copy theo giá trị)
 │   ├── Số: int, long, double, float, decimal
@@ -2403,6 +2779,7 @@ var b = a;                   // a và b cùng trỏ 1 object
 b.TargetMm = 200.0;          // a.TargetMm GIỜ cũng = 200.0!
 </code></pre>
 <p>Sơ đồ sau cho thấy vì sao value type an toàn cho vòng quét — gán là tạo một bản sao độc lập:</p>
+<p><strong>Hình 3.2 — Gán value type là copy độc lập, gán reference type là dùng chung</strong></p>
 <pre><code>Value type (struct) — gán là copy độc lập:
 
     AxisStatus a = { Position = 100.0, ServoOn = true };
@@ -2451,6 +2828,7 @@ lần truy cập thay vì &quot;chụp ảnh&quot; một lần.</p>
 <h3>3.1.2  Stack, Heap và Garbage Collector — nhìn từ vòng quét</h3>
 <p>Hai biến local trong một method nằm trên <strong>stack</strong> <!--idx:Stack-->: cấp phát và thu hồi cực nhanh, tự động biến mất khi ra khỏi scope, không cần ai dọn. Trong vòng quét, stack là &quot;vùng an toàn&quot;.</p>
 <p>Object, mảng, string, delegate nằm trên <strong>heap</strong> <!--idx:Heap-->: linh hoạt, tồn tại lâu, nhưng cấp phát chậm hơn và cần <strong>Garbage Collector (GC)</strong> <!--idx:Garbage Collector--> thu hồi. GC tự động tránh memory leak — bạn tốt của lập trình IT thông thường. Nhưng GC chạy theo thuật toán riêng, <strong>không đảm bảo thời điểm</strong>, và khi chạy có thể tạm dừng (pause) luồng. Vài mili-giây pause không ảnh hưởng UI, nhưng đủ phá vỡ một vòng điều khiển đang chạy — chính xác là lỗi máy pick-and-place ở đầu chương.</p>
+<p><strong>Hình 3.3 — Stack và heap: cái gì nằm ở đâu, và ai dọn</strong></p>
 <pre><code>   Stack — biến local &amp; value type            Heap — reference type (object)
    ┌──────────────────────────┐               ┌────────────────────────────┐
    │ position = 100.0         │               │ AxisController             │
@@ -4406,6 +4784,7 @@ hãy chỉ đặt interface <strong>ở đúng ranh giới bạn sắp phải th
 <h2 id="43-k-tha-đa-hình-và-ưu-tiên-composition">4.3  Kế thừa, đa hình, và &quot;ưu tiên Composition&quot;</h2>
 <p>Sách OOP truyền thống thường dạy <strong>kế thừa (inheritance)</strong> đầu tiên và xem nó là tính năng trung tâm. Đó là một định hướng sai dẫn đến vô số hệ thống khó bảo trì. Chúng ta đi theo thứ tự đúng: composition trước, kế thừa sau và chỉ khi thật cần.</p>
 <h3>4.3.1  Composition trước: &quot;has-a&quot; thay vì &quot;is-a&quot;</h3>
+<p><strong>Hình 4.1 — Composition: AxisController <em>có</em> driver và cảm biến, không <em>là</em> chúng</strong></p>
 <pre><code>AxisController
    ├── IMotionDriver   (has-a: điều khiển phần cứng)
    ├── ILogger         (has-a: ghi log)
@@ -13033,6 +13412,59 @@ tế của operator, không theo thứ tự khai báo control trong XAML. Phím 
 nên nhất quán trên mọi màn hình trong cùng hệ thống (F1 trợ giúp, Esc thoát
 dialog...) để operator học một lần, dùng được ở mọi nơi.</p>
 <hr>
+<h2 id="105-đi-chiu-thc-t-ngành-khung-giao-din-nào-tht-s-đang-chy">10.5 Đối chiếu thực tế ngành — khung giao diện nào thật sự đang chạy</h2>
+<p>Cả chương này trình bày cách làm màn hình đúng chuẩn. Mục này nói về thứ khác: <strong>cái gì
+thật sự đang chạy trong nhà máy</strong>, vì nó quyết định bạn sẽ <em>đọc</em> code kiểu gì khi tiếp
+quản một máy — và điều đó thường đến trước khi bạn được viết một màn hình mới.</p>
+<p>Đếm số lượng form WinForms (file <code>*.Designer.cs</code>) và số file XAML trong bộ mẫu 13 dự án:</p>
+<p><strong>Bảng 10.6 — Khung giao diện trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Số dự án</th>
+<th>Đặc điểm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chỉ WinForms</strong> (0 file XAML)</td>
+<td><strong>6</strong> / 13</td>
+<td>Nhiều dự án có tới 80–110 form trong một solution</td>
+</tr>
+<tr>
+<td><strong>Chỉ WPF</strong> (0 form WinForms)</td>
+<td><strong>2</strong> / 13</td>
+<td>Đều là các dự án mang dáng dấp <em>framework</em>, không phải máy đơn lẻ</td>
+</tr>
+<tr>
+<td><strong>Trộn cả hai</strong> trong cùng solution</td>
+<td><strong>5</strong> / 13</td>
+<td>Thường là WinForms cũ + phần mới viết bằng WPF, hoặc ngược lại</td>
+</tr>
+</tbody></table></div>
+<p>Ba điều rút ra, và cả ba đều đi ngược trực giác của người mới:</p>
+<p><strong>1. WinForms không hề &quot;chết&quot;.</strong> Nó có mặt trong <strong>11/13</strong> dự án ở dạng này hay dạng khác.
+Nếu bạn học WPF rồi bỏ qua Chương 8 vì nghĩ WinForms là công nghệ cũ, xác suất rất cao là
+máy đầu tiên bạn tiếp quản sẽ mở ra một solution đầy <code>*.Designer.cs</code>. Chương 8 nằm trong
+sách chính vì lý do này, không phải vì hoài cổ.</p>
+<p><strong>2. Trộn hai khung trong một solution là chuyện bình thường, không phải bệnh.</strong> 5/13 dự án
+làm vậy. Lý do thường rất thực dụng: phần mới cần biểu đồ, cần binding, cần theme → viết
+bằng WPF và nhúng vào; phần cũ vẫn chạy tốt → không ai đụng vào. Đây là <strong>quyết định kinh
+tế đúng</strong>, và nếu bạn đề xuất &quot;viết lại toàn bộ bằng WPF cho đồng nhất&quot; trong tháng đầu đi
+làm, hãy chuẩn bị trả lời câu hỏi <em>&quot;viết lại thì máy chạy nhanh hơn ở chỗ nào?&quot;</em>.</p>
+<p><strong>3. Số lượng form lớn hơn số màn hình người vận hành thấy rất nhiều.</strong> Một dự án có 106
+form không có nghĩa người vận hành phải học 106 màn hình — phần lớn là hộp thoại cài đặt,
+form kỹ thuật, form debug. Nhưng nó nói lên một điều về cách tổ chức: <strong>màn hình sinh sôi
+dễ hơn nhiều so với bị xoá đi</strong>. Đó chính là lý do mục &quot;bao nhiêu nút thì đủ&quot; ở trên đặt ra
+một tiêu chí loại bỏ, chứ không đặt ra một tiêu chí thêm vào.</p>
+<blockquote>
+<p>📌 <strong>Về cách đo và giới hạn của nó.</strong> Con số trên đếm <strong>dấu vết trong mã nguồn được bàn
+giao</strong>, không phải khảo sát người dùng: một dự án có file XAML chưa chắc đã dùng WPF cho
+màn hình chính. Đọc nó như <em>&quot;khung nào có mặt&quot;</em>, không phải <em>&quot;khung nào chiếm bao nhiêu
+phần trăm màn hình&quot;</em>. Bộ mẫu cũng nghiêng về máy điều khiển chuyển động trực tiếp bằng C#
+— xem giải thích đầy đủ ở Chương 1 mục 1.3.1.</p>
+</blockquote>
+<hr>
 <h2 id="checklist-trưc-khi-đưa-màn-hình-hmi-lên-hin-trưng">Checklist trước khi đưa màn hình HMI lên hiện trường</h2>
 <ul>
 <li><input disabled="" type="checkbox"> Toàn bộ style khai báo trong <code>ResourceDictionary</code>, không hard-code
@@ -13271,7 +13703,7 @@ public enum AxisState
 <p><code>Axis</code> trong ví dụ chứa hành vi cốt lõi liên quan trạng thái và kiểm tra giới hạn. Hệ thống thực tế thường bổ sung <code>Move</code>, <code>Home</code>, <code>Stop</code> trực tiếp trên Axis — nhưng các hành vi liên quan interlock cấp máy vẫn phải đi qua Aggregate Root, không tự ý gọi thẳng driver.</p>
 <h3>11.1.2  Value Object — đại lượng kỹ thuật bất biến</h3>
 <p>Xét tình huống thực tế: kỹ sư truyền tốc độ chuyển động bằng kiểu double, đơn vị mm/s. Sau khi refactor, một chỗ nhầm truyền m/s — trục chạy nhanh hơn 1000 lần, kích E-Stop. Lỗi này không phát hiện được qua type checking vì cả hai đều là double.</p>
-<p>Value Object giải quyết bằng cách đóng gói đơn vị đo vào kiểu riêng. Đặc điểm: không có identity (hai Position(100mm) là một), bất biến (immutable), so sánh theo giá trị. <code>record</code> (đã học ở Chương 7 — tự sinh property/constructor/so sánh theo giá trị từ danh sách tham số) có một biến thể <strong>kiểu giá trị</strong>: <code>readonly record struct</code>. Vẫn cùng cơ chế tự sinh đó, chỉ khác <code>struct</code> (Chương 3) lưu trên stack thay vì heap — hợp cho Value Object nhỏ, tạo/huỷ liên tục trong vòng lặp điều khiển:</p>
+<p>Value Object giải quyết bằng cách đóng gói đơn vị đo vào kiểu riêng. Đặc điểm: không có identity (hai Position(100mm) là một), bất biến (immutable), so sánh theo giá trị. <code>record</code> (đã học ở Chương 7 — tự sinh property/constructor/so sánh theo giá trị từ danh sách tham số) có một biến thể <strong>kiểu giá trị</strong>: <code>readonly record struct&lt;!--idx:readonly record struct--&gt;</code>. Vẫn cùng cơ chế tự sinh đó, chỉ khác <code>struct</code> (Chương 3) lưu trên stack thay vì heap — hợp cho Value Object nhỏ, tạo/huỷ liên tục trong vòng lặp điều khiển:</p>
 <p><strong>Code 11.3 — Value Objects Position, Velocity, Acceleration</strong></p>
 <pre><code class="language-csharp">public readonly record struct Position(decimal ValueMm)
 {
@@ -13341,9 +13773,9 @@ không để nằm rải rác trong đầu từng người viết code.</p>
 </tr>
 </tbody></table></div>
 <h3>11.1.3  Aggregate Root — ranh giới nhất quán</h3>
-<p>Aggregate là ranh giới nhất quán (consistency boundary): trong một thao tác nghiệp vụ, mọi thay đổi bên trong aggregate phải hợp lệ theo các bất biến. Aggregate Root là cửa ngõ duy nhất để thay đổi các entity con bên trong.</p>
+<p>Aggregate là ranh giới nhất quán (consistency boundary): trong một thao tác nghiệp vụ, mọi thay đổi bên trong aggregate phải hợp lệ theo các bất biến. Aggregate Root<!--idx:Aggregate Root--> là cửa ngõ duy nhất để thay đổi các entity con bên trong.</p>
 <p><strong>Invariant — quy tắc bất biến của Aggregate</strong></p>
-<p>Invariant (bất biến) là quy tắc luôn phải đúng trong suốt vòng đời của aggregate, bất kể thao tác nào được thực hiện. Mỗi method của Aggregate Root phải đảm bảo rằng sau khi trả về, tất cả invariant vẫn còn nguyên vẹn.</p>
+<p>Invariant (bất biến)<!--idx:Invariant (bất biến)--> là quy tắc luôn phải đúng trong suốt vòng đời của aggregate, bất kể thao tác nào được thực hiện. Mỗi method của Aggregate Root phải đảm bảo rằng sau khi trả về, tất cả invariant vẫn còn nguyên vẹn.</p>
 <p>Trong ví dụ Machine/Axis (Code 11.1/11.2), ba invariant điển hình được bảo vệ bởi Aggregate Root:</p>
 <ul>
 <li><strong>&quot;Axis chưa Homed thì không được Move&quot;</strong> — <code>Axis.ValidateTarget()</code> (Code 11.2) kiểm tra <code>State != AxisState.Homed</code> và ném exception nếu trục chưa về vị trí gốc; cấp Aggregate Root bổ sung kiểm tra liên động tại <code>Machine.HomeAxis()</code> (Code 11.4).</li>
@@ -13387,16 +13819,16 @@ không để nằm rải rác trong đầu từng người viết code.</p>
 <p>💡 <strong>Mẹo thực chiến:</strong> Trong điều khiển thời gian thực, domain không nên chờ phần cứng thực thi xong. Domain chỉ ra quyết định; phần ngoại vi thực thi và phản hồi (ack) về. Nếu cần đồng bộ trạng thái theo phản hồi, dùng mô hình Command → Hardware → Feedback → ApplyState(domain).</p>
 </blockquote>
 <blockquote>
-<p>🔍 <strong>Đào sâu thêm:</strong> <code>partial class</code> cho phép chia 1 class thành nhiều file, compiler ghép lại khi build — dùng ở đây để tách method theo nhóm trách nhiệm mà không phá vỡ tính đóng gói.</p>
+<p>🔍 <strong>Đào sâu thêm:</strong> <code>partial class&lt;!--idx:partial class--&gt;</code> cho phép chia 1 class thành nhiều file, compiler ghép lại khi build — dùng ở đây để tách method theo nhóm trách nhiệm mà không phá vỡ tính đóng gói.</p>
 </blockquote>
 <h3>11.1.4  Domain Event — sự kiện nghiệp vụ</h3>
-<p>Domain Event biểu diễn một sự kiện có ý nghĩa nghiệp vụ đã xảy ra trong miền: &quot;Máy đã bắt đầu chạy&quot;, &quot;Trục đã home xong&quot;, &quot;Lỗi cấp Fault phát sinh...&quot;. Event khác với log thuần tuý ở chỗ nó là đối tượng có cấu trúc, các phần khác của hệ thống lắng nghe và phản ứng dựa trên nó:</p>
+<p>Domain Event<!--idx:Domain Event--> biểu diễn một sự kiện có ý nghĩa nghiệp vụ đã xảy ra trong miền: &quot;Máy đã bắt đầu chạy&quot;, &quot;Trục đã home xong&quot;, &quot;Lỗi cấp Fault phát sinh...&quot;. Event khác với log thuần tuý ở chỗ nó là đối tượng có cấu trúc, các phần khác của hệ thống lắng nghe và phản ứng dựa trên nó:</p>
 <ul>
 <li>Tách rời (decouple): domain phát event, HMI/SCADA/MES/logging lắng nghe — không gọi trực tiếp nhau</li>
 <li>Truy vết &amp; audit: biết ai làm, lúc nào, thao tác gì</li>
 <li>Mở rộng không sửa lõi: thêm handler mới mà không sửa logic máy</li>
 </ul>
-<p><code>record</code> (đã dùng ở mục 11.1.2/Chương 7) phù hợp cho Domain Event vì bất biến và so sánh theo giá trị — một sự kiện đã xảy ra không nên &quot;sửa lại&quot; được. Cú pháp positional <code>sealed record MachineStarted(Guid MachineId, ...)</code> sinh constructor + property chỉ một dòng:</p>
+<p><code>record&lt;!--idx:record--&gt;</code> (đã dùng ở mục 11.1.2/Chương 7) phù hợp cho Domain Event vì bất biến và so sánh theo giá trị — một sự kiện đã xảy ra không nên &quot;sửa lại&quot; được. Cú pháp positional <code>sealed record MachineStarted(Guid MachineId, ...)</code> sinh constructor + property chỉ một dòng:</p>
 <p><strong>Code 11.5 — IDomainEvent và các event cụ thể</strong></p>
 <pre><code class="language-csharp">public interface IDomainEvent
 {
@@ -13476,7 +13908,7 @@ public enum ErrorSeverity { Info, Warning, Alarm, Fault, Emergency }
 </blockquote>
 <h2 id="112-bounded-context-trong-h-thng-automation">11.2  Bounded Context trong hệ thống Automation</h2>
 <p>Nhà máy bắt đầu tích hợp hệ thống MES. Team MES yêu cầu thêm OrderId, ProductCode, WorkOrderStatus vào class Machine để theo dõi lô sản xuất đang chạy. Kỹ sư domain điều khiển phản đối: &quot;Machine của tôi không quan tâm đến OrderId — nó chỉ cần biết Axis có Homed chưa, cửa an toàn có đóng không, áp suất đủ chưa.&quot;</p>
-<p>Cả hai đều đúng — họ đang nói đến hai ngữ cảnh nghiệp vụ khác nhau nhưng dùng chung một từ &quot;máy&quot;. Đây chính là vấn đề Bounded Context giải quyết.</p>
+<p>Cả hai đều đúng — họ đang nói đến hai ngữ cảnh nghiệp vụ khác nhau nhưng dùng chung một từ &quot;máy&quot;. Đây chính là vấn đề Bounded Context<!--idx:Bounded Context--> giải quyết.</p>
 <h3>11.2.1  Bounded Context là gì?</h3>
 <p>Bounded Context (ngữ cảnh giới hạn) là ranh giới tường minh trong đó một mô hình miền có nghĩa rõ ràng và nhất quán. Bên ngoài ranh giới đó, cùng từ ngữ có thể mang nghĩa khác hoặc model khác.</p>
 <p>Trong một hệ thống nhà máy điển hình, từ &quot;máy&quot; mang ít nhất ba nghĩa khác nhau tuỳ theo người nói:</p>
@@ -13561,7 +13993,7 @@ public enum ErrorSeverity { Info, Warning, Alarm, Fault, Emergency }
 }
 </code></pre>
 <h3>11.2.3  Anti-Corruption Layer — cầu nối giữa hai context</h3>
-<p>Hai context giao tiếp qua Anti-Corruption Layer (ACL) — lớp dịch thuật ngăn khái niệm của context này thấm vào context kia. Khi Machine Control phát Domain Event MachineStarted, ACL bên MES nhận và dịch sang ngôn ngữ MES:</p>
+<p>Hai context giao tiếp qua Anti-Corruption Layer (ACL)<!--idx:Anti-Corruption Layer (ACL)--> — lớp dịch thuật ngăn khái niệm của context này thấm vào context kia. Khi Machine Control phát Domain Event MachineStarted, ACL bên MES nhận và dịch sang ngôn ngữ MES:</p>
 <p><strong>Code 11.9 — Anti-Corruption Layer: dịch Domain Event sang MES</strong></p>
 <pre><code class="language-csharp">namespace MachineDomain.MesIntegration.Handlers
 {
@@ -13698,7 +14130,7 @@ qua <code>IIoAdapter</code> (Chương 12) thay vì gọi thẳng API của máy 
 </ol>
 <p>Domain Service và Aggregate Root thuần nghiệp vụ — không biết DB hay driver tồn tại. Application Service là nơi kết nối hai phía.</p>
 <h3>11.3.1  Domain Service — logic không thuộc entity cụ thể</h3>
-<p>Domain Service chứa logic nghiệp vụ cần phối hợp nhiều entity nhưng không &quot;sống&quot; tự nhiên trong entity cụ thể nào. Ví dụ điển hình: kiểm tra interlock an toàn cần đọc trạng thái Machine, nhiều Axis, nhiều Sensor cùng lúc — đặt vào Machine thì quá phình to, đặt vào Axis thì Axis không biết trạng thái Machine.</p>
+<p>Domain Service<!--idx:Domain Service--> chứa logic nghiệp vụ cần phối hợp nhiều entity nhưng không &quot;sống&quot; tự nhiên trong entity cụ thể nào. Ví dụ điển hình: kiểm tra interlock an toàn cần đọc trạng thái Machine, nhiều Axis, nhiều Sensor cùng lúc — đặt vào Machine thì quá phình to, đặt vào Axis thì Axis không biết trạng thái Machine.</p>
 <p>Nếu toàn bộ logic interlock nằm trong Machine, ba vấn đề nảy sinh theo thời gian:</p>
 <ul>
 <li>Class Machine phình to theo số dòng máy: mỗi loại máy có policy an toàn riêng, dẫn đến <code>if (machineType == ...)</code> lan khắp code, dễ đạt vài nghìn dòng khi hỗ trợ nhiều dòng sản phẩm.</li>
@@ -14204,6 +14636,7 @@ public sealed record IoSnapshot(IReadOnlyDictionary&lt;string, bool&gt; DigitalI
 </code></pre>
 <p>Context không biết gì về logic từng trạng thái — nó chỉ chuyển giao lệnh. State tự quyết định có cho phép chuyển sang trạng thái khác hay không. Thêm trạng thái mới chỉ cần tạo class mới implement <code>IState</code>, không động đến Context hay các State khác.</p>
 <p>Quan hệ class trong ví dụ chương này:</p>
+<p><strong>Hình 12.1 — Quan hệ class trong State Pattern của chương</strong></p>
 <pre><code>  MachineContext
        │ giữ tham chiếu _current
        ▼
@@ -14352,7 +14785,7 @@ phải luôn xác định đang hỏi về state TOÀN CỤC hay state của M�
 tên rõ ràng (ví dụ <code>MachineState</code> cho toàn cục, <code>StationStep</code> cho từng trạm).</p>
 </blockquote>
 <h3>12.1.3  ISequenceEngine — hợp đồng điều khiển từ bên ngoài</h3>
-<p><code>MachineContext</code> nội bộ quản lý chuyển trạng thái, còn <code>ISequenceEngine</code> là interface để Application Service, HMI và kiểm thử tương tác với state machine mà không cần biết chi tiết cài đặt:</p>
+<p><code>MachineContext</code> nội bộ quản lý chuyển trạng thái, còn <code>ISequenceEngine&lt;!--idx:ISequenceEngine--&gt;</code> là interface để Application Service, HMI và kiểm thử tương tác với state machine mà không cần biết chi tiết cài đặt:</p>
 <p><strong>Code 12.4 — ISequenceEngine interface</strong></p>
 <pre><code class="language-csharp">// Đặt tại tầng Application/Core — KHÔNG tại Infrastructure
 // PackMlCommand và PackMlState được định nghĩa đầy đủ tại Code 12.6 (mục 12.3.1).
@@ -14450,7 +14883,7 @@ hoặc 2 giai đoạn khác nhau viết ra.</p>
 <h2 id="122-chun-packml-isa-tr880002">12.2  Chuẩn PackML / ISA-TR88.00.02</h2>
 <h3>12.2.1  PackML là gì và tại sao cần chuẩn hoá</h3>
 <p>Mỗi hãng máy đặt tên trạng thái theo cách riêng: Siemens gọi &quot;Betrieb&quot;, Beckhoff gọi &quot;Running&quot;, kỹ sư nội bộ gọi &quot;Auto&quot;. Khi nhà máy tích hợp MES (Manufacturing Execution System) với 20 loại máy khác nhau, cần 20 bộ adapter để đọc trạng thái từ 20 cách đặt tên khác nhau.</p>
-<p><strong>PackML</strong> (Packaging Machine Language) là chuẩn đặt tên và mô hình trạng thái chung, được chuẩn hoá trong <strong>ISA-TR88.00.02</strong> (kỹ thuật báo cáo của ISA — International Society of Automation, phối hợp với OMAC). Máy tuân thủ PackML cho phép:</p>
+<p><strong>PackML</strong> (Packaging Machine Language) là chuẩn đặt tên và mô hình trạng thái chung, được chuẩn hoá trong <strong>ISA-TR88.00.02<!--idx:ISA-TR88.00.02--></strong> (kỹ thuật báo cáo của ISA — International Society of Automation, phối hợp với OMAC). Máy tuân thủ PackML cho phép:</p>
 <ul>
 <li>MES/SCADA đọc trạng thái qua ngôn ngữ chung, không cần adapter riêng</li>
 <li>Operator chuyển giữa các máy khác hãng mà không cần học lại quy trình vận hành</li>
@@ -14662,7 +15095,7 @@ không chạy) — phục vụ debug/bảo trì mà không phải sửa state ma
 <td>Resetting</td>
 </tr>
 </tbody></table></div>
-<p><strong>Hình 12.1 — Sơ đồ tổng thể trạng thái PackML</strong></p>
+<p><strong>Hình 12.2 — Sơ đồ tổng thể trạng thái PackML</strong></p>
 <pre><code>                       ┌──────────────────────────────────────────────────────┐
                        │          LUỒNG CHÍNH (Normal Production Flow)        │
                        └──────────────────────────────────────────────────────┘
@@ -15220,7 +15653,7 @@ Chương 3, chỉ thêm điều kiện lọc theo property ngay trong <code>{ }<
 </ul>
 </blockquote>
 <p>Lưu ý: trong ví dụ này <code>PackMlStateMachine</code> tự tích luỹ và phát Domain Event theo cơ chế tương tự Aggregate Root ở Chương 11, dù bản thân nó không phải Aggregate Root (không có Repository, không có persistence riêng). Đây là cách đơn giản hoá hợp lý cho state machine đứng độc lập. Nếu <code>PackMlStateMachine</code> nằm bên trong một Aggregate Root lớn hơn (ví dụ class <code>Machine</code> từ Chương 11), domain event có thể được Aggregate Root đó raise thay vì state machine tự raise — tránh trùng lặp trách nhiệm publish event.</p>
-<p><strong>Hình 12.2 — Luồng gọi giữa các thành phần (khác với sơ đồ trạng thái ở Hình 12.1)</strong></p>
+<p><strong>Hình 12.3 — Luồng gọi giữa các thành phần (khác với sơ đồ trạng thái ở Hình 12.1)</strong></p>
 <pre><code>  [HMI / MES / Safety System]
            │ PackMlCommand (Start, Stop, Hold, Abort…)
            ▼
@@ -15886,6 +16319,7 @@ giờ biết đến địa chỉ register hay tên SDK hãng.</p>
 <p>Chương này gom <strong>ba mạch</strong> tưởng không liên quan nhưng thực ra dựa lên nhau. Hai mạch đầu
 giải quyết cùng một vấn đề gốc — <em>&quot;che giấu chi tiết nguồn dữ liệu sau interface&quot;</em> — còn mạch
 thứ ba là những gì bạn <strong>dựng lên trên</strong> hai mạch đó:</p>
+<p><strong>Hình 13.1 — Ba nhánh của Device Abstraction Layer và quan hệ giữa chúng</strong></p>
 <pre><code>[Tầng điều khiển / Sequence]
           │
           ▼
@@ -15978,7 +16412,7 @@ dễ bị nhầm route qua Repository: <strong>telemetry/lịch sử cảm biế
 (ví dụ ghi nhiệt độ hoặc vị trí trục mỗi 100ms). Insert từng dòng qua EF Core
 xuống SQLite ở tần suất đó tạo áp lực ghi liên tục lên SSD của IPC — mỗi
 transaction SQLite mặc định flush xuống đĩa, và số lần ghi vật lý thực tế trên
-ổ có thể lớn hơn nhiều lần số bản ghi logic (<strong>write amplification</strong>), rút ngắn
+ổ có thể lớn hơn nhiều lần số bản ghi logic (<strong>write amplification<!--idx:Write Amplification--></strong>), rút ngắn
 tuổi thọ SSD công nghiệp đáng kể qua nhiều tháng chạy 24/7 — chưa kể nguy cơ
 khoá database (<code>SQLITE_BUSY</code>) khi ghi liên tục cạnh tranh với đọc từ HMI.</p>
 <p>Cách đúng: gom dữ liệu vào bộ đệm trong RAM trước — <code>Channel&lt;T&gt;</code> (Chương 5,
@@ -16069,7 +16503,7 @@ public interface ISensorDeviceRepository
 }
 </code></pre>
 <blockquote>
-<p>📌 <strong>Lưu ý:</strong> <code>IAxisDeviceRepository</code> ở đây minh hoạ Device Gateway Pattern theo đúng
+<p>📌 <strong>Lưu ý:</strong> <code>IAxisDeviceRepository</code> ở đây minh hoạ Device Gateway Pattern<!--idx:Device Gateway Pattern--> theo đúng
 &quot;hình dạng&quot; Repository (định danh bằng <code>Guid</code>, đơn vị <code>decimal</code>) để nhất quán với các
 pattern khác trong mục 13.1 (Unit of Work, Specification). Đây <strong>không phải</strong> interface
 trục được dùng xuyên suốt phần còn lại của chương — từ mục 13.2 trở đi, chương này
@@ -16083,11 +16517,11 @@ thể home lần 2 trong khi đang ở vị trí không an toàn. Luôn xác nh�
 bị trước khi retry bất kỳ lệnh chuyển động nào.</p>
 </blockquote>
 <h3>13.1.2 Unit of Work và Outbox Pattern</h3>
-<p>Unit of Work (UoW) gom nhiều thao tác repository vào một commit, đảm bảo tính nhất
+<p>Unit of Work (UoW)<!--idx:Unit of Work (UoW)--> gom nhiều thao tác repository vào một commit, đảm bảo tính nhất
 quán giữa các bảng liên quan (alarm log, audit trail, recipe revision, machine state).
 Trong hệ thống dùng EF Core, DbContext đã là một UoW ngầm — tuy nhiên tách interface
 giúp test dễ và thay persistence engine không phá code.</p>
-<p>Khi hệ thống cần gửi domain event ra MES/SCADA sau khi commit, Outbox Pattern ghi
+<p>Khi hệ thống cần gửi domain event ra MES/SCADA sau khi commit, Outbox Pattern<!--idx:Outbox Pattern--> ghi
 event vào cùng transaction với state, rồi một worker riêng đọc và publish sau — đảm
 bảo event không bị mất nếu crash giữa chừng:</p>
 <p><strong>Code 13.3 — IUnitOfWork và Outbox Pattern</strong></p>
@@ -16127,7 +16561,7 @@ publish domain event trực tiếp trong transaction. Worker restart khi khởi 
 tiếp tục publish các event chưa gửi — không cần logic recovery phức tạp.</p>
 </blockquote>
 <h3>13.1.3 Specification Pattern cho Query Abstraction</h3>
-<p>Specification Pattern đóng gói điều kiện truy vấn vào một đối tượng tái sử dụng.
+<p>Specification Pattern<!--idx:Specification Pattern--> đóng gói điều kiện truy vấn vào một đối tượng tái sử dụng.
 Thay vì viết LINQ lặp đi lặp lại trong nhiều service, mỗi điều kiện lọc/sắp xếp/phân
 trang trở thành một class có tên gợi tả. Lưu ý kiểu dữ liệu <code>Expression&lt;Func&lt;T, bool&gt;&gt;</code>
 dùng cho <code>Criteria</code> — không phải <code>Func&lt;T, bool&gt;</code> thông thường:</p>
@@ -16190,7 +16624,7 @@ public interface IReadRepository&lt;T&gt;
 </code></pre>
 <blockquote>
 <p>🔍 <strong>Đào sâu thêm:</strong> <code>Expression&lt;Func&lt;T, bool&gt;&gt;</code> — lambda được lưu dưới dạng cây dữ
-liệu (expression tree) thay vì code thực thi ngay; EF Core đọc cây này và dịch thành
+liệu (expression tree<!--idx:Expression Tree-->) thay vì code thực thi ngay; EF Core đọc cây này và dịch thành
 SQL. Dùng <code>Func&lt;T, bool&gt;</code> thay thế sẽ kéo toàn bộ bảng về bộ nhớ trước khi lọc. Tìm
 hiểu thêm: &quot;expression trees C#&quot;, &quot;IQueryable vs IEnumerable EF Core&quot;.</p>
 </blockquote>
@@ -16681,7 +17115,7 @@ Bridge chọn <em>phương ngữ hãng</em>. Ba chiều thay đổi độc lập
 <p>Thay vì một interface <code>IDevice</code> khổng lồ chứa mọi thứ, DAL dùng interface theo năng lực
 (capability). Mỗi thiết bị implement đúng những capability nó có — tầng trên chỉ phụ
 thuộc vào capability nó dùng, giảm coupling tối đa.</p>
-<p><code>readonly record struct SignalValue&lt;T&gt;</code> dùng lại nguyên lý đã học ở Chương 11 (struct bất
+<p><code>readonly record struct SignalValue&lt;T&gt;&lt;!--idx:SignalValue&lt;T&gt;--&gt;</code> dùng lại nguyên lý đã học ở Chương 11 (struct bất
 biến so sánh theo giá trị), nhưng generic để bọc bất kỳ loại đo lường nào (bool, double,
 int...).</p>
 <p><strong>Code 13.5 — IDevice, SignalValue&lt;T&gt;, DeviceState và capability interfaces</strong></p>
@@ -16759,7 +17193,7 @@ capability đó, và DeviceManager chịu trách nhiệm kiểm tra capability k
 hoặc &quot;dữ liệu không chắc&quot; trong môi trường công nghiệp có thể gây tai nạn.</p>
 </blockquote>
 <blockquote>
-<p>🔍 <strong>Đào sâu thêm:</strong> <code>IAsyncDisposable</code> / <code>ValueTask DisposeAsync()</code> / <code>await using</code> —
+<p>🔍 <strong>Đào sâu thêm:</strong> <code>IAsyncDisposable&lt;!--idx:IAsyncDisposable--&gt;</code> / <code>ValueTask DisposeAsync()</code> / <code>await using</code> —
 giải phóng tài nguyên bất đồng bộ (đóng socket, gửi gói tin tắt qua mạng) mà không
 chặn luồng. Tìm hiểu thêm: &quot;IAsyncDisposable C#&quot;, &quot;await using pattern&quot;.</p>
 </blockquote>
@@ -17175,7 +17609,7 @@ simulated). Abstraction nằm ở tầng trên của DAL; implementor là
 &quot;internal&quot; của DAL — tầng Application inject qua DI mà không cần biết
 đang chạy thư viện vision nào.</p>
 </blockquote>
-<p><strong>HAL/Proxy — tách &quot;board điều khiển&quot; khỏi &quot;kênh/trục trên board&quot;.</strong> Bridge Pattern ở
+<p><strong>HAL/Proxy — tách &quot;board điều khiển&quot; khỏi &quot;kênh/trục trên board&quot;.</strong> Bridge Pattern<!--idx:Bridge Pattern--> ở
 trên tách Abstraction khỏi Implementor theo <em>vendor</em> (Beckhoff/Siemens/Simulated). Với
 phần cứng motion nhiều kênh (một board điều khiển 4-8 trục cùng lúc), có thêm một
 chiều tách biệt nữa đáng làm: tách khái niệm &quot;board&quot; (kết nối vật lý, khởi tạo SDK,
@@ -18019,7 +18453,7 @@ nhiều luồng đọc/ghi đồng thời không cần viết <code>lock</code> 
 <td>Lỗi cấu trúc, retry vô nghĩa</td>
 </tr>
 </tbody></table></div>
-<p>Command chỉ được phép retry khi có cơ chế command idempotency hoặc sequence number —
+<p>Command chỉ được phép retry khi có cơ chế command idempotency<!--idx:Command Idempotency--> hoặc sequence number —
 kỹ thuật dùng trong robot/AGV/MES để đảm bảo lệnh trùng lặp không gây hành động lần 2.</p>
 <p>Retry là mắt xích đầu của một chuỗi ba lớp chịu lỗi; hai mắt xích còn lại — <em>Circuit Breaker</em> (ngắt
 khi thiết bị lỗi kéo dài) và <em>Bulkhead</em> (cách ly để một thiết bị hỏng không kéo theo phần còn lại) —
@@ -18082,7 +18516,7 @@ public static class Resilience
 }
 </code></pre>
 <h3>13.3.4 Health Monitoring</h3>
-<p>Health monitoring phát hiện sớm dấu hiệu suy giảm (latency tăng, retry tăng) trước khi
+<p>Health monitor<!--idx:Health Monitor-->ing phát hiện sớm dấu hiệu suy giảm (latency tăng, retry tăng) trước khi
 thiết bị &quot;đứt&quot; hẳn, cung cấp nguyên nhân cho bảo trì, và hỗ trợ quyết định an toàn
 (khóa cycle khi health kém).</p>
 <p><strong>Code 13.13 — HealthLevel, HealthReport, IHealthCheckable và HealthMonitor</strong></p>
@@ -18521,6 +18955,7 @@ chỉ chạy trong phòng thí nghiệm.</p>
 phôi thật không bao giờ vào đúng một chỗ — nó lệch vài mi-li-mét và xoay vài độ mỗi lần.
 Vùng dò cố định sẽ trượt ra ngoài chi tiết.</p>
 <p>Cách giải: <strong>hai bước, không phải một</strong>.</p>
+<p><strong>Hình 13.2 — Gá toạ độ hai bước: dò đặc trưng chuẩn trước, đặt gốc toạ độ sau</strong></p>
 <pre><code>Bước 1 — Tìm đặc trưng chuẩn:  dò một đặc trưng dễ nhận và luôn có mặt
                                (mép khay, lỗ định vị, ký hiệu in sẵn)
                                → biết phôi lệch bao nhiêu, xoay bao nhiêu
@@ -19368,10 +19803,79 @@ bản ghi cũ phải giữ ngưỡng đã dùng lúc đó. Đây là lý do bả
 chứa giá trị đo và kết luận.</p>
 </blockquote>
 <hr>
+<h2 id="135-đi-chiu-thc-t-ngành-tng-tru-tưng-này-có-tht-ngoài-đi-không">13.5 Đối chiếu thực tế ngành — tầng trừu tượng này có thật ngoài đời không?</h2>
+<p>Chương này dạy cách đặt interface giữa logic máy và SDK của hãng. Trước khi khép lại, cần
+một đoạn thẳng thắn: <strong>trong bộ mẫu 13 dự án, phần lớn không làm như vậy</strong> — và biết trước
+điều đó quan trọng hơn là bực mình vì nó.</p>
+<p>Đếm số khai báo <code>public interface I…</code> trong toàn bộ mã nguồn từng dự án:</p>
+<p><strong>Bảng 13.11 — Mức độ dùng interface và chế độ giả lập trong 13 dự án máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Số dự án</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>0 interface</strong> trong toàn bộ solution</td>
+<td><strong>5</strong> / 13</td>
+<td>Gọi thẳng SDK hãng từ nơi cần dùng</td>
+</tr>
+<tr>
+<td><strong>1–3 interface</strong> (gần như không có)</td>
+<td><strong>4</strong> / 13</td>
+<td>Có vài interface lẻ, không phải tầng trừu tượng</td>
+</tr>
+<tr>
+<td><strong>≥ 30 interface</strong> — có tầng trừu tượng thật</td>
+<td><strong>4</strong> / 13</td>
+<td>Cả bốn đều là dự án mang dáng dấp <em>framework</em> dùng lại nhiều máy</td>
+</tr>
+<tr>
+<td>Có <strong>chế độ giả lập</strong> chạy được không cần phần cứng</td>
+<td><strong>5</strong> / 13</td>
+<td>—</td>
+</tr>
+</tbody></table></div>
+<p><strong>Điều đáng chú ý nhất không phải con số 9/13, mà là ai nằm trong nhóm 4/13.</strong> Bốn dự án
+có tầng trừu tượng thật đều là những dự án được thiết kế để <strong>dùng lại cho nhiều máy</strong>.
+Các dự án viết cho <em>một</em> cỗ máy cụ thể gần như luôn gọi thẳng SDK. Đó không phải sự lười
+biếng — đó là một đánh đổi hợp lý khi bạn biết chắc sẽ không bao giờ đổi hãng card: interface
+lúc đó là chi phí không có người trả.</p>
+<p>Vì vậy, lời khuyên thực dụng của chương này <strong>không</strong> phải &quot;luôn luôn bọc mọi thứ sau
+interface&quot;. Nó là ba câu hỏi:</p>
+<ol>
+<li><strong>Thiết bị này có khả năng bị thay bằng hãng khác không?</strong> Card chuyển động và camera
+thường có; cảm biến rời thì hiếm. Có → bọc. Không → có thể gọi thẳng.</li>
+<li><strong>Bạn có cần chạy phần mềm khi không có máy không?</strong> Nếu có, bạn <strong>buộc</strong> phải có
+interface, vì không có interface thì không có chỗ để cắm bản giả lập vào. Đây là lý do
+thật sự khiến bốn dự án kia đầu tư vào trừu tượng hoá — và cũng là lý do chỉ 5/13 dự án
+có chế độ giả lập.</li>
+<li><strong>Đoạn code này có cần test được không?</strong> Câu trả lời gần như luôn trùng với câu 2.
+Chương 18 mục 18.6.4 cho thấy dự án duy nhất có kiểm thử tự động đang chạy cũng chính là
+một trong bốn dự án có tầng trừu tượng thật. <strong>Khả năng test là hệ quả của kiến trúc,
+không phải của kỷ luật.</strong></li>
+</ol>
+<blockquote>
+<p>💡 <strong>Nếu bạn đang tiếp quản một dự án thuộc nhóm 9/13.</strong> Đừng bắt đầu bằng việc bọc lại
+toàn bộ. Hãy bọc <strong>đúng một thiết bị</strong> — thường là camera hoặc card chuyển động — rồi viết
+một bản giả lập cho nó và chạy thử phần trình tự không cần máy. Một lần làm được như vậy
+thuyết phục cả đội hơn mọi lập luận về SOLID, vì nó rút ngắn được thứ mà ai cũng ghét:
+thời gian phải đứng cạnh máy để thử một thay đổi nhỏ.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Giới hạn của cách đo.</strong> Đếm <code>public interface I…</code> là đo <strong>dấu vết cú pháp</strong>, không đo
+chất lượng thiết kế: một dự án có 50 interface vẫn có thể lộ kiểu dữ liệu của hãng ra
+ngoài (đúng lỗi mà mục 13.4.2 cảnh báo), và một dự án 0 interface vẫn có thể tách tầng tốt
+bằng class trừu tượng. Con số này nói về <strong>xu hướng</strong>, không phải bảng xếp hạng.</p>
+</blockquote>
+<hr>
 <h2 id="sơ-đ-kin-trúc-tng-hp">Sơ đồ kiến trúc tổng hợp</h2>
 <p>Dưới đây là bức tranh đầy đủ: mỗi lớp trong sơ đồ tương ứng với một pattern đã học,
 và mỗi mũi tên &quot;→&quot; là ranh giới abstraction mà bên trên không cần biết bên dưới dùng
 gì:</p>
+<p><strong>Hình 13.3 — Kiến trúc tổng hợp: từ tầng quy trình xuống tới SDK của hãng</strong></p>
 <pre><code>[Application / Sequence Layer]
          │  gọi qua interface — không bao giờ gọi trực tiếp SDK
          ↓
@@ -19754,6 +20258,7 @@ công nghiệp dưới dạng đồ thị các <strong>Node</strong>. OPC UA đ�
 </tr>
 </tbody></table></div>
 <p>Node được tổ chức trong <strong>Address Space</strong> — không gian địa chỉ phân cấp duyệt được:</p>
+<p><strong>Hình 14.1 — Address Space của OPC UA: cây node và cách đặt địa chỉ</strong></p>
 <pre><code>Objects (ns=0;i=85)
 └── Factory (ns=2;s=&quot;Factory&quot;)
     └── Line1
@@ -20142,6 +20647,7 @@ bit 7 được set (FC03 request → <code>0x83</code> response khi lỗi), ti�
 lớn hơn, phải chia thành nhiều request liên tiếp.</p>
 </blockquote>
 <p><strong>Cấu trúc Modbus TCP frame</strong> — hiểu để debug Wireshark:</p>
+<p><strong>Hình 14.2 — Cấu trúc một khung Modbus TCP (MBAP header + PDU)</strong></p>
 <pre><code>┌───────────────────── MBAP Header (7 bytes) ─────────────────────┐
 │ Transaction ID (2) │ Protocol ID (2) │ Length (2) │ Unit ID (1) │
 └─────────────────────────────────────────────────────────────────┘
@@ -20785,6 +21291,7 @@ file dữ liệu cần chuyển sang JSON/XML, kèm theo là mọi file cấu h�
 mềm xong sẽ mất toàn bộ điểm dạy và tham số.</p>
 </blockquote>
 <p><strong>Giải pháp: tách thành process riêng giao tiếp qua IPC</strong></p>
+<p><strong>Hình 14.3 — Tách thị giác thành tiến trình riêng, nói chuyện qua IPC</strong></p>
 <pre><code>┌────────────────────────────────┐                              ┌────────────────┐
 │ MeoFrame.Controller (.NET 9)   │  JSON over TCP/named-pipe    │ VisionPro Host │
 │ • MasterController             │  SelectJob, Trigger, Result  │ (.NET FW 4.8)  │
@@ -20944,7 +21451,7 @@ kiểu cơ bản + JSON) là nguyên tắc quan trọng: cả hai process có th
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Cảnh báo:</strong> <code>TcpClient.Connected</code> chỉ phản ánh trạng thái local socket — không phát
-hiện được TCP half-open (peer đã tắt nhưng socket local vẫn báo Connected). Trong môi
+hiện được TCP half-open<!--idx:TCP half-open--> (peer đã tắt nhưng socket local vẫn báo Connected). Trong môi
 trường công nghiệp, điều này xảy ra thường xuyên khi switch mạng khởi động lại hoặc IPC
 bị tắt đột ngột. Heartbeat chính là cơ chế phát hiện half-open — nếu không nhận được reply
 trong timeout, đóng socket và reconnect, không tin vào Connected.</p>
@@ -21177,10 +21684,11 @@ thứ thật sự cần liên tục.</p>
 <h4>Bật một trục servo không phải là bật một công tắc: máy trạng thái CiA 402</h4>
 <p>Khi dùng card hãng, lệnh bật servo thường là một hàm duy nhất (<code>ServoOn(axis)</code>). Khi <strong>máy tính là
 master</strong> (mục trên), bạn sẽ gặp sự thật nằm bên dưới hàm đó: mọi servo drive nối qua EtherCAT đều
-tuân theo một <strong>máy trạng thái chuẩn hoá</strong> — trong tài liệu thường gọi là <strong>CiA 402</strong> (hoặc &quot;DS402&quot;,
+tuân theo một <strong>máy trạng thái chuẩn hoá</strong> — trong tài liệu thường gọi là <strong>CiA 402<!--idx:CiA 402--></strong> (hoặc &quot;DS402&quot;,
 &quot;chuẩn hồ sơ thiết bị truyền động&quot;). Trục không chuyển từ &quot;tắt&quot; sang &quot;chạy được&quot; trong một bước; nó
 đi qua một chuỗi trạng thái, và <strong>bạn phải dẫn nó qua từng bước</strong>.</p>
 <p>Chuỗi rút gọn, đủ để hiểu code bạn sẽ đọc:</p>
+<p><strong>Hình 14.4 — Vòng đời bật một trục servo: từ <em>không sẵn sàng</em> tới <em>chạy được</em></strong></p>
 <pre><code>   Không sẵn sàng
         ↓ (drive tự chuyển sau khi khởi động xong)
    Chưa cho phép bật    ← cũng là nơi trục quay về sau khi có lỗi và được xoá lỗi
@@ -21645,6 +22153,7 @@ thiết bị–host thành bộ chuẩn SECS/GEM — ngày nay bắt buộc tron
 ngày càng phổ biến trong SMT, flat panel display, và solar panel manufacturing.</p>
 <h3>14.2.1  Kiến trúc 3 tầng SECS/GEM</h3>
 <p>SECS/GEM không phải một giao thức đơn lẻ — đây là bộ ba tầng tách biệt rõ ràng:</p>
+<p><strong>Hình 14.5 — Ba tầng của SECS/GEM: GEM, SECS-II và HSMS</strong></p>
 <pre><code>┌─────────────────────────────────────────────────────────────────┐
 │            GEM (SEMI E30) — Generic Equipment Model             │
 │  Hành vi thiết bị: state machine, alarm, process program,       │
@@ -21698,6 +22207,7 @@ retrofit. Phần này tập trung vào HSMS + SECS-II + GEM.</p>
 (không bắt buộc theo chuẩn, nhưng hầu hết vendor dùng mặc định này). HSMS định nghĩa
 hai role: <strong>Active</strong> (MES host, chủ động kết nối) và <strong>Passive</strong> (equipment, lắng nghe).</p>
 <p>HSMS có thủ tục <strong>Select</strong> để kích hoạt kết nối sau TCP handshake:</p>
+<p><strong>Hình 14.6 — Thủ tục Select của HSMS sau khi TCP đã bắt tay</strong></p>
 <pre><code>Host (Active)                          Equipment (Passive)
      │                                       │
      │──── TCP Connect ──────────────────────►│
@@ -21723,6 +22233,7 @@ hai byte liên tiếp trong cùng một message — bảo vệ khỏi kết nố
 <h3>14.2.3  SECS-II message format</h3>
 <p>Mọi giao tiếp trong SECS/GEM đều là <strong>SECS-II message</strong> truyền qua HSMS. Cấu trúc đầy đủ
 gồm hai phần tách biệt: HSMS framing (4 + 10 bytes) và SECS-II data items:</p>
+<p><strong>Hình 14.7 — Một message SECS-II nằm trong khung HSMS như thế nào</strong></p>
 <pre><code>┌──────────── HSMS tầng transport ─────────────────────────────────────────────┐
 │ Message Length (4 bytes) — số bytes của Header + Data theo sau               │
 ├──────────── HSMS Header (10 bytes) ──────────────────────────────────────────┤
@@ -21814,7 +22325,7 @@ chương trước:</p>
 <li><strong>S1F13/S1F14 (Establish Communications Request/Acknowledge)</strong> hoạt động giống TCP
 handshake — thiết bị gửi &quot;tôi muốn bắt đầu giao tiếp GEM&quot; (S1F13), MES host trả lời
 &quot;đồng ý&quot; (S1F14). Nếu COMMACK ≠ 0, kết nối bị từ chối — tương tự TCP RST.</li>
-<li><strong>S6F11 (Event Report Send)</strong> hoạt động giống <strong>Domain Event</strong> từ Chương 11 — thiết bị
+<li><strong>S6F11 (Event Report Send)<!--idx:S6F11 (Event Report Send)--></strong> hoạt động giống <strong>Domain Event</strong> từ Chương 11 — thiết bị
 tự phát sự kiện (&quot;hoàn tất lot&quot;, &quot;job done&quot;, &quot;state change&quot;) mà không cần MES host hỏi.
 CEID đóng vai trò như tên event type; DVID là payload dữ liệu kèm theo.</li>
 <li><strong>S2F41 (Host Command Send)</strong> tương đương gọi Method trong OPC UA — MES host ra lệnh
@@ -21917,6 +22428,7 @@ cho thành viên đăng ký.</p>
 <h4>Ví dụ thực tế — S6F11 Event Report cho sự kiện wafer</h4>
 <p>S6F11 mang cấu trúc dữ liệu lồng nhau (nested TLV) theo định nghĩa GEM. Một S6F11 báo
 hoàn thành xử lý wafer có dạng:</p>
+<p><strong>Hình 14.8 — Cấu trúc message S6F11 báo sự kiện lên host</strong></p>
 <pre><code>S6F11 [E→H]  — Event Report Send
 L [3]                          ← List 3 phần tử (DATAID, CEID, RPT list)
   U4 [1] 4294967201            ← DATAID: transaction ID do equipment tự tạo
@@ -22185,6 +22697,7 @@ xong phải cập nhật lại kết quả của mình cho máy phía sau.</p>
 <p>Nếu mỗi chi tiết có mã vạch riêng thì đơn giản — nhưng chi tiết điện tử thường quá nhỏ để in mã.
 Giải pháp của ngành: <strong>bản đồ khay</strong> (map) — một bảng ghi rõ <em>vị trí nào chứa gì và kết quả ra sao</em>,
 đi kèm khay qua từng máy:</p>
+<p><strong>Hình 14.9 — Bản đồ khay đi kèm sản phẩm qua từng máy trên dây chuyền</strong></p>
 <pre><code>Khay ABC123, 4 hàng × 6 cột
 ┌────┬────┬────┬────┬────┬────┐
 │ OK │ OK │ NG │ -- │ OK │ OK │     OK = đạt
@@ -22400,10 +22913,10 @@ alarm đó — nếu chỉ thấy đúng một kết quả (chỗ khai báo), ng
 </blockquote>
 <p><strong>Từ vựng MES thường gặp</strong> (không phải hệ MES nào cũng dùng đủ cả bốn — tuỳ ngành và quy mô nhà máy):</p>
 <ul>
-<li><strong>Lot</strong> — mã định danh một lô sản phẩm được xử lý/theo dõi cùng nhau qua các công đoạn.</li>
-<li><strong>Work Order / Production Order</strong> — lệnh sản xuất MES giao cho máy: sản xuất gì, số lượng bao nhiêu, dùng recipe nào.</li>
+<li><strong>Lot<!--idx:Lot--></strong> — mã định danh một lô sản phẩm được xử lý/theo dõi cùng nhau qua các công đoạn.</li>
+<li><strong>Work Order / Production Order<!--idx:Work Order / Production Order--></strong> — lệnh sản xuất MES giao cho máy: sản xuất gì, số lượng bao nhiêu, dùng recipe nào.</li>
 <li><strong>Recipe / PPID</strong> — tham số quy trình cho một sản phẩm cụ thể (đã học ở Chương 13) — trong ngữ cảnh SECS/GEM thường gọi là PPID (Process Program ID).</li>
-<li><strong>Genealogy</strong> (truy xuất nguồn gốc) — chuỗi liên kết Lot/số serial qua từng công đoạn, cho phép lần lại lịch sử đầy đủ của một sản phẩm khi phát hiện lỗi sau này.</li>
+<li><strong>Genealogy<!--idx:Genealogy--></strong> (truy xuất nguồn gốc) — chuỗi liên kết Lot/số serial qua từng công đoạn, cho phép lần lại lịch sử đầy đủ của một sản phẩm khi phát hiện lỗi sau này.</li>
 </ul>
 <h3>14.2.8  Giao thức MES độc quyền kiểu &quot;cổng lệnh&quot; — nhận diện khi gặp trong nhà máy thật</h3>
 <p>Không phải nhà máy nào cũng có SECS/GEM chuẩn hay REST API sạch như mục 14.2.7. Rất nhiều
@@ -22441,7 +22954,7 @@ code C#.</p>
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>📌 <strong>Bẫy hay gặp nhất — JSON lồng trong chuỗi (double-encoded JSON):</strong> payload nghiệp vụ
+<p>📌 <strong>Bẫy hay gặp nhất — JSON lồng trong chuỗi (double-encoded JSON<!--idx:Double-encoded JSON-->):</strong> payload nghiệp vụ
 không phải một object JSON con bình thường (<code>&quot;data&quot;: {...}</code>) mà là một CHUỖI chứa JSON đã
 serialize sẵn (<code>&quot;data&quot;: &quot;{\&quot;Sn\&quot;:\&quot;ABC123\&quot;}&quot;</code>). Deserialize một lần chỉ ra một <code>string</code>,
 không ra được object — phải deserialize thêm lần nữa trên chính chuỗi đó. Lý do lịch sử: vỏ
@@ -22516,7 +23029,7 @@ và Genealogy về sau — chỉ gửi <code>false</code> thì không ai trả l
 lý do gì&quot; sáu tháng sau khi có khiếu nại khách hàng. Payload Fail nên có ít nhất: mã lỗi (dùng
 chung một bảng mã cố định, không phải chuỗi tự do) và một trường mô tả ngắn.</p>
 </blockquote>
-<p><strong>Cách bọc an toàn:</strong> dùng chính Adapter Pattern đã học ở Chương 16 — toàn bộ vốn từ (<code>Opcode</code>,
+<p><strong>Cách bọc an toàn:</strong> dùng chính Adapter Pattern đã học ở Chương 16 — toàn bộ vốn từ (<code>Opcode&lt;!--idx:Opcode--&gt;</code>,
 <code>Category</code>, JSON lồng, token phiên) của giao thức này chỉ nên xuất hiện trong một class
 Infrastructure duy nhất (ví dụ <code>LegacyGateMesClient : IMesClient</code>); Step/Sequence gọi qua
 interface đã định kiểu (<code>CheckRouteAsync</code>, <code>ReportResultAsync</code>...) và không bao giờ nhìn thấy
@@ -22707,7 +23220,7 @@ khối riêng, không phải &quot;vài ngày cuối dự án&quot;.</p>
 </tr>
 </tbody></table></div>
 <h3>14.3.2  Khi nào chọn giao thức nào</h3>
-<p><strong>Chọn Modbus TCP khi:</strong></p>
+<p><strong>Chọn Modbus TCP<!--idx:Modbus TCP--> khi:</strong></p>
 <ul>
 <li>Thiết bị đã hỗ trợ Modbus, không có OPC UA</li>
 <li>Bài toán đơn giản: đọc 10–50 thanh ghi từ VFD, đồng hồ điện, cảm biến</li>
@@ -22734,7 +23247,7 @@ khối riêng, không phải &quot;vài ngày cuối dự án&quot;.</p>
 <li>Thiết bị dùng proprietary protocol không có chuẩn mở</li>
 <li>Cần cách ly process vì rủi ro crash native</li>
 </ul>
-<p><strong>Một giao thức khác hay gặp ngoài ba giao thức trên: MQTT</strong> — mô hình
+<p><strong>Một giao thức khác hay gặp ngoài ba giao thức trên: MQTT<!--idx:MQTT--></strong> — mô hình
 publish/subscribe qua một <strong>broker</strong> trung gian (thiết bị gửi dữ liệu <strong>publish</strong>
 lên một <strong>topic</strong> dạng chuỗi phân cấp như <code>line1/station3/temperature</code>, hệ thống
 khác <strong>subscribe</strong> đúng topic đó để nhận, không cần biết địa chỉ IP của nhau).
@@ -22753,6 +23266,7 @@ thiết bị đơn giản, không cần SCADA integration. Tương tự bài h�
 dùng khi vấn đề thực sự đòi hỏi.</p>
 </blockquote>
 <h3>14.3.3  Checklist chọn giao thức</h3>
+<p><strong>Hình 14.10 — Cây quyết định chọn giao thức cho một thiết bị mới</strong></p>
 <pre><code>Thiết bị có hỗ trợ sẵn giao thức nào?
 ├── Chỉ Modbus → dùng Modbus (không over-engineer)
 ├── OPC UA + Modbus → chọn OPC UA nếu cần metadata/security
@@ -22820,6 +23334,74 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 <td>Test kết nối thô và gửi command thủ công trước khi có application code</td>
 </tr>
 </tbody></table></div>
+<hr>
+<h3>14.3.5  Đối chiếu thực tế ngành — giao thức nào thật sự xuất hiện</h3>
+<p>Ba mục trên giúp bạn <em>chọn</em> giao thức. Mục này nói về thứ bạn sẽ <em>gặp</em>, và hai danh sách đó
+lệch nhau đáng kể. Tìm dấu vết từng giao thức trong mã nguồn của bộ mẫu 13 dự án:</p>
+<p><strong>Bảng 14.13 — Dấu vết giao thức trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Giao thức / kênh</th>
+<th>Số dự án có dấu vết</th>
+<th>Nhận xét</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Socket TCP thô</strong> (<code>TcpClient</code>/<code>Socket</code>)</td>
+<td><strong>11</strong> / 13</td>
+<td>Kênh phổ biến nhất — phần lớn là <strong>giao thức tự định nghĩa</strong>, không theo chuẩn nào</td>
+</tr>
+<tr>
+<td><strong>Cổng nối tiếp</strong> (<code>SerialPort</code>)</td>
+<td><strong>10</strong> / 13</td>
+<td>Máy quét mã, cân, bộ điều khiển đèn, thiết bị cũ — chưa hề biến mất</td>
+</tr>
+<tr>
+<td><strong>SDK card chuyển động</strong> qua P/Invoke</td>
+<td><strong>7</strong> / 13</td>
+<td>Kiến trúc A ở Chương 1 mục 1.3.2</td>
+</tr>
+<tr>
+<td><strong>Modbus</strong> (RTU/TCP)</td>
+<td><strong>6</strong> / 13</td>
+<td>Thường để nói chuyện với PLC hoặc bộ điều khiển nhiệt</td>
+</tr>
+<tr>
+<td><strong>SECS/GEM</strong></td>
+<td><strong>5</strong> / 13</td>
+<td>Chỉ ở các máy đặt trong nhà máy bán dẫn/SMT có host</td>
+</tr>
+<tr>
+<td><strong>OPC UA</strong></td>
+<td><strong>0</strong> / 13</td>
+<td>Không tìm thấy dấu vết ở bất kỳ dự án nào</td>
+</tr>
+</tbody></table></div>
+<p>Con số cuối cùng gây ngạc nhiên nhất, và cần được đọc cho đúng.</p>
+<p><strong>OPC UA = 0/13 không có nghĩa OPC UA không quan trọng.</strong> Nó có nghĩa là: trong nhóm máy
+<strong>điều khiển chuyển động trực tiếp bằng C#</strong> — đúng nhóm mà bộ mẫu này nghiêng về — OPC UA
+hiếm khi là lựa chọn, vì nó giải quyết bài toán <em>liên thông giữa hệ thống</em> chứ không giải
+quyết bài toán <em>điều khiển một thiết bị trong máy</em>. OPC UA sống ở tầng trên: giữa máy và
+SCADA, giữa dây chuyền và MES. Nếu bộ mẫu gồm các hệ SCADA thay vì các máy đơn lẻ, con số
+này gần như chắc chắn sẽ đảo ngược.</p>
+<p>Hai điều rút ra có giá trị thực tế ngay:</p>
+<p><strong>1. Thứ bạn phải giỏi nhất không phải là một chuẩn công nghiệp, mà là <em>đọc một giao thức
+tự định nghĩa</em>.</strong> 11/13 dự án mở socket TCP, và phần lớn tự quy định khung tin của mình —
+<code>STX … ETX</code>, chuỗi phân tách bằng dấu phẩy, hoặc một cấu trúc nhị phân do người viết trước
+đặt ra. Không có tài liệu chuẩn nào cứu bạn ở đây; thứ cứu bạn là các nguyên tắc ở mục
+14.1.4 (đọc theo khung, không đọc theo số byte cố định) và một công cụ bắt gói.</p>
+<p><strong>2. Cổng nối tiếp vẫn đáng học, dù nghe như công nghệ của thế kỷ trước.</strong> 10/13. Lý do rất
+đơn giản: các thiết bị ngoại vi rẻ tiền và bền — máy quét mã vạch, cân, bộ điều khiển đèn,
+bộ đọc nhiệt độ — không có lý do gì để đổi sang Ethernet, và chúng sống lâu hơn phần mềm
+điều khiển chúng.</p>
+<blockquote>
+<p>📌 <strong>Cách đo và giới hạn.</strong> Đây là phép đếm <strong>dấu vết chuỗi trong mã nguồn</strong>, nên là
+<strong>giới hạn dưới</strong>: một dự án dùng thư viện bọc sẵn của hãng có thể không lộ ra từ khoá nào
+mà phép đếm này bắt được. Ngược lại, một dấu vết cũng có thể là mã chết còn sót lại. Đọc
+bảng theo hướng <em>&quot;cái gì chắc chắn có mặt&quot;</em>, không phải <em>&quot;tỷ lệ chính xác của ngành&quot;</em> —
+xem thêm Chương 1 mục 1.3.1.</p>
+</blockquote>
 <hr>
 <h2 id="tng-kt-chương-14">Tổng kết chương</h2>
 <p><strong>Bảng 14.11 — Tổng kết: giao thức + pattern áp dụng</strong></p>
@@ -23033,8 +23615,9 @@ cho từng bài toán.</p>
 <blockquote>
 <p>⚠️ <strong>Cảnh báo:</strong> Acknowledged ≠ Cleared. Đây là lỗi thiết kế phổ biến nhất: sau khi operator nhấn Ack, alarm vẫn còn active nếu điều kiện lỗi chưa biến mất. Không được tự động Clear alarm chỉ vì đã Ack. Hai thao tác này độc lập nhau.</p>
 </blockquote>
-<p>Có thêm trường hợp đặc biệt: alarm xuất hiện rồi biến mất trước khi operator kịp acknowledge — gọi là <strong>transient alarm</strong>. Vòng đời trong trường hợp này: Unacknowledged → Cleared (but still unacknowledged) — alarm vẫn giữ nguyên trong list cho đến khi operator ack, dù điều kiện đã biến mất.</p>
+<p>Có thêm trường hợp đặc biệt: alarm xuất hiện rồi biến mất trước khi operator kịp acknowledge — gọi là <strong>transient alarm<!--idx:Transient Alarm--></strong>. Vòng đời trong trường hợp này: Unacknowledged → Cleared (but still unacknowledged) — alarm vẫn giữ nguyên trong list cho đến khi operator ack, dù điều kiện đã biến mất.</p>
 <p>Sơ đồ state machine alarm — gồm cả nhánh transient:</p>
+<p><strong>Hình 15.1 — Vòng đời một cảnh báo, gồm cả nhánh tự phục hồi</strong></p>
 <pre><code>               Alarm Raised
                     │
                     ▼
@@ -23156,7 +23739,7 @@ kê Pareto) — hữu ích để phát hiện servo nào đang có xu hướng h
 trước khi nó gây dừng máy thật sự, thay vì chỉ xử lý từng lần alarm rời rạc.</p>
 </blockquote>
 <blockquote>
-<p>🔍 <strong>Đào sâu thêm — bảng bit trạng thái servo thường gặp, và soft limit vs limit switch vật lý:</strong>
+<p>🔍 <strong>Đào sâu thêm — bảng bit trạng thái servo thường gặp, và soft limit<!--idx:Soft Limit--> vs limit switch vật lý:</strong>
 Driver motion đọc trạng thái trục thường trả về MỘT word số nguyên, mỗi bit mang một ý nghĩa
 riêng — dùng đúng toán tử bitwise đã học ở Chương 3, mục 3.2 để tách từng bit. Không có chuẩn
 chung 100% giữa các hãng, nhưng bộ bit sau rất phổ biến, đủ để nhận diện khi gặp trong code thật:</p>
@@ -23697,7 +24280,7 @@ private readonly Channel&lt;AlarmModel&gt; _writeQueue = Channel.CreateBounded&l
 <p>Khi hàng đợi đầy, <code>DropOldest</code> sẽ xoá bản ghi cũ nhất để nhường chỗ cho bản ghi mới — với log thông thường có thể chấp nhận được, nhưng với alarm thì không: bản ghi cũ nhất trong một đợt alarm dồn dập rất có thể chính là root cause, còn các bản ghi mới hơn chỉ là hậu quả thứ cấp của nó. <code>Wait</code> (chặn ghi mới cho đến khi có chỗ) giữ đúng thứ tự alarm gốc, đánh đổi bằng việc <code>RaiseAsync</code> có thể chờ lâu hơn khi hàng đợi đầy — một đánh đổi chấp nhận được vì tính đúng đắn của alarm quan trọng hơn độ trễ ghi log.</p>
 <p><em>Điều gì xảy ra nếu ứng dụng crash khi alarm đang active?</em> Nếu <code>_activeAlarms</code> chỉ tồn tại trong bộ nhớ, một alarm Critical thật (ví dụ cảm biến áp suất vẫn đang báo nguy hiểm ngoài hiện trường) sẽ &quot;biến mất&quot; khỏi hệ thống ngay khi ứng dụng khởi động lại — dù điều kiện lỗi vật lý chưa hề được xử lý. Nguyên tắc: trạng thái alarm phải sống sót qua crash phần mềm. Cách đơn giản nhất là <code>RaiseAsync</code> ghi mã alarm và mốc thời gian ra nơi lưu bền (cùng bảng alarm hoặc một file trạng thái riêng) <em>trước khi</em> trả về, và <code>AlarmService</code> đọc lại các alarm chưa Clear từ lần chạy trước ngay khi khởi động — không đợi phần cứng báo lại mới biết có lỗi.</p>
 <h3>15.1.6  Alarm Flood Prevention — phòng tránh lũ alarm</h3>
-<p>Alarm flood xảy ra khi một sự cố gốc (root cause) kéo theo hàng loạt alarm thứ cấp. Operator nhìn thấy 40 alarm nhưng nguyên nhân thật chỉ là 1. Ba chiến lược chính:</p>
+<p>Alarm flood<!--idx:Alarm Flood--> xảy ra khi một sự cố gốc (root cause) kéo theo hàng loạt alarm thứ cấp. Operator nhìn thấy 40 alarm nhưng nguyên nhân thật chỉ là 1. Ba chiến lược chính:</p>
 <p><strong>Root Cause Alarm — chỉ hiện alarm gốc</strong></p>
 <p>Mỗi alarm nên khai báo <code>SuppressedBy</code> — danh sách alarm khác mà khi chúng đang active, alarm này bị ẩn:</p>
 <p><strong>Code 15.5 — Cấu hình alarm dependency để lọc flood</strong></p>
@@ -23743,14 +24326,14 @@ if (!_rateLimiter.Allow(alarmCode, windowSecs: 10, maxCount: 5))
 }
 </code></pre>
 <h3>15.1.7  Alarm Shelving và Inhibition</h3>
-<p><strong>Alarm Shelving</strong> — operator tạm thời ẩn alarm trong khoảng thời gian xác định:</p>
+<p><strong>Alarm Shelving<!--idx:Alarm Shelving--></strong> — operator tạm thời ẩn alarm trong khoảng thời gian xác định:</p>
 <ul>
 <li>Chỉ áp dụng cho <code>Minor</code> và <code>Warning</code>. <code>Critical</code> và <code>Major</code> <strong>không được phép shelving</strong>.</li>
 <li>Phải có thời gian hết hạn (auto-unshelve) — ví dụ tối đa 8 giờ.</li>
 <li>Mọi thao tác shelving phải ghi log đầy đủ: ai shelve, lý do, thời hạn.</li>
 <li>Operator luôn nhìn thấy số alarm đang bị shelve, dù alarm không hiển thị trong banner.</li>
 </ul>
-<p><strong>Alarm Inhibition</strong> — logic tự động ẩn alarm theo điều kiện hệ thống, không cần thao tác của operator:</p>
+<p><strong>Alarm Inhibition<!--idx:Alarm Inhibition--></strong> — logic tự động ẩn alarm theo điều kiện hệ thống, không cần thao tác của operator:</p>
 <ul>
 <li>Cấu hình sẵn — không phụ thuộc hành động người dùng.</li>
 <li>Ví dụ: inhibit alarm nhiệt độ khi máy đang ở chế độ bảo trì, inhibit alarm vị trí khi trục chưa homing.</li>
@@ -23792,8 +24375,8 @@ if (!_rateLimiter.Allow(alarmCode, windowSecs: 10, maxCount: 5))
 <td>Đảm bảo mức PLd/SIL theo IEC 62061 / ISO 13849</td>
 </tr>
 </tbody></table></div>
-<p>E-Stop là phần cứng. Khi operator nhấn nút E-Stop, mạch điện an toàn ngắt trực tiếp — không qua CPU, không qua OS, không qua C# runtime. Phần mềm <strong>đọc</strong> trạng thái E-Stop để cập nhật UI và log, nhưng không có quyền <em>quyết định</em> E-Stop có tác dụng hay không.</p>
-<p>Interlock là logic phần mềm kiểm tra điều kiện trước khi cho phép một thao tác — ví dụ không cho phép bắt đầu chu trình nếu recipe chưa nạp, hoặc không cho phép chuyển bước nếu bước trước chưa xác nhận hoàn tất. Interlock có thể bị bypass (nếu có quyền phù hợp) — đó là lý do interlock không phải là Safety Function. Lưu ý: nếu điều kiện kiểm tra trùng với một tín hiệu đã thuộc Safety Function phần cứng (như cửa an toàn ở Bảng 15.3), bypass phần mềm chỉ tắt được lớp kiểm tra logic (cho phép sequence tiếp tục) — lớp phần cứng (STO/Safety Relay) trên cùng tín hiệu đó vẫn hoạt động độc lập và không bị ảnh hưởng.</p>
+<p>E-Stop<!--idx:E-Stop--> là phần cứng. Khi operator nhấn nút E-Stop, mạch điện an toàn ngắt trực tiếp — không qua CPU, không qua OS, không qua C# runtime. Phần mềm <strong>đọc</strong> trạng thái E-Stop để cập nhật UI và log, nhưng không có quyền <em>quyết định</em> E-Stop có tác dụng hay không.</p>
+<p>Interlock<!--idx:Interlock--> là logic phần mềm kiểm tra điều kiện trước khi cho phép một thao tác — ví dụ không cho phép bắt đầu chu trình nếu recipe chưa nạp, hoặc không cho phép chuyển bước nếu bước trước chưa xác nhận hoàn tất. Interlock có thể bị bypass (nếu có quyền phù hợp) — đó là lý do interlock không phải là Safety Function. Lưu ý: nếu điều kiện kiểm tra trùng với một tín hiệu đã thuộc Safety Function phần cứng (như cửa an toàn ở Bảng 15.3), bypass phần mềm chỉ tắt được lớp kiểm tra logic (cho phép sequence tiếp tục) — lớp phần cứng (STO/Safety Relay) trên cùng tín hiệu đó vẫn hoạt động độc lập và không bị ảnh hưởng.</p>
 <p>Safety Function là tổ hợp đạt được mức an toàn theo chuẩn IEC 62061 (SIL) hoặc ISO 13849 (PLd). Phần mềm C# thường không đủ tin cậy để tạo Safety Function độc lập — cần Safety PLC hoặc phần cứng được chứng nhận.</p>
 <blockquote>
 <p>🔍 <strong>Đào sâu thêm — SIL vs PL:</strong> SIL (Safety Integrity Level, IEC 62061) và PL (Performance Level, ISO 13849) là hai hệ thống đánh giá mức độ tin cậy của Safety Function. SIL thường dùng cho <em>process industry</em> (hoá chất, dầu khí, nhà máy điện) với thang SIL 1–4. PL thường dùng cho <em>machinery</em> (robot, máy CNC, máy đóng gói) với thang PLa–PLe. Cả hai đều yêu cầu phần cứng được chứng nhận bởi cơ quan kiểm định (TÜV, SGS, v.v.) — phần mềm C# chạy trên OS thông thường không đủ điều kiện. Tìm hiểu thêm: &quot;SIL vs PL comparison machinery&quot;, &quot;IEC 62061 vs ISO 13849&quot;.</p>
@@ -23958,6 +24541,7 @@ qua đúng luồng đã có chủ đích rà soát an toàn (Sequence/MasterCont
 phản xạ tự động trong vòng lặp đọc trạng thái nền.</p>
 </blockquote>
 <p>Sơ đồ kiến trúc — safety path và control path là hai đường vật lý tách biệt:</p>
+<p><strong>Hình 15.2 — Đường an toàn và đường điều khiển là hai đường vật lý tách rời</strong></p>
 <pre><code>  [E-Stop]   [Door Switch]  [Light Curtain]
       │            │              │
       └────────────┴──────────────┘
@@ -24059,7 +24643,7 @@ public sealed class SafetyMonitorService : ISafetyMonitorService, IDisposable
 <p>📌 <strong>Lưu ý:</strong> Poll 50ms (20Hz) là đủ cho mục đích monitoring và UI update. Safety PLC phản ứng với E-Stop trong microsecond — C# không cần và không nên cố gắng bắt kịp tốc độ đó.</p>
 </blockquote>
 <h3>15.2.3  Guard Engine Pattern — tập trung hoá logic phân quyền</h3>
-<p>Trong dự án MeoFrame, trước khi có Guard Engine, logic kiểm tra quyền rải rác khắp nơi trong code:</p>
+<p>Trong dự án MeoFrame, trước khi có Guard Engine<!--idx:Guard Engine-->, logic kiểm tra quyền rải rác khắp nơi trong code:</p>
 <pre><code class="language-csharp">// Cách cũ — rải rác trong từng ViewModel, từng Step, từng button handler
 if (_userService.CurrentLevel &gt;= UserLevel.Engineer
     &amp;&amp; _machine.GetCurrentState() == PackMlState.Idle
@@ -24140,7 +24724,7 @@ public sealed record GuardResult(bool Allowed, string? DeniedReason)
 <code>RiskTier</code> không chỉ quyết định <em>cấp quyền tối thiểu</em> (Tầng 2 của Guard
 Engine) — nó còn quyết định <em>trạng thái máy cho phép</em> (Tầng 1) và <em>có
 hiển thị xác nhận thêm hay không</em>, ngay cả khi hai tier dùng chung một
-<code>UserLevel</code>. R0 cho phép ở mọi trạng thái kể cả Aborted và không cần xác
+<code>UserLevel&lt;!--idx:UserLevel--&gt;</code>. R0 cho phép ở mọi trạng thái kể cả Aborted và không cần xác
 nhận gì thêm (xem/start/stop là hành động &quot;vô hại&quot;, không đổi trạng thái
 lỗi hiện tại); R1 loại trừ trạng thái Aborted và luôn hiện một hộp thoại
 xác nhận nhẹ trước khi thực thi — vì reset alarm/đổi chế độ thực sự làm
@@ -24158,7 +24742,7 @@ Relay (đúng sơ đồ safety path ở mục 15.2.2) là một phần của Saf
 Function — C# không hề có đường điều khiển tới nó để &quot;bypass&quot;, dù có bao
 nhiêu lớp xác nhận phần mềm đi nữa. Muốn tạm vô hiệu hoá loại cảm biến
 này (ví dụ để căn chỉnh trục) bắt buộc phải qua cơ chế do chính Safety
-PLC quản lý — chìa khoá vật lý (key switch), muting theo chuẩn, hoặc chế
+PLC quản lý — chìa khoá vật lý (key switch), muting<!--idx:Muting--> theo chuẩn, hoặc chế
 độ giảm tốc do Safety PLC ép — không phải một nút bấm trong ứng dụng C#.
 Bypass interlock ở R3 trong bảng trên chỉ dành cho <strong>interlock phần mềm
 thuần logic</strong> — ví dụ bỏ qua kiểm tra &quot;đã xác nhận đúng vị trí phôi
@@ -24626,6 +25210,7 @@ public sealed class PowerMonitorService : IDisposable
     public void Dispose() =&gt; _pollTimer.Dispose();
 }
 </code></pre>
+<p><strong>Hình 15.3 — Chuỗi phát hiện sự cố nguồn và phản ứng có kiểm soát</strong></p>
 <pre><code>Relay giám sát UPS/điện áp
         │  DI &quot;Power-Good&quot; = false
         ▼
@@ -24689,12 +25274,12 @@ giúp tra cứu driver cụ thể đang dùng có hỗ trợ tính năng này ha
 <hr>
 <h2 id="153-alarm-philosophy-theo-isa-182">15.3  Alarm Philosophy theo ISA-18.2</h2>
 <p>Mục 15.1 xây dựng kỹ thuật. Mục này xây dựng <strong>triết lý</strong> — cách <em>tư duy</em> trước khi code. Không có triết lý đúng, mọi kỹ thuật đều có thể bị lạm dụng.</p>
-<p>ISA-18.2 (Management of Alarm Systems for the Process Industries) là chuẩn công nghiệp quan trọng nhất cho Alarm Management. Tuy được xây dựng cho công nghiệp hoá chất và dầu khí, nguyên tắc của nó áp dụng tốt cho mọi hệ thống automation liên tục — từ dây chuyền SMT đến nhà máy thực phẩm.</p>
+<p>ISA-18.2<!--idx:ISA-18.2--> (Management of Alarm Systems for the Process Industries) là chuẩn công nghiệp quan trọng nhất cho Alarm Management. Tuy được xây dựng cho công nghiệp hoá chất và dầu khí, nguyên tắc của nó áp dụng tốt cho mọi hệ thống automation liên tục — từ dây chuyền SMT đến nhà máy thực phẩm.</p>
 <blockquote>
 <p>📌 <strong>Lưu ý:</strong> Mục này trình bày các nguyên tắc cốt lõi của ISA-18.2 đủ để áp dụng trong dự án C#. Đây không phải tài liệu thay thế chuẩn gốc — các dự án yêu cầu compliance chính thức cần tham chiếu <code>[ISA-18.2-2016]</code> trực tiếp.</p>
 </blockquote>
 <blockquote>
-<p>📌 <strong>IEC 62682 — phiên bản quốc tế của ISA-18.2:</strong> IEC 62682 (<em>Management of Alarm Systems for the Process Industry</em>) là bản quốc tế hoá của ISA-18.2 do IEC (International Electrotechnical Commission) phát hành — nội dung gần như tương đương. Khi làm dự án xuất khẩu hoặc kiểm toán theo chuẩn quốc tế (CE, ISO), dùng IEC 62682 thay ISA-18.2 để tránh vấn đề bản quyền tài liệu ANSI. Tìm hiểu thêm: &quot;IEC 62682 vs ISA-18.2 alarm management&quot;.</p>
+<p>📌 <strong>IEC 62682<!--idx:IEC 62682--> — phiên bản quốc tế của ISA-18.2:</strong> IEC 62682 (<em>Management of Alarm Systems for the Process Industry</em>) là bản quốc tế hoá của ISA-18.2 do IEC (International Electrotechnical Commission) phát hành — nội dung gần như tương đương. Khi làm dự án xuất khẩu hoặc kiểm toán theo chuẩn quốc tế (CE, ISO), dùng IEC 62682 thay ISA-18.2 để tránh vấn đề bản quyền tài liệu ANSI. Tìm hiểu thêm: &quot;IEC 62682 vs ISA-18.2 alarm management&quot;.</p>
 </blockquote>
 <h3>15.3.1  Alarm Philosophy Document</h3>
 <p><strong>Alarm Philosophy</strong> là tài liệu sống (living document) định nghĩa <em>khi nào một điều kiện hệ thống đủ điều kiện trở thành alarm</em>. Không có tài liệu này, mỗi kỹ sư tự quyết định theo cảm tính — kết quả là hệ thống không nhất quán.</p>
@@ -24708,7 +25293,7 @@ giúp tra cứu driver cụ thể đang dùng có hỗ trợ tính năng này ha
 </ol>
 <p><strong>Câu hỏi kiểm tra nhanh khi thiết kế mỗi alarm:</strong> <em>&quot;Nếu alarm này xuất hiện lúc 2 giờ sáng và operator một mình, anh ta nên làm gì trong 10 phút tiếp theo?&quot;</em> Nếu câu trả lời là <em>&quot;không biết&quot;</em> hoặc <em>&quot;không cần làm gì&quot;</em> — đây không phải alarm.</p>
 <h3>15.3.2  Alarm Rationalization — quy trình phê duyệt từng alarm</h3>
-<p>Alarm Rationalization là quy trình team xem xét từng alarm trong hệ thống để xác nhận nó đáp ứng năm tiêu chí trên. Quy trình này thường được thực hiện:</p>
+<p>Alarm Rationalization<!--idx:Alarm Rationalization--> là quy trình team xem xét từng alarm trong hệ thống để xác nhận nó đáp ứng năm tiêu chí trên. Quy trình này thường được thực hiện:</p>
 <ul>
 <li><strong>Khi thiết kế</strong> — trước khi code, xác định alarm cần thiết</li>
 <li><strong>Khi O&amp;M</strong> — định kỳ (ví dụ mỗi năm) review alarm nào đang nuisance (alarm liên tục mà không ai xử lý)</li>
@@ -24809,7 +25394,7 @@ public const int MotorOverheat = 10002;
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>📌 <strong>Nguồn gốc các con số benchmark:</strong> Các ngưỡng ≤ 1 alarm/10 phút (ổn định) và &gt; 10 alarm/10 phút (flood) được tham chiếu rộng rãi trong ngành xuất phát từ <strong>EEMUA 191</strong> (Engineering Equipment and Materials Users Association, <em>&quot;Alarm Systems: A Guide to Design, Management and Procurement&quot;</em>). ISA-18.2 tham chiếu các con số này nhưng EEMUA 191 là nguồn gốc. Khi viết Alarm Philosophy Document trong dự án thực tế, hãy trích dẫn đúng nguồn để tránh nhầm lẫn khi kiểm toán.</p>
+<p>📌 <strong>Nguồn gốc các con số benchmark:</strong> Các ngưỡng ≤ 1 alarm/10 phút (ổn định) và &gt; 10 alarm/10 phút (flood) được tham chiếu rộng rãi trong ngành xuất phát từ <strong>EEMUA 191<!--idx:EEMUA 191--></strong> (Engineering Equipment and Materials Users Association, <em>&quot;Alarm Systems: A Guide to Design, Management and Procurement&quot;</em>). ISA-18.2 tham chiếu các con số này nhưng EEMUA 191 là nguồn gốc. Khi viết Alarm Philosophy Document trong dự án thực tế, hãy trích dẫn đúng nguồn để tránh nhầm lẫn khi kiểm toán.</p>
 </blockquote>
 <p>Ngoài alarm rate, ba chỉ số khác cần theo dõi định kỳ:</p>
 <ul>
@@ -24891,6 +25476,191 @@ public sealed class AlarmRateMonitor
 <li><strong>Safety alarm không bao giờ được tắt</strong> — bất kể shelving, suppression, hay out-of-service.</li>
 <li><strong>Operator phải luôn biết có alarm đang bị ẩn</strong> — hiển thị số lượng (ví dụ: &quot;3 alarm shelved&quot;) dù không hiện chi tiết.</li>
 </ol>
+<hr>
+<h2 id="154-đi-chiu-thc-t-ngành-cnh-báo-thì-ai-cũng-làm-interlock-thì-không-ai-gi-tên">15.4 Đối chiếu thực tế ngành — cảnh báo thì ai cũng làm, interlock thì không ai gọi tên</h2>
+<p>Chương này trình bày hai thứ: <strong>quản lý cảnh báo</strong> theo ISA-18.2 và <strong>interlock/dừng khẩn
+cấp</strong>. Đối chiếu với bộ mẫu 13 dự án cho thấy hai thứ đó có số phận rất khác nhau trong thực
+tế — và sự khác nhau đó nói lên điều gì đó về nghề.</p>
+<p><strong>Bảng 15.10 — Dấu vết xử lý cảnh báo và an toàn trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Số dự án có dấu vết</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Có xử lý <strong>cảnh báo/mã lỗi</strong></td>
+<td><strong>12</strong> / 13</td>
+<td>Một dự án có tới 139 file chạm tới cảnh báo</td>
+</tr>
+<tr>
+<td>Có nhắc tới <strong>dừng khẩn cấp</strong></td>
+<td><strong>12</strong> / 13</td>
+<td>Gần như phổ quát</td>
+</tr>
+<tr>
+<td>Có dùng đúng từ <strong>interlock</strong> trong mã nguồn</td>
+<td><strong>6</strong> / 13</td>
+<td>Bảy dự án còn lại <strong>không</strong> có file nào chứa từ này</td>
+</tr>
+</tbody></table></div>
+<p><strong>Chênh lệch 12/13 với 6/13 là phát hiện đáng nói nhất của mục này.</strong> Bảy dự án không dùng
+từ &quot;interlock&quot; gần như chắc chắn <strong>vẫn có</strong> logic interlock — chúng chỉ không gọi tên nó.
+Điều kiện an toàn nằm rải rác trong các câu <code>if</code> ngay trước lệnh chuyển động, mỗi chỗ một
+kiểu, đặt tên theo cảm hứng của người viết lúc đó.</p>
+<p>Hệ quả rất cụ thể và rất tốn kém: <strong>khi một điều kiện an toàn không có tên, không ai kiểm
+tra được là nó có đủ hay không.</strong> Bạn không thể liệt kê ra &quot;máy này có bao nhiêu interlock&quot;
+nếu chúng chưa bao giờ được gom lại; bạn cũng không thể kiểm tra là mọi đường vào chuyển
+động đều đi qua chúng. Đó chính xác là bài toán mà Guard Engine ở mục 15.2.3 giải: không
+phải thêm logic mới, mà <strong>gom logic đã có về một chỗ có tên</strong>.</p>
+<blockquote>
+<p>💡 <strong>Việc rẻ nhất bạn có thể làm với một dự án thuộc nhóm bảy.</strong> Đừng viết lại gì cả. Hãy
+tìm toàn văn các lệnh gây chuyển động, liệt kê <strong>mọi câu <code>if</code> đứng ngay trước chúng</strong>, rồi
+viết danh sách đó ra một file văn bản. Chỉ riêng danh sách đó — chưa cần dòng code nào —
+đã trả lời được câu hỏi mà không ai trong đội trả lời nổi: <em>&quot;máy này chặn chuyển động
+trong những trường hợp nào?&quot;</em>. Đó cũng là đầu vào của Guard Engine nếu sau này bạn muốn
+gom chúng lại thật.</p>
+</blockquote>
+<p>Còn về cảnh báo, con số 12/13 nói rằng đây là phần <strong>ai cũng làm</strong> — nhưng &quot;có làm&quot; và &quot;làm
+theo ISA-18.2&quot; là hai chuyện khác nhau. Những thứ mà bộ mẫu hiếm khi có: phân cấp mức ưu
+tiên có tiêu chí (mục 15.1.2), chống lũ cảnh báo (mục 15.1.6), và đo tốc độ phát cảnh báo
+để biết hệ thống cảnh báo có khoẻ không (mục 15.3.4). Nếu bạn muốn chọn <strong>một</strong> việc để cải
+thiện hệ thống cảnh báo của một máy đang chạy, hãy chọn cái thứ hai — chống lũ — vì nó là
+thứ người vận hành cảm nhận được ngay trong ca làm việc.</p>
+<blockquote>
+<p>⚠️ <strong>Một điều mà phép đếm này KHÔNG nói, và đừng suy ra.</strong> &quot;12/13 dự án có nhắc tới dừng
+khẩn cấp&quot; <strong>không</strong> có nghĩa 12 dự án đó <em>thực hiện</em> dừng khẩn cấp bằng phần mềm — và nếu
+có thì đó mới là vấn đề. Như mục 15.2.2 đã nói: phần mềm C# chỉ <em>biết</em> rằng dừng khẩn cấp
+đã kích hoạt để phản ứng cho đúng; việc cắt năng lượng là của mạch phần cứng. Dấu vết trong
+mã nguồn ở đây phần lớn là mã đọc trạng thái, đúng như nó phải thế.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Giới hạn của cách đo.</strong> Phép đếm dựa trên <strong>từ khoá trong mã nguồn</strong>, nên nó đo <em>cách
+đặt tên</em> nhiều hơn đo <em>hành vi</em>. Một dự án gọi interlock là <code>SafeCheck</code> sẽ bị đếm nhầm vào
+nhóm bảy. Điều đó không làm hỏng kết luận — vì kết luận ở đây chính là về việc <strong>không có
+tên gọi chung</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="155-mt-s-c-đi-ht-vòng-đi-servo-quá-nhit-t-cm-bin-ti-lúc-chy-li">15.5 Một sự cố đi hết vòng đời — servo quá nhiệt, từ cảm biến tới lúc chạy lại</h2>
+<p>Cả chương này trình bày từng mảnh: vòng đời cảnh báo, phân cấp mức, Guard Engine, chống lũ,
+xác thực. Mục cuối này ghép chúng lại bằng <strong>một sự cố duy nhất</strong>, đi từ đầu tới cuối — vì
+trong thực tế bạn không gặp &quot;một bài toán về alarm severity&quot;, bạn gặp một cỗ máy dừng lúc
+2 giờ sáng và một người vận hành đang chờ câu trả lời.</p>
+<p>Tình huống: <strong>động cơ servo trục nâng nóng dần trong ca đêm</strong>. Không có gì hỏng ngay; nhiệt
+độ chỉ bò lên vì một ổ trục bắt đầu mòn và tải tăng.</p>
+<p><strong>Bảng 15.11 — Một sự cố quá nhiệt đi qua các tầng, và mục nào của sách phụ trách tầng đó</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Chuyện gì xảy ra</th>
+<th>Ai xử lý</th>
+<th>Mục</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Nhiệt độ vượt ngưỡng cảnh báo sớm (chưa tới ngưỡng lỗi)</td>
+<td>Tầng đọc analog, so ngưỡng theo recipe</td>
+<td>13.3.4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Phát cảnh báo mức <strong>Minor</strong> — máy <strong>vẫn chạy</strong>, chỉ hiện trên banner</td>
+<td><code>AlarmService.RaiseAsync</code></td>
+<td>15.1.2, 15.1.5</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Nhiệt tiếp tục tăng, vượt ngưỡng lỗi → cảnh báo <strong>Major</strong></td>
+<td>Cùng đường trên, khác mức</td>
+<td>15.1.2</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Guard Engine <strong>chặn mọi lệnh gây chuyển động</strong> của trục đó</td>
+<td><code>IGuardEngine.Evaluate</code> trả về <em>chặn</em></td>
+<td>15.2.3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Trình tự đang chạy nhận lỗi, <strong>kết thúc chu kỳ ở trạng thái an toàn</strong> thay vì dừng giữa chừng</td>
+<td>Sequence Engine, PackML → <code>Holding</code> → <code>Held</code></td>
+<td>12.2.2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Người vận hành thấy banner + <strong>câu hướng dẫn phải làm gì</strong>, không chỉ mã lỗi</td>
+<td>Lớp hiển thị cảnh báo</td>
+<td>10.3.2, 15.1.2b</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Servo drive tự báo lỗi quá nhiệt của chính nó → cảnh báo thứ hai</td>
+<td>Đọc trạng thái drive</td>
+<td>14.1.6</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Chống lũ</strong>: hai cảnh báo cùng một gốc được gom, không nhân thành mười dòng</td>
+<td>Alarm flood prevention</td>
+<td>15.1.6</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Máy nguội, điều kiện lỗi biến mất → cảnh báo chuyển sang <strong>Cleared</strong> nhưng <strong>chưa</strong> tự biến mất khỏi danh sách</td>
+<td>Vòng đời cảnh báo</td>
+<td>15.1.1</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Người vận hành <strong>xác nhận</strong> (acknowledge) — có ghi ai xác nhận, lúc nào</td>
+<td>Xác thực + nhật ký thao tác</td>
+<td>15.2.4</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Guard Engine bỏ chặn, máy về <code>Idle</code>, chạy lại</td>
+<td>Reset có chủ ý</td>
+<td>12.2.2, 15.2.3</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Sự việc để lại <strong>dấu vết đo được</strong>: khoảng cách giữa hai lần can thiệp ngắn dần theo tuần</td>
+<td>Sổ lý do dừng</td>
+<td>12.5.2, 12.5.4</td>
+</tr>
+</tbody></table></div>
+<p>Đọc dọc bảng trên sẽ thấy điều mà đọc từng mục riêng lẻ không thấy được: <strong>không mục nào
+trong chương này tự nó giải quyết được sự cố</strong>. Cảnh báo mà không có Guard Engine thì máy
+vẫn chạy tiếp vào chỗ hỏng; Guard Engine mà không có thông báo tử tế thì người vận hành chỉ
+thấy máy &quot;tự nhiên không nhúc nhích&quot;; cả hai mà không có sổ lý do thì tháng sau không ai
+biết ổ trục đó đã kêu cứu từ ba tuần trước.</p>
+<p>Ba cái bẫy mà tình huống này lộ ra rõ hơn bất kỳ ví dụ rời rạc nào:</p>
+<p><strong>1. Bẫy &quot;cảnh báo sớm nhưng không ai thấy&quot;.</strong> Bước 2 là bước quý nhất trong cả chuỗi — đó
+là lúc còn kịp lên kế hoạch bảo trì thay vì phải dừng máy đột xuất. Nhưng cảnh báo mức Minor
+rất dễ bị chìm: nó không dừng máy, nên không ai buộc phải xử lý, và sau vài ngày nó thành
+một dòng quen mắt trên banner. Cách chặn: cảnh báo mức Minor <strong>phải đi vào báo cáo cuối ca</strong>,
+không chỉ hiện trên màn hình.</p>
+<p><strong>2. Bẫy &quot;clear rồi thì coi như xong&quot;.</strong> Bước 9 và 10 là hai việc khác nhau — điều kiện lỗi
+biến mất <strong>không</strong> đồng nghĩa với việc con người đã biết chuyện gì đã xảy ra. Một hệ thống
+tự xoá cảnh báo khi máy nguội sẽ xoá luôn bằng chứng, và ca sau không hề biết đêm qua có
+chuyện. Đây chính là lý do vòng đời ở mục 15.1.1 tách <code>Cleared</code> khỏi <code>Acknowledged</code>.</p>
+<p><strong>3. Bẫy &quot;chặn quá tay&quot;.</strong> Bước 4 chặn lệnh chuyển động của <strong>trục quá nhiệt</strong>, không phải
+của cả máy. Chặn cả máy nghe có vẻ an toàn hơn, nhưng nó khiến người vận hành không đưa được
+trục khác về vị trí an toàn để lấy sản phẩm ra — và khi phần mềm cản trở việc phục hồi, việc
+tiếp theo con người làm sẽ là tìm cách đi vòng qua phần mềm. Nguyên tắc: <strong>chặn hẹp nhất có
+thể mà vẫn an toàn</strong>, và luôn chừa đường phục hồi có kiểm soát (mục 15.2.3).</p>
+<blockquote>
+<p>⚠️ <strong>Và ranh giới không đổi, dù tình huống nghe rất &quot;phần mềm&quot;.</strong> Toàn bộ chuỗi trên là
+<em>phản ứng</em> của phần mềm trước một sự cố. Nếu quá nhiệt tới mức phải cắt năng lượng động cơ,
+việc đó là của <strong>mạch phần cứng</strong> — công tắc nhiệt nối vào chuỗi an toàn, hoặc chức năng
+bảo vệ của chính drive — chứ không phải của một câu <code>if</code> trong C#. Phần mềm làm cho sự cố
+<strong>được nhìn thấy, được ghi lại và được xử lý có trật tự</strong>; nó không phải thứ giữ cho động
+cơ không cháy (mục 15.2.2).</p>
+</blockquote>
 <hr>
 <h2 id="tng-kt-chương-15">Tổng kết chương</h2>
 <p>Bốn cơ chế xử lý lỗi học rải rác qua các chương trước thực ra nối thành
@@ -25107,7 +25877,7 @@ public sealed class MachineOperationService
 <li>Unit test <code>MachineOperationService</code> buộc phải mock SCADA, MES, Alarm cùng lúc</li>
 </ul>
 <blockquote>
-<p>⚠️ <strong>Khi tight coupling này đi xa hơn — &quot;God Object&quot; / Static Singleton Manager:</strong>
+<p>⚠️ <strong>Khi tight coupling này đi xa hơn — &quot;God Object<!--idx:God Object-->&quot; / Static Singleton Manager:</strong>
 <code>MachineOperationService</code> ở Code 16.1 mới chỉ biết về 3-4 subscriber — một dạng nhẹ của
 một anti-pattern nghiêm trọng hơn hay gặp trong hệ thống automation thực tế: một class
 <code>static</code>/Singleton duy nhất (thường tên kiểu <code>SystemManager</code>, <code>GlobalController</code>) nắm giữ
@@ -25266,7 +26036,7 @@ handler biết xử lý mọi <code>IDomainEvent</code> chắc chắn cũng xử
 <code>Action&lt;string&gt;</code>. Không đánh dấu <code>in</code> thì không cho phép gán như vậy dù
 <code>MachineStarted : IDomainEvent</code>. Ít khi cần tự viết <code>in</code>/<code>out</code> — chỉ cần
 biết ý nghĩa khi đọc thấy trong interface có sẵn.</li>
-<li><strong><code>(dynamic)handler</code></strong> (trong <code>PublishAsync</code>): ép biến sang kiểu
+<li><strong><code>(dynamic&lt;!--idx:dynamic--&gt;)handler</code></strong> (trong <code>PublishAsync</code>): ép biến sang kiểu
 <code>dynamic</code> — compiler bỏ qua kiểm tra kiểu lúc biên dịch, để dành việc tìm
 đúng method tới lúc chạy (khác mọi biến khác trong sách, luôn kiểm tra
 kiểu ngay lúc biên dịch). Cần ở đây vì <code>handler</code> chỉ biết là &quot;một object
@@ -25307,11 +26077,11 @@ public sealed class ScadaEventHandler : IDomainEventHandler&lt;PackMlStateChange
 <p>💡 <strong>Mẹo thực chiến:</strong> <code>InMemoryEventPublisher</code> đủ dùng cho phần lớn hệ thống automation single-process. Chỉ nâng cấp lên message queue (RabbitMQ, Azure Service Bus) khi cần publish event sang process khác hoặc sang SCADA server qua network. Đừng over-engineer với message queue cho hệ thống chạy trên 1 IPC duy nhất.</p>
 </blockquote>
 <blockquote>
-<p>⚠️ <strong>Khi nào KHÔNG nên dùng Event Aggregator (<code>IEventPublisher</code>):</strong> nếu chỉ có 2 class cần giao tiếp trực tiếp và không cần mở rộng thêm subscriber, dùng interface thông thường (dependency injection trực tiếp) đơn giản hơn. Event Aggregator hữu ích khi số subscriber không biết trước hoặc thay đổi runtime — áp dụng vào 2 class cố định là over-engineering.</p>
+<p>⚠️ <strong>Khi nào KHÔNG nên dùng Event Aggregator<!--idx:Event Aggregator--> (<code>IEventPublisher</code>):</strong> nếu chỉ có 2 class cần giao tiếp trực tiếp và không cần mở rộng thêm subscriber, dùng interface thông thường (dependency injection trực tiếp) đơn giản hơn. Event Aggregator hữu ích khi số subscriber không biết trước hoặc thay đổi runtime — áp dụng vào 2 class cố định là over-engineering.</p>
 </blockquote>
 <p><strong>Biến thể 3: IObservable&lt;T&gt; / Rx.NET — reactive streams cho telemetry tần suất cao</strong></p>
-<p>C# event và <code>IEventPublisher</code> phù hợp cho sự kiện nghiệp vụ rời rạc (máy bắt đầu, alarm phát sinh). Với dữ liệu liên tục tần suất cao — encoder 1kHz, nhiệt độ motor 100ms, torque curve — cần <code>IObservable&lt;T&gt;</code> từ System.Reactive (Rx.NET).</p>
-<p>Encoder 1kHz phát 1000 event/giây — nếu mỗi event đều cập nhật UI hoặc ghi log, UI thread sẽ bị saturate và hệ thống chậm đi đáng kể. Đây là &quot;Event Storm&quot; — quá nhiều notification trong thời gian ngắn. <code>Sample(100ms)</code> trong Code 16.4 giải quyết vấn đề này: chỉ lấy 1 mẫu mỗi 100ms (10Hz) thay vì 1000Hz, đủ để hiển thị mà không làm chậm hệ thống.</p>
+<p>C# event và <code>IEventPublisher</code> phù hợp cho sự kiện nghiệp vụ rời rạc (máy bắt đầu, alarm phát sinh). Với dữ liệu liên tục tần suất cao — encoder 1kHz, nhiệt độ motor 100ms, torque curve — cần <code>IObservable&lt;T&gt;&lt;!--idx:IObservable&lt;T&gt;--&gt;</code> từ System.Reactive (Rx.NET).</p>
+<p>Encoder 1kHz phát 1000 event/giây — nếu mỗi event đều cập nhật UI hoặc ghi log, UI thread sẽ bị saturate và hệ thống chậm đi đáng kể. Đây là &quot;Event Storm<!--idx:Event Storm-->&quot; — quá nhiều notification trong thời gian ngắn. <code>Sample(100ms)</code> trong Code 16.4 giải quyết vấn đề này: chỉ lấy 1 mẫu mỗi 100ms (10Hz) thay vì 1000Hz, đủ để hiển thị mà không làm chậm hệ thống.</p>
 <p><strong>Code 16.4 — IObservable&lt;T&gt;: encoder stream với debounce và filter</strong></p>
 <pre><code class="language-csharp">// Subject&lt;T&gt; là cả Observable (nguồn phát) và Observer (nhận dữ liệu từ driver)
 // Không cần NuGet nếu chỉ dùng System.Reactive.Linq
@@ -25356,7 +26126,7 @@ public readonly record struct EncoderSample(
 <p>⚠️ <strong>Cảnh báo:</strong> Không phải mọi telemetry đều cần Rx.NET. Với tần suất 100–200 Hz và xử lý đơn giản (chỉ đọc và hiển thị), <code>Channel&lt;T&gt;</code> với BackgroundService thường đơn giản hơn và đủ dùng. Rx thực sự phát huy khi cần kết hợp nhiều stream (<code>CombineLatest</code>), lọc theo thời gian (<code>Buffer</code>, <code>Window</code>, <code>Throttle</code>), hoặc xử lý backpressure. Nếu không dùng các operator này, cân nhắc giải pháp đơn giản hơn trước.</p>
 </blockquote>
 <blockquote>
-<p>🔍 <strong>Đào sâu thêm:</strong> Rx.NET (System.Reactive) là thư viện đầy đủ với hàng chục operator: <code>Buffer</code>, <code>Window</code>, <code>CombineLatest</code>, <code>Zip</code> cho đồng bộ nhiều sensor. Đặc biệt hữu ích khi cần tính toán FFT trên sliding window, hoặc so sánh tín hiệu từ 2 encoder cùng lúc. Tìm hiểu thêm: &quot;ReactiveX C#&quot;, &quot;System.Reactive Nuget&quot;, &quot;rx.NET tutorial&quot;.</p>
+<p>🔍 <strong>Đào sâu thêm:</strong> Rx.NET (System.Reactive)<!--idx:Rx.NET (System.Reactive)--> là thư viện đầy đủ với hàng chục operator: <code>Buffer</code>, <code>Window</code>, <code>CombineLatest</code>, <code>Zip</code> cho đồng bộ nhiều sensor. Đặc biệt hữu ích khi cần tính toán FFT trên sliding window, hoặc so sánh tín hiệu từ 2 encoder cùng lúc. Tìm hiểu thêm: &quot;ReactiveX C#&quot;, &quot;System.Reactive Nuget&quot;, &quot;rx.NET tutorial&quot;.</p>
 </blockquote>
 <h3>16.1.3  Khi nào dùng biến thể nào</h3>
 <blockquote>
@@ -25708,7 +26478,7 @@ public sealed class GripperOpenCommand : IDeviceCommand
 <p>📌 <strong>Lưu ý về Undo trong automation:</strong> không phải mọi lệnh vật lý đều undo được một cách an toàn. <code>GripperClose</code> khi undo → mở gripper khi chi tiết chưa được đỡ = rơi chi tiết. <code>UndoAsync</code> trong automation thường có nghĩa &quot;di chuyển về trạng thái an toàn có thể xác định&quot;, không phải &quot;đảo ngược hoàn toàn như chưa làm gì&quot;. Ghi chú rõ trong mỗi command implementation.</p>
 </blockquote>
 <blockquote>
-<p>💡 <strong>Liên hệ: Null Object Pattern.</strong> <code>GripperCloseCommand.UndoAsync</code> ở trên trả
+<p>💡 <strong>Liên hệ: Null Object Pattern<!--idx:Null Object Pattern-->.</strong> <code>GripperCloseCommand.UndoAsync</code> ở trên trả
 <code>Task.CompletedTask</code> — một dạng &quot;không làm gì nhưng vẫn implement đúng interface&quot; thay vì
 trả <code>null</code> hay ném <code>NotSupportedException</code>. Tổng quát hoá ý tưởng này thành một nguyên tắc
 riêng gọi là <strong>Null Object Pattern</strong>: thay vì để một property/field có thể <code>null</code> rồi rải
@@ -26579,6 +27349,7 @@ hoặc nếu thật sự cần &quot;bằng&quot; thì phải là <em>bằng tro
 <h2 id="166-bn-đ-pattern-toàn-h-thng">16.6  Bản đồ Pattern toàn hệ thống</h2>
 <p>Sau năm chương (Ch11–Ch15) và chương hiện tại, hệ thống automation đã tích luỹ hơn mười pattern. Mục này đặt tất cả vào đúng vị trí trong kiến trúc layered để không nhầm lẫn giữa các pattern có tên tương tự hoặc giải quyết vấn đề tương tự ở các tầng khác nhau.</p>
 <h3>16.6.1  Kiến trúc layered và vị trí từng Pattern</h3>
+<p><strong>Hình 16.1 — Bản đồ pattern theo tầng kiến trúc</strong></p>
 <pre><code>┌──────────────────────────────────────────────────────────────────────────┐
 │  TẦNG UI / HMI  (Ch8–Ch10)                                               │
 │  WinForms MVP, WPF MVVM, ISA-101                                         │
@@ -27094,7 +27865,7 @@ có 2–5 kỹ sư — Gitflow đầy đủ tạo ra nhiều nhánh sống lâu 
 thiết, và trong môi trường air-gapped, càng nhiều nhánh dài càng khó
 đồng bộ thủ công.</p>
 <p>Với quy mô đội nhỏ, một phiên bản <strong>rút gọn</strong> là đủ:</p>
-<p><strong>Code 17.1 — Mô hình nhánh rút gọn cho đội automation nhỏ</strong></p>
+<p><strong>Hình 17.1 — Mô hình nhánh rút gọn cho đội automation nhỏ</strong></p>
 <pre><code>main            ●───●───●───●───●───●──────►  (luôn build được, luôn là bản đã duyệt)
                  \           \       \
 feature/wo-1842   ●───●───●   \       \        (nhánh ngắn hạn, vài ngày)
@@ -27215,7 +27986,7 @@ theo dòng. Nhiều công cụ automation (TwinCAT XAE, CODESYS) lưu project �
 chỉ báo &quot;file đã đổi&quot; — không nói đổi <em>gì</em>.</p>
 <p>Cách xử lý thực dụng: khai báo rõ cho Git biết loại file nào không nên
 cố diff/merge theo dòng, qua file <code>.gitattributes</code> ở gốc repository:</p>
-<p><strong>Code 17.2 — <code>.gitattributes</code> cho project trộn TwinCAT/CODESYS với C#</strong></p>
+<p><strong>Code 17.1 — <code>.gitattributes</code> cho project trộn TwinCAT/CODESYS với C#</strong></p>
 <pre><code class="language-gitattributes"># Project TwinCAT — nhị phân, không diff theo dòng
 *.tsproj  -diff -merge -text
 *.tpzip   -diff -merge -text binary
@@ -27271,7 +28042,7 @@ là <strong>remote repository không thể là GitHub.com</strong>.</p>
 <p>Giải pháp phổ biến nhất: dựng một <strong>bare repository</strong> — một repo Git
 không có working directory, chỉ chứa lịch sử — trên một server hoặc NAS
 nằm trong mạng LAN nội bộ của nhà máy:</p>
-<p><strong>Code 17.3 — Dựng Git &quot;trung tâm&quot; nội bộ không cần Internet</strong></p>
+<p><strong>Code 17.2 — Dựng Git &quot;trung tâm&quot; nội bộ không cần Internet</strong></p>
 <p>Trước khi chạy lệnh dưới đây, thư mục <code>Git/</code> trên <code>FactoryServer</code> cần
 được share qua mạng (chuột phải thư mục → <strong>Properties → Sharing →
 Share...</strong>) và cấp quyền Read/Write cho đúng nhóm user kỹ sư:</p>
@@ -27363,7 +28134,7 @@ lại thành một việc rất cụ thể: <strong>mỗi khi có code mới, t�
 chạy test, và đóng gói thành một file duy nhất sẵn sàng copy sang IPC</strong>
 — thay vì một kỹ sư ngồi build tay trên máy mình rồi copy qua USB (và
 quên mất mình build bằng cấu hình Debug thay vì Release).</p>
-<!--idx:Pipeline--><p><strong>Code 17.4 — Pipeline tối thiểu cho dự án automation</strong></p>
+<!--idx:Pipeline--><p><strong>Code 17.3 — Pipeline tối thiểu cho dự án automation</strong></p>
 <pre><code>Push code → Build (dotnet build) → Chạy Unit Test (Chương 18)
           → Đóng gói (dotnet publish → .zip) → Thông báo nhóm
 </code></pre>
@@ -27383,7 +28154,7 @@ nguồn mở, tự host trên chính server nội bộ đã dựng ở mục 17.
 <strong>Gitea Actions</strong> — cú pháp workflow gần giống GitHub Actions, chạy
 hoàn toàn trong LAN, không gửi gì ra ngoài.</li>
 </ul>
-<p><strong>Code 17.5 — Pipeline build + test tối thiểu (GitHub Actions, tương
+<p><strong>Code 17.4 — Pipeline build + test tối thiểu (GitHub Actions, tương
 thích cú pháp Gitea Actions)</strong></p>
 <pre><code class="language-yaml">name: build-and-package
 on: [push, pull_request]
@@ -27409,7 +28180,7 @@ jobs:
       - run: Compress-Archive -Path out/* -DestinationPath MeoFrame_${{ github.sha }}.zip
 </code></pre>
 <p>Bốn bước restore → build → test → publish chính là bản dịch trực tiếp
-của sơ đồ ở Code 17.4 (<code>--no-restore</code>/<code>--no-build</code> chỉ tránh lặp lại việc
+của sơ đồ ở Code 17.3 (<code>--no-restore</code>/<code>--no-build</code> chỉ tránh lặp lại việc
 đã làm ở bước trước, không đổi ý nghĩa). Trong môi trường air-gapped,
 <code>dotnet restore</code> cần <code>NuGet.config</code> trỏ vào feed nội bộ thay vì
 nuget.org — nếu không, bước này sẽ treo hoặc lỗi ngay khi runner không
@@ -27511,7 +28282,7 @@ cần hạ tầng song song phức tạp:</p>
 </tbody></table></div>
 <p>Rollback khi đó chỉ là đảo ngược bước 3 — không cần build lại, không cần
 chờ pipeline chạy lần nữa:</p>
-<p><strong>Code 17.6 — Script đổi phiên bản / rollback (PowerShell)</strong></p>
+<p><strong>Code 17.5 — Script đổi phiên bản / rollback (PowerShell)</strong></p>
 <pre><code class="language-powershell">#Requires -RunAsAdministrator
 # Ly do: New-Item -ItemType SymbolicLink can quyen Administrator tren
 # Windows production (khac may dev da bat Developer Mode). Chay
@@ -30436,7 +31207,7 @@ biết C++/CLI, lựa chọn duy nhất còn lại là viết lại toàn bộ S
 <p>Câu hỏi đầu tiên khi cầm một <code>.dll</code> từ hãng thiết bị: <strong>nó export hàm
 C thuần, hay nó là một thư viện class C++?</strong> Câu trả lời quyết định
 toàn bộ hướng đi.</p>
-<p><strong>Code A.1 — Cây quyết định: P/Invoke hay C++/CLI</strong></p>
+<p><strong>Hình A.1 — Cây quyết định: P/Invoke hay C++/CLI</strong></p>
 <pre><code>SDK của hãng là file .dll
         │
         ▼
@@ -30548,10 +31319,10 @@ native bên trong wrapper vẫn dùng <code>*</code> như C++ thường.</li>
 chuyển đổi kiểu dữ liệu thông thường (<code>System::String^</code> sang
 <code>std::string</code>/<code>std::wstring</code>, số, enum); <code>Marshal::Copy</code> dùng để copy
 buffer lớn (frame ảnh, mẫu DAQ) từ native sang managed array — cả hai
-đều được minh hoạ trong Code A.2b bên dưới.</li>
+đều được minh hoạ trong Code A.1b bên dưới.</li>
 </ul>
 <h3>A.2.2  Ví dụ: wrap một SDK camera C++ thành <code>ICameraDriver</code></h3>
-<p><strong>Code A.2 — <code>CameraWrapper.h</code> (project C++/CLI, .NET Class Library)</strong></p>
+<p><strong>Code A.1 — <code>CameraWrapper.h</code> (project C++/CLI, .NET Class Library)</strong></p>
 <pre><code class="language-cpp">#pragma once
 
 // BẮT BUỘC: tắt managed mode trước khi include header C++ thuần
@@ -30581,7 +31352,7 @@ namespace MeoFrame::Infrastructure::Cameras {
     };
 }
 </code></pre>
-<p><strong>Code A.2b — <code>CameraWrapper.cpp</code> (implementation)</strong></p>
+<p><strong>Code A.1b — <code>CameraWrapper.cpp</code> (implementation)</strong></p>
 <pre><code class="language-cpp">// Tắt managed mode khi include header C++ thuần
 #pragma managed(push, off)
 #include &quot;NativeCamera.h&quot;
@@ -30646,7 +31417,7 @@ quản lý sẵn. Dùng <code>pin_ptr</code> khi chiều ngược lại: truyề
 vào native function muốn nhận con trỏ.</p>
 <p>Phía C# tiêu thụ <code>CameraWrapper</code> không khác gì một class .NET bình
 thường — không có dấu hiệu nào cho thấy bên dưới là C++:</p>
-<p><strong>Code A.3 — Đăng ký wrapper trong Composition Root</strong></p>
+<p><strong>Code A.2 — Đăng ký wrapper trong Composition Root</strong></p>
 <pre><code class="language-csharp">// Bootstrapper — nơi DUY NHẤT biết CameraWrapper tồn tại (Chương 7)
 services.AddSingleton&lt;ICameraDriver&gt;(
     _ =&gt; new CameraWrapper(&quot;192.168.1.100&quot;));
@@ -30936,9 +31707,9 @@ x64 — không được để <code>AnyCPU</code>). Sai kiến trúc gây lỗi 
 <code>BadImageFormatException</code> (đã gặp ở Chương 2) ngay khi khởi động.</p>
 <p><strong>Lỗi 4: Quên bọc include header C++ thuần trong cặp <code>push</code>/<code>pop</code>.</strong>
 Nếu không tắt tạm chế độ managed trước khi include header SDK gốc (như
-Code A.2 đã làm), trình biên dịch có thể cố dịch code C++ thuần thành
+Code A.1 đã làm), trình biên dịch có thể cố dịch code C++ thuần thành
 managed code, gây ra lỗi biên dịch khó hiểu không liên quan gì đến logic
-thật của wrapper. Code A.2 đã làm đúng — không bỏ qua cặp
+thật của wrapper. Code A.1 đã làm đúng — không bỏ qua cặp
 <code>#pragma managed(push, off)</code>/<code>#pragma managed(pop)</code> dù có vẻ dư thừa.</p>
 <!-- SECTION: PhuLucB_GiaiPhauPhanMemMay -->
 <hr>
@@ -31811,6 +32582,7 @@ giao cho người viết quy trình nhớ.</p>
 <p>Bảng trên nói con đường 3 gần như luôn thắng, nhưng &quot;cấu hình dạng dữ liệu&quot; nghe còn trừu tượng. Dưới
 đây là hình dung cụ thể, rút từ một dự án tham khảo đã hiện thực trọn vẹn cách này.</p>
 <p><strong>Ý tưởng: quy trình là một ĐỒ THỊ, còn C# chỉ cung cấp thư viện các nút.</strong></p>
+<p><strong>Hình B.1 — Quy trình như một đồ thị: mỗi nút là một thao tác máy</strong></p>
 <pre><code>   [Bắt đầu] → [Đưa trục Z lên an toàn] → [Di chuyển XY tới điểm chụp] → [Chụp ảnh]
                                                                               │
                                         ┌─────────────── kết quả ─────────────┘
@@ -33921,6 +34693,532 @@ chính theo thứ tự bảng chữ cái ở lần rà soát Glossary tiếp the
 <em>Xuất hiện đầu tiên: Chương 17, mục 17.3.</em></p>
 <p><strong>Vòng điều khiển kín (Closed-loop Control)</strong> — Vòng giữ một đại lượng ở giá trị mong muốn (nhiệt độ, áp suất, lực). Câu hỏi đầu tiên không phải <em>&quot;viết PID thế nào&quot;</em> mà <strong>&quot;vòng này có nên nằm trong C# không&quot;</strong>: dưới ~10 ms thuộc bộ điều khiển chuyên dụng; liên quan an toàn thì thuộc <strong>phần cứng, luôn luôn</strong>. PID của phần mềm giữ cho quá trình <em>đúng</em>; rơ-le nhiệt giữ cho nó <em>không cháy</em>. (→ xem Determinism, Interlock)
 <em>Xuất hiện đầu tiên: Chương 6, mục 6.1.7.</em></p>
+<!-- SECTION: Phu_Luc_D_ChiMuc -->
+<hr>
+<h1 id="ph-lc-d-ch-mc-mc-lc-tra-cu">Phụ lục D: Chỉ mục (mục lục tra cứu)</h1>
+<p>Tra ngược từ <strong>thuật ngữ</strong> về <strong>mục</strong> trong sách. Khác với Phụ lục C — bảng thuật ngữ giải
+thích <em>nghĩa</em> của một từ, còn chỉ mục này chỉ trả lời <em>tìm nó ở đâu</em>, và liệt kê <strong>mọi nơi</strong>
+thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.</p>
+<blockquote>
+<p>📌 <strong>Vì sao chỉ mục này ghi số mục chứ không ghi số trang.</strong> Bản này phát hành dạng
+<code>.md</code>/<code>.html</code> đọc trên màn hình — không có khái niệm trang cố định. Số mục (<code>13.4.2</code>) là
+đơn vị định vị ổn định duy nhất, và tra bằng nó nhanh hơn số trang khi đọc trên máy. Khi
+dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng số trang tương ứng.</p>
+</blockquote>
+<hr>
+<h2 id="a-2">A</h2>
+<ul>
+<li><strong>AAA (Arrange-Act-Assert)</strong> — 18.2</li>
+<li><strong>abstract class</strong> — 4.3.2, 4.3.4</li>
+<li><strong>Action<T></strong> — 4.4.1</li>
+<li><strong>Actor Model</strong> — 16.1.1</li>
+<li><strong>Aggregate Root</strong> — 11.1, 11.1.3</li>
+<li><strong>Air-gapped</strong> — 2.1.5, 17.1, 17.1.5</li>
+<li><strong>Alarm Banner</strong> — 10.3, 10.3.2, 10.3.3</li>
+<li><strong>Alarm Chattering</strong> — 15.1.7</li>
+<li><strong>Alarm Consequence Sheet (ACS)</strong> — 15.3.2</li>
+<li><strong>Alarm Flood</strong> — 15.1.6</li>
+<li><strong>Alarm Inhibition</strong> — 15.1.7</li>
+<li><strong>Alarm Lifecycle</strong> — 15.1.1</li>
+<li><strong>Alarm Rationalization</strong> — 15.3.2</li>
+<li><strong>Alarm Shelving</strong> — 15.1.7</li>
+<li><strong>AlarmSeverity</strong> — 15.1.2</li>
+<li><strong>Ảnh đĩa (Disk Image)</strong> — 17.3</li>
+<li><strong>ánh xạ khái niệm PLC</strong> — 6.2</li>
+<li><strong>Anti-Corruption Layer (ACL)</strong> — 11.2.3</li>
+<li><strong>AnyCPU</strong> — 2.2</li>
+<li><strong>APM (Asynchronous Programming Model)</strong> — 5.1.2</li>
+<li><strong>Application Layer (Clean Architecture)</strong> — 7.3.1</li>
+<li><strong>Array</strong> — 3.7.1</li>
+<li><strong>Artifact</strong> — 17.2, 17.2.3</li>
+<li><strong>assembly</strong> — 3.8.2</li>
+<li><strong>Assert.ThrowsAsync<T></strong> — 18.4.2</li>
+<li><strong>async / await</strong> — 5.1</li>
+<li><strong>async void</strong> — 5.1.4</li>
+<li><strong>async/await</strong> — 5.1, 5.1.2</li>
+<li><strong>atomic write</strong> — 3.6</li>
+<li><strong>audit trail</strong> — 16.2</li>
+<li><strong>Authentication</strong> — 15.2.4</li>
+</ul>
+<h2 id="b-2">B</h2>
+<ul>
+<li><strong>backpressure</strong> — 5.4</li>
+<li><strong>BadImageFormatException</strong> — 2.2</li>
+<li><strong>Bản đồ khay (Map Data / Wafer Map)</strong> — 13.4.6, 14.2.6b</li>
+<li><strong>Bàn phím ảo (Virtual Keyboard / Numpad)</strong> — 10.1.6</li>
+<li><strong>Bảng cờ dùng chung (Shared Tag Table)</strong> — 16.3</li>
+<li><strong>Bảng điểm (Point Table)</strong> — 13.4.1</li>
+<li><strong>Bảng màu ISA-101</strong> — 10.2</li>
+<li><strong>Bare Repository</strong> — 17.1</li>
+<li><strong>BCrypt / Argon2</strong> — 15.2.4</li>
+<li><strong>BenchmarkDotNet</strong> — 19.3</li>
+<li><strong>biến trạng thái máy</strong> — 6.2.1</li>
+<li><strong>Binding (WPF)</strong> — 9.1.3, 9.1.5, 10.3.3</li>
+<li><strong>BindingOperations.EnableCollectionSynchronization</strong> — 9.1.5</li>
+<li><strong>BlockingCollection<T></strong> — 3.6.1</li>
+<li><strong>Blue/Green Deployment</strong> — 17.3, 17.3.2</li>
+<li><strong>Bounded Context</strong> — 11.2, 11.2.1, 11.2.4</li>
+<li><strong>Boxing</strong> — 3.7.2</li>
+<li><strong>Branch</strong> — 17.1, 17.1.2</li>
+<li><strong>Breadcrumb (điều hướng)</strong> — 10.1.2</li>
+<li><strong>Break-glass</strong> — 15.2.4</li>
+<li><strong>Breakpoint (điểm dừng)</strong> — 2.3, 2.3.1, 19.1.1</li>
+<li><strong>Bridge Pattern</strong> — 13.2.4</li>
+<li><strong>Build / Rebuild / Clean</strong> — 2.2</li>
+<li><strong>Bulkhead Pattern</strong> — 15.2.5</li>
+<li><strong>Byte order notation (ABCD/CDAB)</strong> — 14.1.2</li>
+</ul>
+<h2 id="c-2">C</h2>
+<ul>
+<li><strong>C++ automation</strong> — 6.3.2</li>
+<li><strong>Căn chỉnh (Alignment)</strong> — 13.4.3</li>
+<li><strong>CancellationToken</strong> — 5.2, 18.4.2</li>
+<li><strong>CancellationTokenSource</strong> — 5.2</li>
+<li><strong>Capability Interface</strong> — 13.2.1</li>
+<li><strong>Card điều khiển chuyển động</strong> — 1.3.2</li>
+<li><strong>cấu trúc dữ liệu automation</strong> — 6.2.4</li>
+<li><strong>Cây tác vụ (Task Tree)</strong> — 16.4</li>
+<li><strong>CEID (Collection Event ID)</strong> — 14.2.4</li>
+<li><strong>Channel<T></strong> — 5.4</li>
+<li><strong>Chốt vị trí (latch)</strong> — 1.3.2</li>
+<li><strong>CI/CD</strong> — 17.2, 17.2.1</li>
+<li><strong>CiA 402</strong> — 14.1.4</li>
+<li><strong>Circuit Breaker Pattern</strong> — 15.2.5</li>
+<li><strong>circular dependency</strong> — 3.8.2</li>
+<li><strong>class</strong> — 4.1, 4.1.1, 4.1.2, 4.3.2, 4.3.4, 6.2.3, 6.2.4, 12.3, A.1.1</li>
+<li><strong>Clean Architecture</strong> — 7.1.4, 7.3, 7.3.5</li>
+<li><strong>Command Idempotency</strong> — 13.3.3</li>
+<li><strong>Command Pattern (GoF)</strong> — 16.2, 16.2.5</li>
+<li><strong>CommandDispatcher</strong> — 16.2.3</li>
+<li><strong>CommandQueue</strong> — 16.2.3, 16.2.4</li>
+<li><strong>CommunityToolkit.Mvvm</strong> — 9.2.3</li>
+<li><strong>composition</strong> — 4.3, 4.3.1, 8.3.6, 9.1.1</li>
+<li><strong>Composition Root</strong> — 7.3.1, 8.3.6</li>
+<li><strong>ConcurrentDictionary&lt;TKey,TValue&gt;</strong> — 5.3.2</li>
+<li><strong>ConfigureAwait(false)</strong> — 5.1.3</li>
+<li><strong>Connection Pool (Connection Pooling)</strong> — 13.3.2</li>
+<li><strong>const</strong> — 3.2.2, 4.1.2</li>
+<li><strong>constructor injection</strong> — 4.2.2</li>
+<li><strong>Control.Invoke / BeginInvoke</strong> — 8.1.2</li>
+<li><strong>ControlTemplate</strong> — 9.1.2</li>
+<li><strong>Correlation ID</strong> — 19.4, 19.4.4</li>
+<li><strong>CQRS (Command Query Responsibility Segregation)</strong> — 13.1.1</li>
+<li><strong>Cross-thread UI update</strong> — 8.1.2</li>
+<li><strong>Custom exception</strong> — 3.5.3</li>
+</ul>
+<h2 id="d-2">D</h2>
+<ul>
+<li><strong>Dải bảo vệ (Guard Band)</strong> — 13.4.7</li>
+<li><strong>Dark theme / Light theme (bối cảnh HMI)</strong> — 10.2.1</li>
+<li><strong>DataAnnotations</strong> — 9.1.5</li>
+<li><strong>DataContext</strong> — 9.1.5</li>
+<li><strong>DataGridView</strong> — 8.2.3</li>
+<li><strong>DataTemplate</strong> — 9.1.2</li>
+<li><strong>Deadband</strong> — 15.1.7</li>
+<li><strong>deadlock</strong> — 5.1.4, 5.3.4, 19.2.2</li>
+<li><strong>deferred execution</strong> — 4.6</li>
+<li><strong>delegate</strong> — 4.4, 4.4.1</li>
+<li><strong>Dependency Injection (DI — tiêm phụ thuộc)</strong> — 4.2.2, 8.3.6</li>
+<li><strong>Dependency Inversion Principle (DIP)</strong> — 7.2.5</li>
+<li><strong>Dependency Property (DP)</strong> — 9.1.3</li>
+<li><strong>Dependency Rule (Clean Architecture)</strong> — 7.3, 7.3.2</li>
+<li><strong>Design by Contract</strong> — 7.2.3</li>
+<li><strong>Determinism (Tính dự đoán được)</strong> — 6.1.5</li>
+<li><strong>Device Gateway Pattern</strong> — 13.1.1</li>
+<li><strong>Device Manager (IDeviceManager)</strong> — 13.3, 13.3.1</li>
+<li><strong>Device-independent unit (đơn vị WPF) và quy tắc chia hết cho 8</strong> — 10.2.5</li>
+<li><strong>DI Lifetime (Singleton / Scoped / Transient)</strong> — 7.2.5</li>
+<li><strong>Dictionary</strong> — 3.7.1, 10.2.4</li>
+<li><strong>Điều kiện phải giữ đúng (Condition Hold Time)</strong> — 16.5</li>
+<li><strong>Dispatcher</strong> — 9.3.2, 16.2.3</li>
+<li><strong>DispatcherTimer</strong> — 9.3.2</li>
+<li><strong>Đối tượng kết quả (Result Object)</strong> — 3.5.4</li>
+<li><strong>Domain Event</strong> — 11.1, 11.1.4, 12.3.3, 15.1.4</li>
+<li><strong>Domain Layer (Clean Architecture)</strong> — 7.3.1, 11.3</li>
+<li><strong>Domain Service</strong> — 11.3, 11.3.1</li>
+<li><strong>dotnet-counters</strong> — 19.1, 19.1.2</li>
+<li><strong>dotnet-dump</strong> — 19.2</li>
+<li><strong>dotnet-trace</strong> — 19.1, 19.1.3</li>
+<li><strong>Double Buffering</strong> — 8.1.3</li>
+<li><strong>Double-Checked Locking</strong> — 2.5</li>
+<li><strong>Double-encoded JSON</strong> — 14.2.8</li>
+<li><strong>Dual State (Trạng thái kép — PackML)</strong> — 12.2.2</li>
+<li><strong>dynamic</strong> — 16.1.2</li>
+<li><strong>DynamicResource</strong> — 9.3.3</li>
+</ul>
+<h2 id="e-2">E</h2>
+<ul>
+<li><strong>E-Stop</strong> — 5.2, 15.2.1</li>
+<li><strong>EEMUA 191</strong> — 15.3.4</li>
+<li><strong>Encapsulation (đóng gói)</strong> — 4.1.2</li>
+<li><strong>Entity (DDD)</strong> — 11.1, 11.1.1, 11.3.1</li>
+<li><strong>enum</strong> — 3.1.4</li>
+<li><strong>event</strong> — 4.4, 4.4.3, 4.4.4, 8.1.1, 9.1.4, 11.1, 11.1.4, 12.3.3, 15.1.4, 15.1.6, 15.2.6, 16.1, 19.1.4</li>
+<li><strong>Event Aggregator</strong> — 16.1.2</li>
+<li><strong>Event Storm</strong> — 16.1.2</li>
+<li><strong>EventArgs</strong> — 4.4.3</li>
+<li><strong>EventPipe</strong> — 19.1</li>
+<li><strong>Eventual Consistency (nhất quán cuối cùng)</strong> — 13.1.2</li>
+<li><strong>Exception</strong> — 3.5.1, 3.5.2, 3.5.3, 5.6</li>
+<li><strong>Expression Tree</strong> — 13.1.3</li>
+<li><strong>Extension method</strong> — 3.4.3</li>
+</ul>
+<h2 id="f-2">F</h2>
+<ul>
+<li><strong>Factory Pattern</strong> — 13.2.2</li>
+<li><strong>False Green (test xanh giả)</strong> — 18.6.1</li>
+<li><strong>FAT (Factory Acceptance Test) / SAT (Site/System Acceptance Test)</strong> — 18.1.2</li>
+<li><strong>FATP (Final Assembly Test &amp; Packaging)</strong> — 10.2.1</li>
+<li><strong>Feature Flag (Feature Toggle)</strong> — 7.3.5</li>
+<li><strong>Fieldbus</strong> — 1.3, 14.1.4</li>
+<li><strong>Find All References (Shift+F12)</strong> — 2.4, 2.4.2</li>
+<li><strong>Find in Files (Ctrl+Shift+F)</strong> — 2.5</li>
+<li><strong>fire-and-forget</strong> — 5.1.4</li>
+<li><strong>Framework-dependent deployment</strong> — 17.2</li>
+<li><strong>Freezable</strong> — 9.3.3</li>
+<li><strong>Func/Action</strong> — 4.4.1</li>
+<li><strong>Func<T></strong> — 4.4.1</li>
+<li><strong>Function Block (FB) / Function (FC) / UDT / Data Block (DB)</strong> — 6.2.3</li>
+<li><strong>Function Code (FC — Modbus)</strong> — 14.1.2</li>
+</ul>
+<h2 id="g-2">G</h2>
+<ul>
+<li><strong>Gá toạ độ (Fixturing)</strong> — 13.4.2</li>
+<li><strong>Garbage Collector (GC)</strong> — 3.1.2</li>
+<li><strong>GC pause</strong> — 1.2, 19.4.6</li>
+<li><strong>GC pressure</strong> — 3.1.2, 19.3.1</li>
+<li><strong>GCLatencyMode</strong> — 19.3</li>
+<li><strong>GDI+</strong> — 8.2.1</li>
+<li><strong>GEM (Generic Equipment Model — SEMI E30)</strong> — 14.2.5</li>
+<li><strong>Genealogy</strong> — 14.2.7</li>
+<li><strong>generic</strong> — 4.5</li>
+<li><strong>Git</strong> — 17.1</li>
+<li><strong>Gitea</strong> — 17.2, 17.2.2</li>
+<li><strong>Glance Model</strong> — 10.1.4</li>
+<li><strong>Go To All (Ctrl+T)</strong> — 2.5</li>
+<li><strong>Go To Definition (F12)</strong> — 2.4, 2.4.1</li>
+<li><strong>God Object</strong> — 16.1.1</li>
+<li><strong>Gộp khối địa chỉ (Block Merge)</strong> — 14.1.2b</li>
+<li><strong>GR&amp;R (Gage Repeatability &amp; Reproducibility)</strong> — 12.4.1</li>
+<li><strong>Grafana Alloy</strong> — 19.4</li>
+<li><strong>Guard Engine</strong> — 15.2.3</li>
+<li><strong>Guid</strong> — 3.1.4</li>
+</ul>
+<h2 id="h-2">H</h2>
+<ul>
+<li><strong>HAL (Hardware Abstraction Layer — trong Bridge Pattern)</strong> — 13.2.4</li>
+<li><strong>Hard real-time / Soft real-time</strong> — 1.1</li>
+<li><strong>Health Check (Endpoint)</strong> — 19.4, 19.4.5</li>
+<li><strong>Health Monitor</strong> — 13.3.4</li>
+<li><strong>Heap</strong> — 3.1.2</li>
+<li><strong>Hexagonal Architecture (Ports &amp; Adapters)</strong> — 7.2.5</li>
+<li><strong>High Performance HMI</strong> — 10.1, 10.1.1</li>
+<li><strong>HIL (Hardware-in-the-Loop)</strong> — 18.1.2</li>
+<li><strong>Hold / Suspend (PackML)</strong> — 12.2.3</li>
+<li><strong>HSMS (High-Speed Message Services — SEMI E37)</strong> — 14.2.2</li>
+</ul>
+<h2 id="i-2">I</h2>
+<ul>
+<li><strong>IAsyncDisposable</strong> — 5.5, 13.2.1</li>
+<li><strong>ICollectionView</strong> — 10.3.4</li>
+<li><strong>ICommand / RelayCommand</strong> — 9.2.1</li>
+<li><strong>IDeviceCommand</strong> — 16.2.2</li>
+<li><strong>IDisposable</strong> — 4.4.3, 5.5</li>
+<li><strong>IEC 62682</strong> — 15.3</li>
+<li><strong>Immediate Window</strong> — 2.3</li>
+<li><strong>IMotionController / IMotionDriver</strong> — 4.1</li>
+<li><strong>Information Model (OPC UA)</strong> — 14.1.1</li>
+<li><strong>Infrastructure Layer (Clean Architecture)</strong> — 7.3.1</li>
+<li><strong>inheritance</strong> — 4.3</li>
+<li><strong>INotifyDataErrorInfo</strong> — 9.1.5</li>
+<li><strong>INotifyPropertyChanged</strong> — 9.1.5</li>
+<li><strong>interface</strong> — 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.3.4, 4.4.4, 7.2.4, 8.3.4, 11.3.2, 13.2.1, 16.2.2, 18.3, 18.3.1</li>
+<li><strong>Interface Segregation Principle (ISP)</strong> — 7.2.4</li>
+<li><strong>Interlock</strong> — 15.2, 15.2.1, 15.4</li>
+<li><strong>Interlocked</strong> — 5.3.3</li>
+<li><strong>Invariant (bất biến)</strong> — 11.1.3, 18.5.2</li>
+<li><strong>IObservable<T></strong> — 16.1.2</li>
+<li><strong>IPC (Industrial PC — máy tính công nghiệp)</strong> — 1.3, 2.2</li>
+<li><strong>ISA-101</strong> — 10.1.2, 10.2</li>
+<li><strong>ISA-18.2</strong> — 15.3, 15.3.5</li>
+<li><strong>ISA-TR88.00.02</strong> — 12.2, 12.2.1</li>
+<li><strong>ISequenceEngine</strong> — 12.1.3</li>
+<li><strong>IT/OT Convergence</strong> — 1.4</li>
+<li><strong>IValueConverter</strong> — 9.1.5</li>
+</ul>
+<h2 id="j-2">J</h2>
+<ul>
+<li><strong>jitter</strong> — 1.1, 3.7.2</li>
+<li><strong>JsonSerializerOptions</strong> — 3.6.3</li>
+</ul>
+<h2 id="k">K</h2>
+<ul>
+<li><strong>Khoảng cách giữa hai lần dừng (MTBA / MTBF)</strong> — 12.5.4</li>
+</ul>
+<h2 id="l-2">L</h2>
+<ul>
+<li><strong>Ladder Logic (Ngôn ngữ bậc thang — IEC 61131-3)</strong> — 6.3.1</li>
+<li><strong>lambda</strong> — 4.4, 4.4.2</li>
+<li><strong>lập trình bất đồng bộ</strong> — 6.1.3</li>
+<li><strong>lập trình đồng bộ</strong> — 6.1.3</li>
+<li><strong>lập trình hướng sự kiện</strong> — 6.1.2</li>
+<li><strong>lập trình song song</strong> — 6.1.2</li>
+<li><strong>lập trình tuần tự</strong> — 6.1.2</li>
+<li><strong>LibraryImport</strong> — A.1.1</li>
+<li><strong>linked token</strong> → xem <strong>CancellationTokenSource</strong> — 7.2.3</li>
+<li><strong>LINQ (Language Integrated Query)</strong> — 4.6</li>
+<li><strong>Liskov Substitution Principle (LSP)</strong> — 7.2.3</li>
+<li><strong>List</strong> — 3.7.1</li>
+<li><strong>lock</strong> — 5.3.2</li>
+<li><strong>Logical Tree</strong> — 9.1.2</li>
+<li><strong>Lot</strong> — 14.2.7</li>
+</ul>
+<h2 id="m-2">M</h2>
+<ul>
+<li><strong>ma trận quyết định ngôn ngữ</strong> — 6.3.3</li>
+<li><strong>Mailbox (Actor)</strong> — 16.1.1</li>
+<li><strong>ManualResetEvent / AutoResetEvent</strong> — 5.3.2</li>
+<li><strong>Matcher (<code>It.IsAny&lt;T&gt;()</code> / <code>It.Ref&lt;T&gt;.IsAny</code>)</strong> — 18.2.3</li>
+<li><strong>MBAP Header (Modbus Application Protocol Header)</strong> — 14.1.2</li>
+<li><strong>MemberwiseClone</strong> — 4.1.3</li>
+<li><strong>Memory Dump (.dmp)</strong> — 19.2</li>
+<li><strong>MeoFrame</strong> — 2.2, 2.2.2, 9.2.3</li>
+<li><strong>Merge Conflict</strong> — 17.1</li>
+<li><strong>Message Loop (Message Pump)</strong> — 8.1, 8.1.1</li>
+<li><strong>Message Template</strong> — 19.4</li>
+<li><strong>Method Hiding (từ khoá <code>new</code> trên method)</strong> — 4.3.3</li>
+<li><strong>MethodTable (MT)</strong> — 19.2</li>
+<li><strong>MinimumLevel.Override (Serilog)</strong> — 19.4</li>
+<li><strong>Mock<T></strong> — 18.3.2</li>
+<li><strong>Modbus TCP</strong> — 14.1, 14.1.2, 14.3.2</li>
+<li><strong>Moq</strong> — 18.3.2</li>
+<li><strong>MQTT</strong> — 14.3.2</li>
+<li><strong>Muting</strong> — 15.2.3</li>
+<li><strong>MVP (Model-View-Presenter)</strong> — 8.3</li>
+<li><strong>MVP Pattern (Model-View-Presenter)</strong> — 8.3</li>
+<li><strong>MVVM (Model-View-ViewModel)</strong> — 9.2</li>
+</ul>
+<h2 id="n-2">N</h2>
+<ul>
+<li><strong>Nagle&#39;s Algorithm / NoDelay (TCP_NODELAY)</strong> — 14.1.3</li>
+<li><strong>namespace</strong> — 3.8, 3.8.1</li>
+<li><strong>Newtonsoft.Json (<code>JObject</code>/<code>JArray</code>)</strong> — 2.5</li>
+<li><strong>Nhóm ngôn ngữ theo font: English-like / Tall / Dense</strong> — 10.2.3</li>
+<li><strong>NodeId (OPC UA)</strong> — 14.1.1</li>
+<li><strong>NuGet</strong> — 2.1</li>
+<li><strong>Null Object Pattern</strong> — 16.2.2</li>
+<li><strong>Null-conditional (<code>?.</code>) và null-coalescing (<code>??</code>)</strong> — 5.6</li>
+<li><strong>Nullable Reference Types (NRT)</strong> — 5.6</li>
+<li><strong>NullLogger</strong> — 18.2.1</li>
+</ul>
+<h2 id="o-2">O</h2>
+<ul>
+<li><strong>object</strong> — 4.1, 4.1.1, 4.1.3, 11.1, 11.1.2</li>
+<li><strong>Object Pool</strong> — 19.3</li>
+<li><strong>ObservableCollection<T></strong> — 9.1.5</li>
+<li><strong>Observer Pattern (Pub-Sub)</strong> — 16.1, 16.1.2</li>
+<li><strong>OEE (Overall Equipment Effectiveness — Hiệu suất thiết bị tổng thể)</strong> — 12.2.1</li>
+<li><strong>OPC Classic (OPC DA/HDA/A&amp;E)</strong> — 14.1.1</li>
+<li><strong>OPC UA (Open Platform Communications Unified Architecture)</strong> — 14.1, 14.1.1</li>
+<li><strong>Opcode</strong> — 14.2.8</li>
+<li><strong>Open/Closed Principle (OCP)</strong> — 7.2.2</li>
+<li><strong>OpenTelemetry</strong> — 19.4, 19.4.4</li>
+<li><strong>OTLP (OpenTelemetry Protocol)</strong> — 19.4</li>
+<li><strong>Outbox Pattern</strong> — 13.1.2</li>
+<li><strong>outputTemplate (Serilog)</strong> — 19.4</li>
+<li><strong>Owner-Drawn Controls</strong> — 8.2.2</li>
+</ul>
+<h2 id="p-2">P</h2>
+<ul>
+<li><strong>PAC (Programmable Automation Controller)</strong> — 1.1</li>
+<li><strong>PackML (Packaging Machine Language)</strong> — 12.2, 12.2.1, 12.2.2, 12.3, 12.3.2</li>
+<li><strong>partial class</strong> — 4.1.3, 11.1.3</li>
+<li><strong>Passive View</strong> — 8.3.3</li>
+<li><strong>Pattern Atlas (Bản đồ Pattern toàn hệ thống)</strong> — 16.3</li>
+<li><strong>Pattern matching</strong> — 3.3.1</li>
+<li><strong>PC-Based Control</strong> — 1.1</li>
+<li><strong>PDO (Process Data Object)</strong> — 14.1.4</li>
+<li><strong>PeriodicTimer</strong> — 9.3.2</li>
+<li><strong>Pipeline</strong> — 5.4, 17.2, 17.2.1</li>
+<li><strong>PL (Performance Level)</strong> — 15.2.2</li>
+<li><strong>Platform Target (x86/x64/AnyCPU)</strong> — 2.2, 2.2.3</li>
+<li><strong>polymorphism</strong> — 4.3.3</li>
+<li><strong>Power Event Handling</strong> — 15.2.6</li>
+<li><strong>Preprocessor Directive (<code>#if</code>/<code>#endif</code>, biên dịch có điều kiện)</strong> — 2.2</li>
+<li><strong>Presentation Layer (Clean Architecture)</strong> — 7.3.1</li>
+<li><strong>PriorityQueue (hàng đợi ưu tiên)</strong> — 16.2.3</li>
+<li><strong>Prism</strong> — 9.2.2</li>
+<li><strong>Process Isolation (Boundary Contract)</strong> — 14.1.3</li>
+<li><strong>producer-consumer</strong> — 5.4</li>
+<li><strong>producer–consumer</strong> — 5.4</li>
+<li><strong>Project (.csproj)</strong> — 2.2, 2.2.1, 3.8, 3.8.2, 18.2.1</li>
+<li><strong>ProjectReference / PackageReference</strong> — 2.2</li>
+<li><strong>Property</strong> — 4.1.2, 9.1.3, 18.3.5</li>
+<li><strong>Python automation</strong> — 6.3.2</li>
+</ul>
+<h2 id="q">Q</h2>
+<ul>
+<li><strong>Queue</strong> — 3.7.1, 16.2, 16.2.1, 16.2.3, 16.2.4</li>
+</ul>
+<h2 id="r-2">R</h2>
+<ul>
+<li><strong>race condition</strong> — 5.3.4</li>
+<li><strong>Re-entrant Transition</strong> — 12.1.2</li>
+<li><strong>readonly</strong> — 3.2.2</li>
+<li><strong>readonly record struct</strong> — 11.1.2</li>
+<li><strong>Recipe Versioning</strong> — 13.1.4</li>
+<li><strong>record</strong> — 11.1.4</li>
+<li><strong>Reference Type</strong> — 3.1.1</li>
+<li><strong>Regression Test (Kiểm thử hồi quy)</strong> — 18.1.3</li>
+<li><strong>Remote I/O</strong> — 1.3</li>
+<li><strong>Repository (kho mã nguồn — ngữ cảnh Git)</strong> — 2.1, 11.3, 11.3.2, 13.1, 13.1.3b</li>
+<li><strong>Repository Pattern</strong> — 11.3.2</li>
+<li><strong>ResourceDictionary (WPF)</strong> — 10.2.4</li>
+<li><strong>Resting State (Trạng thái nghỉ / Wait state — PackML)</strong> — 12.2.2</li>
+<li><strong>Result<T></strong> — 4.5</li>
+<li><strong>Retry Policy</strong> — 13.3.3</li>
+<li><strong>Ring Buffer</strong> — 3.7.2</li>
+<li><strong>RiskTier</strong> — 15.2.3</li>
+<li><strong>Routed Event</strong> — 9.1.4</li>
+<li><strong>Runner (CI)</strong> — 17.2</li>
+<li><strong>Rx.NET (System.Reactive)</strong> — 16.1.2</li>
+</ul>
+<h2 id="s-2">S</h2>
+<ul>
+<li><strong>S6F11 (Event Report Send)</strong> — 14.2.4</li>
+<li><strong>Safe Torque Off (STO)</strong> — 15.2.2</li>
+<li><strong>Safety Function</strong> — 15.2.1</li>
+<li><strong>SC / State Complete</strong> — 12.2.2</li>
+<li><strong>Scan Cycle (Vòng quét — PLC)</strong> — 6.1.1, 12.1.4</li>
+<li><strong>SDO (Service Data Object)</strong> — 14.1.4</li>
+<li><strong>sealed</strong> — 4.3.3</li>
+<li><strong>SECS-II (SEMI E5)</strong> — 14.2.3, 14.2.4</li>
+<li><strong>SEHException (Structured Exception)</strong> — 14.1.3</li>
+<li><strong>Self-contained deployment</strong> — 17.2</li>
+<li><strong>Semantic Versioning (SemVer, MAJOR.MINOR.PATCH)</strong> — 17.1</li>
+<li><strong>SemaphoreSlim</strong> — 5.3.2</li>
+<li><strong>Sentence-case</strong> — 10.2.3</li>
+<li><strong>Seq</strong> — 19.4</li>
+<li><strong>SerialPort (<code>System.IO.Ports</code>)</strong> — 14.1.5</li>
+<li><strong>Serilog</strong> — 19.4</li>
+<li><strong>Setter (vai trò người dùng HMI)</strong> — 10.1.4</li>
+<li><strong>SignalValue<T></strong> — 13.2.1</li>
+<li><strong>SIL (Safety Integrity Level)</strong> — 15.2.1</li>
+<li><strong>Simulator Driver</strong> — 13.2.5</li>
+<li><strong>Single Responsibility Principle (SRP)</strong> — 7.2, 7.2.1</li>
+<li><strong>Singleton</strong> — 7.2.5</li>
+<li><strong>Situational Awareness (nhận thức tình huống, mô hình Endsley)</strong> — 10.1.4</li>
+<li><strong>Sổ lý do dừng máy (Downtime Reason Ledger)</strong> — 12.5.2</li>
+<li><strong>so sánh ngôn ngữ lập trình</strong> — 6.3</li>
+<li><strong>So sánh vị trí (position compare)</strong> — 1.3.2</li>
+<li><strong>Soft Limit</strong> — 15.1.2</li>
+<li><strong>Soft-PLC</strong> — 1.3</li>
+<li><strong>software lifecycle (công nghiệp)</strong> — 7.1</li>
+<li><strong>SOLID (SRP, OCP, LSP, ISP, DIP)</strong> — 7.1.4, 7.2, 7.2.6</li>
+<li><strong>Solution (Visual Studio)</strong> — 2.2, 12.1.2</li>
+<li><strong>Specification Pattern</strong> — 13.1.3</li>
+<li><strong>Stack</strong> — 3.1.2</li>
+<li><strong>Stackable State Machine (Push/Pop State)</strong> — 12.1.2</li>
+<li><strong>Standing Alarm / Stale Alarm</strong> — 15.3.4</li>
+<li><strong>Startup Project</strong> — 2.2</li>
+<li><strong>State Pattern (GoF)</strong> — 12.1, 12.1.2</li>
+<li><strong>stateful</strong> — 6.1.4</li>
+<li><strong>Stateful / Stateless</strong> — 6.1.4</li>
+<li><strong>stateless</strong> — 6.1.4</li>
+<li><strong>Strangler Pattern (Strangler Fig Pattern)</strong> — 7.3.5, 8.3.8b</li>
+<li><strong>Strategy Pattern</strong> — 13.2.3</li>
+<li><strong>struct</strong> — 3.1.3, 4.1.2, 6.3.1, 11.3.2, 19.4.1</li>
+<li><strong>Structured Logging</strong> — 19.4, 19.4.1</li>
+<li><strong>Structured Text (ST — IEC 61131-3)</strong> — 6.3.1</li>
+<li><strong>Stub</strong> — 18.3.3</li>
+<li><strong>Subscription (OPC UA)</strong> — 14.1.1</li>
+<li><strong>Supervising Controller</strong> — 8.3.3</li>
+<li><strong>SUT (Subject Under Test — Đối tượng đang kiểm thử)</strong> — 18.2.2</li>
+<li><strong>SynchronizationContext</strong> — 5.1.3</li>
+</ul>
+<h2 id="t-2">T</h2>
+<ul>
+<li><strong>Tag</strong> — 17.1, 17.1.3</li>
+<li><strong>Task</strong> — 5.1.2</li>
+<li><strong>Task Scheduler (Windows)</strong> — 17.3, 17.3.4</li>
+<li><strong>Task.Run</strong> — 5.1.2</li>
+<li><strong>Task.WhenAll / Task.WhenAny</strong> — 5.1.2</li>
+<li><strong>TCP Framing</strong> — 14.1.3</li>
+<li><strong>TCP half-open</strong> — 14.1.3</li>
+<li><strong>Template Method</strong> — 4.3.2, 13.2.4b</li>
+<li><strong>Test Coverage (Code Coverage)</strong> — 18.6, 18.6.1</li>
+<li><strong>Test Double</strong> — 18.3</li>
+<li><strong>Test Pyramid (Tháp kiểm thử)</strong> — 18.1.2</li>
+<li><strong>Text expansion</strong> — 10.4.2</li>
+<li><strong>Thiết bị nhớ PLC (X / Y / M / D)</strong> — 14.1.2b</li>
+<li><strong>Thread</strong> — 5.3, 5.3.1, 9.3.2, 19.4.6</li>
+<li><strong>ThreadPool</strong> — 5.1.2</li>
+<li><strong>Title Case</strong> — 10.2.3</li>
+<li><strong>Toán tử bitwise</strong> — 3.2.3</li>
+<li><strong>tolerance / precision</strong> — 3.2.3</li>
+<li><strong>Torn read</strong> — 15.1.5</li>
+<li><strong>Touch target</strong> — 10.2.5</li>
+<li><strong>Transient Alarm</strong> — 15.1.1</li>
+<li><strong>Transition Table (Bảng chuyển trạng thái)</strong> — 12.3.2, 18.5, 18.5.1</li>
+<li><strong>Transitional State (Trạng thái chuyển tiếp — PackML)</strong> — 12.2.2</li>
+<li><strong>try-catch-finally</strong> — 3.5.1</li>
+<li><strong>Try-Pattern</strong> — 3.4.1</li>
+<li><strong>tư duy lập trình</strong> — 6.1</li>
+<li><strong>TwinCAT Runtime</strong> — 1.3</li>
+</ul>
+<h2 id="u-2">U</h2>
+<ul>
+<li><strong>UI Virtualization</strong> — 9.3.1</li>
+<li><strong>Unit of Work (UoW)</strong> — 13.1, 13.1.2</li>
+<li><strong>UserLevel</strong> — 15.2.3</li>
+<li><strong>using</strong> — 5.5</li>
+<li><strong>using alias directive</strong> — 3.8.1</li>
+</ul>
+<h2 id="v-2">V</h2>
+<ul>
+<li><strong>Value Object (DDD)</strong> — 11.1, 11.1.2</li>
+<li><strong>Value Type</strong> — 3.1.1</li>
+<li><strong>var</strong> — 3.2.1</li>
+<li><strong>ViewModelLocator</strong> — 9.2.4</li>
+<li><strong>virtual / override</strong> — 4.3.3</li>
+<li><strong>Virtual time testing</strong> — 18.4.4</li>
+<li><strong>virtual/override</strong> — 4.3.3</li>
+<li><strong>Visual Tree</strong> — 9.1.2</li>
+<li><strong>volatile</strong> — 3.6.1, 5.3.3</li>
+<li><strong>Vòng điều khiển kín (Closed-loop Control)</strong> — 6.1.7</li>
+</ul>
+<h2 id="w-2">W</h2>
+<ul>
+<li><strong>watchdog (PLC/fieldbus)</strong> — 2.3, 19.4.6</li>
+<li><strong>Watchdog cấp tiến trình</strong> — 19.4, 19.4.6</li>
+<li><strong>WinDbg</strong> — 19.2</li>
+<li><strong>Windows Service</strong> — 17.3, 17.3.4</li>
+<li><strong>WinForms Timer</strong> — 8.2.4</li>
+<li><strong>Work Order / Production Order</strong> — 14.2.7</li>
+<li><strong>wrapper SDK</strong> — 3.8.2</li>
+<li><strong>Write Amplification</strong> — 13.1</li>
+</ul>
+<h2 id="x-2">X</h2>
+<ul>
+<li><strong>xUnit</strong> — 18.2, 18.2.1, 18.4.1</li>
+</ul>
+<h2 id="y-2">Y</h2>
+<ul>
+<li><strong>YAML / YamlDotNet</strong> — 3.6.5</li>
+</ul>
+<h2 id="section"></h2>
+<ul>
+<li><strong>.gitignore</strong> — 17.1</li>
+<li><strong>.NET</strong> — 2.1</li>
+<li><strong>.vsconfig</strong> — 2.1</li>
+<li><strong>[CallerMemberName]</strong> — 9.1.5</li>
+<li><strong>[Fact]</strong> — 18.2, 18.2.2</li>
+<li><strong>[GlobalSetup] / [GlobalCleanup] (BenchmarkDotNet)</strong> — 19.3</li>
+<li><strong>[NotifyCanExecuteChangedFor] (CommunityToolkit.Mvvm)</strong> — 9.2.3</li>
+<li><strong>[ObservableProperty] / [RelayCommand] (CommunityToolkit.Mvvm)</strong> — 9.2.3</li>
+<li><strong>[Theory] + [InlineData]</strong> — 18.2.3</li>
+<li><strong>[Trait]</strong> — 18.6.3</li>
+</ul>
 </div>
 </div>
 

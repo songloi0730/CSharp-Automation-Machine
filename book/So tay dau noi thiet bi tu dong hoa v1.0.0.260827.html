@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260825</title>
+  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260827</title>
   <style>
 
 html {
@@ -240,7 +240,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <body>
 <header id="title-block-header">
 <h1 class="title">Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá
-— v1.0.0.260825</h1>
+— v1.0.0.260827</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -371,7 +371,7 @@ khi đấu máy, sửa máy, hoặc mua vật tư.</p>
 <tbody>
 <tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260825</td>
+<td>v1.0.0.260827</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -3109,7 +3109,7 @@ mục tra cứu theo triệu chứng</a></strong></td>
 </table>
 <blockquote>
 <p>⭐ <strong>Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng <a href="#phan-pl-e-chi-muc-trieu-chung">Phụ lục E</a>.</strong> Nó gom
-<strong>toàn bộ 596 dòng triệu chứng</strong> của cả sách vào một chỗ,
+<strong>toàn bộ 602 dòng triệu chứng</strong> của cả sách vào một chỗ,
 có bảng quyết định <em>&quot;bạn quan sát thấy gì → mở chương nào&quot;</em>, một
 mục riêng cho <strong>triệu chứng liên quan an toàn</strong>, và chỉ mục
 đầy đủ để <code>Ctrl+F</code>.</p>
@@ -5664,7 +5664,192 @@ dòng rò một chiều thật — tức là mất luôn chức năng bảo vệ
 thêm <a href="#phan-ch13-giam-toc-bldc-bien-tan">Ch.13</a>.</p>
 </blockquote>
 <hr />
-<h3 id="35-nối-đất">3.5 Nối đất</h3>
+<h3 id="35-starstar-cầu-dao-chính-mạch-ngoại-lệ-và-điện-áp-dư--yêu-cầu-iec-60204-1">3.5
+⭐⭐ Cầu dao chính, mạch ngoại lệ và điện áp dư — yêu cầu IEC
+60204-1</h3>
+<p>Bốn mục trên lo <strong>điện đi tới thiết bị thế nào</strong>. Mục
+này lo chuyện ngược lại và ít người để ý hơn: <em><strong>làm sao cắt
+điện cho AN TOÀN để người vào sửa máy.</strong></em></p>
+<p>⭐ Đây là phần khiến một tủ điện &quot;chạy tốt&quot; vẫn <strong>trượt nghiệm
+thu</strong>, và quan trọng hơn — là phần quyết định người thợ bảo trì
+có bị điện giật hay không.</p>
+<h4 id="351-cầu-dao-chính-thiết-bị-cách-ly-nguồn">3.5.1 Cầu dao chính
+(thiết bị cách ly nguồn)</h4>
+<p>Mỗi máy phải có <strong>một thiết bị cách ly nguồn</strong> riêng, và
+nó phải làm được ba việc:</p>
+<table>
+<thead>
+<tr>
+<th>Yêu cầu</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cắt mọi dây mang điện</strong> của nguồn cấp</td>
+<td>Cắt một pha còn hai pha là chưa cách ly</td>
+</tr>
+<tr>
+<td>⭐ <strong>Khoá được ở vị trí CẮT</strong></td>
+<td>Đây là điều kiện để làm <strong>LOTO</strong> — không khoá được thì
+không có quy trình an toàn nào đứng vững</td>
+</tr>
+<tr>
+<td><strong>Nhìn thấy được trạng thái</strong> đóng/cắt</td>
+<td>Người vào sửa phải xác nhận được bằng mắt</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Chiều cao tay gạt</strong> — con số hay bị bỏ qua khi thiết
+kế tủ: đặt trong khoảng <strong>0,6 m đến 1,9 m</strong> so với mặt sàn
+thao tác, và <strong>khuyến nghị không quá 1,7 m</strong>. Đặt quá cao
+thì người thấp không với tới trong tình huống khẩn; quá thấp thì phải
+cúi, thao tác chậm.</p>
+<blockquote>
+<p>⚠⚠ <strong>Cầu dao chính KHÔNG phải nút dừng khẩn cấp.</strong> Hai
+thứ khác mục đích hoàn toàn: cầu dao để <strong>cách ly khi bảo
+trì</strong>, nút dừng khẩn để <strong>dừng nhanh khi có nguy
+hiểm</strong>. Xem <a href="#phan-ch04-an-toan-may">Ch.4</a>. Dùng lẫn
+là sai cả hai chức năng.</p>
+</blockquote>
+<h4 id="352--mạch-ngoại-lệ--cái-vẫn-còn-điện-sau-khi-đã-cắt-cầu-dao">3.5.2
+⚠⚠ Mạch ngoại lệ — cái VẪN CÒN ĐIỆN sau khi đã cắt cầu dao</h4>
+<p>Đây là mục nguy hiểm nhất chương này, và là thứ <strong>rất nhiều
+người không biết</strong>.</p>
+<p>Tiêu chuẩn <strong>cho phép</strong> một số mạch <strong>vẫn có
+điện</strong> khi cầu dao chính đã cắt. Chúng được gọi là <strong>mạch
+ngoại lệ</strong>, và thường gồm:</p>
+<table>
+<thead>
+<tr>
+<th>Loại mạch ngoại lệ</th>
+<th>Vì sao được phép giữ điện</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Đèn chiếu sáng</strong> phục vụ bảo trì, sửa chữa</td>
+<td>Cắt hết thì thợ làm việc trong tối</td>
+</tr>
+<tr>
+<td><strong>Ổ cắm</strong> dành riêng cho dụng cụ sửa chữa (khoan tay,
+thiết bị đo)</td>
+<td>Cần nguồn để làm việc</td>
+</tr>
+<tr>
+<td><strong>Mạch bảo vệ thấp áp</strong> chỉ dùng để tự ngắt khi mất
+nguồn</td>
+<td>Bản chất phải theo dõi nguồn</td>
+</tr>
+<tr>
+<td><strong>Thiết bị buộc phải luôn có điện</strong> để hoạt động đúng —
+ví dụ thiết bị đo có ổn nhiệt, bộ nhớ lưu chương trình</td>
+<td>Mất điện là mất dữ liệu hoặc mất ổn định</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Hệ quả thực tế cho người sửa máy: cắt cầu dao chính rồi
+trong tủ VẪN CÓ 230 V.</strong> Nếu không biết điều này và thò tay vào,
+hậu quả là điện giật — trong khi người đó tin rằng mình đã cắt điện.</p>
+<p>Vì vậy mạch ngoại lệ <strong>bắt buộc phải được đánh dấu rõ
+ràng</strong> để người bảo trì nhận ra. Và tiêu chuẩn <strong>khuyến
+nghị mỗi mạch ngoại lệ có cầu dao cách ly riêng</strong> — vì bản thân
+chúng cũng có lúc phải bảo trì, thay thiết bị.</p>
+</blockquote>
+<p>⭐ <strong>Việc phải làm khi bàn giao:</strong> dán nhãn cảnh báo
+ngay trên cửa tủ, ghi rõ <strong>mạch nào vẫn có điện khi cầu dao chính
+đã cắt và cắt chúng ở đâu</strong>. Đây là thông tin cứu người, không
+phải thủ tục giấy tờ.</p>
+<h4 id="353--điện-áp-dư--quy-tắc-60-v-trong-5-giây">3.5.3 ⚠⚠ Điện áp dư
+— quy tắc <strong>60 V trong 5 giây</strong></h4>
+<p>Cắt cầu dao không có nghĩa là hết điện ngay. Tụ điện trong bộ nguồn,
+biến tần, driver servo còn <strong>giữ điện tích</strong> sau khi mất
+nguồn.</p>
+<p><strong>Yêu cầu của tiêu chuẩn:</strong> sau khi cắt nguồn, phần mang
+điện phải được <strong>xả xuống ≤ 60 V trong vòng 5 giây</strong>.</p>
+<p>Khi không đạt được (tụ lớn, ví dụ biến tần công suất lớn), thì
+<strong>bắt buộc</strong>:</p>
+<ul>
+<li>có <strong>biển cảnh báo</strong> ghi rõ,</li>
+<li>ghi <strong>thời gian chờ</strong> cần thiết trước khi được chạm
+vào.</li>
+</ul>
+<p>⭐ <strong>Đây chính là lý do biến tần và driver servo có nhãn
+<em>&quot;chờ N phút sau khi cắt điện&quot;</em></strong> — nhãn đó không phải để
+trang trí, và cũng không phải để cho vui.</p>
+<blockquote>
+<p>⚠ <strong>Đừng tin, hãy đo.</strong> Sau khi cắt nguồn và chờ đủ thời
+gian ghi trên nhãn, <strong>đo thật</strong> trước khi chạm. Tụ có thể
+xuống cấp, mạch xả có thể hỏng — và khi mạch xả hỏng thì <strong>không
+có gì báo cho bạn biết</strong>.</p>
+</blockquote>
+<h4 id="354-điện-áp-cực-thấp-bảo-vệ-pelv--vì-sao-mạch-24-v-được-coi-là-an-toàn">3.5.4
+Điện áp cực thấp bảo vệ (PELV) — vì sao mạch 24 V được coi là an
+toàn</h4>
+<p>Mạch điều khiển 24 V thường được thiết kế theo <strong>điện áp cực
+thấp bảo vệ</strong>. Ngưỡng để coi là bảo vệ chống chạm trực tiếp trong
+<strong>môi trường khô</strong> và khi <strong>không có tiếp xúc diện
+rộng</strong> với cơ thể:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Ngưỡng</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Xoay chiều</td>
+<td>≤ <strong>25 V AC</strong></td>
+</tr>
+<tr>
+<td>Một chiều</td>
+<td>≤ <strong>60 V DC</strong></td>
+</tr>
+</tbody>
+</table>
+<p>⚠ <strong>Nhưng &quot;24 V&quot; không tự động đồng nghĩa với an toàn.</strong>
+Nó chỉ là PELV khi <strong>nguồn được tách ly đúng cách</strong> khỏi
+lưới (biến áp cách ly an toàn, hoặc bộ nguồn đạt yêu cầu tương đương) và
+phần 0 V được xử lý đúng. Một bộ nguồn rẻ tiền không đạt cách ly an toàn
+thì <strong>24 V phía sau nó không phải PELV</strong>, dù đồng hồ vẫn
+chỉ 24 V.</p>
+<h4 id="355-bốn-câu-hỏi-phải-trả-lời-được-trước-khi-bàn-giao-tủ">3.5.5
+Bốn câu hỏi phải trả lời được trước khi bàn giao tủ</h4>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Câu hỏi</th>
+<th>Nếu chưa có câu trả lời</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Cầu dao chính <strong>khoá được ở vị trí CẮT</strong> không?</td>
+<td>Không làm được LOTO ⇒ không có quy trình an toàn</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠⚠ Có <strong>mạch ngoại lệ</strong> nào không? Đánh dấu ở đâu?</td>
+<td>Người sửa máy bị giật vì tin là đã cắt điện</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Sau khi cắt, <strong>bao lâu thì điện áp dư về dưới 60 V</strong>?
+Đã dán biển chưa?</td>
+<td>Chạm vào tụ chưa xả</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Mạch 24 V có thật sự là <strong>PELV</strong> không?</td>
+<td>Coi là an toàn trong khi không phải</td>
+</tr>
+</tbody>
+</table>
+<h3 id="36-nối-đất">3.6 Nối đất</h3>
 <table>
 <thead>
 <tr>
@@ -5707,7 +5892,7 @@ xúc</td>
 cậy.</p>
 </blockquote>
 <hr />
-<h3 id="36-chọn-mua">3.6 Chọn mua</h3>
+<h3 id="37-chọn-mua">3.7 Chọn mua</h3>
 <blockquote>
 <p>⚠ Trừ số liệu S8VK-G đã dẫn nguồn, mã dưới đây ở <strong>cấp dòng sản
 phẩm</strong>, chưa phải mã đặt hàng.</p>
@@ -5771,7 +5956,7 @@ bao lâu?</li>
 không? — cảnh báo sớm trước khi nguồn chết hẳn</li>
 </ol>
 <hr />
-<h3 id="37-sai-lầm-thường-gặp">3.7 Sai lầm thường gặp</h3>
+<h3 id="38-sai-lầm-thường-gặp">3.8 Sai lầm thường gặp</h3>
 <table>
 <thead>
 <tr>
@@ -5781,6 +5966,38 @@ không? — cảnh báo sớm trước khi nguồn chết hẳn</li>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Thợ bị <strong>điện giật dù đã cắt cầu dao chính</strong></td>
+<td><strong>Mạch ngoại lệ</strong> vẫn có điện và <strong>không được
+đánh dấu</strong></td>
+<td>Dò lại toàn tủ sau khi cắt; dán nhãn ghi rõ mạch nào còn điện và cắt
+ở đâu. Xem 3.5.2</td>
+</tr>
+<tr>
+<td>⚠⚠ Chạm vào biến tần sau khi cắt điện thì <strong>bị
+giật</strong></td>
+<td><strong>Điện áp dư trên tụ</strong> chưa xả hết</td>
+<td>Chờ đủ thời gian ghi trên nhãn <strong>rồi đo thật</strong>. Mạch xả
+hỏng thì không có gì báo. Xem 3.5.3</td>
+</tr>
+<tr>
+<td>Tủ chạy tốt nhưng <strong>trượt nghiệm thu</strong></td>
+<td>Thiếu yêu cầu IEC 60204-1: cầu dao không khoá được ở vị trí cắt,
+thiếu biển cảnh báo, chưa thử cách điện</td>
+<td>Xem 3.5 và <a href="#phan-pl-d-checklist-cap-dien">Phụ lục
+D.6b</a></td>
+</tr>
+<tr>
+<td>Coi mạch 24 V là an toàn nên đấu tay không</td>
+<td>⚠ <strong>24 V không tự động là PELV</strong> — chỉ đúng khi nguồn
+tách ly an toàn khỏi lưới</td>
+<td>Kiểm bộ nguồn có đạt cách ly an toàn không. Xem 3.5.4</td>
+</tr>
+<tr>
+<td>Tay gạt cầu dao <strong>với không tới</strong> khi cần cắt gấp</td>
+<td>Đặt cao quá mức khuyến nghị</td>
+<td>0,6–1,9 m so với sàn thao tác, nên ≤ 1,7 m. Xem 3.5.1</td>
+</tr>
 <tr>
 <td>⭐ <strong>Cảm biến nhảy loạn đúng lúc van hút</strong></td>
 <td>Van và cảm biến <strong>dùng chung một nhánh</strong> — sụt áp tức
@@ -5938,6 +6155,55 @@ ràng</td>
 </table>
 <hr />
 <h3 id="nguồn-tham-khảo-2">Nguồn tham khảo</h3>
+<ul>
+<li><p>⭐ <strong>IEC 60204-1</strong> — <em>Safety of machinery —
+Electrical equipment of machines — Part 1: General requirements</em>.
+Nguồn của toàn bộ mục 3.5. Các số liệu sách dùng và tra lại được:</p>
+<table>
+<thead>
+<tr>
+<th>Sách viết</th>
+<th>Yêu cầu của tiêu chuẩn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tay gạt cầu dao chính</td>
+<td>Đặt trong khoảng <strong>0,6 m – 1,9 m</strong> so với mặt sàn thao
+tác; <strong>khuyến nghị không quá 1,7 m</strong></td>
+</tr>
+<tr>
+<td>Điện áp dư</td>
+<td>Phần mang điện phải xả xuống <strong>≤ 60 V trong 5 giây</strong>
+sau khi cắt nguồn</td>
+</tr>
+<tr>
+<td>Mạch ngoại lệ</td>
+<td>Được phép giữ điện: chiếu sáng bảo trì · ổ cắm cho dụng cụ sửa chữa
+· mạch bảo vệ thấp áp · thiết bị phải luôn có điện (thiết bị đo ổn
+nhiệt, bộ nhớ chương trình). <strong>Khuyến nghị mỗi mạch có cầu dao
+cách ly riêng</strong></td>
+</tr>
+<tr>
+<td>Điện áp cực thấp bảo vệ</td>
+<td>≤ <strong>25 V AC</strong> hoặc <strong>60 V DC</strong> ở nơi khô
+ráo và khi không có tiếp xúc diện rộng với cơ thể</td>
+</tr>
+<tr>
+<td>Thử điện trở cách điện</td>
+<td><strong>500 V DC</strong>, giá trị đo <strong>≥ 1 MΩ</strong> giữa
+dây mạch động lực và mạch liên kết bảo vệ</td>
+</tr>
+</tbody>
+</table></li>
+</ul>
+<blockquote>
+<p>⚠ <strong>Ranh giới xác minh.</strong> Các con số trên là <strong>yêu
+cầu của tiêu chuẩn</strong>, tra lại được trong IEC 60204-1. Cách bố trí
+nhánh 24 V, cách chọn đường cong CB và các khuyến nghị thực hành khác
+trong chương là <strong>kinh nghiệm nghề</strong>, không phải trích
+chuẩn.</p>
+</blockquote>
 <ul>
 <li>Omron, <em>Switch Mode Power Supply S8VK-G Datasheet</em> (T056) —
 Power Boost <strong>120 %</strong>; dải vào <strong>85–264 VAC / 90–350
@@ -35647,7 +35913,7 @@ nói chuyện được với PLC nào</td>
 <tbody>
 <tr>
 <td><strong>Cửa tủ phải có dây bện nối đất</strong></td>
-<td>Bản lề không dẫn đất tin cậy — xem <a href="#phan-ch03-nguon-phan-phoi-dien">Ch.3 mục 3.5</a></td>
+<td>Bản lề không dẫn đất tin cậy — xem <a href="#phan-ch03-nguon-phan-phoi-dien">Ch.3 mục 3.6</a></td>
 </tr>
 <tr>
 <td>Cáp truyền thông đi <strong>tách khỏi cáp động lực</strong></td>
@@ -36659,6 +36925,68 @@ trong máng kín, nhiệt độ tủ cao, nhiều dây mang tải cùng lúc, ho
 (<strong>IEC 60364-5-52</strong>) — đừng dùng bảng này làm căn cứ thiết
 kế.</p>
 <hr />
+<h4 id="2355--tuyệt-đối-không-tráng-thiếc-đầu-dây-bện-rồi-bắt-vào-cầu-đấu-vít">23.5.5
+⚠⚠ Tuyệt đối KHÔNG tráng thiếc đầu dây bện rồi bắt vào cầu đấu vít</h4>
+<p>Đây là thói quen rất phổ biến và <strong>trông có vẻ cẩn
+thận</strong>: nhúng đầu dây bện vào thiếc cho các sợi dính chặt lại,
+rồi mới bắt vào cầu đấu. <strong>Tiêu chuẩn cấm làm vậy.</strong></p>
+<p><strong>Vì sao:</strong> thiếc là kim loại <strong>mềm và chảy
+nguội</strong> dưới áp lực. Vít siết chặt hôm nay, nhưng thiếc
+<strong>từ từ biến dạng</strong> dưới lực siết. Vài tháng sau, lực siết
+giảm dần cho tới khi:</p>
+<table>
+<thead>
+<tr>
+<th>Hệ quả</th>
+<th>Biểu hiện</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Điện trở tiếp xúc tăng</td>
+<td>Điểm nối <strong>nóng lên</strong>, đổi màu, mùi khét cách điện</td>
+</tr>
+<tr>
+<td>Tiếp xúc chập chờn</td>
+<td>Lỗi ngẫu nhiên, thường <strong>nặng thêm khi máy rung</strong></td>
+</tr>
+<tr>
+<td>Nặng nhất</td>
+<td>Hồ quang tại cầu đấu, cháy khối terminal</td>
+</tr>
+</tbody>
+</table>
+<p>⚠ Nguy hiểm ở chỗ <strong>nó không hỏng ngay</strong>. Lúc nghiệm thu
+đo thông mạch vẫn tốt, siết vẫn chặt — hỏng hóc đến sau nhiều tháng, và
+khi đó không ai nghĩ tới cái đầu dây đã tráng thiếc từ đầu.</p>
+<p>⭐ <strong>Cách đúng là dùng ferrule</strong> (23.5.1) bấm bằng đúng
+kìm (23.5.2). Ferrule là ống kim loại <strong>cứng</strong>, không chảy
+nguội, và bọc gọn toàn bộ sợi bện.</p>
+<p><strong>Hàn thiếc thì dùng ở đâu?</strong> Vẫn được, nhưng ở chỗ
+khác:</p>
+<table>
+<thead>
+<tr>
+<th>Trường hợp</th>
+<th>Được / Cấm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dùng <strong>chấu hàn (solder lug)</strong> đúng loại</td>
+<td>✅ Được — chấu hàn thiết kế cho việc đó</td>
+</tr>
+<tr>
+<td>Đầu dây bện tráng thiếc bắt vào <strong>cầu đấu vít</strong></td>
+<td>⚠⚠ <strong>Cấm</strong></td>
+</tr>
+<tr>
+<td>Chỗ có <strong>rung động hoặc chuyển động tương đối</strong> giữa
+các phần đã hàn</td>
+<td>⚠⚠ <strong>Cấm</strong></td>
+</tr>
+</tbody>
+</table>
 <h3 id="236-dây-dẫn">23.6 Dây dẫn</h3>
 <h4 id="2361-chọn-loại-dây-theo-vị-trí">23.6.1 Chọn loại dây theo vị
 trí</h4>
@@ -36937,6 +37265,14 @@ gặp ở dây chuyền thực phẩm.</p>
 </thead>
 <tbody>
 <tr>
+<td>⚠⚠ Điểm nối ở cầu đấu <strong>nóng lên và đổi màu sau vài
+tháng</strong>, lúc nghiệm thu vẫn tốt</td>
+<td>Đầu dây bện <strong>tráng thiếc</strong> rồi bắt vào cầu đấu vít —
+thiếc <strong>chảy nguội</strong> dưới lực siết, lực siết tụt dần</td>
+<td>Cắt bỏ đoạn đã tráng thiếc, bấm <strong>ferrule</strong> đúng kìm.
+Xem 23.5.5</td>
+</tr>
+<tr>
 <td>⭐ <strong>Tín hiệu chập chờn theo vị trí trục</strong>, đo lúc đứng
 yên thì bình thường</td>
 <td>⚠ <strong>Dây thường dùng trong xích cáp</strong> — sợi đứt dần bên
@@ -37121,17 +37457,24 @@ mm</td>
 <hr />
 <h3 id="nguồn-tham-khảo-22">Nguồn tham khảo</h3>
 <ul>
-<li><strong>DIN 46228-4</strong> — đầu cos ferrule có vỏ cách điện: kích
-thước và <strong>mã màu theo tiết diện</strong> (⚠ màu không phải mã duy
-nhất — xám dùng cho cả 0,75 và 4,0 mm²; ngoài ra còn hệ màu T khác
-DIN)</li>
-<li><strong>IEC 61076-2-101</strong> — đầu nối tròn M12 (mã hoá A/B/D và
-sơ đồ chân)</li>
-<li><strong>IEC 61076-2-109</strong> — M12 X-code cho Ethernet</li>
-<li><strong>IEC 60529</strong> — cấp bảo vệ IP</li>
-<li><strong>IEC 60364-5-52</strong> — chọn tiết diện dây theo dòng và
-cách lắp đặt</li>
-<li>Omron E2E datasheet — sơ đồ chân M12 của cảm biến 3/4 dây (xem <a href="#phan-ch07-cam-bien-tiem-can">Ch.7</a>)</li>
+<li><p><strong>IEC 60204-1</strong> — <em>Safety of machinery —
+Electrical equipment of machines</em>. Nguồn của mục 23.5.5: tiêu chuẩn
+cho phép mối nối hàn khi dùng <strong>chấu hàn</strong>, nhưng
+<strong>cấm hàn đầu dây bện</strong> ở nơi dùng <strong>cầu đấu kiểu
+vít</strong>, hoặc nơi có <strong>chuyển động tương đối</strong> giữa
+các phần đã hàn.</p></li>
+<li><p><strong>DIN 46228-4</strong> — đầu cos ferrule có vỏ cách điện:
+kích thước và <strong>mã màu theo tiết diện</strong> (⚠ màu không phải
+mã duy nhất — xám dùng cho cả 0,75 và 4,0 mm²; ngoài ra còn hệ màu T
+khác DIN)</p></li>
+<li><p><strong>IEC 61076-2-101</strong> — đầu nối tròn M12 (mã hoá A/B/D
+và sơ đồ chân)</p></li>
+<li><p><strong>IEC 61076-2-109</strong> — M12 X-code cho
+Ethernet</p></li>
+<li><p><strong>IEC 60529</strong> — cấp bảo vệ IP</p></li>
+<li><p><strong>IEC 60364-5-52</strong> — chọn tiết diện dây theo dòng và
+cách lắp đặt</p></li>
+<li><p>Omron E2E datasheet — sơ đồ chân M12 của cảm biến 3/4 dây (xem <a href="#phan-ch07-cam-bien-tiem-can">Ch.7</a>)</p></li>
 </ul>
 <blockquote>
 <p>⚠ Bảng dòng cho phép theo tiết diện trong chương này là <strong>giá
@@ -45540,6 +45883,67 @@ người</strong> (cao áp, laser, CT)</td>
 </tbody>
 </table>
 <hr />
+<h3 id="d6b-star-bốn-phép-thử-theo-iec-60204-1--làm-trước-khi-ký-bàn-giao">D.6b
+⭐ Bốn phép thử theo IEC 60204-1 — làm trước khi ký bàn giao</h3>
+<p>Bốn phép thử dưới đây là <strong>yêu cầu của tiêu chuẩn</strong>,
+không phải tuỳ chọn. Chúng bắt đúng những lỗi mà chạy thử bình thường
+<strong>không bao giờ lộ ra</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Phép thử</th>
+<th>Cách làm</th>
+<th>Đạt là</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Liên tục của mạch liên kết bảo vệ</strong></td>
+<td>Đo thông mạch từ cọc đất chính tới <strong>từng</strong> vỏ kim
+loại: cửa tủ, tấm gá, vỏ động cơ, khung máy</td>
+<td>Thông mạch tốt ở <strong>mọi điểm</strong> — thiếu một điểm là điểm
+đó không được bảo vệ</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Điện trở cách điện</strong></td>
+<td>Đo bằng <strong>500 V DC</strong> giữa dây mạch động lực và mạch
+liên kết bảo vệ</td>
+<td>⭐ <strong>≥ 1 MΩ</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠⚠ <strong>Điện áp dư</strong></td>
+<td>Cắt cầu dao chính, bấm giờ, đo điện áp trên phần mang điện</td>
+<td><strong>≤ 60 V trong 5 giây</strong>. Không đạt thì <strong>bắt
+buộc</strong> có biển ghi thời gian chờ</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠⚠ <strong>Mạch ngoại lệ</strong></td>
+<td>Cắt cầu dao chính rồi <strong>dò lại toàn tủ</strong> xem chỗ nào
+còn điện</td>
+<td>Mọi mạch còn điện đều <strong>đã được đánh dấu</strong>, và có cầu
+dao cách ly riêng</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>⚠⚠ <strong>Phép thử số 4 là phép thử cứu người.</strong> Người bảo
+trì mặc định rằng cắt cầu dao chính là hết điện. Nếu tủ có mạch ngoại lệ
+mà <strong>không đánh dấu</strong>, thì bạn vừa bàn giao một cái bẫy
+điện giật. Xem <a href="#phan-ch03-nguon-phan-phoi-dien">Ch.3 mục
+3.5.2</a>.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Ghi kết quả đo vào hồ sơ máy</strong>, đặc biệt là điện
+trở cách điện. Vài năm sau đo lại mà thấy tụt rõ thì đó là cách điện
+đang xuống cấp — cùng logic với <a href="#phan-pl-f-tham-so-may-moi">Phụ
+lục F.1</a>.</p>
+</blockquote>
+<hr />
 <h3 id="d7-năm-lỗi-hay-gặp-nhất-khi-cấp-điện-lần-đầu">D.7 Năm lỗi hay
 gặp nhất khi cấp điện lần đầu</h3>
 <p>Rút từ mục <em>&quot;Sai lầm thường gặp&quot;</em> của toàn bộ 30 chương:</p>
@@ -45598,7 +46002,7 @@ tra cứu theo triệu chứng</h2>
 <p><strong>Phụ lục này giải quyết đúng một tình huống:</strong> bạn đang
 đứng trước cái máy, <strong>chỉ biết nó đang bị gì</strong>, và không
 biết mở chương nào.</p>
-<p>Sách có <strong>596 dòng triệu chứng</strong> nằm rải rác trong 29
+<p>Sách có <strong>602 dòng triệu chứng</strong> nằm rải rác trong 29
 bảng <em>&quot;Sai lầm thường gặp&quot;</em>. Nếu không có chỉ mục này thì bạn
 phải <strong>đoán xem là chương nào</strong> — đúng cái mà người đang
 sửa máy lúc 2 giờ sáng không có thời gian làm.</p>
@@ -46111,8 +46515,8 @@ script là chỉ mục tự cập nhật.</p>
 </blockquote>
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-<h3 id="e4-chỉ-mục-đầy-đủ--596-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
-đủ — <strong>596 triệu chứng</strong> theo chương</h3>
+<h3 id="e4-chỉ-mục-đầy-đủ--602-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
+đủ — <strong>602 triệu chứng</strong> theo chương</h3>
 <blockquote>
 <p>💡 <strong>Cách dùng nhanh nhất: <code>Ctrl+F</code> rồi gõ đúng từ
 bạn quan sát được</strong> — ví dụ <code>chập chờn</code>,
@@ -46201,8 +46605,8 @@ cấp</td>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-3--nguồn--phân-phối-điện--16-triệu-chứng">Chương 3 — <a href="#phan-ch03-nguon-phan-phoi-dien">Nguồn &amp; phân phối điện</a> ·
-16 triệu chứng</h4>
+<h4 id="chương-3--nguồn--phân-phối-điện--21-triệu-chứng">Chương 3 — <a href="#phan-ch03-nguon-phan-phoi-dien">Nguồn &amp; phân phối điện</a> ·
+21 triệu chứng</h4>
 <table>
 <thead>
 <tr>
@@ -46211,6 +46615,28 @@ cấp</td>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Thợ bị điện giật dù đã cắt cầu dao chính</td>
+<td>Mạch ngoại lệ vẫn có điện và không được đánh dấu</td>
+</tr>
+<tr>
+<td>⚠⚠ Chạm vào biến tần sau khi cắt điện thì bị giật</td>
+<td>Điện áp dư trên tụ chưa xả hết</td>
+</tr>
+<tr>
+<td>Tủ chạy tốt nhưng trượt nghiệm thu</td>
+<td>Thiếu yêu cầu IEC 60204-1: cầu dao không khoá được ở vị trí cắt,
+thiếu biển cảnh báo, chưa thử cách điện</td>
+</tr>
+<tr>
+<td>Coi mạch 24 V là an toàn nên đấu tay không</td>
+<td>⚠ 24 V không tự động là PELV — chỉ đúng khi nguồn tách ly an toàn
+khỏi lưới</td>
+</tr>
+<tr>
+<td>Tay gạt cầu dao với không tới khi cần cắt gấp</td>
+<td>Đặt cao quá mức khuyến nghị</td>
+</tr>
 <tr>
 <td>⭐ Cảm biến nhảy loạn đúng lúc van hút</td>
 <td>Van và cảm biến dùng chung một nhánh — sụt áp tức thời</td>
@@ -48125,9 +48551,9 @@ hạn thấp hơn của hãng</td>
 </tr>
 </tbody>
 </table>
-<h4 id="chương-23--đầu-nối-dây--kỹ-thuật-đấu--20-triệu-chứng">Chương 23
+<h4 id="chương-23--đầu-nối-dây--kỹ-thuật-đấu--21-triệu-chứng">Chương 23
 — <a href="#phan-ch23-dau-noi-day-ky-thuat-dau">Đầu nối, dây &amp; kỹ
-thuật đấu</a> · 20 triệu chứng</h4>
+thuật đấu</a> · 21 triệu chứng</h4>
 <table>
 <thead>
 <tr>
@@ -48136,6 +48562,12 @@ thuật đấu</a> · 20 triệu chứng</h4>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>⚠⚠ Điểm nối ở cầu đấu nóng lên và đổi màu sau vài tháng, lúc nghiệm
+thu vẫn tốt</td>
+<td>Đầu dây bện tráng thiếc rồi bắt vào cầu đấu vít — thiếc chảy nguội
+dưới lực siết, lực siết tụt dần</td>
+</tr>
 <tr>
 <td>⭐ Tín hiệu chập chờn theo vị trí trục, đo lúc đứng yên thì bình
 thường</td>

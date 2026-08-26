@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260826</title>
+<title>C# cho Automation Machine — v1.0.1.260827</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -423,6 +423,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#172-cicd-pipeline">17.2 CI/CD Pipeline</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#173-deployment-lên-máy-trm-công-nghip">17.3 Deployment lên máy trạm công nghiệp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#174-đi-chiu-thc-t-ngành-cái-gì-tht-s-đưc-dùng-và-nên-bt-đu-t-đâu">17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#175-sau-khi-bàn-giao-bn-loi-thay-đi-và-vì-sao-phi-phân-bit-chúng">17.5 Sau khi bàn giao: bốn loại thay đổi, và vì sao phải phân biệt chúng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-17">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#ph-lc-17a-lnh-git-thưng-dùng-tra-cu-nhanh">Phụ lục 17A — Lệnh Git thường dùng (tra cứu nhanh)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-17">Lỗi thường gặp</a></li>
@@ -533,7 +534,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260826</td>
+<td>v1.0.1.260827</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -14888,6 +14889,111 @@ nhưng thực ra chặn UI thread theo từng bước motion — chỉ lộ ra k
 1 codebase có cả nhánh auto lẫn nhánh manual cùng dùng chung 1 khuôn switch nhưng do 2 người
 hoặc 2 giai đoạn khác nhau viết ra.</p>
 </blockquote>
+<h3>12.1.5  Bảng sự kiện – phản hồi: cách rút máy trạng thái ra từ yêu cầu</h3>
+<p>Bốn mục trên chỉ cho bạn <em>cách viết</em> một máy trạng thái. Còn câu hỏi đứng trước nó — <strong>lấy đâu
+ra danh sách trạng thái và chuyển tiếp?</strong> — thì hầu như không sách nào trả lời, và người mới
+thường bắt đầu sai ở đúng chỗ này: vẽ một lưu đồ mô tả <em>máy chạy thuận lợi thì làm gì</em>.</p>
+<p>Lưu đồ đó không sai, nó chỉ mô tả <strong>một đường duy nhất trong hàng chục đường có thật</strong>. Toàn bộ
+phần khó của phần mềm máy nằm ở những thứ <strong>cắt ngang</strong> đường đó: người bấm dừng giữa chừng,
+cảm biến mất tín hiệu, trạm sau báo đầy, hết vật tư, mất điện.</p>
+<p>Có một kỹ thuật rất cũ và rất rẻ để không bỏ sót: <strong>liệt kê mọi sự kiện mà phần mềm phải nhận
+ra, và bên cạnh mỗi sự kiện là phản hồi bắt buộc</strong>. Không sơ đồ, không công cụ — một cái bảng.</p>
+<p><strong>Bảng 12.2b — Bảng sự kiện – phản hồi (ví dụ rút gọn cho một máy gắp-đặt)</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Sự kiện</th>
+<th>Phản hồi bắt buộc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Người vận hành bấm <strong>Bắt đầu</strong></td>
+<td>Kiểm tra điều kiện tiên quyết → nếu đủ thì sang <code>Starting</code>; nếu thiếu, <strong>nói rõ thiếu cái gì</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cảm biến báo <strong>có phôi</strong> ở vị trí nạp</td>
+<td>Bắt đầu một chu kỳ; ghi nhận thời điểm để tính nhịp máy</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Trục báo <strong>tới vị trí</strong></td>
+<td>Chuyển bước; nếu quá thời gian chờ → cảnh báo hết giờ</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Thị giác trả <strong>kết quả NG</strong></td>
+<td>Ghi kết quả, đưa phôi vào đường loại, <strong>không</strong> dừng máy</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Trạm sau báo <strong>đầy</strong></td>
+<td>Tạm hoãn (suspend) — khác hẳn với tạm dừng do người bấm</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Người bấm <strong>Tạm dừng</strong></td>
+<td>Kết thúc bước hiện tại ở trạng thái an toàn rồi mới dừng</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Hết vật tư</strong> (băng keo, khay rỗng)</td>
+<td>Cảnh báo mức nhẹ <em>trước</em> khi hết hẳn; dừng có trật tự khi hết</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Mất kết nối</strong> với PLC/camera</td>
+<td>Vào trạng thái lỗi, thử kết nối lại có kiểm soát (Chương 13 mục 13.3.5)</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>Cửa an toàn mở</strong></td>
+<td>Phần cứng cắt năng lượng; phần mềm chỉ <em>phản ứng</em>: khoá lệnh, hiện thông báo</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Dừng khẩn cấp</strong></td>
+<td>Như trên, và <strong>không được tự chạy lại</strong> khi nhả nút</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Mất điện rồi có lại</strong></td>
+<td>Không tự chạy; buộc về gốc có chủ ý (Chương 15 mục 15.2.6)</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Sang ca / qua nửa đêm</strong></td>
+<td>Chốt số liệu ca cũ, mở ca mới (Chương 12 mục 12.5.3)</td>
+</tr>
+</tbody></table></div>
+<p>Giá trị của cái bảng này không nằm ở định dạng mà ở <strong>hành động liệt kê</strong>. Ba thứ nó lộ ra gần
+như ngay lập tức:</p>
+<p><strong>1. Ô phản hồi bỏ trống là một lỗ hổng trong đặc tả</strong>, không phải là &quot;chuyện đó chưa nghĩ tới&quot;.
+Bạn phát hiện nó trên giấy, ở giai đoạn rẻ nhất — thay vì phát hiện lúc máy đang chạy đêm.</p>
+<p><strong>2. Sự kiện nào xảy ra được ở <em>mọi</em> trạng thái thì phải tách riêng.</strong> Dừng khẩn cấp, cửa mở,
+mất điện, mất kết nối — bốn dòng cuối bảng — không thuộc về một trạng thái nào cả. Chúng chính
+là các <strong>chuyển tiếp toàn cục</strong> mà mục 12.3.2 bàn tới; nếu bạn xử lý chúng như chuyển tiếp
+thường, bạn sẽ phải khai báo lại ở từng trạng thái và chắc chắn sẽ quên một chỗ.</p>
+<p><strong>3. Bảng này là bản sinh đôi phía <em>yêu cầu</em> của bảng chuyển trạng thái.</strong> Ở mục 12.3.2 bạn viết
+bảng <em>(trạng thái × lệnh) → trạng thái mới</em>; ở Chương 18 mục 18.5.1 bạn biến đúng bảng đó thành
+<code>[Theory]</code> + <code>[InlineData]</code>. Bảng sự kiện – phản hồi là thứ đứng <strong>trước</strong> cả hai: nó quyết định
+bảng chuyển trạng thái có đủ cột hay không.</p>
+<blockquote>
+<p>💡 <strong>Cách dùng thực tế khi nhận một máy mới.</strong> Ngồi với người vận hành và người lắp máy, hỏi
+đúng một câu lặp đi lặp lại: <em>&quot;còn chuyện gì nữa có thể xảy ra?&quot;</em> — và ghi vào cột trái. Đừng
+bàn giải pháp trong lúc liệt kê, vì bàn giải pháp làm người ta ngừng nghĩ ra sự kiện mới. Khi
+danh sách đã cạn, mới quay lại điền cột phải. Buổi làm việc đó thường tốn nửa ngày và tiết
+kiệm nhiều tuần.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Một cái bẫy khi liệt kê: đừng lẫn <em>sự kiện</em> với <em>trạng thái</em>.</strong> &quot;Máy đang chạy&quot; không
+phải sự kiện — nó là trạng thái. Sự kiện là thứ <strong>xảy ra tại một thời điểm</strong> và làm trạng thái
+đổi. Nếu một dòng trong cột trái không trả lời được câu <em>&quot;nó xảy ra lúc nào?&quot;</em>, dòng đó đang
+mô tả sai thứ.</p>
+</blockquote>
+<hr>
 <h2 id="122-chun-packml-isa-tr880002">12.2  Chuẩn PackML / ISA-TR88.00.02</h2>
 <h3>12.2.1  PackML là gì và tại sao cần chuẩn hoá</h3>
 <p>Mỗi hãng máy đặt tên trạng thái theo cách riêng: Siemens gọi &quot;Betrieb&quot;, Beckhoff gọi &quot;Running&quot;, kỹ sư nội bộ gọi &quot;Auto&quot;. Khi nhà máy tích hợp MES (Manufacturing Execution System) với 20 loại máy khác nhau, cần 20 bộ adapter để đọc trạng thái từ 20 cách đặt tên khác nhau.</p>
@@ -15842,7 +15948,7 @@ sequence tuyến tính. Đọc <strong>biến đếm giai đoạn trước</stro
 chuyển giai đoạn là gì. Đọc chi tiết từng bước sau, vì các bước thường lặp lại gần giống nhau giữa
 các giai đoạn, chỉ khác công thức tính lượng tác động.</p>
 </blockquote>
-<h3>12.4.3  Trục thứ hai: nối tuyến hay chạy độc lập — và dấu hiệu bạn đã tách trục sai</h3>
+<h3>12.4.4  Trục thứ hai: nối tuyến hay chạy độc lập — và dấu hiệu bạn đã tách trục sai</h3>
 <p>Bảng 12.7b trả lời <em>&quot;chạy sản xuất theo kiểu nào&quot;</em>. Nhưng mở một máy thật đang chạy trong chuyền, bạn
 sẽ thấy trên màn hình có <strong>hai ô chế độ chứ không phải một</strong>, và hai ô đó không thay thế được cho nhau.
 Ô thứ hai trả lời một câu hỏi khác hẳn: <strong>máy đang làm việc trong hoàn cảnh nào</strong>.</p>
@@ -22241,7 +22347,7 @@ nó không phải là thứ <em>thực hiện</em> việc dừng.</li>
 <blockquote>
 <p>⚠️ <strong>Về kênh nạp chương trình: mạnh, và vì thế nguy hiểm.</strong> Gửi được một đoạn lệnh chuyển động chạy
 ngay nghĩa là <strong>bất cứ ai chạm được vào cổng đó đều điều khiển được cánh tay</strong>. Ba việc tối thiểu: chỉ
-mở kênh này khi máy ở chế độ kỹ thuật (Chương 12 mục 12.4.3), giới hạn tốc độ ở mức dạy học, và <strong>ghi
+mở kênh này khi máy ở chế độ kỹ thuật (Chương 12 mục 12.4.4), giới hạn tốc độ ở mức dạy học, và <strong>ghi
 nhật ký nguyên văn mọi đoạn lệnh đã gửi kèm người đang đăng nhập</strong>. Nếu không cần cho vận hành bình
 thường, tốt nhất là <strong>không mở nó trong bản giao khách</strong>.</p>
 </blockquote>
@@ -28840,6 +28946,73 @@ sau&quot; — và sau lần từ chối đó, đề xuất tiếp theo khó đư
 1–3 <strong>một mình, trong im lặng</strong>, rồi để kết quả tự nói khi có sự cố đầu tiên cần lần ngược phiên
 bản. Ba bậc đó không đòi hỏi ai đổi thói quen ngoài bạn.</p>
 </blockquote>
+<h2 id="175-sau-khi-bàn-giao-bn-loi-thay-đi-và-vì-sao-phi-phân-bit-chúng">17.5 Sau khi bàn giao: bốn loại thay đổi, và vì sao phải phân biệt chúng</h2>
+<p>Bốn mục trên nói về việc <strong>đưa phần mềm lên máy</strong>. Mục này nói về quãng đời dài hơn hẳn đứng sau
+đó: một cỗ máy sản xuất chạy năm tới mười năm, và trong quãng đó phần mềm sẽ bị sửa nhiều lần
+hơn tổng số lần nó được viết mới. Với phần lớn dự án máy, <strong>thời gian sống của phần mềm chủ yếu
+là thời gian bảo trì</strong>, không phải thời gian phát triển.</p>
+<p>Vấn đề thực tế không phải là &quot;có nên sửa không&quot; mà là: các yêu cầu thay đổi đổ về từ nhiều phía
+— người vận hành, kỹ thuật sản xuất, bộ phận chất lượng, bộ phận công nghệ thông tin — và chúng
+<strong>không cùng loại</strong>, nhưng lại thường bị xử lý như nhau: ai kêu to thì sửa trước. Phân loại
+chúng là việc đầu tiên cần làm, vì mỗi loại đòi một cách xử lý khác hẳn.</p>
+<p><strong>Bảng 17.8 — Bốn loại thay đổi sau bàn giao và cách xử lý tương ứng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Nghĩa</th>
+<th>Ví dụ điển hình trên máy thật</th>
+<th>Cách xử lý đúng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Sửa lỗi</strong></td>
+<td>Phần mềm không làm đúng điều đã cam kết</td>
+<td>Đếm sai sản lượng khi qua nửa đêm; treo giao diện khi mất kết nối camera</td>
+<td>Loại <strong>duy nhất</strong> có thể biện minh cho bản vá gấp tại hiện trường — nhưng vẫn phải có nhánh, có tag, có đường lùi (mục 17.3)</td>
+</tr>
+<tr>
+<td><strong>Thích ứng</strong></td>
+<td>Bên ngoài đổi, phần mềm phải theo</td>
+<td>Card ngừng sản xuất phải đổi hãng; Windows nâng cấp; MES thêm một trường bắt buộc; đổi mã hàng mới</td>
+<td>Lên kế hoạch theo phiên bản, <strong>không</strong> vá gấp. Đây là lúc tầng trừu tượng ở Chương 13 hoặc trả lãi, hoặc đòi nợ</td>
+</tr>
+<tr>
+<td><strong>Cải tiến</strong></td>
+<td>Chạy đúng rồi, nhưng muốn tốt hơn</td>
+<td>Thêm biểu đồ thống kê; rút ngắn nhịp máy 0,3 giây; giao diện đẹp hơn</td>
+<td>Gộp vào đợt phát hành có kế hoạch. Gần như <strong>không bao giờ</strong> xứng đáng với một bản vá tại chỗ</td>
+</tr>
+<tr>
+<td><strong>Phòng ngừa</strong></td>
+<td>Chưa hỏng, nhưng đang mục dần</td>
+<td>Gỡ API đã lỗi thời; tách bớt một class 3.000 dòng; bù test cho phần hay sửa</td>
+<td>Việc <strong>không ai đòi</strong>, nên phải tự xếp lịch — thường đi kèm một thay đổi thuộc ba loại trên</td>
+</tr>
+</tbody></table></div>
+<p>Ba hệ quả thực dụng của cách phân loại này:</p>
+<p><strong>1. Chỉ loại thứ nhất mới đủ tư cách phá vỡ quy trình.</strong> Khi máy đang dừng và mất tiền theo
+từng phút, sửa gấp là hợp lý. Nhưng phải gọi tên nó là <em>sửa gấp</em>, và mọi thứ đi kèm — nhánh
+riêng, tag phiên bản, đường lùi, ghi lại đã sửa gì — vẫn bắt buộc. Chương 19 mô tả chuyện xảy ra
+khi bước này bị bỏ: bản vá tạm ở lại vĩnh viễn trong máy, không ai nhớ nó tồn tại.</p>
+<p><strong>2. Loại thứ hai là loại đắt nhất và bị đánh giá thấp nhất.</strong> &quot;Card đó hãng ngừng bán rồi&quot; là
+một câu nói bình thường sau ba năm, nhưng nó là một dự án chứ không phải một yêu cầu sửa. Mục
+13.5 cho thấy 9/13 dự án khảo sát có <strong>≤3 interface</strong> trong toàn bộ mã nguồn — với những dự án
+đó, đổi hãng card nghĩa là mở gần như mọi file. Đây là lập luận thuyết phục nhất cho tầng trừu
+tượng, và nó là lập luận về <strong>tiền</strong>, không phải về sự trong sáng của kiến trúc.</p>
+<p><strong>3. Loại thứ tư sẽ không bao giờ tự xảy ra.</strong> Không người vận hành nào yêu cầu bạn tách một
+class 3.000 dòng. Cách duy nhất khiến nó xảy ra là <strong>gắn nó vào một thay đổi có người đòi</strong>: khi
+phải sửa một vùng code, dọn dẹp đúng vùng đó — không hơn. Đây là phiên bản thực dụng của quy tắc
+&quot;để lại chỗ sạch hơn lúc đến&quot;, áp cho môi trường mà mỗi lần lên máy đều có rủi ro.</p>
+<blockquote>
+<p>⚠️ <strong>Cái bẫy riêng của phần mềm máy: đội bảo trì thường không phải đội đã viết.</strong> Sau hai năm,
+người sửa phần mềm nhiều khả năng là một kỹ sư khác, ở một công ty khác, không có tài liệu
+thiết kế và không có ai để hỏi. Mọi thứ ở Chương 2 mục 2.4 (đọc code người khác) và Phụ lục B
+(giải phẫu phần mềm máy) tồn tại vì tình huống này. Và nó cũng là lý do <strong>hai việc rẻ nhất bạn
+làm được cho người kế nhiệm</strong> là: giữ tên trạng thái/tín hiệu đúng như trên bản vẽ điện, và
+viết vào README ba dòng nói rõ phần nào đã chạy với phần cứng thật, phần nào chưa.</p>
+</blockquote>
+<hr>
 <h2 id="tng-kt-chương-17">Tổng kết chương</h2>
 <ul>
 <li><p>Git giải quyết đúng nỗi đau của quản lý phiên bản kiểu folder-copy:
@@ -30105,6 +30278,87 @@ không có cách nào phát hiện bằng chạy thử tay, vì bạn không bao
 không chứa test nào — dựng lên trong tuần đầu rồi bỏ. Nó tạo ấn tượng sai cho người mới tiếp quản
 (&quot;dự án này có test&quot;), và làm hỏng luôn thói quen chạy <code>dotnet test</code> vì lệnh đó luôn báo xanh mà
 không kiểm tra gì. Hoặc viết test thật, hoặc xoá project đó đi.</p>
+</blockquote>
+<hr>
+<h3>18.6.5  Tám câu hỏi nằm ngoài &quot;chức năng có chạy đúng không&quot;</h3>
+<p>Cả chương này bàn về kiểm thử <strong>chức năng</strong>: cho đầu vào X thì phải ra Y. Nhưng phần mềm máy
+hỏng ngoài hiện trường thường <strong>không phải vì tính sai</strong> — nó tính đúng, chỉ là trả lời chậm
+mất ba phút, hoặc rò bộ nhớ sau bốn ngày, hoặc không tự đứng dậy được sau khi rút nhầm sợi cáp
+mạng. Không phép kiểm <code>[Fact]</code> nào bắt được những chuyện đó.</p>
+<p>Dưới đây là tám câu hỏi thuộc nhóm <strong>phi chức năng</strong> đáng hỏi trước khi giao máy, kèm cách thử
+rẻ nhất cho từng câu:</p>
+<p><strong>Bảng 18.10 — Tám phép thử phi chức năng cho phần mềm máy, và cách làm rẻ nhất</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Nghĩa cụ thể trên máy</th>
+<th>Cách thử rẻ nhất</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Đáp ứng có kịp không</strong></td>
+<td>Cảnh báo phải hiện <em>trong lúc còn cứu được</em>, không phải sau vài phút</td>
+<td>Đo thời gian từ lúc bật tín hiệu lỗi tới lúc banner hiện; đặt ngưỡng và ghi vào đặc tả (Chương 15)</td>
+</tr>
+<tr>
+<td><strong>Có tin được không</strong></td>
+<td>Chạy nhiều ca liên tục mà không sai, không treo</td>
+<td>Cho chạy <strong>qua đêm</strong> ở chế độ chạy không, đối chiếu số đếm đầu/cuối</td>
+</tr>
+<tr>
+<td><strong>Có tự đứng dậy được không</strong></td>
+<td>Rút cáp mạng, tắt PLC, đóng camera — rồi cắm lại</td>
+<td>Thử đúng ba thao tác đó; phần mềm phải tự phục hồi <em>hoặc</em> báo rõ và chờ, không được treo (Chương 13 mục 13.3.5)</td>
+</tr>
+<tr>
+<td><strong>Có chịu được quá tải không</strong></td>
+<td>Bật <strong>tất cả</strong> kênh đo/điểm IO, hoặc nhiều hơn số máy thật có; bắn cảnh báo dồn dập</td>
+<td>Chạy với cấu hình tối đa; xem nhịp máy, bộ nhớ, tốc độ ghi đĩa có xuống không (Chương 15 mục 15.1.6, Chương 19)</td>
+</tr>
+<tr>
+<td><strong>Thêm một thứ có dễ không</strong></td>
+<td>Thêm một trục, một trạm, một mã hàng phải sửa mấy chỗ</td>
+<td>Thử thêm một cái giả rồi <strong>đếm số file phải mở</strong></td>
+</tr>
+<tr>
+<td><strong>Có ai vào được chỗ không nên vào không</strong></td>
+<td>Quyền, mật khẩu, cổng mạng đang mở</td>
+<td>Đăng nhập bằng tài khoản thấp nhất rồi thử chạm vào mọi nút (Chương 15 mục 15.2.4)</td>
+</tr>
+<tr>
+<td><strong>Người vận hành dùng có nổi không</strong></td>
+<td>Đeo găng, đứng, ca đêm, máy đang lỗi</td>
+<td>Nhờ <strong>một người chưa từng thấy màn hình này</strong> làm ba việc thường ngày, và chỉ đứng nhìn (Chương 10)</td>
+</tr>
+<tr>
+<td><strong>Người sau sửa có nổi không</strong></td>
+<td>Kỹ sư khác, hai năm sau, không có bạn để hỏi</td>
+<td>Nhờ đồng nghiệp không viết phần đó thêm một cảnh báo mới; đo xem mất bao lâu</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Nếu chỉ làm được một phép thử trong tám phép trên, hãy chọn phép thứ tư gộp với phép thứ
+hai: chạy qua đêm với cấu hình tối đa.</strong> Một đêm chạy liên tục ở số kênh lớn nhất bắt được gần
+hết những lỗi mà không phép kiểm đơn vị nào bắt nổi — rò bộ nhớ, lũ nhật ký, tràn bộ đếm, và
+nhóm lỗi kinh điển xảy ra đúng lúc <strong>qua nửa đêm</strong> (Chương 12 mục 12.5.3). Chi phí gần bằng
+không: bạn ngủ, máy chạy.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Phép thử quá tải là một đầu vào thiết kế, không chỉ là đạt/không đạt.</strong> Điều đáng giá
+không phải câu trả lời &quot;chạy được với 64 kênh&quot;, mà là <strong>thấy được nó hỏng theo kiểu gì khi quá
+tải</strong>: nhịp máy giãn ra? nhật ký nghẽn? cảnh báo dồn ứ? Chính kiểu hỏng đó cho bạn biết cần dự
+phòng ở đâu và bao nhiêu — và đó là thông tin bạn không có cách nào khác để lấy.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Và một cặp khái niệm hay bị lẫn ở giai đoạn nghiệm thu.</strong> <em>Kiểm chứng</em> (verification) trả
+lời <strong>&quot;phần mềm có làm đúng đặc tả không&quot;</strong> — đo được, khách quan, chính là thứ cả chương này
+dạy. <em>Thẩm định</em> (validation) trả lời <strong>&quot;đặc tả đó có đúng cái nhà máy cần không&quot;</strong> — chủ quan,
+và chỉ trả lời được bằng cách cho người thật dùng thử. Một cỗ máy có thể <strong>kiểm chứng đạt hoàn
+toàn mà thẩm định trượt</strong>: chạy đúng từng dòng đặc tả, nhưng thao tác đổi mã hàng mất mười phút
+trong khi nhà máy đổi mã hàng sáu lần một ca. Lỗi đó không nằm ở code, và không phép kiểm nào
+trong chương này bắt được nó — nên đừng để lần đầu người vận hành thật chạm vào máy là ngày
+nghiệm thu.</p>
 </blockquote>
 <hr>
 <h2 id="tng-kt-chương-18">Tổng kết chương</h2>

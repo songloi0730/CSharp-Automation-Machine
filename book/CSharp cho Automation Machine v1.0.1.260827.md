@@ -14607,6 +14607,13 @@ Từ đó, mọi con số OEE không được *đếm* mà được **suy ra**: 
 có bộ đếm nào cho "thời gian chờ vật liệu" cả — nó là tổng các khoảng mà lý do hiện hành là *chờ vật
 liệu*.
 
+> ⚠️ **Hai lý do dễ bị gộp nhầm nhất, và gộp là mất hết ý nghĩa: đói liệu và nghẽn đầu ra.**
+> Cả hai đều là "máy đứng im dù vẫn khoẻ", nên rất hay bị ghi chung vào *chờ vật liệu*. Nhưng
+> chúng chỉ về **hai cỗ máy khác nhau**: đói liệu là lỗi của phía trước, nghẽn đầu ra là lỗi của
+> phía sau — và **không lý do nào trong hai lý do đó nói rằng máy này có vấn đề**. Một cỗ máy
+> nghẽn 40% thời gian là máy *nhanh* đứng sau một máy chậm; đi cải tiến nó là cải tiến nhầm chỗ.
+> Chương 14 mục 14.1.7 nói cách phần mềm biết được mình đang rơi vào loại nào.
+
 Điều quan trọng cần thấy: **"trạng thái có lý do" KHÔNG phải trạng thái của máy trạng thái điều khiển.**
 Máy trạng thái ở mục 12.1–12.3 trả lời *máy đang làm gì*; sổ lý do trả lời *vì sao máy không sản xuất*.
 Cùng một trạng thái `Idle` của bộ điều khiển có thể là nghỉ giữa ca, chờ vật liệu, chờ thợ tới, hay
@@ -14619,6 +14626,7 @@ làm điểm khởi đầu cho máy của bạn:
 |---|---|---|
 | Không tính vào thời gian khả dụng | Tắt máy; **nghỉ theo kế hoạch** | Trừ khỏi mẫu số |
 | Dừng không kế hoạch | Chờ vật liệu; **để không** (có vật liệu nhưng không chạy) | Giảm *tỉ lệ khả dụng* |
+| | **Đói liệu** (chờ máy trước) và **nghẽn đầu ra** (chờ máy sau) — **hai lý do riêng**, xem Chương 14 mục 14.1.7 | Giảm *tỉ lệ khả dụng*, nhưng chỉ về máy khác |
 | | Bảo trì; **cơ khí**; **khí nén**; **điện/điều khiển**; hiệu chỉnh | Giảm *tỉ lệ khả dụng* |
 | | Thay vật tư tiêu hao; thay linh kiện | Giảm *tỉ lệ khả dụng* |
 | Chạy nhưng chưa ra hàng tốt | **Hàng mẫu đầu ca** | Thường tách riêng |
@@ -20218,6 +20226,139 @@ thái không nhận lệnh. Vì vậy:
 > phải qua đánh giá rủi ro cho **cả ứng dụng**, không chỉ cho cánh tay: dụng cụ đầu tay có sắc không, vật
 > đang cầm có nặng không, tốc độ và lực đã giới hạn đúng chưa. Đó là việc của người thiết kế máy và bộ
 > phận an toàn; phần mềm C# **không phải chỗ để bù đắp** cho một đánh giá thiếu.
+
+---
+
+### 14.1.7  Bắt tay giữa hai máy liền kề — giao thức chỉ có hai sợi dây
+
+Sáu mục trên bàn về việc phần mềm nói chuyện với **thiết bị bên trong máy**. Nhưng một cỗ máy
+hiếm khi đứng một mình: nó nằm trong một dây chuyền, có máy trước đưa hàng tới và máy sau nhận
+hàng đi. Và ở đúng cái ranh giới đó, giao thức thường **đơn giản đến mức gây bất ngờ** — hai
+sợi dây tín hiệu, không có mạng, không có gói tin, không có tên sản phẩm.
+
+Hai hình dạng dây chuyền hay gặp, và chúng đặt ra hai bài toán khác nhau:
+
+- **Chuỗi nối tiếp, máy khác hãng:** mỗi máy làm một công đoạn, sản phẩm chạy qua lần lượt. Đây
+  là nơi cái bắt tay hai dây sống.
+- **Nhiều máy cùng loại chạy song song:** vài máy giống hệt nhau cùng làm một công đoạn để tăng
+  sản lượng. Bài toán ở đây không phải bắt tay mà là **danh tính và gộp số liệu** (bàn ở cuối mục).
+
+#### Vì sao lại là I/O, chứ không phải một giao thức tử tế
+
+Câu hỏi tự nhiên của người viết phần mềm: đã có Ethernet ở khắp nơi, sao hai máy cạnh nhau lại
+nói chuyện bằng hai sợi dây? Bốn lý do, và cả bốn đều là lý do tốt:
+
+1. **Hai máy thường của hai hãng, hai thời kỳ.** Máy trước mua năm 2015, máy sau mua năm 2024.
+   Không có giao thức chung nào cả hai cùng biết — nhưng cả hai đều có ngõ vào/ra 24 V.
+2. **Bắt tay phải sống được khi phần mềm phía kia đã chết.** Tín hiệu mức là trạng thái vật lý;
+   nó vẫn đúng khi ứng dụng bên kia đang khởi động lại hoặc vừa sập.
+3. **Lắp máy xảy ra trước khi có mạng.** Lúc căn chỉnh cơ khí ở xưởng khách, chưa ai cấu hình
+   VLAN cho bạn. Hai sợi dây thì cắm là chạy.
+4. **Ranh giới điện giữ sự cố không lan.** Cách ly quang giữa hai máy nghĩa là sự cố điện bên
+   này không kéo bên kia theo — điều mà một sợi cáp mạng chung switch không bảo đảm.
+
+#### Mẫu kinh điển: mỗi chiều một tín hiệu
+
+**Bảng 14.5d — Bắt tay hai dây giữa hai máy liền kề**
+
+| Tín hiệu | Ai phát | Nghĩa | Nếu kẹt ở mức sai |
+|---|---|---|---|
+| *"Tôi có hàng sẵn"* | Máy **trước** | Đã có sản phẩm ở vị trí giao, mời nhận | Kẹt bật: máy sau chờ mãi một sản phẩm không tồn tại. Kẹt tắt: máy sau **đói liệu** dù hàng đang chất đống |
+| *"Tôi sẵn sàng nhận"* | Máy **sau** | Chỗ nhận đang trống và máy đang chạy | Kẹt bật: máy trước đẩy hàng vào chỗ chưa trống. Kẹt tắt: máy trước **nghẽn**, dừng dù vẫn khoẻ |
+
+Hai tín hiệu đó là toàn bộ giao thức. Khi cả hai cùng đúng, việc chuyển giao xảy ra. Trong mã
+nguồn thật, chúng thường mang những cái tên rất thẳng thắn kiểu *"hàng sẵn ở phía trước"* và
+*"phía sau sẵn sàng nhận khay"*.
+
+Có một biến thể ba pha chặt chẽ hơn dùng khi việc giao nhận cần khoá vị trí: **xin** → **báo
+rảnh** → **chốt**. Chương 11 mục 11.2.4 đã mô tả mẫu này dưới góc nhìn *lớp chống hỏng ngôn ngữ*
+(ACL) — cùng một thứ, nhìn từ phía thiết kế miền.
+
+#### Năm cái bẫy, xếp theo mức độ tốn kém
+
+**1. Mức hay sườn — chọn sai thì mất sản phẩm mà không ai biết.** Nếu bắt tay bằng **xung**
+(sườn lên), chỉ cần phần mềm bận đúng lúc đó là mất tín hiệu, và mất luôn một sản phẩm khỏi mọi
+thống kê. Nếu bắt tay bằng **mức**, trạng thái vẫn nằm đó chờ được đọc. Với giao tiếp giữa hai
+máy, **mức gần như luôn đúng hơn** — và dù chọn cách nào, vẫn phải *xác nhận bằng trạng thái* như
+mục 14.1.5 đã nói: đã giao xong nghĩa là **cảm biến bên nhận thấy có hàng**, không phải nghĩa là
+tín hiệu đã bật.
+
+**2. Cả hai cùng chờ nhau.** Máy trước chờ *"sẵn sàng nhận"*, máy sau chờ *"có hàng"*, và không
+bên nào có giới hạn thời gian. Dây chuyền đứng im, cả hai màn hình đều xanh, không máy nào báo
+lỗi. Cách chặn: **mọi lần chờ hàng xóm đều phải có hạn giờ**, và khi hết giờ thì thông báo phải
+nói rõ *đang chờ máy nào* — người vận hành cần biết đi về phía nào, không cần biết mã lỗi.
+
+**3. "Đầy" và "hỏng" trông giống hệt nhau trên dây.** Máy sau không sẵn sàng có thể vì nó đang
+đầy (bình thường) hoặc vì nó vừa chết (bất thường). Hai sợi dây không phân biệt được. Đây là lý
+do một dây chuyền cần thêm một lớp giám sát bên trên — đèn tháp toàn tuyến, hoặc hệ thống host
+(mục 14.2) — chứ không thể suy ra mọi thứ từ tín hiệu hàng xóm.
+
+**4. Trên dây không có danh tính sản phẩm.** Hai sợi dây chỉ nói *"có một cái gì đó"*, không nói
+*cái gì*. Danh tính phải đến từ đường khác: mã vạch đọc lại ở mỗi máy, bản đồ khay đi kèm lô
+(Chương 13 mục 13.4.6), hoặc host phát danh tính (mục 14.2). Hỏng ở chỗ này sinh ra loại lỗi tệ
+nhất trong nhà máy: **lệch một đơn vị** — máy sau gán kết quả của sản phẩm này cho sản phẩm kế
+bên, và mọi số liệu chất lượng phía sau đều sai mà vẫn trông hợp lý.
+
+**5. Đừng biến việc chờ hàng xóm thành báo lỗi.** Chờ máy trước cấp hàng là **chuyện bình thường
+của một dây chuyền**, xảy ra hàng trăm lần mỗi ca. Nếu mỗi lần chờ đều bật một cảnh báo, bảng
+cảnh báo sẽ vô dụng trong nửa ngày (mục 15.1.6). Nó là một **trạng thái có lý do**, không phải
+một sự cố.
+
+#### Đói và nghẽn — hai lý do khác nhau, và chúng chỉ về hai máy khác nhau
+
+Đây là điểm mà mục này nối thẳng vào cách tính OEE ở Chương 12 mục 12.5.2, và là thứ đáng giá
+nhất mà một dây chuyền dạy cho người viết phần mềm:
+
+**Bảng 14.5e — Hai kiểu dừng do hàng xóm, và ý nghĩa quản lý của chúng**
+
+| | **Đói liệu** (starved) | **Nghẽn đầu ra** (blocked) |
+|---|---|---|
+| Máy đang chờ | Máy **trước** cấp hàng | Máy **sau** nhận hàng |
+| Máy này có vấn đề không | **Không** — nó rảnh vì không có việc | **Không** — nó làm nhanh hơn máy phía sau |
+| Nút thắt thật nằm ở đâu | Ở phía **trước** | Ở phía **sau** |
+| Ghi vào sổ lý do dừng | Hai **lý do riêng biệt**, không gộp vào "chờ vật liệu" chung |
+
+Vì sao phải tách hai lý do đó: một cỗ máy nghẽn 40% thời gian **không phải máy chậm** — nó là
+máy nhanh đứng sau một máy chậm. Nếu sổ lý do chỉ ghi *"dừng"*, người quản lý sẽ nhìn bảng OEE,
+thấy máy này thấp nhất tuyến, và đi cải tiến **đúng cỗ máy không có lỗi gì**. Đây là sai lầm cải
+tiến dây chuyền kinh điển, và phần mềm của bạn là thứ duy nhất có đủ thông tin để chặn nó: bạn
+biết lúc dừng thì tín hiệu hàng xóm nào đang tắt.
+
+> 💡 **Một biểu đồ rẻ tiền mà quản đốc sẽ dùng hằng ngày.** Vẽ cho mỗi máy trên tuyến một dải
+> thời gian tô ba màu: *đang chạy*, *đói*, *nghẽn*. Nhìn cả tuyến chồng lên nhau, nút thắt hiện
+> ra ngay — nó là cỗ máy **không đói cũng không nghẽn**, tức cỗ máy duy nhất luôn có việc làm.
+> Toàn bộ dữ liệu để vẽ đã nằm sẵn trong sổ lý do dừng nếu bạn tách đúng hai lý do ở trên.
+
+#### Phần mềm nên đối xử với máy hàng xóm như thế nào
+
+Nguyên tắc gọn: **coi máy bên cạnh là một thiết bị nữa**, không phải một trường hợp đặc biệt.
+Nghĩa là nó cũng đi qua đúng bộ quy tắc mà cả sách này đã dựng — một interface theo năng lực
+(Chương 13 mục 13.2.1), có hạn giờ cho mọi thao tác chờ, huỷ được bằng `CancellationToken`, và
+**có bản giả lập** để chạy thử khi chưa có hàng xóm.
+
+Điểm cuối cùng quan trọng hơn vẻ ngoài của nó: khi máy còn ở xưởng, **không có máy trước và máy
+sau nào cả**. Nếu phần mềm không chạy nổi trong hoàn cảnh đó, đội lắp máy sẽ tự chế ra cách lách
+— đấu tắt hai sợi dây bằng một đoạn dây điện, hoặc sửa code tạm — và cả hai cách đều có khả năng
+đi thẳng ra hiện trường. Chế độ **chạy độc lập** ở Chương 12 mục 12.4.4 tồn tại chính vì lý do này.
+
+#### Nhiều máy cùng loại chạy song song
+
+Hình dạng thứ hai ở đầu mục đặt ra bài toán khác hẳn: không có bắt tay giữa chúng, vì chúng
+không đưa hàng cho nhau. Bốn thứ cần quyết ngay từ đầu:
+
+| Vấn đề | Quyết định đúng |
+|---|---|
+| Công thức/tham số | **Một nguồn sự thật duy nhất**, phân phát xuống từng máy — không sửa tay từng máy, vì bốn máy sẽ trôi thành bốn cấu hình khác nhau trong vài tháng |
+| Danh tính máy trong dữ liệu | **Mọi bản ghi** đều mang mã máy. Thiếu nó thì không ai truy được lô hàng lỗi ra từ máy nào |
+| Gộp sản lượng | Cộng số liệu ở tầng trên, **không** để mỗi máy tự cộng vào một bộ đếm chung — hai máy ghi cùng lúc là mất số |
+| Màn hình | Mỗi máy một màn hình vận hành, **cộng thêm** một màn hình tổng cho cả nhóm; đừng cố nhồi bốn máy vào một màn hình vận hành |
+
+> 📌 **Đối chiếu thực tế:** trong bộ mẫu 13 dự án của sách, **6 dự án** có dấu vết bắt tay
+> máy–máy trong mã nguồn — tên tín hiệu nói thẳng vai trò của chúng (*"khay sẵn ở phía trước"*,
+> *"phía sau sẵn sàng nhận khay"*, và các biến trạng thái *phía trước / phía sau* riêng biệt).
+> Nói cách khác: gần một nửa số máy trong mẫu **không phải máy đứng một mình**, dù không dự án
+> nào coi đây là một tầng kiến trúc đáng đặt tên. Đó cũng là lý do mục này tồn tại — thứ xuất
+> hiện ở nửa số dự án mà không ai gọi tên thì luôn là thứ mỗi người tự làm một kiểu.
 
 ---
 

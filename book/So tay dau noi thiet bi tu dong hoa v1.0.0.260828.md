@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260827 |
+| **Phiên bản** | v1.0.0.260828 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 08/2026 |
 | **Nội dung** | 30 chương + 7 phụ lục · 137 sơ đồ tự vẽ · 31 ảnh thật |
@@ -14673,6 +14673,28 @@ Rồi **cộng dự phòng cho tổn thất áp**: lưu lượng ghi trên nhãn
 qua lưới lọc và chưa qua tủ chật. Thực tế thường chỉ còn **60–70 %**. Chọn quạt có lưu lượng danh
 định **lớn hơn khoảng 1,5 lần** con số tính ra.
 
+> ⭐ **Xác nhận chéo từ một nguồn độc lập.** Omron đưa ra cùng phép tính này dưới dạng khác — lưu
+> lượng cần thiết `Q [m³/phút] = 50 × W [kW] / ΔT [°C]`. Quy về cùng đơn vị với công thức ở trên
+> thì hệ số của họ là **3,0**, còn của sách là **3,1** — **lệch khoảng 3 %**.
+>
+> Điều này đáng nói vì hệ số 3,1 ở trên là **suy ra từ tính chất không khí**, không trích datasheet.
+> Một hãng thiết bị tính ra gần đúng như vậy là bằng chứng con số đó dùng được. ⚠ Nhưng cả hai đều
+> chỉ để **chọn cỡ**, không phải để chốt thiết kế.
+
+**Hai con số nữa nên biết khi chọn quạt:**
+
+| Thông số | Hướng dẫn |
+|---|---|
+| **ΔT lấy bao nhiêu khi chưa có số liệu?** | Omron gợi ý mặc định **10 °C** — dùng khi chưa biết nhiệt độ cho phép thật của thiết bị nóng nhất trong tủ. Có số liệu thật thì dùng số thật, và lấy **điều kiện khắt khe hơn** |
+| **Biên dự phòng** | Omron khuyến nghị chọn quạt có lưu lượng tối đa **1,3–2 lần** giá trị tính ra — con số **1,5 lần** ở trên nằm gọn trong khoảng đó |
+
+⚠ **Đánh đổi ít người nói tới: lưu lượng càng lớn thì càng ỒN.** Tủ đặt gần chỗ người làm việc thì
+chọn quạt lưu lượng thấp hơn và bù bằng cách khác (tủ lớn hơn, tách nguồn nhiệt ra ngoài).
+
+> 💡 **Và lời nhắc mà chính hãng cũng ghi:** kết quả thực tế **luôn khác tính toán**. Sau khi lắp
+> xong phải **đo nhiệt độ thật trong tủ** ở điều kiện xấu nhất — xem **24.9** và
+> [Phụ lục F.1](#phan-pl-f-tham-so-may-moi). Tính toán chỉ để chọn cỡ, phép đo mới là bằng chứng.
+
 #### 24.5.2 Bốn quy tắc lắp quạt lọc
 
 | Quy tắc | Vì sao |
@@ -14857,6 +14879,13 @@ xưởng tăng vì tháo mất một cái quạt trần. Không cái nào có al
 ---
 
 ### Nguồn tham khảo
+
+- **Omron**, *New Value for Control Panels* (tài liệu hướng dẫn thiết kế tủ điện) — nguồn của phần
+  **xác nhận chéo** ở 24.5.1. Những gì sách dùng: công thức lưu lượng `Q [m³/phút] = 50 × W [kW] / ΔT [°C]`
+  · gợi ý **ΔT mặc định 10 °C** khi chưa có số liệu thật · chọn quạt có lưu lượng tối đa **1,3–2 lần**
+  giá trị tính ra · lưu lượng lớn thì **ồn hơn** · và lưu ý của chính hãng rằng **kết quả thực tế
+  khác tính toán, phải đo lại trong tủ thật**.
+
 
 - Rittal, *Project Planning Manual: Enclosure Heat Dissipation* (bản tiếng Anh, 2009), §7.4
   *Example of dimensioning a climate control component*: công thức **Q̇e = Q̇v − Q̇s** và

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260827</title>
+  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260828</title>
   <style>
 
 html {
@@ -240,7 +240,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
 <body>
 <header id="title-block-header">
 <h1 class="title">Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá
-— v1.0.0.260827</h1>
+— v1.0.0.260828</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -371,7 +371,7 @@ khi đấu máy, sửa máy, hoặc mua vật tư.</p>
 <tbody>
 <tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260827</td>
+<td>v1.0.0.260828</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -37867,6 +37867,50 @@ trên nhãn quạt là lưu lượng <strong>tự do</strong>, chưa qua lưới
 chưa qua tủ chật. Thực tế thường chỉ còn <strong>60–70 %</strong>. Chọn
 quạt có lưu lượng danh định <strong>lớn hơn khoảng 1,5 lần</strong> con
 số tính ra.</p>
+<blockquote>
+<p>⭐ <strong>Xác nhận chéo từ một nguồn độc lập.</strong> Omron đưa ra
+cùng phép tính này dưới dạng khác — lưu lượng cần thiết
+<code>Q [m³/phút] = 50 × W [kW] / ΔT [°C]</code>. Quy về cùng đơn vị với
+công thức ở trên thì hệ số của họ là <strong>3,0</strong>, còn của sách
+là <strong>3,1</strong> — <strong>lệch khoảng 3 %</strong>.</p>
+<p>Điều này đáng nói vì hệ số 3,1 ở trên là <strong>suy ra từ tính chất
+không khí</strong>, không trích datasheet. Một hãng thiết bị tính ra gần
+đúng như vậy là bằng chứng con số đó dùng được. ⚠ Nhưng cả hai đều chỉ
+để <strong>chọn cỡ</strong>, không phải để chốt thiết kế.</p>
+</blockquote>
+<p><strong>Hai con số nữa nên biết khi chọn quạt:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Thông số</th>
+<th>Hướng dẫn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ΔT lấy bao nhiêu khi chưa có số liệu?</strong></td>
+<td>Omron gợi ý mặc định <strong>10 °C</strong> — dùng khi chưa biết
+nhiệt độ cho phép thật của thiết bị nóng nhất trong tủ. Có số liệu thật
+thì dùng số thật, và lấy <strong>điều kiện khắt khe hơn</strong></td>
+</tr>
+<tr>
+<td><strong>Biên dự phòng</strong></td>
+<td>Omron khuyến nghị chọn quạt có lưu lượng tối đa <strong>1,3–2
+lần</strong> giá trị tính ra — con số <strong>1,5 lần</strong> ở trên
+nằm gọn trong khoảng đó</td>
+</tr>
+</tbody>
+</table>
+<p>⚠ <strong>Đánh đổi ít người nói tới: lưu lượng càng lớn thì càng
+ỒN.</strong> Tủ đặt gần chỗ người làm việc thì chọn quạt lưu lượng thấp
+hơn và bù bằng cách khác (tủ lớn hơn, tách nguồn nhiệt ra ngoài).</p>
+<blockquote>
+<p>💡 <strong>Và lời nhắc mà chính hãng cũng ghi:</strong> kết quả thực
+tế <strong>luôn khác tính toán</strong>. Sau khi lắp xong phải
+<strong>đo nhiệt độ thật trong tủ</strong> ở điều kiện xấu nhất — xem
+<strong>24.9</strong> và <a href="#phan-pl-f-tham-so-may-moi">Phụ lục
+F.1</a>. Tính toán chỉ để chọn cỡ, phép đo mới là bằng chứng.</p>
+</blockquote>
 <h4 id="2452-bốn-quy-tắc-lắp-quạt-lọc">24.5.2 Bốn quy tắc lắp quạt
 lọc</h4>
 <table>
@@ -38353,22 +38397,30 @@ tăng → tự phát nhiệt</td>
 <hr />
 <h3 id="nguồn-tham-khảo-23">Nguồn tham khảo</h3>
 <ul>
-<li>Rittal, <em>Project Planning Manual: Enclosure Heat Dissipation</em>
-(bản tiếng Anh, 2009), §7.4 <em>Example of dimensioning a climate
-control component</em>: công thức <strong>Q̇e = Q̇v − Q̇s</strong> và
-<strong>Q̇s = k × A × (Ti − Tu)</strong>; hệ số truyền nhiệt <strong>k =
-5,5 W/m²K cho tôn thép</strong> và <strong>2,5 W/m²K cho vỏ nhôm-kẽm hai
-lớp vách</strong> trong không khí tĩnh; <strong>Ti khuyến nghị từ kinh
-nghiệm là 35 °C</strong>; bảng <strong>diện tích hiệu dụng A theo 6 kiểu
-lắp tủ</strong> theo <strong>DIN VDE 0660 Part 500</strong> (cách tính A
-quy định trong <strong>IEC/TR3 60890</strong>); ví dụ tính đầy đủ (tủ áp
-tường 1,2 × 2,0 × 0,6 m → A = 6,528 m²; Tu = 40 °C, Ti = 35 °C →
-<strong>Q̇s = −179,52 W</strong>, tức vỏ tủ <strong>hút nhiệt
-vào</strong>); điều kiện tiên quyết của quạt lọc là <strong>khí môi
-trường tương đối sạch và ở nhiệt độ thấp hơn nhiệt độ mong muốn trong
-tủ</strong>: <a href="https://www.cmafh.com/images/Master%20PDFs/Rittal/Rittal%20Enclosure%20Heat%20Dissipation%20Manual.pdf">https://www.cmafh.com/images/Master%20PDFs/Rittal/Rittal%20Enclosure%20Heat%20Dissipation%20Manual.pdf</a></li>
-<li>Apiste, <em>ENC-GR1500L-Pro — trang sản phẩm</em> (máy lạnh tủ điều
-khiển): công suất làm lạnh <strong>1460 W</strong> ở điều kiện
+<li><p><strong>Omron</strong>, <em>New Value for Control Panels</em>
+(tài liệu hướng dẫn thiết kế tủ điện) — nguồn của phần <strong>xác nhận
+chéo</strong> ở 24.5.1. Những gì sách dùng: công thức lưu lượng
+<code>Q [m³/phút] = 50 × W [kW] / ΔT [°C]</code> · gợi ý <strong>ΔT mặc
+định 10 °C</strong> khi chưa có số liệu thật · chọn quạt có lưu lượng
+tối đa <strong>1,3–2 lần</strong> giá trị tính ra · lưu lượng lớn thì
+<strong>ồn hơn</strong> · và lưu ý của chính hãng rằng <strong>kết quả
+thực tế khác tính toán, phải đo lại trong tủ thật</strong>.</p></li>
+<li><p>Rittal, <em>Project Planning Manual: Enclosure Heat
+Dissipation</em> (bản tiếng Anh, 2009), §7.4 <em>Example of dimensioning
+a climate control component</em>: công thức <strong>Q̇e = Q̇v −
+Q̇s</strong> và <strong>Q̇s = k × A × (Ti − Tu)</strong>; hệ số truyền
+nhiệt <strong>k = 5,5 W/m²K cho tôn thép</strong> và <strong>2,5 W/m²K
+cho vỏ nhôm-kẽm hai lớp vách</strong> trong không khí tĩnh; <strong>Ti
+khuyến nghị từ kinh nghiệm là 35 °C</strong>; bảng <strong>diện tích
+hiệu dụng A theo 6 kiểu lắp tủ</strong> theo <strong>DIN VDE 0660 Part
+500</strong> (cách tính A quy định trong <strong>IEC/TR3
+60890</strong>); ví dụ tính đầy đủ (tủ áp tường 1,2 × 2,0 × 0,6 m → A =
+6,528 m²; Tu = 40 °C, Ti = 35 °C → <strong>Q̇s = −179,52 W</strong>, tức
+vỏ tủ <strong>hút nhiệt vào</strong>); điều kiện tiên quyết của quạt lọc
+là <strong>khí môi trường tương đối sạch và ở nhiệt độ thấp hơn nhiệt độ
+mong muốn trong tủ</strong>: <a href="https://www.cmafh.com/images/Master%20PDFs/Rittal/Rittal%20Enclosure%20Heat%20Dissipation%20Manual.pdf">https://www.cmafh.com/images/Master%20PDFs/Rittal/Rittal%20Enclosure%20Heat%20Dissipation%20Manual.pdf</a></p></li>
+<li><p>Apiste, <em>ENC-GR1500L-Pro — trang sản phẩm</em> (máy lạnh tủ
+điều khiển): công suất làm lạnh <strong>1460 W</strong> ở điều kiện
 <strong>môi trường 35 °C / 40 %RH / nguồn 200 V</strong>, đo theo
 <strong>JIS B 8615-1</strong> (phương pháp enthalpy khí bên trong);
 nguồn <strong>1 pha 200–240 VAC</strong>, <strong>4,3 A</strong>, tiêu
@@ -38378,12 +38430,12 @@ nhiệt độ <strong>25–45 °C</strong>; môi chất <strong>R1234yf 600
 g</strong>; cấp bảo vệ <strong>tương đương IP54 (đường tuần hoàn bên
 trong), trừ phần cửa thoát nước ngưng</strong>; kích thước 1000 × 400 ×
 230 mm, ≈ 32 kg; chứng nhận CE/ETL/CCC; khuyến nghị <strong>tránh chạy
-liên tục vào mùa đông ở nhiệt độ thấp</strong>: <a href="https://www.apiste-global.com/enc/gr-pro/4623/">https://www.apiste-global.com/enc/gr-pro/4623/</a></li>
-<li><strong>IEC/TR3 60890</strong> — phương pháp xác định độ tăng nhiệt
-của tủ phân phối bằng ngoại suy tính toán; là cơ sở của cách tính diện
-tích hiệu dụng A. <strong>DIN VDE 0660 Part 500</strong> — kiểu lắp tủ.
-<strong>JIS B 8615-1</strong> — phương pháp thử máy điều hoà, dùng để
-công bố công suất làm lạnh.</li>
+liên tục vào mùa đông ở nhiệt độ thấp</strong>: <a href="https://www.apiste-global.com/enc/gr-pro/4623/">https://www.apiste-global.com/enc/gr-pro/4623/</a></p></li>
+<li><p><strong>IEC/TR3 60890</strong> — phương pháp xác định độ tăng
+nhiệt của tủ phân phối bằng ngoại suy tính toán; là cơ sở của cách tính
+diện tích hiệu dụng A. <strong>DIN VDE 0660 Part 500</strong> — kiểu lắp
+tủ. <strong>JIS B 8615-1</strong> — phương pháp thử máy điều hoà, dùng
+để công bố công suất làm lạnh.</p></li>
 </ul>
 <blockquote>
 <p>⚠ Hệ số <strong>3,1</strong> trong công thức lưu lượng quạt

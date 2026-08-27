@@ -14882,6 +14882,22 @@ DAL trong tự động hoá phải xử lý hai loại dữ liệu rất khác n
 | Dữ liệu bền vững (persistent) | Recipe, cấu hình trục, lịch sử alarm, audit trail | Lưu DB; ACID transaction; query phức tạp |
 | Dữ liệu thiết bị (device data) | Trạng thái servo, giá trị cảm biến, tag PLC | Đọc qua OPC UA/Modbus/SDK; real-time; timeout/retry |
 
+> 📌 **Hình dạng dữ liệu của phần mềm máy: cấu trúc đơn giản, nhưng luôn xoay quanh trục thời
+> gian.** Người từ phần mềm quản trị hay mang theo phản xạ thiết kế cơ sở dữ liệu của nghiệp vụ
+> văn phòng — nhiều bảng, nhiều quan hệ, chuẩn hoá kỹ. Dữ liệu của một cỗ máy có bốn đặc điểm
+> khác hẳn, và bốn đặc điểm đó dẫn tới bốn quyết định thiết kế rất cụ thể:
+>
+> | Đặc điểm của dữ liệu máy | Hệ quả cho thiết kế |
+> |---|---|
+> | **Máy tự sinh ra, không ai gõ tay** | Không cần màn hình nhập liệu, nhưng **bắt buộc** phải chịu được ghi liên tục và ghi lúc mất điện |
+> | **Khối lượng lớn nhưng kiểu dữ liệu ít và ổn định** | Lược đồ đơn giản là đúng, không phải là lười. **Chuẩn hoá quá mức** chỉ đổi một phép ghi rẻ thành năm phép join đắt |
+> | **Gần như mọi truy vấn đều là "khoảng thời gian + một định danh"** | Cột thời gian là **chỉ mục quan trọng nhất**; thiếu nó thì màn hình tra cứu chậm dần theo tuổi của máy |
+> | **Dữ liệu cũ mất giá trị theo thời gian, nhưng không đều nhau** | Xoá/lưu trữ **theo thời gian** là chính sách tự nhiên duy nhất — và mỗi loại dữ liệu một mốc (Phụ lục B mục B.3.1) |
+>
+> Kiểm tra nhanh một thiết kế: **thử viết ra câu truy vấn mà màn hình tra cứu sẽ chạy nhiều nhất**.
+> Nếu nó không có dạng *"lấy các bản ghi loại X trong khoảng từ ngày A tới ngày B"*, nhiều khả năng
+> bạn đang thiết kế cho một bài toán khác với bài toán thật.
+
 > 📌 **Lưu ý:** Chương 11 đã định nghĩa `IMachineRepository` — interface lưu Machine
 > aggregate vào DB (domain persistence). Chương này tập trung vào TRIỂN KHAI interface
 > đó và Device Gateway: tầng đọc/ghi trực tiếp từ phần cứng. Xem Chương 11 cho interface
@@ -18346,6 +18362,48 @@ Pareto), và **toàn bộ giá trị đo** của các phép đã chạy. Chỉ g
 
 ---
 
+### 13.4.8  Kênh đo và tác vụ thu thập — thứ khác hẳn với bảng điểm
+
+Mục 13.4.1 nói về **bảng điểm**: các toạ độ mà trục phải tới. Có một họ dữ liệu cấu hình khác,
+rất dễ bị gom nhầm vào cùng chỗ, nhưng bản chất khác hẳn: **kênh đo**<!--idx:Kênh đo--> — một
+đại lượng vật lý mà máy đọc liên tục và không điều khiển bằng toạ độ. Áp suất khí, độ chân
+không, nhiệt độ đầu hàn, lưu lượng, dòng tiêu thụ, lực ép.
+
+Khác biệt cốt lõi: điểm là **nơi trục đi tới**; kênh là **thứ máy quan sát**. Điểm được dùng bởi
+lệnh chuyển động; kênh được dùng bởi cảnh báo, phán định chất lượng và thống kê.
+
+Một kênh đo hiếm khi chỉ là "địa chỉ + tên". Trong các phần mềm làm nghiêm túc, mỗi kênh mang
+theo một nhóm thuộc tính mô tả **cách thu thập nó**:
+
+**Bảng 13.10 — Thuộc tính của một kênh đo, và điều gì hỏng nếu thiếu**
+
+| Thuộc tính | Nghĩa | Thiếu thì sao |
+|---|---|---|
+| **Chu kỳ đọc** | Bao lâu đọc một lần | Đọc tất cả ở tốc độ cao nhất → nghẽn kênh truyền và đầy đĩa vì những giá trị không ai xem |
+| **Mức ưu tiên** | Kênh nào được đọc trước khi bận | Khi tải cao, giá trị an toàn bị xếp hàng sau giá trị trang trí |
+| **Điều kiện kích** | Đọc liên tục, hay chỉ đọc ở một pha của chu trình | Đo lực ép trong lúc trục đang di chuyển cho ra số vô nghĩa |
+| **Độ phân giải ghi** | Chênh bao nhiêu mới ghi một bản ghi mới | Nhiễu ±0,01 sinh hàng triệu bản ghi mỗi ca |
+| **Đơn vị và hệ số quy đổi** | Từ số thô của phần cứng ra đơn vị người đọc hiểu | Số liệu đúng nhưng không ai đọc được, và mỗi màn hình tự quy đổi một kiểu |
+
+> 📌 **Tách cấu hình ngưỡng cảnh báo ra khỏi định nghĩa kênh — đây là quyết định đáng giá nhất
+> trong mục này.** Cám dỗ tự nhiên là nhét luôn `NgưỡngCao`, `NgưỡngThấp` vào cùng bản ghi kênh.
+> Đừng, vì hai thứ đó **thay đổi theo hai nhịp hoàn toàn khác nhau**: định nghĩa kênh gắn với
+> *phần cứng của máy* (đổi khi thay cảm biến — vài năm một lần), còn ngưỡng gắn với *sản phẩm
+> đang chạy* (đổi theo từng mã hàng, tức là theo recipe — có thể vài lần một ca). Trộn chúng vào
+> một bảng nghĩa là mỗi lần đổi mã hàng lại đụng vào bản ghi mô tả phần cứng, và sớm muộn sẽ có
+> người sửa nhầm hệ số quy đổi khi định sửa ngưỡng.
+>
+> Cách tách đúng: **kênh** nằm trong cấu hình máy; **ngưỡng** nằm trong recipe và trỏ tới kênh
+> bằng tên. Chương 15 mục 15.1.7 bàn tiếp phần đi kèm — vùng chết (deadband) và chống dao động
+> quanh ngưỡng — vốn là thuộc tính của *luật cảnh báo*, không phải của kênh.
+
+> 💡 **Dấu hiệu nhận ra phần mềm chưa tách hai thứ này.** Mở file cấu hình lên và tìm một dòng
+> vừa có địa chỉ phần cứng vừa có con số giới hạn trong cùng một hàng. Nếu thấy, hãy hỏi tiếp:
+> *"đổi sang mã hàng khác thì sửa ở đâu?"* — câu trả lời thường là "sửa tay vào file này", và đó
+> là nguồn của loại sự cố khó chịu nhất: máy chạy đúng nhưng chạy theo ngưỡng của mã hàng hôm qua.
+
+---
+
 ## 13.5 Đối chiếu thực tế ngành — tầng trừu tượng này có thật ngoài đời không?
 
 Chương này dạy cách đặt interface giữa logic máy và SDK của hãng. Trước khi khép lại, cần
@@ -21103,6 +21161,56 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 | **SECS/GEM** | **Wireshark** + HSMS Dissector | Kiểm tra SelectReq/SelectRsp, Linktest timing, SECS-II framing |
 | **TCP custom** | **Wireshark** (bắt trên loopback) | Xem raw JSON payload, kiểm tra framing và length-prefix |
 | **TCP custom** | **netcat / ncat** | Test kết nối thô và gửi command thủ công trước khi có application code |
+
+---
+
+### 14.3.4b  Một họ giao thức chưa nhắc tới: thiết bị đo để bàn
+
+Cả chương này bàn về giao tiếp với **thiết bị của máy** — PLC, servo, robot, camera, hệ thống
+host. Có một họ thiết bị nữa xuất hiện thường xuyên ở nhóm **máy kiểm tra**, và nó nói một thứ
+tiếng khác hẳn: nguồn lập trình được, đồng hồ đo đa năng, tải điện tử, máy phát tín hiệu, máy
+hiện sóng.
+
+Chúng gần như luôn nhận **lệnh dạng văn bản** theo một quy ước chung của ngành đo lường: câu
+lệnh là một chuỗi ASCII phân cấp bằng dấu hai chấm, kết thúc bằng ký tự xuống dòng; lệnh có dấu
+`?` là câu hỏi và sẽ có câu trả lời, lệnh không có `?` là mệnh lệnh và **im lặng**. Kênh vật lý
+có thể là LAN, USB, cổng nối tiếp hoặc bus đo lường chuyên dụng — nhưng nội dung câu lệnh gần
+như không đổi giữa các kênh, và đó chính là điểm mạnh của họ này.
+
+**Bảng 14.10b — Thiết bị đo để bàn so với các thiết bị đã bàn trong chương**
+
+| | Thiết bị máy (PLC, servo, camera) | Thiết bị đo để bàn |
+|---|---|---|
+| Dạng dữ liệu | Nhị phân, thanh ghi, tag | **Chuỗi văn bản** người đọc được |
+| Ai bắt đầu | Hai chiều, có thể thiết bị chủ động báo | **Luôn do phần mềm hỏi**, thiết bị không tự nói |
+| Đổi hãng | Thường phải viết lại lớp driver | Nhiều lệnh cơ bản **gần giống nhau giữa các hãng**, nhưng đừng tin là giống hết |
+| Rủi ro đặc trưng | Sai địa chỉ, sai kiểu dữ liệu | **Hỏi mà không đọc câu trả lời** → lệch pha hỏi/đáp cho toàn phiên làm việc |
+
+Ba điều đáng biết trước khi viết dòng đầu tiên:
+
+**1. Rủi ro lớn nhất là lệch pha hỏi–đáp.** Nếu bạn gửi một câu hỏi rồi bỏ qua câu trả lời, câu
+trả lời đó vẫn nằm trong bộ đệm — và lần hỏi sau bạn sẽ đọc được **đáp án của câu hỏi trước**.
+Từ đó mọi số đo đều trễ một nhịp, mà chương trình vẫn chạy êm ru. Nguyên tắc: **mỗi câu hỏi phải
+đọc hết câu trả lời của nó trước khi gửi câu tiếp theo**, và toàn bộ cặp hỏi–đáp nằm trong một
+vùng khoá như mục 14.1.4 đã dựng cho giao thức tự định nghĩa.
+
+**2. "Lệnh đã gửi" không có nghĩa "thiết bị đã làm xong".** Đặt điện áp rồi đo ngay sẽ ra giá trị
+cũ, vì đầu ra cần thời gian ổn định. Đây đúng là nguyên tắc *xác nhận bằng trạng thái* ở mục
+14.1.5, chỉ đổi ngữ cảnh: hỏi lại giá trị thực đo, hoặc chờ thiết bị báo đã xong — đừng chờ bằng
+`Task.Delay` một con số đoán mò.
+
+**3. Đừng để chuỗi lệnh của hãng rò khắp mã nguồn.** Đây là cùng bài học với số hiệu thuộc tính
+ở mục 13.2.4e: bọc thiết bị sau một interface theo **năng lực** (`INguonLapTrinhDuoc` với
+`ĐặtĐiệnÁpAsync`, `ĐọcDòngAsync`), và để đúng một lớp biết mặt chuỗi lệnh. Đổi hãng lúc đó là
+viết một lớp mới, không phải sửa cả trình tự test.
+
+> 📌 **Vì sao mục này không có số liệu khảo sát như các mục khác trong chương.** Bộ mẫu 13 dự án
+> của sách **không có dự án nào** dùng họ giao thức này — quét toàn bộ mã nguồn không thấy dấu
+> vết nào. Điều đó phản ánh **cách chọn mẫu**, không phản ánh ngành: bộ mẫu nghiêng về máy lắp
+> ráp và máy thị giác, còn thiết bị đo để bàn sống ở nhóm **máy kiểm tra điện** (ICT/FCT) — một
+> nhóm máy không có mặt trong mẫu. Nêu mục này ra vì người đọc rất có thể sẽ gặp nó, nhưng theo
+> đúng quy tắc của sách: **không có số liệu thì nói rõ là không có**, thay vì mượn con số của
+> nhóm khác.
 
 ---
 
@@ -31639,7 +31747,7 @@ thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.
 - **Bản đồ khay (Map Data / Wafer Map)** — 13.4.6, 14.2.6b
 - **Bàn phím ảo (Virtual Keyboard / Numpad)** — 10.1.6
 - **Bảng cờ dùng chung (Shared Tag Table)** — 16.3
-- **Bảng điểm (Point Table)** — 13.4.1
+- **Bảng điểm (Point Table)** — 13.4.1, 13.4.8
 - **Bảng màu ISA-101** — 10.2
 - **Bare Repository** — 17.1
 - **BCrypt / Argon2** — 15.2.4
@@ -31845,6 +31953,7 @@ thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.
 
 ## K
 
+- **Kênh đo** — 13.4.8
 - **Khoảng cách giữa hai lần dừng (MTBA / MTBF)** — 12.5.4
 
 ## L

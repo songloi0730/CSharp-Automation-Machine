@@ -16513,6 +16513,39 @@ nhưng bốn mục độc lập về mặt tra cứu: quay lại tra một chứ
 </tr>
 </tbody></table></div>
 <blockquote>
+<p>📌 <strong>Hình dạng dữ liệu của phần mềm máy: cấu trúc đơn giản, nhưng luôn xoay quanh trục thời
+gian.</strong> Người từ phần mềm quản trị hay mang theo phản xạ thiết kế cơ sở dữ liệu của nghiệp vụ
+văn phòng — nhiều bảng, nhiều quan hệ, chuẩn hoá kỹ. Dữ liệu của một cỗ máy có bốn đặc điểm
+khác hẳn, và bốn đặc điểm đó dẫn tới bốn quyết định thiết kế rất cụ thể:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Đặc điểm của dữ liệu máy</th>
+<th>Hệ quả cho thiết kế</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Máy tự sinh ra, không ai gõ tay</strong></td>
+<td>Không cần màn hình nhập liệu, nhưng <strong>bắt buộc</strong> phải chịu được ghi liên tục và ghi lúc mất điện</td>
+</tr>
+<tr>
+<td><strong>Khối lượng lớn nhưng kiểu dữ liệu ít và ổn định</strong></td>
+<td>Lược đồ đơn giản là đúng, không phải là lười. <strong>Chuẩn hoá quá mức</strong> chỉ đổi một phép ghi rẻ thành năm phép join đắt</td>
+</tr>
+<tr>
+<td><strong>Gần như mọi truy vấn đều là &quot;khoảng thời gian + một định danh&quot;</strong></td>
+<td>Cột thời gian là <strong>chỉ mục quan trọng nhất</strong>; thiếu nó thì màn hình tra cứu chậm dần theo tuổi của máy</td>
+</tr>
+<tr>
+<td><strong>Dữ liệu cũ mất giá trị theo thời gian, nhưng không đều nhau</strong></td>
+<td>Xoá/lưu trữ <strong>theo thời gian</strong> là chính sách tự nhiên duy nhất — và mỗi loại dữ liệu một mốc (Phụ lục B mục B.3.1)</td>
+</tr>
+</tbody></table></div>
+<p>Kiểm tra nhanh một thiết kế: <strong>thử viết ra câu truy vấn mà màn hình tra cứu sẽ chạy nhiều nhất</strong>.
+Nếu nó không có dạng <em>&quot;lấy các bản ghi loại X trong khoảng từ ngày A tới ngày B&quot;</em>, nhiều khả năng
+bạn đang thiết kế cho một bài toán khác với bài toán thật.</p>
+</blockquote>
+<blockquote>
 <p>📌 <strong>Lưu ý:</strong> Chương 11 đã định nghĩa <code>IMachineRepository</code> — interface lưu Machine
 aggregate vào DB (domain persistence). Chương này tập trung vào TRIỂN KHAI interface
 đó và Device Gateway: tầng đọc/ghi trực tiếp từ phần cứng. Xem Chương 11 cho interface
@@ -20024,6 +20057,69 @@ thức sản phẩm; đổi nó cần quyền tương đương đổi công th�
 giá trị nào</strong> (Chương 15 mục 15.2.4), và <strong>không bao giờ được áp ngược</strong> cho những sản phẩm đã chạy —
 bản ghi cũ phải giữ ngưỡng đã dùng lúc đó. Đây là lý do bản ghi sản phẩm nên chứa cả ngưỡng, không chỉ
 chứa giá trị đo và kết luận.</p>
+</blockquote>
+<hr>
+<h3>13.4.8  Kênh đo và tác vụ thu thập — thứ khác hẳn với bảng điểm</h3>
+<p>Mục 13.4.1 nói về <strong>bảng điểm</strong>: các toạ độ mà trục phải tới. Có một họ dữ liệu cấu hình khác,
+rất dễ bị gom nhầm vào cùng chỗ, nhưng bản chất khác hẳn: <strong>kênh đo</strong><!--idx:Kênh đo--> — một
+đại lượng vật lý mà máy đọc liên tục và không điều khiển bằng toạ độ. Áp suất khí, độ chân
+không, nhiệt độ đầu hàn, lưu lượng, dòng tiêu thụ, lực ép.</p>
+<p>Khác biệt cốt lõi: điểm là <strong>nơi trục đi tới</strong>; kênh là <strong>thứ máy quan sát</strong>. Điểm được dùng bởi
+lệnh chuyển động; kênh được dùng bởi cảnh báo, phán định chất lượng và thống kê.</p>
+<p>Một kênh đo hiếm khi chỉ là &quot;địa chỉ + tên&quot;. Trong các phần mềm làm nghiêm túc, mỗi kênh mang
+theo một nhóm thuộc tính mô tả <strong>cách thu thập nó</strong>:</p>
+<p><strong>Bảng 13.10 — Thuộc tính của một kênh đo, và điều gì hỏng nếu thiếu</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Nghĩa</th>
+<th>Thiếu thì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chu kỳ đọc</strong></td>
+<td>Bao lâu đọc một lần</td>
+<td>Đọc tất cả ở tốc độ cao nhất → nghẽn kênh truyền và đầy đĩa vì những giá trị không ai xem</td>
+</tr>
+<tr>
+<td><strong>Mức ưu tiên</strong></td>
+<td>Kênh nào được đọc trước khi bận</td>
+<td>Khi tải cao, giá trị an toàn bị xếp hàng sau giá trị trang trí</td>
+</tr>
+<tr>
+<td><strong>Điều kiện kích</strong></td>
+<td>Đọc liên tục, hay chỉ đọc ở một pha của chu trình</td>
+<td>Đo lực ép trong lúc trục đang di chuyển cho ra số vô nghĩa</td>
+</tr>
+<tr>
+<td><strong>Độ phân giải ghi</strong></td>
+<td>Chênh bao nhiêu mới ghi một bản ghi mới</td>
+<td>Nhiễu ±0,01 sinh hàng triệu bản ghi mỗi ca</td>
+</tr>
+<tr>
+<td><strong>Đơn vị và hệ số quy đổi</strong></td>
+<td>Từ số thô của phần cứng ra đơn vị người đọc hiểu</td>
+<td>Số liệu đúng nhưng không ai đọc được, và mỗi màn hình tự quy đổi một kiểu</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Tách cấu hình ngưỡng cảnh báo ra khỏi định nghĩa kênh — đây là quyết định đáng giá nhất
+trong mục này.</strong> Cám dỗ tự nhiên là nhét luôn <code>NgưỡngCao</code>, <code>NgưỡngThấp</code> vào cùng bản ghi kênh.
+Đừng, vì hai thứ đó <strong>thay đổi theo hai nhịp hoàn toàn khác nhau</strong>: định nghĩa kênh gắn với
+<em>phần cứng của máy</em> (đổi khi thay cảm biến — vài năm một lần), còn ngưỡng gắn với <em>sản phẩm
+đang chạy</em> (đổi theo từng mã hàng, tức là theo recipe — có thể vài lần một ca). Trộn chúng vào
+một bảng nghĩa là mỗi lần đổi mã hàng lại đụng vào bản ghi mô tả phần cứng, và sớm muộn sẽ có
+người sửa nhầm hệ số quy đổi khi định sửa ngưỡng.</p>
+<p>Cách tách đúng: <strong>kênh</strong> nằm trong cấu hình máy; <strong>ngưỡng</strong> nằm trong recipe và trỏ tới kênh
+bằng tên. Chương 15 mục 15.1.7 bàn tiếp phần đi kèm — vùng chết (deadband) và chống dao động
+quanh ngưỡng — vốn là thuộc tính của <em>luật cảnh báo</em>, không phải của kênh.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Dấu hiệu nhận ra phần mềm chưa tách hai thứ này.</strong> Mở file cấu hình lên và tìm một dòng
+vừa có địa chỉ phần cứng vừa có con số giới hạn trong cùng một hàng. Nếu thấy, hãy hỏi tiếp:
+<em>&quot;đổi sang mã hàng khác thì sửa ở đâu?&quot;</em> — câu trả lời thường là &quot;sửa tay vào file này&quot;, và đó
+là nguồn của loại sự cố khó chịu nhất: máy chạy đúng nhưng chạy theo ngưỡng của mã hàng hôm qua.</p>
 </blockquote>
 <hr>
 <h2 id="135-đi-chiu-thc-t-ngành-tng-tru-tưng-này-có-tht-ngoài-đi-không">13.5 Đối chiếu thực tế ngành — tầng trừu tượng này có thật ngoài đời không?</h2>
@@ -23557,6 +23653,70 @@ log — mỗi giao thức có một vài công cụ đặc thù không thể thi
 <td>Test kết nối thô và gửi command thủ công trước khi có application code</td>
 </tr>
 </tbody></table></div>
+<hr>
+<h3>14.3.4b  Một họ giao thức chưa nhắc tới: thiết bị đo để bàn</h3>
+<p>Cả chương này bàn về giao tiếp với <strong>thiết bị của máy</strong> — PLC, servo, robot, camera, hệ thống
+host. Có một họ thiết bị nữa xuất hiện thường xuyên ở nhóm <strong>máy kiểm tra</strong>, và nó nói một thứ
+tiếng khác hẳn: nguồn lập trình được, đồng hồ đo đa năng, tải điện tử, máy phát tín hiệu, máy
+hiện sóng.</p>
+<p>Chúng gần như luôn nhận <strong>lệnh dạng văn bản</strong> theo một quy ước chung của ngành đo lường: câu
+lệnh là một chuỗi ASCII phân cấp bằng dấu hai chấm, kết thúc bằng ký tự xuống dòng; lệnh có dấu
+<code>?</code> là câu hỏi và sẽ có câu trả lời, lệnh không có <code>?</code> là mệnh lệnh và <strong>im lặng</strong>. Kênh vật lý
+có thể là LAN, USB, cổng nối tiếp hoặc bus đo lường chuyên dụng — nhưng nội dung câu lệnh gần
+như không đổi giữa các kênh, và đó chính là điểm mạnh của họ này.</p>
+<p><strong>Bảng 14.10b — Thiết bị đo để bàn so với các thiết bị đã bàn trong chương</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Thiết bị máy (PLC, servo, camera)</th>
+<th>Thiết bị đo để bàn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dạng dữ liệu</td>
+<td>Nhị phân, thanh ghi, tag</td>
+<td><strong>Chuỗi văn bản</strong> người đọc được</td>
+</tr>
+<tr>
+<td>Ai bắt đầu</td>
+<td>Hai chiều, có thể thiết bị chủ động báo</td>
+<td><strong>Luôn do phần mềm hỏi</strong>, thiết bị không tự nói</td>
+</tr>
+<tr>
+<td>Đổi hãng</td>
+<td>Thường phải viết lại lớp driver</td>
+<td>Nhiều lệnh cơ bản <strong>gần giống nhau giữa các hãng</strong>, nhưng đừng tin là giống hết</td>
+</tr>
+<tr>
+<td>Rủi ro đặc trưng</td>
+<td>Sai địa chỉ, sai kiểu dữ liệu</td>
+<td><strong>Hỏi mà không đọc câu trả lời</strong> → lệch pha hỏi/đáp cho toàn phiên làm việc</td>
+</tr>
+</tbody></table></div>
+<p>Ba điều đáng biết trước khi viết dòng đầu tiên:</p>
+<p><strong>1. Rủi ro lớn nhất là lệch pha hỏi–đáp.</strong> Nếu bạn gửi một câu hỏi rồi bỏ qua câu trả lời, câu
+trả lời đó vẫn nằm trong bộ đệm — và lần hỏi sau bạn sẽ đọc được <strong>đáp án của câu hỏi trước</strong>.
+Từ đó mọi số đo đều trễ một nhịp, mà chương trình vẫn chạy êm ru. Nguyên tắc: <strong>mỗi câu hỏi phải
+đọc hết câu trả lời của nó trước khi gửi câu tiếp theo</strong>, và toàn bộ cặp hỏi–đáp nằm trong một
+vùng khoá như mục 14.1.4 đã dựng cho giao thức tự định nghĩa.</p>
+<p><strong>2. &quot;Lệnh đã gửi&quot; không có nghĩa &quot;thiết bị đã làm xong&quot;.</strong> Đặt điện áp rồi đo ngay sẽ ra giá trị
+cũ, vì đầu ra cần thời gian ổn định. Đây đúng là nguyên tắc <em>xác nhận bằng trạng thái</em> ở mục
+14.1.5, chỉ đổi ngữ cảnh: hỏi lại giá trị thực đo, hoặc chờ thiết bị báo đã xong — đừng chờ bằng
+<code>Task.Delay</code> một con số đoán mò.</p>
+<p><strong>3. Đừng để chuỗi lệnh của hãng rò khắp mã nguồn.</strong> Đây là cùng bài học với số hiệu thuộc tính
+ở mục 13.2.4e: bọc thiết bị sau một interface theo <strong>năng lực</strong> (<code>INguonLapTrinhDuoc</code> với
+<code>ĐặtĐiệnÁpAsync</code>, <code>ĐọcDòngAsync</code>), và để đúng một lớp biết mặt chuỗi lệnh. Đổi hãng lúc đó là
+viết một lớp mới, không phải sửa cả trình tự test.</p>
+<blockquote>
+<p>📌 <strong>Vì sao mục này không có số liệu khảo sát như các mục khác trong chương.</strong> Bộ mẫu 13 dự án
+của sách <strong>không có dự án nào</strong> dùng họ giao thức này — quét toàn bộ mã nguồn không thấy dấu
+vết nào. Điều đó phản ánh <strong>cách chọn mẫu</strong>, không phản ánh ngành: bộ mẫu nghiêng về máy lắp
+ráp và máy thị giác, còn thiết bị đo để bàn sống ở nhóm <strong>máy kiểm tra điện</strong> (ICT/FCT) — một
+nhóm máy không có mặt trong mẫu. Nêu mục này ra vì người đọc rất có thể sẽ gặp nó, nhưng theo
+đúng quy tắc của sách: <strong>không có số liệu thì nói rõ là không có</strong>, thay vì mượn con số của
+nhóm khác.</p>
+</blockquote>
 <hr>
 <h3>14.3.5  Đối chiếu thực tế ngành — giao thức nào thật sự xuất hiện</h3>
 <p>Ba mục trên giúp bạn <em>chọn</em> giao thức. Mục này nói về thứ bạn sẽ <em>gặp</em>, và hai danh sách đó
@@ -35201,7 +35361,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>Bản đồ khay (Map Data / Wafer Map)</strong> — 13.4.6, 14.2.6b</li>
 <li><strong>Bàn phím ảo (Virtual Keyboard / Numpad)</strong> — 10.1.6</li>
 <li><strong>Bảng cờ dùng chung (Shared Tag Table)</strong> — 16.3</li>
-<li><strong>Bảng điểm (Point Table)</strong> — 13.4.1</li>
+<li><strong>Bảng điểm (Point Table)</strong> — 13.4.1, 13.4.8</li>
 <li><strong>Bảng màu ISA-101</strong> — 10.2</li>
 <li><strong>Bare Repository</strong> — 17.1</li>
 <li><strong>BCrypt / Argon2</strong> — 15.2.4</li>
@@ -35407,6 +35567,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 </ul>
 <h2 id="k">K</h2>
 <ul>
+<li><strong>Kênh đo</strong> — 13.4.8</li>
 <li><strong>Khoảng cách giữa hai lần dừng (MTBA / MTBF)</strong> — 12.5.4</li>
 </ul>
 <h2 id="l-2">L</h2>

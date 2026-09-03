@@ -2634,6 +2634,16 @@ dư thừa xuống đất, bảo vệ các thiết bị phía sau nó.</p>
 có một ngưỡng &quot;bắt buộc theo công suất máy&quot; cố định — quyết định dựa trên đánh giá rủi ro thực
 tế của vị trí lắp đặt (một máy nhỏ ở khu vực hay có giông sét vẫn nên có SPD; một máy lớn ở khu
 vực ít giông sét, cấp điện hoàn toàn trong nhà có thể chấp nhận rủi ro thấp hơn).</p>
+<p><strong>SPD nguồn điện và SPD đường tín hiệu là hai thiết bị khác nhau, không dùng lẫn:</strong> nội dung
+trên nói về SPD lắp trên đường <strong>cấp nguồn</strong> (AC vào tủ). Nếu máy có cáp tín hiệu/truyền thông
+đi dài ra ngoài tủ — đặc biệt đoạn đi ngoài trời, đi song song gần đường dây điện lực, hoặc nối
+tới một hộp nối/trạm ở xa (Chương 21, mục 21.3) — đoạn cáp đó <strong>cũng có thể</strong> bị cảm ứng xung
+sét lan truyền, độc lập với đường nguồn. SPD đường tín hiệu (data-line/signal SPD) là thiết bị
+<strong>riêng biệt</strong>, chọn theo đúng loại tín hiệu cần bảo vệ (analog 4-20mA, RS-485, Ethernet...) —
+không thể dùng SPD nguồn để bảo vệ đường tín hiệu, vì đặc tính điện áp làm việc và tốc độ đáp
+ứng khác hẳn nhau. Với AOI-01 (mọi cáp đi trong nhà xưởng, không đoạn nào ra ngoài trời), rủi ro
+này thấp — nhưng dự án có hộp nối/cảm biến đặt ngoài trời hoặc gần đường dây trung/cao thế nên
+cân nhắc SPD tín hiệu cho đúng đường cáp đó.</p>
 <h2 id="132-b-lc-emi-vì-sao-cn-đu-đâu">13.2. Bộ lọc EMI — vì sao cần, đấu ở đâu</h2>
 <p>Driver servo/biến tần tạo ra điện áp động cơ bằng cách <strong>băm nhanh</strong> điện áp DC bus (tần số
 băm thường hàng kHz tới hàng chục kHz — xem lại nguyên lý ở Chương 10) — quá trình băm nhanh
@@ -2819,6 +2829,30 @@ này hay không&quot;. Câu trả lời cho câu hỏi thứ hai phải có <str
 định: dùng rơ-le an toàn loại nào (có Category/PL bao nhiêu), có cần 2 kênh hay chỉ cần 1 kênh
 là đủ, có cần thêm giám sát tiếp điểm gương hay không. Đây là lý do chương này đứng <strong>trước</strong>
 Chương 18 trong thứ tự tính toán — dù đứng sau về số thứ tự chương trong mục lục.</p>
+<p><strong>Ba bước giảm rủi ro theo đúng thứ tự ưu tiên — nguyên tắc nền tảng đứng sau mọi quyết định
+trong chương này:</strong> phương pháp luận an toàn máy công nghiệp (nguyên tắc chung, không phải quy
+định riêng của sách này) yêu cầu xử lý rủi ro theo đúng thứ tự, không được nhảy cóc:</p>
+<ol>
+<li><strong>Thiết kế vốn dĩ đã an toàn (inherently safe design)</strong> — loại bỏ mối nguy hiểm ngay từ cách
+thiết kế cơ khí/động học, không cần thêm thiết bị bảo vệ nào. Ví dụ: đặt vùng kẹp/va đập ở vị
+trí người vận hành không thể với tới trong lúc thao tác bình thường, thay vì để nguyên vị trí
+dễ với tới rồi thêm cảnh báo.</li>
+<li><strong>Thiết bị bảo vệ/che chắn (guarding &amp; protective devices)</strong> — khi bước 1 không loại bỏ hết
+được mối nguy (ví dụ vùng thao tác bắt buộc phải gần cơ cấu chuyển động), dùng che chắn cơ
+khí, khoá liên động, rèm quang... đúng nội dung sơ đồ mẫu Chương 18.</li>
+<li><strong>Thông tin cho người dùng (information for use)</strong> — biển cảnh báo, hướng dẫn vận hành, đào
+tạo. Đây là bước <strong>cuối cùng</strong>, chỉ bù đắp cho rủi ro còn sót lại sau hai bước trên, <strong>không
+bao giờ được dùng để thay thế</strong> hai bước trên.</li>
+</ol>
+<blockquote>
+<p>⚠ <strong>NGUY HIỂM</strong> — Lỗi tư duy phổ biến nhất: gặp một mối nguy hiểm, phản xạ đầu tiên là &quot;dán
+thêm biển cảnh báo&quot; hoặc &quot;dặn người vận hành cẩn thận&quot; — đây là bước <strong>cuối cùng và yếu nhất</strong>
+trong ba bước trên, chỉ nên dùng khi hai bước đầu đã làm hết mức có thể. Một bộ bản vẽ điện có
+đầy đủ mạch an toàn (bước 2) nhưng được thiết kế để &quot;bù&quot; cho một bố trí cơ khí nguy hiểm lẽ ra
+nên sửa từ bước 1 (ví dụ đặt nút bấm ngay sát vùng kẹp thay vì cách xa) là dấu hiệu quy trình
+thiết kế đã làm sai thứ tự — người thiết kế bản vẽ nên nêu vấn đề với bộ phận cơ khí thay vì
+chỉ cố &quot;bọc&quot; an toàn bằng mạch điện cho một thiết kế cơ khí chưa tối ưu.</p>
+</blockquote>
 <h2 id="142-lp-bng-chc-năng-an-toàn-safety-function-list">14.2. Lập bảng chức năng an toàn (Safety Function list)</h2>
 <p>Một &quot;chức năng an toàn&quot; không phải khái niệm chung chung kiểu &quot;máy có nút dừng khẩn&quot; — nó là
 <strong>một hành động cụ thể, gắn với một mối nguy hiểm cụ thể</strong>. Một máy có thể cần nhiều chức năng
@@ -3535,6 +3569,16 @@ tiếp cỡ/loại thiết bị trong ví dụ này.</p>
 2 kênh cơ bản). Hình 18.2 (biến thể STO) chỉ dùng khi máy có servo/biến tần hỗ trợ chức năng
 này. Mục 18.6 (LOTO) áp dụng cho quy trình bảo trì, không phải một sơ đồ nguyên lý riêng mà là
 một tập hợp yêu cầu thiết kế rải rác trên nhiều trang.</p>
+<blockquote>
+<p>⚠ <strong>NGUY HIỂM</strong> — E-Stop là <strong>biện pháp bảo vệ bổ trợ (complementary/supplementary protective
+measure)</strong>, không phải biện pháp bảo vệ chính — khớp đúng thứ tự 3 bước giảm rủi ro đã học ở
+Chương 14, mục 14.1 (thiết kế vốn an toàn → che chắn/khoá liên động → thông tin/cảnh báo).
+E-Stop chỉ có tác dụng <strong>sau khi</strong> một tình huống bất thường đã xảy ra — nó không ngăn được
+tình huống đó xảy ra. Đừng để một dự án thật dựa hoàn toàn vào &quot;máy có E-Stop rồi&quot; để bỏ qua
+việc che chắn/khoá liên động đúng mức cho vùng nguy hiểm — đây là lỗi tư duy phổ biến khiến
+mạch an toàn &quot;đúng kỹ thuật&quot; (Category/PL đạt yêu cầu) nhưng máy vẫn không an toàn thực sự vì
+người vận hành vẫn tiếp cận được vùng nguy hiểm trong lúc máy chạy bình thường.</p>
+</blockquote>
 <h2 id="182-mch-an-toàn-2-kênh-e-stop-kép-công-tc-ca-hình-181">18.2. Mạch an toàn 2 kênh: E-Stop kép + công tắc cửa (Hình 18.1)</h2>
 <p><img src="../assets/ch18/mau_18_1_estop_2_kenh_nguyen_ly.svg" alt="Hình 18.1 — Mạch an toàn 2 kênh: E-Stop kép + công tắc cửa"></p>
 <p>Đây là hiện thực hoá trực tiếp kiến trúc <strong>Category 3</strong> đã học nguyên lý ở Chương 14 (mục
@@ -3555,6 +3599,19 @@ vỡ hoàn toàn lý do tồn tại của kiến trúc dự phòng.</p>
 kẹt dính, không phải tiếp điểm phụ giám sát) có thể khiến nguồn động lực <strong>không được cắt</strong> dù
 -K1 đã &quot;nghĩ&quot; là đã ngắt thành công. Dùng 2 contactor độc lập, mỗi cái đủ khả năng tự ngắt toàn
 bộ nguồn động lực, đảm bảo dù một trong hai bị kẹt, cái còn lại vẫn hoàn thành nhiệm vụ.</p>
+<p><strong>Vì sao nút E-Stop/công tắc an toàn phải chọn loại có &quot;mở cưỡng bức&quot; (direct opening action),
+không phải bất kỳ tiếp điểm NC nào:</strong> đây là một yêu cầu cấu tạo cơ khí cụ thể (không phải chỉ
+là &quot;tiếp điểm thường đóng&quot;) — tiếp điểm phải được <strong>đẩy mở trực tiếp bằng lực cơ khí</strong> từ hành
+động nhấn/kéo của người dùng, không phụ thuộc vào lò xo bên trong công tắc để tự mở. Vì sao khác
+biệt này quan trọng: một tiếp điểm NC thông thường dựa vào lò xo để mở khi cơ cấu tác động —
+nếu lò xo đó gãy hoặc tiếp điểm bị kẹt dính (hàn dính do hồ quang), tiếp điểm <strong>không mở được</strong>
+dù nút đã được nhấn, và người vận hành không có cách nào biết điều đó chỉ bằng cách nhìn nút đã
+lún xuống. Với cấu tạo mở cưỡng bức, chính lực tay nhấn nút (không phải lò xo) trực tiếp kéo
+tiếp điểm tách ra — tiếp điểm <strong>buộc phải mở</strong> bất kể tình trạng bên trong công tắc, cùng logic
+&quot;cưỡng bức&quot; đã áp dụng cho tiếp điểm phụ contactor -K7/-K8 ở trên, chỉ khác là áp dụng ngay từ
+đầu vào cảm biến/nút bấm thay vì đầu ra. Datasheet công tắc an toàn/nút E-Stop đạt yêu cầu này
+thường ghi rõ &quot;direct opening action&quot; hoặc dùng ký hiệu mũi tên trong vòng tròn (⊖) cạnh ký hiệu
+tiếp điểm trên sơ đồ nguyên lý của hãng.</p>
 <h2 id="183-vì-sao-mch-an-toàn-có-ngun-24vdc-riêng-đu-công-tc-ca-liên-đng">18.3. Vì sao mạch an toàn có nguồn 24VDC riêng, đấu công tắc cửa liên động</h2>
 <p>Hình 18.1 nhận nguồn từ Nhánh 4 đã thiết kế độc lập ở Chương 11/15 — nhắc lại: nếu mạch an toàn
 dùng chung cầu chì với mạch điều khiển thường, một sự cố ở mạch điều khiển (ví dụ chập cháy
@@ -3567,6 +3624,19 @@ thể có tình huống mất tín hiệu giám sát gây khó chẩn đoán s�
 chỉ mở được về mặt cơ khí sau khi mạch an toàn đã ngắt nguồn động lực — kết hợp phần cứng khoá
 cửa với tín hiệu điện, không chỉ dựa vào ý thức người vận hành &quot;nhớ nhấn E-Stop trước khi mở
 cửa&quot;.</p>
+<blockquote>
+<p>⚠ <strong>NGUY HIỂM — chống vô hiệu hoá (defeat) công tắc liên động:</strong> đây là lỗi thực tế phổ biến
+nhất với công tắc cửa an toàn, không phải lỗi thiết kế mạch điện — người vận hành thấy công
+tắc &quot;gây vướng&quot; khi phải mở/đóng cửa liên tục trong ca làm việc, rồi tự chế cách vô hiệu hoá nó
+(dùng băng dính/dây rút giữ tiếp điểm ở trạng thái &quot;đóng&quot; giả, gắn thêm nam châm ngoài để đánh
+lừa công tắc từ) để khỏi phải chờ mạch an toàn reset mỗi lần mở cửa. Vài cách giảm bớt lý do
+khiến người vận hành muốn vô hiệu hoá, đáng cân nhắc ngay từ khâu chọn thiết bị/quy trình,
+không chỉ đổ lỗi cho ý thức người vận hành: chọn công tắc <strong>mã hoá (coded)</strong> khó đánh lừa bằng nam châm
+thường; đặt vị trí công tắc <strong>khó với tới</strong> từ bên trong khu vực nguy hiểm; và quan trọng nhất
+— nếu cửa phải mở/đóng quá thường xuyên trong vận hành bình thường, xem lại có nên dùng <strong>rèm
+quang + muting</strong> (Chương 14, mục 14.8) thay cho cửa cơ khí, thay vì để người vận hành tự tìm
+cách &quot;sống chung&quot; với một thiết kế gây bất tiện.</p>
+</blockquote>
 <h2 id="184-bin-th-dùng-sto-ca-driver-servo-hình-182">18.4. Biến thể — dùng STO của driver servo (Hình 18.2)</h2>
 <p><img src="../assets/ch18/mau_18_2_sto_servo_nguyen_ly.svg" alt="Hình 18.2 — Biến thể dùng STO của driver servo"></p>
 <p><strong>Sự khác biệt cốt lõi so với Hình 18.1:</strong> Hình 18.1 ngắt <strong>nguồn động lực</strong> cấp cho driver
@@ -5183,15 +5253,23 @@ thu bắt buộc và tài liệu kỹ thuật cần kèm theo máy.</p>
 <h1 id="chương-29-nghim-thu-đin-h-sơ-k-thut-giao-khách">Chương 29 — Nghiệm thu điện &amp; hồ sơ kỹ thuật giao khách</h1>
 <blockquote>
 <p>Đây là chương cuối cùng đóng vai trò &quot;chốt chặn&quot; trước khi máy rời khỏi xưởng của bạn. Khác
-với Phụ lục D của sách này (nếu có — checklist cho <strong>người đấu dây</strong> trước khi cấp điện lần
-đầu), chương này là <strong>bộ biểu mẫu nghiệm thu chính thức</strong> mà người thiết kế bản vẽ phải chuẩn
-bị sẵn để đội thi công/nghiệm thu điền vào, và <strong>danh mục tài liệu bắt buộc</strong> phải có khi bàn
-giao — cả hai đều là trách nhiệm thiết kế, không phải chỉ trách nhiệm hiện trường.</p>
+với checklist tự rà soát của người thiết kế trước khi phát hành bản vẽ (Chương 30 — dùng
+trước khi thi công), chương này là <strong>bộ biểu mẫu nghiệm thu chính thức</strong> mà người thiết kế bản
+vẽ phải chuẩn bị sẵn để đội thi công/nghiệm thu điền vào <strong>sau khi thi công xong, trước khi
+cấp điện thật</strong>, và <strong>danh mục tài liệu bắt buộc</strong> phải có khi bàn giao — cả hai đều là trách
+nhiệm thiết kế, không phải chỉ trách nhiệm hiện trường.</p>
 </blockquote>
 <h2 id="291-các-phép-th-bt-buc-trưc-khi-bàn-giao">29.1. Các phép thử bắt buộc trước khi bàn giao</h2>
 <p>IEC 60204-1 (Chương 2) dành hẳn một phần quy định về nghiệm thu (thường gọi tắt là &quot;§18&quot; trong
 nhiều bản dịch/tóm tắt phổ biến — số điều khoản chính xác có thể khác nhau giữa các phiên bản
-tiêu chuẩn, luôn đối chiếu đúng bản đang áp dụng). Năm nhóm phép thử cốt lõi:</p>
+tiêu chuẩn, luôn đối chiếu đúng bản đang áp dụng). Ba mốc nghiệm thu thường gặp trong thực hành
+công nghiệp (thuật ngữ phổ biến quốc tế, không phải quy định riêng của IEC 60204-1): <strong>FAT
+(Factory Acceptance Test)</strong> — thử tại xưởng của bạn, trước khi giao máy; <strong>SAT (Site Acceptance
+Test)</strong> — thử lại tại hiện trường khách hàng, sau khi lắp đặt xong (môi trường/nguồn điện thật
+có thể khác điều kiện thử ở xưởng); <strong>SIT (Site Integration Test)</strong> — thử máy hoạt động đúng
+trong bối cảnh tích hợp với dây chuyền/hệ thống khác tại hiện trường (nếu máy không vận hành độc
+lập). Năm nhóm phép thử dưới đây là nội dung kỹ thuật dùng chung cho cả FAT lẫn SAT — khác nhau
+ở <strong>nơi thử</strong> và <strong>điều kiện môi trường lúc thử</strong>, không phải khác nội dung thử:</p>
 <h3>a) Liên tục mạch bảo vệ (PE continuity)</h3>
 <p>Đo điện trở/kiểm tra liên tục giữa <strong>mọi</strong> bộ phận kim loại đã nối PE (khung máy, vỏ tủ, mọi
 điểm đẳng thế đã học ở Chương 12) và cọc PE chính — xác nhận đường về của dòng sự cố thực sự

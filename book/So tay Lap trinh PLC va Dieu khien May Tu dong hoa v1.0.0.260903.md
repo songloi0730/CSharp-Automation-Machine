@@ -4867,9 +4867,11 @@ END_FOR;
 ```
 
 > ⚠⚠ **Chỉ số mảng vượt dải là lỗi nguy hiểm.**
-> Tuỳ hệ: hoặc CPU báo lỗi và **chuyển sang STOP**, hoặc tệ hơn — **ghi đè lên vùng nhớ của biến
-> khác**, gây hỏng hóc ở chỗ hoàn toàn không liên quan. Mọi chỉ số đến từ tính toán phải được **kẹp
-> trong dải** trước khi dùng. Chương 19, mục 19.7.
+> Tuỳ hệ, có **ba** hậu quả: CPU báo lỗi và **chuyển sang STOP**; hoặc **ghi đè lên vùng nhớ của biến
+> khác**, gây hỏng hóc ở chỗ hoàn toàn không liên quan; hoặc ⚠⚠ — thứ khó phát hiện nhất —
+> ⭐ **hệ tự kẹp im lặng về phần tử đầu/cuối mảng rồi chạy tiếp**, khiến dữ liệu của hai sản phẩm khác
+> nhau đè lên cùng một ô nhớ mà không có dấu hiệu gì. Mọi chỉ số đến từ tính toán phải được **kẹp
+> trong dải** trước khi dùng — ⚠ **đừng trông vào việc hệ tự kẹp**. Chương 19, mục 19.7.
 
 ### Khi nào dùng mảng, khi nào dùng biến rời
 
@@ -5034,7 +5036,7 @@ khác và không ai biết vì sao.
 ### 🔍 BẪY 6 — Chỉ số mảng không kẹp trong dải
 
 **Hiện tượng:** CPU chuyển sang STOP; hoặc hỏng hóc ở một chỗ **hoàn toàn không liên quan** vì vùng
-nhớ biến khác bị ghi đè.
+nhớ biến khác bị ghi đè; hoặc ⚠⚠ **không có triệu chứng gì** vì hệ tự kẹp về phần tử đầu/cuối.
 **Cách sửa:** kẹp mọi chỉ số đến từ tính toán trước khi dùng (Chương 19, mục 19.7).
 
 ### 🔍 BẪY 7 — Để mọi biến ở phạm vi toàn cục
@@ -8511,8 +8513,25 @@ Trên máy tính thường, chia cho 0 ném ra một ngoại lệ mà chương t
 | Hệ có thể | Hậu quả |
 |---|---|
 | Đặt lỗi vào một bit trạng thái, kết quả không xác định, chạy tiếp | Sai số liệu, khó phát hiện |
+| Đặt cờ **lỗi nhẹ** *(minor fault)*, chạy tiếp | Chỉ thấy nếu chương trình có đọc cờ đó |
 | Trả về giá trị lớn nhất của kiểu | Số liệu vô lý, dễ thấy hơn |
-| **Chuyển CPU sang STOP** | ⚠⚠ **Máy dừng đột ngột giữa chu trình** |
+| ⚠⚠ **Tự thay mẫu số bằng 1 rồi tính tiếp** | ⚠⚠ **Kết quả SAI nhưng TRÔNG HỢP LÝ** — xem dưới |
+| **Dừng thực thi chương trình / chuyển CPU sang STOP** | ⚠⚠ **Máy dừng đột ngột giữa chu trình** |
+
+> ⚠⚠ **Hàng thứ tư là hàng nguy hiểm nhất, và nó có thật.**
+>
+> Một dòng PLC phổ biến xử lý mẫu số 0 bằng cách ⭐ **tự đổi mẫu số thành 1**, rồi tính bình thường
+> và **chạy tiếp**. Tín hiệu duy nhất báo có chuyện là ⚠ **đèn LED trên CPU nhấp nháy xen kẽ hai mã
+> lỗi** — thứ không ai đứng nhìn lúc 2 giờ sáng.
+>
+> Hậu quả với ví dụ ở trên: `TotalMs / 0` thành `TotalMs / 1`, tức là ⚠ **thời gian chu kỳ trung bình
+> bằng đúng tổng thời gian**. Con số đó lớn bất thường nhưng **không vô lý** — nó sẽ đi vào báo cáo,
+> vào biểu đồ xu hướng, và vào quyết định của người vận hành.
+>
+> ⭐⭐ **Bài học chung, quan trọng hơn cả chi tiết hãng nào:** khi hệ thống *"tự xử lý"* một lỗi bằng
+> cách thay giá trị, nó ⚠ **biến một lỗi ồn ào thành một lỗi im lặng** — và lỗi im lặng đắt hơn nhiều.
+> Cùng logic đó lặp lại ở giá trị thay thế của analog (Chương 31) và ở giá trị cũ khi mất truyền
+> thông (Chương 38, mục 38.9).
 
 > ⚠⚠ **NGUY HIỂM**
 > Trường hợp thứ ba là lý do mục này có cảnh báo. CPU chuyển sang STOP nghĩa là **mọi ngõ ra tắt cùng
@@ -8537,6 +8556,49 @@ END_IF;
 > **Quy tắc: mọi phép chia có mẫu số là biến đều phải được bọc bằng một phép kiểm khác 0.**
 > Không có ngoại lệ, kể cả khi bạn "chắc chắn" mẫu số không bao giờ bằng 0 — vì đầu ca, sau khi xoá
 > số đếm, và sau khi nạp lại chương trình, nó đều bằng 0.
+
+#### ⚠⚠ Với mẫu số là **số thực**, kiểm "khác 0" là **chưa đủ**
+
+Đoạn code trên đúng cho số nguyên. ⚠ Với `REAL`, nó **có lỗ hổng**: một số thực có thể **khác 0 nhưng
+cực nhỏ** — và chia cho `0.0000001` cho ra một kết quả khổng lồ, đủ để tràn số hoặc làm vô nghĩa mọi
+tính toán phía sau, mà **phép kiểm `<> 0` vẫn cho qua**.
+
+```iecst
+// ✗ CHƯA ĐỦ với số thực
+IF Flow <> 0.0 THEN  Ratio := Total / Flow;  END_IF;
+
+// ✓ ĐÚNG — so với một NGƯỠNG, không so với 0
+IF ABS(Flow) > 1.0E-6 THEN                 // 32 bit: ngưỡng thường dùng 1e-6
+    Ratio := Total / Flow;
+ELSE
+    Ratio := 0.0;
+END_IF;
+```
+
+| Kiểu | Ngưỡng thường dùng |
+|---|---|
+| `REAL` (32 bit) | **1e-6** |
+| `LREAL` (64 bit) | Chỉnh theo nhu cầu, ⭐ **nhỏ nhất khoảng 1e-15** |
+
+> ⭐ Đây là cùng một ý với việc **không so sánh bằng hai số thực** (Chương 14): với số thực, ⭐ **mọi
+> phép so sánh đều phải có dung sai** — kể cả phép so sánh với 0.
+
+#### ⭐ Ba nguyên nhân thật sự làm mẫu số bằng 0
+
+Biết nguyên nhân giúp tìm chỗ cần bọc, thay vì bọc tất cả một cách máy móc:
+
+| Nguyên nhân | Tình huống |
+|---|---|
+| ⭐ **Biến chưa được khởi tạo** | Đầu ca, sau khi nạp lại chương trình |
+| ⭐ **Biến được khởi tạo SAU khi đã bị gọi** | Thứ tự thực thi khác thứ tự bạn tưởng |
+| ⚠ **Biến toàn cục bị ghi ở nhiều tác vụ / nhiều POU** | ⭐ Một tác vụ xoá về 0 đúng lúc tác vụ kia đang chia — **khó tái hiện nhất** |
+
+> ⚡ **Có hệ cho bạn cái bẫy sẵn.** Nền CODESYS có thể sinh tự động các hàm kiểm chia ngầm
+> — `CheckDivInt`, `CheckDivReal` và các biến thể — bằng cách thêm *"POU for implicit checks"* rồi
+> chọn **Division Checks**. Đặt điểm dừng trong các hàm đó là ⭐ **cách nhanh nhất tìm ra dòng nào
+> đang chia cho 0**, thay vì đọc dò cả chương trình.
+>
+> ⚠ Đây là công cụ **gỡ lỗi**, không phải cách sửa. Cách sửa vẫn là bọc phép chia trong code.
 
 ### Tràn số — âm thầm và dai dẳng
 
@@ -8856,9 +8918,20 @@ mà tích luỹ dần.
 
 ### 🔍 BẪY 7 — Chỉ số mảng không được kẹp trong dải
 
-**Hiện tượng:** hỏng hóc ở một chỗ **hoàn toàn không liên quan** tới đoạn code có lỗi — vì vùng nhớ
-của biến khác bị ghi đè. Hoặc CPU chuyển sang STOP.
-**Cách sửa:** kẹp mọi chỉ số đến từ tính toán (mục 19.7).
+**Hiện tượng:** ba khả năng, ⚠ **và khả năng thứ ba là khó phát hiện nhất**:
+
+| Hệ có thể | Hậu quả |
+|---|---|
+| Ghi đè vùng nhớ của biến khác | ⚠ Hỏng ở **một chỗ hoàn toàn không liên quan** tới code có lỗi |
+| Chuyển CPU sang STOP | Máy dừng đột ngột |
+| ⚠⚠ **Kẹp im lặng về phần tử đầu hoặc cuối mảng** | ⚠⚠ **Đọc/ghi nhầm phần tử, không dừng, không báo** |
+
+> ⚠⚠ **Hàng thứ ba là cùng một kiểu nguy hiểm với việc tự thay mẫu số bằng 1** (mục 19.5): hệ *"tự
+> xử lý"* và chạy tiếp. Có dòng PLC kiểm chỉ số **lúc biên dịch** với hằng số và **lúc chạy** với
+> biến, rồi ⭐ **dồn giá trị vượt trên vào phần tử cuối, giá trị vượt dưới vào phần tử 0** — nghĩa là
+> dữ liệu của ⚠ **hai sản phẩm khác nhau đè lên cùng một ô nhớ** mà không ai biết.
+
+**Cách sửa:** kẹp mọi chỉ số đến từ tính toán (mục 19.7) — ⚠ **đừng trông vào việc hệ tự kẹp**.
 
 ### 🔍 BẪY 8 — MOVE chạy mỗi vòng quét khi nạp tham số
 
@@ -8880,7 +8953,8 @@ ký tự và loại hẳn một nhóm lỗi (Chương 30).
 
 | Việc | Quy tắc | Vì sao |
 |---|---|---|
-| Chia | **Luôn kiểm mẫu số khác 0** | Có hệ chuyển CPU sang STOP |
+| Chia, mẫu số **số nguyên** | **Luôn kiểm khác 0** | Có hệ dừng CPU, có hệ **tự thay bằng 1** |
+| ⚠⚠ Chia, mẫu số **số thực** | ⭐ **So với NGƯỠNG** (`ABS(x) > 1e-6`), không so với 0 | Số thực khác 0 nhưng cực nhỏ vẫn làm nổ kết quả |
 | Tính phần trăm | **Nhân trước, chia sau** | Chia số nguyên cắt hết phần lẻ |
 | Kết quả trung gian | Kiểm dải kiểu dữ liệu | Tràn xảy ra trước khi chia kịp thu nhỏ lại |
 | Thời gian tích luỹ | **`DINT`**, không dùng `INT` | 32 767 ms = 33 giây |
@@ -8889,7 +8963,8 @@ ký tự và loại hẳn một nhóm lỗi (Chương 30).
 | Ngưỡng cảnh báo | Có **trễ** (bật/tắt hai ngưỡng) | Chống nhấp nháy quanh ngưỡng |
 | Theo dõi sản phẩm dọc chuyền | **Thanh ghi dịch**, dịch theo sự kiện thật | Thông tin phải đi cùng sản phẩm |
 | Vòng lặp dịch | Từ chỉ số **lớn về nhỏ** | Ngược lại thì nhân bản giá trị ra cả mảng |
-| Chỉ số mảng | **Luôn kẹp trong dải** | Vượt dải: STOP hoặc ghi đè vùng nhớ khác |
+| Chỉ số mảng | **Luôn kẹp trong dải** | Vượt dải: STOP · ghi đè vùng nhớ khác · ⚠⚠ **hoặc kẹp im lặng** |
+| ⭐⭐ Khi hệ *"tự xử lý"* lỗi | ⚠ **Coi chừng** — nó biến lỗi ồn ào thành lỗi im lặng | Lỗi im lặng đắt hơn nhiều |
 | Nạp tham số | **Bắt cạnh**, không nạp mỗi vòng quét | Ghi đè thay đổi của người vận hành |
 
 ---
@@ -8897,7 +8972,7 @@ ký tự và loại hẳn một nhóm lỗi (Chương 30).
 ## 19.12 Tự kiểm
 
 1. `7 / 2` trong phép chia số nguyên cho kết quả bằng mấy? Vì sao không phải `3.5` và cũng không phải `4`?
-2. ⭐ Nêu ba hậu quả khác nhau mà chia cho 0 có thể gây ra trên PLC. Hậu quả nào nguy hiểm nhất và
+2. ⭐ Nêu **năm** hậu quả khác nhau mà chia cho 0 có thể gây ra trên PLC. Hậu quả nào nguy hiểm nhất và
    vì sao?
 3. Vì sao `IF ActualLength = 12.5 THEN` gần như không bao giờ đúng? Viết lại cho đúng.
 4. `OkCount = 1187`, `TotalCount = 1240`, cả hai là `INT`. Tính `(OkCount * 100) / TotalCount` gặp vấn
@@ -8911,6 +8986,11 @@ ký tự và loại hẳn một nhóm lỗi (Chương 30).
 9. Nêu hai lý do nên dùng số nguyên đơn vị phần mười mi-li-mét thay cho số thực mi-li-mét.
 10. ⭐ Chỉ số mảng vượt dải có thể gây hỏng hóc ở một chỗ hoàn toàn không liên quan. Cơ chế nào dẫn tới
     chuyện đó, và vì sao lỗi kiểu này đặc biệt khó tìm?
+11. ⚠⚠ `IF Flow <> 0.0 THEN Ratio := Total / Flow; END_IF;` — đoạn này **vẫn có lỗ hổng**. Lỗ hổng ở
+    đâu, và viết lại cho đúng?
+12. ⭐⭐ Hai hành vi *"tự xử lý rồi chạy tiếp"* (thay mẫu số bằng 1 · kẹp chỉ số mảng) nguy hiểm hơn
+    việc dừng CPU ở điểm nào? Nêu hai chỗ khác trong sách có cùng kiểu nguy hiểm đó.
+13. ⭐ Nêu ba nguyên nhân làm một biến mẫu số bằng 0. Nguyên nhân nào khó tái hiện nhất, vì sao?
 
 > Câu 2, 6 và 10 là ba câu phân loại. Câu 6 là tinh thần của cả chương: **khi dữ liệu phải đi cùng
 > sản phẩm, một biến không đủ — cần một cấu trúc có vị trí.**
@@ -8927,6 +9007,15 @@ là quyết định **tệ** dù nó gọn hơn.
 
 - IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*: các kiểu dữ liệu cơ bản,
   phép toán, phép so sánh, hàm ép kiểu và quy tắc về dải giá trị. *(tiêu chuẩn có bản quyền)*
+- **Tài liệu lập trình Inovance H5U/Easy** §6.1.9 — nguồn cho hai hành vi ⚠⚠ *"tự xử lý rồi chạy
+  tiếp"*: mẫu số 0 **tự đổi thành 1**, và chỉ số mảng vượt dải bị **kẹp về phần tử đầu/cuối**; cả hai
+  chỉ báo bằng **đèn LED nhấp nháy**.
+- **Tài liệu InoProShop (nền CODESYS)** — nguồn cho ⭐ **ba nguyên nhân** làm mẫu số bằng 0, cơ chế
+  *"POU for implicit checks" → Division Checks*, và ⭐ **ngưỡng 1e-6 / 1e-15** cho mẫu số số thực.
+- **Petruzella**, *Programmable Logic Controllers* — hành vi **cờ lỗi nhẹ** *(minor fault)* khi chia
+  cho 0.
+- **Hugh Jack**, *Automating Manufacturing Systems with PLCs* — chương trình xử lý lỗi
+  *(fault handler)* chạy khi có lỗi như chia cho 0.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho hành vi khi **chia cho 0**, khi **tràn
   số**, và cho quy tắc làm tròn khi ép kiểu `REAL` → `INT`. Ba điểm này khác nhau giữa các hãng ở mức
   đủ để đổi kết quả, nên **phải tra theo đúng hệ đang dùng**, không suy từ hệ khác.
@@ -32208,7 +32297,8 @@ Nếu  Tần số xung  >  1 / (2 × Thời gian quét)   →  ⭐ PHẢI dùng 
 | ⚠⚠ **Bẫy chính** | ⭐ **Chia số nguyên cắt bỏ phần thập phân** — `7 / 2 = 3`, không phải 3,5 |
 | ⭐ Quy tắc thực dụng | ⭐ **Ép sang số thực trước khi tính**, ép về số nguyên sau khi tính xong |
 | ⚠ Với số thực | ⭐ **Không so sánh bằng** hai số thực — so bằng khoảng dung sai |
-| Chương | 14 |
+| ⚠⚠ Chia cho mẫu số **số thực** | ⭐ **So với ngưỡng, không so với 0**: `ABS(x) > 1e-6` (32 bit) · tới `1e-15` (64 bit) |
+| Chương | 14, 19 (mục 19.5) |
 
 ---
 

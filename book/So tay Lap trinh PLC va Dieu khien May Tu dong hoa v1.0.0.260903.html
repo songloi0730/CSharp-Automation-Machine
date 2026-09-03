@@ -738,6 +738,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#381-bài-toán-hai-thit-b-đúng-cáp-đúng-không-nói-chuyn-đưc">38.1 Bài toán: hai thiết bị đúng, cáp đúng, không nói chuyện được</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#382-ba-kiu-kt-ni">38.2 Ba kiểu kết nối</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#383-rs-232-rs-422-rs-485">38.3 RS-232, RS-422, RS-485</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#383b-khong-cách-và-tc-đ-đánh-đi-vi-nhau-không-con-s-nào-đng-mt-mình">38.3b ⭐⭐ Khoảng cách và tốc độ đánh đổi với nhau — không con số nào đứng một mình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#384-bn-tham-s-phi-khp">38.4 Bốn tham số phải khớp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#385-ba-th-ca-rs-485-mà-ngưi-ta-hay-quên">38.5 ⭐ Ba thứ của RS-485 mà người ta hay quên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#386-cht-và-sn-xuttiêu-th">38.6 Chủ–tớ và sản xuất–tiêu thụ</a></li>
@@ -794,6 +795,7 @@
   <li><a href="#chương-42-mã-vch-mã-2d-truy-xut-ngun-gc">Chương 42 — Mã vạch, mã 2D & truy xuất nguồn gốc</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#421-bài-toán-mt-lô-hàng-b-tr-v-không-ai-bit-lô-nào">42.1 Bài toán: một lô hàng bị trả về, không ai biết lô nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#422-mã-1d-và-mã-2d">42.2 Mã 1D và mã 2D</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#422b-hai-lý-do-mã-không-đc-đưc-mà-không-nm-đu-đc">42.2b ⭐⭐ Hai lý do "mã không đọc được" mà không nằm ở đầu đọc</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#423-đu-đc-c-đnh-hay-cm-tay">42.3 Đầu đọc — cố định hay cầm tay</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#424-ghép-đu-đc-vào-plc">42.4 Ghép đầu đọc vào PLC</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#425-lung-truy-xut-đy-đ">42.5 ⭐ Luồng truy xuất đầy đủ</a></li>
@@ -10379,7 +10381,7 @@ không giải thích được (khi hai nấc trùng nằm trong hai nhánh chư�
  ────┤ ├─────────────┤/├───────────────────────────────────────────────( )───
 </code></pre>
 <p><strong>Cách phòng:</strong> quy tắc <strong>mỗi ngõ ra chỉ được ghi ở đúng một nơi</strong>. Trước khi thêm điều kiện cho một
-ngõ ra, dùng chức năng tham chiếu chéo <em>(cross-reference)</em> để tìm mọi chỗ đang ghi vào nó — Chương 22
+ngõ ra, dùng công cụ tham chiếu chéo <em>(cross-reference)</em> để tìm mọi chỗ đang ghi vào nó — Chương 22
 hướng dẫn.</p>
 <blockquote>
 <p>⚡ <strong>LƯU Ý</strong>
@@ -12506,7 +12508,7 @@ cho kết quả sai — xem mục 19.5.</li>
 <blockquote>
 <p>💡 <strong>MẸO — MOVE là chỗ tốt để đặt điểm quan sát</strong>
 Khi gỡ lỗi một giá trị &quot;không biết từ đâu ra&quot;, tìm <strong>mọi</strong> lệnh ghi vào biến đó — MOVE, phép gán,
-khối chức năng có chân ra nối vào nó. Công cụ tham chiếu chéo <em>(cross-reference)</em> của phần mềm lập
+khối chức năng có chân ra nối vào nó. Công cụ tham chiếu chéo của phần mềm lập
 trình làm việc này trong vài giây (Chương 22). Đây là kỹ thuật gỡ lỗi năng suất nhất với dữ liệu.</p>
 </blockquote>
 <hr>
@@ -16865,7 +16867,7 @@ trình tự bên trong quản lý các bước. Chương 26 xây phần trình t
 <p>Nguy hiểm cụ thể: một đoạn code phụ nào đó đặt <code>MachineState := Idle</code> khi đang <code>Alarm</code>, và <strong>lỗi biến
 mất mà nguyên nhân còn nguyên</strong>.</p>
 <p><strong>Cách phòng:</strong> chỉ gán <code>MachineState</code> <strong>bên trong khối <code>CASE</code></strong> (hoặc trong các nấc chuyển tiếp đã
-định danh). Dùng tham chiếu chéo <em>(cross-reference)</em> để soát: mọi chỗ ghi vào <code>MachineState</code> phải khớp
+định danh). Dùng công cụ tham chiếu chéo để soát: mọi chỗ ghi vào <code>MachineState</code> phải khớp
 đúng một dòng trong bảng. Đây là ứng dụng trực tiếp của quy tắc &quot;mỗi biến chỉ được ghi ở nơi đã định&quot;
 ở Chương 10.</p>
 <h3>🔍 BẪY 5 — Trạng thái không phản ánh ra ngoài</h3>
@@ -22063,6 +22065,101 @@ nhiều điểm trong một chu trình ép chỉ kéo dài dưới một giây. 
 trước khi thiết kế</strong>, cùng vấn đề với module nhiệt độ ở Chương 33 mục 33.11.</p>
 </blockquote>
 <hr>
+<h3>⭐⭐ Vì sao đơn vị là mV/V — và bốn thông số datasheet quyết định</h3>
+<p><strong>Một — mV/V không phải cách viết cho gọn, nó là bản chất của mạch cầu.</strong></p>
+<p>Mạch cầu đo lực khác mạch cầu cân bằng ở một điểm: ⭐ <strong>điện áp ra tỉ lệ với điện áp kích thích</strong>.
+Cầu cân bằng cho 0 V bất kể nguồn nuôi bao nhiêu; cầu <strong>lệch</strong> thì nguồn nuôi quyết định biên độ ra.</p>
+<p>⭐ Vì thế độ nhạy phải ghi dưới dạng <em>&quot;bao nhiêu mV ra trên mỗi vôn kích, ở tải định mức&quot;</em>.</p>
+<pre><code class="language-text">Load cell 2 mV/V, kich thich 10 V  -&gt;  toan thang =  20 mV
+Load cell 2 mV/V, kich thich  5 V  -&gt;  toan thang =  10 mV
+</code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Hai hệ quả thực dụng:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hệ quả</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Bộ khuếch đại <strong>phải biết</strong> điện áp kích thật</td>
+<td>⚠ Cấu hình sai điện áp kích → <strong>sai toàn thang</strong>, mà đồ thị vẫn đẹp</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Điện áp kích trôi thì phép đo trôi theo</strong></td>
+<td>⚠ Đây là lý do bộ khuếch đại tốt <strong>tự cấp và tự đo</strong> điện áp kích</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<p><strong>Hai — vì sao bốn tem biến dạng chứ không phải một.</strong></p>
+<p>Điện trở tem biến dạng đổi theo <strong>cả lực lẫn nhiệt độ</strong>. ⭐ Mắc bốn tem thành cầu làm ảnh hưởng của
+nhiệt độ <strong>tự triệt tiêu</strong>, vì nó tác động lên mọi nhánh như nhau còn lực thì không.</p>
+<p>⭐ Đây là lý do bạn không thể tự chế load cell bằng một tem biến dạng dán lên thanh thép — nó sẽ đo
+nhiệt độ phòng nhiều hơn đo lực.</p>
+<p><strong>Ba — ⚠ từ biến: số đọc trôi trong lúc lực KHÔNG đổi.</strong></p>
+<p>Giữ nguyên một tải, số đọc vẫn <strong>trôi chậm</strong> — hiện tượng gọi là <strong>từ biến</strong> <em>(creep)</em>. Datasheet
+ghi nó dưới dạng phần trăm toàn thang trong một khoảng thời gian, ⭐ <strong>thường là 30 phút</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bạn làm gì</th>
+<th>Từ biến ảnh hưởng ra sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đo lực đỉnh rồi nhả ngay</td>
+<td>⭐ <strong>Gần như không ảnh hưởng</strong></td>
+</tr>
+<tr>
+<td>⚠ <strong>Giữ lực rồi mới đọc</strong></td>
+<td>⭐ Càng giữ lâu, số đọc càng lệch</td>
+</tr>
+<tr>
+<td>⚠⚠ Giữ tải liên tục và theo dõi lâu dài</td>
+<td>Từ biến trở thành sai số đáng kể</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Thiết kế theo hướng tránh nó:</strong> đọc lực <strong>tại thời điểm xác định trong chu trình</strong>, không phải
+sau một khoảng giữ tuỳ ý. ⚠ Nếu bắt buộc phải giữ, hãy <strong>giữ đúng một khoảng cố định</strong> để sai số
+ít nhất <strong>lặp lại được</strong>.</p>
+</blockquote>
+<p><strong>Bốn — ⚠⚠ đặt lệch tâm: cùng một lực, số đọc khác nhau.</strong></p>
+<p>Load cell được thiết kế để nhận lực <strong>tại một điểm và theo một phương</strong>. ⭐ Lực đặt lệch tâm sinh
+thêm mô-men, và số đọc sai — sai bao nhiêu thì datasheet ghi dưới dạng phần trăm toàn thang <strong>ứng
+với một độ lệch cho trước</strong>.</p>
+<blockquote>
+<p>⚠⚠ <strong>Đây là sai số CƠ KHÍ mà không phép hiệu chuẩn điện nào sửa được.</strong></p>
+<p>Hiệu chuẩn bằng quả cân (mục 34.3) đặt tải <strong>đúng tâm</strong>. Nếu khi chạy thật, cơ cấu ép lại tì lệch —
+⭐ <strong>phép hiệu chuẩn vẫn đúng, mà phép đo vẫn sai</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc phải làm</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Dẫn hướng cơ cấu</strong> để lực luôn đi qua tâm load cell</td>
+<td>Cách tốt nhất</td>
+</tr>
+<tr>
+<td>⭐ Tránh <strong>lực ngang và mô-men</strong> vào load cell</td>
+<td>Dùng khớp cầu hoặc màng đàn hồi nếu cần</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Kiểm bằng cách đặt cùng một quả cân ở vài vị trí</strong></td>
+<td>⭐ Chênh lệch giữa các vị trí chính là sai số lệch tâm <strong>thật của cơ cấu bạn</strong></td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<p>⭐ Hàng cuối là phép kiểm mười phút mà rất ít người làm — và nó trả lời dứt điểm câu hỏi <em>&quot;vì sao
+cùng một sản phẩm mà lực đo lúc cao lúc thấp&quot;</em>.</p>
+<p><em>(Đối chiếu: Kuphaldt — Lessons in Industrial Instrumentation, mục mạch cầu đo và triệt tiêu biến số
+không mong muốn. Từ biến và sai số lệch tâm là <strong>thông số datasheet tiêu chuẩn</strong> của load cell —
+⚠ con số cụ thể khác nhau theo thiết bị và theo cấp chính xác; tra datasheet của load cell bạn dùng.)</em></p>
+<hr>
 <h2 id="343-hiu-chun-bng-qu-cân-chun">34.3 Hiệu chuẩn bằng quả cân chuẩn</h2>
 <p>Với cân, <strong>hiệu chuẩn là bắt buộc</strong> — không phải tuỳ chọn. Chương 32 mục 32.8 đã phân biệt hiệu chuẩn
 với đặt dải; ở đây là quy trình cụ thể.</p>
@@ -22573,6 +22670,22 @@ Chương 29).</p>
 </tr>
 </thead>
 <tbody><tr>
+<td>⭐⭐ Vì sao độ nhạy ghi bằng <strong>mV/V</strong></td>
+<td>Điện áp ra <strong>tỉ lệ với điện áp kích</strong> — kích trôi thì phép đo trôi</td>
+</tr>
+<tr>
+<td>⭐ Vì sao bốn tem chứ không một</td>
+<td>Mạch cầu <strong>tự triệt tiêu ảnh hưởng nhiệt độ</strong></td>
+</tr>
+<tr>
+<td>⚠ Từ biến</td>
+<td>Số đọc <strong>trôi khi lực KHÔNG đổi</strong> — đọc tại thời điểm cố định trong chu trình</td>
+</tr>
+<tr>
+<td>⚠⚠ Đặt lệch tâm</td>
+<td>⭐ <strong>Sai số cơ khí — hiệu chuẩn điện không sửa được.</strong> Kiểm bằng quả cân đặt vài vị trí</td>
+</tr>
+<tr>
 <td>Vì sao cảm biến vị trí không đủ</td>
 <td>⭐ Nhiều loại lỗi <strong>kết thúc ở cùng vị trí</strong>, khác nhau ở <strong>đường đi tới đó</strong></td>
 </tr>
@@ -22656,6 +22769,11 @@ tắc gì?</li>
 bạn một con số; quan hệ giữa hai đại lượng cho bạn một chữ ký — và chữ ký mới phát hiện được hỏng
 hóc trôi dần.</strong></p>
 </blockquote>
+<p>⭐⭐ <strong>Bổ sung.</strong> Một load cell 2 mV/V. Bộ khuếch đại được cấu hình cho kích thích 10 V nhưng thực tế
+chỉ cấp 5 V. Phép đo sai thế nào, và vì sao <strong>đồ thị vẫn trông bình thường</strong>?</p>
+<p>⚠⚠ <strong>Bổ sung.</strong> Bạn hiệu chuẩn bằng quả cân đặt đúng tâm, kết quả hoàn hảo. Khi chạy thật, cùng một
+sản phẩm cho lực lúc cao lúc thấp. Nêu nguyên nhân cơ khí khả dĩ nhất và <strong>phép kiểm mười phút</strong> xác
+nhận nó.</p>
 <hr>
 <h3>Chương tiếp theo</h3>
 <p>Chương 35 — <strong>Điều khiển PID trên PLC</strong>. Bạn đã có các phép đo quá trình. Chương sau về việc dùng
@@ -25277,7 +25395,7 @@ Trên <strong>mạng có chuyển mạch</strong>, mỗi thiết bị có đư�
 <td>Khoảng cách</td>
 <td>Ngắn — vài chục mét</td>
 <td>Xa</td>
-<td>⭐ <strong>Xa</strong> — hàng trăm mét</td>
+<td>⭐ <strong>Xa</strong> — khuyến nghị tới <strong>1200 m</strong> (mục 38.3b)</td>
 </tr>
 <tr>
 <td>Chống nhiễu</td>
@@ -25318,6 +25436,94 @@ một môi trường nhiễu. Dùng hai sợi rời song song thì hiệu quả 
 <p>💡 Cùng nguyên lý này giải thích vì sao vòng dòng 4–20 mA chống nhiễu tốt (Chương 31, mục 31.4) và
 vì sao Ethernet công nghiệp dùng đôi xoắn (Chương 40).</p>
 </blockquote>
+<hr>
+<h2 id="383b-khong-cách-và-tc-đ-đánh-đi-vi-nhau-không-con-s-nào-đng-mt-mình">38.3b ⭐⭐ Khoảng cách và tốc độ đánh đổi với nhau — không con số nào đứng một mình</h2>
+<p>Câu hỏi hay gặp nhất về RS-485 là <em>&quot;đi được bao xa?&quot;</em>. ⚠ Câu hỏi đó <strong>thiếu một nửa</strong>: xa bao nhiêu
+<strong>ở tốc độ nào</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Con số</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Khuyến nghị thường trích</td>
+<td>⭐ <strong>1200 m</strong> cho cả RS-422 và RS-485</td>
+</tr>
+<tr>
+<td>⭐⭐ Quan hệ tốc độ–chiều dài</td>
+<td><strong>Tốc độ tối đa tỉ lệ nghịch với chiều dài cáp</strong></td>
+</tr>
+<tr>
+<td>⚠ Nên hiểu 1200 m là</td>
+<td><strong>Một điểm trên đường đánh đổi</strong>, không phải bức tường</td>
+</tr>
+</tbody></table></div>
+<p><strong>Ba dữ kiện làm rõ ý này</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trường hợp</th>
+<th>Kết quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cáp 30 m <em>(100 ft)</em>, ⚠ <strong>không có điện trở đầu cuối</strong></td>
+<td>~<strong>200 kbps</strong></td>
+</tr>
+<tr>
+<td>⭐ Cùng cáp 30 m, <strong>có</strong> điện trở đầu cuối ở đầu nhận</td>
+<td>⭐ <strong>1 Mbps</strong> — gấp năm lần</td>
+</tr>
+<tr>
+<td>Cáp <strong>5 km</strong>, cáp chất lượng cao, đi dây cẩn thận</td>
+<td>Chạy được ở <strong>1200 bps</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Ba dòng trên nói ba điều khác nhau, và cả ba đều đáng nhớ:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Điện trở đầu cuối không phải chi tiết nhỏ</strong> — cùng sợi cáp đó, có nó thì nhanh gấp năm lần (mục 38.5)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>1200 m không phải giới hạn cứng</strong> — hạ tốc độ xuống thì đi xa hơn nhiều</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ Nhưng cái giá của việc đi xa là <strong>cáp tốt và đi dây cẩn thận</strong>, không phải may mắn</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<p><strong>Hệ quả khi thiết kế</strong></p>
+<blockquote>
+<p>⭐ <strong>Chọn tốc độ thấp nhất mà chu kỳ máy chấp nhận được.</strong></p>
+<p>Người ta hay đặt baud cao <em>&quot;cho chắc&quot;</em>. ⚠ Ngược lại: baud cao <strong>thu hẹp biên an toàn</strong> của mọi thứ
+khác — chiều dài cáp, nhánh rẽ, chất lượng đấu nối, điện trở đầu cuối. Một mạng 9600 bps tha thứ
+cho nhiều sai sót mà mạng 115200 bps thì không.</p>
+<p>⭐ Hãy tính ngược từ nhu cầu: cần đọc bao nhiêu byte, bao lâu một lần (mục 38.8) — rồi chọn baud
+vừa đủ, không chọn baud lớn nhất mà thiết bị hỗ trợ.</p>
+</blockquote>
+<blockquote>
+<p>🔍 <strong>BẪY — &quot;hôm qua chạy được&quot;.</strong></p>
+<p>Một mạng đang chạy ở rìa biên an toàn <strong>vẫn chạy được</strong> — cho tới khi có người nối thêm một thiết
+bị, kéo dài thêm mười mét, hay dựng một biến tần bên cạnh. ⚠ Lúc đó lỗi xuất hiện và <strong>không ai
+liên hệ nó với việc baud đang đặt quá cao từ đầu</strong>.</p>
+<p>⭐ Đây cũng là lý do ⚠ <strong>hạ baud xuống mà hết lỗi</strong> là một phép thử chẩn đoán rất mạnh — nó chỉ
+thẳng vào tầng vật lý (mục 38.5, và Chương 51).</p>
+</blockquote>
+<p><em>(Đối chiếu: Kuphaldt, <em>Lessons In Industrial Instrumentation</em>, §15.6 — khuyến nghị 1200 m, quan hệ
+tỉ lệ nghịch tốc độ–chiều dài, thí nghiệm của Texas Instruments về ảnh hưởng của điện trở đầu cuối,
+và ghi chú về mạng 5 km chạy ở 1200 bps do Park, Mackay &amp; Wright ghi nhận.)</em></p>
 <hr>
 <h2 id="384-bn-tham-s-phi-khp">38.4 Bốn tham số phải khớp</h2>
 <p>Hai thiết bị nói chuyện được chỉ khi <strong>cả bốn tham số này giống hệt nhau</strong>. Lệch một cái là im lặng
@@ -25961,6 +26167,30 @@ chạy không tải.
 <td>⭐ <strong>Chạy ở baud thấp, hỏng ở baud cao</strong></td>
 </tr>
 <tr>
+<td>⭐⭐ &quot;Đi được bao xa&quot;</td>
+<td>⚠ <strong>Câu hỏi thiếu một nửa</strong> — xa bao nhiêu <strong>ở tốc độ nào</strong></td>
+</tr>
+<tr>
+<td>Khuyến nghị chiều dài</td>
+<td>⭐ <strong>1200 m</strong>; ⭐ <strong>tốc độ tối đa tỉ lệ nghịch với chiều dài</strong></td>
+</tr>
+<tr>
+<td>Cùng một sợi cáp, thêm điện trở đầu cuối</td>
+<td>⭐ <strong>200 kbps → 1 Mbps</strong></td>
+</tr>
+<tr>
+<td>⭐ Chọn baud thế nào</td>
+<td>⭐ <strong>Thấp nhất mà chu kỳ máy chấp nhận được</strong> — không phải cao nhất thiết bị hỗ trợ</td>
+</tr>
+<tr>
+<td>Baud cao làm gì</td>
+<td>⚠ <strong>Thu hẹp biên an toàn</strong> của cáp, nhánh rẽ, đấu nối</td>
+</tr>
+<tr>
+<td>⭐ Hạ baud xuống thì hết lỗi</td>
+<td>Phép thử chẩn đoán mạnh — chỉ thẳng vào <strong>tầng vật lý</strong></td>
+</tr>
+<tr>
 <td>Phân cực</td>
 <td><strong>Một bộ</strong> trên toàn bus</td>
 </tr>
@@ -26022,6 +26252,11 @@ là vấn đề? Được phép dùng giá trị nhiệt độ cuối cùng khô
 <li>Vì sao <strong>không</strong> được ghi điểm đặt vào thiết bị ở mỗi vòng quét?</li>
 <li>Nêu ba lý do RS-485 vẫn phổ biến dù Ethernet mạnh hơn.</li>
 <li>⚠ Đã kiểm hết bốn tham số mà vẫn im lặng. Việc nên thử tiếp theo là gì, và vì sao nó hay xảy ra?</li>
+<li>⭐⭐ Vì sao câu hỏi <em>&quot;RS-485 đi được bao xa?&quot;</em> là câu hỏi <strong>thiếu</strong>? Phải hỏi lại thế nào cho đúng?</li>
+<li>⭐ Cùng một sợi cáp 30 m: không điện trở đầu cuối đạt ~200 kbps, có thì đạt 1 Mbps. Con số này nói
+gì về tầm quan trọng của điện trở đầu cuối?</li>
+<li>⭐ Vì sao nên chọn <strong>baud thấp nhất đủ dùng</strong> thay vì baud cao nhất thiết bị hỗ trợ? Liên hệ với
+bẫy &quot;hôm qua chạy được&quot;.</li>
 </ol>
 <blockquote>
 <p>Câu 2, 4, 10 và 11 là bốn câu phân loại. Câu 11 là tinh thần của cả chương: <strong>mất truyền thông không
@@ -26044,6 +26279,9 @@ nhiễu — nền cho mục 38.5.</li>
 cầu không</strong>, điện trở đầu cuối tích hợp, và ⚠ <strong>quy ước đánh số chân A/B</strong>.</li>
 <li><strong>Tài liệu bộ điều khiển nhiệt độ</strong> — dùng cho tham số truyền thông, bản đồ thanh ghi, và ⚠ <strong>giới
 hạn số lần ghi</strong> vào bộ nhớ không mất.</li>
+<li><strong>Kuphaldt, Tony R.</strong> — <em>Lessons In Industrial Instrumentation</em>, §15.6: tín hiệu vi sai, khuyến nghị
+⭐ <strong>1200 m</strong>, ⭐ <strong>quan hệ tỉ lệ nghịch tốc độ–chiều dài</strong>, thí nghiệm Texas Instruments về ảnh hưởng
+của điện trở đầu cuối, và ⚠ <strong>quy ước nhãn A/B không được chuẩn hoá</strong> — nền cho mục 38.3b và 38.13.</li>
 <li>Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J §J.1 và §J.2.</li>
 </ul>
 <blockquote>
@@ -28745,6 +28983,104 @@ Có tiêu chuẩn về chất lượng mã và có thiết bị chấm điểm c
 lượng mã là bước chẩn đoán <strong>rẻ và nhanh hơn</strong> so với đổi đầu đọc.</p>
 </blockquote>
 <hr>
+<h2 id="422b-hai-lý-do-mã-không-đc-đưc-mà-không-nm-đu-đc">42.2b ⭐⭐ Hai lý do &quot;mã không đọc được&quot; mà không nằm ở đầu đọc</h2>
+<p>Khi tỉ lệ đọc kém, người ta đổi đầu đọc, chỉnh đèn, chỉnh tiêu cự. ⭐ <strong>Hai nguyên nhân dưới đây nằm
+ở chính CÁI MÃ</strong>, và không có đầu đọc nào cứu được.</p>
+<p><strong>Một — ⚠⚠ vùng yên tĩnh bị lấn</strong></p>
+<p>Mã 2D cần một <strong>viền trống</strong> quanh nó — gọi là <strong>vùng yên tĩnh</strong> <em>(quiet zone)</em>. Đầu đọc dùng viền
+đó để tìm ra ranh giới và <strong>mẫu định vị hình chữ L</strong> của mã.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Yêu cầu</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tối thiểu theo đặc tả</td>
+<td>⭐ <strong>Một ô</strong> <em>(module)</em> trống ở <strong>cả bốn phía</strong></td>
+</tr>
+<tr>
+<td>⭐ Khuyến nghị thực dụng</td>
+<td><strong>2–4 ô</strong> khi nền nhiễu, bề mặt phản xạ, hoặc gần chi tiết khác</td>
+</tr>
+<tr>
+<td>⚠ Trong vùng đó</td>
+<td><strong>Không được có</strong> hoa văn, chữ, đường viền, mép chi tiết</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Đây là lỗi thiết kế cơ khí, không phải lỗi thị giác.</strong></p>
+<p>Mã in sát mép board, sát một đường mạch in, hay sát một lỗ khoan → ⭐ <strong>đầu đọc không tìm được mẫu
+định vị</strong>, và nó báo &quot;không đọc được&quot; chứ không báo &quot;vùng yên tĩnh bị lấn&quot;.</p>
+<p>⭐ Triệu chứng đặc trưng: ⚠ <strong>mã đọc được khi cầm tay soi ở góc khác, nhưng đầu đọc cố định thì
+không</strong> — vì góc nhìn khác làm mép chi tiết lọt vào hoặc ra khỏi khung.</p>
+<p>⭐ <strong>Quyết định vị trí đặt mã là việc của giai đoạn thiết kế</strong> (Chương 57 giai đoạn 1) — sửa sau khi
+đã có board thì phải đổi cả bản vẽ board.</p>
+</blockquote>
+<p><strong>Hai — ⭐ ô mã quá nhỏ so với độ phân giải camera</strong></p>
+<p>Kích thước một ô của mã <em>(module / X-dimension)</em> quyết định camera cần bao nhiêu điểm ảnh.</p>
+<pre><code class="language-text">So diem anh tren mot o  =  do phan giai camera tren vung nhin  x  kich thuoc o
+</code></pre>
+<p>⭐ Đầu đọc cần <strong>vài điểm ảnh cho mỗi ô</strong> mới giải mã ổn định — ⚠ <strong>con số tối thiểu cụ thể ghi trong
+datasheet đầu đọc</strong>, và nó khác nhau giữa mã in và mã khắc trực tiếp.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Muốn cải thiện</th>
+<th>Cách</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Làm ô mã to hơn</strong></td>
+<td>⭐ Rẻ nhất và hiệu quả nhất — nếu còn chỗ trên sản phẩm</td>
+</tr>
+<tr>
+<td>Thu hẹp vùng nhìn</td>
+<td>Đưa đầu đọc gần hơn, hoặc dùng ống kính tiêu cự dài hơn</td>
+</tr>
+<tr>
+<td>Tăng độ phân giải đầu đọc</td>
+<td>⚠ Đắt, và ⭐ <strong>không cứu được mã quá nhỏ</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Thứ tự đúng khi tỉ lệ đọc kém: kiểm CÁI MÃ trước, đầu đọc sau.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểm theo thứ tự</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ Vùng yên tĩnh có bị lấn không</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Ô mã có đủ lớn cho độ phân giải hiện tại không</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Tương phản và chất lượng in/khắc (mục 42.9)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Chiếu sáng và góc đặt</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Cấu hình đầu đọc</td>
+</tr>
+</tbody></table></div>
+<p>⚠ Người ta thường bắt đầu từ mục 5 và đi ngược lên — mất nhiều ngày cho một vấn đề nằm ở mục 1.</p>
+</blockquote>
+<p><em>(Đối chiếu: ISO/IEC 16022 — đặc tả ký hiệu Data Matrix — quy định vùng yên tĩnh tối thiểu; hướng
+dẫn GS1 khuyến nghị mở rộng khi môi trường nhiễu. ⚠ Sách này <strong>không dẫn số điều khoản</strong>; con số cụ
+thể và yêu cầu điểm ảnh trên ô phải lấy từ <strong>bản gốc đặc tả</strong> và <strong>datasheet đầu đọc</strong>. Tra cứu
+2026-09-03.)</em></p>
+<hr>
 <h2 id="423-đu-đc-c-đnh-hay-cm-tay">42.3 Đầu đọc — cố định hay cầm tay</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -29255,6 +29591,26 @@ tới mức gây dừng máy.
 <td>⭐ <strong>Chiếu sáng</strong></td>
 </tr>
 <tr>
+<td>⭐⭐ Hai nguyên nhân nằm ở <strong>cái mã</strong></td>
+<td>⭐ <strong>Vùng yên tĩnh bị lấn</strong> · ⭐ <strong>ô mã quá nhỏ so với độ phân giải</strong></td>
+</tr>
+<tr>
+<td>Vùng yên tĩnh tối thiểu</td>
+<td>⭐ <strong>Một ô</strong> ở cả bốn phía; <strong>2–4 ô</strong> khi nền nhiễu</td>
+</tr>
+<tr>
+<td>Triệu chứng vùng yên tĩnh bị lấn</td>
+<td>⚠ <strong>Cầm tay đọc được, đầu đọc cố định thì không</strong></td>
+</tr>
+<tr>
+<td>Cách rẻ nhất khi ô mã quá nhỏ</td>
+<td>⭐ <strong>Làm ô mã to hơn</strong> — không phải mua đầu đọc đắt hơn</td>
+</tr>
+<tr>
+<td>Vị trí đặt mã quyết định ở đâu</td>
+<td>⭐ <strong>Giai đoạn thiết kế</strong> — sửa sau thì phải đổi bản vẽ board</td>
+</tr>
+<tr>
 <td>Nhận chuỗi mã về thì</td>
 <td>⭐ <strong>Kiểm định dạng trước khi dùng</strong></td>
 </tr>
@@ -29311,6 +29667,12 @@ vì sao?</li>
 <li>Nếu chọn &quot;chạy tạm&quot;, nêu bốn điều bắt buộc phải làm.</li>
 <li>⭐ Vì sao <strong>nhập tay không có kiểm soát</strong> là lỗ hổng lớn nhất? Liên hệ với bẫy nào ở Chương 29?</li>
 <li>Vì sao nên đếm và theo dõi <strong>tỉ lệ không đọc được</strong>? Nó thuộc mức cảnh báo nào?</li>
+<li>⭐⭐ Nêu <strong>hai nguyên nhân &quot;mã không đọc được&quot; nằm ở chính cái mã</strong>. Vì sao đổi đầu đọc không cứu
+được cả hai?</li>
+<li>⭐ Vùng yên tĩnh là gì, tối thiểu bao nhiêu, và đầu đọc dùng nó để làm gì? Triệu chứng đặc trưng
+khi nó bị lấn là gì?</li>
+<li>Một mã đọc kém. Nêu <strong>thứ tự năm bước kiểm</strong> đúng. Người ta thường bắt đầu từ bước nào, và cái
+giá của việc bắt đầu sai chỗ?</li>
 </ol>
 <blockquote>
 <p>Câu 5, 6, 9 và 11 là bốn câu phân loại. Câu 5 là tinh thần của cả chương: <strong>ghi log giúp bạn điều
@@ -29323,8 +29685,10 @@ hơn: nhận toạ độ và góc lệch, đồng bộ lúc chụp với lúc v�
 ⭐ khi nào một cảm biến quang rẻ tiền làm được việc mà bạn định dùng camera.</p>
 <h3>Nguồn tham khảo chương 42</h3>
 <ul>
-<li><strong>ISO/IEC 16022</strong> — <em>Data Matrix bar code symbology specification</em>: đặc tả mã Data Matrix.
-<em>(tiêu chuẩn có bản quyền)</em></li>
+<li><strong>ISO/IEC 16022</strong> — <em>Data Matrix bar code symbology specification</em>: đặc tả mã Data Matrix, gồm
+⭐ <strong>yêu cầu vùng yên tĩnh</strong> (mục 42.2b). <em>(tiêu chuẩn có bản quyền)</em></li>
+<li><strong>Hướng dẫn GS1 về Data Matrix</strong> — khuyến nghị <strong>mở rộng vùng yên tĩnh</strong> khi môi trường nhiễu.
+⚠ Sách này <strong>không dẫn số điều khoản</strong> của các tiêu chuẩn trên; con số cụ thể phải lấy từ bản gốc.</li>
 <li><strong>ISO/IEC 15415</strong> và <strong>ISO/IEC 29158</strong> — chấm điểm chất lượng mã in và mã khắc trực tiếp; dùng khi
 chẩn đoán tỉ lệ đọc thấp (mục 42.2).</li>
 <li><strong>Tài liệu đầu đọc mã</strong> — dùng cho ⚠ <strong>định dạng chuỗi trả về</strong>, cách kích, giao thức, và yêu cầu

@@ -6644,7 +6644,7 @@ không giải thích được (khi hai nấc trùng nằm trong hai nhánh chư�
 ```
 
 **Cách phòng:** quy tắc **mỗi ngõ ra chỉ được ghi ở đúng một nơi**. Trước khi thêm điều kiện cho một
-ngõ ra, dùng chức năng tham chiếu chéo *(cross-reference)* để tìm mọi chỗ đang ghi vào nó — Chương 22
+ngõ ra, dùng công cụ tham chiếu chéo *(cross-reference)* để tìm mọi chỗ đang ghi vào nó — Chương 22
 hướng dẫn.
 
 > ⚡ **LƯU Ý**
@@ -8392,7 +8392,7 @@ Ba điều dễ vấp:
 
 > 💡 **MẸO — MOVE là chỗ tốt để đặt điểm quan sát**
 > Khi gỡ lỗi một giá trị "không biết từ đâu ra", tìm **mọi** lệnh ghi vào biến đó — MOVE, phép gán,
-> khối chức năng có chân ra nối vào nó. Công cụ tham chiếu chéo *(cross-reference)* của phần mềm lập
+> khối chức năng có chân ra nối vào nó. Công cụ tham chiếu chéo của phần mềm lập
 > trình làm việc này trong vài giây (Chương 22). Đây là kỹ thuật gỡ lỗi năng suất nhất với dữ liệu.
 
 ---
@@ -11689,7 +11689,7 @@ Nguy hiểm cụ thể: một đoạn code phụ nào đó đặt `MachineState 
 mất mà nguyên nhân còn nguyên**.
 
 **Cách phòng:** chỉ gán `MachineState` **bên trong khối `CASE`** (hoặc trong các nấc chuyển tiếp đã
-định danh). Dùng tham chiếu chéo *(cross-reference)* để soát: mọi chỗ ghi vào `MachineState` phải khớp
+định danh). Dùng công cụ tham chiếu chéo để soát: mọi chỗ ghi vào `MachineState` phải khớp
 đúng một dòng trong bảng. Đây là ứng dụng trực tiếp của quy tắc "mỗi biến chỉ được ghi ở nơi đã định"
 ở Chương 10.
 
@@ -15747,6 +15747,76 @@ tác dụng của lực, điện trở đổi rất nhỏ, và cầu mất cân 
 
 ---
 
+### ⭐⭐ Vì sao đơn vị là mV/V — và bốn thông số datasheet quyết định
+
+**Một — mV/V không phải cách viết cho gọn, nó là bản chất của mạch cầu.**
+
+Mạch cầu đo lực khác mạch cầu cân bằng ở một điểm: ⭐ **điện áp ra tỉ lệ với điện áp kích thích**.
+Cầu cân bằng cho 0 V bất kể nguồn nuôi bao nhiêu; cầu **lệch** thì nguồn nuôi quyết định biên độ ra.
+
+⭐ Vì thế độ nhạy phải ghi dưới dạng *"bao nhiêu mV ra trên mỗi vôn kích, ở tải định mức"*.
+
+```text
+Load cell 2 mV/V, kich thich 10 V  ->  toan thang =  20 mV
+Load cell 2 mV/V, kich thich  5 V  ->  toan thang =  10 mV
+```
+
+> ⚠⚠ **Hai hệ quả thực dụng:**
+>
+> | Hệ quả | |
+> |---|---|
+> | ⭐ Bộ khuếch đại **phải biết** điện áp kích thật | ⚠ Cấu hình sai điện áp kích → **sai toàn thang**, mà đồ thị vẫn đẹp |
+> | ⭐⭐ **Điện áp kích trôi thì phép đo trôi theo** | ⚠ Đây là lý do bộ khuếch đại tốt **tự cấp và tự đo** điện áp kích |
+
+**Hai — vì sao bốn tem biến dạng chứ không phải một.**
+
+Điện trở tem biến dạng đổi theo **cả lực lẫn nhiệt độ**. ⭐ Mắc bốn tem thành cầu làm ảnh hưởng của
+nhiệt độ **tự triệt tiêu**, vì nó tác động lên mọi nhánh như nhau còn lực thì không.
+
+⭐ Đây là lý do bạn không thể tự chế load cell bằng một tem biến dạng dán lên thanh thép — nó sẽ đo
+nhiệt độ phòng nhiều hơn đo lực.
+
+**Ba — ⚠ từ biến: số đọc trôi trong lúc lực KHÔNG đổi.**
+
+Giữ nguyên một tải, số đọc vẫn **trôi chậm** — hiện tượng gọi là **từ biến** *(creep)*. Datasheet
+ghi nó dưới dạng phần trăm toàn thang trong một khoảng thời gian, ⭐ **thường là 30 phút**.
+
+| Bạn làm gì | Từ biến ảnh hưởng ra sao |
+|---|---|
+| Đo lực đỉnh rồi nhả ngay | ⭐ **Gần như không ảnh hưởng** |
+| ⚠ **Giữ lực rồi mới đọc** | ⭐ Càng giữ lâu, số đọc càng lệch |
+| ⚠⚠ Giữ tải liên tục và theo dõi lâu dài | Từ biến trở thành sai số đáng kể |
+
+> ⭐ **Thiết kế theo hướng tránh nó:** đọc lực **tại thời điểm xác định trong chu trình**, không phải
+> sau một khoảng giữ tuỳ ý. ⚠ Nếu bắt buộc phải giữ, hãy **giữ đúng một khoảng cố định** để sai số
+> ít nhất **lặp lại được**.
+
+**Bốn — ⚠⚠ đặt lệch tâm: cùng một lực, số đọc khác nhau.**
+
+Load cell được thiết kế để nhận lực **tại một điểm và theo một phương**. ⭐ Lực đặt lệch tâm sinh
+thêm mô-men, và số đọc sai — sai bao nhiêu thì datasheet ghi dưới dạng phần trăm toàn thang **ứng
+với một độ lệch cho trước**.
+
+> ⚠⚠ **Đây là sai số CƠ KHÍ mà không phép hiệu chuẩn điện nào sửa được.**
+>
+> Hiệu chuẩn bằng quả cân (mục 34.3) đặt tải **đúng tâm**. Nếu khi chạy thật, cơ cấu ép lại tì lệch —
+> ⭐ **phép hiệu chuẩn vẫn đúng, mà phép đo vẫn sai**.
+>
+> | Việc phải làm | |
+> |---|---|
+> | ⭐ **Dẫn hướng cơ cấu** để lực luôn đi qua tâm load cell | Cách tốt nhất |
+> | ⭐ Tránh **lực ngang và mô-men** vào load cell | Dùng khớp cầu hoặc màng đàn hồi nếu cần |
+> | ⭐⭐ **Kiểm bằng cách đặt cùng một quả cân ở vài vị trí** | ⭐ Chênh lệch giữa các vị trí chính là sai số lệch tâm **thật của cơ cấu bạn** |
+
+⭐ Hàng cuối là phép kiểm mười phút mà rất ít người làm — và nó trả lời dứt điểm câu hỏi *"vì sao
+cùng một sản phẩm mà lực đo lúc cao lúc thấp"*.
+
+*(Đối chiếu: Kuphaldt — Lessons in Industrial Instrumentation, mục mạch cầu đo và triệt tiêu biến số
+không mong muốn. Từ biến và sai số lệch tâm là **thông số datasheet tiêu chuẩn** của load cell —
+⚠ con số cụ thể khác nhau theo thiết bị và theo cấp chính xác; tra datasheet của load cell bạn dùng.)*
+
+---
+
 ## 34.3 Hiệu chuẩn bằng quả cân chuẩn
 
 Với cân, **hiệu chuẩn là bắt buộc** — không phải tuỳ chọn. Chương 32 mục 32.8 đã phân biệt hiệu chuẩn
@@ -16086,6 +16156,10 @@ Chương 29).
 
 | Câu hỏi | Trả lời |
 |---|---|
+| ⭐⭐ Vì sao độ nhạy ghi bằng **mV/V** | Điện áp ra **tỉ lệ với điện áp kích** — kích trôi thì phép đo trôi |
+| ⭐ Vì sao bốn tem chứ không một | Mạch cầu **tự triệt tiêu ảnh hưởng nhiệt độ** |
+| ⚠ Từ biến | Số đọc **trôi khi lực KHÔNG đổi** — đọc tại thời điểm cố định trong chu trình |
+| ⚠⚠ Đặt lệch tâm | ⭐ **Sai số cơ khí — hiệu chuẩn điện không sửa được.** Kiểm bằng quả cân đặt vài vị trí |
 | Vì sao cảm biến vị trí không đủ | ⭐ Nhiều loại lỗi **kết thúc ở cùng vị trí**, khác nhau ở **đường đi tới đó** |
 | Tiêu chí OK/NG cho thao tác có lực | ⭐ **Cửa sổ lực–vị trí** |
 | Kiểm cửa sổ thế nào cho đúng | ⚠ Phải **đi qua đủ** mọi cửa sổ, không chỉ "không vi phạm" |
@@ -16127,6 +16201,13 @@ Chương 29).
 > Câu 1, 5, 6, 8 và 12 là năm câu phân loại. Câu 12 là tinh thần của cả chương: **một đại lượng cho
 > bạn một con số; quan hệ giữa hai đại lượng cho bạn một chữ ký — và chữ ký mới phát hiện được hỏng
 > hóc trôi dần.**
+
+⭐⭐ **Bổ sung.** Một load cell 2 mV/V. Bộ khuếch đại được cấu hình cho kích thích 10 V nhưng thực tế
+chỉ cấp 5 V. Phép đo sai thế nào, và vì sao **đồ thị vẫn trông bình thường**?
+
+⚠⚠ **Bổ sung.** Bạn hiệu chuẩn bằng quả cân đặt đúng tâm, kết quả hoàn hảo. Khi chạy thật, cùng một
+sản phẩm cho lực lúc cao lúc thấp. Nêu nguyên nhân cơ khí khả dĩ nhất và **phép kiểm mười phút** xác
+nhận nó.
 
 ---
 
@@ -18037,7 +18118,7 @@ Ba chuẩn giao diện điện, thường bị gọi chung là "cổng nối ti�
 | Tín hiệu | **Đơn cực** — so với đất chung | **Vi sai** | ⭐ **Vi sai** |
 | Số thiết bị | 2 | 1 phát, nhiều nhận | ⭐ **Nhiều phát, nhiều nhận** |
 | Chiều | Hai chiều đồng thời | Một chiều (có bản hai chiều) | ⭐ **Hai chiều luân phiên** *(half-duplex)* |
-| Khoảng cách | Ngắn — vài chục mét | Xa | ⭐ **Xa** — hàng trăm mét |
+| Khoảng cách | Ngắn — vài chục mét | Xa | ⭐ **Xa** — khuyến nghị tới **1200 m** (mục 38.3b) |
 | Chống nhiễu | ⚠ Kém | Tốt | ⭐ **Tốt** |
 | Số dây tín hiệu | 3 trở lên | 4 | ⭐ **2** (cộng dây đất) |
 | Vị thế hiện nay | Đang lùi dần | Ít gặp | ⭐ **Phổ biến nhất trong công nghiệp** |
@@ -18068,6 +18149,59 @@ Vì hai dây đi cạnh nhau (và **xoắn** vào nhau), nhiễu cảm ứng và
 >
 > 💡 Cùng nguyên lý này giải thích vì sao vòng dòng 4–20 mA chống nhiễu tốt (Chương 31, mục 31.4) và
 > vì sao Ethernet công nghiệp dùng đôi xoắn (Chương 40).
+
+---
+
+## 38.3b ⭐⭐ Khoảng cách và tốc độ đánh đổi với nhau — không con số nào đứng một mình
+
+Câu hỏi hay gặp nhất về RS-485 là *"đi được bao xa?"*. ⚠ Câu hỏi đó **thiếu một nửa**: xa bao nhiêu
+**ở tốc độ nào**.
+
+| Con số | Nội dung |
+|---|---|
+| Khuyến nghị thường trích | ⭐ **1200 m** cho cả RS-422 và RS-485 |
+| ⭐⭐ Quan hệ tốc độ–chiều dài | **Tốc độ tối đa tỉ lệ nghịch với chiều dài cáp** |
+| ⚠ Nên hiểu 1200 m là | **Một điểm trên đường đánh đổi**, không phải bức tường |
+
+**Ba dữ kiện làm rõ ý này**
+
+| Trường hợp | Kết quả |
+|---|---|
+| Cáp 30 m *(100 ft)*, ⚠ **không có điện trở đầu cuối** | ~**200 kbps** |
+| ⭐ Cùng cáp 30 m, **có** điện trở đầu cuối ở đầu nhận | ⭐ **1 Mbps** — gấp năm lần |
+| Cáp **5 km**, cáp chất lượng cao, đi dây cẩn thận | Chạy được ở **1200 bps** |
+
+> ⭐⭐ **Ba dòng trên nói ba điều khác nhau, và cả ba đều đáng nhớ:**
+>
+> | | |
+> |---|---|
+> | 1 | ⭐ **Điện trở đầu cuối không phải chi tiết nhỏ** — cùng sợi cáp đó, có nó thì nhanh gấp năm lần (mục 38.5) |
+> | 2 | ⭐ **1200 m không phải giới hạn cứng** — hạ tốc độ xuống thì đi xa hơn nhiều |
+> | 3 | ⚠ Nhưng cái giá của việc đi xa là **cáp tốt và đi dây cẩn thận**, không phải may mắn |
+
+**Hệ quả khi thiết kế**
+
+> ⭐ **Chọn tốc độ thấp nhất mà chu kỳ máy chấp nhận được.**
+>
+> Người ta hay đặt baud cao *"cho chắc"*. ⚠ Ngược lại: baud cao **thu hẹp biên an toàn** của mọi thứ
+> khác — chiều dài cáp, nhánh rẽ, chất lượng đấu nối, điện trở đầu cuối. Một mạng 9600 bps tha thứ
+> cho nhiều sai sót mà mạng 115200 bps thì không.
+>
+> ⭐ Hãy tính ngược từ nhu cầu: cần đọc bao nhiêu byte, bao lâu một lần (mục 38.8) — rồi chọn baud
+> vừa đủ, không chọn baud lớn nhất mà thiết bị hỗ trợ.
+
+> 🔍 **BẪY — "hôm qua chạy được".**
+>
+> Một mạng đang chạy ở rìa biên an toàn **vẫn chạy được** — cho tới khi có người nối thêm một thiết
+> bị, kéo dài thêm mười mét, hay dựng một biến tần bên cạnh. ⚠ Lúc đó lỗi xuất hiện và **không ai
+> liên hệ nó với việc baud đang đặt quá cao từ đầu**.
+>
+> ⭐ Đây cũng là lý do ⚠ **hạ baud xuống mà hết lỗi** là một phép thử chẩn đoán rất mạnh — nó chỉ
+> thẳng vào tầng vật lý (mục 38.5, và Chương 51).
+
+*(Đối chiếu: Kuphaldt, *Lessons In Industrial Instrumentation*, §15.6 — khuyến nghị 1200 m, quan hệ
+tỉ lệ nghịch tốc độ–chiều dài, thí nghiệm của Texas Instruments về ảnh hưởng của điện trở đầu cuối,
+và ghi chú về mạng 5 km chạy ở 1200 bps do Park, Mackay & Wright ghi nhận.)*
 
 ---
 
@@ -18525,6 +18659,12 @@ chạy không tải.
 | Lệch chẵn lẻ → | ⚠ **Dữ liệu rác trông như thật** — nguy hiểm hơn |
 | Điện trở đầu cuối | ⭐ **Đúng hai**, ở **hai đầu vật lý** |
 | Triệu chứng thiếu điện trở đầu cuối | ⭐ **Chạy ở baud thấp, hỏng ở baud cao** |
+| ⭐⭐ "Đi được bao xa" | ⚠ **Câu hỏi thiếu một nửa** — xa bao nhiêu **ở tốc độ nào** |
+| Khuyến nghị chiều dài | ⭐ **1200 m**; ⭐ **tốc độ tối đa tỉ lệ nghịch với chiều dài** |
+| Cùng một sợi cáp, thêm điện trở đầu cuối | ⭐ **200 kbps → 1 Mbps** |
+| ⭐ Chọn baud thế nào | ⭐ **Thấp nhất mà chu kỳ máy chấp nhận được** — không phải cao nhất thiết bị hỗ trợ |
+| Baud cao làm gì | ⚠ **Thu hẹp biên an toàn** của cáp, nhánh rẽ, đấu nối |
+| ⭐ Hạ baud xuống thì hết lỗi | Phép thử chẩn đoán mạnh — chỉ thẳng vào **tầng vật lý** |
 | Phân cực | **Một bộ** trên toàn bus |
 | Cấu trúc RS-485 | **Bus**, không phải hình sao |
 | ⚠ Quy ước A/B | **Không thống nhất** giữa các hãng — thử đảo |
@@ -18558,6 +18698,11 @@ chạy không tải.
 12. Vì sao **không** được ghi điểm đặt vào thiết bị ở mỗi vòng quét?
 13. Nêu ba lý do RS-485 vẫn phổ biến dù Ethernet mạnh hơn.
 14. ⚠ Đã kiểm hết bốn tham số mà vẫn im lặng. Việc nên thử tiếp theo là gì, và vì sao nó hay xảy ra?
+15. ⭐⭐ Vì sao câu hỏi *"RS-485 đi được bao xa?"* là câu hỏi **thiếu**? Phải hỏi lại thế nào cho đúng?
+16. ⭐ Cùng một sợi cáp 30 m: không điện trở đầu cuối đạt ~200 kbps, có thì đạt 1 Mbps. Con số này nói
+    gì về tầm quan trọng của điện trở đầu cuối?
+17. ⭐ Vì sao nên chọn **baud thấp nhất đủ dùng** thay vì baud cao nhất thiết bị hỗ trợ? Liên hệ với
+    bẫy "hôm qua chạy được".
 
 > Câu 2, 4, 10 và 11 là bốn câu phân loại. Câu 11 là tinh thần của cả chương: **mất truyền thông không
 > làm quá trình dừng — nó làm bạn mù. Và chạy tiếp trong trạng thái mù là quyết định phải có người
@@ -18582,6 +18727,9 @@ gần như mọi người từng dùng nó.
   cầu không**, điện trở đầu cuối tích hợp, và ⚠ **quy ước đánh số chân A/B**.
 - **Tài liệu bộ điều khiển nhiệt độ** — dùng cho tham số truyền thông, bản đồ thanh ghi, và ⚠ **giới
   hạn số lần ghi** vào bộ nhớ không mất.
+- **Kuphaldt, Tony R.** — *Lessons In Industrial Instrumentation*, §15.6: tín hiệu vi sai, khuyến nghị
+  ⭐ **1200 m**, ⭐ **quan hệ tỉ lệ nghịch tốc độ–chiều dài**, thí nghiệm Texas Instruments về ảnh hưởng
+  của điện trở đầu cuối, và ⚠ **quy ước nhãn A/B không được chuẩn hoá** — nền cho mục 38.3b và 38.13.
 - Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J §J.1 và §J.2.
 
 > ⚡ Các con số về **khoảng cách và số thiết bị tối đa** của RS-485 phụ thuộc tốc độ baud, chất lượng
@@ -20387,6 +20535,69 @@ Mã khắc quá nhạt, quá đậm, tương phản kém, hoặc bề mặt bón
 
 ---
 
+## 42.2b ⭐⭐ Hai lý do "mã không đọc được" mà không nằm ở đầu đọc
+
+Khi tỉ lệ đọc kém, người ta đổi đầu đọc, chỉnh đèn, chỉnh tiêu cự. ⭐ **Hai nguyên nhân dưới đây nằm
+ở chính CÁI MÃ**, và không có đầu đọc nào cứu được.
+
+**Một — ⚠⚠ vùng yên tĩnh bị lấn**
+
+Mã 2D cần một **viền trống** quanh nó — gọi là **vùng yên tĩnh** *(quiet zone)*. Đầu đọc dùng viền
+đó để tìm ra ranh giới và **mẫu định vị hình chữ L** của mã.
+
+| Yêu cầu | Nội dung |
+|---|---|
+| Tối thiểu theo đặc tả | ⭐ **Một ô** *(module)* trống ở **cả bốn phía** |
+| ⭐ Khuyến nghị thực dụng | **2–4 ô** khi nền nhiễu, bề mặt phản xạ, hoặc gần chi tiết khác |
+| ⚠ Trong vùng đó | **Không được có** hoa văn, chữ, đường viền, mép chi tiết |
+
+> ⚠⚠ **Đây là lỗi thiết kế cơ khí, không phải lỗi thị giác.**
+>
+> Mã in sát mép board, sát một đường mạch in, hay sát một lỗ khoan → ⭐ **đầu đọc không tìm được mẫu
+> định vị**, và nó báo "không đọc được" chứ không báo "vùng yên tĩnh bị lấn".
+>
+> ⭐ Triệu chứng đặc trưng: ⚠ **mã đọc được khi cầm tay soi ở góc khác, nhưng đầu đọc cố định thì
+> không** — vì góc nhìn khác làm mép chi tiết lọt vào hoặc ra khỏi khung.
+>
+> ⭐ **Quyết định vị trí đặt mã là việc của giai đoạn thiết kế** (Chương 57 giai đoạn 1) — sửa sau khi
+> đã có board thì phải đổi cả bản vẽ board.
+
+**Hai — ⭐ ô mã quá nhỏ so với độ phân giải camera**
+
+Kích thước một ô của mã *(module / X-dimension)* quyết định camera cần bao nhiêu điểm ảnh.
+
+```text
+So diem anh tren mot o  =  do phan giai camera tren vung nhin  x  kich thuoc o
+```
+
+⭐ Đầu đọc cần **vài điểm ảnh cho mỗi ô** mới giải mã ổn định — ⚠ **con số tối thiểu cụ thể ghi trong
+datasheet đầu đọc**, và nó khác nhau giữa mã in và mã khắc trực tiếp.
+
+| Muốn cải thiện | Cách |
+|---|---|
+| ⭐ **Làm ô mã to hơn** | ⭐ Rẻ nhất và hiệu quả nhất — nếu còn chỗ trên sản phẩm |
+| Thu hẹp vùng nhìn | Đưa đầu đọc gần hơn, hoặc dùng ống kính tiêu cự dài hơn |
+| Tăng độ phân giải đầu đọc | ⚠ Đắt, và ⭐ **không cứu được mã quá nhỏ** |
+
+> ⭐⭐ **Thứ tự đúng khi tỉ lệ đọc kém: kiểm CÁI MÃ trước, đầu đọc sau.**
+>
+> | Kiểm theo thứ tự | |
+> |---|---|
+> | 1 | ⭐ Vùng yên tĩnh có bị lấn không |
+> | 2 | ⭐ Ô mã có đủ lớn cho độ phân giải hiện tại không |
+> | 3 | Tương phản và chất lượng in/khắc (mục 42.9) |
+> | 4 | Chiếu sáng và góc đặt |
+> | 5 | Cấu hình đầu đọc |
+>
+> ⚠ Người ta thường bắt đầu từ mục 5 và đi ngược lên — mất nhiều ngày cho một vấn đề nằm ở mục 1.
+
+*(Đối chiếu: ISO/IEC 16022 — đặc tả ký hiệu Data Matrix — quy định vùng yên tĩnh tối thiểu; hướng
+dẫn GS1 khuyến nghị mở rộng khi môi trường nhiễu. ⚠ Sách này **không dẫn số điều khoản**; con số cụ
+thể và yêu cầu điểm ảnh trên ô phải lấy từ **bản gốc đặc tả** và **datasheet đầu đọc**. Tra cứu
+2026-09-03.)*
+
+---
+
 ## 42.3 Đầu đọc — cố định hay cầm tay
 
 | | ⭐ **Cố định** *(fixed-mount)* | **Cầm tay** *(handheld)* |
@@ -20780,6 +20991,11 @@ tới mức gây dừng máy.
 | Vì sao điện tử dùng mã 2D | Diện tích nhỏ · ⭐ **khắc trực tiếp lên board** · có sửa lỗi |
 | Tỉ lệ đọc thấp — nghi gì trước | ⭐ **Chất lượng mã và chiếu sáng**, không phải đầu đọc |
 | Yếu tố quyết định nhất khi lắp đầu đọc | ⭐ **Chiếu sáng** |
+| ⭐⭐ Hai nguyên nhân nằm ở **cái mã** | ⭐ **Vùng yên tĩnh bị lấn** · ⭐ **ô mã quá nhỏ so với độ phân giải** |
+| Vùng yên tĩnh tối thiểu | ⭐ **Một ô** ở cả bốn phía; **2–4 ô** khi nền nhiễu |
+| Triệu chứng vùng yên tĩnh bị lấn | ⚠ **Cầm tay đọc được, đầu đọc cố định thì không** |
+| Cách rẻ nhất khi ô mã quá nhỏ | ⭐ **Làm ô mã to hơn** — không phải mua đầu đọc đắt hơn |
+| Vị trí đặt mã quyết định ở đâu | ⭐ **Giai đoạn thiết kế** — sửa sau thì phải đổi bản vẽ board |
 | Nhận chuỗi mã về thì | ⭐ **Kiểm định dạng trước khi dùng** |
 | ⭐⭐ Lý do tồn tại của truy xuất | **Hỏi MES TRƯỚC khi làm** — chống nhảy cóc và chống làm trùng |
 | Ghi log một mình cho gì | Chỉ giúp **điều tra sau khi đã hỏng** |
@@ -20808,6 +21024,12 @@ tới mức gây dừng máy.
 10. Nếu chọn "chạy tạm", nêu bốn điều bắt buộc phải làm.
 11. ⭐ Vì sao **nhập tay không có kiểm soát** là lỗ hổng lớn nhất? Liên hệ với bẫy nào ở Chương 29?
 12. Vì sao nên đếm và theo dõi **tỉ lệ không đọc được**? Nó thuộc mức cảnh báo nào?
+13. ⭐⭐ Nêu **hai nguyên nhân "mã không đọc được" nằm ở chính cái mã**. Vì sao đổi đầu đọc không cứu
+    được cả hai?
+14. ⭐ Vùng yên tĩnh là gì, tối thiểu bao nhiêu, và đầu đọc dùng nó để làm gì? Triệu chứng đặc trưng
+    khi nó bị lấn là gì?
+15. Một mã đọc kém. Nêu **thứ tự năm bước kiểm** đúng. Người ta thường bắt đầu từ bước nào, và cái
+    giá của việc bắt đầu sai chỗ?
 
 > Câu 5, 6, 9 và 11 là bốn câu phân loại. Câu 5 là tinh thần của cả chương: **ghi log giúp bạn điều
 > tra sau khi đã hỏng; hỏi trước khi làm giúp bạn không hỏng.**
@@ -20822,8 +21044,10 @@ hơn: nhận toạ độ và góc lệch, đồng bộ lúc chụp với lúc v�
 
 ### Nguồn tham khảo chương 42
 
-- **ISO/IEC 16022** — *Data Matrix bar code symbology specification*: đặc tả mã Data Matrix.
-  *(tiêu chuẩn có bản quyền)*
+- **ISO/IEC 16022** — *Data Matrix bar code symbology specification*: đặc tả mã Data Matrix, gồm
+  ⭐ **yêu cầu vùng yên tĩnh** (mục 42.2b). *(tiêu chuẩn có bản quyền)*
+- **Hướng dẫn GS1 về Data Matrix** — khuyến nghị **mở rộng vùng yên tĩnh** khi môi trường nhiễu.
+  ⚠ Sách này **không dẫn số điều khoản** của các tiêu chuẩn trên; con số cụ thể phải lấy từ bản gốc.
 - **ISO/IEC 15415** và **ISO/IEC 29158** — chấm điểm chất lượng mã in và mã khắc trực tiếp; dùng khi
   chẩn đoán tỉ lệ đọc thấp (mục 42.2).
 - **Tài liệu đầu đọc mã** — dùng cho ⚠ **định dạng chuỗi trả về**, cách kích, giao thức, và yêu cầu

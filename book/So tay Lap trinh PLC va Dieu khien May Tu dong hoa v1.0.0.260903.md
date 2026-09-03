@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260902 |
+| **Phiên bản** | v1.0.0.260903 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -38,6 +38,14 @@
 > ⚠ Các chương chạm phần an toàn — **Chương 3, 6, 47, 48 và Phụ lục D** — mang
 > cờ cảnh báo và **đang chờ chuyên gia an toàn máy rà soát**. Không dùng chúng
 > làm căn cứ thiết kế cho tới khi có.
+
+---
+
+### Góp ý và đánh giá
+
+Quét mã QR hoặc truy cập: [docs.google.com/forms/.../viewform](https://docs.google.com/forms/d/e/1FAIpQLSec734XvPwDWHGrfvk7gHs_sYFwV1jojxTKtJJOmp7-b-j8aA/viewform)
+
+<svg width="120" height="120" version="1.1" viewBox="0 0 45 45" xmlns="http://www.w3.org/2000/svg"><rect width="45" height="45" fill="#ffffff"/><path d="M2,2H3V3H2zM3,2H4V3H3zM4,2H5V3H4zM5,2H6V3H5zM6,2H7V3H6zM7,2H8V3H7zM8,2H9V3H8zM10,2H11V3H10zM11,2H12V3H11zM16,2H17V3H16zM20,2H21V3H20zM21,2H22V3H21zM24,2H25V3H24zM27,2H28V3H27zM31,2H32V3H31zM36,2H37V3H36zM37,2H38V3H37zM38,2H39V3H38zM39,2H40V3H39zM40,2H41V3H40zM41,2H42V3H41zM42,2H43V3H42zM2,3H3V4H2zM8,3H9V4H8zM10,3H11V4H10zM11,3H12V4H11zM12,3H13V4H12zM13,3H14V4H13zM17,3H18V4H17zM19,3H20V4H19zM21,3H22V4H21zM22,3H23V4H22zM24,3H25V4H24zM27,3H28V4H27zM32,3H33V4H32zM33,3H34V4H33zM34,3H35V4H34zM36,3H37V4H36zM42,3H43V4H42zM2,4H3V5H2zM4,4H5V5H4zM5,4H6V5H5zM6,4H7V5H6zM8,4H9V5H8zM10,4H11V5H10zM14,4H15V5H14zM15,4H16V5H15zM16,4H17V5H16zM17,4H18V5H17zM19,4H20V5H19zM20,4H21V5H20zM21,4H22V5H21zM22,4H23V5H22zM23,4H24V5H23zM25,4H26V5H25zM27,4H28V5H27zM28,4H29V5H28zM33,4H34V5H33zM36,4H37V5H36zM38,4H39V5H38zM39,4H40V5H39zM40,4H41V5H40zM42,4H43V5H42zM2,5H3V6H2zM4,5H5V6H4zM5,5H6V6H5zM6,5H7V6H6zM8,5H9V6H8zM12,5H13V6H12zM13,5H14V6H13zM14,5H15V6H14zM15,5H16V6H15zM16,5H17V6H16zM18,5H19V6H18zM24,5H25V6H24zM25,5H26V6H25zM27,5H28V6H27zM30,5H31V6H30zM33,5H34V6H33zM34,5H35V6H34zM36,5H37V6H36zM38,5H39V6H38zM39,5H40V6H39zM40,5H41V6H40zM42,5H43V6H42zM2,6H3V7H2zM4,6H5V7H4zM5,6H6V7H5zM6,6H7V7H6zM8,6H9V7H8zM10,6H11V7H10zM12,6H13V7H12zM13,6H14V7H13zM15,6H16V7H15zM16,6H17V7H16zM20,6H21V7H20zM21,6H22V7H21zM23,6H24V7H23zM26,6H27V7H26zM29,6H30V7H29zM30,6H31V7H30zM31,6H32V7H31zM32,6H33V7H32zM36,6H37V7H36zM38,6H39V7H38zM39,6H40V7H39zM40,6H41V7H40zM42,6H43V7H42zM2,7H3V8H2zM8,7H9V8H8zM13,7H14V8H13zM16,7H17V8H16zM18,7H19V8H18zM25,7H26V8H25zM27,7H28V8H27zM28,7H29V8H28zM31,7H32V8H31zM34,7H35V8H34zM36,7H37V8H36zM42,7H43V8H42zM2,8H3V9H2zM3,8H4V9H3zM4,8H5V9H4zM5,8H6V9H5zM6,8H7V9H6zM7,8H8V9H7zM8,8H9V9H8zM10,8H11V9H10zM12,8H13V9H12zM14,8H15V9H14zM16,8H17V9H16zM18,8H19V9H18zM20,8H21V9H20zM22,8H23V9H22zM24,8H25V9H24zM26,8H27V9H26zM28,8H29V9H28zM30,8H31V9H30zM32,8H33V9H32zM34,8H35V9H34zM36,8H37V9H36zM37,8H38V9H37zM38,8H39V9H38zM39,8H40V9H39zM40,8H41V9H40zM41,8H42V9H41zM42,8H43V9H42zM14,9H15V10H14zM17,9H18V10H17zM21,9H22V10H21zM22,9H23V10H22zM24,9H25V10H24zM25,9H26V10H25zM27,9H28V10H27zM32,9H33V10H32zM33,9H34V10H33zM34,9H35V10H34zM2,10H3V11H2zM5,10H6V11H5zM6,10H7V11H6zM7,10H8V11H7zM8,10H9V11H8zM9,10H10V11H9zM10,10H11V11H10zM12,10H13V11H12zM14,10H15V11H14zM15,10H16V11H15zM16,10H17V11H16zM17,10H18V11H17zM18,10H19V11H18zM19,10H20V11H19zM21,10H22V11H21zM24,10H25V11H24zM26,10H27V11H26zM28,10H29V11H28zM29,10H30V11H29zM30,10H31V11H30zM31,10H32V11H31zM33,10H34V11H33zM35,10H36V11H35zM38,10H39V11H38zM40,10H41V11H40zM41,10H42V11H41zM42,10H43V11H42zM2,11H3V12H2zM9,11H10V12H9zM10,11H11V12H10zM13,11H14V12H13zM15,11H16V12H15zM18,11H19V12H18zM20,11H21V12H20zM21,11H22V12H21zM22,11H23V12H22zM24,11H25V12H24zM25,11H26V12H25zM27,11H28V12H27zM28,11H29V12H28zM29,11H30V12H29zM32,11H33V12H32zM33,11H34V12H33zM37,11H38V12H37zM38,11H39V12H38zM41,11H42V12H41zM2,12H3V13H2zM3,12H4V13H3zM4,12H5V13H4zM5,12H6V13H5zM6,12H7V13H6zM8,12H9V13H8zM12,12H13V13H12zM14,12H15V13H14zM15,12H16V13H15zM16,12H17V13H16zM25,12H26V13H25zM26,12H27V13H26zM29,12H30V13H29zM35,12H36V13H35zM37,12H38V13H37zM40,12H41V13H40zM3,13H4V14H3zM7,13H8V14H7zM12,13H13V14H12zM14,13H15V14H14zM16,13H17V14H16zM18,13H19V14H18zM19,13H20V14H19zM22,13H23V14H22zM25,13H26V14H25zM29,13H30V14H29zM31,13H32V14H31zM32,13H33V14H32zM33,13H34V14H33zM34,13H35V14H34zM38,13H39V14H38zM39,13H40V14H39zM41,13H42V14H41zM42,13H43V14H42zM5,14H6V15H5zM6,14H7V15H6zM7,14H8V15H7zM8,14H9V15H8zM9,14H10V15H9zM10,14H11V15H10zM11,14H12V15H11zM13,14H14V15H13zM15,14H16V15H15zM17,14H18V15H17zM19,14H20V15H19zM24,14H25V15H24zM26,14H27V15H26zM27,14H28V15H27zM30,14H31V15H30zM31,14H32V15H31zM34,14H35V15H34zM35,14H36V15H35zM36,14H37V15H36zM37,14H38V15H37zM2,15H3V16H2zM6,15H7V16H6zM9,15H10V16H9zM15,15H16V16H15zM16,15H17V16H16zM18,15H19V16H18zM19,15H20V16H19zM20,15H21V16H20zM21,15H22V16H21zM22,15H23V16H22zM23,15H24V16H23zM24,15H25V16H24zM25,15H26V16H25zM27,15H28V16H27zM29,15H30V16H29zM30,15H31V16H30zM32,15H33V16H32zM36,15H37V16H36zM38,15H39V16H38zM2,16H3V17H2zM5,16H6V17H5zM7,16H8V17H7zM8,16H9V17H8zM9,16H10V17H9zM11,16H12V17H11zM12,16H13V17H12zM13,16H14V17H13zM14,16H15V17H14zM17,16H18V17H17zM19,16H20V17H19zM20,16H21V17H20zM21,16H22V17H21zM22,16H23V17H22zM24,16H25V17H24zM26,16H27V17H26zM28,16H29V17H28zM29,16H30V17H29zM31,16H32V17H31zM32,16H33V17H32zM33,16H34V17H33zM35,16H36V17H35zM36,16H37V17H36zM38,16H39V17H38zM42,16H43V17H42zM6,17H7V18H6zM7,17H8V18H7zM15,17H16V18H15zM17,17H18V18H17zM18,17H19V18H18zM20,17H21V18H20zM22,17H23V18H22zM24,17H25V18H24zM25,17H26V18H25zM26,17H27V18H26zM30,17H31V18H30zM34,17H35V18H34zM35,17H36V18H35zM37,17H38V18H37zM38,17H39V18H38zM39,17H40V18H39zM40,17H41V18H40zM42,17H43V18H42zM2,18H3V19H2zM4,18H5V19H4zM7,18H8V19H7zM8,18H9V19H8zM10,18H11V19H10zM12,18H13V19H12zM13,18H14V19H13zM14,18H15V19H14zM15,18H16V19H15zM16,18H17V19H16zM17,18H18V19H17zM18,18H19V19H18zM19,18H20V19H19zM24,18H25V19H24zM25,18H26V19H25zM26,18H27V19H26zM31,18H32V19H31zM33,18H34V19H33zM34,18H35V19H34zM35,18H36V19H35zM39,18H40V19H39zM41,18H42V19H41zM42,18H43V19H42zM2,19H3V20H2zM3,19H4V20H3zM4,19H5V20H4zM6,19H7V20H6zM7,19H8V20H7zM9,19H10V20H9zM11,19H12V20H11zM13,19H14V20H13zM14,19H15V20H14zM15,19H16V20H15zM16,19H17V20H16zM18,19H19V20H18zM19,19H20V20H19zM20,19H21V20H20zM21,19H22V20H21zM22,19H23V20H22zM23,19H24V20H23zM28,19H29V20H28zM31,19H32V20H31zM34,19H35V20H34zM35,19H36V20H35zM38,19H39V20H38zM39,19H40V20H39zM2,20H3V21H2zM4,20H5V21H4zM5,20H6V21H5zM6,20H7V21H6zM7,20H8V21H7zM8,20H9V21H8zM11,20H12V21H11zM12,20H13V21H12zM14,20H15V21H14zM17,20H18V21H17zM18,20H19V21H18zM19,20H20V21H19zM20,20H21V21H20zM21,20H22V21H21zM25,20H26V21H25zM26,20H27V21H26zM29,20H30V21H29zM31,20H32V21H31zM32,20H33V21H32zM33,20H34V21H33zM37,20H38V21H37zM38,20H39V21H38zM42,20H43V21H42zM3,21H4V22H3zM5,21H6V22H5zM6,21H7V22H6zM9,21H10V22H9zM14,21H15V22H14zM15,21H16V22H15zM17,21H18V22H17zM22,21H23V22H22zM23,21H24V22H23zM25,21H26V22H25zM26,21H27V22H26zM27,21H28V22H27zM35,21H36V22H35zM36,21H37V22H36zM38,21H39V22H38zM40,21H41V22H40zM42,21H43V22H42zM4,22H5V23H4zM5,22H6V23H5zM7,22H8V23H7zM8,22H9V23H8zM9,22H10V23H9zM10,22H11V23H10zM11,22H12V23H11zM13,22H14V23H13zM14,22H15V23H14zM20,22H21V23H20zM22,22H23V23H22zM23,22H24V23H23zM25,22H26V23H25zM28,22H29V23H28zM31,22H32V23H31zM32,22H33V23H32zM33,22H34V23H33zM34,22H35V23H34zM36,22H37V23H36zM40,22H41V23H40zM41,22H42V23H41zM42,22H43V23H42zM4,23H5V24H4zM5,23H6V24H5zM6,23H7V24H6zM7,23H8V24H7zM9,23H10V24H9zM11,23H12V24H11zM13,23H14V24H13zM14,23H15V24H14zM16,23H17V24H16zM23,23H24V24H23zM24,23H25V24H24zM25,23H26V24H25zM26,23H27V24H26zM27,23H28V24H27zM28,23H29V24H28zM31,23H32V24H31zM32,23H33V24H32zM33,23H34V24H33zM34,23H35V24H34zM37,23H38V24H37zM38,23H39V24H38zM40,23H41V24H40zM8,24H9V25H8zM11,24H12V25H11zM14,24H15V25H14zM15,24H16V25H15zM16,24H17V25H16zM22,24H23V25H22zM24,24H25V25H24zM25,24H26V25H25zM27,24H28V25H27zM29,24H30V25H29zM35,24H36V25H35zM36,24H37V25H36zM38,24H39V25H38zM40,24H41V25H40zM3,25H4V26H3zM5,25H6V26H5zM6,25H7V26H6zM11,25H12V26H11zM13,25H14V26H13zM15,25H16V26H15zM17,25H18V26H17zM18,25H19V26H18zM19,25H20V26H19zM20,25H21V26H20zM21,25H22V26H21zM22,25H23V26H22zM24,25H25V26H24zM26,25H27V26H26zM28,25H29V26H28zM30,25H31V26H30zM31,25H32V26H31zM33,25H34V26H33zM34,25H35V26H34zM35,25H36V26H35zM41,25H42V26H41zM2,26H3V27H2zM5,26H6V27H5zM7,26H8V27H7zM8,26H9V27H8zM9,26H10V27H9zM13,26H14V27H13zM15,26H16V27H15zM16,26H17V27H16zM18,26H19V27H18zM21,26H22V27H21zM22,26H23V27H22zM25,26H26V27H25zM26,26H27V27H26zM29,26H30V27H29zM30,26H31V27H30zM34,26H35V27H34zM35,26H36V27H35zM36,26H37V27H36zM41,26H42V27H41zM42,26H43V27H42zM4,27H5V28H4zM7,27H8V28H7zM9,27H10V28H9zM10,27H11V28H10zM11,27H12V28H11zM15,27H16V28H15zM16,27H17V28H16zM17,27H18V28H17zM18,27H19V28H18zM20,27H21V28H20zM25,27H26V28H25zM27,27H28V28H27zM28,27H29V28H28zM29,27H30V28H29zM32,27H33V28H32zM34,27H35V28H34zM35,27H36V28H35zM36,27H37V28H36zM37,27H38V28H37zM38,27H39V28H38zM40,27H41V28H40zM42,27H43V28H42zM2,28H3V29H2zM5,28H6V29H5zM6,28H7V29H6zM7,28H8V29H7zM8,28H9V29H8zM11,28H12V29H11zM12,28H13V29H12zM13,28H14V29H13zM14,28H15V29H14zM17,28H18V29H17zM21,28H22V29H21zM22,28H23V29H22zM23,28H24V29H23zM29,28H30V29H29zM32,28H33V29H32zM33,28H34V29H33zM34,28H35V29H34zM39,28H40V29H39zM42,28H43V29H42zM3,29H4V30H3zM5,29H6V30H5zM11,29H12V30H11zM13,29H14V30H13zM16,29H17V30H16zM20,29H21V30H20zM21,29H22V30H21zM24,29H25V30H24zM25,29H26V30H25zM29,29H30V30H29zM30,29H31V30H30zM33,29H34V30H33zM35,29H36V30H35zM36,29H37V30H36zM37,29H38V30H37zM38,29H39V30H38zM39,29H40V30H39zM40,29H41V30H40zM41,29H42V30H41zM2,30H3V31H2zM5,30H6V31H5zM6,30H7V31H6zM8,30H9V31H8zM13,30H14V31H13zM14,30H15V31H14zM15,30H16V31H15zM16,30H17V31H16zM17,30H18V31H17zM18,30H19V31H18zM19,30H20V31H19zM21,30H22V31H21zM22,30H23V31H22zM23,30H24V31H23zM24,30H25V31H24zM25,30H26V31H25zM27,30H28V31H27zM29,30H30V31H29zM31,30H32V31H31zM33,30H34V31H33zM37,30H38V31H37zM39,30H40V31H39zM42,30H43V31H42zM2,31H3V32H2zM3,31H4V32H3zM10,31H11V32H10zM11,31H12V32H11zM13,31H14V32H13zM16,31H17V32H16zM18,31H19V32H18zM22,31H23V32H22zM23,31H24V32H23zM29,31H30V32H29zM32,31H33V32H32zM33,31H34V32H33zM38,31H39V32H38zM42,31H43V32H42zM2,32H3V33H2zM3,32H4V33H3zM4,32H5V33H4zM5,32H6V33H5zM6,32H7V33H6zM7,32H8V33H7zM8,32H9V33H8zM10,32H11V33H10zM11,32H12V33H11zM12,32H13V33H12zM13,32H14V33H13zM14,32H15V33H14zM18,32H19V33H18zM20,32H21V33H20zM22,32H23V33H22zM23,32H24V33H23zM24,32H25V33H24zM25,32H26V33H25zM29,32H30V33H29zM30,32H31V33H30zM33,32H34V33H33zM34,32H35V33H34zM35,32H36V33H35zM42,32H43V33H42zM2,33H3V34H2zM3,33H4V34H3zM4,33H5V34H4zM7,33H8V34H7zM9,33H10V34H9zM14,33H15V34H14zM15,33H16V34H15zM16,33H17V34H16zM18,33H19V34H18zM20,33H21V34H20zM25,33H26V34H25zM27,33H28V34H27zM28,33H29V34H28zM29,33H30V34H29zM30,33H31V34H30zM34,33H35V34H34zM36,33H37V34H36zM37,33H38V34H37zM39,33H40V34H39zM40,33H41V34H40zM41,33H42V34H41zM42,33H43V34H42zM2,34H3V35H2zM3,34H4V35H3zM4,34H5V35H4zM5,34H6V35H5zM6,34H7V35H6zM7,34H8V35H7zM8,34H9V35H8zM9,34H10V35H9zM13,34H14V35H13zM15,34H16V35H15zM16,34H17V35H16zM18,34H19V35H18zM23,34H24V35H23zM25,34H26V35H25zM26,34H27V35H26zM29,34H30V35H29zM31,34H32V35H31zM34,34H35V35H34zM35,34H36V35H35zM36,34H37V35H36zM37,34H38V35H37zM38,34H39V35H38zM39,34H40V35H39zM40,34H41V35H40zM42,34H43V35H42zM10,35H11V36H10zM12,35H13V36H12zM17,35H18V36H17zM18,35H19V36H18zM19,35H20V36H19zM20,35H21V36H20zM25,35H26V36H25zM31,35H32V36H31zM34,35H35V36H34zM38,35H39V36H38zM40,35H41V36H40zM41,35H42V36H41zM2,36H3V37H2zM3,36H4V37H3zM4,36H5V37H4zM5,36H6V37H5zM6,36H7V37H6zM7,36H8V37H7zM8,36H9V37H8zM10,36H11V37H10zM11,36H12V37H11zM14,36H15V37H14zM15,36H16V37H15zM16,36H17V37H16zM18,36H19V37H18zM22,36H23V37H22zM23,36H24V37H23zM25,36H26V37H25zM27,36H28V37H27zM29,36H30V37H29zM30,36H31V37H30zM33,36H34V37H33zM34,36H35V37H34zM36,36H37V37H36zM38,36H39V37H38zM2,37H3V38H2zM8,37H9V38H8zM10,37H11V38H10zM11,37H12V38H11zM12,37H13V38H12zM15,37H16V38H15zM20,37H21V38H20zM22,37H23V38H22zM25,37H26V38H25zM26,37H27V38H26zM29,37H30V38H29zM30,37H31V38H30zM31,37H32V38H31zM33,37H34V38H33zM34,37H35V38H34zM38,37H39V38H38zM39,37H40V38H39zM41,37H42V38H41zM2,38H3V39H2zM4,38H5V39H4zM5,38H6V39H5zM6,38H7V39H6zM8,38H9V39H8zM10,38H11V39H10zM11,38H12V39H11zM13,38H14V39H13zM18,38H19V39H18zM19,38H20V39H19zM21,38H22V39H21zM23,38H24V39H23zM24,38H25V39H24zM25,38H26V39H25zM26,38H27V39H26zM29,38H30V39H29zM33,38H34V39H33zM34,38H35V39H34zM35,38H36V39H35zM36,38H37V39H36zM37,38H38V39H37zM38,38H39V39H38zM39,38H40V39H39zM2,39H3V40H2zM4,39H5V40H4zM5,39H6V40H5zM6,39H7V40H6zM8,39H9V40H8zM10,39H11V40H10zM11,39H12V40H11zM16,39H17V40H16zM18,39H19V40H18zM19,39H20V40H19zM20,39H21V40H20zM24,39H25V40H24zM25,39H26V40H25zM28,39H29V40H28zM29,39H30V40H29zM30,39H31V40H30zM37,39H38V40H37zM40,39H41V40H40zM42,39H43V40H42zM2,40H3V41H2zM4,40H5V41H4zM5,40H6V41H5zM6,40H7V41H6zM8,40H9V41H8zM11,40H12V41H11zM16,40H17V41H16zM17,40H18V41H17zM21,40H22V41H21zM24,40H25V41H24zM28,40H29V41H28zM29,40H30V41H29zM31,40H32V41H31zM32,40H33V41H32zM35,40H36V41H35zM37,40H38V41H37zM38,40H39V41H38zM40,40H41V41H40zM42,40H43V41H42zM2,41H3V42H2zM8,41H9V42H8zM11,41H12V42H11zM13,41H14V42H13zM14,41H15V42H14zM18,41H19V42H18zM19,41H20V42H19zM20,41H21V42H20zM22,41H23V42H22zM30,41H31V42H30zM35,41H36V42H35zM36,41H37V42H36zM38,41H39V42H38zM40,41H41V42H40zM42,41H43V42H42zM2,42H3V43H2zM3,42H4V43H3zM4,42H5V43H4zM5,42H6V43H5zM6,42H7V43H6zM7,42H8V43H7zM8,42H9V43H8zM10,42H11V43H10zM12,42H13V43H12zM13,42H14V43H13zM16,42H17V43H16zM17,42H18V43H17zM19,42H20V43H19zM20,42H21V43H20zM21,42H22V43H21zM22,42H23V43H22zM24,42H25V43H24zM25,42H26V43H25zM26,42H27V43H26zM27,42H28V43H27zM30,42H31V43H30zM34,42H35V43H34zM38,42H39V43H38z" id="qr-path" fill="#000000" fill-opacity="1" fill-rule="nonzero" stroke="none"/></svg>
 
 <!-- SECTION: MucLuc -->
 ---
@@ -21515,6 +21523,52 @@ chờ vài giây rồi mới báo sẽ loại được phần lớn báo giả (
 
 ---
 
+**4. ⭐⭐ Vùng chết — cho báo động dao động NGAY TẠI ngưỡng**
+
+⚠ **Trễ và vùng chết sửa hai bệnh khác nhau.** Người ta hay dùng trễ cho mọi trường hợp rồi ngạc
+nhiên vì vẫn bị làm phiền.
+
+| Triệu chứng | Sửa bằng |
+|---|---|
+| Xung nhiễu ngắn, giá trị nhảy rồi về ngay | ⭐ **Trễ trước khi báo** (kỹ thuật 3) |
+| ⭐⭐ Giá trị **nằm sát ngưỡng và dao động qua lại** | ⭐ **Vùng chết** — ngưỡng báo và ngưỡng gỡ **khác nhau** |
+
+Ví dụ cụ thể: ngưỡng báo nhiệt độ cao đặt ở **300 °C**.
+
+```text
+KHONG co vung chet:
+   300,0 -> 300,1 : bao dong
+   300,1 -> 300,0 : go bao dong
+   300,0 -> 300,1 : bao dong lai …
+   ⚠ Dao dong 0,1 do sinh ra HANG CHUC bao dong moi phut
+
+CO vung chet 5 do:
+   Bao khi VUOT 300 (chieu len)
+   Chi go khi XUONG DUOI 295 (chieu xuong)
+   ⭐ Dao dong quanh 300 chi sinh MOT bao dong
+```
+
+> ⭐⭐ **Nguyên tắc: ngưỡng BÁO và ngưỡng GỠ không được bằng nhau.**
+>
+> Đây chính là **vùng chết / trễ tích luỹ** *(hysteresis)* ở Chương 32, áp vào báo động thay vì áp
+> vào phép đo.
+>
+> ⚠ Hậu quả khi thiếu không chỉ là phiền: ⭐ **người vận hành bị buộc phải xác nhận hàng chục báo
+> động cho cùng một sự việc mà họ ĐÃ BIẾT** — và đó là cách nhanh nhất dạy họ thói quen bấm xác
+> nhận mà không đọc.
+
+> ⚡ **Nhiều khối PID của hãng đã có sẵn tham số vùng chết cho báo động** — tách riêng cho báo động
+> theo giá trị đo và báo động theo sai lệch. ⭐ Nếu dùng khối chuẩn, hãy tìm tham số đó trước khi tự
+> viết logic.
+
+> ⭐ **Chọn độ rộng vùng chết:** đủ lớn để trùm biên độ dao động bình thường của đại lượng đó, nhưng
+> ⚠ không lớn tới mức che mất một thay đổi thật đáng quan tâm. ⭐ **Đo dao động thật trước khi chọn**
+> — lại là một lần "ghi mốc lúc máy còn mới".
+
+*(Đối chiếu: Kuphaldt — Lessons in Industrial Instrumentation, mục về vùng chết của công tắc quá
+trình và báo động phiền nhiễu; Rockwell 1756-RM003 — khối PID có tham số vùng chết riêng cho báo
+động theo giá trị đo và theo sai lệch.)*
+
 ## 44.4 Phân quyền người dùng
 
 | Cấp | Làm được gì |
@@ -30060,7 +30114,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 > ⭐⭐ **Nếu máy không nói được điều kiện nào đang thiếu, đó là một lỗi thiết kế cần sửa** — không
 > phải một tình huống bình thường phải chịu đựng.
 >
-> Chương 43 gọi đây là "chuỗi cho phép": máy phải hiện được **điều kiện nào chưa đạt**, không chỉ
+> Chương 44 gọi đây là **thiết kế báo động dùng được**: máy phải hiện được **điều kiện nào chưa đạt**, không chỉ
 > "không sẵn sàng". Đây là thứ rẻ để thêm và tiết kiệm hàng giờ mỗi năm.
 
 ---
@@ -30328,18 +30382,18 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
-| Bộ điều khiển logic khả trình | Programmable Logic Controller (PLC) | | 1, 7 |
-| ⭐ Vòng quét | scan cycle · scan time | ⭐ Khái niệm nền của cả cuốn sách | 7 |
-| Ảnh ngõ vào | input image · process image | Bản chụp trạng thái đầu vòng quét | 7 |
-| Ảnh ngõ ra | output image | | 7 |
-| Chu kỳ quét | cycle time (scan) | ⚠ Khác *cycle time* của máy (Ch.55) | 7, 55 |
-| Bộ nhớ giữ được | retentive memory · retain | Giữ qua mất điện | 12 |
-| Thời gian đáp ứng | response time | | 7 |
-| Ngắt | interrupt | | 19 |
-| Tác vụ theo chu kỳ | cyclic task | | 19 |
-| Giám sát treo máy | watchdog | | 19 |
+| Bộ điều khiển logic khả trình | Programmable Logic Controller (PLC) | | 1, 2 |
+| ⭐ Vòng quét | scan cycle · scan time | ⭐ Khái niệm nền của cả cuốn sách | 10 |
+| Ảnh ngõ vào | input image · process image | Bản chụp trạng thái đầu vòng quét | 10 |
+| Ảnh ngõ ra | output image | | 10 |
+| Chu kỳ quét | cycle time (scan) | ⚠ Khác *cycle time* của máy (Ch.55) | 10, 55 |
+| Bộ nhớ giữ được | retentive memory · retain | Giữ qua mất điện | 11 |
+| Thời gian đáp ứng | response time | | 9, 10 |
+| Ngắt | interrupt | | 10 |
+| Tác vụ theo chu kỳ | cyclic task | | 10 |
+| Giám sát treo máy | watchdog | | 10 |
 | Khe cắm · Giá đỡ | slot · rack | | 8 |
-| Module vào/ra phân tán | remote I/O · distributed I/O | | 40 |
+| Module vào/ra phân tán | remote I/O · distributed I/O | | 8 |
 
 ---
 
@@ -30354,10 +30408,10 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Cảm biến tiệm cận | proximity sensor | | 4 |
 | Cảm biến quang thu-phát | through-beam sensor | | 4 |
 | Cảm biến quang phản xạ | retro-reflective sensor | | 4 |
-| Cảm biến từ trên xy-lanh | reed switch · magnetic cylinder sensor | | 5 |
+| Cảm biến từ trên xy-lanh | reed switch · magnetic cylinder sensor | | 4, 6 |
 | Tiếp điểm khô | dry contact · volt-free contact | | 9 |
 | Cách ly quang | opto-isolation | | 9, 41 |
-| Chống rung tiếp điểm | debounce | | 11 |
+| Chống rung tiếp điểm | debounce | | 17 |
 | Encoder tăng dần · tuyệt đối | incremental · absolute encoder | | 18, 37 |
 | Bộ đếm xung tốc độ cao | high-speed counter (HSC) | | 18 |
 | Cặp nhiệt điện | thermocouple | | 33 |
@@ -30373,17 +30427,17 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
 | Cơ cấu chấp hành | actuator | | 5 |
-| Xy-lanh khí nén | pneumatic cylinder | | 5 |
-| Van điện từ | solenoid valve | | 5, 9 |
-| Van 5/2 lò xo về | 5/2 spring-return valve | ⭐ Trạng thái khi mất điện là **xác định** | 5 |
-| Van 5/2 hai cuộn | 5/2 double-solenoid valve | ⚠ Giữ nguyên vị trí khi mất điện | 5 |
-| Van tiết lưu | flow control valve | Chỉnh tốc độ xy-lanh | 5 |
-| Bộ lọc–điều áp–tra dầu | FRL unit (filter-regulator-lubricator) | | 5 |
-| Giác hút chân không | vacuum cup · suction cup | | 5 |
+| Xy-lanh khí nén | pneumatic cylinder | | 6 |
+| Van điện từ | solenoid valve | | 6, 9 |
+| Van 5/2 lò xo về | 5/2 spring-return valve | ⭐ Trạng thái khi mất điện là **xác định** | 6 |
+| Van 5/2 hai cuộn | 5/2 double-solenoid valve | ⚠ Giữ nguyên vị trí khi mất điện | 6 |
+| Van tiết lưu | flow control valve | Chỉnh tốc độ xy-lanh | 6 |
+| Bộ lọc–điều áp–tra dầu | FRL unit (filter-regulator-lubricator) | | 6 |
+| Giác hút chân không | vacuum cup · suction cup | | 6 |
 | Diode dập xung | flyback diode · freewheeling diode | ⚠ Bắt buộc với tải cảm | 9 |
-| Contactor | contactor | | 9 |
-| Rơ-le trung gian | interposing relay | | 9 |
-| Tuổi thọ cơ · điện | mechanical · electrical life | ⭐ Hai con số khác nhau trong datasheet | 9 |
+| Contactor | contactor | | 5, 9 |
+| Rơ-le trung gian | interposing relay | | 5, 9 |
+| Tuổi thọ cơ · điện | mechanical · electrical life | ⭐ Hai con số khác nhau trong datasheet | 5, 9 |
 
 ---
 
@@ -30392,20 +30446,20 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
 | Biểu đồ bậc thang | Ladder Diagram (LD) | | 15 |
-| Sơ đồ khối chức năng | Function Block Diagram (FBD) | | 16 |
+| Sơ đồ khối chức năng | Function Block Diagram (FBD) | | 21 |
 | Văn bản có cấu trúc | Structured Text (ST) | | 20 |
 | Biểu đồ chức năng tuần tự | Sequential Function Chart (SFC) | | 21 |
-| Danh sách lệnh | Instruction List (IL) | ⚠ Đã bị loại khỏi tiêu chuẩn | 15 |
-| Khối hàm | function block (FB) | | 30 |
-| Hàm | function (FUN) | | 30 |
-| Thể hiện của khối hàm | function block instance | ⭐ Mỗi thể hiện có bộ nhớ riêng | 30 |
-| Khối dữ liệu | data block (DB) | | 30 |
+| Danh sách lệnh | Instruction List (IL) | ⚠ Đã bị loại khỏi tiêu chuẩn | 21 |
+| Khối hàm | function block (FB) | | 14, 30 |
+| Hàm | function (FUN) | | 14, 30 |
+| Thể hiện của khối hàm | function block instance | ⭐ Mỗi thể hiện có bộ nhớ riêng | 14, 30 |
+| Khối dữ liệu | data block (DB) | | 11, 30 |
 | Kiểu dữ liệu do người dùng định nghĩa | user-defined type (UDT) · structure | | 14, 30 |
-| Biến toàn cục · cục bộ | global · local variable | | 24 |
-| Bắt cạnh lên · cạnh xuống | rising edge · falling edge | | 11 |
-| Tự giữ | latch · seal-in | | 15 |
-| Đặt · Xoá | set · reset | | 15 |
-| Cưỡng bức | force | ⚠⚠ Nguy hiểm — Ch.50 | 50 |
+| Biến toàn cục · cục bộ | global · local variable | | 11 |
+| Bắt cạnh lên · cạnh xuống | rising edge · falling edge | | 16 |
+| Tự giữ | latch · seal-in | | 15, 16 |
+| Đặt · Xoá | set · reset | | 16 |
+| Cưỡng bức | force | ⚠⚠ Nguy hiểm — Ch.50 | 50, 51 |
 
 ---
 
@@ -30413,13 +30467,13 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
-| Bộ định thời | timer | | 11 |
-| Trễ khi bật | TON (on-delay timer) | | 11 |
-| Trễ khi tắt | TOF (off-delay timer) | | 11 |
-| Xung | TP (pulse timer) | | 11 |
-| Bộ đếm lên · xuống | CTU · CTD (count up · down) | | 12 |
-| Giá trị đặt · giá trị hiện tại | preset value · current value | | 11, 12 |
-| Thanh ghi dịch | shift register | ⭐ Theo dõi sản phẩm trên chuyền | 12, 41 |
+| Bộ định thời | timer | | 17 |
+| Trễ khi bật | TON (on-delay timer) | | 17 |
+| Trễ khi tắt | TOF (off-delay timer) | | 17 |
+| Xung | TP (pulse timer) | | 17 |
+| Bộ đếm lên · xuống | CTU · CTD (count up · down) | | 18 |
+| Giá trị đặt · giá trị hiện tại | preset value · current value | | 17, 18 |
+| Thanh ghi dịch | shift register | ⭐ Theo dõi sản phẩm trên chuyền | 18, 41 |
 
 ---
 
@@ -30427,21 +30481,21 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
-| Trình tự | sequence | | 21 |
-| Bước | step | | 21 |
-| Điều kiện chuyển tiếp | transition condition | ⭐ Phải là **phản hồi thật** | 21 |
-| Hết giờ | timeout | ⭐ Chỉ để **báo lỗi** | 21 |
+| Trình tự | sequence | | 21, 26 |
+| Bước | step | | 21, 26 |
+| Điều kiện chuyển tiếp | transition condition | ⭐ Phải là **phản hồi thật** | 21, 26 |
+| Hết giờ | timeout | ⭐ Chỉ để **báo lỗi** | 26 |
 | Máy trạng thái | state machine | | 25 |
-| Khoá liên động | interlock | | 22 |
-| Khoá chéo | mutual interlock | | 22 |
-| ⭐ Chờ bận | busy-wait | ⚠ Cách viết cần tránh | 26 |
+| Khoá liên động | interlock | | 27, 47 |
+| Khoá chéo | mutual interlock | | 27, 47 |
+| ⭐ Chờ bận | busy-wait | ⚠ Cách viết cần tránh | 27 |
 | Bế tắc | deadlock | | 26 |
 | Về gốc | homing | ⭐ Bài toán khó nhất thực tế | 28 |
-| Công thức sản phẩm | recipe | | 32 |
-| Chế độ tay · tự động | manual · automatic mode | | 25 |
+| Công thức sản phẩm | recipe | | 29 |
+| Chế độ tay · tự động | manual · automatic mode | | 28 |
 | Đặc tả chức năng | functional specification | | 23 |
 | Bảng vào/ra | I/O list · I/O schedule | | 23 |
-| Chuỗi cho phép | permissive chain · ready chain | ⭐ Máy phải nói **thiếu điều kiện nào** | 43 |
+| Chuỗi cho phép | permissive chain · ready chain | ⭐ Máy phải nói **thiếu điều kiện nào** | 44 |
 
 ---
 
@@ -30449,14 +30503,14 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
-| Giá trị đặt · giá trị đo | setpoint (SP) · process value (PV) | | 34 |
-| Sai lệch | error | | 34 |
-| Vòng kín · vòng hở | closed-loop · open-loop | | 34 |
+| Giá trị đặt · giá trị đo | setpoint (SP) · process value (PV) | | 35 |
+| Sai lệch | error | | 35 |
+| Vòng kín · vòng hở | closed-loop · open-loop | | 35 |
 | Điều khiển tỉ lệ–tích phân–vi phân | PID control | | 35 |
 | Vượt quá | overshoot | | 35 |
 | Bão hoà tích phân | integral windup | | 35 |
-| Vùng chết | deadband | | 34 |
-| Trễ tích luỹ | hysteresis | | 34 |
+| Vùng chết | deadband | | 32, 35 |
+| Trễ tích luỹ | hysteresis | | 32 |
 | Biến tần | VFD (variable frequency drive) · inverter | | 36 |
 | Tăng tốc · giảm tốc | acceleration · deceleration ramp | | 36 |
 | ⭐ Mô-men dừng an toàn | STO (Safe Torque Off) | ⚠ Chức năng an toàn của driver | 36, 47 |
@@ -30495,7 +30549,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
-| Đánh giá rủi ro | risk assessment | ⭐ Làm ở **giai đoạn 1** | 6, 57 |
+| Đánh giá rủi ro | risk assessment | ⭐ Làm ở **giai đoạn 1** | 47, 57 |
 | Mối nguy | hazard | | 6 |
 | Rủi ro | risk | | 6 |
 | Giảm rủi ro theo thứ tự ưu tiên | hierarchy of risk reduction | | 6 |
@@ -30525,7 +30579,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Báo động | alarm | | 43 |
 | Xác nhận báo động | acknowledge (ack) | | 43 |
 | Báo động đầu tiên | first-out alarm | ⭐ Cái nào xảy ra **trước** | 43 |
-| Tràn báo động | alarm flood | IEC 62682 | 43 |
+| Tràn báo động | alarm flood | IEC 62682 | 44 |
 | Sửa trực tuyến | online edit | ⚠⚠ Ch.53 | 53 |
 | Tài liệu hiện trạng | as-built documentation | ⭐ Khác **bản thiết kế** | 53 |
 | Quản lý thay đổi | change management | | 53 |

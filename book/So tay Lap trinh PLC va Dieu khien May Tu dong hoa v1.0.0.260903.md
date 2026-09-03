@@ -6534,6 +6534,36 @@ tới trạng thái an toàn, chứ không phải trạng thái nguy hiểm. Ch�
 > Và với **dừng khẩn cấp** *(E-Stop)* thì còn một tầng nữa: nó **không được chỉ dựa vào logic PLC**,
 > bất kể bạn dùng tổ hợp nào. Lý do: CPU treo thì logic chết theo, còn mối nguy thì không. Chương 47.
 
+### ⚠⚠ Giới hạn của chính bảng này — tổ hợp 3 chống được hỏng kiểu HỞ, không chống hỏng kiểu CHẬP
+
+Cả bảng 4 tổ hợp được xây trên **một** kiểu hỏng: ⭐ **mạch bị HỞ** — đứt dây, tuột đầu cốt, tiếp
+điểm mòn không đóng. Với kiểu hỏng đó, tổ hợp 3 đúng là an toàn.
+
+⚠ Nhưng mạch điện có **kiểu hỏng thứ hai, ngược lại**:
+
+| Kiểu hỏng | Ví dụ | Bit ngõ vào | Tổ hợp 3 xử lý được không |
+|---|---|---|---|
+| ⭐ **HỞ** | Đứt dây · tuột cốt · tiếp điểm không đóng | → **0** | ✅ **Có** — máy dừng |
+| ⚠⚠ **CHẬP** | Hai dây chạm nhau · chập sang 24 V · ⭐ **tiếp điểm hàn dính** (Chương 3, mục 3.5) | → **1** *(kẹt ở mức "bình thường")* | ❌ **KHÔNG** — PLC thấy *"chưa ai nhấn Dừng"* mãi mãi |
+
+> ⚠⚠ **NGUY HIỂM — đây là lý do bảng này KHÔNG đủ cho chức năng an toàn.**
+>
+> Với tổ hợp 3, một chỗ **chập** làm bit kẹt ở 1. Nút Dừng bấm xuống mà bit **không đổi** — và PLC
+> ⚠ **không có cách nào biết**, đúng như nó không phân biệt được đứt dây với hở tiếp điểm.
+>
+> ⭐⭐ **Bảng 4 tổ hợp là điều kiện CẦN, không phải điều kiện ĐỦ.** Nó là cách đúng để đấu và viết
+> logic cho tín hiệu dừng thông thường. ⚠ Nhưng với **chức năng an toàn** thì phải có thêm những thứ
+> mà một nấc thang không làm được:
+>
+> | Cơ chế | Chống được gì | Ở đâu |
+> |---|---|---|
+> | **Hai kênh** và kiểm chéo | Hỏng một kênh | Chương 47 |
+> | ⭐ **Xung kiểm tra trên ngõ ra OSSD** | ⭐ **Chập sang 24 V và chập chéo** | Chương 47, mục 47.7 |
+> | ⭐ **Tiếp điểm dẫn động cưỡng bức** | ⭐ **Tiếp điểm hàn dính** — làm hỏng hóc trở nên phát hiện được | Chương 3, mục 3.5 |
+>
+> ⭐ Nói cách khác: mọi cơ chế an toàn ở Chương 47 tồn tại **chính vì** bảng 4 tổ hợp chỉ giải quyết
+> được một nửa bài toán.
+
 ### Kiểm tra nhanh khi bạn không chắc
 
 Ba câu hỏi, theo thứ tự:
@@ -6544,6 +6574,8 @@ Ba câu hỏi, theo thứ tự:
    trên nhãn.
 3. **Rút dây ra và thử.** Đây là phép thử duy nhất chứng minh được, và nó nằm trong danh mục thử tạo
    lỗi cố ý ở Chương 52.
+4. ⚠ **Và hỏi thêm: nếu tín hiệu này bị *kẹt ở mức bình thường* thì sao?** Nếu câu trả lời là *"máy
+   sẽ không dừng"* → ⭐ **đây là chức năng an toàn**, và nấc thang không đủ (Chương 47).
 
 > 💡 **MẸO**
 > Cảm biến quang, cảm biến tiệm cận thường có cả hai kiểu ngõ ra hoặc chọn được bằng cách đấu dây. Khi
@@ -6784,6 +6816,10 @@ Nhưng những chi tiết sau **khác nhau thật** và sẽ làm bạn vấp kh
    trình. **Dự đoán hậu quả** và giải thích bằng cơ chế của Chương 10.
 6. Giải thích cho một người vừa học ladder: vì sao "ladder giống sơ đồ rơ-le" là câu nói **vừa đúng
    vừa nguy hiểm**.
+7. ⚠⚠ Bảng 4 tổ hợp được xây trên **một** kiểu hỏng. Kiểu hỏng đó là gì, và ⭐ **kiểu hỏng nào bảng
+    này KHÔNG giải quyết được**? Cho một ví dụ cụ thể.
+8. ⭐⭐ Tổ hợp 3 đã đúng, nhưng vì sao nó vẫn **không đủ** cho một chức năng an toàn? Nêu ba cơ chế
+    phải có thêm và mỗi cơ chế chống được kiểu hỏng nào.
 
 Câu 1 và câu 4 là hai câu phân loại. Câu 1 phải trả lời được **không cần nghĩ**; câu 4 chứng tỏ bạn
 hiểu tiêu chí chứ không thuộc lòng quy tắc.
@@ -6807,6 +6843,9 @@ khi reset**. Chương 16 so sánh hai cách và chỉ ra khi nào cách gọn l�
 - Tài liệu hãng về ngôn ngữ Ladder Diagram — dùng để đối chiếu khác biệt ở mục 15.6; số hiệu cụ thể ghi
   trong Phụ lục A2.
 - Cấu hình I/O của DP-01 (kiểu tiếp điểm từng thiết bị) — Phụ lục J.
+- ⚠ **Giới hạn của bảng 4 tổ hợp** (mục 15.3): nó chỉ phủ **hỏng kiểu hở**. Cơ chế chống **hỏng kiểu
+  chập** — tiếp điểm dẫn động cưỡng bức, hai kênh, xung kiểm tra OSSD — nằm ở Chương 3 mục 3.5 và
+  Chương 47 mục 47.7.
 
 > ⚠ Nội dung fail-safe ở mục 15.3 là **nguyên tắc thiết kế**, không thay thế đánh giá rủi ro và tính
 > toán mức hiệu năng cho một cỗ máy cụ thể. Chương 47 nêu rõ ranh giới đó.
@@ -24060,6 +24099,19 @@ Nguyên tắc đã gặp ở Chương 4 và Chương 15, giờ phát biểu ở 
 |---|---|---|
 | Mất nó là **phải dừng** (Dừng, cửa, áp suất, phản hồi mạch an toàn) | **NC** | Đứt dây → bit 0 → dừng |
 | Mất nó chỉ làm **sai sản phẩm** | Tuỳ, thường NO | Xử lý bằng timeout và báo lỗi |
+
+> ⚠⚠ **Phạm vi của bảng trên — đọc kèm mục 15.3.**
+>
+> Bảng này giải quyết ⭐ **hỏng kiểu HỞ** (đứt dây, tuột cốt, tiếp điểm không đóng). ⚠ Nó **không**
+> giải quyết ⭐ **hỏng kiểu CHẬP** — hai dây chạm nhau, chập sang 24 V, tiếp điểm **hàn dính** — khi
+> đó bit **kẹt ở mức "bình thường"** và PLC không phân biệt được.
+>
+> ⭐ Các cơ chế chống hỏng kiểu chập nằm ngoài phạm vi một nấc thang: **tiếp điểm dẫn động cưỡng bức**
+> (Chương 3, mục 3.5), **hai kênh và kiểm chéo**, **xung kiểm tra trên ngõ ra OSSD** (Chương 47,
+> mục 47.7).
+>
+> ⚠ Đây là ranh giới giữa *thiết kế hướng an toàn khi hỏng* của chương này và **chức năng an toàn**
+> đúng nghĩa ở Chương 47 — ⭐ chúng **không thay thế nhau**.
 
 Áp cho tín hiệu analog — đây là chỗ Chương 31 đã chuẩn bị:
 

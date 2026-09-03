@@ -10282,6 +10282,66 @@ bảo vệ, công tắc áp suất, phản hồi mạch an toàn:</p>
 <p>Và với <strong>dừng khẩn cấp</strong> <em>(E-Stop)</em> thì còn một tầng nữa: nó <strong>không được chỉ dựa vào logic PLC</strong>,
 bất kể bạn dùng tổ hợp nào. Lý do: CPU treo thì logic chết theo, còn mối nguy thì không. Chương 47.</p>
 </blockquote>
+<h3>⚠⚠ Giới hạn của chính bảng này — tổ hợp 3 chống được hỏng kiểu HỞ, không chống hỏng kiểu CHẬP</h3>
+<p>Cả bảng 4 tổ hợp được xây trên <strong>một</strong> kiểu hỏng: ⭐ <strong>mạch bị HỞ</strong> — đứt dây, tuột đầu cốt, tiếp
+điểm mòn không đóng. Với kiểu hỏng đó, tổ hợp 3 đúng là an toàn.</p>
+<p>⚠ Nhưng mạch điện có <strong>kiểu hỏng thứ hai, ngược lại</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu hỏng</th>
+<th>Ví dụ</th>
+<th>Bit ngõ vào</th>
+<th>Tổ hợp 3 xử lý được không</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>HỞ</strong></td>
+<td>Đứt dây · tuột cốt · tiếp điểm không đóng</td>
+<td>→ <strong>0</strong></td>
+<td>✅ <strong>Có</strong> — máy dừng</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>CHẬP</strong></td>
+<td>Hai dây chạm nhau · chập sang 24 V · ⭐ <strong>tiếp điểm hàn dính</strong> (Chương 3, mục 3.5)</td>
+<td>→ <strong>1</strong> <em>(kẹt ở mức &quot;bình thường&quot;)</em></td>
+<td>❌ <strong>KHÔNG</strong> — PLC thấy <em>&quot;chưa ai nhấn Dừng&quot;</em> mãi mãi</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>NGUY HIỂM — đây là lý do bảng này KHÔNG đủ cho chức năng an toàn.</strong></p>
+<p>Với tổ hợp 3, một chỗ <strong>chập</strong> làm bit kẹt ở 1. Nút Dừng bấm xuống mà bit <strong>không đổi</strong> — và PLC
+⚠ <strong>không có cách nào biết</strong>, đúng như nó không phân biệt được đứt dây với hở tiếp điểm.</p>
+<p>⭐⭐ <strong>Bảng 4 tổ hợp là điều kiện CẦN, không phải điều kiện ĐỦ.</strong> Nó là cách đúng để đấu và viết
+logic cho tín hiệu dừng thông thường. ⚠ Nhưng với <strong>chức năng an toàn</strong> thì phải có thêm những thứ
+mà một nấc thang không làm được:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cơ chế</th>
+<th>Chống được gì</th>
+<th>Ở đâu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Hai kênh</strong> và kiểm chéo</td>
+<td>Hỏng một kênh</td>
+<td>Chương 47</td>
+</tr>
+<tr>
+<td>⭐ <strong>Xung kiểm tra trên ngõ ra OSSD</strong></td>
+<td>⭐ <strong>Chập sang 24 V và chập chéo</strong></td>
+<td>Chương 47, mục 47.7</td>
+</tr>
+<tr>
+<td>⭐ <strong>Tiếp điểm dẫn động cưỡng bức</strong></td>
+<td>⭐ <strong>Tiếp điểm hàn dính</strong> — làm hỏng hóc trở nên phát hiện được</td>
+<td>Chương 3, mục 3.5</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Nói cách khác: mọi cơ chế an toàn ở Chương 47 tồn tại <strong>chính vì</strong> bảng 4 tổ hợp chỉ giải quyết
+được một nửa bài toán.</p>
+</blockquote>
 <h3>Kiểm tra nhanh khi bạn không chắc</h3>
 <p>Ba câu hỏi, theo thứ tự:</p>
 <ol>
@@ -10291,6 +10351,8 @@ NC, code dùng <code>┤ ├</code>.</li>
 trên nhãn.</li>
 <li><strong>Rút dây ra và thử.</strong> Đây là phép thử duy nhất chứng minh được, và nó nằm trong danh mục thử tạo
 lỗi cố ý ở Chương 52.</li>
+<li>⚠ <strong>Và hỏi thêm: nếu tín hiệu này bị <em>kẹt ở mức bình thường</em> thì sao?</strong> Nếu câu trả lời là <em>&quot;máy
+sẽ không dừng&quot;</em> → ⭐ <strong>đây là chức năng an toàn</strong>, và nấc thang không đủ (Chương 47).</li>
 </ol>
 <blockquote>
 <p>💡 <strong>MẸO</strong>
@@ -10538,6 +10600,10 @@ dùng <code>┤/├</code> cho nút Dừng lại nguy hiểm?</li>
 trình. <strong>Dự đoán hậu quả</strong> và giải thích bằng cơ chế của Chương 10.</li>
 <li>Giải thích cho một người vừa học ladder: vì sao &quot;ladder giống sơ đồ rơ-le&quot; là câu nói <strong>vừa đúng
 vừa nguy hiểm</strong>.</li>
+<li>⚠⚠ Bảng 4 tổ hợp được xây trên <strong>một</strong> kiểu hỏng. Kiểu hỏng đó là gì, và ⭐ <strong>kiểu hỏng nào bảng
+ này KHÔNG giải quyết được</strong>? Cho một ví dụ cụ thể.</li>
+<li>⭐⭐ Tổ hợp 3 đã đúng, nhưng vì sao nó vẫn <strong>không đủ</strong> cho một chức năng an toàn? Nêu ba cơ chế
+ phải có thêm và mỗi cơ chế chống được kiểu hỏng nào.</li>
 </ol>
 <p>Câu 1 và câu 4 là hai câu phân loại. Câu 1 phải trả lời được <strong>không cần nghĩ</strong>; câu 4 chứng tỏ bạn
 hiểu tiêu chí chứ không thuộc lòng quy tắc.</p>
@@ -10556,6 +10622,9 @@ cầu hành vi khi hỏng, làm cơ sở cho quy tắc fail-safe ở mục 15.3.
 <li>Tài liệu hãng về ngôn ngữ Ladder Diagram — dùng để đối chiếu khác biệt ở mục 15.6; số hiệu cụ thể ghi
 trong Phụ lục A2.</li>
 <li>Cấu hình I/O của DP-01 (kiểu tiếp điểm từng thiết bị) — Phụ lục J.</li>
+<li>⚠ <strong>Giới hạn của bảng 4 tổ hợp</strong> (mục 15.3): nó chỉ phủ <strong>hỏng kiểu hở</strong>. Cơ chế chống <strong>hỏng kiểu
+chập</strong> — tiếp điểm dẫn động cưỡng bức, hai kênh, xung kiểm tra OSSD — nằm ở Chương 3 mục 3.5 và
+Chương 47 mục 47.7.</li>
 </ul>
 <blockquote>
 <p>⚠ Nội dung fail-safe ở mục 15.3 là <strong>nguyên tắc thiết kế</strong>, không thay thế đánh giá rủi ro và tính
@@ -34117,6 +34186,17 @@ thiệt hại vô hình</strong>. Đó chính là sự cố ở mục 48.1.</p>
 <td>Xử lý bằng timeout và báo lỗi</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Phạm vi của bảng trên — đọc kèm mục 15.3.</strong></p>
+<p>Bảng này giải quyết ⭐ <strong>hỏng kiểu HỞ</strong> (đứt dây, tuột cốt, tiếp điểm không đóng). ⚠ Nó <strong>không</strong>
+giải quyết ⭐ <strong>hỏng kiểu CHẬP</strong> — hai dây chạm nhau, chập sang 24 V, tiếp điểm <strong>hàn dính</strong> — khi
+đó bit <strong>kẹt ở mức &quot;bình thường&quot;</strong> và PLC không phân biệt được.</p>
+<p>⭐ Các cơ chế chống hỏng kiểu chập nằm ngoài phạm vi một nấc thang: <strong>tiếp điểm dẫn động cưỡng bức</strong>
+(Chương 3, mục 3.5), <strong>hai kênh và kiểm chéo</strong>, <strong>xung kiểm tra trên ngõ ra OSSD</strong> (Chương 47,
+mục 47.7).</p>
+<p>⚠ Đây là ranh giới giữa <em>thiết kế hướng an toàn khi hỏng</em> của chương này và <strong>chức năng an toàn</strong>
+đúng nghĩa ở Chương 47 — ⭐ chúng <strong>không thay thế nhau</strong>.</p>
+</blockquote>
 <p>Áp cho tín hiệu analog — đây là chỗ Chương 31 đã chuẩn bị:</p>
 <blockquote>
 <p>Vòng dòng <strong>4–20 mA</strong> cho phép phân biệt &quot;giá trị bằng 0&quot; với &quot;đứt dây&quot;: giá trị hợp lệ nhỏ nhất là

@@ -7710,17 +7710,37 @@ cách **khai báo, đặt độ phân giải và đặt lại** thì khác nhau 
 | Ba khối chuẩn | `TON` `TOF` `TP` (khối IEC) | `TON` `TOF` `TP` ở GX Works3 | `TON` `TOF` | `TON` `TOF` `TP` |
 | Timer cộng dồn | `TONR` | Dải thiết bị timer chốt riêng | **`RTO`** *(Retentive Timer On)* | `TONR` ở một số thư viện |
 | ⚠ Đặt lại timer cộng dồn | Chân `R` của `TONR` | Lệnh `RST` trên thiết bị timer | ⚠ **Bắt buộc lệnh `RES`** — không có `RES` thì timer không bao giờ về 0 | Chân `R` |
-| Viết hằng số thời gian | `T#2S`, `T#500MS` | Số nguyên nhân với độ phân giải của thiết bị | `.PRE` tính bằng **mili-giây**, là số nguyên | `T#2S` |
+| Viết hằng số thời gian | `T#2S`, `T#500MS` | ⚠ Số nguyên nhân với độ phân giải — do **lệnh và thiết bị** quyết định | `.PRE` tính bằng **mili-giây**, là số nguyên | `T#2S` |
 | Giá trị đang đếm | `.ET` *(elapsed time)* | Giá trị hiện tại của thiết bị `T` | `.ACC` *(accumulated)* | `.ET` |
 | Cờ ngõ ra | `.Q` | Tiếp điểm cùng số hiệu với thiết bị `T` | `.DN` *(done)*, `.TT` *(timing)*, `.EN` *(enable)* | `.Q` |
 
 ### ⚠ Ba chỗ dễ vấp nhất
 
-**1. Mitsubishi — độ phân giải nằm ở SỐ HIỆU thiết bị.** Ở dòng FX truyền thống, timer `T` được chia
-dải: một dải chạy 100 ms, một dải 10 ms, một dải 1 ms, và một dải là timer chốt. Nghĩa là **đổi `T10`
-thành `T210` có thể đổi luôn độ phân giải và hành vi khi mất điện** — trong khi code trông y hệt.
-Đây là chỗ người quen hệ khác vấp ngay, vì ở các hệ đó độ phân giải là thuộc tính của khối, không
-phải của tên biến. Luôn tra bảng phân dải của đúng dòng CPU trước khi chọn số hiệu timer.
+**1. Mitsubishi — độ phân giải KHÔNG nằm trong khối, và nó đến từ HAI nguồn.**
+
+⚠⚠ Đây là chỗ người quen hệ khác vấp ngay: ở hệ IEC, độ phân giải là thuộc tính của khối và giá trị
+đặt là một **khoảng thời gian** (`T#2s`). Ở hệ kiểu thiết bị, giá trị đặt chỉ là một **số nguyên** —
+nó dài bao lâu do hai thứ khác quyết định:
+
+| Nguồn | Ví dụ |
+|---|---|
+| ⭐ **Lệnh dùng để chạy bộ định thời** | `OUT` → 100 ms · `OUTH` → 10 ms · `OUTHS` → 1 ms |
+| ⭐ **Kiểu / số hiệu thiết bị `T`** | Có kiểu 1 ms · 10 ms · 100 ms, và bản **giữ được** của cả ba |
+
+```text
+OUT   T5  K20   →  20 × 100 ms  =  2,0  giây
+OUTH  T5  K20   →  20 ×  10 ms  =  0,2  giây
+OUTHS T5  K20   →  20 ×   1 ms  =  0,02 giây
+```
+
+> ⚠⚠ **Cùng một dòng `K20`, ba kết quả cách nhau 100 lần — và code trông y hệt.**
+>
+> ⭐ Vì vậy `T10` đổi thành `T210` có thể đổi **cả độ phân giải lẫn hành vi khi mất điện**, mà không
+> có gì trên màn hình báo cho bạn. ⚠ Đây là nguồn lỗi kinh điển khi **chuyển chương trình sang dòng
+> CPU khác**, khi **đổi lệnh**, và khi **đổi số hiệu bộ định thời**.
+>
+> ⭐ **Luôn kiểm CẢ HAI: lệnh đang dùng và kiểu thiết bị `T`.** Chi tiết và bảng dải giá trị: Phụ lục
+> A2 §A2.2.
 
 **2. Rockwell — `RTO` cần `RES` mới về 0.** Timer cộng dồn giữ giá trị khi điều kiện mất, và **không
 có cách nào khác** để xoá ngoài lệnh `RES`. Quên `RES` thì timer chạy đủ một lần rồi báo xong mãi
@@ -7750,6 +7770,7 @@ Chi tiết đối chiếu năm hệ: **Phụ lục A2**.
 | 5 | Timer cần chạy liên tục được gọi **ngoài nhánh điều kiện** | Có |
 | 6 | Timeout đặt theo **đo thật**, không theo cảm tính | Có, và đã ghi con số gốc |
 | 7 | Điều kiện vào timer đã **được lọc** nếu có khả năng dao động | Có |
+| 8 | ⚠⚠ Nếu là **hệ kiểu thiết bị**: đã kiểm **cả lệnh lẫn kiểu `T`** | Có — cùng `K20` có thể chênh 100 lần |
 
 ---
 
@@ -7770,6 +7791,8 @@ Chi tiết đối chiếu năm hệ: **Phụ lục A2**.
 9. Timeout đặt quá chặt và quá lỏng — mỗi cái gây hậu quả gì? Cách đặt đúng?
 10. Bạn đọc code của người khác và thấy `T_Wait.Q` làm điều kiện chuyển bước. **Câu hỏi đầu tiên** bạn
     phải đặt là gì?
+11. ⚠⚠ Trên hệ kiểu thiết bị, dòng `OUT T5 K20` đếm bao lâu? Nêu **hai** thứ quyết định câu trả lời,
+    và cho biết khoảng chênh lệch lớn nhất giữa các khả năng.
 
 Câu 5, 6 và 7 là ba câu phân loại. Câu 5 là nguyên tắc trung tâm; câu 6 kiểm tra bạn không áp dụng
 nguyên tắc một cách máy móc; câu 7 là kỹ năng chẩn đoán thật.
@@ -7791,7 +7814,6 @@ ngưỡng mà đếm bằng phần mềm không còn khả thi — chương sau 
 - Tài liệu hãng về khối timer và timer giữ giá trị — dùng để đối chiếu khác biệt ở mục 17.7; số hiệu
   cụ thể ghi trong Phụ lục A2.
 - Bảng thời gian bước của DP-01 — Phụ lục J.
-
 > ⚡ Mọi con số thời gian trong chương (0,6 s cho hành trình kẹp, 3 s timeout, 500 ms lọc khí) là **giá
 > trị minh hoạ của máy mẫu**. Giá trị thật phải đo trên máy của bạn.
 

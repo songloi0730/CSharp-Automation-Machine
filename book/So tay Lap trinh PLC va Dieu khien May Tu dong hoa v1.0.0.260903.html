@@ -11610,7 +11610,7 @@ cách <strong>khai báo, đặt độ phân giải và đặt lại</strong> th�
 <tr>
 <td>Viết hằng số thời gian</td>
 <td><code>T#2S</code>, <code>T#500MS</code></td>
-<td>Số nguyên nhân với độ phân giải của thiết bị</td>
+<td>⚠ Số nguyên nhân với độ phân giải — do <strong>lệnh và thiết bị</strong> quyết định</td>
 <td><code>.PRE</code> tính bằng <strong>mili-giây</strong>, là số nguyên</td>
 <td><code>T#2S</code></td>
 </tr>
@@ -11630,11 +11630,38 @@ cách <strong>khai báo, đặt độ phân giải và đặt lại</strong> th�
 </tr>
 </tbody></table></div>
 <h3>⚠ Ba chỗ dễ vấp nhất</h3>
-<p><strong>1. Mitsubishi — độ phân giải nằm ở SỐ HIỆU thiết bị.</strong> Ở dòng FX truyền thống, timer <code>T</code> được chia
-dải: một dải chạy 100 ms, một dải 10 ms, một dải 1 ms, và một dải là timer chốt. Nghĩa là <strong>đổi <code>T10</code>
-thành <code>T210</code> có thể đổi luôn độ phân giải và hành vi khi mất điện</strong> — trong khi code trông y hệt.
-Đây là chỗ người quen hệ khác vấp ngay, vì ở các hệ đó độ phân giải là thuộc tính của khối, không
-phải của tên biến. Luôn tra bảng phân dải của đúng dòng CPU trước khi chọn số hiệu timer.</p>
+<p><strong>1. Mitsubishi — độ phân giải KHÔNG nằm trong khối, và nó đến từ HAI nguồn.</strong></p>
+<p>⚠⚠ Đây là chỗ người quen hệ khác vấp ngay: ở hệ IEC, độ phân giải là thuộc tính của khối và giá trị
+đặt là một <strong>khoảng thời gian</strong> (<code>T#2s</code>). Ở hệ kiểu thiết bị, giá trị đặt chỉ là một <strong>số nguyên</strong> —
+nó dài bao lâu do hai thứ khác quyết định:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nguồn</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Lệnh dùng để chạy bộ định thời</strong></td>
+<td><code>OUT</code> → 100 ms · <code>OUTH</code> → 10 ms · <code>OUTHS</code> → 1 ms</td>
+</tr>
+<tr>
+<td>⭐ <strong>Kiểu / số hiệu thiết bị <code>T</code></strong></td>
+<td>Có kiểu 1 ms · 10 ms · 100 ms, và bản <strong>giữ được</strong> của cả ba</td>
+</tr>
+</tbody></table></div>
+<pre><code class="language-text">OUT   T5  K20   →  20 × 100 ms  =  2,0  giây
+OUTH  T5  K20   →  20 ×  10 ms  =  0,2  giây
+OUTHS T5  K20   →  20 ×   1 ms  =  0,02 giây
+</code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Cùng một dòng <code>K20</code>, ba kết quả cách nhau 100 lần — và code trông y hệt.</strong></p>
+<p>⭐ Vì vậy <code>T10</code> đổi thành <code>T210</code> có thể đổi <strong>cả độ phân giải lẫn hành vi khi mất điện</strong>, mà không
+có gì trên màn hình báo cho bạn. ⚠ Đây là nguồn lỗi kinh điển khi <strong>chuyển chương trình sang dòng
+CPU khác</strong>, khi <strong>đổi lệnh</strong>, và khi <strong>đổi số hiệu bộ định thời</strong>.</p>
+<p>⭐ <strong>Luôn kiểm CẢ HAI: lệnh đang dùng và kiểu thiết bị <code>T</code>.</strong> Chi tiết và bảng dải giá trị: Phụ lục
+A2 §A2.2.</p>
+</blockquote>
 <p><strong>2. Rockwell — <code>RTO</code> cần <code>RES</code> mới về 0.</strong> Timer cộng dồn giữ giá trị khi điều kiện mất, và <strong>không
 có cách nào khác</strong> để xoá ngoài lệnh <code>RES</code>. Quên <code>RES</code> thì timer chạy đủ một lần rồi báo xong mãi
 mãi. Ngoài ra <code>.PRE</code> là <strong>số nguyên mili-giây</strong>, không phải hằng số kiểu <code>T#</code>.</p>
@@ -11693,6 +11720,11 @@ công cụ chẩn đoán ở Bẫy 2 và Bẫy 3.</p>
 <td>Điều kiện vào timer đã <strong>được lọc</strong> nếu có khả năng dao động</td>
 <td>Có</td>
 </tr>
+<tr>
+<td>8</td>
+<td>⚠⚠ Nếu là <strong>hệ kiểu thiết bị</strong>: đã kiểm <strong>cả lệnh lẫn kiểu <code>T</code></strong></td>
+<td>Có — cùng <code>K20</code> có thể chênh 100 lần</td>
+</tr>
 </tbody></table></div>
 <hr>
 <h2 id="179-t-kim">17.9 Tự kiểm</h2>
@@ -11712,6 +11744,8 @@ phép quan sát.</li>
 <li>Timeout đặt quá chặt và quá lỏng — mỗi cái gây hậu quả gì? Cách đặt đúng?</li>
 <li>Bạn đọc code của người khác và thấy <code>T_Wait.Q</code> làm điều kiện chuyển bước. <strong>Câu hỏi đầu tiên</strong> bạn
 phải đặt là gì?</li>
+<li>⚠⚠ Trên hệ kiểu thiết bị, dòng <code>OUT T5 K20</code> đếm bao lâu? Nêu <strong>hai</strong> thứ quyết định câu trả lời,
+và cho biết khoảng chênh lệch lớn nhất giữa các khả năng.</li>
 </ol>
 <p>Câu 5, 6 và 7 là ba câu phân loại. Câu 5 là nguyên tắc trung tâm; câu 6 kiểm tra bạn không áp dụng
 nguyên tắc một cách máy móc; câu 7 là kỹ năng chẩn đoán thật.</p>

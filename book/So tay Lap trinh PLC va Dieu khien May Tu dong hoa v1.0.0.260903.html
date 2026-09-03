@@ -13558,7 +13558,7 @@ ELSE
 END_IF;
 </code></pre>
 <p>Lưu ý <code>ELSIF</code> viết liền, không phải <code>ELSE IF</code>. Và mọi khối đều có từ khoá đóng riêng: <code>END_IF</code>,
-<code>END_CASE</code>, <code>END_FOR</code>, <code>END_WHILE</code>. Không dùng dấu ngoặc nhọn, không dùng thụt lề để phân khối —
+<code>END_CASE</code>, <code>END_FOR</code>, <code>END_WHILE</code>, <code>END_REPEAT</code>. Không dùng dấu ngoặc nhọn, không dùng thụt lề để phân khối —
 thụt lề chỉ để người đọc, trình biên dịch không quan tâm.</p>
 <h3>CASE — nơi ST vượt hẳn ladder</h3>
 <pre><code class="language-iecst">CASE Stn1_Step OF
@@ -13658,7 +13658,8 @@ song song. ST viết thẳng bằng ngoặc.</p>
 <hr>
 <h2 id="205-vòng-lp-trong-môi-trưng-quét">20.5 ⚠⚠ Vòng lặp trong môi trường quét</h2>
 <h3>Vấn đề</h3>
-<p><code>FOR</code> và <code>WHILE</code> chạy <strong>trọn vẹn trong một vòng quét</strong>. Không có chuyện &quot;lặp qua nhiều vòng quét&quot; —
+<p>Cả ba vòng lặp — <code>FOR</code>, <code>WHILE</code>, <code>REPEAT</code> — chạy <strong>trọn vẹn trong một vòng quét</strong>. Không có chuyện
+&quot;lặp qua nhiều vòng quét&quot; —
 CPU chưa ra khỏi vòng lặp thì chưa sang giai đoạn tiếp theo của chu kỳ quét (Chương 10).</p>
 <p>Hệ quả: <strong>thời gian chạy vòng lặp cộng thẳng vào thời gian quét.</strong></p>
 <p>Mỗi CPU có <strong>bộ giám sát thời gian quét</strong> <em>(watchdog)</em>. Quá thời gian cho phép, CPU coi như chương
@@ -13707,6 +13708,90 @@ mới quan trọng, không phải con số trung bình.</li>
 <li><strong>Tập lớn thì chia nhỏ qua nhiều vòng quét</strong>: mỗi vòng quét xử lý một phần, nhớ vị trí đang tới,
 vòng sau làm tiếp. Dài dòng hơn nhưng giữ thời gian quét ổn định.</li>
 </ul>
+<h3>⚡ &quot;Thế dùng truy cập trực tiếp thì sao?&quot;</h3>
+<p>Người đã đọc Chương 10 sẽ nghĩ ngay tới lối thoát này: dùng <strong>truy cập trực tiếp</strong> (mục 10.4) để đọc
+thẳng chân vào, bỏ qua ảnh — khi đó <code>DI_Clamp1Up</code> <strong>thật sự đổi giá trị</strong> trong lúc vòng lặp chạy, và
+vòng lặp <strong>sẽ</strong> thoát.</p>
+<blockquote>
+<p>⚠⚠ <strong>Đúng về kỹ thuật, và tệ hơn về hậu quả.</strong></p>
+<p>Vòng lặp bây giờ thoát được — nhưng nó thoát <strong>sau khi kẹp lên xong</strong>, tức là ⭐ <strong>CPU đứng chờ suốt
+vài trăm mili-giây</strong> ngay giữa vòng quét. Trong khoảng đó: không nấc thang nào khác chạy, không ngõ
+ra nào được cập nhật, không báo động nào được xét, ⚠⚠ <strong>và nút dừng không được đọc</strong>.</p>
+<p>⭐ Nếu cơ cấu kẹt và tín hiệu không bao giờ tới, bạn quay lại đúng chỗ cũ: watchdog và CPU sang STOP.</p>
+<p>⭐⭐ <strong>Sửa một vòng lặp chờ bằng cách làm cho nó thoát được là chữa triệu chứng.</strong> Vấn đề gốc là
+⚠ <strong>việc chờ không được nằm trong vòng lặp</strong>, bất kể vòng lặp có thoát được hay không.</p>
+</blockquote>
+<h3><code>REPEAT ... UNTIL</code> — vòng lặp thứ ba, và cái bẫy riêng của nó</h3>
+<p>Chuẩn có <strong>ba</strong> vòng lặp. <code>REPEAT</code> ít gặp hơn nhưng có hai đặc điểm dễ vấp:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><code>WHILE ... DO</code></th>
+<th><code>REPEAT ... UNTIL</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠ Cực tính điều kiện</td>
+<td>Chạy <strong>CHỪNG NÀO</strong> điều kiện còn đúng</td>
+<td>⭐ Chạy <strong>CHO TỚI KHI</strong> điều kiện đúng</td>
+</tr>
+<tr>
+<td>⚠⚠ Thân vòng lặp</td>
+<td>Có thể <strong>không chạy lần nào</strong></td>
+<td>⭐ <strong>Luôn chạy ít nhất một lần</strong></td>
+</tr>
+<tr>
+<td>Kiểm điều kiện</td>
+<td>Đầu vòng</td>
+<td>⭐ <strong>Cuối vòng</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Hai chỗ sai kinh điển:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Chép điều kiện của <code>WHILE</code> sang <code>REPEAT</code> mà quên đảo</strong> — vòng lặp chạy đúng ngược lại ý muốn, và thường thành vô hạn</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Quên rằng thân vòng <strong>luôn chạy một lần</strong> — với tập rỗng hoặc điều kiện đã thoả sẵn, <code>WHILE</code> không làm gì còn <code>REPEAT</code> <strong>vẫn làm một lần</strong></td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<h3>⭐⭐ Nguyên tắc chung — và nó giải thích mọi thứ ở trên</h3>
+<blockquote>
+<p>⭐⭐ <strong>Điều kiện thoát của vòng lặp phải phụ thuộc vào một biến được cập nhật BÊN TRONG chính vòng
+lặp đó.</strong></p>
+<p>Rủi ro vòng lặp vô hạn — hoặc chạy quá lâu — ⚠ <strong>lớn nhất khi điều kiện thoát phụ thuộc vào thứ bên
+ngoài</strong>: tín hiệu vào, giá trị từ mạng, biến do tác vụ khác ghi.</p>
+<p>⭐ Nguyên tắc này gói gọn cả ba trường hợp: <code>WHILE NOT DI_Clamp1Up</code> sai vì điều kiện đến từ <strong>bên
+ngoài</strong>; <code>FOR i := 0 TO n</code> rủi ro vì <code>n</code> đến từ <strong>bên ngoài</strong>; còn <code>FOR i := 0 TO 99</code> an toàn vì
+biến đếm do <strong>chính vòng lặp</strong> cập nhật.</p>
+</blockquote>
+<p><strong>Và khi buộc phải dùng <code>WHILE</code>/<code>REPEAT</code>: kèm trần số vòng.</strong> Đây là mẫu chuẩn:</p>
+<pre><code class="language-iecst">k := 1;
+REPEAT
+    Area[k] := Pi * Radius[k] * Radius[k];
+    k := k + 1;
+    IF k &gt;= 200 THEN EXIT; END_IF;      // ⭐ bảo hiểm: trần cứng, độc lập với dữ liệu
+UNTIL Area[k] &gt; 1000
+END_REPEAT;
+</code></pre>
+<blockquote>
+<p>⚠ <strong><code>EXIT</code> chỉ thoát MỘT tầng.</strong> Đặt <code>EXIT</code> trong vòng lặp trong cùng thì <strong>các vòng lặp bao ngoài
+vẫn chạy tiếp</strong>. Muốn thoát nhiều tầng phải có cơ chế riêng — hoặc, tốt hơn, ⭐ <strong>đừng lồng vòng lặp
+trong môi trường quét</strong>.</p>
+<p>⚡ Chuẩn còn có <code>CONTINUE</code> — bỏ qua phần còn lại của lần lặp hiện tại và sang lần kế. Nó <strong>không</strong>
+thoát vòng lặp, nên ⚠ <strong>không phải công cụ phòng vòng lặp vô hạn</strong>.</p>
+</blockquote>
 <blockquote>
 <p>⚠ <strong><code>EXIT</code> không cứu được <code>WHILE</code> chờ tín hiệu.</strong>
 Chuẩn có lệnh <code>EXIT</code> để thoát vòng lặp sớm. Nó hữu ích khi tìm thấy phần tử cần tìm trong mảng.
@@ -13740,6 +13825,14 @@ là <strong>điều kiện thoát không bao giờ thay đổi</strong> trong kh
 <tr>
 <td>Lặp tới khi thoả điều kiện tính trong cùng vòng lặp</td>
 <td>⚠ <code>WHILE</code> <strong>kèm trần số vòng</strong></td>
+</tr>
+<tr>
+<td>Cần thân vòng chạy <strong>ít nhất một lần</strong></td>
+<td>⚠ <code>REPEAT</code> — ⭐ nhớ <strong>đảo cực tính điều kiện</strong></td>
+</tr>
+<tr>
+<td>⭐ Kiểm mọi vòng lặp trước khi giao</td>
+<td><em>&quot;Điều kiện thoát có phụ thuộc biến được cập nhật <strong>bên trong</strong> không?&quot;</em></td>
 </tr>
 </tbody></table></div>
 <hr>
@@ -14050,6 +14143,22 @@ ngưỡng, sự cố đã dẫn tới đoạn code này, cạm bẫy đã tránh
 <td><strong>Liên động và ngõ ra cuối</strong> — thứ người bảo trì nhìn đầu tiên</td>
 </tr>
 <tr>
+<td>⭐⭐ Điều kiện thoát vòng lặp</td>
+<td><strong>Phải phụ thuộc biến cập nhật BÊN TRONG vòng lặp</strong></td>
+</tr>
+<tr>
+<td>⚠ <code>REPEAT</code> khác <code>WHILE</code></td>
+<td>Cực tính <strong>ngược</strong>, và thân vòng <strong>luôn chạy ít nhất một lần</strong></td>
+</tr>
+<tr>
+<td>⚠ <code>EXIT</code> thoát mấy tầng</td>
+<td>⭐ <strong>Một tầng</strong> — vòng bao ngoài vẫn chạy tiếp</td>
+</tr>
+<tr>
+<td>Dùng truy cập trực tiếp để cứu vòng lặp chờ</td>
+<td>⚠⚠ <strong>Chữa triệu chứng</strong> — CPU vẫn đứng chờ, nút dừng vẫn không được đọc</td>
+</tr>
+<tr>
 <td>⭐ Chọn ngôn ngữ theo</td>
 <td><strong>Người sẽ SỬA</strong>, không theo người viết</td>
 </tr>
@@ -14071,6 +14180,13 @@ khiến nó vẫn là quyết định sai.</li>
 <li>Vì sao lỗi ghi trùng ngõ ra khó phát hiện trong ST hơn trong ladder? Công cụ nào giúp tìm?</li>
 <li>⭐ Câu hỏi nào phải hỏi <strong>khách hàng</strong> trước khi chọn ngôn ngữ lập trình, và vì sao nó thuộc về
 đặc tả chứ không thuộc về sở thích kỹ thuật?</li>
+<li>⭐⭐ Phát biểu <strong>nguyên tắc chung</strong> về điều kiện thoát vòng lặp. Dùng nó giải thích vì sao
+<code>WHILE NOT DI_Clamp1Up</code> sai còn <code>FOR i := 0 TO 99</code> an toàn.</li>
+<li>⚠ <code>REPEAT</code> khác <code>WHILE</code> ở <strong>hai</strong> điểm. Nêu cả hai, và cho một tình huống mà chép nhầm từ cái này
+sang cái kia tạo ra vòng lặp vô hạn.</li>
+<li>⚡ Có người sửa vòng lặp chờ bằng <strong>truy cập trực tiếp</strong> để tín hiệu đổi được trong lúc lặp. Vòng
+lặp thoát được thật. ⭐ Vì sao đây vẫn là lời giải sai? Nêu bốn thứ ngừng hoạt động trong lúc CPU
+đứng chờ.</li>
 </ol>
 <blockquote>
 <p>Câu 3, 7 và 10 là ba câu phân loại. Câu 7 và 10 là tinh thần của cả chương: <strong>chương trình tốt
@@ -14089,6 +14205,10 @@ các cấu trúc điều khiển, phân biệt hàm với khối chức năng. <
 mặc định và cách đặt, và chất lượng hiển thị trạng thái trực tuyến của ST. Ba điểm này ảnh hưởng
 trực tiếp tới quyết định ở mục 20.6.</li>
 <li>Đặc tả trình tự của DP-01 — Phụ lục J.</li>
+<li><strong>Hanssen, Dag H.</strong> — <em>Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+CoDeSys</em>, §11.8: ba vòng lặp <code>WHILE</code> / <code>FOR</code> / <code>REPEAT</code>, ⭐ <code>REPEAT</code> <strong>chạy thân ít nhất một lần</strong>
+và điều kiện <strong>ngược cực tính</strong> với <code>WHILE</code>; ⭐⭐ nguyên tắc <em>điều kiện thoát nên phụ thuộc biến được
+cập nhật bên trong vòng lặp</em>; và ⚠ <code>EXIT</code> đặt ở vòng trong <strong>không dừng vòng bao ngoài</strong> (mục 20.5).</li>
 </ul>
 <blockquote>
 <p>⚡ Bảng phân chia ngôn ngữ ở mục 20.6 là <strong>quy tắc thực dụng</strong>, không phải yêu cầu tiêu chuẩn. Một
@@ -44305,6 +44425,11 @@ RETURN;    // thoát khối
 không kết thúc</strong> và CPU vào lỗi giám sát treo máy.</p>
 <p>⭐ Ưu tiên <code>FOR</code> với số vòng lặp <strong>có giới hạn rõ ràng</strong>. Nếu buộc dùng <code>WHILE</code>, thêm bộ đếm vòng
 lặp tối đa làm van an toàn (Chương 20).</p>
+<p>⭐⭐ <strong>Phép kiểm một câu cho mọi vòng lặp:</strong> <em>điều kiện thoát có phụ thuộc một biến được cập nhật
+<strong>bên trong</strong> vòng lặp không?</em> ⚠ Nếu nó phụ thuộc tín hiệu vào, giá trị từ mạng, hay biến do tác vụ
+khác ghi — ⚠⚠ <strong>đó là vòng lặp không bảo đảm kết thúc</strong>.</p>
+<p>⚠ <code>REPEAT</code> khác <code>WHILE</code> hai điểm: điều kiện <strong>ngược cực tính</strong> (chạy <em>cho tới khi</em> đúng), và thân
+vòng ⭐ <strong>luôn chạy ít nhất một lần</strong>. ⚠ <code>EXIT</code> chỉ thoát <strong>một tầng</strong>.</p>
 </blockquote>
 <blockquote>
 <p>⭐⭐ <strong><code>CASE</code> là cấu trúc tự nhiên cho máy trạng thái và trình tự</strong> — mỗi nhánh là một bước, biến

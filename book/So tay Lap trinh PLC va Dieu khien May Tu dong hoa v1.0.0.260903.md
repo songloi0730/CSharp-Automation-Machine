@@ -9219,7 +9219,7 @@ END_IF;
 ```
 
 Lưu ý `ELSIF` viết liền, không phải `ELSE IF`. Và mọi khối đều có từ khoá đóng riêng: `END_IF`,
-`END_CASE`, `END_FOR`, `END_WHILE`. Không dùng dấu ngoặc nhọn, không dùng thụt lề để phân khối —
+`END_CASE`, `END_FOR`, `END_WHILE`, `END_REPEAT`. Không dùng dấu ngoặc nhọn, không dùng thụt lề để phân khối —
 thụt lề chỉ để người đọc, trình biên dịch không quan tâm.
 
 ### CASE — nơi ST vượt hẳn ladder
@@ -9348,7 +9348,8 @@ song song. ST viết thẳng bằng ngoặc.
 
 ### Vấn đề
 
-`FOR` và `WHILE` chạy **trọn vẹn trong một vòng quét**. Không có chuyện "lặp qua nhiều vòng quét" —
+Cả ba vòng lặp — `FOR`, `WHILE`, `REPEAT` — chạy **trọn vẹn trong một vòng quét**. Không có chuyện
+"lặp qua nhiều vòng quét" —
 CPU chưa ra khỏi vòng lặp thì chưa sang giai đoạn tiếp theo của chu kỳ quét (Chương 10).
 
 Hệ quả: **thời gian chạy vòng lặp cộng thẳng vào thời gian quét.**
@@ -9408,6 +9409,71 @@ Ba quy tắc thực dụng:
 - **Tập lớn thì chia nhỏ qua nhiều vòng quét**: mỗi vòng quét xử lý một phần, nhớ vị trí đang tới,
   vòng sau làm tiếp. Dài dòng hơn nhưng giữ thời gian quét ổn định.
 
+### ⚡ "Thế dùng truy cập trực tiếp thì sao?"
+
+Người đã đọc Chương 10 sẽ nghĩ ngay tới lối thoát này: dùng **truy cập trực tiếp** (mục 10.4) để đọc
+thẳng chân vào, bỏ qua ảnh — khi đó `DI_Clamp1Up` **thật sự đổi giá trị** trong lúc vòng lặp chạy, và
+vòng lặp **sẽ** thoát.
+
+> ⚠⚠ **Đúng về kỹ thuật, và tệ hơn về hậu quả.**
+>
+> Vòng lặp bây giờ thoát được — nhưng nó thoát **sau khi kẹp lên xong**, tức là ⭐ **CPU đứng chờ suốt
+> vài trăm mili-giây** ngay giữa vòng quét. Trong khoảng đó: không nấc thang nào khác chạy, không ngõ
+> ra nào được cập nhật, không báo động nào được xét, ⚠⚠ **và nút dừng không được đọc**.
+>
+> ⭐ Nếu cơ cấu kẹt và tín hiệu không bao giờ tới, bạn quay lại đúng chỗ cũ: watchdog và CPU sang STOP.
+>
+> ⭐⭐ **Sửa một vòng lặp chờ bằng cách làm cho nó thoát được là chữa triệu chứng.** Vấn đề gốc là
+> ⚠ **việc chờ không được nằm trong vòng lặp**, bất kể vòng lặp có thoát được hay không.
+
+### `REPEAT ... UNTIL` — vòng lặp thứ ba, và cái bẫy riêng của nó
+
+Chuẩn có **ba** vòng lặp. `REPEAT` ít gặp hơn nhưng có hai đặc điểm dễ vấp:
+
+| | `WHILE ... DO` | `REPEAT ... UNTIL` |
+|---|---|---|
+| ⚠ Cực tính điều kiện | Chạy **CHỪNG NÀO** điều kiện còn đúng | ⭐ Chạy **CHO TỚI KHI** điều kiện đúng |
+| ⚠⚠ Thân vòng lặp | Có thể **không chạy lần nào** | ⭐ **Luôn chạy ít nhất một lần** |
+| Kiểm điều kiện | Đầu vòng | ⭐ **Cuối vòng** |
+
+> ⚠⚠ **Hai chỗ sai kinh điển:**
+>
+> | | |
+> |---|---|
+> | 1 | ⭐ **Chép điều kiện của `WHILE` sang `REPEAT` mà quên đảo** — vòng lặp chạy đúng ngược lại ý muốn, và thường thành vô hạn |
+> | 2 | ⭐ Quên rằng thân vòng **luôn chạy một lần** — với tập rỗng hoặc điều kiện đã thoả sẵn, `WHILE` không làm gì còn `REPEAT` **vẫn làm một lần** |
+
+### ⭐⭐ Nguyên tắc chung — và nó giải thích mọi thứ ở trên
+
+> ⭐⭐ **Điều kiện thoát của vòng lặp phải phụ thuộc vào một biến được cập nhật BÊN TRONG chính vòng
+> lặp đó.**
+>
+> Rủi ro vòng lặp vô hạn — hoặc chạy quá lâu — ⚠ **lớn nhất khi điều kiện thoát phụ thuộc vào thứ bên
+> ngoài**: tín hiệu vào, giá trị từ mạng, biến do tác vụ khác ghi.
+>
+> ⭐ Nguyên tắc này gói gọn cả ba trường hợp: `WHILE NOT DI_Clamp1Up` sai vì điều kiện đến từ **bên
+> ngoài**; `FOR i := 0 TO n` rủi ro vì `n` đến từ **bên ngoài**; còn `FOR i := 0 TO 99` an toàn vì
+> biến đếm do **chính vòng lặp** cập nhật.
+
+**Và khi buộc phải dùng `WHILE`/`REPEAT`: kèm trần số vòng.** Đây là mẫu chuẩn:
+
+```iecst
+k := 1;
+REPEAT
+    Area[k] := Pi * Radius[k] * Radius[k];
+    k := k + 1;
+    IF k >= 200 THEN EXIT; END_IF;      // ⭐ bảo hiểm: trần cứng, độc lập với dữ liệu
+UNTIL Area[k] > 1000
+END_REPEAT;
+```
+
+> ⚠ **`EXIT` chỉ thoát MỘT tầng.** Đặt `EXIT` trong vòng lặp trong cùng thì **các vòng lặp bao ngoài
+> vẫn chạy tiếp**. Muốn thoát nhiều tầng phải có cơ chế riêng — hoặc, tốt hơn, ⭐ **đừng lồng vòng lặp
+> trong môi trường quét**.
+>
+> ⚡ Chuẩn còn có `CONTINUE` — bỏ qua phần còn lại của lần lặp hiện tại và sang lần kế. Nó **không**
+> thoát vòng lặp, nên ⚠ **không phải công cụ phòng vòng lặp vô hạn**.
+
 > ⚠ **`EXIT` không cứu được `WHILE` chờ tín hiệu.**
 > Chuẩn có lệnh `EXIT` để thoát vòng lặp sớm. Nó hữu ích khi tìm thấy phần tử cần tìm trong mảng.
 > Nhưng nó **không** giải quyết được ví dụ sai ở trên, vì vấn đề không phải thiếu lối thoát — vấn đề
@@ -9422,6 +9488,8 @@ Ba quy tắc thực dụng:
 | Duyệt mảng cố định, nhỏ | ✅ `FOR` |
 | Duyệt tập lớn hoặc kích thước thay đổi | ⚠ Chia nhỏ qua nhiều vòng quét |
 | Lặp tới khi thoả điều kiện tính trong cùng vòng lặp | ⚠ `WHILE` **kèm trần số vòng** |
+| Cần thân vòng chạy **ít nhất một lần** | ⚠ `REPEAT` — ⭐ nhớ **đảo cực tính điều kiện** |
+| ⭐ Kiểm mọi vòng lặp trước khi giao | *"Điều kiện thoát có phụ thuộc biến được cập nhật **bên trong** không?"* |
 
 ---
 
@@ -9656,6 +9724,10 @@ ngưỡng, sự cố đã dẫn tới đoạn code này, cạm bẫy đã tránh
 | Khối chức năng | Mỗi chỗ dùng **một thể hiện riêng** |
 | ST hợp cho | Tính toán · trình tự · mảng · truyền thông |
 | ⭐ Ladder hợp cho | **Liên động và ngõ ra cuối** — thứ người bảo trì nhìn đầu tiên |
+| ⭐⭐ Điều kiện thoát vòng lặp | **Phải phụ thuộc biến cập nhật BÊN TRONG vòng lặp** |
+| ⚠ `REPEAT` khác `WHILE` | Cực tính **ngược**, và thân vòng **luôn chạy ít nhất một lần** |
+| ⚠ `EXIT` thoát mấy tầng | ⭐ **Một tầng** — vòng bao ngoài vẫn chạy tiếp |
+| Dùng truy cập trực tiếp để cứu vòng lặp chờ | ⚠⚠ **Chữa triệu chứng** — CPU vẫn đứng chờ, nút dừng vẫn không được đọc |
 | ⭐ Chọn ngôn ngữ theo | **Người sẽ SỬA**, không theo người viết |
 
 ---
@@ -9676,6 +9748,13 @@ ngưỡng, sự cố đã dẫn tới đoạn code này, cạm bẫy đã tránh
 9. Vì sao lỗi ghi trùng ngõ ra khó phát hiện trong ST hơn trong ladder? Công cụ nào giúp tìm?
 10. ⭐ Câu hỏi nào phải hỏi **khách hàng** trước khi chọn ngôn ngữ lập trình, và vì sao nó thuộc về
     đặc tả chứ không thuộc về sở thích kỹ thuật?
+11. ⭐⭐ Phát biểu **nguyên tắc chung** về điều kiện thoát vòng lặp. Dùng nó giải thích vì sao
+    `WHILE NOT DI_Clamp1Up` sai còn `FOR i := 0 TO 99` an toàn.
+12. ⚠ `REPEAT` khác `WHILE` ở **hai** điểm. Nêu cả hai, và cho một tình huống mà chép nhầm từ cái này
+    sang cái kia tạo ra vòng lặp vô hạn.
+13. ⚡ Có người sửa vòng lặp chờ bằng **truy cập trực tiếp** để tín hiệu đổi được trong lúc lặp. Vòng
+    lặp thoát được thật. ⭐ Vì sao đây vẫn là lời giải sai? Nêu bốn thứ ngừng hoạt động trong lúc CPU
+    đứng chờ.
 
 > Câu 3, 7 và 10 là ba câu phân loại. Câu 7 và 10 là tinh thần của cả chương: **chương trình tốt
 > nhất không phải chương trình gọn nhất — mà là chương trình người khác sửa được lúc bạn vắng mặt.**
@@ -9696,6 +9775,10 @@ bạn vừa viết bằng `CASE` — và IL, đủ để đọc chương trình 
   mặc định và cách đặt, và chất lượng hiển thị trạng thái trực tuyến của ST. Ba điểm này ảnh hưởng
   trực tiếp tới quyết định ở mục 20.6.
 - Đặc tả trình tự của DP-01 — Phụ lục J.
+- **Hanssen, Dag H.** — *Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+  CoDeSys*, §11.8: ba vòng lặp `WHILE` / `FOR` / `REPEAT`, ⭐ `REPEAT` **chạy thân ít nhất một lần**
+  và điều kiện **ngược cực tính** với `WHILE`; ⭐⭐ nguyên tắc *điều kiện thoát nên phụ thuộc biến được
+  cập nhật bên trong vòng lặp*; và ⚠ `EXIT` đặt ở vòng trong **không dừng vòng bao ngoài** (mục 20.5).
 
 > ⚡ Bảng phân chia ngôn ngữ ở mục 20.6 là **quy tắc thực dụng**, không phải yêu cầu tiêu chuẩn. Một
 > số đơn vị có quy định nội bộ chặt hơn (ví dụ: toàn bộ chương trình phải là ladder); một số ngành có
@@ -29833,6 +29916,13 @@ RETURN;    // thoát khối
 >
 > ⭐ Ưu tiên `FOR` với số vòng lặp **có giới hạn rõ ràng**. Nếu buộc dùng `WHILE`, thêm bộ đếm vòng
 > lặp tối đa làm van an toàn (Chương 20).
+>
+> ⭐⭐ **Phép kiểm một câu cho mọi vòng lặp:** *điều kiện thoát có phụ thuộc một biến được cập nhật
+> **bên trong** vòng lặp không?* ⚠ Nếu nó phụ thuộc tín hiệu vào, giá trị từ mạng, hay biến do tác vụ
+> khác ghi — ⚠⚠ **đó là vòng lặp không bảo đảm kết thúc**.
+>
+> ⚠ `REPEAT` khác `WHILE` hai điểm: điều kiện **ngược cực tính** (chạy *cho tới khi* đúng), và thân
+> vòng ⭐ **luôn chạy ít nhất một lần**. ⚠ `EXIT` chỉ thoát **một tầng**.
 
 > ⭐⭐ **`CASE` là cấu trúc tự nhiên cho máy trạng thái và trình tự** — mỗi nhánh là một bước, biến
 > điều khiển là số bước hiện tại (Chương 20, 21).

@@ -216,7 +216,9 @@ Sách này dùng bộ tiêu chuẩn **IEC** (International Electrotechnical Comm
 | **IEC 60204-1** | Safety of machinery — Electrical equipment of machines — Phần 1: Yêu cầu chung | Tiêu chuẩn quan trọng nhất của sách: quy định an toàn thiết bị điện máy, cách bố trí, bảo vệ, đấu nối, nút dừng khẩn, màu nút bấm, tài liệu kỹ thuật kèm máy (§17) và các phép thử nghiệm thu (§18) — dùng ở hầu hết các chương |
 | **IEC 60617** | Graphical symbols for diagrams | Ký hiệu thiết bị trên sơ đồ nguyên lý — nền tảng của Chương 5 và mọi sơ đồ Phần III |
 | **IEC 60445** | Basic and safety principles for man-machine interface, marking and identification — Identification of equipment terminals, conductor terminations and conductors | Màu dây và cách đánh dấu đầu nối — dùng ở Chương 22 |
-| **IEC 81346** | Industrial systems, installations and equipment and industrial products — Structuring principles and reference designations | Cách đặt mã hiệu tham chiếu cho thiết bị (=hệ thống +vị trí -sản phẩm) — dùng ở Chương 23 |
+| **IEC 61082** (bộ nhiều phần) | Preparation of documents used in electrotechnology — Phần 1: quy tắc chung trình bày tài liệu; Phần 2: sơ đồ theo chức năng; Phần 3: bảng đấu nối/danh mục; Phần 4: tài liệu bố trí/lắp đặt | Nền tảng cho cách chia loại trang hồ sơ (Chương 3) và cách ghi tham chiếu chéo cuộn dây↔tiếp điểm (Chương 22, 23) — sách áp dụng đúng thực hành của tiêu chuẩn này dù không phải lúc nào cũng nêu tên |
+| **IEC 81346-1** | Industrial systems, installations and equipment and industrial products — Structuring principles and reference designations — Phần 1: Basic rules | Nguyên tắc cấu trúc 3 khía cạnh =hệ thống +vị trí -sản phẩm — dùng ở Chương 23 |
+| **IEC 81346-2:2019** | ...— Phần 2: Classification of objects and codes for classes | Bảng mã chữ phân loại đối tượng (Q/F/K/M/S/T/B/Y/H/X/A/R...) — đây là phần cụ thể quy định bảng mã chữ dùng ở Chương 23 mục 23.3, khác với Phần 1 (chỉ quy định nguyên tắc cấu trúc chung) |
 | **IEC 61000** (bộ nhiều phần) | Electromagnetic compatibility (EMC) | Chống nhiễu điện từ — liên quan khi chọn bộ lọc EMI (Chương 13) và đi dây tránh nhiễu (Chương 20) |
 | **ISO 13849-1** | Safety of machinery — Safety-related parts of control systems — Phần 1: General principles for design | Phương pháp tính Performance Level (PL) cho mạch an toàn — dùng ở Chương 14 |
 | **IEC 62061** | Safety of machinery — Functional safety of safety-related electrical, electronic and programmable electronic control systems | Phương pháp thay thế/bổ sung ISO 13849-1, dùng SIL (Safety Integrity Level) thay vì PL — nêu ở Chương 14 để bạn biết khi nào dự án yêu cầu dùng chuẩn này thay vì ISO 13849-1 |
@@ -286,6 +288,13 @@ Danh mục dưới đây là **một quy ước phổ biến** trong ngành thi�
 "E-xxx" chỉ là ví dụ cách đặt, không phải số bắt buộc theo tiêu chuẩn nào) — bạn có thể đổi
 số hiệu theo quy tắc riêng của công ty/dự án, nhưng **nên giữ nguyên thứ tự nội dung**, vì
 thứ tự đó phản ánh đúng thứ tự người đọc cần thông tin: tổng quan trước, chi tiết sau.
+
+Cách chia trang theo nhóm nội dung này (sơ đồ theo chức năng riêng, bảng đấu nối/danh mục
+riêng, tài liệu bố trí/lắp đặt riêng) không phải quy ước tự sáng tạo — nó khớp với nguyên tắc
+phân loại tài liệu điện của **IEC 61082** (Preparation of documents used in electrotechnology,
+bộ nhiều phần: Phần 1 quy tắc chung, Phần 2 sơ đồ theo chức năng, Phần 3 bảng đấu nối/danh
+mục, Phần 4 tài liệu bố trí/lắp đặt). Sách này không trích số điều khoản cụ thể của tiêu chuẩn
+đó, chỉ áp dụng đúng tinh thần phân loại của nó vào danh mục 21 trang bên dưới.
 
 ## 3.2. Danh mục 21 trang chuẩn
 
@@ -487,6 +496,16 @@ toàn bộ ký hiệu gốc (thuộc bản quyền của IEC) — thay vào đó
 cách nhận diện** từng nhóm ký hiệu bạn sẽ gặp thường xuyên nhất khi đọc/vẽ bản vẽ máy tự động
 hoá. Khi cần bản vẽ chính xác từng nét, luôn đối chiếu bản IEC 60617 gốc hoặc thư viện ký
 hiệu chuẩn có sẵn trong phần mềm CAD điện bạn dùng (Chương 4).
+
+> ⚡ **LƯU Ý — đừng nhầm hai tiêu chuẩn khác mục đích:** IEC 60617 quy định **ký hiệu nghĩa là
+> gì** (nội dung mục này). Một tiêu chuẩn khác, **ISO/IEC 81714** (Design of graphical symbols
+> for use in the technical documentation of products), quy định **cách một thư viện ký hiệu
+> được dựng và trao đổi giữa các phần mềm CAD** (Phần 1: quy tắc thiết kế cơ bản; Phần 2: định
+> dạng dữ liệu máy-đọc-được, layer, điểm kết nối, để nhà cung cấp phần mềm trao đổi thư viện ký
+> hiệu với nhau) — đây là việc của **người xây dựng thư viện ký hiệu cho phần mềm CAD**, không
+> phải việc kỹ sư thiết kế máy làm hàng ngày. Phần mềm CAD điện thông dụng thường đã có sẵn thư
+> viện tuân theo tiêu chuẩn này — bạn chỉ cần chọn đúng thư viện, không cần tự dựng ký hiệu theo
+> ISO/IEC 81714 trừ khi công ty bạn tự phát triển phần mềm/thư viện riêng.
 
 | Nhóm | Thiết bị | Đặc điểm nhận diện chung |
 |---|---|---|
@@ -3108,8 +3127,12 @@ Xuyên suốt Phần III, mọi thiết bị trên sơ đồ đều mang một m
 đây không phải cách đặt tên ngẫu nhiên. Một máy có hàng trăm thiết bị (AOI-01 dù nhỏ vẫn có vài
 chục), nếu chỉ đặt tên tự do ("relay 1", "cảm biến gần cửa"...), người đọc bản vẽ ở một trang
 khác **không có cách nào tra cứu chéo đáng tin cậy** — tên gọi tự do dễ trùng, dễ hiểu nhầm, và
-không mang thông tin gì về việc thiết bị đó thuộc hệ thống nào, đặt ở đâu. IEC 81346 giải quyết
-vấn đề này bằng một cấu trúc mã hoá 3 khía cạnh độc lập.
+không mang thông tin gì về việc thiết bị đó thuộc hệ thống nào, đặt ở đâu. **IEC 81346-1**
+(Structuring principles and reference designations — Phần 1: Basic rules) giải quyết vấn đề này
+bằng một cấu trúc mã hoá 3 khía cạnh độc lập. Bộ 81346 còn có **Phần 2** — quy định riêng bảng
+mã chữ phân loại đối tượng (mục 23.3 bên dưới dùng đúng phần này), và các phần khác cho từng
+ngành/lĩnh vực cụ thể (nằm ngoài phạm vi sách) — khi tra cứu, luôn ghi rõ đang dùng phần nào
+của bộ tiêu chuẩn, không chỉ nói chung chung "IEC 81346".
 
 ## 23.2. Ba khía cạnh của một mã tham chiếu đầy đủ
 
@@ -3141,7 +3164,7 @@ rút gọn `-Q1`, `-K1` (chỉ khía cạnh sản phẩm), chỉ thêm `=A1` khi
 (driver, bộ nguồn), và chỉ thêm vị trí khi thật sự có nhiều vị trí dễ nhầm (Hình 21.2, cụm cảm
 biến ở xa tủ).
 
-## 23.3. Bảng mã chữ (khía cạnh sản phẩm) đã dùng xuyên suốt sách
+## 23.3. Bảng mã chữ (khía cạnh sản phẩm) đã dùng xuyên suốt sách — theo IEC 81346-2:2019
 
 | Mã chữ | Nhóm thiết bị | Ví dụ đã dùng |
 |---|---|---|
@@ -3160,7 +3183,8 @@ biến ở xa tủ).
 
 > ⚡ **LƯU Ý** — Đây là bảng mã chữ **đã dùng nhất quán trong sách này** — một số công ty/phần
 > mềm CAD điện có bảng mã chữ hơi khác (đặc biệt các phiên bản tiêu chuẩn cũ hơn dùng bảng chữ
-> khác một phần so với bản IEC 81346 hiện hành). Điều quan trọng nhất không phải "đúng tuyệt
+> khác một phần so với bản **IEC 81346-2:2019** hiện hành — bản 2019 thay thế bản 2009 trước
+> đó, một số mã chữ đã đổi giữa hai phiên bản). Điều quan trọng nhất không phải "đúng tuyệt
 > đối theo một bảng duy nhất", mà là **nhất quán trong toàn bộ dự án của bạn** — chọn một bảng
 > mã chữ, ghi rõ trong trang Quy ước & Ký hiệu (E-100, Chương 3), và dùng đúng bảng đó xuyên
 > suốt.

@@ -25880,7 +25880,7 @@ nhiều nhất.
 
 | Mức | Cách làm | Chi phí |
 |---|---|---|
-| **1 — Đếm** | ⭐ Bộ đếm giữ được qua mất điện (Chương 12), hiện trên HMI | Gần như bằng không |
+| **1 — Đếm** | ⭐ Bộ đếm giữ được qua mất điện (Chương 11), hiện trên HMI | Gần như bằng không |
 | **2 — Ngưỡng** | Báo *nhắc nhở* khi bộ đếm vượt ngưỡng — ⚡ **nhắc, không phải dừng máy** | Vài giờ lập trình |
 | **3 — Xu hướng** | Ghi số liệu ra ngoài, xem đồ thị theo thời gian | Cần Chương 45 |
 
@@ -25904,7 +25904,7 @@ Ngưỡng cảnh báo = 18 000 000 lần  →  khoảng năm thứ 6
 ```
 
 > ⭐ **Phép tính này chỉ có ý nghĩa nếu bộ đếm sống sót qua mất điện và qua việc nạp lại chương
-> trình.** Xem Chương 12 về vùng nhớ giữ được, và ⚠ **kiểm tra thực tế** — nhiều người phát hiện bộ
+> trình.** Xem Chương 11 về vùng nhớ giữ được, và ⚠ **kiểm tra thực tế** — nhiều người phát hiện bộ
 > đếm bảo trì của mình bị xoá mỗi lần nạp chương trình, sau khi đã đếm được ba năm.
 
 ---
@@ -25985,7 +25985,7 @@ nửa đêm.
 ### 🔍 BẪY 7 — Bộ đếm bảo trì bị xoá khi nạp chương trình
 
 **Hiện tượng:** ⚠ đếm được ba năm rồi phát hiện số về không sau một lần nạp.
-**Cách sửa:** dùng vùng nhớ giữ được (Chương 12), và ⭐ **kiểm tra thực tế bằng cách nạp thử**.
+**Cách sửa:** dùng vùng nhớ giữ được (Chương 11), và ⭐ **kiểm tra thực tế bằng cách nạp thử**.
 
 > ⚠⚠ **Hai cách mất bộ đếm mà không ai ngờ tới — cả hai đều phụ thuộc hệ bạn dùng:**
 >
@@ -27000,7 +27000,7 @@ lớn công việc thực tế là **sửa máy đã có** — thường là má
 - ISO 22400 (bộ) — *Key performance indicators for manufacturing operations management*: ⭐ **định
   nghĩa chuẩn hoá cho các chỉ số năng suất**, gồm cả nhóm chỉ số mà OEE thuộc về. Dùng nó khi cần
   con số **so sánh được giữa các nhà máy**.
-- Phép đo thời gian bước và bộ đếm — Chương 12 (vùng nhớ giữ được), Chương 21 (trình tự), Chương 43
+- Phép đo thời gian bước và bộ đếm — Chương 11 (vùng nhớ giữ được), Chương 21 (trình tự), Chương 43
   (báo động), Chương 53 mục 53.5 (bảo trì).
 
 > ⚠ **Giới hạn.** Công thức OEE ở mục 55.7 là dạng phổ biến nhất, nhưng ⚠ **định nghĩa chi tiết khác
@@ -27187,7 +27187,7 @@ Nghe tầm thường, nhưng đây là công cụ mạnh nhất và rẻ nhất 
 | Cách xử lý bộ định thời khi bị ngắt giữa chừng | Hành vi khác nhau giữa các dòng |
 | ⭐ **Kiểu dữ liệu và tràn số** | Chương 14 — một phép tính chạy đúng 15 năm có thể tràn trên nền mới |
 | Thứ tự quét khối / ngắt | Chương 19 |
-| Vùng nhớ giữ được qua mất điện | ⭐ Chương 12 — ⚠ **bộ đếm bảo trì, số lô, tổng sản lượng** |
+| Vùng nhớ giữ được qua mất điện | ⭐ Chương 11 — ⚠ **bộ đếm bảo trì, số lô, tổng sản lượng** |
 | Cách làm tròn số thực | Chương 14 |
 
 > ⚠⚠ **Hàng đầu là cái bẫy đặc trưng của retrofit.** PLC mới thường quét **nhanh hơn nhiều**. Một
@@ -28596,7 +28596,7 @@ Khi bốn hệ kia làm khác nhau, ⭐ **cột CODESYS cho biết chuẩn IEC 6
 > liệu là chưa đủ — hành vi khác nhau giữa "nạp thay đổi nhỏ", "nạp toàn bộ", và "nạp kèm cấu hình
 > phần cứng".
 >
-> Xem Chương 12 và Chương 53 mục 53.5.
+> Xem Chương 11 và Chương 53 mục 53.5.
 
 > ⭐⭐ **Inovance: hai dòng, hai cơ chế hoàn toàn khác nhau — và cả hai đều có bẫy riêng.**
 >
@@ -28725,7 +28725,7 @@ Nếu bạn chỉ nhớ bốn điều từ phụ lục này:
 | Khái niệm gốc theo chuẩn IEC | Chương 13–21, 30 · **Phụ lục B** |
 | Vì sao vòng quét quan trọng | Chương 7 |
 | ⚠ Chuyển chương trình sang nền mới | ⚠ **Chương 56 mục 56.4** |
-| Vùng nhớ giữ được | Chương 12 · Chương 53 mục 53.5 |
+| Vùng nhớ giữ được | Chương 11 · Chương 53 mục 53.5 |
 
 ---
 
@@ -28897,7 +28897,7 @@ Trước khi vào bảng, cần phân biệt ba loại quan hệ:
 > | ⭐⭐ **Gộp luôn phát hiện ngoài dải** | ⚠ Điều mà khối chuẩn thường **không** làm |
 >
 > ⭐ Hàng cuối là lý do mạnh nhất: khối chuẩn quy đổi 3,0 mA thành một con số âm và **không nói gì**.
-> Khối tự viết thì báo *"lỗi cảm biến"* (Chương 31 mục 31.7).
+> Khối tự viết thì báo *"lỗi cảm biến"* (Chương 31 mục 31.3).
 
 ---
 
@@ -29217,8 +29217,8 @@ Từ **cao xuống thấp**:
 | `:=` | Gán | Cuộn dây | 15 |
 | `S` | Đặt (giữ 1) | Cuộn dây Set | 15 |
 | `R` | Xoá (giữ 0) | Cuộn dây Reset | 15 |
-| `R_TRIG` | ⭐ Bắt **cạnh lên** | Tiếp điểm P | 11 |
-| `F_TRIG` | ⭐ Bắt **cạnh xuống** | Tiếp điểm N | 11 |
+| `R_TRIG` | ⭐ Bắt **cạnh lên** | Tiếp điểm P | 16 |
+| `F_TRIG` | ⭐ Bắt **cạnh xuống** | Tiếp điểm N | 16 |
 | `SR` | Flip-flop ưu tiên Set | | 15 |
 | `RS` | Flip-flop ưu tiên Reset | | 15 |
 
@@ -29743,7 +29743,7 @@ và hồ sơ bàn giao. ⚠ **Làm trước khi đấu tủ** (Chương 23, 49).
 |---|---|---|
 | Đặc tả | C.3 · C.4 · C.5 | 23, 25, 32 |
 | Bảng I/O & phần cứng | ⭐ **C.1** | 23 |
-| Viết chương trình | C.2 | 24 |
+| Viết chương trình | C.2 | 22 |
 | Kiểm thử | C.6 · C.7 | 50, 52 |
 | ⚠ Nghiệm thu an toàn | ⚠ **C.8** | 48 |
 | Bàn giao | ⭐ **C.9** | 52, 54 |
@@ -30104,7 +30104,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | # | Kiểm | Trên DP-01 |
 |---|---|---|
 | 1 | ⚠ **Mạch an toàn lành** | `DI_EStopOK`, `DI_CurtainOK`, `DI_Door1Closed`, `DI_Door2Closed` |
-| 2 | Không có báo động đang treo | Xem danh sách báo động (Ch.43) |
+| 2 | Không có báo động đang treo | Xem danh sách báo động (Ch.44) |
 | 3 | Đã về gốc | Các trục ở vị trí gốc |
 | 4 | Năng lượng phụ trợ đủ | `DI_AirOK` — khí nén |
 | 5 | Thiết bị phụ sẵn sàng | `DI_VfdReady`, `DI_IonizerOK` |
@@ -30138,7 +30138,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Cảm biến lệch / bẩn | Đôi khi nhận, đôi khi không | 4 |
 | ⚠ **Cáp gãy lõi trong xích động** | ⭐ Chập chờn **theo tư thế**; đo tĩnh vẫn tốt | 49 mục 49.7 |
 | Đầu cốt lỏng | ⚠ **Nặng dần theo thời gian** | 3, 49 |
-| Bit bị ghi đè trong chương trình | Bit "nhấp nháy" hoặc không bao giờ giữ | 24, 51 |
+| Bit bị ghi đè trong chương trình | Bit "nhấp nháy" hoặc không bao giờ giữ | 22, 51 |
 
 > ⭐⭐ **Bước 1 loại được nhiều nhất và mất ít thời gian nhất.** Nhìn đèn trên cảm biến trước khi mở
 > phần mềm — nó chia đôi bài toán ngay lập tức.
@@ -30160,7 +30160,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | ⭐ **Quá dòng chân chung của module** | Vài ngõ ra cùng nhóm yếu hoặc không tác động khi **cùng bật** | 9 mục 9.4 |
 | Nguồn 24 V thiếu công suất | ⭐ Lỗi khi **nhiều cơ cấu cùng tác động**; trông giống lỗi phần mềm | 8 mục 8.7 |
 | Van kẹt cơ khí | Có điện, có tiếng, không chuyển động | 5 |
-| Thiếu khí nén | ⭐ **Mọi cơ cấu khí nén cùng chậm hoặc không chạy** | 5 |
+| Thiếu khí nén | ⭐ **Mọi cơ cấu khí nén cùng chậm hoặc không chạy** | 6 |
 | Rơ-le hết tuổi thọ | ⚠ Đóng cắt được nhưng **tiếp điểm cháy rỗ** — sụt áp | 9 mục 9.3 |
 | Mạch an toàn đang cắt nguồn ngõ ra | ⭐ **Bit lên, đèn module sáng, nhưng không có điện ở cơ cấu** | 47 |
 
@@ -30176,7 +30176,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 |---|---|---|
 | ⭐ Giá trị **run liên tục** vài phần trăm | Nhiễu — ⭐ **cáp đi cạnh động lực**, hoặc vòng lặp đất | 31 mục 31.6 · 49 mục 49.4 |
 | ⭐ Nhiễu **tăng khi thiết bị công suất chạy** | ⭐⭐ **Ghép nhiễu từ cáp động lực** — dấu hiệu đặc trưng | 49 mục 49.3 |
-| Giá trị **luôn bằng 0** | Đứt dây; ⭐ với 4–20 mA thì **phân biệt được**, với 0–10 V thì không | 31 mục 31.7 |
+| Giá trị **luôn bằng 0** | Đứt dây; ⭐ với 4–20 mA thì **phân biệt được**, với 0–10 V thì không | 31 mục 31.3 |
 | Giá trị **luôn ở đáy hoặc đỉnh thang** | Sai cấu hình dải, hoặc sai kiểu tín hiệu (áp/dòng) | 31 mục 31.4 |
 | ⭐ Giá trị **lệch một hằng số** | Sai hệ số quy đổi, hoặc chưa hiệu chuẩn | 31 |
 | Giá trị **nhảy bậc lớn ngẫu nhiên** | Đầu cốt lỏng, hoặc cáp gãy lõi | 49 |
@@ -30218,12 +30218,12 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Quan sát | Nghi trước | Chương |
 |---|---|---|
-| ⭐ Dừng ở **cùng một bước** mỗi lần | ⭐ **Điều kiện chuyển tiếp của bước đó không đạt** — kiểm tín hiệu phản hồi | 21, 51 |
+| ⭐ Dừng ở **cùng một bước** mỗi lần | ⭐ **Điều kiện chuyển tiếp của bước đó không đạt** — kiểm tín hiệu phản hồi | 26, 51 |
 | Dừng ở **bước khác nhau** mỗi lần | Điều kiện chung: an toàn, khí nén, nguồn, mạng | E.2 |
-| Báo lỗi hết giờ ở một bước | ⭐ Cơ cấu **không tới nơi**, hoặc cảm biến phản hồi hỏng | 21 |
-| ⚠ Dừng **không có báo động nào** | ⭐⭐ **Lỗi thiết kế báo động** — hoặc CPU mất điện (Ch.49 mục 49.5) | 43, 49 |
-| Dừng khi đổi công thức | Tham số ngoài dải, hoặc thiếu tham số | 32 |
-| ⭐ Dừng lúc **hai trạm cùng cần một thứ** | ⭐ **Bế tắc** trong logic điều phối | 26 |
+| Báo lỗi hết giờ ở một bước | ⭐ Cơ cấu **không tới nơi**, hoặc cảm biến phản hồi hỏng | 26 |
+| ⚠ Dừng **không có báo động nào** | ⭐⭐ **Lỗi thiết kế báo động** — hoặc CPU mất điện (Ch.49 mục 49.5) | 44, 49 |
+| Dừng khi đổi công thức | Tham số ngoài dải, hoặc thiếu tham số | 29 |
+| ⭐ Dừng lúc **hai trạm cùng cần một thứ** | ⭐ **Bế tắc** trong logic điều phối | 26, 27 |
 | Dừng khi máy trước/sau bận | Bắt tay chuyền — có thể là **bình thường**, không phải lỗi | 41, 55 mục 55.6 |
 
 > ⭐⭐ **Hàng "dừng không có báo động" xứng đáng được coi là một lỗi phải sửa, không phải một hiện
@@ -30242,10 +30242,10 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Quan sát | Nghi trước | Chương |
 |---|---|---|
 | ⭐ Hỏng **tăng dần theo thời gian** | ⭐⭐ **Một thứ đang mòn hoặc suy giảm** — đèn UV yếu dần, cảm biến trôi | 53 mục 53.5 |
-| Hỏng theo **lô vật tư** | Vật tư, không phải máy — nhưng máy nên phát hiện được | 32 |
+| Hỏng theo **lô vật tư** | Vật tư, không phải máy — nhưng máy nên phát hiện được | 29 |
 | ⭐ Hỏng khi **chạy nhanh hơn** | ⭐ Thời gian quá trình không đủ; hoặc chuyển tiếp bằng **bộ định thời thay vì phản hồi** | 55 mục 55.5 |
-| Hỏng ở **một vị trí cố định** trên sản phẩm | Cơ khí, gá, hoặc dữ liệu công thức | 32, 37 |
-| Hỏng sau khi đổi công thức | Tham số sai nhưng **vẫn trong dải hợp lệ** | 32 |
+| Hỏng ở **một vị trí cố định** trên sản phẩm | Cơ khí, gá, hoặc dữ liệu công thức | 29, 37 |
+| Hỏng sau khi đổi công thức | Tham số sai nhưng **vẫn trong dải hợp lệ** | 29 |
 | ⚠ Hỏng **không có triệu chứng tại chỗ** | ⭐ ESD, keo chưa cứng, mối hàn nguội — ⚠ **lộ ra ở công đoạn sau** | 7, 53 |
 
 > ⭐⭐ **Câu hỏi cốt lõi cho cả nhóm này: máy có phép đo nào để biết việc nó vừa làm là ĐÚNG không —
@@ -30305,11 +30305,11 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Vừa thay đổi | Nghi trước | Chương |
 |---|---|---|
-| ⭐ **Nạp chương trình mới** | Thay đổi vừa nạp; ⚠ và **bộ đếm giữ được có bị xoá không** | 12, 53 |
+| ⭐ **Nạp chương trình mới** | Thay đổi vừa nạp; ⚠ và **bộ đếm giữ được có bị xoá không** | 11, 53 |
 | Đổi CPU / PLC | ⭐⭐ **Thời gian quét khác** · tràn số · hành vi bộ định thời | 56 mục 56.4 |
 | Thay cảm biến | Sai loại PNP/NPN, sai NO/NC, sai căn chỉnh | 4 |
 | Thay biến tần | ⭐ **Tham số chưa nạp lại** | 36, 54 |
-| Đổi công thức | Tham số ngoài dải, hoặc thiếu tham số | 32 |
+| Đổi công thức | Tham số ngoài dải, hoặc thiếu tham số | 29 |
 | Đấu thêm thiết bị vào tủ | ⭐ **Quá tải nguồn 24 V**; hoặc thêm nguồn nhiễu | 8, 49 |
 | Sửa máy bên cạnh | Đất chung, nguồn chung, hoặc bắt tay chuyền | 41, 49 |
 | ⚠ Chạm mạch an toàn | ⚠⚠ **Phải đánh giá lại** — không chỉ kiểm tra chạy được | 47, 48, 53 |
@@ -30344,7 +30344,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Bạn cần | Đọc |
 |---|---|
 | Phương pháp chẩn đoán có hệ thống | ⭐ **Chương 51** |
-| Thiết kế báo động nói được **phải làm gì** | Chương 43 |
+| Thiết kế báo động nói được **phải làm gì** | Chương 44 |
 | Quy tắc lắp đặt và chống nhiễu | ⭐ **Chương 49** |
 | Đo chu kỳ, tìm nút cổ chai | Chương 55 |
 | Theo dõi sự trôi trước khi thành lỗi | Chương 53 mục 53.5 |
@@ -30576,9 +30576,9 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
-| Báo động | alarm | | 43 |
-| Xác nhận báo động | acknowledge (ack) | | 43 |
-| Báo động đầu tiên | first-out alarm | ⭐ Cái nào xảy ra **trước** | 43 |
+| Báo động | alarm | | 44 |
+| Xác nhận báo động | acknowledge (ack) | | 44 |
+| Báo động đầu tiên | first-out alarm | ⭐ Cái nào xảy ra **trước** | 44 |
 | Tràn báo động | alarm flood | IEC 62682 | 44 |
 | Sửa trực tuyến | online edit | ⚠⚠ Ch.53 | 53 |
 | Tài liệu hiện trạng | as-built documentation | ⭐ Khác **bản thiết kế** | 53 |
@@ -30923,7 +30923,7 @@ công việc yêu cầu.
 
 | Tiêu chuẩn | Nói về | Dùng ở chương |
 |---|---|---|
-| ⭐⭐ **ISO 12100** | Nguyên tắc chung về thiết kế an toàn và **đánh giá rủi ro** | 6, 47, 56 |
+| ⭐⭐ **ISO 12100** | Nguyên tắc chung về thiết kế an toàn và **đánh giá rủi ro** | 47, 56 |
 | ⭐ **ISO 13849-1 / -2** | Bộ phận liên quan an toàn của hệ điều khiển — **mức hiệu năng (PL)** | 47, 48 |
 | ⭐ **IEC 62061** | An toàn chức năng của hệ điều khiển điện — **mức toàn vẹn (SIL)** | 47, 48 |
 | **IEC 61508** | An toàn chức năng — tiêu chuẩn nền cho các tiêu chuẩn trên | 47, 48, 53 |
@@ -30946,7 +30946,7 @@ công việc yêu cầu.
 | Tiêu chuẩn | Nói về | Chương |
 |---|---|---|
 | ⭐⭐ **IEC 61131-3** | ⭐ **Ngôn ngữ lập trình PLC** — xương sống của cả cuốn sách | 13–21, 30 |
-| **IEC 61131-1 / -2** | Thông tin chung · yêu cầu thiết bị | 7, 8 |
+| **IEC 61131-1 / -2** | Thông tin chung · yêu cầu thiết bị | 8, 10 |
 | **IEC 61131-9** | IO-Link | 12 |
 | **IEC 61439** | Tủ điện hạ áp | 49 |
 | **IEC 61800-3** | Yêu cầu EMC cho hệ truyền động | 36, 49 |
@@ -30954,7 +30954,7 @@ công việc yêu cầu.
 | **IEC 61643** | Thiết bị chống quá áp lan truyền | 49 |
 | **IEC 62443** | ⭐ **An ninh mạng công nghiệp** | 45, 53, 54 |
 | **IEC 62541** | OPC UA | 40, 45 |
-| **IEC 62682** | ⭐ Quản lý hệ thống báo động | 43 |
+| **IEC 62682** | ⭐ Quản lý hệ thống báo động | 44 |
 | **IEC 62381** | Kiểm tra chấp nhận hệ tự động hoá (FAT/SAT) | 52 |
 | **IEC 62264** · **ISO 22400** | Tích hợp hệ điều hành sản xuất · ⭐ **chỉ số năng suất** | 45, 55 |
 
@@ -30966,7 +30966,7 @@ công việc yêu cầu.
 | **IEC 60584** | Cặp nhiệt điện | 33 |
 | **IEC 60381** | Tín hiệu analog chuẩn (4–20 mA, 0–10 V) | 31 |
 | **IEC 61340-5-1** | ⭐ Bảo vệ linh kiện điện tử khỏi tĩnh điện (ESD) | 7 |
-| **ISO 4414** | An toàn hệ khí nén | 5 |
+| **ISO 4414** | An toàn hệ khí nén | 6 |
 | **ISO/IEC 16022** | Mã 2D Data Matrix | 42 |
 
 > ⭐ **Cách mua thực dụng:** đừng mua cả bộ. ⭐ **Mua bản bạn thật sự dùng** — với người lập trình máy,
@@ -31144,7 +31144,7 @@ rồi đối chiếu với những gì tài liệu sẵn có đã trả lời t�
 | **1.6** | **SET / RESET.** Bài 1.1 viết lại bằng cuộn dây Set/Reset. So sánh với bản tự giữ: khác nhau ở đâu khi CPU khởi động lại? | Set/Reset vs tự giữ | ✅ |
 | **1.7** | **Bắt cạnh lên.** Mỗi lần nhấn nút, đầu ra **đảo trạng thái** (nhấn bật, nhấn nữa tắt). | ⭐ Bắt cạnh — nếu không bắt cạnh, đầu ra nhấp nháy mỗi vòng quét | ✅ |
 | **1.8** | **Mạch lật hai nút.** Nút A bật, nút B tắt. Nếu nhấn cả hai cùng lúc thì **tắt thắng**. | Ưu tiên trong flip-flop | ✅ |
-| **1.9** | **Báo động có xác nhận.** Cảm biến lỗi → đèn nháy + còi. Nhấn Ack → còi tắt, ⭐ **đèn chuyển sang sáng liên tục** cho tới khi hết lỗi. | ⭐ Ba trạng thái báo động (Ch.43) | ✅ |
+| **1.9** | **Báo động có xác nhận.** Cảm biến lỗi → đèn nháy + còi. Nhấn Ack → còi tắt, ⭐ **đèn chuyển sang sáng liên tục** cho tới khi hết lỗi. | ⭐ Ba trạng thái báo động (Ch.44) | ✅ |
 | **1.10** | ⭐ **Chuỗi cho phép.** Máy chỉ chạy khi đủ 5 điều kiện. Khi thiếu, ⭐ **phải chỉ ra điều kiện nào đang thiếu**, không chỉ "chưa sẵn sàng". | ⭐⭐ Chuỗi cho phép — thứ tiết kiệm hàng giờ khi máy không khởi động | ✅ |
 | **1.11** | **Kiểm đèn.** Nhấn nút Test → mọi đèn và còi bật 2 giây rồi về trạng thái thật. | ⭐ Vì sao cần: đèn báo lỗi bị cháy = lỗi vô hình | ✅ |
 | **1.12** | **Ưu tiên dừng.** Ba nút Start ở ba vị trí, hai nút Stop. Bất kỳ nút Stop nào cũng dừng được. | ⚠ Stop luôn thắng Start | — |
@@ -31189,7 +31189,7 @@ rồi đối chiếu với những gì tài liệu sẵn có đã trả lời t�
 | **3.3** | ⭐⭐ **Cùng bài, hai cách.** Làm bài 3.1 hai lần: (a) chỉ dùng bộ định thời nối tiếp, (b) dùng **thanh ghi bước**. So sánh: cách nào dễ thêm một pha đèn mới? | ⭐⭐ **Vì sao trình tự có cấu trúc thắng chuỗi timer** | ✅ |
 | **3.4** | **Trạm trộn.** Mở van A đủ lượng → mở van B đủ lượng → khuấy 30 s → xả. Có Start/Stop/Reset. | Trình tự nhiều bước có điều kiện | ✅ |
 | **3.5** | **Cổng bãi xe.** Xe tới → mở cổng → chờ xe qua hẳn → đóng. ⚠ **Không được đóng khi xe còn dưới cổng**. | ⚠ Khoá liên động an toàn trong trình tự | ✅ |
-| **3.6** | ⭐ **Báo động first-out.** Năm nguyên nhân đều làm máy dừng. Hiển thị ⭐ **nguyên nhân xảy ra TRƯỚC TIÊN**, không phải cả năm. | ⭐⭐ First-out — thứ phân biệt báo động hữu ích với tràn báo động (Ch.43) | ✅ |
+| **3.6** | ⭐ **Báo động first-out.** Năm nguyên nhân đều làm máy dừng. Hiển thị ⭐ **nguyên nhân xảy ra TRƯỚC TIÊN**, không phải cả năm. | ⭐⭐ First-out — thứ phân biệt báo động hữu ích với tràn báo động (Ch.44) | ✅ |
 | **3.7** | **Timeout từng bước.** Thêm timeout riêng cho mỗi bước của bài 3.4, mỗi timeout có **mã lỗi riêng**. | Chẩn đoán được từ báo động | ✅ |
 | **3.8** | ⭐⭐ **Chuyển Manual ↔ Auto không giật.** Máy đang chạy Auto, chuyển sang Manual rồi quay lại. ⚠ **Cơ cấu không được nhảy vị trí**, trình tự phải biết mình đang ở đâu. | ⭐⭐ Bài khó nhất mức 3 — và là vấn đề thật trên mọi máy | — |
 | **3.9** | **Bỏ bước theo công thức.** Trình tự 6 bước; công thức quyết định bước 3 và 5 **có chạy hay không**. | ⭐ Tham số là **dữ liệu**, không phải mã (Ch.32) | — |
@@ -31214,7 +31214,7 @@ rồi đối chiếu với những gì tài liệu sẵn có đã trả lời t�
 | **4.6** | ⭐ **Giới hạn tốc độ thay đổi.** Giá trị đặt tốc độ chuyền không được nhảy đột ngột — giới hạn 10 %/giây. | ⭐ Ramp — bảo vệ cơ khí | ✅ |
 | **4.7** | ⚠ **Ép kiểu và tràn số.** Tính tổng lưu lượng: cộng giá trị đọc mỗi 100 ms trong 24 giờ. ⚠ **Chọn kiểu dữ liệu sao cho không tràn**, và chứng minh bằng phép tính. | ⚠⚠ Tràn số — lỗi âm thầm nhất (Ch.14) | ✅ |
 | **4.8** | **Tích phân lưu lượng.** Từ tín hiệu lưu lượng tức thời, tính tổng thể tích đã chảy qua. | Tích phân rời rạc theo vòng quét | — |
-| **4.9** | ⭐ **Dải báo động nhiều mức.** Một giá trị analog có 4 ngưỡng: thấp-thấp, thấp, cao, cao-cao. Mỗi ngưỡng có ⭐ **mức ưu tiên và hành động khác nhau**. | ⭐ Phân cấp báo động (Ch.43) | — |
+| **4.9** | ⭐ **Dải báo động nhiều mức.** Một giá trị analog có 4 ngưỡng: thấp-thấp, thấp, cao, cao-cao. Mỗi ngưỡng có ⭐ **mức ưu tiên và hành động khác nhau**. | ⭐ Phân cấp báo động (Ch.44) | — |
 
 > ⭐⭐ **Bài 4.2 là bài nên làm kể cả khi bạn thấy nó dễ.** Rất nhiều máy thật xử lý sai chỗ này: cảm
 > biến đứt dây cho giá trị 0, chương trình hiểu là "áp suất bằng 0", và ⚠ **máy phản ứng như thể áp
@@ -31762,7 +31762,7 @@ Thô = 13824  →  (13824 − 0) / 27648 × (6 − 0) + 0  =  3,00 bar
 | Dòng **< 3,6 mA** | ⭐⭐ **Đứt dây / hỏng cảm biến** — không phải giá trị đo bằng 0 |
 | Dòng **> 21 mA** | Ngắn mạch hoặc lỗi cảm biến |
 | ⚠ Điều kiện áp dụng | ⭐ **Chỉ dùng được với 4–20 mA**; tín hiệu 0–10 V và 0–20 mA **không phân biệt được đứt dây** |
-| Chương | 31 mục 31.7 |
+| Chương | 31 mục 31.3 |
 
 > ⭐⭐ **Đây là lý do 4–20 mA được ưa dùng hơn 0–10 V cho phép đo quan trọng:** không phải vì chống
 > nhiễu tốt hơn (dù nó cũng đúng), mà vì ⭐ **0 mA là một trạng thái không thể xảy ra khi mọi thứ
@@ -31934,7 +31934,7 @@ Thời gian quét  ≈  Thời gian đọc I/O  +  Thời gian chạy chương t
 | ⚠ **Điều kiện áp dụng** | Đây là **ước lượng**, không phải bảo đảm — ⭐ **đo thời gian quét thật trên máy** |
 | ⚠ Nhớ rằng | Thời gian quét **thay đổi theo đường chạy** trong chương trình — quan tâm **giá trị lớn nhất**, không phải trung bình |
 | ⚠⚠ Bẫy khi đổi PLC | ⭐ **PLC mới thường quét nhanh hơn nhiều** — logic dựa vào vòng quét sẽ chạy khác (Ch.56) |
-| Chương | 7 · 19 · 56 mục 56.4 |
+| Chương | 10 · 56 mục 56.4 |
 
 ### ⭐ Khi nào cần bộ đếm xung tốc độ cao
 
@@ -32024,8 +32024,8 @@ Nếu  Tần số xung  >  1 / (2 × Thời gian quét)   →  ⭐ PHẢI dùng 
 |---|---|---|
 | Quy đổi giá trị analog | K.1 | 31 |
 | Phát hiện đứt dây cảm biến 4–20 mA | K.1 | 31 |
-| Lực xy-lanh | K.2 | 5 |
-| Lưu lượng khí | K.2 | 5 |
+| Lực xy-lanh | K.2 | 6 |
+| Lưu lượng khí | K.2 | 6 |
 | Công suất nguồn 24 V | K.3 | 8 |
 | Tuổi thọ van / rơ-le / cáp xích | K.3 | 9, 49 |
 | Ngưỡng bảo trì | K.3 | 53 |
@@ -32033,9 +32033,9 @@ Nếu  Tần số xung  >  1 / (2 × Thời gian quét)   →  ⭐ PHẢI dùng 
 | ⭐ **Chu kỳ máy nhiều trạm** | K.4 | 55 |
 | ⭐ **Tìm nút cổ chai** | K.4 | 55 |
 | OEE | K.4 | 55 |
-| Thời gian quét | K.5 | 7, 19 |
+| Thời gian quét | K.5 | 10 |
 | ⭐ **Khi nào cần bộ đếm tốc độ cao** | K.5 | 18 |
-| Dải kiểu dữ liệu, chống tràn | K.6 | 14 |
+| Dải kiểu dữ liệu, chống tràn | K.6 | 11, 19 |
 | Vỏ chống nhiễu, nối đất | K.7 | 31, 36, 49 |
 
 ---

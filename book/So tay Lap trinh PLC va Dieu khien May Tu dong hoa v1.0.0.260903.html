@@ -495,6 +495,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#185-khi-nào-plc-không-đm-ni-b-đm-tc-đ-cao">18.5 Khi nào PLC không đếm nổi — bộ đếm tốc độ cao</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#185b-encoder-cu-phương-đm-đưc-chiu-và-nhân-đưc-đ-phân-gii">18.5b ⭐⭐ Encoder cầu phương — đếm được CHIỀU, và nhân được độ phân giải</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#186-gi-giá-tr-qua-mt-đin">18.6 Giữ giá trị qua mất điện</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#186b-b-đm-thưng-đã-gi-sn-và-đó-mi-là-ch-nguy-him">18.6b ⚠⚠ Bộ đếm thường ĐÃ giữ sẵn — và đó mới là chỗ nguy hiểm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#187-khác-bit-gia-các-hãng">18.7 Khác biệt giữa các hãng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#188-by-thưng-gp">18.8 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#189-bng-cht">18.9 Bảng chốt</a></li>
@@ -10513,7 +10514,7 @@ này đóng?&quot;</em>. Quy tắc này đúng ở mọi hệ và miễn nhiễm
 </tr>
 <tr>
 <td><strong>Cuộn dây có nhớ (SET/RESET)</strong></td>
-<td>Siemens <code>(S)</code>/<code>(R)</code>; Mitsubishi <code>SET</code>/<code>RST</code>; Rockwell <code>OTL</code>/<code>OTU</code>. Hành vi khi mất điện phụ thuộc khai báo biến — Chương 16</td>
+<td>Siemens <code>(S)</code>/<code>(R)</code>; Mitsubishi <code>SET</code>/<code>RST</code>; Rockwell <code>OTL</code>/<code>OTU</code>. ⚠ Hành vi khi mất điện: ở hệ IEC phụ thuộc <strong>khai báo biến</strong>, còn <code>OTL</code>/<code>OTU</code> của Rockwell <strong>tự nó đã giữ được</strong> — Chương 16, mục 16.7</td>
 </tr>
 </tbody></table></div>
 <p>Đối chiếu chi tiết năm hệ: <strong>Phụ lục A2</strong>.</p>
@@ -11107,7 +11108,7 @@ kỹ trước khi dùng, và đừng đoán từ tên.</p>
 </tr>
 <tr>
 <td><strong>Rockwell Logix</strong></td>
-<td>⭐ <strong>Giá trị tag được giữ mặc định</strong> qua chu kỳ nguồn</td>
+<td>⭐ <strong>Giữ được là thuộc tính của LỆNH</strong>: <code>OTL</code>/<code>OTU</code> giữ được, <code>OTE</code> thì không. Ngoài ra giá trị tag nói chung sống qua chu kỳ nguồn</td>
 <td>Ngược hẳn với Siemens: ở đây bạn phải chủ động <strong>xoá</strong> thứ không được phép giữ, thay vì chủ động đánh dấu thứ cần giữ</td>
 </tr>
 <tr>
@@ -11123,6 +11124,29 @@ Quy tắc ở mục 16.4 — <strong>không bao giờ giữ <code>M_Running</cod
 viết code xoá chúng khi khởi động.</p>
 <p>Người chuyển chương trình từ Siemens sang Logix mà không biết điều này sẽ tạo ra đúng cỗ máy <strong>tự
 chạy lại khi có điện trở lại</strong> — thứ mà IEC 60204-1 cấm.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Chỗ tinh tế nhất: cùng một bit, hai lệnh, hai hành vi khi mất điện.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lệnh</th>
+<th>Hành vi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>OTE</code> <em>(Output Energize)</em></td>
+<td>⭐ <strong>Không giữ</strong> — bit theo nấc thang, mất điện là mất</td>
+</tr>
+<tr>
+<td><code>OTL</code> <em>(Output Latch)</em> / <code>OTU</code> <em>(Output Unlatch)</em></td>
+<td>⚠⚠ <strong>Giữ được</strong> — trạng thái chốt sống qua chu kỳ nguồn</td>
+</tr>
+</tbody></table></div>
+<p>⚠ Nghĩa là ⭐ <strong>việc bit có sống qua mất điện hay không do BẠN CHỌN LỆNH quyết định</strong>, chứ không
+phải do khai báo biến — khác hẳn mô hình ở Siemens và CODESYS, nơi hai chuyện đó tách rời (Bẫy 7).</p>
+<p>⭐ Đây cũng là lý do Bẫy 7 phải đọc kèm mục này: câu <em>&quot;SET/RESET không tự động giữ qua mất điện&quot;</em>
+⚠ <strong>đúng với hệ IEC nhưng không đúng với <code>OTL</code>/<code>OTU</code> của Logix</strong>.</p>
 </blockquote>
 <h3>Điểm còn lại</h3>
 <div class="table-wrap"><table>
@@ -11186,8 +11210,10 @@ nguyên nhân lỗi vẫn còn.
 <h3>🔍 BẪY 7 — Tưởng SET/RESET tự động giữ qua mất điện</h3>
 <p><strong>Hiện tượng:</strong> thiết kế dựa vào việc cờ còn nguyên sau khi bật máy, nhưng nó về 0 — vì biến không
 được khai báo là giữ được.
-<strong>Cách sửa:</strong> SET/RESET quyết định <strong>cách bit đổi giá trị</strong>; khai báo biến quyết định <strong>bit có sống
-qua mất điện không</strong>. Hai chuyện tách rời (mục 16.4).</p>
+<strong>Cách sửa:</strong> ở hệ IEC, SET/RESET quyết định <strong>cách bit đổi giá trị</strong>, còn khai báo biến quyết định
+<strong>bit có sống qua mất điện không</strong> — hai chuyện tách rời (mục 16.4).
+⚠⚠ <strong>Ngoại lệ quan trọng:</strong> trên Logix, <code>OTL</code>/<code>OTU</code> <strong>tự nó đã là giữ được</strong>, còn <code>OTE</code> thì không —
+ở đó hai chuyện <strong>không</strong> tách rời (mục 16.7).</p>
 <h3>🔍 BẪY 8 — Bắt cạnh trên một tín hiệu đang rung</h3>
 <p>Nút bấm cơ khí nảy vài lần trong vài mili-giây. Bắt cạnh trên tín hiệu thô sẽ ra <strong>nhiều cạnh</strong> cho
 một lần nhấn.</p>
@@ -11235,6 +11261,11 @@ một lần nhấn.</p>
 <td>Hai cách cho hai con số khác nhau — chọn có ý thức</td>
 </tr>
 <tr>
+<td>⚠⚠ Sống qua mất điện <strong>trên Logix</strong></td>
+<td>⭐ <strong>Chọn lệnh</strong>: <code>OTL</code>/<code>OTU</code> giữ được, <code>OTE</code> thì không</td>
+<td>Ở đây khai báo biến <strong>không</strong> phải nơi quyết định</td>
+</tr>
+<tr>
 <td>Bắt cạnh trên nút bấm</td>
 <td><strong>Lọc rung rồi mới bắt cạnh</strong></td>
 <td>Sai thứ tự thì một lần nhấn ra nhiều cạnh</td>
@@ -11244,9 +11275,11 @@ một lần nhấn.</p>
 <ol>
 <li>Bit này mô tả <em>máy đang làm gì</em>, hay <em>đã có chuyện gì xảy ra</em>?</li>
 <li>Nếu dòng lệnh này chạy 400 lần liên tiếp thì có sao không?</li>
-<li>Mất điện rồi bật lại, bit này <strong>nên</strong> bằng mấy — và tôi đã khai báo đúng chưa?</li>
+<li>Mất điện rồi bật lại, bit này <strong>nên</strong> bằng mấy — và tôi đã khai báo đúng chưa? ⚠ Trên Logix, hỏi
+thêm: <strong>tôi đang dùng <code>OTE</code> hay <code>OTL</code>/<code>OTU</code>?</strong></li>
 <li>Ai xoá bit này, và điều kiện xoá đã đủ chặt chưa?</li>
 </ol>
+<hr>
 <hr>
 <h2 id="1610-t-kim">16.10 Tự kiểm</h2>
 <ol>
@@ -11284,6 +11317,8 @@ là hành động có chủ ý sau khi khôi phục nguồn — cơ sở cho quy
 <li>Bảng I/O và đặc tả trình tự của DP-01 — Phụ lục J.</li>
 <li>Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho phần khai báo biến giữ được ở mục 16.7,
 vì đây là chỗ khác nhau nhiều nhất giữa các hãng.</li>
+<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> — bảng lệnh Logix: <code>OTE</code> <strong>không giữ</strong>, <code>OTL</code>/<code>OTU</code>
+⭐ <strong>giữ được</strong>; mạch chốt lập trình là <strong>retentive</strong>, giữ trạng thái qua mất điện (mục 16.7).</li>
 </ul>
 <blockquote>
 <p>⚡ Quy tắc chọn giữ / không giữ ở mục 16.4 là <strong>quy tắc thiết kế</strong>, không phải yêu cầu tiêu chuẩn —
@@ -12253,6 +12288,71 @@ khác định kỳ — và khi có kết nối lên hệ thống trên thì đó
 </tr>
 </tbody></table></div>
 <hr>
+<h2 id="186b-b-đm-thưng-đã-gi-sn-và-đó-mi-là-ch-nguy-him">18.6b ⚠⚠ Bộ đếm thường ĐÃ giữ sẵn — và đó mới là chỗ nguy hiểm</h2>
+<p>Mục trên nói về việc <strong>làm cho</strong> bộ đếm giữ được. ⚠ Nhưng ở nhiều hệ, câu hỏi đúng lại ngược lại:
+⭐ <strong>bộ đếm mặc định đã giữ rồi, và bạn phải chủ động xoá thứ không được phép giữ.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Điều</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Mặc định phổ biến</td>
+<td><strong>Bộ đếm giữ giá trị qua mất điện</strong> — giá trị lúc CPU tắt được khôi phục khi có điện lại</td>
+</tr>
+<tr>
+<td>⚠⚠ Hệ quả</td>
+<td>Bộ đếm <strong>điều khiển logic</strong> sẽ khởi động lại với giá trị cũ</td>
+</tr>
+<tr>
+<td>⭐ Ngoại lệ đáng biết</td>
+<td>⚠ Nếu <strong>điều kiện đặt lại đang đúng vào lúc có điện trở lại</strong>, bộ đếm bị xoá — số liệu bạn tưởng còn thì không còn</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Đây là cùng một bẫy với biến giữ được ở Chương 16, mục 16.4 — chỉ khác là nó đến &quot;miễn phí&quot;.</strong></p>
+<p>Với bộ đếm <strong>sản lượng</strong>, giữ được là điều bạn muốn. Với bộ đếm <strong>điều khiển logic</strong> — đếm số board
+trong một mẻ, đếm bước, đếm số lần thử lại — thì ⚠⚠ <strong>giữ được là một lỗi an toàn</strong>: máy có điện
+trở lại và tin rằng nó đang ở giữa mẻ thứ bảy, trong khi băng tải đã bị dọn sạch.</p>
+<p>⭐ <strong>Quy tắc:</strong> với mỗi bộ đếm, trả lời dứt khoát câu hỏi ⭐ <em>&quot;nếu mất điện ngay bây giờ rồi có điện
+lại, giá trị này CÒN thì đúng hay SAI?&quot;</em> — rồi cấu hình theo câu trả lời, ⚠ <strong>đừng để mặc định trả
+lời hộ</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Và đừng dựa vào việc đặt lại lúc khởi động để &quot;chữa&quot;.</strong> Nếu bạn định xoá bộ đếm bằng một điều
+kiện chạy lúc có điện, hãy nhớ ⚠ thứ tự thực thi lúc khởi động không phải lúc nào cũng như bạn
+tưởng — hãy <strong>thử thật</strong>: cho đếm tới một giá trị, cắt nguồn, cấp lại, và <strong>xem giá trị</strong>.</p>
+</blockquote>
+<h3>⚠ Cực tính chân đặt lại khác nhau giữa các hãng</h3>
+<p>⭐ Một khác biệt nhỏ nhưng đủ làm hỏng cả logic đặt lại khi chuyển chương trình:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hệ có thể</th>
+<th>Yêu cầu để xoá bộ đếm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nhóm một</td>
+<td>Nấc / chân đặt lại phải ⭐ <strong>ĐÚNG</strong> <em>(true)</em></td>
+</tr>
+<tr>
+<td>Nhóm hai</td>
+<td>Nấc / chân đặt lại phải ⭐ <strong>SAI</strong> <em>(false)</em></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠ Nghĩa là cùng một đoạn logic đặt lại, chuyển sang hệ khác có thể thành ⚠⚠ <strong>xoá bộ đếm liên tục</strong>
+hoặc ⚠⚠ <strong>không bao giờ xoá</strong> — cả hai đều im lặng.</p>
+<p>⭐ <strong>Tra tài liệu của đúng hệ trước khi viết logic đặt lại</strong>, và kiểm bằng cách cho đếm rồi kích
+điều kiện đặt lại trong lúc trực tuyến.</p>
+</blockquote>
+<p><em>(Đối chiếu: Petruzella, <em>Programmable Logic Controllers</em> — bộ đếm PLC <strong>thường là giữ được</strong>, giá trị
+lúc dừng được khôi phục khi cấp nguồn lại, ⚠ trừ khi điều kiện đặt lại đang tác động lúc đó; và ⭐ cực
+tính chân đặt lại <strong>khác nhau giữa các hãng</strong>, tài liệu khuyến cáo tra sổ tay trước khi lập trình.)</em></p>
+<hr>
 <h2 id="187-khác-bit-gia-các-hãng">18.7 Khác biệt giữa các hãng</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -12284,6 +12384,13 @@ khác định kỳ — và khi có kết nối lên hệ thống trên thì đó
 <td>Lệnh <code>RST</code></td>
 <td>⚠ <strong>Bắt buộc lệnh <code>RES</code></strong></td>
 <td>Chân <code>R</code></td>
+</tr>
+<tr>
+<td>⚠ Cực tính điều kiện đặt lại</td>
+<td>⭐ <strong>Tra tài liệu</strong> — có hệ cần ĐÚNG, có hệ cần SAI (mục 18.6b)</td>
+<td>⭐ Tra tài liệu</td>
+<td>⭐ Tra tài liệu</td>
+<td>⭐ Tra tài liệu</td>
 </tr>
 <tr>
 <td>⚠ Độ rộng số đếm</td>
@@ -12419,6 +12526,22 @@ quãng đã biết, so số xung đếm được với tính toán. Chỉ hai ph
 <td>Có — khai báo <strong>thể hiện của khối</strong> là giữ được, và vẫn ghi ra nơi khác</td>
 </tr>
 <tr>
+<td>⚠⚠ Mặc định của bộ đếm ở nhiều hệ</td>
+<td>⭐ <strong>ĐÃ giữ sẵn</strong> — nguy hiểm với bộ đếm <strong>điều khiển logic</strong></td>
+</tr>
+<tr>
+<td>⭐ Câu hỏi phải trả lời cho mọi bộ đếm</td>
+<td><em>&quot;Mất điện rồi có lại — giá trị này CÒN thì đúng hay sai?&quot;</em></td>
+</tr>
+<tr>
+<td>⚠ Ngoại lệ khi có điện lại</td>
+<td>Điều kiện đặt lại đang đúng lúc đó → ⭐ <strong>bộ đếm bị xoá</strong></td>
+</tr>
+<tr>
+<td>⚠ Cực tính chân đặt lại</td>
+<td>⭐ <strong>Khác nhau giữa các hãng</strong> — có hệ cần ĐÚNG, có hệ cần SAI</td>
+</tr>
+<tr>
 <td>Encoder gia số sau mất điện</td>
 <td>Mất vị trí → <strong>phải về gốc</strong> (Chương 28)</td>
 </tr>
@@ -12451,6 +12574,10 @@ không lấy sát ngưỡng <code>1/(2×Tq)</code>?</li>
 <li>Bộ đếm nào trên DP-01 <strong>không bao giờ</strong> được đặt lại? Vì sao?</li>
 <li>⭐ Vì sao encoder không được dùng làm căn cứ cho chức năng an toàn, dù giá trị nó đọc ra trông
 hoàn toàn hợp lý?</li>
+<li>⚠⚠ Bộ đếm ở nhiều hệ <strong>mặc định đã giữ được</strong>. Nêu một bộ đếm mà điều đó là <strong>đúng ý muốn</strong>, và
+một bộ đếm mà điều đó là <strong>lỗi an toàn</strong>. Câu hỏi nào giúp phân biệt hai loại?</li>
+<li>⭐ Bạn định xoá bộ đếm bằng một điều kiện chạy lúc khởi động. Nêu <strong>hai</strong> lý do không nên tin vào
+thiết kế đó mà không thử thật.</li>
 </ol>
 <blockquote>
 <p>Câu 3, 6 và 10 là ba câu phân loại. Câu 3 là tinh thần của cả chương: <strong>một con số sai hiếm khi
@@ -12474,6 +12601,9 @@ vào số, trong đó có thời gian lọc phần cứng — cơ sở cho giớ
 <li>Tài liệu CPU và module của từng hệ trong Phụ lục A — dùng cho số kênh HSC, tần số tối đa, chế độ
 đếm, và hành vi khi tràn. Đây là các thông số <strong>phải tra theo đúng dòng sản phẩm</strong>, không suy đoán.</li>
 <li>Bảng I/O của DP-01 — Phụ lục J.</li>
+<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> — ⭐ bộ đếm PLC <strong>thường là giữ được</strong>: giá trị lúc
+CPU dừng được khôi phục khi cấp nguồn lại, ⚠ trừ khi <strong>điều kiện đặt lại đang tác động</strong> lúc đó; và
+⭐ <strong>cực tính điều kiện đặt lại khác nhau giữa các hãng</strong> — nền cho mục 18.6b.</li>
 </ul>
 <blockquote>
 <p>⚡ Công thức chọn HSC ở mục 18.5 là <strong>quy tắc thiết kế thực dụng</strong>, không phải yêu cầu tiêu chuẩn.
@@ -42339,7 +42469,7 @@ mục về truy cập dữ liệu I/O và đệm giá trị.)</em></p>
 <td>⭐ <strong>Dải thiết bị được cấu hình là latched</strong></td>
 <td>⭐ <strong>Tuỳ dòng</strong> — xem bảng riêng bên dưới</td>
 <td>⭐ <code>VAR RETAIN</code> · <code>VAR PERSISTENT</code></td>
-<td>⭐ Thuộc tính của tag</td>
+<td>⭐ Thuộc tính của tag, <strong>và của LỆNH</strong> — xem dưới</td>
 </tr>
 <tr>
 <td><strong>Cần pin hay không</strong></td>
@@ -42366,6 +42496,29 @@ rồi phát hiện nó <strong>về không sau một lần nạp chương trình
 liệu là chưa đủ — hành vi khác nhau giữa &quot;nạp thay đổi nhỏ&quot;, &quot;nạp toàn bộ&quot;, và &quot;nạp kèm cấu hình
 phần cứng&quot;.</p>
 <p>Xem Chương 11 và Chương 53 mục 53.5.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Rockwell: giữ được còn là thuộc tính của LỆNH, không chỉ của biến.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lệnh</th>
+<th>Hành vi khi mất điện</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>OTE</code> <em>(Output Energize)</em></td>
+<td>⭐ <strong>Không giữ</strong></td>
+</tr>
+<tr>
+<td><code>OTL</code> / <code>OTU</code> <em>(Output Latch / Unlatch)</em></td>
+<td>⚠⚠ <strong>Giữ được</strong></td>
+</tr>
+</tbody></table></div>
+<p>⚠ Đây là chỗ khác mô hình của bốn hệ còn lại, nơi &quot;cách bit đổi giá trị&quot; và &quot;bit có sống qua mất
+điện không&quot; là hai chuyện tách rời. ⭐ Người chuyển chương trình từ hệ IEC sang Logix mà không biết
+điều này dễ tạo ra máy <strong>tự chạy lại khi có điện trở lại</strong>. Xem Chương 16, mục 16.7.</p>
+<p>⚡ Cùng tinh thần: ⭐ <strong>bộ đếm ở nhiều hệ mặc định đã giữ được</strong> — Chương 18, mục 18.6b.</p>
 </blockquote>
 <blockquote>
 <p>⭐⭐ <strong>Inovance: hai dòng, hai cơ chế hoàn toàn khác nhau — và cả hai đều có bẫy riêng.</strong></p>

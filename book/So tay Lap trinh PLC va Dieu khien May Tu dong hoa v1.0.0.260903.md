@@ -6760,7 +6760,7 @@ Nhưng những chi tiết sau **khác nhau thật** và sẽ làm bạn vấp kh
 | **Số nhánh song song / độ rộng nấc thang** | Đều có giới hạn, và giới hạn khác nhau theo hệ và theo dòng CPU. Chạm giới hạn thì phải tách nấc — thường cũng là lúc nấc đã quá phức tạp (Bẫy 5) |
 | **Cách đặt tên tín hiệu** | Rockwell Logix dùng **tag có tên** là mô hình gốc, không có địa chỉ tuyệt đối kiểu truyền thống. Siemens và Mitsubishi cho dùng **cả hai** — địa chỉ tuyệt đối (`%I0.0`, `X0`) và tag có tên. Chương 11 |
 | **Lệnh mở rộng trên nấc thang** | Mỗi hãng một bộ lệnh số học/so sánh/chuyển dữ liệu với tên riêng. Chương 19 nêu tên cụ thể |
-| **Cuộn dây có nhớ (SET/RESET)** | Siemens `(S)`/`(R)`; Mitsubishi `SET`/`RST`; Rockwell `OTL`/`OTU`. Hành vi khi mất điện phụ thuộc khai báo biến — Chương 16 |
+| **Cuộn dây có nhớ (SET/RESET)** | Siemens `(S)`/`(R)`; Mitsubishi `SET`/`RST`; Rockwell `OTL`/`OTU`. ⚠ Hành vi khi mất điện: ở hệ IEC phụ thuộc **khai báo biến**, còn `OTL`/`OTU` của Rockwell **tự nó đã giữ được** — Chương 16, mục 16.7 |
 
 Đối chiếu chi tiết năm hệ: **Phụ lục A2**.
 
@@ -7230,7 +7230,7 @@ trình giữa hai hệ hay sai nhất.
 |---|---|---|
 | **Siemens** | Đặt **vùng nhớ M giữ được** trong thuộc tính CPU; với khối dữ liệu thì bật thuộc tính *Retain* cho từng biến | Quên bật *Retain* thì biến về 0 sau mất điện, không có cảnh báo nào |
 | **Mitsubishi** | Theo **dải thiết bị**: một số dải `M`, `D`, `C`, `T` là dải chốt *(latched)*, đặt trong tham số PLC | ⚠ Giữ hay không phụ thuộc **số hiệu thiết bị bạn chọn** — đổi `M100` thành `M500` có thể đổi luôn hành vi khi mất điện |
-| **Rockwell Logix** | ⭐ **Giá trị tag được giữ mặc định** qua chu kỳ nguồn | Ngược hẳn với Siemens: ở đây bạn phải chủ động **xoá** thứ không được phép giữ, thay vì chủ động đánh dấu thứ cần giữ |
+| **Rockwell Logix** | ⭐ **Giữ được là thuộc tính của LỆNH**: `OTL`/`OTU` giữ được, `OTE` thì không. Ngoài ra giá trị tag nói chung sống qua chu kỳ nguồn | Ngược hẳn với Siemens: ở đây bạn phải chủ động **xoá** thứ không được phép giữ, thay vì chủ động đánh dấu thứ cần giữ |
 | **CODESYS / TwinCAT** | Từ khoá `VAR RETAIN` và `VAR PERSISTENT` | Hai từ khoá **không giống nhau** — phạm vi giữ khác nhau, tra tài liệu trước khi dùng |
 
 > ⚠⚠ **Hàng Rockwell là hàng nguy hiểm khi chuyển hệ.**
@@ -7240,6 +7240,19 @@ trình giữa hai hệ hay sai nhất.
 >
 > Người chuyển chương trình từ Siemens sang Logix mà không biết điều này sẽ tạo ra đúng cỗ máy **tự
 > chạy lại khi có điện trở lại** — thứ mà IEC 60204-1 cấm.
+
+> ⭐⭐ **Chỗ tinh tế nhất: cùng một bit, hai lệnh, hai hành vi khi mất điện.**
+>
+> | Lệnh | Hành vi |
+> |---|---|
+> | `OTE` *(Output Energize)* | ⭐ **Không giữ** — bit theo nấc thang, mất điện là mất |
+> | `OTL` *(Output Latch)* / `OTU` *(Output Unlatch)* | ⚠⚠ **Giữ được** — trạng thái chốt sống qua chu kỳ nguồn |
+>
+> ⚠ Nghĩa là ⭐ **việc bit có sống qua mất điện hay không do BẠN CHỌN LỆNH quyết định**, chứ không
+> phải do khai báo biến — khác hẳn mô hình ở Siemens và CODESYS, nơi hai chuyện đó tách rời (Bẫy 7).
+>
+> ⭐ Đây cũng là lý do Bẫy 7 phải đọc kèm mục này: câu *"SET/RESET không tự động giữ qua mất điện"*
+> ⚠ **đúng với hệ IEC nhưng không đúng với `OTL`/`OTU` của Logix**.
 
 ### Điểm còn lại
 
@@ -7310,8 +7323,10 @@ nguyên nhân lỗi vẫn còn.
 
 **Hiện tượng:** thiết kế dựa vào việc cờ còn nguyên sau khi bật máy, nhưng nó về 0 — vì biến không
 được khai báo là giữ được.
-**Cách sửa:** SET/RESET quyết định **cách bit đổi giá trị**; khai báo biến quyết định **bit có sống
-qua mất điện không**. Hai chuyện tách rời (mục 16.4).
+**Cách sửa:** ở hệ IEC, SET/RESET quyết định **cách bit đổi giá trị**, còn khai báo biến quyết định
+**bit có sống qua mất điện không** — hai chuyện tách rời (mục 16.4).
+⚠⚠ **Ngoại lệ quan trọng:** trên Logix, `OTL`/`OTU` **tự nó đã là giữ được**, còn `OTE` thì không —
+ở đó hai chuyện **không** tách rời (mục 16.7).
 
 ### 🔍 BẪY 8 — Bắt cạnh trên một tín hiệu đang rung
 
@@ -7334,14 +7349,18 @@ một lần nhấn.
 | Sống qua mất điện | **Khai báo biến giữ được** | ⚠ Không bao giờ giữ `M_Running` và biến bước |
 | Làm đúng một lần mỗi sự kiện | **`R_TRIG` / `F_TRIG`** | Mỗi tín hiệu một thể hiện riêng |
 | Đếm sản phẩm | **Cạnh lên** (vào) hoặc **cạnh xuống** (xong) | Hai cách cho hai con số khác nhau — chọn có ý thức |
+| ⚠⚠ Sống qua mất điện **trên Logix** | ⭐ **Chọn lệnh**: `OTL`/`OTU` giữ được, `OTE` thì không | Ở đây khai báo biến **không** phải nơi quyết định |
 | Bắt cạnh trên nút bấm | **Lọc rung rồi mới bắt cạnh** | Sai thứ tự thì một lần nhấn ra nhiều cạnh |
 
 Bốn câu hỏi tự đặt trước khi viết một bit nhớ:
 
 1. Bit này mô tả *máy đang làm gì*, hay *đã có chuyện gì xảy ra*?
 2. Nếu dòng lệnh này chạy 400 lần liên tiếp thì có sao không?
-3. Mất điện rồi bật lại, bit này **nên** bằng mấy — và tôi đã khai báo đúng chưa?
+3. Mất điện rồi bật lại, bit này **nên** bằng mấy — và tôi đã khai báo đúng chưa? ⚠ Trên Logix, hỏi
+   thêm: **tôi đang dùng `OTE` hay `OTL`/`OTU`?**
 4. Ai xoá bit này, và điều kiện xoá đã đủ chặt chưa?
+
+---
 
 ---
 
@@ -7383,6 +7402,8 @@ phản hồi thật.
 - Bảng I/O và đặc tả trình tự của DP-01 — Phụ lục J.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho phần khai báo biến giữ được ở mục 16.7,
   vì đây là chỗ khác nhau nhiều nhất giữa các hãng.
+- **Petruzella**, *Programmable Logic Controllers* — bảng lệnh Logix: `OTE` **không giữ**, `OTL`/`OTU`
+  ⭐ **giữ được**; mạch chốt lập trình là **retentive**, giữ trạng thái qua mất điện (mục 16.7).
 
 > ⚡ Quy tắc chọn giữ / không giữ ở mục 16.4 là **quy tắc thiết kế**, không phải yêu cầu tiêu chuẩn —
 > trừ trường hợp khởi động lại có chủ ý, vốn là yêu cầu thật. Máy của bạn có ràng buộc khác thì đáp án
@@ -8182,6 +8203,52 @@ Ngoài ra cần một quy ước rõ ràng cho **thời điểm đặt lại**:
 
 ---
 
+## 18.6b ⚠⚠ Bộ đếm thường ĐÃ giữ sẵn — và đó mới là chỗ nguy hiểm
+
+Mục trên nói về việc **làm cho** bộ đếm giữ được. ⚠ Nhưng ở nhiều hệ, câu hỏi đúng lại ngược lại:
+⭐ **bộ đếm mặc định đã giữ rồi, và bạn phải chủ động xoá thứ không được phép giữ.**
+
+| Điều | Nội dung |
+|---|---|
+| ⭐ Mặc định phổ biến | **Bộ đếm giữ giá trị qua mất điện** — giá trị lúc CPU tắt được khôi phục khi có điện lại |
+| ⚠⚠ Hệ quả | Bộ đếm **điều khiển logic** sẽ khởi động lại với giá trị cũ |
+| ⭐ Ngoại lệ đáng biết | ⚠ Nếu **điều kiện đặt lại đang đúng vào lúc có điện trở lại**, bộ đếm bị xoá — số liệu bạn tưởng còn thì không còn |
+
+> ⚠⚠ **Đây là cùng một bẫy với biến giữ được ở Chương 16, mục 16.4 — chỉ khác là nó đến "miễn phí".**
+>
+> Với bộ đếm **sản lượng**, giữ được là điều bạn muốn. Với bộ đếm **điều khiển logic** — đếm số board
+> trong một mẻ, đếm bước, đếm số lần thử lại — thì ⚠⚠ **giữ được là một lỗi an toàn**: máy có điện
+> trở lại và tin rằng nó đang ở giữa mẻ thứ bảy, trong khi băng tải đã bị dọn sạch.
+>
+> ⭐ **Quy tắc:** với mỗi bộ đếm, trả lời dứt khoát câu hỏi ⭐ *"nếu mất điện ngay bây giờ rồi có điện
+> lại, giá trị này CÒN thì đúng hay SAI?"* — rồi cấu hình theo câu trả lời, ⚠ **đừng để mặc định trả
+> lời hộ**.
+
+> ⚡ **Và đừng dựa vào việc đặt lại lúc khởi động để "chữa".** Nếu bạn định xoá bộ đếm bằng một điều
+> kiện chạy lúc có điện, hãy nhớ ⚠ thứ tự thực thi lúc khởi động không phải lúc nào cũng như bạn
+> tưởng — hãy **thử thật**: cho đếm tới một giá trị, cắt nguồn, cấp lại, và **xem giá trị**.
+
+### ⚠ Cực tính chân đặt lại khác nhau giữa các hãng
+
+⭐ Một khác biệt nhỏ nhưng đủ làm hỏng cả logic đặt lại khi chuyển chương trình:
+
+| Hệ có thể | Yêu cầu để xoá bộ đếm |
+|---|---|
+| Nhóm một | Nấc / chân đặt lại phải ⭐ **ĐÚNG** *(true)* |
+| Nhóm hai | Nấc / chân đặt lại phải ⭐ **SAI** *(false)* |
+
+> ⚠ Nghĩa là cùng một đoạn logic đặt lại, chuyển sang hệ khác có thể thành ⚠⚠ **xoá bộ đếm liên tục**
+> hoặc ⚠⚠ **không bao giờ xoá** — cả hai đều im lặng.
+>
+> ⭐ **Tra tài liệu của đúng hệ trước khi viết logic đặt lại**, và kiểm bằng cách cho đếm rồi kích
+> điều kiện đặt lại trong lúc trực tuyến.
+
+*(Đối chiếu: Petruzella, *Programmable Logic Controllers* — bộ đếm PLC **thường là giữ được**, giá trị
+lúc dừng được khôi phục khi cấp nguồn lại, ⚠ trừ khi điều kiện đặt lại đang tác động lúc đó; và ⭐ cực
+tính chân đặt lại **khác nhau giữa các hãng**, tài liệu khuyến cáo tra sổ tay trước khi lập trình.)*
+
+---
+
 ## 18.7 Khác biệt giữa các hãng
 
 | Khía cạnh | Siemens (S7-1200/1500) | Mitsubishi (FX5U / iQ-R) | Rockwell (Logix) | CODESYS / TwinCAT |
@@ -8189,6 +8256,7 @@ Ngoài ra cần một quy ước rõ ràng cho **thời điểm đặt lại**:
 | Khối đếm | `CTU` `CTD` `CTUD` | Thiết bị `C` + lệnh `OUT`/`RST` | `CTU` `CTD` | `CTU` `CTD` `CTUD` |
 | Giá trị hiện tại / đặt | `.CV` / `.PV` | Giá trị hiện tại và giá trị đặt của thiết bị `C` | `.ACC` / `.PRE` | `.CV` / `.PV` |
 | ⚠ Đặt lại | Chân `R` | Lệnh `RST` | ⚠ **Bắt buộc lệnh `RES`** | Chân `R` |
+| ⚠ Cực tính điều kiện đặt lại | ⭐ **Tra tài liệu** — có hệ cần ĐÚNG, có hệ cần SAI (mục 18.6b) | ⭐ Tra tài liệu | ⭐ Tra tài liệu | ⭐ Tra tài liệu |
 | ⚠ Độ rộng số đếm | Chọn kiểu dữ liệu khi khai báo khối (`Int`, `DInt`…) | ⚠ **Theo dải số hiệu**: dải thấp là 16 bit, dải cao là 32 bit | `.ACC` là `DINT` 32 bit | Theo kiểu dữ liệu khai báo |
 | Bộ đếm tốc độ cao | HSC tích hợp trên CPU, cấu hình trong phần cứng | ⚠ Thiết bị `C` chuyên dụng, **gắn cứng với ngõ vào cụ thể** | Module đếm chuyên dụng, hoặc ngõ vào tốc độ cao trên CPU nhỏ | Thiết bị đầu cuối EtherCAT chuyên dụng |
 
@@ -8303,6 +8371,10 @@ quãng đã biết, so số xung đếm được với tính toán. Chỉ hai ph
 | Có cần HSC không | `f < 1/(10×Tq)` → không cần · `f ≥ 1/(2×Tq)` → **bắt buộc** · ở giữa → nên dùng |
 | Vì sao biên tới 10 lần | Chu kỳ quét **không cố định** và sẽ dài ra khi chương trình lớn lên |
 | Sản lượng có giữ qua mất điện không | Có — khai báo **thể hiện của khối** là giữ được, và vẫn ghi ra nơi khác |
+| ⚠⚠ Mặc định của bộ đếm ở nhiều hệ | ⭐ **ĐÃ giữ sẵn** — nguy hiểm với bộ đếm **điều khiển logic** |
+| ⭐ Câu hỏi phải trả lời cho mọi bộ đếm | *"Mất điện rồi có lại — giá trị này CÒN thì đúng hay sai?"* |
+| ⚠ Ngoại lệ khi có điện lại | Điều kiện đặt lại đang đúng lúc đó → ⭐ **bộ đếm bị xoá** |
+| ⚠ Cực tính chân đặt lại | ⭐ **Khác nhau giữa các hãng** — có hệ cần ĐÚNG, có hệ cần SAI |
 | Encoder gia số sau mất điện | Mất vị trí → **phải về gốc** (Chương 28) |
 | Encoder dùng cho an toàn được không | **Không** — Chương 47 |
 
@@ -8331,6 +8403,10 @@ Bốn câu hỏi trước khi đặt một bộ đếm:
 9. Bộ đếm nào trên DP-01 **không bao giờ** được đặt lại? Vì sao?
 10. ⭐ Vì sao encoder không được dùng làm căn cứ cho chức năng an toàn, dù giá trị nó đọc ra trông
     hoàn toàn hợp lý?
+11. ⚠⚠ Bộ đếm ở nhiều hệ **mặc định đã giữ được**. Nêu một bộ đếm mà điều đó là **đúng ý muốn**, và
+    một bộ đếm mà điều đó là **lỗi an toàn**. Câu hỏi nào giúp phân biệt hai loại?
+12. ⭐ Bạn định xoá bộ đếm bằng một điều kiện chạy lúc khởi động. Nêu **hai** lý do không nên tin vào
+    thiết kế đó mà không thử thật.
 
 > Câu 3, 6 và 10 là ba câu phân loại. Câu 3 là tinh thần của cả chương: **một con số sai hiếm khi
 > sai vì phép đếm — nó sai vì đang đếm nhầm thứ.**
@@ -8358,6 +8434,9 @@ sau làm việc với **giá trị**: so sánh, tính toán, và những chỗ p
 - Tài liệu CPU và module của từng hệ trong Phụ lục A — dùng cho số kênh HSC, tần số tối đa, chế độ
   đếm, và hành vi khi tràn. Đây là các thông số **phải tra theo đúng dòng sản phẩm**, không suy đoán.
 - Bảng I/O của DP-01 — Phụ lục J.
+- **Petruzella**, *Programmable Logic Controllers* — ⭐ bộ đếm PLC **thường là giữ được**: giá trị lúc
+  CPU dừng được khôi phục khi cấp nguồn lại, ⚠ trừ khi **điều kiện đặt lại đang tác động** lúc đó; và
+  ⭐ **cực tính điều kiện đặt lại khác nhau giữa các hãng** — nền cho mục 18.6b.
 
 > ⚡ Công thức chọn HSC ở mục 18.5 là **quy tắc thiết kế thực dụng**, không phải yêu cầu tiêu chuẩn.
 > Hệ số 10 là biên dự phòng do chu kỳ quét biến động; đơn vị của bạn có thể chọn biên khác, nhưng phải
@@ -28918,7 +28997,7 @@ Khi bốn hệ kia làm khác nhau, ⭐ **cột CODESYS cho biết chuẩn IEC 6
 
 | | Siemens | Mitsubishi | Inovance | ⭐ CODESYS | Rockwell |
 |---|---|---|---|---|---|
-| **Cách khai báo** | Đánh dấu retentive cho vùng M / DB | ⭐ **Dải thiết bị được cấu hình là latched** | ⭐ **Tuỳ dòng** — xem bảng riêng bên dưới | ⭐ `VAR RETAIN` · `VAR PERSISTENT` | ⭐ Thuộc tính của tag |
+| **Cách khai báo** | Đánh dấu retentive cho vùng M / DB | ⭐ **Dải thiết bị được cấu hình là latched** | ⭐ **Tuỳ dòng** — xem bảng riêng bên dưới | ⭐ `VAR RETAIN` · `VAR PERSISTENT` | ⭐ Thuộc tính của tag, **và của LỆNH** — xem dưới |
 | **Cần pin hay không** | Tuỳ dòng | ⚠ **Dòng cũ thường cần pin** | Tuỳ dòng | Tuỳ phần cứng | Tuỳ dòng |
 | ⚠ **Sống sót qua nạp chương trình?** | ⚠⚠ **PHẢI KIỂM** | ⚠⚠ **PHẢI KIỂM** | ⚠⚠ **PHẢI KIỂM** | ⚠ `RETAIN` vs `PERSISTENT` khác nhau ở chính điểm này | ⚠⚠ **PHẢI KIỂM** |
 
@@ -28932,6 +29011,19 @@ Khi bốn hệ kia làm khác nhau, ⭐ **cột CODESYS cho biết chuẩn IEC 6
 > phần cứng".
 >
 > Xem Chương 11 và Chương 53 mục 53.5.
+
+> ⭐⭐ **Rockwell: giữ được còn là thuộc tính của LỆNH, không chỉ của biến.**
+>
+> | Lệnh | Hành vi khi mất điện |
+> |---|---|
+> | `OTE` *(Output Energize)* | ⭐ **Không giữ** |
+> | `OTL` / `OTU` *(Output Latch / Unlatch)* | ⚠⚠ **Giữ được** |
+>
+> ⚠ Đây là chỗ khác mô hình của bốn hệ còn lại, nơi "cách bit đổi giá trị" và "bit có sống qua mất
+> điện không" là hai chuyện tách rời. ⭐ Người chuyển chương trình từ hệ IEC sang Logix mà không biết
+> điều này dễ tạo ra máy **tự chạy lại khi có điện trở lại**. Xem Chương 16, mục 16.7.
+>
+> ⚡ Cùng tinh thần: ⭐ **bộ đếm ở nhiều hệ mặc định đã giữ được** — Chương 18, mục 18.6b.
 
 > ⭐⭐ **Inovance: hai dòng, hai cơ chế hoàn toàn khác nhau — và cả hai đều có bẫy riêng.**
 >

@@ -25357,6 +25357,37 @@ kiểm tra một đoạn mạch mà không cần tạo ra điều kiện thật.
 > **Quên gỡ cưỡng bức là một trong những nguyên nhân tai nạn phổ biến nhất trong ngành này.** Máy được
 > giao cho sản xuất với một liên động đang bị ép "OK", và không ai biết.
 
+#### ⭐⭐ Cưỡng bức ngõ VÀO và ngõ RA **không giống nhau** — và đây là chỗ hay hiểu sai nhất
+
+Hai thao tác nghe như một, nhưng ⚠ **cơ chế khác hẳn**, nên hậu quả và cách dùng cũng khác:
+
+| | ⚠⚠ **Cưỡng bức ngõ VÀO** | **Cưỡng bức ngõ RA** |
+|---|---|---|
+| Tác động vào | ⭐ **Bit trong bảng ảnh ngõ vào** | ⭐ **Chỉ đúng cái chân ngõ ra đó** |
+| Thời điểm | Ngay **sau kỳ đọc ngõ vào** | Lúc xuất ra module |
+| Bảng ảnh ngõ ra | — | ⭐ **Không bị đổi** |
+| ⚠ Lan tới đâu | ⚠⚠ **MỌI chỗ trong chương trình dùng bit đó** | ⭐ **Không lan** — chương trình chạy y như cũ |
+| Nghĩa là | Chương trình chạy **như thể thiết bị hiện trường thật sự ở trạng thái đó** | Thiết bị tác động, nhưng **logic không biết** |
+
+> ⭐⭐ **Hệ quả thực tế, dễ vấp cả hai chiều:**
+>
+> | Tình huống | Chuyện gì xảy ra |
+> |---|---|
+> | Bạn ép một ngõ ra để **thử van** | ⚠ Van kêu, nhưng **mọi nấc thang đang nhìn bit ngõ ra đó vẫn thấy nó bằng 0** — logic phía sau không chạy theo |
+> | Bạn ép một ngõ vào để **thử một đoạn logic** | ⚠⚠ Nó lan **khắp chương trình** — kể cả vào các nấc liên động mà bạn không định đụng tới |
+>
+> ⭐ **Vì vậy cưỡng bức ngõ VÀO nguy hiểm hơn cưỡng bức ngõ RA**, dù nghe thì ngược lại: ép ngõ ra chỉ
+> làm một cơ cấu chạy; ⚠⚠ **ép ngõ vào làm cả chương trình tin vào một thế giới không có thật**.
+>
+> ⚡ Và nó giải thích một hiện tượng hay làm người ta bối rối: *"tôi ép ngõ ra rồi mà đèn báo trên màn
+> hình vẫn tắt"*. ⭐ **Đúng như thiết kế** — màn hình đọc bit trong bảng ảnh, còn cưỡng bức chỉ chạm
+> tới chân ra.
+
+> ⚠ **Có hệ phân biệt "đã CÀI cưỡng bức" với "đã BẬT cưỡng bức" — hai trạng thái riêng, hiển thị
+> riêng.** Đó là một lớp an toàn, nhưng cũng là một cái bẫy: ⚠⚠ **tắt cưỡng bức không có nghĩa là đã
+> gỡ nó** — lần bật tiếp theo, mọi cưỡng bức cũ sống lại. ⭐ Khi bàn giao máy, phải **gỡ**, không phải
+> **tắt**.
+
 Quy trình bắt buộc — bốn việc, không bỏ việc nào:
 
 1. **Ghi lại trước khi force**: cưỡng bức cái gì, giá trị gì, vì sao, ai làm, lúc mấy giờ.
@@ -25364,6 +25395,7 @@ Quy trình bắt buộc — bốn việc, không bỏ việc nào:
 3. **Gỡ ngay sau khi xong phép thử** — không để qua giờ nghỉ, không để qua ca.
 4. **Kiểm tra danh sách cưỡng bức trước khi bàn giao máy.** Mọi hãng đều có chức năng liệt kê các
    cưỡng bức đang hoạt động — đây là mục bắt buộc trong danh mục nghiệm thu (Chương 52).
+   ⚠⚠ **Kiểm cả cưỡng bức "đã cài nhưng đang tắt"**, không chỉ cưỡng bức đang tác động.
 
 > 💡 **MẸO**
 > Nhiều PLC có đèn hoặc cờ báo "đang có cưỡng bức". Đưa cờ đó lên **màn hình vận hành và đèn tháp** —
@@ -25643,6 +25675,7 @@ liệu để mở rộng bảng triệu chứng ở mục 51.9 thành bảng c�
 | **7** | Phân tích **logic** | Tham chiếu chéo, xem trực tuyến, trend | Biết điều kiện nào đang chặn |
 | **8** | Kiểm **thiết bị hiện trường** | Đo tại thiết bị | Đo tại cuộn dây/cơ cấu, không đo tại module |
 | **✓** | **Ghi lại**: triệu chứng · đã loại trừ gì · nguyên nhân · cách sửa | Nhật ký bảo trì | Người sau đọc được mà không cần hỏi bạn |
+| ⚠⚠ **✓** | ⭐ **GỠ mọi cưỡng bức** — không phải tắt | Danh sách cưỡng bức | Danh sách **rỗng**, kể cả loại đã cài mà đang tắt |
 
 ---
 
@@ -25661,6 +25694,11 @@ liệu để mở rộng bảng triệu chứng ở mục 51.9 thành bảng c�
 9. Chức năng phần mềm nào trả lời câu hỏi *"còn ai đang ghi vào ngõ ra này?"* — và nó phát hiện được
    lỗi nào ở Chương 15 và Chương 27?
 10. Kể **bốn tình huống phải dừng tự sửa và gọi người có thẩm quyền ngay**.
+11. ⭐⭐ Cưỡng bức ngõ **vào** và ngõ **ra** khác nhau ở cơ chế nào? Cái nào **lan** ra cả chương
+    trình, và vì sao điều đó làm nó nguy hiểm hơn?
+12. ⚠ Bạn ép một ngõ ra để thử van. Van kêu, nhưng đèn báo trên màn hình vẫn tắt. ⭐ Đây là lỗi hay
+    là **đúng thiết kế**? Giải thích.
+13. ⚠⚠ Vì sao khi bàn giao máy phải **gỡ** cưỡng bức chứ không được chỉ **tắt**?
 
 Câu 4, 6 và 8 là ba câu phân loại. Câu 4 kiểm tra bạn phân biệt được *lệnh* với *kết quả*; câu 6 là
 kiến thức mà phần lớn người trong nghề học bằng cách trả giá; câu 8 là câu về an toàn — trả lời không
@@ -25684,6 +25722,10 @@ lớn những lỗi đó ngay từ lúc chạy thử — bằng một thứ mà 
 - Tài liệu hãng về **mã lỗi hệ thống và ý nghĩa đèn trạng thái** — ⚠ khác nhau đáng kể giữa các hãng,
   **bắt buộc tra đúng CPU đang dùng**; số hiệu tài liệu ghi trong Phụ lục A1.
 - Cấu hình I/O và bảng thời gian bước của DP-01 — Phụ lục J.
+- **Petruzella**, *Programmable Logic Controllers* §9.6 *Forcing External I/O Addresses* — nguồn cho
+  ⭐ **sự khác nhau giữa cưỡng bức ngõ vào và ngõ ra**: ép ngõ vào tác động vào **bảng ảnh ngõ vào**
+  nên **lan khắp chương trình**; ép ngõ ra chỉ tác động **đúng chân ra**, bảng ảnh ngõ ra không đổi
+  nên chương trình chạy y như cũ (mục 51.7).
 
 > ⚠ Bảng triệu chứng ở mục 51.9 là **điểm khởi đầu**, không phải danh sách đầy đủ. Cách mở rộng tốt
 > nhất: sau mỗi lần sửa xong, thêm một dòng vào bảng của chính bạn — triệu chứng thật, nguyên nhân
@@ -25948,7 +25990,7 @@ viết ra, có người chịu trách nhiệm và có hạn, chứ không phải
 
 | # | Kiểm | Vì sao |
 |---|---|---|
-| 1 | ⭐ **Không còn cưỡng bức I/O nào** | Chương 51 — nguyên nhân tai nạn phổ biến |
+| 1 | ⭐ **Không còn cưỡng bức I/O nào** — ⚠⚠ kể cả loại **đã cài nhưng đang tắt** | Chương 51 — nguyên nhân tai nạn phổ biến |
 | 2 | ⭐ **Cờ mô phỏng đã tắt** và không giữ qua mất điện | Chương 50 |
 | 3 | ⭐ **Cờ chạy khô đã tắt** | Chương 28 |
 | 4 | **Chương trình đang chạy khớp với bản sao lưu** | Dùng chức năng so sánh — không tin trí nhớ |
@@ -26009,6 +26051,11 @@ triển**, còn đo từng điểm I/O thì không.
 
 *"Cứ chạy chương trình rồi xem cơ cấu nào động"* — cách này trộn hai biến số: nếu cơ cấu không động,
 bạn không biết do dây hay do logic. Bước 3 tồn tại để **tách hai thứ đó ra**.
+
+> ⭐ **Và cưỡng bức ngõ RA là công cụ đúng cho việc này, đúng về mặt cơ chế:** nó chỉ chạm tới chân ra,
+> ⭐ **không đổi bảng ảnh ngõ ra**, nên chương trình chạy y như cũ trong lúc bạn thử dây (Chương 51,
+> mục 51.7). ⚠ Cưỡng bức ngõ **VÀO** thì ngược lại — nó lan khắp chương trình, nên **không dùng để
+> kiểm dây ngõ ra**.
 
 ### 🔍 BẪY 3 — Thử E-Stop một lần rồi coi là xong
 
@@ -30364,6 +30411,7 @@ nhân** trước khi đi tiếp.
 
 - [ ] ⭐ **Kiểm từng ngõ vào bằng cách tác động thật** (Phụ lục C.6)
 - [ ] ⚠ Kiểm ngõ ra bằng cưỡng bức — ⚠⚠ **chỉ khi cơ cấu vẫn còn cô lập**
+- [ ] ⚠⚠ **GỠ** (không phải tắt) mọi cưỡng bức sau mỗi phép thử — danh sách phải **rỗng**
 - [ ] Kiểm giá trị analog thô hợp lý
 - [ ] Kiểm mạng: mọi thiết bị được nhận, ⭐ **ghi số lỗi ban đầu**
 

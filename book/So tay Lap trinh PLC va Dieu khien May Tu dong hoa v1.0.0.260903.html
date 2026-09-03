@@ -36170,13 +36170,80 @@ sẽ tác động <strong>bất kể logic an toàn nói gì</strong>. Một ng�
 <p><strong>Quên gỡ cưỡng bức là một trong những nguyên nhân tai nạn phổ biến nhất trong ngành này.</strong> Máy được
 giao cho sản xuất với một liên động đang bị ép &quot;OK&quot;, và không ai biết.</p>
 </blockquote>
+<h4>⭐⭐ Cưỡng bức ngõ VÀO và ngõ RA <strong>không giống nhau</strong> — và đây là chỗ hay hiểu sai nhất</h4>
+<p>Hai thao tác nghe như một, nhưng ⚠ <strong>cơ chế khác hẳn</strong>, nên hậu quả và cách dùng cũng khác:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>⚠⚠ <strong>Cưỡng bức ngõ VÀO</strong></th>
+<th><strong>Cưỡng bức ngõ RA</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tác động vào</td>
+<td>⭐ <strong>Bit trong bảng ảnh ngõ vào</strong></td>
+<td>⭐ <strong>Chỉ đúng cái chân ngõ ra đó</strong></td>
+</tr>
+<tr>
+<td>Thời điểm</td>
+<td>Ngay <strong>sau kỳ đọc ngõ vào</strong></td>
+<td>Lúc xuất ra module</td>
+</tr>
+<tr>
+<td>Bảng ảnh ngõ ra</td>
+<td>—</td>
+<td>⭐ <strong>Không bị đổi</strong></td>
+</tr>
+<tr>
+<td>⚠ Lan tới đâu</td>
+<td>⚠⚠ <strong>MỌI chỗ trong chương trình dùng bit đó</strong></td>
+<td>⭐ <strong>Không lan</strong> — chương trình chạy y như cũ</td>
+</tr>
+<tr>
+<td>Nghĩa là</td>
+<td>Chương trình chạy <strong>như thể thiết bị hiện trường thật sự ở trạng thái đó</strong></td>
+<td>Thiết bị tác động, nhưng <strong>logic không biết</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Hệ quả thực tế, dễ vấp cả hai chiều:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Chuyện gì xảy ra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bạn ép một ngõ ra để <strong>thử van</strong></td>
+<td>⚠ Van kêu, nhưng <strong>mọi nấc thang đang nhìn bit ngõ ra đó vẫn thấy nó bằng 0</strong> — logic phía sau không chạy theo</td>
+</tr>
+<tr>
+<td>Bạn ép một ngõ vào để <strong>thử một đoạn logic</strong></td>
+<td>⚠⚠ Nó lan <strong>khắp chương trình</strong> — kể cả vào các nấc liên động mà bạn không định đụng tới</td>
+</tr>
+</tbody></table></div>
+<p>⭐ <strong>Vì vậy cưỡng bức ngõ VÀO nguy hiểm hơn cưỡng bức ngõ RA</strong>, dù nghe thì ngược lại: ép ngõ ra chỉ
+làm một cơ cấu chạy; ⚠⚠ <strong>ép ngõ vào làm cả chương trình tin vào một thế giới không có thật</strong>.</p>
+<p>⚡ Và nó giải thích một hiện tượng hay làm người ta bối rối: <em>&quot;tôi ép ngõ ra rồi mà đèn báo trên màn
+hình vẫn tắt&quot;</em>. ⭐ <strong>Đúng như thiết kế</strong> — màn hình đọc bit trong bảng ảnh, còn cưỡng bức chỉ chạm
+tới chân ra.</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Có hệ phân biệt &quot;đã CÀI cưỡng bức&quot; với &quot;đã BẬT cưỡng bức&quot; — hai trạng thái riêng, hiển thị
+riêng.</strong> Đó là một lớp an toàn, nhưng cũng là một cái bẫy: ⚠⚠ <strong>tắt cưỡng bức không có nghĩa là đã
+gỡ nó</strong> — lần bật tiếp theo, mọi cưỡng bức cũ sống lại. ⭐ Khi bàn giao máy, phải <strong>gỡ</strong>, không phải
+<strong>tắt</strong>.</p>
+</blockquote>
 <p>Quy trình bắt buộc — bốn việc, không bỏ việc nào:</p>
 <ol>
 <li><strong>Ghi lại trước khi force</strong>: cưỡng bức cái gì, giá trị gì, vì sao, ai làm, lúc mấy giờ.</li>
 <li><strong>Báo cho mọi người quanh máy.</strong> Không ai được ở trong vùng máy khi có cưỡng bức đang hoạt động.</li>
 <li><strong>Gỡ ngay sau khi xong phép thử</strong> — không để qua giờ nghỉ, không để qua ca.</li>
 <li><strong>Kiểm tra danh sách cưỡng bức trước khi bàn giao máy.</strong> Mọi hãng đều có chức năng liệt kê các
-cưỡng bức đang hoạt động — đây là mục bắt buộc trong danh mục nghiệm thu (Chương 52).</li>
+cưỡng bức đang hoạt động — đây là mục bắt buộc trong danh mục nghiệm thu (Chương 52).
+⚠⚠ <strong>Kiểm cả cưỡng bức &quot;đã cài nhưng đang tắt&quot;</strong>, không chỉ cưỡng bức đang tác động.</li>
 </ol>
 <blockquote>
 <p>💡 <strong>MẸO</strong>
@@ -36644,6 +36711,12 @@ liệu để mở rộng bảng triệu chứng ở mục 51.9 thành bảng c�
 <td>Nhật ký bảo trì</td>
 <td>Người sau đọc được mà không cần hỏi bạn</td>
 </tr>
+<tr>
+<td>⚠⚠ <strong>✓</strong></td>
+<td>⭐ <strong>GỠ mọi cưỡng bức</strong> — không phải tắt</td>
+<td>Danh sách cưỡng bức</td>
+<td>Danh sách <strong>rỗng</strong>, kể cả loại đã cài mà đang tắt</td>
+</tr>
 </tbody></table></div>
 <hr>
 <h2 id="5115-t-kim">51.15 Tự kiểm</h2>
@@ -36661,6 +36734,11 @@ dụng cụ nào</strong>?</li>
 <li>Chức năng phần mềm nào trả lời câu hỏi <em>&quot;còn ai đang ghi vào ngõ ra này?&quot;</em> — và nó phát hiện được
 lỗi nào ở Chương 15 và Chương 27?</li>
 <li>Kể <strong>bốn tình huống phải dừng tự sửa và gọi người có thẩm quyền ngay</strong>.</li>
+<li>⭐⭐ Cưỡng bức ngõ <strong>vào</strong> và ngõ <strong>ra</strong> khác nhau ở cơ chế nào? Cái nào <strong>lan</strong> ra cả chương
+trình, và vì sao điều đó làm nó nguy hiểm hơn?</li>
+<li>⚠ Bạn ép một ngõ ra để thử van. Van kêu, nhưng đèn báo trên màn hình vẫn tắt. ⭐ Đây là lỗi hay
+là <strong>đúng thiết kế</strong>? Giải thích.</li>
+<li>⚠⚠ Vì sao khi bàn giao máy phải <strong>gỡ</strong> cưỡng bức chứ không được chỉ <strong>tắt</strong>?</li>
 </ol>
 <p>Câu 4, 6 và 8 là ba câu phân loại. Câu 4 kiểm tra bạn phân biệt được <em>lệnh</em> với <em>kết quả</em>; câu 6 là
 kiến thức mà phần lớn người trong nghề học bằng cách trả giá; câu 8 là câu về an toàn — trả lời không
@@ -36679,6 +36757,10 @@ trên trang bị điện của máy — nền cho cảnh báo ở mục 51.1 và
 <li>Tài liệu hãng về <strong>mã lỗi hệ thống và ý nghĩa đèn trạng thái</strong> — ⚠ khác nhau đáng kể giữa các hãng,
 <strong>bắt buộc tra đúng CPU đang dùng</strong>; số hiệu tài liệu ghi trong Phụ lục A1.</li>
 <li>Cấu hình I/O và bảng thời gian bước của DP-01 — Phụ lục J.</li>
+<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> §9.6 <em>Forcing External I/O Addresses</em> — nguồn cho
+⭐ <strong>sự khác nhau giữa cưỡng bức ngõ vào và ngõ ra</strong>: ép ngõ vào tác động vào <strong>bảng ảnh ngõ vào</strong>
+nên <strong>lan khắp chương trình</strong>; ép ngõ ra chỉ tác động <strong>đúng chân ra</strong>, bảng ảnh ngõ ra không đổi
+nên chương trình chạy y như cũ (mục 51.7).</li>
 </ul>
 <blockquote>
 <p>⚠ Bảng triệu chứng ở mục 51.9 là <strong>điểm khởi đầu</strong>, không phải danh sách đầy đủ. Cách mở rộng tốt
@@ -37130,7 +37212,7 @@ viết ra, có người chịu trách nhiệm và có hạn, chứ không phải
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>⭐ <strong>Không còn cưỡng bức I/O nào</strong></td>
+<td>⭐ <strong>Không còn cưỡng bức I/O nào</strong> — ⚠⚠ kể cả loại <strong>đã cài nhưng đang tắt</strong></td>
 <td>Chương 51 — nguyên nhân tai nạn phổ biến</td>
 </tr>
 <tr>
@@ -37254,6 +37336,12 @@ triển</strong>, còn đo từng điểm I/O thì không.</p>
 <h3>🔍 BẪY 2 — Kiểm I/O bằng chương trình thay vì bằng cưỡng bức</h3>
 <p><em>&quot;Cứ chạy chương trình rồi xem cơ cấu nào động&quot;</em> — cách này trộn hai biến số: nếu cơ cấu không động,
 bạn không biết do dây hay do logic. Bước 3 tồn tại để <strong>tách hai thứ đó ra</strong>.</p>
+<blockquote>
+<p>⭐ <strong>Và cưỡng bức ngõ RA là công cụ đúng cho việc này, đúng về mặt cơ chế:</strong> nó chỉ chạm tới chân ra,
+⭐ <strong>không đổi bảng ảnh ngõ ra</strong>, nên chương trình chạy y như cũ trong lúc bạn thử dây (Chương 51,
+mục 51.7). ⚠ Cưỡng bức ngõ <strong>VÀO</strong> thì ngược lại — nó lan khắp chương trình, nên <strong>không dùng để
+kiểm dây ngõ ra</strong>.</p>
+</blockquote>
 <h3>🔍 BẪY 3 — Thử E-Stop một lần rồi coi là xong</h3>
 <p>Nhấn một nút, thấy máy dừng, tích vào ô. Chưa thử: các nút khác, từng kênh riêng lẻ, các bước khác của
 chu trình, và hành vi sau khi gỡ.</p>
@@ -45314,6 +45402,7 @@ ngắn mạch hoặc đấu ngược cực tính. ⭐ Cắm lại lần hai ch�
 <ul>
 <li><input disabled="" type="checkbox"> ⭐ <strong>Kiểm từng ngõ vào bằng cách tác động thật</strong> (Phụ lục C.6)</li>
 <li><input disabled="" type="checkbox"> ⚠ Kiểm ngõ ra bằng cưỡng bức — ⚠⚠ <strong>chỉ khi cơ cấu vẫn còn cô lập</strong></li>
+<li><input disabled="" type="checkbox"> ⚠⚠ <strong>GỠ</strong> (không phải tắt) mọi cưỡng bức sau mỗi phép thử — danh sách phải <strong>rỗng</strong></li>
 <li><input disabled="" type="checkbox"> Kiểm giá trị analog thô hợp lý</li>
 <li><input disabled="" type="checkbox"> Kiểm mạng: mọi thiết bị được nhận, ⭐ <strong>ghi số lỗi ban đầu</strong></li>
 </ul>

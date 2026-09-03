@@ -2459,6 +2459,19 @@ trong tình huống hoảng loạn.
 > bất thường) — không được coi enabling device là đủ để cho phép chạy tốc độ đầy đủ ở khoảng
 > cách gần.
 
+**Vì sao giới hạn tốc độ Manual không nên chỉ là "một tham số trong chương trình PLC":** nếu
+việc giảm tốc độ chỉ là một biến số trong logic chương trình (ví dụ PLC tự đặt tốc độ đích thấp
+hơn khi ở chế độ Manual), một lỗi lập trình hoặc một giá trị tham số bị sửa nhầm có thể âm thầm
+làm mất tác dụng giới hạn đó mà không ai biết cho tới khi xảy ra sự cố. Với trục servo/biến tần
+có hỗ trợ chức năng an toàn tích hợp, driver có thể tự **giám sát độc lập** tốc độ thực tế và tự
+đưa trục về trạng thái an toàn nếu vượt ngưỡng — chức năng này gọi là **SLS (Safely Limited
+Speed)**, một trong các chức năng an toàn theo tiêu chuẩn IEC 61800-5-2 (cùng nhóm với STO đã
+học ở Chương 18, mục 18.4): SLS giám sát tốc độ động cơ bằng phần cứng/firmware an toàn riêng
+của driver (độc lập với chương trình PLC), và nếu tốc độ vượt ngưỡng đã cài, driver tự đưa trục
+về trạng thái an toàn (thường là kích hoạt STO) — **không phụ thuộc** logic điều khiển thông
+thường có đang chạy đúng hay không. Nếu driver của dự án thật hỗ trợ SLS, đây là lựa chọn đáng
+tin cậy hơn hẳn so với chỉ giới hạn tốc độ bằng tham số phần mềm thông thường cho chế độ Manual.
+
 ## 17.4. Biến thể thường gặp
 
 - **Máy không cần thao tác gần vùng chuyển động** (ví dụ chỉ cần quan sát qua cửa kính, mọi
@@ -2600,6 +2613,21 @@ driver khởi động lại từ đầu, nạp lại tụ DC bus — liên hệ 
 > hay không, (b) mức PL/Category của chức năng STO đó có **đạt hoặc vượt PLr** đã xác định ở
 > Chương 14 cho chức năng an toàn tương ứng hay không. Nếu không đủ điều kiện, dùng Hình 18.1.
 
+**STO không phải chức năng an toàn duy nhất driver có thể hỗ trợ** — theo tiêu chuẩn IEC
+61800-5-2 (đã nhắc ở Chương 17, mục 17.3 với SLS), STO chỉ là chức năng cơ bản nhất trong một họ
+chức năng an toàn tích hợp driver, gồm:
+
+| Chức năng | Hành vi | Dùng khi nào |
+|---|---|---|
+| **STO** (Safe Torque Off) | Cắt mô-men ngay lập tức, trục dừng "tự do" (không hãm chủ động) | Mặc định của Hình 18.2 — dừng ngay, chấp nhận trục dừng theo quán tính tự nhiên |
+| **SS1** (Safe Stop 1) | Giám sát đường giảm tốc **có kiểm soát** trước, chỉ kích hoạt STO sau khi trục đã dừng hẳn | Khi dừng đột ngột không kiểm soát (kiểu STO) gây va đập cơ khí hoặc rơi tải với trục thẳng đứng — muốn dừng êm hơn nhưng vẫn đạt mức an toàn tương đương |
+| **SLS** (Safely Limited Speed) | Giám sát tốc độ không vượt ngưỡng, độc lập với chương trình PLC | Chế độ Manual (Chương 17, mục 17.3) — đảm bảo giới hạn tốc độ thật sự được enforce, không chỉ là một tham số phần mềm |
+
+STO tương ứng Stop Category 0 (cắt không kiểm soát, theo IEC 60204-1), SS1 tương ứng Stop
+Category 1 (dừng có kiểm soát rồi mới cắt hẳn) — đúng khái niệm Category dừng máy đã dùng xuyên
+suốt sách. Không phải driver nào cũng hỗ trợ cả ba — kiểm tra đúng theo chứng nhận PL/Category
+của từng chức năng cụ thể trong datasheet, không giả định "có STO thì chắc cũng có SS1/SLS".
+
 ## 18.5. Reset có giám sát — vì sao không tự động khôi phục
 
 Sau khi mạch an toàn tác động (ví dụ nhấn E-Stop) và nguyên nhân đã được khắc phục (nhả E-Stop
@@ -2627,6 +2655,24 @@ phải đảm bảo **thiết bị hỗ trợ được quy trình đó**:
 > nguy hiểm". Luôn liệt kê rõ trong hồ sơ bàn giao (Chương 29) mọi nguồn năng lượng dư có thể
 > tồn tại sau khi cắt điện chính (tụ điện, khí nén, trọng lực với cơ cấu nâng hạ...) và cách xả
 > an toàn từng loại.
+
+**Kiểu van 5/3 quyết định xy lanh "đứng yên" hay "trôi tự do" khi mạch an toàn cắt tín hiệu điều
+khiển van — chọn sai kiểu có thể biến một hành động an toàn thành một mối nguy khác:** van khí
+nén 5 cửa dùng cho xy lanh tác động kép (Phụ lục K, mục K.1) có loại 2 vị trí (5/2) và loại 3 vị
+trí (5/3) — khi mạch an toàn cắt tín hiệu điều khiển, van 5/3 về đúng **vị trí giữa (center
+position)**, và vị trí giữa này có nhiều kiểu khác nhau, mỗi kiểu cho hành vi xy lanh khác hẳn:
+
+| Kiểu vị trí giữa | Hành vi xy lanh khi van về vị trí giữa | Dùng khi nào |
+|---|---|---|
+| **Đóng kín (closed-center)** | Khí bị **giữ kín** cả hai phía piston — xy lanh **giữ nguyên vị trí**, không di chuyển thêm | Cơ cấu cần **giữ tải** khi mất tín hiệu điều khiển (ví dụ kẹp giữ phôi, đỡ tải theo phương thẳng đứng) — mất tín hiệu mà xy lanh tụt xuống mới là nguy hiểm |
+| **Xả khí (exhaust-center)** | Cả hai phía piston **xả khí ra ngoài** — xy lanh mất lực giữ, có thể bị đẩy/kéo tự do bởi ngoại lực (trọng lực, lò xo hồi...) | Cơ cấu cần **về trạng thái an toàn thụ động** khi mất tín hiệu (ví dụ cơ cấu kẹp cần tự nhả khi có sự cố, không được giữ chặt) |
+
+> ⚠ **NGUY HIỂM** — Chọn nhầm kiểu vị trí giữa là lỗi thiết kế nghiêm trọng, dễ bị bỏ qua vì
+> không lộ ra cho tới đúng lúc mạch an toàn tác động thật: một xy lanh **đỡ tải theo phương
+> thẳng đứng** dùng nhầm van kiểu **xả khí** sẽ **rơi tự do ngay khi nhấn E-Stop** — đúng lúc
+> người vận hành tưởng máy đã dừng an toàn. Luôn xác nhận đúng kiểu van cho từng cơ cấu theo vai
+> trò thật của nó (giữ tải hay cần nhả tự do), không mặc định dùng một kiểu cho mọi xy lanh trên
+> máy, và ghi rõ trong hồ sơ LOTO cơ cấu nào **vẫn còn lực/tải treo** dù van đã về vị trí an toàn.
 
 ## 18.7. Liên kết chéo
 
@@ -2752,6 +2798,17 @@ NÀO cho đúng tại đầu đó.** Hai cách làm phổ biến:
   yêu cầu cấu hình jumper khác với các kênh còn lại (không bù trừ, dùng cho cáp ngắn/thiết bị đặt
   gần) — luôn kiểm tra đúng theo sơ đồ đấu nối của module thật, không giả định mọi kênh AO cùng
   một cách đấu.
+- **Module DI ghi "Type 1/2/3" trong datasheet — vì sao không phải mọi cảm biến đều tương thích
+  mọi loại module DI:** phân loại này theo IEC 61131-2, mô tả đặc tính điện của chính mạch ngõ
+  vào PLC. Type 1 (tương thích công tắc cơ khí và cảm biến bán dẫn 3 dây) là loại phổ thông
+  nhất, chống nhiễu tốt. Type 2 dành cho cảm biến bán dẫn **2 dây** — loại cảm biến này luôn có
+  một **dòng rò nhỏ (quiescent current)** chạy qua ngay cả khi ở trạng thái "chưa tác động" (đặc
+  tính vật lý của mạch 2 dây, không phải lỗi cảm biến), và ngõ vào Type 2 được thiết kế để chấp
+  nhận dòng rò đó mà không đọc nhầm thành "đã tác động" — Type 1 có thể **đọc sai** với một số
+  cảm biến 2 dây vì ngưỡng nhận biết không tính tới dòng rò này. Type 3 tương tự Type 2 nhưng
+  tiêu thụ điện thấp hơn, phù hợp module mật độ kênh cao. **Việc cần làm:** khi chọn cảm biến 2
+  dây (phổ biến với cảm biến tiệm cận/quang giá thành thấp), đối chiếu đúng module DI hỗ trợ
+  Type 2 (hoặc 3), không mặc định mọi module DI đều tương thích mọi loại cảm biến.
 
 ## 19.7. Sai lầm thường gặp
 
@@ -2837,6 +2894,19 @@ sâu giữa các hệ thống độc lập.
 Bảng địa chỉ IP (Hình 20.1) nên đối chiếu với Phụ lục G (phiếu đầu vào thiết kế) — mục "mạng
 nhà máy & MES" cần hỏi khách hàng trước khi đặt dải địa chỉ IP, tránh trùng với hệ thống mạng
 sẵn có của nhà máy.
+
+> ⚡ **LƯU Ý — ranh giới an ninh mạng, biết để hỏi đúng người, không phải để tự làm:** khi mạng
+> điều khiển của máy (switch **-A4**, Hình 20.1) được nối vào mạng nhà máy/MES rộng hơn, đây là
+> lúc rủi ro an ninh mạng công nghiệp bắt đầu liên quan — nguyên tắc phổ biến trong ngành (an
+> ninh mạng hệ thống điều khiển công nghiệp, thường gọi khái niệm **"zone/conduit"** — phân
+> vùng mạng điều khiển thành các khu tách biệt, chỉ cho phép kết nối qua đúng "lối đi" đã kiểm
+> soát, thay vì nối thẳng mọi thiết bị vào cùng một mạng phẳng với hệ thống văn phòng) là **không
+> nối PLC/HMI của máy thẳng vào mạng văn phòng chung** mà không qua thiết bị phân vùng (switch
+> quản lý được/VLAN riêng, hoặc firewall công nghiệp) do đội IT/OT của nhà máy quyết định. Đây
+> là chủ đề chuyên sâu **ngoài phạm vi sách này** (sách tập trung thiết kế điện, không phải an
+> ninh mạng) — mục này chỉ nhằm giúp bạn **nhận ra khi nào cần hỏi** đội IT/OT của khách hàng
+> đúng câu hỏi ("mạng máy này sẽ nối vào đâu, qua thiết bị phân vùng nào"), không phải tự quyết
+> định cấu trúc mạng an toàn cho cả nhà máy.
 
 ## 20.6. Sai lầm thường gặp
 

@@ -608,6 +608,31 @@ chiều dòng năng lượng/tín hiệu thật của máy.
 > Khi bắt buộc phải đi ngược chiều (ví dụ dây hồi tiếp encoder chạy phải→trái), nên ghi chú rõ
 > bằng mũi tên chỉ hướng tín hiệu tại đúng đoạn đó, thay vì để người đọc tự suy luận.
 
+## 5.7. Hai quy ước vẽ dây dễ đọc nhầm nếu không biết trước
+
+**Dây vẽ ngang/dọc (trực giao), không vẽ chéo:** trên sơ đồ nguyên lý chuẩn, mọi đoạn dây chỉ
+được vẽ theo phương **ngang hoặc thẳng đứng** — không có đoạn dây chéo góc. Phần mềm CAD điện
+thường có "chế độ trực giao" (orthogonal mode) bật sẵn để ép buộc điều này. Lý do không chỉ vì
+thẩm mỹ: dây chéo làm khó xác định chính xác đường đi của một mạch khi có nhiều dây cắt qua khu
+vực đó, và làm điểm nối/điểm giao cắt khó phân biệt rõ ràng.
+
+**Chấm nối tại điểm giao cắt — quy ước quan trọng nhất dễ đọc nhầm:** khi hai đường dây cắt
+ngang nhau trên giấy, điều đó **không mặc định nghĩa là chúng nối điện với nhau**. Quy ước
+chuẩn:
+
+- **Có chấm tròn đặc (•) tại giao điểm** → hai dây **có nối điện** tại đúng điểm đó.
+- **Không có chấm** → hai dây chỉ **bắc qua nhau trên giấy** (để vẽ gọn, tránh đường vòng dài),
+  **không nối điện** — về mặt vật lý, hai dây này đi ở hai độ cao khác nhau, không chạm nhau.
+
+Đọc nhầm quy ước này (tưởng mọi chỗ giao cắt đều là nối điện, hoặc ngược lại) dẫn tới hiểu sai
+hoàn toàn logic mạch — đây là một trong những lỗi đọc sơ đồ phổ biến nhất với người mới, vì nhìn
+qua hai trường hợp trông gần giống nhau nếu không chú ý chấm nối.
+
+> ⚡ **LƯU Ý** — Một số quy ước cũ hơn (ít gặp trong bản vẽ hiện đại) vẽ dây không nối bằng cách
+> "nhảy cung" (một dây vẽ vòng cung nhỏ nhảy qua dây kia) thay vì chỉ để hai đường cắt nhau
+> không chấm. Nếu gặp bản vẽ cũ dùng quy ước này, xác nhận lại với chú giải (Legend) của chính
+> bộ hồ sơ đó trước khi đọc — quy ước ký hiệu không phải lúc nào cũng giống bản vẽ hiện đại.
+
 ---
 
 Phần I kết thúc ở đây. Từ Chương 6, sách bước vào **Phần II — phần trọng tâm**: tính toán và
@@ -3097,6 +3122,12 @@ khi đi dây** (không chỉ lúc thiết kế trên giấy) — đã học ở 
 góc) và ranh giới AC/DC-tín hiệu ở mục 21.2 bên trên: dây tín hiệu đi cùng máng/ống với dây động
 lực trong lúc thi công thực tế dễ vô tình xảy ra hơn là khi chỉ nhìn trên sơ đồ giấy.
 
+> 💡 **MẸO** — Một cách đơn giản để không sót/không đấu trùng dây khi thi công theo bản in giấy:
+> dùng bút highlight tô lên từng dây trên bản vẽ **ngay sau khi đấu xong thật** dây đó trong tủ.
+> Nhìn vào bản vẽ đang thi công là biết ngay phần nào đã xong, phần nào chưa, không cần nhớ hoặc
+> hỏi lại — hữu ích nhất khi nhiều người cùng thi công một tủ hoặc thi công ngắt quãng qua nhiều
+> ca.
+
 > ⚡ **LƯU Ý** — Đây là thứ tự **phổ biến trong thực hành đóng tủ công nghiệp**, không phải quy
 > định bắt buộc theo một tiêu chuẩn cụ thể — dự án của bạn có thể điều chỉnh (ví dụ đấu mạch an
 > toàn trước cả mạch động lực nếu quy trình nghiệm thu nội bộ yêu cầu) miễn giữ đúng nguyên tắc
@@ -3342,6 +3373,16 @@ một bộ hồ sơ hoàn toàn tự nhất quán từ sơ đồ nguyên lý t�
 > và giải thích rõ đánh đổi giữa 3 cách phổ biến để bạn tự chọn đúng cho quy mô máy của mình.
 
 ## 24.1. Ba cách đánh số phổ biến — đánh đổi thật, không có cách nào "đúng tuyệt đối"
+
+> ⚠ **NGUY HIỂM — nguyên tắc nền tảng đứng trước cả 3 cách bên dưới, áp dụng cho mọi cách chọn:**
+> **mọi đoạn dây nối liền nhau về mặt điện mà không đi qua bất kỳ thiết bị/tiếp điểm nào (cùng
+> một "nút đẳng thế" — equipotential node) phải mang CÙNG một số hiệu**, kể cả khi đoạn dây đó đi
+> qua nhiều terminal block trung gian hoặc rẽ nhánh ra nhiều điểm. Số hiệu chỉ được phép **đổi
+> khi** dây đi qua một thiết bị làm gián đoạn mạch điện (tiếp điểm, cuộn dây, cầu chì...) — phía
+> bên kia thiết bị đó là một nút đẳng thế khác, mang số khác. Nhầm nguyên tắc này (ví dụ đổi số
+> giữa chừng một đoạn dây liền mạch chỉ vì nó đi qua một terminal block trung gian không làm
+> gián đoạn mạch) là lỗi khiến việc tra cứu bằng số hiệu dây trở nên vô nghĩa — số hiệu không
+> còn phản ánh đúng ranh giới mạch điện thật.
 
 ### Cách 1 — Đánh số liên tục toàn máy
 
@@ -4185,6 +4226,10 @@ nhiều so với chỉ dựa vào một lớp duy nhất.
 - [ ] Bố trí trên máy (Hình 21.2): vị trí cảm biến/cơ cấu có đối chiếu đúng số hiệu với sơ đồ
       nguyên lý? Hộp nối hiện trường (nếu có) đã liệt kê đủ tín hiệu gom qua nó?
 - [ ] Máng cáp không điền quá ~40% (Chương 25, mục 25.6)? Đã chừa dự trữ mở rộng?
+- [ ] Nếu dùng phần mềm CAD điện có chức năng kiểm tra tự động: đã chạy kiểm tra **trùng mã hiệu
+      thiết bị**, **trùng/thiếu số hiệu dây**, và **vượt quá số tiếp điểm phụ khả dụng** của
+      từng contactor/rơ-le trước khi phát hành? Đây là nhóm lỗi máy dễ bắt hơn con người rất
+      nhiều — không tận dụng chức năng này (nếu công cụ có) là bỏ phí một lớp kiểm tra miễn phí.
 
 ## 30.5. Nhóm D — Checklist bảng biểu (Phần V)
 

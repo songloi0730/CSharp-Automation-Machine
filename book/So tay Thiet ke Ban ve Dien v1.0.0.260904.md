@@ -1705,6 +1705,46 @@ gần nhất ở trên, không chọn đúng 3,85A vì không tồn tại sản 
 > Khi đã chọn được mã hàng cụ thể cho từng cảm biến/relay/van, thay bằng dòng tiêu thụ ghi trên
 > datasheet của đúng mã hàng đó trước khi chốt bản vẽ thật.
 
+## 11.8. Nối đất mạch điều khiển: nối đất một cực hay thả nổi — và vì sao nó là quyết định an toàn
+
+Sau khi có nguồn điều khiển (thứ cấp biến áp điều khiển AC hoặc đầu ra 24VDC), còn một quyết định
+nữa **phải thể hiện trên bản vẽ**, không được để mặc định: cực của mạch điều khiển có **nối đất một
+cực** (grounded/referenced) hay **thả nổi** (ungrounded/floating)? Đây không phải chi tiết trang trí —
+chọn sai hoặc bỏ sót có thể làm **máy chạy bất ngờ** hoặc làm **nút dừng khẩn bị vô hiệu âm thầm**.
+
+**Nếu nối đất — phải nối đúng cực nối trực tiếp với cuộn hút.** Theo thực hành nối đất mạch điều khiển
+của IEC 60204-1 và NFPA 79: cực được nối đất là cực **trực tiếp nối với các cuộn hút** (cuộn contactor/
+rơ-le, van điện từ) — với AC là **thứ cấp biến áp điều khiển**, với DC là **cực chung 0V** của bộ nguồn.
+
+> ⚠ **NGUY HIỂM — nối đất nhầm cực làm máy tự chạy.** Hình dung mạch: `[cực A] — tiếp điểm nút bấm —
+> cuộn hút — [cực B]`. Nếu nối đất **cực B (cực cuộn hút)** thì một điểm chạm đất trên đoạn dây giữa
+> nút bấm và cuộn hút chỉ tạo **ngắn mạch xuống đất → nổ cầu chì**, an toàn. Nhưng nếu nối đất **cực A
+> (cực nguồn)**, chính điểm chạm đất đó lại **cấp điện vòng qua đất cho cuộn hút mà không cần bấm nút**
+> → contactor/van tự hút, cơ cấu chạy bất ngờ. Cùng một sự cố chạm đất, nối đất đúng cực thì an toàn,
+> nối nhầm cực thì nguy hiểm — đó là lý do quy tắc "nối đất cực phía cuộn hút" tồn tại.
+
+**Nếu thả nổi — bắt buộc có thiết bị giám sát cách điện (IMD).** Mạch điều khiển thả nổi có ưu điểm
+khả dụng: chịu được **một** điểm chạm đất mà vẫn chạy (không dừng máy chỉ vì một lỗi cách điện đầu
+tiên). Nhưng cái giá là: nếu điểm chạm đất thứ nhất **không được phát hiện**, thì một **điểm chạm đất
+thứ hai** ở vị trí khác có thể **bắc cầu qua một tiếp điểm an toàn** (điển hình là tiếp điểm nút E-stop)
+và **vô hiệu hoá nó mà không ai hay** — máy tưởng vẫn có E-stop nhưng thực ra đã mất. Vì vậy mạch thả
+nổi **phải** kèm **thiết bị giám sát cách điện** (IMD — insulation monitoring device): phát hiện chạm
+đất thứ nhất, báo bằng đèn/còi để sửa kịp thời (và tuỳ cấu hình có thể tự ngắt). IMD biến một hỏng hóc
+âm thầm thành một cảnh báo nhìn thấy được — liên hệ trực tiếp lý do "không để E-stop bị bắc cầu" ở
+Chương 18.
+
+> ⚡ **LƯU Ý** — Mạch **PELV phơi ra** (exposed, người có thể chạm) thì **luôn nối đất**, không dùng
+> phương án thả nổi. Riêng mạch chiếu sáng máy/bảo trì cấp qua biến áp cách ly cũng phải nối đất thứ cấp.
+
+**Hệ quả lên bản vẽ (điều bạn thực sự phải vẽ):**
+
+- Chọn nối đất → đặt **ký hiệu nối đất tại đúng cực thứ cấp phía cuộn hút** trên sơ đồ nguồn điều khiển,
+  và **chỉ một điểm** (nhất quán nguyên tắc nối đất một điểm ở Chương 12).
+- Chọn thả nổi → **vẽ khối IMD** trên sơ đồ mạch điều khiển và **đưa nó vào BOM** (Chương 26) — thả nổi
+  mà thiếu IMD là một thiếu sót an toàn, không phải "đơn giản hoá".
+- Dù chọn cách nào, đây là một mục cần **quyết định có chủ đích và ghi rõ**, không để người đấu dây tự
+  suy đoán tại hiện trường.
+
 ---
 
 Với dòng tổng 24VDC đã có (Chương 11) và dòng động lực (Chương 9-10), Chương 7 bây giờ đủ số
@@ -2012,6 +2052,33 @@ nhau về bản chất:
 > cuộn dây (ghi trên datasheet, thường ký hiệu "coil suppressor" hoặc có mã đặt hàng riêng cho
 > phiên bản có/không có mạch dập) — kiểm tra datasheet trước khi tự thêm mạch dập rời, tránh lắp
 > trùng hai mạch dập không cần thiết cho cùng một cuộn dây.
+
+## 13.7. Ống ferrite (common-mode choke) — chặn nhiễu chế độ chung, và giới hạn phải nhớ
+
+Một linh kiện chống nhiễu hay gặp trên cáp dữ liệu/truyền thông là **ống ferrite** (ferrite sleeve/
+kẹp một hay nhiều vòng cáp xuyên qua). Nó giải quyết một bài toán rất cụ thể: **nhiễu chế độ chung
+(common-mode)** trên cáp có màn chắn nối đất hai đầu.
+
+**Vì sao có nhiễu này:** khi màn chắn cáp nối đất ở CẢ HAI đầu (bắt buộc ở tần số cao — xem Chương
+19 mục 19.2), chênh lệch điện thế đất giữa hai đầu đẩy một dòng chạy dọc màn chắn. Vì màn chắn trở
+kháng thấp, dòng này có thể khá lớn dù điện áp nhỏ — và nó lẫn vào tín hiệu, gây đọc sai dữ liệu.
+
+**Ống ferrite làm gì:** nó **tăng mạnh trở kháng chế độ chung ở tần số cao** mà **không** ảnh hưởng
+tín hiệu vi sai (differential) đi trong cặp dây. Về bản chất lõi và dây tín hiệu tạo thành một biến
+áp 1:1; ống ferrite làm lõi tăng ghép từ → chặn dòng chế độ chung nhưng để tín hiệu đi qua nguyên
+vẹn. Đây chính là một **cuộn cản chế độ chung (common-mode choke)**.
+
+**Khi nào dùng** (theo hướng dẫn EMC của một hãng điều khiển công nghiệp): nơi tài liệu thiết bị
+**chỉ định rõ**; khi **chiều dài cáp > ~10 m (30 ft)**; nếu đo thấy có dòng đất tần số nguồn (bằng
+ampe kìm) có thể nối một đầu màn chắn xuống đất **qua một tụ ~1 µF/50 V** thay vì nối cứng, để chặn
+dòng tần số nguồn mà vẫn thoát nhiễu HF.
+
+> ⚡ **LƯU Ý — ống ferrite KHÔNG phải "thuốc chữa bách bệnh".** Đây là điểm hay bị lạm dụng nhất: khi
+> máy bị nhiễu, phản xạ thường là "kẹp thêm mấy cục ferrite". Nhưng một hệ thống **bố trí và tách dây
+> đúng ngay từ đầu** (Chương 25 mục 25.7, 25.9) chạy tốt **mà không cần** ống ferrite. Ống ferrite là
+> **lớp dự phòng** — hữu ích để hệ chịu được các thay đổi/đấu thêm sau này, nên đưa vào như một chi
+> tiết chuẩn để tăng độ bền vững — nhưng **không thay thế** việc phân nhóm dây, nối màn chắn 360° và
+> nối đất khung tủ cho đúng. Dùng ferrite để "chữa" một bố trí sai là chữa triệu chứng, không chữa gốc.
 
 ---
 
@@ -2573,6 +2640,32 @@ này có thể cần thực thi trong PLC an toàn/rơ-le an toàn (Category cao
 |---|---|---|
 | Kỹ thuật viên phàn nàn tay mỏi khi giữ enabling device lâu, có xu hướng "chèn" vật gì đó giữ cố định vị trí 2 | Thao tác dạy máy mất nhiều thời gian, thiết kế quy trình chưa tối ưu | **Tuyệt đối không** để việc "chèn giữ cố định" xảy ra — đây là hành vi vô hiệu hoá an toàn nghiêm trọng; xem lại quy trình dạy máy để rút ngắn thời gian thao tác thay vì tìm cách "qua mặt" thiết bị an toàn |
 | Máy vẫn chuyển động tốc độ đầy đủ ở chế độ Manual dù có enabling device | Logic chương trình chưa thực sự giảm tốc độ khi -S6=MANUAL, chỉ mới kiểm tra điều kiện cho phép mà quên giảm tốc | Kiểm tra lại logic chương trình PLC thực thi đúng theo mô tả Hình 17.2 |
+
+## 17.7. Chống ngõ ra bật ngoài ý muốn khi cấp/ngắt nguồn
+
+Một mối nguy dễ bỏ sót khi thiết kế mạch điều khiển: **ngõ ra của PLC có thể bật lên trong khoảnh
+khắc ngay lúc cấp hoặc ngắt nguồn** — đủ ngắn để không ai để ý, nhưng đủ để một van/contactor hút
+một nhịp và cơ cấu chấp hành động một cái ngoài ý muốn. Nguy hiểm này **lớn hơn với cơ cấu đáp ứng
+nhanh** (xy lanh, cơ cấu nhả phanh servo…). Đây không phải lỗi lập trình mà là hệ quả vật lý của
+mạch điện tử ngõ ra lúc quá độ nguồn — nên phải xử lý bằng **thiết kế mạch**, không chỉ bằng phần mềm.
+
+**Các biện pháp thể hiện trên bản vẽ:**
+
+- **Có đường cắt được nguồn tới thiết bị ngõ ra** (qua một rơ-le điều khiển chính — master/control
+  relay): khi hệ chưa sẵn sàng thì thiết bị ngõ ra không có nguồn, nên glitch ở ngõ ra PLC cũng
+  không truyền tới cơ cấu. Trình tự đúng: **tắt hết ngõ ra TRƯỚC** khi mở tiếp điểm cắt nguồn này,
+  và **giữ ngõ ra OFF** trong lúc tiếp điểm mở cũng như khi cấp lại nguồn.
+- **Chọn cơ cấu chấp hành có vị trí về an toàn** (home position, lò xo về): nếu glitch có xảy ra,
+  cơ cấu trở về vị trí xác định thay vì kẹt ở trạng thái nguy hiểm.
+- **Logic khởi động ở trạng thái OFF**: ngõ ra dùng lệnh không nhớ (non-retentive) + đường tự giữ
+  (seal-in), sao cho khi cấp nguồn lại mọi ngõ ra bắt đầu ở OFF, chỉ bật khi có điều kiện thật.
+- **Dập xung + nối đất/bonding đúng** (Chương 13) để giảm chính các quá độ gây glitch.
+
+> ⚠ **RANH GIỚI QUAN TRỌNG** — Rơ-le điều khiển chính cắt nguồn ngõ ra ở trên là một **biện pháp
+> điều khiển**, **KHÔNG phải chức năng dừng khẩn cấp** và **không thay thế mạch an toàn 2 kênh** ở
+> Chương 18. Đừng dồn hai vai trò vào một rơ-le: mạch an toàn (E-Stop, cửa) vẫn phải là mạch riêng
+> đúng Category/PLr đã tính ở Chương 14. Nghiệm thu bước này bằng cách **ngắt rồi cấp lại** rơ-le
+> điều khiển chính và xác nhận không cơ cấu nào động (liên hệ thử chức năng, Chương 29 mục 29.1e).
 
 ---
 
@@ -3681,6 +3774,31 @@ vài mét trở lên).
 > theo tiêu chuẩn nào** — dùng làm điểm khởi đầu hợp lý khi không có khuyến cáo riêng, không thay
 > thế việc tham khảo tài liệu của đúng nhà sản xuất cáp/driver đang dùng trong dự án thật.
 
+Một nguồn thứ hai, độc lập và **định lượng theo mức dòng/công suất**, bổ sung cho con số minh hoạ
+trên. Hướng dẫn đi dây & nối đất của một hãng điều khiển công nghiệp phổ biến (đối chiếu IEEE 518)
+đề xuất **phân dây thành 3 nhóm rồi tách theo nhóm** — đây cũng chính là cách nghĩ đúng khi vẽ bố
+trí: quyết định nhóm dây **trước**, rồi mới đặt vị trí máng/module (đặt module I/O theo phân loại
+dây của chính nó, trước khi định tuyến dây):
+
+- **Nhóm 1 — điều khiển & nguồn AC** (chịu nhiễu tốt nhưng cũng phát nhiễu mạnh): cáp nguồn AC, I/O
+  số công suất cao, dây tới cuộn hút/van/rơ-le.
+- **Nhóm 2 — tín hiệu & truyền thông** (nhạy nhiễu, công suất thấp): analog, I/O số công suất thấp,
+  cáp mạng (fieldbus/Ethernet công nghiệp), cáp encoder/cảm biến.
+- **Nhóm 3 — nội bộ tủ**: nguồn DC thấp áp cấp backplane, cáp truyền thông giữa các module trong tủ.
+
+> 📐 **THAM KHẢO** — Cùng nguồn đó cho khoảng cách tối thiểu giữa nhóm 2 và nhóm 1 **phụ thuộc việc
+> dây có nằm trong máng/ống kim loại liền mạch hay không** (máng kim loại nối đất liên tục chắn bớt
+> nhiễu nên cho phép đi gần hơn):
+> - **Trong máng/ống kim loại liền mạch:** ≥ ~75mm (3in) với nhóm 1 dưới 20A; ≥ ~150mm (6in) với
+>   nguồn AC ≥ 20A (tới 100kVA); ≥ ~300mm (1ft) với nguồn AC > 100kVA.
+> - **Không trong máng/ống kim loại:** ≥ ~150mm / ~300mm / ~600mm tương ứng.
+> - Nếu buộc phải cắt qua cáp động lực thì **cắt vuông góc** (nhắc lại mục 20.3).
+>
+> Con số này khớp bậc độ lớn với dải 20-50cm ở trên, và nói thêm hai điều dải kia không có: khoảng
+> cách **giảm được khi đi trong máng kim loại nối đất liên tục**, và **tăng theo mức dòng/kVA của
+> cáp động lực**. Vẫn là **giá trị tham khảo** (nguồn: hướng dẫn đi dây & nối đất của một hãng điều
+> khiển công nghiệp, đối chiếu IEEE 518), không phải ngưỡng bắt buộc — tra tài liệu đúng thiết bị/cáp dự án dùng.
+
 ## 25.8. Khoảng cách tối thiểu thiết bị–máng cáp, và kỹ thuật đi dây qua bản lề cửa tủ
 
 Hai chi tiết vật lý nhỏ nhưng ảnh hưởng trực tiếp tới việc thi công/bảo trì sau này có thuận
@@ -4070,12 +4188,28 @@ trong bối cảnh tích hợp với dây chuyền/hệ thống khác tại hi�
 lập). Năm nhóm phép thử dưới đây là nội dung kỹ thuật dùng chung cho cả FAT lẫn SAT — khác nhau
 ở **nơi thử** và **điều kiện môi trường lúc thử**, không phải khác nội dung thử:
 
+> ⚡ **LƯU Ý — trước 5 phép thử điện là một bước đối chiếu tài liệu.** Thực hành nghiệm thu (IEC
+> 60204-1 và NFPA 79 của Mỹ) đều đặt một phép kiểm **lên trước tiên**: xác nhận **thiết bị lắp đặt
+> thật khớp đúng tài liệu kỹ thuật/bản vẽ** (mã hiệu, số dây, địa chỉ I/O, đúng mã hàng đã chọn).
+> Đây chính là lần đối chiếu 100% giữa sơ đồ — chương trình — thực tế đã nhấn mạnh ở Chương 19 và
+> Chương 27, nay chính thức hoá tại bước nghiệm thu: một sai lệch giữa bản vẽ và máy thật lọt qua
+> đây sẽ khiến mọi phép thử sau — và cả việc bảo trì/xử lý sự cố về sau — dựa trên tài liệu sai.
+
 ### a) Liên tục mạch bảo vệ (PE continuity)
 
 Đo điện trở/kiểm tra liên tục giữa **mọi** bộ phận kim loại đã nối PE (khung máy, vỏ tủ, mọi
 điểm đẳng thế đã học ở Chương 12) và cọc PE chính — xác nhận đường về của dòng sự cố thực sự
 thông suốt, không có điểm nào bị hở mạch do lắp đặt sai (ốc vít không siết đủ chặt, sơn phủ cách
 điện vô tình chèn giữa hai bề mặt kim loại cần tiếp xúc điện...).
+
+> 💡 **MẸO — đo PE bằng dòng thử THẬT, không chỉ "beep thông mạch".** Một mối nối PE trở kháng cao
+> (ốc lỏng, bề mặt oxy hoá, sơn chèn) vẫn có thể làm máy đo cầm tay **kêu "thông"**, nhưng khi có
+> sự cố chạm vỏ thật lại **không tải nổi dòng sự cố** để CB cắt kịp — đúng cái mà phép thử này phải
+> bắt được. Vì vậy tiêu chuẩn yêu cầu **đo điện trở với một dòng thử đủ lớn**: NFPA 79 (Mỹ) dùng
+> dòng thử **≥ 10 A** (50/60 Hz) và giới hạn điện trở mối nối rất nhỏ (bậc **≤ 0,1 Ω**); IEC 60204-1
+> cũng quy định phép thử tương đương với dòng thử đáng kể. Trị số cụ thể theo bản tiêu chuẩn áp dụng
+> (đối chiếu bản gốc trước khi dùng làm tiêu chí đạt). **Mấu chốt: máy đo thông mạch cầm tay không
+> đủ để nghiệm thu PE.**
 
 ### b) Điện trở cách điện (insulation resistance)
 
@@ -4152,6 +4286,14 @@ tối thiểu phải bàn giao cùng máy:
 > Vì hầu hết tài liệu ở bảng trên (trừ biên bản thử và as-built) thực chất **đã có sẵn** từ các
 > chương trước trong quá trình thiết kế (BOM ở Chương 26, sơ đồ ở Phần III...) — công việc thật
 > sự ở bước này là **tổng hợp và cập nhật lần cuối**, không phải viết mới từ đầu.
+
+> ⚡ **LƯU Ý — với máy xuất sang Bắc Mỹ, NFPA 79 nêu rõ nội dung tối thiểu của tài liệu.** Ngoài
+> danh mục trên, NFPA 79 (Mỹ) yêu cầu tài liệu kỹ thuật kèm máy tối thiểu phải mô tả: **điều kiện
+> vận hành bình thường**, **nguồn điện cấp**, **điều kiện môi trường yêu cầu**, **vận chuyển–lưu
+> kho–bốc dỡ**, và **các thao tác/sử dụng KHÔNG đúng cách** cần tránh. Hai lưu ý thực dụng: (1)
+> **ngôn ngữ** — tiếng Anh là mặc định nhưng thường cần thêm ngôn ngữ thứ hai (Tây Ban Nha/Pháp),
+> áp dụng cả cho **nhãn cảnh báo** trên máy, không chỉ tài liệu; (2) nếu tủ do một đơn vị đóng tủ
+> thứ ba làm, **thống nhất trước** định dạng và mức chi tiết tài liệu giữa hai bên.
 
 > ⚠ **NGUY HIỂM** — Với máy lắp đặt tại Mỹ: 5 nhóm phép thử ở mục 29.1 là nghiệm thu **nội bộ**
 > của xưởng bạn — luật Mỹ còn yêu cầu thêm một bước **bắt buộc theo luật, không phải tuỳ chọn**:
@@ -4466,6 +4608,7 @@ thuộc mạch an toàn.
 | Khía cạnh | IEC (Âu, mặc định của sách này) | Mỹ (NEMA/UL508A/NFPA79) | Nhật (JIS/JEM) |
 |---|---|---|---|
 | Khung pháp lý chính | CE marking — tự công bố hợp chuẩn dựa trên tuân thủ Machinery Directive (áp dụng IEC 60204-1 và các tiêu chuẩn liên quan) | UL 508A (tủ điều khiển công nghiệp) + NFPA 79 (thiết bị điện máy công nghiệp) — thường cần chứng nhận bởi bên thứ ba (NRTL) | Chủ yếu dựa trên tiêu chuẩn JIS (tự nguyện áp dụng theo ngành/hợp đồng) + hướng dẫn nội bộ JEM — mức độ bắt buộc chứng nhận khác nhau tuỳ ngành, cần xác nhận theo từng dự án cụ thể |
+| Tiêu chuẩn cho **thiết bị** điều khiển (linh kiện: contactor, rơ-le, khởi động từ…) | IEC 60947-4-1 (thiết bị đóng cắt & điều khiển hạ áp — khởi động từ/bộ khởi động động cơ) | ⚠ **UL 508 (Industrial Control *Equipment*) đã bị rút, thay bằng UL 60947-4-1** (hài hoà với IEC 60947-4-1; từ ~1/2017 thiết bị/tủ mới phải theo UL 60947-4-1, nội dung kỹ thuật gần như trùng UL 508 trừ khác biệt quốc gia nhỏ). **Đừng nhầm với UL 508A** — đó là tiêu chuẩn *đóng tủ điều khiển công nghiệp* (Industrial Control *Panels*), **vẫn hiệu lực** và là cái sách này dẫn ở Chương 7 mục 7.5. Hai số hiệu gần giống nhưng khác đối tượng: *thiết bị* (508→60947-4-1) vs *tủ* (508A) (nguồn: UL/Rockwell/Intertek, cập nhật 2020) | Xác nhận theo tiêu chuẩn áp dụng cụ thể |
 | Màu dây trung tính | Xanh dương (bắt buộc theo IEC 60445, Chương 22) | Thường dùng **trắng hoặc xám** (khác hẳn IEC) theo thực hành phổ biến tại Mỹ | Có quy ước riêng theo JIS, không hoàn toàn giống IEC — xác nhận theo tiêu chuẩn áp dụng cụ thể |
 | Ký hiệu terminal nối đất | "PE" (Protective Earth) | Quy ước thường dùng: **"G"/"GND"/"GRD"/"Ground"** — NFPA 79 cho phép dùng cả "PE" nhưng ghi rõ đây là viết tắt gốc IEC, không phải quy ước chuẩn Bắc Mỹ (nguồn: Siemens ICP Reference Manual, mục 8.1c) | Thường theo IEC |
 | Kết hợp dây bảo vệ và dây trung tính (PEN) | Cho phép ở đoạn thượng nguồn theo sơ đồ TN-C (Chương 12) | **Không cho phép** theo NEC/UL 508A/NFPA 79, trừ hệ thống nguồn độc lập riêng (separately derived systems — máy phát/pin riêng không nối trực tiếp lưới khác) — khác biệt cấu trúc quan trọng so với IEC, không chỉ khác tên gọi | Xác nhận theo tiêu chuẩn áp dụng cụ thể |
@@ -4475,6 +4618,37 @@ thuộc mạch an toàn.
 | Đơn vị đo trên bản vẽ | Hệ mét (mm, m) | Thường dùng hệ Anh (inch) song song hoặc thay thế hệ mét, tuỳ khách hàng | Hệ mét |
 | Kiểu mạng nguồn & cách chọn thiết bị theo điện áp | Hệ TN-S/TN-C-S/TT (Chương 12) — thiết bị chọn theo điện áp dây/pha thông thường | Mạng Mỹ có thêm kiểu **"grounded wye" (điện áp dạng "480Y/277V" — số trước "Y" là điện áp dây, số sau là điện áp pha-đất)** và **"corner-grounded delta"/mạng không nối đất** — thiết bị cho mạng grounded wye ("slash voltage rating", ví dụ 480Y/277V) **không dùng thay thế được** cho thiết bị mạng delta/không nối đất ("straight voltage rating", ví dụ 480V) — sai loại có thể khiến thiết bị không đủ khả năng cắt đúng khi có sự cố chạm đất (nguồn: Siemens "The Secrets of UL", 2009) | Thường theo cách tiếp cận gần IEC hơn |
 | Nghiệm thu trước khi vận hành | Nghiệm thu nội bộ theo IEC 60204-1 §18 (Chương 29) — không có bước kiểm tra bắt buộc bởi bên thứ ba tại hiện trường theo luật (trừ khi hợp đồng/ngành yêu cầu riêng) | **Bắt buộc theo luật**: mọi máy/hệ thống điện phải qua kiểm tra bởi **AHJ (Authority Having Jurisdiction)** tại hiện trường trước khi vận hành, dựa trên NEC/NFPA 79/quy định địa phương — bốn cách đạt được: (1) tủ đã dán nhãn NRTL sẵn, (2) nhà sản xuất tủ được chứng nhận + thanh tra UL kiểm tra tại xưởng, (3) chấp thuận sơ bộ + thanh tra lại tại hiện trường, (4) thanh tra/đánh giá trực tiếp tại hiện trường bởi AHJ — không nghiệm thu, có nguy cơ mất bảo hiểm và bị từ chối cấp điện (nguồn: Siemens "The Secrets of UL", 2009) | Xác nhận theo yêu cầu khách hàng/ngành cụ thể |
+
+## Ghi chú riêng cho thị trường Nhật (JIS/JEM) — tên loại bản vẽ & mã chữ
+
+Cột "Nhật" ở bảng trên vốn là phần **ít chắc chắn nhất** vì tài liệu gốc phần lớn bằng tiếng Nhật.
+Một nguồn tra được: bảng thuật ngữ & mã chữ **JEM 1115** ("配電盤・制御盤・制御装置の用語及び文字
+記号" — thuật ngữ và mã chữ cho tủ phân phối/tủ điều khiển/thiết bị điều khiển). Hai điều đáng lưu ý
+khi đọc hoặc giao bản vẽ cho đối tác Nhật:
+
+**1. Tên loại bản vẽ khác tên quen dùng theo IEC — nhưng chỉ đúng những loại sách này đã dạy.** Khi
+đối tác Nhật nói "接続図" hay "展開接続図", họ đang chỉ đúng loại bản vẽ bạn đã biết, chỉ khác tên gọi:
+
+| Tên Nhật (JEM 1115) | Nghĩa (EN) | Tương ứng trong sách |
+|---|---|---|
+| 展開接続図 | Schematic / circuit / control-wiring diagram | **Sơ đồ nguyên lý** (Phần III) — bản "trải" mạch theo chức năng |
+| 単線接続図 | Single-line diagram | Sơ đồ một sợi (E-100/E-200) |
+| 複線接続図 (三線接続図) | Multi-line diagram | Sơ đồ nhiều sợi (mạch động lực 3 pha vẽ đủ dây) |
+| 相互接続図 | Interconnection diagram | Sơ đồ liên kết tủ ↔ tủ / tủ ↔ hiện trường |
+| 端子配列図 | Terminal arrangement diagram | Bảng/sơ đồ bố trí terminal (Chương 27) |
+| 裏面接続図 / 内部接続図 | Back-of-panel / internal wiring diagram | Sơ đồ đấu dây bên trong tủ |
+
+**2. Mã chữ thiết bị có thể theo JEM, không theo IEC 81346.** JEM 1115 dùng bộ **文字記号 (letter
+symbols)** riêng — ví dụ `PS` = nguồn (power supply), `AC`/`DC`, `1φ`/`3φ`, `CVCF` (nguồn ổn áp–ổn
+tần), `VVVF` (biến tần). Bộ này **không trùng** bảng mã chữ IEC 81346-2 mà sách dùng nhất quán ở
+Chương 23 (Q/F/K/M/S/T…). Hệ quả thực tế: khi đọc bản vẽ Nhật, **đừng suy mã chữ theo thói quen
+IEC** — tra đúng bảng chú giải của chính bộ hồ sơ đó; và khi giao bản vẽ chuẩn IEC cho đối tác Nhật,
+kèm theo một trang chú giải mã chữ (Chương 23 đã có cơ chế bảng mã chữ) để tránh hiểu nhầm.
+
+> 💡 **MẸO** — Điểm mấu chốt không phải "học thuộc chữ Nhật" mà là **nhận ra hai bộ quy ước song
+> song tồn tại**: gặp bản vẽ Nhật thì tìm bảng mã chữ / tên loại bản vẽ của chính bộ hồ sơ đó trước
+> khi đọc, thay vì áp cứng quy ước IEC quen thuộc. (Nguồn: trích JEM 1115 do Mitsubishi Electric đăng
+> công khai — dùng ở mức đối chiếu thuật ngữ, không phải bản sao tiêu chuẩn gốc.)
 
 ## Vì sao cần đối chiếu ngay từ Phụ lục G (phiếu đầu vào)
 

@@ -23910,6 +23910,61 @@ muộn hơn nhiều giờ.
 
 ---
 
+## 47.4b ⭐⭐ Lập trình PLC an toàn — một ngôn ngữ bị cắt bớt có chủ ý
+
+Ô *"Nhược"* của cột **PLC an toàn** ở bảng trên ghi *"lập trình an toàn có quy trình riêng"*. Mục này
+nói rõ **riêng ở chỗ nào** — vì hiểu sai điểm này dẫn tới một dự án đội chi phí mà không ai lường trước.
+
+> ⭐⭐ **Viết chương trình an toàn KHÔNG phải là lập trình bình thường cộng thêm cẩn thận.**
+> Đó là lập trình trong một ⚠ **tập con bị cắt bớt có chủ ý** của IEC 61131-3 — ít ngôn ngữ hơn, ít
+> kiểu dữ liệu hơn, ít khối chức năng hơn. Và ⭐ **công cụ lập trình cưỡng chế điều đó**, không phải
+> bạn tự giữ kỷ luật.
+
+### Ba mức người dùng — và chỗ chi phí nhảy vọt
+
+| Mức | Bạn được làm gì | ⭐ Cái giá |
+|---|---|---|
+| ⭐ **Cơ bản** *(Basic)* | Chỉ **nối các khối chức năng đã được chứng nhận** lại với nhau, dạng đồ hoạ | ⭐⭐ **Thời gian nghiệm thu ngắn hẳn** — các khối đã chứng nhận từ trước |
+| ⚠ **Mở rộng** *(Extended)* | Tự viết khối khi khối sẵn có không đủ | ⚠⚠ **Toàn bộ chương trình phải qua quy trình kiểm định đầy đủ** — phức tạp và tốn thời gian hơn nhiều |
+| **Hệ thống** *(System)* | Dành cho **nhà cung cấp bộ điều khiển an toàn** | Nằm ngoài phạm vi đặc tả |
+
+> ⭐⭐ **Đây là ranh giới chi phí quan trọng nhất của cả chương.**
+>
+> Ở mức cơ bản, bạn **thừa hưởng** kết quả chứng nhận của các khối — giống hệt tinh thần *"đấu đúng
+> sơ đồ mẫu của hãng"* ở mục trên. ⚠ Nhưng **ngay khi bạn tự viết một khối**, bạn bước sang mức mở
+> rộng, và **cả chương trình** — không chỉ khối đó — phải đi qua quy trình kiểm định.
+>
+> ⭐ Nghĩa là câu hỏi *"tự viết một khối nhỏ thôi mà, có sao đâu?"* ⚠⚠ **không phải câu hỏi kỹ thuật,
+> mà là câu hỏi ngân sách và tiến độ**.
+>
+> ⚡ Lối thoát có sẵn: khối tự viết **sau khi đã được kiểm định/chứng nhận** thì dùng lại được ở mức
+> cơ bản — nên nếu công ty làm nhiều máy giống nhau, chi phí đó **trả một lần**.
+
+### ⚠ Ngôn ngữ nào được dùng — và vì sao
+
+Đặc tả giới hạn ngôn ngữ dựa trên khuyến nghị theo mức SIL của IEC 61508:
+
+| Ngôn ngữ | Trạng thái trong lập trình an toàn |
+|---|---|
+| ⭐ **FBD** và **LD** | ⭐ **Ngôn ngữ ưu tiên** — và chỉ dùng **một tập con đã định** của chúng |
+| **ST** | Chỉ ở **mức mở rộng** |
+| ⚠ **IL** và **SFC** | ⚠ **Không được đặt vấn đề** trong đặc tả — chi phí vòng đời cao hơn |
+
+> ⭐ **Lý do là kiểm định, không phải khẩu vị:** kiểm thử và thẩm định chương trình viết bằng **ngôn
+> ngữ văn bản** thì ⚠ **phức tạp hơn và dễ sai hơn** so với ngôn ngữ đồ hoạ. Ngôn ngữ đồ hoạ cho
+> **cái nhìn tổng thể** về chính chương trình an toàn, và công cụ hỗ trợ, dẫn dắt người dùng tốt hơn
+> nhiều.
+>
+> ⚡ Đây là một trong số ít chỗ trong sách mà **ladder thắng ST một cách dứt khoát** — và lý do trùng
+> đúng với lý do ở Chương 20 mục 20.6: ⭐ **thứ người khác phải đọc và xác nhận được thì viết bằng cái
+> họ đọc được.** Ở đây "người khác" là **người thẩm định**.
+
+> ⚠⚠ **Mục này mô tả CÔNG CỤ ràng buộc bạn thế nào — nó KHÔNG dạy bạn viết chương trình an toàn.**
+> Việc đó cần đào tạo riêng, công cụ được chứng nhận, và người có thẩm quyền thẩm định. ⭐ Mục đích ở
+> đây chỉ là để bạn **biết trước mình đang bước vào cái gì** khi chọn cột thứ ba của bảng ở mục 47.4.
+
+---
+
 ## 47.5 Mức hiệu năng và kiến trúc — đủ để làm việc
 
 Phần này diễn giải khái niệm ở mức đủ để bạn **đọc hiểu tài liệu và trao đổi với chuyên gia**. Nó
@@ -24265,6 +24320,8 @@ Chương 52, và nó là phần bắt buộc.
 | 6 | Kiểm **tính độc lập** của các kênh | Nhóm thiết kế | Không chung cáp, không chung đầu nối, không chung nguồn |
 | 7 | Thiết kế **LOTO** cho mọi dạng năng lượng | Nhóm thiết kế | Mọi cơ cấu cô lập **khoá được**, **với tới được**, và **xả được** |
 | 8 | **Kiểm định** chức năng an toàn | Người có thẩm quyền | Thử từng SF, thử từng kênh riêng lẻ, có biên bản |
+| 8b | ⭐ Nếu dùng **PLC an toàn**: chốt **mức người dùng** trước khi báo giá | Nhóm thiết kế + chủ đầu tư | ⚠⚠ Ở mức cơ bản chỉ **nối khối đã chứng nhận**; tự viết khối là **cả chương trình** phải kiểm định |
+| 8c | Chốt **ngôn ngữ** dùng cho phần an toàn | Nhóm thiết kế | ⭐ **FBD/LD**; ST chỉ ở mức mở rộng; IL và SFC không đặt vấn đề |
 | 9 | **Không phát hành** khi mục 1, 4, 8 chưa có | — | — |
 
 ---
@@ -24286,6 +24343,12 @@ Chương 52, và nó là phần bắt buộc.
 9. Nêu **ba lỗi thiết kế** làm quy trình LOTO không thực hiện được.
 10. Ở chế độ tay, cái gì được nới lỏng và cái gì tuyệt đối không? Nếu cần chuyển động khi cửa mở thì
     phải xử lý thế nào?
+11. ⭐⭐ Vì sao viết chương trình an toàn **không phải** là *"lập trình bình thường cộng thêm cẩn thận"*?
+    Nêu ba thứ bị cắt bớt.
+12. ⚠⚠ Nêu ba **mức người dùng**. ⭐ Chi phí nhảy vọt ở ranh giới nào, và vì sao câu hỏi *"tự viết một
+    khối nhỏ thôi mà"* lại là câu hỏi ngân sách chứ không phải câu hỏi kỹ thuật?
+13. ⭐ Vì sao lập trình an toàn ưu tiên **FBD và LD** thay vì ST? Liên hệ lý do đó với nguyên tắc ở
+    Chương 20 mục 20.6.
 
 Câu 1, 4 và 7 là ba câu phân loại. Nhưng lưu ý: **trả lời trôi chảy mười câu này không có nghĩa là bạn
 đủ thẩm quyền thiết kế mạch an toàn.** Nó có nghĩa là bạn đủ hiểu để làm việc được với người có thẩm
@@ -24322,6 +24385,10 @@ tin lệnh** là nguyên tắc xuyên suốt cả cuốn sách.
   khái niệm và ví dụ kiến trúc; nguồn cho định nghĩa **OSSD** và hành vi ngõ ra an toàn (mục 47.7).
 - **DGUV / IFA Report 2/2017e** — báo cáo kỹ thuật của viện nghiên cứu an toàn lao động; nguồn cho
   ⭐ **yêu cầu phát hiện chập chéo** trên ngõ ra an toàn (mục 47.7).
+- ⭐ **PLCopen Safety — Part 1: Concepts and Function Blocks, v2.10** *(bản chính thức, tải miễn phí
+  từ PLCopen)*: §4 *Reduction in the Development Environment* — ⭐⭐ **ba mức người dùng** (cơ bản ·
+  mở rộng · hệ thống) và ⚠ **giới hạn tập ngôn ngữ** (FBD/LD ưu tiên, ST chỉ ở mức mở rộng, IL và SFC
+  không đặt vấn đề) — nền cho mục 47.4b.
 
 > ⚠⚠ **Toàn bộ tiêu chuẩn liệt kê ở trên đều có bản quyền và phải mua từ tổ chức phát hành.** Chương
 > này diễn giải khái niệm ở mức đủ để trao đổi chuyên môn; **nó không trích dẫn nội dung tiêu chuẩn và

@@ -369,6 +369,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#75-đưng-thoát-tĩnh-đin-ca-mt-c-máy">7.5 Đường thoát tĩnh điện của một cỗ máy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#76-b-kh-tĩnh-đin-và-vì-sao-plc-phi-bit-nó-còn-sng">7.6 Bộ khử tĩnh điện — và vì sao PLC phải biết nó còn sống</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#77-nh-hưng-ti-thit-k-cơ-cu">7.7 Ảnh hưởng tới thiết kế cơ cấu</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#77b-esd-còn-làm-hng-chính-b-điu-khin-không-ch-sn-phm">7.7b ⚠ ESD còn làm hỏng CHÍNH BỘ ĐIỀU KHIỂN — không chỉ sản phẩm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#78-môi-trưng-đ-m-và-phòng-sch">7.8 Môi trường: độ ẩm và phòng sạch</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#79-by-thưng-gp">7.9 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#710-bng-cht-danh-mc-kim-esd-cho-mt-c-máy">7.10 Bảng chốt — danh mục kiểm ESD cho một cỗ máy</a></li>
@@ -661,6 +662,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#324-công-thc-quy-đi-thang">32.4 Công thức quy đổi thang</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#325-phát-hin-ngoài-di">32.5 ⭐ Phát hiện ngoài dải</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#326-lc-và-cái-giá-ca-nó">32.6 Lọc — và cái giá của nó</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#326b-giá-tr-bn-đang-đc-luôn-cũ-hơn-bn-tưng-cng-đ-ba-khon">32.6b ⭐⭐ Giá trị bạn đang đọc luôn CŨ HƠN bạn tưởng — cộng đủ ba khoản</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#327-vùng-cht-chng-dao-đng-quanh-ngưng">32.7 Vùng chết — chống dao động quanh ngưỡng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#328-hiu-chun-và-nó-không-phi-cái-gì">32.8 Hiệu chuẩn — và nó **không** phải cái gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#329-trên-máy-mu-dp-01">32.9 Trên máy mẫu DP-01</a></li>
@@ -5452,6 +5454,65 @@ Câu hỏi để rà soát một thiết kế cơ cấu: <strong>&quot;ở chỗ
 Mỗi chỗ như vậy là một nguồn tích điện, và mỗi chỗ cần một câu trả lời: vật liệu tiêu tán, hay ion hoá.</p>
 </blockquote>
 <hr>
+<h2 id="77b-esd-còn-làm-hng-chính-b-điu-khin-không-ch-sn-phm">7.7b ⚠ ESD còn làm hỏng CHÍNH BỘ ĐIỀU KHIỂN — không chỉ sản phẩm</h2>
+<p>Cả chương tới đây nói về tĩnh điện làm hỏng <strong>sản phẩm</strong>. ⭐ Nhưng có một hướng thứ hai, gần bạn hơn
+nhiều: ⚠ <strong>chính module PLC trong tay bạn cũng nhạy với ESD</strong> — và tài liệu hãng cảnh báo điều đó ở
+những chỗ rất cụ thể.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thao tác</th>
+<th>Cái gì hỏng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠⚠ <strong>Cắm / rút thẻ nhớ</strong></td>
+<td>⭐ Hỏng <strong>thẻ nhớ</strong> hoặc <strong>chính khe cắm trên CPU</strong></td>
+</tr>
+<tr>
+<td>⚠ <strong>Chạm vào chân của đầu nối module</strong></td>
+<td>Hỏng module</td>
+</tr>
+<tr>
+<td>Cầm module chưa lắp</td>
+<td>Hỏng linh kiện bên trong</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Hai biện pháp mà tài liệu hãng nêu — đơn giản tới mức dễ bị bỏ qua:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Chạm vào một bề mặt dẫn điện đã nối đất</strong> trước khi cầm module hoặc thẻ nhớ</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Hoặc <strong>đeo vòng đeo tay tiêu tán tĩnh điện đã nối đất</strong></td>
+</tr>
+</tbody></table></div>
+<p>⚡ Cùng nguyên lý với đường thoát tĩnh điện của cỗ máy ở mục 7.5 — ⭐ <strong>xả điện tích của bạn về cùng
+một điểm quy chiếu trước khi tiếp xúc</strong>, thay vì để nó phóng qua linh kiện.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Vì sao hướng này nguy hiểm hơn vẻ ngoài của nó.</strong></p>
+<p>Hỏng do ESD <strong>hiếm khi hỏng ngay</strong>. Giống board sản phẩm ở mục 7.2, module PLC bị phóng tĩnh điện
+thường ⭐ <strong>hỏng tiềm ẩn</strong>: chạy tiếp vài tuần rồi bắt đầu lỗi chập chờn — ⚠ và lúc đó <strong>không ai
+liên hệ nó với lần thay thẻ nhớ ba tuần trước</strong>.</p>
+<p>⭐ Đây chính là <strong>một mục nữa cho danh sách bốn nguyên nhân vật lý của lỗi chập chờn</strong> ở Chương 51
+mục 51.8: ⚠ <em>&quot;module này đã từng bị ai cầm mà không xả tĩnh điện chưa?&quot;</em></p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Hệ quả tổ chức:</strong> khu vực bảo trì tủ điện nên có sẵn <strong>một điểm nối đất và một vòng đeo tay</strong>,
+đúng như khu vực thao tác sản phẩm. ⚠ Nếu công ty đã đầu tư đường thoát tĩnh điện cho <strong>sản phẩm</strong>
+mà bàn sửa chữa module thì không có gì, ⭐ <strong>đó là một lỗ hổng nhất quán</strong>.</p>
+</blockquote>
+<hr>
 <h2 id="78-môi-trưng-đ-m-và-phòng-sch">7.8 Môi trường: độ ẩm và phòng sạch</h2>
 <h3>Độ ẩm</h3>
 <p>Không khí ẩm dẫn điện tốt hơn không khí khô, nên <strong>độ ẩm thấp làm tích điện nặng hơn nhiều</strong>. Đây là lý
@@ -5582,6 +5643,11 @@ vấn đề (bụi) lấy một vấn đề nặng hơn (tĩnh điện). Nếu p
 <td>Khí nén thổi sản phẩm đều <strong>có ion hoá</strong></td>
 <td>Có</td>
 </tr>
+<tr>
+<td>11</td>
+<td>⚠ <strong>Bàn sửa chữa module</strong> cũng có điểm nối đất và vòng đeo tay</td>
+<td>⭐ Có — ESD hỏng <strong>cả module PLC</strong>, không chỉ sản phẩm (mục 7.7b)</td>
+</tr>
 </tbody></table></div>
 <hr>
 <h2 id="711-t-kim">7.11 Tự kiểm</h2>
@@ -5597,6 +5663,10 @@ của điều đó là gì?</li>
 <li>Vì sao <strong>tín hiệu tình trạng của ionizer phải là điều kiện cho phép chạy</strong>, không chỉ là dòng hiển thị?</li>
 <li>Một ionizer lệch cân bằng nguy hiểm thế nào so với không có ionizer?</li>
 <li>Câu hỏi nào dùng để rà soát một thiết kế cơ cấu về mặt ESD?</li>
+<li>⚠ Ngoài sản phẩm, ESD còn làm hỏng cái gì trong tủ điện? ⭐ Nêu <strong>hai</strong> thao tác rủi ro nhất và
+<strong>hai</strong> biện pháp phòng.</li>
+<li>⭐⭐ Vì sao hỏng module do ESD <strong>khó truy nguyên nhân</strong> hơn hỏng ngay? Liên hệ với danh sách nguyên
+nhân lỗi chập chờn ở Chương 51.</li>
 </ol>
 <p>Câu 4, 6 và 8 là ba câu phân loại. Câu 4 quyết định bạn chọn đúng biện pháp cho máy tự động hay áp
 nhầm biện pháp của lắp ráp thủ công; câu 6 là câu về <strong>an toàn cho người</strong>; câu 8 là chỗ chương này
@@ -5616,6 +5686,10 @@ General requirements</em>: yêu cầu với khu vực bảo vệ chống tĩnh �
 dùng cho mục 7.3.</li>
 <li>Tài liệu kỹ thuật của nhà sản xuất thiết bị ion hoá và vật liệu chống tĩnh điện — dùng cho phần
 diễn giải nguyên lý ở mục 7.4 và 7.6.</li>
+<li><strong>Siemens S7-1200 System Manual</strong> — cảnh báo ESD lặp lại ở các thao tác <strong>cắm/rút thẻ nhớ</strong> và
+<strong>chạm chân đầu nối module</strong>: ⭐ <em>phóng tĩnh điện có thể làm hỏng thẻ nhớ hoặc khe cắm trên CPU</em>;
+biện pháp nêu là ⭐ <strong>chạm bề mặt dẫn điện đã nối đất và/hoặc đeo vòng tay nối đất</strong> — nền cho
+mục 7.7b.</li>
 </ul>
 <blockquote>
 <p>⚠ Chương này diễn giải khái niệm ở mức đủ để <strong>thiết kế máy có tính tới ESD</strong> và <strong>trao đổi với
@@ -22272,6 +22346,88 @@ biết chính xác mình đang chấp nhận trễ bao lâu (Chương 17, mục 
 hiển thị và ghi log. Chúng phục vụ hai mục đích khác nhau, không có lý do gì phải dùng chung.</p>
 </blockquote>
 <hr>
+<h2 id="326b-giá-tr-bn-đang-đc-luôn-cũ-hơn-bn-tưng-cng-đ-ba-khon">32.6b ⭐⭐ Giá trị bạn đang đọc luôn CŨ HƠN bạn tưởng — cộng đủ ba khoản</h2>
+<p>Mục trên nói bộ lọc gây trễ. ⚠ Nhưng bộ lọc chỉ là <strong>một</strong> khoản. Thời gian từ lúc đại lượng thật đổi
+tới lúc chương trình <strong>nhìn thấy</strong> giá trị mới là <strong>tổng của ba khoản</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>Khoản</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>⭐ <strong>Thời gian đáp ứng của cảm biến</strong></td>
+<td>⚠⚠ Thường là khoản <strong>lớn nhất</strong> — cảm biến nhiệt độ rất chậm (Chương 33)</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>⭐ <strong>Thời gian cập nhật của module analog</strong></td>
+<td>Bao gồm <strong>trễ do lọc</strong> của chính module (mục 32.6)</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><strong>Chu kỳ quét của chương trình</strong></td>
+<td>Chương 10</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Cộng đủ ba khoản trước khi kết luận &quot;hệ đáp ứng chậm&quot;.</strong></p>
+<p>Người ta hay đi tối ưu chương trình — khoản <strong>nhỏ nhất</strong> trong ba — trong khi ⚠ vấn đề nằm ở cảm
+biến hoặc ở cấu hình lọc của module.</p>
+<p>⚡ Và nhớ rằng ⭐ <strong>bộ lọc phần mềm bạn tự viết là khoản THỨ TƯ</strong>, cộng thêm vào ba khoản trên.</p>
+</blockquote>
+<h3>⚠ Hai chỗ dễ hiểu sai về tốc độ module</h3>
+<p><strong>Một — thời gian một KÊNH khác thời gian cả MODULE</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Đại lượng</th>
+<th>Nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Thời gian quét <strong>một kênh</strong></td>
+<td>Đọc xong một ngõ vào</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian chu kỳ của cả module</strong></td>
+<td>Đọc hết <strong>mọi</strong> kênh rồi quay lại kênh đầu</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Và đây là chỗ phản trực giác: thời gian chu kỳ của module thường KHÔNG giảm khi bạn dùng ít
+kênh hơn.</strong></p>
+<p>⭐ Module vẫn quét đủ chu kỳ của nó, kể cả với các kênh <strong>không dùng</strong>. Nên mẹo <em>&quot;chỉ đấu 2 trong 8
+kênh cho nhanh&quot;</em> ⚠ <strong>không có tác dụng</strong> — trừ khi tài liệu của đúng module đó nói khác.</p>
+<p>⭐ <strong>Muốn nhanh hơn thì phải đổi module</strong>, không phải bỏ bớt kênh.</p>
+</blockquote>
+<p><strong>Hai — ⚠ khi PLC vừa đọc analog vừa chạy PID</strong></p>
+<p>Với vòng điều khiển (Chương 35), tổng trễ ở trên <strong>đi thẳng vào chất lượng điều khiển</strong>. ⭐ Nếu module
+quá chậm so với quá trình, có <strong>hai</strong> đường:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Khi nào chọn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Đổi sang module analog nhanh hơn</strong></td>
+<td>Khi phần còn lại của thiết kế vẫn hợp</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Dùng bộ điều khiển chuyên dụng bên ngoài</strong>, PLC chỉ <strong>đặt điểm đặt</strong> cho nó</td>
+<td>Khi quá trình nhanh hơn hẳn khả năng của PLC</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚡ Đường thứ hai chính là kiến trúc của bộ điều khiển nhiệt độ rời trên máy mẫu (Chương 38, mục
+38.11): ⭐ <strong>PLC không điều khiển vòng — nó chỉ ra lệnh và giám sát.</strong></p>
+</blockquote>
+<hr>
 <h2 id="327-vùng-cht-chng-dao-đng-quanh-ngưng">32.7 Vùng chết — chống dao động quanh ngưỡng</h2>
 <p>Đã gặp ở Chương 19 mục 19.3 dưới tên <strong>trễ</strong> <em>(hysteresis)</em>; với analog nó là công cụ bắt buộc.</p>
 <p>Giá trị dao động quanh đúng ngưỡng làm bit kết quả nhấp nháy — mỗi lần nhấp là một lần báo động rồi
@@ -22667,6 +22823,22 @@ tự nạp (mục 32.8, Chương 12).</p>
 <td>Hiệu chuẩn cần <strong>chuẩn chính xác hơn</strong> và có vết truy nguyên</td>
 </tr>
 <tr>
+<td>⭐⭐ Trễ của giá trị analog</td>
+<td><strong>Tổng BA khoản</strong>: đáp ứng cảm biến + cập nhật module (có lọc) + chu kỳ quét</td>
+</tr>
+<tr>
+<td>Khoản nào thường lớn nhất</td>
+<td>⚠ <strong>Cảm biến</strong> — không phải chương trình</td>
+</tr>
+<tr>
+<td>⚠⚠ Dùng ít kênh cho nhanh</td>
+<td>⭐ <strong>Không có tác dụng</strong> — chu kỳ module không giảm theo số kênh dùng</td>
+</tr>
+<tr>
+<td>Quá trình nhanh hơn khả năng PLC</td>
+<td>⭐ Đổi module nhanh hơn, hoặc ⭐⭐ <strong>bộ điều khiển rời, PLC chỉ đặt điểm đặt</strong></td>
+</tr>
+<tr>
 <td>Cảm biến thay thế</td>
 <td>⚠ Có <strong>dải mặc định của nhà sản xuất</strong> — không phải dải bạn đã đặt</td>
 </tr>
@@ -22690,6 +22862,9 @@ dùng gì thay thế?</li>
 <li>⭐ Đồng hồ chuẩn chỉ 4,0 bar, PLC hiện 4,3 bar. Bạn sửa hệ số cho PLC hiện 4,0. Đó có phải hiệu
 chuẩn không? Vì sao?</li>
 <li>LRV và URV là gì? Đặt lại dải trên cảm biến có lợi gì, và tạo ra <strong>bẫy bảo trì</strong> nào?</li>
+<li>⭐⭐ Từ lúc đại lượng thật đổi tới lúc chương trình thấy giá trị mới gồm <strong>ba</strong> khoản nào? ⚠ Khoản
+nào thường lớn nhất, và người ta hay đi tối ưu khoản nào?</li>
+<li>⚠⚠ Có người đề xuất <em>&quot;chỉ đấu 2 trong 8 kênh cho module đọc nhanh hơn&quot;</em>. ⭐ Đúng hay sai, vì sao?</li>
 </ol>
 <blockquote>
 <p>Câu 2, 5, 8 và 11 là bốn câu phân loại. Câu 2 là tinh thần của cả chương: <strong>nhiều chữ số không làm
@@ -22710,6 +22885,11 @@ ngoài dải, bit trạng thái kênh, và tuỳ chọn lọc tích hợp. Đây
 không suy từ hệ khác.</li>
 <li><strong>Datasheet cảm biến</strong> — dùng cho <strong>sai số</strong>, dải đặt được của LRV/URV, và quy trình chỉnh zero/span.</li>
 <li>Bảng I/O và bảng công thức của DP-01 — Phụ lục J; bảng ở mục 32.9 lấy từ đó.</li>
+<li><strong>Hanssen, Dag H.</strong> — <em>Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+CoDeSys</em>, §3.6.2 <em>Important Properties and Parameters</em>: ⭐⭐ <strong>thời gian cập nhật của một giá trị
+analog gồm ba khoản</strong> (đáp ứng cảm biến · cập nhật module kèm trễ lọc · chu kỳ quét); phân biệt
+<strong>thời gian một kênh</strong> với <strong>chu kỳ cả module</strong>, và ⚠ <strong>chu kỳ module không đổi dù có kênh không
+dùng</strong>; hai đường xử lý khi module quá chậm cho vòng PID — nền cho mục 32.6b.</li>
 </ul>
 <blockquote>
 <p>⚡ Con số <strong>27 648</strong> dùng xuyên suốt chương là <strong>ví dụ minh hoạ</strong>, lấy theo một cách ánh xạ phổ biến.

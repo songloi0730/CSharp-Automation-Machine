@@ -37039,7 +37039,24 @@ không có mạng và không có thời gian tìm tài liệu.</p>
 <td>Danh sách lỗi CPU có dấu thời gian</td>
 <td>&quot;CPU đã ghi nhận chuyện gì?&quot;</td>
 </tr>
+<tr>
+<td>⭐ <strong>Quét đơn</strong> <em>(single scan)</em></td>
+<td>Thực thi <strong>đúng một vòng quét</strong> rồi dừng</td>
+<td>⭐⭐ <em>&quot;Ở vòng quét này, nấc nào đổi trạng thái?&quot;</em></td>
+</tr>
+<tr>
+<td>⭐ <strong>Chế độ thử</strong> <em>(TEST mode)</em></td>
+<td>Chạy chương trình <strong>với ngõ ra bị vô hiệu</strong></td>
+<td><em>&quot;Logic có đúng không — mà máy không động?&quot;</em></td>
+</tr>
 </tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Quét đơn là công cụ duy nhất cho lỗi phụ thuộc THỨ TỰ.</strong></p>
+<p>Xem trực tuyến cho bạn giá trị <strong>sau khi cả vòng quét đã chạy xong</strong> — nên với lỗi kiểu <em>&quot;nấc 5 đọc
+giá trị của vòng quét trước&quot;</em> (Chương 15, Chương 10), ⚠ <strong>màn hình trực tuyến trông hoàn toàn bình
+thường</strong>. Chỉ khi cho chạy <strong>từng vòng quét một</strong> và nhìn giá trị đổi sau mỗi lần, thứ tự mới lộ ra.</p>
+<p>⚠ Nhiều người không biết mình có công cụ này — ⭐ <strong>tra tài liệu phần mềm lập trình của bạn</strong>.</p>
+</blockquote>
 <p><strong>Tham chiếu chéo là chức năng bị dùng ít nhất so với giá trị của nó.</strong> Nó trả lời trong ba giây câu
 hỏi mà đọc code mất một giờ: <em>ngoài chỗ này, còn ai ghi vào biến này nữa không?</em> — tức là phát hiện
 cuộn dây trùng (Chương 15) và vi phạm quy tắc &quot;một nơi ghi&quot; (Chương 27).</p>
@@ -37467,6 +37484,59 @@ buổi và tránh được những lần dừng máy dài ngày.</p>
 </tbody></table></div>
 <p>Điểm chung: cả bốn đều là <strong>xu hướng theo thời gian</strong>, không phải giá trị tức thời. Một xy-lanh mất
 0,8 giây thay vì 0,5 giây không phải lỗi — nhưng xu hướng tăng đều trong ba tháng là dấu hiệu rõ ràng.</p>
+<h3>⚠ Và bảo trì cho chính bộ điều khiển — thứ hay bị quên vì &quot;PLC có hỏng bao giờ đâu&quot;</h3>
+<p>Bảng trên là PLC <strong>giám sát máy</strong>. Còn bản thân PLC cũng cần bảo trì, chỉ vài việc nhưng bỏ qua thì
+hỏng theo kiểu khó đoán:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>Vì sao</th>
+<th>⭐ Tần suất</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Kiểm và thay phin lọc của tủ</strong></td>
+<td>Không khí sạch lưu thông trong tủ</td>
+<td>⚠ <strong>Đừng chờ tới kỳ bảo trì máy mới kiểm</strong> — tuỳ độ bụi khu vực</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Không để bụi bám lên module</strong></td>
+<td>⭐ CPU và module I/O <strong>không được thiết kế kín bụi</strong>; bụi bám cánh tản nhiệt <strong>chặn thoát nhiệt</strong> → mạch hoạt động sai</td>
+<td>Theo môi trường</td>
+</tr>
+<tr>
+<td>Kiểm siết lại đầu nối</td>
+<td>Chu kỳ nóng–nguội làm mỏi mối nối (mục 51.8)</td>
+<td>Theo lịch máy</td>
+</tr>
+<tr>
+<td>Thay pin nuôi bộ nhớ</td>
+<td>Hết pin → mất dữ liệu giữ được, âm thầm (Chương 18, mục 18.6)</td>
+<td>Theo khuyến cáo hãng</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Hai nguyên tắc lập lịch, và cả hai đều thực dụng:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Ghép lịch bảo trì PLC vào lịch bảo trì máy</strong> — để máy chỉ dừng <strong>một lần</strong>, không dừng hai lần</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠ <strong>Tần suất phụ thuộc MÔI TRƯỜNG, không phải phụ thuộc PLC</strong> — ⭐ môi trường càng khắc nghiệt thì càng phải thường xuyên</td>
+</tr>
+</tbody></table></div>
+<p>⚡ Nguyên tắc 2 giải thích vì sao không có con số chung: cùng một CPU đặt trong phòng điều khiển
+sạch và đặt cạnh máy cắt kim loại là <strong>hai lịch bảo trì khác hẳn nhau</strong> (Chương 7, Chương 8).</p>
+</blockquote>
 <hr>
 <h2 id="5112-khi-nào-dng-t-sa-và-gi-ngưi-khác">51.12 Khi nào dừng tự sửa và gọi người khác</h2>
 <p>Biết dừng cũng là một kỹ năng.</p>
@@ -37645,6 +37715,10 @@ trên trang bị điện của máy — nền cho cảnh báo ở mục 51.1 và
 ⭐ <strong>sự khác nhau giữa cưỡng bức ngõ vào và ngõ ra</strong>: ép ngõ vào tác động vào <strong>bảng ảnh ngõ vào</strong>
 nên <strong>lan khắp chương trình</strong>; ép ngõ ra chỉ tác động <strong>đúng chân ra</strong>, bảng ảnh ngõ ra không đổi
 nên chương trình chạy y như cũ (mục 51.7).</li>
+<li><strong>Bryan, L.A. &amp; Bryan, E.A.</strong> — <em>Programmable Controllers: Theory and Implementation</em>, ch. 20 §20-6 <em>PLC System
+Maintenance</em>: ⭐ <strong>bảo trì phòng ngừa cho chính bộ điều khiển</strong> — phin lọc tủ, ⚠⚠ bụi bám cánh tản
+nhiệt <strong>chặn thoát nhiệt</strong>, và hai nguyên tắc lập lịch: ⭐ <strong>ghép vào lịch bảo trì máy</strong> và ⭐ <strong>tần
+suất theo môi trường</strong>. §20-7 cho công cụ <strong>quét đơn</strong> <em>(single scan)</em> — nền cho mục 51.7 và 51.11.</li>
 </ul>
 <blockquote>
 <p>⚠ Bảng triệu chứng ở mục 51.9 là <strong>điểm khởi đầu</strong>, không phải danh sách đầy đủ. Cách mở rộng tốt
@@ -37964,6 +38038,75 @@ bước tiếp. Chỉ khi cả chu trình đã đi qua từng bước an toàn m
 Trước khi chạy khô lần đầu, <strong>kiểm cờ <code>M_DryRun</code> và mọi cưỡng bức đã ở trạng thái đúng</strong>, và kiểm
 <strong>cờ mô phỏng đã tắt</strong> (Chương 50). Máy chạy với cờ mô phỏng còn bật là máy chạy mù.</p>
 </blockquote>
+<h3>⭐ Ba công cụ của chính bộ điều khiển — kiểm tra trước khi tự dựng cờ</h3>
+<p>Cờ <code>M_DryRun</code> là giải pháp <strong>phần mềm tự viết</strong>. ⚠ Nhưng nhiều bộ điều khiển đã có sẵn công cụ làm
+đúng việc đó, an toàn hơn vì <strong>không phụ thuộc chương trình của bạn chạy đúng</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Công cụ</th>
+<th>Nó làm gì</th>
+<th>⭐ Vì sao tốt hơn cờ tự viết</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Chế độ thử</strong> <em>(TEST mode)</em></td>
+<td>Chạy và gỡ lỗi chương trình <strong>với ngõ ra bị vô hiệu</strong></td>
+<td>⭐⭐ Ngõ ra tắt <strong>ở tầng hệ thống</strong> — không có cách nào một lỗi logic bật nhầm được</td>
+</tr>
+<tr>
+<td>⭐ <strong>Quét đơn</strong> <em>(single scan)</em></td>
+<td>Thực thi <strong>đúng một vòng quét</strong> rồi dừng</td>
+<td>⭐ Quan sát <strong>từng nấc ở từng vòng quét</strong> — công cụ mạnh nhất cho lỗi phụ thuộc thứ tự (Chương 10)</td>
+</tr>
+<tr>
+<td>Cô lập ngõ ra tại chỗ</td>
+<td>Tháo/ngắt riêng các ngõ ra chưa thử</td>
+<td>Dùng khi bắt buộc phải ở chế độ RUN để cập nhật ngõ ra</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Tra tài liệu bộ điều khiển của bạn TRƯỚC khi tự dựng cờ chạy khô.</strong> Nếu có chế độ thử, dùng nó
+cho vòng kiểm logic đầu tiên; cờ <code>M_DryRun</code> vẫn giữ vai trò riêng — nó cho phép chạy khô <strong>trong chế
+độ RUN bình thường</strong> về sau, khi máy đã bàn giao.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>BẪY — nấc thang tạm để thử.</strong></p>
+<p>Trong lúc thử, người ta hay chèn <strong>logic tạm</strong>: một nấc bỏ qua một bước, một lệnh chặn nhóm ngõ ra
+chưa sẵn sàng, một điều kiện luôn đúng để đi tiếp. Chúng hữu ích và <strong>hoàn toàn chính đáng</strong>.</p>
+<p>⚠⚠ <strong>Nhưng chúng phải được gỡ hết trước khi chạy tổng thể</strong> — và đây là <strong>cùng một loại nguy hiểm
+với cưỡng bức quên gỡ</strong> (Chương 51, mục 51.7), chỉ khác một điểm khiến nó <strong>tệ hơn</strong>:</p>
+<p>⭐ <strong>Cưỡng bức thì có danh sách để kiểm. Nấc thang tạm thì KHÔNG</strong> — nó trông y hệt code thật.</p>
+<p>⭐ <strong>Cách phòng, làm ngay từ lúc chèn:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Đánh dấu thống nhất</strong> — comment mở đầu <code>*** TAM — GO TRUOC KHI BAN GIAO ***</code>, dễ tìm bằng tham chiếu chéo</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Ghi vào <strong>một danh sách</strong> ngay khi chèn, cùng chỗ với danh sách cưỡng bức</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ <strong>Đối chiếu chương trình với bản trước khi thử</strong> — chức năng so sánh dự án (Chương 30) chỉ ra mọi thứ đã thêm</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠⚠ Ghi vào <strong>danh mục nghiệm thu</strong> ở mục 52.9 như một mục riêng</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Và ngay sau khi sửa bất cứ gì trong lúc chạy thử: ghi lại NGAY và cập nhật tài liệu gốc.</strong>
+Không để tới cuối đợt — lúc đó không ai nhớ nổi đã sửa những gì (Chương 30).</p>
+</blockquote>
 <hr>
 <h2 id="527-bưc-7-th-to-li-c-ý">52.7 Bước 7 — thử tạo lỗi cố ý ⭐</h2>
 <p>Đây là bước phân biệt nghiệm thu thật với nghiệm thu hình thức.</p>
@@ -38098,6 +38241,11 @@ viết ra, có người chịu trách nhiệm và có hạn, chứ không phải
 <td>1</td>
 <td>⭐ <strong>Không còn cưỡng bức I/O nào</strong> — ⚠⚠ kể cả loại <strong>đã cài nhưng đang tắt</strong></td>
 <td>Chương 51 — nguyên nhân tai nạn phổ biến</td>
+</tr>
+<tr>
+<td>1b</td>
+<td>⚠⚠ <strong>Không còn nấc thang / logic tạm</strong> nào của đợt thử</td>
+<td>⭐ Không có danh sách sẵn như cưỡng bức — phải <strong>so sánh dự án</strong></td>
 </tr>
 <tr>
 <td>2</td>
@@ -38276,6 +38424,10 @@ Acceptance Test (SAT), Site Integration Test (SIT)</em>: định nghĩa và ph�
 mục 52.2, và yêu cầu về hồ sơ kèm theo từng mốc.</li>
 <li>Biểu mẫu <strong>biên bản kiểm I/O 1-1</strong>, <strong>biên bản nghiệm thu</strong> và <strong>phiếu bàn giao</strong> — Phụ lục C.</li>
 <li>Bảng I/O, đặc tả và bảng trạng thái an toàn của DP-01 — Phụ lục J.</li>
+<li><strong>Bryan, L.A. &amp; Bryan, E.A.</strong> — <em>Programmable Controllers: Theory and Implementation</em>, ch. 20 §20-5 <em>PLC Start-Up and
+Checking Procedures</em>: ⭐ <strong>chế độ thử</strong> <em>(TEST mode)</em> chạy chương trình với <strong>ngõ ra bị vô hiệu</strong>;
+<strong>quét đơn</strong> để soát từng nấc; cô lập ngõ ra chưa thử; ⚠⚠ <strong>gỡ mọi nấc thang tạm</strong> trước khi chạy
+tổng thể; và ⭐ <strong>ghi lại mọi thay đổi NGAY</strong>, cập nhật tài liệu gốc — nền cho mục 52.6.</li>
 </ul>
 <blockquote>
 <p>⚠⚠ Mục 52.5 là <strong>danh mục tối thiểu để bạn biết cái gì phải được thử</strong>, không phải quy trình kiểm

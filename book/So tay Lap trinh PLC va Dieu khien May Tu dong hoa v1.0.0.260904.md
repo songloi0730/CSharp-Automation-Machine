@@ -25886,6 +25886,16 @@ Khi đã xác định lỗi nằm ở phần mềm (bước ③ ở mục 51.2),
 | **Đồ thị xu hướng** *(trend)* | Ghi giá trị theo thời gian | "Giá trị này nhảy lúc nào, có trùng với sự kiện gì?" |
 | **Thống kê thời gian quét** | Xem quét nhỏ nhất / lớn nhất | "Có phải chương trình vừa phình ra không?" (Chương 10) |
 | **Bộ đệm lỗi hệ thống** | Danh sách lỗi CPU có dấu thời gian | "CPU đã ghi nhận chuyện gì?" |
+| ⭐ **Quét đơn** *(single scan)* | Thực thi **đúng một vòng quét** rồi dừng | ⭐⭐ *"Ở vòng quét này, nấc nào đổi trạng thái?"* |
+| ⭐ **Chế độ thử** *(TEST mode)* | Chạy chương trình **với ngõ ra bị vô hiệu** | *"Logic có đúng không — mà máy không động?"* |
+
+> ⭐⭐ **Quét đơn là công cụ duy nhất cho lỗi phụ thuộc THỨ TỰ.**
+>
+> Xem trực tuyến cho bạn giá trị **sau khi cả vòng quét đã chạy xong** — nên với lỗi kiểu *"nấc 5 đọc
+> giá trị của vòng quét trước"* (Chương 15, Chương 10), ⚠ **màn hình trực tuyến trông hoàn toàn bình
+> thường**. Chỉ khi cho chạy **từng vòng quét một** và nhìn giá trị đổi sau mỗi lần, thứ tự mới lộ ra.
+>
+> ⚠ Nhiều người không biết mình có công cụ này — ⭐ **tra tài liệu phần mềm lập trình của bạn**.
 
 **Tham chiếu chéo là chức năng bị dùng ít nhất so với giá trị của nó.** Nó trả lời trong ba giây câu
 hỏi mà đọc code mất một giờ: *ngoài chỗ này, còn ai ghi vào biến này nữa không?* — tức là phát hiện
@@ -26119,6 +26129,28 @@ PLC biết nhiều thứ về sức khoẻ của máy mà không ai hỏi tới.
 Điểm chung: cả bốn đều là **xu hướng theo thời gian**, không phải giá trị tức thời. Một xy-lanh mất
 0,8 giây thay vì 0,5 giây không phải lỗi — nhưng xu hướng tăng đều trong ba tháng là dấu hiệu rõ ràng.
 
+### ⚠ Và bảo trì cho chính bộ điều khiển — thứ hay bị quên vì "PLC có hỏng bao giờ đâu"
+
+Bảng trên là PLC **giám sát máy**. Còn bản thân PLC cũng cần bảo trì, chỉ vài việc nhưng bỏ qua thì
+hỏng theo kiểu khó đoán:
+
+| Việc | Vì sao | ⭐ Tần suất |
+|---|---|---|
+| ⭐ **Kiểm và thay phin lọc của tủ** | Không khí sạch lưu thông trong tủ | ⚠ **Đừng chờ tới kỳ bảo trì máy mới kiểm** — tuỳ độ bụi khu vực |
+| ⚠⚠ **Không để bụi bám lên module** | ⭐ CPU và module I/O **không được thiết kế kín bụi**; bụi bám cánh tản nhiệt **chặn thoát nhiệt** → mạch hoạt động sai | Theo môi trường |
+| Kiểm siết lại đầu nối | Chu kỳ nóng–nguội làm mỏi mối nối (mục 51.8) | Theo lịch máy |
+| Thay pin nuôi bộ nhớ | Hết pin → mất dữ liệu giữ được, âm thầm (Chương 18, mục 18.6) | Theo khuyến cáo hãng |
+
+> ⭐⭐ **Hai nguyên tắc lập lịch, và cả hai đều thực dụng:**
+>
+> | | |
+> |---|---|
+> | 1 | ⭐ **Ghép lịch bảo trì PLC vào lịch bảo trì máy** — để máy chỉ dừng **một lần**, không dừng hai lần |
+> | 2 | ⚠ **Tần suất phụ thuộc MÔI TRƯỜNG, không phải phụ thuộc PLC** — ⭐ môi trường càng khắc nghiệt thì càng phải thường xuyên |
+>
+> ⚡ Nguyên tắc 2 giải thích vì sao không có con số chung: cùng một CPU đặt trong phòng điều khiển
+> sạch và đặt cạnh máy cắt kim loại là **hai lịch bảo trì khác hẳn nhau** (Chương 7, Chương 8).
+
 ---
 
 ## 51.12 Khi nào dừng tự sửa và gọi người khác
@@ -26273,6 +26305,10 @@ lớn những lỗi đó ngay từ lúc chạy thử — bằng một thứ mà 
   ⭐ **sự khác nhau giữa cưỡng bức ngõ vào và ngõ ra**: ép ngõ vào tác động vào **bảng ảnh ngõ vào**
   nên **lan khắp chương trình**; ép ngõ ra chỉ tác động **đúng chân ra**, bảng ảnh ngõ ra không đổi
   nên chương trình chạy y như cũ (mục 51.7).
+- **Bryan, L.A. & Bryan, E.A.** — *Programmable Controllers: Theory and Implementation*, ch. 20 §20-6 *PLC System
+  Maintenance*: ⭐ **bảo trì phòng ngừa cho chính bộ điều khiển** — phin lọc tủ, ⚠⚠ bụi bám cánh tản
+  nhiệt **chặn thoát nhiệt**, và hai nguyên tắc lập lịch: ⭐ **ghép vào lịch bảo trì máy** và ⭐ **tần
+  suất theo môi trường**. §20-7 cho công cụ **quét đơn** *(single scan)* — nền cho mục 51.7 và 51.11.
 
 > ⚠ Bảng triệu chứng ở mục 51.9 là **điểm khởi đầu**, không phải danh sách đầy đủ. Cách mở rộng tốt
 > nhất: sau mỗi lần sửa xong, thêm một dòng vào bảng của chính bạn — triệu chứng thật, nguyên nhân
@@ -26466,6 +26502,43 @@ bước tiếp. Chỉ khi cả chu trình đã đi qua từng bước an toàn m
 > Trước khi chạy khô lần đầu, **kiểm cờ `M_DryRun` và mọi cưỡng bức đã ở trạng thái đúng**, và kiểm
 > **cờ mô phỏng đã tắt** (Chương 50). Máy chạy với cờ mô phỏng còn bật là máy chạy mù.
 
+### ⭐ Ba công cụ của chính bộ điều khiển — kiểm tra trước khi tự dựng cờ
+
+Cờ `M_DryRun` là giải pháp **phần mềm tự viết**. ⚠ Nhưng nhiều bộ điều khiển đã có sẵn công cụ làm
+đúng việc đó, an toàn hơn vì **không phụ thuộc chương trình của bạn chạy đúng**:
+
+| Công cụ | Nó làm gì | ⭐ Vì sao tốt hơn cờ tự viết |
+|---|---|---|
+| ⭐ **Chế độ thử** *(TEST mode)* | Chạy và gỡ lỗi chương trình **với ngõ ra bị vô hiệu** | ⭐⭐ Ngõ ra tắt **ở tầng hệ thống** — không có cách nào một lỗi logic bật nhầm được |
+| ⭐ **Quét đơn** *(single scan)* | Thực thi **đúng một vòng quét** rồi dừng | ⭐ Quan sát **từng nấc ở từng vòng quét** — công cụ mạnh nhất cho lỗi phụ thuộc thứ tự (Chương 10) |
+| Cô lập ngõ ra tại chỗ | Tháo/ngắt riêng các ngõ ra chưa thử | Dùng khi bắt buộc phải ở chế độ RUN để cập nhật ngõ ra |
+
+> ⭐ **Tra tài liệu bộ điều khiển của bạn TRƯỚC khi tự dựng cờ chạy khô.** Nếu có chế độ thử, dùng nó
+> cho vòng kiểm logic đầu tiên; cờ `M_DryRun` vẫn giữ vai trò riêng — nó cho phép chạy khô **trong chế
+> độ RUN bình thường** về sau, khi máy đã bàn giao.
+
+> ⚠⚠ **BẪY — nấc thang tạm để thử.**
+>
+> Trong lúc thử, người ta hay chèn **logic tạm**: một nấc bỏ qua một bước, một lệnh chặn nhóm ngõ ra
+> chưa sẵn sàng, một điều kiện luôn đúng để đi tiếp. Chúng hữu ích và **hoàn toàn chính đáng**.
+>
+> ⚠⚠ **Nhưng chúng phải được gỡ hết trước khi chạy tổng thể** — và đây là **cùng một loại nguy hiểm
+> với cưỡng bức quên gỡ** (Chương 51, mục 51.7), chỉ khác một điểm khiến nó **tệ hơn**:
+>
+> ⭐ **Cưỡng bức thì có danh sách để kiểm. Nấc thang tạm thì KHÔNG** — nó trông y hệt code thật.
+>
+> ⭐ **Cách phòng, làm ngay từ lúc chèn:**
+>
+> | | |
+> |---|---|
+> | 1 | ⭐ **Đánh dấu thống nhất** — comment mở đầu `*** TAM — GO TRUOC KHI BAN GIAO ***`, dễ tìm bằng tham chiếu chéo |
+> | 2 | ⭐ Ghi vào **một danh sách** ngay khi chèn, cùng chỗ với danh sách cưỡng bức |
+> | 3 | ⚠ **Đối chiếu chương trình với bản trước khi thử** — chức năng so sánh dự án (Chương 30) chỉ ra mọi thứ đã thêm |
+> | 4 | ⚠⚠ Ghi vào **danh mục nghiệm thu** ở mục 52.9 như một mục riêng |
+
+> ⭐ **Và ngay sau khi sửa bất cứ gì trong lúc chạy thử: ghi lại NGAY và cập nhật tài liệu gốc.**
+> Không để tới cuối đợt — lúc đó không ai nhớ nổi đã sửa những gì (Chương 30).
+
 ---
 
 ## 52.7 Bước 7 — thử tạo lỗi cố ý ⭐
@@ -26538,6 +26611,7 @@ viết ra, có người chịu trách nhiệm và có hạn, chứ không phải
 | # | Kiểm | Vì sao |
 |---|---|---|
 | 1 | ⭐ **Không còn cưỡng bức I/O nào** — ⚠⚠ kể cả loại **đã cài nhưng đang tắt** | Chương 51 — nguyên nhân tai nạn phổ biến |
+| 1b | ⚠⚠ **Không còn nấc thang / logic tạm** nào của đợt thử | ⭐ Không có danh sách sẵn như cưỡng bức — phải **so sánh dự án** |
 | 2 | ⭐ **Cờ mô phỏng đã tắt** và không giữ qua mất điện | Chương 50 |
 | 3 | ⭐ **Cờ chạy khô đã tắt** | Chương 28 |
 | 4 | **Chương trình đang chạy khớp với bản sao lưu** | Dùng chức năng so sánh — không tin trí nhớ |
@@ -26672,6 +26746,10 @@ thay đổi đều diễn ra trên một cỗ máy không được phép dừng 
   mục 52.2, và yêu cầu về hồ sơ kèm theo từng mốc.
 - Biểu mẫu **biên bản kiểm I/O 1-1**, **biên bản nghiệm thu** và **phiếu bàn giao** — Phụ lục C.
 - Bảng I/O, đặc tả và bảng trạng thái an toàn của DP-01 — Phụ lục J.
+- **Bryan, L.A. & Bryan, E.A.** — *Programmable Controllers: Theory and Implementation*, ch. 20 §20-5 *PLC Start-Up and
+  Checking Procedures*: ⭐ **chế độ thử** *(TEST mode)* chạy chương trình với **ngõ ra bị vô hiệu**;
+  **quét đơn** để soát từng nấc; cô lập ngõ ra chưa thử; ⚠⚠ **gỡ mọi nấc thang tạm** trước khi chạy
+  tổng thể; và ⭐ **ghi lại mọi thay đổi NGAY**, cập nhật tài liệu gốc — nền cho mục 52.6.
 
 > ⚠⚠ Mục 52.5 là **danh mục tối thiểu để bạn biết cái gì phải được thử**, không phải quy trình kiểm
 > định. Kiểm định chức năng an toàn phải do người có thẩm quyền thực hiện theo tiêu chuẩn hiện hành

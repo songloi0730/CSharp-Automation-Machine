@@ -588,6 +588,7 @@
   <li><a href="#chương-26-thit-k-theo-lưu-đ-bit-trình-t">Chương 26 — Thiết kế theo lưu đồ & bit trình tự</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#261-bài-toán-máy-đng-im-không-báo-gì">26.1 Bài toán: máy đứng im, không báo gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#262-t-lưu-đ-ti-bit-bưc">26.2 Từ lưu đồ tới bit bước</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#262b-phương-pháp-th-hai-và-bit-khi-nào-nó-hp-l-mi-là-phn-khó">26.2b ⭐ Phương pháp thứ hai — và biết KHI NÀO nó hợp lệ mới là phần khó</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#263-trên-máy-mu-dp-01">26.3 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#264-timeout-tng-bưc-cơ-ch-báo-li-không-phi-cơ-ch-điu-khin">26.4 Timeout từng bước — cơ chế báo lỗi, không phải cơ chế điều khiển</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#265-nhánh-song-song-và-đim-hp-nht">26.5 Nhánh song song và điểm hợp nhất</a></li>
@@ -18001,6 +18002,99 @@ bit cũ trong cùng một nấc thang</strong> — giống hệt quy tắc ở C
 đếm số bit đang bật.</p>
 </blockquote>
 <hr>
+<h2 id="262b-phương-pháp-th-hai-và-bit-khi-nào-nó-hp-l-mi-là-phn-khó">26.2b ⭐ Phương pháp thứ hai — và biết KHI NÀO nó hợp lệ mới là phần khó</h2>
+<p>Cách ở mục trên — lưu đồ rồi bit bước — là cách <strong>mặc định đúng</strong> cho máy tự động hoá. Nhưng có một
+phương pháp thiết kế thứ hai, và bạn sẽ gặp nó trong tài liệu lẫn trong code người khác:</p>
+<blockquote>
+<p>⭐ <strong>Thiết kế theo sơ đồ thời gian</strong> <em>(timing diagram)</em>: vẽ các ngõ ra theo trục thời gian, đánh dấu
+các mốc quan trọng, rồi đặt một timer cho mỗi mốc.</p>
+</blockquote>
+<p><strong>Năm bước:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Việc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Hiểu quy trình</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Xác định <strong>ngõ ra nào phụ thuộc thời gian</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Vẽ <strong>sơ đồ thời gian</strong> cho các ngõ ra đó</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Gán <strong>một timer cho mỗi mốc</strong> ngõ ra bật hoặc tắt</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Viết logic đọc giá trị timer để bật/tắt ngõ ra</td>
+</tr>
+</tbody></table></div>
+<h3>⚠⚠ Điều kiện áp dụng — đọc kỹ dòng này trước khi dùng</h3>
+<blockquote>
+<p>⭐⭐ <strong>Sơ đồ thời gian chỉ hợp lệ cho quy trình PHỤ THUỘC DUY NHẤT VÀO THỜI GIAN.</strong></p>
+<p>⚠ Nếu quy trình có <strong>phản hồi thật</strong> — cảm biến báo cơ cấu đã tới nơi, công tắc hành trình, tín hiệu
+xong việc — thì ⚠⚠ <strong>dùng sơ đồ thời gian là quay lại đúng sai lầm lớn nhất ở Chương 17</strong>:
+<em>&quot;chờ 2 giây chắc kẹp xong rồi&quot;</em>.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại quy trình</th>
+<th>Ví dụ</th>
+<th>Phương pháp đúng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Có phản hồi thật</td>
+<td>⭐ <strong>DP-01</strong> — mọi bước đều có cảm biến xác nhận</td>
+<td>⭐ <strong>Lưu đồ → bit bước</strong> (mục 26.2)</td>
+</tr>
+<tr>
+<td>Thuần thời gian, <strong>không có gì để đo</strong></td>
+<td>Cửa tự động không cảm biến vị trí · đèn giao thông · chu trình xả rửa theo thời gian</td>
+<td>Sơ đồ thời gian</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Phép thử một câu:</strong> ⚠ <em>&quot;Có cảm biến nào cho tôi biết bước này đã xong chưa?&quot;</em></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trả lời</th>
+<th>Kết luận</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Có</strong></td>
+<td>⭐ Dùng phản hồi đó. Timer chỉ để <strong>báo lỗi</strong> (mục 26.4)</td>
+</tr>
+<tr>
+<td><strong>Không, và không lắp được</strong></td>
+<td>Sơ đồ thời gian là hợp lệ — ⚠ nhưng <strong>ghi rõ trong đặc tả rằng bước này không được xác nhận</strong></td>
+</tr>
+<tr>
+<td><em>&quot;Có nhưng lắp thêm thì tốn&quot;</em></td>
+<td>⚠⚠ <strong>Đây là quyết định của người trả tiền, không phải của người lập trình</strong> (Chương 23)</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Vì sao vẫn phải biết phương pháp này dù hiếm dùng:</strong> bạn sẽ <strong>đọc phải nó</strong> trong chương trình
+của người khác. Thấy một chuỗi timer nối tiếp không kèm phản hồi nào, ⭐ câu hỏi đầu tiên không phải
+<em>&quot;viết lại thế nào&quot;</em> mà là ⚠ <strong>&quot;quy trình này có gì để đo không?&quot;</strong></p>
+<p>⭐ Nếu <strong>có</strong> mà tác giả cũ không dùng — đó là <strong>nợ kỹ thuật cần trả</strong> (Chương 22).
+Nếu <strong>không có</strong> — thiết kế đó <strong>đúng</strong>, và bạn suýt viết lại một thứ vốn không sai.</p>
+</blockquote>
+<hr>
 <h2 id="263-trên-máy-mu-dp-01">26.3 Trên máy mẫu DP-01</h2>
 <p>Trình tự trạm 1, viết bằng biến số bước:</p>
 <pre><code class="language-iecst">// ── Trình tự trạm 1 — chỉ chạy khi tầng máy cho phép (Chương 27) ──
@@ -18300,6 +18394,16 @@ lần nhánh kia chậm bất thường.</p>
 </tr>
 <tr>
 <td>7</td>
+<td>⭐ Đã hỏi <em>&quot;có cảm biến nào cho biết bước này xong chưa?&quot;</em> cho <strong>từng</strong> bước?</td>
+<td>Có, và ghi lại câu trả lời</td>
+</tr>
+<tr>
+<td>8</td>
+<td>⚠ Bước nào <strong>không</strong> có phản hồi thật đã được <strong>ghi vào đặc tả</strong>?</td>
+<td>Có — không để im lặng</td>
+</tr>
+<tr>
+<td>7</td>
 <td>Có biến giữ <strong>bước bị kẹt</strong> lúc lỗi?</td>
 <td>Có, chỉ xoá khi Reset</td>
 </tr>
@@ -18333,6 +18437,10 @@ sai.</li>
 từ bên ngoài?</li>
 <li>Vì sao <code>RETURN</code> khi máy không cho phép lại <strong>giữ nguyên bước</strong> thay vì đặt về 0?</li>
 <li>Điểm hợp nhất nhánh song song dùng <code>OR</code> thay vì <code>AND</code>. Vì sao lỗi này <strong>khó phát hiện khi thử nghiệm</strong>?</li>
+<li>⭐ Nêu phương pháp thiết kế <strong>thứ hai</strong> ngoài lưu đồ → bit bước. ⚠⚠ Điều kiện áp dụng duy nhất của
+ nó là gì, và vì sao dùng sai điều kiện là quay lại sai lầm ở Chương 17?</li>
+<li>⭐ Bạn đọc chương trình của người khác và thấy <strong>một chuỗi timer nối tiếp, không có phản hồi nào</strong>.
+Câu hỏi đầu tiên phải đặt là gì? Nêu hai kết luận có thể, và mỗi kết luận dẫn tới hành động nào.</li>
 </ol>
 <p>Câu 2 và câu 6 là hai câu phân loại. Câu 2 là nguyên tắc trung tâm của chương; câu 6 kiểm tra bạn hiểu
 rằng &quot;chờ&quot; và &quot;kẹt&quot; nhìn từ ngoài <strong>giống hệt nhau</strong>, nên phải thiết kế cách phân biệt.</p>
@@ -18348,6 +18456,10 @@ hai trạm chạy song song, dùng chung một chuyền — và chương này đ
 tiếp, nhánh song song và nhánh lựa chọn) — mô hình khái niệm cho chương này; lệnh <code>CASE</code> và khối
 <code>TON</code>. <em>(tiêu chuẩn có bản quyền; chương này chỉ diễn giải ở mức khái niệm)</em></li>
 <li>Đặc tả trình tự hai trạm và bảng thời gian bước của DP-01 — Phụ lục J.</li>
+<li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, ch. 10 <em>Structured Logic Design</em>:
+phương pháp <strong>bit trình tự</strong> theo các bước đánh số, và ⭐ <strong>thiết kế theo sơ đồ thời gian</strong> kèm
+⚠⚠ <strong>điều kiện áp dụng</strong>: chỉ hợp lệ cho quy trình <em>&quot;phụ thuộc duy nhất vào thời gian&quot;</em> — nền cho
+mục 26.2b.</li>
 </ul>
 <blockquote>
 <p>⚡ Các con số thời gian trong chương (3 giây cho hành trình xy-lanh, 60 giây cho bước xử lý) là <strong>giá
@@ -18411,6 +18523,59 @@ phương số trạm.</p>
 <td>Kẹp trạm 1, chặn trạm 1, chuyền</td>
 </tr>
 </tbody></table></div>
+<h3>⭐⭐ Bốn câu hỏi để tự suy ra cách chia — dùng khi máy không giống DP-01</h3>
+<p>Ba tầng ở trên là <strong>kết quả</strong>, không phải xuất phát điểm. Với một cỗ máy khác — một trạm, hoặc mười
+trạm, hoặc một dây chuyền không có &quot;sản phẩm&quot; rõ ràng — bạn phải tự chia. ⭐ Bốn câu hỏi này làm việc đó:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>Câu hỏi</th>
+<th>Trả lời <strong>CÓ</strong> nghĩa là</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>⭐ <em>Hai việc này có bao giờ xảy ra <strong>cùng lúc</strong> không?</em></td>
+<td>⭐ <strong>Phải tách</strong> — gộp lại thì một việc chặn việc kia</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td><em>Việc này có xảy ra <strong>bất kể</strong> các việc khác không?</em></td>
+<td>⭐ <strong>Tách</strong> — nó độc lập, đừng buộc nó vào trình tự nào</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><em>Có một <strong>trình tự rõ ràng</strong> không?</em></td>
+<td>Phần đó là <strong>một</strong> khối trình tự (Chương 26)</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>⭐ <em>Có <strong>ranh giới vật lý</strong> trong quy trình hoặc trong máy không?</em></td>
+<td>⭐ <strong>Chia theo đúng ranh giới đó</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Câu 4 là câu đáng tin nhất, và cũng là câu hay bị bỏ qua nhất.</strong></p>
+<p>Ranh giới vật lý — hai trạm cách nhau, hai cụm cơ khí độc lập, hai tủ điện — ⭐ <strong>là ranh giới đã
+được thực tế kiểm chứng</strong>. Chia phần mềm theo nó thì cấu trúc chương trình <strong>soi gương</strong> cấu trúc
+máy, và người bảo trì đứng trước máy biết ngay phải mở khối nào.</p>
+<p>⚠ Ngược lại, chia theo thứ tự khác — theo loại thiết bị chẳng hạn, <em>&quot;tất cả xy-lanh vào một khối&quot;</em> —
+tạo ra chương trình mà ⚠⚠ <strong>không ai đứng trước máy suy ra được</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Thứ tự dùng:</strong> hỏi câu 4 <strong>trước</strong>. Nếu máy có ranh giới vật lý rõ, phần lớn việc chia đã xong.
+Ba câu còn lại dùng để xử lý phần không có ranh giới vật lý.</p>
+<p>⚡ Trên DP-01, câu 4 cho ngay <strong>hai trạm</strong>; câu 1 cho biết hai trạm chạy đồng thời nên <strong>không được</strong>
+gộp; câu 3 cho biết bên trong mỗi trạm là một trình tự; câu 2 tách ra những thứ chạy độc lập —
+⭐ <strong>và đó chính là ba tầng ở bảng trên.</strong></p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Điều kiện tiên quyết cho cả bốn câu: hiểu quy trình trước đã.</strong> Khi quy trình mới hiểu một
+nửa, việc chia sẽ <strong>phải làm đi làm lại</strong> — và mỗi lần chia lại là viết lại. ⭐ Đây là lý do
+Chương 23 (từ yêu cầu tới đặc tả) đứng <strong>trước</strong> chương này.</p>
+</blockquote>
+<hr>
 <h3>Ba quy tắc gọi — vi phạm là kiến trúc hỏng</h3>
 <blockquote>
 <p><strong>Q1 — Chỉ gọi xuống, không gọi lên.</strong>
@@ -18761,6 +18926,16 @@ cầu định lượng về thời gian</strong> viết ra được thành con s
 <td>Một, trừ khi có con số biện minh</td>
 </tr>
 <tr>
+<td>11</td>
+<td>⭐ Cách chia có <strong>soi gương ranh giới vật lý</strong> của máy không?</td>
+<td>Có — người đứng trước máy suy ra được</td>
+</tr>
+<tr>
+<td>12</td>
+<td>⚠ Hai việc chạy <strong>cùng lúc</strong> có bị gộp vào một khối không?</td>
+<td>Không</td>
+</tr>
+<tr>
 <td>10</td>
 <td>Điều kiện &quot;hết việc&quot; có kiểm <strong>mọi trạm</strong> không?</td>
 <td>Có — không chỉ trạm đầu</td>
@@ -18779,6 +18954,11 @@ xuống 5 giây thì năng suất đổi thế nào — <strong>vì sao</strong>
 <li>Mô tả tình huống <strong>xả cạn</strong> và cho biết điều kiện đúng để máy coi là đã hết việc.</li>
 <li>Hai trạm cùng cần chuyền chạy. Ai được ghi vào <code>DO_ConvRun</code>, và hai trạm làm gì?</li>
 <li>Khi nào tách tác vụ là chính đáng? Nêu <strong>một lý do đúng</strong> và <strong>một lý do sai</strong> thường gặp.</li>
+<li>⭐⭐ Nêu <strong>bốn câu hỏi</strong> để tự chia một bài toán điều khiển. ⭐ Câu nào đáng tin nhất, và vì sao?</li>
+<li>⚠ Một chương trình chia theo <strong>loại thiết bị</strong> (<em>&quot;mọi xy-lanh vào một khối&quot;</em>). Nêu vì sao cách chia
+đó gây khó cho người bảo trì, dù bản thân code có thể chạy đúng.</li>
+<li>⭐ Vì sao Chương 23 (từ yêu cầu tới đặc tả) phải đứng <strong>trước</strong> chương này? Chuyện gì xảy ra khi
+chia kiến trúc lúc mới hiểu một nửa quy trình?</li>
 </ol>
 <p>Câu 2 và câu 5 là hai câu phân loại. Câu 2 kiểm tra bạn phân biệt được <em>chạy đúng</em> với <em>thiết kế đúng</em>;
 câu 5 kiểm tra bạn hiểu nút cổ chai — thứ quyết định mọi quyết định cải tiến năng suất về sau.</p>
@@ -18796,6 +18976,10 @@ chưa trả lời: khi máy dừng giữa chừng ở một tư thế bất kỳ
 <li>Tài liệu hãng về tổ chức tác vụ, chương trình và khối tái dùng — dùng để đối chiếu khác biệt; số hiệu
 cụ thể ghi trong Phụ lục A1.</li>
 <li>Cấu hình cơ cấu và đặc tả trình tự hai trạm của DP-01 — Phụ lục J.</li>
+<li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, §32.4.1 <em>Developing a Program
+Structure</em>: ⭐ <strong>bốn câu hỏi để chia bài toán điều khiển</strong> (chạy cùng lúc? · độc lập? · có trình tự
+rõ? · ⭐ <strong>có ranh giới vật lý?</strong>), và ⚠ điều kiện tiên quyết <em>hiểu quy trình trước</em> — nền cho
+mục 27.2.</li>
 </ul>
 <blockquote>
 <p>⚡ Ba tầng ở mục 27.2 là <strong>cách tổ chức thực dụng đã được kiểm chứng cho máy tự động hoá rời rạc</strong>,
@@ -20386,6 +20570,46 @@ càng tiện thì càng dễ dùng mà không nghĩ.</p>
 </tr>
 </tbody></table></div>
 <hr>
+<h3>⚠⚠ Thời điểm viết tài liệu — thứ quyết định chất lượng của nó</h3>
+<p>Comment tốt viết lúc nào? Cùng lúc viết code. ⭐ <strong>Nguyên tắc đó đúng cho cả hồ sơ dự án</strong>, và đây là
+lý do:</p>
+<blockquote>
+<p>⚠⚠ <strong>Tài liệu để dồn tới cuối dự án thì KHÔNG BAO GIỜ tốt được — không phải vì lười, mà vì đến lúc
+đó chi tiết đã quên mất rồi.</strong></p>
+<p>Người viết phải <strong>nhớ lại</strong>, nên vừa mất nhiều thời gian hơn, vừa ra một bản luôn thiếu. ⚠ Và thứ
+bị quên trước nhất luôn là ⭐ <strong>lý do</strong> — <em>vì sao chọn cách này thay vì cách kia</em> — đúng thứ người
+đọc sau cần nhất (mục 30.4).</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thời điểm</th>
+<th>Ghi cái gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Trước khi viết</td>
+<td>Bảng I/O · đặc tả trình tự (Chương 23)</td>
+</tr>
+<tr>
+<td>⭐ <strong>Trong khi viết</strong></td>
+<td>⭐ <strong>Lý do của mọi quyết định lạ</strong> · con số lấy từ đâu · cái đã thử mà không được</td>
+</tr>
+<tr>
+<td>Khi chạy thử</td>
+<td>Giá trị đo thật thay cho giá trị giả định (Chương 52)</td>
+</tr>
+<tr>
+<td>⚠ Sau khi xong</td>
+<td>⭐ <strong>Chỉ còn dọn dẹp và đóng gói</strong> — không phải lúc bắt đầu viết</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Hệ quả tổ chức:</strong> hồ sơ nên ở dạng <strong>biểu mẫu để sẵn</strong> (Phụ lục C) chứ không phải một bản báo
+cáo viết một lần. Biểu mẫu đặt tại chỗ mọi người lấy được và <strong>cập nhật được khi máy thay đổi</strong> —
+tài liệu chỉ sống nếu người bảo trì sửa được nó (Chương 53).</p>
+</blockquote>
+<hr>
 <h2 id="306-qun-lý-phiên-bn-chương-trình-plc">30.6 Quản lý phiên bản chương trình PLC</h2>
 <h3>Cái gì so sánh được, cái gì không</h3>
 <p>Đây là chỗ chương trình PLC khác phần mềm thông thường, và khác biệt đó quyết định cách làm:</p>
@@ -20560,6 +20784,11 @@ lại là 3 giây</strong>.</p>
 <td>Có</td>
 </tr>
 <tr>
+<td>⚠⚠ Viết tài liệu lúc nào</td>
+<td>⭐ <strong>Trong khi làm</strong>, không dồn tới cuối</td>
+<td>Đến cuối thì chi tiết đã quên, và <strong>lý do</strong> quên trước nhất</td>
+</tr>
+<tr>
 <td>10</td>
 <td>Phiên bản <strong>hiển thị trên màn hình</strong> và đọc được khi xem trực tuyến</td>
 <td>Có</td>
@@ -20579,6 +20808,8 @@ lớn lên?</li>
 <li>Cái gì trong dự án PLC <strong>so sánh được</strong> bằng công cụ và cái gì không? Hệ quả với việc sao lưu?</li>
 <li>Vì sao viết <code>M_Out := (A AND NOT B) OR …</code> gọn trong một dòng lại là lựa chọn tệ?</li>
 <li>Nhật ký thay đổi ghi <em>&quot;v1.4 — sửa timeout&quot;</em>. Thiếu gì, và vì sao thứ thiếu đó quan trọng nhất?</li>
+<li>⚠⚠ Vì sao tài liệu dồn tới cuối dự án <em>&quot;không bao giờ tốt được&quot;</em> — và lý do đó <strong>không phải</strong> là
+lười? ⭐ Thứ gì bị quên trước nhất, và vì sao đúng thứ đó lại quan trọng nhất?</li>
 </ol>
 <p>Câu 2, 6 và 7 là ba câu phân loại. Câu 7 là câu về an toàn — dùng lại code là chỗ giả định cũ đi theo
 mà không ai để ý.</p>
@@ -20595,6 +20826,9 @@ kiểu dữ liệu người dùng. <em>(tiêu chuẩn có bản quyền)</em></l
 tài liệu này bàn đúng về cấu trúc chương trình, khối tái dùng và tối ưu vùng nhớ. Số hiệu cụ thể
 ghi trong Phụ lục A1.</li>
 <li>Quy ước đặt tên và cấu trúc dùng trong sách — Phụ lục C.</li>
+<li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, §32.5 <em>Documentation</em>: ⭐ tài liệu
+phải <strong>phát triển cùng dự án</strong>, để tới cuối thì chi tiết đã quên nên vừa lâu hơn vừa thiếu; và cách
+dùng <strong>biểu mẫu để sẵn</strong>, đặt nơi mọi người truy cập và cập nhật được khi máy thay đổi.</li>
 </ul>
 <blockquote>
 <p>⚡ Quy ước đặt tên ở mục 30.2 là <strong>quy ước của cuốn sách này</strong>, không phải chuẩn ngành. Dự án của bạn

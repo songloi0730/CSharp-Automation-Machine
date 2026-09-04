@@ -12443,6 +12443,54 @@ Cần chèn một bước giữa 20 và 30? Dùng 25. Không phải sửa gì kh
 
 ---
 
+## 26.2b ⭐ Phương pháp thứ hai — và biết KHI NÀO nó hợp lệ mới là phần khó
+
+Cách ở mục trên — lưu đồ rồi bit bước — là cách **mặc định đúng** cho máy tự động hoá. Nhưng có một
+phương pháp thiết kế thứ hai, và bạn sẽ gặp nó trong tài liệu lẫn trong code người khác:
+
+> ⭐ **Thiết kế theo sơ đồ thời gian** *(timing diagram)*: vẽ các ngõ ra theo trục thời gian, đánh dấu
+> các mốc quan trọng, rồi đặt một timer cho mỗi mốc.
+
+**Năm bước:**
+
+| | Việc |
+|---|---|
+| 1 | Hiểu quy trình |
+| 2 | ⭐ Xác định **ngõ ra nào phụ thuộc thời gian** |
+| 3 | Vẽ **sơ đồ thời gian** cho các ngõ ra đó |
+| 4 | Gán **một timer cho mỗi mốc** ngõ ra bật hoặc tắt |
+| 5 | Viết logic đọc giá trị timer để bật/tắt ngõ ra |
+
+### ⚠⚠ Điều kiện áp dụng — đọc kỹ dòng này trước khi dùng
+
+> ⭐⭐ **Sơ đồ thời gian chỉ hợp lệ cho quy trình PHỤ THUỘC DUY NHẤT VÀO THỜI GIAN.**
+>
+> ⚠ Nếu quy trình có **phản hồi thật** — cảm biến báo cơ cấu đã tới nơi, công tắc hành trình, tín hiệu
+> xong việc — thì ⚠⚠ **dùng sơ đồ thời gian là quay lại đúng sai lầm lớn nhất ở Chương 17**:
+> *"chờ 2 giây chắc kẹp xong rồi"*.
+
+| Loại quy trình | Ví dụ | Phương pháp đúng |
+|---|---|---|
+| ⭐ Có phản hồi thật | ⭐ **DP-01** — mọi bước đều có cảm biến xác nhận | ⭐ **Lưu đồ → bit bước** (mục 26.2) |
+| Thuần thời gian, **không có gì để đo** | Cửa tự động không cảm biến vị trí · đèn giao thông · chu trình xả rửa theo thời gian | Sơ đồ thời gian |
+
+> ⭐ **Phép thử một câu:** ⚠ *"Có cảm biến nào cho tôi biết bước này đã xong chưa?"*
+>
+> | Trả lời | Kết luận |
+> |---|---|
+> | **Có** | ⭐ Dùng phản hồi đó. Timer chỉ để **báo lỗi** (mục 26.4) |
+> | **Không, và không lắp được** | Sơ đồ thời gian là hợp lệ — ⚠ nhưng **ghi rõ trong đặc tả rằng bước này không được xác nhận** |
+> | *"Có nhưng lắp thêm thì tốn"* | ⚠⚠ **Đây là quyết định của người trả tiền, không phải của người lập trình** (Chương 23) |
+
+> ⚡ **Vì sao vẫn phải biết phương pháp này dù hiếm dùng:** bạn sẽ **đọc phải nó** trong chương trình
+> của người khác. Thấy một chuỗi timer nối tiếp không kèm phản hồi nào, ⭐ câu hỏi đầu tiên không phải
+> *"viết lại thế nào"* mà là ⚠ **"quy trình này có gì để đo không?"**
+>
+> ⭐ Nếu **có** mà tác giả cũ không dùng — đó là **nợ kỹ thuật cần trả** (Chương 22).
+> Nếu **không có** — thiết kế đó **đúng**, và bạn suýt viết lại một thứ vốn không sai.
+
+---
+
 ## 26.3 Trên máy mẫu DP-01
 
 Trình tự trạm 1, viết bằng biến số bước:
@@ -12759,6 +12807,8 @@ lần nhánh kia chậm bất thường.
 | 4 | Bước chờ vô hạn có được **giám sát ở tầng máy**? | Có |
 | 5 | Thông báo lỗi nói được **bước nào · chờ gì · kiểm tra gì**? | Đủ ba |
 | 6 | Số bước đánh **cách 10**? | Có |
+| 7 | ⭐ Đã hỏi *"có cảm biến nào cho biết bước này xong chưa?"* cho **từng** bước? | Có, và ghi lại câu trả lời |
+| 8 | ⚠ Bước nào **không** có phản hồi thật đã được **ghi vào đặc tả**? | Có — không để im lặng |
 | 7 | Có biến giữ **bước bị kẹt** lúc lỗi? | Có, chỉ xoá khi Reset |
 | 8 | Trình tự có kiểm **tầng máy cho phép** trước khi tiến bước? | Có, và `RETURN` giữ nguyên bước |
 | 9 | Điểm hợp nhất nhánh song song dùng **AND**? | Có |
@@ -12779,6 +12829,10 @@ lần nhánh kia chậm bất thường.
    từ bên ngoài?
 7. Vì sao `RETURN` khi máy không cho phép lại **giữ nguyên bước** thay vì đặt về 0?
 8. Điểm hợp nhất nhánh song song dùng `OR` thay vì `AND`. Vì sao lỗi này **khó phát hiện khi thử nghiệm**?
+9. ⭐ Nêu phương pháp thiết kế **thứ hai** ngoài lưu đồ → bit bước. ⚠⚠ Điều kiện áp dụng duy nhất của
+    nó là gì, và vì sao dùng sai điều kiện là quay lại sai lầm ở Chương 17?
+10. ⭐ Bạn đọc chương trình của người khác và thấy **một chuỗi timer nối tiếp, không có phản hồi nào**.
+    Câu hỏi đầu tiên phải đặt là gì? Nêu hai kết luận có thể, và mỗi kết luận dẫn tới hành động nào.
 
 Câu 2 và câu 6 là hai câu phân loại. Câu 2 là nguyên tắc trung tâm của chương; câu 6 kiểm tra bạn hiểu
 rằng "chờ" và "kẹt" nhìn từ ngoài **giống hệt nhau**, nên phải thiết kế cách phân biệt.
@@ -12799,6 +12853,10 @@ hai trạm chạy song song, dùng chung một chuyền — và chương này đ
   tiếp, nhánh song song và nhánh lựa chọn) — mô hình khái niệm cho chương này; lệnh `CASE` và khối
   `TON`. *(tiêu chuẩn có bản quyền; chương này chỉ diễn giải ở mức khái niệm)*
 - Đặc tả trình tự hai trạm và bảng thời gian bước của DP-01 — Phụ lục J.
+- **Hugh Jack** — *Automating Manufacturing Systems with PLCs*, ch. 10 *Structured Logic Design*:
+  phương pháp **bit trình tự** theo các bước đánh số, và ⭐ **thiết kế theo sơ đồ thời gian** kèm
+  ⚠⚠ **điều kiện áp dụng**: chỉ hợp lệ cho quy trình *"phụ thuộc duy nhất vào thời gian"* — nền cho
+  mục 26.2b.
 
 > ⚡ Các con số thời gian trong chương (3 giây cho hành trình xy-lanh, 60 giây cho bước xử lý) là **giá
 > trị minh hoạ của máy mẫu**. Thời gian thật phải đo trên máy của bạn rồi cộng biên an toàn — đặt quá
@@ -12850,6 +12908,40 @@ Cách tổ chức đã được kiểm chứng là chia chương trình thành *
 | **Máy** *(machine)* | Chế độ vận hành, lỗi toàn máy, cho phép/cấm | *Máy có được phép chạy không?* | Máy trạng thái ở Chương 25 |
 | **Trạm** *(station)* | Trình tự xử lý **sản phẩm đang ở trạm đó** | *Board ở trạm này đang ở bước nào?* | Trạm tra keo, trạm sấy |
 | **Cơ cấu** *(device)* | Điều khiển **một** thiết bị vật lý | *Xy-lanh này ra hay vào?* | Kẹp trạm 1, chặn trạm 1, chuyền |
+
+### ⭐⭐ Bốn câu hỏi để tự suy ra cách chia — dùng khi máy không giống DP-01
+
+Ba tầng ở trên là **kết quả**, không phải xuất phát điểm. Với một cỗ máy khác — một trạm, hoặc mười
+trạm, hoặc một dây chuyền không có "sản phẩm" rõ ràng — bạn phải tự chia. ⭐ Bốn câu hỏi này làm việc đó:
+
+| # | Câu hỏi | Trả lời **CÓ** nghĩa là |
+|:-:|---|---|
+| 1 | ⭐ *Hai việc này có bao giờ xảy ra **cùng lúc** không?* | ⭐ **Phải tách** — gộp lại thì một việc chặn việc kia |
+| 2 | *Việc này có xảy ra **bất kể** các việc khác không?* | ⭐ **Tách** — nó độc lập, đừng buộc nó vào trình tự nào |
+| 3 | *Có một **trình tự rõ ràng** không?* | Phần đó là **một** khối trình tự (Chương 26) |
+| 4 | ⭐ *Có **ranh giới vật lý** trong quy trình hoặc trong máy không?* | ⭐ **Chia theo đúng ranh giới đó** |
+
+> ⭐⭐ **Câu 4 là câu đáng tin nhất, và cũng là câu hay bị bỏ qua nhất.**
+>
+> Ranh giới vật lý — hai trạm cách nhau, hai cụm cơ khí độc lập, hai tủ điện — ⭐ **là ranh giới đã
+> được thực tế kiểm chứng**. Chia phần mềm theo nó thì cấu trúc chương trình **soi gương** cấu trúc
+> máy, và người bảo trì đứng trước máy biết ngay phải mở khối nào.
+>
+> ⚠ Ngược lại, chia theo thứ tự khác — theo loại thiết bị chẳng hạn, *"tất cả xy-lanh vào một khối"* —
+> tạo ra chương trình mà ⚠⚠ **không ai đứng trước máy suy ra được**.
+
+> ⭐ **Thứ tự dùng:** hỏi câu 4 **trước**. Nếu máy có ranh giới vật lý rõ, phần lớn việc chia đã xong.
+> Ba câu còn lại dùng để xử lý phần không có ranh giới vật lý.
+>
+> ⚡ Trên DP-01, câu 4 cho ngay **hai trạm**; câu 1 cho biết hai trạm chạy đồng thời nên **không được**
+> gộp; câu 3 cho biết bên trong mỗi trạm là một trình tự; câu 2 tách ra những thứ chạy độc lập —
+> ⭐ **và đó chính là ba tầng ở bảng trên.**
+
+> ⚠ **Điều kiện tiên quyết cho cả bốn câu: hiểu quy trình trước đã.** Khi quy trình mới hiểu một
+> nửa, việc chia sẽ **phải làm đi làm lại** — và mỗi lần chia lại là viết lại. ⭐ Đây là lý do
+> Chương 23 (từ yêu cầu tới đặc tả) đứng **trước** chương này.
+
+---
 
 ### Ba quy tắc gọi — vi phạm là kiến trúc hỏng
 
@@ -13192,6 +13284,8 @@ Dùng bảng này khi rà soát chương trình của mình hoặc của ngườ
 | 7 | Tài nguyên dùng chung có **đúng một chủ** không? | Có, ở tầng máy |
 | 8 | Thứ tự gọi có đúng **cơ cấu → máy → trạm → ghi ngõ ra** không? | Có |
 | 9 | Có bao nhiêu tác vụ? Mỗi tác vụ thêm có **lý do định lượng** không? | Một, trừ khi có con số biện minh |
+| 11 | ⭐ Cách chia có **soi gương ranh giới vật lý** của máy không? | Có — người đứng trước máy suy ra được |
+| 12 | ⚠ Hai việc chạy **cùng lúc** có bị gộp vào một khối không? | Không |
 | 10 | Điều kiện "hết việc" có kiểm **mọi trạm** không? | Có — không chỉ trạm đầu |
 
 ---
@@ -13208,6 +13302,11 @@ Dùng bảng này khi rà soát chương trình của mình hoặc của ngườ
 6. Mô tả tình huống **xả cạn** và cho biết điều kiện đúng để máy coi là đã hết việc.
 7. Hai trạm cùng cần chuyền chạy. Ai được ghi vào `DO_ConvRun`, và hai trạm làm gì?
 8. Khi nào tách tác vụ là chính đáng? Nêu **một lý do đúng** và **một lý do sai** thường gặp.
+9. ⭐⭐ Nêu **bốn câu hỏi** để tự chia một bài toán điều khiển. ⭐ Câu nào đáng tin nhất, và vì sao?
+10. ⚠ Một chương trình chia theo **loại thiết bị** (*"mọi xy-lanh vào một khối"*). Nêu vì sao cách chia
+    đó gây khó cho người bảo trì, dù bản thân code có thể chạy đúng.
+11. ⭐ Vì sao Chương 23 (từ yêu cầu tới đặc tả) phải đứng **trước** chương này? Chuyện gì xảy ra khi
+    chia kiến trúc lúc mới hiểu một nửa quy trình?
 
 Câu 2 và câu 5 là hai câu phân loại. Câu 2 kiểm tra bạn phân biệt được *chạy đúng* với *thiết kế đúng*;
 câu 5 kiểm tra bạn hiểu nút cổ chai — thứ quyết định mọi quyết định cải tiến năng suất về sau.
@@ -13230,6 +13329,10 @@ chưa trả lời: khi máy dừng giữa chừng ở một tư thế bất kỳ
 - Tài liệu hãng về tổ chức tác vụ, chương trình và khối tái dùng — dùng để đối chiếu khác biệt; số hiệu
   cụ thể ghi trong Phụ lục A1.
 - Cấu hình cơ cấu và đặc tả trình tự hai trạm của DP-01 — Phụ lục J.
+- **Hugh Jack** — *Automating Manufacturing Systems with PLCs*, §32.4.1 *Developing a Program
+  Structure*: ⭐ **bốn câu hỏi để chia bài toán điều khiển** (chạy cùng lúc? · độc lập? · có trình tự
+  rõ? · ⭐ **có ranh giới vật lý?**), và ⚠ điều kiện tiên quyết *hiểu quy trình trước* — nền cho
+  mục 27.2.
 
 > ⚡ Ba tầng ở mục 27.2 là **cách tổ chức thực dụng đã được kiểm chứng cho máy tự động hoá rời rạc**,
 > không phải một kiến trúc chuẩn hoá bắt buộc. Máy rất nhỏ có thể gộp tầng trạm vào tầng máy; máy rất
@@ -14399,6 +14502,31 @@ Kiểu thứ ba là kiểu hay xảy ra nhất trong thực tế, và nó tệ h
 
 ---
 
+### ⚠⚠ Thời điểm viết tài liệu — thứ quyết định chất lượng của nó
+
+Comment tốt viết lúc nào? Cùng lúc viết code. ⭐ **Nguyên tắc đó đúng cho cả hồ sơ dự án**, và đây là
+lý do:
+
+> ⚠⚠ **Tài liệu để dồn tới cuối dự án thì KHÔNG BAO GIỜ tốt được — không phải vì lười, mà vì đến lúc
+> đó chi tiết đã quên mất rồi.**
+>
+> Người viết phải **nhớ lại**, nên vừa mất nhiều thời gian hơn, vừa ra một bản luôn thiếu. ⚠ Và thứ
+> bị quên trước nhất luôn là ⭐ **lý do** — *vì sao chọn cách này thay vì cách kia* — đúng thứ người
+> đọc sau cần nhất (mục 30.4).
+
+| Thời điểm | Ghi cái gì |
+|---|---|
+| Trước khi viết | Bảng I/O · đặc tả trình tự (Chương 23) |
+| ⭐ **Trong khi viết** | ⭐ **Lý do của mọi quyết định lạ** · con số lấy từ đâu · cái đã thử mà không được |
+| Khi chạy thử | Giá trị đo thật thay cho giá trị giả định (Chương 52) |
+| ⚠ Sau khi xong | ⭐ **Chỉ còn dọn dẹp và đóng gói** — không phải lúc bắt đầu viết |
+
+> ⭐ **Hệ quả tổ chức:** hồ sơ nên ở dạng **biểu mẫu để sẵn** (Phụ lục C) chứ không phải một bản báo
+> cáo viết một lần. Biểu mẫu đặt tại chỗ mọi người lấy được và **cập nhật được khi máy thay đổi** —
+> tài liệu chỉ sống nếu người bảo trì sửa được nó (Chương 53).
+
+---
+
 ## 30.6 Quản lý phiên bản chương trình PLC
 
 ### Cái gì so sánh được, cái gì không
@@ -14513,6 +14641,7 @@ Cột **vì sao** là cột duy nhất không suy ra được từ chương trì
 | 7 | Có comment cho **những cách đã thử mà không được** | Có ở những chỗ từng mất thời gian |
 | 8 | Khối trong thư viện có **ghi rõ giả định an toàn** | Có |
 | 9 | **Nhật ký thay đổi** trong chương trình, có cột *vì sao* | Có |
+| ⚠⚠ Viết tài liệu lúc nào | ⭐ **Trong khi làm**, không dồn tới cuối | Đến cuối thì chi tiết đã quên, và **lý do** quên trước nhất |
 | 10 | Phiên bản **hiển thị trên màn hình** và đọc được khi xem trực tuyến | Có |
 
 ---
@@ -14530,6 +14659,8 @@ Cột **vì sao** là cột duy nhất không suy ra được từ chương trì
 8. Cái gì trong dự án PLC **so sánh được** bằng công cụ và cái gì không? Hệ quả với việc sao lưu?
 9. Vì sao viết `M_Out := (A AND NOT B) OR …` gọn trong một dòng lại là lựa chọn tệ?
 10. Nhật ký thay đổi ghi *"v1.4 — sửa timeout"*. Thiếu gì, và vì sao thứ thiếu đó quan trọng nhất?
+11. ⚠⚠ Vì sao tài liệu dồn tới cuối dự án *"không bao giờ tốt được"* — và lý do đó **không phải** là
+    lười? ⭐ Thứ gì bị quên trước nhất, và vì sao đúng thứ đó lại quan trọng nhất?
 
 Câu 2, 6 và 7 là ba câu phân loại. Câu 7 là câu về an toàn — dùng lại code là chỗ giả định cũ đi theo
 mà không ai để ý.
@@ -14551,6 +14682,9 @@ một lớp: analog và chuyển động.
   tài liệu này bàn đúng về cấu trúc chương trình, khối tái dùng và tối ưu vùng nhớ. Số hiệu cụ thể
   ghi trong Phụ lục A1.
 - Quy ước đặt tên và cấu trúc dùng trong sách — Phụ lục C.
+- **Hugh Jack** — *Automating Manufacturing Systems with PLCs*, §32.5 *Documentation*: ⭐ tài liệu
+  phải **phát triển cùng dự án**, để tới cuối thì chi tiết đã quên nên vừa lâu hơn vừa thiếu; và cách
+  dùng **biểu mẫu để sẵn**, đặt nơi mọi người truy cập và cập nhật được khi máy thay đổi.
 
 > ⚡ Quy ước đặt tên ở mục 30.2 là **quy ước của cuốn sách này**, không phải chuẩn ngành. Dự án của bạn
 > có thể dùng quy ước khác — điều bắt buộc là **có một quy ước, viết ra thành văn, và dùng nhất quán**.

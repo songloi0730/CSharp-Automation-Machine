@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260903</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260904</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -579,6 +579,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#253-mô-hình-trng-thái-chun-cho-mt-c-máy">25.3 Mô hình trạng thái chuẩn cho một cỗ máy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#254-bng-chuyn-trng-thái-công-c-làm-vic-tht">25.4 Bảng chuyển trạng thái — công cụ làm việc thật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#255-hin-thc-hoá-hai-cách">25.5 Hiện thực hoá — hai cách</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#255b-bt-bin-nm-dưi-mi-cách-hin-thc-và-câu-hi-ưu-tiên">25.5b ⭐⭐ Bất biến nằm dưới mọi cách hiện thực — và câu hỏi ưu tiên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#256-trng-thái-máy-tng-và-trng-thái-tng-trm">25.6 Trạng thái máy tổng và trạng thái từng trạm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#257-by-thưng-gp">25.7 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#258-khác-bit-gia-các-hãng">25.8 Khác biệt giữa các hãng</a></li>
@@ -1156,7 +1157,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260903</td>
+<td>v1.0.0.260904</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -9678,6 +9679,86 @@ năng</strong>. Quy tắc: <strong>mỗi chỗ dùng, một thể hiện riêng.
 </code></pre>
 <p>Ba thể hiện dùng chung một bản thiết kế, nhưng <strong>mỗi cái nhớ việc của mình</strong>. Nếu bạn chỉ tạo một thể
 hiện rồi dùng cho cả ba chỗ, cả ba cùng ghi vào một mẩu bộ nhớ — và không cái nào đúng.</p>
+<h3>⚠ &quot;FB có bộ nhớ&quot; đúng với THỂ HIỆN, không đúng với mọi biến bên trong nó</h3>
+<p>Có một loại biến ⭐ <strong>không nhớ gì cả, kể cả khi nằm trong một FB</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Từ khoá</th>
+<th>Hành vi giữa hai lần gọi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VAR</code> (trong FB)</td>
+<td>⭐ <strong>Giữ giá trị</strong> — đây là bộ nhớ của thể hiện</td>
+</tr>
+<tr>
+<td>⚠⚠ <code>VAR_TEMP</code></td>
+<td>⭐ <strong>Khởi tạo lại mỗi lần gọi POU</strong> — giá trị lần trước <strong>mất sạch</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Bẫy:</strong> khai một biến đếm bằng <code>VAR_TEMP</code> rồi cộng dồn vào nó. Nó <strong>không bao giờ cộng được</strong> —
+mỗi lần gọi, biến quay về giá trị khởi tạo của kiểu. ⚠ Không có báo lỗi; chỉ có một con số mãi
+không tăng.</p>
+<p>⭐ Ngược lại, <code>VAR_TEMP</code> là <strong>lựa chọn đúng</strong> cho biến trung gian dùng xong bỏ — biến đếm vòng lặp,
+kết quả tạm của một phép tính. Nó nói rõ ý định <em>&quot;cái này không mang thông tin sang lần sau&quot;</em>, và
+⭐ <strong>tránh được đúng loại lỗi ở Chương 11 mục 11.7</strong> (hai POU vô tình chia nhau một biến).</p>
+</blockquote>
+<h3>⭐ Ba hướng tham số — và hướng thứ ba ít ai biết</h3>
+<p>Khi khai báo giao diện của một POU, chuẩn có <strong>ba</strong> hướng, không phải hai:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Từ khoá</th>
+<th>Chiều</th>
+<th>⭐ Truyền cái gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VAR_INPUT</code></td>
+<td>Vào</td>
+<td><strong>Bản sao giá trị</strong> — POU được gọi không sửa được biến gốc</td>
+</tr>
+<tr>
+<td><code>VAR_OUTPUT</code></td>
+<td>Ra</td>
+<td>Kết quả trả về cho bên gọi</td>
+</tr>
+<tr>
+<td>⭐⭐ <code>VAR_IN_OUT</code></td>
+<td><strong>Vào và ra cùng lúc</strong></td>
+<td>⭐ <strong>Chính vị trí bộ nhớ</strong> — POU được gọi <strong>sửa thẳng biến của bên gọi</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao <code>VAR_IN_OUT</code> quan trọng khi chương trình lớn lên:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Với <code>VAR_INPUT</code>/<code>VAR_OUTPUT</code></th>
+<th>⭐ Với <code>VAR_IN_OUT</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FB cần <strong>sửa một <code>STRUCT</code></strong> của bên gọi</td>
+<td>Phải chép vào, sửa, chép ra — ⚠ hai bản dễ lệch nhau</td>
+<td>Sửa thẳng, <strong>một bản duy nhất</strong></td>
+</tr>
+<tr>
+<td>Truyền một <strong>mảng lớn</strong></td>
+<td>⚠ Chép cả mảng mỗi lần gọi</td>
+<td>⭐ Chỉ truyền chỗ nó nằm</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Đây chính là công cụ cho mẫu <strong>&quot;một FB trạm, dùng cho nhiều trạm&quot;</strong> ở Chương 27, và cho việc
+⭐ <strong>truyền cả bản ghi công thức vào một khối xử lý</strong> ở Chương 29 — thay vì liệt kê ba mươi tham số
+đầu vào rời rạc.</p>
+<p>⚠ <strong>Cái giá:</strong> vì POU sửa thẳng biến gốc, ⭐ <strong>bạn mất tính chất &quot;gọi hàm không có tác dụng phụ&quot;</strong>.
+Khi đọc code người khác, một tham số <code>VAR_IN_OUT</code> nghĩa là ⚠ <strong>giá trị của bạn có thể đã bị đổi sau
+lời gọi</strong> — điều mà <code>VAR_INPUT</code> bảo đảm là không.</p>
+</blockquote>
 <h3>Khi nào viết FB của riêng mình</h3>
 <p>Khi bạn thấy mình <strong>chép đi chép lại cùng một đoạn logic cho nhiều đối tượng giống nhau</strong>.</p>
 <p>Trên DP-01 có bốn xy-lanh hai vị trí — hai chặn, hai kẹp — và logic điều khiển chúng giống hệt nhau:
@@ -10034,6 +10115,22 @@ có bộ nhớ (mục 14.3).</p>
 <td><strong>Đúng một POU</strong>, chạy cuối cùng</td>
 </tr>
 <tr>
+<td>⚠⚠ <code>VAR_TEMP</code></td>
+<td>⭐ <strong>Khởi tạo lại mỗi lần gọi</strong> — FB có bộ nhớ, biến này thì không</td>
+</tr>
+<tr>
+<td>⭐⭐ Hướng tham số thứ ba</td>
+<td><strong><code>VAR_IN_OUT</code></strong> — truyền <strong>vị trí bộ nhớ</strong>, POU sửa thẳng biến bên gọi</td>
+</tr>
+<tr>
+<td>Khi nào cần <code>VAR_IN_OUT</code></td>
+<td>⭐ FB sửa một <code>STRUCT</code> · truyền <strong>mảng lớn</strong> không muốn chép (Ch.27, Ch.29)</td>
+</tr>
+<tr>
+<td>⚠ Cái giá của <code>VAR_IN_OUT</code></td>
+<td>⭐ <strong>Mất bảo đảm &quot;gọi xong biến của tôi không đổi&quot;</strong></td>
+</tr>
+<tr>
 <td>Chia POU theo gì</td>
 <td>Theo <strong>cơ cấu và chức năng</strong>, không theo bước trình tự</td>
 </tr>
@@ -10055,6 +10152,12 @@ mỗi bên.</li>
 ghi vào các tag <code>DO_</code>?</li>
 <li>⭐ Vì sao chia POU theo <strong>cơ cấu</strong> tốt hơn chia theo <strong>bước trình tự</strong>? Nêu hậu quả cụ thể của
 cách chia sai.</li>
+<li>⚠⚠ Bạn khai một biến đếm bằng <code>VAR_TEMP</code> rồi cộng dồn. Nó không bao giờ tăng. ⭐ Vì sao, và
+<code>VAR_TEMP</code> thì <strong>đúng</strong> cho loại biến nào?</li>
+<li>⭐⭐ Nêu <strong>ba</strong> hướng tham số của một POU. Hướng thứ ba truyền cái gì khác hai hướng kia, và điều
+đó cho phép làm gì mà hai hướng kia không làm được?</li>
+<li>⭐ Nêu cái giá phải trả khi dùng <code>VAR_IN_OUT</code>. Khi <strong>đọc code người khác</strong>, thấy tham số kiểu này
+thì phải cảnh giác điều gì?</li>
 </ol>
 <blockquote>
 <p>Câu 2, 4 và 7 là ba câu phân loại. Câu 4 là tinh thần của cả chương: <strong>nhiều bẫy trông khác nhau
@@ -10071,6 +10174,10 @@ ba loại POU, mô hình tác vụ, và bộ kiểu dữ liệu chuẩn. <em>(ti
 <li>IEC 61131-1 — <em>Programmable controllers, Part 1: General information</em>: mô hình phần mềm tổng thể.</li>
 <li>Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng đối chiếu ở mục 14.8: tên gọi POU,
 cách khai báo tác vụ, cơ chế bộ nhớ thể hiện, và tên gói SFC của từng hãng.</li>
+<li><strong>Hanssen, Dag H.</strong> — <em>Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+CoDeSys</em>, §6.6: ba hướng tham số <code>VAR_INPUT</code> / <code>VAR_OUTPUT</code> / ⭐ <strong><code>VAR_IN_OUT</code></strong> (POU được gọi nhận
+<strong>chính vị trí bộ nhớ</strong> nên sửa được biến của bên gọi), và ⚠ <strong><code>VAR_TEMP</code></strong> — khởi tạo lại ở mỗi
+lần gọi POU nên <strong>không mang được giá trị sang lần sau</strong>.</li>
 </ul>
 <blockquote>
 <p>⚡ Nhận định ở mục 14.6 về tính khả chuyển là <strong>quan sát thực tế của nghề</strong>, không phải phát biểu
@@ -14382,7 +14489,23 @@ của khối này vào chân vào của khối kia. Tín hiệu chảy từ trá
 <td>Sơ đồ lớn</td>
 <td>Đường nối chằng chịt còn khó đọc hơn code</td>
 </tr>
+<tr>
+<td>⚠⚠ <strong>Có hồi tiếp</strong></td>
+<td>⭐ <strong>Chuẩn KHÔNG quy định thứ tự thực thi</strong> — xem cảnh báo dưới</td>
+</tr>
 </tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>&quot;Trái sang phải, trên xuống dưới&quot; là GIẢ ĐỊNH HỢP LÝ, không phải bảo đảm của chuẩn.</strong></p>
+<p>Khi ngõ ra của một khối được đưa ngược lại làm ngõ vào cho khối <strong>đứng trước nó</strong>, ⭐ chuẩn
+<strong>không</strong> nói bộ xử lý phải làm gì — điều đó <strong>tuỳ hiện thực của từng hãng</strong>.</p>
+<p>⚠ Hệ quả: cùng một sơ đồ FBD có hồi tiếp <strong>có thể cho kết quả khác nhau trên hai hệ khác nhau</strong>, và
+khác biệt đó ⚠⚠ <strong>không lộ ra khi đọc sơ đồ</strong>.</p>
+<p>⭐ Chính vì vậy <strong>có hãng không cho vẽ đường hồi tiếp tường minh</strong> — để thứ tự thực thi luôn rõ ràng.</p>
+<p>⭐⭐ <strong>Quy tắc thực dụng:</strong> cần hồi tiếp thì ⭐ <strong>đưa nó qua một biến trung gian có tên</strong>, đừng vẽ
+đường vòng lại. Khi đó thứ tự đọc–ghi rõ ràng, và nó trở về đúng bài toán quen thuộc ở Chương 10
+(thứ tự trong vòng quét). ⚠ Và <strong>tra tài liệu hãng</strong> trước khi tin vào bất kỳ giả định nào về thứ
+tự thực thi FBD.</p>
+</blockquote>
 <h3>So sánh trực tiếp với ladder</h3>
 <p>Cùng một logic, hai cách vẽ:</p>
 <pre><code class="language-text">LADDER
@@ -14505,6 +14628,86 @@ im vĩnh viễn, không báo gì. Đúng cỗ máy ở Chương 26, mục 26.1.<
 <blockquote>
 <p>⚠ Dùng <code>S</code> mà quên <code>R</code> là biến thể SFC của bẫy SET/RESET ở Chương 16: một thứ được bật rồi không ai
 tắt. Quy tắc giống hệt — <strong>mỗi <code>S</code> phải có một <code>R</code> tương ứng</strong>, và bạn phải chỉ ra được nó ở đâu.</p>
+</blockquote>
+<p><strong>Ba bổ ngữ nữa đáng biết, vì mỗi cái thay được cả một khối chức năng:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bổ ngữ</th>
+<th>Nghĩa</th>
+<th>⭐ Nó thay cho cái gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>P</strong> — <em>pulse</em></td>
+<td>Chạy <strong>đúng một lần</strong> mỗi khi bước được kích hoạt</td>
+<td>⭐ Khối bắt cạnh <code>R_TRIG</code> (Chương 16)</td>
+</tr>
+<tr>
+<td><strong>L</strong> — <em>time limited</em></td>
+<td>Chạy rồi <strong>tự dừng sau một khoảng</strong>, hoặc khi rời bước</td>
+<td>⭐ Một <code>TP</code> (Chương 17)</td>
+</tr>
+<tr>
+<td><strong>D</strong> — <em>time delayed</em></td>
+<td>⭐ <strong>Bắt đầu sau một khoảng</strong>, nếu lúc đó vẫn còn ở bước</td>
+<td>⭐ Một <code>TON</code></td>
+</tr>
+</tbody></table></div>
+<p>Chuẩn còn vài bổ ngữ kết hợp nữa (lưu kèm trễ…). ⚠ Số bổ ngữ <strong>thực sự được hiện thực</strong> khác nhau
+theo hãng — tra tài liệu trước khi dùng cái ngoài <code>N</code>/<code>S</code>/<code>R</code>.</p>
+<blockquote>
+<p>⭐⭐ <strong>Ý quan trọng hơn danh sách: SFC gói sẵn ba mẫu mà ở ngôn ngữ khác bạn phải tự dựng.</strong>
+<em>&quot;Làm đúng một lần&quot;</em> · <em>&quot;làm trong 2 giây rồi thôi&quot;</em> · <em>&quot;chờ 500 ms rồi mới làm&quot;</em> — ở LD hay ST là
+ba khối chức năng kèm ba thể hiện riêng; ở SFC là <strong>ba chữ cái</strong>.</p>
+</blockquote>
+<h3>⭐⭐ Mỗi bước tự có hai biến — và một trong hai là timer miễn phí</h3>
+<p>Đây là thứ hữu ích nhất của SFC mà người mới không biết mình đang có. ⭐ Mỗi bước được cấp <strong>hai biến,
+tự động, không phải khai báo</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Biến</th>
+<th>Kiểu</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TênBước.X</code></td>
+<td><code>BOOL</code></td>
+<td>⭐ <strong>TRUE khi bước đang hoạt động</strong>, FALSE khi không</td>
+</tr>
+<tr>
+<td>⭐⭐ <code>TênBước.T</code></td>
+<td><code>TIME</code></td>
+<td>⭐ <strong>Thời gian đã ở trong bước</strong> — chạy từ lúc vào bước, <strong>về <code>t#0s</code></strong> khi rời bước</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠ <strong>Cả hai chỉ đọc.</strong> Chương trình không sửa được; sửa thì trình biên dịch báo lỗi. Đó là điều tốt —
+chúng luôn nói đúng sự thật về trạng thái trình tự.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Công dụng một — timeout của bước gần như miễn phí.</strong></p>
+<p>Chương 17 mục 17.4 dạy: mỗi bước chờ cơ cấu phải có <strong>timeout để báo lỗi</strong>. Ở LD/ST điều đó nghĩa là
+một <code>TON</code> riêng cho <strong>từng</strong> bước. ⭐ Trong SFC thì không phải khai báo gì:</p>
+<pre><code class="language-iecst">IF Step30_Clamp.T &gt; T#3s THEN
+    M_Alarm_ClampTimeout := TRUE;      // bước 30 chờ kẹp quá 3 giây
+END_IF;
+</code></pre>
+<p>⚡ Và vì <code>.T</code> <strong>tự về 0 khi rời bước</strong>, bạn không phải nhớ đặt lại timer — ⚠ đúng cái hay quên nhất
+khi tự dựng bằng <code>TON</code> (Chương 17, Bẫy 2).</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Công dụng hai — <code>.X</code> là cách đúng để phần còn lại của chương trình biết trình tự đang ở đâu.</strong></p>
+<p>Dùng cho đèn báo, cho điều kiện liên động, cho chẩn đoán — ⚠ <strong>thay vì tự nuôi một biến &quot;bước hiện
+tại&quot; song song</strong>, thứ chắc chắn sẽ lệch với thực tế vào một ngày nào đó.</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Một luật cấu trúc dễ vi phạm khi vẽ: không được đặt hai bước liền nhau mà không có bước chuyển
+ở giữa.</strong> Nghe hiển nhiên, nhưng khi <strong>chèn thêm bước vào sơ đồ có sẵn</strong> thì đây là lỗi hay gặp —
+⭐ may là trình biên dịch bắt được, nên nó chỉ tốn thời gian chứ không nguy hiểm.</p>
+<p>⚡ Ngược lại, ⭐ <strong>nhiều bước được phép hoạt động cùng lúc</strong> — đó chính là cơ chế của nhánh song song.</p>
 </blockquote>
 <h3>SFC mạnh ở đâu, yếu ở đâu</h3>
 <div class="table-wrap"><table>
@@ -14875,6 +15078,22 @@ thực bằng ngôn ngữ nào cũng được (mục 21.3, Chương 26).</p>
 <td>Phương ngữ riêng, mạnh hơn IL chuẩn; phổ biến ở S7-300/400 đời cũ</td>
 </tr>
 <tr>
+<td>⭐⭐ Mỗi bước SFC tự có</td>
+<td><code>TênBước.X</code> (đang ở bước) và ⭐ <strong><code>TênBước.T</code> — timer sẵn, tự về 0</strong></td>
+</tr>
+<tr>
+<td>Timeout bước trong SFC</td>
+<td>⭐ <strong>Không phải khai <code>TON</code></strong> — dùng thẳng <code>.T</code></td>
+</tr>
+<tr>
+<td>Bổ ngữ <code>P</code> / <code>L</code> / <code>D</code></td>
+<td>Thay cho <code>R_TRIG</code> / <code>TP</code> / <code>TON</code></td>
+</tr>
+<tr>
+<td>⚠⚠ Thứ tự thực thi FBD khi có hồi tiếp</td>
+<td>⭐ <strong>Chuẩn KHÔNG quy định</strong> — tuỳ hãng; đưa hồi tiếp qua <strong>biến trung gian có tên</strong></td>
+</tr>
+<tr>
 <td>Khi bảng kỹ thuật mâu thuẫn với người bảo trì</td>
 <td>⭐ <strong>Người bảo trì thắng</strong></td>
 </tr>
@@ -14895,6 +15114,11 @@ gì?</li>
 <li>Siemens STL khác IL chuẩn ở điểm nào, và vì sao điều đó quan trọng khi tiếp quản máy Siemens cũ?</li>
 <li>⭐ Với DP-01 có hai trạm gần giống nhau, vì sao sách chọn <code>CASE</code> thay vì SFC cho trình tự? Trong
 tình huống nào thì SFC lại là lựa chọn tốt hơn?</li>
+<li>⭐⭐ Mỗi bước SFC tự có hai biến nào? Nêu <strong>hai</strong> việc mà <code>.T</code> làm được và giải thích vì sao nó tiện
+hơn tự dựng một <code>TON</code> cho từng bước.</li>
+<li>⭐ Bổ ngữ <code>P</code>, <code>L</code>, <code>D</code> mỗi cái thay cho khối chức năng nào ở LD/ST?</li>
+<li>⚠⚠ Một sơ đồ FBD có đường hồi tiếp chạy đúng trên hệ A, sai trên hệ B. ⭐ Vì sao điều này <strong>không</strong>
+phải lỗi của hãng nào? Cách viết nào tránh được hẳn?</li>
 </ol>
 <blockquote>
 <p>Câu 3, 5 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: <strong>không có ngôn ngữ nào tốt
@@ -14912,6 +15136,11 @@ chuyển tiếp, hành động, bổ ngữ hành động, các kiểu nhánh) v�
 <li>Tài liệu về <strong>GRAFCET</strong> — phương pháp mô tả trình tự mà SFC bắt nguồn từ đó, có tiêu chuẩn riêng.</li>
 <li>Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng ở mục 21.7: tên gói SFC của từng
 hãng, tình trạng bản quyền, và đặc điểm của Siemens STL.</li>
+<li><strong>Hanssen, Dag H.</strong> — <em>Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+CoDeSys</em>, §10.3 và ch. 12: ⭐ <strong>chuẩn không quy định thứ tự thực thi FBD khi có hồi tiếp</strong> (tuỳ hiện
+thực; có hãng không cho vẽ hồi tiếp tường minh); ⭐⭐ <strong><code>Step.X</code> và <code>Step.T</code></strong> — mọi bước SFC có sẵn
+cờ trạng thái và <strong>timer nội</strong>, cả hai chỉ đọc; bảng <strong>bổ ngữ hành động</strong> <code>N</code>/<code>S</code>/<code>R</code>/<code>P</code>/<code>L</code>/<code>D</code>;
+và luật <strong>không đặt hai bước liền nhau không có bước chuyển</strong>.</li>
 </ul>
 <blockquote>
 <p>⚡ Nhận định &quot;IL đã bị rút khỏi bản mới của chuẩn&quot; là <strong>thay đổi giữa các phiên bản tiêu chuẩn</strong>.
@@ -17261,6 +17490,95 @@ toàn — nó biến một lỗi logic âm thầm thành một báo động nhì
 <p>Tiêu chí quyết định <strong>không phải kỹ thuật mà là tổ chức</strong>: ai sẽ sửa cỗ máy này lúc hai giờ sáng khi
 bạn không có mặt? Viết cho người đó đọc.</p>
 <hr>
+<h2 id="255b-bt-bin-nm-dưi-mi-cách-hin-thc-và-câu-hi-ưu-tiên">25.5b ⭐⭐ Bất biến nằm dưới mọi cách hiện thực — và câu hỏi ưu tiên</h2>
+<p>Hai cách ở mục trên trông rất khác nhau, nhưng ⭐ <strong>cả hai đang cưỡng chế cùng một bất biến</strong>. Phát
+biểu nó thành một câu là cách chắc nhất để kiểm code của mình — và của người khác:</p>
+<blockquote>
+<p>⭐⭐ <strong>Một trạng thái đang BẬT nếu: nó đã bật sẵn, HOẶC vừa được một chuyển tiếp đưa vào —</strong>
+<strong>và nó chưa bị một chuyển tiếp nào đưa ra.</strong></p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Vế của bất biến</th>
+<th>Nếu quên vế này</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>&quot;đã bật sẵn&quot;</em></td>
+<td>⚠ Trạng thái <strong>tắt ngay vòng quét sau</strong> khi điều kiện vào không còn đúng</td>
+</tr>
+<tr>
+<td><em>&quot;vừa được chuyển tiếp đưa vào&quot;</em></td>
+<td>⚠ Không bao giờ vào được trạng thái</td>
+</tr>
+<tr>
+<td>⚠⚠ <em>&quot;chưa bị chuyển tiếp nào đưa ra&quot;</em></td>
+<td>⚠⚠ <strong>Vào được nhưng không ra được</strong> — đúng Bẫy 2 ở dưới</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Mỗi trạng thái cần <strong>một</strong> biểu thức như vậy. Khi rà code người khác, hãy tìm đủ ba vế cho từng
+trạng thái — thiếu vế nào thì lỗi thuộc đúng loại ở bảng trên.</p>
+<h3>⚠⚠ Câu hỏi ưu tiên: hai chuyển tiếp cùng đúng trong MỘT vòng quét thì sao?</h3>
+<p>Bảng chuyển trạng thái ở mục 25.4 liệt kê các chuyển tiếp hợp lệ, nhưng nó <strong>không trả lời</strong> câu hỏi
+này: ⚠ từ một trạng thái có hai đường ra, và <strong>cả hai điều kiện cùng đúng ở cùng một vòng quét</strong>.</p>
+<p>Tình huống này <strong>không hiếm</strong>: nút Dừng bị nhấn đúng lúc cảm biến báo xong; báo lỗi xuất hiện đúng lúc
+bước hoàn tất.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách hiện thực</th>
+<th>Chuyện gì xảy ra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Biến + <code>CASE</code></td>
+<td><strong>Nhánh <code>IF</code> nào viết trước thì thắng</strong> — ưu tiên có sẵn, do <strong>thứ tự code</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ Bit trạng thái (ladder)</td>
+<td>⚠ Không có ưu tiên tự nhiên — ⭐ <strong>có thể bật hai bit, hoặc tắt cả hai</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Quy tắc: ưu tiên phải là một quyết định được viết ra, không phải hệ quả tình cờ của thứ tự
+gõ code.</strong></p>
+<p>Với <code>CASE</code>, ⚠ <strong>thứ tự các nhánh <code>IF</code> CHÍNH LÀ bảng ưu tiên của bạn</strong> — dù bạn có ý thức hay không.
+⭐ Hãy <strong>ghi thứ tự đó ra thành comment</strong>, và đặt chuyển tiếp <em>về lỗi</em> lên <strong>trên cùng</strong>.</p>
+<p>Với bit trạng thái, ⭐ phải <strong>cưỡng chế tường minh</strong>: điều kiện của đường ra ưu tiên thấp phải kèm
+<em>&quot;và đường ưu tiên cao không đúng&quot;</em>.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Thứ tự ưu tiên mặc định đáng dùng</strong>, từ cao xuống thấp:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Chuyển tiếp</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠⚠ <strong>Về <code>Alarm</code></strong> — từ bất kỳ trạng thái nào</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Về <code>Stopping</code></strong> — người vận hành yêu cầu dừng</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Chuyển tiếp bình thường của quy trình</td>
+</tr>
+</tbody></table></div>
+<p>⚡ Lý do thứ tự này: ⭐ <strong>an toàn và ý muốn của người vận hành luôn thắng tiến độ sản xuất.</strong></p>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Về cái giá của cách &quot;bit trạng thái&quot;:</strong> nó tạo ra chương trình <strong>dài hơn và kém hiệu quả hơn</strong>
+so với cách viết bằng biểu thức gọn. ⭐ Nhưng nó <strong>dễ hiểu và dễ gỡ lỗi hơn hẳn</strong> — và với phần mềm
+máy, đó là đánh đổi <strong>đúng</strong>, đúng theo tiêu chí tổ chức ở mục trên: <em>ai sửa cỗ máy này lúc hai giờ
+sáng?</em></p>
+</blockquote>
+<hr>
 <h2 id="256-trng-thái-máy-tng-và-trng-thái-tng-trm">25.6 Trạng thái máy tổng và trạng thái từng trạm</h2>
 <p>DP-01 có <strong>hai trạm</strong>. Câu hỏi tự nhiên: một máy trạng thái hay ba?</p>
 <p>Câu trả lời: <strong>ba</strong> — một cho máy tổng, một cho mỗi trạm — xếp thành hai tầng.</p>
@@ -17480,6 +17798,21 @@ bản quyền riêng hoặc ấn bản phần mềm cao hơn</strong>. Kiểm tr
 <td>Soát <strong>mọi chỗ ghi vào biến trạng thái</strong></td>
 <td>Khớp đúng số dòng của bảng</td>
 </tr>
+<tr>
+<td>9</td>
+<td>⭐⭐ Kiểm <strong>bất biến</strong> đủ ba vế cho từng trạng thái</td>
+<td>Đã bật · vừa được đưa vào · chưa bị đưa ra</td>
+</tr>
+<tr>
+<td>10</td>
+<td>⚠⚠ <strong>Viết ra thứ tự ưu tiên</strong> của các chuyển tiếp</td>
+<td><code>Alarm</code> → <code>Stopping</code> → quy trình; có comment</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Với bit trạng thái: <strong>cưỡng chế ưu tiên tường minh</strong></td>
+<td>Đường ưu tiên thấp kèm <em>&quot;và đường cao không đúng&quot;</em></td>
+</tr>
 </tbody></table></div>
 <hr>
 <h2 id="2510-t-kim">25.10 Tự kiểm</h2>
@@ -17494,6 +17827,12 @@ còn một biến trạng thái thì không? Trả lời bằng <strong>con số
 trạng thái không quay lại đúng vấn đề của cờ rải rác là gì?</li>
 <li>Máy đang <code>Hold</code> mà đèn xanh vẫn sáng. Nguyên nhân gốc nằm ở đâu, và sửa thế nào cho lỗi này <strong>không
 thể</strong> tái diễn?</li>
+<li>⭐⭐ Phát biểu <strong>bất biến</strong> mà mọi cách hiện thực máy trạng thái đều phải cưỡng chế. Thiếu mỗi
+ trong ba vế thì sinh ra lỗi gì?</li>
+<li>⚠⚠ Từ một trạng thái có hai đường ra, cả hai điều kiện cùng đúng ở <strong>cùng một vòng quét</strong>. Với
+ <code>CASE</code> thì cái nào thắng? Với <strong>bit trạng thái</strong> thì sao? ⭐ Nêu cách cưỡng chế ưu tiên cho cách
+ thứ hai.</li>
+<li>⭐ Vì sao chuyển tiếp <strong>về <code>Alarm</code></strong> phải đứng trên cùng trong thứ tự ưu tiên?</li>
 </ol>
 <p>Câu 1 và câu 3 là hai câu phân loại. Câu 1 kiểm tra bạn hiểu <em>vì sao</em> chứ không chỉ <em>làm thế nào</em>; câu
 3 kiểm tra bạn có phản xạ về an toàn khi khởi động lại — thứ Chương 28 sẽ khai triển.</p>
@@ -17510,6 +17849,11 @@ và ngôn ngữ SFC. <em>(tiêu chuẩn có bản quyền; chương này chỉ d
 <li>IEC 60204-1 — <em>Safety of machinery — Electrical equipment of machines</em>: phân biệt các loại lệnh dừng
 và yêu cầu về khởi động lại có chủ ý — cơ sở cho quyết định <code>Resetting → Homing</code> ở mục 25.3.</li>
 <li>Đặc tả trình tự và danh sách chức năng an toàn của DP-01 — Phụ lục J.</li>
+<li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, ch. 12 <em>State Based Design</em>: ba cách
+chuyển sơ đồ trạng thái sang ladder (<strong>block logic</strong> · <strong>state equations</strong> · <strong>state-transition
+equations</strong>), ⭐⭐ <strong>bất biến của phương trình trạng thái</strong> (mục 25.5b), và ⚠ <strong>ladder có ưu tiên</strong>
+khi nhiều chuyển tiếp cùng đúng. Cũng là nguồn cho đánh đổi <em>&quot;dài hơn và kém hiệu quả hơn, nhưng dễ
+hiểu và dễ gỡ lỗi hơn&quot;</em> của cách bit trạng thái.</li>
 </ul>
 <blockquote>
 <p>⚡ Bảy trạng thái ở mục 25.3 là <strong>mô hình thực dụng đã được rút gọn cho máy tự động hoá rời rạc</strong>,
@@ -33960,8 +34304,10 @@ systems</em>: tiêu chuẩn gốc về an toàn chức năng, nơi ISO 13849-1 v
 với thiết bị dừng khẩn cấp, khởi động lại có chủ ý (mục 47.6).</li>
 <li>IEC 61800-5-2 — <em>Adjustable speed electrical power drive systems — Safety requirements</em>: định nghĩa
 các chức năng an toàn của truyền động, trong đó có STO (mục 47.8).</li>
-<li>Tài liệu hướng dẫn của nhà sản xuất thiết bị an toàn và báo cáo kỹ thuật của viện nghiên cứu an toàn
-lao động — dùng cho phần diễn giải khái niệm và ví dụ kiến trúc.</li>
+<li><strong>Tài liệu hướng dẫn của SICK và Schneider Electric</strong> về thiết bị an toàn — dùng cho phần diễn giải
+khái niệm và ví dụ kiến trúc; nguồn cho định nghĩa <strong>OSSD</strong> và hành vi ngõ ra an toàn (mục 47.7).</li>
+<li><strong>DGUV / IFA Report 2/2017e</strong> — báo cáo kỹ thuật của viện nghiên cứu an toàn lao động; nguồn cho
+⭐ <strong>yêu cầu phát hiện chập chéo</strong> trên ngõ ra an toàn (mục 47.7).</li>
 </ul>
 <blockquote>
 <p>⚠⚠ <strong>Toàn bộ tiêu chuẩn liệt kê ở trên đều có bản quyền và phải mua từ tổ chức phát hành.</strong> Chương

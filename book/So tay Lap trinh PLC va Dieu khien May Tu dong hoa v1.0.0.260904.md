@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260903 |
+| **Phiên bản** | v1.0.0.260904 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -6091,6 +6091,48 @@ Khối chức năng là **bản thiết kế**; thể hiện là **cái máy đ�
 Ba thể hiện dùng chung một bản thiết kế, nhưng **mỗi cái nhớ việc của mình**. Nếu bạn chỉ tạo một thể
 hiện rồi dùng cho cả ba chỗ, cả ba cùng ghi vào một mẩu bộ nhớ — và không cái nào đúng.
 
+### ⚠ "FB có bộ nhớ" đúng với THỂ HIỆN, không đúng với mọi biến bên trong nó
+
+Có một loại biến ⭐ **không nhớ gì cả, kể cả khi nằm trong một FB**:
+
+| Từ khoá | Hành vi giữa hai lần gọi |
+|---|---|
+| `VAR` (trong FB) | ⭐ **Giữ giá trị** — đây là bộ nhớ của thể hiện |
+| ⚠⚠ `VAR_TEMP` | ⭐ **Khởi tạo lại mỗi lần gọi POU** — giá trị lần trước **mất sạch** |
+
+> ⚠⚠ **Bẫy:** khai một biến đếm bằng `VAR_TEMP` rồi cộng dồn vào nó. Nó **không bao giờ cộng được** —
+> mỗi lần gọi, biến quay về giá trị khởi tạo của kiểu. ⚠ Không có báo lỗi; chỉ có một con số mãi
+> không tăng.
+>
+> ⭐ Ngược lại, `VAR_TEMP` là **lựa chọn đúng** cho biến trung gian dùng xong bỏ — biến đếm vòng lặp,
+> kết quả tạm của một phép tính. Nó nói rõ ý định *"cái này không mang thông tin sang lần sau"*, và
+> ⭐ **tránh được đúng loại lỗi ở Chương 11 mục 11.7** (hai POU vô tình chia nhau một biến).
+
+### ⭐ Ba hướng tham số — và hướng thứ ba ít ai biết
+
+Khi khai báo giao diện của một POU, chuẩn có **ba** hướng, không phải hai:
+
+| Từ khoá | Chiều | ⭐ Truyền cái gì |
+|---|---|---|
+| `VAR_INPUT` | Vào | **Bản sao giá trị** — POU được gọi không sửa được biến gốc |
+| `VAR_OUTPUT` | Ra | Kết quả trả về cho bên gọi |
+| ⭐⭐ `VAR_IN_OUT` | **Vào và ra cùng lúc** | ⭐ **Chính vị trí bộ nhớ** — POU được gọi **sửa thẳng biến của bên gọi** |
+
+> ⭐⭐ **Vì sao `VAR_IN_OUT` quan trọng khi chương trình lớn lên:**
+>
+> | Tình huống | Với `VAR_INPUT`/`VAR_OUTPUT` | ⭐ Với `VAR_IN_OUT` |
+> |---|---|---|
+> | FB cần **sửa một `STRUCT`** của bên gọi | Phải chép vào, sửa, chép ra — ⚠ hai bản dễ lệch nhau | Sửa thẳng, **một bản duy nhất** |
+> | Truyền một **mảng lớn** | ⚠ Chép cả mảng mỗi lần gọi | ⭐ Chỉ truyền chỗ nó nằm |
+>
+> ⭐ Đây chính là công cụ cho mẫu **"một FB trạm, dùng cho nhiều trạm"** ở Chương 27, và cho việc
+> ⭐ **truyền cả bản ghi công thức vào một khối xử lý** ở Chương 29 — thay vì liệt kê ba mươi tham số
+> đầu vào rời rạc.
+>
+> ⚠ **Cái giá:** vì POU sửa thẳng biến gốc, ⭐ **bạn mất tính chất "gọi hàm không có tác dụng phụ"**.
+> Khi đọc code người khác, một tham số `VAR_IN_OUT` nghĩa là ⚠ **giá trị của bạn có thể đã bị đổi sau
+> lời gọi** — điều mà `VAR_INPUT` bảo đảm là không.
+
 ### Khi nào viết FB của riêng mình
 
 Khi bạn thấy mình **chép đi chép lại cùng một đoạn logic cho nhiều đối tượng giống nhau**.
@@ -6318,6 +6360,10 @@ có bộ nhớ (mục 14.3).
 | Hai tác vụ cùng ghi một biến | ❌ Không được — lỗi khó tái hiện |
 | Chuẩn làm gì khả chuyển | ⭐ **Kỹ năng và thiết kế** — không phải tệp dự án |
 | Ngõ ra nên ghi ở đâu | **Đúng một POU**, chạy cuối cùng |
+| ⚠⚠ `VAR_TEMP` | ⭐ **Khởi tạo lại mỗi lần gọi** — FB có bộ nhớ, biến này thì không |
+| ⭐⭐ Hướng tham số thứ ba | **`VAR_IN_OUT`** — truyền **vị trí bộ nhớ**, POU sửa thẳng biến bên gọi |
+| Khi nào cần `VAR_IN_OUT` | ⭐ FB sửa một `STRUCT` · truyền **mảng lớn** không muốn chép (Ch.27, Ch.29) |
+| ⚠ Cái giá của `VAR_IN_OUT` | ⭐ **Mất bảo đảm "gọi xong biến của tôi không đổi"** |
 | Chia POU theo gì | Theo **cơ cấu và chức năng**, không theo bước trình tự |
 
 ---
@@ -6338,6 +6384,12 @@ có bộ nhớ (mục 14.3).
    ghi vào các tag `DO_`?
 10. ⭐ Vì sao chia POU theo **cơ cấu** tốt hơn chia theo **bước trình tự**? Nêu hậu quả cụ thể của
     cách chia sai.
+11. ⚠⚠ Bạn khai một biến đếm bằng `VAR_TEMP` rồi cộng dồn. Nó không bao giờ tăng. ⭐ Vì sao, và
+    `VAR_TEMP` thì **đúng** cho loại biến nào?
+12. ⭐⭐ Nêu **ba** hướng tham số của một POU. Hướng thứ ba truyền cái gì khác hai hướng kia, và điều
+    đó cho phép làm gì mà hai hướng kia không làm được?
+13. ⭐ Nêu cái giá phải trả khi dùng `VAR_IN_OUT`. Khi **đọc code người khác**, thấy tham số kiểu này
+    thì phải cảnh giác điều gì?
 
 > Câu 2, 4 và 7 là ba câu phân loại. Câu 4 là tinh thần của cả chương: **nhiều bẫy trông khác nhau
 > thật ra là một khái niệm chưa nắm chắc.**
@@ -6356,6 +6408,10 @@ bằng ngôn ngữ chiếm ưu thế ở tầng máy và cũng là ngôn ngữ c
 - IEC 61131-1 — *Programmable controllers, Part 1: General information*: mô hình phần mềm tổng thể.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng đối chiếu ở mục 14.8: tên gọi POU,
   cách khai báo tác vụ, cơ chế bộ nhớ thể hiện, và tên gói SFC của từng hãng.
+- **Hanssen, Dag H.** — *Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+  CoDeSys*, §6.6: ba hướng tham số `VAR_INPUT` / `VAR_OUTPUT` / ⭐ **`VAR_IN_OUT`** (POU được gọi nhận
+  **chính vị trí bộ nhớ** nên sửa được biến của bên gọi), và ⚠ **`VAR_TEMP`** — khởi tạo lại ở mỗi
+  lần gọi POU nên **không mang được giá trị sang lần sau**.
 
 > ⚡ Nhận định ở mục 14.6 về tính khả chuyển là **quan sát thực tế của nghề**, không phải phát biểu
 > của tiêu chuẩn. Bản thân chuẩn không hứa hẹn khả chuyển ở mức tệp dự án; kỳ vọng đó đến từ cách
@@ -9882,6 +9938,22 @@ của khối này vào chân vào của khối kia. Tín hiệu chảy từ trá
 | Rẽ nhánh phức tạp | Không có `IF/ELSE` — phải mô phỏng bằng khối chọn, rất rườm |
 | Tính toán chuỗi dài | Mỗi phép một khối; một công thức năm phép thành năm khối nối nhau, ST viết một dòng |
 | Sơ đồ lớn | Đường nối chằng chịt còn khó đọc hơn code |
+| ⚠⚠ **Có hồi tiếp** | ⭐ **Chuẩn KHÔNG quy định thứ tự thực thi** — xem cảnh báo dưới |
+
+> ⚠⚠ **"Trái sang phải, trên xuống dưới" là GIẢ ĐỊNH HỢP LÝ, không phải bảo đảm của chuẩn.**
+>
+> Khi ngõ ra của một khối được đưa ngược lại làm ngõ vào cho khối **đứng trước nó**, ⭐ chuẩn
+> **không** nói bộ xử lý phải làm gì — điều đó **tuỳ hiện thực của từng hãng**.
+>
+> ⚠ Hệ quả: cùng một sơ đồ FBD có hồi tiếp **có thể cho kết quả khác nhau trên hai hệ khác nhau**, và
+> khác biệt đó ⚠⚠ **không lộ ra khi đọc sơ đồ**.
+>
+> ⭐ Chính vì vậy **có hãng không cho vẽ đường hồi tiếp tường minh** — để thứ tự thực thi luôn rõ ràng.
+>
+> ⭐⭐ **Quy tắc thực dụng:** cần hồi tiếp thì ⭐ **đưa nó qua một biến trung gian có tên**, đừng vẽ
+> đường vòng lại. Khi đó thứ tự đọc–ghi rõ ràng, và nó trở về đúng bài toán quen thuộc ở Chương 10
+> (thứ tự trong vòng quét). ⚠ Và **tra tài liệu hãng** trước khi tin vào bất kỳ giả định nào về thứ
+> tự thực thi FBD.
 
 ### So sánh trực tiếp với ladder
 
@@ -9993,6 +10065,59 @@ Chuẩn có nhiều **bổ ngữ hành động** *(action qualifier)*; ba cái b
 
 > ⚠ Dùng `S` mà quên `R` là biến thể SFC của bẫy SET/RESET ở Chương 16: một thứ được bật rồi không ai
 > tắt. Quy tắc giống hệt — **mỗi `S` phải có một `R` tương ứng**, và bạn phải chỉ ra được nó ở đâu.
+
+**Ba bổ ngữ nữa đáng biết, vì mỗi cái thay được cả một khối chức năng:**
+
+| Bổ ngữ | Nghĩa | ⭐ Nó thay cho cái gì |
+|---|---|---|
+| **P** — *pulse* | Chạy **đúng một lần** mỗi khi bước được kích hoạt | ⭐ Khối bắt cạnh `R_TRIG` (Chương 16) |
+| **L** — *time limited* | Chạy rồi **tự dừng sau một khoảng**, hoặc khi rời bước | ⭐ Một `TP` (Chương 17) |
+| **D** — *time delayed* | ⭐ **Bắt đầu sau một khoảng**, nếu lúc đó vẫn còn ở bước | ⭐ Một `TON` |
+
+Chuẩn còn vài bổ ngữ kết hợp nữa (lưu kèm trễ…). ⚠ Số bổ ngữ **thực sự được hiện thực** khác nhau
+theo hãng — tra tài liệu trước khi dùng cái ngoài `N`/`S`/`R`.
+
+> ⭐⭐ **Ý quan trọng hơn danh sách: SFC gói sẵn ba mẫu mà ở ngôn ngữ khác bạn phải tự dựng.**
+> *"Làm đúng một lần"* · *"làm trong 2 giây rồi thôi"* · *"chờ 500 ms rồi mới làm"* — ở LD hay ST là
+> ba khối chức năng kèm ba thể hiện riêng; ở SFC là **ba chữ cái**.
+
+### ⭐⭐ Mỗi bước tự có hai biến — và một trong hai là timer miễn phí
+
+Đây là thứ hữu ích nhất của SFC mà người mới không biết mình đang có. ⭐ Mỗi bước được cấp **hai biến,
+tự động, không phải khai báo**:
+
+| Biến | Kiểu | Nội dung |
+|---|---|---|
+| `TênBước.X` | `BOOL` | ⭐ **TRUE khi bước đang hoạt động**, FALSE khi không |
+| ⭐⭐ `TênBước.T` | `TIME` | ⭐ **Thời gian đã ở trong bước** — chạy từ lúc vào bước, **về `t#0s`** khi rời bước |
+
+> ⚠ **Cả hai chỉ đọc.** Chương trình không sửa được; sửa thì trình biên dịch báo lỗi. Đó là điều tốt —
+> chúng luôn nói đúng sự thật về trạng thái trình tự.
+
+> ⭐⭐ **Công dụng một — timeout của bước gần như miễn phí.**
+>
+> Chương 17 mục 17.4 dạy: mỗi bước chờ cơ cấu phải có **timeout để báo lỗi**. Ở LD/ST điều đó nghĩa là
+> một `TON` riêng cho **từng** bước. ⭐ Trong SFC thì không phải khai báo gì:
+>
+> ```iecst
+> IF Step30_Clamp.T > T#3s THEN
+>     M_Alarm_ClampTimeout := TRUE;      // bước 30 chờ kẹp quá 3 giây
+> END_IF;
+> ```
+>
+> ⚡ Và vì `.T` **tự về 0 khi rời bước**, bạn không phải nhớ đặt lại timer — ⚠ đúng cái hay quên nhất
+> khi tự dựng bằng `TON` (Chương 17, Bẫy 2).
+
+> ⭐ **Công dụng hai — `.X` là cách đúng để phần còn lại của chương trình biết trình tự đang ở đâu.**
+>
+> Dùng cho đèn báo, cho điều kiện liên động, cho chẩn đoán — ⚠ **thay vì tự nuôi một biến "bước hiện
+> tại" song song**, thứ chắc chắn sẽ lệch với thực tế vào một ngày nào đó.
+
+> ⚠ **Một luật cấu trúc dễ vi phạm khi vẽ: không được đặt hai bước liền nhau mà không có bước chuyển
+> ở giữa.** Nghe hiển nhiên, nhưng khi **chèn thêm bước vào sơ đồ có sẵn** thì đây là lỗi hay gặp —
+> ⭐ may là trình biên dịch bắt được, nên nó chỉ tốn thời gian chứ không nguy hiểm.
+>
+> ⚡ Ngược lại, ⭐ **nhiều bước được phép hoạt động cùng lúc** — đó chính là cơ chế của nhánh song song.
 
 ### SFC mạnh ở đâu, yếu ở đâu
 
@@ -10232,6 +10357,10 @@ thực bằng ngôn ngữ nào cũng được (mục 21.3, Chương 26).
 | GRAFCET với SFC | GRAFCET là **cách mô tả**, SFC là **ngôn ngữ**. Không bắt buộc đi cùng nhau |
 | IL | ⚠ Đã bị **rút khỏi chuẩn** — chỉ đọc, không viết mới |
 | Siemens STL | Phương ngữ riêng, mạnh hơn IL chuẩn; phổ biến ở S7-300/400 đời cũ |
+| ⭐⭐ Mỗi bước SFC tự có | `TênBước.X` (đang ở bước) và ⭐ **`TênBước.T` — timer sẵn, tự về 0** |
+| Timeout bước trong SFC | ⭐ **Không phải khai `TON`** — dùng thẳng `.T` |
+| Bổ ngữ `P` / `L` / `D` | Thay cho `R_TRIG` / `TP` / `TON` |
+| ⚠⚠ Thứ tự thực thi FBD khi có hồi tiếp | ⭐ **Chuẩn KHÔNG quy định** — tuỳ hãng; đưa hồi tiếp qua **biến trung gian có tên** |
 | Khi bảng kỹ thuật mâu thuẫn với người bảo trì | ⭐ **Người bảo trì thắng** |
 
 ---
@@ -10251,6 +10380,11 @@ thực bằng ngôn ngữ nào cũng được (mục 21.3, Chương 26).
 9. Siemens STL khác IL chuẩn ở điểm nào, và vì sao điều đó quan trọng khi tiếp quản máy Siemens cũ?
 10. ⭐ Với DP-01 có hai trạm gần giống nhau, vì sao sách chọn `CASE` thay vì SFC cho trình tự? Trong
     tình huống nào thì SFC lại là lựa chọn tốt hơn?
+11. ⭐⭐ Mỗi bước SFC tự có hai biến nào? Nêu **hai** việc mà `.T` làm được và giải thích vì sao nó tiện
+    hơn tự dựng một `TON` cho từng bước.
+12. ⭐ Bổ ngữ `P`, `L`, `D` mỗi cái thay cho khối chức năng nào ở LD/ST?
+13. ⚠⚠ Một sơ đồ FBD có đường hồi tiếp chạy đúng trên hệ A, sai trên hệ B. ⭐ Vì sao điều này **không**
+    phải lỗi của hãng nào? Cách viết nào tránh được hẳn?
 
 > Câu 3, 5 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: **không có ngôn ngữ nào tốt
 > nhất — chỉ có ngôn ngữ hợp với bài toán này, cỗ máy này, và đội ngũ này.**
@@ -10270,6 +10404,11 @@ có tài liệu, và phải sửa nó mà không làm hỏng thứ đang chạy.
 - Tài liệu về **GRAFCET** — phương pháp mô tả trình tự mà SFC bắt nguồn từ đó, có tiêu chuẩn riêng.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng ở mục 21.7: tên gói SFC của từng
   hãng, tình trạng bản quyền, và đặc điểm của Siemens STL.
+- **Hanssen, Dag H.** — *Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
+  CoDeSys*, §10.3 và ch. 12: ⭐ **chuẩn không quy định thứ tự thực thi FBD khi có hồi tiếp** (tuỳ hiện
+  thực; có hãng không cho vẽ hồi tiếp tường minh); ⭐⭐ **`Step.X` và `Step.T`** — mọi bước SFC có sẵn
+  cờ trạng thái và **timer nội**, cả hai chỉ đọc; bảng **bổ ngữ hành động** `N`/`S`/`R`/`P`/`L`/`D`;
+  và luật **không đặt hai bước liền nhau không có bước chuyển**.
 
 > ⚡ Nhận định "IL đã bị rút khỏi bản mới của chuẩn" là **thay đổi giữa các phiên bản tiêu chuẩn**.
 > Khi cần dẫn chiếu chính thức, kiểm phiên bản IEC 61131-3 đang hiệu lực tại thị trường của bạn —
@@ -11908,6 +12047,62 @@ bạn không có mặt? Viết cho người đó đọc.
 
 ---
 
+## 25.5b ⭐⭐ Bất biến nằm dưới mọi cách hiện thực — và câu hỏi ưu tiên
+
+Hai cách ở mục trên trông rất khác nhau, nhưng ⭐ **cả hai đang cưỡng chế cùng một bất biến**. Phát
+biểu nó thành một câu là cách chắc nhất để kiểm code của mình — và của người khác:
+
+> ⭐⭐ **Một trạng thái đang BẬT nếu: nó đã bật sẵn, HOẶC vừa được một chuyển tiếp đưa vào —**
+> **và nó chưa bị một chuyển tiếp nào đưa ra.**
+
+| Vế của bất biến | Nếu quên vế này |
+|---|---|
+| *"đã bật sẵn"* | ⚠ Trạng thái **tắt ngay vòng quét sau** khi điều kiện vào không còn đúng |
+| *"vừa được chuyển tiếp đưa vào"* | ⚠ Không bao giờ vào được trạng thái |
+| ⚠⚠ *"chưa bị chuyển tiếp nào đưa ra"* | ⚠⚠ **Vào được nhưng không ra được** — đúng Bẫy 2 ở dưới |
+
+⭐ Mỗi trạng thái cần **một** biểu thức như vậy. Khi rà code người khác, hãy tìm đủ ba vế cho từng
+trạng thái — thiếu vế nào thì lỗi thuộc đúng loại ở bảng trên.
+
+### ⚠⚠ Câu hỏi ưu tiên: hai chuyển tiếp cùng đúng trong MỘT vòng quét thì sao?
+
+Bảng chuyển trạng thái ở mục 25.4 liệt kê các chuyển tiếp hợp lệ, nhưng nó **không trả lời** câu hỏi
+này: ⚠ từ một trạng thái có hai đường ra, và **cả hai điều kiện cùng đúng ở cùng một vòng quét**.
+
+Tình huống này **không hiếm**: nút Dừng bị nhấn đúng lúc cảm biến báo xong; báo lỗi xuất hiện đúng lúc
+bước hoàn tất.
+
+| Cách hiện thực | Chuyện gì xảy ra |
+|---|---|
+| ⭐ Biến + `CASE` | **Nhánh `IF` nào viết trước thì thắng** — ưu tiên có sẵn, do **thứ tự code** |
+| ⚠⚠ Bit trạng thái (ladder) | ⚠ Không có ưu tiên tự nhiên — ⭐ **có thể bật hai bit, hoặc tắt cả hai** |
+
+> ⭐⭐ **Quy tắc: ưu tiên phải là một quyết định được viết ra, không phải hệ quả tình cờ của thứ tự
+> gõ code.**
+>
+> Với `CASE`, ⚠ **thứ tự các nhánh `IF` CHÍNH LÀ bảng ưu tiên của bạn** — dù bạn có ý thức hay không.
+> ⭐ Hãy **ghi thứ tự đó ra thành comment**, và đặt chuyển tiếp *về lỗi* lên **trên cùng**.
+>
+> Với bit trạng thái, ⭐ phải **cưỡng chế tường minh**: điều kiện của đường ra ưu tiên thấp phải kèm
+> *"và đường ưu tiên cao không đúng"*.
+
+> ⭐ **Thứ tự ưu tiên mặc định đáng dùng**, từ cao xuống thấp:
+>
+> | | Chuyển tiếp |
+> |---|---|
+> | 1 | ⚠⚠ **Về `Alarm`** — từ bất kỳ trạng thái nào |
+> | 2 | **Về `Stopping`** — người vận hành yêu cầu dừng |
+> | 3 | Chuyển tiếp bình thường của quy trình |
+>
+> ⚡ Lý do thứ tự này: ⭐ **an toàn và ý muốn của người vận hành luôn thắng tiến độ sản xuất.**
+
+> ⚡ **Về cái giá của cách "bit trạng thái":** nó tạo ra chương trình **dài hơn và kém hiệu quả hơn**
+> so với cách viết bằng biểu thức gọn. ⭐ Nhưng nó **dễ hiểu và dễ gỡ lỗi hơn hẳn** — và với phần mềm
+> máy, đó là đánh đổi **đúng**, đúng theo tiêu chí tổ chức ở mục trên: *ai sửa cỗ máy này lúc hai giờ
+> sáng?*
+
+---
+
 ## 25.6 Trạng thái máy tổng và trạng thái từng trạm
 
 DP-01 có **hai trạm**. Câu hỏi tự nhiên: một máy trạng thái hay ba?
@@ -12068,6 +12263,9 @@ Chi tiết đối chiếu năm hệ: **Phụ lục A1**.
 | 6 | Chọn cách hiện thực | Theo tiêu chí *ai sẽ bảo trì*, không theo sở thích |
 | 7 | Nối **đèn tháp và màn hình** thẳng vào biến trạng thái | Không có logic đèn riêng |
 | 8 | Soát **mọi chỗ ghi vào biến trạng thái** | Khớp đúng số dòng của bảng |
+| 9 | ⭐⭐ Kiểm **bất biến** đủ ba vế cho từng trạng thái | Đã bật · vừa được đưa vào · chưa bị đưa ra |
+| 10 | ⚠⚠ **Viết ra thứ tự ưu tiên** của các chuyển tiếp | `Alarm` → `Stopping` → quy trình; có comment |
+| 11 | Với bit trạng thái: **cưỡng chế ưu tiên tường minh** | Đường ưu tiên thấp kèm *"và đường cao không đúng"* |
 
 ---
 
@@ -12083,6 +12281,12 @@ Chi tiết đối chiếu năm hệ: **Phụ lục A1**.
    trạng thái không quay lại đúng vấn đề của cờ rải rác là gì?
 7. Máy đang `Hold` mà đèn xanh vẫn sáng. Nguyên nhân gốc nằm ở đâu, và sửa thế nào cho lỗi này **không
    thể** tái diễn?
+8. ⭐⭐ Phát biểu **bất biến** mà mọi cách hiện thực máy trạng thái đều phải cưỡng chế. Thiếu mỗi
+    trong ba vế thì sinh ra lỗi gì?
+9. ⚠⚠ Từ một trạng thái có hai đường ra, cả hai điều kiện cùng đúng ở **cùng một vòng quét**. Với
+    `CASE` thì cái nào thắng? Với **bit trạng thái** thì sao? ⭐ Nêu cách cưỡng chế ưu tiên cho cách
+    thứ hai.
+10. ⭐ Vì sao chuyển tiếp **về `Alarm`** phải đứng trên cùng trong thứ tự ưu tiên?
 
 Câu 1 và câu 3 là hai câu phân loại. Câu 1 kiểm tra bạn hiểu *vì sao* chứ không chỉ *làm thế nào*; câu
 3 kiểm tra bạn có phản xạ về an toàn khi khởi động lại — thứ Chương 28 sẽ khai triển.
@@ -12104,6 +12308,11 @@ song song và cách phát hiện bế tắc bằng timeout từng bước.
 - IEC 60204-1 — *Safety of machinery — Electrical equipment of machines*: phân biệt các loại lệnh dừng
   và yêu cầu về khởi động lại có chủ ý — cơ sở cho quyết định `Resetting → Homing` ở mục 25.3.
 - Đặc tả trình tự và danh sách chức năng an toàn của DP-01 — Phụ lục J.
+- **Hugh Jack** — *Automating Manufacturing Systems with PLCs*, ch. 12 *State Based Design*: ba cách
+  chuyển sơ đồ trạng thái sang ladder (**block logic** · **state equations** · **state-transition
+  equations**), ⭐⭐ **bất biến của phương trình trạng thái** (mục 25.5b), và ⚠ **ladder có ưu tiên**
+  khi nhiều chuyển tiếp cùng đúng. Cũng là nguồn cho đánh đổi *"dài hơn và kém hiệu quả hơn, nhưng dễ
+  hiểu và dễ gỡ lỗi hơn"* của cách bit trạng thái.
 
 > ⚡ Bảy trạng thái ở mục 25.3 là **mô hình thực dụng đã được rút gọn cho máy tự động hoá rời rạc**,
 > không phải một mô hình chuẩn hoá bắt buộc. Máy của bạn có thể cần bớt hoặc thêm — điều bắt buộc là
@@ -23975,8 +24184,10 @@ tin lệnh** là nguyên tắc xuyên suốt cả cuốn sách.
   với thiết bị dừng khẩn cấp, khởi động lại có chủ ý (mục 47.6).
 - IEC 61800-5-2 — *Adjustable speed electrical power drive systems — Safety requirements*: định nghĩa
   các chức năng an toàn của truyền động, trong đó có STO (mục 47.8).
-- Tài liệu hướng dẫn của nhà sản xuất thiết bị an toàn và báo cáo kỹ thuật của viện nghiên cứu an toàn
-  lao động — dùng cho phần diễn giải khái niệm và ví dụ kiến trúc.
+- **Tài liệu hướng dẫn của SICK và Schneider Electric** về thiết bị an toàn — dùng cho phần diễn giải
+  khái niệm và ví dụ kiến trúc; nguồn cho định nghĩa **OSSD** và hành vi ngõ ra an toàn (mục 47.7).
+- **DGUV / IFA Report 2/2017e** — báo cáo kỹ thuật của viện nghiên cứu an toàn lao động; nguồn cho
+  ⭐ **yêu cầu phát hiện chập chéo** trên ngõ ra an toàn (mục 47.7).
 
 > ⚠⚠ **Toàn bộ tiêu chuẩn liệt kê ở trên đều có bản quyền và phải mua từ tổ chức phát hành.** Chương
 > này diễn giải khái niệm ở mức đủ để trao đổi chuyên môn; **nó không trích dẫn nội dung tiêu chuẩn và

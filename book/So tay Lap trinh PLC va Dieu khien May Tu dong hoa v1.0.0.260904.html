@@ -613,6 +613,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#282-vì-sao-v-gc-khó-hơn-chy">28.2 Vì sao "về gốc" khó hơn "chạy"</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#283-các-ch-đ-vn-hành">28.3 Các chế độ vận hành</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#284-v-gc-th-t-suy-ra-t-phân-tích-không-phi-tu-ý">28.4 Về gốc — thứ tự suy ra từ phân tích, không phải tuỳ ý</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#284b-v-gc-cho-trc-hai-tín-hiu-hai-vai-trò">28.4b ⭐⭐ Về gốc cho TRỤC — hai tín hiệu, hai vai trò</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#285-chy-tip-hay-hu-chu-trình">28.5 Chạy tiếp hay huỷ chu trình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#286-sn-phm-d-dang-th-hay-b-quên-nht">28.6 Sản phẩm dở dang — thứ hay bị quên nhất</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#287-by-thưng-gp">28.7 Bẫy thường gặp</a></li>
@@ -19439,6 +19440,104 @@ END_IF;
 <p>Không có timeout thì trình tự về gốc kẹt vĩnh viễn ở một bước, và không ai biết bước nào — người sửa
 phải đọc code để đoán. Với timeout có mã lỗi, màn hình nói thẳng chỗ kẹt.</p>
 <hr>
+<h2 id="284b-v-gc-cho-trc-hai-tín-hiu-hai-vai-trò">28.4b ⭐⭐ Về gốc cho TRỤC — hai tín hiệu, hai vai trò</h2>
+<p>Mục trên bàn về gốc cho <strong>xy-lanh</strong> — cơ cấu chỉ có hai tư thế, cảm biến báo tới nơi là xong. Với
+<strong>trục điều khiển vị trí</strong> (Chương 37) thì khác hẳn: trục dừng được ở <strong>vô số vị trí</strong>, nên câu hỏi
+<em>&quot;gốc nằm ở đâu&quot;</em> phải được trả lời bằng một trình tự riêng.</p>
+<h3>Vì sao cần HAI tín hiệu chứ không phải một</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tín hiệu</th>
+<th>Vai trò</th>
+<th>Độ chính xác</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Cữ báo gần gốc</strong> <em>(near-point dog)</em></td>
+<td><em>&quot;Sắp tới rồi — giảm tốc đi&quot;</em></td>
+<td>⚠ <strong>Thô</strong> — chỉ cần đúng vài mi-li-mét</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Tín hiệu điểm không</strong> <em>(zero signal)</em></td>
+<td><em>&quot;ĐÚNG điểm này là gốc&quot;</em></td>
+<td>⭐ <strong>Tinh</strong> — thường là <strong>kênh Z của encoder</strong> (Chương 18, mục 18.5b)</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Trình tự chuẩn, giống nhau ở mọi hệ dù tên gọi khác:</p>
+<pre><code class="language-text">   1. Chạy theo CHIỀU VỀ GỐC ở tốc độ về gốc  (nhanh)
+   2. Gặp cữ báo gần gốc  →  GIẢM TỐC xuống tốc độ bò
+   3. Chạy ở TỐC ĐỘ BÒ, chờ tín hiệu điểm không
+   4. Gặp điểm không  →  DỪNG.  Vị trí này = gốc
+   5. (Tuỳ chọn) chờ hết thời gian dừng  →  báo về gốc xong
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao phải có bước bò chậm — và vì sao nó quyết định độ lặp lại.</strong></p>
+<p>Dừng từ tốc độ cao thì quãng đường dừng phụ thuộc <strong>tốc độ lúc đó, tải, và ma sát</strong> — ba thứ đều
+thay đổi. ⭐ Bò chậm làm quãng đường dừng nhỏ tới mức <strong>không còn đáng kể</strong>, nên lần nào cũng dừng ở
+đúng một chỗ.</p>
+<p>⭐ Cùng lý do đó, ⚠ <strong>luôn về gốc theo CÙNG MỘT CHIỀU</strong>: khe hở cơ khí <em>(backlash)</em> làm vị trí dừng
+khác nhau tuỳ chiều tới.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Hệ quả cho việc mua sắm và đấu tủ — quyết định ở giai đoạn thiết kế, không sửa được bằng phần
+mềm:</strong> cần <strong>hai</strong> thứ, và cả hai phải có mặt trong bảng I/O từ đầu (Chương 23):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ Một <strong>cảm biến cữ gần gốc</strong> trên hành trình, đấu vào ngõ vào <strong>cữ báo</strong> của module hoặc driver</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Một <strong>tín hiệu điểm không</strong> — thường lấy kênh Z của encoder, ⚠ <strong>phải chọn encoder CÓ kênh Z</strong></td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<h3>⭐ Về gốc &quot;nhanh&quot; — và điều kiện để nó hợp lệ</h3>
+<p>Sau khi đã về gốc bằng cữ và điểm không <strong>một lần</strong>, hệ đã <strong>biết địa chỉ của gốc</strong>. Từ đó có thể về
+gốc kiểu thứ hai: ⭐ <strong>chạy định vị tuyệt đối tới địa chỉ gốc</strong>, ⚠ <strong>không dùng cữ, không dùng điểm
+không</strong> — nên nhanh hơn nhiều.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>⭐ Về gốc bằng cảm biến</th>
+<th>Về gốc nhanh</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dùng gì</td>
+<td>⭐ <strong>Cữ + điểm không</strong></td>
+<td>Địa chỉ gốc đã nhớ</td>
+</tr>
+<tr>
+<td>Tốc độ</td>
+<td>Chậm — có bước bò</td>
+<td>⭐ <strong>Nhanh</strong></td>
+</tr>
+<tr>
+<td>⭐⭐ Còn đúng khi nào</td>
+<td>⭐ <strong>Luôn luôn</strong></td>
+<td>⚠⚠ <strong>Chỉ khi vị trí CHƯA từng mất</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Đây là chỗ dễ dùng sai nhất, và hậu quả là trục đi tới một vị trí sai mà máy tin là đúng.</strong></p>
+<p>⭐ <strong>Sau mất điện với encoder gia số, vị trí ĐÃ MẤT</strong> (Chương 18, mục 18.6) — lúc đó ⚠⚠ <strong>bắt buộc
+về gốc bằng cảm biến</strong>, không được dùng về gốc nhanh.</p>
+<p>⭐ <strong>Quy tắc: về gốc nhanh chỉ dùng khi máy vẫn có điện và không có lỗi trục kể từ lần về gốc trước.</strong>
+Mọi trường hợp còn lại — bật máy, sau lỗi trục, sau khi nhả phanh bằng tay — ⭐ <strong>về gốc bằng cảm
+biến</strong>.</p>
+<p>⚡ Cách kiểm rẻ nhất: giữ một cờ <em>&quot;vị trí còn tin được&quot;</em>, ⭐ <strong>xoá nó ở mọi chỗ có thể làm mất vị
+trí</strong>, và chỉ cho phép về gốc nhanh khi cờ đó còn đúng.</p>
+</blockquote>
+<hr>
 <h2 id="285-chy-tip-hay-hu-chu-trình">28.5 Chạy tiếp hay huỷ chu trình</h2>
 <p>Sau khi lỗi được xử lý, máy có hai đường đi. <strong>Chọn đường nào là quyết định của khách hàng, không phải
 của người lập trình</strong> — nhưng người lập trình phải trình bày rõ đánh đổi để khách hàng chọn được.</p>
@@ -19649,6 +19748,21 @@ xuất thật mà vẫn bỏ qua kiểm tra có board, cho ra hàng loạt sản
 <td>Không có đường nào để sản phẩm dở dang lẫn vào hàng tốt</td>
 </tr>
 <tr>
+<td>9</td>
+<td>⭐ Với <strong>trục</strong>: đã có <strong>cữ báo gần gốc</strong> và <strong>tín hiệu điểm không</strong> trong bảng I/O</td>
+<td>Cả hai có mặt từ giai đoạn thiết kế — không sửa được bằng phần mềm</td>
+</tr>
+<tr>
+<td>10</td>
+<td>⭐ Về gốc trục luôn theo <strong>cùng một chiều</strong>, có <strong>bước bò chậm</strong></td>
+<td>Có — đó là thứ quyết định độ lặp lại</td>
+</tr>
+<tr>
+<td>11</td>
+<td>⚠⚠ Có cờ <em>&quot;vị trí còn tin được&quot;</em>, và <strong>về gốc nhanh chỉ dùng khi cờ đó đúng</strong></td>
+<td>Cờ bị xoá ở <strong>mọi</strong> chỗ có thể làm mất vị trí</td>
+</tr>
+<tr>
 <td>8</td>
 <td>Lập <strong>danh sách tư thế xuất phát</strong> để kiểm thử</td>
 <td>Có ít nhất 5 tư thế, gồm cả tư thế giữa chừng</td>
@@ -19667,6 +19781,12 @@ xuất thật mà vẫn bỏ qua kiểm tra có board, cho ra hàng loạt sản
 và ba cách xử lý là gì?</li>
 <li>Ở chế độ Manual, cái gì được nới lỏng và cái gì <strong>tuyệt đối không</strong> được nới lỏng?</li>
 <li>Liệt kê <strong>năm tư thế xuất phát</strong> cần thử khi nghiệm thu trình tự về gốc, kèm cách tạo ra từng tư thế.</li>
+<li>⭐⭐ Về gốc một <strong>trục</strong> cần <strong>hai</strong> tín hiệu. Nêu tên và <strong>vai trò</strong> của mỗi cái, và cho biết cái
+ nào cần chính xác cao.</li>
+<li>⭐ Vì sao trình tự về gốc phải có <strong>bước bò chậm</strong>, và vì sao phải luôn về gốc <strong>theo cùng một
+chiều</strong>?</li>
+<li>⚠⚠ Phân biệt <strong>về gốc bằng cảm biến</strong> với <strong>về gốc nhanh</strong>. Sau khi mất điện với encoder gia số,
+được dùng cái nào? ⭐ Nêu cách kiểm rẻ nhất để không dùng nhầm.</li>
 </ol>
 <p>Câu 2, 3 và 7 là ba câu phân loại. Trả lời được cả ba nghĩa là bạn đã có phản xạ <em>suy thứ tự từ phân
 tích va chạm</em> — thứ phân biệt người viết được máy chạy an toàn với người viết được máy chạy.</p>
@@ -19684,6 +19804,10 @@ về <strong>khởi động lại phải có chủ ý</strong> <em>(intentional 
 <li>ISO 12100 — <em>Safety of machinery — General principles for design</em>: phân tích mối nguy làm nền cho
 bảng va chạm ở mục 28.4.</li>
 <li>Đặc tả trình tự, danh sách cơ cấu và chức năng an toàn của DP-01 — Phụ lục J.</li>
+<li><strong>Mitsubishi MELSEC iQ-F FX5 Positioning Control</strong> §3.2 <em>OPR Control</em> — nguồn cho mục 28.4b: trình
+tự ⭐ <strong>tốc độ về gốc → cữ báo gần gốc → tốc độ bò → tín hiệu điểm không → dừng</strong>, thời gian dừng
+tuỳ chọn, và ⭐ <strong>về gốc nhanh</strong> bằng định vị tuyệt đối tới địa chỉ gốc đã thiết lập — ⚠ <strong>không dùng
+cữ và điểm không</strong>. <em>(Tên gọi khác nhau giữa các hãng; cơ chế giống nhau.)</em></li>
 </ul>
 <blockquote>
 <p>⚠ Bảng va chạm và trình tự về gốc trong chương là <strong>ví dụ dạy học cho DP-01 ở lát cắt 2</strong>. Máy thật

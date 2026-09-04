@@ -13643,6 +13643,72 @@ phải đọc code để đoán. Với timeout có mã lỗi, màn hình nói th
 
 ---
 
+## 28.4b ⭐⭐ Về gốc cho TRỤC — hai tín hiệu, hai vai trò
+
+Mục trên bàn về gốc cho **xy-lanh** — cơ cấu chỉ có hai tư thế, cảm biến báo tới nơi là xong. Với
+**trục điều khiển vị trí** (Chương 37) thì khác hẳn: trục dừng được ở **vô số vị trí**, nên câu hỏi
+*"gốc nằm ở đâu"* phải được trả lời bằng một trình tự riêng.
+
+### Vì sao cần HAI tín hiệu chứ không phải một
+
+| Tín hiệu | Vai trò | Độ chính xác |
+|---|---|---|
+| ⭐ **Cữ báo gần gốc** *(near-point dog)* | *"Sắp tới rồi — giảm tốc đi"* | ⚠ **Thô** — chỉ cần đúng vài mi-li-mét |
+| ⭐⭐ **Tín hiệu điểm không** *(zero signal)* | *"ĐÚNG điểm này là gốc"* | ⭐ **Tinh** — thường là **kênh Z của encoder** (Chương 18, mục 18.5b) |
+
+⭐ Trình tự chuẩn, giống nhau ở mọi hệ dù tên gọi khác:
+
+```text
+   1. Chạy theo CHIỀU VỀ GỐC ở tốc độ về gốc  (nhanh)
+   2. Gặp cữ báo gần gốc  →  GIẢM TỐC xuống tốc độ bò
+   3. Chạy ở TỐC ĐỘ BÒ, chờ tín hiệu điểm không
+   4. Gặp điểm không  →  DỪNG.  Vị trí này = gốc
+   5. (Tuỳ chọn) chờ hết thời gian dừng  →  báo về gốc xong
+```
+
+> ⭐⭐ **Vì sao phải có bước bò chậm — và vì sao nó quyết định độ lặp lại.**
+>
+> Dừng từ tốc độ cao thì quãng đường dừng phụ thuộc **tốc độ lúc đó, tải, và ma sát** — ba thứ đều
+> thay đổi. ⭐ Bò chậm làm quãng đường dừng nhỏ tới mức **không còn đáng kể**, nên lần nào cũng dừng ở
+> đúng một chỗ.
+>
+> ⭐ Cùng lý do đó, ⚠ **luôn về gốc theo CÙNG MỘT CHIỀU**: khe hở cơ khí *(backlash)* làm vị trí dừng
+> khác nhau tuỳ chiều tới.
+
+> ⚠⚠ **Hệ quả cho việc mua sắm và đấu tủ — quyết định ở giai đoạn thiết kế, không sửa được bằng phần
+> mềm:** cần **hai** thứ, và cả hai phải có mặt trong bảng I/O từ đầu (Chương 23):
+>
+> | | |
+> |---|---|
+> | 1 | ⭐ Một **cảm biến cữ gần gốc** trên hành trình, đấu vào ngõ vào **cữ báo** của module hoặc driver |
+> | 2 | ⭐ Một **tín hiệu điểm không** — thường lấy kênh Z của encoder, ⚠ **phải chọn encoder CÓ kênh Z** |
+
+### ⭐ Về gốc "nhanh" — và điều kiện để nó hợp lệ
+
+Sau khi đã về gốc bằng cữ và điểm không **một lần**, hệ đã **biết địa chỉ của gốc**. Từ đó có thể về
+gốc kiểu thứ hai: ⭐ **chạy định vị tuyệt đối tới địa chỉ gốc**, ⚠ **không dùng cữ, không dùng điểm
+không** — nên nhanh hơn nhiều.
+
+| | ⭐ Về gốc bằng cảm biến | Về gốc nhanh |
+|---|---|---|
+| Dùng gì | ⭐ **Cữ + điểm không** | Địa chỉ gốc đã nhớ |
+| Tốc độ | Chậm — có bước bò | ⭐ **Nhanh** |
+| ⭐⭐ Còn đúng khi nào | ⭐ **Luôn luôn** | ⚠⚠ **Chỉ khi vị trí CHƯA từng mất** |
+
+> ⚠⚠ **Đây là chỗ dễ dùng sai nhất, và hậu quả là trục đi tới một vị trí sai mà máy tin là đúng.**
+>
+> ⭐ **Sau mất điện với encoder gia số, vị trí ĐÃ MẤT** (Chương 18, mục 18.6) — lúc đó ⚠⚠ **bắt buộc
+> về gốc bằng cảm biến**, không được dùng về gốc nhanh.
+>
+> ⭐ **Quy tắc: về gốc nhanh chỉ dùng khi máy vẫn có điện và không có lỗi trục kể từ lần về gốc trước.**
+> Mọi trường hợp còn lại — bật máy, sau lỗi trục, sau khi nhả phanh bằng tay — ⭐ **về gốc bằng cảm
+> biến**.
+>
+> ⚡ Cách kiểm rẻ nhất: giữ một cờ *"vị trí còn tin được"*, ⭐ **xoá nó ở mọi chỗ có thể làm mất vị
+> trí**, và chỉ cho phép về gốc nhanh khi cờ đó còn đúng.
+
+---
+
 ## 28.5 Chạy tiếp hay huỷ chu trình
 
 Sau khi lỗi được xử lý, máy có hai đường đi. **Chọn đường nào là quyết định của khách hàng, không phải
@@ -13788,6 +13854,9 @@ xuất thật mà vẫn bỏ qua kiểm tra có board, cho ra hàng loạt sản
 | 5 | Đặt **timeout + mã lỗi riêng** cho từng bước | Mã lỗi nói được kẹt ở bước nào |
 | 6 | Quyết định **huỷ chu trình hay chạy tiếp** — trình bày đánh đổi cho khách hàng | Có văn bản ghi lựa chọn |
 | 7 | Định nghĩa **cách xử lý sản phẩm dở dang** | Không có đường nào để sản phẩm dở dang lẫn vào hàng tốt |
+| 9 | ⭐ Với **trục**: đã có **cữ báo gần gốc** và **tín hiệu điểm không** trong bảng I/O | Cả hai có mặt từ giai đoạn thiết kế — không sửa được bằng phần mềm |
+| 10 | ⭐ Về gốc trục luôn theo **cùng một chiều**, có **bước bò chậm** | Có — đó là thứ quyết định độ lặp lại |
+| 11 | ⚠⚠ Có cờ *"vị trí còn tin được"*, và **về gốc nhanh chỉ dùng khi cờ đó đúng** | Cờ bị xoá ở **mọi** chỗ có thể làm mất vị trí |
 | 8 | Lập **danh sách tư thế xuất phát** để kiểm thử | Có ít nhất 5 tư thế, gồm cả tư thế giữa chừng |
 
 ---
@@ -13804,6 +13873,12 @@ xuất thật mà vẫn bỏ qua kiểm tra có board, cho ra hàng loạt sản
    và ba cách xử lý là gì?
 7. Ở chế độ Manual, cái gì được nới lỏng và cái gì **tuyệt đối không** được nới lỏng?
 8. Liệt kê **năm tư thế xuất phát** cần thử khi nghiệm thu trình tự về gốc, kèm cách tạo ra từng tư thế.
+9. ⭐⭐ Về gốc một **trục** cần **hai** tín hiệu. Nêu tên và **vai trò** của mỗi cái, và cho biết cái
+    nào cần chính xác cao.
+10. ⭐ Vì sao trình tự về gốc phải có **bước bò chậm**, và vì sao phải luôn về gốc **theo cùng một
+    chiều**?
+11. ⚠⚠ Phân biệt **về gốc bằng cảm biến** với **về gốc nhanh**. Sau khi mất điện với encoder gia số,
+    được dùng cái nào? ⭐ Nêu cách kiểm rẻ nhất để không dùng nhầm.
 
 Câu 2, 3 và 7 là ba câu phân loại. Trả lời được cả ba nghĩa là bạn đã có phản xạ *suy thứ tự từ phân
 tích va chạm* — thứ phân biệt người viết được máy chạy an toàn với người viết được máy chạy.
@@ -13826,6 +13901,10 @@ kiểm tra công thức hợp lệ thuộc về PLC chứ không thuộc về h�
 - ISO 12100 — *Safety of machinery — General principles for design*: phân tích mối nguy làm nền cho
   bảng va chạm ở mục 28.4.
 - Đặc tả trình tự, danh sách cơ cấu và chức năng an toàn của DP-01 — Phụ lục J.
+- **Mitsubishi MELSEC iQ-F FX5 Positioning Control** §3.2 *OPR Control* — nguồn cho mục 28.4b: trình
+  tự ⭐ **tốc độ về gốc → cữ báo gần gốc → tốc độ bò → tín hiệu điểm không → dừng**, thời gian dừng
+  tuỳ chọn, và ⭐ **về gốc nhanh** bằng định vị tuyệt đối tới địa chỉ gốc đã thiết lập — ⚠ **không dùng
+  cữ và điểm không**. *(Tên gọi khác nhau giữa các hãng; cơ chế giống nhau.)*
 
 > ⚠ Bảng va chạm và trình tự về gốc trong chương là **ví dụ dạy học cho DP-01 ở lát cắt 2**. Máy thật
 > có thêm cơ cấu và thêm dạng năng lượng sẽ có bảng va chạm dài hơn — và bảng đó phải do người thiết kế

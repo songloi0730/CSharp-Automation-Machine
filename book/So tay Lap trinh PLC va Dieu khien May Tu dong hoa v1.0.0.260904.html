@@ -897,6 +897,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#494-ni-đt-pe-không-phi-0-v">49.4 ⭐⭐ Nối đất — PE không phải 0 V</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#495-ngun-24-v-và-chia-nhánh">49.5 Nguồn 24 V và chia nhánh</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#496-đánh-s-dây-và-cu-đu">49.6 Đánh số dây và cầu đấu</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#496b-ba-vic-lúc-lp-module-nh-nhưng-b-qua-thì-tr-giá-lâu-dài">49.6b ⭐ Ba việc lúc lắp module — nhỏ, nhưng bỏ qua thì trả giá lâu dài</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#497-đi-dây-trên-máng-xích-đng">49.7 ⚠ Đi dây trên máng xích động</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#498-tám-sai-lm-gây-li-ngu-nhiên">49.8 ⭐ Tám sai lầm gây lỗi "ngẫu nhiên"</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#499-trên-máy-mu-dp-01">49.9 Trên máy mẫu DP-01</a></li>
@@ -6057,6 +6058,65 @@ tự khỏi vào sáng hôm sau. Người ta đi tìm trong chương trình (Ph�
 <td>⚠ Module PLC thường chỉ đạt cấp <strong>chống vật rắn lớn, không chống nước</strong></td>
 </tr>
 </tbody></table></div>
+<h3>⚠⚠ Khoảng cách lắp trong tài liệu hãng có GIẢ ĐỊNH NGẦM — và máy của bạn dễ vi phạm</h3>
+<p>⭐ Con số milimét ở bảng trên <strong>không phải hằng số vật lý</strong>. Nhà sản xuất tính nó cho một <strong>tình huống
+điển hình</strong>, và tình huống đó có bốn điều kiện:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Điều kiện điển hình</th>
+<th>Nghĩa là</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>~60 % ngõ vào</strong> BẬT tại một thời điểm</td>
+<td>Không phải mọi cảm biến cùng tác động</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>~30 % ngõ ra</strong> BẬT tại một thời điểm</td>
+<td>⚠ <strong>Đây là điều kiện dễ vi phạm nhất</strong></td>
+</tr>
+<tr>
+<td>Tổng dòng các module nằm trong đặc tả</td>
+<td>Mục 8.7</td>
+</tr>
+<tr>
+<td>⭐ Nhiệt độ không khí khoảng <strong>40 °C</strong></td>
+<td>⚠ Không phải 25 °C như người ta hay hình dung</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Máy của bạn có thể không &quot;điển hình&quot; mà không ai để ý.</strong></p>
+<p>Một máy có nhiều van giữ <strong>bật liên tục</strong> trong suốt chu trình, hoặc dàn đèn báo luôn sáng, dễ dàng
+vượt xa mức 30 % ngõ ra. ⭐ Khi đó <strong>khoảng cách lắp phải LỚN HƠN</strong> con số trong tài liệu — chứ
+không phải vừa đủ theo bảng.</p>
+<p>⭐ Và nhớ chiều so sánh: điều kiện điển hình là <strong>40 °C</strong>, nên tủ ở 45 °C <strong>đã là khắc nghiệt hơn
+điển hình</strong>, không phải &quot;vẫn còn xa giới hạn 55 °C&quot;.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Ba việc rẻ tiền khi máy không điển hình:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Nới khoảng cách</strong> giữa các module — rẻ nhất, làm lúc thiết kế tủ</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>Quạt tuần hoàn</strong> để phá điểm nóng cục bộ quanh PLC</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠⚠ <strong>Gió của quạt phải qua phin lọc trước</strong> — ⭐ bụi bám vào bề mặt tản nhiệt làm <strong>giảm chính khả năng thoát nhiệt</strong> mà quạt đang cố cải thiện (Chương 51, mục 51.11)</td>
+</tr>
+</tbody></table></div>
+<p>⚡ Ba việc trên xử lý được phần lớn trường hợp. Nhiệt cao <strong>kéo dài</strong> thì mới tính tới điều hoà tủ.</p>
+</blockquote>
 <blockquote>
 <p>⭐⭐ <strong>Hàng cuối là điều dễ hiểu nhầm: bản thân module PLC gần như không chống được bụi mịn và
 nước.</strong> Cái chống là <strong>vỏ tủ</strong>. ⚠ Nghĩa là cấp bảo vệ ghi trên tủ mới là cấp bảo vệ thật của hệ —
@@ -6314,6 +6374,16 @@ do người có thẩm quyền thiết kế.</p>
 <td>Mất chương trình = dựng lại từ đầu</td>
 </tr>
 <tr>
+<td>⚠⚠ Khoảng cách lắp trong tài liệu hãng</td>
+<td>⭐ Tính cho <strong>tình huống điển hình</strong></td>
+<td>~60 % DI · ⭐ <strong>~30 % DO</strong> · <strong>40 °C</strong></td>
+</tr>
+<tr>
+<td>⭐ Máy không điển hình</td>
+<td><strong>Nới khoảng cách</strong> + quạt tuần hoàn</td>
+<td>⚠⚠ Gió <strong>phải qua phin lọc</strong></td>
+</tr>
+<tr>
 <td>Pin</td>
 <td>Thay theo lịch, khi CPU còn điện</td>
 <td>Mất số liệu sản xuất</td>
@@ -6335,6 +6405,10 @@ Nêu hai biện pháp phòng.</li>
 thành lỗi phần mềm. Đo bằng dụng cụ gì để xác nhận, và vì sao không dùng đồng hồ vạn năng?</li>
 <li>Vì sao chuyển CPU sang STOP <strong>không phải</strong> là cách dừng máy? Nêu hai hậu quả cụ thể trên DP-01.</li>
 <li>⭐ Vì sao chương này nằm <strong>trước</strong> mọi chương lập trình trong sách?</li>
+<li>⚠⚠ Khoảng cách lắp module trong tài liệu hãng dựa trên <strong>bốn điều kiện điển hình</strong> nào? ⭐ Điều
+kiện nào dễ bị máy thật vi phạm nhất, và vì sao?</li>
+<li>⭐ Tủ điện ở <strong>45 °C</strong> — so với điều kiện điển hình thì đó là <strong>khắc nghiệt hơn</strong> hay <strong>vẫn thoải
+mái</strong>? Giải thích.</li>
 </ol>
 <blockquote>
 <p>Câu 3, 8 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: <strong>quyết định phần cứng đến
@@ -6360,6 +6434,11 @@ khiển và với hành vi khi mất rồi khôi phục nguồn — nền cho m�
 số kênh, dung lượng bộ nhớ, dòng tiêu thụ module, số module tối đa, quy tắc đánh địa chỉ, vai trò
 thẻ nhớ, ý nghĩa đèn trạng thái.</li>
 <li>Bảng I/O của DP-01 — Phụ lục J.</li>
+<li><strong>Bryan, L.A. &amp; Bryan, E.A.</strong> — <em>Programmable Controllers: Theory and Implementation</em>, ch. 20 §20-3
+<em>Noise, Heat, and Voltage Requirements</em>: PLC làm mát bằng <strong>đối lưu</strong>, và ⭐ <strong>khuyến nghị khoảng
+cách lắp của hãng dựa trên tình huống điển hình</strong> — ~60 % ngõ vào và ~30 % ngõ ra BẬT, không khí
+~40 °C; ⚠ ngoài điều kiện đó <strong>phải nới khoảng cách</strong>. Gió quạt phải <strong>qua phin lọc</strong> vì bụi làm
+giảm chính khả năng thoát nhiệt (mục 8.7b).</li>
 </ul>
 <blockquote>
 <p>⚡ <strong>Về các con số trong chương này.</strong> Hệ số dự phòng 20 % (I/O) và 1,3–1,5 (nguồn) là <strong>quy tắc
@@ -36053,6 +36132,73 @@ một cuộc điều tra.</p>
 khi đấu tủ.</p>
 </blockquote>
 <hr>
+<h2 id="496b-ba-vic-lúc-lp-module-nh-nhưng-b-qua-thì-tr-giá-lâu-dài">49.6b ⭐ Ba việc lúc lắp module — nhỏ, nhưng bỏ qua thì trả giá lâu dài</h2>
+<p><strong>Một — ⚠⚠ cắt nguồn trước khi lắp hoặc tháo module</strong></p>
+<blockquote>
+<p>⚠⚠ <strong>Cắt nguồn cấp cho module (hoặc cả giá) TRƯỚC khi cắm, rút, hay đấu dây vào module.</strong></p>
+<p>⭐ Một số dòng PLC cho phép <strong>thay nóng</strong> <em>(hot swap)</em> — nhưng đó là <strong>tính năng phải được ghi rõ
+trong tài liệu của đúng module đó</strong>, không phải mặc định. ⚠ Rút một module không hỗ trợ thay nóng
+có thể hỏng module, hỏng giá, hoặc ⚠⚠ <strong>làm các ngõ ra khác nhảy trạng thái trong khoảnh khắc</strong>.</p>
+<p>⭐ Và ngay cả khi module <strong>có</strong> hỗ trợ thay nóng, câu hỏi tiếp theo vẫn còn: ⚠ <em>&quot;máy đang chạy —
+ngõ ra của module này đang giữ cái gì?&quot;</em> (Chương 53).</p>
+</blockquote>
+<p><strong>Hai — ⭐ bó dây theo MODULE</strong></p>
+<p>Các sợi dây đi tới <strong>cùng một module</strong> được bó lại thành một bó rồi mới đi vào máng. Nghe như việc
+thẩm mỹ, nhưng nó là việc <strong>bảo trì</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Có bó theo module</th>
+<th>Không bó</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Tháo một module → <strong>rút một bó</strong></td>
+<td>⚠ Lần theo từng sợi trong máng chung</td>
+</tr>
+<tr>
+<td>⭐ Nhìn là biết bó nào của module nào</td>
+<td>Phải đọc số dây từng sợi</td>
+</tr>
+<tr>
+<td>⭐ Thay module → cắm lại <strong>một lần</strong></td>
+<td>⚠ Nhiều lần cắm, nhiều cơ hội cắm nhầm</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚡ Bó dây <strong>không</strong> thay thế quy tắc tách cáp ở mục 49.3 — ⭐ <strong>bó theo module, rồi các bó vẫn phải
+đi đúng máng theo loại tín hiệu.</strong></p>
+</blockquote>
+<p><strong>Ba — ⚠ kiểm tiết diện dây theo dòng LỚN NHẤT, không theo dòng bình thường</strong></p>
+<p>Mỗi chân module nhận được dây trong một dải tiết diện nhất định. ⭐ Hai điều phải kiểm, và người ta
+thường chỉ kiểm điều thứ nhất:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ Dây có <strong>vừa chân đấu</strong> không — dải tiết diện ghi trong tài liệu module</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠⚠ Dây có <strong>chịu nổi dòng lớn nhất có thể</strong> không — ⭐ <strong>không phải dòng lúc chạy bình thường</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ Cùng tinh thần với việc chọn bộ nguồn ở mục 49.5: ⚠ <strong>tính theo trường hợp xấu nhất</strong>, không tính
+theo trường hợp thường gặp.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>MẸO — mã màu theo loại tín hiệu, dùng KÈM số dây chứ không thay số dây.</strong>
+Ví dụ AC một màu, DC một màu, dây chung một màu. ⭐ Màu giúp <strong>thấy sai từ xa</strong> — một sợi màu lạ nằm
+trong bó là dấu hiệu nhìn ra ngay, trước cả khi đọc số. ⚠ Nhưng màu <strong>không đủ để truy vết</strong>: vẫn
+phải có số dây (mục 49.6), vì hai sợi cùng màu thì không phân biệt được.</p>
+</blockquote>
+<hr>
 <h2 id="497-đi-dây-trên-máng-xích-đng">49.7 ⚠ Đi dây trên máng xích động</h2>
 <p>Cáp đi theo cơ cấu chuyển động là điểm hỏng <strong>được lập trình sẵn</strong> nếu chọn sai.</p>
 <div class="table-wrap"><table>
@@ -36423,6 +36569,22 @@ tĩnh vẫn tốt.
 <td><strong>Nghi lắp đặt trước khi nghi logic</strong></td>
 </tr>
 <tr>
+<td>⚠⚠ Trước khi lắp/tháo module</td>
+<td>⭐ <strong>Cắt nguồn</strong> — thay nóng là <strong>tính năng phải ghi rõ</strong>, không mặc định</td>
+</tr>
+<tr>
+<td>⭐ Bó dây</td>
+<td><strong>Theo module</strong> — rồi các bó vẫn đi đúng máng theo loại tín hiệu</td>
+</tr>
+<tr>
+<td>Kiểm tiết diện dây theo</td>
+<td>⚠⚠ <strong>Dòng lớn nhất có thể</strong>, không phải dòng lúc chạy bình thường</td>
+</tr>
+<tr>
+<td>Mã màu theo loại tín hiệu</td>
+<td>⭐ Dùng <strong>kèm</strong> số dây — thấy sai từ xa, nhưng <strong>không thay</strong> số dây</td>
+</tr>
+<tr>
 <td>Lúc nghiệm thu phải ghi gì</td>
 <td>⭐ <strong>Mốc</strong>: điện áp 24 V tải nặng, dòng động cơ, số lỗi mạng</td>
 </tr>
@@ -36445,6 +36607,11 @@ ngày. Con số đó nói lên điều gì về cách bạn coi sợi cáp?</li>
 <li>Nêu tám sai lầm lắp đặt gây lỗi &quot;ngẫu nhiên&quot;. Điểm chung của chúng là gì?</li>
 <li>⭐⭐ Khi gặp lỗi chập chờn không tái hiện được, nên nghi vào đâu trước? Vì sao quy tắc này tiết
 kiệm nhiều thời gian nhất?</li>
+<li>⚠⚠ Vì sao phải <strong>cắt nguồn</strong> trước khi lắp/tháo module? ⭐ Nếu module <strong>có</strong> hỗ trợ thay nóng thì
+câu hỏi tiếp theo là gì?</li>
+<li>⭐ Nêu <strong>ba</strong> lợi ích của việc bó dây theo module khi bảo trì. ⚠ Bó dây có thay được quy tắc tách
+cáp ở mục 49.3 không?</li>
+<li>⚠ Kiểm tiết diện dây phải theo dòng nào? ⭐ Vì sao mã màu <strong>không đủ</strong> để truy vết một sợi dây?</li>
 </ol>
 <blockquote>
 <p>Câu 3, 5, 9 và 12 là bốn câu phân loại. Câu 12 là tinh thần của cả chương: <strong>lỗi do lắp đặt không
@@ -36469,6 +36636,10 @@ nghiệp.</li>
 <li><strong>Hướng dẫn lắp đặt của nhà sản xuất biến tần và PLC</strong> — dùng cho nối đất và chống nhiễu; ⭐ <strong>họ đã
 tính cho sản phẩm của họ</strong>.</li>
 <li>Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J.</li>
+<li><strong>Bryan, L.A. &amp; Bryan, E.A.</strong> — <em>Programmable Controllers: Theory and Implementation</em>, ch. 20 §20-4 <em>I/O Installation,
+Wiring, and Precautions</em>: ⚠ <strong>cắt nguồn trước khi lắp/đấu module</strong>; ⭐ <strong>bó dây theo module</strong>; kiểm
+<strong>tiết diện theo dòng lớn nhất</strong>; và <strong>mã màu theo loại tín hiệu</strong> dùng kèm nhãn số dây — nền cho
+mục 49.6b.</li>
 </ul>
 <blockquote>
 <p>⚠⚠ <strong>Nhắc lại giới hạn.</strong> Chương này giúp bạn <strong>hiểu và kiểm tra</strong>, không phải để tự thiết kế tủ

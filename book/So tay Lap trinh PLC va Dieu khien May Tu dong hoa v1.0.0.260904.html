@@ -542,6 +542,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#222-đc-trưc-sa-sau-quy-trình-sáu-bưc">22.2 Đọc trước, sửa sau — quy trình sáu bước</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#223-tham-chiu-chéo-công-c-quan-trng-nht">22.3 ⭐ Tham chiếu chéo — công cụ quan trọng nhất</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#224-dng-bn-đ-chương-trình">22.4 Dựng bản đồ chương trình</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#224b-th-l-ra-bn-phi-nhn-đưc-và-vic-nên-làm-khi-không-có">22.4b ⭐⭐ Thứ lẽ ra bạn phải nhận được — và việc nên làm khi không có</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#225-đc-code-không-có-chú-thích">22.5 Đọc code không có chú thích</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#226-chương-trình-b-sa-chp-vá-qua-nhiu-đi">22.6 ⚠ Chương trình bị sửa chắp vá qua nhiều đời</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#227-quy-tc-sa-an-toàn">22.7 ⭐ Quy tắc sửa an toàn</a></li>
@@ -11659,7 +11660,7 @@ là hành động có chủ ý sau khi khôi phục nguồn — cơ sở cho quy
 <li>Bảng I/O và đặc tả trình tự của DP-01 — Phụ lục J.</li>
 <li>Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho phần khai báo biến giữ được ở mục 16.7,
 vì đây là chỗ khác nhau nhiều nhất giữa các hãng.</li>
-<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> — bảng lệnh Logix: <code>OTE</code> <strong>không giữ</strong>, <code>OTL</code>/<code>OTU</code>
+<li><strong>Petruzella, Frank D.</strong> — <em>Programmable Logic Controllers</em> <em>(nội dung dẫn có ở <strong>cả bản 6th ed. lẫn bản 2025</strong>)</em> — bảng lệnh Logix: <code>OTE</code> <strong>không giữ</strong>, <code>OTL</code>/<code>OTU</code>
 ⭐ <strong>giữ được</strong>; mạch chốt lập trình là <strong>retentive</strong>, giữ trạng thái qua mất điện (mục 16.7).</li>
 </ul>
 <blockquote>
@@ -12943,7 +12944,7 @@ vào số, trong đó có thời gian lọc phần cứng — cơ sở cho giớ
 <li>Tài liệu CPU và module của từng hệ trong Phụ lục A — dùng cho số kênh HSC, tần số tối đa, chế độ
 đếm, và hành vi khi tràn. Đây là các thông số <strong>phải tra theo đúng dòng sản phẩm</strong>, không suy đoán.</li>
 <li>Bảng I/O của DP-01 — Phụ lục J.</li>
-<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> — ⭐ bộ đếm PLC <strong>thường là giữ được</strong>: giá trị lúc
+<li><strong>Petruzella, Frank D.</strong> — <em>Programmable Logic Controllers</em> <em>(nội dung dẫn có ở <strong>cả bản 6th ed. lẫn bản 2025</strong>)</em> — ⭐ bộ đếm PLC <strong>thường là giữ được</strong>: giá trị lúc
 CPU dừng được khôi phục khi cấp nguồn lại, ⚠ trừ khi <strong>điều kiện đặt lại đang tác động</strong> lúc đó; và
 ⭐ <strong>cực tính điều kiện đặt lại khác nhau giữa các hãng</strong> — nền cho mục 18.6b.</li>
 </ul>
@@ -13802,7 +13803,7 @@ tiếp&quot;</em>: mẫu số 0 <strong>tự đổi thành 1</strong>, và chỉ
 chỉ báo bằng <strong>đèn LED nhấp nháy</strong>.</li>
 <li><strong>Tài liệu InoProShop (nền CODESYS)</strong> — nguồn cho ⭐ <strong>ba nguyên nhân</strong> làm mẫu số bằng 0, cơ chế
 <em>&quot;POU for implicit checks&quot; → Division Checks</em>, và ⭐ <strong>ngưỡng 1e-6 / 1e-15</strong> cho mẫu số số thực.</li>
-<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> — hành vi <strong>cờ lỗi nhẹ</strong> <em>(minor fault)</em> khi chia
+<li><strong>Petruzella, Frank D.</strong> — <em>Programmable Logic Controllers</em> <em>(nội dung dẫn có ở <strong>cả bản 6th ed. lẫn bản 2025</strong>)</em> — hành vi <strong>cờ lỗi nhẹ</strong> <em>(minor fault)</em> khi chia
 cho 0.</li>
 <li><strong>Hugh Jack</strong>, <em>Automating Manufacturing Systems with PLCs</em> — chương trình xử lý lỗi
 <em>(fault handler)</em> chạy khi có lỗi như chia cho 0.</li>
@@ -15475,6 +15476,77 @@ Rải khắp nơi → ⚠ chuẩn bị tinh thần: mỗi thay đổi đều có
 sẽ là công cụ bạn dùng liên tục.</p>
 </blockquote>
 <hr>
+<h2 id="224b-th-l-ra-bn-phi-nhn-đưc-và-vic-nên-làm-khi-không-có">22.4b ⭐⭐ Thứ lẽ ra bạn phải nhận được — và việc nên làm khi không có</h2>
+<p>Mục trên dựng bản đồ chương trình <strong>từ con số không</strong>. Đáng hỏi tiếp: ⭐ <em>vì sao phải dựng lại thứ
+lẽ ra đã có sẵn?</em></p>
+<p>Một bộ hồ sơ đầy đủ luôn mở đầu bằng một <strong>bản tóm tắt hệ thống</strong> — vài trang mô tả toàn cảnh, gồm
+ba phần:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phần</th>
+<th>Trả lời câu hỏi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Phát biểu bài toán điều khiển</strong></td>
+<td><em>Máy này giải quyết việc gì?</em></td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Chiến lược thiết kế</strong></td>
+<td><em>Các khối phần cứng và phần mềm chính làm gì — và ⭐ <strong>VÌ SAO chọn chúng</strong>?</em></td>
+</tr>
+<tr>
+<td><strong>Mục tiêu phải đạt</strong></td>
+<td><em>Đo bằng gì thì gọi là đạt?</em></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Phần thứ hai là phần đắt nhất, và cũng là phần luôn mất trước.</strong></p>
+<p>Sơ đồ đấu dây và bảng địa chỉ thì còn — vì thiếu chúng thì <strong>không đấu được máy</strong>. ⚠ Nhưng
+<em>&quot;vì sao chọn cách này&quot;</em> thì ⭐ <strong>không ai cần tới để máy chạy</strong>, nên nó không được viết ra, và
+người sau phải <strong>đoán</strong> (Chương 30).</p>
+<p>⚡ Đó chính là lý do mục 22.5 tồn tại: đọc code không chú thích <strong>là hệ quả của việc này</strong>, không
+phải một kỹ năng đáng tự hào.</p>
+</blockquote>
+<h3>⭐ Khi bạn đã dựng xong bản đồ — hãy viết bản tóm tắt đó ra</h3>
+<p>Đây là đề nghị thực dụng nhất của cả chương:</p>
+<blockquote>
+<p>⭐⭐ <strong>Bạn vừa phải bỏ công dựng lại hiểu biết về cỗ máy. Đừng để công đó chết trong đầu bạn.</strong></p>
+<p>Viết ra <strong>hai tới ba trang</strong> theo đúng ba phần trên, kèm những gì bạn đã <strong>suy ra</strong> và ⚠ <strong>đánh dấu
+rõ chỗ nào là suy đoán chưa xác nhận</strong>.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bạn được gì</th>
+<th>Người sau được gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Viết ra mới phát hiện chỗ mình <strong>tưởng đã hiểu mà chưa</strong></td>
+<td>⭐ <strong>Không phải làm lại từ đầu</strong> việc bạn vừa làm</td>
+</tr>
+<tr>
+<td>Có căn cứ khi cần giải trình một thay đổi</td>
+<td>Biết chỗ nào là <strong>sự thật</strong> và chỗ nào là <strong>suy đoán của bạn</strong></td>
+</tr>
+<tr>
+<td>⭐ Người bàn giao đọc lại có thể <strong>đính chính</strong> cho bạn</td>
+<td>Có cái để đính chính tiếp</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Và một mục nữa nên có ngay từ đầu: người và thời điểm.</strong> Ai viết chương trình gốc, ai đã sửa,
+sửa khi nào. ⚠ Với chương trình <em>&quot;chắp vá qua nhiều đời&quot;</em> ở mục 22.6, ⭐ <strong>biết được đời nào làm gì
+đã là nửa lời giải</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Vì sao đây không phải việc thừa:</strong> hồ sơ tồn tại để trả lời câu hỏi, chẩn đoán sự cố, và ⭐ <strong>sửa
+chương trình khi yêu cầu thay đổi</strong> — ba việc mà <strong>chính bạn</strong> sẽ phải làm lần sau, trên cùng cỗ
+máy này. ⚠ Người bạn đang giúp trước hết là <strong>bạn của sáu tháng tới</strong>.</p>
+</blockquote>
+<hr>
 <h2 id="225-đc-code-không-có-chú-thích">22.5 Đọc code không có chú thích</h2>
 <p>Đây là tình huống phổ biến nhất. Không có chú thích, hoặc chú thích bằng ngôn ngữ bạn không đọc được,
 hoặc chú thích chỉ lặp lại code.</p>
@@ -15937,6 +16009,22 @@ nó, hay đổi để chữa cái gì.
 <td><strong>Chương trình thắng</strong>, rồi cập nhật tài liệu</td>
 </tr>
 <tr>
+<td>⭐⭐ Hồ sơ lẽ ra phải có</td>
+<td><strong>Bản tóm tắt hệ thống</strong>: bài toán · ⭐ <strong>chiến lược và VÌ SAO chọn</strong> · mục tiêu</td>
+</tr>
+<tr>
+<td>Phần luôn mất trước</td>
+<td>⭐ <strong>&quot;Vì sao chọn cách này&quot;</strong> — vì không cần tới nó thì máy vẫn chạy</td>
+</tr>
+<tr>
+<td>⭐ Dựng xong bản đồ thì làm gì</td>
+<td><strong>Viết ra 2–3 trang</strong>, ⚠ <strong>đánh dấu rõ chỗ nào là suy đoán</strong></td>
+</tr>
+<tr>
+<td>Ghi thêm mục nào</td>
+<td>⭐ <strong>Ai viết, ai sửa, sửa khi nào</strong> — nửa lời giải cho code chắp vá</td>
+</tr>
+<tr>
 <td>Trước khi nhận bảo trì một máy</td>
 <td>Hỏi: <strong>có file dự án gốc không?</strong></td>
 </tr>
@@ -15957,6 +16045,10 @@ năng.</li>
 tiên nên làm là gì?</li>
 <li>⭐ Vì sao câu hỏi <em>&quot;có file dự án gốc không?&quot;</em> lại quan trọng tới mức phải hỏi <strong>trước khi</strong> nhận
 bảo trì một máy?</li>
+<li>⭐⭐ Nêu <strong>ba phần</strong> của một bản tóm tắt hệ thống. ⭐ Phần nào đắt nhất, và vì sao nó <strong>luôn mất
+trước</strong> trong khi sơ đồ đấu dây thì còn?</li>
+<li>⭐ Sau khi dựng xong bản đồ chương trình của người khác, việc nên làm tiếp là gì? Nêu <strong>hai</strong> cái
+lợi cho chính bạn, không phải cho người sau.</li>
 </ol>
 <blockquote>
 <p>Câu 2, 5 và 9 là ba câu phân loại. Câu 9 là tinh thần của cả chương: <strong>làm cho triệu chứng biến mất
@@ -15975,6 +16067,10 @@ Mục cuối khác nhau nhiều giữa các hệ và ảnh hưởng lớn tới 
 <li>IEC 60204-1 — <em>Safety of machinery — Electrical equipment of machines</em>: yêu cầu về tài liệu kỹ
 thuật đi kèm máy — nền cho việc đòi hỏi file dự án gốc khi bàn giao. <em>(tiêu chuẩn có bản quyền)</em></li>
 <li>Biểu mẫu <strong>nhật ký thay đổi chương trình</strong> — Phụ lục C.</li>
+<li><strong>Bryan, L.A. &amp; Bryan, E.A.</strong> — <em>Programmable Controllers: Theory and Implementation</em>, ch. 12
+<em>PLC System Documentation</em> §12-1 và §12-2: các thành phần của một bộ hồ sơ đầy đủ, và ⭐⭐ <strong>bản tóm
+tắt hệ thống</strong> gồm <strong>phát biểu bài toán · chiến lược thiết kế kèm LÝ DO chọn · mục tiêu phải đạt</strong>;
+hồ sơ tồn tại để <strong>trả lời câu hỏi, chẩn đoán, và sửa khi yêu cầu thay đổi</strong> — nền cho mục 22.4b.</li>
 </ul>
 <blockquote>
 <p>⚡ Các quy tắc trong chương này là <strong>thực hành nghề</strong>, không phải yêu cầu tiêu chuẩn — trừ phần tài
@@ -38272,7 +38368,7 @@ trên trang bị điện của máy — nền cho cảnh báo ở mục 51.1 và
 <li>Tài liệu hãng về <strong>mã lỗi hệ thống và ý nghĩa đèn trạng thái</strong> — ⚠ khác nhau đáng kể giữa các hãng,
 <strong>bắt buộc tra đúng CPU đang dùng</strong>; số hiệu tài liệu ghi trong Phụ lục A1.</li>
 <li>Cấu hình I/O và bảng thời gian bước của DP-01 — Phụ lục J.</li>
-<li><strong>Petruzella</strong>, <em>Programmable Logic Controllers</em> §9.6 <em>Forcing External I/O Addresses</em> — nguồn cho
+<li><strong>Petruzella, Frank D.</strong> — <em>Programmable Logic Controllers</em> <em>(nội dung dẫn có ở <strong>cả bản 6th ed. lẫn bản 2025</strong>)</em> §9.6 <em>Forcing External I/O Addresses</em> — nguồn cho
 ⭐ <strong>sự khác nhau giữa cưỡng bức ngõ vào và ngõ ra</strong>: ép ngõ vào tác động vào <strong>bảng ảnh ngõ vào</strong>
 nên <strong>lan khắp chương trình</strong>; ép ngõ ra chỉ tác động <strong>đúng chân ra</strong>, bảng ảnh ngõ ra không đổi
 nên chương trình chạy y như cũ (mục 51.7).</li>

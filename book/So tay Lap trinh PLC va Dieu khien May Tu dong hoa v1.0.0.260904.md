@@ -7587,7 +7587,7 @@ phản hồi thật.
 - Bảng I/O và đặc tả trình tự của DP-01 — Phụ lục J.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho phần khai báo biến giữ được ở mục 16.7,
   vì đây là chỗ khác nhau nhiều nhất giữa các hãng.
-- **Petruzella**, *Programmable Logic Controllers* — bảng lệnh Logix: `OTE` **không giữ**, `OTL`/`OTU`
+- **Petruzella, Frank D.** — *Programmable Logic Controllers* *(nội dung dẫn có ở **cả bản 6th ed. lẫn bản 2025**)* — bảng lệnh Logix: `OTE` **không giữ**, `OTL`/`OTU`
   ⭐ **giữ được**; mạch chốt lập trình là **retentive**, giữ trạng thái qua mất điện (mục 16.7).
 
 > ⚡ Quy tắc chọn giữ / không giữ ở mục 16.4 là **quy tắc thiết kế**, không phải yêu cầu tiêu chuẩn —
@@ -8619,7 +8619,7 @@ sau làm việc với **giá trị**: so sánh, tính toán, và những chỗ p
 - Tài liệu CPU và module của từng hệ trong Phụ lục A — dùng cho số kênh HSC, tần số tối đa, chế độ
   đếm, và hành vi khi tràn. Đây là các thông số **phải tra theo đúng dòng sản phẩm**, không suy đoán.
 - Bảng I/O của DP-01 — Phụ lục J.
-- **Petruzella**, *Programmable Logic Controllers* — ⭐ bộ đếm PLC **thường là giữ được**: giá trị lúc
+- **Petruzella, Frank D.** — *Programmable Logic Controllers* *(nội dung dẫn có ở **cả bản 6th ed. lẫn bản 2025**)* — ⭐ bộ đếm PLC **thường là giữ được**: giá trị lúc
   CPU dừng được khôi phục khi cấp nguồn lại, ⚠ trừ khi **điều kiện đặt lại đang tác động** lúc đó; và
   ⭐ **cực tính điều kiện đặt lại khác nhau giữa các hãng** — nền cho mục 18.6b.
 
@@ -9298,7 +9298,7 @@ là quyết định **tệ** dù nó gọn hơn.
   chỉ báo bằng **đèn LED nhấp nháy**.
 - **Tài liệu InoProShop (nền CODESYS)** — nguồn cho ⭐ **ba nguyên nhân** làm mẫu số bằng 0, cơ chế
   *"POU for implicit checks" → Division Checks*, và ⭐ **ngưỡng 1e-6 / 1e-15** cho mẫu số số thực.
-- **Petruzella**, *Programmable Logic Controllers* — hành vi **cờ lỗi nhẹ** *(minor fault)* khi chia
+- **Petruzella, Frank D.** — *Programmable Logic Controllers* *(nội dung dẫn có ở **cả bản 6th ed. lẫn bản 2025**)* — hành vi **cờ lỗi nhẹ** *(minor fault)* khi chia
   cho 0.
 - **Hugh Jack**, *Automating Manufacturing Systems with PLCs* — chương trình xử lý lỗi
   *(fault handler)* chạy khi có lỗi như chia cho 0.
@@ -10621,6 +10621,54 @@ Trước khi lao vào chi tiết, dành hai mươi phút dựng bản đồ. Nó
 
 ---
 
+## 22.4b ⭐⭐ Thứ lẽ ra bạn phải nhận được — và việc nên làm khi không có
+
+Mục trên dựng bản đồ chương trình **từ con số không**. Đáng hỏi tiếp: ⭐ *vì sao phải dựng lại thứ
+lẽ ra đã có sẵn?*
+
+Một bộ hồ sơ đầy đủ luôn mở đầu bằng một **bản tóm tắt hệ thống** — vài trang mô tả toàn cảnh, gồm
+ba phần:
+
+| Phần | Trả lời câu hỏi |
+|---|---|
+| ⭐ **Phát biểu bài toán điều khiển** | *Máy này giải quyết việc gì?* |
+| ⭐⭐ **Chiến lược thiết kế** | *Các khối phần cứng và phần mềm chính làm gì — và ⭐ **VÌ SAO chọn chúng**?* |
+| **Mục tiêu phải đạt** | *Đo bằng gì thì gọi là đạt?* |
+
+> ⭐⭐ **Phần thứ hai là phần đắt nhất, và cũng là phần luôn mất trước.**
+>
+> Sơ đồ đấu dây và bảng địa chỉ thì còn — vì thiếu chúng thì **không đấu được máy**. ⚠ Nhưng
+> *"vì sao chọn cách này"* thì ⭐ **không ai cần tới để máy chạy**, nên nó không được viết ra, và
+> người sau phải **đoán** (Chương 30).
+>
+> ⚡ Đó chính là lý do mục 22.5 tồn tại: đọc code không chú thích **là hệ quả của việc này**, không
+> phải một kỹ năng đáng tự hào.
+
+### ⭐ Khi bạn đã dựng xong bản đồ — hãy viết bản tóm tắt đó ra
+
+Đây là đề nghị thực dụng nhất của cả chương:
+
+> ⭐⭐ **Bạn vừa phải bỏ công dựng lại hiểu biết về cỗ máy. Đừng để công đó chết trong đầu bạn.**
+>
+> Viết ra **hai tới ba trang** theo đúng ba phần trên, kèm những gì bạn đã **suy ra** và ⚠ **đánh dấu
+> rõ chỗ nào là suy đoán chưa xác nhận**.
+
+| Bạn được gì | Người sau được gì |
+|---|---|
+| ⭐ Viết ra mới phát hiện chỗ mình **tưởng đã hiểu mà chưa** | ⭐ **Không phải làm lại từ đầu** việc bạn vừa làm |
+| Có căn cứ khi cần giải trình một thay đổi | Biết chỗ nào là **sự thật** và chỗ nào là **suy đoán của bạn** |
+| ⭐ Người bàn giao đọc lại có thể **đính chính** cho bạn | Có cái để đính chính tiếp |
+
+> ⭐ **Và một mục nữa nên có ngay từ đầu: người và thời điểm.** Ai viết chương trình gốc, ai đã sửa,
+> sửa khi nào. ⚠ Với chương trình *"chắp vá qua nhiều đời"* ở mục 22.6, ⭐ **biết được đời nào làm gì
+> đã là nửa lời giải**.
+
+> ⚡ **Vì sao đây không phải việc thừa:** hồ sơ tồn tại để trả lời câu hỏi, chẩn đoán sự cố, và ⭐ **sửa
+> chương trình khi yêu cầu thay đổi** — ba việc mà **chính bạn** sẽ phải làm lần sau, trên cùng cỗ
+> máy này. ⚠ Người bạn đang giúp trước hết là **bạn của sáu tháng tới**.
+
+---
+
 ## 22.5 Đọc code không có chú thích
 
 Đây là tình huống phổ biến nhất. Không có chú thích, hoặc chú thích bằng ngôn ngữ bạn không đọc được,
@@ -10931,6 +10979,10 @@ nó, hay đổi để chữa cái gì.
 | Sửa xong | Ghi **ngày · tên · lý do**, trong code và trong nhật ký |
 | Sửa trực tuyến | Chỉ cho giá trị đặt và chẩn đoán. ⚠ Chạm chuyển động hoặc an toàn → **dừng máy** |
 | Tài liệu mâu thuẫn chương trình | **Chương trình thắng**, rồi cập nhật tài liệu |
+| ⭐⭐ Hồ sơ lẽ ra phải có | **Bản tóm tắt hệ thống**: bài toán · ⭐ **chiến lược và VÌ SAO chọn** · mục tiêu |
+| Phần luôn mất trước | ⭐ **"Vì sao chọn cách này"** — vì không cần tới nó thì máy vẫn chạy |
+| ⭐ Dựng xong bản đồ thì làm gì | **Viết ra 2–3 trang**, ⚠ **đánh dấu rõ chỗ nào là suy đoán** |
+| Ghi thêm mục nào | ⭐ **Ai viết, ai sửa, sửa khi nào** — nửa lời giải cho code chắp vá |
 | Trước khi nhận bảo trì một máy | Hỏi: **có file dự án gốc không?** |
 
 ---
@@ -10950,6 +11002,10 @@ nó, hay đổi để chữa cái gì.
    tiên nên làm là gì?
 10. ⭐ Vì sao câu hỏi *"có file dự án gốc không?"* lại quan trọng tới mức phải hỏi **trước khi** nhận
     bảo trì một máy?
+11. ⭐⭐ Nêu **ba phần** của một bản tóm tắt hệ thống. ⭐ Phần nào đắt nhất, và vì sao nó **luôn mất
+    trước** trong khi sơ đồ đấu dây thì còn?
+12. ⭐ Sau khi dựng xong bản đồ chương trình của người khác, việc nên làm tiếp là gì? Nêu **hai** cái
+    lợi cho chính bạn, không phải cho người sau.
 
 > Câu 2, 5 và 9 là ba câu phân loại. Câu 9 là tinh thần của cả chương: **làm cho triệu chứng biến mất
 > không phải là sửa — và đôi khi nó còn tệ hơn không làm gì, vì nó tắt luôn bộ phát hiện.**
@@ -10970,6 +11026,10 @@ lỗi code: viết đúng cái không ai cần.
 - IEC 60204-1 — *Safety of machinery — Electrical equipment of machines*: yêu cầu về tài liệu kỹ
   thuật đi kèm máy — nền cho việc đòi hỏi file dự án gốc khi bàn giao. *(tiêu chuẩn có bản quyền)*
 - Biểu mẫu **nhật ký thay đổi chương trình** — Phụ lục C.
+- **Bryan, L.A. & Bryan, E.A.** — *Programmable Controllers: Theory and Implementation*, ch. 12
+  *PLC System Documentation* §12-1 và §12-2: các thành phần của một bộ hồ sơ đầy đủ, và ⭐⭐ **bản tóm
+  tắt hệ thống** gồm **phát biểu bài toán · chiến lược thiết kế kèm LÝ DO chọn · mục tiêu phải đạt**;
+  hồ sơ tồn tại để **trả lời câu hỏi, chẩn đoán, và sửa khi yêu cầu thay đổi** — nền cho mục 22.4b.
 
 > ⚡ Các quy tắc trong chương này là **thực hành nghề**, không phải yêu cầu tiêu chuẩn — trừ phần tài
 > liệu bàn giao. Cơ sở của bạn có thể có quy định chặt hơn về việc sửa chương trình trên máy đang
@@ -26643,7 +26703,7 @@ lớn những lỗi đó ngay từ lúc chạy thử — bằng một thứ mà 
 - Tài liệu hãng về **mã lỗi hệ thống và ý nghĩa đèn trạng thái** — ⚠ khác nhau đáng kể giữa các hãng,
   **bắt buộc tra đúng CPU đang dùng**; số hiệu tài liệu ghi trong Phụ lục A1.
 - Cấu hình I/O và bảng thời gian bước của DP-01 — Phụ lục J.
-- **Petruzella**, *Programmable Logic Controllers* §9.6 *Forcing External I/O Addresses* — nguồn cho
+- **Petruzella, Frank D.** — *Programmable Logic Controllers* *(nội dung dẫn có ở **cả bản 6th ed. lẫn bản 2025**)* §9.6 *Forcing External I/O Addresses* — nguồn cho
   ⭐ **sự khác nhau giữa cưỡng bức ngõ vào và ngõ ra**: ép ngõ vào tác động vào **bảng ảnh ngõ vào**
   nên **lan khắp chương trình**; ép ngõ ra chỉ tác động **đúng chân ra**, bảng ảnh ngõ ra không đổi
   nên chương trình chạy y như cũ (mục 51.7).

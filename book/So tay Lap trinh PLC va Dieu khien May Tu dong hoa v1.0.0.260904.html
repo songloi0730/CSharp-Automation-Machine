@@ -34510,6 +34510,96 @@ an toàn.</p>
 <td>Đi cùng khoá giữ tới khi an toàn</td>
 </tr>
 </tbody></table></div>
+<h3>⭐⭐ Hình học quyết định TRƯỚC phần mềm — ba điều người lập trình hay bỏ qua</h3>
+<p>Bảng trên là <strong>thiết bị</strong>. Nhưng ⭐ <strong>phần lớn việc bảo vệ được quyết định bằng hình học</strong>, và nó nằm
+trước mọi thiết bị lẫn mọi dòng code — đúng tinh thần thứ tự ưu tiên ở mục 47.3.</p>
+<p><strong>Một — khoảng cách an toàn phụ thuộc KÍCH THƯỚC LỖ trên che chắn</strong></p>
+<p>Một tấm che có lỗ để nạp liệu hoặc để nhìn vào. ⚠ <em>&quot;Có che chắn rồi&quot;</em> <strong>không đủ</strong> — hai đại lượng đi
+cùng nhau:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Kích thước lỗ</strong></td>
+<td>⭐ <strong>Cạnh NHỎ NHẤT</strong> của lỗ — cạnh ngắn của khe, một cạnh của lỗ vuông, <strong>đường kính</strong> của lỗ tròn</td>
+</tr>
+<tr>
+<td>⭐ <strong>Khoảng cách an toàn</strong></td>
+<td>Từ tấm che tới <strong>vùng nguy hiểm</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Lỗ càng lớn thì tấm che phải đặt càng XA</strong> — vì lỗ lớn cho phép luồn sâu hơn. Quan hệ giữa hai
+con số nằm trong <strong>bảng của tiêu chuẩn về khoảng cách an toàn</strong>, không suy đoán được.</p>
+<p>⚠ Hệ quả hay gặp: <strong>đổi lưới che sang loại mắt to hơn</strong> cho dễ nhìn — ⚠⚠ <strong>việc đó có thể làm mất
+hiệu lực của khoảng cách đang có</strong>, dù tấm che vẫn ở nguyên chỗ cũ.</p>
+</blockquote>
+<p><strong>Hai — chống kẹp có HAI cách, và chỉ một cách là loại bỏ mối nguy</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Bản chất</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ <strong>Chừa khe hở tối thiểu</strong> giữa các bộ phận chuyển động</td>
+<td>⭐ <strong>Loại bỏ mối nguy</strong> — cơ thể không thể bị chạm tới. An toàn tự thân</td>
+</tr>
+<tr>
+<td><strong>Giảm lực và năng lượng</strong> của bộ phận chuyển động</td>
+<td>⚠ <strong>Giảm rủi ro xuống mức chấp nhận được</strong> — mối nguy vẫn còn</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ Cách thứ nhất mạnh hơn hẳn, và nó thuần <strong>cơ khí</strong> — không cần cảm biến, không cần logic, ⭐ <strong>không
+hỏng được</strong>.</p>
+</blockquote>
+<p><strong>Ba — ⚠⚠ điểm cuốn: mối nguy mà LOGIC KHÔNG BẢO VỆ ĐƯỢC</strong></p>
+<p><strong>Điểm cuốn</strong> <em>(in-running nip)</em> là chỗ hai bề mặt hội tụ và <strong>cuốn cơ thể vào</strong>. Nó sinh ra từ bốn
+cấu hình:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Cấu hình</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Hai con lăn <strong>chạm nhau</strong>, quay ngược chiều</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Hai con lăn <strong>không chạm nhau</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Một con lăn <strong>gần một vật đứng yên</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>⭐ Một con lăn <strong>tiếp xúc với băng tải, xích, hoặc chính vật liệu</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Cấu hình 4 là cấu hình của mọi băng tải — kể cả băng tải của DP-01</strong> (mục 47.9).</p>
+<p>⭐ Điều làm nó nguy hiểm với người làm phần mềm: ⚠⚠ <strong>không có cảm biến nào và không có logic nào
+bảo vệ được</strong>. Khi tóc, găng tay hoặc tay áo đã bị cuốn, ⭐ <strong>dừng máy cũng đã muộn</strong> — và bám càng
+chắc, lực ép càng lớn thì thương tích càng nặng.</p>
+<p>⭐ Thứ duy nhất có tác dụng là <strong>hình học</strong>: che kín chỗ hội tụ, hoặc chừa khe đủ để không cuốn được.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao mục này nằm trong một cuốn sách về PLC:</strong> ⚠ để bạn <strong>nhận ra khi bài toán KHÔNG phải
+bài toán của mình.</strong> Người ta hay hỏi <em>&quot;lập trình thế nào cho an toàn chỗ này?&quot;</em> — và với ba tình
+huống trên, ⭐ <strong>câu trả lời đúng là &quot;không lập trình, mà sửa cơ khí&quot;</strong>.</p>
+<p>⚠ Con số cụ thể — khoảng cách bao nhiêu, khe hở bao nhiêu — nằm trong <strong>bảng của các tiêu chuẩn</strong>
+tương ứng và ⭐ <strong>do người có thẩm quyền tra và ký</strong>, không phải do người lập trình ước lượng.</p>
+</blockquote>
 <h3>⭐⭐ OSSD — ngõ ra của thiết bị an toàn, và cái bẫy nó tạo ra</h3>
 <p>Ngõ ra của rèm quang, máy quét an toàn và rơ-le an toàn có tên riêng: <strong>OSSD</strong> <em>(Output Signal
 Switching Device)</em> — phần của thiết bị bảo vệ <strong>nối tới hệ điều khiển của máy</strong>.</p>
@@ -34866,6 +34956,12 @@ Chương 52, và nó là phần bắt buộc.</p>
 <td>⭐ <strong>FBD/LD</strong>; ST chỉ ở mức mở rộng; IL và SFC không đặt vấn đề</td>
 </tr>
 <tr>
+<td>2b</td>
+<td>⚠⚠ Đã rà <strong>hình học</strong>: lỗ trên che chắn · khe hở chống kẹp · ⭐ <strong>điểm cuốn</strong></td>
+<td>Người có thẩm quyền</td>
+<td>⭐ Con số tra từ <strong>bảng tiêu chuẩn</strong> và <strong>có người ký</strong> — không ước lượng</td>
+</tr>
+<tr>
 <td>9</td>
 <td><strong>Không phát hành</strong> khi mục 1, 4, 8 chưa có</td>
 <td>—</td>
@@ -34896,6 +34992,11 @@ Nêu ba thứ bị cắt bớt.</li>
 khối nhỏ thôi mà&quot;</em> lại là câu hỏi ngân sách chứ không phải câu hỏi kỹ thuật?</li>
 <li>⭐ Vì sao lập trình an toàn ưu tiên <strong>FBD và LD</strong> thay vì ST? Liên hệ lý do đó với nguyên tắc ở
 Chương 20 mục 20.6.</li>
+<li>⭐ Một tấm che có lỗ để nhìn vào. ⚠ Vì sao <em>&quot;đã có che chắn&quot;</em> chưa đủ? ⭐ <strong>Hai</strong> đại lượng nào đi
+cùng nhau, và <em>&quot;kích thước lỗ&quot;</em> được đo thế nào với lỗ khe, lỗ vuông, lỗ tròn?</li>
+<li>⭐⭐ Chống kẹp có <strong>hai</strong> cách. Cách nào <strong>loại bỏ</strong> mối nguy, cách nào chỉ <strong>giảm</strong> rủi ro?</li>
+<li>⚠⚠ <strong>Điểm cuốn</strong> là gì, và nêu bốn cấu hình sinh ra nó. ⭐ Vì sao <strong>không cảm biến nào và không
+logic nào</strong> bảo vệ được? Băng tải của DP-01 thuộc cấu hình nào?</li>
 </ol>
 <p>Câu 1, 4 và 7 là ba câu phân loại. Nhưng lưu ý: <strong>trả lời trôi chảy mười câu này không có nghĩa là bạn
 đủ thẩm quyền thiết kế mạch an toàn.</strong> Nó có nghĩa là bạn đủ hiểu để làm việc được với người có thẩm
@@ -34931,6 +35032,10 @@ khái niệm và ví dụ kiến trúc; nguồn cho định nghĩa <strong>OSSD<
 từ PLCopen)</em>: §4 <em>Reduction in the Development Environment</em> — ⭐⭐ <strong>ba mức người dùng</strong> (cơ bản ·
 mở rộng · hệ thống) và ⚠ <strong>giới hạn tập ngôn ngữ</strong> (FBD/LD ưu tiên, ST chỉ ở mức mở rộng, IL và SFC
 không đặt vấn đề) — nền cho mục 47.4b.</li>
+<li>⭐ <strong>IRSST (Québec), <em>Prevention of Mechanical Hazards</em> (RG-597)</strong> — hướng dẫn về <strong>che chắn cơ khí</strong>:
+⭐ quan hệ giữa <strong>kích thước lỗ trên che chắn</strong> và <strong>khoảng cách an toàn</strong>; hai cách chống kẹp
+(⭐ <strong>khe hở tối thiểu</strong> — loại bỏ mối nguy — so với <strong>giảm lực/năng lượng</strong>); và ⚠⚠ <strong>bốn cấu hình
+sinh ra điểm cuốn</strong>, trong đó có <strong>con lăn tiếp xúc băng tải</strong> — nền cho mục 47.7.</li>
 </ul>
 <blockquote>
 <p>⚠⚠ <strong>Toàn bộ tiêu chuẩn liệt kê ở trên đều có bản quyền và phải mua từ tổ chức phát hành.</strong> Chương
@@ -48508,7 +48613,7 @@ khi nghi ngờ hãy dùng nó.</p>
 <td>Mối nguy</td>
 <td>hazard</td>
 <td></td>
-<td>6</td>
+<td>47</td>
 </tr>
 <tr>
 <td>Rủi ro</td>

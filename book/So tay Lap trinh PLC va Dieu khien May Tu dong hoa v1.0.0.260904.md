@@ -24277,6 +24277,64 @@ Tiêu chuẩn về trang bị điện của máy phân biệt ba loại dừng:
 | **Điều khiển hai tay** | Phải giữ **cả hai** nút mới chạy | Máy ép, thao tác lặp có nguy cơ kẹp tay | Bảo vệ **người vận hành đó**, không bảo vệ người khác đứng gần |
 | **Giám sát tốc độ không** *(zero-speed)* | Chỉ cho mở cửa khi đã dừng hẳn | Trục quán tính lớn | Đi cùng khoá giữ tới khi an toàn |
 
+### ⭐⭐ Hình học quyết định TRƯỚC phần mềm — ba điều người lập trình hay bỏ qua
+
+Bảng trên là **thiết bị**. Nhưng ⭐ **phần lớn việc bảo vệ được quyết định bằng hình học**, và nó nằm
+trước mọi thiết bị lẫn mọi dòng code — đúng tinh thần thứ tự ưu tiên ở mục 47.3.
+
+**Một — khoảng cách an toàn phụ thuộc KÍCH THƯỚC LỖ trên che chắn**
+
+Một tấm che có lỗ để nạp liệu hoặc để nhìn vào. ⚠ *"Có che chắn rồi"* **không đủ** — hai đại lượng đi
+cùng nhau:
+
+| Ký hiệu | Nghĩa |
+|---|---|
+| ⭐ **Kích thước lỗ** | ⭐ **Cạnh NHỎ NHẤT** của lỗ — cạnh ngắn của khe, một cạnh của lỗ vuông, **đường kính** của lỗ tròn |
+| ⭐ **Khoảng cách an toàn** | Từ tấm che tới **vùng nguy hiểm** |
+
+> ⭐⭐ **Lỗ càng lớn thì tấm che phải đặt càng XA** — vì lỗ lớn cho phép luồn sâu hơn. Quan hệ giữa hai
+> con số nằm trong **bảng của tiêu chuẩn về khoảng cách an toàn**, không suy đoán được.
+>
+> ⚠ Hệ quả hay gặp: **đổi lưới che sang loại mắt to hơn** cho dễ nhìn — ⚠⚠ **việc đó có thể làm mất
+> hiệu lực của khoảng cách đang có**, dù tấm che vẫn ở nguyên chỗ cũ.
+
+**Hai — chống kẹp có HAI cách, và chỉ một cách là loại bỏ mối nguy**
+
+| Cách | Bản chất |
+|---|---|
+| ⭐⭐ **Chừa khe hở tối thiểu** giữa các bộ phận chuyển động | ⭐ **Loại bỏ mối nguy** — cơ thể không thể bị chạm tới. An toàn tự thân |
+| **Giảm lực và năng lượng** của bộ phận chuyển động | ⚠ **Giảm rủi ro xuống mức chấp nhận được** — mối nguy vẫn còn |
+
+> ⭐ Cách thứ nhất mạnh hơn hẳn, và nó thuần **cơ khí** — không cần cảm biến, không cần logic, ⭐ **không
+> hỏng được**.
+
+**Ba — ⚠⚠ điểm cuốn: mối nguy mà LOGIC KHÔNG BẢO VỆ ĐƯỢC**
+
+**Điểm cuốn** *(in-running nip)* là chỗ hai bề mặt hội tụ và **cuốn cơ thể vào**. Nó sinh ra từ bốn
+cấu hình:
+
+| | Cấu hình |
+|---|---|
+| 1 | Hai con lăn **chạm nhau**, quay ngược chiều |
+| 2 | Hai con lăn **không chạm nhau** |
+| 3 | Một con lăn **gần một vật đứng yên** |
+| 4 | ⭐ Một con lăn **tiếp xúc với băng tải, xích, hoặc chính vật liệu** |
+
+> ⚠⚠ **Cấu hình 4 là cấu hình của mọi băng tải — kể cả băng tải của DP-01** (mục 47.9).
+>
+> ⭐ Điều làm nó nguy hiểm với người làm phần mềm: ⚠⚠ **không có cảm biến nào và không có logic nào
+> bảo vệ được**. Khi tóc, găng tay hoặc tay áo đã bị cuốn, ⭐ **dừng máy cũng đã muộn** — và bám càng
+> chắc, lực ép càng lớn thì thương tích càng nặng.
+>
+> ⭐ Thứ duy nhất có tác dụng là **hình học**: che kín chỗ hội tụ, hoặc chừa khe đủ để không cuốn được.
+
+> ⭐⭐ **Vì sao mục này nằm trong một cuốn sách về PLC:** ⚠ để bạn **nhận ra khi bài toán KHÔNG phải
+> bài toán của mình.** Người ta hay hỏi *"lập trình thế nào cho an toàn chỗ này?"* — và với ba tình
+> huống trên, ⭐ **câu trả lời đúng là "không lập trình, mà sửa cơ khí"**.
+>
+> ⚠ Con số cụ thể — khoảng cách bao nhiêu, khe hở bao nhiêu — nằm trong **bảng của các tiêu chuẩn**
+> tương ứng và ⭐ **do người có thẩm quyền tra và ký**, không phải do người lập trình ước lượng.
+
 ### ⭐⭐ OSSD — ngõ ra của thiết bị an toàn, và cái bẫy nó tạo ra
 
 Ngõ ra của rèm quang, máy quét an toàn và rơ-le an toàn có tên riêng: **OSSD** *(Output Signal
@@ -24494,6 +24552,7 @@ Chương 52, và nó là phần bắt buộc.
 | 8 | **Kiểm định** chức năng an toàn | Người có thẩm quyền | Thử từng SF, thử từng kênh riêng lẻ, có biên bản |
 | 8b | ⭐ Nếu dùng **PLC an toàn**: chốt **mức người dùng** trước khi báo giá | Nhóm thiết kế + chủ đầu tư | ⚠⚠ Ở mức cơ bản chỉ **nối khối đã chứng nhận**; tự viết khối là **cả chương trình** phải kiểm định |
 | 8c | Chốt **ngôn ngữ** dùng cho phần an toàn | Nhóm thiết kế | ⭐ **FBD/LD**; ST chỉ ở mức mở rộng; IL và SFC không đặt vấn đề |
+| 2b | ⚠⚠ Đã rà **hình học**: lỗ trên che chắn · khe hở chống kẹp · ⭐ **điểm cuốn** | Người có thẩm quyền | ⭐ Con số tra từ **bảng tiêu chuẩn** và **có người ký** — không ước lượng |
 | 9 | **Không phát hành** khi mục 1, 4, 8 chưa có | — | — |
 
 ---
@@ -24521,6 +24580,11 @@ Chương 52, và nó là phần bắt buộc.
     khối nhỏ thôi mà"* lại là câu hỏi ngân sách chứ không phải câu hỏi kỹ thuật?
 13. ⭐ Vì sao lập trình an toàn ưu tiên **FBD và LD** thay vì ST? Liên hệ lý do đó với nguyên tắc ở
     Chương 20 mục 20.6.
+14. ⭐ Một tấm che có lỗ để nhìn vào. ⚠ Vì sao *"đã có che chắn"* chưa đủ? ⭐ **Hai** đại lượng nào đi
+    cùng nhau, và *"kích thước lỗ"* được đo thế nào với lỗ khe, lỗ vuông, lỗ tròn?
+15. ⭐⭐ Chống kẹp có **hai** cách. Cách nào **loại bỏ** mối nguy, cách nào chỉ **giảm** rủi ro?
+16. ⚠⚠ **Điểm cuốn** là gì, và nêu bốn cấu hình sinh ra nó. ⭐ Vì sao **không cảm biến nào và không
+    logic nào** bảo vệ được? Băng tải của DP-01 thuộc cấu hình nào?
 
 Câu 1, 4 và 7 là ba câu phân loại. Nhưng lưu ý: **trả lời trôi chảy mười câu này không có nghĩa là bạn
 đủ thẩm quyền thiết kế mạch an toàn.** Nó có nghĩa là bạn đủ hiểu để làm việc được với người có thẩm
@@ -24561,6 +24625,10 @@ tin lệnh** là nguyên tắc xuyên suốt cả cuốn sách.
   từ PLCopen)*: §4 *Reduction in the Development Environment* — ⭐⭐ **ba mức người dùng** (cơ bản ·
   mở rộng · hệ thống) và ⚠ **giới hạn tập ngôn ngữ** (FBD/LD ưu tiên, ST chỉ ở mức mở rộng, IL và SFC
   không đặt vấn đề) — nền cho mục 47.4b.
+- ⭐ **IRSST (Québec), *Prevention of Mechanical Hazards* (RG-597)** — hướng dẫn về **che chắn cơ khí**:
+  ⭐ quan hệ giữa **kích thước lỗ trên che chắn** và **khoảng cách an toàn**; hai cách chống kẹp
+  (⭐ **khe hở tối thiểu** — loại bỏ mối nguy — so với **giảm lực/năng lượng**); và ⚠⚠ **bốn cấu hình
+  sinh ra điểm cuốn**, trong đó có **con lăn tiếp xúc băng tải** — nền cho mục 47.7.
 
 > ⚠⚠ **Toàn bộ tiêu chuẩn liệt kê ở trên đều có bản quyền và phải mua từ tổ chức phát hành.** Chương
 > này diễn giải khái niệm ở mức đủ để trao đổi chuyên môn; **nó không trích dẫn nội dung tiêu chuẩn và
@@ -31829,7 +31897,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Tiếng Việt | English | Ghi chú | Chương |
 |---|---|---|---|
 | Đánh giá rủi ro | risk assessment | ⭐ Làm ở **giai đoạn 1** | 47, 57 |
-| Mối nguy | hazard | | 6 |
+| Mối nguy | hazard | | 47 |
 | Rủi ro | risk | | 6 |
 | Giảm rủi ro theo thứ tự ưu tiên | hierarchy of risk reduction | | 6 |
 | Chức năng an toàn | safety function | | 47 |

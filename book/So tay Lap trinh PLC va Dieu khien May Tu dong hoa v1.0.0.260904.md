@@ -5222,7 +5222,8 @@ Hai loại sau là thứ mà lớp đấu nối truyền thống **hoàn toàn k
 
 ### Cách hoạt động
 
-Cổng IO-Link chủ **giữ một bản sao tham số** của thiết bị cắm vào nó. Khi phát hiện một thiết bị mới:
+Cổng IO-Link chủ **giữ một bản sao tham số** của thiết bị cắm vào nó — cơ chế này trong đặc tả gọi là
+**kho tham số** *(Data Storage)*. Khi phát hiện một thiết bị mới:
 
 ```text
    1. Thiết bị mới cắm vào cổng
@@ -5257,6 +5258,40 @@ Cơ chế này **không tự có** — nó phải được cấu hình:
   master là mất toàn bộ tham số của mọi cảm biến trên nó.
 
 Gạch đầu dòng cuối là bẫy mà người ta chỉ phát hiện khi đã muộn.
+
+---
+
+## 12.4b ⭐⭐ Một thiết bị IO-Link vẫn chạy được như cảm biến thường
+
+Đây là tính chất quyết định khi **mua sắm**, và nó hay bị bỏ qua vì nghe quá đơn giản.
+
+> ⭐⭐ **Thiết bị IO-Link có hai chế độ, và chế độ thứ hai là cảm biến số bình thường.**
+
+| Chế độ | Thiết bị làm gì |
+|---|---|
+| ⭐ **IO-Link** *(SDCI)* | Truyền thông đầy đủ — tham số, chẩn đoán, danh tính (các mục trên) |
+| ⭐⭐ **SIO** — *Standard Input/Output* | ⭐ **Bỏ qua toàn bộ tầng truyền thông**, đưa thẳng tín hiệu DI hoặc DO ra ngoài như một cảm biến số thường |
+
+**Ba hệ quả thực tế:**
+
+| | |
+|---|---|
+| 1 | ⭐⭐ **Cắm được vào module DI thường.** Đặc tính điện của chân DI/DO ở chế độ SIO lấy theo **IEC 61131-2 kiểu 1** — đúng loại ngõ vào ở Chương 9. Không cần cổng IO-Link chủ |
+| 2 | ⭐ **Chọn chế độ bằng CẤU HÌNH, không bằng đấu dây.** Cùng một thiết bị, cùng một sợi cáp 3 dây — chuyển chế độ là việc của cấu hình master |
+| 3 | ⭐ **Nâng cấp được theo giai đoạn.** Mua cảm biến có IO-Link ngay bây giờ, dùng như cảm biến thường; khi nào cần chẩn đoán và tự nạp tham số thì **đổi module, giữ nguyên thiết bị và dây** |
+
+> ⭐⭐ **Hệ quả 3 làm đổi hẳn phép tính chi phí ở mục 12.7.**
+>
+> Câu hỏi *"có nên dùng IO-Link không"* thường được đặt thành **một quyết định phải chốt ngay**. Nhưng
+> với chế độ SIO, ⭐ **nó không phải quyết định một lần** — chênh lệch giá cảm biến có IO-Link so với
+> cảm biến thường thường nhỏ, và nó **giữ cửa mở** cho việc nâng cấp sau này.
+>
+> ⚡ Ngược lại, ⚠ mua cảm biến **không** có IO-Link để tiết kiệm hôm nay nghĩa là ⚠⚠ **muốn nâng cấp
+> phải thay cả thiết bị hiện trường** — công việc nằm ngoài tủ điện, tốn hơn nhiều lần.
+
+> ⚠ **Điều SIO KHÔNG cho bạn:** ở chế độ đó thiết bị **chỉ là một cảm biến số**. ⚠ Không có tham số
+> tự nạp (mục 12.4), không có dữ liệu chẩn đoán (mục 12.5), không có kiểm danh tính. ⭐ Nó là **đường
+> lui và bước đệm**, không phải cách dùng IO-Link.
 
 ---
 
@@ -5477,6 +5512,10 @@ biết thông báo đó nghĩa là gì**. Thời gian dừng máy dài hơn cả
 | Không đáng dùng khi | Cảm biến không tham số · máy nhỏ · cần rất nhanh · khoảng cách xa |
 | ⚠ Không được dùng cho | ⚠⚠ **Tín hiệu an toàn** |
 | Đi kèm quyết định triển khai | **Đào tạo và tài liệu** cho đội bảo trì |
+| ⭐⭐ Thiết bị IO-Link có mấy chế độ | **Hai** — IO-Link đầy đủ, và ⭐ **SIO: cảm biến số thường** |
+| Ở chế độ SIO cắm vào đâu | ⭐ **Module DI thường** — đặc tính điện theo **IEC 61131-2 kiểu 1** (Chương 9) |
+| Chọn chế độ bằng gì | ⭐ **Cấu hình**, không phải đấu dây — cùng một sợi cáp 3 dây |
+| ⭐ Hệ quả mua sắm | **Không phải quyết định một lần** — mua thiết bị có IO-Link, nâng cấp module sau |
 | Cách áp dụng hợp lý | Trộn — IO-Link cho cảm biến hưởng lợi, ngõ vào thường cho phần còn lại |
 
 ---
@@ -5498,6 +5537,11 @@ biết thông báo đó nghĩa là gì**. Thời gian dừng máy dài hơn cả
    vì sao?
 10. ⭐ Vì sao "đội bảo trì chưa quen" là lý do nghiêm túc để cân nhắc, và nghĩa vụ nào đi kèm quyết
     định triển khai IO-Link?
+11. ⭐⭐ Nêu **hai chế độ** của một thiết bị IO-Link. Ở chế độ thứ hai nó cắm vào loại module nào, và
+    theo đặc tính điện của tiêu chuẩn nào?
+12. ⭐ Vì sao chế độ SIO làm câu hỏi *"có nên dùng IO-Link không"* **không còn là quyết định một lần**?
+    ⚠ Nêu cái giá của việc mua cảm biến **không** có IO-Link để tiết kiệm hôm nay.
+13. ⚠ Ở chế độ SIO, **ba** tính năng nào của IO-Link **không** còn?
 
 > Câu 2, 4, 6 và 10 là bốn câu phân loại. Câu 4 là tinh thần của cả chương: **giá trị thật của lớp
 > cảm biến thông minh không phải là dữ liệu — mà là biến những hỏng hóc im lặng thành thứ phát hiện
@@ -5522,6 +5566,10 @@ thật, và mua gì để tự học.
 - Datasheet của từng cảm biến IO-Link — dùng cho cách diễn giải byte dữ liệu quá trình và danh sách
   tham số chẩn đoán có sẵn.
 - Bảng I/O của DP-01 — Phụ lục J; bảng đánh giá ở mục 12.8 lấy danh sách cảm biến từ đó.
+- ⭐ **IO-Link Interface and System Specification v1.1.3** *(IEC 61131-9 / SDCI)* — §6 *Standard Input
+  and Output (SIO)*: thiết bị **bỏ qua tầng truyền thông** và đưa thẳng tín hiệu DI/DO ra ngoài; chuyển
+  chế độ bằng **cấu hình người dùng**; ⭐ đặc tính DI/DO lấy theo **IEC 61131-2 kiểu 1**. §12 *Holistic
+  view on Data Storage* — tên chuẩn của cơ chế **kho tham số** ở mục 12.4.
 
 > ⚡ Bảng ở mục 12.8 là **kết quả cân nhắc cho máy mẫu DP-01**, không phải khuyến nghị chung. Với máy
 > có nhiều cảm biến cần chỉnh tham số, hoặc cảm biến nằm ở chỗ khó với tới, cán cân nghiêng về IO-Link
@@ -11084,6 +11132,44 @@ và mỗi câu quên là một lần sửa đắt về sau.
 
 ---
 
+## 23.5b ⭐⭐ Viết mãi không xong trình tự — đó là chẩn đoán, không phải kém cỏi
+
+Có một tín hiệu rất đáng tin mà ít ai đọc đúng. Bạn ngồi viết mô tả trình tự ở mục 23.4, viết được
+vài bước rồi **tắc**; sửa đi sửa lại, mỗi lần đọc lại thấy vẫn thiếu chỗ nào đó.
+
+> ⭐⭐ **Phản xạ sai: cố viết tiếp cho xong.**
+> ⭐ **Phản xạ đúng: quay lại mục 23.5 và hỏi thêm.**
+
+Vì thứ tự thật sự của công việc là ba bước, và **bước sau phụ thuộc bước trước**:
+
+| Bước | Việc | Nếu bước này thiếu |
+|---|---|---|
+| 1 | ⭐ **Định nghĩa nhiệm vụ** — *máy phải làm gì* | ⚠ Bước 2 **không thể** viết được |
+| 2 | **Trình tự các bước** — *làm theo thứ tự nào* | ⚠ Bước 3 sẽ phải viết lại nhiều lần |
+| 3 | Viết chương trình | — |
+
+> ⭐ **Nói cách khác: viết trình tự khó không phải vì bạn nghĩ chậm, mà vì bài toán chưa đủ dữ kiện.**
+>
+> Không ai chỉ được đường từ đây tới một nơi mà **cả hai đầu đều chưa xác định** — và cũng không chỉ
+> được nếu chưa biết ⚠ **phải đi bằng gì** và ⚠ **có hạn thời gian không**. Trình tự cũng vậy: nó
+> không viết ra được khi còn thiếu điều kiện biên.
+
+⭐ **Ba câu hỏi để tìm chỗ thiếu**, khi thấy mình tắc:
+
+| | Hỏi |
+|---|---|
+| 1 | ⭐ Bước này kết thúc khi nào — và **tôi đo bằng gì**? *(nếu không đo được: Chương 26, mục 26.2b)* |
+| 2 | ⚠ Nếu bước này **không xong** thì máy làm gì? *(nếu chưa có đáp án: quay lại mục 23.5 nhóm A)* |
+| 3 | ⚠⚠ Ai quyết định điều đó — **tôi hay khách hàng**? *(nếu là khách hàng thì đừng tự quyết)* |
+
+> ⭐⭐ **Nguyên tắc gói cả mục này trong bốn chữ: NGHĨ TRƯỚC, LẬP TRÌNH SAU.**
+>
+> Cân nhắc vài cách giải khác nhau và **để thời gian mài lại trình tự** trước khi mở phần mềm — đúng
+> tinh thần Bẫy 1 ở mục 23.7. ⚡ Thời gian bỏ ra ở đây **rẻ hơn nhiều lần** so với sửa cùng vấn đề đó
+> ở bước 3.
+
+---
+
 ## 23.6 Tiêu chí nghiệm thu — viết từ đầu, không viết cuối
 
 Tiêu chí nghiệm thu là **định nghĩa của "xong"**. Viết nó ở đầu dự án có ba tác dụng, và tác dụng thứ
@@ -11174,6 +11260,7 @@ Tiêu chí phải viết **trước**, khi bạn còn chưa biết máy sẽ kh�
 | 6 | **Tiêu chí nghiệm thu** | Mọi tiêu chí **đo được**: làm gì · kỳ vọng gì · đo bao lâu |
 | 7 | Đã hỏi **4 nhóm câu** ở mục 23.5 | Có câu trả lời bằng văn bản, không phải bằng trí nhớ |
 | 8 | Đã **đi qua trực tiếp** với người vận hành | Có biên bản, có người ký |
+| 9 | ⭐⭐ Không còn bước nào **viết mãi không xong** | Mỗi chỗ tắc đã quay lại mục 23.5 hỏi thêm, không cố viết tiếp |
 
 ---
 
@@ -11189,6 +11276,8 @@ Tiêu chí phải viết **trước**, khi bạn còn chưa biết máy sẽ kh�
 7. Vì sao hỏi *"anh có yêu cầu gì về xử lý lỗi không?"* thường không ra kết quả? Cách hỏi nào hiệu quả
    hơn?
 8. Vì sao tiêu chí nghiệm thu phải viết **trước** khi máy chạy, chứ không phải sau?
+9. ⭐⭐ Bạn viết mô tả trình tự, viết vài bước rồi tắc, sửa mãi vẫn thấy thiếu. ⭐ Đó là dấu hiệu của
+    cái gì? Nêu **ba câu hỏi** để tìm chỗ thiếu.
 
 Câu 3 và câu 5 là hai câu phân loại. Câu 3 là công cụ bạn sẽ dùng ở mọi dự án; câu 5 kiểm tra bạn nhận
 ra được **đặc tả đang phát hiện thiếu sót phần cứng** — một trong những giá trị lớn nhất của việc viết
@@ -11212,6 +11301,10 @@ và biết khi nào **không** nên rút gọn chúng.
   đi trước thiết kế — cơ sở cho cảnh báo ở mục 23.5.
 - Biểu mẫu bảng I/O, mẫu mô tả trình tự và mẫu biên bản nghiệm thu — **Phụ lục C**.
 - Hồ sơ đặc tả đầy đủ của DP-01 — Phụ lục J.
+- **Bryan, L.A. & Bryan, E.A.** — *Programmable Controllers: Theory and Implementation*, ch. 11
+  §11-1 và §11-2: ⭐ **định nghĩa nhiệm vụ → chiến lược điều khiển → lập trình**, và quy tắc ⭐ **khi
+  xây trình tự thấy khó thì quay lại định nghĩa lại bài toán**; nguyên tắc *think first, program later*
+  — nền cho mục 23.5b.
 
 > ⚡ Danh sách câu hỏi ở mục 23.5 là **điểm khởi đầu, không phải danh sách đầy đủ**. Mỗi ngành có thêm
 > những câu riêng. Cách tốt nhất để mở rộng danh sách này: sau mỗi dự án, ghi lại những câu mà lẽ ra

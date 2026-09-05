@@ -4650,6 +4650,51 @@ kèm theo một trang chú giải mã chữ (Chương 23 đã có cơ chế bả
 > khi đọc, thay vì áp cứng quy ước IEC quen thuộc. (Nguồn: trích JEM 1115 do Mitsubishi Electric đăng
 > công khai — dùng ở mức đối chiếu thuật ngữ, không phải bản sao tiêu chuẩn gốc.)
 
+## Đối chiếu mở rộng — Trung Quốc (GB), Hàn Quốc (KS), Nga (ГОСТ/ЕСКД)
+
+Ngoài Mỹ và Nhật, ba thị trường hay gặp khác chia làm hai nhóm rõ rệt — biết thuộc nhóm nào để đỡ
+mất công:
+
+**Trung Quốc (GB/T) và Hàn Quốc (KS) — phần lớn CHẤP NHẬN IEC.** Bộ tiêu chuẩn vẽ bản vẽ điện của
+hai nước này chủ yếu là bản chấp nhận (thường là "IDT" — identical) các tiêu chuẩn IEC mà sách này
+đã dùng làm nền:
+
+| Nội dung | IEC (nền của sách) | Trung Quốc | Hàn Quốc |
+|---|---|---|---|
+| Ký hiệu đồ hoạ trên sơ đồ | IEC 60617 | GB/T 4728 | KS X IEC 60617 |
+| Mã hiệu / cấu trúc thiết bị | IEC 81346 | GB/T 5094 | (KS chấp nhận IEC 81346) |
+| Quy tắc lập tài liệu bản vẽ | IEC 61082 | GB/T 6988 | (KS chấp nhận IEC) |
+
+Hệ quả thực dụng: một bộ bản vẽ dựng đúng IEC (như sách hướng dẫn) chuyển sang hai thị trường này
+**gần như tương thích về ký hiệu và mã hiệu** — việc chính không phải vẽ lại, mà là **đối chiếu đúng
+số hiệu và NĂM ban hành** của tiêu chuẩn địa phương (một số bản GB/KS chấp nhận bản IEC cũ hơn), cộng
+với các khác biệt đến từ **luật/quy phạm điện lực địa phương** (không phải từ quy ước bản vẽ).
+
+**Nga (ГОСТ / ЕСКД) — hệ RIÊNG, phải học cách đọc.** Bản vẽ điện ở Nga theo bộ **ЕСКД** (hệ tài liệu
+thiết kế thống nhất). Điểm khác lớn nhất: **loại sơ đồ được mã hoá bằng một chữ + một số** theo
+ГОСТ 2.701 — chữ chỉ *lĩnh vực* (**Э = điện**, Г = thuỷ lực, П = khí nén), số chỉ *kiểu sơ đồ*:
+
+| Mã | Kiểu sơ đồ | Tương ứng trong sách |
+|---|---|---|
+| Э1 | Cấu trúc (структурная) | Sơ đồ khối/cấu trúc hệ thống |
+| Э2 | Chức năng (функциональная) | Sơ đồ chức năng |
+| **Э3** | **Nguyên lý (принципиальная)** | **Sơ đồ nguyên lý** (Phần III) |
+| Э4 | Đấu nối/lắp ráp (соединений) | Sơ đồ đấu dây trong tủ |
+| Э5 | Kết nối ngoài (подключения) | Sơ đồ đấu nối thiết bị ngoài/hiện trường |
+| Э6 | Tổng quát (общая) | Sơ đồ tổng thể |
+| Э7 | Bố trí (расположения) | Bản vẽ bố trí thiết bị (GA) |
+| Э0 | Kết hợp (объединённая) | Sơ đồ gộp nhiều kiểu |
+
+Vậy khi đối tác Nga nói **"Э3"** là họ chỉ **sơ đồ nguyên lý điện** (đúng loại Phần III của sách dạy);
+**"Э4"** là sơ đồ đấu nối. Mã hiệu thiết bị (chữ–số như R, C, K…) theo **ГОСТ 2.710** — vai trò tương
+tự bảng mã chữ IEC 81346 của sách, nhưng **bộ ký hiệu và quy tắc khác**, phải tra đúng bảng của bộ
+hồ sơ đó. Nguyên tắc chung (giống ghi chú Nhật ở trên): gặp bộ hồ sơ Nga, **tìm bảng mã sơ đồ ЕСКД +
+bảng ГОСТ 2.710 của chính bộ đó trước khi đọc**, đừng áp cứng thói quen IEC.
+
+> ⚡ **LƯU Ý** — Bảng đối chiếu trên là **định hướng** (đối chiếu qua tài liệu tiêu chuẩn công khai
+> nhiều ngôn ngữ, ≥2 nguồn độc lập cho mỗi khẳng định). Trước khi giao/nhận bản vẽ cho một thị trường
+> cụ thể, luôn xác nhận **bản và năm** tiêu chuẩn địa phương đang áp dụng cho dự án đó.
+
 ## Chi tiết đặc thù Bắc Mỹ khi thiết kế mạch điều khiển & chọn dây
 
 Ngoài các dòng ở bảng đối chiếu, một số quy tắc thiết kế **khác thực hành IEC** hay gặp khi làm

@@ -523,6 +523,7 @@
   <li><a href="#ph-lc-e-đi-chiu-âu-iec-m-nemaul508anfpa79-nht-jisjem">Phụ lục E — Đối chiếu Âu (IEC) ↔ Mỹ (NEMA/UL508A/NFPA79) ↔ Nhật (JIS/JEM)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#bng-đi-chiu-mi-khác-bit-mt-dòng-bt-bin-b5">Bảng đối chiếu — mỗi khác biệt một dòng (bất biến B5)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#ghi-chú-riêng-cho-th-trưng-nht-jisjem-tên-loi-bn-v-mã-ch">Ghi chú riêng cho thị trường Nhật (JIS/JEM) — tên loại bản vẽ & mã chữ</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#đi-chiu-m-rng-trung-quc-gb-hàn-quc-ks-nga">Đối chiếu mở rộng — Trung Quốc (GB), Hàn Quốc (KS), Nga (ГОСТ/ЕСКД)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#chi-tit-đc-thù-bc-m-khi-thit-k-mch-điu-khin-chn-dây">Chi tiết đặc thù Bắc Mỹ khi thiết kế mạch điều khiển & chọn dây</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#vì-sao-cn-đi-chiu-ngay-t-ph-lc-g-phiu-đu-vào">Vì sao cần đối chiếu ngay từ Phụ lục G (phiếu đầu vào)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#vic-cn-làm-khi-d-án-tht-cn-xut-khu">Việc cần làm khi dự án thật cần xuất khẩu</a></li>
@@ -6518,6 +6519,106 @@ kèm theo một trang chú giải mã chữ (Chương 23 đã có cơ chế bả
 song tồn tại</strong>: gặp bản vẽ Nhật thì tìm bảng mã chữ / tên loại bản vẽ của chính bộ hồ sơ đó trước
 khi đọc, thay vì áp cứng quy ước IEC quen thuộc. (Nguồn: trích JEM 1115 do Mitsubishi Electric đăng
 công khai — dùng ở mức đối chiếu thuật ngữ, không phải bản sao tiêu chuẩn gốc.)</p>
+</blockquote>
+<h2 id="đi-chiu-m-rng-trung-quc-gb-hàn-quc-ks-nga">Đối chiếu mở rộng — Trung Quốc (GB), Hàn Quốc (KS), Nga (ГОСТ/ЕСКД)</h2>
+<p>Ngoài Mỹ và Nhật, ba thị trường hay gặp khác chia làm hai nhóm rõ rệt — biết thuộc nhóm nào để đỡ
+mất công:</p>
+<p><strong>Trung Quốc (GB/T) và Hàn Quốc (KS) — phần lớn CHẤP NHẬN IEC.</strong> Bộ tiêu chuẩn vẽ bản vẽ điện của
+hai nước này chủ yếu là bản chấp nhận (thường là &quot;IDT&quot; — identical) các tiêu chuẩn IEC mà sách này
+đã dùng làm nền:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nội dung</th>
+<th>IEC (nền của sách)</th>
+<th>Trung Quốc</th>
+<th>Hàn Quốc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ký hiệu đồ hoạ trên sơ đồ</td>
+<td>IEC 60617</td>
+<td>GB/T 4728</td>
+<td>KS X IEC 60617</td>
+</tr>
+<tr>
+<td>Mã hiệu / cấu trúc thiết bị</td>
+<td>IEC 81346</td>
+<td>GB/T 5094</td>
+<td>(KS chấp nhận IEC 81346)</td>
+</tr>
+<tr>
+<td>Quy tắc lập tài liệu bản vẽ</td>
+<td>IEC 61082</td>
+<td>GB/T 6988</td>
+<td>(KS chấp nhận IEC)</td>
+</tr>
+</tbody></table></div>
+<p>Hệ quả thực dụng: một bộ bản vẽ dựng đúng IEC (như sách hướng dẫn) chuyển sang hai thị trường này
+<strong>gần như tương thích về ký hiệu và mã hiệu</strong> — việc chính không phải vẽ lại, mà là <strong>đối chiếu đúng
+số hiệu và NĂM ban hành</strong> của tiêu chuẩn địa phương (một số bản GB/KS chấp nhận bản IEC cũ hơn), cộng
+với các khác biệt đến từ <strong>luật/quy phạm điện lực địa phương</strong> (không phải từ quy ước bản vẽ).</p>
+<p><strong>Nga (ГОСТ / ЕСКД) — hệ RIÊNG, phải học cách đọc.</strong> Bản vẽ điện ở Nga theo bộ <strong>ЕСКД</strong> (hệ tài liệu
+thiết kế thống nhất). Điểm khác lớn nhất: <strong>loại sơ đồ được mã hoá bằng một chữ + một số</strong> theo
+ГОСТ 2.701 — chữ chỉ <em>lĩnh vực</em> (<strong>Э = điện</strong>, Г = thuỷ lực, П = khí nén), số chỉ <em>kiểu sơ đồ</em>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mã</th>
+<th>Kiểu sơ đồ</th>
+<th>Tương ứng trong sách</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Э1</td>
+<td>Cấu trúc (структурная)</td>
+<td>Sơ đồ khối/cấu trúc hệ thống</td>
+</tr>
+<tr>
+<td>Э2</td>
+<td>Chức năng (функциональная)</td>
+<td>Sơ đồ chức năng</td>
+</tr>
+<tr>
+<td><strong>Э3</strong></td>
+<td><strong>Nguyên lý (принципиальная)</strong></td>
+<td><strong>Sơ đồ nguyên lý</strong> (Phần III)</td>
+</tr>
+<tr>
+<td>Э4</td>
+<td>Đấu nối/lắp ráp (соединений)</td>
+<td>Sơ đồ đấu dây trong tủ</td>
+</tr>
+<tr>
+<td>Э5</td>
+<td>Kết nối ngoài (подключения)</td>
+<td>Sơ đồ đấu nối thiết bị ngoài/hiện trường</td>
+</tr>
+<tr>
+<td>Э6</td>
+<td>Tổng quát (общая)</td>
+<td>Sơ đồ tổng thể</td>
+</tr>
+<tr>
+<td>Э7</td>
+<td>Bố trí (расположения)</td>
+<td>Bản vẽ bố trí thiết bị (GA)</td>
+</tr>
+<tr>
+<td>Э0</td>
+<td>Kết hợp (объединённая)</td>
+<td>Sơ đồ gộp nhiều kiểu</td>
+</tr>
+</tbody></table></div>
+<p>Vậy khi đối tác Nga nói <strong>&quot;Э3&quot;</strong> là họ chỉ <strong>sơ đồ nguyên lý điện</strong> (đúng loại Phần III của sách dạy);
+<strong>&quot;Э4&quot;</strong> là sơ đồ đấu nối. Mã hiệu thiết bị (chữ–số như R, C, K…) theo <strong>ГОСТ 2.710</strong> — vai trò tương
+tự bảng mã chữ IEC 81346 của sách, nhưng <strong>bộ ký hiệu và quy tắc khác</strong>, phải tra đúng bảng của bộ
+hồ sơ đó. Nguyên tắc chung (giống ghi chú Nhật ở trên): gặp bộ hồ sơ Nga, <strong>tìm bảng mã sơ đồ ЕСКД +
+bảng ГОСТ 2.710 của chính bộ đó trước khi đọc</strong>, đừng áp cứng thói quen IEC.</p>
+<blockquote>
+<p>⚡ <strong>LƯU Ý</strong> — Bảng đối chiếu trên là <strong>định hướng</strong> (đối chiếu qua tài liệu tiêu chuẩn công khai
+nhiều ngôn ngữ, ≥2 nguồn độc lập cho mỗi khẳng định). Trước khi giao/nhận bản vẽ cho một thị trường
+cụ thể, luôn xác nhận <strong>bản và năm</strong> tiêu chuẩn địa phương đang áp dụng cho dự án đó.</p>
 </blockquote>
 <h2 id="chi-tit-đc-thù-bc-m-khi-thit-k-mch-điu-khin-chn-dây">Chi tiết đặc thù Bắc Mỹ khi thiết kế mạch điều khiển &amp; chọn dây</h2>
 <p>Ngoài các dòng ở bảng đối chiếu, một số quy tắc thiết kế <strong>khác thực hành IEC</strong> hay gặp khi làm

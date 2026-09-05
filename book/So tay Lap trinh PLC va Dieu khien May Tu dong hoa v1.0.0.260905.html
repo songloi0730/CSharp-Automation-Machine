@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260904</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260905</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -820,6 +820,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#433-ranh-gii-trách-nhim">43.3 ⭐ Ranh giới trách nhiệm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#434-kích-chp-vì-sao-trigger-phn-cng-chính-xác-hơn">43.4 ⭐ Kích chụp — vì sao trigger phần cứng chính xác hơn</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#435-nhn-kt-qu">43.5 Nhận kết quả</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#435b-ba-th-ch-l-ra-khi-đo-trên-máy-tht">43.5b ⭐ Ba thứ chỉ lộ ra khi đo trên máy thật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#436-hiu-chnh-to-đ-camera-và-to-đ-máy">43.6 Hiệu chỉnh toạ độ camera và toạ độ máy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#437-khi-vision-không-tr-li">43.7 ⚠ Khi vision không trả lời</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#438-chu-k-và-nh-hưng-ti-nhp-máy">43.8 Chu kỳ và ảnh hưởng tới nhịp máy</a></li>
@@ -950,6 +951,7 @@
   <li><a href="#chương-53-bo-trì-thay-đi-khi-máy-đang-chy">Chương 53 — Bảo trì & thay đổi khi máy đang chạy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#531-bài-toán-mt-dòng-lnh-lúc-hai-gi-chiu">53.1 Bài toán: một dòng lệnh lúc hai giờ chiều</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#532-sa-trc-tuyn-online-edit">53.2 ⚠⚠ Sửa trực tuyến *(online edit)*</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#532b-hai-điu-v-sa-trc-tuyn-mà-tài-liu-hãng-nói-còn-ngưi-ta-thì-không">53.2b ⚠⚠ Hai điều về sửa trực tuyến mà tài liệu hãng nói, còn người ta thì không</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#533-quy-trình-thay-đi-có-kim-soát">53.3 Quy trình thay đổi có kiểm soát</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#534-tài-liu-as-built-và-bn-thit-k">53.4 Tài liệu **as-built** và bản thiết kế</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#535-bo-trì-phòng-nga-nhìn-t-plc">53.5 Bảo trì phòng ngừa nhìn từ PLC</a></li>
@@ -977,6 +979,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#555-ti-ưu-bng-song-song-hoá">55.5 ⭐ Tối ưu bằng song song hoá</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#556-thi-gian-cht-ngoài-chu-k">55.6 ⚠ Thời gian chết ngoài chu kỳ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#557-nhp-môn-oee">55.7 Nhập môn OEE</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#557b-oee-ca-hai-máy-không-so-sánh-đưc-nu-chưa-chung-đnh-nghĩa">55.7b ⚠⚠ OEE của hai máy KHÔNG so sánh được nếu chưa chung định nghĩa</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#558-trên-máy-mu-dp-01">55.8 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#559-by-thưng-gp">55.9 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#5510-bng-cht">55.10 Bảng chốt</a></li>
@@ -1166,7 +1169,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260904</td>
+<td>v1.0.0.260905</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -31683,6 +31686,109 @@ Hệ vision có thể trả về toạ độ vô lý nếu nó nhận nhầm v�
 <strong>Luôn kẹp trong dải</strong> (Chương 32, mục 32.4), và lệch quá nhiều thì <strong>coi là NG</strong> thay vì cố bù.</p>
 </blockquote>
 <hr>
+<h2 id="435b-ba-th-ch-l-ra-khi-đo-trên-máy-tht">43.5b ⭐ Ba thứ chỉ lộ ra khi đo trên máy thật</h2>
+<p>Ba mục trên là <strong>cơ chế</strong>. Mục này là ba con số và một cái bẫy mà chỉ hệ chạy thật mới cho thấy.</p>
+<h3>⚠⚠ Bẫy — camera có bit CHO PHÉP KÍCH riêng, và khi nó tắt thì kích không có tác dụng</h3>
+<p>Nhiều hệ vision có <strong>hai</strong> thứ khác nhau:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tín hiệu</th>
+<th>Vai trò</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Cho phép kích</strong> <em>(trigger enable)</em></td>
+<td>Bật chế độ nhận lệnh kích. ⚠ Phải <strong>đặt lên 1 trước</strong></td>
+</tr>
+<tr>
+<td><strong>Kích</strong> <em>(trigger)</em></td>
+<td>Lệnh chụp thật, thường theo <strong>cạnh lên</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Khi bit cho phép chưa bật, camera BỎ QUA mọi lệnh kích — và không báo lỗi gì.</strong></p>
+<p>⭐ Triệu chứng: mọi thứ trông đúng — dây đúng, địa chỉ đúng, PLC vẫn phát xung kích đều đặn — mà
+<strong>không có ảnh nào được chụp</strong>. Người ta đi kiểm cáp và cấu hình mạng, trong khi nguyên nhân là
+<strong>một bit chưa bật</strong>.</p>
+<p>⭐ <strong>Cách phòng:</strong> đưa bit cho phép kích vào <strong>trình tự khởi động</strong> của máy (Chương 28) và <strong>giám
+sát nó</strong> như một điều kiện cho phép chạy — thay vì đặt tay một lần rồi quên.</p>
+<p>⚡ Đây là cùng loại lỗi với <strong>cưỡng bức quên gỡ</strong> (Chương 51): ⭐ <strong>một trạng thái do người đặt, tồn
+tại vô hình, và không có gì nhắc lại.</strong></p>
+</blockquote>
+<h3>⭐ Độ trễ thật của một vòng kích–kết quả</h3>
+<p>Số đo từ một hệ camera thông minh nối PLC qua Ethernet công nghiệp, chế độ trao đổi tuần hoàn:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại kiểm tra</th>
+<th>Thời gian từ kích tới có kết quả ở PLC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kiểm đơn giản</td>
+<td>⭐ <strong>~55 ms</strong> (độ lệch ~6 ms)</td>
+</tr>
+<tr>
+<td>Phân loại phức tạp hơn</td>
+<td>⭐ <strong>~59 ms</strong> (độ lệch ~8 ms)</td>
+</tr>
+<tr>
+<td>⭐ Khi mạng bị chiếm ~50 % băng thông</td>
+<td>Trễ tăng ⭐ <strong>dưới 6 %</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Dùng con số này thế nào:</strong> không phải để chép vào thiết kế của bạn, mà để có <strong>bậc độ lớn</strong> khi
+tính nhịp máy ở mục 43.8 — ⭐ <strong>hàng chục mili-giây</strong>, không phải vài mili-giây và cũng không phải
+vài trăm.</p>
+<p>⚠ Và lưu ý cột cuối: nó cho thấy mạng công nghiệp <strong>giữ được tính tất định</strong> ở mức tải đó — nhưng
+⭐ <strong>đó là một phép đo trên một hệ cụ thể</strong>, không phải bảo đảm cho hệ của bạn (Chương 40).</p>
+</blockquote>
+<h3>⭐⭐ Giảm báo lỗi giả bằng cách chụp nhiều lần — và cái giá của nó</h3>
+<p>⚠ <strong>Báo lỗi giả</strong> <em>(false positive)</em> — hàng tốt bị kết luận là lỗi — tốn tiền theo cách âm thầm:
+sản phẩm tốt bị loại, và lòng tin vào hệ thống giảm dần cho tới lúc có người tắt nó đi.</p>
+<p>⭐ Một cách xử lý ở <strong>tầng PLC</strong>, không đụng vào chương trình camera:</p>
+<pre><code class="language-text">   Kích 3 lần trên CÙNG một sản phẩm
+        → PLC đệm 3 kết quả liên tiếp
+        → Kết luận theo ĐA SỐ  (2/3)
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Kết quả đo được</td>
+<td>Tỉ lệ báo lỗi giả giảm từ <strong>7,5 %</strong> xuống <strong>5,4 %</strong> — giảm khoảng <strong>28 %</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ Cái giá</td>
+<td><strong>Ba lần chụp thay vì một</strong> — cộng thẳng vào chu kỳ (mục 43.8)</td>
+</tr>
+<tr>
+<td>⭐ Khi nào đáng</td>
+<td>Khi <strong>loại nhầm hàng tốt đắt hơn</strong> thời gian chu kỳ tăng thêm</td>
+</tr>
+<tr>
+<td>⚠ Khi nào KHÔNG đáng</td>
+<td>Khi nhịp máy là nút cổ chai (Chương 55) — ⭐ lúc đó hãy <strong>sửa nguyên nhân</strong>: chiếu sáng, gá, ngưỡng</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Đọc kỹ chiều của phép đo này: nó giảm báo lỗi GIẢ, không phải giảm bỏ sót lỗi thật.</strong></p>
+<p>⭐ Biểu quyết theo đa số làm hệ <strong>khoan dung hơn</strong> — nên nó cũng có thể ⚠ <strong>cho lọt một lỗi thật xuất
+hiện ở một trong ba ảnh</strong>. Với hàng mà lọt lỗi là không chấp nhận được, ⭐ <strong>đây là đánh đổi sai
+hướng</strong>, và câu hỏi đúng vẫn là <em>&quot;vì sao ba ảnh của cùng một vật lại cho ba kết quả khác nhau?&quot;</em></p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Nguyên nhân gốc của kết quả không ổn định gần như luôn nằm ở đây:</strong> ⚠ <strong>chiếu sáng dao động</strong>.
+Trong phép đo trên, ánh sáng thay đổi làm báo lỗi giả tăng thêm <strong>2–3 %</strong>. ⭐ Bao che chắn sáng và
+khống chế nguồn sáng rẻ hơn nhiều so với mọi thủ thuật ở tầng PLC.</p>
+</blockquote>
+<hr>
 <h2 id="436-hiu-chnh-to-đ-camera-và-to-đ-máy">43.6 Hiệu chỉnh toạ độ camera và toạ độ máy</h2>
 <p>Hệ vision đo bằng <strong>pixel</strong>. Cơ cấu chuyển động theo <strong>mi-li-mét</strong>. Cần một phép chuyển đổi.</p>
 <p><strong>Hiệu chỉnh</strong> <em>(calibration)</em> là việc xác định phép chuyển đổi đó — ở mức khái niệm, nó gồm ba thứ:</p>
@@ -32027,6 +32133,22 @@ lỗi nào.
 <td>⭐ <strong>Đo trên vật thật</strong>, không lấy catalogue</td>
 </tr>
 <tr>
+<td>⚠⚠ Kích không có tác dụng, không báo lỗi</td>
+<td>⭐ Kiểm <strong>bit CHO PHÉP KÍCH</strong> — đưa vào trình tự khởi động</td>
+</tr>
+<tr>
+<td>⭐ Bậc độ lớn của một vòng kích–kết quả</td>
+<td><strong>Hàng chục mili-giây</strong> (đo được ~55–59 ms)</td>
+</tr>
+<tr>
+<td>Giảm báo lỗi giả bằng chụp nhiều lần</td>
+<td>⭐ Biểu quyết 2/3 giảm ~28 % — ⚠⚠ <strong>giá là ba lần chụp</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ Biểu quyết đa số làm hệ</td>
+<td><strong>Khoan dung hơn</strong> — có thể <strong>lọt lỗi thật</strong>; sai hướng nếu lọt lỗi là không chấp nhận được</td>
+</tr>
+<tr>
 <td>Ảnh sản phẩm NG</td>
 <td>⭐ <strong>Lưu lại</strong> — rất quý khi phân tích nguyên nhân</td>
 </tr>
@@ -32050,6 +32172,10 @@ cùng bài toán.</li>
 — coi là OK và coi là NG — đều có vấn đề?</li>
 <li>Vì sao <strong>không</strong> nên để hệ vision điều khiển cơ cấu trực tiếp?</li>
 <li>Vì sao thời gian xử lý ảnh phải <strong>đo</strong> thay vì lấy từ catalogue?</li>
+<li>⚠⚠ PLC phát xung kích đều đặn, dây và địa chỉ đều đúng, mà <strong>không có ảnh nào được chụp</strong>, cũng
+không có lỗi. ⭐ Nghi gì đầu tiên, và cách phòng lâu dài là gì?</li>
+<li>⭐ Biểu quyết 2/3 giảm báo lỗi giả khoảng 28 %. ⚠⚠ Nêu <strong>hai</strong> cái giá, và một loại sản phẩm mà
+đánh đổi này <strong>đi sai hướng</strong>.</li>
 </ol>
 <blockquote>
 <p>Câu 1, 4, 7 và 10 là bốn câu phân loại. Câu 10 là tinh thần của cả chương: <strong>&quot;hỏng&quot; và &quot;không biết&quot;
@@ -32068,6 +32194,13 @@ hiệu chỉnh, và ⚠ <strong>thời gian xử lý thật</strong>.</li>
 <em>(tiêu chuẩn có bản quyền)</em></li>
 <li>Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J §J.1, mục 3 (quyết định không đưa vision vào máy
 mẫu).</li>
+<li>⭐ <strong>Maślanka, Jancarczyk &amp; Rysinski</strong> — <em>Integration of Machine Vision and PLC-Based Control for
+Scalable Quality Inspection in Industry 4.0</em>, <strong>Sensors</strong> 25(20):6383, 2025 <em>(truy cập mở, CC BY;
+DOI 10.3390/s25206383)</em>: nghiên cứu tình huống camera thông minh nối PLC qua Ethernet công nghiệp —
+⚠ <strong>bit cho phép kích</strong> phải bật trước, ⭐ <strong>độ trễ đo được ~55–59 ms</strong> và tăng dưới 6 % khi mạng
+chiếm 50 % băng thông, và ⭐⭐ <strong>biểu quyết đa số ba lần chụp ở tầng PLC</strong> giảm báo lỗi giả từ 7,5 %
+xuống 5,4 %. ⚠ Nhóm tác giả cũng nêu giới hạn: bộ dữ liệu nhỏ, <strong>nhạy với dao động chiếu sáng</strong>
+(+2–3 % báo lỗi giả), chưa kiểm chứng ở quy mô dây chuyền đầy đủ — nền cho mục 43.5b.</li>
 </ul>
 <blockquote>
 <p>⚡ Nội dung về <strong>hiệu chỉnh toạ độ</strong> ở mục 43.6 được trình bày <strong>ở mức khái niệm</strong> — đủ để bạn hiểu
@@ -39407,6 +39540,92 @@ và vài giờ đó đổi lấy: có thời gian kiểm thử, có sao lưu, c�
 mọi người đi làm việc khác, và ghi chép trôi mất.</p>
 </blockquote>
 <hr>
+<h2 id="532b-hai-điu-v-sa-trc-tuyn-mà-tài-liu-hãng-nói-còn-ngưi-ta-thì-không">53.2b ⚠⚠ Hai điều về sửa trực tuyến mà tài liệu hãng nói, còn người ta thì không</h2>
+<p>Mục trên bàn <strong>có nên</strong> sửa trực tuyến. Mục này bàn hai chuyện xảy ra <strong>khi bạn đã quyết định sửa</strong> —
+và cả hai đều có thể biến một sửa đổi nhỏ thành một lần dừng máy ngoài kế hoạch.</p>
+<h3>⚠⚠ Một — sửa trực tuyến CÓ THỂ BỊ TỪ CHỐI, và khi đó bạn buộc phải nạp lại toàn bộ</h3>
+<p>⭐ Sửa trực tuyến hoạt động được là nhờ <strong>vùng nhớ dự phòng</strong> mà trình biên dịch chừa sẵn: thêm một
+nhãn cục bộ, một lệnh, một thể hiện khối chức năng — tất cả phải <strong>vừa vào chỗ trống đã chừa</strong>.</p>
+<blockquote>
+<p>⚠⚠ <strong>Khi chỗ trống đó không đủ, sửa trực tuyến KHÔNG thực hiện được, và toàn bộ chương trình phải
+được biên dịch lại và gán lại địa chỉ.</strong></p>
+<p>⭐ Nghĩa là: <strong>nạp lại toàn bộ → dừng máy.</strong> Không phải lựa chọn của bạn nữa.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hệ quả thực tế</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠ <em>&quot;Chỉ thêm một dòng thôi mà&quot;</em></td>
+<td>⭐ <strong>Không bảo đảm là sửa trực tuyến được</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ Phát hiện lúc nào</td>
+<td><strong>Đúng lúc bạn bấm nút</strong>, khi đã đứng cạnh máy đang chạy</td>
+</tr>
+<tr>
+<td>⭐ Cách phòng</td>
+<td><strong>Thử trên máy mô phỏng hoặc máy dự phòng TRƯỚC</strong> (Chương 50) — biết trước là dừng có kế hoạch, không phải dừng đột ngột</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚡ Và nó <strong>tích luỹ</strong>: mỗi lần sửa trực tuyến ăn thêm vào chỗ trống dự phòng. ⭐ Máy càng bị sửa
+nhiều lần thì lần sửa sau càng dễ bị từ chối — ⚠ <strong>đúng lúc bạn ít mong nhất</strong>.</p>
+</blockquote>
+<h3>⚠⚠ Hai — sau khi nạp, trình tự chạy tiếp từ đâu?</h3>
+<p>Với chương trình <strong>có trình tự</strong> (Chương 26, Chương 21), câu hỏi này quan trọng hơn cả bản thân sửa đổi:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách vào</th>
+<th>Trình tự chạy tiếp thế nào</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Dừng CPU rồi cho chạy lại</strong>, không nạp gì</td>
+<td>Khôi phục <strong>đúng trạng thái trước khi dừng</strong> — chạy tiếp giữa chừng</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Nạp chương trình trong lúc STOP</strong> rồi cho chạy</td>
+<td>⭐ Thường khởi động <strong>từ đầu</strong> — nhưng ⚠ <strong>có thể vẫn chạy tiếp giữa chừng nếu công cụ coi là &quot;không có thay đổi&quot;</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Chỗ nguy hiểm nằm ở chữ &quot;thường&quot; và chữ &quot;có thể&quot;.</strong></p>
+<p>Hai hành vi khác nhau <strong>một trời một vực</strong> — chạy tiếp giữa chừng <strong>với logic vừa đổi</strong> là tình
+huống chưa ai thử. Và ⚠ <strong>cái quyết định lại là việc công cụ có coi lần ghi của bạn là một thay đổi
+hay không</strong> — thứ bạn không kiểm soát và không nhìn thấy.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Quy tắc rút ra, áp cho mọi hệ:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠⚠ <strong>Sau khi nạp chương trình có trình tự, ĐỪNG cho chạy tiếp giữa chừng.</strong> Đưa máy về gốc rồi bắt đầu lại (Chương 28)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>Kiểm bằng mắt trước khi cho chạy</strong>: bước hiện tại đang là bước nào — đúng cái bạn mong đợi không?</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐ Nếu hệ có tham số chọn <em>&quot;chạy tiếp&quot;</em> hay <em>&quot;bắt đầu lại&quot;</em>, ⚠ <strong>biết nó đang đặt gì</strong>, và biết <strong>thao tác nào ghi đè nó</strong></td>
+</tr>
+</tbody></table></div>
+<p>⚡ Chi tiết thao tác khác nhau theo hãng — có hệ yêu cầu <strong>reset CPU sau khi nạp</strong> rồi mới chạy, có
+hệ dùng một bit hệ thống để chọn chế độ khởi động. ⭐ <strong>Tra tài liệu của đúng hệ</strong>, và ⚠ <strong>thử trên
+máy mô phỏng</strong> trước khi làm trên máy thật.</p>
+</blockquote>
+<hr>
 <h2 id="533-quy-trình-thay-đi-có-kim-soát">53.3 Quy trình thay đổi có kiểm soát</h2>
 <p>&quot;Có kiểm soát&quot; nghe nặng nề, nhưng thực chất chỉ là <strong>năm câu hỏi</strong> trả lời được trước khi sửa.</p>
 <div class="table-wrap"><table>
@@ -39979,6 +40198,12 @@ truy cập vào hệ thống điều khiển. <em>(tiêu chuẩn có bản quy�
 <li><strong>Datasheet thiết bị</strong> — dùng cho tuổi thọ đóng cắt, giờ chạy đèn UV, và ngưỡng ở mục 53.5.</li>
 <li>Số liệu chu trình DP-01 — Phụ lục J §J.1; các phép tính tuổi thọ ở Chương 9 mục 9.3 và Chương 49
 mục 49.7.</li>
+<li><strong>Mitsubishi MELSEC iQ-F FX5 Programming Manual — Program Design</strong>: ⚠⚠ sửa trực tuyến phụ thuộc
+<strong>vùng nhớ dự phòng</strong> — khi không đủ chỗ thì <strong>không thực hiện được</strong> và toàn bộ chương trình phải
+<strong>biên dịch lại, gán lại địa chỉ</strong> (tức là nạp lại toàn bộ); và ⭐ <strong>chế độ khởi động của chương
+trình trình tự sau khi nạp</strong> khác nhau tuỳ cách vào — dừng rồi chạy lại thì <strong>khôi phục trạng thái
+trước đó</strong>, còn nạp trong lúc STOP thì thường <strong>bắt đầu lại từ đầu</strong>, ⚠ trừ khi công cụ coi là
+<em>&quot;không có thay đổi&quot;</em> — nền cho mục 53.2b.</li>
 </ul>
 <blockquote>
 <p>⚠ <strong>Nhắc lại giới hạn.</strong> Mục 53.3 mô tả <strong>cách tổ chức công việc</strong>, không phải một tiêu chuẩn cụ
@@ -41192,6 +41417,125 @@ tốc độ nữa</strong>.</p>
 làm đẹp báo cáo), rồi nói rõ định nghĩa mình dùng.</p>
 </blockquote>
 <hr>
+<h2 id="557b-oee-ca-hai-máy-không-so-sánh-đưc-nu-chưa-chung-đnh-nghĩa">55.7b ⚠⚠ OEE của hai máy KHÔNG so sánh được nếu chưa chung định nghĩa</h2>
+<p>Công thức ở mục trên đúng. ⚠ Nhưng con số nó cho ra <strong>chỉ có nghĩa bên trong một bộ định nghĩa</strong> —
+và đây là chỗ OEE bị dùng sai nhiều nhất.</p>
+<blockquote>
+<p>⭐⭐ <strong>Cùng một cỗ máy, cùng một ca, có thể cho OEE 72 % hay 91 % — chỉ khác nhau ở chỗ bạn tính
+những gì vào &quot;thời gian dự định&quot;.</strong></p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi định nghĩa</th>
+<th>Hai cách trả lời đều &quot;có lý&quot;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ Giờ ăn ca</td>
+<td>Trừ khỏi thời gian dự định · hay tính là dừng có kế hoạch</td>
+</tr>
+<tr>
+<td>⭐ Đổi lô, đổi công thức</td>
+<td>Tổn thất khả dụng · hay thời gian không thuộc trách nhiệm máy</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Chờ máy trước/sau</strong></td>
+<td>⭐ <strong>Tổn thất của máy này</strong> · hay của <strong>chuyền</strong></td>
+</tr>
+<tr>
+<td>Chạy thử đầu ca</td>
+<td>Sản lượng · hay không tính</td>
+</tr>
+<tr>
+<td>Sản phẩm làm lại được</td>
+<td>Tính vào chất lượng · hay không</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Hệ quả rất thực tế:</strong> khách hàng nói <em>&quot;máy của anh phải đạt OEE 85 %&quot;</em> mà <strong>chưa chốt các định
+nghĩa trên</strong> thì ⭐ <strong>đó chưa phải một yêu cầu nghiệm thu</strong> — nó là một con số không kiểm chứng được,
+và sẽ thành tranh cãi đúng lúc bàn giao (Chương 23, Chương 52).</p>
+<p>⭐ <strong>Việc phải làm: chốt bằng văn bản, TRƯỚC khi ký, từng dòng một</strong> — cái gì tính vào thời gian dự
+định, cái gì tính là dừng, ai chịu tổn thất do chuyền.</p>
+</blockquote>
+<h3>⭐ Có tiêu chuẩn để khỏi phải tự định nghĩa</h3>
+<p>Với <strong>sản xuất điện tử và bán dẫn</strong>, ngành đã có bộ định nghĩa chung — và nếu khách hàng của bạn ở
+ngành đó, ⭐ <strong>họ nhiều khả năng đang dùng nó</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tiêu chuẩn</th>
+<th>Định nghĩa cái gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>SEMI E10</strong></td>
+<td><strong>Trạng thái thiết bị</strong> — độ tin cậy, khả dụng, khả bảo trì; nền cho mọi phép tính bên trên</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>SEMI E79</strong></td>
+<td><strong>Năng suất thiết bị</strong> — trong đó có <strong>OEE</strong> và thông lượng</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠ <strong>Cả hai là tiêu chuẩn có bản quyền, phải mua từ SEMI.</strong> ⭐ Sách này <strong>không dẫn số điều khoản
+hay công thức nguyên văn</strong> — mục đích ở đây chỉ là để bạn <strong>biết chúng tồn tại</strong> và hỏi đúng câu:
+⭐ <em>&quot;Ta tính OEE theo định nghĩa nào?&quot;</em></p>
+<p>⚡ Nếu khách hàng trả lời <em>&quot;theo SEMI E10/E79&quot;</em> thì tranh cãi kết thúc trước khi bắt đầu — ⭐ <strong>bộ
+định nghĩa đã có sẵn, chỉ việc áp</strong>.</p>
+</blockquote>
+<h3>⭐ Sáu nhóm tổn thất — từ vựng khách hàng sẽ dùng</h3>
+<p>Danh sách ở mục 55.6 là cách nhìn của <strong>người làm máy</strong>. ⭐ Người làm sản xuất thường nhóm tổn thất
+theo sáu loại kinh điển, và ⚠ <strong>họ sẽ dùng từ đó khi nói chuyện với bạn</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thuộc</th>
+<th>Nhóm tổn thất</th>
+<th>Ứng với mục 55.6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Khả dụng</td>
+<td>⭐ <strong>Hỏng hóc</strong> <em>(breakdown)</em></td>
+<td>Dừng do lỗi</td>
+</tr>
+<tr>
+<td>Khả dụng</td>
+<td><strong>Cài đặt và điều chỉnh</strong> <em>(setup)</em></td>
+<td>Đổi lô, đổi công thức</td>
+</tr>
+<tr>
+<td>Hiệu suất</td>
+<td>⚠ <strong>Dừng vặt</strong> <em>(minor stop)</em></td>
+<td>⭐ Kẹt nhẹ, chờ vật tư — <strong>hay bị bỏ sót vì mỗi lần chỉ vài giây</strong></td>
+</tr>
+<tr>
+<td>Hiệu suất</td>
+<td><strong>Chạy chậm</strong> <em>(speed loss)</em></td>
+<td>Chu kỳ thật dài hơn thiết kế (mục 55.4)</td>
+</tr>
+<tr>
+<td>Chất lượng</td>
+<td><strong>Lỗi lúc khởi động</strong> <em>(startup)</em></td>
+<td>Chạy thử đầu ca</td>
+</tr>
+<tr>
+<td>Chất lượng</td>
+<td><strong>Lỗi khi sản xuất</strong> <em>(production defect)</em></td>
+<td>Board NG</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Nhóm &quot;dừng vặt&quot; là nhóm PLC giúp được nhiều nhất, và cũng là nhóm không ai đo được bằng tay.</strong></p>
+<p>Mỗi lần chỉ 5–20 giây nên không ai ghi vào sổ; cộng lại một ca thì lớn hơn cả một lần hỏng máy.
+⭐ Nhưng <strong>PLC biết chính xác</strong> — nó thấy từng lần chờ, từng lần timeout, từng lần thao tác lại
+(Chương 51, mục 51.11).</p>
+<p>⚡ Đây là chỗ <strong>đóng góp rẻ nhất và lớn nhất</strong> mà người lập trình mang lại cho sản lượng: ⭐ <strong>đếm và
+phân loại các lần dừng vặt</strong>, thay vì chỉ đếm sản phẩm.</p>
+</blockquote>
+<hr>
 <h2 id="558-trên-máy-mu-dp-01">55.8 Trên máy mẫu DP-01</h2>
 <p>Số liệu đã chốt: <strong>300 board/giờ</strong> → chu kỳ <strong>12,0 giây</strong> (Phụ lục J §J.1).</p>
 <div class="table-wrap"><table>
@@ -41409,6 +41753,22 @@ trung bình che mất.
 <td><strong>Tìm chỗ cải tiến</strong> — không phải chấm điểm người</td>
 </tr>
 <tr>
+<td>⚠⚠ <em>&quot;Máy phải đạt OEE 85 %&quot;</em></td>
+<td>⭐ <strong>Chưa phải yêu cầu nghiệm thu</strong> nếu chưa chốt định nghĩa</td>
+</tr>
+<tr>
+<td>Phải chốt bằng văn bản trước khi ký</td>
+<td>Giờ ăn ca · đổi lô · ⭐ <strong>chờ máy trước/sau</strong> · chạy thử · hàng làm lại</td>
+</tr>
+<tr>
+<td>⭐ Ngành điện tử có sẵn định nghĩa</td>
+<td><strong>SEMI E10</strong> (trạng thái thiết bị) · <strong>SEMI E79</strong> (năng suất, OEE) — ⚠ có bản quyền</td>
+</tr>
+<tr>
+<td>⭐⭐ Nhóm tổn thất PLC giúp nhiều nhất</td>
+<td><strong>Dừng vặt</strong> — mỗi lần vài giây, không ai ghi sổ, nhưng <strong>PLC biết chính xác</strong></td>
+</tr>
+<tr>
 <td>⚠ Nút cổ chai của DP-01</td>
 <td>⭐ <strong>Trạm 2 — sấy UV (6–12 s)</strong>; với công thức 12 s thì <strong>chỉ vừa đủ</strong> 300 board/giờ</td>
 </tr>
@@ -41433,6 +41793,10 @@ bẫy tinh vi nhất?</li>
 phẩm, 50 sản phẩm lỗi. Ba thành phần nói gì về nơi cần cải tiến?</li>
 <li>⚠⚠ Nêu năm cách bóp méo OEE. Cách nào nguy hiểm nhất, và vì sao nó trông hợp lý?</li>
 <li>⭐⭐ Vì sao trên DP-01 việc rút thời gian sấy UV <strong>không phải</strong> việc của người lập trình?</li>
+<li>⚠⚠ Vì sao OEE của hai máy <strong>không so sánh được</strong> nếu chưa chung định nghĩa? ⭐ Nêu <strong>ba</strong> câu hỏi
+định nghĩa phải chốt trước khi ký hợp đồng.</li>
+<li>⭐ Nêu <strong>sáu nhóm tổn thất</strong> và cho biết mỗi nhóm thuộc thành phần nào của OEE. ⭐⭐ Nhóm nào người
+lập trình PLC giúp được nhiều nhất, và vì sao không ai đo được nó bằng tay?</li>
 </ol>
 <blockquote>
 <p>Câu 5, 7, 10 và 13 là bốn câu phân loại. Câu 1 và 14 gắn với nhau: ⭐ <strong>cả hai đều nói rằng công
@@ -41453,6 +41817,11 @@ nghĩa chuẩn hoá cho các chỉ số năng suất</strong>, gồm cả nhóm 
 con số <strong>so sánh được giữa các nhà máy</strong>.</li>
 <li>Phép đo thời gian bước và bộ đếm — Chương 11 (vùng nhớ giữ được), Chương 21 (trình tự), Chương 43
 (báo động), Chương 53 mục 53.5 (bảo trì).</li>
+<li>⚠ <strong>SEMI E10</strong> — <em>Specification for Definition and Measurement of Equipment Reliability,
+Availability, and Maintainability</em> và ⭐ <strong>SEMI E79</strong> — <em>Specification for Definition and Measurement
+of Equipment Productivity</em> (gồm <strong>OEE</strong>): bộ định nghĩa chuẩn dùng trong <strong>sản xuất điện tử và bán
+dẫn</strong>. ⚠⚠ <strong>Tiêu chuẩn có bản quyền, phải mua từ SEMI</strong> — sách này chỉ <strong>nêu tên để bạn hỏi đúng
+câu</strong>, không dẫn công thức hay số điều khoản (mục 55.7b).</li>
 </ul>
 <blockquote>
 <p>⚠ <strong>Giới hạn.</strong> Công thức OEE ở mục 55.7 là dạng phổ biến nhất, nhưng ⚠ <strong>định nghĩa chi tiết khác

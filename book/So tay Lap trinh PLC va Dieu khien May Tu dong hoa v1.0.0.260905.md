@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260904 |
+| **Phiên bản** | v1.0.0.260905 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -22325,6 +22325,80 @@ END_IF;
 
 ---
 
+## 43.5b ⭐ Ba thứ chỉ lộ ra khi đo trên máy thật
+
+Ba mục trên là **cơ chế**. Mục này là ba con số và một cái bẫy mà chỉ hệ chạy thật mới cho thấy.
+
+### ⚠⚠ Bẫy — camera có bit CHO PHÉP KÍCH riêng, và khi nó tắt thì kích không có tác dụng
+
+Nhiều hệ vision có **hai** thứ khác nhau:
+
+| Tín hiệu | Vai trò |
+|---|---|
+| ⭐ **Cho phép kích** *(trigger enable)* | Bật chế độ nhận lệnh kích. ⚠ Phải **đặt lên 1 trước** |
+| **Kích** *(trigger)* | Lệnh chụp thật, thường theo **cạnh lên** |
+
+> ⚠⚠ **Khi bit cho phép chưa bật, camera BỎ QUA mọi lệnh kích — và không báo lỗi gì.**
+>
+> ⭐ Triệu chứng: mọi thứ trông đúng — dây đúng, địa chỉ đúng, PLC vẫn phát xung kích đều đặn — mà
+> **không có ảnh nào được chụp**. Người ta đi kiểm cáp và cấu hình mạng, trong khi nguyên nhân là
+> **một bit chưa bật**.
+>
+> ⭐ **Cách phòng:** đưa bit cho phép kích vào **trình tự khởi động** của máy (Chương 28) và **giám
+> sát nó** như một điều kiện cho phép chạy — thay vì đặt tay một lần rồi quên.
+>
+> ⚡ Đây là cùng loại lỗi với **cưỡng bức quên gỡ** (Chương 51): ⭐ **một trạng thái do người đặt, tồn
+> tại vô hình, và không có gì nhắc lại.**
+
+### ⭐ Độ trễ thật của một vòng kích–kết quả
+
+Số đo từ một hệ camera thông minh nối PLC qua Ethernet công nghiệp, chế độ trao đổi tuần hoàn:
+
+| Loại kiểm tra | Thời gian từ kích tới có kết quả ở PLC |
+|---|---|
+| Kiểm đơn giản | ⭐ **~55 ms** (độ lệch ~6 ms) |
+| Phân loại phức tạp hơn | ⭐ **~59 ms** (độ lệch ~8 ms) |
+| ⭐ Khi mạng bị chiếm ~50 % băng thông | Trễ tăng ⭐ **dưới 6 %** |
+
+> ⭐ **Dùng con số này thế nào:** không phải để chép vào thiết kế của bạn, mà để có **bậc độ lớn** khi
+> tính nhịp máy ở mục 43.8 — ⭐ **hàng chục mili-giây**, không phải vài mili-giây và cũng không phải
+> vài trăm.
+>
+> ⚠ Và lưu ý cột cuối: nó cho thấy mạng công nghiệp **giữ được tính tất định** ở mức tải đó — nhưng
+> ⭐ **đó là một phép đo trên một hệ cụ thể**, không phải bảo đảm cho hệ của bạn (Chương 40).
+
+### ⭐⭐ Giảm báo lỗi giả bằng cách chụp nhiều lần — và cái giá của nó
+
+⚠ **Báo lỗi giả** *(false positive)* — hàng tốt bị kết luận là lỗi — tốn tiền theo cách âm thầm:
+sản phẩm tốt bị loại, và lòng tin vào hệ thống giảm dần cho tới lúc có người tắt nó đi.
+
+⭐ Một cách xử lý ở **tầng PLC**, không đụng vào chương trình camera:
+
+```text
+   Kích 3 lần trên CÙNG một sản phẩm
+        → PLC đệm 3 kết quả liên tiếp
+        → Kết luận theo ĐA SỐ  (2/3)
+```
+
+| | |
+|---|---|
+| ⭐ Kết quả đo được | Tỉ lệ báo lỗi giả giảm từ **7,5 %** xuống **5,4 %** — giảm khoảng **28 %** |
+| ⚠⚠ Cái giá | **Ba lần chụp thay vì một** — cộng thẳng vào chu kỳ (mục 43.8) |
+| ⭐ Khi nào đáng | Khi **loại nhầm hàng tốt đắt hơn** thời gian chu kỳ tăng thêm |
+| ⚠ Khi nào KHÔNG đáng | Khi nhịp máy là nút cổ chai (Chương 55) — ⭐ lúc đó hãy **sửa nguyên nhân**: chiếu sáng, gá, ngưỡng |
+
+> ⚠⚠ **Đọc kỹ chiều của phép đo này: nó giảm báo lỗi GIẢ, không phải giảm bỏ sót lỗi thật.**
+>
+> ⭐ Biểu quyết theo đa số làm hệ **khoan dung hơn** — nên nó cũng có thể ⚠ **cho lọt một lỗi thật xuất
+> hiện ở một trong ba ảnh**. Với hàng mà lọt lỗi là không chấp nhận được, ⭐ **đây là đánh đổi sai
+> hướng**, và câu hỏi đúng vẫn là *"vì sao ba ảnh của cùng một vật lại cho ba kết quả khác nhau?"*
+
+> ⭐ **Nguyên nhân gốc của kết quả không ổn định gần như luôn nằm ở đây:** ⚠ **chiếu sáng dao động**.
+> Trong phép đo trên, ánh sáng thay đổi làm báo lỗi giả tăng thêm **2–3 %**. ⭐ Bao che chắn sáng và
+> khống chế nguồn sáng rẻ hơn nhiều so với mọi thủ thuật ở tầng PLC.
+
+---
+
 ## 43.6 Hiệu chỉnh toạ độ camera và toạ độ máy
 
 Hệ vision đo bằng **pixel**. Cơ cấu chuyển động theo **mi-li-mét**. Cần một phép chuyển đổi.
@@ -22553,6 +22627,10 @@ lỗi nào.
 | ⭐⭐ "NG" và "không trả lời được" | **Hai thứ khác nhau** — xử lý khác nhau |
 | "Không biết" xử lý thế nào | ⚠ Không phải OK, không phải NG — **dừng và báo người** |
 | Thời gian xử lý ảnh | ⭐ **Đo trên vật thật**, không lấy catalogue |
+| ⚠⚠ Kích không có tác dụng, không báo lỗi | ⭐ Kiểm **bit CHO PHÉP KÍCH** — đưa vào trình tự khởi động |
+| ⭐ Bậc độ lớn của một vòng kích–kết quả | **Hàng chục mili-giây** (đo được ~55–59 ms) |
+| Giảm báo lỗi giả bằng chụp nhiều lần | ⭐ Biểu quyết 2/3 giảm ~28 % — ⚠⚠ **giá là ba lần chụp** |
+| ⚠⚠ Biểu quyết đa số làm hệ | **Khoan dung hơn** — có thể **lọt lỗi thật**; sai hướng nếu lọt lỗi là không chấp nhận được |
 | Ảnh sản phẩm NG | ⭐ **Lưu lại** — rất quý khi phân tích nguyên nhân |
 
 ---
@@ -22575,6 +22653,10 @@ lỗi nào.
     — coi là OK và coi là NG — đều có vấn đề?
 11. Vì sao **không** nên để hệ vision điều khiển cơ cấu trực tiếp?
 12. Vì sao thời gian xử lý ảnh phải **đo** thay vì lấy từ catalogue?
+13. ⚠⚠ PLC phát xung kích đều đặn, dây và địa chỉ đều đúng, mà **không có ảnh nào được chụp**, cũng
+    không có lỗi. ⭐ Nghi gì đầu tiên, và cách phòng lâu dài là gì?
+14. ⭐ Biểu quyết 2/3 giảm báo lỗi giả khoảng 28 %. ⚠⚠ Nêu **hai** cái giá, và một loại sản phẩm mà
+    đánh đổi này **đi sai hướng**.
 
 > Câu 1, 4, 7 và 10 là bốn câu phân loại. Câu 10 là tinh thần của cả chương: **"hỏng" và "không biết"
 > là hai trạng thái khác nhau — và gộp chúng lại là cách chắc chắn để đưa ra quyết định sai.**
@@ -22595,6 +22677,13 @@ thứ đều báo động" nghĩa là không có báo động nào.
   *(tiêu chuẩn có bản quyền)*
 - Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J §J.1, mục 3 (quyết định không đưa vision vào máy
   mẫu).
+- ⭐ **Maślanka, Jancarczyk & Rysinski** — *Integration of Machine Vision and PLC-Based Control for
+  Scalable Quality Inspection in Industry 4.0*, **Sensors** 25(20):6383, 2025 *(truy cập mở, CC BY;
+  DOI 10.3390/s25206383)*: nghiên cứu tình huống camera thông minh nối PLC qua Ethernet công nghiệp —
+  ⚠ **bit cho phép kích** phải bật trước, ⭐ **độ trễ đo được ~55–59 ms** và tăng dưới 6 % khi mạng
+  chiếm 50 % băng thông, và ⭐⭐ **biểu quyết đa số ba lần chụp ở tầng PLC** giảm báo lỗi giả từ 7,5 %
+  xuống 5,4 %. ⚠ Nhóm tác giả cũng nêu giới hạn: bộ dữ liệu nhỏ, **nhạy với dao động chiếu sáng**
+  (+2–3 % báo lỗi giả), chưa kiểm chứng ở quy mô dây chuyền đầy đủ — nền cho mục 43.5b.
 
 > ⚡ Nội dung về **hiệu chỉnh toạ độ** ở mục 43.6 được trình bày **ở mức khái niệm** — đủ để bạn hiểu
 > chuyện gì đang xảy ra, biết khi nào nó mất hiệu lực, và biết phải kiểm gì. Phép toán đầy đủ của
@@ -27353,6 +27442,59 @@ Nó không phải điều cấm tuyệt đối — có những lúc nó là lự
 
 ---
 
+## 53.2b ⚠⚠ Hai điều về sửa trực tuyến mà tài liệu hãng nói, còn người ta thì không
+
+Mục trên bàn **có nên** sửa trực tuyến. Mục này bàn hai chuyện xảy ra **khi bạn đã quyết định sửa** —
+và cả hai đều có thể biến một sửa đổi nhỏ thành một lần dừng máy ngoài kế hoạch.
+
+### ⚠⚠ Một — sửa trực tuyến CÓ THỂ BỊ TỪ CHỐI, và khi đó bạn buộc phải nạp lại toàn bộ
+
+⭐ Sửa trực tuyến hoạt động được là nhờ **vùng nhớ dự phòng** mà trình biên dịch chừa sẵn: thêm một
+nhãn cục bộ, một lệnh, một thể hiện khối chức năng — tất cả phải **vừa vào chỗ trống đã chừa**.
+
+> ⚠⚠ **Khi chỗ trống đó không đủ, sửa trực tuyến KHÔNG thực hiện được, và toàn bộ chương trình phải
+> được biên dịch lại và gán lại địa chỉ.**
+>
+> ⭐ Nghĩa là: **nạp lại toàn bộ → dừng máy.** Không phải lựa chọn của bạn nữa.
+
+| Hệ quả thực tế | |
+|---|---|
+| ⚠ *"Chỉ thêm một dòng thôi mà"* | ⭐ **Không bảo đảm là sửa trực tuyến được** |
+| ⚠⚠ Phát hiện lúc nào | **Đúng lúc bạn bấm nút**, khi đã đứng cạnh máy đang chạy |
+| ⭐ Cách phòng | **Thử trên máy mô phỏng hoặc máy dự phòng TRƯỚC** (Chương 50) — biết trước là dừng có kế hoạch, không phải dừng đột ngột |
+
+> ⚡ Và nó **tích luỹ**: mỗi lần sửa trực tuyến ăn thêm vào chỗ trống dự phòng. ⭐ Máy càng bị sửa
+> nhiều lần thì lần sửa sau càng dễ bị từ chối — ⚠ **đúng lúc bạn ít mong nhất**.
+
+### ⚠⚠ Hai — sau khi nạp, trình tự chạy tiếp từ đâu?
+
+Với chương trình **có trình tự** (Chương 26, Chương 21), câu hỏi này quan trọng hơn cả bản thân sửa đổi:
+
+| Cách vào | Trình tự chạy tiếp thế nào |
+|---|---|
+| ⭐ **Dừng CPU rồi cho chạy lại**, không nạp gì | Khôi phục **đúng trạng thái trước khi dừng** — chạy tiếp giữa chừng |
+| ⚠⚠ **Nạp chương trình trong lúc STOP** rồi cho chạy | ⭐ Thường khởi động **từ đầu** — nhưng ⚠ **có thể vẫn chạy tiếp giữa chừng nếu công cụ coi là "không có thay đổi"** |
+
+> ⚠⚠ **Chỗ nguy hiểm nằm ở chữ "thường" và chữ "có thể".**
+>
+> Hai hành vi khác nhau **một trời một vực** — chạy tiếp giữa chừng **với logic vừa đổi** là tình
+> huống chưa ai thử. Và ⚠ **cái quyết định lại là việc công cụ có coi lần ghi của bạn là một thay đổi
+> hay không** — thứ bạn không kiểm soát và không nhìn thấy.
+
+> ⭐⭐ **Quy tắc rút ra, áp cho mọi hệ:**
+>
+> | | |
+> |---|---|
+> | 1 | ⚠⚠ **Sau khi nạp chương trình có trình tự, ĐỪNG cho chạy tiếp giữa chừng.** Đưa máy về gốc rồi bắt đầu lại (Chương 28) |
+> | 2 | ⭐ **Kiểm bằng mắt trước khi cho chạy**: bước hiện tại đang là bước nào — đúng cái bạn mong đợi không? |
+> | 3 | ⭐ Nếu hệ có tham số chọn *"chạy tiếp"* hay *"bắt đầu lại"*, ⚠ **biết nó đang đặt gì**, và biết **thao tác nào ghi đè nó** |
+>
+> ⚡ Chi tiết thao tác khác nhau theo hãng — có hệ yêu cầu **reset CPU sau khi nạp** rồi mới chạy, có
+> hệ dùng một bit hệ thống để chọn chế độ khởi động. ⭐ **Tra tài liệu của đúng hệ**, và ⚠ **thử trên
+> máy mô phỏng** trước khi làm trên máy thật.
+
+---
+
 ## 53.3 Quy trình thay đổi có kiểm soát
 
 "Có kiểm soát" nghe nặng nề, nhưng thực chất chỉ là **năm câu hỏi** trả lời được trước khi sửa.
@@ -27676,6 +27818,12 @@ mọi mục; chương sau nói **sao lưu cái gì, để ở đâu, và làm sa
 - **Datasheet thiết bị** — dùng cho tuổi thọ đóng cắt, giờ chạy đèn UV, và ngưỡng ở mục 53.5.
 - Số liệu chu trình DP-01 — Phụ lục J §J.1; các phép tính tuổi thọ ở Chương 9 mục 9.3 và Chương 49
   mục 49.7.
+- **Mitsubishi MELSEC iQ-F FX5 Programming Manual — Program Design**: ⚠⚠ sửa trực tuyến phụ thuộc
+  **vùng nhớ dự phòng** — khi không đủ chỗ thì **không thực hiện được** và toàn bộ chương trình phải
+  **biên dịch lại, gán lại địa chỉ** (tức là nạp lại toàn bộ); và ⭐ **chế độ khởi động của chương
+  trình trình tự sau khi nạp** khác nhau tuỳ cách vào — dừng rồi chạy lại thì **khôi phục trạng thái
+  trước đó**, còn nạp trong lúc STOP thì thường **bắt đầu lại từ đầu**, ⚠ trừ khi công cụ coi là
+  *"không có thay đổi"* — nền cho mục 53.2b.
 
 > ⚠ **Nhắc lại giới hạn.** Mục 53.3 mô tả **cách tổ chức công việc**, không phải một tiêu chuẩn cụ
 > thể. Cơ sở của bạn có thể có quy định riêng — và nếu máy thuộc ngành có quản lý chặt (dược phẩm,
@@ -28423,6 +28571,71 @@ OEE       = 0,90 × 0,89 × 0,98 = 0,78  →  78 %
 
 ---
 
+## 55.7b ⚠⚠ OEE của hai máy KHÔNG so sánh được nếu chưa chung định nghĩa
+
+Công thức ở mục trên đúng. ⚠ Nhưng con số nó cho ra **chỉ có nghĩa bên trong một bộ định nghĩa** —
+và đây là chỗ OEE bị dùng sai nhiều nhất.
+
+> ⭐⭐ **Cùng một cỗ máy, cùng một ca, có thể cho OEE 72 % hay 91 % — chỉ khác nhau ở chỗ bạn tính
+> những gì vào "thời gian dự định".**
+
+| Câu hỏi định nghĩa | Hai cách trả lời đều "có lý" |
+|---|---|
+| ⭐ Giờ ăn ca | Trừ khỏi thời gian dự định · hay tính là dừng có kế hoạch |
+| ⭐ Đổi lô, đổi công thức | Tổn thất khả dụng · hay thời gian không thuộc trách nhiệm máy |
+| ⚠⚠ **Chờ máy trước/sau** | ⭐ **Tổn thất của máy này** · hay của **chuyền** |
+| Chạy thử đầu ca | Sản lượng · hay không tính |
+| Sản phẩm làm lại được | Tính vào chất lượng · hay không |
+
+> ⚠⚠ **Hệ quả rất thực tế:** khách hàng nói *"máy của anh phải đạt OEE 85 %"* mà **chưa chốt các định
+> nghĩa trên** thì ⭐ **đó chưa phải một yêu cầu nghiệm thu** — nó là một con số không kiểm chứng được,
+> và sẽ thành tranh cãi đúng lúc bàn giao (Chương 23, Chương 52).
+>
+> ⭐ **Việc phải làm: chốt bằng văn bản, TRƯỚC khi ký, từng dòng một** — cái gì tính vào thời gian dự
+> định, cái gì tính là dừng, ai chịu tổn thất do chuyền.
+
+### ⭐ Có tiêu chuẩn để khỏi phải tự định nghĩa
+
+Với **sản xuất điện tử và bán dẫn**, ngành đã có bộ định nghĩa chung — và nếu khách hàng của bạn ở
+ngành đó, ⭐ **họ nhiều khả năng đang dùng nó**:
+
+| Tiêu chuẩn | Định nghĩa cái gì |
+|---|---|
+| ⭐ **SEMI E10** | **Trạng thái thiết bị** — độ tin cậy, khả dụng, khả bảo trì; nền cho mọi phép tính bên trên |
+| ⭐⭐ **SEMI E79** | **Năng suất thiết bị** — trong đó có **OEE** và thông lượng |
+
+> ⚠ **Cả hai là tiêu chuẩn có bản quyền, phải mua từ SEMI.** ⭐ Sách này **không dẫn số điều khoản
+> hay công thức nguyên văn** — mục đích ở đây chỉ là để bạn **biết chúng tồn tại** và hỏi đúng câu:
+> ⭐ *"Ta tính OEE theo định nghĩa nào?"*
+>
+> ⚡ Nếu khách hàng trả lời *"theo SEMI E10/E79"* thì tranh cãi kết thúc trước khi bắt đầu — ⭐ **bộ
+> định nghĩa đã có sẵn, chỉ việc áp**.
+
+### ⭐ Sáu nhóm tổn thất — từ vựng khách hàng sẽ dùng
+
+Danh sách ở mục 55.6 là cách nhìn của **người làm máy**. ⭐ Người làm sản xuất thường nhóm tổn thất
+theo sáu loại kinh điển, và ⚠ **họ sẽ dùng từ đó khi nói chuyện với bạn**:
+
+| Thuộc | Nhóm tổn thất | Ứng với mục 55.6 |
+|---|---|---|
+| Khả dụng | ⭐ **Hỏng hóc** *(breakdown)* | Dừng do lỗi |
+| Khả dụng | **Cài đặt và điều chỉnh** *(setup)* | Đổi lô, đổi công thức |
+| Hiệu suất | ⚠ **Dừng vặt** *(minor stop)* | ⭐ Kẹt nhẹ, chờ vật tư — **hay bị bỏ sót vì mỗi lần chỉ vài giây** |
+| Hiệu suất | **Chạy chậm** *(speed loss)* | Chu kỳ thật dài hơn thiết kế (mục 55.4) |
+| Chất lượng | **Lỗi lúc khởi động** *(startup)* | Chạy thử đầu ca |
+| Chất lượng | **Lỗi khi sản xuất** *(production defect)* | Board NG |
+
+> ⭐⭐ **Nhóm "dừng vặt" là nhóm PLC giúp được nhiều nhất, và cũng là nhóm không ai đo được bằng tay.**
+>
+> Mỗi lần chỉ 5–20 giây nên không ai ghi vào sổ; cộng lại một ca thì lớn hơn cả một lần hỏng máy.
+> ⭐ Nhưng **PLC biết chính xác** — nó thấy từng lần chờ, từng lần timeout, từng lần thao tác lại
+> (Chương 51, mục 51.11).
+>
+> ⚡ Đây là chỗ **đóng góp rẻ nhất và lớn nhất** mà người lập trình mang lại cho sản lượng: ⭐ **đếm và
+> phân loại các lần dừng vặt**, thay vì chỉ đếm sản phẩm.
+
+---
+
 ## 55.8 Trên máy mẫu DP-01
 
 Số liệu đã chốt: **300 board/giờ** → chu kỳ **12,0 giây** (Phụ lục J §J.1).
@@ -28553,6 +28766,10 @@ trung bình che mất.
 | ⭐ Giá trị của OEE nằm ở đâu | **Ba con số thành phần**, không phải con số gộp |
 | ⚠⚠ Cách bóp méo phổ biến nhất | **Lấy chu kỳ thực tế làm chu kỳ thiết kế** → hiệu suất luôn ~100 % |
 | ⭐ OEE dùng để làm gì | **Tìm chỗ cải tiến** — không phải chấm điểm người |
+| ⚠⚠ *"Máy phải đạt OEE 85 %"* | ⭐ **Chưa phải yêu cầu nghiệm thu** nếu chưa chốt định nghĩa |
+| Phải chốt bằng văn bản trước khi ký | Giờ ăn ca · đổi lô · ⭐ **chờ máy trước/sau** · chạy thử · hàng làm lại |
+| ⭐ Ngành điện tử có sẵn định nghĩa | **SEMI E10** (trạng thái thiết bị) · **SEMI E79** (năng suất, OEE) — ⚠ có bản quyền |
+| ⭐⭐ Nhóm tổn thất PLC giúp nhiều nhất | **Dừng vặt** — mỗi lần vài giây, không ai ghi sổ, nhưng **PLC biết chính xác** |
 | ⚠ Nút cổ chai của DP-01 | ⭐ **Trạm 2 — sấy UV (6–12 s)**; với công thức 12 s thì **chỉ vừa đủ** 300 board/giờ |
 
 ---
@@ -28576,6 +28793,10 @@ trung bình che mất.
     phẩm, 50 sản phẩm lỗi. Ba thành phần nói gì về nơi cần cải tiến?
 13. ⚠⚠ Nêu năm cách bóp méo OEE. Cách nào nguy hiểm nhất, và vì sao nó trông hợp lý?
 14. ⭐⭐ Vì sao trên DP-01 việc rút thời gian sấy UV **không phải** việc của người lập trình?
+15. ⚠⚠ Vì sao OEE của hai máy **không so sánh được** nếu chưa chung định nghĩa? ⭐ Nêu **ba** câu hỏi
+    định nghĩa phải chốt trước khi ký hợp đồng.
+16. ⭐ Nêu **sáu nhóm tổn thất** và cho biết mỗi nhóm thuộc thành phần nào của OEE. ⭐⭐ Nhóm nào người
+    lập trình PLC giúp được nhiều nhất, và vì sao không ai đo được nó bằng tay?
 
 > Câu 5, 7, 10 và 13 là bốn câu phân loại. Câu 1 và 14 gắn với nhau: ⭐ **cả hai đều nói rằng công
 > sức đặt sai chỗ không tạo ra kết quả, dù công sức đó rất thật.**
@@ -28598,6 +28819,11 @@ lớn công việc thực tế là **sửa máy đã có** — thường là má
   con số **so sánh được giữa các nhà máy**.
 - Phép đo thời gian bước và bộ đếm — Chương 11 (vùng nhớ giữ được), Chương 21 (trình tự), Chương 43
   (báo động), Chương 53 mục 53.5 (bảo trì).
+- ⚠ **SEMI E10** — *Specification for Definition and Measurement of Equipment Reliability,
+  Availability, and Maintainability* và ⭐ **SEMI E79** — *Specification for Definition and Measurement
+  of Equipment Productivity* (gồm **OEE**): bộ định nghĩa chuẩn dùng trong **sản xuất điện tử và bán
+  dẫn**. ⚠⚠ **Tiêu chuẩn có bản quyền, phải mua từ SEMI** — sách này chỉ **nêu tên để bạn hỏi đúng
+  câu**, không dẫn công thức hay số điều khoản (mục 55.7b).
 
 > ⚠ **Giới hạn.** Công thức OEE ở mục 55.7 là dạng phổ biến nhất, nhưng ⚠ **định nghĩa chi tiết khác
 > nhau giữa các nơi** — cái gì tính là "thời gian dự định", dừng ngắn bao nhiêu thì bỏ qua, hàng sửa

@@ -633,6 +633,45 @@ qua hai trường hợp trông gần giống nhau nếu không chú ý chấm n�
 > không chấm. Nếu gặp bản vẽ cũ dùng quy ước này, xác nhận lại với chú giải (Legend) của chính
 > bộ hồ sơ đó trước khi đọc — quy ước ký hiệu không phải lúc nào cũng giống bản vẽ hiện đại.
 
+## 5.8. Ảnh tiếp điểm dưới cuộn hút — "mục lục" các tiếp điểm của một rơ-le/contactor
+
+Cuộn hút của một rơ-le/contactor được vẽ ở một chỗ, nhưng **các tiếp điểm của nó nằm rải khắp
+nhiều trang** (tiếp điểm này ở mạch động lực, tiếp điểm kia ở mạch điều khiển, tiếp điểm nữa báo
+tín hiệu về PLC). Để không phải lật khắp bộ hồ sơ tìm xem cuộn này điều khiển những gì, ngay
+**dưới ký hiệu cuộn hút** thường có một **bảng nhỏ liệt kê TẤT CẢ tiếp điểm** của thiết bị đó —
+gọi là **ảnh tiếp điểm** (contact image). Mỗi dòng ghi: số chân chuẩn của tiếp điểm (13-14 nếu NO,
+21-22 nếu NC — theo mục 5.3) và **vị trí trang.cột** nơi tiếp điểm đó thực sự được vẽ (theo cách
+tham chiếu chéo `/12.4` ở mục 5.4).
+
+Đọc được ảnh tiếp điểm cho bạn ba thứ ngay tại chỗ, không cần lật trang:
+
+- Cuộn này có **bao nhiêu** tiếp điểm, mỗi cái là **NO hay NC**.
+- Mỗi tiếp điểm đang được dùng **ở đâu** (đi thẳng tới đúng trang.cột đó mà kiểm tra).
+- ⭐ **Tiếp điểm nào còn TRỐNG** (có trong ảnh nhưng không kèm vị trí) — cực kỳ hữu ích khi cần
+  thêm một mạch mà **không phải lắp thêm rơ-le**: nhìn ảnh tiếp điểm là biết còn dư tiếp điểm không.
+
+> ⚠ **Đừng lẫn hai chữ "gương/ảnh".** Một số phần mềm CAD gọi bảng này là *contact mirror* ("gương
+> tiếp điểm"). Nó **khác hoàn toàn** với **tiếp điểm gương (mirror contact)** theo nghĩa an toàn ở
+> Chương 4 — thứ đó là một **tiếp điểm NC liên kết cơ khí cưỡng bức** dùng để giám sát trạng thái
+> tiếp điểm chính, là chức năng vật lý của thiết bị. Ảnh tiếp điểm ở đây chỉ là **cách HIỂN THỊ**
+> trên bản vẽ, không phải một tiếp điểm thật. Trùng tên, khác bản chất — đọc theo ngữ cảnh.
+
+## 5.9. Mũi tên tín hiệu nguồn–đích — lần theo một dây khi nó sang trang khác
+
+Tham chiếu chéo `/12.4` (mục 5.4) trỏ tới **một tiếp điểm/thiết bị** ở trang khác. Nhưng còn một
+trường hợp nữa: **một dây (hay một tín hiệu) tiếp tục sang trang khác**. Người ta không kéo dài
+đường dây qua mép giấy, mà kết thúc nó bằng một **mũi tên tín hiệu** mang nhãn tham chiếu:
+
+- Đầu **nguồn** (source) ở cuối dây trang này: mũi tên ghi *đi tới* trang.cột nào (ví dụ "→ /12.4").
+- Đầu **đích** (destination) ở đầu dây trang kia: mũi tên ghi *đến từ* trang.cột nào (ví dụ "/5.7 →").
+  Hai đầu trỏ về nhau bằng một mã/nhãn chung; **một nguồn có thể đi tới nhiều đích** (một tín hiệu
+  24V hay một tín hiệu enable đi tới nhiều nơi).
+
+Công dụng: lần theo trọn vẹn đường đi của **một dây/tín hiệu** xuyên nhiều trang mà không lạc —
+đây là cơ chế tham chiếu chéo áp cho **dây**, bổ sung cho tham chiếu chéo áp cho **tiếp điểm** ở
+mục 5.4. Lưu ý phân biệt với **chấm nối** (mục 5.7): chấm nối nói "hai dây nối nhau tại điểm này
+trên cùng trang"; mũi tên tín hiệu nói "dây này đi tiếp ở một trang khác".
+
 ---
 
 Phần I kết thúc ở đây. Từ Chương 6, sách bước vào **Phần II — phần trọng tâm**: tính toán và

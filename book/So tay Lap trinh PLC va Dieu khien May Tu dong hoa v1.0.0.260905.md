@@ -22329,6 +22329,11 @@ END_IF;
 
 Ba mục trên là **cơ chế**. Mục này là ba con số và một cái bẫy mà chỉ hệ chạy thật mới cho thấy.
 
+![Sơ đồ thời gian một vòng kích ảnh](../assets/ch43/hinh_43_1_vong_kich_anh.svg)
+
+*Hình 43.1 — Một vòng kích–kết quả. Ba việc phải đúng cùng lúc: bit cho phép đã bật, kích theo cạnh
+lên, và kết quả mang đúng số thứ tự.*
+
 ### ⚠⚠ Bẫy — camera có bit CHO PHÉP KÍCH riêng, và khi nó tắt thì kích không có tác dụng
 
 Nhiều hệ vision có **hai** thứ khác nhau:
@@ -22679,7 +22684,7 @@ thứ đều báo động" nghĩa là không có báo động nào.
   mẫu).
 - ⭐ **Maślanka, Jancarczyk & Rysinski** — *Integration of Machine Vision and PLC-Based Control for
   Scalable Quality Inspection in Industry 4.0*, **Sensors** 25(20):6383, 2025 *(truy cập mở, CC BY;
-  DOI 10.3390/s25206383)*: nghiên cứu tình huống camera thông minh nối PLC qua Ethernet công nghiệp —
+  DOI 10.3390/s25206383 — bản PDF có trong bộ tài liệu)*: nghiên cứu tình huống camera thông minh nối PLC qua Ethernet công nghiệp —
   ⚠ **bit cho phép kích** phải bật trước, ⭐ **độ trễ đo được ~55–59 ms** và tăng dưới 6 % khi mạng
   chiếm 50 % băng thông, và ⭐⭐ **biểu quyết đa số ba lần chụp ở tầng PLC** giảm báo lỗi giả từ 7,5 %
   xuống 5,4 %. ⚠ Nhóm tác giả cũng nêu giới hạn: bộ dữ liệu nhỏ, **nhạy với dao động chiếu sáng**
@@ -28587,6 +28592,9 @@ và đây là chỗ OEE bị dùng sai nhiều nhất.
 | Chạy thử đầu ca | Sản lượng · hay không tính |
 | Sản phẩm làm lại được | Tính vào chất lượng · hay không |
 
+⭐ **Tin tốt: không cần tự trả lời.** Ngành điện tử và bán dẫn đã có bộ định nghĩa chung, và nó trả lời
+đúng từng dòng ở bảng trên.
+
 > ⚠⚠ **Hệ quả rất thực tế:** khách hàng nói *"máy của anh phải đạt OEE 85 %"* mà **chưa chốt các định
 > nghĩa trên** thì ⭐ **đó chưa phải một yêu cầu nghiệm thu** — nó là một con số không kiểm chứng được,
 > và sẽ thành tranh cãi đúng lúc bàn giao (Chương 23, Chương 52).
@@ -28594,22 +28602,105 @@ và đây là chỗ OEE bị dùng sai nhiều nhất.
 > ⭐ **Việc phải làm: chốt bằng văn bản, TRƯỚC khi ký, từng dòng một** — cái gì tính vào thời gian dự
 > định, cái gì tính là dừng, ai chịu tổn thất do chuyền.
 
-### ⭐ Có tiêu chuẩn để khỏi phải tự định nghĩa
-
-Với **sản xuất điện tử và bán dẫn**, ngành đã có bộ định nghĩa chung — và nếu khách hàng của bạn ở
-ngành đó, ⭐ **họ nhiều khả năng đang dùng nó**:
+### ⭐⭐ Sáu trạng thái thiết bị — bộ định nghĩa chung của ngành
 
 | Tiêu chuẩn | Định nghĩa cái gì |
 |---|---|
-| ⭐ **SEMI E10** | **Trạng thái thiết bị** — độ tin cậy, khả dụng, khả bảo trì; nền cho mọi phép tính bên trên |
-| ⭐⭐ **SEMI E79** | **Năng suất thiết bị** — trong đó có **OEE** và thông lượng |
+| ⭐ **SEMI E10** | **Trạng thái thiết bị** và các khối thời gian — nền cho mọi phép tính khả dụng |
+| ⭐⭐ **SEMI E79** | **Năng suất thiết bị**, trong đó có **OEE** và thông lượng |
 
-> ⚠ **Cả hai là tiêu chuẩn có bản quyền, phải mua từ SEMI.** ⭐ Sách này **không dẫn số điều khoản
-> hay công thức nguyên văn** — mục đích ở đây chỉ là để bạn **biết chúng tồn tại** và hỏi đúng câu:
-> ⭐ *"Ta tính OEE theo định nghĩa nào?"*
+⭐ E10 (mục 5) đặt ra **sáu trạng thái cơ bản**, và yêu cầu ⭐⭐ **mọi điều kiện và mọi khoảng thời gian
+của thiết bị phải rơi vào đúng một trong sáu**:
+
+![Sáu trạng thái thiết bị và các khối thời gian](../assets/ch55/hinh_55_1_sau_trang_thai_thiet_bi.svg)
+
+*Hình 55.1 — Sáu trạng thái và cách chúng gộp lại. Nhóm nào cộng vào đâu quyết định mẫu số của mọi
+phép tính khả dụng.*
+
+> ⭐⭐ **Quy tắc quan trọng nhất của E10, và nó cắt đứt phần lớn tranh cãi: trạng thái xác định theo
+> CHỨC NĂNG, không theo TỔ CHỨC.**
 >
-> ⚡ Nếu khách hàng trả lời *"theo SEMI E10/E79"* thì tranh cãi kết thúc trước khi bắt đầu — ⭐ **bộ
-> định nghĩa đã có sẵn, chỉ việc áp**.
+> ⭐ Một việc bảo trì được xếp **cùng một loại** dù ai làm — người vận hành, kỹ thuật viên sản xuất,
+> kỹ thuật viên bảo trì, hay kỹ sư quá trình. ⚠ Nghĩa là câu *"cái này thuộc bộ phận nào"* **không
+> phải câu hỏi đúng** — câu đúng là *"lúc đó thiết bị đang ở tình trạng nào?"*
+
+**Áp vào đúng những câu hỏi ở bảng trên:**
+
+| Tình huống | ⭐ E10 xếp vào |
+|---|---|
+| Giờ ăn ca, họp, không có người | ⭐ **Chờ** — thiết bị vẫn **lên máy**, chỉ là không ai vận hành |
+| Chờ máy trước/sau, hết hàng để làm | ⭐ **Chờ** — cùng nhóm với trên, **không** phải dừng máy |
+| Cài đặt đổi lô, thay vật tư tiêu hao | **Dừng có kế hoạch** |
+| Chờ người hoặc phụ tùng để sửa | ⭐ **Dừng ngoài kế hoạch** — và ⚠ phải tách riêng, xem dưới |
+| Sản phẩm **làm lại** | ⭐ **Đang sản xuất** — làm lại vẫn là làm |
+| Chạy thử để **kiểm tra sản xuất** | Dừng có kế hoạch |
+| Chạy thử **nghiên cứu** trên hàng thật | ⭐ **Đang sản xuất** |
+| Ca không làm, lắp đặt, nâng cấp, đào tạo ngoài giờ | **Không xếp lịch** |
+
+> ⚡ **Chú ý dòng thứ hai — nó là dòng gây tranh cãi nhiều nhất và E10 trả lời dứt khoát:** máy đứng vì
+> **chuyền không cấp hàng** là ⭐ **CHỜ, không phải hỏng**. Thiết bị vẫn *"ở tình trạng thực hiện được
+> chức năng"*. ⚠ Xếp nó vào dừng máy là **đổ lỗi sai chỗ** — và làm mờ đúng con số cần nhìn.
+
+### ⚠⚠ Tách "chờ bảo trì" ra khỏi "thời gian sửa" — nếu không, MTTR nói dối
+
+E10 (mục 5.9) chia thời gian sửa chữa thành **bốn phần**, và tách riêng một phần thứ năm:
+
+| Phần | Nội dung |
+|---|---|
+| **Chẩn đoán** | Tìm ra nguồn gốc sự cố |
+| **Khắc phục** | Sửa — kể cả hạ/nâng máy, khởi động lại, ⭐ **quay về phiên bản phần mềm trước** (Chương 53) |
+| **Thử thiết bị** | Chứng minh thiết bị hoạt động lại được |
+| **Chạy xác nhận** | ⭐ Chạy sản phẩm thật và **đánh giá kết quả** để chắc chắn còn đúng quy cách |
+| ⚠⚠ **Chờ bảo trì** *(maintenance delay)* | ⭐ **Chờ người hoặc phụ tùng** — hoặc quyết định hành chính **để máy nằm đó** |
+
+> ⚠⚠ **E10 yêu cầu theo dõi "chờ bảo trì" TÁCH RIÊNG khỏi "thời gian bảo trì".** Nó nằm trong thời
+> gian máy nghỉ, nhưng ⭐ **không nằm trong thời gian bảo trì**.
+>
+> ⭐ **Vì sao điều này đáng giá với người làm máy:** nếu bạn gộp *"chờ phụ tùng"* vào *"thời gian
+> sửa"*, thì con số MTTR của bạn ⚠ **đo kho vật tư chứ không đo khả năng sửa của thiết bị**. Rồi
+> người ta đi đào tạo thợ, mua thêm dụng cụ — trong khi ⭐ **vấn đề thật là không có phụ tùng dự trữ**.
+>
+> ⚡ Và điều này PLC giúp được: ⭐ **dấu thời gian của lúc báo lỗi, lúc có người tới, lúc bắt đầu sửa,
+> lúc chạy xác nhận** — bốn mốc đó tách được bốn khoản ở trên mà không cần ai ghi sổ (Chương 51,
+> mục 51.11).
+
+### ⚠⚠ Bằng chứng rõ nhất: ngay CÔNG THỨC cũng khác nhau
+
+Công thức ở mục 55.7 là cách tính **phổ biến trong ngành**, và nó đúng — nhưng ⭐ **E79 (mục 5.2)
+định nghĩa khác ở đúng chỗ quan trọng nhất**:
+
+| | Cách phổ biến (mục 55.7) | ⭐ **SEMI E79** |
+|---|---|---|
+| Mẫu số của **khả dụng** | Thời gian **dự định** | ⭐⭐ **TỔNG thời gian** |
+| ⚠ Hệ quả | Thời gian không xếp lịch **không bị tính** | ⭐ Ca không làm, ngày nghỉ **vẫn nằm trong mẫu số** |
+
+> ⚠⚠ **Cùng một cỗ máy, cùng một tuần: cách phổ biến có thể ra 85 %, còn E79 ra 40 % — mà không ai
+> tính sai.**
+>
+> ⭐ Chúng trả lời **hai câu hỏi khác nhau**: cách phổ biến hỏi *"trong thời gian ta định chạy, máy
+> chạy được bao nhiêu?"*; E79 hỏi *"tài sản này sinh lợi bao nhiêu phần của **toàn bộ** thời gian nó
+> tồn tại?"* — câu hỏi của **người bỏ vốn mua máy**.
+>
+> ⚡ Đây là lý do mục này tồn tại: ⚠ **hai con số OEE không so sánh được, tới mức ngay cả công thức
+> cũng không giống nhau.**
+
+⭐ **E79 còn tách "hiệu suất" thành hai** — và phép tách này đáng dùng dù bạn theo định nghĩa nào:
+
+| Thành phần | Trả lời câu hỏi | ⭐ Kém thì sửa ở đâu |
+|---|---|---|
+| ⭐ **Hiệu suất vận hành** | Trong thời gian **lên máy**, máy thật sự **có chạy** bao nhiêu? | ⭐ Cấp hàng, người vận hành, chuyền (mục 55.6) |
+| ⭐ **Hiệu suất nhịp độ** | Khi đã chạy, có **nhanh bằng thiết kế** không? | ⭐ Chu kỳ thật, nút cổ chai (mục 55.3, 55.4) |
+
+> ⭐⭐ **Vì sao tách hai lại quan trọng:** một con số *"hiệu suất 70 %"* không nói cho bạn biết phải làm
+> gì. ⚠ Máy **đứng nhiều** và máy **chạy chậm** là hai bệnh khác hẳn nhau, và ⭐ **cách chữa không liên
+> quan gì tới nhau** — nhưng gộp lại thì cả hai cùng cho ra 70 %.
+
+> ⚡ Và E79 định nghĩa **sáu biến thể OEE** khác nhau cho các mục đích khác nhau. ⭐ Riêng chi tiết đó
+> đã đủ chứng minh luận điểm của mục này: ⚠⚠ **"OEE" không phải MỘT con số.**
+
+> ⭐ **Chốt lại:** khi khách hàng nói *"OEE phải đạt 85 %"*, câu hỏi lại đúng là ⚠ **"theo định nghĩa
+> nào — và mẫu số là thời gian dự định hay tổng thời gian?"**. Có câu trả lời thì tranh cãi kết thúc
+> trước khi bắt đầu.
 
 ### ⭐ Sáu nhóm tổn thất — từ vựng khách hàng sẽ dùng
 
@@ -28768,7 +28859,12 @@ trung bình che mất.
 | ⭐ OEE dùng để làm gì | **Tìm chỗ cải tiến** — không phải chấm điểm người |
 | ⚠⚠ *"Máy phải đạt OEE 85 %"* | ⭐ **Chưa phải yêu cầu nghiệm thu** nếu chưa chốt định nghĩa |
 | Phải chốt bằng văn bản trước khi ký | Giờ ăn ca · đổi lô · ⭐ **chờ máy trước/sau** · chạy thử · hàng làm lại |
-| ⭐ Ngành điện tử có sẵn định nghĩa | **SEMI E10** (trạng thái thiết bị) · **SEMI E79** (năng suất, OEE) — ⚠ có bản quyền |
+| ⭐ Ngành điện tử có sẵn định nghĩa | **SEMI E10** (sáu trạng thái) · **SEMI E79** (năng suất, OEE) |
+| ⭐⭐ Quy tắc cắt tranh cãi của E10 | **Phân loại theo CHỨC NĂNG, không theo tổ chức** — ai làm không quan trọng |
+| ⚠⚠ Máy đứng vì chuyền không cấp hàng | ⭐ **CHỜ**, không phải hỏng — thiết bị vẫn **lên máy** |
+| ⚠⚠ Ngay công thức cũng khác | Mẫu số khả dụng: **thời gian dự định** (phổ biến) vs ⭐ **tổng thời gian** (E79) |
+| ⭐ Tách "hiệu suất" làm hai | **Vận hành** (có chạy không) và **nhịp độ** (chạy nhanh không) — hai bệnh, hai cách chữa |
+| ⚠ Chờ người/phụ tùng | ⭐ **Tách riêng khỏi thời gian sửa** — nếu không, MTTR đo kho vật tư |
 | ⭐⭐ Nhóm tổn thất PLC giúp nhiều nhất | **Dừng vặt** — mỗi lần vài giây, không ai ghi sổ, nhưng **PLC biết chính xác** |
 | ⚠ Nút cổ chai của DP-01 | ⭐ **Trạm 2 — sấy UV (6–12 s)**; với công thức 12 s thì **chỉ vừa đủ** 300 board/giờ |
 
@@ -28819,11 +28915,14 @@ lớn công việc thực tế là **sửa máy đã có** — thường là má
   con số **so sánh được giữa các nhà máy**.
 - Phép đo thời gian bước và bộ đếm — Chương 11 (vùng nhớ giữ được), Chương 21 (trình tự), Chương 43
   (báo động), Chương 53 mục 53.5 (bảo trì).
-- ⚠ **SEMI E10** — *Specification for Definition and Measurement of Equipment Reliability,
-  Availability, and Maintainability* và ⭐ **SEMI E79** — *Specification for Definition and Measurement
-  of Equipment Productivity* (gồm **OEE**): bộ định nghĩa chuẩn dùng trong **sản xuất điện tử và bán
-  dẫn**. ⚠⚠ **Tiêu chuẩn có bản quyền, phải mua từ SEMI** — sách này chỉ **nêu tên để bạn hỏi đúng
-  câu**, không dẫn công thức hay số điều khoản (mục 55.7b).
+- ⭐⭐ **SEMI E10** — *Specification for Definition and Measurement of Equipment Reliability,
+  Availability, and Maintainability*: **mục 5** định nghĩa ⭐ **sáu trạng thái thiết bị** và các khối
+  thời gian, kèm quy tắc ⭐⭐ *"phân loại theo chức năng, không theo tổ chức"*; **mục 5.9** chia thời
+  gian sửa chữa và ⚠ yêu cầu tách riêng **chờ bảo trì** — nền cho mục 55.7b và Hình 55.1.
+- ⭐ **SEMI E79** — *Standard for Definition and Measurement of Equipment Productivity*: định nghĩa
+  **OEE** và thông lượng trên nền các trạng thái của E10.
+- ⚠ Cả hai là **tiêu chuẩn có bản quyền**. Sách này **diễn giải khái niệm bằng lời của mình** và dẫn
+  số mục để bạn tra lại bản gốc — ⭐ **không sao chép bảng hay công thức nguyên văn**.
 
 > ⚠ **Giới hạn.** Công thức OEE ở mục 55.7 là dạng phổ biến nhất, nhưng ⚠ **định nghĩa chi tiết khác
 > nhau giữa các nơi** — cái gì tính là "thời gian dự định", dừng ngắn bao nhiêu thì bỏ qua, hàng sửa

@@ -31688,6 +31688,9 @@ Hệ vision có thể trả về toạ độ vô lý nếu nó nhận nhầm v�
 <hr>
 <h2 id="435b-ba-th-ch-l-ra-khi-đo-trên-máy-tht">43.5b ⭐ Ba thứ chỉ lộ ra khi đo trên máy thật</h2>
 <p>Ba mục trên là <strong>cơ chế</strong>. Mục này là ba con số và một cái bẫy mà chỉ hệ chạy thật mới cho thấy.</p>
+<p><img src="../assets/ch43/hinh_43_1_vong_kich_anh.svg" alt="Sơ đồ thời gian một vòng kích ảnh"></p>
+<p><em>Hình 43.1 — Một vòng kích–kết quả. Ba việc phải đúng cùng lúc: bit cho phép đã bật, kích theo cạnh
+lên, và kết quả mang đúng số thứ tự.</em></p>
 <h3>⚠⚠ Bẫy — camera có bit CHO PHÉP KÍCH riêng, và khi nó tắt thì kích không có tác dụng</h3>
 <p>Nhiều hệ vision có <strong>hai</strong> thứ khác nhau:</p>
 <div class="table-wrap"><table>
@@ -32196,7 +32199,7 @@ hiệu chỉnh, và ⚠ <strong>thời gian xử lý thật</strong>.</li>
 mẫu).</li>
 <li>⭐ <strong>Maślanka, Jancarczyk &amp; Rysinski</strong> — <em>Integration of Machine Vision and PLC-Based Control for
 Scalable Quality Inspection in Industry 4.0</em>, <strong>Sensors</strong> 25(20):6383, 2025 <em>(truy cập mở, CC BY;
-DOI 10.3390/s25206383)</em>: nghiên cứu tình huống camera thông minh nối PLC qua Ethernet công nghiệp —
+DOI 10.3390/s25206383 — bản PDF có trong bộ tài liệu)</em>: nghiên cứu tình huống camera thông minh nối PLC qua Ethernet công nghiệp —
 ⚠ <strong>bit cho phép kích</strong> phải bật trước, ⭐ <strong>độ trễ đo được ~55–59 ms</strong> và tăng dưới 6 % khi mạng
 chiếm 50 % băng thông, và ⭐⭐ <strong>biểu quyết đa số ba lần chụp ở tầng PLC</strong> giảm báo lỗi giả từ 7,5 %
 xuống 5,4 %. ⚠ Nhóm tác giả cũng nêu giới hạn: bộ dữ liệu nhỏ, <strong>nhạy với dao động chiếu sáng</strong>
@@ -41452,6 +41455,8 @@ những gì vào &quot;thời gian dự định&quot;.</strong></p>
 <td>Tính vào chất lượng · hay không</td>
 </tr>
 </tbody></table></div>
+<p>⭐ <strong>Tin tốt: không cần tự trả lời.</strong> Ngành điện tử và bán dẫn đã có bộ định nghĩa chung, và nó trả lời
+đúng từng dòng ở bảng trên.</p>
 <blockquote>
 <p>⚠⚠ <strong>Hệ quả rất thực tế:</strong> khách hàng nói <em>&quot;máy của anh phải đạt OEE 85 %&quot;</em> mà <strong>chưa chốt các định
 nghĩa trên</strong> thì ⭐ <strong>đó chưa phải một yêu cầu nghiệm thu</strong> — nó là một con số không kiểm chứng được,
@@ -41459,9 +41464,7 @@ và sẽ thành tranh cãi đúng lúc bàn giao (Chương 23, Chương 52).</p>
 <p>⭐ <strong>Việc phải làm: chốt bằng văn bản, TRƯỚC khi ký, từng dòng một</strong> — cái gì tính vào thời gian dự
 định, cái gì tính là dừng, ai chịu tổn thất do chuyền.</p>
 </blockquote>
-<h3>⭐ Có tiêu chuẩn để khỏi phải tự định nghĩa</h3>
-<p>Với <strong>sản xuất điện tử và bán dẫn</strong>, ngành đã có bộ định nghĩa chung — và nếu khách hàng của bạn ở
-ngành đó, ⭐ <strong>họ nhiều khả năng đang dùng nó</strong>:</p>
+<h3>⭐⭐ Sáu trạng thái thiết bị — bộ định nghĩa chung của ngành</h3>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -41471,19 +41474,175 @@ ngành đó, ⭐ <strong>họ nhiều khả năng đang dùng nó</strong>:</p>
 </thead>
 <tbody><tr>
 <td>⭐ <strong>SEMI E10</strong></td>
-<td><strong>Trạng thái thiết bị</strong> — độ tin cậy, khả dụng, khả bảo trì; nền cho mọi phép tính bên trên</td>
+<td><strong>Trạng thái thiết bị</strong> và các khối thời gian — nền cho mọi phép tính khả dụng</td>
 </tr>
 <tr>
 <td>⭐⭐ <strong>SEMI E79</strong></td>
-<td><strong>Năng suất thiết bị</strong> — trong đó có <strong>OEE</strong> và thông lượng</td>
+<td><strong>Năng suất thiết bị</strong>, trong đó có <strong>OEE</strong> và thông lượng</td>
+</tr>
+</tbody></table></div>
+<p>⭐ E10 (mục 5) đặt ra <strong>sáu trạng thái cơ bản</strong>, và yêu cầu ⭐⭐ <strong>mọi điều kiện và mọi khoảng thời gian
+của thiết bị phải rơi vào đúng một trong sáu</strong>:</p>
+<p><img src="../assets/ch55/hinh_55_1_sau_trang_thai_thiet_bi.svg" alt="Sáu trạng thái thiết bị và các khối thời gian"></p>
+<p><em>Hình 55.1 — Sáu trạng thái và cách chúng gộp lại. Nhóm nào cộng vào đâu quyết định mẫu số của mọi
+phép tính khả dụng.</em></p>
+<blockquote>
+<p>⭐⭐ <strong>Quy tắc quan trọng nhất của E10, và nó cắt đứt phần lớn tranh cãi: trạng thái xác định theo
+CHỨC NĂNG, không theo TỔ CHỨC.</strong></p>
+<p>⭐ Một việc bảo trì được xếp <strong>cùng một loại</strong> dù ai làm — người vận hành, kỹ thuật viên sản xuất,
+kỹ thuật viên bảo trì, hay kỹ sư quá trình. ⚠ Nghĩa là câu <em>&quot;cái này thuộc bộ phận nào&quot;</em> <strong>không
+phải câu hỏi đúng</strong> — câu đúng là <em>&quot;lúc đó thiết bị đang ở tình trạng nào?&quot;</em></p>
+</blockquote>
+<p><strong>Áp vào đúng những câu hỏi ở bảng trên:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>⭐ E10 xếp vào</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Giờ ăn ca, họp, không có người</td>
+<td>⭐ <strong>Chờ</strong> — thiết bị vẫn <strong>lên máy</strong>, chỉ là không ai vận hành</td>
+</tr>
+<tr>
+<td>Chờ máy trước/sau, hết hàng để làm</td>
+<td>⭐ <strong>Chờ</strong> — cùng nhóm với trên, <strong>không</strong> phải dừng máy</td>
+</tr>
+<tr>
+<td>Cài đặt đổi lô, thay vật tư tiêu hao</td>
+<td><strong>Dừng có kế hoạch</strong></td>
+</tr>
+<tr>
+<td>Chờ người hoặc phụ tùng để sửa</td>
+<td>⭐ <strong>Dừng ngoài kế hoạch</strong> — và ⚠ phải tách riêng, xem dưới</td>
+</tr>
+<tr>
+<td>Sản phẩm <strong>làm lại</strong></td>
+<td>⭐ <strong>Đang sản xuất</strong> — làm lại vẫn là làm</td>
+</tr>
+<tr>
+<td>Chạy thử để <strong>kiểm tra sản xuất</strong></td>
+<td>Dừng có kế hoạch</td>
+</tr>
+<tr>
+<td>Chạy thử <strong>nghiên cứu</strong> trên hàng thật</td>
+<td>⭐ <strong>Đang sản xuất</strong></td>
+</tr>
+<tr>
+<td>Ca không làm, lắp đặt, nâng cấp, đào tạo ngoài giờ</td>
+<td><strong>Không xếp lịch</strong></td>
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>⚠ <strong>Cả hai là tiêu chuẩn có bản quyền, phải mua từ SEMI.</strong> ⭐ Sách này <strong>không dẫn số điều khoản
-hay công thức nguyên văn</strong> — mục đích ở đây chỉ là để bạn <strong>biết chúng tồn tại</strong> và hỏi đúng câu:
-⭐ <em>&quot;Ta tính OEE theo định nghĩa nào?&quot;</em></p>
-<p>⚡ Nếu khách hàng trả lời <em>&quot;theo SEMI E10/E79&quot;</em> thì tranh cãi kết thúc trước khi bắt đầu — ⭐ <strong>bộ
-định nghĩa đã có sẵn, chỉ việc áp</strong>.</p>
+<p>⚡ <strong>Chú ý dòng thứ hai — nó là dòng gây tranh cãi nhiều nhất và E10 trả lời dứt khoát:</strong> máy đứng vì
+<strong>chuyền không cấp hàng</strong> là ⭐ <strong>CHỜ, không phải hỏng</strong>. Thiết bị vẫn <em>&quot;ở tình trạng thực hiện được
+chức năng&quot;</em>. ⚠ Xếp nó vào dừng máy là <strong>đổ lỗi sai chỗ</strong> — và làm mờ đúng con số cần nhìn.</p>
+</blockquote>
+<h3>⚠⚠ Tách &quot;chờ bảo trì&quot; ra khỏi &quot;thời gian sửa&quot; — nếu không, MTTR nói dối</h3>
+<p>E10 (mục 5.9) chia thời gian sửa chữa thành <strong>bốn phần</strong>, và tách riêng một phần thứ năm:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phần</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chẩn đoán</strong></td>
+<td>Tìm ra nguồn gốc sự cố</td>
+</tr>
+<tr>
+<td><strong>Khắc phục</strong></td>
+<td>Sửa — kể cả hạ/nâng máy, khởi động lại, ⭐ <strong>quay về phiên bản phần mềm trước</strong> (Chương 53)</td>
+</tr>
+<tr>
+<td><strong>Thử thiết bị</strong></td>
+<td>Chứng minh thiết bị hoạt động lại được</td>
+</tr>
+<tr>
+<td><strong>Chạy xác nhận</strong></td>
+<td>⭐ Chạy sản phẩm thật và <strong>đánh giá kết quả</strong> để chắc chắn còn đúng quy cách</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Chờ bảo trì</strong> <em>(maintenance delay)</em></td>
+<td>⭐ <strong>Chờ người hoặc phụ tùng</strong> — hoặc quyết định hành chính <strong>để máy nằm đó</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>E10 yêu cầu theo dõi &quot;chờ bảo trì&quot; TÁCH RIÊNG khỏi &quot;thời gian bảo trì&quot;.</strong> Nó nằm trong thời
+gian máy nghỉ, nhưng ⭐ <strong>không nằm trong thời gian bảo trì</strong>.</p>
+<p>⭐ <strong>Vì sao điều này đáng giá với người làm máy:</strong> nếu bạn gộp <em>&quot;chờ phụ tùng&quot;</em> vào <em>&quot;thời gian
+sửa&quot;</em>, thì con số MTTR của bạn ⚠ <strong>đo kho vật tư chứ không đo khả năng sửa của thiết bị</strong>. Rồi
+người ta đi đào tạo thợ, mua thêm dụng cụ — trong khi ⭐ <strong>vấn đề thật là không có phụ tùng dự trữ</strong>.</p>
+<p>⚡ Và điều này PLC giúp được: ⭐ <strong>dấu thời gian của lúc báo lỗi, lúc có người tới, lúc bắt đầu sửa,
+lúc chạy xác nhận</strong> — bốn mốc đó tách được bốn khoản ở trên mà không cần ai ghi sổ (Chương 51,
+mục 51.11).</p>
+</blockquote>
+<h3>⚠⚠ Bằng chứng rõ nhất: ngay CÔNG THỨC cũng khác nhau</h3>
+<p>Công thức ở mục 55.7 là cách tính <strong>phổ biến trong ngành</strong>, và nó đúng — nhưng ⭐ <strong>E79 (mục 5.2)
+định nghĩa khác ở đúng chỗ quan trọng nhất</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Cách phổ biến (mục 55.7)</th>
+<th>⭐ <strong>SEMI E79</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mẫu số của <strong>khả dụng</strong></td>
+<td>Thời gian <strong>dự định</strong></td>
+<td>⭐⭐ <strong>TỔNG thời gian</strong></td>
+</tr>
+<tr>
+<td>⚠ Hệ quả</td>
+<td>Thời gian không xếp lịch <strong>không bị tính</strong></td>
+<td>⭐ Ca không làm, ngày nghỉ <strong>vẫn nằm trong mẫu số</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Cùng một cỗ máy, cùng một tuần: cách phổ biến có thể ra 85 %, còn E79 ra 40 % — mà không ai
+tính sai.</strong></p>
+<p>⭐ Chúng trả lời <strong>hai câu hỏi khác nhau</strong>: cách phổ biến hỏi <em>&quot;trong thời gian ta định chạy, máy
+chạy được bao nhiêu?&quot;</em>; E79 hỏi <em>&quot;tài sản này sinh lợi bao nhiêu phần của <strong>toàn bộ</strong> thời gian nó
+tồn tại?&quot;</em> — câu hỏi của <strong>người bỏ vốn mua máy</strong>.</p>
+<p>⚡ Đây là lý do mục này tồn tại: ⚠ <strong>hai con số OEE không so sánh được, tới mức ngay cả công thức
+cũng không giống nhau.</strong></p>
+</blockquote>
+<p>⭐ <strong>E79 còn tách &quot;hiệu suất&quot; thành hai</strong> — và phép tách này đáng dùng dù bạn theo định nghĩa nào:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thành phần</th>
+<th>Trả lời câu hỏi</th>
+<th>⭐ Kém thì sửa ở đâu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Hiệu suất vận hành</strong></td>
+<td>Trong thời gian <strong>lên máy</strong>, máy thật sự <strong>có chạy</strong> bao nhiêu?</td>
+<td>⭐ Cấp hàng, người vận hành, chuyền (mục 55.6)</td>
+</tr>
+<tr>
+<td>⭐ <strong>Hiệu suất nhịp độ</strong></td>
+<td>Khi đã chạy, có <strong>nhanh bằng thiết kế</strong> không?</td>
+<td>⭐ Chu kỳ thật, nút cổ chai (mục 55.3, 55.4)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao tách hai lại quan trọng:</strong> một con số <em>&quot;hiệu suất 70 %&quot;</em> không nói cho bạn biết phải làm
+gì. ⚠ Máy <strong>đứng nhiều</strong> và máy <strong>chạy chậm</strong> là hai bệnh khác hẳn nhau, và ⭐ <strong>cách chữa không liên
+quan gì tới nhau</strong> — nhưng gộp lại thì cả hai cùng cho ra 70 %.</p>
+</blockquote>
+<blockquote>
+<p>⚡ Và E79 định nghĩa <strong>sáu biến thể OEE</strong> khác nhau cho các mục đích khác nhau. ⭐ Riêng chi tiết đó
+đã đủ chứng minh luận điểm của mục này: ⚠⚠ <strong>&quot;OEE&quot; không phải MỘT con số.</strong></p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Chốt lại:</strong> khi khách hàng nói <em>&quot;OEE phải đạt 85 %&quot;</em>, câu hỏi lại đúng là ⚠ <strong>&quot;theo định nghĩa
+nào — và mẫu số là thời gian dự định hay tổng thời gian?&quot;</strong>. Có câu trả lời thì tranh cãi kết thúc
+trước khi bắt đầu.</p>
 </blockquote>
 <h3>⭐ Sáu nhóm tổn thất — từ vựng khách hàng sẽ dùng</h3>
 <p>Danh sách ở mục 55.6 là cách nhìn của <strong>người làm máy</strong>. ⭐ Người làm sản xuất thường nhóm tổn thất
@@ -41762,7 +41921,27 @@ trung bình che mất.
 </tr>
 <tr>
 <td>⭐ Ngành điện tử có sẵn định nghĩa</td>
-<td><strong>SEMI E10</strong> (trạng thái thiết bị) · <strong>SEMI E79</strong> (năng suất, OEE) — ⚠ có bản quyền</td>
+<td><strong>SEMI E10</strong> (sáu trạng thái) · <strong>SEMI E79</strong> (năng suất, OEE)</td>
+</tr>
+<tr>
+<td>⭐⭐ Quy tắc cắt tranh cãi của E10</td>
+<td><strong>Phân loại theo CHỨC NĂNG, không theo tổ chức</strong> — ai làm không quan trọng</td>
+</tr>
+<tr>
+<td>⚠⚠ Máy đứng vì chuyền không cấp hàng</td>
+<td>⭐ <strong>CHỜ</strong>, không phải hỏng — thiết bị vẫn <strong>lên máy</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ Ngay công thức cũng khác</td>
+<td>Mẫu số khả dụng: <strong>thời gian dự định</strong> (phổ biến) vs ⭐ <strong>tổng thời gian</strong> (E79)</td>
+</tr>
+<tr>
+<td>⭐ Tách &quot;hiệu suất&quot; làm hai</td>
+<td><strong>Vận hành</strong> (có chạy không) và <strong>nhịp độ</strong> (chạy nhanh không) — hai bệnh, hai cách chữa</td>
+</tr>
+<tr>
+<td>⚠ Chờ người/phụ tùng</td>
+<td>⭐ <strong>Tách riêng khỏi thời gian sửa</strong> — nếu không, MTTR đo kho vật tư</td>
 </tr>
 <tr>
 <td>⭐⭐ Nhóm tổn thất PLC giúp nhiều nhất</td>
@@ -41817,11 +41996,14 @@ nghĩa chuẩn hoá cho các chỉ số năng suất</strong>, gồm cả nhóm 
 con số <strong>so sánh được giữa các nhà máy</strong>.</li>
 <li>Phép đo thời gian bước và bộ đếm — Chương 11 (vùng nhớ giữ được), Chương 21 (trình tự), Chương 43
 (báo động), Chương 53 mục 53.5 (bảo trì).</li>
-<li>⚠ <strong>SEMI E10</strong> — <em>Specification for Definition and Measurement of Equipment Reliability,
-Availability, and Maintainability</em> và ⭐ <strong>SEMI E79</strong> — <em>Specification for Definition and Measurement
-of Equipment Productivity</em> (gồm <strong>OEE</strong>): bộ định nghĩa chuẩn dùng trong <strong>sản xuất điện tử và bán
-dẫn</strong>. ⚠⚠ <strong>Tiêu chuẩn có bản quyền, phải mua từ SEMI</strong> — sách này chỉ <strong>nêu tên để bạn hỏi đúng
-câu</strong>, không dẫn công thức hay số điều khoản (mục 55.7b).</li>
+<li>⭐⭐ <strong>SEMI E10</strong> — <em>Specification for Definition and Measurement of Equipment Reliability,
+Availability, and Maintainability</em>: <strong>mục 5</strong> định nghĩa ⭐ <strong>sáu trạng thái thiết bị</strong> và các khối
+thời gian, kèm quy tắc ⭐⭐ <em>&quot;phân loại theo chức năng, không theo tổ chức&quot;</em>; <strong>mục 5.9</strong> chia thời
+gian sửa chữa và ⚠ yêu cầu tách riêng <strong>chờ bảo trì</strong> — nền cho mục 55.7b và Hình 55.1.</li>
+<li>⭐ <strong>SEMI E79</strong> — <em>Standard for Definition and Measurement of Equipment Productivity</em>: định nghĩa
+<strong>OEE</strong> và thông lượng trên nền các trạng thái của E10.</li>
+<li>⚠ Cả hai là <strong>tiêu chuẩn có bản quyền</strong>. Sách này <strong>diễn giải khái niệm bằng lời của mình</strong> và dẫn
+số mục để bạn tra lại bản gốc — ⭐ <strong>không sao chép bảng hay công thức nguyên văn</strong>.</li>
 </ul>
 <blockquote>
 <p>⚠ <strong>Giới hạn.</strong> Công thức OEE ở mục 55.7 là dạng phổ biến nhất, nhưng ⚠ <strong>định nghĩa chi tiết khác

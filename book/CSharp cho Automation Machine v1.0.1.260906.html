@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260827</title>
+<title>C# cho Automation Machine — v1.0.1.260906</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -534,7 +534,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260827</td>
+<td>v1.0.1.260906</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -12519,6 +12519,159 @@ SCADA/HMI, hoặc vẽ lại bằng Path XAML nếu cần đổi màu động.</
 severity tái sử dụng đúng <code>SeverityToBrushConverter</code> — sẽ trình bày đầy đủ
 ở Code 10.4, mục 10.3.3 — không cần thêm converter hay control riêng cho
 icon.</p>
+<h3>10.2.6b  Giải phẫu một điều khiển — những thuộc tính phải quyết cho mọi nút</h3>
+<p>Mục trên trả lời <em>&quot;dùng control nào&quot;</em>. Nhưng chọn đúng loại control mới là một nửa việc. Nửa
+còn lại: với <strong>mỗi</strong> nút bạn đặt lên màn hình, có khoảng chục thuộc tính phải quyết — và nếu
+bạn không quyết tường minh thì framework sẽ quyết thay, theo mặc định của phần mềm văn phòng,
+vốn gần như luôn sai cho một cỗ máy.</p>
+<h4>Ba thuộc tính mô tả một nút</h4>
+<p><strong>Bảng 10.2i — Ba thuộc tính của một nút, và câu hỏi tương ứng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thuộc tính</th>
+<th>Trả lời câu hỏi</th>
+<th>Sai lầm hay gặp</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Kiểu hiển thị</strong></td>
+<td>Nút này nổi bật tới mức nào so với các nút quanh nó?</td>
+<td>Làm mọi nút đều nổi bật — mắt không còn chỗ nghỉ, và không ai biết nên bấm cái nào</td>
+</tr>
+<tr>
+<td><strong>Nội dung</strong></td>
+<td>Chữ, biểu tượng, hay cả hai?</td>
+<td>Chỉ biểu tượng cho hành động hiếm gặp — người vận hành phải đoán</td>
+</tr>
+<tr>
+<td><strong>Vai trò</strong></td>
+<td>Nút thường, nút mặc định, nút huỷ, hay nút nguy hiểm?</td>
+<td>Không phân vai — mọi nút đều &quot;thường&quot;, nên phần mềm không biết nút nào gắn với phím Enter</td>
+</tr>
+</tbody></table></div>
+<p>Hai quy tắc thực dụng đi kèm ba thuộc tính trên:</p>
+<ul>
+<li><strong>Mỗi màn hình chỉ nên có một, nhiều nhất là hai nút nổi bật.</strong> Nổi bật là một nguồn tài
+nguyên có hạn: càng nhiều nút tranh nhau nổi bật thì không nút nào còn nổi bật nữa, và người
+vận hành phải đọc hết mới chọn được — đúng thứ mà mục 10.1.1 muốn tránh.</li>
+<li><strong>Phân biệt nút ưu tiên bằng <em>kiểu</em>, không bằng <em>kích thước</em>.</strong> Hai nút cùng cỡ báo hiệu
+&quot;hai lựa chọn ngang hàng&quot;; một nút to hơn hẳn trông như lỗi bố cục chứ không như một gợi ý.</li>
+</ul>
+<h4>Tám trạng thái phải quyết cho mọi nút</h4>
+<p>Đây là phần hay bị bỏ sót nhất. Một nút không phải chỉ có &quot;bấm được / không bấm được&quot;:</p>
+<p><strong>Bảng 10.2j — Tám trạng thái của một điều khiển và điều phải quyết ở mỗi trạng thái</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trạng thái</th>
+<th>Phải quyết điều gì</th>
+<th>Riêng với phần mềm máy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bật / tắt</strong> (enabled)</td>
+<td>Điều kiện nào cho phép bấm</td>
+<td>Điều kiện phải lấy từ <strong>cùng một nguồn</strong> với logic chặn thật (mục 15.2.3), không viết lại trong ViewModel</td>
+</tr>
+<tr>
+<td><strong>Ẩn hay chỉ làm mờ</strong></td>
+<td>Không đủ quyền thì giấu đi hay để mờ</td>
+<td><strong>Giấu</strong> khi vai trò này <em>không bao giờ</em> dùng tới; <strong>làm mờ</strong> khi chỉ <em>tạm thời</em> chưa đủ điều kiện. Giấu thứ chỉ tạm thời không dùng được khiến người ta tưởng máy hỏng</td>
+</tr>
+<tr>
+<td><strong>Đang nhấn</strong> (pressed)</td>
+<td>Có phản hồi thị giác lúc bấm không</td>
+<td><strong>Bắt buộc.</strong> Không có phản hồi nhấn, người vận hành sẽ bấm lần hai — và với lệnh gây chuyển động, bấm hai lần là chuyện khác hẳn</td>
+</tr>
+<tr>
+<td><strong>Con trỏ đi qua</strong> (hover)</td>
+<td>Hiện gì khi rê chuột</td>
+<td>Chỉ có trên chuột, <strong>không có trên cảm ứng</strong>. Không bao giờ để thông tin quan trọng chỉ xuất hiện khi rê chuột</td>
+</tr>
+<tr>
+<td><strong>Đang bận</strong> (busy)</td>
+<td>Nút biến thành gì khi lệnh chưa xong</td>
+<td>Đổi nhãn theo thì đang diễn ra (<em>&quot;Đang về gốc…&quot;</em>), hiện chỉ báo tiến trình, và <strong>chặn bấm lại</strong>. Đây là trạng thái phổ biến nhất trong phần mềm máy và bị bỏ quên nhiều nhất</td>
+</tr>
+<tr>
+<td><strong>Bật/tắt hai chiều</strong> (toggle)</td>
+<td>Nhãn nói <em>trạng thái hiện tại</em> hay <em>hành động sắp làm</em></td>
+<td>Chọn một kiểu và giữ nguyên toàn bộ phần mềm. Trộn hai kiểu là nguồn của thao tác ngược — xem callout dưới</td>
+</tr>
+<tr>
+<td><strong>Đang lấy nét</strong> (focus)</td>
+<td>Bàn phím đang ở đâu</td>
+<td>Bắt buộc nếu máy có thao tác không dùng chuột (mục 10.4.4)</td>
+</tr>
+<tr>
+<td><strong>Vai trò phím</strong></td>
+<td>Enter và Esc gắn với nút nào</td>
+<td>Enter gắn nút mặc định, Esc gắn nút huỷ — và xem giới hạn an toàn ngay dưới</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Cái bẫy của nút hai trạng thái: nhãn nói trạng thái hay nói hành động?</strong> Một nút ghi
+<em>&quot;Bơm: BẬT&quot;</em> có thể có hai nghĩa hoàn toàn ngược nhau — <em>&quot;bơm đang bật&quot;</em> (nhãn mô tả trạng
+thái) hoặc <em>&quot;bấm để bật bơm&quot;</em> (nhãn mô tả hành động). Người vận hành đoán sai một lần là tắt
+nhầm bơm. Hai cách chữa, chọn <strong>một</strong> rồi áp dụng nhất quán: (1) nhãn luôn là <strong>hành động</strong>
+(<em>&quot;Bật bơm&quot;</em> / <em>&quot;Tắt bơm&quot;</em>), trạng thái hiển thị bằng đèn riêng bên cạnh; hoặc (2) nút là một
+<strong>công tắc có hình dạng nói lên trạng thái</strong> (gạt trái/phải), không dùng chữ để chỉ trạng thái.
+Cách (1) an toàn hơn cho màn hình vận hành vì nó tách hẳn <em>&quot;máy đang thế nào&quot;</em> khỏi <em>&quot;tôi sắp
+làm gì&quot;</em>.</p>
+</blockquote>
+<h4>Ba luật riêng của phần mềm máy — chỗ phải đi chệch quy ước phần mềm văn phòng</h4>
+<p><strong>1. Hành động gây chuyển động không được là nút mặc định, và không được gắn phím tắt.</strong> Quy
+ước desktop nói: gắn Enter vào nút người dùng nhiều khả năng chọn nhất, để bấm nhanh. Quy ước
+desktop cũng nói thêm: <strong>đừng bao giờ gắn Enter vào một hành động phá huỷ</strong>, vì nút nổi bật hay
+bị bấm trước khi đọc. Với máy sản xuất, luật thứ hai mạnh hơn luật thứ nhất: một phím Enter bấm
+nhầm mà làm trục chạy là chuyện khác hẳn một phím Enter bấm nhầm mà mở sai màn hình (mục 10.1.9).</p>
+<p><strong>2. Vùng chạm phải lớn hơn chuẩn tiêu dùng.</strong> Hướng dẫn giao diện của các nền tảng tiêu dùng
+lấy mốc khoảng 44 điểm cho đầu ngón tay trần, người ngồi yên. Người vận hành <strong>đeo găng, đứng,
+máy đang rung, và đang vội</strong> — mốc đó là sàn, không phải đích (mục 10.2.5).</p>
+<p><strong>3. Chú giải khi rê chuột là phần bổ sung, không phải nơi cất thông tin.</strong> Trên máy tính để
+bàn, rê chuột lên một nút một lúc sẽ hiện dòng giải thích ngắn — rất hữu ích, và nên có. Nhưng
+ca đêm không ai rê chuột để tìm hiểu vì sao nút không bấm được. Thông tin đó phải hiện <strong>ngay
+tại chỗ</strong>, không nằm sau một thao tác rê.</p>
+<blockquote>
+<p>📌 <strong>Lỗi thiết kế phổ biến nhất trên màn hình máy: tắt một cái nút mà không nói vì sao.</strong>
+Người vận hành thấy nút <em>Bắt đầu</em> mờ đi, không có lời giải thích nào, và thế là bắt đầu đoán:
+bấm lại vài lần, khởi động lại phần mềm, gọi người khác. Trong khi đó phần mềm <strong>biết chính
+xác lý do</strong> — chính cái điều kiện làm nút mờ đi. Guard Engine ở Chương 15 mục 15.2.3 khi từ
+chối một thao tác đã trả về lý do; việc còn lại chỉ là <strong>đưa lý do đó lên màn hình</strong> thay vì
+vứt đi:</p>
+<pre><code class="language-csharp">// Đừng chỉ trả về true/false — trả về CẢ LÝ DO, rồi hiển thị lý do đó
+public sealed record GuardResult(bool Allowed, string? BlockedReason);
+
+// ViewModel: nút mờ VÀ dòng chữ nói vì sao mờ, cùng một nguồn sự thật
+public bool   CanStart      =&gt; _guard.Evaluate(MachineAction.Start).Allowed;
+public string StartBlockedBy =&gt; _guard.Evaluate(MachineAction.Start).BlockedReason ?? &quot;&quot;;
+</code></pre>
+<p>Một dòng chữ <em>&quot;Chưa về gốc trục Z&quot;</em> cạnh cái nút mờ tiết kiệm nhiều cuộc gọi hơn bất kỳ tính
+năng nào khác cùng chi phí. Và nó cũng chặn được thứ tệ hơn: người vận hành tự tìm đường đi
+vòng qua phần mềm vì tưởng phần mềm hỏng.</p>
+</blockquote>
+<h4>Bốn quy ước đặt nhãn, mượn từ phần mềm để bàn và vẫn đúng ở đây</h4>
+<ol>
+<li><strong>Bắt đầu bằng động từ, nói kết quả chứ không nói cơ chế.</strong> <em>&quot;Xoá dữ liệu ca&quot;</em> rõ hơn
+<em>&quot;Thực thi&quot;</em>; <em>&quot;Về gốc trục Z&quot;</em> rõ hơn <em>&quot;Chạy quy trình 3&quot;</em>.</li>
+<li><strong>Dấu ba chấm cuối nhãn nghĩa là &quot;còn hỏi thêm&quot;.</strong> <em>&quot;Đổi mã hàng…&quot;</em> báo cho người dùng biết
+bấm vào sẽ mở ra một cửa sổ để chọn, chứ chưa đổi ngay. Không có dấu ba chấm nghĩa là <strong>bấm
+là chạy</strong>. Quy ước nhỏ này rẻ tiền và giảm hẳn nỗi sợ bấm thử.</li>
+<li><strong>Với hành động có hậu quả, đừng dùng &quot;OK&quot; / &quot;Có&quot; / &quot;Không&quot;.</strong> Trong hộp thoại xác nhận, nhãn
+nút phải nhắc lại chính hành động: <em>&quot;Xoá&quot;</em>, <em>&quot;Ghi đè&quot;</em>, <em>&quot;Chạy không kiểm tra&quot;</em>. &quot;OK&quot; mơ hồ
+một cách nguy hiểm — nó vừa có thể là <em>&quot;tôi đồng ý làm&quot;</em> vừa có thể là <em>&quot;tôi đã đọc&quot;</em>.</li>
+<li><strong>Nút huỷ luôn tên là &quot;Huỷ&quot;.</strong> Đừng sáng tạo. Người vận hành cần một lối thoát mà họ nhận ra
+ngay cả khi không đọc kỹ.</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Một phép thử nhanh cho toàn bộ mục này.</strong> Chọn ngẫu nhiên ba nút trên màn hình vận hành
+của bạn và trả lời tám câu ở Bảng 10.2j cho từng nút. Nếu có câu nào bạn phải mở mã nguồn ra
+mới trả lời được — hoặc tệ hơn, không có câu trả lời — thì đó chính là chỗ người vận hành sẽ
+gặp bất ngờ. Làm phép thử này trước khi bàn giao rẻ hơn nhiều so với làm nó qua điện thoại lúc
+hai giờ sáng.</p>
+</blockquote>
+<hr>
 <h3>10.2.7 Lỗi phổ biến khi áp bảng màu và chữ</h3>
 <ul>
 <li><strong>Dùng đỏ/cam cho decoration hoặc button thường</strong> — phá vỡ chính nguyên

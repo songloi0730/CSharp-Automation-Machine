@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260827 |
+| **Phiên bản** | v1.0.1.260906 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -11389,6 +11389,115 @@ Vì đây chỉ là một `TextBlock` dùng font đặc biệt, đổi màu icon
 severity tái sử dụng đúng `SeverityToBrushConverter` — sẽ trình bày đầy đủ
 ở Code 10.4, mục 10.3.3 — không cần thêm converter hay control riêng cho
 icon.
+
+### 10.2.6b  Giải phẫu một điều khiển — những thuộc tính phải quyết cho mọi nút
+
+Mục trên trả lời *"dùng control nào"*. Nhưng chọn đúng loại control mới là một nửa việc. Nửa
+còn lại: với **mỗi** nút bạn đặt lên màn hình, có khoảng chục thuộc tính phải quyết — và nếu
+bạn không quyết tường minh thì framework sẽ quyết thay, theo mặc định của phần mềm văn phòng,
+vốn gần như luôn sai cho một cỗ máy.
+
+#### Ba thuộc tính mô tả một nút
+
+**Bảng 10.2i — Ba thuộc tính của một nút, và câu hỏi tương ứng**
+
+| Thuộc tính | Trả lời câu hỏi | Sai lầm hay gặp |
+|---|---|---|
+| **Kiểu hiển thị** | Nút này nổi bật tới mức nào so với các nút quanh nó? | Làm mọi nút đều nổi bật — mắt không còn chỗ nghỉ, và không ai biết nên bấm cái nào |
+| **Nội dung** | Chữ, biểu tượng, hay cả hai? | Chỉ biểu tượng cho hành động hiếm gặp — người vận hành phải đoán |
+| **Vai trò** | Nút thường, nút mặc định, nút huỷ, hay nút nguy hiểm? | Không phân vai — mọi nút đều "thường", nên phần mềm không biết nút nào gắn với phím Enter |
+
+Hai quy tắc thực dụng đi kèm ba thuộc tính trên:
+
+- **Mỗi màn hình chỉ nên có một, nhiều nhất là hai nút nổi bật.** Nổi bật là một nguồn tài
+  nguyên có hạn: càng nhiều nút tranh nhau nổi bật thì không nút nào còn nổi bật nữa, và người
+  vận hành phải đọc hết mới chọn được — đúng thứ mà mục 10.1.1 muốn tránh.
+- **Phân biệt nút ưu tiên bằng *kiểu*, không bằng *kích thước*.** Hai nút cùng cỡ báo hiệu
+  "hai lựa chọn ngang hàng"; một nút to hơn hẳn trông như lỗi bố cục chứ không như một gợi ý.
+
+#### Tám trạng thái phải quyết cho mọi nút
+
+Đây là phần hay bị bỏ sót nhất. Một nút không phải chỉ có "bấm được / không bấm được":
+
+**Bảng 10.2j — Tám trạng thái của một điều khiển và điều phải quyết ở mỗi trạng thái**
+
+| Trạng thái | Phải quyết điều gì | Riêng với phần mềm máy |
+|---|---|---|
+| **Bật / tắt** (enabled) | Điều kiện nào cho phép bấm | Điều kiện phải lấy từ **cùng một nguồn** với logic chặn thật (mục 15.2.3), không viết lại trong ViewModel |
+| **Ẩn hay chỉ làm mờ** | Không đủ quyền thì giấu đi hay để mờ | **Giấu** khi vai trò này *không bao giờ* dùng tới; **làm mờ** khi chỉ *tạm thời* chưa đủ điều kiện. Giấu thứ chỉ tạm thời không dùng được khiến người ta tưởng máy hỏng |
+| **Đang nhấn** (pressed) | Có phản hồi thị giác lúc bấm không | **Bắt buộc.** Không có phản hồi nhấn, người vận hành sẽ bấm lần hai — và với lệnh gây chuyển động, bấm hai lần là chuyện khác hẳn |
+| **Con trỏ đi qua** (hover) | Hiện gì khi rê chuột | Chỉ có trên chuột, **không có trên cảm ứng**. Không bao giờ để thông tin quan trọng chỉ xuất hiện khi rê chuột |
+| **Đang bận** (busy) | Nút biến thành gì khi lệnh chưa xong | Đổi nhãn theo thì đang diễn ra (*"Đang về gốc…"*), hiện chỉ báo tiến trình, và **chặn bấm lại**. Đây là trạng thái phổ biến nhất trong phần mềm máy và bị bỏ quên nhiều nhất |
+| **Bật/tắt hai chiều** (toggle) | Nhãn nói *trạng thái hiện tại* hay *hành động sắp làm* | Chọn một kiểu và giữ nguyên toàn bộ phần mềm. Trộn hai kiểu là nguồn của thao tác ngược — xem callout dưới |
+| **Đang lấy nét** (focus) | Bàn phím đang ở đâu | Bắt buộc nếu máy có thao tác không dùng chuột (mục 10.4.4) |
+| **Vai trò phím** | Enter và Esc gắn với nút nào | Enter gắn nút mặc định, Esc gắn nút huỷ — và xem giới hạn an toàn ngay dưới |
+
+> ⚠️ **Cái bẫy của nút hai trạng thái: nhãn nói trạng thái hay nói hành động?** Một nút ghi
+> *"Bơm: BẬT"* có thể có hai nghĩa hoàn toàn ngược nhau — *"bơm đang bật"* (nhãn mô tả trạng
+> thái) hoặc *"bấm để bật bơm"* (nhãn mô tả hành động). Người vận hành đoán sai một lần là tắt
+> nhầm bơm. Hai cách chữa, chọn **một** rồi áp dụng nhất quán: (1) nhãn luôn là **hành động**
+> (*"Bật bơm"* / *"Tắt bơm"*), trạng thái hiển thị bằng đèn riêng bên cạnh; hoặc (2) nút là một
+> **công tắc có hình dạng nói lên trạng thái** (gạt trái/phải), không dùng chữ để chỉ trạng thái.
+> Cách (1) an toàn hơn cho màn hình vận hành vì nó tách hẳn *"máy đang thế nào"* khỏi *"tôi sắp
+> làm gì"*.
+
+#### Ba luật riêng của phần mềm máy — chỗ phải đi chệch quy ước phần mềm văn phòng
+
+**1. Hành động gây chuyển động không được là nút mặc định, và không được gắn phím tắt.** Quy
+ước desktop nói: gắn Enter vào nút người dùng nhiều khả năng chọn nhất, để bấm nhanh. Quy ước
+desktop cũng nói thêm: **đừng bao giờ gắn Enter vào một hành động phá huỷ**, vì nút nổi bật hay
+bị bấm trước khi đọc. Với máy sản xuất, luật thứ hai mạnh hơn luật thứ nhất: một phím Enter bấm
+nhầm mà làm trục chạy là chuyện khác hẳn một phím Enter bấm nhầm mà mở sai màn hình (mục 10.1.9).
+
+**2. Vùng chạm phải lớn hơn chuẩn tiêu dùng.** Hướng dẫn giao diện của các nền tảng tiêu dùng
+lấy mốc khoảng 44 điểm cho đầu ngón tay trần, người ngồi yên. Người vận hành **đeo găng, đứng,
+máy đang rung, và đang vội** — mốc đó là sàn, không phải đích (mục 10.2.5).
+
+**3. Chú giải khi rê chuột là phần bổ sung, không phải nơi cất thông tin.** Trên máy tính để
+bàn, rê chuột lên một nút một lúc sẽ hiện dòng giải thích ngắn — rất hữu ích, và nên có. Nhưng
+ca đêm không ai rê chuột để tìm hiểu vì sao nút không bấm được. Thông tin đó phải hiện **ngay
+tại chỗ**, không nằm sau một thao tác rê.
+
+> 📌 **Lỗi thiết kế phổ biến nhất trên màn hình máy: tắt một cái nút mà không nói vì sao.**
+> Người vận hành thấy nút *Bắt đầu* mờ đi, không có lời giải thích nào, và thế là bắt đầu đoán:
+> bấm lại vài lần, khởi động lại phần mềm, gọi người khác. Trong khi đó phần mềm **biết chính
+> xác lý do** — chính cái điều kiện làm nút mờ đi. Guard Engine ở Chương 15 mục 15.2.3 khi từ
+> chối một thao tác đã trả về lý do; việc còn lại chỉ là **đưa lý do đó lên màn hình** thay vì
+> vứt đi:
+>
+> ```csharp
+> // Đừng chỉ trả về true/false — trả về CẢ LÝ DO, rồi hiển thị lý do đó
+> public sealed record GuardResult(bool Allowed, string? BlockedReason);
+>
+> // ViewModel: nút mờ VÀ dòng chữ nói vì sao mờ, cùng một nguồn sự thật
+> public bool   CanStart      => _guard.Evaluate(MachineAction.Start).Allowed;
+> public string StartBlockedBy => _guard.Evaluate(MachineAction.Start).BlockedReason ?? "";
+> ```
+>
+> Một dòng chữ *"Chưa về gốc trục Z"* cạnh cái nút mờ tiết kiệm nhiều cuộc gọi hơn bất kỳ tính
+> năng nào khác cùng chi phí. Và nó cũng chặn được thứ tệ hơn: người vận hành tự tìm đường đi
+> vòng qua phần mềm vì tưởng phần mềm hỏng.
+
+#### Bốn quy ước đặt nhãn, mượn từ phần mềm để bàn và vẫn đúng ở đây
+
+1. **Bắt đầu bằng động từ, nói kết quả chứ không nói cơ chế.** *"Xoá dữ liệu ca"* rõ hơn
+   *"Thực thi"*; *"Về gốc trục Z"* rõ hơn *"Chạy quy trình 3"*.
+2. **Dấu ba chấm cuối nhãn nghĩa là "còn hỏi thêm".** *"Đổi mã hàng…"* báo cho người dùng biết
+   bấm vào sẽ mở ra một cửa sổ để chọn, chứ chưa đổi ngay. Không có dấu ba chấm nghĩa là **bấm
+   là chạy**. Quy ước nhỏ này rẻ tiền và giảm hẳn nỗi sợ bấm thử.
+3. **Với hành động có hậu quả, đừng dùng "OK" / "Có" / "Không".** Trong hộp thoại xác nhận, nhãn
+   nút phải nhắc lại chính hành động: *"Xoá"*, *"Ghi đè"*, *"Chạy không kiểm tra"*. "OK" mơ hồ
+   một cách nguy hiểm — nó vừa có thể là *"tôi đồng ý làm"* vừa có thể là *"tôi đã đọc"*.
+4. **Nút huỷ luôn tên là "Huỷ".** Đừng sáng tạo. Người vận hành cần một lối thoát mà họ nhận ra
+   ngay cả khi không đọc kỹ.
+
+> 💡 **Một phép thử nhanh cho toàn bộ mục này.** Chọn ngẫu nhiên ba nút trên màn hình vận hành
+> của bạn và trả lời tám câu ở Bảng 10.2j cho từng nút. Nếu có câu nào bạn phải mở mã nguồn ra
+> mới trả lời được — hoặc tệ hơn, không có câu trả lời — thì đó chính là chỗ người vận hành sẽ
+> gặp bất ngờ. Làm phép thử này trước khi bàn giao rẻ hơn nhiều so với làm nó qua điện thoại lúc
+> hai giờ sáng.
+
+---
 
 ### 10.2.7 Lỗi phổ biến khi áp bảng màu và chữ
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260905</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260906</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -337,7 +337,8 @@
   <li style="padding-left:16px;font-size:13px"><a href="#45-các-loi-cm-bin-s-thưng-gp">4.5 Các loại cảm biến số thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#46-trên-máy-mu-dp-01">4.6 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#47-by-thưng-gp">4.7 Bẫy thường gặp</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#48-t-kim">4.8 Tự kiểm</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#48-bng-cht">4.8 Bảng chốt</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#49-t-kim">4.9 Tự kiểm</a></li>
   <li><a href="#chương-5-cơ-cu-chp-hành-đin-ti">Chương 5 — Cơ cấu chấp hành điện & tải</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#51-bài-toán-ngõ-ra-cht-dn-trong-sáu-tháng">5.1 Bài toán: ngõ ra chết dần trong sáu tháng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#52-van-đin-t">5.2 Van điện từ</a></li>
@@ -346,7 +347,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#55-rơ-le-trung-gian-vì-sao-gn-như-luôn-cn">5.5 ⭐ Rơ-le trung gian — vì sao gần như luôn cần</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#56-đèn-tháp-và-còi">5.6 Đèn tháp và còi</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#57-tính-công-sut-nhánh-24-vdc">5.7 Tính công suất nhánh 24 VDC</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#58-bng-cht-chn-gì-cho-ti-nào">5.8 Bảng chốt — chọn gì cho tải nào</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#58-chn-gì-cho-ti-nào-bng-tra-khi-thit-k">5.8 ⭐ Chọn gì cho tải nào — bảng tra khi thiết kế</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#59-by-thưng-gp">5.9 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#510-bng-cht">5.10 Bảng chốt</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#511-t-kim">5.11 Tự kiểm</a></li>
@@ -408,7 +409,8 @@
   <li style="padding-left:16px;font-size:13px"><a href="#103-trên-máy-mu-dp-01">10.3 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#104-by-thưng-gp">10.4 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#105-khác-bit-gia-các-hãng">10.5 Khác biệt giữa các hãng</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#106-t-kim">10.6 Tự kiểm</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#106-bng-cht">10.6 Bảng chốt</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#107-t-kim">10.7 Tự kiểm</a></li>
   <li><a href="#chương-11-b-nh-bin-kiu-d-liu">Chương 11 — Bộ nhớ, biến & kiểu dữ liệu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#111-bài-toán-mt-tag-hai-thit-b">11.1 Bài toán: một tag, hai thiết bị</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#112-kiu-d-liu-bng-phi-thuc">11.2 Kiểu dữ liệu — bảng phải thuộc</a></li>
@@ -467,7 +469,8 @@
   <li style="padding-left:16px;font-size:13px"><a href="#154-trên-máy-mu-dp-01">15.4 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#155-by-thưng-gp">15.5 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#156-khác-bit-gia-các-hãng">15.6 Khác biệt giữa các hãng</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#157-t-kim">15.7 Tự kiểm</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#157-bng-cht">15.7 Bảng chốt</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#158-t-kim">15.8 Tự kiểm</a></li>
   <li><a href="#chương-16-latch-setreset-bt-cnh">Chương 16 — Latch, Set/Reset & bắt cạnh</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#161-ba-câu-hi-mà-chương-này-tr-li">16.1 Ba câu hỏi mà chương này trả lời</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#162-t-gi-nhc-li-đ-đ-so-sánh">16.2 Tự giữ — nhắc lại đủ để so sánh</a></li>
@@ -628,6 +631,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#294-kim-tra-hp-l-là-vic-ca-plc">29.4 ⭐ Kiểm tra hợp lệ là việc của PLC</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#295-đi-công-thc-khi-đang-chy-đưc-phép-đim-nào">29.5 Đổi công thức khi đang chạy — được phép ở điểm nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#296-phiên-bn-và-vt-thay-đi">29.6 Phiên bản và vết thay đổi</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#296b-đưc-duyt-và-đã-chng-thc-là-hai-câu-hi-khác-nhau">29.6b ⭐⭐ "Được duyệt" và "đã chứng thực" là HAI câu hỏi khác nhau</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#297-trên-máy-mu-dp-01">29.7 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#298-khác-bit-gia-các-hãng">29.8 Khác biệt giữa các hãng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#299-by-thưng-gp">29.9 Bẫy thường gặp</a></li>
@@ -846,6 +850,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#452-ghi-d-liu-sn-xut-ghi-gì">45.2 Ghi dữ liệu sản xuất — ghi gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#453-ghi-đâu">45.3 Ghi ở đâu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#454-opc-ua-và-mqtt-khi-nào-dùng-cái-nào">45.4 OPC UA và MQTT — khi nào dùng cái nào</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#454b-nu-khách-hàng-làm-đin-t-h-s-hi-v-secsgem">45.4b ⭐ Nếu khách hàng làm điện tử: họ sẽ hỏi về SECS/GEM</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#455-vì-sao-không-cho-h-it-truy-cp-trc-tip-plc">45.5 ⭐⭐ Vì sao không cho hệ IT truy cập trực tiếp PLC</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#456-phân-vùng-mng">45.6 Phân vùng mạng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#457-nhng-vic-thc-t-ngưi-lp-trình-plc-làm-đưc">45.7 ⭐ Những việc thực tế người lập trình PLC làm được</a></li>
@@ -1169,7 +1174,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260905</td>
+<td>v1.0.0.260906</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -3820,7 +3825,49 @@ hoặc cảm biến của một số hãng dùng màu khác.</p>
 <p>Luôn tra datasheet của đúng model. Và nếu cáp đã bị cắt nối, đo trước khi cấp nguồn — đấu ngược nguồn
 vào chân tín hiệu có thể làm hỏng cả cảm biến lẫn ngõ vào module.</p>
 <hr>
-<h2 id="48-t-kim">4.8 Tự kiểm</h2>
+<h2 id="48-bng-cht">4.8 Bảng chốt</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Trả lời</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ &quot;Trạng thái NORMAL&quot; nghĩa là gì</td>
+<td><strong>Lúc không có kích thích</strong> — chưa ai nhấn, chưa thấy vật</td>
+</tr>
+<tr>
+<td>Cảm biến 2 dây khác 3 dây ở đâu</td>
+<td>2 dây mắc <strong>nối tiếp với tải</strong>; 3 dây có <strong>nguồn riêng</strong> cho phần điện tử</td>
+</tr>
+<tr>
+<td>⚠⚠ PNP/NPN — bốn tổ hợp</td>
+<td>⭐ <strong>Hai tổ hợp KHÔNG BAO GIỜ chạy</strong>, dù thiết bị tốt và dây đúng màu</td>
+</tr>
+<tr>
+<td>Cách nhớ</td>
+<td>⭐ Cảm biến <strong>cấp dòng</strong> thì module phải <strong>nhận dòng</strong>, và ngược lại</td>
+</tr>
+<tr>
+<td>⚠ Đấu sai kiểu thì</td>
+<td>Không phải &quot;chạy sai&quot; mà là <strong>không chạy</strong> — và trông y hệt hỏng cảm biến</td>
+</tr>
+<tr>
+<td>Chọn kiểu đầu ra lúc nào</td>
+<td>⭐ <strong>Lúc mua sắm</strong>, theo bảng 4 tổ hợp — không phải lúc đấu dây</td>
+</tr>
+<tr>
+<td>⭐ Tín hiệu mất là phải dừng</td>
+<td>Tiếp điểm vật lý <strong>NC</strong> (Chương 15, mục 15.3)</td>
+</tr>
+<tr>
+<td>Cảm biến quang chọn loại nào</td>
+<td>Theo <strong>vật cần phát hiện</strong> và khoảng cách — thu-phát riêng, phản xạ gương, phản xạ khuếch tán</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="49-t-kim">4.9 Tự kiểm</h2>
 <ol>
 <li><strong>Viết lại bảng 4 tổ hợp từ trí nhớ</strong>, kèm giải thích đường đi của dòng cho hai tổ hợp chạy được.</li>
 <li>Một cảm biến PNP, đèn trên thân sáng khi có vật, nhưng bit PLC không lên. <strong>Ba bước kiểm tra đầu
@@ -4248,7 +4295,7 @@ ra</strong>, và nó nằm trong mô tả trình tự.</p>
 từng nhóm bằng cách rút một cầu chì (Chương 51). Chi phí thêm rất nhỏ.</p>
 </blockquote>
 <hr>
-<h2 id="58-bng-cht-chn-gì-cho-ti-nào">5.8 Bảng chốt — chọn gì cho tải nào</h2>
+<h2 id="58-chn-gì-cho-ti-nào-bng-tra-khi-thit-k">5.8 ⭐ Chọn gì cho tải nào — bảng tra khi thiết kế</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -7708,7 +7755,53 @@ thử nghiệm thật</strong> trước khi bàn giao máy. Giả định sai �
 trạng thái nào khi CPU chết. Chương 48 và Chương 52 quay lại điểm này.</p>
 </blockquote>
 <hr>
-<h2 id="106-t-kim">10.6 Tự kiểm</h2>
+<h2 id="106-bng-cht">10.6 Bảng chốt</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Trả lời</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ Bốn giai đoạn của vòng quét</td>
+<td><strong>Đọc ảnh vào → chạy chương trình → ghi ảnh ra → việc hệ thống</strong></td>
+</tr>
+<tr>
+<td>PLC nhìn ngõ vào mấy lần một vòng</td>
+<td>⭐ <strong>Một lần</strong>, ở đầu vòng — giữa chừng nó không biết gì</td>
+</tr>
+<tr>
+<td>⚠ Xung ngắn hơn một vòng quét</td>
+<td>⭐ <strong>Mất hoàn toàn</strong> — cần bắt cạnh hoặc bộ đếm tốc độ cao (Chương 18)</td>
+</tr>
+<tr>
+<td>⭐⭐ Vì sao thứ tự nấc thang đổi kết quả</td>
+<td>Nấc sau đọc <strong>giá trị nấc trước vừa ghi</strong>, trong <strong>cùng</strong> một vòng</td>
+</tr>
+<tr>
+<td>Truy cập trực tiếp dùng khi nào</td>
+<td>⚠ <strong>Chỉ khi đã đo được</strong> rằng độ trễ một vòng quét là không chấp nhận được</td>
+</tr>
+<tr>
+<td>⚠⚠ Watchdog kích thì</td>
+<td><strong>Mọi ngõ ra tắt cùng lúc, giữa chu trình</strong> — kiểu dừng tệ nhất</td>
+</tr>
+<tr>
+<td>Thời gian quét con số nào quan trọng</td>
+<td>⭐ <strong>Lớn nhất</strong>, không phải trung bình</td>
+</tr>
+<tr>
+<td>Chương trình phình ra thì</td>
+<td>Quét dài ra → biên an toàn của mọi tính toán thời gian <strong>hẹp lại</strong></td>
+</tr>
+<tr>
+<td>Hai POU cùng ghi một biến</td>
+<td>⚠ <strong>Tranh chấp</strong> — kết quả phụ thuộc thứ tự gọi, rất khó tái hiện</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="107-t-kim">10.7 Tự kiểm</h2>
 <p>Làm được những việc sau thì coi như hiểu chương này:</p>
 <ol>
 <li><strong>Vẽ lại vòng quét bằng lời</strong>, không nhìn sách, nêu đủ bốn giai đoạn và nói được giai đoạn nào là
@@ -10937,7 +11030,53 @@ Bảng 4 tổ hợp ở mục 15.3 <strong>không phụ thuộc hãng</strong>. 
 của định nghĩa hai lệnh tiếp điểm. Học một lần, dùng ở mọi hệ, suốt đời.</p>
 </blockquote>
 <hr>
-<h2 id="157-t-kim">15.7 Tự kiểm</h2>
+<h2 id="157-bng-cht">15.7 Bảng chốt</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Trả lời</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ &quot;Dòng năng lượng&quot; trong ladder là gì</td>
+<td><strong>Ẩn dụ</strong>, không phải điện — nó là <strong>thứ tự đánh giá logic</strong></td>
+</tr>
+<tr>
+<td>Hai lệnh tiếp điểm</td>
+<td>⭐ Kiểm bit <strong>bằng 1</strong> · kiểm bit <strong>bằng 0</strong> — ⚠ tên gọi &quot;NO/NC&quot; trong phần mềm gây hại</td>
+</tr>
+<tr>
+<td>⭐⭐ Bảng bốn tổ hợp — đáp án</td>
+<td><strong>Tiếp điểm vật lý NC, trong code dùng tiếp điểm kiểm-bằng-1</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ Tổ hợp nguy hiểm nhất</td>
+<td>⭐ <strong>NO + kiểm-bằng-0</strong>: chạy đúng mọi lần thử, hỏng đúng ngày đứt dây</td>
+</tr>
+<tr>
+<td>⚠⚠ Giới hạn của bảng 4 tổ hợp</td>
+<td>⭐ Chỉ phủ <strong>hỏng kiểu HỞ</strong> — <strong>không</strong> phủ hỏng kiểu <strong>CHẬP</strong> (mục 15.3)</td>
+</tr>
+<tr>
+<td>Cuộn dây trùng</td>
+<td>⭐ <strong>Nấc cuối thắng</strong> — và lỗi này im lặng</td>
+</tr>
+<tr>
+<td>Thứ tự nấc thang</td>
+<td>⚠ <strong>Là logic</strong>, không phải cách sắp xếp cho đẹp</td>
+</tr>
+<tr>
+<td>Một nấc nên chứa bao nhiêu</td>
+<td>⭐ Đủ để <strong>đọc hiểu trong một lần nhìn</strong> — nhồi nhiều là nợ cho người bảo trì</td>
+</tr>
+<tr>
+<td>⭐ Trước khi kết luận về đấu nối</td>
+<td><strong>Đo thật</strong>, đừng suy từ nhãn trên thiết bị</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="158-t-kim">15.8 Tự kiểm</h2>
 <ol>
 <li><strong>Viết lại bảng 4 tổ hợp từ trí nhớ.</strong> Chỉ ra tổ hợp đúng và giải thích vì sao tổ hợp 2 nguy hiểm
 dù nó chạy đúng khi thử nghiệm.</li>
@@ -14821,6 +14960,9 @@ ladder</strong>, kể cả khi FBD gọn hơn.</p>
 <p>So với cùng trình tự viết bằng <code>CASE</code> (Chương 20, mục 20.2): SFC <strong>thấy được toàn cảnh</strong> — bao nhiêu
 bước, đi theo đường nào, quay lại chỗ nào. Với người đọc lần đầu, đây là lợi thế lớn.</p>
 <h3>Hai kiểu nhánh</h3>
+<p><img src="../assets/ch21/hinh_21_1_hai_kieu_nhanh_sfc.svg" alt="Hai kiểu nhánh trong SFC"></p>
+<p><em>Hình 21.1 — Vạch đôi và vạch đơn. Hai nét vẽ gần giống nhau, nghĩa ngược nhau, và vẽ nhầm thì máy
+đứng im vĩnh viễn mà không báo gì.</em></p>
 <p><strong>Nhánh song song</strong> <em>(parallel / simultaneous divergence)</em> — hai nhánh chạy <strong>cùng lúc</strong>, và trình tự
 chỉ đi tiếp khi <strong>cả hai</strong> đã xong:</p>
 <pre><code class="language-text">              ═══════╦═══════        ← vạch đôi = song song
@@ -20445,6 +20587,106 @@ trên.</p>
 <p>Cơ chế phân quyền nằm ở màn hình vận hành (Chương 44), nhưng ⚠ <strong>PLC vẫn phải tự kiểm dải</strong> — vì
 màn hình có thể bị thay, bị bỏ qua, hoặc công thức có thể đến từ hệ thống trên (mục 29.4).</p>
 <hr>
+<h2 id="296b-đưc-duyt-và-đã-chng-thc-là-hai-câu-hi-khác-nhau">29.6b ⭐⭐ &quot;Được duyệt&quot; và &quot;đã chứng thực&quot; là HAI câu hỏi khác nhau</h2>
+<p>Mục trên lo việc <strong>ghi vết ai sửa gì</strong>. Còn một câu hỏi nữa mà công thức phải trả lời được trước khi
+đem ra chạy hàng — và ⚠ nhiều hệ gộp nó làm một, gây ra đúng loại sự cố khó truy.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Ai trả lời</th>
+<th>Ý nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Công thức này ĐÃ ĐƯỢC DUYỆT chưa?</strong></td>
+<td>Kỹ thuật quá trình, quản lý sản xuất</td>
+<td>Nội dung công thức là <strong>đúng về mặt công nghệ</strong></td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Nó ĐÃ ĐƯỢC CHỨNG THỰC trên MÁY NÀY chưa?</strong></td>
+<td>Người chạy thử trên chính cỗ máy đó</td>
+<td>Đã chạy thật ở đây và <strong>cho kết quả đạt</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Hai câu này độc lập, và đó là điểm mấu chốt.</strong></p>
+<p>Một công thức được kỹ thuật duyệt hoàn toàn có thể ⚠ <strong>chưa từng chạy trên máy số 3</strong> — vì máy số 3
+có gá khác, đèn khác, hoặc vừa thay một cơ cấu. ⭐ <em>&quot;Đã duyệt&quot;</em> <strong>không suy ra được</strong> <em>&quot;chạy được ở
+đây&quot;</em>.</p>
+<p>⭐ Ngược lại cũng vậy: ai đó chỉnh tham số cho chạy được trên máy số 3 thì ⚠ <strong>đó chưa phải công
+thức đã duyệt</strong> — nó chỉ là một bản vá tại chỗ.</p>
+</blockquote>
+<h3>⭐ Mức duyệt là một CON SỐ, không phải một dấu tích</h3>
+<p>Cách làm quen thuộc là một cờ <em>&quot;đã duyệt: có/không&quot;</em>. ⭐ Cách chặt hơn: <strong>mức duyệt là một con số</strong>,
+và <strong>khoá được suy ra từ con số đó</strong>:</p>
+<pre><code class="language-text">Công thức có  Mức duyệt  ≥  Ngưỡng chỉ-đọc của kho   →  KHOÁ, không sửa được
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ Vì sao hơn hẳn cờ có/không</td>
+<td><strong>Khoá là HỆ QUẢ</strong>, không phải việc ai đó phải nhớ bật</td>
+</tr>
+<tr>
+<td>⭐ Đặt ngưỡng bằng 0</td>
+<td>⭐ <strong>Mọi công thức đều bị khoá</strong> — mặc định an toàn cho môi trường sản xuất</td>
+</tr>
+<tr>
+<td>⭐ Nhiều mức</td>
+<td>Nháp · đã kiểm nội bộ · đã duyệt sản xuất — mỗi mức mở ra quyền khác nhau</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Đây là cùng tinh thần với &quot;làm cho hỏng hóc trở nên phát hiện được&quot;</strong> ở Chương 48: ⚠ thay vì
+trông vào việc <strong>người ta nhớ khoá công thức</strong>, hãy để trạng thái khoá <strong>tự suy ra</strong> từ một thuộc
+tính mà quy trình bắt buộc phải điền.</p>
+</blockquote>
+<h3>⭐ Vòng đời một công thức — các trạng thái đáng có</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trạng thái</th>
+<th>Nghĩa</th>
+<th>Được làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tạo / sửa</strong></td>
+<td>Bản nháp trong kho</td>
+<td>Sửa tự do</td>
+</tr>
+<tr>
+<td>⭐ <strong>Đã duyệt</strong></td>
+<td>Nội dung được người có thẩm quyền chấp nhận</td>
+<td>⚠ <strong>Khoá</strong> nếu mức duyệt vượt ngưỡng</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Đã chứng thực trên máy này</strong></td>
+<td>Đã chạy thật ở đây, kết quả đạt</td>
+<td>⭐ <strong>Được phép chạy sản xuất</strong></td>
+</tr>
+<tr>
+<td>⚠ <strong>Bị rút chứng thực</strong></td>
+<td>Máy thay đổi, hoặc kết quả không còn đạt</td>
+<td>⚠⚠ <strong>Phải chứng thực lại trước khi chạy tiếp</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Trạng thái cuối là trạng thái hay bị bỏ quên nhất, và nó bảo vệ đúng lúc nguy hiểm nhất.</strong></p>
+<p>Sau khi <strong>thay cơ cấu, đổi cảm biến, hay sửa cơ khí</strong> (Chương 53), ⭐ chứng thực cũ <strong>không còn giá
+trị</strong> — dù công thức không đổi một chữ. ⚠ Hệ nào không có trạng thái này thì sau mỗi lần bảo trì,
+máy chạy tiếp với một chứng thực <strong>đã hết hiệu lực mà không ai biết</strong>.</p>
+<p>⭐ <strong>Cách làm tối thiểu nếu hệ của bạn không có sẵn:</strong> giữ hai trường trong bản ghi công thức —
+<em>&quot;mức duyệt&quot;</em> và <em>&quot;lần chứng thực gần nhất trên máy này (ngày, người, kết quả)&quot;</em> — và ⭐ <strong>xoá trường
+thứ hai trong quy trình bảo trì</strong>, cùng chỗ với việc gỡ cưỡng bức (Chương 51, mục 51.7).</p>
+</blockquote>
+<hr>
 <h2 id="297-trên-máy-mu-dp-01">29.7 Trên máy mẫu DP-01</h2>
 <p>Bảng công thức cho ba mã hàng:</p>
 <div class="table-wrap"><table>
@@ -20684,6 +20926,18 @@ Cơ chế bảo vệ bị vô hiệu hoá từ bên trong.
 <td>Chọn / sửa tham số / sửa dải hợp lệ là <strong>ba cấp khác nhau</strong></td>
 </tr>
 <tr>
+<td>⭐⭐ Hai câu hỏi độc lập</td>
+<td><strong>Đã duyệt</strong> (nội dung đúng) và ⭐ <strong>đã chứng thực trên MÁY NÀY</strong></td>
+</tr>
+<tr>
+<td>⭐ Mức duyệt nên là gì</td>
+<td><strong>Một con số</strong>, và <strong>khoá tự suy ra</strong> khi vượt ngưỡng — không phải cờ ai đó nhớ bật</td>
+</tr>
+<tr>
+<td>⚠⚠ Sau khi bảo trì đổi cơ cấu</td>
+<td>⭐ <strong>Chứng thực cũ hết hiệu lực</strong> — phải chứng thực lại dù công thức không đổi</td>
+</tr>
+<tr>
 <td>Trước khi thiết kế bảng công thức</td>
 <td>⚠ Kiểm <strong>dung lượng vùng nhớ giữ được</strong> của CPU</td>
 </tr>
@@ -20705,6 +20959,12 @@ quả của cách sai.</li>
 <li>Nêu ba mức chính sách đổi công thức khi đang chạy. Mức nào là mặc định đúng cho DP-01 và vì sao?</li>
 <li>⭐ Người vận hành gặp thông báo &quot;vượt giới hạn&quot; và nới dải hợp lệ ra. Vì sao đó là vấn đề nghiêm
 trọng, và cơ chế nào ngăn được nó?</li>
+<li>⭐⭐ Nêu <strong>hai câu hỏi độc lập</strong> phải trả lời trước khi cho một công thức chạy hàng. ⚠ Vì sao
+<em>&quot;đã duyệt&quot;</em> <strong>không suy ra được</strong> <em>&quot;chạy được ở đây&quot;</em>?</li>
+<li>⭐ Vì sao để <strong>mức duyệt là một con số</strong> và <strong>khoá tự suy ra</strong> thì chặt hơn một cờ <em>&quot;đã duyệt:
+có/không&quot;</em>? Liên hệ với nguyên tắc ở Chương 48.</li>
+<li>⚠⚠ Máy vừa thay một cơ cấu, công thức <strong>không đổi một chữ</strong>. ⭐ Có được chạy tiếp ngay không, vì
+sao? Nêu việc tối thiểu phải làm.</li>
 </ol>
 <blockquote>
 <p>Câu 3, 5 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: <strong>một cơ chế bảo vệ mà người
@@ -20725,6 +20985,10 @@ hành động ứng phó — áp cho thông báo từ chối công thức ở m�
 kiểm trước khi thiết kế bảng công thức.</li>
 <li>Bảng công thức và đặc tả tham số của DP-01 — Phụ lục J; bảng ở mục 29.7 lấy từ đó.</li>
 <li>Biểu mẫu <strong>nhật ký thay đổi công thức</strong> — Phụ lục C.</li>
+<li>⭐ <strong>SEMI E42</strong> — <em>Recipe Management Standard: Concepts, Behavior, and Message Services</em>: vòng đời
+công thức (mục 8.1) và các thao tác <strong>duyệt · bảo vệ · chứng thực / rút chứng thực</strong> (mục 8.2.4–8.2.8);
+⭐⭐ cơ chế <strong>khoá suy ra từ ngưỡng mức duyệt</strong> (mục 8.2.5) thay cho một cờ đặt tay — nền cho
+mục 29.6b.</li>
 </ul>
 <blockquote>
 <p>⚡ Các dải hợp lệ ở mục 29.7 là <strong>giá trị của máy mẫu DP-01</strong>, không phải giá trị áp dụng chung. Dải
@@ -24660,6 +24924,9 @@ tính ở Chương 9 mục 9.3 — vài giây một lần, suốt ngày, suốt 
 <pre><code class="language-text">CV = Kp × e
 </code></pre>
 <p>Sai lệch lớn → tác động mạnh. Sai lệch nhỏ → tác động nhẹ. Trực giác, và hiệu quả.</p>
+<p><img src="../assets/ch35/hinh_35_1_ba_duong_dap_ung.svg" alt="Ba đường đáp ứng của bộ điều khiển"></p>
+<p><em>Hình 35.1 — Cùng một quá trình, cùng một điểm đặt, ba cách chỉnh. Đường vàng dừng lại dưới điểm đặt
+và ở lại đó; đường xanh tới đúng nơi; đường đỏ là hậu quả của việc tăng P để bù sai lệch tĩnh.</em></p>
 <h3>⭐ Vì sao P thuần luôn để lại sai lệch tĩnh</h3>
 <p>Đây là điểm mà nhiều người dùng PID nhiều năm vẫn không nắm chắc, và nó suy ra trực tiếp từ công thức.</p>
 <p>Xét bộ gia nhiệt keo. Để <strong>giữ</strong> keo ở 60 °C, cần một công suất gia nhiệt nhất định — giả sử 30 % —
@@ -33212,6 +33479,73 @@ vì chờ ai đó <strong>đi vào</strong>. Điều đó rất hợp với nguy
 kênh điều khiển. Đừng dùng chúng cho việc phối hợp chuyển động hay bắt tay máy–máy (Chương 40, 41).</p>
 </blockquote>
 <hr>
+<h2 id="454b-nu-khách-hàng-làm-đin-t-h-s-hi-v-secsgem">45.4b ⭐ Nếu khách hàng làm điện tử: họ sẽ hỏi về SECS/GEM</h2>
+<p>Hai giao thức ở mục trên là lựa chọn chung cho công nghiệp. ⚠ Nhưng trong <strong>bán dẫn và điện tử</strong> —
+đúng ngành của máy mẫu DP-01 — có một bộ tiêu chuẩn riêng, và khách hàng sẽ <strong>hỏi đích danh nó</strong>.</p>
+<p>Bộ này chia làm <strong>ba tầng tách bạch</strong>, và hiểu đúng chỗ chia là đủ để nói chuyện được:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tầng</th>
+<th>Trả lời câu hỏi</th>
+<th>Tên thường gặp</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Vận chuyển</strong></td>
+<td>Bản tin đi qua đường nào</td>
+<td>Nối tiếp điểm–điểm, hoặc <strong>trên nền TCP/IP</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>Nội dung bản tin</strong></td>
+<td>Bản tin <strong>gồm những gì</strong> — cấu trúc, kiểu dữ liệu</td>
+<td><strong>SECS-II</strong></td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Hành vi thiết bị</strong></td>
+<td>⭐ <strong>Dùng bản tin nào, trong tình huống nào, và máy phải làm gì sau đó</strong></td>
+<td><strong>GEM</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Tầng thứ ba mới là tầng đắt.</strong> Hai tầng dưới chỉ nói <em>&quot;nói bằng gì&quot;</em>; ⭐⭐ GEM nói <em>&quot;cư xử thế
+nào&quot;</em> — trạng thái xử lý, sự kiện thu thập, báo động, lệnh từ xa, biến dữ liệu.</p>
+<p>⚡ Nói cách khác, nó là <strong>đặc tả hành vi của máy nhìn từ đầu dây bên kia</strong> — đúng thứ mà Chương 42
+gọi là <em>&quot;giao diện MES&quot;</em>, nhưng đã được chuẩn hoá sẵn thay vì mỗi nhà máy tự định nghĩa.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Bất đối xứng quan trọng nhất, và nó quyết định cách bạn viết hợp đồng:</strong></p>
+<p>⭐ <strong>GEM quy định hành vi của THIẾT BỊ, không quy định hành vi của HỆ THỐNG CẤP TRÊN.</strong> Cấp trên có
+quyền khởi xướng bất kỳ kịch bản nào, <strong>bất kỳ lúc nào</strong> — và máy của bạn <strong>phải đáp đúng như chuẩn
+mô tả</strong>.</p>
+<p>⚠ Hệ quả: câu <em>&quot;máy chúng tôi hỗ trợ GEM&quot;</em> là <strong>một cam kết một chiều — về phía bạn</strong>. ⭐ Nó <strong>không</strong>
+cho bạn biết cấp trên sẽ làm gì, gọi gì, gọi lúc nào. ⚠⚠ Vẫn phải hỏi <strong>đúng những câu ở Chương 42
+mục 42.8</strong> — và hỏi <strong>sớm</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Mức độ chi tiết cần biết, tuỳ vai trò của bạn:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Người lập trình PLC ở máy <strong>không</strong> thuộc ngành này</td>
+<td>⭐ Biết <strong>tên và ba tầng</strong> là đủ</td>
+</tr>
+<tr>
+<td>Máy sẽ bán vào nhà máy điện tử/bán dẫn</td>
+<td>⚠⚠ <strong>Hỏi ngay từ khâu đặc tả</strong>: có yêu cầu GEM không, mức nào</td>
+</tr>
+<tr>
+<td>Đã chốt là có</td>
+<td>⭐ Phần này thường do <strong>một mô-đun phần mềm chuyên dụng</strong> đảm nhiệm, không viết tay trong PLC — nhưng ⚠ <strong>PLC phải cấp đủ dữ liệu và trạng thái</strong> cho nó (mục 45.2)</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<hr>
 <h2 id="455-vì-sao-không-cho-h-it-truy-cp-trc-tip-plc">45.5 ⭐⭐ Vì sao không cho hệ IT truy cập trực tiếp PLC</h2>
 <p>Đây là mục quan trọng nhất chương.</p>
 <h3>Bốn lý do</h3>
@@ -33758,6 +34092,10 @@ tiêu chuẩn ngành tham chiếu.</li>
 <li><strong>Tài liệu bảo mật của hệ PLC đang dùng</strong> — dùng cho ⚠ <strong>khả năng xác thực và mã hoá của dòng CPU
 cụ thể</strong>, cơ chế khoá chương trình, và ghi vết truy cập.</li>
 <li>Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J.</li>
+<li>⭐ <strong>SEMI E30</strong> — <em>Generic Model for Communications and Control of Manufacturing Equipment (GEM)</em>,
+mục 1.2–1.3: GEM định nghĩa ⭐⭐ <strong>hành vi của thiết bị nhìn qua đường truyền</strong> — dùng bản tin nào,
+trong tình huống nào, và kết quả phải ra sao — trên nền <strong>SEMI E5 (SECS-II)</strong> vốn chỉ định nghĩa
+<strong>nội dung bản tin</strong>; ⚠ và GEM <strong>không quy định hành vi của hệ thống cấp trên</strong> — nền cho mục 45.4b.</li>
 </ul>
 <blockquote>
 <p>⚠⚠ <strong>Giới hạn của chương này.</strong> Nội dung ở đây là <strong>định hướng để bạn không tự tạo ra lỗ hổng và

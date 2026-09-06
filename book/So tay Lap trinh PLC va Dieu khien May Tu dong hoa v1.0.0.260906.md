@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260905 |
+| **Phiên bản** | v1.0.0.260906 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -1853,7 +1853,22 @@ vào chân tín hiệu có thể làm hỏng cả cảm biến lẫn ngõ vào m
 
 ---
 
-## 4.8 Tự kiểm
+## 4.8 Bảng chốt
+
+| Câu hỏi | Trả lời |
+|---|---|
+| ⭐⭐ "Trạng thái NORMAL" nghĩa là gì | **Lúc không có kích thích** — chưa ai nhấn, chưa thấy vật |
+| Cảm biến 2 dây khác 3 dây ở đâu | 2 dây mắc **nối tiếp với tải**; 3 dây có **nguồn riêng** cho phần điện tử |
+| ⚠⚠ PNP/NPN — bốn tổ hợp | ⭐ **Hai tổ hợp KHÔNG BAO GIỜ chạy**, dù thiết bị tốt và dây đúng màu |
+| Cách nhớ | ⭐ Cảm biến **cấp dòng** thì module phải **nhận dòng**, và ngược lại |
+| ⚠ Đấu sai kiểu thì | Không phải "chạy sai" mà là **không chạy** — và trông y hệt hỏng cảm biến |
+| Chọn kiểu đầu ra lúc nào | ⭐ **Lúc mua sắm**, theo bảng 4 tổ hợp — không phải lúc đấu dây |
+| ⭐ Tín hiệu mất là phải dừng | Tiếp điểm vật lý **NC** (Chương 15, mục 15.3) |
+| Cảm biến quang chọn loại nào | Theo **vật cần phát hiện** và khoảng cách — thu-phát riêng, phản xạ gương, phản xạ khuếch tán |
+
+---
+
+## 4.9 Tự kiểm
 
 1. **Viết lại bảng 4 tổ hợp từ trí nhớ**, kèm giải thích đường đi của dòng cho hai tổ hợp chạy được.
 2. Một cảm biến PNP, đèn trên thân sáng khi có vật, nhưng bit PLC không lên. **Ba bước kiểm tra đầu
@@ -2175,7 +2190,7 @@ ra**, và nó nằm trong mô tả trình tự.
 
 ---
 
-## 5.8 Bảng chốt — chọn gì cho tải nào
+## 5.8 ⭐ Chọn gì cho tải nào — bảng tra khi thiết kế
 
 | Tải | Kiểu ngõ ra | Mạch dập | Rơ-le trung gian |
 |---|---|---|---|
@@ -4657,7 +4672,23 @@ Chi tiết đối chiếu năm hệ: **Phụ lục A1**.
 
 ---
 
-## 10.6 Tự kiểm
+## 10.6 Bảng chốt
+
+| Câu hỏi | Trả lời |
+|---|---|
+| ⭐⭐ Bốn giai đoạn của vòng quét | **Đọc ảnh vào → chạy chương trình → ghi ảnh ra → việc hệ thống** |
+| PLC nhìn ngõ vào mấy lần một vòng | ⭐ **Một lần**, ở đầu vòng — giữa chừng nó không biết gì |
+| ⚠ Xung ngắn hơn một vòng quét | ⭐ **Mất hoàn toàn** — cần bắt cạnh hoặc bộ đếm tốc độ cao (Chương 18) |
+| ⭐⭐ Vì sao thứ tự nấc thang đổi kết quả | Nấc sau đọc **giá trị nấc trước vừa ghi**, trong **cùng** một vòng |
+| Truy cập trực tiếp dùng khi nào | ⚠ **Chỉ khi đã đo được** rằng độ trễ một vòng quét là không chấp nhận được |
+| ⚠⚠ Watchdog kích thì | **Mọi ngõ ra tắt cùng lúc, giữa chu trình** — kiểu dừng tệ nhất |
+| Thời gian quét con số nào quan trọng | ⭐ **Lớn nhất**, không phải trung bình |
+| Chương trình phình ra thì | Quét dài ra → biên an toàn của mọi tính toán thời gian **hẹp lại** |
+| Hai POU cùng ghi một biến | ⚠ **Tranh chấp** — kết quả phụ thuộc thứ tự gọi, rất khó tái hiện |
+
+---
+
+## 10.7 Tự kiểm
 
 Làm được những việc sau thì coi như hiểu chương này:
 
@@ -6994,7 +7025,23 @@ Nhưng những chi tiết sau **khác nhau thật** và sẽ làm bạn vấp kh
 
 ---
 
-## 15.7 Tự kiểm
+## 15.7 Bảng chốt
+
+| Câu hỏi | Trả lời |
+|---|---|
+| ⭐ "Dòng năng lượng" trong ladder là gì | **Ẩn dụ**, không phải điện — nó là **thứ tự đánh giá logic** |
+| Hai lệnh tiếp điểm | ⭐ Kiểm bit **bằng 1** · kiểm bit **bằng 0** — ⚠ tên gọi "NO/NC" trong phần mềm gây hại |
+| ⭐⭐ Bảng bốn tổ hợp — đáp án | **Tiếp điểm vật lý NC, trong code dùng tiếp điểm kiểm-bằng-1** |
+| ⚠⚠ Tổ hợp nguy hiểm nhất | ⭐ **NO + kiểm-bằng-0**: chạy đúng mọi lần thử, hỏng đúng ngày đứt dây |
+| ⚠⚠ Giới hạn của bảng 4 tổ hợp | ⭐ Chỉ phủ **hỏng kiểu HỞ** — **không** phủ hỏng kiểu **CHẬP** (mục 15.3) |
+| Cuộn dây trùng | ⭐ **Nấc cuối thắng** — và lỗi này im lặng |
+| Thứ tự nấc thang | ⚠ **Là logic**, không phải cách sắp xếp cho đẹp |
+| Một nấc nên chứa bao nhiêu | ⭐ Đủ để **đọc hiểu trong một lần nhìn** — nhồi nhiều là nợ cho người bảo trì |
+| ⭐ Trước khi kết luận về đấu nối | **Đo thật**, đừng suy từ nhãn trên thiết bị |
+
+---
+
+## 15.8 Tự kiểm
 
 1. **Viết lại bảng 4 tổ hợp từ trí nhớ.** Chỉ ra tổ hợp đúng và giải thích vì sao tổ hợp 2 nguy hiểm
    dù nó chạy đúng khi thử nghiệm.
@@ -10156,6 +10203,11 @@ So với cùng trình tự viết bằng `CASE` (Chương 20, mục 20.2): SFC *
 bước, đi theo đường nào, quay lại chỗ nào. Với người đọc lần đầu, đây là lợi thế lớn.
 
 ### Hai kiểu nhánh
+
+![Hai kiểu nhánh trong SFC](../assets/ch21/hinh_21_1_hai_kieu_nhanh_sfc.svg)
+
+*Hình 21.1 — Vạch đôi và vạch đơn. Hai nét vẽ gần giống nhau, nghĩa ngược nhau, và vẽ nhầm thì máy
+đứng im vĩnh viễn mà không báo gì.*
 
 **Nhánh song song** *(parallel / simultaneous divergence)* — hai nhánh chạy **cùng lúc**, và trình tự
 chỉ đi tiếp khi **cả hai** đã xong:
@@ -14385,6 +14437,65 @@ màn hình có thể bị thay, bị bỏ qua, hoặc công thức có thể đ�
 
 ---
 
+## 29.6b ⭐⭐ "Được duyệt" và "đã chứng thực" là HAI câu hỏi khác nhau
+
+Mục trên lo việc **ghi vết ai sửa gì**. Còn một câu hỏi nữa mà công thức phải trả lời được trước khi
+đem ra chạy hàng — và ⚠ nhiều hệ gộp nó làm một, gây ra đúng loại sự cố khó truy.
+
+| Câu hỏi | Ai trả lời | Ý nghĩa |
+|---|---|---|
+| ⭐ **Công thức này ĐÃ ĐƯỢC DUYỆT chưa?** | Kỹ thuật quá trình, quản lý sản xuất | Nội dung công thức là **đúng về mặt công nghệ** |
+| ⭐⭐ **Nó ĐÃ ĐƯỢC CHỨNG THỰC trên MÁY NÀY chưa?** | Người chạy thử trên chính cỗ máy đó | Đã chạy thật ở đây và **cho kết quả đạt** |
+
+> ⚠⚠ **Hai câu này độc lập, và đó là điểm mấu chốt.**
+>
+> Một công thức được kỹ thuật duyệt hoàn toàn có thể ⚠ **chưa từng chạy trên máy số 3** — vì máy số 3
+> có gá khác, đèn khác, hoặc vừa thay một cơ cấu. ⭐ *"Đã duyệt"* **không suy ra được** *"chạy được ở
+> đây"*.
+>
+> ⭐ Ngược lại cũng vậy: ai đó chỉnh tham số cho chạy được trên máy số 3 thì ⚠ **đó chưa phải công
+> thức đã duyệt** — nó chỉ là một bản vá tại chỗ.
+
+### ⭐ Mức duyệt là một CON SỐ, không phải một dấu tích
+
+Cách làm quen thuộc là một cờ *"đã duyệt: có/không"*. ⭐ Cách chặt hơn: **mức duyệt là một con số**,
+và **khoá được suy ra từ con số đó**:
+
+```text
+Công thức có  Mức duyệt  ≥  Ngưỡng chỉ-đọc của kho   →  KHOÁ, không sửa được
+```
+
+| | |
+|---|---|
+| ⭐⭐ Vì sao hơn hẳn cờ có/không | **Khoá là HỆ QUẢ**, không phải việc ai đó phải nhớ bật |
+| ⭐ Đặt ngưỡng bằng 0 | ⭐ **Mọi công thức đều bị khoá** — mặc định an toàn cho môi trường sản xuất |
+| ⭐ Nhiều mức | Nháp · đã kiểm nội bộ · đã duyệt sản xuất — mỗi mức mở ra quyền khác nhau |
+
+> ⭐ **Đây là cùng tinh thần với "làm cho hỏng hóc trở nên phát hiện được"** ở Chương 48: ⚠ thay vì
+> trông vào việc **người ta nhớ khoá công thức**, hãy để trạng thái khoá **tự suy ra** từ một thuộc
+> tính mà quy trình bắt buộc phải điền.
+
+### ⭐ Vòng đời một công thức — các trạng thái đáng có
+
+| Trạng thái | Nghĩa | Được làm gì |
+|---|---|---|
+| **Tạo / sửa** | Bản nháp trong kho | Sửa tự do |
+| ⭐ **Đã duyệt** | Nội dung được người có thẩm quyền chấp nhận | ⚠ **Khoá** nếu mức duyệt vượt ngưỡng |
+| ⭐⭐ **Đã chứng thực trên máy này** | Đã chạy thật ở đây, kết quả đạt | ⭐ **Được phép chạy sản xuất** |
+| ⚠ **Bị rút chứng thực** | Máy thay đổi, hoặc kết quả không còn đạt | ⚠⚠ **Phải chứng thực lại trước khi chạy tiếp** |
+
+> ⚠⚠ **Trạng thái cuối là trạng thái hay bị bỏ quên nhất, và nó bảo vệ đúng lúc nguy hiểm nhất.**
+>
+> Sau khi **thay cơ cấu, đổi cảm biến, hay sửa cơ khí** (Chương 53), ⭐ chứng thực cũ **không còn giá
+> trị** — dù công thức không đổi một chữ. ⚠ Hệ nào không có trạng thái này thì sau mỗi lần bảo trì,
+> máy chạy tiếp với một chứng thực **đã hết hiệu lực mà không ai biết**.
+>
+> ⭐ **Cách làm tối thiểu nếu hệ của bạn không có sẵn:** giữ hai trường trong bản ghi công thức —
+> *"mức duyệt"* và *"lần chứng thực gần nhất trên máy này (ngày, người, kết quả)"* — và ⭐ **xoá trường
+> thứ hai trong quy trình bảo trì**, cùng chỗ với việc gỡ cưỡng bức (Chương 51, mục 51.7).
+
+---
+
 ## 29.7 Trên máy mẫu DP-01
 
 Bảng công thức cho ba mã hàng:
@@ -14527,6 +14638,9 @@ Cơ chế bảo vệ bị vô hiệu hoá từ bên trong.
 | Chưa nạp công thức thì | ⚠ **Không cho vào `Running`** |
 | Ghi vết | Thời gian · người · công thức cũ → mới, ghi **tại điểm nạp** |
 | Phân quyền | Chọn / sửa tham số / sửa dải hợp lệ là **ba cấp khác nhau** |
+| ⭐⭐ Hai câu hỏi độc lập | **Đã duyệt** (nội dung đúng) và ⭐ **đã chứng thực trên MÁY NÀY** |
+| ⭐ Mức duyệt nên là gì | **Một con số**, và **khoá tự suy ra** khi vượt ngưỡng — không phải cờ ai đó nhớ bật |
+| ⚠⚠ Sau khi bảo trì đổi cơ cấu | ⭐ **Chứng thực cũ hết hiệu lực** — phải chứng thực lại dù công thức không đổi |
 | Trước khi thiết kế bảng công thức | ⚠ Kiểm **dung lượng vùng nhớ giữ được** của CPU |
 
 ---
@@ -14547,6 +14661,12 @@ Cơ chế bảo vệ bị vô hiệu hoá từ bên trong.
 9. Nêu ba mức chính sách đổi công thức khi đang chạy. Mức nào là mặc định đúng cho DP-01 và vì sao?
 10. ⭐ Người vận hành gặp thông báo "vượt giới hạn" và nới dải hợp lệ ra. Vì sao đó là vấn đề nghiêm
     trọng, và cơ chế nào ngăn được nó?
+11. ⭐⭐ Nêu **hai câu hỏi độc lập** phải trả lời trước khi cho một công thức chạy hàng. ⚠ Vì sao
+    *"đã duyệt"* **không suy ra được** *"chạy được ở đây"*?
+12. ⭐ Vì sao để **mức duyệt là một con số** và **khoá tự suy ra** thì chặt hơn một cờ *"đã duyệt:
+    có/không"*? Liên hệ với nguyên tắc ở Chương 48.
+13. ⚠⚠ Máy vừa thay một cơ cấu, công thức **không đổi một chữ**. ⭐ Có được chạy tiếp ngay không, vì
+    sao? Nêu việc tối thiểu phải làm.
 
 > Câu 3, 5 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: **một cơ chế bảo vệ mà người
 > dùng tự nới được thì không phải cơ chế bảo vệ.**
@@ -14569,6 +14689,10 @@ lại, và quản lý phiên bản.
   kiểm trước khi thiết kế bảng công thức.
 - Bảng công thức và đặc tả tham số của DP-01 — Phụ lục J; bảng ở mục 29.7 lấy từ đó.
 - Biểu mẫu **nhật ký thay đổi công thức** — Phụ lục C.
+- ⭐ **SEMI E42** — *Recipe Management Standard: Concepts, Behavior, and Message Services*: vòng đời
+  công thức (mục 8.1) và các thao tác **duyệt · bảo vệ · chứng thực / rút chứng thực** (mục 8.2.4–8.2.8);
+  ⭐⭐ cơ chế **khoá suy ra từ ngưỡng mức duyệt** (mục 8.2.5) thay cho một cờ đặt tay — nền cho
+  mục 29.6b.
 
 > ⚡ Các dải hợp lệ ở mục 29.7 là **giá trị của máy mẫu DP-01**, không phải giá trị áp dụng chung. Dải
 > của máy bạn đến từ **giới hạn vật lý của cơ cấu** và từ **yêu cầu công nghệ của sản phẩm** — hai
@@ -17392,6 +17516,11 @@ CV = Kp × e
 ```
 
 Sai lệch lớn → tác động mạnh. Sai lệch nhỏ → tác động nhẹ. Trực giác, và hiệu quả.
+
+![Ba đường đáp ứng của bộ điều khiển](../assets/ch35/hinh_35_1_ba_duong_dap_ung.svg)
+
+*Hình 35.1 — Cùng một quá trình, cùng một điểm đặt, ba cách chỉnh. Đường vàng dừng lại dưới điểm đặt
+và ở lại đó; đường xanh tới đúng nơi; đường đỏ là hậu quả của việc tăng P để bù sai lệch tĩnh.*
 
 ### ⭐ Vì sao P thuần luôn để lại sai lệch tĩnh
 
@@ -23366,6 +23495,45 @@ Hai cách phổ biến để đưa dữ liệu từ tầng máy lên tầng trê
 
 ---
 
+## 45.4b ⭐ Nếu khách hàng làm điện tử: họ sẽ hỏi về SECS/GEM
+
+Hai giao thức ở mục trên là lựa chọn chung cho công nghiệp. ⚠ Nhưng trong **bán dẫn và điện tử** —
+đúng ngành của máy mẫu DP-01 — có một bộ tiêu chuẩn riêng, và khách hàng sẽ **hỏi đích danh nó**.
+
+Bộ này chia làm **ba tầng tách bạch**, và hiểu đúng chỗ chia là đủ để nói chuyện được:
+
+| Tầng | Trả lời câu hỏi | Tên thường gặp |
+|---|---|---|
+| **Vận chuyển** | Bản tin đi qua đường nào | Nối tiếp điểm–điểm, hoặc **trên nền TCP/IP** |
+| ⭐ **Nội dung bản tin** | Bản tin **gồm những gì** — cấu trúc, kiểu dữ liệu | **SECS-II** |
+| ⭐⭐ **Hành vi thiết bị** | ⭐ **Dùng bản tin nào, trong tình huống nào, và máy phải làm gì sau đó** | **GEM** |
+
+> ⭐ **Tầng thứ ba mới là tầng đắt.** Hai tầng dưới chỉ nói *"nói bằng gì"*; ⭐⭐ GEM nói *"cư xử thế
+> nào"* — trạng thái xử lý, sự kiện thu thập, báo động, lệnh từ xa, biến dữ liệu.
+>
+> ⚡ Nói cách khác, nó là **đặc tả hành vi của máy nhìn từ đầu dây bên kia** — đúng thứ mà Chương 42
+> gọi là *"giao diện MES"*, nhưng đã được chuẩn hoá sẵn thay vì mỗi nhà máy tự định nghĩa.
+
+> ⚠⚠ **Bất đối xứng quan trọng nhất, và nó quyết định cách bạn viết hợp đồng:**
+>
+> ⭐ **GEM quy định hành vi của THIẾT BỊ, không quy định hành vi của HỆ THỐNG CẤP TRÊN.** Cấp trên có
+> quyền khởi xướng bất kỳ kịch bản nào, **bất kỳ lúc nào** — và máy của bạn **phải đáp đúng như chuẩn
+> mô tả**.
+>
+> ⚠ Hệ quả: câu *"máy chúng tôi hỗ trợ GEM"* là **một cam kết một chiều — về phía bạn**. ⭐ Nó **không**
+> cho bạn biết cấp trên sẽ làm gì, gọi gì, gọi lúc nào. ⚠⚠ Vẫn phải hỏi **đúng những câu ở Chương 42
+> mục 42.8** — và hỏi **sớm**.
+
+> ⭐ **Mức độ chi tiết cần biết, tuỳ vai trò của bạn:**
+>
+> | | |
+> |---|---|
+> | Người lập trình PLC ở máy **không** thuộc ngành này | ⭐ Biết **tên và ba tầng** là đủ |
+> | Máy sẽ bán vào nhà máy điện tử/bán dẫn | ⚠⚠ **Hỏi ngay từ khâu đặc tả**: có yêu cầu GEM không, mức nào |
+> | Đã chốt là có | ⭐ Phần này thường do **một mô-đun phần mềm chuyên dụng** đảm nhiệm, không viết tay trong PLC — nhưng ⚠ **PLC phải cấp đủ dữ liệu và trạng thái** cho nó (mục 45.2) |
+
+---
+
 ## 45.5 ⭐⭐ Vì sao không cho hệ IT truy cập trực tiếp PLC
 
 Đây là mục quan trọng nhất chương.
@@ -23738,6 +23906,10 @@ hệ quả của lựa chọn đó lên toàn bộ cách viết chương trình.
 - **Tài liệu bảo mật của hệ PLC đang dùng** — dùng cho ⚠ **khả năng xác thực và mã hoá của dòng CPU
   cụ thể**, cơ chế khoá chương trình, và ghi vết truy cập.
 - Bảng I/O và số liệu đã chốt của DP-01 — Phụ lục J.
+- ⭐ **SEMI E30** — *Generic Model for Communications and Control of Manufacturing Equipment (GEM)*,
+  mục 1.2–1.3: GEM định nghĩa ⭐⭐ **hành vi của thiết bị nhìn qua đường truyền** — dùng bản tin nào,
+  trong tình huống nào, và kết quả phải ra sao — trên nền **SEMI E5 (SECS-II)** vốn chỉ định nghĩa
+  **nội dung bản tin**; ⚠ và GEM **không quy định hành vi của hệ thống cấp trên** — nền cho mục 45.4b.
 
 > ⚠⚠ **Giới hạn của chương này.** Nội dung ở đây là **định hướng để bạn không tự tạo ra lỗ hổng và
 > biết phải hỏi gì**. Nó **không** đủ để thiết kế kiến trúc an ninh cho một nhà máy.

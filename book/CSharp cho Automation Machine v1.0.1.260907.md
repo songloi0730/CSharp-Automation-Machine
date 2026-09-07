@@ -11300,6 +11300,110 @@ nhau (tương đương 3/12 lưới mỗi cột); muốn một panel chiếm n�
 thuộc từ các hệ thiết kế web (Bootstrap/Material), không phải khái niệm
 XAML mới.
 
+### 10.2.5b  Căn chỉnh, nhóm và thứ tự đọc — phần còn lại của bố cục
+
+Mục trên cho bạn **các con số**: đơn vị, bội số của 8, bảng khoảng cách, lưới 12 cột. Nhưng hai
+màn hình dùng đúng cùng bộ số đó vẫn có thể một cái gọn gàng và một cái lộn xộn. Phần chênh
+nhau nằm ở ba thứ không đo bằng pixel: **căn chỉnh, cách nhóm, và thứ tự đọc**.
+
+#### Căn chỉnh: đếm số lề, càng ít càng tốt
+
+Quy tắc thực dụng nhất về bố cục cũng là quy tắc dễ kiểm nhất: **kẻ vài đường thẳng đứng tưởng
+tượng lên màn hình của bạn và đếm xem có bao nhiêu lề khác nhau**. Mỗi nhãn bắt đầu ở một chỗ,
+mỗi ô nhập rộng một kiểu, mỗi nhóm thụt vào một mức — đó là cảm giác "trông thiếu chủ đích" mà
+người ta hay mô tả mơ hồ là *"xấu"*.
+
+Ba luật đủ dùng cho hầu hết màn hình máy:
+
+1. **Mọi nhãn cùng một lề, mọi giá trị cùng một lề.** Hai lề, không phải mười.
+2. **Thụt lề để thể hiện cấp bậc, không phải để trang trí.** Nếu một khối thụt vào, nó phải
+   *thuộc về* khối phía trên. Người đọc dùng thụt lề để suy ra quan hệ mà không cần đọc chữ.
+3. **Cùng loại thì cùng bề rộng.** Bốn ô nhập số cạnh nhau nên rộng bằng nhau kể cả khi một ô
+   chứa số ngắn hơn — bề rộng khác nhau ngầm báo hiệu "đây là loại dữ liệu khác".
+
+#### Số liệu: căn phải, và chữ số phải cùng bề rộng
+
+Đây là quy tắc mang lại nhiều giá trị nhất cho một màn hình máy, và cũng là quy tắc hay bị bỏ
+nhất — vì mặc định của mọi framework là căn trái.
+
+| Cách căn | Trông ra sao khi xếp chồng | Hệ quả |
+|---|---|---|
+| **Căn trái** (mặc định) | `9.5` / `12.75` / `108.2` — hàng đơn vị nhảy loạn | Muốn so sánh phải đọc từng số |
+| **Căn phải theo dấu thập phân** | Hàng đơn vị, hàng chục thẳng cột | **Nhìn lướt là thấy số nào bất thường** — dài hơn hẳn nghĩa là lớn hơn hẳn |
+
+Kèm theo nó là một chi tiết nhỏ nhưng khó chịu nếu bỏ qua: **chữ số phải cùng bề rộng**. Nhiều
+phông chữ hiện đại vẽ số `1` hẹp hơn số `8`, nên một giá trị đang cập nhật liên tục sẽ **nhảy
+qua nhảy lại** vài pixel mỗi lần đổi — trên màn hình có chục giá trị đang chạy thì cả vùng đó
+rung. Cách chữa trong WPF là bật bộ chữ số cùng bề rộng:
+
+```xml
+<!-- Số căn phải + chữ số cùng bề rộng: giá trị đổi mà không làm nhảy bố cục -->
+<TextBlock Text="{Binding PositionMm, StringFormat={}{0:F2}}"
+           HorizontalAlignment="Right"
+           Typography.NumeralAlignment="Tabular"/>
+```
+
+> ⚠️ **`NumeralAlignment="Tabular"` chỉ có tác dụng nếu phông chữ hỗ trợ.** Đây là một tính năng
+> OpenType, không phải một phép co giãn do WPF tự làm — phông không có bộ chữ số dạng bảng thì
+> khai báo này im lặng không đổi gì, và bạn sẽ tưởng mình đã sửa xong. Cách kiểm chắc chắn:
+> cho một giá trị chạy từ `111.11` tới `888.88` và nhìn xem bề rộng có đổi không. Nếu có, dùng
+> phương án chắc ăn cho **riêng vùng hiển thị số**: một phông có chữ số đơn cách (`Consolas`) —
+> nó không đẹp bằng phông thân bài nhưng nó không bao giờ nhảy.
+
+> 💡 **Và luôn để đơn vị ở một cột riêng, đừng nối vào số.** `"12.75 mm"` là một chuỗi, nên khi
+> căn phải thì chữ `mm` mới là thứ thẳng hàng, còn con số thì vẫn lệch. Tách thành hai cột — số
+> căn phải, đơn vị căn trái — và bạn được cả hai: số thẳng cột **và** đơn vị luôn nhìn thấy
+> (mục 10.1.6 nói vì sao đơn vị không được thiếu).
+
+#### Nhóm: khoảng trắng trước, đường kẻ sau
+
+Khi hai thứ đứng gần nhau, mắt tự hiểu là chúng liên quan — không cần vẽ gì cả. Đây là công cụ
+nhóm rẻ nhất và cũng hợp với tinh thần *màn hình yên tĩnh* của ISA-101 (mục 10.2.1): mỗi đường
+kẻ bạn vẽ thêm là một nét mực nữa cạnh tranh sự chú ý với thứ thật sự cần chú ý.
+
+Thứ tự nên thử, từ nhẹ tới nặng: **khoảng trắng** → **nền khác sắc độ rất nhẹ** → **đường kẻ
+mảnh** → **khung viền**. Chỉ đi xuống mức sau khi mức trước không đủ. Trên thực tế, khoảng trắng
+đủ dùng cho phần lớn trường hợp, và cách nhận ra mình đã lạm dụng đường kẻ rất đơn giản: **thử
+xoá hết đường kẻ đi — nếu bố cục vẫn đọc được thì những đường đó là thừa.**
+
+Điều kiện đi kèm: **khoảng cách giữa các nhóm phải lớn hơn hẳn khoảng cách trong nhóm**. Bảng
+10.2f ở mục trên đã cho sẵn tỉ lệ dùng được — 8 unit trong nhóm, 24–32 unit giữa các nhóm. Nếu
+hai con số đó gần nhau, mắt không phân biệt được nhóm, và mọi thứ trở thành một khối phẳng.
+
+#### Thứ tự đọc: chỗ đặt cũng là một cách nói
+
+Mắt đi từ trên xuống, từ đầu dòng sang cuối dòng. Nghĩa là **vị trí của một thành phần đã ngầm
+tuyên bố mức quan trọng của nó**, dù bạn có chủ ý hay không.
+
+**Bảng 10.2m — Vị trí và thứ bậc trên màn hình vận hành**
+
+| Vùng | Đặt gì | Vì sao |
+|---|---|---|
+| Trên cùng | Trạng thái máy, cảnh báo đang hoạt động | Thứ đầu tiên mắt chạm tới, và là thứ người vận hành cần biết trước mọi thứ khác |
+| Giữa | Nội dung của màn hình hiện tại | Vùng đổi theo từng màn hình |
+| Dưới cùng, cố định | Nút hành động chính, trong đó có Dừng | Tay đặt sẵn ở đó; **vị trí không đổi giữa các màn hình** nên thành trí nhớ cơ bắp |
+| Góc, cạnh | Thông tin phụ: phiên bản, người đăng nhập, đồng hồ | Có mặt khi cần tra, không tranh chú ý |
+
+> 📌 **Một hệ quả ít người để ý: cái gì cố định vị trí thì được dùng nhiều hơn hẳn cái gì di
+> chuyển.** Nếu nút *Dừng* nằm ở góc phải dưới trên màn hình này và góc trái dưới trên màn hình
+> kia, người vận hành phải **nhìn** để tìm nó — mà đúng lúc cần bấm Dừng thì họ đang nhìn cỗ máy,
+> không nhìn màn hình. Giữ nguyên vị trí các nút cấp cao nhất giữa mọi màn hình còn quan trọng
+> hơn việc bố trí chúng "đẹp" trên từng màn hình riêng lẻ. Đây là cùng lập luận với ánh xạ phím
+> chức năng cố định ở mục 10.1.9.
+
+#### Hai phép thử bố cục đáng làm trước khi giao máy
+
+**1. Thử với dữ liệu xấu nhất, không phải dữ liệu mẫu.** Tên công thức dài nhất, giá trị âm có
+nhiều chữ số nhất, danh sách cảnh báo dài nhất, và **bản dịch dài nhất** — chuyển sang ngôn ngữ
+khác thường làm chuỗi dài thêm đáng kể (mục 10.4.2). Bố cục vỡ ở hiện trường gần như luôn vì
+người viết chỉ thử với dữ liệu vừa đẹp.
+
+**2. Nói cho người dùng biết còn nội dung phía dưới.** Một danh sách kết thúc đúng ở mép khung
+trông y hệt một danh sách đã hết. Cách rẻ nhất là **để lộ một phần hàng kế tiếp** ở mép dưới, và
+hiện số lượng (*"12 / 48"*) — hai chi tiết đó nói rõ "còn nữa" mà không tốn thêm chỗ nào.
+
+---
+
 ### 10.2.6 Thành phần UI và khi nào dùng cái nào
 
 **Bảng 10.2g — Hướng dẫn chọn control cho từng nhu cầu**
@@ -32213,7 +32317,7 @@ thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.
 ## C
 
 - **C++ automation** — 6.3.2
-- **Căn chỉnh (Alignment)** — 13.4.3
+- **Căn chỉnh (Alignment)** — 10.2.5b, 13.4.3
 - **CancellationToken** — 5.2, 18.4.2
 - **CancellationTokenSource** — 5.2
 - **Capability Interface** — 13.2.1

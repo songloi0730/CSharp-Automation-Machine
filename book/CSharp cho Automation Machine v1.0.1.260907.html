@@ -12367,6 +12367,129 @@ nhau (tương đương 3/12 lưới mỗi cột); muốn một panel chiếm n�
 <code>*</code> đã học ở Chương 9 — ở đây chỉ áp dụng theo quy ước lưới 12 phần quen
 thuộc từ các hệ thiết kế web (Bootstrap/Material), không phải khái niệm
 XAML mới.</p>
+<h3>10.2.5b  Căn chỉnh, nhóm và thứ tự đọc — phần còn lại của bố cục</h3>
+<p>Mục trên cho bạn <strong>các con số</strong>: đơn vị, bội số của 8, bảng khoảng cách, lưới 12 cột. Nhưng hai
+màn hình dùng đúng cùng bộ số đó vẫn có thể một cái gọn gàng và một cái lộn xộn. Phần chênh
+nhau nằm ở ba thứ không đo bằng pixel: <strong>căn chỉnh, cách nhóm, và thứ tự đọc</strong>.</p>
+<h4>Căn chỉnh: đếm số lề, càng ít càng tốt</h4>
+<p>Quy tắc thực dụng nhất về bố cục cũng là quy tắc dễ kiểm nhất: <strong>kẻ vài đường thẳng đứng tưởng
+tượng lên màn hình của bạn và đếm xem có bao nhiêu lề khác nhau</strong>. Mỗi nhãn bắt đầu ở một chỗ,
+mỗi ô nhập rộng một kiểu, mỗi nhóm thụt vào một mức — đó là cảm giác &quot;trông thiếu chủ đích&quot; mà
+người ta hay mô tả mơ hồ là <em>&quot;xấu&quot;</em>.</p>
+<p>Ba luật đủ dùng cho hầu hết màn hình máy:</p>
+<ol>
+<li><strong>Mọi nhãn cùng một lề, mọi giá trị cùng một lề.</strong> Hai lề, không phải mười.</li>
+<li><strong>Thụt lề để thể hiện cấp bậc, không phải để trang trí.</strong> Nếu một khối thụt vào, nó phải
+<em>thuộc về</em> khối phía trên. Người đọc dùng thụt lề để suy ra quan hệ mà không cần đọc chữ.</li>
+<li><strong>Cùng loại thì cùng bề rộng.</strong> Bốn ô nhập số cạnh nhau nên rộng bằng nhau kể cả khi một ô
+chứa số ngắn hơn — bề rộng khác nhau ngầm báo hiệu &quot;đây là loại dữ liệu khác&quot;.</li>
+</ol>
+<h4>Số liệu: căn phải, và chữ số phải cùng bề rộng</h4>
+<p>Đây là quy tắc mang lại nhiều giá trị nhất cho một màn hình máy, và cũng là quy tắc hay bị bỏ
+nhất — vì mặc định của mọi framework là căn trái.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách căn</th>
+<th>Trông ra sao khi xếp chồng</th>
+<th>Hệ quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Căn trái</strong> (mặc định)</td>
+<td><code>9.5</code> / <code>12.75</code> / <code>108.2</code> — hàng đơn vị nhảy loạn</td>
+<td>Muốn so sánh phải đọc từng số</td>
+</tr>
+<tr>
+<td><strong>Căn phải theo dấu thập phân</strong></td>
+<td>Hàng đơn vị, hàng chục thẳng cột</td>
+<td><strong>Nhìn lướt là thấy số nào bất thường</strong> — dài hơn hẳn nghĩa là lớn hơn hẳn</td>
+</tr>
+</tbody></table></div>
+<p>Kèm theo nó là một chi tiết nhỏ nhưng khó chịu nếu bỏ qua: <strong>chữ số phải cùng bề rộng</strong>. Nhiều
+phông chữ hiện đại vẽ số <code>1</code> hẹp hơn số <code>8</code>, nên một giá trị đang cập nhật liên tục sẽ <strong>nhảy
+qua nhảy lại</strong> vài pixel mỗi lần đổi — trên màn hình có chục giá trị đang chạy thì cả vùng đó
+rung. Cách chữa trong WPF là bật bộ chữ số cùng bề rộng:</p>
+<pre><code class="language-xml">&lt;!-- Số căn phải + chữ số cùng bề rộng: giá trị đổi mà không làm nhảy bố cục --&gt;
+&lt;TextBlock Text=&quot;{Binding PositionMm, StringFormat={}{0:F2}}&quot;
+           HorizontalAlignment=&quot;Right&quot;
+           Typography.NumeralAlignment=&quot;Tabular&quot;/&gt;
+</code></pre>
+<blockquote>
+<p>⚠️ <strong><code>NumeralAlignment=&quot;Tabular&quot;</code> chỉ có tác dụng nếu phông chữ hỗ trợ.</strong> Đây là một tính năng
+OpenType, không phải một phép co giãn do WPF tự làm — phông không có bộ chữ số dạng bảng thì
+khai báo này im lặng không đổi gì, và bạn sẽ tưởng mình đã sửa xong. Cách kiểm chắc chắn:
+cho một giá trị chạy từ <code>111.11</code> tới <code>888.88</code> và nhìn xem bề rộng có đổi không. Nếu có, dùng
+phương án chắc ăn cho <strong>riêng vùng hiển thị số</strong>: một phông có chữ số đơn cách (<code>Consolas</code>) —
+nó không đẹp bằng phông thân bài nhưng nó không bao giờ nhảy.</p>
+</blockquote>
+<blockquote>
+<p>💡 <strong>Và luôn để đơn vị ở một cột riêng, đừng nối vào số.</strong> <code>&quot;12.75 mm&quot;</code> là một chuỗi, nên khi
+căn phải thì chữ <code>mm</code> mới là thứ thẳng hàng, còn con số thì vẫn lệch. Tách thành hai cột — số
+căn phải, đơn vị căn trái — và bạn được cả hai: số thẳng cột <strong>và</strong> đơn vị luôn nhìn thấy
+(mục 10.1.6 nói vì sao đơn vị không được thiếu).</p>
+</blockquote>
+<h4>Nhóm: khoảng trắng trước, đường kẻ sau</h4>
+<p>Khi hai thứ đứng gần nhau, mắt tự hiểu là chúng liên quan — không cần vẽ gì cả. Đây là công cụ
+nhóm rẻ nhất và cũng hợp với tinh thần <em>màn hình yên tĩnh</em> của ISA-101 (mục 10.2.1): mỗi đường
+kẻ bạn vẽ thêm là một nét mực nữa cạnh tranh sự chú ý với thứ thật sự cần chú ý.</p>
+<p>Thứ tự nên thử, từ nhẹ tới nặng: <strong>khoảng trắng</strong> → <strong>nền khác sắc độ rất nhẹ</strong> → <strong>đường kẻ
+mảnh</strong> → <strong>khung viền</strong>. Chỉ đi xuống mức sau khi mức trước không đủ. Trên thực tế, khoảng trắng
+đủ dùng cho phần lớn trường hợp, và cách nhận ra mình đã lạm dụng đường kẻ rất đơn giản: <strong>thử
+xoá hết đường kẻ đi — nếu bố cục vẫn đọc được thì những đường đó là thừa.</strong></p>
+<p>Điều kiện đi kèm: <strong>khoảng cách giữa các nhóm phải lớn hơn hẳn khoảng cách trong nhóm</strong>. Bảng
+10.2f ở mục trên đã cho sẵn tỉ lệ dùng được — 8 unit trong nhóm, 24–32 unit giữa các nhóm. Nếu
+hai con số đó gần nhau, mắt không phân biệt được nhóm, và mọi thứ trở thành một khối phẳng.</p>
+<h4>Thứ tự đọc: chỗ đặt cũng là một cách nói</h4>
+<p>Mắt đi từ trên xuống, từ đầu dòng sang cuối dòng. Nghĩa là <strong>vị trí của một thành phần đã ngầm
+tuyên bố mức quan trọng của nó</strong>, dù bạn có chủ ý hay không.</p>
+<p><strong>Bảng 10.2m — Vị trí và thứ bậc trên màn hình vận hành</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Vùng</th>
+<th>Đặt gì</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Trên cùng</td>
+<td>Trạng thái máy, cảnh báo đang hoạt động</td>
+<td>Thứ đầu tiên mắt chạm tới, và là thứ người vận hành cần biết trước mọi thứ khác</td>
+</tr>
+<tr>
+<td>Giữa</td>
+<td>Nội dung của màn hình hiện tại</td>
+<td>Vùng đổi theo từng màn hình</td>
+</tr>
+<tr>
+<td>Dưới cùng, cố định</td>
+<td>Nút hành động chính, trong đó có Dừng</td>
+<td>Tay đặt sẵn ở đó; <strong>vị trí không đổi giữa các màn hình</strong> nên thành trí nhớ cơ bắp</td>
+</tr>
+<tr>
+<td>Góc, cạnh</td>
+<td>Thông tin phụ: phiên bản, người đăng nhập, đồng hồ</td>
+<td>Có mặt khi cần tra, không tranh chú ý</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Một hệ quả ít người để ý: cái gì cố định vị trí thì được dùng nhiều hơn hẳn cái gì di
+chuyển.</strong> Nếu nút <em>Dừng</em> nằm ở góc phải dưới trên màn hình này và góc trái dưới trên màn hình
+kia, người vận hành phải <strong>nhìn</strong> để tìm nó — mà đúng lúc cần bấm Dừng thì họ đang nhìn cỗ máy,
+không nhìn màn hình. Giữ nguyên vị trí các nút cấp cao nhất giữa mọi màn hình còn quan trọng
+hơn việc bố trí chúng &quot;đẹp&quot; trên từng màn hình riêng lẻ. Đây là cùng lập luận với ánh xạ phím
+chức năng cố định ở mục 10.1.9.</p>
+</blockquote>
+<h4>Hai phép thử bố cục đáng làm trước khi giao máy</h4>
+<p><strong>1. Thử với dữ liệu xấu nhất, không phải dữ liệu mẫu.</strong> Tên công thức dài nhất, giá trị âm có
+nhiều chữ số nhất, danh sách cảnh báo dài nhất, và <strong>bản dịch dài nhất</strong> — chuyển sang ngôn ngữ
+khác thường làm chuỗi dài thêm đáng kể (mục 10.4.2). Bố cục vỡ ở hiện trường gần như luôn vì
+người viết chỉ thử với dữ liệu vừa đẹp.</p>
+<p><strong>2. Nói cho người dùng biết còn nội dung phía dưới.</strong> Một danh sách kết thúc đúng ở mép khung
+trông y hệt một danh sách đã hết. Cách rẻ nhất là <strong>để lộ một phần hàng kế tiếp</strong> ở mép dưới, và
+hiện số lượng (<em>&quot;12 / 48&quot;</em>) — hai chi tiết đó nói rõ &quot;còn nữa&quot; mà không tốn thêm chỗ nào.</p>
+<hr>
 <h3>10.2.6 Thành phần UI và khi nào dùng cái nào</h3>
 <p><strong>Bảng 10.2g — Hướng dẫn chọn control cho từng nhu cầu</strong></p>
 <div class="table-wrap"><table>
@@ -35973,7 +36096,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <h2 id="c-2">C</h2>
 <ul>
 <li><strong>C++ automation</strong> — 6.3.2</li>
-<li><strong>Căn chỉnh (Alignment)</strong> — 13.4.3</li>
+<li><strong>Căn chỉnh (Alignment)</strong> — 10.2.5b, 13.4.3</li>
 <li><strong>CancellationToken</strong> — 5.2, 18.4.2</li>
 <li><strong>CancellationTokenSource</strong> — 5.2</li>
 <li><strong>Capability Interface</strong> — 13.2.1</li>

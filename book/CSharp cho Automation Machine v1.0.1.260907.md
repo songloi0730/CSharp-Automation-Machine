@@ -11604,6 +11604,93 @@ Sáu quy tắc còn lại, tất cả đều rẻ và đều hay bị bỏ:
 
 ---
 
+### 10.2.6d  Ba tình huống giao diện hay bị bỏ quên
+
+Ba thứ dưới đây nhỏ hơn hẳn hai mục trên, nhưng cả ba đều là chỗ phần mềm máy hay để lộ ra rằng
+người viết chỉ nghĩ tới trường hợp thuận lợi.
+
+#### 1. Menu chuột phải — nơi cất chức năng mà một nửa người dùng không với tới
+
+Khảo sát bộ mẫu cho một con số bất ngờ: **11/13 dự án có dùng menu chuột phải**. Bất ngờ hơn là
+những gì nằm trong đó — không phải *sao chép* hay *dán*, mà là:
+
+**Bảng 10.2l — Những gì thực sự nằm trong menu chuột phải của các dự án khảo sát**
+
+| Nhóm | Mục menu tìm thấy (đã dịch) | Nhận xét |
+|---|---|---|
+| Phá huỷ | *Xoá*, *Xoá sạch*, *Xoá nút này*, *Xoá lệnh* | Không hoàn tác được, và không đi qua hộp thoại xác nhận nào |
+| Chạm tới thiết bị | *Kết nối*, *Ngắt kết nối*, *Bắt đầu thu thập*, *Dừng thu thập* | Tác động thật lên phần cứng |
+| Sửa dữ liệu máy | *Sửa*, *Dạy điểm*, *Sửa điểm dạy* | Đổi toạ độ máy — hậu quả vật lý ở chu kỳ kế tiếp |
+
+Ba vấn đề, xếp theo mức độ nghiêm trọng tăng dần:
+
+**Không ai biết nó ở đó.** Menu chuột phải không có dấu hiệu nào báo cho biết nó tồn tại. Người
+mới tiếp quản máy có thể dùng phần mềm hàng tháng mà không biết mình đang bỏ lỡ nửa số chức năng.
+
+**Trên màn hình cảm ứng, nó đơn giản là không tồn tại.** Máy tính công nghiệp trong xưởng thường
+dùng cảm ứng và **không có chuột**. Mọi chức năng chỉ có đường vào bằng chuột phải sẽ **biến mất
+hoàn toàn** với người vận hành đứng trước máy — trong khi vẫn hoạt động bình thường trên máy tính
+của người lập trình. Đây là loại lỗi không bao giờ lộ ra lúc phát triển.
+
+**Nó là con đường vòng qua mọi cửa kiểm tra.** Cái nút *Xoá* trên màn hình đã đi qua kiểm quyền,
+qua hộp thoại xác nhận, qua nhật ký thao tác. Mục *Xoá* trong menu chuột phải — được thêm vào lúc
+gấp, ở một chỗ khác trong mã nguồn — thường **không đi qua thứ nào cả**.
+
+> ⚠️ **Ba luật cho menu chuột phải trong phần mềm máy.** (1) Nó chỉ được là **lối tắt cho thao tác
+> đã có đường vào khác nhìn thấy được** — không bao giờ là đường duy nhất. (2) Mọi mục trong đó
+> phải đi qua **đúng cửa kiểm quyền và guard** như nút tương ứng (mục 15.2.3), gọi chung một
+> lệnh, không viết lại logic. (3) Nếu máy có màn hình cảm ứng, mỗi mục phải có đường thay thế
+> chạm được — nút hiện lên trên hàng đang chọn, hoặc một nút *thao tác* cạnh danh sách.
+>
+> Phép thử một phút: **rút chuột ra khỏi máy tính rồi thử làm hết công việc của một ca.** Chỗ nào
+> tắc là chỗ có chức năng bị chôn sau chuột phải.
+
+#### 2. Màn hình khi chưa có gì — ba loại "rỗng" rất khác nhau
+
+Một bảng trống trông giống nhau trong cả ba tình huống dưới đây, nhưng ý nghĩa thì ngược nhau
+hoàn toàn — và trên máy sản xuất, đoán nhầm loại rỗng là chuyện nguy hiểm:
+
+| Loại rỗng | Nghĩa thật | Phải hiện gì |
+|---|---|---|
+| **Chưa có dữ liệu** | Đầu ca, máy vừa khởi động, chưa chạy sản phẩm nào | *"Chưa có sản phẩm nào trong ca này"* — bình thường, nói cho yên tâm |
+| **Lọc hết rồi** | Có dữ liệu, nhưng bộ lọc hiện tại không khớp gì | *"Không có bản ghi nào khớp bộ lọc"* + **nút xoá bộ lọc**. Đây là loại rỗng hay làm người ta tưởng mất dữ liệu |
+| **Không đọc được** | Mất kết nối cơ sở dữ liệu, truy vấn lỗi | **Phải nói rõ là lỗi**, kèm lý do và nút thử lại |
+
+> ⚠️ **Loại thứ ba là loại chết người, và nó hay bị hiển thị y hệt loại thứ nhất.** Một danh sách
+> cảnh báo trống có thể nghĩa là *"máy đang chạy tốt, không có cảnh báo nào"* — hoặc nghĩa là
+> *"mất kết nối với nguồn cảnh báo nên không đọc được gì"*. Hai thứ đó ngược nhau về mức độ nguy
+> hiểm, mà trên màn hình chúng giống hệt nhau: một khoảng trắng. Quy tắc: **màn hình rỗng phải
+> luôn nói rõ nó thuộc loại nào**, và loại "không đọc được" phải trông như một sự cố chứ không
+> như một sự yên tĩnh.
+>
+> Mục này không có số liệu khảo sát — không có cách nào đếm "trạng thái rỗng" bằng cách quét mã
+> nguồn. Nhưng chính vì không đếm được nên nó cũng không bao giờ được ai rà lại.
+
+#### 3. Hai màn hình — hiếm, nhưng hỏng theo kiểu khó chịu
+
+Chỉ **2/13 dự án** trong bộ mẫu có dấu vết xử lý nhiều màn hình, nên đây là tình huống ít gặp.
+Nhưng nó có thật ở những chỗ nhà máy gắn thêm một màn cho hệ thống ngoài hoặc cho ảnh thị giác,
+và khi gặp thì bốn cái bẫy dưới đây đến gần như cùng lúc:
+
+1. **Hộp thoại mở ra ở màn hình kia.** Đây là trường hợp tệ nhất và nối thẳng vào mục 10.2.6c:
+   một cửa sổ **chặn** mà người vận hành **không nhìn thấy**. Phần mềm trông như bị treo — nó
+   không nhận thao tác nào, và không có gì trên màn hình chính giải thích vì sao. Luật: **cửa sổ
+   con luôn mở trên cùng màn hình với cửa sổ cha**, không phải ở vị trí nhớ từ lần trước.
+2. **Nhớ vị trí cửa sổ, nhưng màn hình thứ hai không còn.** Lần sau khởi động mà cáp màn hình
+   thứ hai bị rút, cửa sổ được khôi phục vào một toạ độ nằm ngoài vùng nhìn thấy. Luôn **kiểm tra
+   vị trí đã lưu có nằm trong màn hình hiện có không**, không thì đưa về màn hình chính.
+3. **Hai màn khác độ phân giải hoặc khác mức phóng.** Bố cục vừa vặn ở màn này có thể vỡ ở màn
+   kia. Đây là lý do nữa để dùng bố cục co giãn thay vì toạ độ cố định (mục 10.2.5).
+4. **Chế độ toàn màn hình khoá nhầm màn.** Màn hình vận hành nên chiếm trọn **màn hình chính**;
+   các cửa sổ phụ (ảnh thị giác, nhật ký) mới là thứ được phép đẩy sang màn thứ hai.
+
+> 📌 **Nguyên tắc gói lại cho cả ba tình huống:** giao diện phải đúng cả khi **thiếu** thứ gì đó
+> — thiếu chuột, thiếu dữ liệu, thiếu một màn hình. Ba tình huống này không xuất hiện trên máy
+> của người lập trình, nên cách duy nhất bắt được chúng là **cố ý tạo ra chúng** trước khi giao
+> máy: rút chuột, xoá sạch dữ liệu thử, rút cáp màn hình thứ hai. Mỗi phép thử tốn vài phút.
+
+---
+
 ### 10.2.7 Lỗi phổ biến khi áp bảng màu và chữ
 
 - **Dùng đỏ/cam cho decoration hoặc button thường** — phá vỡ chính nguyên

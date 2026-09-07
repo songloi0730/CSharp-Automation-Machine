@@ -10300,6 +10300,62 @@ quyết định này không nằm trong bất kỳ chuẩn nào, mà đến từ
 > 32 inch có thể sai hoàn toàn cho một IPC 21 inch cạnh máy. Đọc chuẩn để
 > *hiểu lý do*, không phải để chép nguyên văn điều khoản.
 
+### 10.1.3b  Cái gì đáng lấy từ EEMUA 201 và SEMI E95
+
+Mục trên nói **cách** áp chuẩn: chọn lọc theo ngữ cảnh. Mục này nói **cụ thể lấy gì** — vì hai
+chuẩn kia, dù viết cho ngữ cảnh khác, mỗi chuẩn có vài nguyên tắc đúng cho cả một cỗ máy đơn lẻ,
+và chúng bổ khuyết đúng những chỗ ISA-101 không nói tới.
+
+#### Bốn nguyên tắc từ EEMUA 201
+
+Chuẩn này viết cho phòng điều khiển nhà máy quy trình, nên phần bố cục và số lượng màn hình
+không áp được. Nhưng bốn nguyên tắc **hệ thống** của nó thì đúng ở mọi quy mô:
+
+**Bảng 10.1c — Bốn nguyên tắc EEMUA 201 áp cho máy đơn lẻ**
+
+| Nguyên tắc | Nghĩa cụ thể trên một cỗ máy | Điều gì hỏng nếu bỏ qua |
+|---|---|---|
+| **Thiết kế cho lúc bất thường trước** | Giao diện phải tốt nhất lúc máy lỗi, lúc khởi động và lúc dừng — không phải lúc chạy đều | Đúng lúc cần giao diện nhất thì nó lại là phần ít được thiết kế nhất |
+| **Luôn nhìn thấy toàn cảnh** | Vùng trạng thái máy và thanh cảnh báo hiện ở **mọi** màn hình, kể cả màn chi tiết | *Tầm nhìn hẹp*: người vận hành chăm chú vào một màn và bỏ sót bất thường ở chỗ khác |
+| **Đừng để màn hình trống lúc bình thường** | Hiện trạng thái liên tục, không "chạy ngầm, chỉ báo khi lỗi" | Người vận hành mất mô hình tinh thần về máy, và **không nhận ra xu hướng xấu trước khi nó thành cảnh báo** |
+| **Một tác vụ, một màn hình** | Gom đủ tham số cho *một* việc vào một chỗ (hiệu chuẩn, đổi mã hàng) | Bắt mở ba màn để làm một việc — và người ta sẽ quên bước ở màn thứ hai |
+
+> ⚠️ **Nguyên tắc thứ ba nghe như mâu thuẫn với "màn hình yên tĩnh" ở mục 10.2.1 — nó không.**
+> *Yên tĩnh* nghĩa là **không có màu và không có chuyển động khi mọi thứ bình thường**. *Trống*
+> nghĩa là **không có thông tin**. Hai thứ khác hẳn nhau: một màn hình yên tĩnh vẫn hiện đầy đủ
+> nhịp máy, sản lượng, trạng thái từng trạm — chỉ là hiện bằng chữ và sắc độ trung tính, không
+> bằng đèn nhấp nháy. Cái ISA-101 muốn bỏ là **màu và chuyển động thừa**, không phải bỏ nội dung.
+>
+> Kiểm tra nhanh xem mình có rơi vào "màn hình trống" không: **nhìn màn hình lúc máy đang chạy
+> tốt và hỏi — tôi có biết máy đang làm gì không?** Nếu câu trả lời là *"không, nhưng nếu có lỗi
+> thì nó sẽ báo"*, thì đó chính là thiết kế mà nguyên tắc này cảnh báo.
+
+#### Ba thứ đáng lấy từ SEMI E95
+
+SEMI E95 là chuẩn giao diện cho thiết bị bán dẫn. Nó quy định một **bố cục bốn vùng riêng**, khác
+với bố cục theo ISA-101 mà chương này dùng — và đây là chỗ phải chọn, không phải chỗ để trộn:
+
+> 📌 **Bố cục bốn vùng của SEMI E95 và bố cục theo ISA-101 đều hợp lệ — nhưng phải chọn một và
+> giữ nhất quán.** Trộn nửa này nửa kia cho ra một giao diện không giống chuẩn nào và cũng không
+> quen với ai. Khi nào bắt buộc theo E95 đầy đủ? **Khi khách hàng là nhà máy bán dẫn có yêu cầu
+> chứng nhận** — lúc đó bạn còn phải nộp kèm một bản tự đối chiếu, đánh dấu từng yêu cầu của
+> chuẩn là đã thực hiện hay không. Đó là một hạng mục hợp đồng, cần biết **trước khi** thiết kế
+> màn hình, không phải sau khi đã làm xong. Ngoài trường hợp đó, bố cục theo ISA-101 là đủ.
+
+Ba ý **không** ràng buộc vào bố cục, nên lấy được trong mọi trường hợp:
+
+1. **Cảnh báo phải với tới được kể cả khi đang mở hộp thoại**, và hộp thoại **không được che**
+   thanh cảnh báo hay vùng điều hướng. Đây chính là ràng buộc mà mục 10.2.6c đã nêu như một luật
+   an toàn — dễ chịu khi biết rằng một chuẩn ngành cũng nói đúng như vậy.
+2. **Nhãn nút viết kiểu tiêu đề, không viết hoa toàn bộ.** Chuỗi viết hoa hết mất đường viền
+   trên–dưới của chữ nên đọc chậm hơn, và trên màn hình vận hành nó còn đọc như đang quát.
+3. **Trạng thái kết nối với hệ thống host gồm hai thứ, không phải một**: *đang liên lạc được hay
+   không*, và *host có đang được quyền điều khiển máy hay không*. Hai giá trị đó độc lập — máy
+   có thể liên lạc tốt nhưng đang ở chế độ tự chủ. Hiển thị gộp thành một đèn là mất thông tin
+   (chi tiết ở Chương 14 mục 14.2.5; cách hiện chip trạng thái ở mục 10.2.8).
+
+---
+
 ### 10.1.4 Thiết kế cho operator không nhìn màn hình liên tục
 
 Một kỹ sư phần mềm ngồi trước máy tính cả ngày dễ mặc định operator cũng vậy
@@ -11021,6 +11077,61 @@ nhận vẫn phải giữ màu đỏ (vì điều kiện lỗi chưa biến mấ
 biết), chỉ khác ở chỗ **ngừng nhấp nháy**. Đổi hẳn màu đỏ thành xám khi
 Acknowledged sẽ khiến operator đánh giá thấp một alarm Critical vẫn đang
 active — áp dụng cụ thể ở mục 10.3.3.
+
+### 10.2.2b  Viền trạng thái và cặp giá trị đặt / thực
+
+Hai kỹ thuật hiển thị dưới đây không thuộc bảng màu ở mục trên, nhưng chúng quyết định người vận
+hành **đọc đúng hay đọc nhầm** một màn hình đầy số.
+
+#### Viền trạng thái: tô viền, đừng tô ruột
+
+Khi một đối tượng trên màn hình (một trạm, một khay, một trục) cần báo trạng thái bất thường,
+phản xạ đầu tiên là **đổi màu nền của nó**. Đừng — vì đổi nền làm chữ bên trong khó đọc đúng lúc
+người ta cần đọc nó nhất. Cách của chuẩn giao diện thiết bị bán dẫn gọn hơn: **vẽ một viền màu
+quanh đối tượng**, giữ nguyên phần ruột.
+
+**Bảng 10.2n — Quy ước viền trạng thái**
+
+| Viền | Nghĩa | Ghi chú |
+|---|---|---|
+| **Không viền** | Bình thường | Trạng thái phổ biến nhất phải là trạng thái **không vẽ gì** — đúng tinh thần màn hình yên tĩnh (mục 10.2.1) |
+| **Đỏ** | Đang có lỗi | Dùng cùng sắc đỏ với bảng màu cảnh báo ở mục 10.2.2, không chế màu riêng |
+| **Vàng** | Cần chú ý, chưa phải lỗi | Sắp hết vật tư, gần ngưỡng |
+| **Xanh dương** | Đang xử lý / đang được chọn | Trạng thái tạm thời, tự hết |
+| **Xanh lá** | Cần thao tác của người | Ví dụ: khay đã xong, chờ lấy ra |
+
+Ba ràng buộc đi kèm, cái thứ ba là cái hay bị vi phạm nhất:
+
+- **Viền không được che nội dung.** Nó vẽ ra ngoài hoặc chèn vào phần đệm, không đè lên chữ.
+- **Bề dày viền phải đủ thấy từ khoảng cách đứng vận hành** — 1 pixel là để trang trí, không phải
+  để báo trạng thái.
+- **Đừng dùng viền cho trạng thái bật/tắt.** Viền dành cho *bất thường* và *cần chú ý*. Nếu bạn
+  viền cả những thứ đang bật bình thường, màn hình lúc chạy tốt sẽ đầy viền — và khi có viền thật
+  thì không ai thấy nữa. Bật/tắt dùng đèn hoặc chữ, không dùng viền.
+
+#### Giá trị đặt và giá trị thực: luôn là hai thứ, luôn hiện cả hai
+
+Đây là quy tắc nhỏ nhất trong chương và cũng là quy tắc mà lẫn lộn thì hậu quả nặng nhất.
+
+Mọi đại lượng điều khiển được đều tồn tại ở **hai bản**: giá trị mà người ta *yêu cầu* (đặt), và
+giá trị mà máy *đang thật sự có* (thực). Nhiệt độ đặt 250 °C và nhiệt độ đang là 180 °C là hai
+con số đều đúng, mô tả hai thứ khác nhau. Hiển thị nhập nhằng giữa chúng dẫn tới đúng một loại
+sự cố: **người vận hành tưởng máy đã đạt điều kiện trong khi nó mới chỉ được yêu cầu đạt.**
+
+| Sai | Đúng |
+|---|---|
+| Một ô ghi `250 °C`, không rõ đặt hay thực | Hai ô cạnh nhau: **Đặt** `250` · **Thực** `180` |
+| Ô nhập hiển thị giá trị thực, gõ vào thì thành giá trị đặt | **Ô nhập luôn là giá trị đặt**; giá trị thực là chữ hiển thị, không sửa được |
+| Chỉ hiện giá trị thực, muốn xem giá trị đặt phải mở màn khác | Cả hai cùng chỗ — vì so sánh chúng chính là việc người vận hành đang làm |
+
+> 💡 **Và cho người viết phần mềm: hai giá trị đó phải đi hai đường khác nhau trong mã nguồn.**
+> Giá trị đặt đến từ công thức hoặc từ thao tác người dùng và **được ghi xuống** thiết bị; giá trị
+> thực **đọc lên** từ thiết bị và không bao giờ được phép ghi ngược. Nếu chúng dùng chung một
+> thuộc tính trong ViewModel, sớm muộn sẽ có một luồng cập nhật giá trị thực đè lên giá trị người
+> dùng vừa gõ — hoặc tệ hơn, ghi giá trị đọc được xuống làm giá trị đặt mới. Đặt tên tách bạch
+> ngay từ đầu (`TargetTempC` và `ActualTempC`) rẻ hơn nhiều so với đi tìm lỗi đó về sau.
+
+---
 
 ### 10.2.3 Hệ thống chữ cho HMI
 

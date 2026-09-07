@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260906 |
+| **Phiên bản** | v1.0.1.260907 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -10527,6 +10527,16 @@ hơn nữa vì người dùng bấm nhanh và liên tiếp.
 
 ---
 
+> 💡 **Ba quy tắc nhập liệu mượn từ phần mềm để bàn, đều tiết kiệm thao tác cho người đeo găng.**
+> (1) **Cho chọn thay vì bắt gõ** bất cứ khi nào tập giá trị là hữu hạn — chọn công thức từ danh
+> sách luôn nhanh và ít sai hơn gõ tên nó, và trên màn hình cảm ứng thì khoảng cách giữa hai cách
+> còn lớn hơn nữa. (2) **Kiểm giá trị ngay khi vừa nhập**, đừng đợi tới lúc bấm Lưu mới báo một
+> loạt lỗi — sai đơn vị hay sai dấu thập phân phải hiện ngay tại ô đó. (3) **Điền sẵn giá trị mặc
+> định hợp lý** và ghi rõ **đơn vị** ngay cạnh ô; một ô trống không đơn vị là lời mời nhập nhầm
+> đơn vị, và trên máy thì nhầm mi-li-mét với mét là một sự cố chứ không phải một lỗi nhập liệu.
+
+---
+
 ### 10.1.7 Khi nào dùng luồng hướng dẫn từng bước thay vì một màn hình đầy ô nhập
 
 Phần lớn màn hình cấu hình trong phần mềm máy là **một bảng nhiều ô nhập**: mở ra, sửa ô nào cần sửa,
@@ -11496,6 +11506,101 @@ tại chỗ**, không nằm sau một thao tác rê.
 > mới trả lời được — hoặc tệ hơn, không có câu trả lời — thì đó chính là chỗ người vận hành sẽ
 > gặp bất ngờ. Làm phép thử này trước khi bàn giao rẻ hơn nhiều so với làm nó qua điện thoại lúc
 > hai giờ sáng.
+
+---
+
+### 10.2.6c  Chờ đợi, chặn màn hình và phản hồi — ba quyết định đi cùng nhau
+
+Mục trên bàn về từng nút. Mục này bàn về thứ xảy ra **sau khi bấm**: máy cần vài giây tới vài
+phút để làm xong, và trong khoảng đó giao diện phải trả lời ba câu hỏi — *có đang chạy không*,
+*còn bao lâu*, và *tôi có được làm việc khác không*. Trả lời sai câu thứ ba là chỗ phần mềm máy
+hay đi chệch quy ước phần mềm văn phòng theo hướng nguy hiểm.
+
+#### Chặn màn hình: quy ước chung, và ngoại lệ bắt buộc của máy sản xuất
+
+Một cửa sổ **chặn** (modal) là cửa sổ không cho chạm vào phần còn lại cho tới khi đóng nó. Quy
+ước chung của phần mềm để bàn về chặn màn hình rất rõ và vẫn đúng ở đây:
+
+- Chỉ chặn khi **thật sự có lợi** — người dùng bị kéo ra khỏi việc đang làm và buộc phải xử lý.
+- Giữ việc trong cửa sổ chặn **ngắn và đơn giản**; đừng dựng cả một cây màn hình con bên trong,
+  vì người ta sẽ quên đường quay lại.
+- **Luôn có lối đóng rõ ràng**, và đặt tiêu đề nói rõ đây là việc gì.
+- **Không bao giờ mở hai cửa sổ chặn chồng nhau.** Cái sau che cái trước, và người vận hành mất
+  hoàn toàn dấu vết mình đang ở đâu.
+
+Nhưng có một luật mà **chỉ phần mềm máy mới cần**, và nó mạnh hơn tất cả những luật trên:
+
+> ⚠️ **Cửa sổ chặn không được che trạng thái máy và không được che nút Dừng.** Trên phần mềm văn
+> phòng, chặn màn hình cùng lắm gây khó chịu. Trên một cỗ máy đang chạy, một hộp thoại phủ kín
+> màn hình nghĩa là người vận hành **không nhìn thấy cảnh báo vừa nổi lên** và **không bấm được
+> nút Dừng** — trong khi trục vẫn đang chuyển động. Ba ràng buộc rút ra:
+> 1. Vùng trạng thái máy và thanh cảnh báo (mục 10.3) **luôn hiện**, kể cả khi có cửa sổ chặn.
+> 2. Nút Dừng **không bao giờ bị che**. Nếu bố cục không cho phép, thì hộp thoại đó phải là hộp
+>    thoại **không chặn**, hoặc phải nhắc lại nút Dừng bên trong nó.
+> 3. Hộp thoại **không được tự bật lên từ luồng nền trong lúc máy đang chạy**. Một hộp thoại xuất
+>    hiện đúng lúc người vận hành đang định bấm chỗ khác sẽ **ăn mất cú bấm đó** — và cú bấm bị
+>    ăn có thể chính là cú bấm Dừng.
+>
+> Cách làm đúng cho hầu hết thông báo trong lúc chạy: **không dùng hộp thoại**. Đưa thông tin vào
+> dòng nhắc dành cho người vận hành hoặc vào thanh cảnh báo — chúng nằm cố định một chỗ, không
+> che gì, và không cướp tiêu điểm bàn phím.
+
+**Bảng 10.2k — Chọn cách hiển thị theo mức độ quan trọng**
+
+| Mức | Ví dụ trên máy | Cách hiển thị đúng |
+|---|---|---|
+| Thông tin trạng thái | Đã kết nối camera; còn 120 khay trong máng | Hiển thị **thụ động, tại chỗ** — cạnh chính thứ nó mô tả, không cần ai bấm gì |
+| Kết quả một thao tác đã xong | Đã lưu công thức; đã về gốc xong | Dòng nhắc ngắn tự tắt; **không** hộp thoại. Người ta vốn đã cho rằng nó thành công |
+| Thao tác **thất bại** | Không lưu được công thức; về gốc quá thời gian | Nói ngay tại chỗ vừa thao tác, kèm **lý do** và việc cần làm — không chỉ báo "Lỗi" |
+| Việc sắp làm **không hoàn tác được** | Xoá dữ liệu ca; ghi đè công thức đang chạy | Hộp thoại **chặn**, có nút mang tên chính hành động (mục 10.2.6b) |
+| Sự cố cần can thiệp ngay | Cảnh báo an toàn, mất kết nối PLC | Thanh cảnh báo + đèn tháp + âm thanh — **nhiều kênh**, vì người vận hành có thể đang không nhìn màn hình (mục 10.1.4) |
+
+Nguyên tắc gói lại một câu: **mức độ cắt ngang phải tương xứng với mức độ quan trọng**. Hộp thoại
+dùng cho mọi thứ sẽ bị bấm "OK" theo phản xạ trong hai ngày, và khi cái thật sự quan trọng hiện
+lên thì nó cũng bị bấm "OK" như thế.
+
+> 📌 **Và đừng hỏi lại những việc mà người ta cố ý làm và có thể làm lại.** Xác nhận là tài
+> nguyên có hạn, giống như sự nổi bật của nút. Xoá một dòng ghi chú thì đừng hỏi; **ghi đè công
+> thức đang chạy trên máy** thì phải hỏi. Ranh giới rất thực dụng: *hành động này có hoàn tác
+> được không, và người dùng có chủ ý làm nó không?* Hai lần "có" thì đừng hỏi.
+
+#### Chỉ báo tiến trình: đo được thì đừng quay vòng
+
+Có hai loại chỉ báo, và chọn sai loại là tự làm khó mình:
+
+- **Đo được** (xác định): biết còn bao nhiêu phần trăm hoặc còn mấy bước.
+- **Không đo được**: chỉ biết là đang chạy — thường là hình xoay tròn.
+
+**Ưu tiên loại đo được bất cứ khi nào có thể.** Một hình xoay tròn nói *"đang bận"* nhưng không
+giúp người vận hành quyết định nên đứng chờ hay đi làm việc khác — mà trong ca sản xuất, đó
+chính là quyết định họ cần.
+
+Sáu quy tắc còn lại, tất cả đều rẻ và đều hay bị bỏ:
+
+1. **Trung thực về nhịp.** Chạy tới 90% trong năm giây rồi đứng im năm phút ở 10% cuối làm người
+   ta tưởng máy treo — và lần sau họ sẽ không tin thanh tiến trình nữa.
+2. **Luôn phải nhúc nhích.** Một chỉ báo đứng yên bị đọc là *"đã treo"*. Nếu quá trình thật sự
+   dừng lại vì lý do gì, hãy nói lý do đó ra thay vì để hình quay tiếp.
+3. **Được phép chuyển từ không đo được sang đo được**, khi đã biết tổng khối lượng. Nhưng
+   **đừng đổi hình dạng** giữa chừng (từ vòng tròn sang thanh ngang) — người ta tưởng là việc khác.
+4. **Kèm một dòng mô tả cụ thể.** *"Đang về gốc trục Z (3/7)"* có giá trị; *"Đang xử lý…"* thì
+   không, vì nó không thêm gì so với chính hình đang quay.
+5. **Đặt cố định một chỗ** trên mọi màn hình, để mắt biết chỗ mà tìm.
+6. **Cho dừng được, nếu dừng được an toàn** — và nói rõ dừng thì mất gì.
+
+> ⚠️ **"Huỷ" trên máy không giống "huỷ" khi tải một file.** Huỷ tải file thì mất phần đã tải, thế
+> thôi. Huỷ một thao tác máy giữa chừng để lại **trục ở một vị trí không ai định trước**, có thể
+> đang giữ phôi, có thể đang ở giữa vùng va chạm. Vì vậy nút dừng một tác vụ dài phải nói rõ nó
+> làm gì — và ba cách hành xử dưới đây là ba thứ khác nhau, đừng gọi chung là "Huỷ":
+>
+> | Nhãn | Nghĩa | Dùng khi |
+> |---|---|---|
+> | **Dừng ngay** | Cắt chuyển động tại chỗ | Chỉ khi dừng giữa chừng là an toàn về cơ khí |
+> | **Dừng ở cuối bước** | Chạy nốt bước hiện tại rồi mới dừng | Mặc định đúng cho hầu hết thao tác máy (mục 12.2.3) |
+> | *(không có nút)* | Không huỷ được | Thao tác không thể ngắt — và **nói thẳng điều đó** trong dòng mô tả, đừng để nút mờ mà không giải thích |
+>
+> Với thao tác dài mà huỷ giữa chừng gây hậu quả, quy ước desktop khuyên thêm một nút **Tạm dừng**
+> bên cạnh — trên máy nó tương ứng với việc dừng ở một điểm an toàn đã biết rồi chờ, thay vì cắt.
 
 ---
 

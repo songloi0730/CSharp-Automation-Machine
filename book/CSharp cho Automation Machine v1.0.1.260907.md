@@ -10936,6 +10936,97 @@ một dải điều hướng bên trái? Nhưng với **máy sản xuất**, cá
 
 ---
 
+### 10.1.10  Quy trình làm ra một màn hình — năm việc trước khi mở trình thiết kế
+
+Chín mục trên là **nguyên tắc**: màn hình nên trông thế nào. Mục cuối của phần này nói về **thứ
+tự làm**: theo đúng thứ tự thì bạn tiết kiệm được phần lớn công sửa lại, còn làm ngược thì mọi
+nguyên tắc ở trên cũng không cứu nổi.
+
+Sai lầm phổ biến nhất không phải chọn sai màu hay sai cỡ chữ. Nó là **mở trình thiết kế giao diện
+ra quá sớm** — vì ngay khi có một cửa sổ trống trước mặt, người ta bắt đầu kéo thả điều khiển, và
+từ giây phút đó bố cục bị quyết định bởi *thứ tự nghĩ ra* chứ không bởi *thứ tự quan trọng*.
+
+#### Việc 1 — Bắt đầu khi máy còn trên bản vẽ
+
+Giao diện thường được làm sau cùng, khi cơ khí đã lắp xong và phần điều khiển đã chạy. Lúc đó mọi
+ràng buộc đã cố định, và giao diện chỉ còn cách **bám theo** những gì đã có: có bao nhiêu cảm
+biến thì hiện bấy nhiêu đèn, có bao nhiêu tham số thì bày ra bấy nhiêu ô.
+
+Làm sớm — song song với thiết kế cơ khí và điện — cho bạn một thứ mà làm muộn không bao giờ có:
+**quyền hỏi ngược lại**. *"Trạng thái này người vận hành cần biết, mà không có cảm biến nào đọc
+được nó — thêm một cảm biến có đắt không?"* là câu hỏi chỉ trả lời được khi bản vẽ điện chưa
+chốt. Hỏi sau khi tủ điện đã đấu xong thì câu trả lời luôn là không.
+
+#### Việc 2 — Kiểm kê công việc theo vai trò và tần suất
+
+Đây là việc cho lợi ích lớn nhất trên công sức bỏ ra, và hầu như không ai làm. Lập một bảng: mỗi
+dòng là **một việc có thật** ai đó phải làm trên máy, kèm **ai làm** và **bao lâu một lần**.
+
+**Bảng 10.1d — Kiểm kê công việc: đầu vào để quyết định bố cục và điều hướng**
+
+| Việc | Ai làm | Tần suất | Hệ quả cho giao diện |
+|---|---|---|---|
+| Bắt đầu / dừng chu kỳ | Vận hành | Hàng chục lần/ca | Phải ở **màn hình chính**, nút cố định vị trí |
+| Xoá cảnh báo, gạt phôi kẹt | Vận hành | Vài lần/ca | Màn hình chính, không cần đăng nhập lại |
+| Đổi mã hàng | Vận hành / tổ trưởng | 1–6 lần/ca | Một luồng riêng, gom đủ bước vào một chỗ (mục 10.1.7) |
+| Kiểm tra sản lượng đầu ca | Tổ trưởng | 1 lần/ca | Một màn riêng, không chiếm chỗ màn hình chính |
+| Dạy lại điểm | Kỹ sư | Vài lần/tháng | Sau một lần bấm nữa, có kiểm quyền |
+| Hiệu chuẩn camera | Kỹ sư | Vài lần/năm | Chôn sâu cũng được — nhưng **phải tìm được** khi cần |
+
+Bảng này quyết định ba thứ cùng lúc, mà không cần bàn cãi cảm tính:
+
+- **Cái gì lên màn hình chính** — việc làm hàng chục lần mỗi ca, không phải việc trông "quan trọng".
+- **Thứ tự các nút điều hướng** — theo tần suất dùng, không theo thứ tự chương trong tài liệu.
+- **Chỗ nào cần kiểm quyền** — cột *ai làm* chính là đầu vào cho bảng phân vai ở Chương 15 mục 15.2.3.
+
+> 💡 **Và hỏi thêm một câu khi lập bảng: "máy đời trước có gì khiến mọi người bực?"** Người vận
+> hành và kỹ thuật viên nhà máy luôn có sẵn danh sách đó trong đầu — *phải bấm bốn lần mới tới
+> màn hình này*, *số hiển thị nhỏ quá đọc không ra*, *mỗi lần đổi mã hàng phải gọi kỹ sư*. Đây là
+> nghiên cứu người dùng rẻ nhất mà bạn có thể có, và nó **cụ thể hơn mọi nguyên tắc thiết kế**.
+> Ghi lại từng câu, vì sau sáu tháng làm dự án bạn sẽ quên hết.
+
+#### Việc 3 — Phác trên giấy, và phác nhiều hơn một phương án
+
+Mục 10.1.5 đã nói vì sao bắt đầu bằng giấy. Ở đây thêm một điều kiện: **đừng dừng ở phương án
+đầu tiên**. Phương án đầu tiên bao giờ cũng là cách sắp xếp hiển nhiên nhất — thường là chép lại
+cấu trúc phần mềm chứ không phải cấu trúc công việc. Vẽ thêm hai phương án nữa, rồi so bằng đúng
+bảng kiểm kê ở Việc 2: *với phương án này, việc làm nhiều nhất mỗi ca cần mấy thao tác?*
+
+Chi phí: nửa giờ và ba tờ giấy. Chi phí của việc bỏ qua: phát hiện ra bố cục sai sau khi đã viết
+xong hai mươi màn hình theo nó.
+
+#### Việc 4 — Ngăn lỗi, đừng chỉ báo lỗi
+
+Nguyên tắc gói lại: **thao tác sai tốt nhất là thao tác không thực hiện được**. Ba tầng, theo thứ
+tự ưu tiên:
+
+1. **Không cho làm** khi điều kiện chưa đủ — nút bị tắt, **kèm lý do** (mục 10.2.6b).
+2. **Hỏi lại** khi hành động không hoàn tác được (mục 10.2.6c).
+3. **Báo lỗi kèm cách xử lý** khi hai tầng trên không chặn được — thông báo phải nói *làm gì tiếp*,
+   không chỉ nói *đã sai gì*.
+
+Ba tầng này đã bàn rải rác ở các mục sau; điều đáng nhớ ở đây là **thứ tự ưu tiên** giữa chúng.
+Phần lớn phần mềm máy chỉ làm tầng ba, vì tầng ba dễ viết nhất.
+
+#### Việc 5 — Thử với người thật, ở nơi thật
+
+Một màn hình chạy tốt trên bàn làm việc không nói lên gì cả. Ba khác biệt ở hiện trường luôn làm
+lộ ra thứ mới: **ánh sáng** (nắng chiếu vào, đèn xưởng), **tư thế** (đứng, nhìn nghiêng, xa hơn
+bạn tưởng), và **sự vội** (người vận hành đang phải làm ba việc cùng lúc).
+
+Cách thử rẻ nhất và hiệu quả nhất: **đưa cho một người chưa từng thấy màn hình này và nhờ họ làm
+ba việc thường ngày — rồi chỉ đứng nhìn, không hướng dẫn**. Mỗi lần họ ngập ngừng là một chỗ cần
+sửa. Đừng giải thích, vì ở hiện trường sẽ không có bạn đứng cạnh để giải thích. Chương 18 mục
+18.6.5 xếp đúng phép thử này vào nhóm kiểm thử phi chức năng.
+
+> 📌 **Thứ tự năm việc trên quan trọng hơn nội dung từng việc.** Làm đúng thứ tự thì bạn viết mã
+> giao diện **một lần**. Làm ngược — dựng màn hình trước, hỏi người dùng sau — thì mọi phát hiện
+> đều đến vào lúc sửa đắt nhất, và phần lớn sẽ không được sửa, chỉ được ghi vào danh sách "để
+> phiên bản sau". Đó là lý do thật sự khiến nhiều phần mềm máy có giao diện khó dùng: không phải
+> vì người viết không biết nguyên tắc, mà vì họ biết chúng **quá muộn**.
+
+---
+
 ## 10.2 Bảng màu & Hệ thống phân cấp theo ISA-101
 
 <!--idx:Bảng màu ISA-101-->

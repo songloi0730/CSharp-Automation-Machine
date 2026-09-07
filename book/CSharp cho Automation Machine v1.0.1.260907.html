@@ -11891,6 +11891,118 @@ thứ ba nên mở khi nhận một máy lạ, sau hàm khởi động (Phụ l�
 16.3.5) — và là tệp duy nhất trong ba tệp đó mà bạn có được <strong>khi không có mã nguồn</strong>.</p>
 </blockquote>
 <hr>
+<h3>10.1.10  Quy trình làm ra một màn hình — năm việc trước khi mở trình thiết kế</h3>
+<p>Chín mục trên là <strong>nguyên tắc</strong>: màn hình nên trông thế nào. Mục cuối của phần này nói về <strong>thứ
+tự làm</strong>: theo đúng thứ tự thì bạn tiết kiệm được phần lớn công sửa lại, còn làm ngược thì mọi
+nguyên tắc ở trên cũng không cứu nổi.</p>
+<p>Sai lầm phổ biến nhất không phải chọn sai màu hay sai cỡ chữ. Nó là <strong>mở trình thiết kế giao diện
+ra quá sớm</strong> — vì ngay khi có một cửa sổ trống trước mặt, người ta bắt đầu kéo thả điều khiển, và
+từ giây phút đó bố cục bị quyết định bởi <em>thứ tự nghĩ ra</em> chứ không bởi <em>thứ tự quan trọng</em>.</p>
+<h4>Việc 1 — Bắt đầu khi máy còn trên bản vẽ</h4>
+<p>Giao diện thường được làm sau cùng, khi cơ khí đã lắp xong và phần điều khiển đã chạy. Lúc đó mọi
+ràng buộc đã cố định, và giao diện chỉ còn cách <strong>bám theo</strong> những gì đã có: có bao nhiêu cảm
+biến thì hiện bấy nhiêu đèn, có bao nhiêu tham số thì bày ra bấy nhiêu ô.</p>
+<p>Làm sớm — song song với thiết kế cơ khí và điện — cho bạn một thứ mà làm muộn không bao giờ có:
+<strong>quyền hỏi ngược lại</strong>. <em>&quot;Trạng thái này người vận hành cần biết, mà không có cảm biến nào đọc
+được nó — thêm một cảm biến có đắt không?&quot;</em> là câu hỏi chỉ trả lời được khi bản vẽ điện chưa
+chốt. Hỏi sau khi tủ điện đã đấu xong thì câu trả lời luôn là không.</p>
+<h4>Việc 2 — Kiểm kê công việc theo vai trò và tần suất</h4>
+<p>Đây là việc cho lợi ích lớn nhất trên công sức bỏ ra, và hầu như không ai làm. Lập một bảng: mỗi
+dòng là <strong>một việc có thật</strong> ai đó phải làm trên máy, kèm <strong>ai làm</strong> và <strong>bao lâu một lần</strong>.</p>
+<p><strong>Bảng 10.1d — Kiểm kê công việc: đầu vào để quyết định bố cục và điều hướng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>Ai làm</th>
+<th>Tần suất</th>
+<th>Hệ quả cho giao diện</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bắt đầu / dừng chu kỳ</td>
+<td>Vận hành</td>
+<td>Hàng chục lần/ca</td>
+<td>Phải ở <strong>màn hình chính</strong>, nút cố định vị trí</td>
+</tr>
+<tr>
+<td>Xoá cảnh báo, gạt phôi kẹt</td>
+<td>Vận hành</td>
+<td>Vài lần/ca</td>
+<td>Màn hình chính, không cần đăng nhập lại</td>
+</tr>
+<tr>
+<td>Đổi mã hàng</td>
+<td>Vận hành / tổ trưởng</td>
+<td>1–6 lần/ca</td>
+<td>Một luồng riêng, gom đủ bước vào một chỗ (mục 10.1.7)</td>
+</tr>
+<tr>
+<td>Kiểm tra sản lượng đầu ca</td>
+<td>Tổ trưởng</td>
+<td>1 lần/ca</td>
+<td>Một màn riêng, không chiếm chỗ màn hình chính</td>
+</tr>
+<tr>
+<td>Dạy lại điểm</td>
+<td>Kỹ sư</td>
+<td>Vài lần/tháng</td>
+<td>Sau một lần bấm nữa, có kiểm quyền</td>
+</tr>
+<tr>
+<td>Hiệu chuẩn camera</td>
+<td>Kỹ sư</td>
+<td>Vài lần/năm</td>
+<td>Chôn sâu cũng được — nhưng <strong>phải tìm được</strong> khi cần</td>
+</tr>
+</tbody></table></div>
+<p>Bảng này quyết định ba thứ cùng lúc, mà không cần bàn cãi cảm tính:</p>
+<ul>
+<li><strong>Cái gì lên màn hình chính</strong> — việc làm hàng chục lần mỗi ca, không phải việc trông &quot;quan trọng&quot;.</li>
+<li><strong>Thứ tự các nút điều hướng</strong> — theo tần suất dùng, không theo thứ tự chương trong tài liệu.</li>
+<li><strong>Chỗ nào cần kiểm quyền</strong> — cột <em>ai làm</em> chính là đầu vào cho bảng phân vai ở Chương 15 mục 15.2.3.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Và hỏi thêm một câu khi lập bảng: &quot;máy đời trước có gì khiến mọi người bực?&quot;</strong> Người vận
+hành và kỹ thuật viên nhà máy luôn có sẵn danh sách đó trong đầu — <em>phải bấm bốn lần mới tới
+màn hình này</em>, <em>số hiển thị nhỏ quá đọc không ra</em>, <em>mỗi lần đổi mã hàng phải gọi kỹ sư</em>. Đây là
+nghiên cứu người dùng rẻ nhất mà bạn có thể có, và nó <strong>cụ thể hơn mọi nguyên tắc thiết kế</strong>.
+Ghi lại từng câu, vì sau sáu tháng làm dự án bạn sẽ quên hết.</p>
+</blockquote>
+<h4>Việc 3 — Phác trên giấy, và phác nhiều hơn một phương án</h4>
+<p>Mục 10.1.5 đã nói vì sao bắt đầu bằng giấy. Ở đây thêm một điều kiện: <strong>đừng dừng ở phương án
+đầu tiên</strong>. Phương án đầu tiên bao giờ cũng là cách sắp xếp hiển nhiên nhất — thường là chép lại
+cấu trúc phần mềm chứ không phải cấu trúc công việc. Vẽ thêm hai phương án nữa, rồi so bằng đúng
+bảng kiểm kê ở Việc 2: <em>với phương án này, việc làm nhiều nhất mỗi ca cần mấy thao tác?</em></p>
+<p>Chi phí: nửa giờ và ba tờ giấy. Chi phí của việc bỏ qua: phát hiện ra bố cục sai sau khi đã viết
+xong hai mươi màn hình theo nó.</p>
+<h4>Việc 4 — Ngăn lỗi, đừng chỉ báo lỗi</h4>
+<p>Nguyên tắc gói lại: <strong>thao tác sai tốt nhất là thao tác không thực hiện được</strong>. Ba tầng, theo thứ
+tự ưu tiên:</p>
+<ol>
+<li><strong>Không cho làm</strong> khi điều kiện chưa đủ — nút bị tắt, <strong>kèm lý do</strong> (mục 10.2.6b).</li>
+<li><strong>Hỏi lại</strong> khi hành động không hoàn tác được (mục 10.2.6c).</li>
+<li><strong>Báo lỗi kèm cách xử lý</strong> khi hai tầng trên không chặn được — thông báo phải nói <em>làm gì tiếp</em>,
+không chỉ nói <em>đã sai gì</em>.</li>
+</ol>
+<p>Ba tầng này đã bàn rải rác ở các mục sau; điều đáng nhớ ở đây là <strong>thứ tự ưu tiên</strong> giữa chúng.
+Phần lớn phần mềm máy chỉ làm tầng ba, vì tầng ba dễ viết nhất.</p>
+<h4>Việc 5 — Thử với người thật, ở nơi thật</h4>
+<p>Một màn hình chạy tốt trên bàn làm việc không nói lên gì cả. Ba khác biệt ở hiện trường luôn làm
+lộ ra thứ mới: <strong>ánh sáng</strong> (nắng chiếu vào, đèn xưởng), <strong>tư thế</strong> (đứng, nhìn nghiêng, xa hơn
+bạn tưởng), và <strong>sự vội</strong> (người vận hành đang phải làm ba việc cùng lúc).</p>
+<p>Cách thử rẻ nhất và hiệu quả nhất: <strong>đưa cho một người chưa từng thấy màn hình này và nhờ họ làm
+ba việc thường ngày — rồi chỉ đứng nhìn, không hướng dẫn</strong>. Mỗi lần họ ngập ngừng là một chỗ cần
+sửa. Đừng giải thích, vì ở hiện trường sẽ không có bạn đứng cạnh để giải thích. Chương 18 mục
+18.6.5 xếp đúng phép thử này vào nhóm kiểm thử phi chức năng.</p>
+<blockquote>
+<p>📌 <strong>Thứ tự năm việc trên quan trọng hơn nội dung từng việc.</strong> Làm đúng thứ tự thì bạn viết mã
+giao diện <strong>một lần</strong>. Làm ngược — dựng màn hình trước, hỏi người dùng sau — thì mọi phát hiện
+đều đến vào lúc sửa đắt nhất, và phần lớn sẽ không được sửa, chỉ được ghi vào danh sách &quot;để
+phiên bản sau&quot;. Đó là lý do thật sự khiến nhiều phần mềm máy có giao diện khó dùng: không phải
+vì người viết không biết nguyên tắc, mà vì họ biết chúng <strong>quá muộn</strong>.</p>
+</blockquote>
+<hr>
 <h2 id="102-bng-màu-h-thng-phân-cp-theo-isa-101">10.2 Bảng màu &amp; Hệ thống phân cấp theo ISA-101</h2>
 <!--idx:Bảng màu ISA-101--><h3>10.2.1 Nền trung tính — màu chỉ dành cho bất thường</h3>
 <p>Nguyên tắc nền tảng của bảng màu ISA-101: <strong>nền màn hình phải trung tính</strong>

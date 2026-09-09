@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260907 |
+| **Phiên bản** | v1.0.1.260909 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -4456,6 +4456,15 @@ var topDefects = records
 
 ---
 
+> 📌 **"Biết từng mảnh rồi, nhưng ráp lại thế nào?"** Nếu đọc xong chương này bạn thấy mình hiểu
+> class, interface, thuộc tính và sự kiện — nhưng vẫn không biết **bắt đầu gõ từ file nào** khi
+> nhận một yêu cầu mới, thì đó là cảm giác đúng và rất phổ biến: chương này dạy *các mảnh*, chưa
+> dạy *thứ tự ráp*. Câu trả lời nằm ở **Chương 7 mục 7.4** — một tính năng hoàn chỉnh được viết
+> theo đúng tám bước, từ file đầu tiên tới lúc nó hiện lên màn hình và chặn được máy, kèm bản đồ
+> "ai phụ thuộc ai" và danh sách tám câu hỏi để biết mình đã đủ hay còn thiếu.
+>
+> Chỉ cần đọc thêm Chương 5 (bất đồng bộ) và Chương 7 (SOLID) là đủ nền để theo mục đó.
+
 ## Tổng kết chương
 
 Nhìn lại câu chuyện đổi vendor đầu chương: cái khiến việc một tuần thành một tháng không phải phần cứng, mà là code phụ thuộc trực tiếp vào class vendor ở 30 nơi. Bộ công cụ OOP trong chương này là lời giải: **interface** biến "trục của hãng A" thành "một thứ `MoveAbsolute` được", **đa hình** cho Sequence xử lý mọi trục như nhau, **composition** lắp ghép driver/logger thay vì trói cứng, và **abstract class** giữ rule an toàn ở một nơi. Đổi vendor trở thành thay một mảnh ghép.
@@ -7451,6 +7460,368 @@ bộ test contract để phát hiện sai khác.
 
 > ⚠️ **Quy tắc sống còn:** Mọi phần "mới" phải có đường quay về "cũ" trong 1–2
 > thao tác vận hành. Feature flag không thể đòi hỏi rebuild hay restart service.
+
+---
+
+## 7.4  Thứ tự viết mã — ráp một tính năng chạy được từ con số không
+
+Từ Chương 3 tới đây, sách đã giới thiệu đủ các mảnh: biến, class, interface, thuộc tính, sự
+kiện, bất đồng bộ, SOLID, Composition Root. Nhưng biết từng mảnh **không** đồng nghĩa với biết
+ráp chúng lại — và câu hỏi mà người mới hay mắc kẹt không phải *"property là gì"* mà là:
+
+> *Bắt đầu gõ từ file nào? Viết xong cái này rồi thì cái tiếp theo là cái gì? Làm sao biết mình
+> đã đủ để chạy được, hay còn thiếu một mảnh nào đó?*
+
+Mục này trả lời bằng cách làm **một tính năng nhỏ nhưng đầy đủ**, từ file đầu tiên tới lúc nó
+hiện lên màn hình và chặn được máy. Tính năng: **giám sát áp suất khí nén, cảnh báo khi xuống
+dưới ngưỡng**. Nhỏ, nhưng nó đi qua đúng mọi tầng mà một tính năng thật phải đi qua.
+
+### 7.4.1  Nguyên tắc thứ tự: viết từ trong ra ngoài
+
+Người mới gần như luôn bắt đầu sai chỗ — hoặc từ **giao diện** (vì nó nhìn thấy được), hoặc từ
+**driver phần cứng** (vì nó có vẻ là gốc của mọi thứ). Cả hai đều dẫn tới cùng một kết cục: viết
+được một mảnh chạy riêng lẻ, rồi tắc khi phải nối nó vào phần còn lại.
+
+Thứ tự đúng đi theo **Dependency Rule** ở mục 7.3.2 — viết từ thứ **không phụ thuộc vào ai**, rồi
+dần ra ngoài:
+
+```
+①  Kiểu dữ liệu miền     — không phụ thuộc gì cả
+②  Interface năng lực    — chỉ phụ thuộc ①
+③  Một bản cài đặt giả   — phụ thuộc ②      ← tới đây đã CHẠY được
+④  Lớp nghiệp vụ         — phụ thuộc ①②
+⑤  Cắm dây (Composition Root) — biết mọi class cụ thể
+⑥  Chạy thử bằng Console — chứng minh nó sống
+⑦  Giao diện             — phụ thuộc ④
+⑧  Trình tự máy          — phụ thuộc ④
+```
+
+Điểm quan trọng nhất của thứ tự này: **tới bước ③ bạn đã có thứ chạy được**, dù chưa có phần
+cứng, chưa có giao diện, chưa có gì cả. Mỗi bước sau đó đều bắt đầu từ một trạng thái đang chạy —
+nên khi hỏng, bạn biết chắc lỗi nằm ở bước vừa thêm.
+
+### 7.4.2  Tám bước, và sau mỗi bước là gì
+
+#### ① Kiểu dữ liệu miền — danh từ của bài toán
+
+Bắt đầu bằng câu hỏi: *tính năng này nói về **cái gì***? Ở đây là **một lần đọc áp suất** — gồm
+giá trị và thời điểm.
+
+**Code 7.10 — Kiểu dữ liệu miền: bất biến, không phụ thuộc gì**
+
+```csharp
+// MeoFrame.Domain/Sensors/PressureReading.cs
+namespace MeoFrame.Domain.Sensors;
+
+/// <summary>Một lần đọc áp suất khí nén tại một thời điểm.</summary>
+public readonly record struct PressureReading(double Bar, DateTimeOffset At);
+```
+
+Ba quyết định trong một dòng, và cả ba đều đã học rồi:
+
+- **`record`** — kiểu chỉ để *chở dữ liệu*, không có hành vi (Chương 4 mục 4.1.3).
+- **`readonly`** — tạo xong là không sửa được. Một lần đọc đã xảy ra thì không có lý do gì để đổi.
+- **`struct`** — kiểu giá trị, không cấp phát trên heap. Đọc mỗi 200 ms suốt ca thì đây là lựa
+  chọn đúng (Chương 3 mục 3.1.1).
+
+*Chạy được chưa?* Chưa làm gì cả, nhưng **biên dịch được** — và đó đã là một mốc: bạn có một khái
+niệm của bài toán tồn tại trong mã nguồn.
+
+#### ② Interface — hợp đồng, chưa phải cách làm
+
+Câu hỏi tiếp: *ai cung cấp dữ liệu đó, và ta cần gì ở họ?* Trả lời bằng **năng lực**, không bằng
+thiết bị (mục 7.2.4 và Chương 13 mục 13.2.1):
+
+**Code 7.11 — Interface theo năng lực**
+
+```csharp
+// MeoFrame.Domain/Sensors/IPressureSensor.cs
+namespace MeoFrame.Domain.Sensors;
+
+/// <summary>Bất cứ thứ gì đọc được áp suất — cảm biến thật hay bản giả lập.</summary>
+public interface IPressureSensor
+{
+    Task<PressureReading> ReadAsync(CancellationToken ct = default);
+}
+```
+
+Interface **không chứa code chạy được**; nó chỉ nói *"sẽ có ai đó làm được việc này"*. Đây là chỗ
+người mới hay thấy vô nghĩa — *"sao không viết thẳng class cho nhanh?"*. Lý do nằm ở bước ③ ngay
+dưới đây.
+
+#### ③ Một bản cài đặt giả — và đây là lúc mọi thứ bắt đầu chạy
+
+**Code 7.12 — Bản giả lập: chạy được ngay, không cần phần cứng**
+
+```csharp
+// MeoFrame.Hardware.Simulation/SimulatedPressureSensor.cs
+public sealed class SimulatedPressureSensor : IPressureSensor
+{
+    private double _bar = 6.0;          // field: trạng thái riêng, không ai ngoài cần thấy
+
+    public Task<PressureReading> ReadAsync(CancellationToken ct = default)
+    {
+        _bar -= 0.05;                   // giả lập rò rỉ chậm để thấy được cảnh báo
+        return Task.FromResult(new PressureReading(_bar, DateTimeOffset.Now));
+    }
+}
+```
+
+Dấu `:` trong `class SimulatedPressureSensor : IPressureSensor` đọc là *"lớp này **thực hiện** hợp
+đồng kia"*. Trình biên dịch từ đây sẽ bắt bạn phải có đủ mọi thứ interface đòi — quên một hàm là
+không build được. Đó chính là ích lợi đầu tiên của interface: **nó biến một thoả thuận thành thứ
+máy kiểm tra được.**
+
+*Chạy được chưa?* **Rồi.** Ba file, chưa tới ba mươi dòng, và bạn đã có một cảm biến áp suất hoạt
+động. Đây là lý do viết interface trước khi viết driver thật: bạn không phải chờ phần cứng.
+
+#### ④ Lớp nghiệp vụ — nơi có luật, và nơi gặp đủ mọi loại thành viên
+
+Cảm biến chỉ trả về số. Còn *"bao nhiêu là thấp"* và *"thấp thì làm gì"* là **luật của máy**, và
+luật thì thuộc về một lớp riêng:
+
+**Code 7.13 — Lớp nghiệp vụ: đủ bốn loại thành viên trong một class**
+
+```csharp
+// MeoFrame.Domain/Sensors/PressureMonitor.cs
+public sealed class PressureMonitor
+{
+    private readonly IPressureSensor _sensor;   // (1) field readonly — gán một lần, không đổi
+    private PressureReading _last;              // (2) field thường  — trạng thái đổi liên tục
+
+    public PressureMonitor(IPressureSensor sensor)
+    {
+        ArgumentNullException.ThrowIfNull(sensor);
+        _sensor = sensor;                       // constructor: nhận thứ mình cần, không tự tạo
+    }
+
+    public double MinimumBar { get; init; } = 5.0;      // (3) thuộc tính cấu hình
+    public PressureReading Last => _last;               // (4) thuộc tính chỉ đọc
+    public bool IsTooLow => _last.Bar < MinimumBar;     // (5) thuộc tính tính toán
+
+    /// <summary>Phát khi áp suất xuống dưới ngưỡng.</summary>
+    public event EventHandler<PressureEventArgs>? PressureTooLow;
+
+    public async Task<PressureReading> PollAsync(CancellationToken ct = default)
+    {
+        _last = await _sensor.ReadAsync(ct).ConfigureAwait(false);
+
+        if (IsTooLow)
+            PressureTooLow?.Invoke(this, new PressureEventArgs(_last, MinimumBar));
+
+        return _last;
+    }
+}
+
+public sealed class PressureEventArgs : EventArgs      // CA1003: sự kiện phải dùng EventArgs
+{
+    public PressureEventArgs(PressureReading reading, double minimumBar)
+    {
+        Reading    = reading;
+        MinimumBar = minimumBar;
+    }
+
+    public PressureReading Reading    { get; }
+    public double          MinimumBar { get; }
+}
+```
+
+Class này cố ý chứa **cả năm dạng thành viên** mà người mới hay lẫn. Bảng dưới là câu trả lời gọn
+cho câu hỏi *"khi nào dùng field, khi nào dùng property, khi nào có `set`"*:
+
+**Bảng 7.5 — Field hay property, và có `set` hay không**
+
+| Dạng | Viết thế nào | Dùng khi | Ví dụ ở trên |
+|---|---|---|---|
+| **Field `readonly`** | `private readonly T _x;` | Thứ nhận trong constructor và không bao giờ đổi | `_sensor` |
+| **Field thường** | `private T _x;` | Trạng thái trong, thay đổi liên tục, **bên ngoài không cần thấy** | `_last` |
+| **Thuộc tính tự động** | `public T X { get; init; }` | Cấu hình: đặt lúc tạo đối tượng, sau đó cố định | `MinimumBar` |
+| **Thuộc tính chỉ đọc** | `public T X => _x;` | Lộ trạng thái trong ra ngoài **nhưng không cho ghi** | `Last` |
+| **Thuộc tính tính toán** | `public bool X => a < b;` | Suy ra được từ thứ khác — **đừng lưu, tính mỗi lần đọc** | `IsTooLow` |
+
+> 📌 **Ba câu hỏi để chọn đúng, theo thứ tự.**
+> (1) *Bên ngoài có cần thấy không?* Không → **field**. Có → đọc tiếp.
+> (2) *Bên ngoài có được phép đổi không?* Không → **thuộc tính chỉ đọc** (chỉ `get`).
+> Có, nhưng chỉ lúc tạo → **`init`**. Có, bất cứ lúc nào → `get; set;`.
+> (3) *Giá trị này có suy ra được từ thứ khác không?* Có → **thuộc tính tính toán**, đừng lưu
+> thành field. Lưu hai bản của cùng một sự thật là cách chắc chắn nhất để chúng lệch nhau.
+>
+> Và một cái bẫy riêng của phần mềm máy: **`IsTooLow` phải là thuộc tính tính toán, không phải
+> field được cập nhật trong `PollAsync`.** Nếu nó là field, sẽ có lúc ai đó đổi `MinimumBar` mà
+> quên gọi lại hàm cập nhật — và máy chạy tiếp với kết luận cũ.
+
+*Chạy được chưa?* Rồi, nhưng **chưa ai gọi nó**. Bốn file đã đủ để biên dịch và test được, nhưng
+chương trình chưa biết những lớp này tồn tại.
+
+#### ⑤ Cắm dây — Composition Root, nơi duy nhất được phép `new`
+
+Đây là mảnh mà người mới hay thiếu nhất, vì nó không "làm" gì cả — nó chỉ **nối**:
+
+```csharp
+// MeoFrame.Application.Shell/Bootstrapper.cs — nơi DUY NHẤT biết class cụ thể (mục 7.2.5)
+IPressureSensor sensor = new SimulatedPressureSensor();
+var monitor = new PressureMonitor(sensor) { MinimumBar = 5.0 };
+```
+
+Hai dòng đó là toàn bộ ý nghĩa của Dependency Inversion trong thực tế: `PressureMonitor` **không
+biết** nó đang nói chuyện với bản giả lập hay cảm biến thật. Đổi sang phần cứng thật sau này là
+đổi **đúng một dòng ở đây** — không đụng vào bất kỳ file nào trong bốn bước trên.
+
+> ⚠️ **Nếu bạn thấy `new SimulatedPressureSensor()` xuất hiện ở chỗ nào khác ngoài Composition
+> Root, đó là một lỗi kiến trúc**, dù mã vẫn chạy. Một `new` trong ViewModel hay trong lớp nghiệp
+> vụ nghĩa là lớp đó vừa tự trói mình vào một class cụ thể — và mọi lợi ích của bốn bước trên biến
+> mất. Đây là thứ dễ kiểm nhất khi rà mã: tìm toàn văn `new ` và xem chúng nằm ở đâu.
+
+#### ⑥ Chạy thử bằng Console — trước khi có giao diện
+
+Đừng nhảy thẳng sang WPF. Một vòng lặp mười dòng chứng minh toàn bộ chuỗi đã sống:
+
+```csharp
+monitor.PressureTooLow += (_, e) =>
+    Console.WriteLine($"CẢNH BÁO: áp suất {e.Reading.Bar:F2} bar < ngưỡng {e.MinimumBar:F2}");
+
+for (int i = 0; i < 30; i++)
+{
+    var r = await monitor.PollAsync();
+    Console.WriteLine($"{r.At:HH:mm:ss}  {r.Bar:F2} bar");
+}
+```
+
+Dòng `+=` là cách **đăng ký nghe sự kiện** (Chương 4 mục 4.4.3). Chạy thử này mất năm phút và loại
+bỏ được cả một nhóm nghi phạm: nếu ở đây đã đúng, thì mọi lỗi phát sinh sau này nằm ở giao diện
+hoặc ở phần cắm dây, **không nằm trong logic**.
+
+#### ⑦ Giao diện — và dạng đầy đủ của một thuộc tính
+
+Giờ mới tới ViewModel. Đây cũng là chỗ xuất hiện dạng thuộc tính thứ sáu: **có `get`, có `set`, và
+`set` làm thêm việc**:
+
+**Code 7.14 — ViewModel: dạng đầy đủ của một thuộc tính có báo thay đổi**
+
+```csharp
+public sealed class PressureViewModel : INotifyPropertyChanged
+{
+    private readonly PressureMonitor _monitor;
+    private string _display = "--";
+
+    public PressureViewModel(PressureMonitor monitor)   // lại là nhận, không tự tạo
+    {
+        ArgumentNullException.ThrowIfNull(monitor);
+        _monitor = monitor;
+    }
+
+    public string Display
+    {
+        get => _display;
+        private set                                  // chỉ lớp này được đổi; bên ngoài chỉ đọc
+        {
+            if (_display == value) return;           // không đổi thì không báo — tránh vẽ lại thừa
+            _display = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Display)));
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public async Task RefreshAsync(CancellationToken ct = default)
+    {
+        var r = await _monitor.PollAsync(ct);        // ViewModel: KHÔNG ConfigureAwait(false)
+        Display = $"{r.Bar:F2} bar";                 // gán vào property → giao diện tự cập nhật
+    }
+}
+```
+
+Ba chi tiết đáng dừng lại, cả ba đều là lỗi kinh điển nếu làm sai:
+
+1. **`set` phải báo cho giao diện biết.** Thuộc tính tự động `{ get; set; }` **không** báo — gán
+   xong màn hình vẫn hiện giá trị cũ, không có lỗi nào cả. Đây là lý do ViewModel cần dạng đầy đủ
+   có field đệm (Chương 9 mục 9.2.1).
+2. **`if (_display == value) return;`** — chặn thông báo khi giá trị không đổi. Với màn hình đọc
+   giá trị 5 lần/giây, bỏ dòng này là bắt giao diện vẽ lại 5 lần/giây dù số không nhúc nhích.
+3. **`private set`** — bên ngoài đọc được, nhưng chỉ lớp này ghi được. Áp đúng câu hỏi số (2) ở
+   Bảng 7.5.
+
+#### ⑧ Nối vào trình tự máy — để nó thật sự có tác dụng
+
+Cảnh báo hiện lên màn hình là tốt, nhưng chưa chặn được gì. Bước cuối là để luật này **có quyền
+lực**:
+
+```csharp
+// Trong bước kiểm tra điều kiện trước khi chạy chu kỳ (Chương 12)
+await _pressure.PollAsync(ct).ConfigureAwait(false);
+if (_pressure.IsTooLow)
+    throw new AlarmException(AlarmCodes.AirPressureLow, "AIR",
+        $"Áp suất {_pressure.Last.Bar:F2} bar < {_pressure.MinimumBar:F2} bar");
+```
+
+### 7.4.3  Bản đồ phụ thuộc — ai biết ai
+
+Sau tám bước, quan hệ giữa các mảnh nhìn như sau. Mũi tên đọc là *"biết tới / phụ thuộc vào"*:
+
+**Hình 7.1 — Quan hệ phụ thuộc của một tính năng hoàn chỉnh**
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Composition Root  (Bootstrapper)                            │
+│  — nơi DUY NHẤT biết mọi class cụ thể                        │
+└───────┬──────────────────────────────────┬───────────────────┘
+        │ tạo và nối                       │ tạo và nối
+        ▼                                  ▼
+┌───────────────────────┐          ┌──────────────────────────┐
+│ SimulatedPressure     │          │ PressureViewModel        │
+│ Sensor                │          │  (giao diện)             │
+└───────┬───────────────┘          └───────┬──────────────────┘
+        │ thực hiện                        │ dùng
+        ▼                                  ▼
+┌───────────────────────┐          ┌──────────────────────────┐
+│ IPressureSensor       │◄─────────│ PressureMonitor          │
+│  (hợp đồng)           │   dùng   │  (luật của máy)          │
+└───────┬───────────────┘          └───────┬──────────────────┘
+        │ dùng                             │ dùng
+        ▼                                  ▼
+┌──────────────────────────────────────────────────────────────┐
+│ PressureReading  ·  PressureEventArgs   (kiểu dữ liệu miền)  │
+│ — không phụ thuộc vào bất cứ thứ gì                          │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Hai điều đọc ra được từ sơ đồ, và chúng chính là Dependency Rule ở mục 7.3.2 nhìn bằng mắt:
+
+- **Mọi mũi tên đều chỉ xuống dưới.** Không có mũi tên nào đi ngược lên — lớp trong không bao giờ
+  biết lớp ngoài. `PressureMonitor` không biết ViewModel tồn tại; `PressureReading` không biết ai
+  đang dùng nó.
+- **`PressureMonitor` chỉ tay vào interface, không vào bản cài đặt.** Đó là toàn bộ ý nghĩa của
+  chữ *Inversion*: nếu không có interface, mũi tên đó sẽ đâm thẳng vào `SimulatedPressureSensor`,
+  và lớp nghiệp vụ sẽ dính chặt vào một bản cài đặt cụ thể.
+
+### 7.4.4  Làm sao biết mình đã đủ — tám câu hỏi
+
+Câu hỏi *"tôi có thiếu gì không?"* trả lời được bằng một danh sách, không cần kinh nghiệm:
+
+**Bảng 7.6 — Kiểm tra một tính năng đã hoàn chỉnh chưa**
+
+| # | Câu hỏi | Nếu "không" thì thiếu gì |
+|---|---|---|
+| 1 | Có kiểu dữ liệu riêng cho khái niệm này chưa? | Bạn đang truyền `double` trần khắp nơi — sớm muộn sẽ nhầm đơn vị |
+| 2 | Có interface cho thứ đến từ bên ngoài chưa? | Không test được, không chạy được khi thiếu phần cứng |
+| 3 | Có bản giả lập chưa? | Phải có máy thật mới chạy được phần mềm |
+| 4 | Luật nghiệp vụ có nằm trong lớp riêng không? | Nếu nó nằm trong ViewModel thì trình tự máy không dùng lại được |
+| 5 | Mọi `new` có nằm trong Composition Root không? | Có chỗ nào đó vừa tự trói vào một class cụ thể |
+| 6 | Đã chạy thử không cần giao diện chưa? | Chưa tách được lỗi logic khỏi lỗi giao diện |
+| 7 | Thuộc tính hiển thị có báo `PropertyChanged` không? | Màn hình sẽ hiện giá trị cũ mà không báo lỗi gì |
+| 8 | Kết quả có **tác động** được tới máy không? | Mới chỉ hiển thị đẹp, chưa ngăn được sự cố |
+
+> 💡 **Một mẹo để không bao giờ lạc: sau mỗi bước, hãy chạy thử.** Tám bước ở trên được xếp sao
+> cho **bước ③ trở đi lúc nào cũng có thứ chạy được**. Nếu bạn viết một mạch cả tám bước rồi mới
+> bấm chạy lần đầu, và nó hỏng, bạn có tám nghi phạm. Nếu bạn chạy sau mỗi bước, bạn luôn chỉ có
+> **một** — thứ vừa thêm vào. Đây là thói quen phân biệt người viết nhanh với người viết lâu, rõ
+> hơn bất kỳ kiến thức cú pháp nào.
+
+> 📌 **Và tám bước này lặp lại gần như nguyên vẹn cho mọi tính năng khác.** Đổi *áp suất* thành
+> *nhiệt độ đầu hàn*, *cảm biến* thành *camera*, *cảnh báo* thành *phán định OK/NG* — thứ tự và
+> các mảnh không đổi. Chương 13 chỉ là mục này áp cho thiết bị phức tạp hơn; Chương 11 là mục này
+> khi khái niệm miền lớn tới mức cần nhiều lớp; Chương 12 là mục này khi luật nghiệp vụ là một
+> chuỗi bước thay vì một phép so sánh.
 
 ---
 

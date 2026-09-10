@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260909</title>
+<title>C# cho Automation Machine — v1.0.1.260910</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -350,6 +350,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#72-nguyên-lý-solid-chi-tit-ng-dng">7.2  Nguyên lý SOLID — chi tiết ứng dụng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#73-clean-architecture-cho-h-thng-điu-khin">7.3  Clean Architecture cho hệ thống điều khiển</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#74-th-t-vit-mã-ráp-mt-tính-năng-chy-đưc-t-con-s-không">7.4  Thứ tự viết mã — ráp một tính năng chạy được từ con số không</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#75-chương-trình-mu-hoàn-chnh-mt-c-máy-thu-nh-chy-đưc-tht">7.5  Chương trình mẫu hoàn chỉnh — một cỗ máy thu nhỏ chạy được thật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-7">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-7">Lỗi thường gặp</a></li>
   <li><a href="#chương-8-winforms-cho-h-thng-k-tha">Chương 8: WinForms cho hệ thống kế thừa</a></li>
@@ -535,7 +536,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260909</td>
+<td>v1.0.1.260910</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -8709,6 +8710,512 @@ khi khái niệm miền lớn tới mức cần nhiều lớp; Chương 12 là m
 chuỗi bước thay vì một phép so sánh.</p>
 </blockquote>
 <hr>
+<h2 id="75-chương-trình-mu-hoàn-chnh-mt-c-máy-thu-nh-chy-đưc-tht">7.5  Chương trình mẫu hoàn chỉnh — một cỗ máy thu nhỏ chạy được thật</h2>
+<p>Mục trên trình bày tám bước trên <strong>một tính năng</strong>. Mục này ghép nhiều tính năng lại thành một
+<strong>chương trình hoàn chỉnh, biên dịch được, chạy được ngay</strong> — không cần phần cứng, không cần
+WPF, không cần cài gì ngoài .NET SDK. Toàn bộ mã dưới đây đã được biên dịch và chạy thật; kết
+quả in ra ở mục 7.5.2 là kết quả thật của lần chạy đó.</p>
+<p>Cỗ máy thu nhỏ này làm đúng những việc mà một cỗ máy thật làm, chỉ ít hơn về số lượng:</p>
+<ul>
+<li>Về gốc một trục, rồi lặp chu trình <strong>đi tới chỗ gắp → gắp → đi tới chỗ đặt → nhả</strong>.</li>
+<li><strong>Trước mỗi chu kỳ</strong>, kiểm tra áp suất khí nén; áp suất giảm dần theo thời gian (giả lập rò rỉ).</li>
+<li>Khi áp suất xuống dưới ngưỡng, ném cảnh báo, <strong>chuyển sang trạng thái Alarm và dừng</strong> — chứ
+không chạy tiếp.</li>
+<li>Mọi thao tác phần cứng đều có <strong>hạn giờ</strong>; quá giờ là một cảnh báo khác.</li>
+<li>Giao diện (ở đây là cửa sổ Console) chỉ <strong>nghe</strong> sự kiện, không điều khiển gì.</li>
+</ul>
+<h3>7.5.1  Cách chạy — ba lệnh</h3>
+<pre><code class="language-bash">dotnet new console -n MeoFrameMini
+cd MeoFrameMini
+dotnet run
+</code></pre>
+<p>Giữa lệnh thứ hai và thứ ba, dán toàn bộ mã ở mục 7.5.3 vào <code>Program.cs</code>, ghi đè nội dung cũ.
+Không cần thêm gói NuGet nào. Nếu máy chưa có .NET SDK, xem Chương 2 mục 2.1.</p>
+<h3>7.5.2  Kết quả chạy thật</h3>
+<pre><code>=== MeoFrameMini — máy gắp-đặt thu nhỏ ===
+  Về gốc…
+  Đã về gốc, vị trí 0.0 mm
+  Chu kỳ  1 xong · áp suất 5.92 bar
+  Chu kỳ  2 xong · áp suất 5.84 bar
+  Chu kỳ  3 xong · áp suất 5.76 bar
+  …
+  Chu kỳ 11 xong · áp suất 5.12 bar
+  Chu kỳ 12 xong · áp suất 5.04 bar
+  ! áp suất thấp: 4.96 &lt; 5.00 bar
+  CẢNH BÁO [30001] AIR: Áp suất 4.96 bar &lt; ngưỡng 5.00 bar
+
+Trạng thái cuối : Alarm
+Số chu kỳ chạy  : 12
+Cảnh báo        : [30001] AIR: Áp suất 4.96 bar &lt; ngưỡng 5.00 bar
+</code></pre>
+<p>Đọc kỹ ba dòng cuối, vì đó là toàn bộ ý nghĩa của chương trình này: máy <strong>không</strong> chạy tiếp khi
+điều kiện tiên quyết hỏng, nó <strong>ghi lại</strong> vì sao dừng, và trạng thái cuối nói rõ nó đang ở đâu.
+Một cỗ máy thật cũng chỉ cần đúng ba thứ đó — phần còn lại là quy mô.</p>
+<h3>7.5.3  Mã nguồn, theo đúng năm tầng của mục 7.4</h3>
+<p>Phần đầu file — chỉ có một <code>using</code>, vì chương trình không dùng thư viện ngoài nào:</p>
+<pre><code class="language-csharp">// -------------------------------------------------------
+// File:    Program.cs
+// Project: MeoFrameMini — chương trình mẫu của sách &quot;C# cho Automation Machine&quot;
+// Purpose: Một cỗ máy gắp-đặt thu nhỏ, CHẠY ĐƯỢC THẬT, không cần phần cứng.
+//          Đọc kèm Chương 7 mục 7.4 (thứ tự viết mã).
+// -------------------------------------------------------
+using System.Diagnostics;
+
+// ══════════════════════════════════════════════════════════════════
+</code></pre>
+<h4>Tầng 1 — Kiểu dữ liệu miền</h4>
+<p>Không phụ thuộc vào bất cứ thứ gì. Đây là những <strong>danh từ</strong> của bài toán.</p>
+<p><strong>Code 7.15 — Tầng 1: kiểu dữ liệu miền và ngoại lệ cảnh báo</strong></p>
+<pre><code class="language-csharp">/// &lt;summary&gt;Một lần đọc áp suất khí nén tại một thời điểm.&lt;/summary&gt;
+public readonly record struct PressureReading(double Bar, TimeSpan At);
+
+/// &lt;summary&gt;Trạng thái tổng của máy. Chỉ MachineController được phép đổi.&lt;/summary&gt;
+public enum MachineState { Idle, Homing, Running, Alarm }
+
+/// &lt;summary&gt;Mã cảnh báo — dải 30xxx dành cho cảm biến (xem Chương 15).&lt;/summary&gt;
+public static class AlarmCodes
+{
+    public const int AirPressureLow = 30001;
+    public const int AxisTimeout    = 10001;
+}
+
+/// &lt;summary&gt;Lỗi có thể lường trước, người vận hành xử lý được.&lt;/summary&gt;
+public sealed class AlarmException : Exception
+{
+    // Lưu ý: KHÔNG đặt tên thuộc tính là Source — Exception đã có sẵn Source,
+    // đặt trùng sẽ bị lỗi biên dịch CS0114. Dùng Station theo quy ước của sách.
+    public AlarmException(int alarmCode, string station, string message) : base(message)
+    {
+        AlarmCode = alarmCode;
+        Station   = station;
+    }
+
+    public int    AlarmCode { get; }
+    public string Station   { get; }
+}
+
+// ══════════════════════════════════════════════════════════════════
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Dòng ghi chú trong <code>AlarmException</code> đến từ một lỗi biên dịch có thật.</strong> Bản viết đầu tiên
+của chương trình này đặt tên thuộc tính là <code>Source</code>, và trình biên dịch từ chối ngay: <code>Exception</code>
+<strong>đã có sẵn</strong> một thuộc tính tên <code>Source</code>, nên khai báo trùng tên bị báo lỗi <code>CS0114</code>. Đây là
+loại va chạm rất hay gặp khi kế thừa từ lớp có sẵn của .NET, và cách xử lý đúng không phải là
+thêm từ khoá để che nó đi, mà là <strong>đổi tên cho khác nghĩa</strong> — ở đây là <code>Station</code>, đúng theo quy
+ước đặt tên của sách.</p>
+</blockquote>
+<h4>Tầng 2 — Interface năng lực</h4>
+<p>Ba hợp đồng, không có một dòng code chạy được nào. Cả ba đều nói về <strong>năng lực</strong> (đọc áp suất,
+di chuyển, kẹp/nhả) chứ không nói về <strong>thiết bị cụ thể</strong> nào.</p>
+<p><strong>Code 7.16 — Tầng 2: ba interface năng lực</strong></p>
+<pre><code class="language-csharp">public interface IPressureSensor
+{
+    Task&lt;PressureReading&gt; ReadAsync(CancellationToken ct = default);
+}
+
+public interface IAxis
+{
+    string Name     { get; }
+    double PositionMm { get; }
+    bool   IsHomed  { get; }
+
+    Task HomeAsync(CancellationToken ct = default);
+    Task MoveToAsync(double targetMm, CancellationToken ct = default);
+}
+
+public interface IGripper
+{
+    bool IsGripping { get; }
+    Task GripAsync(CancellationToken ct = default);
+    Task ReleaseAsync(CancellationToken ct = default);
+}
+
+// ══════════════════════════════════════════════════════════════════
+</code></pre>
+<h4>Tầng 3 — Bản giả lập</h4>
+<p>Tới đây chương trình đã <strong>chạy được</strong>. Ba lớp này thay cho phần cứng thật, và chúng đủ trung
+thực để lộ ra các vấn đề thật: trục mất thời gian để tới đích, kẹp mất thời gian để đóng, áp
+suất tụt dần theo từng lần đọc.</p>
+<p><strong>Code 7.17 — Tầng 3: ba bản giả lập</strong></p>
+<pre><code class="language-csharp">public sealed class SimulatedPressureSensor : IPressureSensor
+{
+    private readonly Stopwatch _clock = Stopwatch.StartNew();
+    private double _bar;                         // field: trạng thái riêng
+
+    public SimulatedPressureSensor(double startBar = 6.00, double dropPerRead = 0.08)
+    {
+        _bar        = startBar;
+        DropPerRead = dropPerRead;
+    }
+
+    /// &lt;summary&gt;Mỗi lần đọc thì tụt bấy nhiêu — giả lập rò rỉ để thấy được cảnh báo.&lt;/summary&gt;
+    public double DropPerRead { get; init; }
+
+    public Task&lt;PressureReading&gt; ReadAsync(CancellationToken ct = default)
+    {
+        ct.ThrowIfCancellationRequested();
+        _bar -= DropPerRead;
+        return Task.FromResult(new PressureReading(_bar, _clock.Elapsed));
+    }
+}
+
+public sealed class SimulatedAxis : IAxis
+{
+    private double _positionMm;
+    private bool   _isHomed;
+
+    public SimulatedAxis(string name, double speedMmPerStep = 40.0)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+        Name           = name;
+        SpeedMmPerStep = speedMmPerStep;
+    }
+
+    public string Name           { get; }
+    public double SpeedMmPerStep { get; init; }
+    public double PositionMm     =&gt; _positionMm;      // thuộc tính chỉ đọc
+    public bool   IsHomed        =&gt; _isHomed;
+
+    public async Task HomeAsync(CancellationToken ct = default)
+    {
+        await MoveToAsync(0.0, ct).ConfigureAwait(false);
+        _isHomed = true;
+    }
+
+    public async Task MoveToAsync(double targetMm, CancellationToken ct = default)
+    {
+        // Giả lập trục chạy dần tới đích, mỗi vòng một bước.
+        while (Math.Abs(_positionMm - targetMm) &gt; 0.001)
+        {
+            ct.ThrowIfCancellationRequested();
+            var delta = Math.Clamp(targetMm - _positionMm, -SpeedMmPerStep, SpeedMmPerStep);
+            _positionMm += delta;
+            await Task.Delay(5, ct).ConfigureAwait(false);
+        }
+    }
+}
+
+public sealed class SimulatedGripper : IGripper
+{
+    public bool IsGripping { get; private set; }     // property có set riêng tư
+
+    public async Task GripAsync(CancellationToken ct = default)
+    {
+        await Task.Delay(20, ct).ConfigureAwait(false);
+        IsGripping = true;
+    }
+
+    public async Task ReleaseAsync(CancellationToken ct = default)
+    {
+        await Task.Delay(20, ct).ConfigureAwait(false);
+        IsGripping = false;
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════
+</code></pre>
+<blockquote>
+<p>💡 <strong>Vì sao bản giả lập nên có độ trễ, thay vì trả kết quả ngay lập tức.</strong> Một <code>SimulatedAxis</code>
+trả về ngay tức khắc sẽ giấu đi mọi lỗi liên quan tới thời gian — mà đó lại đúng là nhóm lỗi
+khó tìm nhất ở hiện trường. Cho nó chạy dần từng bước như trong <code>MoveToAsync</code> khiến bản giả lập
+trở thành công cụ <strong>kiểm được cả hạn giờ và huỷ giữa chừng</strong>, chứ không chỉ kiểm logic.</p>
+</blockquote>
+<h4>Tầng 4 — Lớp nghiệp vụ</h4>
+<p>Đây là nơi có <strong>luật của máy</strong>: bao nhiêu là thấp, làm gì khi thấp, chu trình gồm những bước nào,
+gặp cảnh báo thì xử trí ra sao. Ba nhóm lớp:</p>
+<ul>
+<li><code>PressureMonitor</code> — một luật đơn giản, đúng như mục 7.4 đã dựng.</li>
+<li><code>IStep</code> và hai lớp bước — mỗi bước là <strong>một việc</strong>, và mọi bước cùng một hình dạng.</li>
+<li><code>MachineController</code> — máy trạng thái, vòng lặp chu kỳ, và chỗ bắt cảnh báo.</li>
+</ul>
+<p><strong>Code 7.18 — Tầng 4: luật của máy</strong></p>
+<pre><code class="language-csharp">public sealed class PressureEventArgs : EventArgs
+{
+    public PressureEventArgs(PressureReading reading, double minimumBar)
+    {
+        Reading    = reading;
+        MinimumBar = minimumBar;
+    }
+
+    public PressureReading Reading    { get; }
+    public double          MinimumBar { get; }
+}
+
+public sealed class PressureMonitor
+{
+    private readonly IPressureSensor _sensor;     // field readonly — gán một lần
+    private PressureReading _last;                // field thường  — đổi liên tục
+
+    public PressureMonitor(IPressureSensor sensor)
+    {
+        ArgumentNullException.ThrowIfNull(sensor);
+        _sensor = sensor;
+    }
+
+    public double           MinimumBar { get; init; } = 5.00;          // cấu hình
+    public PressureReading  Last       =&gt; _last;                       // chỉ đọc
+    public bool             IsTooLow   =&gt; _last.Bar &lt; MinimumBar;      // tính toán
+
+    public event EventHandler&lt;PressureEventArgs&gt;? PressureTooLow;
+
+    public async Task&lt;PressureReading&gt; PollAsync(CancellationToken ct = default)
+    {
+        _last = await _sensor.ReadAsync(ct).ConfigureAwait(false);
+        if (IsTooLow)
+            PressureTooLow?.Invoke(this, new PressureEventArgs(_last, MinimumBar));
+        return _last;
+    }
+}
+
+/// &lt;summary&gt;Một bước trong chu trình. Mọi bước đều cùng hình dạng này.&lt;/summary&gt;
+public interface IStep
+{
+    string Name { get; }
+    Task ExecuteAsync(CancellationToken ct = default);
+}
+
+public sealed class StepMoveTo : IStep
+{
+    private readonly IAxis  _axis;
+    private readonly double _targetMm;
+
+    public StepMoveTo(IAxis axis, double targetMm, string name)
+    {
+        ArgumentNullException.ThrowIfNull(axis);
+        _axis     = axis;
+        _targetMm = targetMm;
+        Name      = name;
+    }
+
+    public string Name { get; }
+
+    public async Task ExecuteAsync(CancellationToken ct = default)
+    {
+        using var toCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        toCts.CancelAfter(TimeSpan.FromSeconds(5));            // hạn giờ: BẮT BUỘC
+        try
+        {
+            await _axis.MoveToAsync(_targetMm, toCts.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+        {
+            throw new AlarmException(AlarmCodes.AxisTimeout, _axis.Name,
+                $&quot;Trục {_axis.Name} quá thời gian khi đi tới {_targetMm:F1} mm&quot;);
+        }
+    }
+}
+
+public sealed class StepGrip : IStep
+{
+    private readonly IGripper _gripper;
+    private readonly bool     _grip;
+
+    public StepGrip(IGripper gripper, bool grip, string name)
+    {
+        ArgumentNullException.ThrowIfNull(gripper);
+        _gripper = gripper;
+        _grip    = grip;
+        Name     = name;
+    }
+
+    public string Name { get; }
+
+    public Task ExecuteAsync(CancellationToken ct = default) =&gt;
+        _grip ? _gripper.GripAsync(ct) : _gripper.ReleaseAsync(ct);
+}
+
+public sealed class MachineController
+{
+    private readonly IAxis           _axis;
+    private readonly PressureMonitor _pressure;
+    private readonly IReadOnlyList&lt;IStep&gt; _steps;
+
+    public MachineController(IAxis axis, PressureMonitor pressure, IReadOnlyList&lt;IStep&gt; steps)
+    {
+        ArgumentNullException.ThrowIfNull(axis);
+        ArgumentNullException.ThrowIfNull(pressure);
+        ArgumentNullException.ThrowIfNull(steps);
+        _axis     = axis;
+        _pressure = pressure;
+        _steps    = steps;
+    }
+
+    public MachineState State      { get; private set; } = MachineState.Idle;
+    public int          CycleCount { get; private set; }
+    public string?      AlarmText  { get; private set; }
+
+    public event EventHandler&lt;string&gt;? Reported;
+
+    private void Report(string text) =&gt; Reported?.Invoke(this, text);
+
+    public async Task RunAsync(int maxCycles, CancellationToken ct = default)
+    {
+        State = MachineState.Homing;
+        Report(&quot;Về gốc…&quot;);
+        await _axis.HomeAsync(ct).ConfigureAwait(false);
+        Report($&quot;Đã về gốc, vị trí {_axis.PositionMm:F1} mm&quot;);
+
+        State = MachineState.Running;
+
+        while (CycleCount &lt; maxCycles &amp;&amp; !ct.IsCancellationRequested)
+        {
+            try
+            {
+                // Điều kiện tiên quyết: kiểm TRƯỚC mỗi chu kỳ, không phải một lần lúc khởi động.
+                await _pressure.PollAsync(ct).ConfigureAwait(false);
+                if (_pressure.IsTooLow)
+                    throw new AlarmException(AlarmCodes.AirPressureLow, &quot;AIR&quot;,
+                        $&quot;Áp suất {_pressure.Last.Bar:F2} bar &lt; ngưỡng {_pressure.MinimumBar:F2} bar&quot;);
+
+                foreach (var step in _steps)
+                    await step.ExecuteAsync(ct).ConfigureAwait(false);
+
+                CycleCount++;
+                Report($&quot;Chu kỳ {CycleCount,2} xong · áp suất {_pressure.Last.Bar:F2} bar&quot;);
+            }
+            catch (AlarmException ex)
+            {
+                State     = MachineState.Alarm;
+                AlarmText = $&quot;[{ex.AlarmCode}] {ex.Station}: {ex.Message}&quot;;
+                Report($&quot;CẢNH BÁO {AlarmText}&quot;);
+                return;                       // dừng chu trình, chờ người xử lý
+            }
+        }
+
+        State = MachineState.Idle;
+        Report($&quot;Dừng bình thường sau {CycleCount} chu kỳ&quot;);
+    }
+}
+
+// ══════════════════════════════════════════════════════════════════
+</code></pre>
+<p>Ba chi tiết trong <code>MachineController</code> đáng đọc kỹ, vì cả ba là nguyên tắc mà các chương sau sẽ
+<strong>mở rộng chứ không thay đổi</strong>:</p>
+<ol>
+<li><strong>Điều kiện tiên quyết được kiểm trước MỖI chu kỳ, không phải một lần lúc khởi động.</strong> Áp suất
+lúc bật máy tốt không nói lên điều gì về áp suất ở chu kỳ thứ hai trăm.</li>
+<li><strong><code>catch (AlarmException)</code> rồi <code>return</code></strong> — cảnh báo là tình huống <strong>lường trước được</strong>, nên nó
+không làm sập chương trình; nó chuyển máy sang trạng thái Alarm và dừng có trật tự.</li>
+<li><strong><code>State</code> có <code>private set</code>.</strong> Chỉ <code>MachineController</code> được đổi trạng thái máy; mọi lớp khác chỉ
+đọc. Đây là quy tắc mà một cỗ máy thật vi phạm là hỏng ngay (Chương 12 mục 12.1.3).</li>
+</ol>
+<h4>Tầng 5 — Composition Root</h4>
+<p>Nơi duy nhất trong cả chương trình xuất hiện từ khoá <code>new</code> cho các lớp cụ thể. Đọc kỹ đoạn này
+sẽ thấy toàn bộ cấu trúc chương trình gói gọn trong hai mươi dòng:</p>
+<p><strong>Code 7.19 — Tầng 5: cắm dây và chạy</strong></p>
+<pre><code class="language-csharp">public static class Program
+{
+    public static async Task Main()
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+        // --- tạo thiết bị (bản giả lập) ---
+        IPressureSensor sensor  = new SimulatedPressureSensor(startBar: 6.00, dropPerRead: 0.08);
+        IAxis           axisX   = new SimulatedAxis(&quot;X&quot;, speedMmPerStep: 40.0);
+        IGripper        gripper = new SimulatedGripper();
+
+        // --- lớp nghiệp vụ ---
+        var pressure = new PressureMonitor(sensor) { MinimumBar = 5.00 };
+
+        var steps = new IStep[]
+        {
+            new StepMoveTo(axisX, 120.0, &quot;Tới vị trí gắp&quot;),
+            new StepGrip(gripper, grip: true,  &quot;Gắp&quot;),
+            new StepMoveTo(axisX,  20.0, &quot;Tới vị trí đặt&quot;),
+            new StepGrip(gripper, grip: false, &quot;Nhả&quot;),
+        };
+
+        var machine = new MachineController(axisX, pressure, steps);
+
+        // --- đăng ký nghe: giao diện (ở đây là Console) chỉ NGHE, không điều khiển ---
+        machine.Reported     += (_, text) =&gt; Console.WriteLine($&quot;  {text}&quot;);
+        pressure.PressureTooLow += (_, e) =&gt;
+            Console.WriteLine($&quot;  ! áp suất thấp: {e.Reading.Bar:F2} &lt; {e.MinimumBar:F2} bar&quot;);
+
+        // --- chạy ---
+        Console.WriteLine(&quot;=== MeoFrameMini — máy gắp-đặt thu nhỏ ===&quot;);
+        await machine.RunAsync(maxCycles: 20).ConfigureAwait(false);
+
+        Console.WriteLine();
+        Console.WriteLine($&quot;Trạng thái cuối : {machine.State}&quot;);
+        Console.WriteLine($&quot;Số chu kỳ chạy  : {machine.CycleCount}&quot;);
+        Console.WriteLine($&quot;Cảnh báo        : {machine.AlarmText ?? &quot;(không có)&quot;}&quot;);
+    }
+}
+</code></pre>
+<h3>7.5.4  Ba điều chỉ lộ ra khi thật sự chạy</h3>
+<p>Mục 7.4 khuyên <em>&quot;chạy thử sau mỗi bước&quot;</em>. Chương trình này là ví dụ cụ thể cho lời khuyên đó — ba
+điều dưới đây không thể phát hiện bằng cách đọc:</p>
+<p><strong>1. Lỗi biên dịch do trùng tên với lớp cơ sở.</strong> Đã nói ở Tầng 1. Không biên dịch thì không biết.</p>
+<p><strong>2. Hạn giờ phải dùng <code>CancellationTokenSource.CreateLinkedTokenSource</code>, không phải một
+<code>CancellationTokenSource</code> mới.</strong> Trong <code>StepMoveTo</code>, nếu tạo một nguồn huỷ độc lập thì khi người
+vận hành bấm Dừng, bước đang chạy <strong>không hề biết</strong> — nó vẫn chạy nốt hạn giờ 5 giây của mình.
+Nối hai nguồn lại bằng <code>CreateLinkedTokenSource</code> khiến bước dừng vì <strong>bất kỳ lý do nào trong
+hai</strong>. Và <code>using</code> ở đó là bắt buộc, không phải tuỳ chọn.</p>
+<p><strong>3. Mệnh đề <code>when (!ct.IsCancellationRequested)</code></strong> phân biệt hai loại huỷ trông giống hệt nhau:
+<em>hết giờ</em> (là cảnh báo) và <em>người bấm Dừng</em> (là bình thường). Không có mệnh đề <code>when</code> đó, mọi lần
+bấm Dừng sẽ sinh ra một cảnh báo giả — và người vận hành sẽ học được rằng cảnh báo của máy này
+không đáng tin.</p>
+<h3>7.5.5  Chương trình này ứng với phần nào của sách</h3>
+<p>Cỗ máy thu nhỏ ở trên là bộ xương của mọi thứ còn lại. Bảng dưới nối từng phần của nó với chương
+sẽ mở rộng nó:</p>
+<p><strong>Bảng 7.7 — Từ chương trình mẫu tới phần còn lại của sách</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trong chương trình mẫu</th>
+<th>Chương mở rộng nó</th>
+<th>Cái gì được thêm vào</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IPressureSensor</code>, <code>IAxis</code>, <code>IGripper</code></td>
+<td>Chương 13</td>
+<td>Vòng đời thiết bị, Factory theo hãng, xử lý mất kết nối, driver thật</td>
+</tr>
+<tr>
+<td><code>SimulatedAxis</code>, <code>SimulatedGripper</code></td>
+<td>Chương 13 mục 13.2.5</td>
+<td>Bản giả lập đầy đủ, và thiết bị ảo do hãng cung cấp</td>
+</tr>
+<tr>
+<td><code>IStep</code> + vòng <code>foreach</code></td>
+<td>Chương 12</td>
+<td>Tạm dừng, chạy tiếp, huỷ giữa chừng, cây tác vụ, PackML</td>
+</tr>
+<tr>
+<td><code>MachineState</code> (4 trạng thái)</td>
+<td>Chương 12 mục 12.2.2</td>
+<td>17 trạng thái PackML và các chuyển tiếp toàn cục</td>
+</tr>
+<tr>
+<td><code>AlarmException</code></td>
+<td>Chương 15</td>
+<td>Dải mã, mức độ, vòng đời cảnh báo, chống lũ cảnh báo</td>
+</tr>
+<tr>
+<td>Sự kiện <code>Reported</code> ra Console</td>
+<td>Chương 9 và 10</td>
+<td>ViewModel, ràng buộc dữ liệu, màn hình vận hành thật</td>
+</tr>
+<tr>
+<td>Composition Root viết tay</td>
+<td>Chương 7 mục 7.3.3</td>
+<td>Bộ chứa DI, đăng ký theo vòng đời</td>
+</tr>
+<tr>
+<td><em>(chưa có trong mẫu)</em></td>
+<td>Chương 11, 14, 17, 18, 19</td>
+<td>Dữ liệu bền vững, giao thức, triển khai, kiểm thử, gỡ lỗi hiện trường</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Nếu chỉ giữ lại một ý từ hai mục 7.4 và 7.5, hãy giữ ý này:</strong> một cỗ máy thật khác cỗ máy
+thu nhỏ ở trên <strong>về quy mô, không về cấu trúc</strong>. Cùng năm tầng đó, cùng thứ tự đó, cùng những
+câu hỏi đó. Khi bạn mở một dự án thật và thấy hai trăm file, hãy tìm năm tầng này trước — chúng
+luôn ở đó, chỉ là bị chia nhỏ hơn.</p>
+</blockquote>
+<hr>
 <h2 id="tng-kt-chương-7">Tổng kết chương</h2>
 <ul>
 <li><strong>Phần mềm máy công nghiệp là nền tảng tái dùng nhiều thế hệ</strong>, không chỉ
@@ -16176,6 +16683,114 @@ phải sự kiện — nó là trạng thái. Sự kiện là thứ <strong>xả
 mô tả sai thứ.</p>
 </blockquote>
 <hr>
+<h3>12.1.6  Từ vòng <code>foreach</code> tới sequence engine — sáu thứ còn thiếu</h3>
+<p>Chương trình mẫu ở Chương 7 mục 7.5 chạy chu trình bằng đúng hai dòng:</p>
+<pre><code class="language-csharp">foreach (var step in _steps)
+    await step.ExecuteAsync(ct).ConfigureAwait(false);
+</code></pre>
+<p>Hai dòng đó <strong>đúng</strong>, và với một cỗ máy thu nhỏ thì đủ. Mục này trả lời câu hỏi tự nhiên tiếp
+theo: <em>tại sao một cỗ máy thật cần tới cả một chương về trình tự, trong khi hai dòng này đã chạy?</em></p>
+<p>Câu trả lời không phải &quot;vì hai dòng đó sai&quot;, mà là: <strong>vòng <code>foreach</code> chỉ hỗ trợ đúng một tình
+huống — chạy từ đầu tới cuối, không ai can thiệp.</strong> Sáu tình huống dưới đây đều có thật ở hiện
+trường, và không tình huống nào trong số đó xử lý được bằng cách thêm <code>if</code> vào vòng lặp:</p>
+<p><strong>Bảng 12.2c — Sáu thứ vòng <code>foreach</code> không làm được, và chương này giải quyết ở đâu</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tình huống</th>
+<th>Vì sao <code>foreach</code> không đủ</th>
+<th>Giải ở mục</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Tạm dừng rồi chạy tiếp</strong></td>
+<td><code>foreach</code> không có chỗ nào để dừng lại và chờ; muốn dừng chỉ còn cách thoát hẳn khỏi vòng</td>
+<td>12.2.3, 12.2.4</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Biết đang ở bước nào</strong></td>
+<td>Chỉ số vòng lặp là biến cục bộ — màn hình không đọc được, và sau khi thoát thì mất</td>
+<td>12.1.3</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Chạy tay từng bước</strong></td>
+<td>Kỹ sư cần chạy đúng một bước rồi dừng; <code>foreach</code> chỉ có &quot;chạy tất cả&quot;</td>
+<td>12.4.1</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Rẽ nhánh theo kết quả</strong></td>
+<td>Thị giác báo NG thì phải đi đường khác, không phải bước kế tiếp trong danh sách</td>
+<td>12.4.3</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Bước lồng bước</strong></td>
+<td>Một &quot;bước&quot; thật thường gồm nhiều bước con; danh sách phẳng không diễn tả được</td>
+<td>Chương 16 mục 16.4</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Sự kiện cắt ngang mọi bước</strong></td>
+<td>Dừng khẩn cấp, cửa mở, mất điện — chúng không thuộc bước nào cả</td>
+<td>12.3.2</td>
+</tr>
+</tbody></table></div>
+<h4>Ba tình huống đầu có chung một nguyên nhân</h4>
+<p>Nhìn kỹ ba dòng đầu bảng sẽ thấy chúng là <strong>cùng một vấn đề</strong>: trong vòng <code>foreach</code>, <strong>vị trí
+hiện tại của chu trình chỉ tồn tại trong ngăn xếp lời gọi</strong>. Nó không phải dữ liệu, nên không ai
+đọc được nó, không ai lưu được nó, và không ai can thiệp vào nó.</p>
+<p>Đó chính là lý do sequence engine ở mục 12.1.3 biến &quot;đang ở bước nào&quot; từ <strong>một biến ẩn</strong> thành
+<strong>một thuộc tính công khai</strong>:</p>
+<pre><code class="language-csharp">// Vòng foreach: vị trí nằm trong ngăn xếp — không ai với tới được
+foreach (var step in _steps) { … }
+
+// Sequence engine: vị trí là DỮ LIỆU — đọc được, hiển thị được, lưu được, sửa được
+public int    CurrentStepIndex { get; private set; }
+public string CurrentStepName  =&gt; _steps[CurrentStepIndex].Name;
+</code></pre>
+<p>Một thay đổi nhỏ về hình thức, nhưng nó mở khoá cả ba tình huống cùng lúc: màn hình hiện được
+<em>&quot;Bước 3/7: Gắp&quot;</em>; người vận hành tạm dừng thì máy biết chỗ để quay lại; kỹ sư chạy tay từng bước
+thì chỉ là gọi đúng một phần tử thay vì cả danh sách.</p>
+<blockquote>
+<p>📌 <strong>Đây là một khuôn mẫu lặp đi lặp lại trong phần mềm máy, đáng nhận ra sớm: thứ gì người vận
+hành cần nhìn thấy hoặc can thiệp thì phải là <em>dữ liệu</em>, không được là <em>luồng chạy</em>.</strong> Cùng lý
+do đó, mục 12.5.2 biến &quot;vì sao máy đang dừng&quot; từ một nhánh <code>if</code> thành một bản ghi trong sổ lý
+do, và Chương 15 biến &quot;máy đang có vấn đề&quot; từ một biến <code>bool</code> thành một danh sách cảnh báo có
+vòng đời.</p>
+</blockquote>
+<h4>Tình huống thứ sáu là tình huống nguy hiểm nhất</h4>
+<p>Ba tình huống đầu gây bất tiện. Tình huống thứ sáu — <strong>sự kiện cắt ngang</strong> — gây tai nạn.</p>
+<p>Trong chương trình mẫu, cảnh báo áp suất được kiểm <strong>giữa hai chu kỳ</strong>, ở đầu vòng <code>while</code>. Điều
+đó có nghĩa: nếu áp suất tụt <strong>giữa lúc trục đang chạy</strong>, máy vẫn chạy nốt cả chu kỳ rồi mới phát
+hiện. Với áp suất khí thì thường không sao. Với <strong>cửa an toàn bị mở</strong> thì đó là khoảng thời gian
+không được phép tồn tại.</p>
+<p>Cách chữa <strong>không phải</strong> là rắc thêm lệnh kiểm tra vào mọi bước — làm vậy sẽ có ngày quên một chỗ,
+và chỗ quên đó không ai phát hiện cho tới khi có chuyện. Cách chữa là để <strong>khung gọi bước tự kiểm
+tra giúp</strong>, tức là mọi bước đều đi qua một cửa duy nhất:</p>
+<pre><code class="language-csharp">// Không gọi thẳng step.ExecuteAsync — gọi qua một chỗ có kiểm tra
+private async Task RunStepAsync(IStep step, CancellationToken ct)
+{
+    await _guard.EnsureSafeToMoveAsync(ct).ConfigureAwait(false);   // cửa duy nhất
+    await step.ExecuteAsync(ct).ConfigureAwait(false);
+}
+</code></pre>
+<p>Chi tiết đầy đủ của cơ chế này — bao gồm chuyển tiếp toàn cục và cách bảo đảm <strong>không bước nào đi
+vòng qua được cửa kiểm tra</strong> — nằm ở mục 12.3.2 và Chương 15 mục 15.2.3. Phụ lục B mục B.5 nêu
+cùng nguyên tắc này dưới dạng một mục trong danh sách kiểm khi tiếp quản máy lạ: <em>kiểm tra dừng
+và tạm dừng phải do khung gọi tự làm ở mỗi bước, không phải do từng bước tự nhớ</em>.</p>
+<blockquote>
+<p>⚠️ <strong>Và một cái bẫy khi nâng cấp từ <code>foreach</code> lên sequence engine: đừng để hai cơ chế cùng tồn
+tại.</strong> Trong mã nguồn thật rất hay gặp tình trạng phần lớn chu trình đã chạy qua engine, nhưng
+còn vài chỗ &quot;cho nhanh&quot; vẫn gọi thẳng <code>step.ExecuteAsync()</code> hoặc gọi thẳng driver. Những chỗ đó
+<strong>không chịu bất kỳ luật nào</strong> của engine — không tạm dừng được, không hiện lên màn hình, không
+qua cửa kiểm tra an toàn. Đây là loại nợ kỹ thuật im lặng cho tới ngày nó lên tiếng.</p>
+</blockquote>
+<hr>
 <h2 id="122-chun-packml-isa-tr880002">12.2  Chuẩn PackML / ISA-TR88.00.02</h2>
 <h3>12.2.1  PackML là gì và tại sao cần chuẩn hoá</h3>
 <p>Mỗi hãng máy đặt tên trạng thái theo cách riêng: Siemens gọi &quot;Betrieb&quot;, Beckhoff gọi &quot;Running&quot;, kỹ sư nội bộ gọi &quot;Auto&quot;. Khi nhà máy tích hợp MES (Manufacturing Execution System) với 20 loại máy khác nhau, cần 20 bộ adapter để đọc trạng thái từ 20 cách đặt tên khác nhau.</p>
@@ -19537,6 +20152,118 @@ thật.</strong> Thiết bị ảo chấp nhận những lệnh mà cơ khí th�
 hành trình trục dài bao nhiêu, không biết đồ gá đang ở đâu. Thứ tự đúng luôn là: thiết bị
 ảo → máy thật <strong>chạy chậm, không tải</strong> → mới tới tốc độ sản xuất.</p>
 </blockquote>
+<h3>13.2.5b  Từ bản giả lập tới driver thật — cái gì đổi, cái gì không</h3>
+<p>Chương trình mẫu ở Chương 7 mục 7.5 chạy được hoàn chỉnh với <code>SimulatedAxis</code>. Câu hỏi tiếp theo
+là câu mà mọi dự án đều phải trả lời một lần: <strong>thay bản giả lập bằng phần cứng thật thì phải
+viết lại những gì?</strong></p>
+<p>Câu trả lời ngắn — và đây chính là phần thưởng cho việc đã đặt interface ở đúng chỗ:</p>
+<blockquote>
+<p><strong>Không có lớp nào ở tầng trên phải sửa một dòng nào.</strong> <code>MachineController</code>, các lớp <code>Step</code>,
+<code>PressureMonitor</code>, ViewModel — tất cả đều chỉ biết <code>IAxis</code>. Thứ duy nhất đổi là <strong>một dòng ở
+Composition Root</strong>, cộng với một lớp driver mới.</p>
+</blockquote>
+<p><strong>Bảng 13.6c — Bản giả lập và driver thật: cái gì giống, cái gì khác</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th><code>SimulatedAxis</code></th>
+<th>Driver thật</th>
+<th>Ai chịu trách nhiệm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chữ ký hàm</strong></td>
+<td><code>MoveToAsync(double mm, ct)</code></td>
+<td><strong>y hệt</strong></td>
+<td>Interface — không đổi</td>
+</tr>
+<tr>
+<td><strong>Đơn vị</strong></td>
+<td>mm trực tiếp</td>
+<td>Xung/encoder → phải <strong>quy đổi</strong> sang mm</td>
+<td>Driver, không phải tầng trên</td>
+</tr>
+<tr>
+<td><strong>Vòng đời</strong></td>
+<td>không có</td>
+<td><code>Connect</code> / <code>Disconnect</code> / kiểm tra sẵn sàng</td>
+<td>Driver + mục 13.3</td>
+</tr>
+<tr>
+<td><strong>Lỗi</strong></td>
+<td>không bao giờ lỗi</td>
+<td>Mã lỗi của hãng → phải <strong>dịch</strong> sang <code>AlarmException</code></td>
+<td>Driver</td>
+</tr>
+<tr>
+<td><strong>Trạng thái</strong></td>
+<td>nằm trong biến của lớp</td>
+<td>Nằm <strong>trong card</strong>, phải đọc lên</td>
+<td>Driver + Chương 11</td>
+</tr>
+<tr>
+<td><strong>Hạn giờ</strong></td>
+<td>có sẵn ở tầng Step</td>
+<td><strong>y hệt</strong> — không đổi</td>
+<td>Step, không phải driver</td>
+</tr>
+<tr>
+<td><strong>Huỷ giữa chừng</strong></td>
+<td><code>ct.ThrowIfCancellationRequested()</code></td>
+<td>Phải gọi lệnh <strong>dừng trục</strong> của hãng nữa</td>
+<td>Driver</td>
+</tr>
+</tbody></table></div>
+<p>Bốn dòng in đậm giữa bảng là toàn bộ công việc thật của một driver. Đọc theo thứ tự đó cũng chính
+là thứ tự nên viết driver:</p>
+<p><strong>1. Quy đổi đơn vị — và đặt nó ở đúng một chỗ.</strong> Card làm việc bằng <strong>xung</strong>, máy làm việc bằng
+<strong>mi-li-mét</strong>. Hệ số quy đổi phải nằm trong driver và <strong>không được rò ra ngoài</strong>: nếu một lớp
+<code>Step</code> nào đó phải nhân với 1000 trước khi gọi, thì tầng trừu tượng đã hỏng. Đây cũng là chỗ hay
+sinh lỗi nhất khi đổi hãng card — xem mục 13.4.1 về bảng điểm và đơn vị.</p>
+<p><strong>2. Dịch lỗi của hãng sang cảnh báo của máy.</strong> SDK trả về mã lỗi riêng của nó; người vận hành
+cần một câu tiếng Việt và một mã trong dải của bạn (Chương 15 mục 15.1.2b). Nguyên tắc đã nêu ở
+đó vẫn giữ: <strong>ghi kèm mã gốc của hãng vào nhật ký</strong>, vì đó là thứ duy nhất bộ phận hỗ trợ kỹ
+thuật của hãng hiểu.</p>
+<p><strong>3. Trạng thái thật nằm ở card, không nằm trong biến của bạn.</strong> <code>SimulatedAxis</code> giữ <code>_positionMm</code>
+trong bộ nhớ; driver thật phải <strong>đọc vị trí lên từ card</strong> mỗi lần được hỏi. Hệ quả trực tiếp: sau
+khi khởi động lại phần mềm, đừng tin trạng thái đã lưu — đọc lại từ phần cứng (Chương 11 mục
+11.3.2), vì trong lúc phần mềm tắt, trục vẫn ở nguyên chỗ nó đang đứng và có thể đã bị ai đó đẩy
+bằng tay.</p>
+<p><strong>4. Huỷ phải chạm tới phần cứng.</strong> Trong bản giả lập, huỷ chỉ là thoát khỏi vòng lặp. Với trục
+thật, <strong>thoát khỏi hàm không làm trục dừng</strong> — card đã nhận lệnh và vẫn đang thực hiện (Chương 1
+mục 1.3.2). Driver phải gọi lệnh dừng của hãng khi nhận tín hiệu huỷ:</p>
+<pre><code class="language-csharp">public async Task MoveToAsync(double targetMm, CancellationToken ct = default)
+{
+    _sdk.MoveAbs(_axisNo, ToPulse(targetMm));            // ra lệnh, KHÔNG chờ ở đây
+    try
+    {
+        while (!_sdk.IsMotionDone(_axisNo))              // chờ bằng cách hỏi trạng thái
+            await Task.Delay(PollMs, ct).ConfigureAwait(false);
+    }
+    catch (OperationCanceledException)
+    {
+        _sdk.StopAxis(_axisNo);                          // ← dòng quan trọng nhất của cả hàm
+        throw;
+    }
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Bỏ dòng <code>StopAxis</code> đó là lỗi thường gặp nhất khi chuyển từ giả lập sang thật, và nó im
+lặng.</strong> Mọi phép kiểm thử với bản giả lập đều xanh, mã nguồn trông đúng, người vận hành bấm Dừng
+thì giao diện phản hồi ngay — chỉ có điều <strong>trục vẫn chạy nốt tới đích</strong>. Nếu bạn chỉ thêm một
+phép kiểm tra vào danh sách nghiệm thu sau khi đọc chương này, hãy chọn phép này: <strong>cho trục
+chạy một hành trình dài, bấm Dừng ở giữa, và đo xem nó dừng ở đâu.</strong></p>
+</blockquote>
+<h4>Điều không đổi — và vì sao đó mới là phần đáng giá</h4>
+<p>Đọc lại cột cuối của Bảng 13.6c: bốn hạng mục thuộc về <strong>driver</strong>, hai hạng mục <strong>không đổi</strong>.
+Nghĩa là toàn bộ phần khó của phần mềm máy — trình tự, cảnh báo, giao diện, kiểm thử — được viết
+<strong>một lần</strong>, và nó không quan tâm bên dưới là bản giả lập, card hãng A hay card hãng B.</p>
+<p>Đó là toàn bộ lý do tồn tại của tầng trừu tượng, phát biểu bằng công việc thật chứ không bằng
+nguyên lý. Và nó cũng giải thích con số ở mục 13.5: <strong>9/13 dự án khảo sát có ≤3 interface trong
+toàn bộ mã nguồn</strong> — với những dự án đó, bảng trên không có cột &quot;ai chịu trách nhiệm&quot;, vì câu trả
+lời luôn là <em>&quot;mọi file có chạm tới trục&quot;</em>.</p>
+<hr>
 <h3>13.2.6 Biến thể máy — một bộ mã nguồn, nhiều cấu hình vật lý</h3>
 <p>Factory ở mục 13.2.2 giải quyết bài toán &quot;nhiều <strong>hãng</strong> thiết bị&quot;. Có một bài toán họ hàng, xuất hiện
 gần như chắc chắn trong máy phi tiêu chuẩn, mà Factory một mình không giải quyết: <strong>cùng một loại máy

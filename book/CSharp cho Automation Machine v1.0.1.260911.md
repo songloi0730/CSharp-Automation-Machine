@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260910 |
+| **Phiên bản** | v1.0.1.260911 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -4708,6 +4708,45 @@ await arrived;   // quan sát lỗi nếu arrived bị faulted
 > hay `XxxAsync` + sự kiện `XxxCompleted` (EAP) là bất đồng bộ kiểu cũ, hoạt động khác hẳn cách đọc
 > tuần tự của `await`, trước khi cố gắng "sửa" hay tích hợp thêm code mới vào đó.
 
+### 5.1.2b  Nếu bạn đang đọc code không dùng Task — bảng quy đổi
+
+Mục trên trình bày `Task` như thứ bạn sẽ **viết**. Nhưng phần lớn mã nguồn máy mà bạn sẽ **đọc**
+không viết như vậy: nó chặn luồng, ngủ bằng `Thread.Sleep`, và dừng bằng một biến cờ. Mục 5.7 đưa
+con số cụ thể; ở đây là thứ cần trước tiên — **một quyển từ điển** để đọc được chúng.
+
+Trước khi vào bảng, một câu giúp mọi thứ còn lại dễ hiểu hẳn:
+
+> **Lệnh chặn thì *chiếm* một luồng trong lúc chờ; `await` thì *trả* luồng lại rồi lấy lại sau.**
+
+Một cỗ máy chờ mười thiết bị cùng lúc: lối chặn cần mười luồng đang ngủ, lối `await` cần gần như
+không luồng nào. Đó là khác biệt duy nhất về bản chất — mọi thứ trong bảng dưới đều là hệ quả.
+
+**Bảng 5.1b — Đọc code chặn, và thứ tương đương bên async**
+
+| Trong code chặn bạn thấy | Tương đương async | Điều gì đổi |
+|---|---|---|
+| `Thread.Sleep(200)` | `await Task.Delay(200, ct)` | Bản async **huỷ được giữa chừng**; `Thread.Sleep` thì không — nó ngủ cho hết |
+| `new Thread(Work).Start()` | `Task.Run(...)` hoặc vòng lặp `async` | Luồng riêng vẫn hợp lệ cho worker chạy 24/7 (mục 5.3.1) |
+| `volatile bool _stop` + tự kiểm ở mọi vòng | `CancellationToken` | Cùng ý tưởng. Khác ở chỗ **`ct` được truyền xuống và compiler nhắc bạn**, còn cờ thì phải tự nhớ |
+| `Stopwatch` + vòng canh giờ | `cts.CancelAfter(timeout)` | Bản async gói hạn giờ vào **một dòng**, không cần luồng canh |
+| `task.Result` / `task.Wait()` | `await task` | **Đây là chỗ nguy hiểm nhất** — xem mục 5.1.4 |
+| `lock(obj)` quanh lời gọi thiết bị | `SemaphoreSlim` + `await WaitAsync` | `lock` **không** dùng được với `await`; đổi khoá là bắt buộc chứ không phải tuỳ chọn |
+| Hàm trả `void`, chờ bên trong | `async Task` | `async void` chỉ dành cho trình xử lý sự kiện (mục 5.1.4) |
+
+> 📌 **Và đây là điều quan trọng nhất trong cả mục này: đọc được không có nghĩa là phải viết lại.**
+> Một cỗ máy đang chạy tốt với lối chặn **không** trở nên tốt hơn chỉ vì bạn đổi hết sang
+> `async/await`. Đổi khi có lý do cụ thể — giao diện bị đơ, số thao tác chờ đồng thời tăng, hoặc
+> bạn cần huỷ giữa chừng mà cơ chế cờ hiện tại không với tới được. Không có lý do nào trong ba
+> lý do đó thì việc đổi chỉ là rủi ro không đổi lấy gì.
+
+> ⚠️ **Cái thật sự nguy hiểm không phải lối chặn, mà là TRỘN hai lối.** Một hàm đồng bộ gọi thư
+> viện trả về `Task` rồi `.Result` để lấy kết quả — đó là lúc bạn có đủ nhược điểm của cả hai
+> phía: vẫn chiếm luồng như lối chặn, **và** có nguy cơ treo cứng như mục 5.1.4 mô tả. Mục 5.7
+> cho thấy đây không phải nguy cơ lý thuyết: trong bộ mẫu khảo sát có một dự án **không có một
+> chữ `async` nào nhưng gọi `.Result` hơn hai trăm lần**.
+
+---
+
 ### 5.1.3  ConfigureAwait(false) — context và vì sao thư viện cần nó
 
 Khi `await` xong, phần code sau nó cần chạy *ở đâu*? Mặc định, runtime cố quay về **SynchronizationContext** đã bắt lúc gọi `await` — với app WPF/WinForms, đó là luồng UI (để bạn cập nhật giao diện an toàn). Việc "quay về context" này tiện cho code UI nhưng tốn một chút và là mầm mống deadlock ở tầng dưới.
@@ -5565,6 +5604,57 @@ Dấu `?` trên kiểu mang ý nghĩa thiết kế rõ ràng: `IMotionDriver?` �
 | Đọc nhiều thiết bị song song | `Task.WhenAll` |
 | Chờ cái nào xong trước / timeout | `Task.WhenAny` |
 | Cần huỷ thao tác | `CancellationToken` |
+
+## 5.7  Đối chiếu thực tế ngành — phần lớn code máy không dùng async
+
+Cả chương này dạy `async/await`. Trước khi khép lại, cần một đoạn thẳng thắn: **phần lớn phần
+mềm máy ngoài thực tế không viết như vậy**, và biết trước điều đó quan trọng hơn là ngạc nhiên
+khi mở dự án đầu tiên ra.
+
+Đếm số lần xuất hiện của từng từ khoá trong mã nguồn của 13 dự án máy thật:
+
+**Bảng 5.3 — Lối viết bất đồng bộ trong 13 phần mềm máy thật**
+
+| Nhóm | Số dự án | Ghi chú |
+|---|---|---|
+| **Không có một chữ `async` nào** | **4** / 13 | Chặn hoàn toàn, chu trình chạy trên luồng riêng |
+| Dùng lác đác (dưới 70 lần `await` trong cả dự án) | **7** / 13 | Thường chỉ ở vài chỗ mới viết sau này |
+| **Dùng như kiến trúc chính** (trên 1.000 lần `await`) | **2** / 13 | Và cả hai đều là dự án mang dáng dấp *framework* dùng lại nhiều máy |
+| Có `Thread.Sleep` | **11** / 13 | Dự án nhiều nhất: hơn 330 lần |
+| Có `.Result` hoặc `.Wait()` | **12** / 13 | Xem cảnh báo dưới đây |
+
+Ba điều đọc ra được, và cả ba đều đi ngược trực giác của người mới học async:
+
+**1. Lối chặn không phải lỗi thiết kế.** Một chu trình máy chạy trên **một luồng riêng của nó**,
+chặn ở từng bước, là kiến trúc **hợp lệ và dễ đọc** — đặc biệt khi nó phản chiếu đúng cách máy
+hoạt động: bước này xong mới tới bước kia. Mục 7.6 chứng minh điều đó bằng một chương trình chạy
+được: cùng cỗ máy, viết theo lối chặn, cho ra **kết quả giống hệt từng ký tự**.
+
+**2. Nhưng cái giá không nằm ở chỗ dễ thấy.** Vẫn ở mục 7.6: bản chặn **dài hơn bản async 40
+dòng**, dù trông "đơn giản hơn". Phần dài thêm không phải logic máy — nó là **hạn giờ và huỷ
+giữa chừng dựng bằng tay**: một lớp cờ dừng, một luồng canh giờ, và những lời gọi kiểm tra rải
+rác mà **không ai nhắc bạn nếu quên**. Mục 5.3.1 đã kể chuyện một dự án quên đúng chuyện đó ở
+một file 2.067 dòng.
+
+**3. Con số đáng lo nhất là 12/13 có `.Result`.** Trong đó có một dự án **không có một chữ
+`async` nào nhưng gọi `.Result` hơn hai trăm lần** — nghĩa là nó gọi thư viện của hãng (vốn trả
+về `Task`) rồi chặn lại để lấy kết quả. Đây đúng là cái bẫy ở mục 5.1.4, và nó không phải lựa
+chọn kiến trúc mà là **hệ quả của việc buộc phải dùng một thư viện async trong một chương trình
+đồng bộ**.
+
+> 📌 **Kết luận cân bằng, và đây là câu đáng nhớ hơn mọi con số ở trên:** *chặn* là một lựa chọn
+> hợp lệ; *async* là một lựa chọn hợp lệ; **trộn hai lối bằng `.Result` thì không**. Nếu dự án
+> của bạn đang thuần chặn, hãy giữ nó thuần chặn và dựng cho tử tế một cơ chế dừng dùng chung.
+> Nếu bạn buộc phải gọi một thư viện async, hãy đẩy **toàn bộ đường gọi** đó sang async thay vì
+> chặn lại ở giữa — hoặc cô lập nó sang một luồng riêng và nói chuyện với phần còn lại bằng hàng
+> đợi (mục 5.4).
+
+> 💡 **Về cách đo:** đây là phép đếm từ khoá trong mã nguồn được bàn giao, nên nó đo **lối viết**
+> chứ không đo chất lượng. Một dự án 1.400 lần `await` vẫn có thể dùng sai, và một dự án 0 lần
+> vẫn có thể chạy tốt suốt mười năm. Đọc bảng theo hướng *"bạn sẽ gặp gì khi mở một dự án lạ"*,
+> không phải *"cách nào đúng hơn"* — xem thêm Chương 1 mục 1.3.1.
+
+---
 
 ## Tổng kết chương
 
@@ -8334,6 +8424,160 @@ sẽ mở rộng nó:
 > thu nhỏ ở trên **về quy mô, không về cấu trúc**. Cùng năm tầng đó, cùng thứ tự đó, cùng những
 > câu hỏi đó. Khi bạn mở một dự án thật và thấy hai trăm file, hãy tìm năm tầng này trước — chúng
 > luôn ở đó, chỉ là bị chia nhỏ hơn.
+
+---
+
+## 7.6  Cùng cỗ máy đó, viết không dùng Task
+
+Chương trình ở mục 7.5 dùng `async/await` xuyên suốt. Nhưng như mục 5.7 cho thấy, **phần lớn
+phần mềm máy ngoài thực tế không viết như vậy** — 4 trong 13 dự án khảo sát không có một chữ
+`async` nào. Nếu bạn đến từ thế giới đó, hoặc sắp tiếp quản một dự án như vậy, mục này viết lại
+**đúng cỗ máy đó theo lối chặn** để bạn có hai bản đặt cạnh nhau.
+
+Cả hai bản đều đã được biên dịch và chạy thật. Điều đáng nói trước tiên:
+
+> **Hai chương trình cho ra kết quả giống hệt nhau từng ký tự** — cùng 12 chu kỳ, cùng cảnh báo
+> áp suất ở 4,96 bar, cùng trạng thái cuối. Lối viết khác nhau, hành vi không khác.
+
+### 7.6.1  Cái gì giữ nguyên — và đó là phần lớn
+
+Ba tầng đầu tiên gần như **không đổi một chữ**: kiểu dữ liệu miền, lớp ngoại lệ cảnh báo, và
+toàn bộ logic nghiệp vụ. Đây là bằng chứng cụ thể cho điều mục 7.4 đã nói: *thứ tự và cấu trúc*
+mới là phần khó, còn `async` chỉ là một cách viết.
+
+Những gì đổi chỉ nằm ở bốn chỗ, và chúng đều xoay quanh **chờ đợi**:
+
+**Bảng 7.8 — Hai bản của cùng một chương trình, đo thật**
+
+| Chỉ tiêu | Bản `async` (mục 7.5) | Bản chặn (mục này) |
+|---|---|---|
+| Số dòng | 350 | **390** |
+| Chữ ký hàm | `Task MoveToAsync(double, CancellationToken)` | `void MoveTo(double)` — gọn hơn hẳn |
+| Ngủ | `await Task.Delay(5, ct)` | `Thread.Sleep(5)` |
+| Cơ chế dừng | `CancellationToken` có sẵn | **Tự viết lớp `StopFlag`** + gọi kiểm tra ở mọi vòng |
+| Hạn giờ | `cts.CancelAfter(5s)` — một dòng | **Một luồng canh + `Stopwatch`** — mười dòng |
+| Chu trình chạy ở đâu | Luồng nào cũng được | **Bắt buộc một luồng riêng**, vì `Run()` chặn |
+
+Điều bất ngờ nằm ở dòng đầu: bản "đơn giản hơn" lại **dài hơn 40 dòng**. Phần dài thêm không phải
+logic máy — nó là hạn giờ và huỷ giữa chừng, hai thứ mà bản async được nền tảng cho không.
+
+### 7.6.2  Bốn chỗ khác nhau, xem tận mã
+
+**① Interface bỏ `Task` và `CancellationToken` — gọn hơn thật**
+
+**Code 7.20 — Interface bản chặn**
+
+```csharp
+public interface IAxis
+{
+    string Name       { get; }
+    double PositionMm { get; }
+    bool   IsHomed    { get; }
+
+    void Home();
+    void MoveTo(double targetMm);
+}
+```
+
+So với bản async, chữ ký ngắn hơn và người mới đọc hiểu ngay. Đây là ưu điểm thật, không nên phủ
+nhận: **`MoveTo(120)` dễ đọc hơn `await MoveToAsync(120, ct)`**.
+
+**② Cái giá của sự gọn đó: phải tự dựng cơ chế dừng**
+
+`CancellationToken` biến mất, nên phải có thứ thay thế — và thứ thay thế đó bạn tự viết:
+
+**Code 7.21 — Cờ dừng tự viết, thay cho CancellationToken**
+
+```csharp
+public sealed class StopFlag
+{
+    private volatile bool _stop;          // volatile: luồng khác đọc thấy ngay
+
+    public bool IsStopRequested => _stop;
+    public void Request() => _stop = true;
+
+    public void ThrowIfStopRequested()
+    {
+        if (_stop) throw new OperationCanceledException("Người vận hành bấm Dừng");
+    }
+}
+```
+
+Lớp này chỉ 12 dòng và không khó viết. Cái khó nằm ở chỗ khác: **nó phải được truyền tới mọi lớp
+có vòng lặp, và mọi vòng lặp phải nhớ gọi `ThrowIfStopRequested()`**. Không ai nhắc bạn nếu quên
+một chỗ — và chỗ quên đó chính là chỗ bấm Dừng mà máy không dừng. Chương 5 mục 5.3.1 kể một
+trường hợp thật: một file trạm 2.067 dòng gọi kiểm tra dừng **0 lần**.
+
+**③ Hạn giờ: từ một dòng thành một luồng canh**
+
+Đây là chỗ chênh lệch lớn nhất giữa hai bản:
+
+**Code 7.22 — Hạn giờ dựng bằng tay trong bản chặn**
+
+```csharp
+public void Execute()
+{
+    var sw      = Stopwatch.StartNew();
+    var timeout = TimeSpan.FromSeconds(5);
+
+    var worker = new Thread(() => _axis.MoveTo(_targetMm)) { IsBackground = true };
+    worker.Start();
+
+    while (worker.IsAlive)
+    {
+        if (sw.Elapsed > timeout)
+            throw new AlarmException(AlarmCodes.AxisTimeout, _axis.Name,
+                $"Trục {_axis.Name} quá thời gian khi đi tới {_targetMm:F1} mm");
+        _stop.ThrowIfStopRequested();
+        Thread.Sleep(2);
+    }
+}
+```
+
+Bản async làm đúng việc này bằng hai dòng (`CreateLinkedTokenSource` + `CancelAfter`). Ở đây phải
+tự đẻ một luồng, tự canh đồng hồ, tự thăm dò. Và lưu ý một điểm yếu còn lại mà đoạn mã trên
+**không** giải quyết được: khi hết giờ, nó ném cảnh báo nhưng **luồng kia vẫn đang chạy** — với
+bản giả lập thì vô hại, với trục thật thì đó chính là vấn đề ở mục 13.2.5b.
+
+**④ Chu trình bắt buộc phải có luồng riêng**
+
+Vì `Run()` chặn cho tới khi xong, nếu gọi nó trên luồng giao diện thì màn hình đơ cứng suốt cả
+ca. Không còn lựa chọn nào khác ngoài đẩy nó sang luồng riêng:
+
+**Code 7.23 — Chạy chu trình trên luồng riêng**
+
+```csharp
+var cycleThread = new Thread(() => machine.Run(maxCycles: 20))
+{
+    IsBackground = true,
+    Name         = "CycleThread",       // đặt tên: giúp đọc dump khi gỡ lỗi (Chương 19)
+};
+cycleThread.Start();
+```
+
+Đây **không** phải nhược điểm — đó là kiến trúc chuẩn của rất nhiều phần mềm máy chạy tốt, và
+mục 5.3.1 nói rõ luồng riêng là lựa chọn đúng cho worker chạy dài. Chỉ cần biết rằng từ lúc này,
+mọi thứ luồng chu trình chạm vào mà giao diện cũng chạm vào đều cần khoá (mục 5.3.2).
+
+> 📌 **Toàn bộ mã nguồn bản chặn nằm ở `source/MeoFrameMiniSync/`.** Phần không in ở đây — kiểu
+> dữ liệu miền, `PressureMonitor`, `MachineController` — giống bản ở mục 7.5 tới mức chỉ khác
+> đúng ba thứ: bỏ `async`, bỏ `await`, bỏ `CancellationToken` khỏi chữ ký.
+
+### 7.6.3  Chọn lối nào
+
+Không có câu trả lời chung, nhưng có ba câu hỏi cho ra câu trả lời khá nhanh:
+
+| Câu hỏi | Nếu "có" thì nghiêng về |
+|---|---|
+| Máy có **nhiều thao tác chờ chạy song song** (nhiều trạm, nhiều thiết bị cùng chờ)? | `async` — mỗi lệnh chờ theo lối chặn tốn một luồng đang ngủ |
+| Có phần nào **chạm tới giao diện** trong lúc chờ? | `async` — hoặc bắt buộc phải có luồng riêng + chuyển luồng đúng cách |
+| Đội đã quen lối chặn, máy đang chạy ổn, không có ba lý do ở mục 5.1.2b? | **Giữ nguyên lối chặn** — và đầu tư vào một cơ chế dừng dùng chung cho tử tế |
+
+> ⚠️ **Điều duy nhất không nên làm, dù chọn lối nào: trộn cả hai.** Một chương trình đồng bộ gọi
+> `.Result` lên một `Task` là cách chắc chắn nhất để có đủ nhược điểm của cả hai phía. Nếu buộc
+> phải dùng một thư viện async trong chương trình chặn, hãy **cô lập nó** — cho nó chạy trên
+> luồng riêng của nó và nói chuyện với phần còn lại bằng hàng đợi (Chương 5 mục 5.4), thay vì
+> chặn lại ở giữa đường.
 
 ---
 

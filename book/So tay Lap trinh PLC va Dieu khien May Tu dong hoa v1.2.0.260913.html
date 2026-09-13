@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.1.0.260913</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.2.0.260913</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -607,6 +607,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#271-ch-chương-trình-sp-đ-khi-máy-ln-lên">27.1 Chỗ chương trình sụp đổ khi máy lớn lên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#272-ba-tng-và-quy-tc-gi">27.2 Ba tầng — và quy tắc gọi</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#273-tng-cơ-cu-khi-tái-dùng">27.3 Tầng cơ cấu — khối tái dùng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#273b-tng-chng-va-chm-mt-lp-riêng-không-ri-trong-trình-t">27.3b ⭐⭐ Tầng chống va chạm — một lớp riêng, không rải trong trình tự</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#274-đng-b-gia-hai-trm-không-đưc-ch-bn">27.4 Đồng bộ giữa hai trạm — không được chờ bận</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#275-bài-toán-pipeline-ca-dp-01">27.5 Bài toán pipeline của DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#276-tác-v-khi-nào-tách-khi-nào-đng">27.6 Tác vụ — khi nào tách, khi nào đừng</a></li>
@@ -641,6 +642,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#301-ngưi-đc-tht-s-ca-chương-trình-bn-vit">30.1 Người đọc thật sự của chương trình bạn viết</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#302-đt-tên-nht-quán-quan-trng-hơn-đp">30.2 Đặt tên — nhất quán quan trọng hơn đẹp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#303-cu-trúc-chương-trình-theo-cơ-cu-không-theo-bưc">30.3 Cấu trúc chương trình — theo cơ cấu, không theo bước</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#303b-hai-quy-ưc-làm-cho-cu-trúc-mc-303-gi-đưc-khi-máy-ln-lên">30.3b ⭐ Hai quy ước làm cho cấu trúc ở mục 30.3 **giữ được** khi máy lớn lên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#304-comment-vit-như-nht-ký-k-thut">30.4 Comment — viết như nhật ký kỹ thuật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#305-thư-vin-dùng-li-và-cái-giá-ca-dùng-li-sai">30.5 Thư viện dùng lại — và cái giá của dùng lại sai</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#306-qun-lý-phiên-bn-chương-trình-plc">30.6 Quản lý phiên bản chương trình PLC</a></li>
@@ -839,6 +841,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#443-thit-k-báo-đng">44.3 ⭐⭐ Thiết kế báo động</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#444-phân-quyn-ngưi-dùng">44.4 Phân quyền người dùng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#445-nguyên-tc-trình-bày">44.5 Nguyên tắc trình bày</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#445b-ca-s-nhc-thao-tác-do-plc-điu-khin-không-do-hmi">44.5b ⭐ Cửa sổ nhắc thao tác — do PLC điều khiển, không do HMI</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#446-ba-điu-hmi-không-đưc-làm">44.6 ⚠⚠ Ba điều HMI không được làm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#447-trên-máy-mu-dp-01">44.7 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#448-khác-bit-gia-các-hãng">44.8 Khác biệt giữa các hãng</a></li>
@@ -932,6 +935,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#515-b-công-c-và-khi-nào-cn-cái-nào">51.5 Bộ công cụ — và khi nào cần cái nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#516-đèn-led-nói-gì-và-không-nói-gì">51.6 Đèn LED — nói gì và **không** nói gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#517-công-c-phn-mm-mnh-hơn-đng-h">51.7 Công cụ phần mềm — mạnh hơn đồng hồ</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#517b-c-b-qua-thit-k-sn-th-duy-nht-thay-th-đưc-vic-cưng-bc">51.7b ⭐⭐ Cờ bỏ qua thiết kế sẵn — thứ duy nhất thay thế được việc cưỡng bức</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#518-li-chp-chn-bn-nguyên-nhân-vt-lý-hay-b-b-sót">51.8 Lỗi chập chờn — bốn nguyên nhân vật lý hay bị bỏ sót</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#519-bng-triu-chng-nguyên-nhân-phép-kim">51.9 Bảng triệu chứng → nguyên nhân → phép kiểm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#5110-sa-hay-thay">51.10 Sửa hay thay</a></li>
@@ -985,6 +989,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#556-thi-gian-cht-ngoài-chu-k">55.6 ⚠ Thời gian chết ngoài chu kỳ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#557-nhp-môn-oee">55.7 Nhập môn OEE</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#557b-oee-ca-hai-máy-không-so-sánh-đưc-nu-chưa-chung-đnh-nghĩa">55.7b ⚠⚠ OEE của hai máy KHÔNG so sánh được nếu chưa chung định nghĩa</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#557c-đo-và-ct-s-liu-đâu-phn-plc-phi-làm">55.7c ⭐ Đo và cất số liệu ở đâu — phần PLC phải làm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#558-trên-máy-mu-dp-01">55.8 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#559-by-thưng-gp">55.9 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#5510-bng-cht">55.10 Bảng chốt</a></li>
@@ -1155,6 +1160,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#k5-thi-gian-quét-và-b-đm-xung">K.5 Thời gian quét và bộ đếm xung</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#k6-s-hc-và-kiu-d-liu">K.6 Số học và kiểu dữ liệu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#k7-tín-hiu-và-dây-dn">K.7 Tín hiệu và dây dẫn</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k7b-lưi-khay-dy-ba-đim-tính-ra-mi-ô">K.7b Lưới khay — dạy ba điểm, tính ra mọi ô</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#k8-bng-tra-nhanh-công-thc-nào-chương-nào">K.8 Bảng tra nhanh — công thức nào ở chương nào</a></li>
   <li><a href="#ph-lc-l-thư-vin-mu-code-dùng-ngay">Phụ lục L — Thư viện mẫu code dùng ngay</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l1-t-gi-startstop-nn-ca-mi-th">L.1 Tự giữ Start/Stop — nền của mọi thứ</a></li>
@@ -1171,7 +1177,9 @@
   <li style="padding-left:16px;font-size:13px"><a href="#l12-analog-bn-bưc-đúng-th-t">L.12 Analog: bốn bước, đúng thứ tự</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l13-đèn-tháp-và-nháy-mi-lúc-nói-đúng-mt-th">L.13 Đèn tháp và nháy — mỗi lúc nói đúng một thứ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l14-đm-sn-lưng-con-s-phi-đúng-nghĩa">L.14 Đếm sản lượng — con số phải đúng nghĩa</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#l15-bng-tra-nhanh-mu-nào-cho-vic-gì">L.15 Bảng tra nhanh — mẫu nào cho việc gì</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l15-hút-chân-không-có-thi-ngưc-hai-ngõ-ra-hai-xác-nhn">L.15 Hút chân không có thổi ngược — hai ngõ ra, hai xác nhận</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l16-đm-tui-th-vt-tư-cnh-báo-trưc-báo-đng-sau">L.16 Đếm tuổi thọ vật tư — cảnh báo trước, báo động sau</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l17-bng-tra-nhanh-mu-nào-cho-vic-gì">L.17 Bảng tra nhanh — mẫu nào cho việc gì</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -1190,7 +1198,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.1.0.260913</td>
+<td>v1.2.0.260913</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -1886,7 +1894,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>L</td>
 <td><a href="pl_l_thu_vien_mau_code.md">⭐ **Thư viện mẫu code dùng ngay</a></td>
-<td>14 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm <strong>điều kiện dùng</strong> và <strong>thứ nó KHÔNG làm</strong>: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — <strong>không phải</strong> chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh &amp; chống rung · khối xy-lanh hai vị trí dùng lại được · servo theo PLCopen Motion · đảo chiều &amp; sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng. Kèm bảng tra <em>việc cần làm → mẫu nào → bẫy lớn nhất</em></td>
+<td>16 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm <strong>điều kiện dùng</strong> và <strong>thứ nó KHÔNG làm</strong>: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — <strong>không phải</strong> chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh &amp; chống rung · khối xy-lanh hai vị trí dùng lại được · servo theo PLCopen Motion · đảo chiều &amp; sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng · hút chân không có thổi ngược · đếm tuổi thọ vật tư. Kèm bảng tra <em>việc cần làm → mẫu nào → bẫy lớn nhất</em></td>
 <td>✅</td>
 </tr>
 </tbody></table></div>
@@ -19253,6 +19261,103 @@ chỗ, áp cho cả bốn.</li>
 thái, và bạn vừa tạo thêm một chỗ để mất đồng bộ. Mức thì tự đồng bộ: mất lệnh là về vị trí lò xo.</p>
 </blockquote>
 <hr>
+<h2 id="273b-tng-chng-va-chm-mt-lp-riêng-không-ri-trong-trình-t">27.3b ⭐⭐ Tầng chống va chạm — một lớp riêng, không rải trong trình tự</h2>
+<p>Mục 27.3 đặt cơ cấu thành một tầng. Nhưng có một loại điều kiện <strong>không thuộc về cơ cấu nào cả</strong>:
+điều kiện nói rằng ⭐ <strong>hai cơ cấu không được ở cùng một chỗ, cùng một lúc</strong>.</p>
+<p>Đầu công tác không được hạ xuống khi kẹp chưa lên. Băng tải không được chạy khi kẹp còn giữ board.
+Xy-lanh chặn không được hạ khi board chưa qua hẳn.</p>
+<h3>Vì sao nó phải là một tầng riêng</h3>
+<p>Cách làm tự nhiên là viết điều kiện đó ngay tại chỗ ra lệnh:</p>
+<pre><code class="language-iecst">// ⚠ CÁCH HAY GẶP — và nó sẽ hỏng
+IF Stn1_Step = 30 AND DI_Clamp1Up THEN     // &quot;nhớ&quot; kiểm kẹp trước khi hạ Z
+    M_Z_DownReq := TRUE;
+END_IF;
+</code></pre>
+<p>Ba vấn đề, cả ba đều chỉ lộ ra khi máy đã chạy:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Vấn đề</th>
+<th>Hậu quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠⚠ <strong>Chế độ tay không đi qua trình tự</strong></td>
+<td>Người vận hành hạ Z bằng nút trên màn hình — điều kiện trên <strong>không chạy</strong>. Đây là lúc va chạm thật sự xảy ra (Chương 28 mục 28.2)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠ <strong>Không rà được</strong></td>
+<td>Muốn trả lời <em>&quot;có bao nhiêu ràng buộc chống va chạm?&quot;</em> phải đọc hết chương trình. Không ai làm được việc đó ở buổi nghiệm thu</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ <strong>Sửa một chỗ, sót ba chỗ</strong></td>
+<td>Cùng một ràng buộc được viết lại ở mọi nơi có lệnh hạ Z</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Cách đúng: <strong>tính mọi điều kiện chống va chạm ở MỘT chỗ, thành một tập cờ riêng, và cơ cấu đọc cờ
+đó như đọc một ngõ vào.</strong></p>
+<pre><code class="language-iecst">// ── TẦNG CHỐNG VA CHẠM — chạy mỗi vòng quét, TRƯỚC mọi trình tự ──
+// Mỗi dòng là MỘT ràng buộc vật lý, đọc được như một câu tiếng Việt.
+
+M_Itf_ZDown   := NOT DI_Clamp1Up;                      // chưa kẹp thì cấm hạ đầu công tác
+M_Itf_ClampDn := NOT M_Z_AtSafeHeight;                 // đầu chưa lên cao thì cấm nhả kẹp   
+M_Itf_Stop1Dn := DI_BoardStn1;                         // board còn tại trạm thì cấm hạ chặn
+M_Itf_ConvRun := M_Stn1_ClampReq OR M_Stn2_ClampReq;   // còn kẹp thì cấm chạy băng
+
+M_Itf_Any := M_Itf_ZDown OR M_Itf_ClampDn OR M_Itf_Stop1Dn OR M_Itf_ConvRun;
+</code></pre>
+<p>Rồi <strong>mọi</strong> đường ra lệnh — tự động, tay, về gốc, chạy khô — đều đi qua cùng một cửa:</p>
+<pre><code class="language-iecst">// Tầng cơ cấu: ngõ ra và yêu cầu chuyển động chỉ đi tiếp khi tầng này cho phép
+DO_Stop1Vlv := (M_Stn1_StopReq  OR M_Stn1_StopManual)  AND NOT M_Itf_Stop1Dn;
+DO_ConvRun  := (M_ConvRunReq    OR M_ConvRunManual)    AND NOT M_Itf_ConvRun;
+M_Z_DownGo  := (M_Z_DownReq     OR M_Z_DownManual)     AND NOT M_Itf_ZDown;
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Điểm mấu chốt: cờ chống va chạm nằm ở TẦNG CƠ CẤU, không ở tầng trình tự.</strong> Nhờ vậy nó
+<strong>không thể bị bỏ qua</strong> bởi bất kỳ đường ra lệnh nào — kể cả chế độ tay, kể cả trình tự về gốc
+(Chương 28 mục 28.5).</p>
+</blockquote>
+<h3>Báo động chống va chạm là một nhóm riêng</h3>
+<p>⭐ Khi một lệnh bị tầng này chặn, <strong>phải báo</strong> — và báo bằng một <strong>nhóm báo động riêng</strong>, không trộn
+vào lỗi cơ cấu:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm báo động</th>
+<th>Nghĩa</th>
+<th>Người xử lý</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lỗi <strong>cơ cấu</strong></td>
+<td>Van hỏng, cảm biến hỏng, quá thời gian</td>
+<td>Thợ bảo trì</td>
+</tr>
+<tr>
+<td>⭐ Lỗi <strong>chống va chạm</strong></td>
+<td>Cơ cấu bình thường, nhưng <strong>lệnh sai lúc</strong></td>
+<td>⭐ <strong>Người viết chương trình</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Hai nhóm này gọi hai người khác nhau tới máy.</strong> Trộn chúng làm một là lý do thợ bảo trì thay
+một cái van hoàn toàn tốt.</p>
+<p>⚡ Và một báo động chống va chạm ở máy đã nghiệm thu là <strong>tín hiệu có lỗi thiết kế trình tự</strong>, không
+phải sự cố vận hành. Nó nên được đếm và xem lại, không nên chỉ xác nhận rồi chạy tiếp.</p>
+</blockquote>
+<h3>⚠⚠ Cái tầng này KHÔNG làm</h3>
+<blockquote>
+<p>⚠⚠ <strong>Tầng chống va chạm bảo vệ MÁY, không bảo vệ NGƯỜI.</strong></p>
+<p>Nó chạy trong CPU thường, nên nó chết cùng CPU. Mọi mối nguy với người vẫn phải do thiết bị an toàn
+xử lý, độc lập — Chương 47.</p>
+<p>⭐ Cách phân biệt nhanh: <em>&quot;nếu CPU treo giữa lúc này, ai bị thương?&quot;</em> Trả lời được <strong>&quot;không ai&quot;</strong> thì
+nó thuộc tầng chống va chạm. Trả lời khác đi thì nó thuộc Chương 47, và không có ngoại lệ.</p>
+</blockquote>
+<hr>
 <h2 id="274-đng-b-gia-hai-trm-không-đưc-ch-bn">27.4 Đồng bộ giữa hai trạm — không được chờ bận</h2>
 <p>Hai trạm của DP-01 chạy song song trên hai board khác nhau. Chúng cần phối hợp đúng <strong>một</strong> việc: trạm
 1 chỉ được nhả board sang khi <strong>trạm 2 đang trống</strong>.</p>
@@ -21246,6 +21351,172 @@ END_VAR
 <li>⭐ <strong>Không thể quên</strong> — khi bạn tạo <code>Stn3</code>, nó tự động có đủ mọi trường. Với biến rời rạc, bạn sẽ
 quên ít nhất một cái.</li>
 </ol>
+<hr>
+<h2 id="303b-hai-quy-ưc-làm-cho-cu-trúc-mc-303-gi-đưc-khi-máy-ln-lên">30.3b ⭐ Hai quy ước làm cho cấu trúc ở mục 30.3 <strong>giữ được</strong> khi máy lớn lên</h2>
+<p>Mục 30.3 nói tổ chức theo cơ cấu và gói trạng thái vào một kiểu dữ liệu. Hai quy ước dưới đây là thứ
+quyết định cấu trúc đó còn đứng vững sau ba năm hay tan ra — và cả hai đều gần như không tốn gì.</p>
+<h3>Quy ước 1 — chia kiểu dữ liệu làm <strong>ba phần</strong>: Lệnh · Dữ liệu · Phản hồi</h3>
+<p>Kiểu <code>ST_Station</code> ở mục 30.3 trộn lẫn thứ <strong>người khác ghi vào</strong> với thứ <strong>khối tự ghi ra</strong>. Khi chỉ
+có sáu trường thì không sao. Khi có sáu mươi trường thì không ai còn trả lời được câu hỏi quan trọng
+nhất: ⚠ <em>&quot;biến này ai được phép ghi?&quot;</em></p>
+<p>⭐ Cách chữa: tách mỗi cơ cấu thành <strong>ba kiểu</strong>, đặt tên theo cùng một khuôn:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phần</th>
+<th>Nghĩa</th>
+<th>Ai ghi</th>
+<th>Ai đọc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>…Cmd</code> — <strong>Lệnh</strong></td>
+<td>Thứ người ngoài <strong>yêu cầu</strong> cơ cấu làm</td>
+<td>⭐ Trình tự, chế độ tay, nơi ra lệnh</td>
+<td>Khối cơ cấu</td>
+</tr>
+<tr>
+<td><code>…Data</code> — <strong>Dữ liệu</strong></td>
+<td>Tham số và số đo: vị trí, tốc độ, thời gian, ngưỡng</td>
+<td>⭐ Công thức, khối</td>
+<td>Cả hai</td>
+</tr>
+<tr>
+<td><code>…Resp</code> — <strong>Phản hồi</strong></td>
+<td>Thứ cơ cấu <strong>công bố</strong> về chính nó</td>
+<td>⭐ <strong>Chỉ khối cơ cấu</strong></td>
+<td>Mọi người</td>
+</tr>
+</tbody></table></div>
+<pre><code class="language-iecst">TYPE ST_CylinderCmd :          // ai cũng ghi được
+STRUCT
+    Req          : BOOL;       // yêu cầu tới vị trí làm việc
+    ManualTrig   : BOOL;       // nút trên màn hình
+    InitialReset : BOOL;       // đưa về gốc khi khởi tạo
+    InterLock    : BOOL;       // chặn từ tầng chống va chạm (Chương 27 mục 27.3b)
+    AlarmShield  : BOOL;       // bỏ qua báo động cơ cấu này (Chương 51 mục 51.7b)
+    SensShield   : BOOL;       // bỏ qua cảm biến — có điều kiện, xem Ch.51
+END_STRUCT
+END_TYPE
+
+TYPE ST_CylinderResp :         // ⚠ CHỈ khối cơ cấu được ghi
+STRUCT
+    Done         : BOOL;
+    AtHome       : BOOL;
+    AtWork       : BOOL;
+    Fault        : BOOL;
+    FaultCode    : INT;
+    InitialDone  : BOOL;
+    ManualActive : BOOL;       // đang bị điều khiển bằng tay
+    Admit        : BOOL;       // ⭐ xem bên dưới
+END_STRUCT
+END_TYPE
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Lợi ích thật không nằm ở chỗ gọn, mà ở chỗ quy tắc trở nên KIỂM TRA ĐƯỢC.</strong></p>
+<p>Với ba phần có tên, câu hỏi <em>&quot;chỗ nào trong chương trình ghi vào phản hồi của xy-lanh 3?&quot;</em> trả lời
+được bằng <strong>một lần tra chéo</strong> <em>(cross-reference)</em>. ⚠ Ra nhiều hơn một chỗ là có lỗi — và bạn tìm
+ra nó <strong>trước</strong> khi máy chạy, thay vì sau (Chương 22, Chương 51 mục 51.7).</p>
+</blockquote>
+<h3>⭐ Trường <code>Admit</code> — cơ cấu tự nói nó có nhận lệnh hay không</h3>
+<p>Trong <code>…Resp</code> nên có một trường mà người mới hay bỏ: <strong>cơ cấu tự công bố nó có sẵn sàng nhận lệnh
+không</strong>, và nói riêng cho từng chế độ.</p>
+<pre><code class="language-iecst">// Trong khối cơ cấu — KHÔNG phải trong trình tự
+Cyl1.Resp.AutoAdmit   := Cyl1.Resp.InitialDone AND NOT Cyl1.Resp.Fault
+                         AND NOT Cyl1.Cmd.InterLock AND M_AutoMode;
+Cyl1.Resp.ManualAdmit := Cyl1.Resp.InitialDone AND NOT Cyl1.Cmd.InterLock
+                         AND M_ManualMode;
+</code></pre>
+<p>Vì sao đáng có:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ Trình tự chỉ cần hỏi <strong>một bit</strong> thay vì lặp lại đủ điều kiện ở mọi chỗ gọi</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐⭐ Nơi ra lệnh <strong>biết trước lệnh sẽ bị từ chối</strong>, nên không gửi đi một lệnh chắc chắn rơi vào hư không — và nói được vì sao (Chương 44)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ Điều kiện nằm <strong>trong</strong> khối nên <strong>không thể quên</strong> khi thêm một cơ cấu mới</td>
+</tr>
+</tbody></table></div>
+<h3>Quy ước 2 — chia thư mục chương trình theo <strong>vai trò</strong>, không theo thứ tự viết</h3>
+<p>Chương trình máy thật có vài chục chương trình con. ⚠ Để chúng phẳng trong một danh sách thì sau sáu
+tháng không ai tìm được gì. ⭐ Một bố cục theo vai trò đã được dùng nhiều và đủ tốt để bắt chước:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Chứa gì</th>
+<th>Chương</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A — Cấu hình hệ thống</strong></td>
+<td>Gán I/O, máy trạng thái toàn máy, cờ bỏ qua, tham số hệ thống</td>
+<td>25, 51</td>
+</tr>
+<tr>
+<td><strong>B — Khởi tạo</strong></td>
+<td>Trình tự về gốc: toàn máy, rồi từng trạm</td>
+<td>28</td>
+</tr>
+<tr>
+<td><strong>C — Thao tác tay</strong></td>
+<td>Điều khiển từng cơ cấu bằng tay, điều khiển chuyền</td>
+<td>28</td>
+</tr>
+<tr>
+<td><strong>D — Báo động</strong></td>
+<td>⭐ <strong>Mỗi nhóm nguyên nhân một chương trình con</strong>: cơ cấu · trục · hệ thống · chống va chạm · trạm · cảnh báo, và một chỗ gom tất cả</td>
+<td>27, 44</td>
+</tr>
+<tr>
+<td><strong>E — Trình tự trạm</strong></td>
+<td>Mỗi trạm một chương trình con, cộng trình tự chạy khô</td>
+<td>26, 27</td>
+</tr>
+<tr>
+<td><strong>F — Cấu hình trục</strong></td>
+<td>Tham số trục, dữ liệu trục, phần hiện lên màn hình</td>
+<td>37</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Nhóm D là nhóm chứng minh giá trị của cách chia này.</strong> Tách báo động theo <strong>nguyên nhân</strong> —
+chứ không rải chúng vào chỗ phát hiện ra lỗi — cho ngay ba thứ:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ Đếm được tổng số báo động của máy, và ⚠ <strong>thấy ngay cái nào chưa có</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ Mỗi nhóm gom được thành <strong>một bit tổng</strong> để đèn tháp và màn hình dùng (Phụ lục L.11, L.13)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐⭐ Lỗi <strong>chống va chạm</strong> tách khỏi lỗi <strong>cơ cấu</strong> — hai nhóm gọi hai người khác nhau tới máy (Chương 27 mục 27.3b)</td>
+</tr>
+</tbody></table></div>
+<p>⚡ Và nhóm E tách <strong>trình tự chạy khô</strong> <em>(dry run)</em> thành một chương trình con riêng thay vì rải
+<code>IF M_DryRun</code> khắp trình tự thật — nhờ vậy trình tự thật đọc được, còn chế độ chạy khô không âm thầm
+phân nhánh ở mười chỗ (Chương 28, Chương 50).</p>
+</blockquote>
 <hr>
 <h2 id="304-comment-vit-như-nht-ký-k-thut">30.4 Comment — viết như nhật ký kỹ thuật</h2>
 <h3>Comment vô dụng và comment có giá trị</h3>
@@ -32949,6 +33220,142 @@ Một phần người vận hành gặp khó khi phân biệt màu — thường
 <p>Đây cũng là lý do đèn tháp có <strong>quy ước vị trí</strong> ngoài quy ước màu (Chương 5, mục 5.6).</p>
 </blockquote>
 <hr>
+<h2 id="445b-ca-s-nhc-thao-tác-do-plc-điu-khin-không-do-hmi">44.5b ⭐ Cửa sổ nhắc thao tác — do PLC điều khiển, không do HMI</h2>
+<p>Báo động ở mục 44.3 nói <em>&quot;có chuyện gì&quot;</em>. Nhưng có một loại tình huống khác hẳn, và nó chiếm phần lớn
+thời gian dừng máy thật:</p>
+<blockquote>
+<p>Máy <strong>không hỏng</strong>. Nó chỉ <strong>cần một người làm một việc</strong> rồi mới đi tiếp được: lấy sản phẩm lỗi ra,
+nạp thêm liệu, xác nhận đã gá lại đúng, quyết định thử lại hay bỏ qua.</p>
+</blockquote>
+<p>⚠ Dùng báo động cho việc này là sai công cụ: báo động nói <em>đã có lỗi</em>, còn đây là <em>đang chờ bạn</em>. Và
+nó làm hỏng chính số liệu ở Chương 55 — thời gian chờ người bị tính thành thời gian máy hỏng.</p>
+<h3>Giao thức tối thiểu — năm nút, không hơn</h3>
+<p>⭐ PLC nêu câu hỏi, <strong>PLC</strong> quyết định có những lựa chọn nào, HMI chỉ vẽ:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>PLC gửi lên</th>
+<th>Nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mã cửa sổ nhắc</td>
+<td>Câu hỏi nào — HMI tra bảng văn bản, ⭐ để dịch được nhiều thứ tiếng</td>
+</tr>
+<tr>
+<td>Vị trí</td>
+<td>Trạm nào, cơ cấu nào đang hỏi</td>
+</tr>
+<tr>
+<td>Cờ từng nút</td>
+<td>⭐ <strong>Nút nào được phép bấm lúc này</strong></td>
+</tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>HMI gửi xuống</th>
+<th>Nghĩa</th>
+<th>Trình tự làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Xác nhận</strong></td>
+<td>&quot;Tôi làm xong rồi&quot;</td>
+<td>Đi tiếp từ bước đang đứng</td>
+</tr>
+<tr>
+<td>⭐ <strong>Lặp lại</strong></td>
+<td>&quot;Thử lại động tác vừa rồi&quot;</td>
+<td>⭐ Quay lại <strong>đầu bước hiện tại</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>Bỏ qua</strong></td>
+<td>&quot;Bỏ sản phẩm này, làm tiếp cái sau&quot;</td>
+<td>Nhảy tới bước kết thúc, ⚠ <strong>đánh dấu sản phẩm là loại</strong></td>
+</tr>
+<tr>
+<td><strong>Tiếp tục</strong></td>
+<td>&quot;Đi tiếp dù chưa đạt&quot;</td>
+<td>⚠⚠ Xem cảnh báo bên dưới</td>
+</tr>
+<tr>
+<td><strong>Huỷ</strong></td>
+<td>&quot;Dừng chu trình này&quot;</td>
+<td>Về bước chờ, trả máy về trạng thái an toàn</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Ba nút Lặp lại · Bỏ qua · Huỷ là phần đáng giá nhất, và là phần hay bị bỏ sót nhất.</strong></p>
+<p>Không có chúng, người vận hành chỉ còn hai lựa chọn: <em>xác nhận</em> (dù chưa xử lý xong) hoặc <em>tắt máy
+đi bật lại</em>. ⚠ Cả hai đều tệ, và ⭐ <strong>cái thứ nhất tệ hơn</strong> — vì nó âm thầm, và nó ghi vào hồ sơ
+rằng mọi thứ đã ổn.</p>
+</blockquote>
+<h3>Bốn quy tắc</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Quy tắc</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐⭐ <strong>PLC bật cờ cho từng nút, HMI chỉ vẽ nút có cờ</strong></td>
+<td>⚠ HMI tự quyết định hiện nút nào là logic điều khiển nằm trong HMI — đúng điều mục 44.6 cấm</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>Một cửa sổ nhắc một lúc, mỗi trạm một hàng đợi riêng</strong></td>
+<td>Hai cửa sổ nhắc chồng nhau thì người vận hành trả lời nhầm cái kia</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐ <strong>Ghi nhật ký mọi lựa chọn</strong>: cửa sổ nhắc nào, ai chọn gì, lúc nào</td>
+<td>⚠⚠ Đây là dữ liệu đắt nhất mà máy tạo ra — xem bên dưới</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠ <strong>Có thời gian chờ tối đa</strong>, hết thì tự chuyển thành báo động</td>
+<td>Cửa sổ nhắc mở suốt ca đêm mà không ai thấy là một dạng máy chết âm thầm</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Quy tắc 3 cho một thứ mà không phép đo nào khác cho được: bảng đếm &quot;cửa sổ nhắc nào hiện nhiều
+nhất&quot;.</strong></p>
+<p>Cửa sổ nhắc đứng đầu bảng chính là ⭐ <strong>việc thủ công tốn nhiều thời gian nhất của cả máy</strong> — và nó
+thường là thứ không ai để ý, vì mỗi lần chỉ mất hai mươi giây. ⚡ Đây là đầu vào tốt nhất cho việc
+cải tiến chu kỳ ở Chương 55, tốt hơn cả đồ thị OEE.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Cảnh báo về nút &quot;Tiếp tục&quot;.</strong></p>
+<p>Nút này cho phép đi tiếp khi một phép kiểm <strong>chưa đạt</strong>. Nó có lý do tồn tại — chạy thử, chạy mẫu
+đầu, xử lý sự cố — nhưng ba điều kiện là bắt buộc:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Phải có phân quyền</strong>, không phải nút của người vận hành (mục 44.4)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠⚠ <strong>Sản phẩm đi qua bằng nút này phải bị đánh dấu trong hồ sơ truy xuất</strong> (Chương 42)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ <strong>Không được có ở chế độ sản xuất bình thường</strong> — chỉ hiện khi máy đang ở chế độ thử</td>
+</tr>
+</tbody></table></div>
+<p>⚡ Không có ba điều kiện đó, <em>&quot;Tiếp tục&quot;</em> là ⭐ <strong>một cái nút để biến hàng lỗi thành hàng đạt</strong>, và
+nó sẽ được dùng đúng như vậy vào cuối ca khi còn thiếu sản lượng.</p>
+</blockquote>
+<hr>
 <h2 id="446-ba-điu-hmi-không-đưc-làm">44.6 ⚠⚠ Ba điều HMI không được làm</h2>
 <h3>1. Không chứa logic điều khiển</h3>
 <blockquote>
@@ -38492,6 +38899,136 @@ ví dụ đèn vàng nhấp nháy kiểu riêng. Khi ấy việc quên gỡ tr�
 trong phần mềm.</p>
 </blockquote>
 <hr>
+<h2 id="517b-c-b-qua-thit-k-sn-th-duy-nht-thay-th-đưc-vic-cưng-bc">51.7b ⭐⭐ Cờ bỏ qua thiết kế sẵn — thứ duy nhất thay thế được việc cưỡng bức</h2>
+<p>Mục 51.7 nói cưỡng bức <em>(forcing)</em> nguy hiểm thế nào và phải gỡ ra sao. Nhưng nó chưa trả lời câu hỏi
+đứng ngay sau đó, và là câu hỏi thật của người vận hành lúc hai giờ sáng:</p>
+<blockquote>
+<p><em>&quot;Camera trạm 2 hỏng, phụ tùng mai mới về. Tôi vẫn phải ra hàng đêm nay. Làm sao?&quot;</em></p>
+</blockquote>
+<p>⚠⚠ <strong>Nếu chương trình không trả lời được câu này, người ta sẽ tự trả lời — bằng cưỡng bức, bằng sửa
+trực tuyến, hoặc bằng cách rút một sợi dây.</strong> Cả ba đều tệ hơn thứ lẽ ra nên có.</p>
+<h3>Bỏ qua là một yêu cầu chức năng, không phải một sự cố</h3>
+<p>Máy sản xuất thật <strong>luôn</strong> có lúc phải chạy thiếu một thứ gì đó: một camera hỏng, một đầu đọc mã mất
+kết nối, máy chủ cấp trên bảo trì nên không nhận được dữ liệu tải lên, một trạm phải tháo ra sửa.</p>
+<p>⭐ Vì vậy <strong>&quot;bỏ qua&quot; (bypass) phải được thiết kế vào chương trình từ đầu</strong> — thành một tập cờ có tên,
+có chỗ hiển thị, có ghi nhật ký. Khi ấy việc bỏ qua trở thành một <strong>thao tác được kiểm soát</strong> thay vì
+một mẹo cá nhân.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cái gì nên có cờ bỏ qua</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Từng trạm</strong></td>
+<td>Trạm hỏng thì bỏ trạm, chuyền vẫn chạy qua</td>
+</tr>
+<tr>
+<td>⭐ <strong>Từng camera, từng đầu đọc mã</strong></td>
+<td>Thiết bị phụ trợ hỏng không nên làm dừng cả máy</td>
+</tr>
+<tr>
+<td>⭐ <strong>Việc tải dữ liệu lên cấp trên</strong></td>
+<td>Máy chủ bảo trì — máy không có lỗi gì cả (Chương 45)</td>
+</tr>
+<tr>
+<td><strong>Liên kết với máy tính điều khiển</strong></td>
+<td>Mất kết nối PC không đồng nghĩa máy hỏng (Chương 43)</td>
+</tr>
+<tr>
+<td><strong>Từng ô khay, từng vị trí trên mâm</strong></td>
+<td>Một ô hỏng không làm bỏ cả khay</td>
+</tr>
+<tr>
+<td><strong>Còi báo</strong></td>
+<td>Đêm khuya, xưởng trống — tắt còi là hợp lý, và nên tắt <strong>có kiểm soát</strong></td>
+</tr>
+<tr>
+<td>⚠ Từng cảm biến của một cơ cấu</td>
+<td>Chấp nhận được <strong>với điều kiện</strong> ở mục dưới</td>
+</tr>
+</tbody></table></div>
+<h3>Bốn yêu cầu bắt buộc của một cờ bỏ qua</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Yêu cầu</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐⭐ <strong>Nhìn thấy được, không cần đi tìm</strong></td>
+<td>Hiện ngay màn hình chính: <em>&quot;Đang bỏ qua: 2 mục&quot;</em>. ⚠ Cờ bỏ qua chôn trong trang cài đặt tầng ba là cưỡng bức đội lốt</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>Có phân quyền</strong></td>
+<td>Bỏ qua một trạm không phải thao tác của người vận hành (Chương 44 mục 44.4)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐⭐ <strong>Ghi nhật ký: ai bật, lúc nào, bỏ qua cái gì</strong></td>
+<td>Khi lô hàng bị trả về, đây là thứ duy nhất trả lời được <em>&quot;lô đó máy đang chạy ở trạng thái nào&quot;</em></td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠ <strong>Đánh dấu sản phẩm làm ra trong lúc bỏ qua</strong></td>
+<td>Board đi qua trạm kiểm mà camera đang bị bỏ qua thì ⚠⚠ <strong>nó chưa được kiểm</strong> — dữ liệu truy xuất phải nói đúng điều đó (Chương 42)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Yêu cầu số 4 là yêu cầu hay bị quên nhất, và là yêu cầu tốn kém nhất khi quên.</strong></p>
+<p>Bỏ qua camera rồi vẫn ghi <em>&quot;đã kiểm — OK&quot;</em> vào hồ sơ truy xuất là <strong>ghi một điều không đúng sự
+thật</strong>. ⚠ Lúc có sự cố chất lượng, hồ sơ đó sẽ được dùng để chứng minh máy đã kiểm — và nó sẽ dẫn
+việc điều tra đi sai hướng suốt nhiều ngày.</p>
+</blockquote>
+<h3>⚠⚠ Một ranh giới không được nhập nhằng</h3>
+<blockquote>
+<p>⚠⚠ <strong>Cờ bỏ qua cho thiết bị an toàn — cửa an toàn, rèm quang — KHÔNG thuộc danh sách trên và không
+được nằm chung một chỗ với chúng.</strong></p>
+<p>Việc tạm vô hiệu hoá một thiết bị bảo vệ có tên riêng là <strong>muting</strong>, có yêu cầu thiết kế riêng, và
+⭐ <strong>phải do người có thẩm quyền thiết kế</strong> — xem Chương 47 mục 47.7.</p>
+<p>⚠ Đặt <em>&quot;bỏ qua cửa an toàn&quot;</em> cùng bảng với <em>&quot;bỏ qua còi báo&quot;</em> là đã sai ngay từ cách trình bày:
+nó dạy người dùng rằng hai thứ đó cùng một loại. <strong>Chúng không cùng một loại.</strong></p>
+</blockquote>
+<h3>Bỏ qua cảm biến của cơ cấu — chấp nhận được khi nào</h3>
+<p>Cho phép bỏ qua <strong>một</strong> cảm biến vị trí của xy-lanh là việc thường gặp, và có lý: cảm biến hỏng lúc
+nửa đêm, xy-lanh vẫn tốt.</p>
+<p>⚠ Nhưng nó đổi bản chất của cơ cấu đó: từ <strong>có xác nhận</strong> thành <strong>chạy mù theo thời gian</strong>. Ba điều
+kiện tối thiểu:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠ <strong>Phải thay bằng một thời gian chờ cố định</strong>, không phải bỏ luôn phép kiểm</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠⚠ <strong>Không áp dụng cho cơ cấu mà sai vị trí gây hư hỏng hoặc nguy hiểm</strong> — trục đứng có tải treo, kẹp giữ sản phẩm nặng</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐ <strong>Phải tự hết khi khởi động lại máy</strong>, không được là biến giữ qua mất điện</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚡ <strong>Điều kiện 3 là điều kiện phân biệt &quot;bỏ qua&quot; với &quot;sửa vĩnh viễn&quot;.</strong> Một cờ bỏ qua sống sót qua
+mất điện sẽ ở lại đó ba năm, và không ai còn nhớ vì sao nó bật. ⭐ Cùng lý do với cờ <em>đã về gốc</em> ở
+Chương 37 mục 37.3: <strong>thứ mô tả một tình trạng tạm thời thì không được giữ.</strong></p>
+</blockquote>
+<h3>Đưa lên đèn tháp</h3>
+<p>⭐ Mẹo ở mục 51.7 (đèn vàng nháy khi còn cưỡng bức) áp y hệt cho cờ bỏ qua — và ở đây nó còn quan
+trọng hơn, vì cờ bỏ qua <strong>được phép tồn tại lâu</strong>, nên càng dễ bị quên. Một cỗ máy đang chạy với ba
+cờ bỏ qua bật phải <strong>trông khác</strong> một cỗ máy chạy đủ chức năng, nhìn từ xa.</p>
+<hr>
 <h2 id="518-li-chp-chn-bn-nguyên-nhân-vt-lý-hay-b-b-sót">51.8 Lỗi chập chờn — bốn nguyên nhân vật lý hay bị bỏ sót</h2>
 <p>Lỗi chập chờn là loại khó nhất: nó không có mặt khi bạn tới, và nó quay lại khi bạn vừa đi.</p>
 <blockquote>
@@ -40306,6 +40843,16 @@ Ngưỡng cảnh báo = 18 000 000 lần  →  khoảng năm thứ 6
 trình.</strong> Xem Chương 11 về vùng nhớ giữ được, và ⚠ <strong>kiểm tra thực tế</strong> — nhiều người phát hiện bộ
 đếm bảo trì của mình bị xoá mỗi lần nạp chương trình, sau khi đã đếm được ba năm.</p>
 </blockquote>
+<h3>⭐ Viết một khối, dùng cho mọi thứ cần theo dõi</h3>
+<p>⚠ Cách làm hỏng việc ở đây không phải là tính sai ngưỡng, mà là <strong>viết tay từng bộ đếm</strong>. Khi mỗi vật
+tư tốn hai chục dòng, người ta theo dõi ba thứ rồi thôi — và ba thứ đó luôn là ba thứ nghĩ ra đầu
+tiên, không phải ba thứ hay hỏng nhất.</p>
+<p>⭐ Gói thành <strong>một khối chức năng</strong> với ngưỡng là tham số: <code>số lần dùng · ngưỡng nhắc · ngưỡng cảnh báo · phần trăm đã dùng</code>. Thêm một thứ cần theo dõi khi ấy tốn <strong>một dòng khai báo</strong> — và vì nó rẻ,
+người ta sẽ thật sự thêm (Chương 30 mục 30.3, mẫu code ở <strong>Phụ lục L.16</strong>).</p>
+<blockquote>
+<p>⚡ <strong>Phần trăm đã dùng là thứ đáng hiện lên màn hình, không phải số lần đếm được.</strong> <em>&quot;Van kẹp 1:
+86 %&quot;</em> nói ngay phải làm gì; <em>&quot;12 400 512 lần&quot;</em> thì không ai biết là nhiều hay ít.</p>
+</blockquote>
 <hr>
 <h2 id="536-trên-máy-mu-dp-01">53.6 Trên máy mẫu DP-01</h2>
 <div class="table-wrap"><table>
@@ -42059,6 +42606,134 @@ theo sáu loại kinh điển, và ⚠ <strong>họ sẽ dùng từ đó khi nó
 (Chương 51, mục 51.11).</p>
 <p>⚡ Đây là chỗ <strong>đóng góp rẻ nhất và lớn nhất</strong> mà người lập trình mang lại cho sản lượng: ⭐ <strong>đếm và
 phân loại các lần dừng vặt</strong>, thay vì chỉ đếm sản phẩm.</p>
+</blockquote>
+<hr>
+<h2 id="557c-đo-và-ct-s-liu-đâu-phn-plc-phi-làm">55.7c ⭐ Đo và cất số liệu ở đâu — phần PLC phải làm</h2>
+<p>Mục 55.7 và 55.7b nói OEE <strong>nghĩa là gì</strong> và vì sao nó hay bị bóp méo. Mục này trả lời câu còn lại:
+⭐ <strong>ai đếm, đếm bằng gì, và cất ở đâu</strong> — vì đó là phần rơi vào tay người lập trình PLC.</p>
+<h3>Bốn đồng hồ, và chúng phải cộng lại đúng</h3>
+<p>Sáu trạng thái của SEMI E10 ở mục 55.7b cần có chỗ tích luỹ thời gian. Tối thiểu là <strong>bốn đồng hồ</strong>,
+và chúng phải thoả một bất biến:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Đồng hồ</th>
+<th>Đếm khi</th>
+<th>Nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Thời gian bật máy</strong></td>
+<td>CPU đang chạy</td>
+<td>Mẫu số của mọi tỉ lệ</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian chạy</strong></td>
+<td>Máy đang làm ra sản phẩm</td>
+<td>Tử số của khả dụng</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian dừng</strong></td>
+<td>Có báo động, hoặc người dừng máy</td>
+<td>Thứ cần phân tích</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian chờ</strong></td>
+<td>Máy tốt, không có gì để làm — thiếu liệu, chờ máy trước</td>
+<td>⚠ <strong>Không phải lỗi của máy</strong></td>
+</tr>
+</tbody></table></div>
+<pre><code class="language-text">⭐ BẤT BIẾN:   chạy + dừng + chờ  =  bật máy
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Bất biến này là phép kiểm rẻ nhất và hiệu quả nhất của cả hệ thống đo.</strong></p>
+<p>Viết nó thành một phép so sánh chạy mỗi giờ. ⚠ Lệch quá vài giây nghĩa là có một trạng thái <strong>không
+được đếm vào đâu cả</strong> — và trạng thái bị bỏ quên đó luôn là trạng thái bạn cần biết nhất.</p>
+<p>⚡ Nó cũng là cách phát hiện lỗi kinh điển: máy chuyển từ <em>chạy</em> sang <em>báo động</em> mà đoạn mã tích luỹ
+chỉ cộng khi <em>chạy</em> và khi <em>dừng</em>, quên mất nửa giây chuyển tiếp. Một ngày mất vài phút, một tháng
+mất vài giờ, và không ai biết chúng đi đâu.</p>
+</blockquote>
+<h3>⚠ Tách &quot;chờ&quot; khỏi &quot;dừng&quot; — tách một lần, dùng mãi</h3>
+<p>⚠⚠ <strong>Gộp thời gian chờ vào thời gian dừng là cách nhanh nhất để biến OEE thành một con số vô dụng.</strong></p>
+<p>Máy đứng vì máy trước chưa cấp liệu <strong>không phải</strong> máy hỏng. Gộp chúng lại thì mọi cuộc họp sản xuất
+sẽ dành ra bàn xem lỗi tại ai, thay vì bàn xem nút cổ chai ở đâu — trong khi ⭐ <strong>con số trả lời câu
+thứ hai đã nằm sẵn trong PLC</strong> (mục 55.3).</p>
+<p>⭐ Nếu chỉ tách được <strong>một</strong> thứ trong cả hệ thống đo, hãy tách thứ này.</p>
+<h3>Cất ở đâu trong PLC</h3>
+<p>⭐ Một bộ khung đủ dùng cho hầu hết máy, và vừa bộ nhớ của PLC cỡ trung:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mức</th>
+<th>Cất gì</th>
+<th>Vì sao cần mức này</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Theo giờ</strong></td>
+<td>24 ô cho một ngày</td>
+<td>⭐⭐ Thấy <strong>giờ nào trong ca bị mất</strong>, thứ mà con số cả ngày giấu đi</td>
+</tr>
+<tr>
+<td><strong>Theo ca</strong></td>
+<td>Một ô cho mỗi ca</td>
+<td>Đơn vị mà người quản lý sản xuất thật sự dùng</td>
+</tr>
+<tr>
+<td><strong>Theo ngày</strong></td>
+<td>Khoảng 31 ô cho một tháng</td>
+<td>Xu hướng trong tháng</td>
+</tr>
+<tr>
+<td><strong>Theo tháng</strong></td>
+<td>Tháng này và tháng trước</td>
+<td>So sánh, và ⭐ dữ liệu <strong>sống sót qua một lần mất mạng dài</strong></td>
+</tr>
+</tbody></table></div>
+<p>Mỗi ô chứa cùng một tập trường — thời gian kế hoạch, thời gian chạy, số đạt, số không đạt — nên nó
+chính là một <strong>kiểu dữ liệu người dùng</strong> dùng lại ở cả bốn mức (Chương 11, Chương 30 mục 30.3).</p>
+<blockquote>
+<p>⭐ <strong>Cất số ĐẾM, không cất số phần trăm.</strong> Tỉ lệ tính ra lúc hiển thị. ⚠ Cất sẵn phần trăm thì khi
+định nghĩa đổi — mà nó sẽ đổi, xem mục 55.7b — <strong>toàn bộ lịch sử thành rác</strong>, vì không còn số gốc
+để tính lại.</p>
+</blockquote>
+<h3>⚠ Ba chỗ hỏng, đều nằm ở ranh giới thời gian</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Chỗ hỏng</th>
+<th>Cách phòng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠⚠ <strong>Ca không trùng ngày</strong></td>
+<td>Ca đêm chạy qua nửa đêm. ⭐ Quyết định trước: sản lượng của ca đó thuộc <strong>ngày bắt đầu ca</strong>, và ghi quyết định ấy vào hồ sơ máy</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠ <strong>Đổi ô khi sang giờ mới</strong></td>
+<td>Lúc chuyển ô, phần thời gian dở dang phải <strong>chia đúng</strong> cho hai ô, không dồn hết về một bên</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠⚠ <strong>Đồng hồ thời gian thực của PLC trôi</strong></td>
+<td>Vài giây mỗi tuần là bình thường. ⭐ Đồng bộ từ cấp trên (Chương 45), và ⚠ <strong>ghi lại mỗi lần chỉnh giờ</strong> — nếu không, một lần chỉnh lùi sẽ tạo ra số liệu âm mà không ai giải thích được</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚡ <strong>Chỗ hỏng số 3 đáng nhớ vì hậu quả của nó trông giống lỗi lập trình.</strong> Một ô sản lượng âm, hoặc
+một giờ có 4 000 giây, gần như luôn là ⭐ <strong>đồng hồ bị chỉnh</strong>, không phải phép cộng sai.</p>
+</blockquote>
+<h3>Ai bấm nút xoá</h3>
+<p>⭐ Số liệu OEE phải xoá được — đầu lô mới, sau khi chạy thử, sau khi sửa máy. Nhưng:</p>
+<blockquote>
+<p>⚠⚠ <strong>Nút xoá số liệu phải có phân quyền, phải hỏi lại, và phải ghi nhật ký ai xoá lúc nào</strong>
+(Chương 44 mục 44.4).</p>
+<p>⭐ Lý do rất thực tế: OEE thường được dùng làm chỉ tiêu đánh giá. ⚠ Một nút xoá không ghi nhật ký,
+đặt ngay màn hình chính, là một lời mời — và khi nghi ngờ nổi lên, <strong>không có cách nào chứng minh
+điều ngược lại</strong>. Ghi nhật ký bảo vệ cả người vận hành lẫn con số.</p>
 </blockquote>
 <hr>
 <h2 id="558-trên-máy-mu-dp-01">55.8 Trên máy mẫu DP-01</h2>
@@ -53844,6 +54519,62 @@ sau <strong>32 767 sản phẩm</strong> — với DP-01 ở 300 board/giờ, đ
 </tr>
 </tbody></table></div>
 <hr>
+<h2 id="k7b-lưi-khay-dy-ba-đim-tính-ra-mi-ô">K.7b Lưới khay — dạy ba điểm, tính ra mọi ô</h2>
+<p>Khay có <code>R</code> hàng × <code>C</code> cột. ⚠ Dạy từng ô là việc không làm nổi khi khay có 60 ô, và ⭐ <strong>mỗi lần gá
+lại khay là phải dạy lại toàn bộ</strong>.</p>
+<p>⭐ Chỉ dạy <strong>ba</strong> ô và suy ra phần còn lại:</p>
+<pre><code class="language-text">P1 = ô (1,1)        — góc đầu
+P2 = ô (1,C)        — cuối HÀNG thứ nhất
+P3 = ô (R,1)        — cuối CỘT thứ nhất
+</code></pre>
+<pre><code class="language-text">             (c − 1)                       (r − 1)
+P(r,c) = P1 + ─────── × (P2 − P1)  +  ─────── × (P3 − P1)
+             (C − 1)                       (R − 1)
+</code></pre>
+<p>Áp cho từng trục:</p>
+<pre><code class="language-text">X(r,c) = X1 + (c−1)·(X2−X1)/(C−1) + (r−1)·(X3−X1)/(R−1)
+Y(r,c) = Y1 + (c−1)·(Y2−Y1)/(C−1) + (r−1)·(Y3−Y1)/(R−1)
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Điều kiện áp dụng</strong></td>
+<td>Các ô cách <strong>đều nhau</strong> theo mỗi chiều; khay <strong>phẳng</strong> trong mặt phẳng chuyển động</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Vì sao phải ba điểm, không phải hai</strong></td>
+<td>Ba điểm bắt được cả <strong>khay bị xoay</strong> khi gá. Hai điểm chỉ bắt được bước và chiều dài — ⚠ khay lệch góc vài độ sẽ sai dần và ⭐ <strong>ô cuối cùng sai nhiều nhất</strong></td>
+</tr>
+<tr>
+<td>⚠ <strong>Không áp dụng cho</strong></td>
+<td>Khay có bước không đều; khay cong vênh; khay nghiêng so với mặt phẳng chạy — khi đó cần dạy thêm điểm hoặc dùng hệ thị giác (Chương 43)</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Bẫy số học</strong></td>
+<td>⭐ <strong>Nhân trước, chia sau</strong>; <code>C = 1</code> hoặc <code>R = 1</code> làm <strong>mẫu số bằng 0</strong> — phải chặn riêng (K.6, Chương 19 mục 19.5)</td>
+</tr>
+<tr>
+<td>⭐ Kiểm tra</td>
+<td>Sau khi dạy, chạy thử <strong>bốn góc</strong> — không phải ô đầu. ⚠ Sai số cộng dồn chỉ lộ ra ở góc xa nhất</td>
+</tr>
+<tr>
+<td>Chương</td>
+<td>37 · Phụ lục L.9</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Đánh số ô: chọn một quy ước rồi viết nó lên khay.</strong> Đếm theo hàng trước hay theo cột trước,
+đếm từ 0 hay từ 1 — ⚠ <strong>cả bốn kiểu đều có người dùng</strong>, và cãi nhau về việc này lúc giao máy là
+chuyện có thật. Ghi vào hồ sơ máy (Phụ lục J).</p>
+<p>⚡ Cùng công thức này dùng được cho <strong>kho nhiều tầng</strong>: thay <code>(r, c)</code> bằng <code>(tầng, ô)</code> và dạy ba
+điểm tương ứng.</p>
+</blockquote>
+<hr>
 <h2 id="k8-bng-tra-nhanh-công-thc-nào-chương-nào">K.8 Bảng tra nhanh — công thức nào ở chương nào</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -53928,6 +54659,11 @@ sau <strong>32 767 sản phẩm</strong> — với DP-01 ở 300 board/giờ, đ
 <td>K.7</td>
 <td>31, 36, 49</td>
 </tr>
+<tr>
+<td>⭐ <strong>Lưới khay — dạy ba điểm</strong></td>
+<td>K.7b</td>
+<td>37</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>⭐ <strong>Cần đoạn code chứ không phải công thức?</strong> Các mạch lặp lại ở mọi máy — tự giữ, chuỗi cho
@@ -53945,7 +54681,7 @@ của bạn</strong>. ⚠ Phần điện lực, tiết diện dây, tính toán 
 <hr>
 <h1 id="ph-lc-l-thư-vin-mu-code-dùng-ngay">Phụ lục L — Thư viện mẫu code dùng ngay</h1>
 <blockquote>
-<p><strong>Tài liệu tra cứu.</strong> Những đoạn logic lặp lại ở gần như mọi cỗ máy, gom về một chỗ. Mỗi mẫu kèm
+<p><strong>Tài liệu tra cứu.</strong> Mười sáu đoạn logic lặp lại ở gần như mọi cỗ máy, gom về một chỗ. Mỗi mẫu kèm
 ⭐ <strong>điều kiện dùng</strong> và ⚠ <strong>thứ nó KHÔNG làm</strong> — vì chép một mẫu mà không biết giới hạn của nó là
 cách tạo ra lỗi trông rất giống code đúng.</p>
 </blockquote>
@@ -54614,7 +55350,125 @@ có hệ <strong>tự thay mẫu số bằng 1</strong> rồi chạy tiếp vớ
 thì số liệu biến mất âm thầm (Chương 18, Chương 54).</p>
 </blockquote>
 <hr>
-<h2 id="l15-bng-tra-nhanh-mu-nào-cho-vic-gì">L.15 Bảng tra nhanh — mẫu nào cho việc gì</h2>
+<h2 id="l15-hút-chân-không-có-thi-ngưc-hai-ngõ-ra-hai-xác-nhn">L.15 Hút chân không có thổi ngược — hai ngõ ra, hai xác nhận</h2>
+<p>⭐ <strong>Dùng khi:</strong> gắp sản phẩm bằng giác hút. ⚠ Mẫu này khác hẳn xy-lanh hai vị trí ở L.8: <strong>nhả không
+phải là ngừng hút</strong>.</p>
+<pre><code class="language-iecst">FUNCTION_BLOCK FB_Vacuum
+VAR_INPUT
+    SuckReq     : BOOL;      // TRUE = hút · FALSE = nhả
+    SensOK      : BOOL;      // công tắc áp chân không báo đã đủ độ chân không
+    SensShield  : BOOL;      // bỏ qua cảm biến — có điều kiện, xem Chương 51
+    InterLock   : BOOL;      // chặn từ tầng chống va chạm (Chương 27)
+    SuckLimit   : TIME := T#1S;    // bao lâu thì phải đạt độ chân không
+    BlowTime    : TIME := T#300MS; // thổi ngược bao lâu rồi tắt
+END_VAR
+VAR_OUTPUT
+    OutSuck     : BOOL;      // van hút
+    OutBlow     : BOOL;      // ⭐ van THỔI NGƯỢC — ngõ ra riêng
+    Holding     : BOOL;      // đang giữ được sản phẩm
+    Released    : BOOL;      // đã nhả xong
+    Fault       : BOOL;
+    FaultCode   : INT;       // 1 = hút không đạt · 2 = rơi giữa chừng
+END_VAR
+VAR
+    T_Suck : TON;
+    T_Blow : TON;
+END_VAR
+
+// ── Hút ──
+OutSuck := SuckReq AND NOT InterLock;
+Holding := OutSuck AND (SensOK OR SensShield);
+
+T_Suck(IN := OutSuck AND NOT Holding, PT := SuckLimit);
+IF T_Suck.Q THEN
+    Fault := TRUE;  FaultCode := 1;        // hút mãi không đạt: hở, tắc, hoặc không có hàng
+END_IF;
+
+// ⚠⚠ MẤT CHÂN KHÔNG GIỮA CHỪNG — sản phẩm đã rơi, và đây là báo động RIÊNG
+IF OutSuck AND NOT SensOK AND NOT SensShield AND T_Suck.ET &gt; SuckLimit THEN
+    Fault := TRUE;  FaultCode := 2;
+END_IF;
+
+// ── Nhả: thổi ngược một nhịp NGẮN rồi TẮT ──
+T_Blow(IN := NOT SuckReq, PT := BlowTime);
+OutBlow  := NOT SuckReq AND NOT T_Blow.Q;  // thổi trong BlowTime, sau đó thôi
+Released := NOT SuckReq AND T_Blow.Q;
+END_FUNCTION_BLOCK
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Ba điều làm mẫu này khác xy-lanh hai vị trí, và cả ba đều là chỗ hay sai:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Ngừng hút KHÔNG phải là nhả.</strong> Sản phẩm nhẹ sẽ dính lại vì độ chân không còn dư — phải <strong>thổi ngược</strong> mới rời ra đúng chỗ</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠⚠ <strong>Thổi ngược phải TẮT sau một nhịp ngắn.</strong> Thổi liên tục thì tốn khí, làm bẩn sản phẩm, và ⭐ <strong>thổi bay sản phẩm kế tiếp</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠⚠ <strong>&quot;Mất chân không giữa chừng&quot; là báo động riêng, khác &quot;hút không đạt&quot;.</strong> Loại một nghĩa là chưa gắp được; loại hai nghĩa là ⭐ <strong>sản phẩm đã rơi đâu đó trong máy</strong> — và phải tìm nó trước khi chạy tiếp</td>
+</tr>
+</tbody></table></div>
+<p>⚡ <strong>Cảm biến ở đây là công tắc áp chân không, không phải cảm biến vị trí.</strong> Nó nói <em>&quot;đủ độ chân
+không&quot;</em>, ⚠ <strong>không</strong> nói <em>&quot;đang giữ đúng một sản phẩm&quot;</em> — giác hút bịt vào mặt bàn cũng cho tín hiệu
+y hệt (Chương 33, Chương 48).</p>
+</blockquote>
+<hr>
+<h2 id="l16-đm-tui-th-vt-tư-cnh-báo-trưc-báo-đng-sau">L.16 Đếm tuổi thọ vật tư — cảnh báo trước, báo động sau</h2>
+<p>⭐ <strong>Dùng khi:</strong> một thứ sẽ mòn và sẽ hỏng — van, giác hút, mũi tra keo, bộ lọc, đèn UV, dây đai. Mẫu
+này biến <strong>một sự cố bất ngờ</strong> thành <strong>một việc có kế hoạch</strong> (Chương 53 mục 53.5).</p>
+<pre><code class="language-iecst">FUNCTION_BLOCK FB_PartLife
+VAR_INPUT
+    CountTrig  : BOOL;       // một xung mỗi lần dùng — ⚠ đã bắt cạnh (L.7)
+    ResetTrig  : BOOL;       // thay đồ mới → xoá về 0
+    WarnLimit  : DINT;       // ⭐ ngưỡng NHẮC   ≈ tuổi thọ × 0,7
+    AlarmLimit : DINT;       // ⭐ ngưỡng CẢNH BÁO ≈ tuổi thọ × 0,9
+END_VAR
+VAR_OUTPUT
+    Count      : DINT;       // ⚠⚠ phải là biến GIỮ ĐƯỢC qua mất điện
+    Warning    : BOOL;       // còn thời gian đặt hàng
+    Alarm      : BOOL;       // nên thay ở lần dừng máy tới
+    PctUsed    : INT;        // % đã dùng, đơn vị 1 %
+END_VAR
+
+IF ResetTrig THEN
+    Count := 0;
+ELSIF CountTrig THEN
+    Count := Count + 1;
+END_IF;
+
+Warning := (Count &gt;= WarnLimit);
+Alarm   := (Count &gt;= AlarmLimit);
+
+IF AlarmLimit &gt; 0 THEN
+    PctUsed := DINT_TO_INT((Count * 100) / AlarmLimit);
+ELSE
+    PctUsed := 0;                        // chưa đặt ngưỡng — đừng chia cho 0 (L.14)
+END_IF;
+END_FUNCTION_BLOCK
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Hai ngưỡng, không phải một — và khoảng cách giữa chúng chính là thời gian đặt hàng phụ tùng.</strong>
+Một ngưỡng thì bạn biết <em>đúng lúc đã muộn</em>.</p>
+<p>⚠⚠ <strong>Cả hai ngưỡng đều là NHẮC, không được dừng máy.</strong> Một cỗ máy tự dừng vì <em>&quot;đã tới hạn thay
+van&quot;</em> sẽ bị vô hiệu hoá trong vòng một tuần — và khi đó bạn mất luôn cả bộ đếm (Chương 53).</p>
+<p>⚠⚠ <strong><code>Count</code> phải sống sót qua mất điện VÀ qua việc nạp lại chương trình.</strong> ⭐ Đây là chỗ phải
+<strong>thử thật</strong>, không được tin: nhiều người phát hiện bộ đếm bảo trì của mình bị xoá mỗi lần nạp
+chương trình — sau khi đã đếm được ba năm (Chương 11, Chương 54).</p>
+<p>⚡ <strong>Một khối, nhiều thể hiện, ngưỡng là tham số.</strong> Đây đúng là mức 1 của việc tái sử dụng ở
+Chương 30: mỗi vật tư một thể hiện, ngưỡng nạp từ bảng tham số — ⭐ <strong>thêm một thứ cần theo dõi chỉ
+tốn một dòng khai báo</strong>, nên người ta sẽ thật sự thêm.</p>
+</blockquote>
+<hr>
+<h2 id="l17-bng-tra-nhanh-mu-nào-cho-vic-gì">L.17 Bảng tra nhanh — mẫu nào cho việc gì</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -54707,6 +55561,18 @@ thì số liệu biến mất âm thầm (Chương 18, Chương 54).</p>
 <td>L.14</td>
 <td>⚠⚠ Chia cho 0 ở đầu ca</td>
 <td>19, 55</td>
+</tr>
+<tr>
+<td>Gắp bằng giác hút</td>
+<td>L.15</td>
+<td>⚠⚠ Ngừng hút <strong>không phải</strong> là nhả</td>
+<td>6, 33, 46</td>
+</tr>
+<tr>
+<td>Theo dõi tuổi thọ vật tư</td>
+<td>L.16</td>
+<td>⚠⚠ Bộ đếm bị xoá khi nạp lại chương trình</td>
+<td>11, 53</td>
 </tr>
 </tbody></table></div>
 <hr>

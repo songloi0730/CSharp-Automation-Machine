@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.2.0.260913 |
+| **Phiên bản** | v1.0.0.260913 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -15129,6 +15129,28 @@ Kiểu thứ ba là kiểu hay xảy ra nhất trong thực tế, và nó tệ h
 | 2 | **Không phụ thuộc biến toàn cục** | Khối đọc lén một biến ngoài thì không tái dùng được ở dự án khác |
 | 3 | **Có ghi rõ giả định** | ⭐ "khối này giả định cơ cấu về vị trí lò xo khi mất lệnh" — viết ngay đầu khối |
 
+### ⭐⭐ Mức 3 trông như thế nào trong thực tế
+
+Mức 3 ở bảng mục 30.3 — *tái sử dụng ở quy mô cả máy* — nghe trừu tượng. Đây là hình dạng thật của
+nó, đo trên **hai cỗ máy khác nhau do cùng một nhóm kỹ thuật viết**:
+
+| Hạng mục | Hai máy đó |
+|---|---|
+| Bố cục thư mục | ⭐ **Giống hệt** — sáu nhóm ở mục 30.3b |
+| Thư viện khối cơ cấu | ⭐ **Giống hệt** — cùng một bộ khối cho xy-lanh, trục, chân không, đầu ép, khay, kho đệm, đếm chu kỳ, đếm tuổi thọ vật tư, thống kê năng suất |
+| Bộ kiểu dữ liệu | ⭐ Giống hệt |
+| Khối giao diện với màn hình | ⭐⭐ **Khoảng hai phần ba trùng nhau từng tên biến** |
+| ⚠ **Phần khác nhau** | Gần như **chỉ có thư mục trình tự trạm**, cộng vài tín hiệu bắt tay riêng giữa các trạm của máy đó |
+
+> ⭐⭐ **Đó là câu trả lời cụ thể cho câu hỏi "tái sử dụng ở mức máy nghĩa là gì".** Không phải chép cả
+> chương trình rồi sửa. Mà là: ⭐ **mọi thứ KHÔNG đặc thù cho cỗ máy này đều nằm ngoài phần đặc thù**
+> — và phần đặc thù thu lại thành **một thư mục**.
+>
+> ⚡ Khi đạt tới hình dạng này, câu *"làm máy mới mất bao lâu"* đổi nghĩa: nó không còn là *"viết lại
+> chương trình"* mà là *"viết trình tự cho mấy trạm"*. ⚠ Nhưng nó cũng đặt ra một kỷ luật mới —
+> **sửa một khối dùng chung là chạm vào mọi cỗ máy đang dùng nó**, nên bắt buộc phải có phiên bản
+> (mục 30.6) và phải biết máy nào đang dùng phiên bản nào.
+
 > ⭐ **Bắt đầu từ đâu.** Phụ lục L gom sẵn những mẫu lặp lại ở gần như mọi máy — tự giữ, chuỗi
 > cho phép, ba lệnh dừng, khung trình tự có timeout, khối cơ cấu hai vị trí dùng lại được.
 > ⚠ Mỗi mẫu ở đó **ghi kèm giả định của nó** đúng theo yêu cầu số 3 trong bảng trên — đọc phần
@@ -21602,6 +21624,92 @@ END_IF;
 
 ---
 
+## 41.7b ⭐ Trạm đệm — nơi sản phẩm nằm lại, và nơi chương trình hay mất dấu
+
+Mục 41.4 hỏi *"ai đang giữ sản phẩm"* với **một** sản phẩm ở **một** chỗ giao. Trạm đệm *(buffer)* làm
+câu hỏi đó khó hẳn lên: ⭐ **nhiều sản phẩm nằm cùng lúc, và chương trình phải nhớ từng ô có gì.**
+
+Trạm đệm có hai lý do tồn tại, và chúng đòi hỏi khác nhau:
+
+| Kiểu | Mục đích | Điều kiện lấy ra |
+|---|---|---|
+| ⭐ **Đệm cân bằng nhịp** | Máy trước và máy sau không cùng nhịp (mục 41.2) | Có hàng là lấy được |
+| ⭐⭐ **Đệm theo thời gian** | ⭐ **Thời gian nằm lại LÀ một công đoạn** — keo đông, nguội sau sấy | ⚠ **Đủ thời gian mới được lấy** |
+
+### Ba thứ phải có cho mỗi ô
+
+| | Nội dung |
+|---|---|
+| ⭐ **Có hàng hay không** | Một bit cho mỗi ô |
+| ⭐ **Vào lúc nào** | Một đồng hồ cho mỗi ô — cần cho kiểu đệm theo thời gian, và ⚠ **luôn hữu ích** kể cả kiểu kia |
+| **Có dùng được không** | ⭐ Ô hỏng thì **bỏ qua ô đó**, không bỏ cả trạm (Chương 51 mục 51.7b) |
+
+```iecst
+// ── Mỗi ô: đếm thời gian đã nằm, và cho biết đã đủ chưa ──
+FOR i := 1 TO SLOT_COUNT DO
+    IF Slot[i].HasPart THEN
+        Slot[i].DwellMs := Slot[i].DwellMs + TASK_MS;
+    ELSE
+        Slot[i].DwellMs := 0;
+    END_IF;
+
+    // ⭐ Ô sẵn sàng để LẤY RA
+    Slot[i].ReadyOut := Slot[i].HasPart
+                        AND (Slot[i].DwellMs >= MinDwellMs)
+                        AND NOT Slot[i].Disabled;
+END_FOR;
+```
+
+### ⭐ Vào trước ra trước, hay vào sau ra trước — phải chọn, và phải chọn đúng
+
+| | **Vào trước ra trước** *(FIFO)* | **Vào sau ra trước** *(LIFO)* |
+|---|---|---|
+| Dùng khi | ⭐ **Hầu hết trường hợp** | Kho xếp chồng, chỉ với tới cái trên cùng |
+| Với đệm theo thời gian | ⭐⭐ **Bắt buộc** — cái vào trước đủ thời gian trước | ⚠⚠ **Sai** — cái vừa vào chưa đủ thời gian |
+| Truy xuất nguồn gốc | ⭐ Thứ tự ra đoán được | ⚠ Khó đối chiếu (Chương 42) |
+
+> ⚠⚠ **Chọn nhầm ở trạm đệm theo thời gian là lỗi không nhìn thấy được.** Máy vẫn chạy, sản lượng vẫn
+> đủ, ⭐ **chỉ có chất lượng là sai** — keo chưa đông đã đi tiếp. Và nó sai **âm thầm** đúng kiểu
+> Chương 48 cảnh báo: không có phép kiểm nào báo động.
+>
+> ⭐ Cách phòng rẻ nhất: **đừng lấy ra theo vị trí, hãy lấy ra theo ĐỒNG HỒ.** Chọn ô có thời gian nằm
+> lâu nhất trong số các ô đã đủ điều kiện — khi đó thứ tự đúng **tự nhiên đúng**, không phụ thuộc vào
+> việc ai đã chọn đúng chế độ.
+
+### ⚠⚠ Bật máy lên, trong đệm đang có hàng
+
+Đây là phần khó nhất, và là phần hay bị bỏ hẳn:
+
+> ⚠⚠ **Mất điện giữa ca thì sản phẩm vẫn nằm nguyên trong trạm đệm — nhưng bộ nhớ của chương trình
+> thì không.**
+
+Ba lối xử lý, và cái thứ ba là cái đúng:
+
+| Cách | Vấn đề |
+|---|---|
+| Giả định đệm rỗng | ⚠⚠ Máy nạp thêm vào ô đã có hàng, hoặc bỏ sót hàng cũ nằm lại mãi |
+| Giữ toàn bộ trạng thái qua mất điện | ⚠ Sai ngay khi có người **lấy tay ra** trong lúc máy tắt — và luôn có người làm thế |
+| ⭐⭐ **Đọc lại cảm biến khi khởi tạo, rồi HỎI người vận hành** | ⭐ Chương trình dựng lại *"ô nào có hàng"* từ cảm biến; ⚠ nhưng **thời gian đã nằm thì không cảm biến nào biết** |
+
+⭐ Với đệm theo thời gian, câu hỏi phải hỏi thẳng — bằng kênh nhắc thao tác ở Chương 44 mục 44.3b:
+
+```text
+   Trong trạm đệm đang có 4 sản phẩm.
+   Không biết chúng đã nằm bao lâu.
+
+   [ Tính lại từ bây giờ ]   [ Coi là đã đủ ]   [ Loại bỏ cả 4 ]
+```
+
+> ⭐⭐ **Ba nút đó là một quyết định về CHẤT LƯỢNG, nên nó phải do người quyết, không phải do chương
+> trình mặc định.** ⚠ Và dù chọn gì, **phải ghi vào nhật ký và đánh dấu bốn sản phẩm đó** — vì nếu về
+> sau có sự cố, đây chính xác là bốn sản phẩm cần tra lại (Chương 42).
+>
+> ⚡ Cùng một lập luận với việc *"bỏ qua camera thì sản phẩm phải bị đánh dấu"* ở Chương 51 mục 51.7b:
+> ⭐ **khi máy không biết chắc, hồ sơ phải nói rằng nó không biết chắc** — không được ghi một điều
+> đẹp đẽ mà sai.
+
+---
+
 ## 41.8 Trên máy mẫu DP-01
 
 ### Giao diện đầy đủ
@@ -23073,6 +23181,7 @@ thông dụng và đủ dùng:
 | ⭐ **Điều kiện đang thiếu để chạy** | Xem bên dưới |
 | Công thức đang chạy — **tên**, không chỉ mã số | Chương 29 |
 | Trạng thái kết nối: MES, đầu đọc, servo | Chương 40, 42 |
+| ⭐ **Phiên bản chương trình PLC** — hiện ở một góc | ⚠ Câu hỏi đầu tiên khi gọi hỗ trợ từ xa là *"máy đang chạy bản nào?"*; không hiện thì không ai trả lời được (Chương 54) |
 
 > ⭐⭐ **"Điều kiện đang thiếu để chạy" là thành phần có giá trị nhất của màn hình tổng quan, và hay
 > bị bỏ nhất.**
@@ -23094,6 +23203,73 @@ thông dụng và đủ dùng:
    │  ✓ Nhiệt độ keo: 60,2 °C         │
    └──────────────────────────────────┘
 ```
+
+---
+
+## 44.2b ⭐⭐ Một màn hình chi tiết dùng cho mọi cơ cấu cùng loại
+
+Mức 3 ở bảng trên là *"từng cơ cấu, từng giá trị"*. ⚠ Hiểu theo nghĩa đen thì máy có 10 trục sẽ có 10
+màn hình trục, 30 xy-lanh sẽ có 30 màn hình xy-lanh. Và đó là chỗ công sức làm màn hình vượt công sức
+viết chương trình.
+
+⭐ Cách làm tốt hơn: **một màn hình duy nhất cho mỗi LOẠI cơ cấu, cộng một ô chọn số thứ tự.**
+
+### Cách hoạt động
+
+Trong PLC, dựng **một bộ biến giao diện duy nhất** cho loại cơ cấu đó — theo hợp đồng ba phần ở
+Chương 30 mục 30.3b — cộng một biến chỉ số:
+
+```iecst
+// ── Chỉ số do màn hình đặt ──
+IF (HmiAxisNo < 1) OR (HmiAxisNo > AXIS_COUNT) THEN
+    HmiAxisNo := 1;                         // ⚠ luôn chặn dải trước khi dùng làm chỉ số
+END_IF;
+
+// ── ĐỔI CHỈ SỐ: xoá sạch phần Lệnh TRƯỚC khi nạp trục mới ──
+IF HmiAxisNo <> HmiAxisNoPrev THEN
+    HmiAxisCmd  := EmptyAxisCmd;            // ⚠⚠ bắt buộc — xem cảnh báo bên dưới
+    HmiAxisNoPrev := HmiAxisNo;
+END_IF;
+
+// ── Chép PHẢN HỒI + DỮ LIỆU của trục đang chọn RA màn hình ──
+HmiAxisResp := Axis[HmiAxisNo].Resp;
+HmiAxisData := Axis[HmiAxisNo].Data;
+
+// ── Chép LỆNH từ màn hình VÀO đúng trục đang chọn ──
+Axis[HmiAxisNo].Cmd := HmiAxisCmd;
+```
+
+| Được gì | |
+|---|---|
+| 1 | ⭐ **Một màn hình để làm và để sửa**, dù máy có 3 trục hay 30 |
+| 2 | ⭐⭐ **Thêm một trục không tốn gì trên màn hình** — chỉ đổi một hằng số |
+| 3 | ⭐ **Mọi trục trông giống nhau**, nên người vận hành học một lần |
+| 4 | ⭐ Dữ liệu trao đổi với màn hình **không tăng theo số cơ cấu** — đáng kể khi màn hình đọc qua mạng (Chương 39) |
+
+> ⚠⚠ **Bẫy chết người của mẫu này: lệnh còn treo khi đổi chỉ số.**
+>
+> Người vận hành mở trục 1, nhấn *chạy tới vị trí*, rồi đổi ô chọn sang trục 2 **trong lúc bit lệnh
+> vẫn còn bằng 1**. Nếu không xoá phần Lệnh khi chỉ số đổi, ⭐ **lệnh dành cho trục 1 sẽ rơi xuống
+> trục 2** — và trục 2 chạy mà không ai bấm gì cho nó.
+>
+> ⚠ Vì vậy dòng `HmiAxisCmd := EmptyAxisCmd;` **không phải để cho sạch sẽ** — nó là điều kiện để mẫu
+> này an toàn. ⭐ Cùng lý do với việc phải hạ `Execute` xuống ở Chương 37 mục 37.8.
+
+> ⚠ **Hai điều kiện nữa, ít nguy hiểm hơn nhưng vẫn phải có:**
+>
+> | | |
+> |---|---|
+> | 1 | ⚠ **Chặn dải chỉ số trước khi dùng.** Chỉ số ngoài dải là **truy cập mảng ngoài biên** — có hệ báo lỗi và dừng CPU, có hệ ghi đè lên vùng nhớ bên cạnh (Chương 11, Chương 19) |
+> | 2 | ⚠ **Hai màn hình cùng lúc sẽ giành nhau một ô chỉ số.** Máy có hai chỗ vận hành thì phải có **hai bộ biến giao diện**, không dùng chung một bộ |
+
+### Việc lật trang cũng là logic — nên nó cũng thuộc PLC
+
+Cùng nguyên tắc áp cho việc **xem số liệu lịch sử**: nút *ngày trước · ngày sau · xem theo tháng* chỉ
+gửi xuống một xung, ⭐ **PLC giữ chỉ số ngày đang xem và chép đúng khối số liệu đó ra**.
+
+> ⭐ Lý do không nằm ở kỹ thuật mà ở chỗ **nguồn sự thật chỉ có một**: khi màn hình tự tính chỉ số,
+> máy có hai chỗ cùng tin mình biết *"đang xem ngày nào"* — và chúng sẽ lệch nhau. ⚡ Đây là một ca cụ
+> thể của mục 44.6.
 
 ---
 
@@ -23242,6 +23418,35 @@ CO vung chet 5 do:
 *(Đối chiếu: Kuphaldt — Lessons in Industrial Instrumentation, mục về vùng chết của công tắc quá
 trình và báo động phiền nhiễu; Rockwell 1756-RM003 — khối PID có tham số vùng chết riêng cho báo
 động theo giá trị đo và theo sai lệch.)*
+
+## 44.3b ⭐ Ba kênh thông điệp — đừng nhét tất cả vào báo động
+
+Mục 44.3 thiết kế **báo động**. Nhưng máy có ba loại chuyện muốn nói với người vận hành, và ⚠ nhét cả
+ba vào danh sách báo động là nguyên nhân gốc của cỗ máy 47 báo động ở mục 44.1.
+
+| Kênh | Nghĩa | Máy có dừng không | Ai phải làm gì |
+|---|---|---|---|
+| ⚠ **Báo động** | Có lỗi, không chạy tiếp được | ⭐ **Dừng** | Sửa rồi xác nhận |
+| **Cảnh báo** | Vẫn chạy được, nhưng có thứ đang trôi | ⭐ **Không dừng** | Lên kế hoạch xử lý |
+| ⭐ **Nhắc thao tác** | Máy **không hỏng** — nó đang **chờ một người** | Đứng chờ | Làm việc được yêu cầu |
+
+⭐ Ba kênh **ba danh sách riêng, ba chỗ hiển thị riêng, ba cách xác nhận riêng.**
+
+> ⭐⭐ **Kênh thứ ba là kênh hay bị bỏ nhất, và nó bóp méo cả số liệu ở Chương 55.**
+>
+> Máy đứng chờ người lấy sản phẩm lỗi ra **không phải máy hỏng**. ⚠ Báo nó bằng báo động thì thời gian
+> đó rơi vào ô *"thời gian dừng"* thay vì *"thời gian chờ"* — đúng phép gộp mà Chương 55 mục 55.7c nói
+> là làm hỏng OEE. ⭐ **Tách kênh ở đây thì số liệu ở kia tự đúng.**
+
+> ⭐ **Cảnh báo phải có chỗ ở riêng, nếu không nó sẽ bị trộn vào báo động và biến mất.**
+>
+> *"Van kẹp đã dùng 86 % tuổi thọ"* (Chương 53) nằm lẫn trong danh sách báo động thì sau hai ngày
+> không ai đọc nó nữa. ⚠ Nó cũng không được phép làm dừng máy — xem Chương 53 mục 53.5.
+
+⚡ Kênh **nhắc thao tác** cần thêm một thứ mà hai kênh kia không cần: người vận hành phải **trả lời**
+được. Cách làm ở mục 44.5b.
+
+---
 
 ## 44.4 Phân quyền người dùng
 
@@ -33153,7 +33358,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Thời gian thông qua | throughput time · lead time | | 55 |
 | Sản lượng giờ | UPH (units per hour) | | 55 |
 | ⭐⭐ Nút cổ chai | bottleneck | | 55 |
-| Chỗ đệm | buffer | | 55 |
+| Chỗ đệm | buffer | ⭐ Trạm đệm và thời gian nằm lại: Ch.41 mục 41.7b | 41, 55 |
 | Hiệu suất thiết bị tổng thể | OEE (Overall Equipment Effectiveness) | ISO 22400 | 55 |
 | Khả dụng · Hiệu suất · Chất lượng | availability · performance · quality | Ba thành phần OEE | 55 |
 | Thời gian chết | downtime | | 55 |

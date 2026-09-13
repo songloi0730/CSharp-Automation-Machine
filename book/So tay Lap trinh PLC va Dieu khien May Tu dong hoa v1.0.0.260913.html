@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.2.0.260913</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260913</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -802,6 +802,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#415-tín-hiu-cng-hay-qua-mng">41.5 Tín hiệu cứng hay qua mạng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#416-bt-tay-d-liu-khi-cn-nhiu-hơn-hai-bit">41.6 Bắt tay dữ liệu — khi cần nhiều hơn hai bit</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#417-hành-vi-biên-chuyn">41.7 Hành vi ở biên chuyền</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#417b-trm-đm-nơi-sn-phm-nm-li-và-nơi-chương-trình-hay-mt-du">41.7b ⭐ Trạm đệm — nơi sản phẩm nằm lại, và nơi chương trình hay mất dấu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#418-trên-máy-mu-dp-01">41.8 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#419-khác-bit-gia-các-hãng-và-các-chun">41.9 Khác biệt giữa các hãng và các chuẩn</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#4110-by-thưng-gp">41.10 Bẫy thường gặp</a></li>
@@ -838,7 +839,9 @@
   <li><a href="#chương-44-hmiscada-thit-k-màn-hình-vn-hành">Chương 44 — HMI/SCADA: thiết kế màn hình vận hành</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#441-bài-toán-47-báo-đng-không-ai-đc">44.1 Bài toán: 47 báo động, không ai đọc</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#442-phân-cp-màn-hình">44.2 Phân cấp màn hình</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#442b-mt-màn-hình-chi-tit-dùng-cho-mi-cơ-cu-cùng-loi">44.2b ⭐⭐ Một màn hình chi tiết dùng cho mọi cơ cấu cùng loại</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#443-thit-k-báo-đng">44.3 ⭐⭐ Thiết kế báo động</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#443b-ba-kênh-thông-đip-đng-nhét-tt-c-vào-báo-đng">44.3b ⭐ Ba kênh thông điệp — đừng nhét tất cả vào báo động</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#444-phân-quyn-ngưi-dùng">44.4 Phân quyền người dùng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#445-nguyên-tc-trình-bày">44.5 Nguyên tắc trình bày</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#445b-ca-s-nhc-thao-tác-do-plc-điu-khin-không-do-hmi">44.5b ⭐ Cửa sổ nhắc thao tác — do PLC điều khiển, không do HMI</a></li>
@@ -1198,7 +1201,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.2.0.260913</td>
+<td>v1.0.0.260913</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -21664,6 +21667,46 @@ càng tiện thì càng dễ dùng mà không nghĩ.</p>
 <td>⭐ &quot;khối này giả định cơ cấu về vị trí lò xo khi mất lệnh&quot; — viết ngay đầu khối</td>
 </tr>
 </tbody></table></div>
+<h3>⭐⭐ Mức 3 trông như thế nào trong thực tế</h3>
+<p>Mức 3 ở bảng mục 30.3 — <em>tái sử dụng ở quy mô cả máy</em> — nghe trừu tượng. Đây là hình dạng thật của
+nó, đo trên <strong>hai cỗ máy khác nhau do cùng một nhóm kỹ thuật viết</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Hai máy đó</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bố cục thư mục</td>
+<td>⭐ <strong>Giống hệt</strong> — sáu nhóm ở mục 30.3b</td>
+</tr>
+<tr>
+<td>Thư viện khối cơ cấu</td>
+<td>⭐ <strong>Giống hệt</strong> — cùng một bộ khối cho xy-lanh, trục, chân không, đầu ép, khay, kho đệm, đếm chu kỳ, đếm tuổi thọ vật tư, thống kê năng suất</td>
+</tr>
+<tr>
+<td>Bộ kiểu dữ liệu</td>
+<td>⭐ Giống hệt</td>
+</tr>
+<tr>
+<td>Khối giao diện với màn hình</td>
+<td>⭐⭐ <strong>Khoảng hai phần ba trùng nhau từng tên biến</strong></td>
+</tr>
+<tr>
+<td>⚠ <strong>Phần khác nhau</strong></td>
+<td>Gần như <strong>chỉ có thư mục trình tự trạm</strong>, cộng vài tín hiệu bắt tay riêng giữa các trạm của máy đó</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Đó là câu trả lời cụ thể cho câu hỏi &quot;tái sử dụng ở mức máy nghĩa là gì&quot;.</strong> Không phải chép cả
+chương trình rồi sửa. Mà là: ⭐ <strong>mọi thứ KHÔNG đặc thù cho cỗ máy này đều nằm ngoài phần đặc thù</strong>
+— và phần đặc thù thu lại thành <strong>một thư mục</strong>.</p>
+<p>⚡ Khi đạt tới hình dạng này, câu <em>&quot;làm máy mới mất bao lâu&quot;</em> đổi nghĩa: nó không còn là <em>&quot;viết lại
+chương trình&quot;</em> mà là <em>&quot;viết trình tự cho mấy trạm&quot;</em>. ⚠ Nhưng nó cũng đặt ra một kỷ luật mới —
+<strong>sửa một khối dùng chung là chạm vào mọi cỗ máy đang dùng nó</strong>, nên bắt buộc phải có phiên bản
+(mục 30.6) và phải biết máy nào đang dùng phiên bản nào.</p>
+</blockquote>
 <blockquote>
 <p>⭐ <strong>Bắt đầu từ đâu.</strong> Phụ lục L gom sẵn những mẫu lặp lại ở gần như mọi máy — tự giữ, chuỗi
 cho phép, ba lệnh dừng, khung trình tự có timeout, khối cơ cấu hai vị trí dùng lại được.
@@ -30882,6 +30925,139 @@ END_IF;
 rỗng</strong>. Một cờ, dùng cho nhiều việc.</p>
 </blockquote>
 <hr>
+<h2 id="417b-trm-đm-nơi-sn-phm-nm-li-và-nơi-chương-trình-hay-mt-du">41.7b ⭐ Trạm đệm — nơi sản phẩm nằm lại, và nơi chương trình hay mất dấu</h2>
+<p>Mục 41.4 hỏi <em>&quot;ai đang giữ sản phẩm&quot;</em> với <strong>một</strong> sản phẩm ở <strong>một</strong> chỗ giao. Trạm đệm <em>(buffer)</em> làm
+câu hỏi đó khó hẳn lên: ⭐ <strong>nhiều sản phẩm nằm cùng lúc, và chương trình phải nhớ từng ô có gì.</strong></p>
+<p>Trạm đệm có hai lý do tồn tại, và chúng đòi hỏi khác nhau:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Mục đích</th>
+<th>Điều kiện lấy ra</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Đệm cân bằng nhịp</strong></td>
+<td>Máy trước và máy sau không cùng nhịp (mục 41.2)</td>
+<td>Có hàng là lấy được</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Đệm theo thời gian</strong></td>
+<td>⭐ <strong>Thời gian nằm lại LÀ một công đoạn</strong> — keo đông, nguội sau sấy</td>
+<td>⚠ <strong>Đủ thời gian mới được lấy</strong></td>
+</tr>
+</tbody></table></div>
+<h3>Ba thứ phải có cho mỗi ô</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Có hàng hay không</strong></td>
+<td>Một bit cho mỗi ô</td>
+</tr>
+<tr>
+<td>⭐ <strong>Vào lúc nào</strong></td>
+<td>Một đồng hồ cho mỗi ô — cần cho kiểu đệm theo thời gian, và ⚠ <strong>luôn hữu ích</strong> kể cả kiểu kia</td>
+</tr>
+<tr>
+<td><strong>Có dùng được không</strong></td>
+<td>⭐ Ô hỏng thì <strong>bỏ qua ô đó</strong>, không bỏ cả trạm (Chương 51 mục 51.7b)</td>
+</tr>
+</tbody></table></div>
+<pre><code class="language-iecst">// ── Mỗi ô: đếm thời gian đã nằm, và cho biết đã đủ chưa ──
+FOR i := 1 TO SLOT_COUNT DO
+    IF Slot[i].HasPart THEN
+        Slot[i].DwellMs := Slot[i].DwellMs + TASK_MS;
+    ELSE
+        Slot[i].DwellMs := 0;
+    END_IF;
+
+    // ⭐ Ô sẵn sàng để LẤY RA
+    Slot[i].ReadyOut := Slot[i].HasPart
+                        AND (Slot[i].DwellMs &gt;= MinDwellMs)
+                        AND NOT Slot[i].Disabled;
+END_FOR;
+</code></pre>
+<h3>⭐ Vào trước ra trước, hay vào sau ra trước — phải chọn, và phải chọn đúng</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Vào trước ra trước</strong> <em>(FIFO)</em></th>
+<th><strong>Vào sau ra trước</strong> <em>(LIFO)</em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dùng khi</td>
+<td>⭐ <strong>Hầu hết trường hợp</strong></td>
+<td>Kho xếp chồng, chỉ với tới cái trên cùng</td>
+</tr>
+<tr>
+<td>Với đệm theo thời gian</td>
+<td>⭐⭐ <strong>Bắt buộc</strong> — cái vào trước đủ thời gian trước</td>
+<td>⚠⚠ <strong>Sai</strong> — cái vừa vào chưa đủ thời gian</td>
+</tr>
+<tr>
+<td>Truy xuất nguồn gốc</td>
+<td>⭐ Thứ tự ra đoán được</td>
+<td>⚠ Khó đối chiếu (Chương 42)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Chọn nhầm ở trạm đệm theo thời gian là lỗi không nhìn thấy được.</strong> Máy vẫn chạy, sản lượng vẫn
+đủ, ⭐ <strong>chỉ có chất lượng là sai</strong> — keo chưa đông đã đi tiếp. Và nó sai <strong>âm thầm</strong> đúng kiểu
+Chương 48 cảnh báo: không có phép kiểm nào báo động.</p>
+<p>⭐ Cách phòng rẻ nhất: <strong>đừng lấy ra theo vị trí, hãy lấy ra theo ĐỒNG HỒ.</strong> Chọn ô có thời gian nằm
+lâu nhất trong số các ô đã đủ điều kiện — khi đó thứ tự đúng <strong>tự nhiên đúng</strong>, không phụ thuộc vào
+việc ai đã chọn đúng chế độ.</p>
+</blockquote>
+<h3>⚠⚠ Bật máy lên, trong đệm đang có hàng</h3>
+<p>Đây là phần khó nhất, và là phần hay bị bỏ hẳn:</p>
+<blockquote>
+<p>⚠⚠ <strong>Mất điện giữa ca thì sản phẩm vẫn nằm nguyên trong trạm đệm — nhưng bộ nhớ của chương trình
+thì không.</strong></p>
+</blockquote>
+<p>Ba lối xử lý, và cái thứ ba là cái đúng:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Vấn đề</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Giả định đệm rỗng</td>
+<td>⚠⚠ Máy nạp thêm vào ô đã có hàng, hoặc bỏ sót hàng cũ nằm lại mãi</td>
+</tr>
+<tr>
+<td>Giữ toàn bộ trạng thái qua mất điện</td>
+<td>⚠ Sai ngay khi có người <strong>lấy tay ra</strong> trong lúc máy tắt — và luôn có người làm thế</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Đọc lại cảm biến khi khởi tạo, rồi HỎI người vận hành</strong></td>
+<td>⭐ Chương trình dựng lại <em>&quot;ô nào có hàng&quot;</em> từ cảm biến; ⚠ nhưng <strong>thời gian đã nằm thì không cảm biến nào biết</strong></td>
+</tr>
+</tbody></table></div>
+<p>⭐ Với đệm theo thời gian, câu hỏi phải hỏi thẳng — bằng kênh nhắc thao tác ở Chương 44 mục 44.3b:</p>
+<pre><code class="language-text">   Trong trạm đệm đang có 4 sản phẩm.
+   Không biết chúng đã nằm bao lâu.
+
+   [ Tính lại từ bây giờ ]   [ Coi là đã đủ ]   [ Loại bỏ cả 4 ]
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Ba nút đó là một quyết định về CHẤT LƯỢNG, nên nó phải do người quyết, không phải do chương
+trình mặc định.</strong> ⚠ Và dù chọn gì, <strong>phải ghi vào nhật ký và đánh dấu bốn sản phẩm đó</strong> — vì nếu về
+sau có sự cố, đây chính xác là bốn sản phẩm cần tra lại (Chương 42).</p>
+<p>⚡ Cùng một lập luận với việc <em>&quot;bỏ qua camera thì sản phẩm phải bị đánh dấu&quot;</em> ở Chương 51 mục 51.7b:
+⭐ <strong>khi máy không biết chắc, hồ sơ phải nói rằng nó không biết chắc</strong> — không được ghi một điều
+đẹp đẽ mà sai.</p>
+</blockquote>
+<hr>
 <h2 id="418-trên-máy-mu-dp-01">41.8 Trên máy mẫu DP-01</h2>
 <h3>Giao diện đầy đủ</h3>
 <div class="table-wrap"><table>
@@ -32871,6 +33047,10 @@ qua bốn màn hình.</p>
 <td>Trạng thái kết nối: MES, đầu đọc, servo</td>
 <td>Chương 40, 42</td>
 </tr>
+<tr>
+<td>⭐ <strong>Phiên bản chương trình PLC</strong> — hiện ở một góc</td>
+<td>⚠ Câu hỏi đầu tiên khi gọi hỗ trợ từ xa là <em>&quot;máy đang chạy bản nào?&quot;</em>; không hiện thì không ai trả lời được (Chương 54)</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>⭐⭐ <strong>&quot;Điều kiện đang thiếu để chạy&quot; là thành phần có giá trị nhất của màn hình tổng quan, và hay
@@ -32890,6 +33070,92 @@ lý do Chương 24 mục 24.7 khuyên <strong>viết đủ từng điều kiện
    │  ✓ Nhiệt độ keo: 60,2 °C         │
    └──────────────────────────────────┘
 </code></pre>
+<hr>
+<h2 id="442b-mt-màn-hình-chi-tit-dùng-cho-mi-cơ-cu-cùng-loi">44.2b ⭐⭐ Một màn hình chi tiết dùng cho mọi cơ cấu cùng loại</h2>
+<p>Mức 3 ở bảng trên là <em>&quot;từng cơ cấu, từng giá trị&quot;</em>. ⚠ Hiểu theo nghĩa đen thì máy có 10 trục sẽ có 10
+màn hình trục, 30 xy-lanh sẽ có 30 màn hình xy-lanh. Và đó là chỗ công sức làm màn hình vượt công sức
+viết chương trình.</p>
+<p>⭐ Cách làm tốt hơn: <strong>một màn hình duy nhất cho mỗi LOẠI cơ cấu, cộng một ô chọn số thứ tự.</strong></p>
+<h3>Cách hoạt động</h3>
+<p>Trong PLC, dựng <strong>một bộ biến giao diện duy nhất</strong> cho loại cơ cấu đó — theo hợp đồng ba phần ở
+Chương 30 mục 30.3b — cộng một biến chỉ số:</p>
+<pre><code class="language-iecst">// ── Chỉ số do màn hình đặt ──
+IF (HmiAxisNo &lt; 1) OR (HmiAxisNo &gt; AXIS_COUNT) THEN
+    HmiAxisNo := 1;                         // ⚠ luôn chặn dải trước khi dùng làm chỉ số
+END_IF;
+
+// ── ĐỔI CHỈ SỐ: xoá sạch phần Lệnh TRƯỚC khi nạp trục mới ──
+IF HmiAxisNo &lt;&gt; HmiAxisNoPrev THEN
+    HmiAxisCmd  := EmptyAxisCmd;            // ⚠⚠ bắt buộc — xem cảnh báo bên dưới
+    HmiAxisNoPrev := HmiAxisNo;
+END_IF;
+
+// ── Chép PHẢN HỒI + DỮ LIỆU của trục đang chọn RA màn hình ──
+HmiAxisResp := Axis[HmiAxisNo].Resp;
+HmiAxisData := Axis[HmiAxisNo].Data;
+
+// ── Chép LỆNH từ màn hình VÀO đúng trục đang chọn ──
+Axis[HmiAxisNo].Cmd := HmiAxisCmd;
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Được gì</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐ <strong>Một màn hình để làm và để sửa</strong>, dù máy có 3 trục hay 30</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐⭐ <strong>Thêm một trục không tốn gì trên màn hình</strong> — chỉ đổi một hằng số</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐ <strong>Mọi trục trông giống nhau</strong>, nên người vận hành học một lần</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⭐ Dữ liệu trao đổi với màn hình <strong>không tăng theo số cơ cấu</strong> — đáng kể khi màn hình đọc qua mạng (Chương 39)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Bẫy chết người của mẫu này: lệnh còn treo khi đổi chỉ số.</strong></p>
+<p>Người vận hành mở trục 1, nhấn <em>chạy tới vị trí</em>, rồi đổi ô chọn sang trục 2 <strong>trong lúc bit lệnh
+vẫn còn bằng 1</strong>. Nếu không xoá phần Lệnh khi chỉ số đổi, ⭐ <strong>lệnh dành cho trục 1 sẽ rơi xuống
+trục 2</strong> — và trục 2 chạy mà không ai bấm gì cho nó.</p>
+<p>⚠ Vì vậy dòng <code>HmiAxisCmd := EmptyAxisCmd;</code> <strong>không phải để cho sạch sẽ</strong> — nó là điều kiện để mẫu
+này an toàn. ⭐ Cùng lý do với việc phải hạ <code>Execute</code> xuống ở Chương 37 mục 37.8.</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Hai điều kiện nữa, ít nguy hiểm hơn nhưng vẫn phải có:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠ <strong>Chặn dải chỉ số trước khi dùng.</strong> Chỉ số ngoài dải là <strong>truy cập mảng ngoài biên</strong> — có hệ báo lỗi và dừng CPU, có hệ ghi đè lên vùng nhớ bên cạnh (Chương 11, Chương 19)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠ <strong>Hai màn hình cùng lúc sẽ giành nhau một ô chỉ số.</strong> Máy có hai chỗ vận hành thì phải có <strong>hai bộ biến giao diện</strong>, không dùng chung một bộ</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<h3>Việc lật trang cũng là logic — nên nó cũng thuộc PLC</h3>
+<p>Cùng nguyên tắc áp cho việc <strong>xem số liệu lịch sử</strong>: nút <em>ngày trước · ngày sau · xem theo tháng</em> chỉ
+gửi xuống một xung, ⭐ <strong>PLC giữ chỉ số ngày đang xem và chép đúng khối số liệu đó ra</strong>.</p>
+<blockquote>
+<p>⭐ Lý do không nằm ở kỹ thuật mà ở chỗ <strong>nguồn sự thật chỉ có một</strong>: khi màn hình tự tính chỉ số,
+máy có hai chỗ cùng tin mình biết <em>&quot;đang xem ngày nào&quot;</em> — và chúng sẽ lệch nhau. ⚡ Đây là một ca cụ
+thể của mục 44.6.</p>
+</blockquote>
 <hr>
 <h2 id="443-thit-k-báo-đng">44.3 ⭐⭐ Thiết kế báo động</h2>
 <p>Đây là mục quan trọng nhất chương. Chương 48 mục 48.6 đã nêu phép thử một dòng; ở đây là thiết kế đầy
@@ -33084,6 +33350,52 @@ viết logic.</p>
 <p><em>(Đối chiếu: Kuphaldt — Lessons in Industrial Instrumentation, mục về vùng chết của công tắc quá
 trình và báo động phiền nhiễu; Rockwell 1756-RM003 — khối PID có tham số vùng chết riêng cho báo
 động theo giá trị đo và theo sai lệch.)</em></p>
+<h2 id="443b-ba-kênh-thông-đip-đng-nhét-tt-c-vào-báo-đng">44.3b ⭐ Ba kênh thông điệp — đừng nhét tất cả vào báo động</h2>
+<p>Mục 44.3 thiết kế <strong>báo động</strong>. Nhưng máy có ba loại chuyện muốn nói với người vận hành, và ⚠ nhét cả
+ba vào danh sách báo động là nguyên nhân gốc của cỗ máy 47 báo động ở mục 44.1.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kênh</th>
+<th>Nghĩa</th>
+<th>Máy có dừng không</th>
+<th>Ai phải làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠ <strong>Báo động</strong></td>
+<td>Có lỗi, không chạy tiếp được</td>
+<td>⭐ <strong>Dừng</strong></td>
+<td>Sửa rồi xác nhận</td>
+</tr>
+<tr>
+<td><strong>Cảnh báo</strong></td>
+<td>Vẫn chạy được, nhưng có thứ đang trôi</td>
+<td>⭐ <strong>Không dừng</strong></td>
+<td>Lên kế hoạch xử lý</td>
+</tr>
+<tr>
+<td>⭐ <strong>Nhắc thao tác</strong></td>
+<td>Máy <strong>không hỏng</strong> — nó đang <strong>chờ một người</strong></td>
+<td>Đứng chờ</td>
+<td>Làm việc được yêu cầu</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Ba kênh <strong>ba danh sách riêng, ba chỗ hiển thị riêng, ba cách xác nhận riêng.</strong></p>
+<blockquote>
+<p>⭐⭐ <strong>Kênh thứ ba là kênh hay bị bỏ nhất, và nó bóp méo cả số liệu ở Chương 55.</strong></p>
+<p>Máy đứng chờ người lấy sản phẩm lỗi ra <strong>không phải máy hỏng</strong>. ⚠ Báo nó bằng báo động thì thời gian
+đó rơi vào ô <em>&quot;thời gian dừng&quot;</em> thay vì <em>&quot;thời gian chờ&quot;</em> — đúng phép gộp mà Chương 55 mục 55.7c nói
+là làm hỏng OEE. ⭐ <strong>Tách kênh ở đây thì số liệu ở kia tự đúng.</strong></p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Cảnh báo phải có chỗ ở riêng, nếu không nó sẽ bị trộn vào báo động và biến mất.</strong></p>
+<p><em>&quot;Van kẹp đã dùng 86 % tuổi thọ&quot;</em> (Chương 53) nằm lẫn trong danh sách báo động thì sau hai ngày
+không ai đọc nó nữa. ⚠ Nó cũng không được phép làm dừng máy — xem Chương 53 mục 53.5.</p>
+</blockquote>
+<p>⚡ Kênh <strong>nhắc thao tác</strong> cần thêm một thứ mà hai kênh kia không cần: người vận hành phải <strong>trả lời</strong>
+được. Cách làm ở mục 44.5b.</p>
+<hr>
 <h2 id="444-phân-quyn-ngưi-dùng">44.4 Phân quyền người dùng</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -50923,8 +51235,8 @@ khi nghi ngờ hãy dùng nó.</p>
 <tr>
 <td>Chỗ đệm</td>
 <td>buffer</td>
-<td></td>
-<td>55</td>
+<td>⭐ Trạm đệm và thời gian nằm lại: Ch.41 mục 41.7b</td>
+<td>41, 55</td>
 </tr>
 <tr>
 <td>Hiệu suất thiết bị tổng thể</td>

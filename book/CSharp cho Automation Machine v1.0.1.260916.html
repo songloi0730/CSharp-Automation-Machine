@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260911</title>
+<title>C# cho Automation Machine — v1.0.1.260916</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -353,6 +353,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#74-th-t-vit-mã-ráp-mt-tính-năng-chy-đưc-t-con-s-không">7.4  Thứ tự viết mã — ráp một tính năng chạy được từ con số không</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#75-chương-trình-mu-hoàn-chnh-mt-c-máy-thu-nh-chy-đưc-tht">7.5  Chương trình mẫu hoàn chỉnh — một cỗ máy thu nhỏ chạy được thật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#76-cùng-c-máy-đó-vit-không-dùng-task">7.6  Cùng cỗ máy đó, viết không dùng Task</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#77-và-nu-b-luôn-c-interface">7.7  Và nếu bỏ luôn cả interface</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-7">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-7">Lỗi thường gặp</a></li>
   <li><a href="#chương-8-winforms-cho-h-thng-k-tha">Chương 8: WinForms cho hệ thống kế thừa</a></li>
@@ -538,7 +539,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260911</td>
+<td>v1.0.1.260916</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -9522,6 +9523,189 @@ dữ liệu miền, <code>PressureMonitor</code>, <code>MachineController</code>
 phải dùng một thư viện async trong chương trình chặn, hãy <strong>cô lập nó</strong> — cho nó chạy trên
 luồng riêng của nó và nói chuyện với phần còn lại bằng hàng đợi (Chương 5 mục 5.4), thay vì
 chặn lại ở giữa đường.</p>
+</blockquote>
+<hr>
+<h2 id="77-và-nu-b-luôn-c-interface">7.7  Và nếu bỏ luôn cả interface</h2>
+<p>Mục 7.6 bỏ <code>Task</code>. Mục này bỏ nốt thứ còn lại: <strong>interface</strong>. Lý do vẫn là lý do cũ — đây là
+cách rất nhiều phần mềm máy thật đang viết, và người đọc nên gặp nó ở đây trước khi gặp nó ở
+hiện trường.</p>
+<p>Con số trong bộ mẫu 13 dự án: <strong>5 dự án không có một <code>interface</code> nào</strong> trong toàn bộ mã nguồn,
+và <strong>3 trong số đó không có cả <code>async</code> lẫn <code>interface</code></strong> — hai lựa chọn này đi cùng nhau, vì
+chúng đến từ cùng một tư duy: <em>viết thẳng thứ cần làm, đừng thêm tầng nào ở giữa</em>.</p>
+<h3>7.7.1  Nói điều khó nghe trước: bản này NGẮN NHẤT</h3>
+<p>Chương trình thứ ba cũng đã được biên dịch và chạy, và nó cho ra <strong>kết quả giống hệt hai bản
+kia</strong> — cùng 12 chu kỳ, cùng cảnh báo 4,96 bar. Đo ba bản:</p>
+<p><strong>Bảng 7.9 — Ba lối viết cùng một cỗ máy, đo thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chỉ tiêu</th>
+<th><code>async</code> + interface (7.5)</th>
+<th>Chặn + interface (7.6)</th>
+<th><strong>Chặn, không interface (7.7)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Số dòng</td>
+<td>350</td>
+<td>390</td>
+<td><strong>336</strong> — ngắn nhất</td>
+</tr>
+<tr>
+<td>Số <code>interface</code></td>
+<td>4</td>
+<td>4</td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>Nhánh <code>if (_simulate)</code> trong lớp thiết bị</td>
+<td>0</td>
+<td>0</td>
+<td><strong>10</strong></td>
+</tr>
+<tr>
+<td>Kết quả chạy</td>
+<td>giống nhau</td>
+<td>giống nhau</td>
+<td>giống nhau</td>
+</tr>
+</tbody></table></div>
+<p>Đừng bỏ qua dòng đầu. <strong>Lối viết thẳng thật sự ngắn hơn</strong>, và nó còn có hai ưu điểm mà người
+mới cảm nhận được ngay: bấm F12 trên một lời gọi thì nhảy thẳng tới <strong>mã chạy thật</strong> chứ không
+rơi vào một interface rỗng, và không phải mở hai file để hiểu một hành vi. Với một người mới
+tiếp quản, đó là khác biệt có thật.</p>
+<p>Vậy cái giá nằm ở đâu? Nó không nằm ở số dòng, và cũng không lộ ra trong ngày đầu tiên.</p>
+<h3>7.7.2  Sáu cái giá, nhìn tận mã</h3>
+<h4>① Giả lập phải chui vào trong lớp thiết bị</h4>
+<p>Bỏ interface thì không còn chỗ nào để cắm một lớp giả lập vào. Cách duy nhất còn lại là <strong>nhét
+cờ giả lập vào chính lớp thiết bị</strong>:</p>
+<p><strong>Code 7.24 — Lớp thiết bị khi không có interface: hai đường chạy trong một hàm</strong></p>
+<pre><code class="language-csharp">public sealed class Axis
+{
+    private readonly bool _simulate;        // cờ quyết định chạy nhánh nào
+
+    public void MoveTo(double targetMm)
+    {
+        if (_simulate)
+        {
+            while (Math.Abs(_positionMm - targetMm) &gt; 0.001) { /* giả lập */ }
+            return;
+        }
+
+        _sdk.MoveAbs(_axisNo, ToPulse(targetMm));   // đường chạy thật
+        // … chờ, kiểm lỗi, quy đổi đơn vị …
+    }
+}
+</code></pre>
+<p>Trong chương trình mẫu, cờ này xuất hiện <strong>10 lần</strong>. Ba hệ quả, xếp theo mức độ khó chịu tăng dần:</p>
+<ul>
+<li><strong>Mỗi hàm dài gấp đôi</strong> và có hai đường chạy phải cùng đọc để hiểu.</li>
+<li><strong>Mã giả lập đi theo bản giao khách.</strong> Nó nằm trong file thực thi chạy trên máy thật, và chỉ
+cách chế độ sản xuất đúng một giá trị <code>bool</code>.</li>
+<li><strong>Hai đường chạy trôi xa nhau theo thời gian.</strong> Sửa logic thật mà quên sửa nhánh giả lập là
+chuyện xảy ra rất nhanh — và bạn chỉ phát hiện khi bản giả lập bắt đầu nói dối.</li>
+</ul>
+<h4>② Không còn chỗ cắm thứ giả để kiểm thử</h4>
+<p>Muốn viết một phép kiểm cho <code>PressureMonitor</code> — <em>&quot;áp suất dưới ngưỡng thì có phát cảnh báo
+không?&quot;</em> — bạn cần đưa cho nó một cảm biến trả về giá trị do bạn chọn. Không có interface thì
+không đưa được: nó đòi đúng lớp <code>PressureSensor</code>, và lớp đó tự quyết định giá trị của nó.</p>
+<p>Cách duy nhất còn lại là tạo <code>PressureSensor</code> với <code>simulate: true</code> — nhưng như vậy bạn đang
+<strong>kiểm thử bản giả lập</strong>, không kiểm thử luật của máy. Đây chính là điều Chương 18 mục 18.6.3
+gọi là <em>khả năng test là hệ quả của kiến trúc, không phải của kỷ luật</em>.</p>
+<h4>③ Mất <code>IStep</code>: chu trình từ danh sách thành dãy lời gọi cứng</h4>
+<p>Đây là cái giá ít ai lường trước, vì nó không nằm ở tầng thiết bị mà ở tầng trình tự. Có <code>IStep</code>
+thì chu trình là <strong>dữ liệu</strong> — một danh sách. Không có nó, chu trình buộc phải là <strong>mã</strong>:</p>
+<p><strong>Code 7.25 — Chu trình khi không còn IStep</strong></p>
+<pre><code class="language-csharp">private void RunOneCycle()
+{
+    MoveWithTimeout(120.0);      // bước 1: tới vị trí gắp
+    _gripper.Grip();             // bước 2: gắp
+    MoveWithTimeout(20.0);       // bước 3: tới vị trí đặt
+    _gripper.Release();          // bước 4: nhả
+}
+</code></pre>
+<p>So sánh với bản có interface, nơi cùng chu trình đó là bốn phần tử trong một mảng. Bốn thứ mất
+đi cùng lúc — và đúng bốn thứ này là nội dung Chương 12 mục 12.1.6 đã liệt kê:</p>
+<ul>
+<li>Không hiện được <em>&quot;Bước 3/7: Gắp&quot;</em> lên màn hình, vì không có gì để đếm.</li>
+<li>Không chạy tay từng bước được.</li>
+<li>Không đổi thứ tự bước theo công thức được.</li>
+<li><strong>Hạn giờ phải lặp lại ở mọi chỗ gọi chuyển động.</strong> Trong bản mẫu, nó thành hàm
+<code>MoveWithTimeout</code> — nghĩa là mỗi lần thêm một chuyển động mới, người viết phải <strong>nhớ</strong> gọi
+đúng hàm đó thay vì gọi thẳng <code>_axis.MoveTo</code>. Không ai nhắc nếu quên.</li>
+</ul>
+<h4>④ Đổi hãng thiết bị là sửa lớp đang chạy, không phải thêm lớp mới</h4>
+<p>Với interface, thêm một hãng card là <strong>thêm một file</strong> và đổi một dòng ở Composition Root; lớp
+cũ không bị đụng tới. Không có interface, bạn phải <strong>mở chính lớp <code>Axis</code> đang chạy tốt</strong> và thêm
+nhánh vào nó — hoặc chép cả lớp ra thành <code>Axis2</code>, rồi mọi nơi dùng <code>Axis</code> phải quyết định dùng
+bản nào. Đây là lý do thực dụng nhất, và nó là lý do về <strong>rủi ro</strong>: bạn sửa mã đang chạy trên
+máy đang sản xuất, chỉ để thêm một thứ chưa từng chạy.</p>
+<h4>⑤ Mũi tên phụ thuộc đi ngược</h4>
+<p>Xem lại Hình 7.1 ở mục 7.4.3: mọi mũi tên chỉ xuống dưới. Ở bản này, <code>MachineController</code> — nơi
+chứa <strong>luật của máy</strong> — khai báo thẳng <code>private readonly Axis _axis;</code> và <code>private readonly Gripper _gripper;</code>. Nghĩa là tầng nghiệp vụ <strong>biết tên lớp phần cứng</strong>, và mũi tên chỉ ngược
+lên. Hệ quả cụ thể: không thể biên dịch tầng nghiệp vụ mà không có mã phần cứng, và không thể
+dùng lại nó cho một cỗ máy khác.</p>
+<h4>⑥ Composition Root mất ý nghĩa</h4>
+<p>Trong hai bản trước, chỗ cắm dây quyết định <strong>dùng lớp nào</strong>. Ở bản này nó chỉ còn truyền
+<strong>tham số</strong> <code>UseSimulation</code> vào từng lớp. Khác biệt nghe nhỏ nhưng rất lớn: quyết định thật/giả
+không còn nằm ở <strong>một chỗ</strong>, nó nằm rải ở <strong>mỗi lớp thiết bị</strong> — và mỗi lớp có thể nhận một giá
+trị khác nhau. Một cấu hình nửa thật nửa giả là chuyện hoàn toàn có thể xảy ra mà không ai
+nhận ra.</p>
+<h3>7.7.3  Vậy khi nào lối này chấp nhận được</h3>
+<p>Năm dự án trong bộ mẫu chọn lối này và chúng <strong>vẫn đang chạy trong nhà máy</strong>. Nói rằng chúng sai
+là không trung thực. Lối viết thẳng hợp lý khi <strong>cả năm điều</strong> dưới đây cùng đúng:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Điều kiện</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Máy chỉ có <strong>một bản duy nhất</strong>, không nhân bản</td>
+<td>Không bao giờ phải dùng lại mã cho máy khác</td>
+</tr>
+<tr>
+<td>Thiết bị <strong>chắc chắn không đổi</strong> trong vòng đời máy</td>
+<td>Không phải trả giá ④</td>
+</tr>
+<tr>
+<td>Đội <strong>một tới hai người</strong>, và họ ở lại</td>
+<td>Không cần tầng trừu tượng để phân công</td>
+</tr>
+<tr>
+<td><strong>Không cần kiểm thử tự động</strong></td>
+<td>Chấp nhận giá ②</td>
+</tr>
+<tr>
+<td>Máy <strong>không cần chạy thử khi thiếu phần cứng</strong></td>
+<td>Chấp nhận giá ①</td>
+</tr>
+</tbody></table></div>
+<p>Điều kiện thứ năm là điều kiện hay sai nhất. Gần như dự án nào cũng có lúc cần chạy phần mềm
+khi máy chưa lắp xong — và đó chính là lúc cờ <code>_simulate</code> ra đời, thường là vội vàng, rồi ở lại
+vĩnh viễn.</p>
+<blockquote>
+<p>💡 <strong>Đường giữa, và đây là khuyến nghị thật của sách: đừng bọc mọi thứ, hãy bọc đúng thứ có
+khả năng đổi.</strong> Ba câu hỏi ở Chương 13 mục 13.5 trả lời được việc này trong một phút: thiết bị
+này có khả năng bị thay hãng không? bạn có cần chạy khi không có nó không? đoạn logic này có
+cần test không? Có một câu &quot;có&quot; thì bọc; cả ba đều &quot;không&quot; thì gọi thẳng cũng chẳng sao.</p>
+<p>Trong cỗ máy mẫu, câu trả lời sẽ là: <strong>bọc trục và cảm biến</strong> (có thể đổi hãng, cần chạy thử
+khi chưa có máy), <strong>không cần bọc</strong> lớp <code>StopFlag</code> hay các kiểu dữ liệu miền. Hai interface,
+không phải bốn — và đó là một thiết kế hợp lý hơn cả hai thái cực.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Ba dấu hiệu cho thấy bạn đang trả giá mà chưa nhận ra.</strong> (1) Trong mã nguồn có từ khoá
+giả lập xuất hiện ở hàng chục chỗ. (2) Muốn thử một thay đổi nhỏ thì phải ra đứng cạnh máy.
+(3) Có một lớp thiết bị mà <strong>không ai dám sửa</strong> vì nó đang chạy và không có cách nào kiểm tra
+lại ngoài việc chạy thật. Dấu hiệu thứ ba là dấu hiệu nặng nhất: nó nghĩa là phần mềm đã bước
+vào giai đoạn <strong>chỉ thêm, không sửa</strong> — và từ đó mọi thay đổi đều đắt dần.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Toàn bộ ba chương trình nằm ở <code>source/MeoFrameMini</code>, <code>source/MeoFrameMiniSync</code> và
+<code>source/MeoFrameMiniDirect</code>.</strong> Chạy lần lượt cả ba, xem kết quả giống hệt nhau, rồi thử <strong>thêm
+một trục thứ hai của hãng khác</strong> vào từng bản. Đó là bài thử một giờ đồng hồ nói lên nhiều hơn
+mọi lập luận trong mục này.</p>
 </blockquote>
 <hr>
 <h2 id="tng-kt-chương-7">Tổng kết chương</h2>
@@ -37944,7 +38128,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>inheritance</strong> — 4.3</li>
 <li><strong>INotifyDataErrorInfo</strong> — 9.1.5</li>
 <li><strong>INotifyPropertyChanged</strong> — 9.1.5</li>
-<li><strong>interface</strong> — 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.3.4, 4.4.4, 7.2.4, 8.3.4, 11.3.2, 13.2.1, 16.2.2, 18.3, 18.3.1</li>
+<li><strong>interface</strong> — 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.3.4, 4.4.4, 7.2.4, 7.7, 8.3.4, 11.3.2, 13.2.1, 16.2.2, 18.3, 18.3.1</li>
 <li><strong>Interface Segregation Principle (ISP)</strong> — 7.2.4</li>
 <li><strong>Interlock</strong> — 15.2, 15.2.1, 15.4</li>
 <li><strong>Interlocked</strong> — 5.3.3</li>

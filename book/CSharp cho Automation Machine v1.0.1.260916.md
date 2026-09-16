@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260911 |
+| **Phiên bản** | v1.0.1.260916 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -8578,6 +8578,173 @@ Không có câu trả lời chung, nhưng có ba câu hỏi cho ra câu trả l�
 > phải dùng một thư viện async trong chương trình chặn, hãy **cô lập nó** — cho nó chạy trên
 > luồng riêng của nó và nói chuyện với phần còn lại bằng hàng đợi (Chương 5 mục 5.4), thay vì
 > chặn lại ở giữa đường.
+
+---
+
+## 7.7  Và nếu bỏ luôn cả interface
+
+Mục 7.6 bỏ `Task`. Mục này bỏ nốt thứ còn lại: **interface**. Lý do vẫn là lý do cũ — đây là
+cách rất nhiều phần mềm máy thật đang viết, và người đọc nên gặp nó ở đây trước khi gặp nó ở
+hiện trường.
+
+Con số trong bộ mẫu 13 dự án: **5 dự án không có một `interface` nào** trong toàn bộ mã nguồn,
+và **3 trong số đó không có cả `async` lẫn `interface`** — hai lựa chọn này đi cùng nhau, vì
+chúng đến từ cùng một tư duy: *viết thẳng thứ cần làm, đừng thêm tầng nào ở giữa*.
+
+### 7.7.1  Nói điều khó nghe trước: bản này NGẮN NHẤT
+
+Chương trình thứ ba cũng đã được biên dịch và chạy, và nó cho ra **kết quả giống hệt hai bản
+kia** — cùng 12 chu kỳ, cùng cảnh báo 4,96 bar. Đo ba bản:
+
+**Bảng 7.9 — Ba lối viết cùng một cỗ máy, đo thật**
+
+| Chỉ tiêu | `async` + interface (7.5) | Chặn + interface (7.6) | **Chặn, không interface (7.7)** |
+|---|---|---|---|
+| Số dòng | 350 | 390 | **336** — ngắn nhất |
+| Số `interface` | 4 | 4 | **0** |
+| Nhánh `if (_simulate)` trong lớp thiết bị | 0 | 0 | **10** |
+| Kết quả chạy | giống nhau | giống nhau | giống nhau |
+
+Đừng bỏ qua dòng đầu. **Lối viết thẳng thật sự ngắn hơn**, và nó còn có hai ưu điểm mà người
+mới cảm nhận được ngay: bấm F12 trên một lời gọi thì nhảy thẳng tới **mã chạy thật** chứ không
+rơi vào một interface rỗng, và không phải mở hai file để hiểu một hành vi. Với một người mới
+tiếp quản, đó là khác biệt có thật.
+
+Vậy cái giá nằm ở đâu? Nó không nằm ở số dòng, và cũng không lộ ra trong ngày đầu tiên.
+
+### 7.7.2  Sáu cái giá, nhìn tận mã
+
+#### ① Giả lập phải chui vào trong lớp thiết bị
+
+Bỏ interface thì không còn chỗ nào để cắm một lớp giả lập vào. Cách duy nhất còn lại là **nhét
+cờ giả lập vào chính lớp thiết bị**:
+
+**Code 7.24 — Lớp thiết bị khi không có interface: hai đường chạy trong một hàm**
+
+```csharp
+public sealed class Axis
+{
+    private readonly bool _simulate;        // cờ quyết định chạy nhánh nào
+
+    public void MoveTo(double targetMm)
+    {
+        if (_simulate)
+        {
+            while (Math.Abs(_positionMm - targetMm) > 0.001) { /* giả lập */ }
+            return;
+        }
+
+        _sdk.MoveAbs(_axisNo, ToPulse(targetMm));   // đường chạy thật
+        // … chờ, kiểm lỗi, quy đổi đơn vị …
+    }
+}
+```
+
+Trong chương trình mẫu, cờ này xuất hiện **10 lần**. Ba hệ quả, xếp theo mức độ khó chịu tăng dần:
+
+- **Mỗi hàm dài gấp đôi** và có hai đường chạy phải cùng đọc để hiểu.
+- **Mã giả lập đi theo bản giao khách.** Nó nằm trong file thực thi chạy trên máy thật, và chỉ
+  cách chế độ sản xuất đúng một giá trị `bool`.
+- **Hai đường chạy trôi xa nhau theo thời gian.** Sửa logic thật mà quên sửa nhánh giả lập là
+  chuyện xảy ra rất nhanh — và bạn chỉ phát hiện khi bản giả lập bắt đầu nói dối.
+
+#### ② Không còn chỗ cắm thứ giả để kiểm thử
+
+Muốn viết một phép kiểm cho `PressureMonitor` — *"áp suất dưới ngưỡng thì có phát cảnh báo
+không?"* — bạn cần đưa cho nó một cảm biến trả về giá trị do bạn chọn. Không có interface thì
+không đưa được: nó đòi đúng lớp `PressureSensor`, và lớp đó tự quyết định giá trị của nó.
+
+Cách duy nhất còn lại là tạo `PressureSensor` với `simulate: true` — nhưng như vậy bạn đang
+**kiểm thử bản giả lập**, không kiểm thử luật của máy. Đây chính là điều Chương 18 mục 18.6.3
+gọi là *khả năng test là hệ quả của kiến trúc, không phải của kỷ luật*.
+
+#### ③ Mất `IStep`: chu trình từ danh sách thành dãy lời gọi cứng
+
+Đây là cái giá ít ai lường trước, vì nó không nằm ở tầng thiết bị mà ở tầng trình tự. Có `IStep`
+thì chu trình là **dữ liệu** — một danh sách. Không có nó, chu trình buộc phải là **mã**:
+
+**Code 7.25 — Chu trình khi không còn IStep**
+
+```csharp
+private void RunOneCycle()
+{
+    MoveWithTimeout(120.0);      // bước 1: tới vị trí gắp
+    _gripper.Grip();             // bước 2: gắp
+    MoveWithTimeout(20.0);       // bước 3: tới vị trí đặt
+    _gripper.Release();          // bước 4: nhả
+}
+```
+
+So sánh với bản có interface, nơi cùng chu trình đó là bốn phần tử trong một mảng. Bốn thứ mất
+đi cùng lúc — và đúng bốn thứ này là nội dung Chương 12 mục 12.1.6 đã liệt kê:
+
+- Không hiện được *"Bước 3/7: Gắp"* lên màn hình, vì không có gì để đếm.
+- Không chạy tay từng bước được.
+- Không đổi thứ tự bước theo công thức được.
+- **Hạn giờ phải lặp lại ở mọi chỗ gọi chuyển động.** Trong bản mẫu, nó thành hàm
+  `MoveWithTimeout` — nghĩa là mỗi lần thêm một chuyển động mới, người viết phải **nhớ** gọi
+  đúng hàm đó thay vì gọi thẳng `_axis.MoveTo`. Không ai nhắc nếu quên.
+
+#### ④ Đổi hãng thiết bị là sửa lớp đang chạy, không phải thêm lớp mới
+
+Với interface, thêm một hãng card là **thêm một file** và đổi một dòng ở Composition Root; lớp
+cũ không bị đụng tới. Không có interface, bạn phải **mở chính lớp `Axis` đang chạy tốt** và thêm
+nhánh vào nó — hoặc chép cả lớp ra thành `Axis2`, rồi mọi nơi dùng `Axis` phải quyết định dùng
+bản nào. Đây là lý do thực dụng nhất, và nó là lý do về **rủi ro**: bạn sửa mã đang chạy trên
+máy đang sản xuất, chỉ để thêm một thứ chưa từng chạy.
+
+#### ⑤ Mũi tên phụ thuộc đi ngược
+
+Xem lại Hình 7.1 ở mục 7.4.3: mọi mũi tên chỉ xuống dưới. Ở bản này, `MachineController` — nơi
+chứa **luật của máy** — khai báo thẳng `private readonly Axis _axis;` và `private readonly
+Gripper _gripper;`. Nghĩa là tầng nghiệp vụ **biết tên lớp phần cứng**, và mũi tên chỉ ngược
+lên. Hệ quả cụ thể: không thể biên dịch tầng nghiệp vụ mà không có mã phần cứng, và không thể
+dùng lại nó cho một cỗ máy khác.
+
+#### ⑥ Composition Root mất ý nghĩa
+
+Trong hai bản trước, chỗ cắm dây quyết định **dùng lớp nào**. Ở bản này nó chỉ còn truyền
+**tham số** `UseSimulation` vào từng lớp. Khác biệt nghe nhỏ nhưng rất lớn: quyết định thật/giả
+không còn nằm ở **một chỗ**, nó nằm rải ở **mỗi lớp thiết bị** — và mỗi lớp có thể nhận một giá
+trị khác nhau. Một cấu hình nửa thật nửa giả là chuyện hoàn toàn có thể xảy ra mà không ai
+nhận ra.
+
+### 7.7.3  Vậy khi nào lối này chấp nhận được
+
+Năm dự án trong bộ mẫu chọn lối này và chúng **vẫn đang chạy trong nhà máy**. Nói rằng chúng sai
+là không trung thực. Lối viết thẳng hợp lý khi **cả năm điều** dưới đây cùng đúng:
+
+| Điều kiện | Vì sao |
+|---|---|
+| Máy chỉ có **một bản duy nhất**, không nhân bản | Không bao giờ phải dùng lại mã cho máy khác |
+| Thiết bị **chắc chắn không đổi** trong vòng đời máy | Không phải trả giá ④ |
+| Đội **một tới hai người**, và họ ở lại | Không cần tầng trừu tượng để phân công |
+| **Không cần kiểm thử tự động** | Chấp nhận giá ② |
+| Máy **không cần chạy thử khi thiếu phần cứng** | Chấp nhận giá ① |
+
+Điều kiện thứ năm là điều kiện hay sai nhất. Gần như dự án nào cũng có lúc cần chạy phần mềm
+khi máy chưa lắp xong — và đó chính là lúc cờ `_simulate` ra đời, thường là vội vàng, rồi ở lại
+vĩnh viễn.
+
+> 💡 **Đường giữa, và đây là khuyến nghị thật của sách: đừng bọc mọi thứ, hãy bọc đúng thứ có
+> khả năng đổi.** Ba câu hỏi ở Chương 13 mục 13.5 trả lời được việc này trong một phút: thiết bị
+> này có khả năng bị thay hãng không? bạn có cần chạy khi không có nó không? đoạn logic này có
+> cần test không? Có một câu "có" thì bọc; cả ba đều "không" thì gọi thẳng cũng chẳng sao.
+>
+> Trong cỗ máy mẫu, câu trả lời sẽ là: **bọc trục và cảm biến** (có thể đổi hãng, cần chạy thử
+> khi chưa có máy), **không cần bọc** lớp `StopFlag` hay các kiểu dữ liệu miền. Hai interface,
+> không phải bốn — và đó là một thiết kế hợp lý hơn cả hai thái cực.
+
+> ⚠️ **Ba dấu hiệu cho thấy bạn đang trả giá mà chưa nhận ra.** (1) Trong mã nguồn có từ khoá
+> giả lập xuất hiện ở hàng chục chỗ. (2) Muốn thử một thay đổi nhỏ thì phải ra đứng cạnh máy.
+> (3) Có một lớp thiết bị mà **không ai dám sửa** vì nó đang chạy và không có cách nào kiểm tra
+> lại ngoài việc chạy thật. Dấu hiệu thứ ba là dấu hiệu nặng nhất: nó nghĩa là phần mềm đã bước
+> vào giai đoạn **chỉ thêm, không sửa** — và từ đó mọi thay đổi đều đắt dần.
+
+> 📌 **Toàn bộ ba chương trình nằm ở `source/MeoFrameMini`, `source/MeoFrameMiniSync` và
+> `source/MeoFrameMiniDirect`.** Chạy lần lượt cả ba, xem kết quả giống hệt nhau, rồi thử **thêm
+> một trục thứ hai của hãng khác** vào từng bản. Đó là bài thử một giờ đồng hồ nói lên nhiều hơn
+> mọi lập luận trong mục này.
 
 ---
 
@@ -33980,7 +34147,7 @@ thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.
 - **inheritance** — 4.3
 - **INotifyDataErrorInfo** — 9.1.5
 - **INotifyPropertyChanged** — 9.1.5
-- **interface** — 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.3.4, 4.4.4, 7.2.4, 8.3.4, 11.3.2, 13.2.1, 16.2.2, 18.3, 18.3.1
+- **interface** — 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.3.4, 4.4.4, 7.2.4, 7.7, 8.3.4, 11.3.2, 13.2.1, 16.2.2, 18.3, 18.3.1
 - **Interface Segregation Principle (ISP)** — 7.2.4
 - **Interlock** — 15.2, 15.2.1, 15.4
 - **Interlocked** — 5.3.3

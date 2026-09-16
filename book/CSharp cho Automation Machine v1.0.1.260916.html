@@ -9708,6 +9708,104 @@ một trục thứ hai của hãng khác</strong> vào từng bản. Đó là b�
 mọi lập luận trong mục này.</p>
 </blockquote>
 <hr>
+<h3>7.7.4  Trường hợp đáng bàn: công ty đã chuẩn hoá thiết bị</h3>
+<p>Bảng điều kiện ở mục trên đặt ra một tình huống rất cụ thể mà nhiều công ty máy đang ở trong
+đó: <strong>đã chọn một bộ mã thiết bị làm chuẩn cho mọi máy mới trong nhiều năm, và không có nhu cầu
+mô phỏng</strong>. Câu hỏi tự nhiên: vậy lối gọi thẳng có ưu thế hơn không?</p>
+<p><strong>Câu trả lời thẳng: có.</strong> Tiền đề đó xoá hẳn hai trong sáu cái giá ở mục 7.7.2, và đó đúng là
+hai cái giá nặng nhất:</p>
+<p><strong>Bảng 7.10 — Sáu cái giá dưới tiền đề &quot;thiết bị chuẩn, không mô phỏng&quot;</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cái giá</th>
+<th>Còn không</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>① Giả lập chui vào lớp thiết bị</td>
+<td><strong>Không còn</strong></td>
+<td>Không mô phỏng thì không có cờ <code>_simulate</code>, lớp thiết bị chỉ còn một đường chạy — sạch hơn cả bản có interface</td>
+</tr>
+<tr>
+<td>② Không cắm được thứ giả để test</td>
+<td>Còn, nhưng <strong>không phải cái giá bạn đang trả</strong> nếu đội không viết kiểm thử tự động</td>
+<td></td>
+</tr>
+<tr>
+<td>③ Mất <code>IStep</code></td>
+<td><strong>Không bắt buộc phải mất</strong> — xem ngay dưới</td>
+<td></td>
+</tr>
+<tr>
+<td>④ Đổi hãng = sửa lớp đang chạy</td>
+<td><strong>Nhẹ hẳn</strong></td>
+<td>Thiết bị đã chuẩn hoá thì tần suất gần bằng không</td>
+</tr>
+<tr>
+<td>⑤ Mũi tên phụ thuộc đi ngược</td>
+<td>Còn</td>
+<td>Nhưng hệ quả thực tế nhẹ đi khi mọi máy dùng cùng bộ thiết bị</td>
+</tr>
+<tr>
+<td>⑥ Composition Root mất ý nghĩa</td>
+<td><strong>Không còn</strong></td>
+<td>Không có cờ thật/giả thì cũng không có gì để rải</td>
+</tr>
+</tbody></table></div>
+<h4>Điều chỉnh quan trọng: mục 7.7 đã trộn hai quyết định khác nhau</h4>
+<p>Chương trình ở mục 7.7 bỏ interface ở <strong>mọi tầng cùng lúc</strong> — và đó là cách trình bày gọn cho
+việc so sánh, nhưng nó che mất một điều: <strong><code>IStep</code> không phải interface của thiết bị.</strong></p>
+<p><code>IAxis</code> trừu tượng hoá <em>một hãng phần cứng có thể đổi</em>. <code>IStep</code> trừu tượng hoá <em>một bước trong
+chu trình</em> — thứ chẳng liên quan gì tới hãng card, và <strong>luôn có nhiều loại</strong> ngay trong cùng một
+máy. Bỏ <code>IAxis</code> vì thiết bị đã chuẩn là hợp lý; bỏ <code>IStep</code> theo thì không, vì không có tiền đề
+nào biện minh cho nó.</p>
+<p>Giữ lại <code>IStep</code> không tốn gì — nó không kéo theo bản giả lập, không kéo theo Composition Root
+phức tạp — mà giữ lại được cả bốn thứ đã mất ở giá ③: danh sách bước, hiển thị <em>&quot;bước 3/7&quot;</em>,
+chạy tay từng bước, và <strong>hạn giờ gói gọn trong một chỗ</strong> thay vì phải nhớ ở mọi lời gọi chuyển
+động.</p>
+<blockquote>
+<p>📌 <strong>Vậy thiết kế đúng cho bối cảnh này không phải &quot;phương án 1&quot; cũng không phải &quot;phương án 3&quot;,
+mà là một pha trộn:</strong> gọi <strong>thẳng</strong> lớp thiết bị chuẩn (không interface ở tầng driver), <strong>giữ</strong>
+interface ở tầng trình tự, và <strong>giữ</strong> kiểu dữ liệu miền sạch như cả ba bản mẫu đều làm. Kết quả
+là mã ngắn gần bằng bản 7.7 nhưng không mất thứ gì ở tầng trình tự.</p>
+</blockquote>
+<h4>Ba thứ tiền đề đó KHÔNG xoá được</h4>
+<p><strong>1. &quot;Chuẩn trong nhiều năm&quot; là quyết định của công ty bạn; &quot;ngừng sản xuất&quot; là quyết định của
+hãng.</strong> Hai bên không hỏi ý nhau. Chương 17 mục 17.5 xếp đây vào loại thay đổi <em>thích ứng</em> —
+loại đắt nhất và bị đánh giá thấp nhất. Điều này không có nghĩa phải bọc phòng xa: nếu việc đó
+xảy ra một lần trong tám năm, còn tầng trừu tượng tốn công mỗi ngày, thì phép tính vẫn có thể
+nghiêng về gọi thẳng. Chỉ cần biết rằng bạn <strong>đang đặt cược</strong>, chứ không phải đã loại bỏ rủi ro.</p>
+<p><strong>2. &quot;Không muốn mô phỏng&quot; khác với &quot;không bao giờ cần chạy khi thiếu phần cứng&quot;.</strong> Bốn thời
+điểm sau xuất hiện ở gần như mọi dự án, kể cả dự án không hề có ý định làm giả lập: máy chưa
+lắp xong mà phần mềm phải chạy thử; card về muộn; sửa một lỗi ở văn phòng trong khi máy đang
+chạy sản xuất ở nhà máy; tái hiện một lỗi hiện trường mà không có máy để mượn. Câu hỏi đáng
+hỏi đội của bạn không phải <em>&quot;ta có cần mô phỏng không&quot;</em> mà là <em><strong>&quot;đã bao giờ có ai ước chạy được
+phần mềm mà không có máy chưa?&quot;</strong></em></p>
+<p><strong>3. Và đây là điều đi ngược trực giác nhất: chuẩn hoá làm TĂNG bán kính ảnh hưởng khi chuẩn
+đổi.</strong> Nếu hai mươi cỗ máy cùng dùng <strong>một lớp <code>Axis</code> cụ thể</strong> trong một thư viện dùng chung, thì
+ngày hãng đổi dòng card, bạn sửa một lớp — và <strong>hai mươi cỗ máy đang chạy sản xuất đều bị đụng
+tới</strong>, tất cả phải kiểm tra lại. Với interface, máy cũ giữ nguyên lớp cũ, máy mới nhận lớp mới;
+đội máy được phép <strong>khác nhau một cách an toàn</strong>.</p>
+<blockquote>
+<p>⚠️ <strong>Hệ quả thực tế của điểm 3, và đây là điều cần quyết ngay từ đầu chứ không phải lúc gặp
+chuyện: lớp thiết bị dùng chung phải được đánh phiên bản.</strong> Nếu mỗi máy tham chiếu tới một
+<strong>phiên bản đã chốt</strong> của thư viện thiết bị (chứ không phải &quot;bản mới nhất trong thư mục
+chung&quot;), thì bạn giữ được phần lớn lợi ích của interface mà không cần viết interface nào: máy
+cũ đóng băng ở phiên bản cũ, máy mới dùng phiên bản mới. Còn nếu mọi máy cùng trỏ vào một bản
+chép tay dùng chung, thì mỗi lần sửa là một lần đánh cược với cả đội máy — và đó là rủi ro
+lớn hơn hẳn thứ mà interface định giải quyết.</p>
+</blockquote>
+<h4>Còn một câu hỏi nữa nên hỏi trước khi chốt</h4>
+<p>Thiết bị chuẩn hoá <strong>không</strong> đồng nghĩa với cấu hình giống nhau. Nếu các máy mới dùng cùng dòng
+card nhưng <strong>khác số trục, khác số trạm, khác tuỳ chọn</strong> — máy này ba trục, máy kia sáu trục,
+khách A mua thêm trạm quét mã — thì bạn vẫn cần một tầng trừu tượng, chỉ là <strong>trừu tượng theo
+cấu hình chứ không theo hãng</strong>. Đó là bài toán khác hẳn, và Chương 13 mục 13.2.6 bàn riêng về nó.</p>
+<p>Gói lại thành một câu để mang đi: <strong>tiền đề &quot;thiết bị chuẩn, không mô phỏng&quot; biện minh cho việc
+bỏ interface ở tầng thiết bị — không biện minh cho việc bỏ interface ở mọi tầng, và không thay
+thế được việc đánh phiên bản thư viện dùng chung.</strong></p>
+<hr>
 <h2 id="tng-kt-chương-7">Tổng kết chương</h2>
 <ul>
 <li><strong>Phần mềm máy công nghiệp là nền tảng tái dùng nhiều thế hệ</strong>, không chỉ

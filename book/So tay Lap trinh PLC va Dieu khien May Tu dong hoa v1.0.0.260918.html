@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260917</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260918</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -549,6 +549,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#221-k-năng-chim-phn-ln-thi-gian-đi-làm">22.1 Kỹ năng chiếm phần lớn thời gian đi làm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#222-đc-trưc-sa-sau-quy-trình-sáu-bưc">22.2 Đọc trước, sửa sau — quy trình sáu bước</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#223-tham-chiu-chéo-công-c-quan-trng-nht">22.3 ⭐ Tham chiếu chéo — công cụ quan trọng nhất</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#223b-tham-chiu-chéo-khi-chương-trình-dùng-ch-s">22.3b ⭐⭐ Tham chiếu chéo khi chương trình dùng CHỈ SỐ</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#224-dng-bn-đ-chương-trình">22.4 Dựng bản đồ chương trình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#224b-th-l-ra-bn-phi-nhn-đưc-và-vic-nên-làm-khi-không-có">22.4b ⭐⭐ Thứ lẽ ra bạn phải nhận được — và việc nên làm khi không có</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#225-đc-code-không-có-chú-thích">22.5 Đọc code không có chú thích</a></li>
@@ -1213,7 +1214,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260917</td>
+<td>v1.0.0.260918</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -16133,10 +16134,253 @@ thống trên (Chương 42), hoặc ai đó đang cưỡng bức (Chương 51).<
 của <strong>một lệnh cưỡng bức bị quên</strong> — và đó là tai nạn chờ xảy ra.</p>
 <h3>Điều tham chiếu chéo <strong>không</strong> làm được</h3>
 <ul>
-<li>Không tìm được chỗ ghi <strong>gián tiếp</strong> qua chỉ số mảng tính toán được (<code>Data[i] := …</code>).</li>
+<li>Không tìm được chỗ ghi <strong>gián tiếp</strong> qua chỉ số mảng tính toán được (<code>Data[i] := …</code>).
+⭐ <strong>Đây là giới hạn lớn nhất, và nó có cách đi vòng — mục 22.3b.</strong></li>
 <li>Không biết tag đó có được ghi từ <strong>bên ngoài PLC</strong> không.</li>
 <li>Không nói cho bạn <strong>vì sao</strong> người ta ghi vào đó.</li>
 </ul>
+<hr>
+<h2 id="223b-tham-chiu-chéo-khi-chương-trình-dùng-ch-s">22.3b ⭐⭐ Tham chiếu chéo khi chương trình dùng CHỈ SỐ</h2>
+<p>Mục 22.3 kết thúc bằng một dòng thừa nhận: ⚠ <em>tham chiếu chéo không tìm được chỗ ghi gián tiếp qua
+chỉ số tính toán được</em>. ⭐ Mục này trả lời câu đứng ngay sau đó — <strong>vậy làm thế nào?</strong> — vì với máy
+lớn thì <strong>gần như toàn bộ chương trình là chỉ số</strong>.</p>
+<h3>Vì sao chỉ số làm hỏng tham chiếu chéo</h3>
+<p>Cả hai kiểu dưới đây đều làm công cụ bó tay, và chúng là hai kiểu khác nhau:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Trông ra sao</th>
+<th>⚠ Công cụ trả lời được gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chỉ số vào mảng</strong></td>
+<td><code>Cyl[i].Cmd.Req := TRUE;</code></td>
+<td>Tra <code>Cyl</code> → ra <strong>mọi</strong> xy-lanh. Tra <code>Cyl[12]</code> → ⚠ <strong>không ra gì</strong>, vì trong mã không có chữ <code>12</code></td>
+</tr>
+<tr>
+<td><strong>Thanh ghi chỉ số</strong> <em>(index register)</em></td>
+<td><code>D100Z1</code> — địa chỉ cộng thêm nội dung một thanh ghi</td>
+<td>⚠ Càng khó hơn: <strong>địa chỉ thật chỉ tồn tại lúc chạy</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Điểm chung của cả hai: cái bạn muốn tra (phần tử số 12) KHÔNG XUẤT HIỆN trong mã nguồn.</strong> Nên
+dù công cụ có tốt tới đâu, nó cũng không thể tìm ra thứ không được viết ra.</p>
+</blockquote>
+<h3>⭐⭐ Bảy cách làm việc — xếp theo thứ tự nên thử</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Cách</th>
+<th>Khi nào dùng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐⭐ <strong>Tra theo TRƯỜNG, đừng tra theo phần tử</strong></td>
+<td>Luôn luôn — xem bên dưới</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐⭐ <strong>Tra biến CHỈ SỐ, không tra mảng</strong></td>
+<td>Khi hỏi <em>&quot;ai chạm vào số 12&quot;</em></td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐ <strong>Đổi chỉ số thành hằng có tên</strong></td>
+<td>Khi bạn còn quyền sửa chương trình</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⭐ <strong>Đọc chương trình con CẤU HÌNH trước tiên</strong></td>
+<td>Khi mới nhận một chương trình lạ</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Tìm trong bản xuất văn bản</strong></td>
+<td>Khi cần bắt các chỗ viết chỉ số <strong>cứng</strong></td>
+</tr>
+<tr>
+<td>6</td>
+<td>⭐ <strong>Chuyển sang xem trực tuyến</strong></td>
+<td>Khi tra tĩnh đã bó tay</td>
+</tr>
+<tr>
+<td>7</td>
+<td>⚠ <strong>Sửa thiết kế</strong> để lần sau tra được</td>
+<td>Khi bạn là người viết</td>
+</tr>
+</tbody></table></div>
+<h3>① Tra theo TRƯỜNG, không theo phần tử</h3>
+<p>⭐ Đây là cách đảo ngược câu hỏi, và nó giải quyết phần lớn trường hợp.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>⚠ Câu hỏi bó tay</th>
+<th>⭐ Câu hỏi trả lời được</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><em>&quot;Chỗ nào ghi vào <code>Cyl[12].Cmd.Req</code>?&quot;</em></td>
+<td><em>&quot;Chỗ nào ghi vào <strong><code>.Cmd.Req</code> của bất kỳ xy-lanh nào</strong>?&quot;</em></td>
+</tr>
+</tbody></table></div>
+<p>⚡ Nghe như trả lời rộng hơn, nhưng thực tế nó <strong>hẹp lại</strong>: trong một chương trình có kỷ luật, số
+chỗ ghi vào trường đó thường chỉ là <strong>hai hoặc ba</strong> — khối cơ cấu, chế độ tay, và tầng chống va chạm
+(Chương 27 mục 27.3b).</p>
+<blockquote>
+<p>⭐⭐ <strong>Và đó chính là câu trả lời bạn cần.</strong> Câu hỏi thật không phải <em>&quot;ai ghi vào số 12&quot;</em> mà là
+<em>&quot;có bao nhiêu nơi có thể ghi vào một cái bất kỳ&quot;</em>. ⚠ Nếu con số đó là <strong>ba</strong> thì bạn đọc ba chỗ
+là xong. ⚠⚠ Nếu nó là <strong>mười lăm</strong> thì bạn vừa tìm ra vấn đề thật của chương trình, và nó không
+phải vấn đề của xy-lanh số 12.</p>
+</blockquote>
+<h3>② Tra biến CHỈ SỐ, không tra mảng</h3>
+<p>⭐ Đổi câu hỏi <em>&quot;ai ghi vào phần tử 12&quot;</em> thành <strong>&quot;biến chỉ số nhận giá trị 12 ở đâu&quot;</strong>.</p>
+<pre><code class="language-iecst">// Không tra Cyl[...] — tra chính biến i
+FOR i := 1 TO CYL_COUNT DO        // ⭐ chỉ số chạy hết dải: &quot;ai ghi&quot; = vòng lặp này
+    FB_Cyl[i](Cmd := Cyl[i].Cmd, ...);
+END_FOR;
+
+Cyl[HmiCylNo].Cmd.ManualTrig := …;   // ⚠ chỉ số đến từ NGOÀI — tra HmiCylNo
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chỉ số đến từ đâu</th>
+<th>⭐ Kết luận ngay</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Một <strong>vòng lặp chạy hết dải</strong></td>
+<td>⭐ &quot;Ai ghi&quot; = vòng lặp đó. <strong>Xong</strong> — không cần tra thêm</td>
+</tr>
+<tr>
+<td>Một biến do <strong>nơi khác đặt</strong></td>
+<td>⭐ Tra biến đó; đây mới là chỗ cần đọc (Chương 44 mục 44.2b)</td>
+</tr>
+<tr>
+<td>Một <strong>phép tính</strong></td>
+<td>⚠⚠ Chỗ nguy hiểm nhất — xem cảnh báo cuối mục</td>
+</tr>
+</tbody></table></div>
+<h3>③ Đổi chỉ số thành hằng có tên</h3>
+<pre><code class="language-iecst">// ⚠ Tra &quot;12&quot; thì ra cả trăm chỗ vô can
+Cyl[12].Cmd.Req := TRUE;
+
+// ⭐ Tra CYL_CLAMP_STN1 thì ra ĐÚNG những chỗ liên quan tới nó
+Cyl[CYL_CLAMP_STN1].Cmd.Req := TRUE;
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Một dòng khai báo hằng lấy lại toàn bộ sức mạnh của tham chiếu chéo cho một phần tử.</strong> Đây là
+cách rẻ nhất trong cả mục, và nó còn làm tên <strong>tự giải thích</strong> — không phải tra bảng nữa
+(Chương 30 mục 30.2b).</p>
+</blockquote>
+<h3>④ Đọc chương trình con CẤU HÌNH trước tiên</h3>
+<p>⭐ Chương trình dùng chỉ số <strong>bắt buộc</strong> phải có một chỗ gán <em>&quot;chỉ số nào là cơ cấu nào&quot;</em>. Tìm nó
+trước khi đọc bất cứ thứ gì khác — thường tên có chữ <em>config</em> hoặc <em>mapping</em>, và nó là <strong>bản đồ</strong>
+của cả chương trình.</p>
+<p>⚠ Nếu không tìm thấy chỗ đó, hãy dừng lại và hỏi. ⭐ Đọc một chương trình đánh chỉ số mà không có
+bảng tra thì <strong>không phải đọc chậm — mà là không đọc được</strong> (Chương 30 mục 30.2b).</p>
+<h3>⑤ Tìm trong bản xuất văn bản</h3>
+<p>⭐ Xuất chương trình ra văn bản (Chương 30 mục 30.6) rồi tìm chuỗi <code>[12]</code> bằng công cụ tìm kiếm
+thường. ⚡ Nó bắt được đúng thứ tham chiếu chéo hay bỏ sót: <strong>những chỗ ai đó viết chỉ số CỨNG</strong> —
+và những chỗ đó thường chính là ngoại lệ mà người viết cài vào rồi quên.</p>
+<h3>⑥ Khi tra tĩnh bó tay — chuyển sang xem trực tuyến</h3>
+<p>⚠ Nếu chỉ số là kết quả một phép tính, không công cụ tĩnh nào lần ra được. ⭐ Khi ấy đổi chiến thuật:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Làm gì</th>
+<th>Vì sao được</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mở cửa sổ xem <strong>đúng phần tử 12</strong> và cả <strong>biến chỉ số</strong></td>
+<td>Thấy giá trị đổi <strong>lúc nào</strong></td>
+</tr>
+<tr>
+<td>Chạy từng thao tác một, xem giá trị nào đổi theo</td>
+<td>⭐ Thu hẹp còn đúng thao tác gây ra</td>
+</tr>
+<tr>
+<td>Đặt một điểm dừng hoặc một cờ ghi lại khi phần tử 12 đổi</td>
+<td>Chương 51</td>
+</tr>
+</tbody></table></div>
+<h3>⑦ Nếu bạn là người viết — bốn luật để lần sau tra được</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Luật</th>
+<th>Nó mua cho bạn cái gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⭐⭐ <strong>Mỗi mảng chỉ có MỘT nơi ghi</strong> — thường là vòng gọi khối</td>
+<td>Tra theo trường ra <strong>một</strong> kết quả, không phải mười lăm</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>Chỉ số cố định luôn là hằng có tên</strong></td>
+<td>Lấy lại tham chiếu chéo cho từng phần tử</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⭐ <strong>Mỗi biến chỉ số dùng cho đúng một mục đích</strong> — đừng dùng lại <code>i</code> cho việc khác trong cùng khối</td>
+<td>⚠ Dùng chung là cách nhanh nhất để mất dấu</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⚠ <strong>Ghi lại mọi chỗ ghi chỉ số CỨNG</strong> như một ngoại lệ có chủ ý</td>
+<td>Ngoại lệ không ghi lại = quả mìn cho người sau</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Cạm bẫy cuối, và là cái nguy hiểm nhất của cả cách viết theo chỉ số:</strong></p>
+<p>⭐ <strong>Chỉ số ngoài dải không sai cú pháp.</strong> <code>Cyl[30]</code> khi mảng chỉ có 20 phần tử vẫn biên dịch được.
+Tuỳ hệ, nó sẽ <strong>dừng CPU</strong>, hoặc ⚠⚠ <strong>ghi đè lên vùng nhớ nằm cạnh</strong> — nghĩa là một cơ cấu <strong>hoàn
+toàn khác</strong> bỗng nhận lệnh, và tham chiếu chéo <strong>không bao giờ chỉ ra được</strong> điều đó.</p>
+<p>⭐ Vì vậy <strong>mọi chỉ số đến từ bên ngoài đều phải chặn dải trước khi dùng</strong> — đúng như mẫu ở
+Chương 44 mục 44.2b. ⚡ Đây là lý do thật của việc chặn dải: không phải cho sạch sẽ, mà vì
+<strong>không có công cụ nào cứu bạn nếu bỏ qua nó.</strong></p>
+</blockquote>
+<h3>⭐ Còn khi chương trình không dùng tên mà dùng thẳng địa chỉ</h3>
+<p>Có một kiểu chương trình khác, rất phổ biến ở nền cũ và ở các hệ đánh địa chỉ theo thiết bị: ⚠ <strong>hầu
+như không khai báo tên biến nào cả</strong>, mà dùng thẳng <code>X3</code>, <code>Y5</code>, <code>M20</code>, <code>D13</code>, và <strong>ý nghĩa nằm trong
+CHÚ THÍCH THIẾT BỊ</strong> <em>(device comment)</em> gắn với từng địa chỉ.</p>
+<p>⚡ Với kiểu này, tham chiếu chéo <strong>lại hoạt động rất tốt</strong> — vì địa chỉ là chuỗi có thật trong mã.
+⚠ Nhưng đổi lại hai thứ:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>⚠ Vấn đề</th>
+<th>Hệ quả khi đọc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠⚠ <strong>Chú thích gắn với ĐỊA CHỈ, không gắn với ý nghĩa</strong></td>
+<td>Đổi cách đánh địa chỉ thì chú thích <strong>ở lại với địa chỉ cũ</strong> — và nó thành sai</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Mất tệp chú thích là mất toàn bộ ý nghĩa</strong></td>
+<td>Chương trình còn chạy, nhưng đọc <code>M20</code> thì không biết là gì. ⭐ Tệp chú thích phải nằm trong danh mục sao lưu (Chương 54)</td>
+</tr>
+<tr>
+<td>⚠ Kiểu này thường đi kèm <strong>thanh ghi chỉ số</strong></td>
+<td>Khi đó lại rơi về đúng bài toán ở đầu mục này</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Chốt lại cho cả mục — và đây là câu đáng mang đi:</strong></p>
+<p><strong>Tham chiếu chéo không phải một nút bấm, mà là một CÁCH ĐẶT CÂU HỎI.</strong> ⚠ Hỏi <em>&quot;ai ghi vào số
+12&quot;</em> thì công cụ chịu. ⭐ Hỏi <em>&quot;có mấy nơi ghi vào trường này&quot;</em>, <em>&quot;chỉ số nhận giá trị ở đâu&quot;</em>,
+<em>&quot;bảng tra nằm ở đâu&quot;</em> — thì cùng một công cụ đó trả lời được hết.</p>
+</blockquote>
 <hr>
 <h2 id="224-dng-bn-đ-chương-trình">22.4 Dựng bản đồ chương trình</h2>
 <p>Trước khi lao vào chi tiết, dành hai mươi phút dựng bản đồ. Nó tiết kiệm nhiều giờ sau đó.</p>
@@ -22164,6 +22408,56 @@ ghi lại ở đâu</strong> — vì đúng chỗ đó sẽ là chỗ <strong>qu
 tầng này, ai là người đọc, và họ cần cái tên nói gì?&quot;</strong> — ở tầng gán chân người đọc cầm bản vẽ; ở
 tầng khung người đọc là <strong>một khối chạy cho mọi thiết bị cùng loại</strong>; ở tầng logic máy người đọc là
 thợ bảo trì lúc hai giờ sáng.</p>
+</blockquote>
+<h3>⚠ Và có một kiểu thứ ba: KHÔNG đặt tên biến nào cả</h3>
+<p>Hai tầng ở trên đều giả định chương trình <strong>có khai báo biến</strong>. ⚠ Nhưng còn một kiểu rất phổ biến —
+nhất là ở nền đánh địa chỉ theo thiết bị và ở chương trình đời cũ:</p>
+<blockquote>
+<p>⚠⚠ <strong>Không khai báo biến nào. Dùng thẳng <code>X3</code>, <code>Y5</code>, <code>M20</code>, <code>D13</code> — và ý nghĩa nằm trong CHÚ THÍCH
+THIẾT BỊ</strong> <em>(device comment)</em> gắn với từng địa chỉ.</p>
+</blockquote>
+<p>⭐ Khảo sát <strong>16 chương trình dạy học</strong> trên một nền phổ biến cho kết quả rất nhất quán: ⚠ <strong>gần như
+không chương trình nào khai báo biến</strong>, trong khi số <strong>chú thích thiết bị do người viết đặt</strong> chạy
+từ 0 tới hơn 200 mỗi chương trình.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>⭐ Được gì</th>
+<th>⚠ Mất gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Dùng thẳng địa chỉ + chú thích</strong></td>
+<td>⭐⭐ <strong>Tham chiếu chéo chạy rất tốt</strong> — địa chỉ là chuỗi có thật trong mã (khác hẳn chỉ số, xem Chương 22 mục 22.3b) · khớp một–một với bản vẽ · không cần thiết kế cấu trúc trước</td>
+<td>⚠⚠ <strong>Chú thích gắn với ĐỊA CHỈ, không gắn với ý nghĩa</strong> — đổi cách đánh địa chỉ thì chú thích ở lại chỗ cũ và <strong>thành sai</strong> · ⚠⚠ <strong>mất tệp chú thích là mất toàn bộ ý nghĩa</strong> · ⚠ không tái dùng khối được (mỗi thiết bị một đoạn mã riêng)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Ba kiểu, ba thứ bị mất khi mất tài liệu — và đây là cách phân biệt nhanh nhất:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Mất tài liệu thì còn đọc được không</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tên mô tả</strong></td>
+<td>⭐ <strong>Còn</strong> — cái tên <strong>chính là</strong> tài liệu</td>
+</tr>
+<tr>
+<td><strong>Mảng đánh chỉ số</strong></td>
+<td>⚠ <strong>Mất</strong> bảng tra chỉ số → không biết <code>[12]</code> là cơ cấu nào</td>
+</tr>
+<tr>
+<td><strong>Địa chỉ + chú thích</strong></td>
+<td>⚠⚠ <strong>Mất</strong> tệp chú thích → <code>M20</code> không còn nghĩa gì</td>
+</tr>
+</tbody></table></div>
+<p>⚡ Hai kiểu sau đều biến <strong>một tệp phụ thành một phần không thể thiếu của chương trình</strong>. ⭐ Hệ quả
+giống nhau: tệp đó <strong>phải nằm trong danh mục sao lưu</strong> (Chương 54 mục 54.3), và ⚠ thiếu nó thì máy
+vẫn chạy — chỉ là không ai sửa được nữa.</p>
 </blockquote>
 <hr>
 <h2 id="303-cu-trúc-chương-trình-theo-cơ-cu-không-theo-bưc">30.3 Cấu trúc chương trình — theo cơ cấu, không theo bước</h2>

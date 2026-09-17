@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260917 |
+| **Phiên bản** | v1.0.0.260918 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -10958,8 +10958,156 @@ của **một lệnh cưỡng bức bị quên** — và đó là tai nạn ch�
 ### Điều tham chiếu chéo **không** làm được
 
 - Không tìm được chỗ ghi **gián tiếp** qua chỉ số mảng tính toán được (`Data[i] := …`).
+  ⭐ **Đây là giới hạn lớn nhất, và nó có cách đi vòng — mục 22.3b.**
 - Không biết tag đó có được ghi từ **bên ngoài PLC** không.
 - Không nói cho bạn **vì sao** người ta ghi vào đó.
+
+---
+
+## 22.3b ⭐⭐ Tham chiếu chéo khi chương trình dùng CHỈ SỐ
+
+Mục 22.3 kết thúc bằng một dòng thừa nhận: ⚠ *tham chiếu chéo không tìm được chỗ ghi gián tiếp qua
+chỉ số tính toán được*. ⭐ Mục này trả lời câu đứng ngay sau đó — **vậy làm thế nào?** — vì với máy
+lớn thì **gần như toàn bộ chương trình là chỉ số**.
+
+### Vì sao chỉ số làm hỏng tham chiếu chéo
+
+Cả hai kiểu dưới đây đều làm công cụ bó tay, và chúng là hai kiểu khác nhau:
+
+| Kiểu | Trông ra sao | ⚠ Công cụ trả lời được gì |
+|---|---|---|
+| **Chỉ số vào mảng** | `Cyl[i].Cmd.Req := TRUE;` | Tra `Cyl` → ra **mọi** xy-lanh. Tra `Cyl[12]` → ⚠ **không ra gì**, vì trong mã không có chữ `12` |
+| **Thanh ghi chỉ số** *(index register)* | `D100Z1` — địa chỉ cộng thêm nội dung một thanh ghi | ⚠ Càng khó hơn: **địa chỉ thật chỉ tồn tại lúc chạy** |
+
+> ⭐ **Điểm chung của cả hai: cái bạn muốn tra (phần tử số 12) KHÔNG XUẤT HIỆN trong mã nguồn.** Nên
+> dù công cụ có tốt tới đâu, nó cũng không thể tìm ra thứ không được viết ra.
+
+### ⭐⭐ Bảy cách làm việc — xếp theo thứ tự nên thử
+
+| # | Cách | Khi nào dùng |
+|---|---|---|
+| 1 | ⭐⭐ **Tra theo TRƯỜNG, đừng tra theo phần tử** | Luôn luôn — xem bên dưới |
+| 2 | ⭐⭐ **Tra biến CHỈ SỐ, không tra mảng** | Khi hỏi *"ai chạm vào số 12"* |
+| 3 | ⭐ **Đổi chỉ số thành hằng có tên** | Khi bạn còn quyền sửa chương trình |
+| 4 | ⭐ **Đọc chương trình con CẤU HÌNH trước tiên** | Khi mới nhận một chương trình lạ |
+| 5 | **Tìm trong bản xuất văn bản** | Khi cần bắt các chỗ viết chỉ số **cứng** |
+| 6 | ⭐ **Chuyển sang xem trực tuyến** | Khi tra tĩnh đã bó tay |
+| 7 | ⚠ **Sửa thiết kế** để lần sau tra được | Khi bạn là người viết |
+
+### ① Tra theo TRƯỜNG, không theo phần tử
+
+⭐ Đây là cách đảo ngược câu hỏi, và nó giải quyết phần lớn trường hợp.
+
+| ⚠ Câu hỏi bó tay | ⭐ Câu hỏi trả lời được |
+|---|---|
+| *"Chỗ nào ghi vào `Cyl[12].Cmd.Req`?"* | *"Chỗ nào ghi vào **`.Cmd.Req` của bất kỳ xy-lanh nào**?"* |
+
+⚡ Nghe như trả lời rộng hơn, nhưng thực tế nó **hẹp lại**: trong một chương trình có kỷ luật, số
+chỗ ghi vào trường đó thường chỉ là **hai hoặc ba** — khối cơ cấu, chế độ tay, và tầng chống va chạm
+(Chương 27 mục 27.3b).
+
+> ⭐⭐ **Và đó chính là câu trả lời bạn cần.** Câu hỏi thật không phải *"ai ghi vào số 12"* mà là
+> *"có bao nhiêu nơi có thể ghi vào một cái bất kỳ"*. ⚠ Nếu con số đó là **ba** thì bạn đọc ba chỗ
+> là xong. ⚠⚠ Nếu nó là **mười lăm** thì bạn vừa tìm ra vấn đề thật của chương trình, và nó không
+> phải vấn đề của xy-lanh số 12.
+
+### ② Tra biến CHỈ SỐ, không tra mảng
+
+⭐ Đổi câu hỏi *"ai ghi vào phần tử 12"* thành **"biến chỉ số nhận giá trị 12 ở đâu"**.
+
+```iecst
+// Không tra Cyl[...] — tra chính biến i
+FOR i := 1 TO CYL_COUNT DO        // ⭐ chỉ số chạy hết dải: "ai ghi" = vòng lặp này
+    FB_Cyl[i](Cmd := Cyl[i].Cmd, ...);
+END_FOR;
+
+Cyl[HmiCylNo].Cmd.ManualTrig := …;   // ⚠ chỉ số đến từ NGOÀI — tra HmiCylNo
+```
+
+| Chỉ số đến từ đâu | ⭐ Kết luận ngay |
+|---|---|
+| Một **vòng lặp chạy hết dải** | ⭐ "Ai ghi" = vòng lặp đó. **Xong** — không cần tra thêm |
+| Một biến do **nơi khác đặt** | ⭐ Tra biến đó; đây mới là chỗ cần đọc (Chương 44 mục 44.2b) |
+| Một **phép tính** | ⚠⚠ Chỗ nguy hiểm nhất — xem cảnh báo cuối mục |
+
+### ③ Đổi chỉ số thành hằng có tên
+
+```iecst
+// ⚠ Tra "12" thì ra cả trăm chỗ vô can
+Cyl[12].Cmd.Req := TRUE;
+
+// ⭐ Tra CYL_CLAMP_STN1 thì ra ĐÚNG những chỗ liên quan tới nó
+Cyl[CYL_CLAMP_STN1].Cmd.Req := TRUE;
+```
+
+> ⭐⭐ **Một dòng khai báo hằng lấy lại toàn bộ sức mạnh của tham chiếu chéo cho một phần tử.** Đây là
+> cách rẻ nhất trong cả mục, và nó còn làm tên **tự giải thích** — không phải tra bảng nữa
+> (Chương 30 mục 30.2b).
+
+### ④ Đọc chương trình con CẤU HÌNH trước tiên
+
+⭐ Chương trình dùng chỉ số **bắt buộc** phải có một chỗ gán *"chỉ số nào là cơ cấu nào"*. Tìm nó
+trước khi đọc bất cứ thứ gì khác — thường tên có chữ *config* hoặc *mapping*, và nó là **bản đồ**
+của cả chương trình.
+
+⚠ Nếu không tìm thấy chỗ đó, hãy dừng lại và hỏi. ⭐ Đọc một chương trình đánh chỉ số mà không có
+bảng tra thì **không phải đọc chậm — mà là không đọc được** (Chương 30 mục 30.2b).
+
+### ⑤ Tìm trong bản xuất văn bản
+
+⭐ Xuất chương trình ra văn bản (Chương 30 mục 30.6) rồi tìm chuỗi `[12]` bằng công cụ tìm kiếm
+thường. ⚡ Nó bắt được đúng thứ tham chiếu chéo hay bỏ sót: **những chỗ ai đó viết chỉ số CỨNG** —
+và những chỗ đó thường chính là ngoại lệ mà người viết cài vào rồi quên.
+
+### ⑥ Khi tra tĩnh bó tay — chuyển sang xem trực tuyến
+
+⚠ Nếu chỉ số là kết quả một phép tính, không công cụ tĩnh nào lần ra được. ⭐ Khi ấy đổi chiến thuật:
+
+| Làm gì | Vì sao được |
+|---|---|
+| Mở cửa sổ xem **đúng phần tử 12** và cả **biến chỉ số** | Thấy giá trị đổi **lúc nào** |
+| Chạy từng thao tác một, xem giá trị nào đổi theo | ⭐ Thu hẹp còn đúng thao tác gây ra |
+| Đặt một điểm dừng hoặc một cờ ghi lại khi phần tử 12 đổi | Chương 51 |
+
+### ⑦ Nếu bạn là người viết — bốn luật để lần sau tra được
+
+| # | Luật | Nó mua cho bạn cái gì |
+|---|---|---|
+| 1 | ⭐⭐ **Mỗi mảng chỉ có MỘT nơi ghi** — thường là vòng gọi khối | Tra theo trường ra **một** kết quả, không phải mười lăm |
+| 2 | ⭐ **Chỉ số cố định luôn là hằng có tên** | Lấy lại tham chiếu chéo cho từng phần tử |
+| 3 | ⭐ **Mỗi biến chỉ số dùng cho đúng một mục đích** — đừng dùng lại `i` cho việc khác trong cùng khối | ⚠ Dùng chung là cách nhanh nhất để mất dấu |
+| 4 | ⚠ **Ghi lại mọi chỗ ghi chỉ số CỨNG** như một ngoại lệ có chủ ý | Ngoại lệ không ghi lại = quả mìn cho người sau |
+
+> ⚠⚠ **Cạm bẫy cuối, và là cái nguy hiểm nhất của cả cách viết theo chỉ số:**
+>
+> ⭐ **Chỉ số ngoài dải không sai cú pháp.** `Cyl[30]` khi mảng chỉ có 20 phần tử vẫn biên dịch được.
+> Tuỳ hệ, nó sẽ **dừng CPU**, hoặc ⚠⚠ **ghi đè lên vùng nhớ nằm cạnh** — nghĩa là một cơ cấu **hoàn
+> toàn khác** bỗng nhận lệnh, và tham chiếu chéo **không bao giờ chỉ ra được** điều đó.
+>
+> ⭐ Vì vậy **mọi chỉ số đến từ bên ngoài đều phải chặn dải trước khi dùng** — đúng như mẫu ở
+> Chương 44 mục 44.2b. ⚡ Đây là lý do thật của việc chặn dải: không phải cho sạch sẽ, mà vì
+> **không có công cụ nào cứu bạn nếu bỏ qua nó.**
+
+### ⭐ Còn khi chương trình không dùng tên mà dùng thẳng địa chỉ
+
+Có một kiểu chương trình khác, rất phổ biến ở nền cũ và ở các hệ đánh địa chỉ theo thiết bị: ⚠ **hầu
+như không khai báo tên biến nào cả**, mà dùng thẳng `X3`, `Y5`, `M20`, `D13`, và **ý nghĩa nằm trong
+CHÚ THÍCH THIẾT BỊ** *(device comment)* gắn với từng địa chỉ.
+
+⚡ Với kiểu này, tham chiếu chéo **lại hoạt động rất tốt** — vì địa chỉ là chuỗi có thật trong mã.
+⚠ Nhưng đổi lại hai thứ:
+
+| ⚠ Vấn đề | Hệ quả khi đọc |
+|---|---|
+| ⚠⚠ **Chú thích gắn với ĐỊA CHỈ, không gắn với ý nghĩa** | Đổi cách đánh địa chỉ thì chú thích **ở lại với địa chỉ cũ** — và nó thành sai |
+| ⚠⚠ **Mất tệp chú thích là mất toàn bộ ý nghĩa** | Chương trình còn chạy, nhưng đọc `M20` thì không biết là gì. ⭐ Tệp chú thích phải nằm trong danh mục sao lưu (Chương 54) |
+| ⚠ Kiểu này thường đi kèm **thanh ghi chỉ số** | Khi đó lại rơi về đúng bài toán ở đầu mục này |
+
+> ⭐⭐ **Chốt lại cho cả mục — và đây là câu đáng mang đi:**
+>
+> **Tham chiếu chéo không phải một nút bấm, mà là một CÁCH ĐẶT CÂU HỎI.** ⚠ Hỏi *"ai ghi vào số
+> 12"* thì công cụ chịu. ⭐ Hỏi *"có mấy nơi ghi vào trường này"*, *"chỉ số nhận giá trị ở đâu"*,
+> *"bảng tra nằm ở đâu"* — thì cùng một công cụ đó trả lời được hết.
 
 ---
 
@@ -15405,6 +15553,34 @@ trao đổi dữ liệu với hệ trên, đọc thẳng một byte vào/ra.
 > tầng này, ai là người đọc, và họ cần cái tên nói gì?"** — ở tầng gán chân người đọc cầm bản vẽ; ở
 > tầng khung người đọc là **một khối chạy cho mọi thiết bị cùng loại**; ở tầng logic máy người đọc là
 > thợ bảo trì lúc hai giờ sáng.
+
+### ⚠ Và có một kiểu thứ ba: KHÔNG đặt tên biến nào cả
+
+Hai tầng ở trên đều giả định chương trình **có khai báo biến**. ⚠ Nhưng còn một kiểu rất phổ biến —
+nhất là ở nền đánh địa chỉ theo thiết bị và ở chương trình đời cũ:
+
+> ⚠⚠ **Không khai báo biến nào. Dùng thẳng `X3`, `Y5`, `M20`, `D13` — và ý nghĩa nằm trong CHÚ THÍCH
+> THIẾT BỊ** *(device comment)* gắn với từng địa chỉ.
+
+⭐ Khảo sát **16 chương trình dạy học** trên một nền phổ biến cho kết quả rất nhất quán: ⚠ **gần như
+không chương trình nào khai báo biến**, trong khi số **chú thích thiết bị do người viết đặt** chạy
+từ 0 tới hơn 200 mỗi chương trình.
+
+| | ⭐ Được gì | ⚠ Mất gì |
+|---|---|---|
+| **Dùng thẳng địa chỉ + chú thích** | ⭐⭐ **Tham chiếu chéo chạy rất tốt** — địa chỉ là chuỗi có thật trong mã (khác hẳn chỉ số, xem Chương 22 mục 22.3b) · khớp một–một với bản vẽ · không cần thiết kế cấu trúc trước | ⚠⚠ **Chú thích gắn với ĐỊA CHỈ, không gắn với ý nghĩa** — đổi cách đánh địa chỉ thì chú thích ở lại chỗ cũ và **thành sai** · ⚠⚠ **mất tệp chú thích là mất toàn bộ ý nghĩa** · ⚠ không tái dùng khối được (mỗi thiết bị một đoạn mã riêng) |
+
+> ⭐⭐ **Ba kiểu, ba thứ bị mất khi mất tài liệu — và đây là cách phân biệt nhanh nhất:**
+>
+> | Kiểu | Mất tài liệu thì còn đọc được không |
+> |---|---|
+> | **Tên mô tả** | ⭐ **Còn** — cái tên **chính là** tài liệu |
+> | **Mảng đánh chỉ số** | ⚠ **Mất** bảng tra chỉ số → không biết `[12]` là cơ cấu nào |
+> | **Địa chỉ + chú thích** | ⚠⚠ **Mất** tệp chú thích → `M20` không còn nghĩa gì |
+>
+> ⚡ Hai kiểu sau đều biến **một tệp phụ thành một phần không thể thiếu của chương trình**. ⭐ Hệ quả
+> giống nhau: tệp đó **phải nằm trong danh mục sao lưu** (Chương 54 mục 54.3), và ⚠ thiếu nó thì máy
+> vẫn chạy — chỉ là không ai sửa được nữa.
 
 ---
 

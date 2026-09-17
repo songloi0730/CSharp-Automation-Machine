@@ -745,6 +745,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#374-các-kiu-lnh-chuyn-đng">37.4 Các kiểu lệnh chuyển động</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#375-biên-dng-vn-tc">37.5 Biên dạng vận tốc</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#376-gii-hn-phn-mm-không-thay-đưc-gii-hn-phn-cng">37.6 ⭐⭐ Giới hạn phần mềm không thay được giới hạn phần cứng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#376b-chc-năng-an-toàn-ca-truyn-đng-c-mt-h-không-ch-sto">37.6b ⭐⭐ Chức năng an toàn của truyền động — cả một họ, không chỉ STO</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#377-phi-hp-nhiu-trc">37.7 Phối hợp nhiều trục</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#378-plcopen-motion-và-vì-sao-khi-lnh-có-execute-done-busy">37.8 PLCopen Motion — và vì sao khối lệnh có `Execute` / `Done` / `Busy`</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#378b-sai-lch-bám-tín-hiu-chn-đoán-quan-trng-nht-ca-servo">37.8b ⭐⭐ Sai lệch bám — tín hiệu chẩn đoán quan trọng nhất của servo</a></li>
@@ -980,7 +981,7 @@
   <li><a href="#chương-54-sao-lưu-phiên-bn-bo-mt-chương-trình">Chương 54 — Sao lưu, phiên bản & bảo mật chương trình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#541-bài-toán-chic-máy-không-ai-dng-li-đưc">54.1 ⚠⚠ Bài toán: chiếc máy không ai dựng lại được</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#542-vì-sao-ti-t-plc-v-không-cu-đưc-bn">54.2 ⭐ Vì sao "tải từ PLC về" không cứu được bạn</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#543-sao-lưu-cái-gì-by-th-không-phi-mt">54.3 ⭐⭐ Sao lưu cái gì — bảy thứ, không phải một</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#543-sao-lưu-cái-gì-tám-th-không-phi-mt">54.3 ⭐⭐ Sao lưu cái gì — tám thứ, không phải một</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#544-sao-lưu-khi-nào-ct-đâu">54.4 Sao lưu khi nào, cất ở đâu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#545-bn-sao-lưu-chưa-th-khôi-phc-không-phi-bn-sao-lưu">54.5 ⭐⭐ Bản sao lưu chưa thử khôi phục không phải bản sao lưu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#546-khoá-chương-trình-bng-mt-khu">54.6 ⚠ Khoá chương trình bằng mật khẩu</a></li>
@@ -19841,6 +19842,34 @@ xử lý, độc lập — Chương 47.</p>
 nó thuộc tầng chống va chạm. Trả lời khác đi thì nó thuộc Chương 47, và không có ngoại lệ.</p>
 </blockquote>
 <hr>
+<h3>⭐ Khi &quot;cơ cấu&quot; lại là một bộ điều khiển khác</h3>
+<p>Xy-lanh là cơ cấu <strong>không tự nghĩ</strong>: bạn ra lệnh, nó làm. Nhưng có loại cơ cấu <strong>mang theo bộ điều
+khiển riêng</strong> — có chương trình riêng, máy trạng thái riêng, và thường là <strong>người lập trình riêng</strong>.</p>
+<p>⭐ <strong>Quy tắc ba tầng vẫn giữ nguyên</strong>: với tầng trạm, thứ đó vẫn chỉ là một cơ cấu có <code>Cmd</code> · <code>Data</code> ·
+<code>Resp</code> (mục 30.3b). ⚠ Nhưng ba điều đổi, và cả ba đều đắt nếu phát hiện muộn:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Đổi ở chỗ nào</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>⚠⚠ <strong>Phải chốt AI CHỈ HUY AI trước khi viết dòng đầu tiên</strong> — và chốt bằng văn bản, vì hai bên là hai người</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠ <strong>Phục hồi khác hẳn</strong>: cơ cấu đó có thể <strong>đang giữ sản phẩm</strong> và đang ở giữa chương trình của nó — không &quot;về gốc&quot; một phát là xong (Chương 28)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>⚠ <strong>Nó có dữ liệu phải sao lưu</strong> mà không nằm trong dự án PLC của bạn (Chương 54 mục 54.3, hạng mục 8)</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Loại cơ cấu này được nói kỹ ở <strong>Chương 46</strong> — mục 46.3 cho việc chỉ huy, 46.5 cho dữ liệu
+phải sao lưu, 46.8 cho phục hồi.</p>
+<hr>
 <h2 id="274-đng-b-gia-hai-trm-không-đưc-ch-bn">27.4 Đồng bộ giữa hai trạm — không được chờ bận</h2>
 <p>Hai trạm của DP-01 chạy song song trên hai board khác nhau. Chúng cần phối hợp đúng <strong>một</strong> việc: trạm
 1 chỉ được nhả board sang khi <strong>trạm 2 đang trống</strong>.</p>
@@ -27735,6 +27764,191 @@ Chúng bảo vệ <strong>cơ cấu</strong>. Bảo vệ người khi trục chu
 các chức năng an toàn của truyền động (Chương 47; Chương 36, mục 36.6).</p>
 </blockquote>
 <hr>
+<h2 id="376b-chc-năng-an-toàn-ca-truyn-đng-c-mt-h-không-ch-sto">37.6b ⭐⭐ Chức năng an toàn của truyền động — cả một họ, không chỉ STO</h2>
+<p>Mục 37.6 dựng ba lớp bảo vệ <strong>cơ khí và logic</strong>. Còn một lớp nữa nằm <strong>bên trong chính bộ truyền
+động</strong>, và phần lớn người mới chỉ biết đúng một thành viên của nó: <strong>STO</strong>.</p>
+<blockquote>
+<p>⚠⚠ <strong>Mục này giới thiệu TỪ VỰNG, không thiết kế an toàn.</strong> Chọn dùng chức năng nào, ở mức toàn vẹn
+nào, với kiến trúc nào — là kết quả của <strong>đánh giá rủi ro do người có thẩm quyền thực hiện</strong>
+(Chương 47). ⭐ Mục đích ở đây là để bạn <strong>biết những gì tồn tại</strong> mà hỏi cho đúng, thay vì mặc định
+rằng STO là lựa chọn duy nhất.</p>
+</blockquote>
+<h3>Vì sao chỉ biết STO là không đủ</h3>
+<p>Chương 47 mục 47.8 đã cảnh báo hai điều STO <strong>không</strong> làm, và cảnh báo quan trọng nhất là:</p>
+<blockquote>
+<p>⚠ <strong>STO không hãm.</strong> Động cơ ngừng sinh mô-men, nhưng tải có quán tính <strong>trôi theo đà</strong> — và trục
+đứng có tải treo thì <strong>rơi</strong>.</p>
+</blockquote>
+<p>⭐ Câu hỏi tự nhiên tiếp theo là <em>&quot;vậy dùng gì?&quot;</em> — và câu trả lời nằm ở chỗ <strong>có cả một họ chức năng
+an toàn cho truyền động</strong>, được định nghĩa trong tiêu chuẩn về truyền động điện <em>(IEC 61800-5-2)</em>.</p>
+<h3>Bốn chức năng dừng — khác nhau ở chỗ nào</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Tên</th>
+<th>Làm gì</th>
+<th>⭐ Trả lời tình huống</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>STO</strong></td>
+<td><em>Safe torque off</em></td>
+<td>⭐ <strong>Cắt năng lượng sinh chuyển động</strong> khỏi động cơ</td>
+<td>Tải nhẹ, ma sát đủ giữ, hoặc đã có phanh cơ</td>
+</tr>
+<tr>
+<td>⭐ <strong>SS1</strong></td>
+<td><em>Safe stop 1</em></td>
+<td><strong>Giảm tốc có kiểm soát, rồi mới STO</strong></td>
+<td>⭐⭐ Đúng câu trả lời cho <em>&quot;tải có quán tính lớn&quot;</em></td>
+</tr>
+<tr>
+<td>⭐ <strong>SS2</strong></td>
+<td><em>Safe stop 2</em></td>
+<td>Giảm tốc có kiểm soát, <strong>rồi chuyển sang SOS</strong></td>
+<td>Khi dừng xong vẫn phải <strong>giữ nguyên vị trí</strong></td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>SOS</strong></td>
+<td><em>Safe operating stop</em></td>
+<td>⭐ <strong>Giữ trục đứng yên — vẫn còn mô-men</strong></td>
+<td>⚠ <strong>Trục đứng có tải treo</strong>; hoặc cần giữ vị trí giữa chu trình</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Khác biệt SS1 với SS2/SOS là khác biệt đáng nhớ nhất của cả mục này.</strong></p>
+<p>Cả hai đều giảm tốc có kiểm soát. Nhưng ⚠ <strong>SS1 kết thúc bằng STO — hết mô-men</strong>, còn ⭐ <strong>SS2 kết
+thúc bằng SOS — còn mô-men để giữ chỗ</strong>.</p>
+<p>⚡ Với trục Z mang đầu công tác, chọn nhầm SS1 thay vì SS2 nghĩa là: máy dừng êm, đúng quy trình,
+<strong>rồi trục rơi xuống</strong> — vì sau khi giảm tốc xong thì mô-men bị cắt.</p>
+</blockquote>
+<h3>Các chức năng giám sát — cho phép máy vẫn chạy, nhưng chạy trong giới hạn</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Tên</th>
+<th>Giữ cho cái gì trong giới hạn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ <strong>SLS</strong></td>
+<td><em>Safely-limited speed</em></td>
+<td><strong>Tốc độ</strong> không vượt ngưỡng</td>
+</tr>
+<tr>
+<td><strong>SSR</strong></td>
+<td><em>Safe speed range</em></td>
+<td>Tốc độ nằm trong một <strong>dải</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>SLP</strong></td>
+<td><em>Safely-limited position</em></td>
+<td><strong>Vị trí</strong> không vượt giới hạn</td>
+</tr>
+<tr>
+<td><strong>SLI</strong></td>
+<td><em>Safely-limited increment</em></td>
+<td>Mỗi lần chỉ đi <strong>một bước ngắn</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>SDI</strong></td>
+<td><em>Safe direction</em></td>
+<td>Chỉ cho đi <strong>một chiều</strong> — chặn chiều không mong muốn</td>
+</tr>
+<tr>
+<td><strong>SLA</strong> · <strong>SAR</strong></td>
+<td><em>Safely-limited / safe range acceleration</em></td>
+<td><strong>Gia tốc</strong></td>
+</tr>
+<tr>
+<td><strong>SLT</strong> · <strong>STR</strong></td>
+<td><em>Safely-limited / safe range torque</em></td>
+<td><strong>Mô-men hoặc lực</strong></td>
+</tr>
+<tr>
+<td><strong>SMT</strong></td>
+<td><em>Safe motor temperature</em></td>
+<td><strong>Nhiệt độ động cơ</strong></td>
+</tr>
+</tbody></table></div>
+<p>Và ba chức năng <strong>công bố tín hiệu</strong> thay vì hạn chế:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Tên</th>
+<th>Công bố điều gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>SSM</strong></td>
+<td><em>Safe speed monitor</em></td>
+<td>Tốc độ <strong>đang dưới ngưỡng</strong> hay không</td>
+</tr>
+<tr>
+<td><strong>SCA</strong></td>
+<td><em>Safe cam</em></td>
+<td>Trục <strong>đang trong một dải vị trí</strong> hay không</td>
+</tr>
+<tr>
+<td>⭐ <strong>SBC</strong></td>
+<td><em>Safe brake control</em></td>
+<td>⭐⭐ Điều khiển <strong>phanh ngoài</strong> bằng tín hiệu an toàn — ⚠ đây là thứ đi cùng trục đứng</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>SLS là chức năng đổi cách làm việc nhiều nhất, và đáng biết nhất với người lập trình.</strong></p>
+<p>Bài toán quen thuộc: <strong>dạy điểm, căn chỉnh, gỡ kẹt</strong> — những việc buộc người phải vào vùng máy
+trong khi trục cần <strong>vẫn nhúc nhích được</strong>. ⚠ Nếu chỉ có STO thì chỉ còn hai lựa chọn, và cả hai
+đều tệ: <strong>cắt hẳn</strong> (không làm được việc) hoặc <strong>chạy đủ tốc độ</strong> (không an toàn).</p>
+<p>⭐ SLS mở ra lựa chọn thứ ba: <strong>cho chạy, nhưng tốc độ bị chặn ở mức an toàn — và mức chặn đó do
+phần cứng an toàn giám sát, không do chương trình</strong>. ⚡ Ghép thêm <strong>SDI</strong> thì còn giới hạn được cả
+chiều: chỉ cho đi <strong>ra xa</strong> người, không cho đi vào.</p>
+<p>⚠ Nhưng nhắc lại: <strong>ngưỡng tốc độ an toàn là con số của đánh giá rủi ro</strong>, không phải con số người
+lập trình chọn (Chương 47).</p>
+</blockquote>
+<h3>⭐ Hai chỗ đặt chức năng an toàn — và hệ quả với người lập trình</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Trong chính bộ truyền động</strong> <em>(safety drive)</em></th>
+<th><strong>Do một PLC an toàn giám sát</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cách làm</td>
+<td>⭐ Drive có sẵn chức năng an toàn; nó tự chuyển giữa các chức năng bằng <strong>máy trạng thái bên trong</strong></td>
+<td>Bộ điều khiển an toàn giám sát nhiều trục ở một chỗ</td>
+</tr>
+<tr>
+<td>⭐ Được gì</td>
+<td>Phản ứng nhanh nhất, ít dây; ⭐ <strong>không phụ thuộc mạng</strong></td>
+<td>⭐ Nhìn được <strong>toàn máy</strong>, phối hợp nhiều trục theo vùng</td>
+</tr>
+<tr>
+<td>⚠ Mất gì</td>
+<td>Cấu hình nằm <strong>trong tham số drive</strong> — ⚠ <strong>dễ bị quên khi thay drive</strong> (Chương 53, Chương 54)</td>
+<td>Phức tạp hơn; phụ thuộc mạng an toàn</td>
+</tr>
+<tr>
+<td>⚠ Hệ quả với bạn</td>
+<td>⭐⭐ <strong>Tham số an toàn của drive PHẢI nằm trong bản sao lưu</strong> — nó không nằm trong tệp chương trình PLC</td>
+<td>Dự án an toàn là <strong>một dự án riêng</strong>, sao lưu riêng</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Hàng cuối là hàng hay gây sự cố nhất, và nó thuộc về người lập trình PLC.</strong></p>
+<p>Thay một drive hỏng, nạp lại tham số từ bản lưu — nhưng bản lưu ấy <strong>chỉ có tham số vận hành</strong>,
+không có <strong>tham số an toàn</strong>. ⭐ Máy chạy bình thường, mọi thứ trông đúng, và ⚠⚠ <strong>chức năng an
+toàn thì không còn như đã nghiệm thu</strong> — không có báo động nào nói điều đó.</p>
+<p>⭐ Vì vậy danh mục sao lưu ở Chương 54 phải ghi <strong>tham số an toàn của từng drive</strong> thành một mục
+riêng, và việc thay drive phải kèm <strong>thử lại chức năng an toàn</strong>, không chỉ thử chạy
+(Chương 52 mục 52.5).</p>
+</blockquote>
+<hr>
 <h2 id="377-phi-hp-nhiu-trc">37.7 Phối hợp nhiều trục</h2>
 <p>Gantry XY cần hai trục chạy <strong>cùng lúc và phối hợp</strong>, không phải lần lượt.</p>
 <div class="table-wrap"><table>
@@ -28299,17 +28513,30 @@ lát cắt 4: nối máy với thế giới bên ngoài. Bắt đầu bằng RS-
 công nghiệp, và là cách bộ điều khiển nhiệt độ của DP-01 nói chuyện với PLC.</p>
 <h3>Nguồn tham khảo chương 37</h3>
 <ul>
-<li>IEC 61800-5-2 — <em>Adjustable speed electrical power drive systems — Safety requirements — Functional</em>:
-các chức năng an toàn của truyền động. <em>(tiêu chuẩn có bản quyền)</em></li>
-<li>IEC 60204-1 — <em>Safety of machinery — Electrical equipment of machines</em>: yêu cầu với mạch điều khiển
-chuyển động và với chức năng dừng — nền cho mục 37.6.</li>
-<li><strong>Đặc tả PLCopen Motion Control</strong> — chuẩn hoá giao diện khối chuyển động (<code>Execute</code>/<code>Done</code>/<code>Busy</code>/
+<li><p><strong>PLCopen</strong> — <em>Safe Motion v1.0</em> (TC5): ⭐ <strong>danh mục đầy đủ các chức năng an toàn của truyền động</strong>
+theo <strong>IEC 61800-5-2</strong> — bốn chức năng dừng (STO · SS1 · SS2 · SOS), nhóm giới hạn (SLS, SSR, SLP,
+SLI, SDI, SLA, SAR, SLT, STR, SMT), nhóm công bố tín hiệu (SSM, SCA, SBC) — nền cho mục 37.6b;
+và <strong>hai kiến trúc</strong>: giám sát <strong>trong chính drive</strong> với máy trạng thái nội bộ, hay giám sát ở một
+<strong>bộ điều khiển an toàn</strong>. <em>(tài liệu mở của PLCopen; ⚠ bản thân IEC 61800-5-2 có bản quyền và
+KHÔNG có trong bộ tài liệu — sách chỉ nêu tên và mô tả chức năng ở mức khái niệm, không dẫn số
+điều khoản)</em></p>
+</li>
+<li><p>IEC 61800-5-2 — <em>Adjustable speed electrical power drive systems — Safety requirements — Functional</em>:
+các chức năng an toàn của truyền động. <em>(tiêu chuẩn có bản quyền)</em></p>
+</li>
+<li><p>IEC 60204-1 — <em>Safety of machinery — Electrical equipment of machines</em>: yêu cầu với mạch điều khiển
+chuyển động và với chức năng dừng — nền cho mục 37.6.</p>
+</li>
+<li><p><strong>Đặc tả PLCopen Motion Control</strong> — chuẩn hoá giao diện khối chuyển động (<code>Execute</code>/<code>Done</code>/<code>Busy</code>/
 <code>Error</code>) mà nhiều hãng theo. ⭐ Đây là tài liệu đáng đọc vì nó là chỗ <strong>kỹ năng chuyển được giữa các
-hệ</strong> tốt nhất.</li>
-<li><strong>Tài liệu servo drive</strong> của hệ đang dùng — dùng cho ⚠ <strong>đơn vị kỹ thuật và tỉ số truyền</strong>, kiểu về
+hệ</strong> tốt nhất.</p>
+</li>
+<li><p><strong>Tài liệu servo drive</strong> của hệ đang dùng — dùng cho ⚠ <strong>đơn vị kỹ thuật và tỉ số truyền</strong>, kiểu về
 gốc hỗ trợ, ngõ vào giới hạn phần cứng, ngưỡng sai số bám, và ⚠ <strong>điều khiển phanh cùng thứ tự
-nhả/kẹp</strong>.</li>
-<li>Bảng I/O, vùng làm việc gantry và số liệu đã chốt của DP-01 — Phụ lục J §J.1 và §J.2.</li>
+nhả/kẹp</strong>.</p>
+</li>
+<li><p>Bảng I/O, vùng làm việc gantry và số liệu đã chốt của DP-01 — Phụ lục J §J.1 và §J.2.</p>
+</li>
 </ul>
 <blockquote>
 <p>⚡ Các con số giới hạn ở mục 37.6 (−1/51 mm, −3/53 mm, −5/55 mm) là <strong>minh hoạ cho nguyên tắc ba
@@ -42377,7 +42604,7 @@ Với nhiều dòng PLC, kết quả là hàng nghìn dòng logic với tên bi�
 chú thích</strong>.</p>
 </blockquote>
 <hr>
-<h2 id="543-sao-lưu-cái-gì-by-th-không-phi-mt">54.3 ⭐⭐ Sao lưu cái gì — bảy thứ, không phải một</h2>
+<h2 id="543-sao-lưu-cái-gì-tám-th-không-phi-mt">54.3 ⭐⭐ Sao lưu cái gì — tám thứ, không phải một</h2>
 <p>Đây là mục quan trọng nhất chương. Hầu hết người ta sao lưu <strong>một</strong> thứ và tưởng là đã xong.</p>
 <div class="table-wrap"><table>
 <thead>
@@ -42399,8 +42626,8 @@ chú thích</strong>.</p>
 </tr>
 <tr>
 <td>3</td>
-<td>⭐ <strong>Tham số biến tần / servo driver</strong></td>
-<td>⚠ <strong>Động cơ chạy sai hoặc không chạy</strong>; chỉnh lại tay mất hàng ngày (Chương 36–37)</td>
+<td>⭐ <strong>Tham số biến tần / servo driver</strong> — ⚠⚠ <strong>kể cả tham số CHỨC NĂNG AN TOÀN của drive</strong></td>
+<td>⚠ <strong>Động cơ chạy sai hoặc không chạy</strong>; chỉnh lại tay mất hàng ngày (Chương 36–37). ⚠⚠ Và nếu thiếu tham số an toàn: máy <strong>chạy bình thường</strong> nhưng chức năng an toàn <strong>không còn như đã nghiệm thu</strong>, ⭐ <strong>không báo động nào nói điều đó</strong> (Chương 37 mục 37.6b)</td>
 </tr>
 <tr>
 <td>4</td>
@@ -42422,6 +42649,11 @@ chú thích</strong>.</p>
 <td><strong>Cấu hình mạng</strong> — địa chỉ IP, tên trạm, tệp mô tả thiết bị</td>
 <td>Thiết bị không nhận nhau (Chương 40)</td>
 </tr>
+<tr>
+<td>8</td>
+<td>⭐⭐ <strong>Chương trình và ĐIỂM DẠY của bộ điều khiển ngoài</strong> — robot, tay gắp thông minh</td>
+<td>⚠⚠ <strong>Điểm dạy là dữ liệu nhưng có vai trò như code</strong>: mất nó thì phải dạy lại từng điểm trên máy thật, và ⚠ không có cách nào kiểm rằng đã dạy đúng như cũ (Chương 46 mục 46.5)</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>⭐ <strong>Mục 3 là mục bị quên nhiều nhất, và nó gây bất ngờ khó chịu nhất.</strong></p>
@@ -42431,6 +42663,12 @@ Thay biến tần mới mà không có bản sao tham số thì bạn đang <str
 chạy</strong>.</p>
 <p>⚡ Nhiều biến tần cho phép <strong>sao chép tham số vào bảng điều khiển rời</strong> rồi nạp sang bộ khác — dùng
 nó, và <strong>kèm cả tệp sao lưu tham số</strong> vào bộ sao lưu chung.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Mục 8 hay bị bỏ vì nó &quot;không thuộc PLC&quot;.</strong></p>
+<p>Robot có bộ nhớ riêng, phần mềm riêng, người lập trình riêng — nên rất dễ mặc định rằng <em>&quot;bên robot
+họ tự lo&quot;</em>. ⚠ Nhưng khi máy hỏng lúc nửa đêm, người đứng đó là bạn. ⭐ <strong>Bộ sao lưu của cỗ máy phải
+là bộ sao lưu của CẢ CỖ MÁY</strong>, không phải của riêng phần mình làm (Chương 46).</p>
 </blockquote>
 <h3>⭐ Mục 6 là hạng mục đặc biệt</h3>
 <p>Chương trình an toàn không chỉ cần khôi phục — nó cần <strong>khôi phục đúng bản đã được kiểm định</strong>.</p>
@@ -51662,8 +51900,8 @@ khi nghi ngờ hãy dùng nó.</p>
 <tr>
 <td>Tăng tốc · giảm tốc</td>
 <td>acceleration · deceleration ramp</td>
-<td></td>
-<td>36</td>
+<td>Dốc của biến tần: Ch.36; biên dạng vận tốc của servo: Ch.37 mục 37.5</td>
+<td>36, 37</td>
 </tr>
 <tr>
 <td>⭐ Mô-men dừng an toàn</td>

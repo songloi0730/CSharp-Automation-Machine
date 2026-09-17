@@ -13676,6 +13676,25 @@ vào lỗi cơ cấu:
 
 ---
 
+### ⭐ Khi "cơ cấu" lại là một bộ điều khiển khác
+
+Xy-lanh là cơ cấu **không tự nghĩ**: bạn ra lệnh, nó làm. Nhưng có loại cơ cấu **mang theo bộ điều
+khiển riêng** — có chương trình riêng, máy trạng thái riêng, và thường là **người lập trình riêng**.
+
+⭐ **Quy tắc ba tầng vẫn giữ nguyên**: với tầng trạm, thứ đó vẫn chỉ là một cơ cấu có `Cmd` · `Data` ·
+`Resp` (mục 30.3b). ⚠ Nhưng ba điều đổi, và cả ba đều đắt nếu phát hiện muộn:
+
+| | Đổi ở chỗ nào |
+|---|---|
+| 1 | ⚠⚠ **Phải chốt AI CHỈ HUY AI trước khi viết dòng đầu tiên** — và chốt bằng văn bản, vì hai bên là hai người |
+| 2 | ⚠ **Phục hồi khác hẳn**: cơ cấu đó có thể **đang giữ sản phẩm** và đang ở giữa chương trình của nó — không "về gốc" một phát là xong (Chương 28) |
+| 3 | ⚠ **Nó có dữ liệu phải sao lưu** mà không nằm trong dự án PLC của bạn (Chương 54 mục 54.3, hạng mục 8) |
+
+⭐ Loại cơ cấu này được nói kỹ ở **Chương 46** — mục 46.3 cho việc chỉ huy, 46.5 cho dữ liệu
+phải sao lưu, 46.8 cho phục hồi.
+
+---
+
 ## 27.4 Đồng bộ giữa hai trạm — không được chờ bận
 
 Hai trạm của DP-01 chạy song song trên hai board khác nhau. Chúng cần phối hợp đúng **một** việc: trạm
@@ -19394,6 +19413,98 @@ Ba yêu cầu đi kèm:
 
 ---
 
+## 37.6b ⭐⭐ Chức năng an toàn của truyền động — cả một họ, không chỉ STO
+
+Mục 37.6 dựng ba lớp bảo vệ **cơ khí và logic**. Còn một lớp nữa nằm **bên trong chính bộ truyền
+động**, và phần lớn người mới chỉ biết đúng một thành viên của nó: **STO**.
+
+> ⚠⚠ **Mục này giới thiệu TỪ VỰNG, không thiết kế an toàn.** Chọn dùng chức năng nào, ở mức toàn vẹn
+> nào, với kiến trúc nào — là kết quả của **đánh giá rủi ro do người có thẩm quyền thực hiện**
+> (Chương 47). ⭐ Mục đích ở đây là để bạn **biết những gì tồn tại** mà hỏi cho đúng, thay vì mặc định
+> rằng STO là lựa chọn duy nhất.
+
+### Vì sao chỉ biết STO là không đủ
+
+Chương 47 mục 47.8 đã cảnh báo hai điều STO **không** làm, và cảnh báo quan trọng nhất là:
+
+> ⚠ **STO không hãm.** Động cơ ngừng sinh mô-men, nhưng tải có quán tính **trôi theo đà** — và trục
+> đứng có tải treo thì **rơi**.
+
+⭐ Câu hỏi tự nhiên tiếp theo là *"vậy dùng gì?"* — và câu trả lời nằm ở chỗ **có cả một họ chức năng
+an toàn cho truyền động**, được định nghĩa trong tiêu chuẩn về truyền động điện *(IEC 61800-5-2)*.
+
+### Bốn chức năng dừng — khác nhau ở chỗ nào
+
+| Ký hiệu | Tên | Làm gì | ⭐ Trả lời tình huống |
+|---|---|---|---|
+| **STO** | *Safe torque off* | ⭐ **Cắt năng lượng sinh chuyển động** khỏi động cơ | Tải nhẹ, ma sát đủ giữ, hoặc đã có phanh cơ |
+| ⭐ **SS1** | *Safe stop 1* | **Giảm tốc có kiểm soát, rồi mới STO** | ⭐⭐ Đúng câu trả lời cho *"tải có quán tính lớn"* |
+| ⭐ **SS2** | *Safe stop 2* | Giảm tốc có kiểm soát, **rồi chuyển sang SOS** | Khi dừng xong vẫn phải **giữ nguyên vị trí** |
+| ⭐⭐ **SOS** | *Safe operating stop* | ⭐ **Giữ trục đứng yên — vẫn còn mô-men** | ⚠ **Trục đứng có tải treo**; hoặc cần giữ vị trí giữa chu trình |
+
+> ⭐⭐ **Khác biệt SS1 với SS2/SOS là khác biệt đáng nhớ nhất của cả mục này.**
+>
+> Cả hai đều giảm tốc có kiểm soát. Nhưng ⚠ **SS1 kết thúc bằng STO — hết mô-men**, còn ⭐ **SS2 kết
+> thúc bằng SOS — còn mô-men để giữ chỗ**.
+>
+> ⚡ Với trục Z mang đầu công tác, chọn nhầm SS1 thay vì SS2 nghĩa là: máy dừng êm, đúng quy trình,
+> **rồi trục rơi xuống** — vì sau khi giảm tốc xong thì mô-men bị cắt.
+
+### Các chức năng giám sát — cho phép máy vẫn chạy, nhưng chạy trong giới hạn
+
+| Ký hiệu | Tên | Giữ cho cái gì trong giới hạn |
+|---|---|---|
+| ⭐⭐ **SLS** | *Safely-limited speed* | **Tốc độ** không vượt ngưỡng |
+| **SSR** | *Safe speed range* | Tốc độ nằm trong một **dải** |
+| ⭐ **SLP** | *Safely-limited position* | **Vị trí** không vượt giới hạn |
+| **SLI** | *Safely-limited increment* | Mỗi lần chỉ đi **một bước ngắn** |
+| ⭐ **SDI** | *Safe direction* | Chỉ cho đi **một chiều** — chặn chiều không mong muốn |
+| **SLA** · **SAR** | *Safely-limited / safe range acceleration* | **Gia tốc** |
+| **SLT** · **STR** | *Safely-limited / safe range torque* | **Mô-men hoặc lực** |
+| **SMT** | *Safe motor temperature* | **Nhiệt độ động cơ** |
+
+Và ba chức năng **công bố tín hiệu** thay vì hạn chế:
+
+| Ký hiệu | Tên | Công bố điều gì |
+|---|---|---|
+| **SSM** | *Safe speed monitor* | Tốc độ **đang dưới ngưỡng** hay không |
+| **SCA** | *Safe cam* | Trục **đang trong một dải vị trí** hay không |
+| ⭐ **SBC** | *Safe brake control* | ⭐⭐ Điều khiển **phanh ngoài** bằng tín hiệu an toàn — ⚠ đây là thứ đi cùng trục đứng |
+
+> ⭐⭐ **SLS là chức năng đổi cách làm việc nhiều nhất, và đáng biết nhất với người lập trình.**
+>
+> Bài toán quen thuộc: **dạy điểm, căn chỉnh, gỡ kẹt** — những việc buộc người phải vào vùng máy
+> trong khi trục cần **vẫn nhúc nhích được**. ⚠ Nếu chỉ có STO thì chỉ còn hai lựa chọn, và cả hai
+> đều tệ: **cắt hẳn** (không làm được việc) hoặc **chạy đủ tốc độ** (không an toàn).
+>
+> ⭐ SLS mở ra lựa chọn thứ ba: **cho chạy, nhưng tốc độ bị chặn ở mức an toàn — và mức chặn đó do
+> phần cứng an toàn giám sát, không do chương trình**. ⚡ Ghép thêm **SDI** thì còn giới hạn được cả
+> chiều: chỉ cho đi **ra xa** người, không cho đi vào.
+>
+> ⚠ Nhưng nhắc lại: **ngưỡng tốc độ an toàn là con số của đánh giá rủi ro**, không phải con số người
+> lập trình chọn (Chương 47).
+
+### ⭐ Hai chỗ đặt chức năng an toàn — và hệ quả với người lập trình
+
+| | **Trong chính bộ truyền động** *(safety drive)* | **Do một PLC an toàn giám sát** |
+|---|---|---|
+| Cách làm | ⭐ Drive có sẵn chức năng an toàn; nó tự chuyển giữa các chức năng bằng **máy trạng thái bên trong** | Bộ điều khiển an toàn giám sát nhiều trục ở một chỗ |
+| ⭐ Được gì | Phản ứng nhanh nhất, ít dây; ⭐ **không phụ thuộc mạng** | ⭐ Nhìn được **toàn máy**, phối hợp nhiều trục theo vùng |
+| ⚠ Mất gì | Cấu hình nằm **trong tham số drive** — ⚠ **dễ bị quên khi thay drive** (Chương 53, Chương 54) | Phức tạp hơn; phụ thuộc mạng an toàn |
+| ⚠ Hệ quả với bạn | ⭐⭐ **Tham số an toàn của drive PHẢI nằm trong bản sao lưu** — nó không nằm trong tệp chương trình PLC | Dự án an toàn là **một dự án riêng**, sao lưu riêng |
+
+> ⚠⚠ **Hàng cuối là hàng hay gây sự cố nhất, và nó thuộc về người lập trình PLC.**
+>
+> Thay một drive hỏng, nạp lại tham số từ bản lưu — nhưng bản lưu ấy **chỉ có tham số vận hành**,
+> không có **tham số an toàn**. ⭐ Máy chạy bình thường, mọi thứ trông đúng, và ⚠⚠ **chức năng an
+> toàn thì không còn như đã nghiệm thu** — không có báo động nào nói điều đó.
+>
+> ⭐ Vì vậy danh mục sao lưu ở Chương 54 phải ghi **tham số an toàn của từng drive** thành một mục
+> riêng, và việc thay drive phải kèm **thử lại chức năng an toàn**, không chỉ thử chạy
+> (Chương 52 mục 52.5).
+
+---
+
 ## 37.7 Phối hợp nhiều trục
 
 Gantry XY cần hai trục chạy **cùng lúc và phối hợp**, không phải lần lượt.
@@ -19795,6 +19906,14 @@ lát cắt 4: nối máy với thế giới bên ngoài. Bắt đầu bằng RS-
 công nghiệp, và là cách bộ điều khiển nhiệt độ của DP-01 nói chuyện với PLC.
 
 ### Nguồn tham khảo chương 37
+
+- **PLCopen** — *Safe Motion v1.0* (TC5): ⭐ **danh mục đầy đủ các chức năng an toàn của truyền động**
+  theo **IEC 61800-5-2** — bốn chức năng dừng (STO · SS1 · SS2 · SOS), nhóm giới hạn (SLS, SSR, SLP,
+  SLI, SDI, SLA, SAR, SLT, STR, SMT), nhóm công bố tín hiệu (SSM, SCA, SBC) — nền cho mục 37.6b;
+  và **hai kiến trúc**: giám sát **trong chính drive** với máy trạng thái nội bộ, hay giám sát ở một
+  **bộ điều khiển an toàn**. *(tài liệu mở của PLCopen; ⚠ bản thân IEC 61800-5-2 có bản quyền và
+  KHÔNG có trong bộ tài liệu — sách chỉ nêu tên và mô tả chức năng ở mức khái niệm, không dẫn số
+  điều khoản)*
 
 - IEC 61800-5-2 — *Adjustable speed electrical power drive systems — Safety requirements — Functional*:
   các chức năng an toàn của truyền động. *(tiêu chuẩn có bản quyền)*
@@ -29073,7 +29192,7 @@ của nó rất đắt.
 
 ---
 
-## 54.3 ⭐⭐ Sao lưu cái gì — bảy thứ, không phải một
+## 54.3 ⭐⭐ Sao lưu cái gì — tám thứ, không phải một
 
 Đây là mục quan trọng nhất chương. Hầu hết người ta sao lưu **một** thứ và tưởng là đã xong.
 
@@ -29081,11 +29200,12 @@ của nó rất đắt.
 |---|---|---|
 | 1 | ⭐ **Dự án PLC** (logic + chú thích + tên biến) | Có logic nhưng không đọc được |
 | 2 | ⭐ **Cấu hình phần cứng** *(hardware configuration)* — khe cắm, module, địa chỉ, tham số module | CPU mới không nhận I/O |
-| 3 | ⭐ **Tham số biến tần / servo driver** | ⚠ **Động cơ chạy sai hoặc không chạy**; chỉnh lại tay mất hàng ngày (Chương 36–37) |
+| 3 | ⭐ **Tham số biến tần / servo driver** — ⚠⚠ **kể cả tham số CHỨC NĂNG AN TOÀN của drive** | ⚠ **Động cơ chạy sai hoặc không chạy**; chỉnh lại tay mất hàng ngày (Chương 36–37). ⚠⚠ Và nếu thiếu tham số an toàn: máy **chạy bình thường** nhưng chức năng an toàn **không còn như đã nghiệm thu**, ⭐ **không báo động nào nói điều đó** (Chương 37 mục 37.6b) |
 | 4 | ⭐ **Dự án HMI / SCADA** | Có máy chạy nhưng ⚠ **không ai điều khiển được** (Chương 44) |
 | 5 | **Công thức và tham số sản phẩm** | Mất toàn bộ dữ liệu sản phẩm (Chương 32) |
 | 6 | ⚠⚠ **Chương trình và cấu hình thiết bị an toàn** | Không khôi phục được chức năng an toàn; ⚠ **và phải kiểm định lại** (Chương 48) |
 | 7 | **Cấu hình mạng** — địa chỉ IP, tên trạm, tệp mô tả thiết bị | Thiết bị không nhận nhau (Chương 40) |
+| 8 | ⭐⭐ **Chương trình và ĐIỂM DẠY của bộ điều khiển ngoài** — robot, tay gắp thông minh | ⚠⚠ **Điểm dạy là dữ liệu nhưng có vai trò như code**: mất nó thì phải dạy lại từng điểm trên máy thật, và ⚠ không có cách nào kiểm rằng đã dạy đúng như cũ (Chương 46 mục 46.5) |
 
 > ⭐ **Mục 3 là mục bị quên nhiều nhất, và nó gây bất ngờ khó chịu nhất.**
 >
@@ -29096,6 +29216,12 @@ của nó rất đắt.
 >
 > ⚡ Nhiều biến tần cho phép **sao chép tham số vào bảng điều khiển rời** rồi nạp sang bộ khác — dùng
 > nó, và **kèm cả tệp sao lưu tham số** vào bộ sao lưu chung.
+
+> ⭐⭐ **Mục 8 hay bị bỏ vì nó "không thuộc PLC".**
+>
+> Robot có bộ nhớ riêng, phần mềm riêng, người lập trình riêng — nên rất dễ mặc định rằng *"bên robot
+> họ tự lo"*. ⚠ Nhưng khi máy hỏng lúc nửa đêm, người đứng đó là bạn. ⭐ **Bộ sao lưu của cỗ máy phải
+> là bộ sao lưu của CẢ CỖ MÁY**, không phải của riêng phần mình làm (Chương 46).
 
 ### ⭐ Mục 6 là hạng mục đặc biệt
 
@@ -33719,7 +33845,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | Vùng chết | deadband | | 32, 35 |
 | Trễ tích luỹ | hysteresis | | 32 |
 | Biến tần | VFD (variable frequency drive) · inverter | | 36 |
-| Tăng tốc · giảm tốc | acceleration · deceleration ramp | | 36 |
+| Tăng tốc · giảm tốc | acceleration · deceleration ramp | Dốc của biến tần: Ch.36; biên dạng vận tốc của servo: Ch.37 mục 37.5 | 36, 37 |
 | ⭐ Mô-men dừng an toàn | STO (Safe Torque Off) | ⚠ Chức năng an toàn của driver | 36, 47 |
 | Servo drive | servo drive | | 37 |
 | Trục | axis | | 37 |

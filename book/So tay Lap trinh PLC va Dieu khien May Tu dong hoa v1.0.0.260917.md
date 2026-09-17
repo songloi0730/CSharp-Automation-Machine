@@ -5813,6 +5813,72 @@ vô ích.
 
 ---
 
+## 13.2b ⭐ Ba tiêu chí nữa — ít được nhắc, và mỗi cái từng làm hỏng một dự án
+
+Bảy tiêu chí ở mục 13.2 là những thứ ai cũng nghĩ tới. Ba tiêu chí dưới đây ⚠ **hay bị bỏ cho tới
+lúc đã mua hàng**, và khi ấy sửa rất đắt.
+
+### 8. ⚠ Môi trường lắp đặt — hỏi trước khi chọn, không phải sau
+
+⭐ **Bộ điều khiển công nghiệp thông dụng có dải nhiệt độ làm việc quanh 0–55 °C.** Con số đó nghe
+rộng rãi cho tới khi bạn nhớ rằng nó là ⚠ **nhiệt độ TRONG TỦ, không phải trong xưởng**.
+
+| Yếu tố | Hỏi gì | ⚠ Hậu quả nếu bỏ qua |
+|---|---|---|
+| ⭐⭐ **Nhiệt độ trong tủ** | Tủ đặt ở đâu, có nắng chiếu không, có quạt/điều hoà không, mùa hè cao nhất bao nhiêu | Tủ kín cạnh lò nung dễ vượt 55 °C. ⚠ CPU không cháy ngay — nó **chạy sai lúc nóng nhất**, tức là lúc sản lượng cao nhất |
+| **Bụi và hơi ẩm** | Môi trường có bụi dẫn điện, hơi dầu, hơi hoá chất không | Cấp bảo vệ của tủ, và cần lọc hay làm mát kín |
+| **Rung động** | Máy có búa, máy dập, hay đặt cạnh thiết bị rung | Đầu nối long ra sau vài tháng — kiểu lỗi chập chờn ở Chương 51 mục 51.8 |
+| ⚠ **Quy định riêng của nhà máy** | Nhà máy có yêu cầu riêng về chứng nhận, về hãng được duyệt, về cấp bảo vệ không | ⭐ Biết **trước khi báo giá**, không phải lúc nghiệm thu |
+
+> ⭐ **Đo, đừng đoán.** Đặt một nhiệt kế ghi dữ liệu trong tủ của một máy tương tự, chạy một ngày hè.
+> ⚠ Con số thật thường cao hơn ước lượng 10–15 °C, vì trong tủ còn có biến tần và bộ nguồn toả
+> nhiệt (Chương 49).
+
+### 9. ⭐ Bộ nhớ — và cách ước lượng khi chưa viết dòng nào
+
+Câu hỏi *"cần bao nhiêu bộ nhớ"* nghe như không trả lời được trước khi viết chương trình. ⭐ Có một
+**quy tắc ngón tay cái** để ước lượng thô:
+
+```text
+Bộ nhớ chương trình  ≈  5 word × số thiết bị số  +  25 word × số thiết bị analog
+```
+
+Với máy mẫu DP-01 (Phụ lục J): khoảng 40 tín hiệu số và 7 tín hiệu analog.
+
+```text
+≈ 5 × 40  +  25 × 7  =  200 + 175  =  375 word
+```
+
+| Hạng mục | Nội dung |
+|---|---|
+| ⭐ **Điều kiện áp dụng** | Ứng dụng **thiên về tuần tự** — đóng cắt, liên động, trình tự bước |
+| ⚠ **Không áp dụng cho** | Chương trình nặng tính toán, xử lý chuỗi, hay nhiều khối chuyển động — ⭐ **khó ước lượng hơn nhiều**, phải tra bảng chi phí lệnh của hãng |
+| ⭐ Dùng để làm gì | **Loại nhanh** các CPU quá nhỏ. ⚠ **Không** dùng để chọn CPU vừa khít |
+| ⭐⭐ Hệ số dự phòng | ⚠ **Nhân đôi**. Máy nào cũng phình ra: thêm báo động, thêm chế độ, thêm thống kê (mục 13.2 tiêu chí 1) |
+
+⚠ Và nhớ **bộ nhớ dữ liệu là chuyện khác**: nếu máy phải giữ lịch sử — số liệu năng suất theo giờ,
+theo ca, theo ngày (Chương 55 mục 55.7c) — thì **kích thước bảng dữ liệu mới là thứ quyết định chọn
+CPU nào**, chứ không phải số dòng lệnh.
+
+> ⚡ **Một chi tiết về thời gian quét mà bảng thông số hay giấu:** ⚠ **có CPU nhanh ở lệnh logic
+> nhưng chậm ở lệnh xử lý dữ liệu.** Con số *"0,05 µs mỗi lệnh"* trên tờ quảng cáo gần như luôn là
+> ⭐ **lệnh bit**. Nếu chương trình của bạn nhiều phép tính, phải tra bảng chi phí **từng nhóm lệnh**
+> (Chương 10, Phụ lục K.5).
+
+### 10. I/O tại chỗ hay ở xa
+
+| | **Tại chỗ** — module cắm cạnh CPU | **Ở xa** — cụm I/O nối qua mạng |
+|---|---|---|
+| ⭐ Được gì | Nhanh nhất, đơn giản nhất, ít thứ hỏng | ⭐⭐ **Tiết kiệm dây rất nhiều** khi máy dài hoặc có nhiều cụm rời |
+| ⚠ Mất gì | ⚠ Tốn dây khi thiết bị ở xa tủ | ⚠ Thêm một mạng phải cấu hình và chẩn đoán · ⭐ **thêm trễ**, và trễ đó cộng vào chuỗi trễ ở Chương 32 mục 32.6 |
+| Phải hỏi trước | Tủ cách thiết bị xa nhất bao nhiêu mét | ⭐ CPU có **hỗ trợ I/O từ xa** không, qua giao thức nào, khoảng cách và tốc độ tối đa (Chương 40) |
+
+> ⭐ **Câu hỏi quyết định rất đơn giản: có cụm thiết bị nào cách tủ trên ~10 m và có từ 8 tín hiệu
+> trở lên không?** Có thì cân nhắc I/O từ xa; không thì đừng thêm một mạng vào máy chỉ để cho hiện
+> đại.
+
+---
+
 ## 13.3 Bảng đối chiếu các hệ phổ biến
 
 Nêu tên để bạn **biết đường tra và so sánh**, không phải để khuyến nghị. Cột "đặc điểm" là những thứ
@@ -6130,6 +6196,12 @@ chiếm ưu thế ở tầng máy.
   mọi số liệu và tình trạng sản phẩm.
 - Thông tin về vòng đời sản phẩm và thông báo ngừng sản xuất, công bố trên trang chính thức của từng
   hãng — dùng cho tiêu chí 6.
+- **AutomationDirect** — *PLC Handbook*, chương *How to Choose a Controller*: bảng công tác chín bước
+  chọn bộ điều khiển — nền cho mục 13.2b, gồm ⭐ **môi trường lắp đặt** (dải nhiệt độ làm việc thông
+  dụng 0–55 °C), ⭐ **quy tắc ước lượng bộ nhớ chương trình** (5 word mỗi thiết bị số, 25 word mỗi
+  thiết bị analog), và ⚠ lưu ý **CPU nhanh ở lệnh logic có thể chậm ở lệnh xử lý dữ liệu**.
+  *(tài liệu của hãng — ⚠ mang tính giới thiệu sản phẩm; chỉ lấy phần nguyên tắc chung, mọi số liệu
+  sản phẩm phải tra catalogue hiện hành)*
 
 > ⚠⚠ **Thông tin có hạn sử dụng — đọc kỹ.** Bảng ở mục 13.3 và mọi nhận định về **giá tương đối, tính
 > sẵn có, chính sách bản quyền, và dòng sản phẩm** đều **đổi theo thời gian và theo thị trường**. Dòng
@@ -13273,6 +13345,58 @@ Quy tắc Q3 nghe hình thức, nhưng nó là quy tắc **trả lại nhiều n
 
 ---
 
+## 27.2b ⭐⭐ Bảy bước dựng cấu trúc — làm theo thứ tự nào
+
+Mục 27.2 nói chương trình **nên** có ba tầng. Mục này trả lời câu đứng ngay sau đó: ⭐ **bắt đầu từ
+đâu, và theo thứ tự nào** — vì thứ tự sai thì ba tầng kia không tự mọc ra.
+
+PLCopen đề xuất một trình tự bảy bước cho việc cấu trúc hoá phần mềm theo IEC 61131-3. Bảng dưới đặt
+nó cạnh chỗ tương ứng trong sách này:
+
+| # | Bước | Trả lời câu hỏi | Chương |
+|---|---|---|---|
+| 1 | **Xác định giao diện ra bên ngoài** của hệ điều khiển | Máy nói chuyện với **ai** — máy trước, máy sau, cấp trên, người vận hành | 41, 45 |
+| 2 | **Chốt các tín hiệu chính trao đổi** với phần còn lại của nhà máy | Qua mỗi giao diện đó, **những bit và số nào** đi qua | 23, 41 |
+| 3 | ⭐⭐ **Chốt mọi tương tác của người vận hành, mọi cách BỎ QUA, và dữ liệu giám sát** | Người vận hành làm được gì, và ⭐ **được phép bỏ qua cái gì** | 28, 51 |
+| 4 | **Phân rã bài toán từ trên xuống** thành các phần logic | Máy chia thành mấy trạm, mấy cụm, mấy cơ cấu | ⭐ **27** |
+| 5 | **Định nghĩa các khối cần có** — chương trình và khối chức năng | Cái gì viết một lần dùng nhiều lần | 27, 30 |
+| 6 | **Chốt yêu cầu chu kỳ** cho từng phần | Phần nào phải chạy nhanh, phần nào chậm cũng được | 10, 27 |
+| 7 | **Cấu hình hệ thống** — gán chương trình vào tác vụ, gán chân vào/ra | Ai chạy trong tác vụ nào, tag nào ứng chân nào | 27, 30 |
+
+> ⭐⭐ **Bước 3 là bước gây ngạc nhiên nhất, và nó đáng bàn.**
+>
+> Tương tác người vận hành và ⭐ **các đường "bỏ qua" (override) được chốt ở bước 3 — TRƯỚC khi phân
+> rã bài toán ở bước 4.** Nghĩa là chúng được coi là **đầu vào của kiến trúc**, không phải thứ gắn
+> thêm khi máy gần xong.
+>
+> ⚠ Thực tế thì gần như ai cũng làm ngược: viết trình tự tự động trước, rồi mới nghĩ tới chế độ tay,
+> rồi cuối cùng mới đối phó với câu *"camera hỏng thì chạy kiểu gì"*. ⭐ Và đó chính là lý do phần đó
+> luôn trông như chắp vá — xem Chương 28 và Chương 51 mục 51.7b.
+
+### ⚠ Giới hạn của việc chia nhỏ
+
+Chia để trị là đúng, nhưng nó **không đúng vô hạn**:
+
+> ⚠⚠ **Chia càng nhỏ thì công sức không biến mất — nó chuyển sang việc GHÉP các mảnh lại.**
+>
+> ⭐ Một khối làm đúng một việc rõ ràng là tốt. Ba mươi khối, mỗi khối ba dòng, nối với nhau bằng
+> bốn mươi biến trung gian thì **khó đọc hơn** một khối ba mươi dòng.
+>
+> ⚡ Dấu hiệu đã chia quá tay: ⚠ **số biến đi lại giữa các khối tăng nhanh hơn số khối**. Khi mỗi
+> khối mới thêm vào lại kéo theo năm biến giao tiếp, bạn đang trả nhiều hơn phần được lợi — đúng
+> nguyên tắc "giao diện phải nhỏ" ở mục 27.3.
+
+### ⭐ Bốn nguyên tắc đi kèm
+
+| Nguyên tắc | Nghĩa | Ở đâu trong sách |
+|---|---|---|
+| ⭐⭐ **Chỉ làm việc bằng tên tượng trưng** — địa chỉ tuyệt đối **chỉ xuất hiện ở phần khai báo** | Đổi module, đổi chân thì sửa **một chỗ**; phần còn lại không biết gì | Chương 30 mục 30.2 |
+| **Phần nào thuộc về nhau thì để cạnh nhau trong mã nguồn** | Đọc một cơ cấu không phải nhảy bốn chỗ | Chương 30 mục 30.3 |
+| ⚠ **Không dùng lệnh nhảy** | Nhảy phá tính đọc được và tính tái dùng, và sinh hiệu ứng phụ | Chương 20 |
+| **Đặt tên biến và khối nhất quán** | Cho phép **đoán đúng** thay vì phải tra | Chương 30 mục 30.2 |
+
+---
+
 ## 27.3 Tầng cơ cấu — khối tái dùng
 
 Mỗi loại cơ cấu viết **một lần** thành một **khối chức năng** *(function block, FB)*, rồi tạo nhiều
@@ -13724,6 +13848,11 @@ chưa trả lời: khi máy dừng giữa chừng ở một tư thế bất kỳ
   Structure*: ⭐ **bốn câu hỏi để chia bài toán điều khiển** (chạy cùng lúc? · độc lập? · có trình tự
   rõ? · ⭐ **có ranh giới vật lý?**), và ⚠ điều kiện tiên quyết *hiểu quy trình trước* — nền cho
   mục 27.2.
+- **PLCopen** — *Structuring Program Development with IEC 61131-3*: ⭐⭐ **bảy bước dựng cấu trúc**
+  (nền cho mục 27.2b), năm nguyên tắc mô-đun hoá (giao diện ít và nhỏ, tương tác khai báo tường minh,
+  đóng gói dữ liệu), ⚠ **giới hạn của việc chia nhỏ** — chia quá tay thì công sức chuyển sang việc
+  ghép, và bốn nguyên tắc đi kèm (chỉ dùng tên tượng trưng · để phần thuộc về nhau cạnh nhau ·
+  không dùng lệnh nhảy · đặt tên nhất quán). *(tài liệu mở của PLCopen)*
 
 > ⚡ Ba tầng ở mục 27.2 là **cách tổ chức thực dụng đã được kiểm chứng cho máy tự động hoá rời rạc**,
 > không phải một kiến trúc chuẩn hoá bắt buộc. Máy rất nhỏ có thể gộp tầng trạm vào tầng máy; máy rất
@@ -14905,6 +15034,10 @@ DI_Clamp1Up            // tầng gán chân, chỉ xuất hiện ở một chỗ
 > ⭐⭐ **Cách trộn thứ hai đáng học nhất.** Tên theo địa chỉ hoặc theo chân chỉ xuất hiện **ở đúng một
 > chỗ** — lớp gán vào/ra ở đầu chương trình. Từ đó trở đi mọi thứ dùng tên phân cấp. ⚡ Khi đổi module
 > hay đổi chân, **chỉ một chỗ phải sửa**, và phần còn lại của chương trình không biết gì.
+>
+> ⭐ Đây không phải sáng kiến riêng của sách: PLCopen nêu nó thành một nguyên tắc — ⭐⭐ *"chỉ làm việc
+> bằng tên tượng trưng; địa chỉ tuyệt đối chỉ xuất hiện ở phần khai báo"* — với đúng ba lợi ích:
+> **dễ thích nghi khi môi trường đổi · tái dùng được nhiều hơn · ít hiệu ứng phụ** (Chương 27 mục 27.2b).
 
 ### Chọn cái nào
 
@@ -15681,6 +15814,16 @@ Với vòng hai dây, nguồn có thể đến từ **module analog của PLC** 
 >
 > **Cách phòng:** tra **sơ đồ đấu trong datasheet của module** trước khi đấu sợi dây đầu tiên. Sơ đồ
 > nói rõ có nguồn hay không — đừng suy từ tên gọi, và đừng suy từ module khác của cùng hãng.
+
+![Ai cấp nguồn cho vòng 4–20 mA](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5MDAgNTYwJyB3aWR0aD0nOTAwJyBoZWlnaHQ9JzU2MCc+DQo8cmVjdCB3aWR0aD0nOTAwJyBoZWlnaHQ9JzU2MCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDMxLjEg4oCUIEFpIGPhuqVwIG5ndeG7k24gY2hvIHbDsm5nIDTigJMyMCBtQTwvdGV4dD4NCjx0ZXh0IHg9JzI0JyB5PSc1NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5CYSBzxqEgxJHhu5MgdHLDtG5nIG5hIG7DoSBuaGF1LiBLaMOhYyBiaeG7h3QgZHV5IG5o4bqldCBsw6Agbmd14buTbiAyNCBWIG7hurFtIOG7nyDEkcOidSDigJQgdsOgIG7DsyBxdXnhur90IMSR4buLbmggbW9kdWxlIHPhu5FuZyBoYXkgY2jhur90LjwvdGV4dD4NCjxyZWN0IHg9JzI0JyB5PSc4MCcgd2lkdGg9JzQxMCcgaGVpZ2h0PScyMDAnIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8cmVjdCB4PScyNCcgeT0nODAnIHdpZHRoPSc0MTAnIGhlaWdodD0nMzAnIHJ4PSczJyBmaWxsPScjREZGMEU0JyBzdHJva2U9JyMyRTdENEYnIHN0cm9rZS13aWR0aD0nMS4zJy8+DQo8dGV4dCB4PScyMjknIHk9JzEwMCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzJFN0Q0RicgdGV4dC1hbmNob3I9J21pZGRsZSc+QSDCtyDEkMOaTkcg4oCUIG1vZHVsZSBDw5MgY+G6pXAgbmd14buTbiB2w7JuZzwvdGV4dD4NCjx0ZXh0IHg9JzIyOScgeT0nMjY4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkNo4buJIGhhaSBz4bujaSBkw6J5LiBLaMO0bmcgxJHGsGEgdGjDqm0gbmd14buTbiBuw6BvIHThu6sgbmdvw6BpLjwvdGV4dD4NCjxyZWN0IHg9JzYwJyB5PScxNTQnIHdpZHRoPSc5MCcgaGVpZ2h0PSc0MCcgcng9JzMnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9JzEwNScgeT0nMTcxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkPhuqJNIEJJ4bq+TjwvdGV4dD4NCjx0ZXh0IHg9JzEwNScgeT0nMTg1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz4yIGTDonk8L3RleHQ+DQo8cmVjdCB4PScyODQnIHk9JzE0OCcgd2lkdGg9Jzk2JyBoZWlnaHQ9JzUyJyByeD0nMycgZmlsbD0nI0Y0RjVGNycgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzEuNScvPg0KPHRleHQgeD0nMzMyJyB5PScxNjknIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+TU9EVUxFPC90ZXh0Pg0KPHRleHQgeD0nMzMyJyB5PScxODInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+QU5BTE9HPC90ZXh0Pg0KPHRleHQgeD0nMzMyJyB5PScxOTQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+Y8OzIG5ndeG7k24gcGjhu6U8L3RleHQ+DQo8bGluZSB4MT0nMjg0JyB5MT0nMTY0JyB4Mj0nMTUwJyB5Mj0nMTY0JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8bGluZSB4MT0nMjI0JyB5MT0nMTY0JyB4Mj0nMjA0JyB5Mj0nMTY0JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cG9seWdvbiBwb2ludHM9JzE5NC4wLDE2NC4wIDIwNC4wLDE1OS4wIDIwNC4wLDE2OS4wJyBmaWxsPScjQzAzOTJCJy8+DQo8bGluZSB4MT0nMTUwJyB5MT0nMTg4JyB4Mj0nMjg0JyB5Mj0nMTg4JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8bGluZSB4MT0nMjE0JyB5MT0nMTg4JyB4Mj0nMjM0JyB5Mj0nMTg4JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cG9seWdvbiBwb2ludHM9JzI0NC4wLDE4OC4wIDIzNC4wLDE5My4wIDIzNC4wLDE4My4wJyBmaWxsPScjQzAzOTJCJy8+DQo8dGV4dCB4PScyMTcnIHk9JzE1NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNDMDM5MkInIHRleHQtYW5jaG9yPSdtaWRkbGUnPjI0IFYgdOG7qyBtb2R1bGU8L3RleHQ+DQo8dGV4dCB4PScyMTcnIHk9JzIwNCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNDMDM5MkInIHRleHQtYW5jaG9yPSdtaWRkbGUnPjTigJMyMCBtQSB24buBPC90ZXh0Pg0KPHRleHQgeD0nMzMyJyB5PScyMjAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPuKtkCBt4buZdCBuZ3Xhu5NuIGR1eSBuaOG6pXQ8L3RleHQ+DQo8cmVjdCB4PSc0NjYnIHk9JzgwJyB3aWR0aD0nNDEwJyBoZWlnaHQ9JzIwMCcgcng9JzMnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjxyZWN0IHg9JzQ2NicgeT0nODAnIHdpZHRoPSc0MTAnIGhlaWdodD0nMzAnIHJ4PSczJyBmaWxsPScjREZGMEU0JyBzdHJva2U9JyMyRTdENEYnIHN0cm9rZS13aWR0aD0nMS4zJy8+DQo8dGV4dCB4PSc2NzEnIHk9JzEwMCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzJFN0Q0RicgdGV4dC1hbmNob3I9J21pZGRsZSc+QiDCtyDEkMOaTkcg4oCUIG1vZHVsZSBDSOG7iCDEkE8sIG5ndeG7k24gbmdvw6BpPC90ZXh0Pg0KPHRleHQgeD0nNjcxJyB5PScyNjgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+Tmd14buTbiAyNCBWIG3huq9jIE7hu5BJIFRJ4bq+UCB0cm9uZyB2w7JuZywgxJHDum5nIG3hu5l0IGzhuqduLjwvdGV4dD4NCjxyZWN0IHg9JzQ5MicgeT0nMTU0JyB3aWR0aD0nOTAnIGhlaWdodD0nNDAnIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS41Jy8+DQo8dGV4dCB4PSc1MzcnIHk9JzE3MScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5D4bqiTSBCSeG6vk48L3RleHQ+DQo8dGV4dCB4PSc1MzcnIHk9JzE4NScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+MiBkw6J5PC90ZXh0Pg0KPHJlY3QgeD0nNzM4JyB5PScxNDgnIHdpZHRoPSc5NicgaGVpZ2h0PSc1Micgcng9JzMnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9Jzc4NicgeT0nMTY5JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPk1PRFVMRTwvdGV4dD4NCjx0ZXh0IHg9Jzc4NicgeT0nMTgyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkFOQUxPRzwvdGV4dD4NCjx0ZXh0IHg9Jzc4NicgeT0nMTk0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPmNo4buJIMSRbyBkw7JuZzwvdGV4dD4NCjxyZWN0IHg9JzYxNicgeT0nMTI0JyB3aWR0aD0nNzQnIGhlaWdodD0nMzQnIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS42Jy8+DQo8dGV4dCB4PSc2NTMnIHk9JzE0NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+MjQgVjwvdGV4dD4NCjxsaW5lIHgxPSc1MzcnIHkxPScxNTQnIHgyPSc1MzcnIHkyPScxNDEnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxsaW5lIHgxPSc1MzcnIHkxPScxNDEnIHgyPSc2MTYnIHkyPScxNDEnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxsaW5lIHgxPSc2OTAnIHkxPScxNDEnIHgyPSc3ODYnIHkyPScxNDEnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxsaW5lIHgxPSc3ODYnIHkxPScxNDEnIHgyPSc3ODYnIHkyPScxNDgnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxsaW5lIHgxPSc3MTYnIHkxPScxNDEnIHgyPSc3NDEnIHkyPScxNDEnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxwb2x5Z29uIHBvaW50cz0nNzUxLjAsMTQxLjAgNzQxLjAsMTQ2LjAgNzQxLjAsMTM2LjAnIGZpbGw9JyNDMDM5MkInLz4NCjxsaW5lIHgxPSc1ODInIHkxPScxODgnIHgyPSc3MzgnIHkyPScxODgnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxsaW5lIHgxPSc2NzYnIHkxPScxODgnIHgyPSc2NTEnIHkyPScxODgnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxwb2x5Z29uIHBvaW50cz0nNjQxLjAsMTg4LjAgNjUxLjAsMTgzLjAgNjUxLjAsMTkzLjAnIGZpbGw9JyNDMDM5MkInLz4NCjx0ZXh0IHg9JzY3MScgeT0nMjEwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J21pZGRsZSc+beG7mXQgdsOybmcga8OtbiwgbeG7mXQgbmd14buTbjwvdGV4dD4NCjx0ZXh0IHg9Jzc4MicgeT0nMjMwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMkU3RDRGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz7irZAgbeG7mXQgbmd14buTbiBkdXkgbmjhuqV0PC90ZXh0Pg0KPHJlY3QgeD0nMjQnIHk9JzMwMicgd2lkdGg9JzQxMCcgaGVpZ2h0PScyMDAnIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8cmVjdCB4PScyNCcgeT0nMzAyJyB3aWR0aD0nNDEwJyBoZWlnaHQ9JzMwJyByeD0nMycgZmlsbD0nI0ZCRTlFNycgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nMjI5JyB5PSczMjInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkMgwrcg4pqg4pqgIFNBSSDigJQgY+G6pXAgbmd14buTbiBIQUkgTOG6pk48L3RleHQ+DQo8dGV4dCB4PScyMjknIHk9JzQ5MCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5Nb2R1bGUgdOG7sSBj4bqlcCBuZ3Xhu5NuLCBWw4AgY8OzIHRow6ptIG5ndeG7k24gbmdvw6BpIG3huq9jIHRyb25nIHbDsm5nLjwvdGV4dD4NCjxyZWN0IHg9JzUwJyB5PSczODYnIHdpZHRoPSc5MCcgaGVpZ2h0PSc0MCcgcng9JzMnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9Jzk1JyB5PSc0MDMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+Q+G6ok0gQknhur5OPC90ZXh0Pg0KPHRleHQgeD0nOTUnIHk9JzQxNycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+MiBkw6J5PC90ZXh0Pg0KPHJlY3QgeD0nMTc0JyB5PSczNTYnIHdpZHRoPSc3NCcgaGVpZ2h0PSczNCcgcng9JzMnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjx0ZXh0IHg9JzIxMScgeT0nMzc4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQjAzQTJFJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz4yNCBWPC90ZXh0Pg0KPHJlY3QgeD0nMjkwJyB5PSczODAnIHdpZHRoPScxMDgnIGhlaWdodD0nNjInIHJ4PSczJyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS41Jy8+DQo8dGV4dCB4PSczNDQnIHk9JzM5OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+TU9EVUxFIEFOQUxPRzwvdGV4dD4NCjxyZWN0IHg9JzMwMCcgeT0nNDA2JyB3aWR0aD0nODgnIGhlaWdodD0nMjInIHJ4PSczJyBmaWxsPScjRkJFOUU3JyBzdHJva2U9JyNCMDNBMkUnIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PSczNDQnIHk9JzQyMScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdtaWRkbGUnPm5ndeG7k24gMiDCtyAyNCBWPC90ZXh0Pg0KPHRleHQgeD0nMzQ0JyB5PSc0MzgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz4oY8OzIG5ndeG7k24gcGjhu6Ugc+G6tW4pPC90ZXh0Pg0KPGxpbmUgeDE9Jzk1JyB5MT0nMzg2JyB4Mj0nOTUnIHkyPSczNzMnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjxsaW5lIHgxPSc5NScgeTE9JzM3MycgeDI9JzE3NCcgeTI9JzM3Mycgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPGxpbmUgeDE9JzI0OCcgeTE9JzM3MycgeDI9JzM0NCcgeTI9JzM3Mycgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPGxpbmUgeDE9JzM0NCcgeTE9JzM3MycgeDI9JzM0NCcgeTI9JzM4MCcgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPGxpbmUgeDE9JzI2NCcgeTE9JzM3MycgeDI9JzI5NCcgeTI9JzM3Mycgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPHBvbHlnb24gcG9pbnRzPSczMDQuMCwzNzMuMCAyOTQuMCwzNzguMCAyOTQuMCwzNjguMCcgZmlsbD0nI0IwM0EyRScvPg0KPGxpbmUgeDE9JzE0MCcgeTE9JzQ1NCcgeDI9JzM0NCcgeTI9JzQ1NCcgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPGxpbmUgeDE9JzM0NCcgeTE9JzQ0MicgeDI9JzM0NCcgeTI9JzQ1NCcgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPGxpbmUgeDE9JzE0MCcgeTE9JzQyNicgeDI9JzE0MCcgeTI9JzQ1NCcgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPGxpbmUgeDE9JzI2NCcgeTE9JzQ1NCcgeDI9JzIzNCcgeTI9JzQ1NCcgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPHBvbHlnb24gcG9pbnRzPScyMjQuMCw0NTQuMCAyMzQuMCw0NDkuMCAyMzQuMCw0NTkuMCcgZmlsbD0nI0IwM0EyRScvPg0KPHRleHQgeD0nMjExJyB5PSczNTAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQjAzQTJFJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5uZ3Xhu5NuIDEg4oCUIGLDqm4gbmdvw6BpPC90ZXh0Pg0KPHRleHQgeD0nMjI5JyB5PSc0NzgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0IwM0EyRScgdGV4dC1hbmNob3I9J21pZGRsZSc+4pqg4pqgIEhBSSBuZ3Xhu5NuIG7hu5FpIHRp4bq/cCB0cm9uZyBt4buZdCB2w7JuZyDihpIgSOG7jk5HIG5nw7UgdsOgbyBtb2R1bGU8L3RleHQ+DQo8cmVjdCB4PSc0NjYnIHk9JzMwMicgd2lkdGg9JzQxMCcgaGVpZ2h0PScyMDAnIHJ4PSczJyBmaWxsPScjRkRGNkU3JyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8dGV4dCB4PSc2NzEnIHk9JzMyOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5QaMOibiBiaeG7h3QgYuG6sW5nIGPDoWNoIG7DoG88L3RleHQ+DQo8dGV4dCB4PSc0ODgnIHk9JzM1OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J3N0YXJ0Jz7irZA8L3RleHQ+DQo8dGV4dCB4PSc1MTAnIHk9JzM1OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5UcmEgU8agIMSQ4buSIMSQ4bqkVSB0cm9uZyBkYXRhc2hlZXQgY+G7p2EgTU9EVUxFPC90ZXh0Pg0KPHRleHQgeD0nNTEwJyB5PSczNzknIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+4oCUIHRyxrDhu5tjIGtoaSDEkeG6pXUgc+G7o2kgZMOieSDEkeG6p3UgdGnDqm4uPC90ZXh0Pg0KPHRleHQgeD0nNDg4JyB5PSc0MDAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdzdGFydCc+4pqgPC90ZXh0Pg0KPHRleHQgeD0nNTEwJyB5PSc0MDAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+xJDhu6tuZyBzdXkgdOG7qyBUw4pOIEfhu4xJIGPhu6dhIG1vZHVsZS48L3RleHQ+DQo8dGV4dCB4PSc0ODgnIHk9JzQyMScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0IwM0EyRScgdGV4dC1hbmNob3I9J3N0YXJ0Jz7imqA8L3RleHQ+DQo8dGV4dCB4PSc1MTAnIHk9JzQyMScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz7EkOG7q25nIHN1eSB04burIG1vZHVsZSBraMOhYyBj4bunYSBjw7luZyBow6NuZy48L3RleHQ+DQo8dGV4dCB4PSc0ODgnIHk9JzQ0MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J3N0YXJ0Jz7irZA8L3RleHQ+DQo8dGV4dCB4PSc1MTAnIHk9JzQ0MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5Dw7luZyBt4buZdCBow6NuZywgaGFpIGTDsm5nIG1vZHVsZSBjw7MgdGjhu4M8L3RleHQ+DQo8dGV4dCB4PSc1MTAnIHk9JzQ2MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5raMOhYyBuaGF1IOG7nyDEkcO6bmcgxJFp4buDbSBuw6B5LjwvdGV4dD4NCjxyZWN0IHg9JzI0JyB5PSc1MTInIHdpZHRoPSc4NTInIGhlaWdodD0nNDInIHJ4PSczJyBmaWxsPScjRUFGMUY2JyBzdHJva2U9JyM1NjVFNjYnIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8dGV4dCB4PSczOCcgeT0nNTMxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKtkCBIYWkgbOG7l2kgY2hvIGhhaSB0cmnhu4d1IGNo4bupbmcgS0jDgUMgTkhBVSDigJQgxJHhu41jIHRyaeG7h3UgY2jhu6luZyBsw6AgYmnhur90IMSR4bqldSBzYWkga2nhu4N1IG7DoG86PC90ZXh0Pg0KPHRleHQgeD0nMzgnIHk9JzU0NycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPsSQ4buNYyAwIG1BIHN14buRdCDihpIgY8OzIHRo4buDIEtIw5RORyBuZ3Xhu5NuIG7DoG8gKMOtdCBo4bqhaSwgY2jhu4kgdOG7kW4gY8O0bmcgdMOsbSkuICAgIMSQ4buNYyB24buNdCBxdcOhIDIwIG1BLCBob+G6t2MgbW9kdWxlIGNo4bq/dCDihpIgSEFJIG5ndeG7k24uPC90ZXh0Pg0KPC9zdmc+)
+
+*Hình 31.1 — Ba cách đấu vòng 4–20 mA. Hai cách đúng khác nhau ở chỗ nguồn nằm trong module hay
+ngoài; cách sai có hai nguồn nối tiếp trong cùng một vòng, và nguồn thứ hai nằm khuất bên trong
+module nên sơ đồ đấu ngoài không cho thấy nó.*
+
+> ⭐ **Hình 31.1 vẽ cả ba cách đấu cạnh nhau** vì trên bản vẽ chúng trông na ná: cũng hai sợi dây,
+> cũng một cảm biến, cũng một module. ⚠ Khác biệt duy nhất là **nguồn 24 V nằm ở đâu** — và với ô C
+> thì nguồn thứ hai **nằm bên trong module**, nên nhìn sơ đồ đấu ngoài không thấy nó.
 
 ### ⚠ Điện trở tải tối đa của vòng
 
@@ -28119,6 +28262,25 @@ hoặc thiếu tham số thiết bị.
 
 ---
 
+## 52.11b Bảng chốt
+
+| Chủ đề | Chốt lại |
+|---|---|
+| ⚠⚠ **Thứ tự tám bước** | **Không phải gợi ý.** Mỗi bước chặn một loại sự cố; nhảy bước là chấp nhận loại sự cố đó (mục 52.2) |
+| ⭐ **Ba mốc nghiệm thu** | **FAT** tại xưởng · **SAT** tại hiện trường · **SIT** khi ghép chuyền. ⚠ SAT **không phải** FAT làm lại — vận chuyển, nguồn, khí và nhiệt độ đều khác |
+| ⭐⭐ **Kiểm I/O 1-1** | Kiểm **từng kênh một**, bằng **cưỡng bức**, ⚠ **không bằng chương trình** — chương trình sai thì phép kiểm sai theo (Bẫy 2) |
+| ⚠ **Chức năng an toàn** | Thử **từng nút, từng cửa, từng rèm** — không thử một cái rồi suy ra cái còn lại (Bẫy 3) |
+| ⭐ **Thử tạo lỗi cố ý** | Bước 7 là bước phân biệt máy **chạy được** với máy **dùng được**. Cắt khí, che cảm biến, rút cáp — rồi xem máy nói gì |
+| ⚠ **Đo chu kỳ** | Đo ở **điều kiện thật**: sản phẩm thật, người thật, có cả lúc chờ. ⭐ Con số đo lúc lý tưởng là con số sẽ bị đem ra cãi nhau (Bẫy 5) |
+| ⭐⭐ **Trước khi bàn giao** | ⚠ Gỡ **hết** cưỡng bức — kể cả loại "đã cài nhưng đang tắt" · tắt cờ mô phỏng và chạy khô · bỏ mọi nấc thang tạm (mục 52.9) |
+| ⭐ **Sao lưu** | Bản sao lưu **chưa thử khôi phục** thì chưa phải bản sao lưu (Bẫy 7, Chương 54) |
+| **Bộ số liệu chuẩn** | Ghi lại lúc máy còn tốt: thời gian quét, điện áp 24 V, chu kỳ, thời gian hành trình từng cơ cấu — ⭐ **mốc so sánh cho cả vòng đời máy** (Chương 53) |
+| ⚠ **Danh mục tồn** | Phải **viết ra, có người chịu trách nhiệm, có hạn**. "Để đó rồi tính" nghĩa là không bao giờ |
+| ⭐ **Biên bản** | *"Đã nghiệm thu"* mà **không kèm danh mục cụ thể** là câu vô nghĩa khi có tranh chấp |
+| ⭐⭐ **Bàn giao là một hoạt động, không phải một lần gửi tệp** | Tài liệu **cộng** đào tạo người vận hành. Máy tốt mà không ai biết dùng thì vẫn là máy dừng (mục 52.10) |
+
+---
+
 ## 52.12 Tự kiểm
 
 1. Kể lại sự cố ở mục 52.1. **Bước nào** trong thứ tự tám bước đã có thể chặn nó, và mất bao lâu?
@@ -34798,6 +34960,28 @@ Nếu  Tần số xung  >  1 / (2 × Thời gian quét)   →  ⭐ PHẢI dùng 
 
 ---
 
+## K.5b Ước lượng bộ nhớ chương trình
+
+⭐ Dùng khi **chưa viết dòng nào** mà đã phải chọn CPU.
+
+```text
+Bộ nhớ chương trình  ≈  5 word × số thiết bị SỐ  +  25 word × số thiết bị ANALOG
+```
+
+| Hạng mục | Nội dung |
+|---|---|
+| ⭐ **Điều kiện áp dụng** | Ứng dụng **thiên về tuần tự** — đóng cắt, liên động, trình tự bước |
+| ⚠ **Không áp dụng cho** | Chương trình nặng tính toán, xử lý chuỗi, nhiều khối chuyển động — ⭐ phải tra **bảng chi phí lệnh** của hãng |
+| ⭐ Dùng để làm gì | **Loại nhanh** CPU quá nhỏ. ⚠ **Không** dùng để chọn CPU vừa khít |
+| ⭐⭐ Hệ số dự phòng | ⚠ **Nhân đôi** — máy nào cũng phình ra: thêm báo động, thêm chế độ, thêm thống kê |
+| ⚠⚠ Bẫy | **Bộ nhớ DỮ LIỆU là chuyện khác.** Nếu phải giữ lịch sử năng suất theo giờ/ca/ngày thì ⭐ **kích thước bảng dữ liệu mới quyết định chọn CPU**, không phải số dòng lệnh (Ch.55 mục 55.7c) |
+| Chương | 13 mục 13.2b |
+
+> ⚡ **Con số trên tờ quảng cáo gần như luôn là lệnh BIT.** ⚠ Có CPU nhanh ở lệnh logic nhưng chậm ở
+> lệnh xử lý dữ liệu — chương trình nhiều phép tính phải tra chi phí **từng nhóm lệnh** (Ch.10, K.5).
+
+---
+
 ## K.6 Số học và kiểu dữ liệu
 
 ### ⚠ Dải giá trị các kiểu số nguyên thường gặp
@@ -34927,6 +35111,7 @@ Y(r,c) = Y1 + (c−1)·(Y2−Y1)/(C−1) + (r−1)·(Y3−Y1)/(R−1)
 | ⭐ **Khi nào cần bộ đếm tốc độ cao** | K.5 | 18 |
 | Dải kiểu dữ liệu, chống tràn | K.6 | 11, 19 |
 | Vỏ chống nhiễu, nối đất | K.7 | 31, 36, 49 |
+| ⭐ Ước lượng bộ nhớ chương trình | K.5b | 13 |
 | ⭐ **Lưới khay — dạy ba điểm** | K.7b | 37 |
 
 > ⭐ **Cần đoạn code chứ không phải công thức?** Các mạch lặp lại ở mọi máy — tự giữ, chuỗi cho

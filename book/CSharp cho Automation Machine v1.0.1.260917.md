@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260916 |
+| **Phiên bản** | v1.0.1.260917 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -8785,8 +8785,55 @@ chạy tay từng bước, và **hạn giờ gói gọn trong một chỗ** thay
 
 > 📌 **Vậy thiết kế đúng cho bối cảnh này không phải "phương án 1" cũng không phải "phương án 3",
 > mà là một pha trộn:** gọi **thẳng** lớp thiết bị chuẩn (không interface ở tầng driver), **giữ**
-> interface ở tầng trình tự, và **giữ** kiểu dữ liệu miền sạch như cả ba bản mẫu đều làm. Kết quả
-> là mã ngắn gần bằng bản 7.7 nhưng không mất thứ gì ở tầng trình tự.
+> interface ở tầng trình tự, và **giữ** kiểu dữ liệu miền sạch như cả ba bản mẫu đều làm.
+
+Phương án thứ tư này cũng đã được dựng và chạy thật, để đặt ngang hàng với ba bản kia chứ không
+chỉ nói suông. Cả bốn cho ra **cùng một kết quả**:
+
+**Bảng 7.11 — Bốn phương án trên cùng bộ tiêu chí, đo thật**
+
+| Tiêu chí | ① async + interface (7.5) | ② chặn + interface (7.6) | ③ không interface (7.7) | ④ **pha trộn** (mục này) |
+|---|---|---|---|---|
+| Số dòng | 350 | 390 | **336** | 368 |
+| Interface tầng thiết bị | 3 | 3 | **0** | **0** |
+| Interface tầng trình tự | `IStep` | `IStep` | **không có** | `IStep` |
+| Chạy được khi thiếu phần cứng | ✅ đổi một dòng | ✅ đổi một dòng | ⚠️ phải sửa lớp thiết bị | ⚠️ phải sửa lớp thiết bị |
+| Test được luật máy | ✅ | ✅ | ❌ | ⚠️ test được tầng trình tự, không test được tầng thiết bị |
+| Hiện được *"bước 3/7"* | ✅ | ✅ | ❌ | ✅ |
+| Hạn giờ gói một chỗ | ✅ trong `Step` | ✅ trong `Step` | ❌ lặp ở mọi lời gọi | ✅ trong `Step` |
+| Đổi hãng thiết bị | thêm lớp mới | thêm lớp mới | **sửa lớp đang chạy** | **sửa lớp đang chạy** |
+| Dễ với người mới | ⚠️ phải hiểu async | ✅ | ✅ nhất | ✅ |
+
+Đọc cột ④ theo chiều dọc sẽ thấy nó **mua lại đúng ba dòng** mà phương án ③ đánh mất — hiện được
+số bước, hạn giờ gói một chỗ, test được tầng trình tự — với cái giá **32 dòng mã** so với ③. Và
+nó vẫn giữ nguyên hai thứ mà tiền đề "thiết bị chuẩn" cho phép bỏ: không interface thiết bị,
+không cờ giả lập.
+
+Về mặt mã nguồn, khác biệt giữa ③ và ④ chỉ nằm ở chỗ **giữ lại `IStep` và danh sách bước**:
+
+```csharp
+// ③ không interface: chu trình là mã, hạn giờ phải nhớ gọi đúng hàm bọc
+private void RunOneCycle()
+{
+    MoveWithTimeout(120.0);
+    _gripper.Grip();
+    MoveWithTimeout(20.0);
+    _gripper.Release();
+}
+
+// ④ pha trộn: thiết bị vẫn gọi thẳng (Axis, Gripper — không interface),
+//    nhưng chu trình quay lại là DỮ LIỆU, và hạn giờ nằm trong StepMoveTo
+var steps = new IStep[]
+{
+    new StepMoveTo(axisX, 120.0, "Tới vị trí gắp", stop),
+    new StepGrip(gripper, grip: true,  "Gắp"),
+    new StepMoveTo(axisX,  20.0, "Tới vị trí đặt", stop),
+    new StepGrip(gripper, grip: false, "Nhả"),
+};
+```
+
+Chú ý `StepMoveTo` ở bản ④ nhận thẳng `Axis` chứ không phải `IAxis` — đó chính là điều khiến nó
+khác bản ②. Mã nguồn đầy đủ ở `source/MeoFrameMiniMixed/`.
 
 #### Ba thứ tiền đề đó KHÔNG xoá được
 

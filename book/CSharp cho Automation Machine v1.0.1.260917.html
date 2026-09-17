@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260916</title>
+<title>C# cho Automation Machine — v1.0.1.260917</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -539,7 +539,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260916</td>
+<td>v1.0.1.260917</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -9768,9 +9768,111 @@ chạy tay từng bước, và <strong>hạn giờ gói gọn trong một chỗ<
 <blockquote>
 <p>📌 <strong>Vậy thiết kế đúng cho bối cảnh này không phải &quot;phương án 1&quot; cũng không phải &quot;phương án 3&quot;,
 mà là một pha trộn:</strong> gọi <strong>thẳng</strong> lớp thiết bị chuẩn (không interface ở tầng driver), <strong>giữ</strong>
-interface ở tầng trình tự, và <strong>giữ</strong> kiểu dữ liệu miền sạch như cả ba bản mẫu đều làm. Kết quả
-là mã ngắn gần bằng bản 7.7 nhưng không mất thứ gì ở tầng trình tự.</p>
+interface ở tầng trình tự, và <strong>giữ</strong> kiểu dữ liệu miền sạch như cả ba bản mẫu đều làm.</p>
 </blockquote>
+<p>Phương án thứ tư này cũng đã được dựng và chạy thật, để đặt ngang hàng với ba bản kia chứ không
+chỉ nói suông. Cả bốn cho ra <strong>cùng một kết quả</strong>:</p>
+<p><strong>Bảng 7.11 — Bốn phương án trên cùng bộ tiêu chí, đo thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>① async + interface (7.5)</th>
+<th>② chặn + interface (7.6)</th>
+<th>③ không interface (7.7)</th>
+<th>④ <strong>pha trộn</strong> (mục này)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Số dòng</td>
+<td>350</td>
+<td>390</td>
+<td><strong>336</strong></td>
+<td>368</td>
+</tr>
+<tr>
+<td>Interface tầng thiết bị</td>
+<td>3</td>
+<td>3</td>
+<td><strong>0</strong></td>
+<td><strong>0</strong></td>
+</tr>
+<tr>
+<td>Interface tầng trình tự</td>
+<td><code>IStep</code></td>
+<td><code>IStep</code></td>
+<td><strong>không có</strong></td>
+<td><code>IStep</code></td>
+</tr>
+<tr>
+<td>Chạy được khi thiếu phần cứng</td>
+<td>✅ đổi một dòng</td>
+<td>✅ đổi một dòng</td>
+<td>⚠️ phải sửa lớp thiết bị</td>
+<td>⚠️ phải sửa lớp thiết bị</td>
+</tr>
+<tr>
+<td>Test được luật máy</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>⚠️ test được tầng trình tự, không test được tầng thiết bị</td>
+</tr>
+<tr>
+<td>Hiện được <em>&quot;bước 3/7&quot;</em></td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Hạn giờ gói một chỗ</td>
+<td>✅ trong <code>Step</code></td>
+<td>✅ trong <code>Step</code></td>
+<td>❌ lặp ở mọi lời gọi</td>
+<td>✅ trong <code>Step</code></td>
+</tr>
+<tr>
+<td>Đổi hãng thiết bị</td>
+<td>thêm lớp mới</td>
+<td>thêm lớp mới</td>
+<td><strong>sửa lớp đang chạy</strong></td>
+<td><strong>sửa lớp đang chạy</strong></td>
+</tr>
+<tr>
+<td>Dễ với người mới</td>
+<td>⚠️ phải hiểu async</td>
+<td>✅</td>
+<td>✅ nhất</td>
+<td>✅</td>
+</tr>
+</tbody></table></div>
+<p>Đọc cột ④ theo chiều dọc sẽ thấy nó <strong>mua lại đúng ba dòng</strong> mà phương án ③ đánh mất — hiện được
+số bước, hạn giờ gói một chỗ, test được tầng trình tự — với cái giá <strong>32 dòng mã</strong> so với ③. Và
+nó vẫn giữ nguyên hai thứ mà tiền đề &quot;thiết bị chuẩn&quot; cho phép bỏ: không interface thiết bị,
+không cờ giả lập.</p>
+<p>Về mặt mã nguồn, khác biệt giữa ③ và ④ chỉ nằm ở chỗ <strong>giữ lại <code>IStep</code> và danh sách bước</strong>:</p>
+<pre><code class="language-csharp">// ③ không interface: chu trình là mã, hạn giờ phải nhớ gọi đúng hàm bọc
+private void RunOneCycle()
+{
+    MoveWithTimeout(120.0);
+    _gripper.Grip();
+    MoveWithTimeout(20.0);
+    _gripper.Release();
+}
+
+// ④ pha trộn: thiết bị vẫn gọi thẳng (Axis, Gripper — không interface),
+//    nhưng chu trình quay lại là DỮ LIỆU, và hạn giờ nằm trong StepMoveTo
+var steps = new IStep[]
+{
+    new StepMoveTo(axisX, 120.0, &quot;Tới vị trí gắp&quot;, stop),
+    new StepGrip(gripper, grip: true,  &quot;Gắp&quot;),
+    new StepMoveTo(axisX,  20.0, &quot;Tới vị trí đặt&quot;, stop),
+    new StepGrip(gripper, grip: false, &quot;Nhả&quot;),
+};
+</code></pre>
+<p>Chú ý <code>StepMoveTo</code> ở bản ④ nhận thẳng <code>Axis</code> chứ không phải <code>IAxis</code> — đó chính là điều khiến nó
+khác bản ②. Mã nguồn đầy đủ ở <code>source/MeoFrameMiniMixed/</code>.</p>
 <h4>Ba thứ tiền đề đó KHÔNG xoá được</h4>
 <p><strong>1. &quot;Chuẩn trong nhiều năm&quot; là quyết định của công ty bạn; &quot;ngừng sản xuất&quot; là quyết định của
 hãng.</strong> Hai bên không hỏi ý nhau. Chương 17 mục 17.5 xếp đây vào loại thay đổi <em>thích ứng</em> —

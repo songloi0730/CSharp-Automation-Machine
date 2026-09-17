@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260913</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260917</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -1201,7 +1201,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260913</td>
+<td>v1.0.0.260917</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -8109,8 +8109,9 @@ thấy gì.</p>
 </tbody></table></div>
 <p>Ba quy tắc quan trọng hơn bản thân quy ước:</p>
 <ul>
-<li><strong>Nhất quán quan trọng hơn đẹp.</strong> Nhiều cách đặt tên đều hợp lý; trộn nhiều cách trong một chương
-trình thì luôn sai, vì người đọc mất khả năng đoán (Chương 30).</li>
+<li><strong>Nhất quán quan trọng hơn đẹp.</strong> Nhiều cách đặt tên đều hợp lý; trộn tuỳ hứng nhiều cách trong một
+chương trình thì luôn sai, vì người đọc mất khả năng đoán. ⭐ <strong>Bốn quy ước hay gặp, cùng một ví dụ,
+kèm ưu và nhược: Chương 30 mục 30.2</strong> — đọc trước khi chốt quy ước cho dự án của bạn.</li>
 <li>⭐ <strong>Đưa đơn vị vào tên</strong> khi giá trị có đơn vị: <code>CycleTimeMs</code>, <code>LengthTenthMm</code>, <code>YieldPctX10</code>. Đơn
 vị ngầm hiểu là nguồn của lỗi quy đổi gấp 10, 100, 1000 lần (Chương 19, Bẫy 9).</li>
 <li><strong>Tên nói <em>là gì</em>, không nói <em>ở đâu</em>.</strong> <code>DI_BoardStn1</code> tốt; <code>DI_Input2</code> vô dụng vì nó chỉ lặp lại
@@ -18921,7 +18922,39 @@ END_IF;
 <h3>🔍 BẪY 3 — Đánh số bước liền nhau</h3>
 <p>Đánh 1, 2, 3, 4… rồi cần chèn một bước giữa 2 và 3. Bạn phải đánh số lại toàn bộ, và mọi tham chiếu
 tới số bước — trong thông báo lỗi, trong màn hình, trong tài liệu — đều sai.</p>
-<p>Đánh cách 10 ngay từ đầu. Chi phí bằng không, lợi ích rất lớn.</p>
+<p>Ba kiểu đánh số đều có người dùng. Cùng một trình tự 5 bước:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>Trông ra sao</th>
+<th>⭐ Được gì</th>
+<th>⚠ Mất gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Liền nhau</strong></td>
+<td><code>1, 2, 3, 4, 5</code></td>
+<td>Ngắn; hợp với <code>CASE</code> có kiểm đủ nhánh</td>
+<td>⚠⚠ <strong>Chèn một bước là đánh số lại tất cả</strong> — kéo theo thông báo lỗi, màn hình, tài liệu</td>
+</tr>
+<tr>
+<td>⭐ <strong>Cách 10</strong></td>
+<td><code>10, 20, 30, 40, 50</code></td>
+<td>⭐ Chèn được <strong>9 bước</strong> vào giữa mà không đụng gì khác</td>
+<td>Số lớn hơn; ⚠ chèn quá 9 lần vào cùng một khe thì hết chỗ</td>
+</tr>
+<tr>
+<td><strong>Cách 100 theo trạm</strong></td>
+<td><code>110…150</code> cho trạm 1, <code>210…250</code> cho trạm 2</td>
+<td>⭐⭐ <strong>Nhìn số là biết trạm nào</strong> — rất lợi khi thông báo lỗi ghi số bước</td>
+<td>Số dài; ⚠ giới hạn 9 trạm nếu dùng ba chữ số</td>
+</tr>
+</tbody></table></div>
+<p>⭐ <strong>Cách 10 là lựa chọn mặc định tốt</strong>: chi phí bằng không, và nó giải quyết đúng vấn đề hay gặp
+nhất. ⚡ Máy từ ba trạm trở lên thì <strong>cách 100 theo trạm</strong> đáng giá hơn, vì mã lỗi <code>S230 quá thời gian</code> tự nói ra <em>trạm 2, bước 30</em> mà không cần tra.</p>
+<p>⚠ Dù chọn kiểu nào, <strong>ghi quy ước đó vào hồ sơ máy</strong> — người sửa sau bạn sẽ chèn bước, và họ cần
+biết khe trống nằm ở đâu.</p>
 <h3>🔍 BẪY 4 — Không ghi lại bước bị kẹt</h3>
 <p>Trình tự báo lỗi rồi <strong>đặt lại bước về 0</strong>. Thông tin quan trọng nhất — kẹt ở bước nào — mất luôn.</p>
 <p>Luôn có một biến <code>Stn1_FaultStep</code> giữ lại bước lúc xảy ra lỗi, và biến đó <strong>chỉ được xoá khi Reset</strong>.
@@ -21166,6 +21199,140 @@ board. Bạn không cần tra. Khi quy ước hỗn độn, mỗi tag là một 
 <blockquote>
 <p><strong>Giá trị của quy ước đặt tên nằm ở chỗ nó cho phép ĐOÁN ĐÚNG.</strong> Một quy ước &quot;xấu&quot; mà nhất quán còn
 tốt hơn ba quy ước &quot;đẹp&quot; trộn lẫn.</p>
+</blockquote>
+<h3>Bốn quy ước thật sự có người dùng — cùng một tín hiệu, bốn cái tên</h3>
+<p>Nói <em>&quot;có nhiều cách đặt tên&quot;</em> rồi bỏ qua là vô ích. Dưới đây là <strong>bốn quy ước gặp thật trong nghề</strong>,
+tất cả đặt tên cho <strong>cùng một tín hiệu</strong>: cảm biến báo <strong>xy-lanh kẹp ở trạm 1 đã lên</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Quy ước</th>
+<th>Cái tên</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A</strong></td>
+<td><strong>Địa chỉ trần</strong> — không có tên tượng trưng</td>
+<td><code>X10</code> · <code>I0.2</code> · <code>%IX0.2</code></td>
+</tr>
+<tr>
+<td><strong>B</strong></td>
+<td>⭐ <strong>Tiền tố loại + chức năng</strong> — <em>sách này dùng</em></td>
+<td><code>DI_Clamp1Up</code></td>
+</tr>
+<tr>
+<td><strong>C</strong></td>
+<td><strong>Phân cấp theo cấu trúc</strong></td>
+<td><code>Stn1.Clamp.UpSensor</code></td>
+</tr>
+<tr>
+<td><strong>D</strong></td>
+<td><strong>Theo mã thiết bị trên bản vẽ điện</strong></td>
+<td><code>B12_Clamp1Up</code></td>
+</tr>
+</tbody></table></div>
+<p>Cùng một đoạn logic, viết bằng bốn quy ước:</p>
+<pre><code class="language-iecst">// A — địa chỉ trần
+IF X10 AND NOT X11 THEN  M20 := TRUE;  END_IF;
+
+// B — tiền tố loại + chức năng
+IF DI_Clamp1Up AND NOT DI_Clamp1Dn THEN  M_Stn1_ClampedOk := TRUE;  END_IF;
+
+// C — phân cấp
+IF Stn[1].Clamp.UpSensor AND NOT Stn[1].Clamp.DnSensor THEN
+    Stn[1].Clamp.Confirmed := TRUE;
+END_IF;
+
+// D — theo mã thiết bị trên bản vẽ
+IF B12_Clamp1Up AND NOT B13_Clamp1Dn THEN  M_Stn1_ClampedOk := TRUE;  END_IF;
+</code></pre>
+<h3>Ưu và nhược của từng quy ước</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>⭐ Được gì</th>
+<th>⚠ Mất gì</th>
+<th>Hợp với</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>A</strong> Địa chỉ trần</td>
+<td>Không phải nghĩ; <strong>khớp thẳng bản vẽ đấu dây</strong>; ai cũng tra được</td>
+<td>⚠⚠ Đọc chương trình phải <strong>tra bảng liên tục</strong> · đổi module là mọi ghi chú sai · ⚠ <strong>không dùng được ở hệ chỉ có tag</strong> (Phụ lục A1)</td>
+<td>Máy rất nhỏ, làm một lần, một người</td>
+</tr>
+<tr>
+<td><strong>B</strong> Tiền tố loại</td>
+<td>⭐ <strong>Đoán được loại tín hiệu ngay khi đọc</strong> · lọc và sắp xếp theo tiền tố · dùng được ở mọi hệ</td>
+<td>⚠ Tiền tố <strong>lặp lại thứ trình biên dịch đã biết</strong> · tên dài · ⚠ khi một tín hiệu chuyển từ dây cứng sang lấy qua mạng thì <strong>tên nói sai</strong></td>
+<td>⭐ <strong>Mặc định tốt</strong> cho máy vừa, nhóm nhiều người</td>
+</tr>
+<tr>
+<td><strong>C</strong> Phân cấp</td>
+<td>⭐⭐ <strong>Khớp với kiểu dữ liệu người dùng và mảng</strong> — thêm trạm thứ ba tốn một dòng (mục 30.3) · trình soạn thảo gợi ý theo cấp</td>
+<td>⚠ Phải <strong>thiết kế cấu trúc trước</strong>, sửa cấu trúc về sau rất đắt · ⚠ <strong>tra chéo theo tiền tố không còn dùng được</strong> · tên đầy đủ dài khi viết vào hồ sơ</td>
+<td>Máy nhiều trạm <strong>giống nhau</strong>; hệ hỗ trợ kiểu người dùng tốt</td>
+</tr>
+<tr>
+<td><strong>D</strong> Mã thiết bị</td>
+<td>⭐⭐ <strong>Thợ điện cầm bản vẽ và người đọc chương trình nói cùng một ngôn ngữ</strong> — giá trị lớn nhất lúc 2 giờ sáng</td>
+<td>⚠ Sửa bản vẽ là <strong>phải sửa chương trình</strong> · mã thiết bị <strong>không nói chức năng</strong> nên vẫn phải kèm phần chữ · ⚠ phụ thuộc chất lượng hồ sơ điện</td>
+<td>Máy có <strong>hồ sơ điện nghiêm túc</strong>, nhiều người bảo trì luân phiên</td>
+</tr>
+</tbody></table></div>
+<h3>⭐ Trong thực tế người ta trộn — và trộn thế nào thì được</h3>
+<p>⚠ Mục 30.2 mở đầu bằng <em>&quot;trộn nhiều cách thì luôn sai&quot;</em>. Nói chính xác hơn: ⭐ <strong>trộn TUỲ HỨNG thì
+sai; trộn theo một luật viết ra được thì tốt.</strong></p>
+<p>Hai cách trộn hay gặp và đều dùng được:</p>
+<pre><code class="language-iecst">// B + D — tiền tố loại, rồi mã thiết bị, rồi chức năng
+DI_B12Clamp1Up         // ai cũng đọc được, và tra được về bản vẽ
+
+// C + B — phân cấp cho cơ cấu, tiền tố cho tín hiệu vào/ra thô
+Stn[1].Clamp.UpSensor  // tầng cơ cấu
+DI_Clamp1Up            // tầng gán chân, chỉ xuất hiện ở một chỗ duy nhất
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Cách trộn thứ hai đáng học nhất.</strong> Tên theo địa chỉ hoặc theo chân chỉ xuất hiện <strong>ở đúng một
+chỗ</strong> — lớp gán vào/ra ở đầu chương trình. Từ đó trở đi mọi thứ dùng tên phân cấp. ⚡ Khi đổi module
+hay đổi chân, <strong>chỉ một chỗ phải sửa</strong>, và phần còn lại của chương trình không biết gì.</p>
+</blockquote>
+<h3>Chọn cái nào</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hoàn cảnh</th>
+<th>⭐ Chọn</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Máy nhỏ, dưới ~30 tín hiệu, một người làm và bảo trì</td>
+<td><strong>A</strong> hoặc <strong>B</strong> — đừng dựng bộ máy to hơn bài toán</td>
+</tr>
+<tr>
+<td>Máy vừa, vài người, nhiều cơ cấu <strong>khác nhau</strong></td>
+<td>⭐ <strong>B</strong> — đây là lý do sách chọn nó</td>
+</tr>
+<tr>
+<td>Máy nhiều trạm <strong>giống nhau</strong>, sẽ còn nhân bản</td>
+<td>⭐⭐ <strong>C</strong>, cộng <strong>B</strong> ở lớp gán chân</td>
+</tr>
+<tr>
+<td>Nhà máy có nhiều người bảo trì luân phiên, hồ sơ điện tốt</td>
+<td>⭐ <strong>D</strong>, thường trộn với <strong>B</strong></td>
+</tr>
+<tr>
+<td>⚠ Khách hàng đã có quy ước riêng</td>
+<td>⭐⭐ <strong>Theo họ</strong> — dù bạn thấy nó không đẹp. Xem bên dưới</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Điều tệ nhất không phải chọn sai quy ước, mà là không chọn.</strong> Ba người viết ba kiểu trong cùng
+một chương trình gây thiệt hại lớn hơn bất kỳ quy ước &quot;xấu&quot; nào được tuân thủ nghiêm túc.</p>
+<p>⚠ Và khi bàn giao cho một nhà máy đã có quy ước riêng, ⭐ <strong>quy ước của họ thắng</strong> — kể cả khi bạn
+thấy nó dở. Người sống với chương trình này mười năm tới là họ, không phải bạn. ⚡ Điều bạn nên đấu
+tranh là <strong>có một quy ước và nó được ghi ra</strong>, không phải quy ước nào.</p>
 </blockquote>
 <h3>Quy ước dùng trong sách</h3>
 <pre><code class="language-text">&lt;tiền tố&gt;_&lt;vùng&gt;&lt;chức năng&gt;
@@ -26460,7 +26627,7 @@ board vào và ra trong phần thời gian không dành cho gia công</strong>.<
 </tr>
 <tr>
 <td>Giao thức mạng</td>
-<td>Phần lớn biến tần hỗ trợ nhiều lựa chọn: Modbus RTU/TCP (Chương 39), PROFINET, EtherNet/IP, EtherCAT (Chương 40). ⭐ Chọn theo mạng bạn đang dùng</td>
+<td>Phần lớn biến tần hỗ trợ nhiều lựa chọn: Modbus RTU/TCP (Chương 39), PROFINET, EtherNet/IP, EtherCAT. ⭐ <strong>Bảng so sánh ba họ giao thức kèm ưu/nhược: Chương 40 mục 40.3; cách chọn: mục 40.5.</strong> ⚠ Với biến tần, phần lớn trường hợp chỉ cần chạy/dừng và đặt tần số — ⭐ <strong>không cần họ nhanh nhất</strong>, nên đừng chọn EtherCAT chỉ vì nó nhanh</td>
 </tr>
 <tr>
 <td>⭐ Từ điều khiển / từ trạng thái</td>

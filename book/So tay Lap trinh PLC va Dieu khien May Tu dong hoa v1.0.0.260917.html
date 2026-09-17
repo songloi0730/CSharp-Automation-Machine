@@ -646,6 +646,7 @@
   <li><a href="#chương-30-chun-hoá-tái-s-dng">Chương 30 — Chuẩn hoá & tái sử dụng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#301-ngưi-đc-tht-s-ca-chương-trình-bn-vit">30.1 Người đọc thật sự của chương trình bạn viết</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#302-đt-tên-nht-quán-quan-trng-hơn-đp">30.2 Đặt tên — nhất quán quan trọng hơn đẹp</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#302b-quy-ưc-không-chn-mt-ln-cho-c-chương-trình-chn-cho-tng-tng">30.2b ⭐⭐ Quy ước không chọn MỘT lần cho cả chương trình — chọn cho TỪNG TẦNG</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#303-cu-trúc-chương-trình-theo-cơ-cu-không-theo-bưc">30.3 Cấu trúc chương trình — theo cơ cấu, không theo bước</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#303b-hai-quy-ưc-làm-cho-cu-trúc-mc-303-gi-đưc-khi-máy-ln-lên">30.3b ⭐ Hai quy ước làm cho cấu trúc ở mục 30.3 **giữ được** khi máy lớn lên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#304-comment-vit-như-nht-ký-k-thut">30.4 Comment — viết như nhật ký kỹ thuật</a></li>
@@ -21899,7 +21900,7 @@ IF B12_Clamp1Up AND NOT B13_Clamp1Dn THEN  M_Stn1_ClampedOk := TRUE;  END_IF;
 <tr>
 <td><strong>C</strong> Phân cấp</td>
 <td>⭐⭐ <strong>Khớp với kiểu dữ liệu người dùng và mảng</strong> — thêm trạm thứ ba tốn một dòng (mục 30.3) · trình soạn thảo gợi ý theo cấp</td>
-<td>⚠ Phải <strong>thiết kế cấu trúc trước</strong>, sửa cấu trúc về sau rất đắt · ⚠ <strong>tra chéo theo tiền tố không còn dùng được</strong> · tên đầy đủ dài khi viết vào hồ sơ</td>
+<td>⚠ Phải <strong>thiết kế cấu trúc trước</strong>, sửa cấu trúc về sau rất đắt · ⚠ <strong>lọc theo tiền tố không còn dùng được</strong> · tên đầy đủ dài khi viết vào hồ sơ</td>
 <td>Máy nhiều trạm <strong>giống nhau</strong>; hệ hỗ trợ kiểu người dùng tốt</td>
 </tr>
 <tr>
@@ -22047,6 +22048,123 @@ IF DI_DoorClosed THEN …
 </code></pre>
 <p>Với tín hiệu an toàn, tên nên phản ánh <strong>trạng thái an toàn là mức 1</strong> — khớp với nguyên tắc tiếp điểm
 NC ở Chương 4: <code>DI_EStopOK</code>, <code>DI_AirOK</code>, <code>DI_DoorClosed</code>. Nhìn tên là biết &quot;1 nghĩa là ổn&quot;.</p>
+<hr>
+<h2 id="302b-quy-ưc-không-chn-mt-ln-cho-c-chương-trình-chn-cho-tng-tng">30.2b ⭐⭐ Quy ước không chọn MỘT lần cho cả chương trình — chọn cho TỪNG TẦNG</h2>
+<p>Mục 30.2 bày bốn quy ước cạnh nhau, và cách trình bày đó dễ gây một hiểu nhầm: rằng bạn <strong>chọn một
+cái rồi dùng nó cho mọi thứ</strong>.</p>
+<p>⚠ Chương trình máy thật <strong>không như vậy</strong>. Đo trên một chương trình máy sản xuất đang chạy, ba tầng
+dùng <strong>ba quy ước khác nhau</strong> — và đó là lựa chọn đúng:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tầng</th>
+<th>Quy ước dùng</th>
+<th>Ví dụ có thật</th>
+<th>Vì sao chọn cái đó ở tầng này</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1. Gán chân vào/ra</strong></td>
+<td>⭐ <strong>Địa chỉ trần</strong> (quy ước A) — gói thành mảng theo byte và bit</td>
+<td><code>InX10[3]</code> · <code>OutY24[0]</code></td>
+<td>⭐ Đối chiếu <strong>một–một với bản vẽ và với vỏ module</strong>. Ở đúng tầng này, &quot;không có nghĩa&quot; lại là <strong>ưu điểm</strong>: nó không hứa hẹn điều gì</td>
+</tr>
+<tr>
+<td><strong>2. Khung dùng lại</strong></td>
+<td>⭐⭐ <strong>Mảng cấu trúc, đánh chỉ số</strong> (quy ước C)</td>
+<td><code>Cyl[i].Resp.Done</code> · <code>Alarm.Cylinder[12]</code></td>
+<td>⭐⭐ <strong>Đây là điều kiện để có thư viện</strong> — xem bên dưới</td>
+</tr>
+<tr>
+<td><strong>3. Logic riêng của máy</strong></td>
+<td>⭐ <strong>Tên mô tả</strong> (quy ước B, thường kèm tiền tố kiểu)</td>
+<td><code>bLock1</code> · <code>x_ChanTram1DaLen</code></td>
+<td>Chỗ này mỗi máy một khác, nên tên phải <strong>nói được việc</strong></td>
+</tr>
+</tbody></table></div>
+<h3>⭐⭐ Vì sao tầng 2 buộc phải đánh chỉ số</h3>
+<p>Đây là điểm mấu chốt, và nó giải thích một điều nhìn qua tưởng là cẩu thả.</p>
+<blockquote>
+<p>⭐⭐ <strong>Bạn không thể viết <code>FB_Cylinder</code> một lần rồi tạo 30 thể hiện, nếu mỗi xy-lanh lại có một cái
+tên viết tay trong logic.</strong></p>
+<p>Muốn một khối chạy được cho <strong>mọi</strong> xy-lanh, nó phải nhận <strong>một chỉ số</strong>. Và khi khối đã nhận chỉ
+số thì báo động, cấu hình, timeout, cờ bỏ qua của nó <strong>cũng phải đánh chỉ số theo</strong>.</p>
+</blockquote>
+<p>⭐ Cái giá trả cho việc đó chính là cái lợi đã đo được ở mục 30.5: <strong>25 trên 27 khối giống hệt nhau ở
+bốn cỗ máy khác nhau</strong>. ⚡ Nói cách khác — <strong>thư viện dùng lại và tên riêng cho từng thiết bị là hai
+thứ loại trừ nhau ở tầng 2.</strong> Phải chọn.</p>
+<h3>⚠⚠ Nhưng cái giá là có thật, và phải trả nó cho đúng chỗ</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>⚠ Cái giá</th>
+<th>Trả bằng cách nào</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠⚠ <strong><code>Alarm.Cylinder[12]</code> không nói gì với người sửa máy lúc hai giờ sáng</strong></td>
+<td>⭐ Phải có <strong>bảng tra chỉ số → tên thiết bị</strong>, và bảng đó phải <strong>ở nơi người đó với tới được</strong></td>
+</tr>
+<tr>
+<td>⚠ Tên biến <strong>không còn tự giải thích</strong></td>
+<td>⭐ Phải đọc kèm <strong>chương trình con cấu hình</strong> (nơi gán chỉ số nào cho cơ cấu nào) — Chương 22</td>
+</tr>
+<tr>
+<td>⚠⚠ Bảng tra thường nằm <strong>ngoài dự án PLC</strong></td>
+<td>⭐⭐ Nên nó <strong>phải nằm trong danh mục sao lưu</strong> — mất nó thì chương trình còn chạy nhưng <strong>không còn đọc được</strong> (Chương 54 mục 54.3)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Hàng cuối là hậu quả nặng nhất, và nó ít ai nghĩ tới.</strong></p>
+<p>Với quy ước B, mất hết tài liệu thì bạn vẫn đọc được chương trình — vì <strong>cái tên chính là tài
+liệu</strong>. ⭐ Với quy ước C đánh chỉ số, mất bảng tra là <strong>mất khả năng đọc</strong>: bạn thấy <code>[12]</code> báo lỗi
+và không có cách nào biết <code>[12]</code> là cơ cấu nào.</p>
+<p>⚡ Vì vậy: chọn tầng 2 theo chỉ số <strong>thì bảng tra chỉ số trở thành một phần của chương trình</strong>, không
+phải một phụ lục cho đẹp.</p>
+</blockquote>
+<h3>⭐ Cách KIỂM xem kỷ luật đặt tên có được giữ hay không</h3>
+<p>Nguyên tắc ở Chương 27 mục 27.2b nói: ⭐ <strong>địa chỉ tuyệt đối chỉ được xuất hiện ở tầng khai báo.</strong> Đó
+là một phát biểu <strong>kiểm được</strong> bằng đúng công cụ ở Chương 22 mục 22.3, không phải một lời khuyên chung chung:</p>
+<blockquote>
+<p>⭐⭐ <strong>Dùng công cụ tham chiếu chéo <em>(cross-reference)</em> trên một tag I/O thô, đếm xem nó xuất hiện ở
+<strong>mấy chương trình con</strong>.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kết quả</th>
+<th>Nghĩa là</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Chỉ ở chương trình con gán chân</strong></td>
+<td>Kỷ luật đang được giữ. Đổi module chỉ phải sửa một chỗ</td>
+</tr>
+<tr>
+<td>⚠ Xuất hiện thêm ở vài chỗ khác</td>
+<td><strong>Có rò rỉ</strong> — tìm ra và kéo về tầng gán chân</td>
+</tr>
+<tr>
+<td>⚠⚠ Rải khắp nơi</td>
+<td>Tầng gán chân chỉ còn là hình thức</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<p>⭐ Làm thử trên một chương trình máy thật cho con số rất cụ thể: <strong>148 trên 158</strong> lần dùng tag I/O
+thô nằm trong đúng chương trình con gán chân — <strong>94 %</strong>. Phần còn lại là <strong>một</strong> chương trình con
+trao đổi dữ liệu với hệ trên, đọc thẳng một byte vào/ra.</p>
+<blockquote>
+<p>⚡ <strong>Con số 94 % đáng nói ở hai điểm.</strong></p>
+<p>⭐ Thứ nhất: kỷ luật này <strong>giữ được trong thực tế</strong>, không phải lý tưởng trên giấy.</p>
+<p>⚠ Thứ hai: <strong>rò rỉ luôn có, và nó luôn có lý do nghe hợp lý lúc đó</strong> — ở đây là <em>&quot;chỗ này chỉ cần
+một byte, gán chân làm gì cho rườm&quot;</em>. ⭐ Cách xử lý không phải là cấm, mà là <strong>biết nó tồn tại và
+ghi lại ở đâu</strong> — vì đúng chỗ đó sẽ là chỗ <strong>quên sửa</strong> khi đổi module (Chương 53).</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Rút gọn thành một câu để mang đi:</strong> <em>&quot;chọn quy ước nào&quot;</em> là câu hỏi sai. Câu đúng là ⭐ <strong>&quot;ở
+tầng này, ai là người đọc, và họ cần cái tên nói gì?&quot;</strong> — ở tầng gán chân người đọc cầm bản vẽ; ở
+tầng khung người đọc là <strong>một khối chạy cho mọi thiết bị cùng loại</strong>; ở tầng logic máy người đọc là
+thợ bảo trì lúc hai giờ sáng.</p>
+</blockquote>
 <hr>
 <h2 id="303-cu-trúc-chương-trình-theo-cơ-cu-không-theo-bưc">30.3 Cấu trúc chương trình — theo cơ cấu, không theo bước</h2>
 <p>Đây là quyết định cấu trúc quan trọng nhất, và nó nối thẳng vào Chương 27.</p>
@@ -22215,7 +22333,7 @@ END_TYPE
 <blockquote>
 <p>⭐⭐ <strong>Lợi ích thật không nằm ở chỗ gọn, mà ở chỗ quy tắc trở nên KIỂM TRA ĐƯỢC.</strong></p>
 <p>Với ba phần có tên, câu hỏi <em>&quot;chỗ nào trong chương trình ghi vào phản hồi của xy-lanh 3?&quot;</em> trả lời
-được bằng <strong>một lần tra chéo</strong> <em>(cross-reference)</em>. ⚠ Ra nhiều hơn một chỗ là có lỗi — và bạn tìm
+được bằng <strong>một lần dùng công cụ tham chiếu chéo</strong> <em>(cross-reference)</em>. ⚠ Ra nhiều hơn một chỗ là có lỗi — và bạn tìm
 ra nó <strong>trước</strong> khi máy chạy, thay vì sau (Chương 22, Chương 51 mục 51.7).</p>
 </blockquote>
 <h3>⭐ Trường <code>Admit</code> — cơ cấu tự nói nó có nhận lệnh hay không</h3>

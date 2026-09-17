@@ -15240,7 +15240,7 @@ IF B12_Clamp1Up AND NOT B13_Clamp1Dn THEN  M_Stn1_ClampedOk := TRUE;  END_IF;
 |---|---|---|---|
 | **A** Địa chỉ trần | Không phải nghĩ; **khớp thẳng bản vẽ đấu dây**; ai cũng tra được | ⚠⚠ Đọc chương trình phải **tra bảng liên tục** · đổi module là mọi ghi chú sai · ⚠ **không dùng được ở hệ chỉ có tag** (Phụ lục A1) | Máy rất nhỏ, làm một lần, một người |
 | **B** Tiền tố loại | ⭐ **Đoán được loại tín hiệu ngay khi đọc** · lọc và sắp xếp theo tiền tố · dùng được ở mọi hệ | ⚠ Tiền tố **lặp lại thứ trình biên dịch đã biết** · tên dài · ⚠ khi một tín hiệu chuyển từ dây cứng sang lấy qua mạng thì **tên nói sai** | ⭐ **Mặc định tốt** cho máy vừa, nhóm nhiều người |
-| **C** Phân cấp | ⭐⭐ **Khớp với kiểu dữ liệu người dùng và mảng** — thêm trạm thứ ba tốn một dòng (mục 30.3) · trình soạn thảo gợi ý theo cấp | ⚠ Phải **thiết kế cấu trúc trước**, sửa cấu trúc về sau rất đắt · ⚠ **tra chéo theo tiền tố không còn dùng được** · tên đầy đủ dài khi viết vào hồ sơ | Máy nhiều trạm **giống nhau**; hệ hỗ trợ kiểu người dùng tốt |
+| **C** Phân cấp | ⭐⭐ **Khớp với kiểu dữ liệu người dùng và mảng** — thêm trạm thứ ba tốn một dòng (mục 30.3) · trình soạn thảo gợi ý theo cấp | ⚠ Phải **thiết kế cấu trúc trước**, sửa cấu trúc về sau rất đắt · ⚠ **lọc theo tiền tố không còn dùng được** · tên đầy đủ dài khi viết vào hồ sơ | Máy nhiều trạm **giống nhau**; hệ hỗ trợ kiểu người dùng tốt |
 | **D** Mã thiết bị | ⭐⭐ **Thợ điện cầm bản vẽ và người đọc chương trình nói cùng một ngôn ngữ** — giá trị lớn nhất lúc 2 giờ sáng | ⚠ Sửa bản vẽ là **phải sửa chương trình** · mã thiết bị **không nói chức năng** nên vẫn phải kèm phần chữ · ⚠ phụ thuộc chất lượng hồ sơ điện | Máy có **hồ sơ điện nghiêm túc**, nhiều người bảo trì luân phiên |
 
 ### ⭐ Trong thực tế người ta trộn — và trộn thế nào thì được
@@ -15327,6 +15327,84 @@ IF DI_DoorClosed THEN …
 
 Với tín hiệu an toàn, tên nên phản ánh **trạng thái an toàn là mức 1** — khớp với nguyên tắc tiếp điểm
 NC ở Chương 4: `DI_EStopOK`, `DI_AirOK`, `DI_DoorClosed`. Nhìn tên là biết "1 nghĩa là ổn".
+
+---
+
+## 30.2b ⭐⭐ Quy ước không chọn MỘT lần cho cả chương trình — chọn cho TỪNG TẦNG
+
+Mục 30.2 bày bốn quy ước cạnh nhau, và cách trình bày đó dễ gây một hiểu nhầm: rằng bạn **chọn một
+cái rồi dùng nó cho mọi thứ**.
+
+⚠ Chương trình máy thật **không như vậy**. Đo trên một chương trình máy sản xuất đang chạy, ba tầng
+dùng **ba quy ước khác nhau** — và đó là lựa chọn đúng:
+
+| Tầng | Quy ước dùng | Ví dụ có thật | Vì sao chọn cái đó ở tầng này |
+|---|---|---|---|
+| **1. Gán chân vào/ra** | ⭐ **Địa chỉ trần** (quy ước A) — gói thành mảng theo byte và bit | `InX10[3]` · `OutY24[0]` | ⭐ Đối chiếu **một–một với bản vẽ và với vỏ module**. Ở đúng tầng này, "không có nghĩa" lại là **ưu điểm**: nó không hứa hẹn điều gì |
+| **2. Khung dùng lại** | ⭐⭐ **Mảng cấu trúc, đánh chỉ số** (quy ước C) | `Cyl[i].Resp.Done` · `Alarm.Cylinder[12]` | ⭐⭐ **Đây là điều kiện để có thư viện** — xem bên dưới |
+| **3. Logic riêng của máy** | ⭐ **Tên mô tả** (quy ước B, thường kèm tiền tố kiểu) | `bLock1` · `x_ChanTram1DaLen` | Chỗ này mỗi máy một khác, nên tên phải **nói được việc** |
+
+### ⭐⭐ Vì sao tầng 2 buộc phải đánh chỉ số
+
+Đây là điểm mấu chốt, và nó giải thích một điều nhìn qua tưởng là cẩu thả.
+
+> ⭐⭐ **Bạn không thể viết `FB_Cylinder` một lần rồi tạo 30 thể hiện, nếu mỗi xy-lanh lại có một cái
+> tên viết tay trong logic.**
+>
+> Muốn một khối chạy được cho **mọi** xy-lanh, nó phải nhận **một chỉ số**. Và khi khối đã nhận chỉ
+> số thì báo động, cấu hình, timeout, cờ bỏ qua của nó **cũng phải đánh chỉ số theo**.
+
+⭐ Cái giá trả cho việc đó chính là cái lợi đã đo được ở mục 30.5: **25 trên 27 khối giống hệt nhau ở
+bốn cỗ máy khác nhau**. ⚡ Nói cách khác — **thư viện dùng lại và tên riêng cho từng thiết bị là hai
+thứ loại trừ nhau ở tầng 2.** Phải chọn.
+
+### ⚠⚠ Nhưng cái giá là có thật, và phải trả nó cho đúng chỗ
+
+| ⚠ Cái giá | Trả bằng cách nào |
+|---|---|
+| ⚠⚠ **`Alarm.Cylinder[12]` không nói gì với người sửa máy lúc hai giờ sáng** | ⭐ Phải có **bảng tra chỉ số → tên thiết bị**, và bảng đó phải **ở nơi người đó với tới được** |
+| ⚠ Tên biến **không còn tự giải thích** | ⭐ Phải đọc kèm **chương trình con cấu hình** (nơi gán chỉ số nào cho cơ cấu nào) — Chương 22 |
+| ⚠⚠ Bảng tra thường nằm **ngoài dự án PLC** | ⭐⭐ Nên nó **phải nằm trong danh mục sao lưu** — mất nó thì chương trình còn chạy nhưng **không còn đọc được** (Chương 54 mục 54.3) |
+
+> ⚠⚠ **Hàng cuối là hậu quả nặng nhất, và nó ít ai nghĩ tới.**
+>
+> Với quy ước B, mất hết tài liệu thì bạn vẫn đọc được chương trình — vì **cái tên chính là tài
+> liệu**. ⭐ Với quy ước C đánh chỉ số, mất bảng tra là **mất khả năng đọc**: bạn thấy `[12]` báo lỗi
+> và không có cách nào biết `[12]` là cơ cấu nào.
+>
+> ⚡ Vì vậy: chọn tầng 2 theo chỉ số **thì bảng tra chỉ số trở thành một phần của chương trình**, không
+> phải một phụ lục cho đẹp.
+
+### ⭐ Cách KIỂM xem kỷ luật đặt tên có được giữ hay không
+
+Nguyên tắc ở Chương 27 mục 27.2b nói: ⭐ **địa chỉ tuyệt đối chỉ được xuất hiện ở tầng khai báo.** Đó
+là một phát biểu **kiểm được** bằng đúng công cụ ở Chương 22 mục 22.3, không phải một lời khuyên chung chung:
+
+> ⭐⭐ **Dùng công cụ tham chiếu chéo *(cross-reference)* trên một tag I/O thô, đếm xem nó xuất hiện ở
+> **mấy chương trình con**.**
+>
+> | Kết quả | Nghĩa là |
+> |---|---|
+> | ⭐ **Chỉ ở chương trình con gán chân** | Kỷ luật đang được giữ. Đổi module chỉ phải sửa một chỗ |
+> | ⚠ Xuất hiện thêm ở vài chỗ khác | **Có rò rỉ** — tìm ra và kéo về tầng gán chân |
+> | ⚠⚠ Rải khắp nơi | Tầng gán chân chỉ còn là hình thức |
+
+⭐ Làm thử trên một chương trình máy thật cho con số rất cụ thể: **148 trên 158** lần dùng tag I/O
+thô nằm trong đúng chương trình con gán chân — **94 %**. Phần còn lại là **một** chương trình con
+trao đổi dữ liệu với hệ trên, đọc thẳng một byte vào/ra.
+
+> ⚡ **Con số 94 % đáng nói ở hai điểm.**
+>
+> ⭐ Thứ nhất: kỷ luật này **giữ được trong thực tế**, không phải lý tưởng trên giấy.
+>
+> ⚠ Thứ hai: **rò rỉ luôn có, và nó luôn có lý do nghe hợp lý lúc đó** — ở đây là *"chỗ này chỉ cần
+> một byte, gán chân làm gì cho rườm"*. ⭐ Cách xử lý không phải là cấm, mà là **biết nó tồn tại và
+> ghi lại ở đâu** — vì đúng chỗ đó sẽ là chỗ **quên sửa** khi đổi module (Chương 53).
+
+> ⭐⭐ **Rút gọn thành một câu để mang đi:** *"chọn quy ước nào"* là câu hỏi sai. Câu đúng là ⭐ **"ở
+> tầng này, ai là người đọc, và họ cần cái tên nói gì?"** — ở tầng gán chân người đọc cầm bản vẽ; ở
+> tầng khung người đọc là **một khối chạy cho mọi thiết bị cùng loại**; ở tầng logic máy người đọc là
+> thợ bảo trì lúc hai giờ sáng.
 
 ---
 
@@ -15445,7 +15523,7 @@ END_TYPE
 > ⭐⭐ **Lợi ích thật không nằm ở chỗ gọn, mà ở chỗ quy tắc trở nên KIỂM TRA ĐƯỢC.**
 >
 > Với ba phần có tên, câu hỏi *"chỗ nào trong chương trình ghi vào phản hồi của xy-lanh 3?"* trả lời
-> được bằng **một lần tra chéo** *(cross-reference)*. ⚠ Ra nhiều hơn một chỗ là có lỗi — và bạn tìm
+> được bằng **một lần dùng công cụ tham chiếu chéo** *(cross-reference)*. ⚠ Ra nhiều hơn một chỗ là có lỗi — và bạn tìm
 > ra nó **trước** khi máy chạy, thay vì sau (Chương 22, Chương 51 mục 51.7).
 
 ### ⭐ Trường `Admit` — cơ cấu tự nói nó có nhận lệnh hay không

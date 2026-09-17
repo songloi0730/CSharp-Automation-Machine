@@ -4471,6 +4471,19 @@ trước** — thường là tắt hết, nhưng cấu hình được. Đây kh�
 > lý do **mạch dừng khẩn cấp không được đi qua logic PLC thường** (Chương 47): khi CPU chết, logic chết
 > theo, còn mối nguy thì không.
 
+> ⚠⚠ **Và có một lệnh cho phép bạn TẮT lời cảnh báo này — đừng dùng nó để làm việc đó.**
+>
+> Phần lớn hệ có một lệnh nạp lại watchdog giữa vòng quét (tên hay gặp: `WDT`). ⭐ Nó có công dụng
+> hợp lệ: một đoạn khởi tạo chạy **đúng một lần** lúc bật máy và cố tình mất lâu.
+>
+> ⚠ Nhưng cách nó **thường** được dùng là: chương trình bắt đầu chạm ngưỡng watchdog, ai đó thêm
+> một lệnh nạp lại vào giữa, và cảnh báo biến mất. ⭐⭐ **Vòng quét vẫn dài y như cũ** — thứ duy nhất
+> mất đi là **cái báo cho bạn biết điều đó**.
+>
+> ⚡ Vòng quét dài là một **triệu chứng**, và nó có nguyên nhân tra được: vòng lặp chờ tín hiệu ngoài
+> (Chương 20 mục 20.5), khối mới thêm vào tác vụ sai, hay dữ liệu lớn hơn dự tính. ⭐ Chữa nguyên
+> nhân; đừng tháo đồng hồ báo.
+
 ---
 
 ## 10.3 Trên máy mẫu DP-01
@@ -7052,6 +7065,69 @@ board. Khó chịu, nhưng không nguy hiểm cho người.
    DI_BoardStn1                                                    DO_Stop1Vlv
  ────┤ ├──────────────────────────────────────────────────────────────( )───
 ```
+
+---
+
+## 15.4b ⚠⚠ Vùng điều khiển `MCR` — và một cái tên nguy hiểm
+
+Có một nhóm lệnh ladder mà mọi hệ đều có, sách chưa nhắc, và nó mang **một cái tên gây hiểu nhầm
+chết người**: **lệnh điều khiển vùng**, thường viết là `MCR` hoặc `MC` / `MCR`.
+
+### Nó làm gì
+
+Hai lệnh đặt thành **một cặp**, kẹp lấy một nhóm nấc thang. Khi điều kiện của lệnh mở **sai**, toàn
+bộ nhóm nấc bên trong **bị vô hiệu**:
+
+```text
+      M_ZoneEnable
+   ──────┤ ├──────────────────────────( MCR bắt đầu vùng )──
+
+        ⋮   các nấc thang bên trong vùng
+        ⋮   — chỉ chạy khi M_ZoneEnable = 1
+
+   ────────────────────────────────────( MCR kết thúc vùng )──
+```
+
+⭐ Công dụng thật của nó: **tắt nhanh một mảng lớn logic** — ví dụ cả cụm logic của một trạm đang bị
+bỏ qua (Chương 51 mục 51.7b), mà không phải thêm một tiếp điểm vào từng nấc.
+
+### ⚠⚠ Cái tên — đây mới là phần phải nhớ
+
+`MCR` là viết tắt của **Master Control Relay**. Và trong nghề, **cùng cụm từ đó** còn chỉ một thứ
+hoàn toàn khác:
+
+| | ⭐ **Lệnh `MCR` trong chương trình** | ⚠⚠ **Mạch "master control relay" bằng PHẦN CỨNG** |
+|---|---|---|
+| Là cái gì | Một lệnh ladder | ⭐ Một **mạch điện thật** cắt nguồn cấp cho ngõ ra |
+| Cắt cái gì | ⚠ **Không cắt gì cả** — chỉ làm logic bên trong vùng ngừng chạy | ⭐ **Cắt năng lượng** tới các cơ cấu |
+| Có tác dụng khi CPU treo | ⚠⚠ **Không** — nó *là* phần mềm | ⭐ **Có** — nó không phụ thuộc CPU |
+| Dùng cho an toàn được không | ⚠⚠ **TUYỆT ĐỐI KHÔNG** | Là một phần của thiết kế an toàn (Chương 47) |
+
+> ⚠⚠ **Hai thứ trùng tên, ngược nhau về bản chất, và một trong hai liên quan tới tính mạng.**
+>
+> ⭐ Nhầm lẫn kinh điển: *"trạm này đã nằm trong vùng `MCR` rồi nên nó an toàn"*. ⚠⚠ **Sai.** Lệnh
+> `MCR` chạy trong cùng CPU với phần còn lại của chương trình — ⭐ **CPU treo thì nó treo theo**, và
+> các ngõ ra giữ nguyên trạng thái lúc đó.
+>
+> ⚡ Cách tự kiểm vẫn là câu hỏi ở Chương 27 mục 27.3b: *"nếu CPU treo đúng lúc này, ai bị thương?"*
+
+### ⚠ Ba điều lệnh `MCR` không làm như người ta tưởng
+
+| # | Tưởng là | Thực tế |
+|---|---|---|
+| 1 | *"Ngõ ra trong vùng bị tắt khi vùng tắt"* | ⚠ **Tuỳ hệ và tuỳ loại lệnh trong vùng.** Cuộn dây thường về 0, nhưng ⭐ **cuộn dây chốt (SET/RESET) thường GIỮ NGUYÊN** — Chương 16 |
+| 2 | *"Timer trong vùng dừng đếm"* | ⚠ Hành vi **khác nhau giữa các hãng**. Có hệ timer bị đặt lại, có hệ giữ giá trị — ⭐ **phải tra, không được đoán** (Chương 17) |
+| 3 | *"Vùng lồng nhau thì như ngoặc"* | ⚠ Có hệ cho lồng, có hệ không, và **số cấp lồng tối đa khác nhau**. ⭐ Vùng không đóng đúng cặp là lỗi rất khó tìm |
+
+> ⭐⭐ **Lời khuyên thực dụng: dùng `MCR` ít thôi, và không bao giờ cho thứ gì quan trọng.**
+>
+> Nó tiện đúng một việc: **tắt cả một mảng logic phụ trợ**. ⚠ Nhưng nó làm cho việc đọc chương trình
+> khó hẳn lên — một nấc thang trông hoàn toàn bình thường có thể **không bao giờ chạy**, và lý do
+> nằm ở một dòng cách đó hai trang. ⚡ Đây cùng họ vấn đề với lệnh nhảy (Chương 27 mục 27.2b).
+>
+> ⭐ Thay thế rõ ràng hơn trong phần lớn trường hợp: **đưa cờ cho phép vào chuỗi điều kiện của từng
+> ngõ ra**, đúng cách làm ở Phụ lục L.2. Dài hơn vài ký tự, nhưng ⭐ **đọc một nấc là biết nấc đó có
+> chạy hay không**.
 
 ---
 
@@ -12515,12 +12591,32 @@ S_Uninit   S_Homing   S_Idle   S_Running   S_Hold   S_Alarm   S_Resetting
 
 ### Chọn cách nào
 
-| | Biến + `CASE` | Bit trạng thái |
-|---|---|---|
-| Bất biến "một trạng thái" | **Được bảo đảm bởi kiểu dữ liệu** | Phải tự cưỡng chế + giám sát |
-| Đọc trạng thái khi gỡ lỗi | Xem một biến | Xem bảy bit |
-| Đội bảo trì đọc ladder | Không đọc được | **Đọc được** |
-| Thêm trạng thái | Thêm một giá trị | Thêm một bit + sửa nấc giám sát |
+| | Biến + `CASE` | Bit trạng thái | ⭐ Lệnh tuần tự của hãng |
+|---|---|---|---|
+| Bất biến "một trạng thái" | **Được bảo đảm bởi kiểu dữ liệu** | Phải tự cưỡng chế + giám sát | ⭐ **Do chính lệnh bảo đảm** |
+| Đọc trạng thái khi gỡ lỗi | Xem một biến | Xem bảy bit | Xem bước đang hoạt |
+| Đội bảo trì đọc ladder | Không đọc được | **Đọc được** | ⚠ Đọc được **nếu đã quen cú pháp riêng đó** |
+| Thêm trạng thái | Thêm một giá trị | Thêm một bit + sửa nấc giám sát | Thêm một bước |
+| ⚠⚠ **Khả chuyển sang hãng khác** | ⭐ Cao | ⭐ **Cao nhất** — chỉ là bit và tiếp điểm | ⚠⚠ **Bằng không** |
+
+### ⭐ Cột thứ ba là gì
+
+Nhiều hệ có sẵn **một nhóm lệnh chuyên để viết trình tự**: bước, chuyển tiếp, và cơ chế tự tắt bước
+trước khi bật bước sau. Tên gọi khác nhau theo hãng — *step ladder*, *sequencer*, *drum* — nhưng ý
+tưởng giống nhau, và chúng ⭐ **làm hộ bạn đúng cái bất biến "chỉ một bước hoạt tại một thời điểm"**.
+
+| ⭐ Được gì | ⚠ Mất gì |
+|---|---|
+| Bất biến được **lệnh bảo đảm**, không phải do bạn tự canh | ⚠⚠ **Khoá chặt vào hãng** — không có lệnh tương đương khi đổi hệ (Chương 14 mục 14.6b) |
+| Viết nhanh, ít nấc thang hơn | ⚠ Người chưa quen cú pháp đó **không đọc được**, kể cả khi họ thạo ladder |
+| Trình soạn thảo thường có màn theo dõi bước riêng | ⚠ Hành vi ở **trường hợp biên** (nhảy bước, huỷ giữa chừng, khởi động lại) **khác nhau giữa các hãng** — phải tra |
+
+> ⭐⭐ **Khi nào nên dùng cột thứ ba:** máy sẽ **ở lại trên một nền duy nhất** suốt đời, đội bảo trì
+> đã quen cú pháp đó, và trình tự **thuần tuần tự** — không có nhiều nhánh song song.
+>
+> ⚠ **Khi nào tránh:** làm máy để **bán cho nhiều khách dùng nhiều hãng khác nhau**, hoặc nhóm kỹ
+> thuật còn đang xoay vòng giữa vài nền. ⭐ Khi đó cái giá *"khả chuyển bằng không"* là cái giá thật,
+> và nó chỉ hiện ra ở dự án sau.
 
 Tiêu chí quyết định **không phải kỹ thuật mà là tổ chức**: ai sẽ sửa cỗ máy này lúc hai giờ sáng khi
 bạn không có mặt? Viết cho người đó đọc.

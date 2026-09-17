@@ -470,6 +470,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#152-ladder-hot-đng-th-nào">15.2 Ladder hoạt động thế nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#153-bn-t-hp-bng-phi-thuc">15.3 Bốn tổ hợp — bảng phải thuộc</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#154-trên-máy-mu-dp-01">15.4 Trên máy mẫu DP-01</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#154b-vùng-điu-khin-mcr-và-mt-cái-tên-nguy-him">15.4b ⚠⚠ Vùng điều khiển `MCR` — và một cái tên nguy hiểm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#155-by-thưng-gp">15.5 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#156-khác-bit-gia-các-hãng">15.6 Khác biệt giữa các hãng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#157-bng-cht">15.7 Bảng chốt</a></li>
@@ -7573,6 +7574,17 @@ nén còn trong ống, động cơ còn quán tính, cơ cấu còn ở tư th�
 lý do <strong>mạch dừng khẩn cấp không được đi qua logic PLC thường</strong> (Chương 47): khi CPU chết, logic chết
 theo, còn mối nguy thì không.</p>
 </blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Và có một lệnh cho phép bạn TẮT lời cảnh báo này — đừng dùng nó để làm việc đó.</strong></p>
+<p>Phần lớn hệ có một lệnh nạp lại watchdog giữa vòng quét (tên hay gặp: <code>WDT</code>). ⭐ Nó có công dụng
+hợp lệ: một đoạn khởi tạo chạy <strong>đúng một lần</strong> lúc bật máy và cố tình mất lâu.</p>
+<p>⚠ Nhưng cách nó <strong>thường</strong> được dùng là: chương trình bắt đầu chạm ngưỡng watchdog, ai đó thêm
+một lệnh nạp lại vào giữa, và cảnh báo biến mất. ⭐⭐ <strong>Vòng quét vẫn dài y như cũ</strong> — thứ duy nhất
+mất đi là <strong>cái báo cho bạn biết điều đó</strong>.</p>
+<p>⚡ Vòng quét dài là một <strong>triệu chứng</strong>, và nó có nguyên nhân tra được: vòng lặp chờ tín hiệu ngoài
+(Chương 20 mục 20.5), khối mới thêm vào tác vụ sai, hay dữ liệu lớn hơn dự tính. ⭐ Chữa nguyên
+nhân; đừng tháo đồng hồ báo.</p>
+</blockquote>
 <hr>
 <h2 id="103-trên-máy-mu-dp-01">10.3 Trên máy mẫu DP-01</h2>
 <p>Lấy một đoạn thật từ lát cắt 1 của DP-01: board tới vị trí trạm keo thì dừng chuyền và nâng chặn.</p>
@@ -11243,6 +11255,96 @@ báo động). Chương 23 đưa việc phân loại này vào biểu mẫu đ�
 <pre><code class="language-text">   DI_BoardStn1                                                    DO_Stop1Vlv
  ────┤ ├──────────────────────────────────────────────────────────────( )───
 </code></pre>
+<hr>
+<h2 id="154b-vùng-điu-khin-mcr-và-mt-cái-tên-nguy-him">15.4b ⚠⚠ Vùng điều khiển <code>MCR</code> — và một cái tên nguy hiểm</h2>
+<p>Có một nhóm lệnh ladder mà mọi hệ đều có, sách chưa nhắc, và nó mang <strong>một cái tên gây hiểu nhầm
+chết người</strong>: <strong>lệnh điều khiển vùng</strong>, thường viết là <code>MCR</code> hoặc <code>MC</code> / <code>MCR</code>.</p>
+<h3>Nó làm gì</h3>
+<p>Hai lệnh đặt thành <strong>một cặp</strong>, kẹp lấy một nhóm nấc thang. Khi điều kiện của lệnh mở <strong>sai</strong>, toàn
+bộ nhóm nấc bên trong <strong>bị vô hiệu</strong>:</p>
+<pre><code class="language-text">      M_ZoneEnable
+   ──────┤ ├──────────────────────────( MCR bắt đầu vùng )──
+
+        ⋮   các nấc thang bên trong vùng
+        ⋮   — chỉ chạy khi M_ZoneEnable = 1
+
+   ────────────────────────────────────( MCR kết thúc vùng )──
+</code></pre>
+<p>⭐ Công dụng thật của nó: <strong>tắt nhanh một mảng lớn logic</strong> — ví dụ cả cụm logic của một trạm đang bị
+bỏ qua (Chương 51 mục 51.7b), mà không phải thêm một tiếp điểm vào từng nấc.</p>
+<h3>⚠⚠ Cái tên — đây mới là phần phải nhớ</h3>
+<p><code>MCR</code> là viết tắt của <strong>Master Control Relay</strong>. Và trong nghề, <strong>cùng cụm từ đó</strong> còn chỉ một thứ
+hoàn toàn khác:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>⭐ <strong>Lệnh <code>MCR</code> trong chương trình</strong></th>
+<th>⚠⚠ <strong>Mạch &quot;master control relay&quot; bằng PHẦN CỨNG</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Là cái gì</td>
+<td>Một lệnh ladder</td>
+<td>⭐ Một <strong>mạch điện thật</strong> cắt nguồn cấp cho ngõ ra</td>
+</tr>
+<tr>
+<td>Cắt cái gì</td>
+<td>⚠ <strong>Không cắt gì cả</strong> — chỉ làm logic bên trong vùng ngừng chạy</td>
+<td>⭐ <strong>Cắt năng lượng</strong> tới các cơ cấu</td>
+</tr>
+<tr>
+<td>Có tác dụng khi CPU treo</td>
+<td>⚠⚠ <strong>Không</strong> — nó <em>là</em> phần mềm</td>
+<td>⭐ <strong>Có</strong> — nó không phụ thuộc CPU</td>
+</tr>
+<tr>
+<td>Dùng cho an toàn được không</td>
+<td>⚠⚠ <strong>TUYỆT ĐỐI KHÔNG</strong></td>
+<td>Là một phần của thiết kế an toàn (Chương 47)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Hai thứ trùng tên, ngược nhau về bản chất, và một trong hai liên quan tới tính mạng.</strong></p>
+<p>⭐ Nhầm lẫn kinh điển: <em>&quot;trạm này đã nằm trong vùng <code>MCR</code> rồi nên nó an toàn&quot;</em>. ⚠⚠ <strong>Sai.</strong> Lệnh
+<code>MCR</code> chạy trong cùng CPU với phần còn lại của chương trình — ⭐ <strong>CPU treo thì nó treo theo</strong>, và
+các ngõ ra giữ nguyên trạng thái lúc đó.</p>
+<p>⚡ Cách tự kiểm vẫn là câu hỏi ở Chương 27 mục 27.3b: <em>&quot;nếu CPU treo đúng lúc này, ai bị thương?&quot;</em></p>
+</blockquote>
+<h3>⚠ Ba điều lệnh <code>MCR</code> không làm như người ta tưởng</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Tưởng là</th>
+<th>Thực tế</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><em>&quot;Ngõ ra trong vùng bị tắt khi vùng tắt&quot;</em></td>
+<td>⚠ <strong>Tuỳ hệ và tuỳ loại lệnh trong vùng.</strong> Cuộn dây thường về 0, nhưng ⭐ <strong>cuộn dây chốt (SET/RESET) thường GIỮ NGUYÊN</strong> — Chương 16</td>
+</tr>
+<tr>
+<td>2</td>
+<td><em>&quot;Timer trong vùng dừng đếm&quot;</em></td>
+<td>⚠ Hành vi <strong>khác nhau giữa các hãng</strong>. Có hệ timer bị đặt lại, có hệ giữ giá trị — ⭐ <strong>phải tra, không được đoán</strong> (Chương 17)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><em>&quot;Vùng lồng nhau thì như ngoặc&quot;</em></td>
+<td>⚠ Có hệ cho lồng, có hệ không, và <strong>số cấp lồng tối đa khác nhau</strong>. ⭐ Vùng không đóng đúng cặp là lỗi rất khó tìm</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Lời khuyên thực dụng: dùng <code>MCR</code> ít thôi, và không bao giờ cho thứ gì quan trọng.</strong></p>
+<p>Nó tiện đúng một việc: <strong>tắt cả một mảng logic phụ trợ</strong>. ⚠ Nhưng nó làm cho việc đọc chương trình
+khó hẳn lên — một nấc thang trông hoàn toàn bình thường có thể <strong>không bao giờ chạy</strong>, và lý do
+nằm ở một dòng cách đó hai trang. ⚡ Đây cùng họ vấn đề với lệnh nhảy (Chương 27 mục 27.2b).</p>
+<p>⭐ Thay thế rõ ràng hơn trong phần lớn trường hợp: <strong>đưa cờ cho phép vào chuỗi điều kiện của từng
+ngõ ra</strong>, đúng cách làm ở Phụ lục L.2. Dài hơn vài ký tự, nhưng ⭐ <strong>đọc một nấc là biết nấc đó có
+chạy hay không</strong>.</p>
+</blockquote>
 <hr>
 <h2 id="155-by-thưng-gp">15.5 Bẫy thường gặp</h2>
 <h3>🔍 BẪY 1 — Cuộn dây trùng</h3>
@@ -18397,29 +18499,71 @@ toàn — nó biến một lỗi logic âm thầm thành một báo động nhì
 <th></th>
 <th>Biến + <code>CASE</code></th>
 <th>Bit trạng thái</th>
+<th>⭐ Lệnh tuần tự của hãng</th>
 </tr>
 </thead>
 <tbody><tr>
 <td>Bất biến &quot;một trạng thái&quot;</td>
 <td><strong>Được bảo đảm bởi kiểu dữ liệu</strong></td>
 <td>Phải tự cưỡng chế + giám sát</td>
+<td>⭐ <strong>Do chính lệnh bảo đảm</strong></td>
 </tr>
 <tr>
 <td>Đọc trạng thái khi gỡ lỗi</td>
 <td>Xem một biến</td>
 <td>Xem bảy bit</td>
+<td>Xem bước đang hoạt</td>
 </tr>
 <tr>
 <td>Đội bảo trì đọc ladder</td>
 <td>Không đọc được</td>
 <td><strong>Đọc được</strong></td>
+<td>⚠ Đọc được <strong>nếu đã quen cú pháp riêng đó</strong></td>
 </tr>
 <tr>
 <td>Thêm trạng thái</td>
 <td>Thêm một giá trị</td>
 <td>Thêm một bit + sửa nấc giám sát</td>
+<td>Thêm một bước</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Khả chuyển sang hãng khác</strong></td>
+<td>⭐ Cao</td>
+<td>⭐ <strong>Cao nhất</strong> — chỉ là bit và tiếp điểm</td>
+<td>⚠⚠ <strong>Bằng không</strong></td>
 </tr>
 </tbody></table></div>
+<h3>⭐ Cột thứ ba là gì</h3>
+<p>Nhiều hệ có sẵn <strong>một nhóm lệnh chuyên để viết trình tự</strong>: bước, chuyển tiếp, và cơ chế tự tắt bước
+trước khi bật bước sau. Tên gọi khác nhau theo hãng — <em>step ladder</em>, <em>sequencer</em>, <em>drum</em> — nhưng ý
+tưởng giống nhau, và chúng ⭐ <strong>làm hộ bạn đúng cái bất biến &quot;chỉ một bước hoạt tại một thời điểm&quot;</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>⭐ Được gì</th>
+<th>⚠ Mất gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bất biến được <strong>lệnh bảo đảm</strong>, không phải do bạn tự canh</td>
+<td>⚠⚠ <strong>Khoá chặt vào hãng</strong> — không có lệnh tương đương khi đổi hệ (Chương 14 mục 14.6b)</td>
+</tr>
+<tr>
+<td>Viết nhanh, ít nấc thang hơn</td>
+<td>⚠ Người chưa quen cú pháp đó <strong>không đọc được</strong>, kể cả khi họ thạo ladder</td>
+</tr>
+<tr>
+<td>Trình soạn thảo thường có màn theo dõi bước riêng</td>
+<td>⚠ Hành vi ở <strong>trường hợp biên</strong> (nhảy bước, huỷ giữa chừng, khởi động lại) <strong>khác nhau giữa các hãng</strong> — phải tra</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Khi nào nên dùng cột thứ ba:</strong> máy sẽ <strong>ở lại trên một nền duy nhất</strong> suốt đời, đội bảo trì
+đã quen cú pháp đó, và trình tự <strong>thuần tuần tự</strong> — không có nhiều nhánh song song.</p>
+<p>⚠ <strong>Khi nào tránh:</strong> làm máy để <strong>bán cho nhiều khách dùng nhiều hãng khác nhau</strong>, hoặc nhóm kỹ
+thuật còn đang xoay vòng giữa vài nền. ⭐ Khi đó cái giá <em>&quot;khả chuyển bằng không&quot;</em> là cái giá thật,
+và nó chỉ hiện ra ở dự án sau.</p>
+</blockquote>
 <p>Tiêu chí quyết định <strong>không phải kỹ thuật mà là tổ chức</strong>: ai sẽ sửa cỗ máy này lúc hai giờ sáng khi
 bạn không có mặt? Viết cho người đó đọc.</p>
 <hr>

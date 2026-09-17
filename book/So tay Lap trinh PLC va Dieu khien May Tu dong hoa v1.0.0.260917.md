@@ -636,6 +636,33 @@ Ba nguyên tắc áp dụng từ trang này tới hết sách:
 
 ---
 
+## 1.9b Bảng chốt — dùng cuốn sách này thế nào
+
+⭐ Một trang để quay lại khi bạn quên mình đang ở đâu.
+
+| Bạn là ai | Bắt đầu từ | ⚠ Đừng bỏ qua | Chương đầu tiên nên đọc kỹ |
+|---|---|---|---|
+| **Chuyển ngành, chưa biết điện** | ⭐ Lộ trình A — đọc tuần tự từ Ch.1 | ⚠ **Ch.3 (điện) và Ch.6 (khí nén)** — thiếu nền này thì các chương sau chỉ là chép mẫu | 3 · 4 · 9 |
+| **Thợ điện, kỹ thuật viên đi lên** | Lộ trình B — nhảy qua phần điện cơ bản | ⚠ **Ch.10 (vòng quét)** — đây là chỗ tư duy mạch điện dẫn tới hiểu sai | 10 · 15 · 17 |
+| **Dân lập trình phần mềm** | Lộ trình C | ⚠⚠ **Ch.10 và Ch.48** — chương trình PLC không "chạy một lần", và phần cứng **hỏng thật** | 10 · 15 · 48 |
+
+| Bạn đang cần gì ngay lúc này | ⭐ Đi đường nào |
+|---|---|
+| Học nghề, có thời gian | **Đường 1** — đọc tuần tự (mục 1.3) |
+| Đang làm một việc cụ thể | **Đường 2** — tra theo việc (mục 1.3) |
+| ⚠ **Máy đang hỏng, có người đứng chờ** | ⭐⭐ **Đường 3 — Phụ lục E, tra theo triệu chứng.** Đừng đọc tuần tự lúc này |
+| Cần một đoạn code mẫu | **Phụ lục L** — 16 mẫu dùng ngay |
+| Cần một công thức | **Phụ lục K** — kèm điều kiện áp dụng |
+| Cần đối chiếu sang hãng mình dùng | **Phụ lục A1 và A2** |
+
+| Ba điều nhớ trước khi bắt đầu | |
+|---|---|
+| ⭐ **Một máy mẫu duy nhất** | Mọi ví dụ từ Ch.8 trở đi dùng chung máy **DP-01**, bóc lớp dần theo chương (mục 1.4) |
+| ⭐ **Sách không dạy theo phần mềm nào** | Thân sách dạy khái niệm; mọi thứ phụ thuộc hãng nằm ở **Phụ lục A** (mục 1.5) |
+| ⚠⚠ **An toàn không phải một chương** | Nó nằm rải khắp sách. Các chương có cờ ⚠ đang **chờ người có thẩm quyền duyệt** — đọc để hiểu, ⚠ **không dùng thay đánh giá rủi ro** (mục 1.9) |
+
+---
+
 ## 1.10 Tự kiểm
 
 Đọc xong chương này, bạn phải trả lời được:
@@ -6479,6 +6506,80 @@ nên người ta dùng, nên chương trình trở nên gắn chặt với hãng
 
 ---
 
+## 14.6b ⭐⭐ "Tuân thủ IEC" là một BẢNG TÍCH, không phải một dấu tích
+
+Mục 14.6 nói code không khả chuyển. Mục này nói một điều sắc hơn, và nó đổi cách bạn nói chuyện với
+người bán hàng: ⭐ **"tuân thủ IEC 61131-3" không phải một tính chất có hoặc không.**
+
+### Vì sao nó không thể là một dấu tích
+
+⚠⚠ **Bộ lệnh mà chuẩn quy định là TUỲ CHỌN.** Chuẩn liệt kê một tập lệnh giới hạn; ⭐ hãng nào **có**
+hiện thực lệnh đó thì phải làm đúng cách thực thi và cách biểu diễn đã quy định — nhưng chuẩn
+**không bắt phải có**, và cũng **không giới hạn** hãng thêm lệnh của riêng mình.
+
+Hệ quả, và đây là câu đáng nhớ:
+
+> ⚠⚠ **Lệnh mở rộng của hãng không được chuẩn định nghĩa, nên KHÔNG có gì bảo đảm hai hãng hiện thực
+> giống nhau — và dùng chúng có thể khiến logic không chuyển đi đâu được.**
+>
+> ⭐ Trớ trêu ở chỗ: lệnh mở rộng thường là **lệnh tiện nhất** — chẩn đoán, các phép điều khiển
+> chuyên dụng, xử lý khối dữ liệu. Nghĩa là ⚠ **càng dùng những thứ giúp làm việc nhanh, chương
+> trình càng dính chặt vào hãng.**
+
+### Nên hỏi người bán hàng câu gì
+
+Vì vậy hãng nghiêm túc **không** trả lời *"có, chúng tôi tuân thủ IEC"*. Họ đưa ra một **bảng tuân
+thủ**, mỗi dòng là một đặc trưng của chuẩn, kèm cột ⭐ **"phần mở rộng và ghi chú hiện thực"**:
+
+| Số bảng | Số đặc trưng | Mô tả đặc trưng | Phần mở rộng / ghi chú |
+|---|---|---|---|
+| … | … | Chú thích một dòng `// …` | *có, và hỗ trợ thêm `/* … */`* |
+| … | … | Định danh có gạch dưới ở đầu | *áp cho tên tác vụ, chương trình, cấu trúc…* |
+
+⭐⭐ **Câu hỏi đúng không phải *"có tuân thủ không"* mà là *"cho tôi xem bảng tuân thủ"*** — rồi đọc
+cột cuối. Đó là chỗ mọi khác biệt thật nằm.
+
+> ⚡ **Hai ví dụ cho thấy khác biệt nhỏ tới mức nào, và vẫn đủ gây chuyện:**
+>
+> | Chuẩn nói | Một hệ thực tế làm |
+> |---|---|
+> | Định danh phải hỗ trợ **tối thiểu sáu ký tự** | Hỗ trợ từ **một** ký tự — rộng hơn, nhưng ⚠ tên một ký tự sẽ **không chuyển ngược** sang hệ chỉ làm đúng mức tối thiểu |
+> | ⚠ **Không quy định** đơn vị thời gian cho tác vụ chu kỳ | Đặt được từ **1 ms** — con số này là của hãng, ⚠ **không phải của chuẩn** (Chương 10) |
+>
+> ⭐ Cả hai đều là "tuân thủ". Cả hai đều là chỗ chương trình có thể vấp khi đổi hệ.
+
+### ⭐ Có một định dạng trao đổi chung — nhưng nó không đến từ chuẩn
+
+Mục 14.6 nói *"không có định dạng chung được dùng rộng rãi"*. Nói cho đủ: ⭐ **có một định dạng chung
+tồn tại**, tên là **PLCopen XML** *(TC6 XML)* — và câu chuyện của nó giải thích chính xác vấn đề.
+
+| | |
+|---|---|
+| Ai làm | ⭐ **PLCopen** — một tổ chức độc lập, ⚠ **không phải ban soạn thảo chuẩn** |
+| Vì sao có | Người dùng muốn trao đổi chương trình giữa các môi trường phát triển — ⚠⚠ **"dù đó không phải chủ ý của bản thân chuẩn"** |
+| Chở được gì | Chương trình, thư viện, cả dự án — ⭐ kể cả **thông tin đồ hoạ**, không chỉ văn bản |
+| Dùng vào việc gì | Trao đổi giữa công cụ · ⭐ **đưa vào hệ quản lý phiên bản** · sinh tài liệu · công cụ kiểm tra · phân phối thư viện khối |
+
+⚠ Và đây là phần trung thực mà chính đặc tả tự nói ra:
+
+| ⚠ Giới hạn do chính đặc tả nêu | Nghĩa thực tế |
+|---|---|
+| Chuyển sang hệ khác *"có thể cần **một lượng công thủ công nhất định**"* | ⭐ Nó **giảm** công, **không xoá** công |
+| Dùng song song nhiều hệ cũng *"có thể cần một lượng công thủ công"* | Không có chuyện xuất ra rồi nhập vào là xong |
+| Nội dung xuất ra ⚠ *"có thể đang dở dang, nên **không có kiểm chứng** về tính áp dụng được, tính nhất quán hay tính đúng đắn"* | ⚠⚠ **Tệp XML hợp lệ không có nghĩa là chương trình chạy được** |
+
+> ⭐⭐ **Chốt lại cho đúng, và đây là bản sửa cho một câu hay bị nói quá:**
+>
+> ⚠ Sai: *"IEC 61131-3 cho phép chuyển chương trình giữa các hãng."*
+> ⭐ Đúng: **chuẩn không định nghĩa định dạng tệp — đó là một điểm yếu của nó** — nên một tổ chức
+> độc lập đã làm một định dạng bù vào, và định dạng ấy ⭐ **giảm được công chuyển đổi, nhưng vẫn để
+> lại phần việc tay.**
+>
+> ⚡ Giá trị lớn nhất của PLCopen XML với đa số người đọc sách này **không nằm ở việc đổi hãng** — mà
+> ở chỗ nó biến chương trình thành **văn bản so sánh được và lưu trữ được** (Chương 30 mục 30.6).
+
+---
+
 ## 14.7 Trên máy mẫu DP-01 — chương trình được tổ chức thế nào
 
 Áp tất cả khái niệm của chương vào một bố cục cụ thể:
@@ -6649,14 +6750,26 @@ bằng ngôn ngữ chiếm ưu thế ở tầng máy và cũng là ngôn ngữ c
 - IEC 61131-1 — *Programmable controllers, Part 1: General information*: mô hình phần mềm tổng thể.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng đối chiếu ở mục 14.8: tên gọi POU,
   cách khai báo tác vụ, cơ chế bộ nhớ thể hiện, và tên gói SFC của từng hãng.
+- **Rockwell Automation** — *Logix 5000 Controllers IEC 61131-3 Compliance* (1756-PM018): ⭐⭐ **bộ
+  lệnh của chuẩn là TUỲ CHỌN**; lệnh mở rộng của hãng không được chuẩn định nghĩa nên ⚠ **không bảo
+  đảm tương thích giữa các hãng**; ⚠⚠ **chuẩn không định nghĩa định dạng trao đổi tệp — tài liệu gọi
+  thẳng đó là "điểm yếu"**; và **mẫu bảng tuân thủ theo từng đặc trưng** kèm cột *phần mở rộng và ghi
+  chú hiện thực* — nền cho mục 14.6b. *(tài liệu của hãng; phần trích ở đây là phát biểu về CHUẨN,
+  không phải về sản phẩm)*
+- **PLCopen** — *TC6 XML technical documentation v2.01*: mục đích và bốn nhóm ca sử dụng của
+  **PLCopen XML**, ⚠ kèm các giới hạn do chính đặc tả nêu — chuyển hệ *"có thể cần một lượng công thủ
+  công nhất định"*, và nội dung xuất ra *"không có kiểm chứng về tính áp dụng được, tính nhất quán
+  hay tính đúng đắn"*. *(tài liệu mở của PLCopen)*
 - **Hanssen, Dag H.** — *Programmable Logic Controllers: A Practical Approach to IEC 61131-3 using
   CoDeSys*, §6.6: ba hướng tham số `VAR_INPUT` / `VAR_OUTPUT` / ⭐ **`VAR_IN_OUT`** (POU được gọi nhận
   **chính vị trí bộ nhớ** nên sửa được biến của bên gọi), và ⚠ **`VAR_TEMP`** — khởi tạo lại ở mỗi
   lần gọi POU nên **không mang được giá trị sang lần sau**.
 
-> ⚡ Nhận định ở mục 14.6 về tính khả chuyển là **quan sát thực tế của nghề**, không phải phát biểu
-> của tiêu chuẩn. Bản thân chuẩn không hứa hẹn khả chuyển ở mức tệp dự án; kỳ vọng đó đến từ cách
-> chuẩn được giới thiệu, không từ nội dung của nó.
+> ⚡ ⭐ **Cập nhật:** nhận định ở mục 14.6 trước đây chỉ là **quan sát của nghề**. Nay nó **có nguồn**
+> — và nguồn đến từ chính tài liệu tuân thủ của một hãng lớn, chứ không phải từ người phê bình:
+> *"đây là một điểm yếu của IEC 61131-3, vì chuẩn không định nghĩa định dạng trao đổi tệp"*, và
+> *"lệnh mở rộng… không có bảo đảm rằng hai hãng hiện thực tương thích; dùng chúng có thể khiến logic
+> không chuyển được giữa các hãng"*. ⭐ Chi tiết ở mục 14.6b.
 
 <!-- SECTION: ch15_ladder_diagram -->
 ---
@@ -15424,6 +15537,39 @@ lý do:
 > Vì phần lớn không so sánh được bằng công cụ, **bản sao lưu phải là bản đầy đủ** — không chỉ file
 > chương trình. Thiếu tham số driver hoặc cấu hình phần cứng nghĩa là **không khôi phục được máy**,
 > dù bạn có file chương trình. Chương 54.
+
+### ⭐⭐ Làm cho nó so sánh được — xuất ra văn bản
+
+Bảng trên cho thấy phần lớn thành phần **không** so sánh được bằng công cụ. ⚠ Nhưng đó là nhận định
+về **định dạng tệp gốc của hãng**, không phải về giới hạn không vượt qua được.
+
+⭐ **Cách vượt qua: xuất chương trình ra một định dạng văn bản, rồi so sánh và lưu bản văn bản đó.**
+
+| Cách xuất | Có ở đâu | ⭐ Được gì | ⚠ Mất gì |
+|---|---|---|---|
+| **Xuất văn bản ASCII của hãng** | Hầu hết hệ đều có, dưới tên *import/export* | ⭐ Luôn sẵn, không cần công cụ ngoài | ⚠ Định dạng **riêng của hãng** — đổi hãng thì vô dụng |
+| ⭐⭐ **Xuất PLCopen XML** | Nhiều hệ hỗ trợ, mức độ khác nhau | ⭐ Định dạng **mở**, chở được cả phần đồ hoạ; ⭐⭐ đúng thứ hệ quản lý phiên bản cần (Chương 14 mục 14.6b) | ⚠ **Không phải hệ nào cũng có**, và mức hỗ trợ khác nhau |
+| **Chụp báo cáo / in ra PDF** | Mọi hệ | Xem được bằng mắt | ⚠⚠ **Không so sánh tự động được** — chỉ là ảnh chụp |
+
+> ⭐⭐ **Xuất ra văn bản đổi hẳn chất của việc quản lý phiên bản.** Khi bản lưu là văn bản, bạn có
+> đúng ba thứ mà tệp nhị phân của hãng không cho:
+>
+> | | |
+> |---|---|
+> | 1 | ⭐ **Xem được đã đổi chính xác dòng nào** — không phải "có khác nhau" chung chung |
+> | 2 | ⭐ Tìm được **khi nào** một dòng xuất hiện, và **ai** thêm nó |
+> | 3 | ⭐⭐ Đọc được bản cũ **mà không cần cài đúng phiên bản phần mềm của hãng** — thứ sẽ rất quý sau năm năm |
+
+> ⚠⚠ **Nhưng bản xuất KHÔNG thay được bản sao lưu gốc.**
+>
+> Bản văn bản chở logic; nó ⚠ **không chở đủ cấu hình phần cứng, tham số thiết bị, và mọi thứ ở bảng
+> trên đang để dấu ❌**. ⭐ Quy tắc: **lưu CẢ HAI** — tệp gốc của hãng để khôi phục máy, bản xuất văn
+> bản để đọc và so sánh (Chương 54).
+>
+> ⚡ Và nhớ kiểm chứng: ⚠ **tệp xuất hợp lệ không có nghĩa là nhập lại được** — chính đặc tả PLCopen
+> XML nói nội dung xuất ra *"không có kiểm chứng về tính nhất quán hay tính đúng đắn"*. ⭐ Cách duy
+> nhất để biết là **thử nhập lại một lần**, đúng tinh thần *"bản sao lưu chưa thử khôi phục thì chưa
+> phải bản sao lưu"* (Chương 52, Chương 54).
 
 ### Quy ước tối thiểu
 
@@ -27014,6 +27160,61 @@ Bảng này chính là **bằng chứng nghiệm thu** ở Chương 52 — và n
 > 💡 **MẸO**
 > Ghi cả những ca **đã thử và không phát hiện vấn đề**. Sáu tháng sau khi có sự cố, câu hỏi đầu tiên
 > sẽ là *"lúc nghiệm thu đã thử tình huống này chưa?"* — và bảng này trả lời được.
+
+---
+
+## 50.5b ⭐⭐ Kiểm thử hồi quy — sửa một chỗ, phải thử lại những gì
+
+Mục 50.4 cho một danh sách ca kiểm thử để chạy **lần đầu**. Nhưng phần lớn đời sống của một chương
+trình không phải lần đầu — nó là **lần thứ hai mươi**, sau một lần sửa nhỏ lúc máy đang chạy
+(Chương 53).
+
+Và đây là câu hỏi không ai trả lời được nếu chưa chuẩn bị trước:
+
+> ⚠⚠ **"Tôi vừa đổi một dòng. Giờ phải thử lại những gì?"**
+>
+> ⭐ Trả lời *"thử lại hết"* thì không ai làm — vì không có thời gian. ⚠ Trả lời *"chắc không ảnh
+> hưởng gì"* thì đó chính là câu nói ngay trước phần lớn sự cố sau bảo trì.
+
+**Kiểm thử hồi quy** *(regression testing)* là việc chạy lại một tập ca kiểm thử **đã từng đạt**, để
+chắc rằng thay đổi mới không phá cái cũ.
+
+### ⭐ Ba vòng, chọn theo mức rủi ro của thay đổi
+
+| Vòng | Chạy những gì | Mất bao lâu | Dùng khi |
+|---|---|---|---|
+| **Tối thiểu** | Nhóm A (luồng chính) + ca đúng chỗ vừa sửa | Vài phút | Sửa thông báo, đổi một hằng số hiển thị |
+| ⭐ **Tiêu chuẩn** | Trên + nhóm B (điều kiện biên) + nhóm F (về gốc) | ~nửa giờ | ⭐ **Mặc định** cho mọi thay đổi logic |
+| **Đầy đủ** | Toàn bộ A–F | Vài giờ | ⚠ Đổi máy trạng thái, đổi liên động, đổi bất cứ thứ gì liên quan an toàn, hoặc **đổi phiên bản phần mềm/firmware** |
+
+> ⭐⭐ **Chọn vòng nào là quyết định về RỦI RO, nên nó không thuộc về người sửa.** Người vừa sửa luôn
+> là người đánh giá thấp nhất ảnh hưởng của thay đổi đó — họ vừa nghĩ về nó, và nó rõ ràng trong đầu
+> họ. ⭐ Đây là lý do quy trình thay đổi có kiểm soát ở Chương 53 mục 53.3 yêu cầu **người thứ hai**.
+
+### ⚠ Bốn thay đổi trông vô hại nhưng bắt buộc vòng ĐẦY ĐỦ
+
+| Thay đổi | Vì sao nguy hiểm hơn vẻ ngoài |
+|---|---|
+| ⚠⚠ **Đổi phiên bản firmware hoặc phần mềm lập trình** | ⭐ Bạn **không đổi một dòng nào**, nhưng nền bên dưới đã đổi: hành vi biên, thời gian quét, cách xử lý tràn số (Chương 19) |
+| ⚠ **Thêm một khối vào tác vụ đang chạy** | Thời gian quét dài ra — ảnh hưởng **mọi phép đo thời gian** trong chương trình (Chương 10) |
+| ⚠ **Đổi một khối trong thư viện dùng chung** | Chạm vào **mọi cơ cấu** đang dùng khối đó, không chỉ cơ cấu bạn đang nghĩ tới (mục 30.5) |
+| ⚠⚠ **Đổi một hằng số dùng nhiều nơi** | Tra chéo trước khi đổi. ⭐ *"Chỉ một con số"* là câu mở đầu quen thuộc của một sự cố |
+
+### ⭐ Điều kiện để việc này khả thi: ca kiểm thử phải **ghi lại được và chạy lại được**
+
+Kiểm thử hồi quy chỉ làm được nếu ca kiểm thử **tồn tại dưới dạng viết ra**, không nằm trong đầu ai.
+
+| Cần có | Vì sao |
+|---|---|
+| ⭐ **Danh sách ca đánh số** — mục 50.4 và Phụ lục C | Nói *"chạy lại ca B3, B7"* mới có nghĩa |
+| ⭐⭐ **Mỗi ca ghi rõ: đặt gì vào, chờ thấy gì** | ⚠ Ca không có kết quả mong đợi thì **không thể trượt** — nên nó không kiểm gì cả |
+| **Kết quả lần chạy trước** (mục 50.5) | Để biết ca này **từng đạt**, nếu không thì trượt lần này chưa chắc là hồi quy |
+| ⭐ **Cờ mô phỏng còn dùng được** | ⚠ Lớp mô phỏng ở mục 50.3 hay bị bỏ rơi sau khi giao máy — ⭐ **giữ nó sống** thì mỗi lần sửa về sau rẻ đi rất nhiều |
+
+> ⚡ **Hàng cuối là hàng tiết kiệm nhiều thời gian nhất trong cả chương, và cũng là hàng hay bị bỏ
+> nhất.** Lớp mô phỏng được viết cho lần chạy thử đầu tiên, rồi bị coi là xong việc. ⭐ Nếu giữ nó —
+> và giữ cho nó vẫn đúng khi chương trình đổi — thì ba năm sau, việc thử một thay đổi vẫn làm được
+> **trên bàn**, thay vì phải chờ dừng máy (mục 50.1).
 
 ---
 

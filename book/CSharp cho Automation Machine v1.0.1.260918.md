@@ -2519,6 +2519,112 @@ while (!success && attempt < 3);
 
 ---
 
+### 3.3.3  Một điều kiện không bao giờ đúng — đọc mã thật để thấy vì sao trình biên dịch im lặng
+
+Mục 3.3.1 nói về cách viết rẽ nhánh. Mục này đọc **một điều kiện có thật**, lấy từ phần mềm một cỗ
+máy hiệu chỉnh quang học đang chạy trong nhà máy, và nó minh hoạ điều mà không bài giảng nào về
+`if` nói được rõ bằng: **trình biên dịch kiểm tra ngữ pháp, không kiểm tra ý nghĩa.**
+
+Bối cảnh: trước khi bắt đầu quy trình hiệu chỉnh, phần mềm đọc nhiệt độ bo mạch và hỏi người vận
+hành nếu nhiệt độ lệch quá ±5 °C so với ngưỡng cho phép. Mã được viết lại cho dễ đọc, giữ nguyên
+hình dạng điều kiện:
+
+**Code 3.23 — Một lớp bảo vệ được viết ra, biên dịch sạch, và không bao giờ chạy**
+
+```csharp
+double nhietDo = DocNhietDoBoMach();
+
+// Ý định: "lệch quá ±5 °C so với ngưỡng thì hỏi người vận hành"
+if (nhietDo > (nguongMax + 5) && nhietDo < (nguongMax - 5))
+{
+    if (HoiNguoiVanHanh("Nhiệt độ bất thường — có chạy tiếp không?") == TraLoi.Khong)
+        return false;
+}
+
+// … chạy tiếp quy trình hiệu chỉnh
+```
+
+Hãy thử đặt một con số vào. Với `nguongMax = 45`, điều kiện trở thành `nhietDo > 50 && nhietDo < 40`.
+Không có số thực nào vừa lớn hơn 50 vừa nhỏ hơn 40. Điều kiện **không bao giờ đúng với bất kỳ giá
+trị `nguongMax` nào** — vì để nó đúng thì phải có `nguongMax + 5 < nguongMax - 5`, tức là `5 < -5`.
+
+Hệ quả: lớp bảo vệ nhiệt độ đã được viết, được đọc qua trong mọi lần review, nằm trong mã nguồn nhiều
+năm — và **chưa từng chạy một lần nào**. Máy vẫn hiệu chỉnh ở nhiệt độ bất thường mà không ai được
+hỏi. Đây không phải lỗi hiếm gặp vì khó; nó tồn tại lâu vì **không có triệu chứng**: không crash,
+không báo lỗi, không dòng log nào. Cái đáng lo chính là sự im lặng đó.
+
+#### Vì sao trình biên dịch không nói gì
+
+Cả hai vế đều hợp lệ về kiểu và cú pháp: `double > double` và `double < double`. Mâu thuẫn chỉ lộ ra
+khi **so hai vế với nhau**, mà đó là việc của con người hoặc của công cụ phân tích, không phải của
+bộ kiểm tra kiểu. Nói cách khác, `&&` đã làm đúng việc của nó — vấn đề là người viết định dùng `||`
+(*"thấp hơn ngưỡng dưới **hoặc** cao hơn ngưỡng trên"*) nhưng lại gõ `&&`, và không cách nào máy
+đoán được ý định đó từ mã.
+
+#### Bốn cách viết lại, và cái giá của từng cách
+
+**Code 3.24 — Cùng một ý định, bốn cách viết**
+
+```csharp
+const double DungSai = 5.0;                       // hết magic number
+
+// (1) Sửa tại chỗ: đổi && thành ||
+if (nhietDo > nguongMax + DungSai || nhietDo < nguongMax - DungSai) { … }
+
+// (2) Nói bằng khoảng cách — không còn hướng nào để nhầm
+if (Math.Abs(nhietDo - nguongMax) > DungSai) { … }
+
+// (3) Đặt tên cho ý định, rồi mới dùng
+bool lechQuaNhieu = Math.Abs(nhietDo - nguongMax) > DungSai;
+if (lechQuaNhieu) { … }
+
+// (4) Tách thành hàm thuần — kiểm thử được không cần phần cứng
+public static bool LechQuaNguong(double doDo, double nguong, double dungSai)
+    => Math.Abs(doDo - nguong) > dungSai;
+```
+
+**Bảng 3.5 — Bốn cách viết lớp bảo vệ, cùng một ý định**
+
+| Cách | Ưu điểm | Nhược điểm | Nên dùng khi |
+|---|---|---|---|
+| (1) Đổi `&&` → `\|\|` | Sửa ít nhất, dễ duyệt | Vẫn còn **hai** phép so sánh và **hai** hướng để nhầm lần sau | Sửa gấp một lỗi đã biết, không có thời gian tái cấu trúc |
+| (2) `Math.Abs(...) > dungSai` | Chỉ còn **một** phép so sánh; đọc đúng như lời nói *"lệch quá 5"* | Mất thông tin *lệch về phía nào* — nếu cần phân biệt nóng/lạnh thì không đủ | Hầu hết trường hợp ngưỡng đối xứng |
+| (3) Đặt tên biến trung gian | Tên biến tự nói ý định; debug đặt breakpoint xem được giá trị | Thêm một dòng; vô ích nếu tên đặt dở (`bool ok`) | Điều kiện dài hoặc ghép nhiều vế |
+| (4) Tách hàm thuần | **Viết được phép kiểm thử** cho đúng chỗ dễ sai nhất; dùng lại được | Thêm một hàm phải đặt tên và đặt chỗ | Ngưỡng/giới hạn có liên quan tới an toàn hoặc chất lượng |
+
+Cách (4) là cách duy nhất biến lỗi này thành **lỗi bắt được**. Một phép kiểm thử ba dòng —
+*"lệch 6 thì phải trả về `true`"* — sẽ đỏ ngay lần chạy đầu. Chương 18 mục 18.6.2 xếp đúng loại logic
+này (ngưỡng, giới hạn, quy đổi đơn vị) vào nhóm **ưu tiên kiểm thử cao nhất**, và lý do nằm ở ví dụ
+trên: nó rẻ để kiểm, và khi sai thì sai im lặng.
+
+#### Quét cả bộ mẫu: lỗi này hiếm, nhưng họ hàng của nó thì không
+
+Đã quét tất cả biểu thức dạng `x > A ± m && x < B ± n` trong 13 phần mềm máy của bộ mẫu. Kết quả
+trung thực: **chỉ tìm được một chỗ** như Code 3.23. Đừng đọc nó thành *"ngành này đầy điều kiện
+chết"*. Hãy đọc nó thành: **một chỗ là đủ, và nó nằm đúng ở một lớp bảo vệ.**
+
+Hai họ hàng gần của nó xuất hiện nhiều hơn hẳn, và đáng nói vì chúng cùng một bản chất — *điều kiện
+hợp lệ về cú pháp nhưng sai về ý nghĩa*:
+
+- **So sánh số thực bằng `==`: 13 chỗ, trong đó 12 chỗ nằm ở cùng một dự án.** Dạng
+  `if (viTri == 125.0)` với `viTri` là toạ độ trục đọc về từ card chuyển động. Trục dừng ở
+  125.0000001 mm là chuyện bình thường; điều kiện đó đơn giản là không đúng. Cách viết đúng là so
+  theo dung sai: `Math.Abs(viTri - 125.0) <= 0.01`. Đây là lỗi *xác suất* — chạy đúng chín lần rồi
+  sai lần thứ mười — nên còn khó tìm hơn điều kiện chết.
+- **`== true` và `!= false` thừa: 1.049 chỗ, 13/13 dự án.** Và đây là chỗ cần công bằng: những chỗ
+  này **vô hại**. `if (dangChay == true)` chạy đúng y như `if (dangChay)`. Nêu ra để nói một điều
+  về thứ tự ưu tiên khi đọc mã người khác: đừng tiêu ngân sách review vào 1.049 chỗ rườm rà mà vô
+  hại, hãy tiêu vào **những điều kiện ghép hai phép so sánh trên cùng một biến** — đó là chỗ duy
+  nhất trong ba dạng này có thể khiến máy chạy sai.
+
+> 💡 **Một thói quen đọc mã rút ra từ ví dụ này.** Khi gặp `if (x > … && x < …)`, hãy dừng lại ba
+> giây và **thay một con số cụ thể vào** cả hai vế. Nếu hai vế cùng nói về một biến, chỉ có hai khả
+> năng: chúng tạo thành một **khoảng** (đúng — `x > 10 && x < 20`), hoặc chúng tạo thành một **tập
+> rỗng** (sai — `x > 20 && x < 10`). Phân biệt hai thứ đó mất ba giây; phát hiện ra sau khi máy đã
+> chạy hai năm thì mất nhiều hơn thế rất nhiều.
+
+---
+
 ## 3.4  Hàm và phương thức trong thiết kế module
 
 Trong một hệ thống PC-Based Control, chất lượng không thể hiện ở "code chạy được" mà ở chỗ **module hoá**: mỗi phần (Device, Sequence, UI, Logging) có giao diện rõ ràng, dễ test, dễ mở rộng. Phương thức (method) là đơn vị nhỏ nhất tạo nên cấu trúc đó — tương đương một network/rung có tên trong PLC, nhưng mạnh hơn nhiều.
@@ -2651,6 +2757,114 @@ Một nguyên tắc bao trùm cho mọi method trong điều khiển máy: **m�
 >   `Atan2` nhận đúng CẢ HAI dấu của `dx`/`dy` nên xác định đúng góc ở đủ 4 góc phần tư (`Atan` đơn lẻ
 >   chia `dy/dx` sẽ mất thông tin dấu, cho kết quả sai góc phần tư 2 và 3). Đổi sang độ:
 >   `double degrees = Math.Atan2(dy, dx) * 180.0 / Math.PI;`.
+
+---
+
+### 3.4.4  Đọc hai chữ ký hàm dài — một cái gọi được, một cái không
+
+Mục 3.4.1 tới 3.4.3 nói cách viết hàm. Mục này đo **độ dài chữ ký hàm** trong 13 phần mềm máy thật và
+đọc hai chữ ký dài nhất tìm được. Điểm bất ngờ: chúng dài gần bằng nhau, nhưng **không xấu như nhau** —
+và chỗ khác nhau đó chính là bài học.
+
+Số đo trên 25.128 chữ ký hàm:
+
+**Bảng 3.6 — Độ dài chữ ký hàm trong 13 phần mềm máy thật**
+
+| Chỉ tiêu | Số đo | Ghi chú |
+|---|---|---|
+| Tổng số hàm quét được | 25.128 | Chỉ tính chữ ký nằm gọn trên một dòng |
+| Hàm có **≥ 5 tham số** | 905 (3,6 %) | 13/13 dự án đều có |
+| Hàm có **≥ 8 tham số** | 275 (1,1 %) | Nhiều nhất một dự án: 97 |
+| Hàm có tham số `ref`/`out` | 908 | Nhiều nhất một dự án: 255 |
+| Hàm có **từ 2 tham số `bool` trở lên** | 121 | Nhiều nhất một dự án: 33 |
+| Chữ ký dài nhất tìm được | **27 tham số** | Dài nhì: 25 · dài ba: 23 |
+
+Tỷ lệ tổng thể nhỏ (3,6 %), nhưng phân bố rất lệch: hai dự án chiếm quá nửa số hàm ≥ 8 tham số. Nói
+cách khác đây không phải bệnh chung của ngành — nó là **thói quen của một số đội**, và nó lây trong
+nội bộ một dự án chứ không lây giữa các dự án.
+
+#### Chữ ký 27 tham số
+
+Viết lại theo đúng hình dạng gốc (tên đã đổi, thứ tự giữ nguyên, toàn bộ nằm trên **một dòng** đúng
+như trong mã thật):
+
+**Code 3.25 — Chữ ký 27 tham số, và bốn vấn đề chồng lên nhau**
+
+```csharp
+public bool ChayQuyTrinh(bool coTre, BoDieuKhien dk, ChonCamBien chonCb, bool coCanNang,
+    double nguongCanNang, double nhietDoMax, double nguongOH, LoaiSanPham sp, KenhThauKinh kenh,
+    LoaiQuyTrinh qt, CheDo mode, double buX, double buY, double buZ, string trangThauKinh,
+    string trangSN, string trangRx, int tongSo, string duongDanData, double[] viTriTrai,
+    double[] viTriPhai, double[] buoc1, double[] buoc2, double[] buTriSo,
+    ref double[] viTriTotNhat1, ref double[] viTriTotNhat2, ref double[] giaTriTotNhat)
+```
+
+Bốn vấn đề, xếp theo mức độ khó chịu tăng dần:
+
+1. **Không ai gọi đúng được nếu không mở định nghĩa hàm.** Ba tham số `double` liền nhau `buX, buY,
+   buZ` rồi tiếp `string, string, string` — đảo nhầm hai tham số cùng kiểu thì **biên dịch vẫn
+   sạch** và máy chạy sai. Đây là loại lỗi mà kiểu dữ liệu đáng lẽ phải bắt được, nhưng không bắt
+   được vì mọi thứ đều là `double` và `string`.
+2. **Ba tham số `ref double[]` là kết quả trả về đội lốt đầu vào.** Hàm trả `bool` — nhưng thứ gọi
+   hàm thật sự cần lại là ba mảng kia. Người gọi phải **cấp phát sẵn mảng đúng kích thước** trước khi
+   gọi, mà kích thước đúng chỉ được biết bên trong hàm. Không có gì nhắc nếu cấp sai.
+3. **`double[]` không mang đơn vị và không mang ý nghĩa.** `viTriTrai[2]` là gì? Trục Z? Góc? mm hay
+   xung? Câu trả lời chỉ nằm trong đầu người viết ban đầu.
+4. **Hai tham số `bool` đứng cạnh nhau ở đầu.** Chỗ gọi sẽ đọc là `ChayQuyTrinh(true, dk, …, false,
+   …)` — và từ chỗ gọi thì `true` đó nghĩa là gì, không ai biết.
+
+#### Chữ ký 25 tham số — dài gần bằng, nhưng khác hẳn
+
+Dự án khác trong bộ mẫu có một chữ ký 25 tham số. Cùng độ dài, nhưng:
+
+**Code 3.26 — Chữ ký 25 tham số vẫn gọi được, vì ba lý do**
+
+```csharp
+public ThongTinTruc(
+    int chiSo,
+    TrangThaiTrucVM trangThai,
+    string tenActor,
+    string duongDan,
+    BienVM? jogBuocNho     = null,
+    BienVM? jogBuocVua     = null,
+    BienVM? jogBuocLon     = null,
+    BienVM? jogTocDoCham   = null,
+    BienVM? jogTocDoVua    = null,
+    // … 16 tham số tuỳ chọn nữa, mỗi tham số một dòng
+    BienVM? giaTocGiatThuong = null)
+```
+
+Ba khác biệt quyết định:
+
+- **Bốn tham số bắt buộc, 21 tham số tuỳ chọn có giá trị mặc định.** Lời gọi thông thường chỉ truyền
+  bốn cái đầu. Chữ ký dài không có nghĩa là **lời gọi** dài.
+- **Tất cả tham số tuỳ chọn cùng một kiểu `BienVM?`** và chỉ khác nhau về vai trò — nên bắt buộc phải
+  gọi bằng **named argument** (`jogTocDoCham: x`), mà named argument thì tự nó là tài liệu. Đây đúng
+  là công dụng mà mục 3.4.2 mô tả.
+- **Không có `ref`/`out` nào.** Đây là hàm dựng (constructor) — nó *nhận* dữ liệu và *giữ* dữ liệu,
+  không trả kết quả qua tham số.
+
+> 📌 **Kết luận không phải "hàm nhiều tham số là xấu".** Kết luận là: **đếm tham số sai chỗ.** Câu
+> hỏi đúng không phải *"hàm này bao nhiêu tham số?"* mà là ba câu này: (a) *Lời gọi có tự đọc được
+> không, hay phải mở định nghĩa hàm ra mới hiểu?* (b) *Đảo nhầm hai tham số cạnh nhau thì trình biên
+> dịch có bắt được không?* (c) *Kết quả đi ra bằng giá trị trả về, hay bằng tham số?*
+
+#### Ba cách rút gọn, kèm cái giá
+
+**Bảng 3.7 — Ba cách xử lý một hàm quá nhiều tham số**
+
+| Cách | Làm gì | Ưu điểm | Nhược điểm |
+|---|---|---|---|
+| **Đối tượng tham số** (`record`) | Gom các tham số đi cùng nhau thành một `record` có tên, ví dụ `ThamSoHieuChinh` | Thêm một trường không phải sửa mọi chỗ gọi; tên trường tự tài liệu hoá; truyền tiếp xuống tầng dưới gọn | Thêm một kiểu phải đặt tên; nếu gom bừa thì thành một cái túi tạp nham khác |
+| **Tham số tuỳ chọn + named argument** | Giữ chữ ký nhưng cho giá trị mặc định, ép gọi bằng tên | Sửa rất ít, tương thích ngược với mã cũ | Không giải quyết `ref`/`out`; giá trị mặc định nằm trong chữ ký nên **đổi mặc định phải biên dịch lại mọi nơi gọi** |
+| **Tách hàm** | 27 tham số thường là dấu hiệu **một hàm đang làm bốn việc** | Chữa đúng bệnh chứ không chữa triệu chứng | Đắt nhất; phải hiểu hàm cũ trước đã, mà hàm cũ thì dài |
+| **Kiểu miền thay `double[]`** | `double[] viTri` → `ViTriTruc` có đơn vị (mục 11.2) | Trình biên dịch bắt được lỗi đảo mm ↔ xung | Phải làm xuyên nhiều tầng mới có ích |
+
+Khuyến nghị thực dụng khi bạn **đang tiếp quản** một hàm như Code 3.25 — và đây là thứ tự có chủ ý:
+đừng bắt đầu bằng việc tách hàm (đắt nhất, rủi ro nhất trên mã đang chạy). Bắt đầu bằng **đối tượng
+tham số cho nhóm rõ ràng nhất** (ba giá trị bù `buX, buY, buZ` thành một `BuToaDo`), rồi đổi ba
+`ref double[]` thành **một `record` kết quả** trả về. Hai bước đó gỡ được vấn đề (1) và (2) — hai
+vấn đề duy nhất có thể khiến máy chạy sai — mà không đụng tới thân hàm.
 
 ---
 
@@ -2911,6 +3125,126 @@ nhà máy khác, biểu hiện là "máy báo alarm giả mỗi lần bấm Stop
 chỉ để **hiển thị và ghi log**, không bao giờ để **ra quyết định**. Muốn phân loại thì dùng kiểu
 exception, hoặc một property riêng do mình định nghĩa (như `AxisId` ở Code 3.15, hay `AlarmCode` ở
 Chương 15).
+
+---
+
+### 3.5.5  646 chỗ nuốt lỗi: đọc, đếm, rồi phân loại
+
+Mục 3.5.1 nói `catch` để làm gì. Mục này đếm xem trong 13 phần mềm máy thật, người ta dùng `catch`
+để **không làm gì** ở bao nhiêu chỗ — và quan trọng hơn, phân loại xem những chỗ đó nguy hiểm tới
+đâu. Vì chúng **không nguy hiểm như nhau**, và một cuốn sách kết luận *"`catch {}` luôn luôn sai"*
+sẽ khiến bạn tiêu công sức không đúng chỗ.
+
+Mẫu được đếm là khối bắt lỗi rỗng — `catch { }` hoặc `catch (Exception) { }`. Phân loại theo **nội
+dung khối `try` đứng ngay trước nó**:
+
+**Bảng 3.8 — 646 khối bắt lỗi rỗng, phân loại theo thứ được bọc**
+
+| Thứ nằm trong `try` | Số chỗ | Mức nguy hiểm | Vì sao |
+|---|---|---|---|
+| **Thiết bị / vào-ra / truyền thông** | 156 | 🔴 Cao | Lệnh xuống máy thất bại mà không ai biết — mục dưới có một ví dụ |
+| Vừa thiết bị vừa giao diện | 47 | 🔴 Cao | Trộn hai mối quan tâm, nên nuốt luôn cả lỗi thiết bị |
+| **Chỉ giao diện** (độ rộng cột, màu, vẽ lại) | 176 | 🟢 Thấp | Hỏng thì người dùng thấy ngay; không ảnh hưởng phôi |
+| Dọn dẹp (`Dispose`, `Close`, `Stop`) | 24 | 🟡 Trung bình | Bọc lúc đóng tài nguyên là **có lý** — xem callout dưới |
+| Khác (phân tích chuỗi, đọc/ghi file, tính toán) | 243 | 🟡 Trung bình | Tuỳ chỗ; nguy hiểm khi nuốt lỗi phân tích dữ liệu sản xuất |
+| **Tổng** | **646** | | 12/13 dự án có ít nhất một chỗ |
+
+Hai con số cần đọc kỹ. Thứ nhất: **176 chỗ — nhóm đông nhất — chỉ bọc chuyện thẩm mỹ giao diện**,
+kiểu `dataGridView1.Columns[i].Width = …`. Bọc chúng lại rồi bỏ qua là một quyết định **phòng thủ
+hợp lý**: người vận hành thà thấy bảng xấu còn hơn thấy phần mềm chết giữa ca sản xuất. Thứ hai:
+**hai dự án gần như không dùng mẫu này** (0 chỗ và 1 chỗ), nên đây không phải chuyện bắt buộc phải
+đánh đổi để giao máy đúng hạn.
+
+#### Chỗ nguy hiểm trông như thế nào
+
+Đây là một trong 156 chỗ nhóm đỏ, viết lại và bỏ tên thật. Nó là **nhịp tim báo sống** mà máy gửi
+lên hệ thống điều hành sản xuất của nhà máy: cứ mỗi 5 giây, đảo một bit để bên kia biết máy còn sống.
+
+**Code 3.27 — Nuốt lỗi ở chỗ đắt nhất: bit báo sống gửi lên hệ thống nhà máy**
+
+```csharp
+try
+{
+    bool dangBat = ReadBit(TinHieuDoc.BitBaoSong);
+
+    if (DateTime.Now - _lanDaoCuoi > TimeSpan.FromSeconds(5))
+    {
+        WriteBit(TinHieuGhi.BitBaoSong, !dangBat);   // đảo bit báo sống
+        _lanDaoCuoi = DateTime.Now;
+    }
+}
+catch
+{
+}
+```
+
+Ba dòng, và ba hệ quả xếp theo thứ tự thời gian:
+
+1. **Ngay lập tức:** nếu đường truyền xuống bộ điều khiển rớt, `ReadBit` ném lỗi, khối `catch` nuốt,
+   hàm trả về bình thường. Không log, không cảnh báo, không đổi trạng thái.
+2. **Sau vài giây:** bit báo sống ngừng đảo. Hệ thống nhà máy kết luận máy đã chết và bắt đầu xử lý
+   theo kịch bản của nó — dừng cấp phôi, báo lên bảng quản lý ca.
+3. **Khi người ta đi tìm nguyên nhân:** phần mềm máy **không có một dòng nào** về chuyện này. Người
+   vận hành thấy máy vẫn hiện "đang chạy". Cuộc điều tra bắt đầu từ phía hệ thống nhà máy, và mất
+   nhiều giờ để quay về đúng chỗ — đúng chỗ là ba dòng `catch { }` này.
+
+Nghịch lý đáng nhớ: **khối `catch` này được viết ra chính vì sợ mất kết nối.** Người viết biết đường
+truyền có thể rớt và không muốn cả luồng chết theo. Ý định đúng — chỉ thiếu đúng một việc: **nói ra
+rằng nó vừa rớt.**
+
+#### Bản đối chứng: bắt cùng loại lỗi, ở cùng vị trí, nhưng có nói
+
+Cũng trong bộ mẫu, một dự án khác bắt lỗi ở vòng lặp nghiệp vụ của trạm. Cùng là `catch (Exception)`
+bao trùm, cùng là "không cho lỗi giết luồng", nhưng khác ở ba điểm:
+
+```csharp
+catch (Exception ex)
+{
+    _logger?.Error($"[{TenTram}] lỗi nghiệp vụ: {ex.Message}");
+
+    // (a) Người vận hành bấm Dừng thì KHÔNG coi là sự cố
+    if (_daYeuCauDung) return;
+
+    // (b) Chỉ điền mã cảnh báo mặc định khi chưa có mã cụ thể hơn —
+    //     giữ lại thông tin hiện trường có giá trị chẩn đoán cao hơn
+    var canhBaoMacDinh = new CanhBaoChoXuLy(MaCanhBao.LoiKhongXacDinh, TenTram, ex.Message);
+    …
+    // (c) Đẩy trạng thái trạm sang báo động — máy dừng một cách có chủ ý
+}
+```
+
+Ba điều bản này làm mà bản trên không làm: **nói ra** (có log, có tên trạm), **phân biệt dừng chủ ý
+với sự cố** (điểm a — nếu thiếu, mỗi lần bấm Dừng sẽ đẻ ra một cảnh báo giả), và **chuyển lỗi thành
+trạng thái máy** thay vì để nó bốc hơi (điểm c).
+
+> ⚠️ **Nhưng bản tốt này vẫn còn một khuyết điểm, và nêu ra mới công bằng.** Nó ghi
+> `$"…{ex.Message}"` — tức là **chỉ lấy câu chữ của lỗi và vứt bỏ `ex`**. Mất theo đó là toàn bộ
+> vết gọi hàm (stack trace) và lỗi gốc bên trong (`InnerException`) — đúng hai thứ trả lời được câu
+> *"lỗi này phát ra từ dòng nào"*. Cách đúng là truyền cả đối tượng lỗi vào logger:
+> `_logger.Error(ex, "[{TenTram}] lỗi nghiệp vụ", TenTram)`. Đây chính là điều mục 19.4.1 nói về
+> ghi log có cấu trúc. Rút ra: *"có `catch` đàng hoàng"* và *"ghi log đàng hoàng"* là **hai việc
+> khác nhau**, và một dự án có thể làm tốt việc này mà vẫn hụt việc kia.
+
+#### Vậy khi nào `catch {}` chấp nhận được
+
+Có, và cần nói rõ để bạn không đi sửa 646 chỗ một cách máy móc:
+
+**Ba trường hợp `catch {}` là lựa chọn đúng** — (1) **dọn dẹp trên đường thoát**: đóng cổng, giải
+phóng tài nguyên khi đang tắt chương trình, nơi lỗi không còn đổi được gì và ném tiếp sẽ che mất lỗi
+gốc; (2) **thao tác thẩm mỹ giao diện** không ảnh hưởng máy; (3) **thăm dò có chủ đích**: thử một
+cách, hỏng thì thử cách khác, và đường dự phòng đã được viết ngay dưới.
+
+**Điều kiện kèm theo, không thương lượng:** kể cả ba trường hợp trên, hãy viết `catch (Exception)`
+kèm **một dòng chú thích nói vì sao được phép bỏ qua**. Khối rỗng không chú thích không phân biệt
+được với khối rỗng do quên — và người đọc sau bạn, kể cả chính bạn sáu tháng sau, sẽ không dám xoá
+nó cũng không dám giữ nó.
+
+> 💡 **Một cách soát rẻ mà hiệu quả cho dự án đang có sẵn.** Đừng tìm mọi `catch {}`. Hãy tìm giao
+> của hai tập: **khối bắt lỗi rỗng** và **trong `try` có lời gọi thiết bị/truyền thông** (`Read`,
+> `Write`, `Move`, `Send`, `Connect`). Trong bộ mẫu, phép lọc đó rút 646 chỗ xuống còn **203 chỗ**
+> (156 + 47) — chưa tới một phần ba, và đó là phần duy nhất có thể làm máy chạy sai mà không ai
+> biết. Thêm một dòng log vào mỗi chỗ đó là một buổi chiều, và nó đổi hẳn khả năng chẩn đoán của
+> phần mềm.
 
 ---
 
@@ -15400,6 +15734,143 @@ Ba vấn đề nảy sinh không thể tránh khi code theo cách này:
 > 12.1.1 vẫn còn nguyên. Đây chỉ là một thứ cần **mang theo** khi chuyển sang State Pattern, không
 > phải một lý do để không chuyển.
 
+### 12.1.1b  Biến thể hay gặp nhất, và cũng tệ nhất: không có biến trạng thái nào cả
+
+Mục 12.1.1 nêu ba cách biểu diễn trạng thái mà code cũ hay dùng: chuỗi, số nguyên tuỳ ý, và enum.
+Đọc mã của 13 phần mềm máy thật thì thấy một biến thể thứ tư, phổ biến hơn cả ba, và nó tệ hơn vì
+một lý do rất khác: **nó không có "biến trạng thái" nào để mà chỉ ra.**
+
+Trạng thái máy nằm rải ở nhiều biến `bool` độc lập, thường là biến `public static` dùng chung toàn
+chương trình. Đây là hình dạng thật, chỉ đổi tên:
+
+**Code 12.1b — Trạng thái máy trong bảy biến `bool` độc lập**
+
+```csharp
+public class BienToanCuc
+{
+    public static bool DangTamDung;        // đang tạm dừng
+    public static bool CheDoKyThuat;       // chế độ kỹ thuật viên
+    public static bool DangChayTuDong;     // đang chạy tự động
+    public static bool CheDoThuCong;       // chế độ thủ công
+    public static bool DaKhoiTao;          // đã khởi tạo xong
+    public static bool DangKhoiTao;        // đang khởi tạo
+    public static bool DangCoLoi;          // đang có lỗi
+
+    // … và 144 thành viên `public static` nữa trong cùng lớp này
+}
+```
+
+Số đo trong dự án gốc: lớp biến toàn cục đó có **151 thành viên `public static`**, được tham chiếu
+**3.680 lần trên 97 file**. Không phải ngoại lệ: **13/13 dự án** trong bộ mẫu đều có biến
+`public static` dùng chung, tổng **1.514 khai báo**.
+
+#### Vì sao bảy biến `bool` tệ hơn một chuỗi hay một số
+
+Cả ba cách ở mục 12.1.1 đều sai ở chỗ *trình biên dịch không bắt được giá trị sai*. Cách này sai
+nặng hơn, ở một chỗ khác hẳn:
+
+**Bảng 12.1b — Bốn cách biểu diễn trạng thái máy**
+
+| Cách | Bao nhiêu tổ hợp biểu diễn được | Bao nhiêu tổ hợp hợp lệ | Trạng thái mâu thuẫn có thể tồn tại không |
+|---|---|---|---|
+| Chuỗi (`"Idle"`) | Vô hạn | 8 | Không — mỗi lúc chỉ một giá trị |
+| Số nguyên tuỳ ý (`step = 8000`) | ~4 tỷ | 8 | Không — mỗi lúc chỉ một giá trị |
+| `enum MachineState` | 8 | 8 | Không — **và không thể gõ sai tên** |
+| **Bảy biến `bool` độc lập** | **128** | 8 | **Có — 120 tổ hợp vô nghĩa đều biểu diễn được** |
+
+Dòng cuối là toàn bộ vấn đề. Với enum, câu hỏi *"máy đang ở trạng thái nào?"* luôn có **đúng một**
+câu trả lời. Với bảy cờ, `DangChayTuDong = true` **và** `DangCoLoi = true` **và** `DangKhoiTao = true`
+cùng lúc là chuyện hoàn toàn có thể xảy ra — chỉ cần hai đoạn mã ở hai file khác nhau cùng ghi vào
+mà không biết về nhau. Và vì mỗi cờ được đặt ở một chỗ khác nhau trong 97 file, **không có nơi nào
+để đặt một lớp kiểm tra tính nhất quán**.
+
+Ba hệ quả cụ thể, theo thứ tự hay gặp:
+
+- **Không trả lời được "máy đang ở đâu" trong một dòng log.** Muốn ghi lại trạng thái, phải ghi bảy
+  giá trị; muốn đọc lại nhật ký sự cố, phải tự suy ra trạng thái từ bảy giá trị đó.
+- **Không có chỗ nào để chặn chuyển trạng thái sai.** *"Đang có lỗi thì không được vào chạy tự động"*
+  là một luật — nhưng luật đó phải được lặp lại ở **mọi chỗ** gán `DangChayTuDong = true`. Quên một
+  chỗ là máy chạy khi đang báo lỗi.
+- **Sửa một cờ là động vào 97 file.** Không ai dám xoá một cờ, nên số cờ chỉ tăng. Đó là cách một
+  lớp đi tới 151 thành viên.
+
+#### Và hệ quả ở tầng trình tự: một hàm 28.635 dòng
+
+Khi trạng thái không có hình dạng, trình tự cũng không. Dự án có chữ ký 27 tham số ở mục 3.4.4 cũng
+là dự án có file nguồn lớn nhất bộ mẫu: **28.635 dòng trong một file**, chứa **861 nhãn `case`**,
+**346 lệnh `switch`** và — con số nói lên nhiều nhất — **991 lệnh `goto case`**.
+
+**Code 12.1c — Trình tự khi trạng thái không có hình dạng**
+
+```csharp
+switch (loaiQuyTrinh)
+{
+    case LoaiQuyTrinh.ThauKinh:
+        // … 300 dòng: đọc mã vạch, đặt bù nhiệt, dò thô, dò tinh …
+        if (dieuKienNaoDo) goto case LoaiQuyTrinh.KiemTraLai;
+        break;
+
+    case LoaiQuyTrinh.KiemTraLai:
+        // … 200 dòng nữa …
+        goto case LoaiQuyTrinh.GhiKetQua;
+
+    // … 859 nhãn case nữa trong cùng file
+}
+```
+
+`goto case` là cách C# cho phép một nhánh `switch` nhảy sang nhánh khác. Dùng một hai chỗ thì hợp
+lý. Dùng **991 chỗ** thì nó đã trở thành cơ chế chuyển trạng thái chính của phần mềm — nhưng là một
+cơ chế **không liệt kê được**: không có bảng nào nói *"từ trạng thái A đi được tới những đâu"*, câu
+trả lời nằm rải trong 28.635 dòng. Muốn biết vì sao máy đang ở bước này, chỉ còn cách đọc ngược.
+
+Đây cũng là lý do thực dụng nhất, đo được, để không đi theo lối này: **ba dự án trong bộ mẫu không có
+file nào quá 2.000 dòng** — và đúng ba dự án đó là nhóm dùng enum trạng thái, dùng interface, và là
+nơi duy nhất tìm thấy kiểm thử tự động (Chương 18 mục 18.6.4). Ngược lại, dự án nhiều file khổng lồ
+nhất có **17 file trên 2.000 dòng**. Đây là tương quan, không phải quan hệ nhân quả đã chứng minh —
+nhưng nó nhất quán với lập luận của cả chương này.
+
+#### Bản đối chứng: bảng chuyển trạng thái khai báo được
+
+Một dự án khác trong bộ mẫu — cũng là phần mềm máy nhiều trạm, cũng viết bằng C# — biểu diễn đúng
+bài toán đó bằng một **bảng chuyển trạng thái khai báo**, tám trạng thái và mười lệnh kích hoạt:
+
+```csharp
+_may.Configure(TrangThaiMay.ChuaKhoiTao)
+    .Permit(LenhKichHoat.KhoiTao,      TrangThaiMay.DangKhoiTao);
+
+_may.Configure(TrangThaiMay.DangKhoiTao)
+    .Permit(LenhKichHoat.KhoiTaoXong,  TrangThaiMay.SanSang)
+    .Permit(LenhKichHoat.Loi,          TrangThaiMay.LoiKhoiTao)
+    .Permit(LenhKichHoat.Dung,         TrangThaiMay.ChuaKhoiTao);
+
+_may.Configure(TrangThaiMay.DangChay)
+    .OnEntryFromAsync(LenhKichHoat.BatDau,  KhoiDongCacTramAsync)
+    .OnEntryFromAsync(LenhKichHoat.ChayTiep, ChayTiepCacTramAsync)
+    .Permit(LenhKichHoat.TamDung,      TrangThaiMay.TamDung)
+    .Permit(LenhKichHoat.Dung,         TrangThaiMay.ChuaKhoiTao)
+    .Permit(LenhKichHoat.Loi,          TrangThaiMay.LoiVanHanh);
+```
+
+Bốn thứ có được mà bảy cờ `bool` không cho:
+
+1. **Chuyển sai là không thực hiện được, không phải "không nên làm".** Lệnh `BatDau` khi đang ở
+   `LoiVanHanh` không được khai báo, nên nó bị từ chối — không cần ai nhớ viết `if` kiểm tra.
+2. **Toàn bộ luật nằm ở một chỗ, đọc hết trong hai phút** — thay vì rải khắp 97 file.
+3. **Việc cần làm khi vào trạng thái được gắn vào chính chuyển tiếp** (`OnEntryFrom`), nên không thể
+   xảy ra chuyện "đã sang `DangChay` nhưng quên khởi động các trạm".
+4. **Kiểm thử được mà không cần máy**: bắn một chuỗi lệnh vào bảng và khẳng định trạng thái cuối —
+   đúng như Chương 18 mục 18.5 mô tả.
+
+> 📌 **Nếu bạn đang tiếp quản một phần mềm dạng bảy cờ, đừng bắt đầu bằng việc xoá cờ.** Thứ tự ít
+> rủi ro nhất: (1) **thêm** một `enum` trạng thái và một thuộc tính duy nhất trả về nó, **suy ra** từ
+> các cờ hiện có — chưa xoá gì cả; (2) đổi **màn hình và nhật ký** sang đọc thuộc tính mới, để mọi
+> người bắt đầu nói cùng một ngôn ngữ; (3) khi một tổ hợp cờ vô nghĩa xuất hiện, thuộc tính đó sẽ lộ
+> ra ngay — đó là lúc bạn có **bằng chứng** để đề nghị đổi tiếp; (4) chỉ khi ấy mới đảo chiều: cờ trở
+> thành thứ suy ra từ `enum`, rồi xoá dần. Bước (1) tốn nửa ngày và không phá gì — đó là lý do nên
+> bắt đầu từ đó thay vì từ một đợt tái cấu trúc lớn mà không ai duyệt.
+
+---
+
 ### 12.1.2  Giải pháp: GoF State Pattern
 
 GoF State Pattern đưa ra nguyên tắc: **mỗi trạng thái là một đối tượng riêng** (State), đóng gói toàn bộ hành vi của máy khi ở trạng thái đó. Một class trung tâm (Context) giữ tham chiếu đến State hiện tại và ủy quyền mọi lệnh xuống State xử lý — thêm trạng thái mới chỉ cần thêm class mới, không sửa class cũ.
@@ -24753,6 +25224,115 @@ public sealed class SafetyMonitorService : ISafetyMonitorService, IDisposable
 ```
 
 > 📌 **Lưu ý:** Poll 50ms (20Hz) là đủ cho mục đích monitoring và UI update. Safety PLC phản ứng với E-Stop trong microsecond — C# không cần và không nên cố gắng bắt kịp tốc độ đó.
+
+### 15.2.2b  Điều kiện an toàn nằm trong `if` của phần mềm thì nó **chú thích được**
+
+Mục 15.2.2 nói C# có bốn vai trò trong hệ thống an toàn và không có vai trò thứ năm. Lập luận ở đó
+là lập luận nguyên tắc. Mục này đưa ra **bằng chứng**: một đoạn mã thật, trong một phần mềm máy đang
+chạy, cho thấy điều gì xảy ra với một điều kiện an toàn khi nó sống trong mã ứng dụng.
+
+Bối cảnh: máy có **nút khởi động hai tay** — người vận hành phải bấm đồng thời hai nút cách xa nhau
+thì máy mới chạy, để hai tay không thể ở trong vùng nguy hiểm lúc cơ cấu đi xuống. Đây là một chức
+năng an toàn kinh điển, thường đi kèm **màn chắn sáng** (light curtain). Cả hai được thực hiện **bằng
+C#**, trong một vòng lặp quét:
+
+**Code 15.12 — Khởi động hai tay viết bằng phần mềm ứng dụng (mã thật, đã đổi tên)**
+
+```csharp
+// (Dòng bị chú thích — vẫn còn nguyên trong mã nguồn:)
+//if (CanhLen(DocDI(DI.NutTrai) == 1) && ChayTuDong && !DungKhanCap && DocDI(DI.ManChanSang) == 0)
+if (CanhLen(DocDI(DI.NutTrai) == 1) && ChayTuDong && !DungKhanCap)
+{
+    _dongHoTrai.Reset();
+    _dongHoTrai.Start();
+}
+if (_dongHoTrai.ElapsedMilliseconds < cuaSoMs && _dongHoTrai.ElapsedMilliseconds > 0 && buoc <= 20)
+{ _tayTrai = true; }
+else if (_dongHoTrai.ElapsedMilliseconds > cuaSoMs)
+{ _tayTrai = false; _dongHoTrai.Stop(); _dongHoTrai.Reset(); }
+
+// (Nhánh tay phải: cũng có một dòng bị chú thích y hệt, cũng mất điều kiện màn chắn sáng)
+if (CanhLen(DocDI(DI.NutPhai) == 1) && ChayTuDong && !DungKhanCap && buoc <= 20)
+{ … }
+
+return _tayTrai && _tayPhai;
+```
+
+Đọc kỹ đoạn này cho ra **bốn** phát hiện, và thứ tự quan trọng dần:
+
+**1. Điều kiện màn chắn sáng đã bị chú thích — ở cả hai nhánh.** Dòng gốc có
+`DocDI(DI.ManChanSang) == 0`; dòng đang chạy thì không. Bản đang chạy khởi động được **mà không cần
+màn chắn sáng ở trạng thái an toàn**. Không có gì trong phần mềm ghi nhận việc này: không cảnh báo,
+không dòng log, không thông báo trên màn hình. Dấu vết duy nhất là dòng bị chú thích nằm ngay phía
+trên — và dấu vết đó chỉ người đọc mã nguồn mới thấy.
+
+**2. Hai nhánh không còn giống nhau.** Nhánh phải có thêm `buoc <= 20` trong chính câu `if`; nhánh
+trái thì điều kiện ấy nằm ở câu `if` kế tiếp. Hai bàn tay được xử lý theo hai luật hơi khác nhau —
+gần như chắc chắn là hệ quả của chép-dán rồi sửa một bên. Với một chức năng mà toàn bộ ý nghĩa nằm ở
+chữ *"đồng thời"*, sự bất đối xứng này tự nó đã là lỗi.
+
+**3. Luật "đồng thời" thực ra không được kiểm.** Đọc kỹ logic: `_tayTrai` được đặt `true` khi đồng hồ
+bấm giờ của tay trái **đang trong cửa sổ 500 ms kể từ lúc bấm**. Nghĩa là mã này kiểm *"nút trái đã
+được bấm trong vòng 500 ms vừa rồi"*, **không** kiểm *"nút trái đang được giữ ngay lúc này"*. Người
+vận hành hoàn toàn có thể bấm nút trái rồi **thả tay ra**, và trong 500 ms đó `_tayTrai` vẫn là
+`true`. Yêu cầu cốt lõi của khởi động hai tay — *buông một tay ra thì cơ cấu phải dừng* — không được
+thực hiện, vì sau lần đọc đầu tiên mã này **không đọc lại tín hiệu nút nữa**.
+
+**4. Cửa sổ thời gian phụ thuộc vào nhịp gọi của vòng lặp.** `_dongHoTrai` chỉ được kiểm khi hàm này
+được gọi. Nếu vòng quét bị trễ — máy bận, bộ gom rác chạy, một lệnh vào-ra chờ lâu — thì cửa sổ
+500 ms trên thực tế **rộng ra** đúng bằng độ trễ đó, im lặng. Một chức năng an toàn mà dung sai thời
+gian của nó là hệ quả phụ của tải CPU thì không phải một chức năng an toàn.
+
+#### Điều đáng rút ra không phải "đội này làm ẩu"
+
+Người viết đoạn mã đó hiểu hệ thống của họ; dòng bị chú thích chứng minh họ **đã** nghĩ tới màn chắn
+sáng. Chú thích nó đi gần như chắc chắn xuất phát từ một lý do rất đời thường trong giai đoạn chạy
+thử: màn chắn sáng chưa lắp, hoặc đang chỉnh, hoặc báo giả liên tục làm không chạy nổi. Bỏ tạm một
+điều kiện để chạy tiếp là phản xạ tự nhiên — và **đó chính là vấn đề**:
+
+> ⚠️ **Một điều kiện an toàn đặt trong `if` của phần mềm ứng dụng là một điều kiện có thể chú thích
+> đi trong ba giây, bởi một người, lúc hai giờ sáng, dưới áp lực giao máy — và không để lại dấu vết
+> nào ngoài mã nguồn.** Không cần dụng cụ, không cần ai duyệt, không có bản ghi. Đây là lý do kỹ
+> thuật, không phải lý do hành chính, cho nguyên tắc ở mục 15.2.1: **chức năng an toàn thuộc về mạch
+> an toàn phần cứng** — rơ-le an toàn, bộ điều khiển hai tay chuyên dụng, PLC an toàn — chứ không
+> thuộc về phần mềm máy tính.
+
+Đặt cạnh nhau cho rõ:
+
+**Bảng 15.12 — Cùng một chức năng "khởi động hai tay", hai chỗ thực hiện**
+
+| Tiêu chí | Viết trong C# ứng dụng | Mạch an toàn phần cứng |
+|---|---|---|
+| Bỏ một điều kiện đi | Chú thích một dòng, 3 giây, không ai biết | Phải tháo dây/đổi cấu hình bằng dụng cụ và mật khẩu, thường có bản ghi |
+| Dung sai thời gian "đồng thời" | Phụ thuộc nhịp vòng quét, tải CPU, bộ gom rác | Do phần cứng bảo đảm, độc lập với phần mềm |
+| Buông một tay giữa chừng | Phải tự viết mã đọc lại tín hiệu — dễ thiếu, như trong ví dụ trên | Là hành vi mặc định của bộ điều khiển hai tay |
+| Khi phần mềm treo / khởi động lại | Chức năng an toàn **mất theo** | Không liên quan — vẫn hoạt động |
+| Chứng minh khi nghiệm thu | Phải đọc mã nguồn | Có chứng nhận thiết bị và sơ đồ mạch |
+
+#### Vậy phần mềm nên làm gì với đoạn logic đó
+
+Không phải "xoá đi". Bốn vai trò ở mục 15.2.2 vẫn còn nguyên giá trị, và đây là cách chúng áp vào
+đúng ví dụ này:
+
+- **Giám sát:** đọc trạng thái màn chắn sáng và bộ điều khiển hai tay **từ mạch an toàn** như tín
+  hiệu chỉ đọc.
+- **Hiển thị:** hiện rõ trên màn hình *"màn chắn sáng: đang bị che"* để người vận hành biết vì sao
+  máy không chạy — thiếu cái này là nguyên nhân số một khiến người ta đi tìm cách vô hiệu hoá nó.
+- **Ghi log:** ghi lại mọi lần mạch an toàn cắt, kèm thời điểm và ai reset (mục 15.1.5).
+- **Khoá lệnh:** không cho gửi lệnh chạy khi tín hiệu an toàn chưa cho phép — **lớp thứ hai**, không
+  phải lớp duy nhất.
+
+Khác biệt cốt lõi so với Code 15.12 nằm ở một chữ: phần mềm **đọc** kết quả của chức năng an toàn,
+chứ không **thực hiện** chức năng an toàn. Chú thích một dòng trong phần mềm khi đó làm hỏng phần
+hiển thị — không làm hỏng chức năng an toàn.
+
+> 📌 **Một câu để tự kiểm dự án của bạn:** tìm trong mã nguồn những dòng bị chú thích có chứa tên tín
+> hiệu an toàn (màn chắn sáng, cửa che, công tắc cửa, dừng khẩn cấp). Mỗi dòng tìm được là một câu
+> hỏi cần trả lời: *chức năng này hiện đang được bảo đảm ở đâu — trong mạch an toàn, hay chỉ ở dòng
+> đang bị chú thích này?* Nếu câu trả lời là vế sau, bạn vừa tìm thấy việc quan trọng nhất trong
+> tuần.
+
+---
 
 ### 15.2.3  Guard Engine Pattern — tập trung hoá logic phân quyền
 

@@ -1195,7 +1195,8 @@
   <li style="padding-left:16px;font-size:13px"><a href="#l15-hút-chân-không-có-thi-ngưc-hai-ngõ-ra-hai-xác-nhn">L.15 Hút chân không có thổi ngược — hai ngõ ra, hai xác nhận</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l16-đm-tui-th-vt-tư-cnh-báo-trưc-báo-đng-sau">L.16 Đếm tuổi thọ vật tư — cảnh báo trước, báo động sau</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l17-danh-mc-khi-dùng-li-cái-nào-t-vit-cái-nào-đã-có-sn">L.17 ⭐⭐ Danh mục khối dùng lại — cái nào tự viết, cái nào đã có sẵn</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#l18-bng-tra-nhanh-mu-nào-cho-vic-gì">L.18 Bảng tra nhanh — mẫu nào cho việc gì</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l18-ladder-hay-st-mu-nào-nên-vit-bng-gì">L.18 ⭐⭐ Ladder hay ST — mẫu nào nên viết bằng gì</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l19-bng-tra-nhanh-mu-nào-cho-vic-gì">L.19 Bảng tra nhanh — mẫu nào cho việc gì</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -56921,7 +56922,7 @@ cách tạo ra lỗi trông rất giống code đúng.</p>
 </thead>
 <tbody><tr>
 <td>1</td>
-<td>⭐ Mẫu ở đây viết bằng <strong>Structured Text</strong> cho gọn. Với logic liên động và ngõ ra cuối, ⚠ cân nhắc viết bằng <strong>ladder</strong> để người bảo trì đọc được (Chương 20)</td>
+<td>⭐ Mẫu viết bằng <strong>Structured Text</strong>; ⭐⭐ <strong>bảy mẫu có thêm bản LADDER</strong> ngay bên dưới. ⚠ Bảy mẫu còn lại cố ý <strong>chỉ có ST</strong> — lý do và cách chọn ở <strong>mục L.18</strong></td>
 </tr>
 <tr>
 <td>2</td>
@@ -56949,6 +56950,19 @@ M_Running := (DI_StartPB OR M_Running)      // nhánh tự giữ
              AND DI_StopPB                  // ⚠ nút NC → kiểm BẰNG 1
              AND M_AllPermissive;           // chuỗi cho phép (L.2)
 </code></pre>
+<p>⭐ <strong>Cùng mẫu này viết bằng ladder</strong> — đây là nấc thang phổ biến nhất trong cả ngành:</p>
+<pre><code class="language-text">   DI_StartPB      DI_StopPB    M_AllPermissive                      M_Running
+ ┌───┤ ├──────┬──────┤ ├────────────┤ ├────────────────────────────────( )───┐
+ │            │
+ │  M_Running │
+ └───┤ ├──────┘
+</code></pre>
+<blockquote>
+<p>⭐ <strong>Ở ladder, mạch tự giữ NHÌN THẤY ĐƯỢC</strong> — nó là nhánh song song vòng ngược về. ⚡ Đó là ưu thế
+thật của ladder ở mẫu này: ⚠ trong bản ST, dấu ngoặc đặt sai chỗ <strong>trông vẫn bình thường</strong>; trong
+ladder, nhánh tự giữ ôm nhầm cả <code>DI_StopPB</code> thì <strong>nhìn là thấy ngay</strong>.</p>
+<p>⚡ Nấc này giống hệt nấc ở Chương 15 mục 15.4 — cố ý, vì đó là mẫu chuẩn.</p>
+</blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Vị trí của điều kiện dừng quyết định tất cả.</strong> Đưa <code>DI_StopPB</code> <strong>vào trong</strong> dấu ngoặc của
 nhánh tự giữ thì ⭐ <strong>nhấn Stop trong lúc vẫn đang giữ Start sẽ KHÔNG dừng được máy</strong> — và người thử
@@ -56979,6 +56993,19 @@ ELSIF NOT M_Homed        THEN M_BlockReason := BLK_NOT_HOMED;
 ELSE                          M_BlockReason := BLK_NONE;
 END_IF;
 </code></pre>
+<p>⭐ <strong>Bằng ladder</strong> — chuỗi cho phép là nơi ladder <strong>thắng rõ nhất</strong>:</p>
+<pre><code class="language-text"> DI_EStopOK DI_Door1Closed DI_Door2Closed DI_CurtainOK DI_AirOK M_AnyFault M_Homed  M_AllPermissive
+ ───┤ ├────────┤ ├────────────┤ ├───────────┤ ├────────┤ ├───────┤/├───────┤ ├────────( )───
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Một nấc thang, đọc từ trái sang phải, và người vận hành hiểu ngay.</strong> ⚡ Khi máy không chạy,
+mở màn hình theo dõi nấc này là <strong>thấy ngay tiếp điểm nào đang hở</strong> — không cần đọc code, không cần
+biết lập trình.</p>
+<p>⭐ Đây là lý do thật khiến chuỗi cho phép <strong>nên</strong> viết bằng ladder kể cả khi cả chương trình viết
+bằng ST: ⚠ nó là nấc mà <strong>người không lập trình cũng phải đọc được</strong>.</p>
+<p>⚠ Nhưng phần <code>M_BlockReason</code> thì <strong>để nguyên ST</strong> — ladder diễn đạt chuỗi <code>ELSIF</code> rất tệ. ⭐ Đây là
+ví dụ điển hình của việc <strong>trộn hai ngôn ngữ đúng chỗ</strong> (mục L.18).</p>
+</blockquote>
 <blockquote>
 <p>⭐⭐ <strong><code>M_BlockReason</code> là phần đáng giá nhất của mẫu này.</strong> Không có nó, người vận hành chỉ thấy
 <em>&quot;máy không chạy&quot;</em> rồi bắt đầu bấm thử mọi thứ — đó là lúc người ta học được thói quen nhấn bừa.</p>
@@ -57097,6 +57124,28 @@ IF M_Paused THEN
     // M_Stn1_ClampReq GIỮ NGUYÊN — không đụng tới cái đang GIỮ
 END_IF;
 </code></pre>
+<p>⭐ <strong>Bằng ladder</strong> — cuộn dây chốt <code>( S )</code> / <code>( R )</code> làm phần &quot;dừng cuối chu trình&quot; rất gọn:</p>
+<pre><code class="language-text">  M_StopEocPB_Rise                                                 M_NoNewCycle
+ ────┤ ├───────────────────────────────────────────────────────────────( S )──
+
+  M_NoNewCycle   Stn1_Step=0    Stn2_Step=0                         M_CycleEnable
+ ────┤ ├─────────────┤ ├────────────┤ ├─────────────┬───────────────────( R )──
+                                                    │               M_NoNewCycle
+                                                    └───────────────────( R )──
+
+  M_PausePB_Rise    M_Paused                                            M_Paused
+ ────┤ ├──────────────┤/├───────────────────────────────────────────────( S )──
+  M_PausePB_Rise    M_Paused
+ ────┤ ├──────────────┤ ├────────────────────────────────────────────────( R )──
+</code></pre>
+<blockquote>
+<p>⭐ <strong>Nút bật/tắt bằng ladder cần HAI nấc</strong> — một để bật, một để tắt — trong khi ST chỉ cần
+<code>M_Paused := NOT M_Paused</code>. ⚠ Nhưng hai nấc ladder <strong>không có bẫy thứ tự quét</strong> mà phép đảo trong
+ST có thể gặp nếu bị gọi hai lần trong một vòng.</p>
+<p>⚠⚠ <strong>Chú ý cặp <code>( S )</code> / <code>( R )</code>:</strong> phải kiểm hãng của bạn <strong>cuộn nào thắng</strong> khi cả hai cùng
+tích cực trong một vòng quét — Chương 16 mục 16.2. ⭐ Ở đây hai nấc loại trừ nhau bằng chính
+<code>M_Paused</code> nên không gặp, nhưng <strong>đừng dựa vào may mắn ở chỗ khác</strong>.</p>
+</blockquote>
 <blockquote>
 <p>⭐⭐ <strong>Điểm quyết định của &quot;tạm dừng&quot;: phân biệt ngõ ra CHUYỂN ĐỘNG với ngõ ra ĐANG GIỮ.</strong></p>
 <p>⚠ Tắt hết mọi ngõ ra khi tạm dừng là lỗi nguy hiểm — ⭐ <strong>kẹp nhả ra thì sản phẩm rơi</strong>, và với trục
@@ -57228,6 +57277,42 @@ T_Debounce(IN := DI_BoardStn1, PT := T#20MS);
 R_Board(CLK := T_Debounce.Q);
 M_BoardArrived := R_Board.Q;
 </code></pre>
+<p>⭐ <strong>Bằng ladder</strong> — tiếp điểm bắt cạnh <code>┤P├</code> và khối <code>TON</code> vẽ thành hộp:</p>
+<pre><code class="language-text">  DI_StartPB                                                      M_StartPB_Rise
+ ────┤P├────────────────────────────────────────────────────────────────( )───
+
+  DI_BoardStn1        ┌──────────────────┐
+ ────┤ ├──────────────┤ IN   T_Debounce Q├──┤P├──────────────────( )───
+                      │ T#20MS        PT │                   M_BoardArrived
+                      └──────────────────┘
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Nghĩa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>┤P├</code></td>
+<td>⭐ <strong>Tiếp điểm bắt cạnh LÊN</strong> — thông đúng một vòng quét khi bit đổi 0→1</td>
+</tr>
+<tr>
+<td><code>┤N├</code></td>
+<td>Tiếp điểm bắt cạnh <strong>xuống</strong></td>
+</tr>
+<tr>
+<td>Hộp có <code>IN</code>/<code>PT</code>/<code>Q</code></td>
+<td>Khối chức năng đặt <strong>giữa</strong> nấc thang</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Ở ladder, thứ tự &quot;lọc rung TRƯỚC, bắt cạnh SAU&quot; là thứ nhìn thấy được</strong> — hộp <code>TON</code> nằm bên
+trái, <code>┤P├</code> nằm bên phải. ⚡ Đảo hai cái là nhìn thấy ngay, khác hẳn bản ST nơi hai dòng đứng cạnh
+nhau và đổi chỗ trông vẫn hợp lý.</p>
+<p>⚠ <strong>Nhưng ladder giấu một thứ mà ST nói rõ:</strong> mỗi hộp là <strong>một thể hiện riêng</strong>. Chép nấc thang
+này rồi dán mà quên đổi tên hộp thì ⚠⚠ <strong>hai tín hiệu dùng chung một timer</strong> — Chương 14 mục 14.3.</p>
+</blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Đảo thứ tự là một lần nhấn ra nhiều xung.</strong> Lọc rung phải đứng <strong>trước</strong> bắt cạnh
 (Chương 18).</p>
@@ -57282,6 +57367,25 @@ IF SensWork AND SensHome THEN
 END_IF;
 END_FUNCTION_BLOCK
 </code></pre>
+<p>⭐ <strong>Gọi khối này từ ladder</strong> trông như sau — mỗi xy-lanh một hộp, mỗi hộp một tên:</p>
+<pre><code class="language-text">                      ┌────────────────────────┐
+                      │     FB_Cyl_Clamp1      │
+   M_Stn1_ClampReq    │                        │   DO_Clamp1Vlv
+ ────┤ ├──────────────┤ Req             SolOut ├────────( )───
+   DI_Clamp1Up        │                        │   M_Clamp1Done
+ ────┤ ├──────────────┤ SensWork          Done ├────────( )───
+   DI_Clamp1Dn        │                        │   M_Clamp1Fault
+ ────┤ ├──────────────┤ SensHome         Fault ├────────( )───
+        T#3S ─────────┤ Limit                  │
+                      └────────────────────────┘
+</code></pre>
+<blockquote>
+<p>⭐ <strong>Đây là hình dạng quen thuộc nhất với thợ bảo trì:</strong> một hộp có tên, chân trái là lệnh vào,
+chân phải là phản hồi ra. ⚡ Không cần biết bên trong hộp viết bằng gì — và thực tế <strong>bên trong
+nên viết bằng ST</strong>, vì nó có timer, so sánh và mã lỗi (mục L.19).</p>
+<p>⭐⭐ <strong>Một hộp một tên</strong> — <code>FB_Cyl_Clamp1</code>, <code>FB_Cyl_Clamp2</code>… ⚠ Hai xy-lanh dùng chung một tên hộp
+là lỗi cùng loại với dùng chung <code>R_TRIG</code> ở L.7.</p>
+</blockquote>
 <blockquote>
 <p>⭐⭐ <strong>Phép kiểm &quot;cả hai cảm biến cùng báo&quot; là thứ đáng giá nhất trong khối này.</strong> Về mặt vật lý nó
 <strong>không thể xảy ra</strong> — nên khi nó xảy ra thì chắc chắn có hỏng hóc. ⚡ Đây là cách rẻ nhất để
@@ -57432,6 +57536,22 @@ M_KM_Main  := (SD_Step &gt;= 10);
 M_KM_Star  := (SD_Step  = 10);
 M_KM_Delta := (SD_Step  = 30);
 </code></pre>
+<p>⭐ <strong>Khoá chéo bằng ladder</strong> — đây là mẫu ladder kinh điển nhất, và lý do nó kinh điển là
+<strong>tiếp điểm khoá chéo nhìn thấy được</strong>:</p>
+<pre><code class="language-text">   M_FwdReq      M_RevReq     M_MotorRev   M_AllPermissive          M_MotorFwd
+ ────┤ ├───────────┤/├───────────┤/├────────────┤ ├────────────────────( )───
+
+   M_RevReq      M_FwdReq     M_MotorFwd   M_AllPermissive          M_MotorRev
+ ────┤ ├───────────┤/├───────────┤/├────────────┤ ├────────────────────( )───
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Đọc chéo hai nấc là thấy ngay khoá chéo:</strong> nấc trên có <code>┤/├</code> của <code>M_MotorRev</code>, nấc dưới có
+<code>┤/├</code> của <code>M_MotorFwd</code>. ⚡ Thiếu một trong hai là <strong>nhìn ra được bằng mắt</strong> — trong bản ST thì
+phải đọc kỹ từng vế.</p>
+<p>⚠⚠ <strong>Nhắc lại lần nữa vì nó quan trọng:</strong> hai nấc này là <strong>lớp 1</strong>. Vẫn phải có <strong>khoảng chết</strong>
+(lớp 2) và ⭐⭐ <strong>khoá CƠ KHÍ giữa hai contactor</strong> (lớp 3). Ladder đẹp không cứu được tiếp điểm
+hàn dính.</p>
+</blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Bỏ khoảng chết ở bước 20 là ngắn mạch pha.</strong> Contactor sao chưa nhả hẳn mà contactor tam giác
 đã đóng → ⭐ <strong>nổ contactor</strong>. Đây là lỗi <strong>không được phép xảy ra lần nào</strong>, nên khoảng chết phải
@@ -57540,6 +57660,28 @@ DO_LampYellow := NOT M_AnyFault AND (M_Paused OR M_NoNewCycle OR (M_ForceActive 
 DO_LampGreen  := NOT M_AnyFault AND NOT M_Paused AND M_Running;
 DO_Buzzer     := M_AnyFault AND NOT M_AlarmAcked;
 </code></pre>
+<p>⭐ <strong>Bằng ladder</strong> — bốn nấc, mỗi đèn một nấc, và đọc được từ xa:</p>
+<pre><code class="language-text">   M_AnyFault                                                        DO_LampRed
+ ────┤ ├────────────────────────────────────────────────────────────────( )───
+
+   M_AnyFault    M_Paused                                       DO_LampYellow
+ ────┤/├───┬───────┤ ├───────────────────────────────────────┬───────( )───
+           │   M_NoNewCycle                                  │
+           ├───────┤ ├───────────────────────────────────────┤
+           │  M_ForceActive   M_Blink                        │
+           └───────┤ ├──────────┤ ├──────────────────────────┘
+
+   M_AnyFault    M_Paused     M_Running                          DO_LampGreen
+ ────┤/├───────────┤/├───────────┤ ├────────────────────────────────────( )───
+
+   M_AnyFault   M_AlarmAcked                                         DO_Buzzer
+ ────┤ ├────────────┤/├─────────────────────────────────────────────────( )───
+</code></pre>
+<blockquote>
+<p>⭐ <strong>Ngõ ra cuối cùng là chỗ ladder đáng dùng nhất trong cả phụ lục này.</strong> ⚡ Khi máy có sự cố,
+người đầu tiên mở chương trình thường là thợ bảo trì — và họ sẽ tìm <strong>nấc thang điều khiển cái
+đèn đang sáng sai</strong>. ⭐ Bốn nấc ở trên tìm ra trong mười giây; bốn dòng ST thì phải biết tìm ở đâu.</p>
+</blockquote>
 <blockquote>
 <p>⭐ <strong>Đèn vàng nháy khi còn cưỡng bức I/O</strong> là mẹo rẻ nhất chống quên gỡ force: nó biến một trạng
 thái <strong>ẩn trong phần mềm</strong> thành thứ <strong>nhìn thấy được từ đầu kia xưởng</strong> (Chương 51).</p>
@@ -57935,7 +58077,184 @@ trạm (Chương 30 mục 30.5).</p>
 </tr>
 </tbody></table></div>
 <hr>
-<h2 id="l18-bng-tra-nhanh-mu-nào-cho-vic-gì">L.18 Bảng tra nhanh — mẫu nào cho việc gì</h2>
+<h2 id="l18-ladder-hay-st-mu-nào-nên-vit-bng-gì">L.18 ⭐⭐ Ladder hay ST — mẫu nào nên viết bằng gì</h2>
+<p>Bảy mẫu ở trên có <strong>cả hai bản</strong>. Bảy mẫu còn lại <strong>chỉ có ST</strong> — và đó là chủ ý, không phải lười.
+⭐ Mục này nói rõ vì sao, để bạn quyết định cho máy của mình.</p>
+<h3>⭐ Cùng một bài toán, hai ngôn ngữ, hai kết quả rất khác nhau</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mẫu</th>
+<th>Ladder</th>
+<th>ST</th>
+<th>⭐ Nên dùng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>L.1</strong> tự giữ</td>
+<td>⭐⭐ Nhánh tự giữ <strong>nhìn thấy được</strong></td>
+<td>⚠ Dấu ngoặc sai chỗ trông vẫn bình thường</td>
+<td>⭐ <strong>Ladder</strong></td>
+</tr>
+<tr>
+<td><strong>L.2</strong> chuỗi cho phép</td>
+<td>⭐⭐ Một nấc, thấy ngay tiếp điểm nào hở</td>
+<td>Một biểu thức dài</td>
+<td>⭐⭐ <strong>Ladder</strong></td>
+</tr>
+<tr>
+<td><strong>L.4</strong> ba lệnh dừng</td>
+<td>⭐ Rõ, nhưng tốn hai nấc cho một nút bật/tắt</td>
+<td>⭐ Gọn hơn</td>
+<td>Hoà</td>
+</tr>
+<tr>
+<td><strong>L.7</strong> bắt cạnh + chống rung</td>
+<td>⭐ Thứ tự lọc–bắt cạnh <strong>nhìn thấy được</strong></td>
+<td>⚠ Hai dòng cạnh nhau, đảo chỗ trông vẫn hợp lý</td>
+<td>⭐ <strong>Ladder</strong></td>
+</tr>
+<tr>
+<td><strong>L.8</strong> gọi khối cơ cấu</td>
+<td>⭐⭐ Hộp có tên — hình dạng quen nhất với thợ bảo trì</td>
+<td>Gọn</td>
+<td>⭐ <strong>Ladder gọi, ST viết bên trong</strong></td>
+</tr>
+<tr>
+<td><strong>L.10</strong> khoá chéo</td>
+<td>⭐⭐ Tiếp điểm khoá chéo <strong>nhìn chéo là thấy</strong></td>
+<td>Phải đọc kỹ từng vế</td>
+<td>⭐⭐ <strong>Ladder</strong></td>
+</tr>
+<tr>
+<td><strong>L.13</strong> đèn tháp</td>
+<td>⭐⭐ Mỗi đèn một nấc — tìm ra trong mười giây</td>
+<td>Bốn dòng, phải biết tìm ở đâu</td>
+<td>⭐⭐ <strong>Ladder</strong></td>
+</tr>
+<tr>
+<td><strong>L.3</strong> giám sát dừng khẩn</td>
+<td>⚠ Nhiều nấc rời rạc, mất mạch lạc</td>
+<td>⭐ Một khối <code>IF</code> đọc liền mạch</td>
+<td>⭐ <strong>ST</strong></td>
+</tr>
+<tr>
+<td><strong>L.5</strong> một lần / tuần hoàn</td>
+<td>⚠ Điều kiện lồng nhau thành nhiều nấc</td>
+<td>⭐ Rõ</td>
+<td>⭐ <strong>ST</strong></td>
+</tr>
+<tr>
+<td><strong>L.6</strong> khung trình tự</td>
+<td>⚠⚠ <code>CASE</code> <strong>không có tương đương tự nhiên</strong></td>
+<td>⭐⭐ Đúng công cụ</td>
+<td>⭐⭐ <strong>ST</strong></td>
+</tr>
+<tr>
+<td><strong>L.9</strong> servo</td>
+<td>⚠ Nhiều hộp, nhiều chân, rối</td>
+<td>⭐ Máy trạng thái đọc được</td>
+<td>⭐⭐ <strong>ST</strong></td>
+</tr>
+<tr>
+<td><strong>L.12</strong> analog bốn bước</td>
+<td>⚠⚠ Phép tính bằng ladder rất khó đọc</td>
+<td>⭐⭐ Tự nhiên</td>
+<td>⭐⭐ <strong>ST</strong></td>
+</tr>
+<tr>
+<td><strong>L.14</strong> đếm sản lượng</td>
+<td>⚠ Phép chia và kiểm mẫu số thành nhiều hộp</td>
+<td>⭐ Bốn dòng</td>
+<td>⭐⭐ <strong>ST</strong></td>
+</tr>
+<tr>
+<td><strong>L.16</strong> tuổi thọ vật tư</td>
+<td>⚠ So sánh và phần trăm rối</td>
+<td>⭐ Rõ</td>
+<td>⭐ <strong>ST</strong></td>
+</tr>
+</tbody></table></div>
+<h3>⭐⭐ Rút ra một quy tắc dùng được</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Viết bằng <strong>ladder</strong> khi…</th>
+<th>Viết bằng <strong>ST</strong> khi…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ <strong>Thợ bảo trì sẽ phải đọc nó lúc hai giờ sáng</strong></td>
+<td>Chỉ người lập trình đọc</td>
+</tr>
+<tr>
+<td>Nó là <strong>logic bit</strong>: nối tiếp, song song, khoá chéo, chốt</td>
+<td>Có <strong>phép tính</strong>, so sánh nhiều nhánh, xử lý số</td>
+</tr>
+<tr>
+<td>⭐ Nó điều khiển <strong>ngõ ra cuối cùng</strong></td>
+<td>Nó là <strong>tính toán trung gian</strong></td>
+</tr>
+<tr>
+<td>⭐ Nó là <strong>liên động</strong> — thứ người ta sẽ soi khi máy không chạy</td>
+<td>Nó là <strong>trình tự nhiều bước</strong> (<code>CASE</code>)</td>
+</tr>
+<tr>
+<td>Cần <strong>theo dõi trực tuyến</strong> thấy dòng chạy qua từng tiếp điểm</td>
+<td>Cần <strong>vòng lặp</strong>, mảng, chỉ số</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Câu quyết định, và nó không phải câu kỹ thuật:</strong> ⭐ <strong>ai sẽ mở đoạn này ra xem, và trong
+hoàn cảnh nào?</strong></p>
+<p>⚡ Cùng một logic, viết bằng ladder thì <strong>người không biết lập trình vẫn dò được</strong> bằng cách nhìn
+tiếp điểm nào đang sáng trên màn hình theo dõi. ⚠ Viết bằng ST thì họ phải <strong>gọi bạn</strong>.</p>
+</blockquote>
+<h3>⭐ Trộn hai ngôn ngữ — cách trộn đúng</h3>
+<p>⚠ Trộn <strong>không</strong> có nghĩa là mỗi chỗ một kiểu tuỳ hứng. ⭐ Có một cách chia đã được dùng nhiều và
+hợp lý:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tầng</th>
+<th>Ngôn ngữ</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bên trong khối chức năng</strong></td>
+<td>⭐ <strong>ST</strong></td>
+<td>Có timer, so sánh, mã lỗi — và ⭐ <strong>người dùng khối không cần mở nó ra</strong></td>
+</tr>
+<tr>
+<td><strong>Gọi khối, nối dây giữa các khối</strong></td>
+<td>⭐ <strong>Ladder</strong></td>
+<td>Hình dạng hộp quen thuộc, thấy được luồng</td>
+</tr>
+<tr>
+<td><strong>Trình tự nhiều bước</strong></td>
+<td>⭐⭐ <strong>ST</strong> với <code>CASE</code>, hoặc <strong>SFC</strong></td>
+<td>Chương 21, Chương 26</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Chuỗi cho phép và ngõ ra cuối</strong></td>
+<td>⭐⭐ <strong>Ladder</strong></td>
+<td>⚠ Đây là chỗ <strong>không nên</strong> dùng ST, kể cả khi cả chương trình viết bằng ST</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Hàng cuối là lời khuyên đáng giá nhất của cả mục.</strong> Rất nhiều chương trình viết toàn bộ bằng
+ST rồi để ngõ ra cuối cũng bằng ST — ⚡ và đó chính là chỗ thợ bảo trì bị chặn lại. ⭐ <strong>Vài nấc
+thang ladder ở đúng chỗ đó đổi hẳn khả năng tự xử lý của nhà máy</strong>, và nó gần như không tốn gì.</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Một lưu ý về hỗ trợ của hãng.</strong> Không phải hệ nào cũng cho <strong>trộn ngôn ngữ trong cùng một
+chương trình</strong> ở mọi mức. ⭐ Phần lớn hệ hiện đại cho mỗi <strong>khối</strong> một ngôn ngữ (khối này ladder,
+khối kia ST) — như vậy là đủ cho cách chia ở bảng trên. ⚠ <strong>Kiểm trước khi thiết kế theo nó</strong>, và
+xem Phụ lục A1 cho khác biệt giữa các hệ.</p>
+</blockquote>
+<hr>
+<h2 id="l19-bng-tra-nhanh-mu-nào-cho-vic-gì">L.19 Bảng tra nhanh — mẫu nào cho việc gì</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -58040,6 +58359,18 @@ trạm (Chương 30 mục 30.5).</p>
 <td>L.16</td>
 <td>⚠⚠ Bộ đếm bị xoá khi nạp lại chương trình</td>
 <td>11, 53</td>
+</tr>
+<tr>
+<td>⭐ <strong>Chọn viết bằng ladder hay ST</strong></td>
+<td><strong>L.18</strong></td>
+<td>⚠ Viết ngõ ra cuối bằng ST — thợ bảo trì bị chặn</td>
+<td>15, 20</td>
+</tr>
+<tr>
+<td>⭐ Khối nào tự viết, khối nào đã có sẵn</td>
+<td><strong>L.17</strong></td>
+<td>⚠⚠ Tự viết khối chức năng an toàn</td>
+<td>30, 47</td>
 </tr>
 </tbody></table></div>
 <hr>

@@ -35904,7 +35904,7 @@ Y(r,c) = Y1 + (c−1)·(Y2−Y1)/(C−1) + (r−1)·(Y3−Y1)/(R−1)
 >
 > | | |
 > |---|---|
-> | 1 | ⭐ Mẫu ở đây viết bằng **Structured Text** cho gọn. Với logic liên động và ngõ ra cuối, ⚠ cân nhắc viết bằng **ladder** để người bảo trì đọc được (Chương 20) |
+> | 1 | ⭐ Mẫu viết bằng **Structured Text**; ⭐⭐ **bảy mẫu có thêm bản LADDER** ngay bên dưới. ⚠ Bảy mẫu còn lại cố ý **chỉ có ST** — lý do và cách chọn ở **mục L.18** |
 > | 2 | ⭐ Tên biến theo máy mẫu DP-01 (Phụ lục J). Đổi sang tên máy của bạn — ⚠ **đừng giữ tên mẫu** |
 > | 3 | ⚠⚠ **Không mẫu nào ở đây là chức năng an toàn.** Xem L.3 |
 > | 4 | ⭐ Mọi mẫu đều **chạy trong một tác vụ chu kỳ**, được gọi mỗi vòng quét (Chương 10) |
@@ -35922,6 +35922,22 @@ M_Running := (DI_StartPB OR M_Running)      // nhánh tự giữ
              AND DI_StopPB                  // ⚠ nút NC → kiểm BẰNG 1
              AND M_AllPermissive;           // chuỗi cho phép (L.2)
 ```
+
+⭐ **Cùng mẫu này viết bằng ladder** — đây là nấc thang phổ biến nhất trong cả ngành:
+
+```text
+   DI_StartPB      DI_StopPB    M_AllPermissive                      M_Running
+ ┌───┤ ├──────┬──────┤ ├────────────┤ ├────────────────────────────────( )───┐
+ │            │
+ │  M_Running │
+ └───┤ ├──────┘
+```
+
+> ⭐ **Ở ladder, mạch tự giữ NHÌN THẤY ĐƯỢC** — nó là nhánh song song vòng ngược về. ⚡ Đó là ưu thế
+> thật của ladder ở mẫu này: ⚠ trong bản ST, dấu ngoặc đặt sai chỗ **trông vẫn bình thường**; trong
+> ladder, nhánh tự giữ ôm nhầm cả `DI_StopPB` thì **nhìn là thấy ngay**.
+>
+> ⚡ Nấc này giống hệt nấc ở Chương 15 mục 15.4 — cố ý, vì đó là mẫu chuẩn.
 
 > ⚠⚠ **Vị trí của điều kiện dừng quyết định tất cả.** Đưa `DI_StopPB` **vào trong** dấu ngoặc của
 > nhánh tự giữ thì ⭐ **nhấn Stop trong lúc vẫn đang giữ Start sẽ KHÔNG dừng được máy** — và người thử
@@ -35957,6 +35973,23 @@ ELSIF NOT M_Homed        THEN M_BlockReason := BLK_NOT_HOMED;
 ELSE                          M_BlockReason := BLK_NONE;
 END_IF;
 ```
+
+⭐ **Bằng ladder** — chuỗi cho phép là nơi ladder **thắng rõ nhất**:
+
+```text
+ DI_EStopOK DI_Door1Closed DI_Door2Closed DI_CurtainOK DI_AirOK M_AnyFault M_Homed  M_AllPermissive
+ ───┤ ├────────┤ ├────────────┤ ├───────────┤ ├────────┤ ├───────┤/├───────┤ ├────────( )───
+```
+
+> ⭐⭐ **Một nấc thang, đọc từ trái sang phải, và người vận hành hiểu ngay.** ⚡ Khi máy không chạy,
+> mở màn hình theo dõi nấc này là **thấy ngay tiếp điểm nào đang hở** — không cần đọc code, không cần
+> biết lập trình.
+>
+> ⭐ Đây là lý do thật khiến chuỗi cho phép **nên** viết bằng ladder kể cả khi cả chương trình viết
+> bằng ST: ⚠ nó là nấc mà **người không lập trình cũng phải đọc được**.
+>
+> ⚠ Nhưng phần `M_BlockReason` thì **để nguyên ST** — ladder diễn đạt chuỗi `ELSIF` rất tệ. ⭐ Đây là
+> ví dụ điển hình của việc **trộn hai ngôn ngữ đúng chỗ** (mục L.18).
 
 > ⭐⭐ **`M_BlockReason` là phần đáng giá nhất của mẫu này.** Không có nó, người vận hành chỉ thấy
 > *"máy không chạy"* rồi bắt đầu bấm thử mọi thứ — đó là lúc người ta học được thói quen nhấn bừa.
@@ -36052,6 +36085,31 @@ IF M_Paused THEN
     // M_Stn1_ClampReq GIỮ NGUYÊN — không đụng tới cái đang GIỮ
 END_IF;
 ```
+
+⭐ **Bằng ladder** — cuộn dây chốt `( S )` / `( R )` làm phần "dừng cuối chu trình" rất gọn:
+
+```text
+  M_StopEocPB_Rise                                                 M_NoNewCycle
+ ────┤ ├───────────────────────────────────────────────────────────────( S )──
+
+  M_NoNewCycle   Stn1_Step=0    Stn2_Step=0                         M_CycleEnable
+ ────┤ ├─────────────┤ ├────────────┤ ├─────────────┬───────────────────( R )──
+                                                    │               M_NoNewCycle
+                                                    └───────────────────( R )──
+
+  M_PausePB_Rise    M_Paused                                            M_Paused
+ ────┤ ├──────────────┤/├───────────────────────────────────────────────( S )──
+  M_PausePB_Rise    M_Paused
+ ────┤ ├──────────────┤ ├────────────────────────────────────────────────( R )──
+```
+
+> ⭐ **Nút bật/tắt bằng ladder cần HAI nấc** — một để bật, một để tắt — trong khi ST chỉ cần
+> `M_Paused := NOT M_Paused`. ⚠ Nhưng hai nấc ladder **không có bẫy thứ tự quét** mà phép đảo trong
+> ST có thể gặp nếu bị gọi hai lần trong một vòng.
+>
+> ⚠⚠ **Chú ý cặp `( S )` / `( R )`:** phải kiểm hãng của bạn **cuộn nào thắng** khi cả hai cùng
+> tích cực trong một vòng quét — Chương 16 mục 16.2. ⭐ Ở đây hai nấc loại trừ nhau bằng chính
+> `M_Paused` nên không gặp, nhưng **đừng dựa vào may mắn ở chỗ khác**.
 
 > ⭐⭐ **Điểm quyết định của "tạm dừng": phân biệt ngõ ra CHUYỂN ĐỘNG với ngõ ra ĐANG GIỮ.**
 >
@@ -36187,6 +36245,31 @@ R_Board(CLK := T_Debounce.Q);
 M_BoardArrived := R_Board.Q;
 ```
 
+⭐ **Bằng ladder** — tiếp điểm bắt cạnh `┤P├` và khối `TON` vẽ thành hộp:
+
+```text
+  DI_StartPB                                                      M_StartPB_Rise
+ ────┤P├────────────────────────────────────────────────────────────────( )───
+
+  DI_BoardStn1        ┌──────────────────┐
+ ────┤ ├──────────────┤ IN   T_Debounce Q├──┤P├──────────────────( )───
+                      │ T#20MS        PT │                   M_BoardArrived
+                      └──────────────────┘
+```
+
+| Ký hiệu | Nghĩa |
+|---|---|
+| `┤P├` | ⭐ **Tiếp điểm bắt cạnh LÊN** — thông đúng một vòng quét khi bit đổi 0→1 |
+| `┤N├` | Tiếp điểm bắt cạnh **xuống** |
+| Hộp có `IN`/`PT`/`Q` | Khối chức năng đặt **giữa** nấc thang |
+
+> ⭐⭐ **Ở ladder, thứ tự "lọc rung TRƯỚC, bắt cạnh SAU" là thứ nhìn thấy được** — hộp `TON` nằm bên
+> trái, `┤P├` nằm bên phải. ⚡ Đảo hai cái là nhìn thấy ngay, khác hẳn bản ST nơi hai dòng đứng cạnh
+> nhau và đổi chỗ trông vẫn hợp lý.
+>
+> ⚠ **Nhưng ladder giấu một thứ mà ST nói rõ:** mỗi hộp là **một thể hiện riêng**. Chép nấc thang
+> này rồi dán mà quên đổi tên hộp thì ⚠⚠ **hai tín hiệu dùng chung một timer** — Chương 14 mục 14.3.
+
 > ⚠⚠ **Đảo thứ tự là một lần nhấn ra nhiều xung.** Lọc rung phải đứng **trước** bắt cạnh
 > (Chương 18).
 >
@@ -36245,6 +36328,28 @@ IF SensWork AND SensHome THEN
 END_IF;
 END_FUNCTION_BLOCK
 ```
+
+⭐ **Gọi khối này từ ladder** trông như sau — mỗi xy-lanh một hộp, mỗi hộp một tên:
+
+```text
+                      ┌────────────────────────┐
+                      │     FB_Cyl_Clamp1      │
+   M_Stn1_ClampReq    │                        │   DO_Clamp1Vlv
+ ────┤ ├──────────────┤ Req             SolOut ├────────( )───
+   DI_Clamp1Up        │                        │   M_Clamp1Done
+ ────┤ ├──────────────┤ SensWork          Done ├────────( )───
+   DI_Clamp1Dn        │                        │   M_Clamp1Fault
+ ────┤ ├──────────────┤ SensHome         Fault ├────────( )───
+        T#3S ─────────┤ Limit                  │
+                      └────────────────────────┘
+```
+
+> ⭐ **Đây là hình dạng quen thuộc nhất với thợ bảo trì:** một hộp có tên, chân trái là lệnh vào,
+> chân phải là phản hồi ra. ⚡ Không cần biết bên trong hộp viết bằng gì — và thực tế **bên trong
+> nên viết bằng ST**, vì nó có timer, so sánh và mã lỗi (mục L.19).
+>
+> ⭐⭐ **Một hộp một tên** — `FB_Cyl_Clamp1`, `FB_Cyl_Clamp2`… ⚠ Hai xy-lanh dùng chung một tên hộp
+> là lỗi cùng loại với dùng chung `R_TRIG` ở L.7.
 
 > ⭐⭐ **Phép kiểm "cả hai cảm biến cùng báo" là thứ đáng giá nhất trong khối này.** Về mặt vật lý nó
 > **không thể xảy ra** — nên khi nó xảy ra thì chắc chắn có hỏng hóc. ⚡ Đây là cách rẻ nhất để
@@ -36391,6 +36496,25 @@ M_KM_Star  := (SD_Step  = 10);
 M_KM_Delta := (SD_Step  = 30);
 ```
 
+⭐ **Khoá chéo bằng ladder** — đây là mẫu ladder kinh điển nhất, và lý do nó kinh điển là
+**tiếp điểm khoá chéo nhìn thấy được**:
+
+```text
+   M_FwdReq      M_RevReq     M_MotorRev   M_AllPermissive          M_MotorFwd
+ ────┤ ├───────────┤/├───────────┤/├────────────┤ ├────────────────────( )───
+
+   M_RevReq      M_FwdReq     M_MotorFwd   M_AllPermissive          M_MotorRev
+ ────┤ ├───────────┤/├───────────┤/├────────────┤ ├────────────────────( )───
+```
+
+> ⭐⭐ **Đọc chéo hai nấc là thấy ngay khoá chéo:** nấc trên có `┤/├` của `M_MotorRev`, nấc dưới có
+> `┤/├` của `M_MotorFwd`. ⚡ Thiếu một trong hai là **nhìn ra được bằng mắt** — trong bản ST thì
+> phải đọc kỹ từng vế.
+>
+> ⚠⚠ **Nhắc lại lần nữa vì nó quan trọng:** hai nấc này là **lớp 1**. Vẫn phải có **khoảng chết**
+> (lớp 2) và ⭐⭐ **khoá CƠ KHÍ giữa hai contactor** (lớp 3). Ladder đẹp không cứu được tiếp điểm
+> hàn dính.
+
 > ⚠⚠ **Bỏ khoảng chết ở bước 20 là ngắn mạch pha.** Contactor sao chưa nhả hẳn mà contactor tam giác
 > đã đóng → ⭐ **nổ contactor**. Đây là lỗi **không được phép xảy ra lần nào**, nên khoảng chết phải
 > lấy theo thời gian nhả **ghi trong datasheet contactor**, không lấy theo cảm tính.
@@ -36514,6 +36638,30 @@ DO_LampYellow := NOT M_AnyFault AND (M_Paused OR M_NoNewCycle OR (M_ForceActive 
 DO_LampGreen  := NOT M_AnyFault AND NOT M_Paused AND M_Running;
 DO_Buzzer     := M_AnyFault AND NOT M_AlarmAcked;
 ```
+
+⭐ **Bằng ladder** — bốn nấc, mỗi đèn một nấc, và đọc được từ xa:
+
+```text
+   M_AnyFault                                                        DO_LampRed
+ ────┤ ├────────────────────────────────────────────────────────────────( )───
+
+   M_AnyFault    M_Paused                                       DO_LampYellow
+ ────┤/├───┬───────┤ ├───────────────────────────────────────┬───────( )───
+           │   M_NoNewCycle                                  │
+           ├───────┤ ├───────────────────────────────────────┤
+           │  M_ForceActive   M_Blink                        │
+           └───────┤ ├──────────┤ ├──────────────────────────┘
+
+   M_AnyFault    M_Paused     M_Running                          DO_LampGreen
+ ────┤/├───────────┤/├───────────┤ ├────────────────────────────────────( )───
+
+   M_AnyFault   M_AlarmAcked                                         DO_Buzzer
+ ────┤ ├────────────┤/├─────────────────────────────────────────────────( )───
+```
+
+> ⭐ **Ngõ ra cuối cùng là chỗ ladder đáng dùng nhất trong cả phụ lục này.** ⚡ Khi máy có sự cố,
+> người đầu tiên mở chương trình thường là thợ bảo trì — và họ sẽ tìm **nấc thang điều khiển cái
+> đèn đang sáng sai**. ⭐ Bốn nấc ở trên tìm ra trong mười giây; bốn dòng ST thì phải biết tìm ở đâu.
 
 > ⭐ **Đèn vàng nháy khi còn cưỡng bức I/O** là mẹo rẻ nhất chống quên gỡ force: nó biến một trạng
 > thái **ẩn trong phần mềm** thành thứ **nhìn thấy được từ đầu kia xưởng** (Chương 51).
@@ -36761,7 +36909,70 @@ hoạt động. Mỗi dòng dưới đây đã có mẫu ở đâu đó trong s�
 
 ---
 
-## L.18 Bảng tra nhanh — mẫu nào cho việc gì
+## L.18 ⭐⭐ Ladder hay ST — mẫu nào nên viết bằng gì
+
+Bảy mẫu ở trên có **cả hai bản**. Bảy mẫu còn lại **chỉ có ST** — và đó là chủ ý, không phải lười.
+⭐ Mục này nói rõ vì sao, để bạn quyết định cho máy của mình.
+
+### ⭐ Cùng một bài toán, hai ngôn ngữ, hai kết quả rất khác nhau
+
+| Mẫu | Ladder | ST | ⭐ Nên dùng |
+|---|---|---|---|
+| **L.1** tự giữ | ⭐⭐ Nhánh tự giữ **nhìn thấy được** | ⚠ Dấu ngoặc sai chỗ trông vẫn bình thường | ⭐ **Ladder** |
+| **L.2** chuỗi cho phép | ⭐⭐ Một nấc, thấy ngay tiếp điểm nào hở | Một biểu thức dài | ⭐⭐ **Ladder** |
+| **L.4** ba lệnh dừng | ⭐ Rõ, nhưng tốn hai nấc cho một nút bật/tắt | ⭐ Gọn hơn | Hoà |
+| **L.7** bắt cạnh + chống rung | ⭐ Thứ tự lọc–bắt cạnh **nhìn thấy được** | ⚠ Hai dòng cạnh nhau, đảo chỗ trông vẫn hợp lý | ⭐ **Ladder** |
+| **L.8** gọi khối cơ cấu | ⭐⭐ Hộp có tên — hình dạng quen nhất với thợ bảo trì | Gọn | ⭐ **Ladder gọi, ST viết bên trong** |
+| **L.10** khoá chéo | ⭐⭐ Tiếp điểm khoá chéo **nhìn chéo là thấy** | Phải đọc kỹ từng vế | ⭐⭐ **Ladder** |
+| **L.13** đèn tháp | ⭐⭐ Mỗi đèn một nấc — tìm ra trong mười giây | Bốn dòng, phải biết tìm ở đâu | ⭐⭐ **Ladder** |
+| **L.3** giám sát dừng khẩn | ⚠ Nhiều nấc rời rạc, mất mạch lạc | ⭐ Một khối `IF` đọc liền mạch | ⭐ **ST** |
+| **L.5** một lần / tuần hoàn | ⚠ Điều kiện lồng nhau thành nhiều nấc | ⭐ Rõ | ⭐ **ST** |
+| **L.6** khung trình tự | ⚠⚠ `CASE` **không có tương đương tự nhiên** | ⭐⭐ Đúng công cụ | ⭐⭐ **ST** |
+| **L.9** servo | ⚠ Nhiều hộp, nhiều chân, rối | ⭐ Máy trạng thái đọc được | ⭐⭐ **ST** |
+| **L.12** analog bốn bước | ⚠⚠ Phép tính bằng ladder rất khó đọc | ⭐⭐ Tự nhiên | ⭐⭐ **ST** |
+| **L.14** đếm sản lượng | ⚠ Phép chia và kiểm mẫu số thành nhiều hộp | ⭐ Bốn dòng | ⭐⭐ **ST** |
+| **L.16** tuổi thọ vật tư | ⚠ So sánh và phần trăm rối | ⭐ Rõ | ⭐ **ST** |
+
+### ⭐⭐ Rút ra một quy tắc dùng được
+
+| Viết bằng **ladder** khi… | Viết bằng **ST** khi… |
+|---|---|
+| ⭐⭐ **Thợ bảo trì sẽ phải đọc nó lúc hai giờ sáng** | Chỉ người lập trình đọc |
+| Nó là **logic bit**: nối tiếp, song song, khoá chéo, chốt | Có **phép tính**, so sánh nhiều nhánh, xử lý số |
+| ⭐ Nó điều khiển **ngõ ra cuối cùng** | Nó là **tính toán trung gian** |
+| ⭐ Nó là **liên động** — thứ người ta sẽ soi khi máy không chạy | Nó là **trình tự nhiều bước** (`CASE`) |
+| Cần **theo dõi trực tuyến** thấy dòng chạy qua từng tiếp điểm | Cần **vòng lặp**, mảng, chỉ số |
+
+> ⭐⭐ **Câu quyết định, và nó không phải câu kỹ thuật:** ⭐ **ai sẽ mở đoạn này ra xem, và trong
+> hoàn cảnh nào?**
+>
+> ⚡ Cùng một logic, viết bằng ladder thì **người không biết lập trình vẫn dò được** bằng cách nhìn
+> tiếp điểm nào đang sáng trên màn hình theo dõi. ⚠ Viết bằng ST thì họ phải **gọi bạn**.
+
+### ⭐ Trộn hai ngôn ngữ — cách trộn đúng
+
+⚠ Trộn **không** có nghĩa là mỗi chỗ một kiểu tuỳ hứng. ⭐ Có một cách chia đã được dùng nhiều và
+hợp lý:
+
+| Tầng | Ngôn ngữ | Vì sao |
+|---|---|---|
+| **Bên trong khối chức năng** | ⭐ **ST** | Có timer, so sánh, mã lỗi — và ⭐ **người dùng khối không cần mở nó ra** |
+| **Gọi khối, nối dây giữa các khối** | ⭐ **Ladder** | Hình dạng hộp quen thuộc, thấy được luồng |
+| **Trình tự nhiều bước** | ⭐⭐ **ST** với `CASE`, hoặc **SFC** | Chương 21, Chương 26 |
+| ⭐⭐ **Chuỗi cho phép và ngõ ra cuối** | ⭐⭐ **Ladder** | ⚠ Đây là chỗ **không nên** dùng ST, kể cả khi cả chương trình viết bằng ST |
+
+> ⭐⭐ **Hàng cuối là lời khuyên đáng giá nhất của cả mục.** Rất nhiều chương trình viết toàn bộ bằng
+> ST rồi để ngõ ra cuối cũng bằng ST — ⚡ và đó chính là chỗ thợ bảo trì bị chặn lại. ⭐ **Vài nấc
+> thang ladder ở đúng chỗ đó đổi hẳn khả năng tự xử lý của nhà máy**, và nó gần như không tốn gì.
+
+> ⚠ **Một lưu ý về hỗ trợ của hãng.** Không phải hệ nào cũng cho **trộn ngôn ngữ trong cùng một
+> chương trình** ở mọi mức. ⭐ Phần lớn hệ hiện đại cho mỗi **khối** một ngôn ngữ (khối này ladder,
+> khối kia ST) — như vậy là đủ cho cách chia ở bảng trên. ⚠ **Kiểm trước khi thiết kế theo nó**, và
+> xem Phụ lục A1 cho khác biệt giữa các hệ.
+
+---
+
+## L.19 Bảng tra nhanh — mẫu nào cho việc gì
 
 | Việc cần làm | Mẫu | Bẫy lớn nhất | Chương |
 |---|---|---|---|
@@ -36781,6 +36992,8 @@ hoạt động. Mỗi dòng dưới đây đã có mẫu ở đâu đó trong s�
 | Đếm sản lượng | L.14 | ⚠⚠ Chia cho 0 ở đầu ca | 19, 55 |
 | Gắp bằng giác hút | L.15 | ⚠⚠ Ngừng hút **không phải** là nhả | 6, 33, 46 |
 | Theo dõi tuổi thọ vật tư | L.16 | ⚠⚠ Bộ đếm bị xoá khi nạp lại chương trình | 11, 53 |
+| ⭐ **Chọn viết bằng ladder hay ST** | **L.18** | ⚠ Viết ngõ ra cuối bằng ST — thợ bảo trì bị chặn | 15, 20 |
+| ⭐ Khối nào tự viết, khối nào đã có sẵn | **L.17** | ⚠⚠ Tự viết khối chức năng an toàn | 30, 47 |
 
 ---
 

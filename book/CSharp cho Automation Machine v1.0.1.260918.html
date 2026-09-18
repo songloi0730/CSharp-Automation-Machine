@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260917</title>
+<title>C# cho Automation Machine — v1.0.1.260918</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -539,7 +539,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260917</td>
+<td>v1.0.1.260918</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -3845,6 +3845,153 @@ public static class JsonConfigIO
 }
 </code></pre>
 <p>Tóm lại chiến lược file cho một dự án PC-Based Control: <strong>Log</strong> → text + rolling + batch; <strong>Config</strong> → JSON + version + atomic + backup; <strong>Recipe/Historical</strong> → binary (compact) hoặc JSON/CSV (dễ kiểm); <strong>Export sản xuất</strong> → CSV với invariant culture.</p>
+<h3>3.6.3b  Hai định dạng sách chưa nhắc mà dự án nào cũng có: INI và Excel</h3>
+<p>Ba mục trên bàn CSV, JSON, XML, YAML — những định dạng bạn <strong>nên</strong> chọn khi bắt đầu mới. Nhưng
+khi mở một dự án máy có sẵn, hai định dạng khác mới là thứ đập vào mắt trước, và sách sẽ thiếu
+sót nếu không nói về chúng.</p>
+<p>Đếm dấu vết trong bộ mẫu 13 dự án:</p>
+<p><strong>Bảng 3.9 — Định dạng dữ liệu/cấu hình thực sự gặp trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Định dạng</th>
+<th>Số dự án</th>
+<th>Dự án dùng nhiều nhất</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>INI</strong> (<code>GetPrivateProfileString</code>, <code>*.ini</code>)</td>
+<td><strong>13</strong> / 13</td>
+<td><strong>591</strong> lần</td>
+</tr>
+<tr>
+<td><strong>Excel</strong> (Interop / NPOI / <code>.xls</code>)</td>
+<td><strong>11</strong> / 13</td>
+<td><strong>429</strong> lần</td>
+</tr>
+<tr>
+<td>CSV</td>
+<td>13 / 13</td>
+<td>119 lần</td>
+</tr>
+<tr>
+<td>SQLite</td>
+<td>5 / 13</td>
+<td>79 lần</td>
+</tr>
+</tbody></table></div>
+<p>Đọc bảng này cùng lúc với thứ tự các mục trong chương sẽ thấy một khoảng cách đáng chú ý: định
+dạng <strong>phổ biến nhất ngoài thực tế</strong> lại là định dạng <strong>ít được sách vở nhắc tới nhất</strong>.</p>
+<h4>INI — cũ, hạn chế, và vẫn là lựa chọn hợp lý cho một phần cấu hình</h4>
+<p>INI là định dạng phẳng hai cấp: <code>[Mục]</code> rồi <code>Khoá=Giá trị</code>. Nó không có kiểu dữ liệu, không có
+cấu trúc lồng nhau, không có mảng. Vậy vì sao 13/13 dự án vẫn dùng?</p>
+<p><strong>Bảng 3.10 — INI so với JSON cho cấu hình máy</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>INI</th>
+<th>JSON</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kỹ thuật viên sửa tay bằng Notepad ngoài hiện trường</td>
+<td><strong>Rất dễ</strong> — sai cú pháp gần như không thể</td>
+<td>Dễ sai: thiếu dấu phẩy, thừa dấu phẩy cuối, sai ngoặc</td>
+</tr>
+<tr>
+<td>Một dòng hỏng thì sao</td>
+<td>Mất <strong>một khoá</strong></td>
+<td>Có thể hỏng <strong>cả file</strong></td>
+</tr>
+<tr>
+<td>Cấu trúc lồng nhau, mảng</td>
+<td><strong>Không có</strong> — phải bịa quy ước <code>Diem1</code>, <code>Diem2</code>…</td>
+<td>Có sẵn</td>
+</tr>
+<tr>
+<td>Kiểu dữ liệu</td>
+<td>Không — tất cả là chuỗi, tự ép kiểu, tự sai</td>
+<td>Có</td>
+</tr>
+<tr>
+<td>Ghi chú trong file</td>
+<td>Có (<code>;</code>)</td>
+<td><strong>Không</strong> (JSON chuẩn không có comment)</td>
+</tr>
+<tr>
+<td>Công cụ .NET sẵn có</td>
+<td>Không — phải gọi Win32 hoặc tự viết</td>
+<td><code>System.Text.Json</code>, không cần NuGet</td>
+</tr>
+</tbody></table></div>
+<p>Đọc theo cột sẽ thấy INI thắng ở đúng một trục, nhưng là trục rất quan trọng với phần mềm máy:
+<strong>người sửa file đó thường không phải lập trình viên, và họ sửa bằng Notepad trên một máy tính
+công nghiệp lúc nửa đêm.</strong> Một file JSON hỏng vì thừa dấu phẩy sẽ làm máy không khởi động được;
+một dòng INI hỏng chỉ làm mất một khoá.</p>
+<blockquote>
+<p>💡 <strong>Khuyến nghị thực dụng: chia cấu hình làm hai loại thay vì chọn một định dạng cho tất cả.</strong>
+<strong>Thứ người vận hành/kỹ thuật viên sửa</strong> (địa chỉ IP, cổng COM, ngưỡng đơn giản, bật/tắt tính
+năng) → INI, vì tính chịu lỗi khi sửa tay quan trọng hơn mọi thứ khác. <strong>Thứ chỉ phần mềm đọc/
+ghi</strong> (bảng điểm, công thức, cấu hình trạm có cấu trúc lồng nhau) → JSON, vì nó có kiểu và có
+cấu trúc. Trộn được hai thứ này trong một dự án là chuyện bình thường, không phải sự thiếu nhất
+quán.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Hai cái bẫy của INI mà mọi dự án dùng nó đều gặp.</strong> Thứ nhất, <strong><code>GetPrivateProfileString</code>
+là hàm Win32</strong>, nghĩa là mã của bạn buộc phải P/Invoke (Phụ lục A) và <strong>không chạy ngoài
+Windows</strong> — chấp nhận được với phần mềm máy, nhưng phải biết. Thứ hai, và nguy hiểm hơn: <strong>INI
+không có kiểu, nên mọi giá trị đọc lên đều là chuỗi và phải tự ép kiểu.</strong> Một khoá ghi <code>5.0</code>
+đọc bằng <code>double.Parse</code> trên máy đặt vùng miền tiếng Việt sẽ ra <strong>50</strong>, vì dấu chấm bị hiểu là
+dấu phân nhóm nghìn. Đây là lỗi có thật, im lặng, và đắt — luôn ép kiểu với
+<code>CultureInfo.InvariantCulture</code>.</p>
+</blockquote>
+<h4>Excel — công cụ báo cáo mà nhà máy đòi, và cái giá kỹ thuật của nó</h4>
+<p>11/13 dự án có dấu vết Excel, một dự án tới 429 lần. Lý do rất đơn giản và không thể tranh cãi:
+<strong>nhà máy muốn báo cáo mở được bằng Excel</strong>, vì đó là công cụ mọi người đều có và đều biết dùng.</p>
+<p>Vấn đề không nằm ở yêu cầu đó mà ở <strong>cách đáp ứng nó</strong>:</p>
+<p><strong>Bảng 3.11 — Ba cách xuất báo cáo Excel từ phần mềm máy</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Ưu</th>
+<th>Nhược</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ghi CSV</strong> rồi để người dùng mở bằng Excel</td>
+<td>Không phụ thuộc gì; vài dòng mã; nhanh nhất</td>
+<td>Không có định dạng, không nhiều sheet, không công thức. Excel có thể <strong>hiểu nhầm</strong> mã lô dài thành số khoa học</td>
+</tr>
+<tr>
+<td><strong>Thư viện đọc/ghi xlsx</strong> (không cần Excel cài trên máy)</td>
+<td>Có định dạng, nhiều sheet; chạy được trên máy không cài Office</td>
+<td>Thêm một gói phụ thuộc; API phải học</td>
+</tr>
+<tr>
+<td><strong>Excel Interop</strong> (điều khiển Excel thật)</td>
+<td>Làm được <strong>mọi thứ</strong> Excel làm được</td>
+<td><strong>Đòi Excel cài trên máy tính công nghiệp</strong>; chậm; và cái bẫy nặng nhất ở dưới</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Cái bẫy của Excel Interop trên máy tính công nghiệp: tiến trình Excel không chết.</strong> Mỗi
+lần mã của bạn mở một workbook mà quên giải phóng đúng cách, một tiến trình <code>EXCEL.EXE</code> ở lại
+trong bộ nhớ — vô hình vì không có cửa sổ nào. Máy chạy ba ca, xuất báo cáo mỗi giờ, và sau vài
+ngày Task Manager có hàng chục tiến trình Excel. Đây là một trong những nguyên nhân &quot;máy chạy
+vài ngày thì chậm dần&quot; khó tìm nhất, vì nó <strong>không nằm trong phần mềm của bạn</strong> (Chương 19 mục
+19.2.3 bàn về nhóm lỗi rò rỉ này).</p>
+<p>Và một hệ quả về triển khai ít ai nghĩ tới lúc viết mã: dùng Interop nghĩa là <strong>bản quyền
+Microsoft Office trở thành điều kiện chạy của cỗ máy bạn giao</strong>. Khách hàng đổi máy tính, cài
+lại Windows mà quên cài Office, thì chức năng báo cáo chết — và không có thông báo nào giải
+thích vì sao.</p>
+<p><strong>Khuyến nghị:</strong> mặc định chọn <strong>CSV</strong> nếu báo cáo chỉ là bảng số; chọn <strong>thư viện xlsx</strong> khi
+cần định dạng hoặc nhiều sheet; chỉ dùng <strong>Interop</strong> khi buộc phải điều khiển một file mẫu có
+sẵn của khách với công thức phức tạp — và khi đó phải kiểm tra tiến trình Excel còn sót sau mỗi
+lần xuất, ngay trong giai đoạn chạy thử.</p>
+</blockquote>
+<hr>
 <h3>3.6.4  XML — khi gặp trong config kế thừa</h3>
 <p>Sách khuyên dùng <strong>JSON</strong> cho config mới (mục 3.6.3), nhưng rất nhiều máy đang chạy trong nhà máy
 thật — nhất là máy đã hoạt động 10-15 năm — vẫn dùng <strong>XML</strong> làm định dạng file cấu hình (danh sách
@@ -34065,6 +34212,267 @@ gọi gateway PLC, gateway ghi historian), gắn thêm một <strong>Correlation
 là lọc ra được toàn bộ hành trình của một thao tác cụ thể xuyên suốt các
 thành phần, thay vì phải đối chiếu thời gian giữa nhiều file log rời
 rạc.</p>
+<h3>19.4.1b  Đọc hai bộ ghi log thật — một xấu, một tốt</h3>
+<p>Mục trên trình bày <em>nên</em> ghi log thế nào. Mục này làm điều hữu ích hơn: mở hai bộ ghi log <strong>có
+thật</strong> trong bộ mẫu khảo sát ra đọc, phân tích từng chỗ, và cho thấy khoảng cách giữa hai cách
+làm lớn tới mức nào — cả hai đều do kỹ sư máy viết, cả hai đều đang chạy trong nhà máy.</p>
+<p>Con số nền trước đã, vì nó giải thích vì sao mục này cần thiết:</p>
+<p><strong>Bảng 19.4 — Cách ghi log trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách ghi</th>
+<th>Số dự án</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Có dùng <strong>thư viện log</strong> (log4net / NLog / Serilog)</td>
+<td><strong>6</strong> / 13</td>
+<td>Dự án dùng nhiều nhất: ~90 lời gọi</td>
+</tr>
+<tr>
+<td><strong>Tự viết</strong> lớp log</td>
+<td><strong>8</strong> / 13</td>
+<td>Từ 30 tới hơn 200 dòng</td>
+</tr>
+<tr>
+<td><code>Console.WriteLine</code> trong mã sản xuất</td>
+<td><strong>11</strong> / 13</td>
+<td>Dự án nhiều nhất: <strong>316 lần</strong></td>
+</tr>
+<tr>
+<td>Ghi thẳng ra file bằng <code>File.AppendText</code> rải rác</td>
+<td><strong>6</strong> / 13</td>
+<td>Dự án nhiều nhất: <strong>43 chỗ</strong></td>
+</tr>
+</tbody></table></div>
+<p>Ba phần tư số dự án tự viết bộ ghi log, và 11/13 còn để lại <code>Console.WriteLine</code> trong mã giao cho
+khách. Vậy nên &quot;tự viết logger&quot; không phải chuyện hiếm cần cảnh báo — nó là <strong>mặc định của
+ngành</strong>, và điều đáng làm là biết tự viết cho đúng.</p>
+<h4>Bản xấu: một lớp <code>Log</code> tĩnh 213 dòng</h4>
+<p>Dưới đây là hình dạng của một bộ ghi log tự viết có thật, đã viết lại bằng tên trung tính. Đọc
+chậm — mỗi dòng bôi đậm là một quyết định sẽ phải trả giá:</p>
+<p><strong>Code 19.13 — Bộ ghi log tự viết: hình dạng thường gặp, và mười vấn đề</strong></p>
+<pre><code class="language-csharp">public class Log
+{
+    static List&lt;TimeLog&gt; timeLogs = new List&lt;TimeLog&gt;();
+    static object _lock = new object();
+
+    public static DataGridView gridView;          // ①  logger GIỮ một control giao diện
+
+    public static void DataGridViewSetting(DataGridView grid)
+    {
+        gridView = grid;
+        // ②  … 60 dòng đặt màu, phông chữ, bề rộng cột … nằm trong lớp Log
+    }
+
+    public static void ListThreadStart()
+    {
+        new Thread(() =&gt;
+        {
+            while (true)                          // ③  vòng lặp không có đường thoát
+            {
+                if (timeLogs.Count &gt; 0)
+                {
+                    TimeLog item = timeLogs[0];   // ④  ĐỌC và XOÁ ngoài lock
+                    timeLogs.RemoveAt(0);         //     (bên ghi thì có lock)
+                    LogDisplay(item);             // ⑤  vẽ giao diện …
+                    Write(item);                  //     … rồi ghi đĩa, cùng một luồng
+                }
+                Thread.Sleep(10);
+            }
+        }) { IsBackground = true }.Start();
+    }
+
+    public static void Add(string text, LevelEnum level)   // ⑥ mức log là TÊN MÀU
+    {
+        lock (_lock) { timeLogs.Add(new TimeLog(DateTime.Now, text, level)); }
+    }
+
+    static void LogDisplay(TimeLog item)
+    {
+        try
+        {
+            gridView.Rows.Insert(0, item.Time.ToString(&quot;HH:mm:ss:fff&quot;), item.Message);
+            gridView.Rows[0].DefaultCellStyle.BackColor = ColorOf(item.Level);
+            if (gridView.RowCount &gt; 500) gridView.Rows.RemoveAt(gridView.RowCount - 2);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message);          // ⑦  LỖI LOG → HỘP THOẠI CHẶN MÀN HÌNH
+        }
+    }
+
+    static void Write(TimeLog item)
+    {
+        try
+        {
+            var dir = LogPath + item.Time.ToString(&quot;yyyy年MM月dd日&quot;);   // ⑧ tên thư mục bản địa
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+            using (var w = File.AppendText(Path.Combine(dir, ...)))  // ⑨ mở/đóng file MỖI DÒNG
+                w.WriteLine($&quot;{item.Time:HH:mm:ss:ffff} {TextOf(item.Level)} {item.Message}&quot;);
+        }
+        catch (Exception) { throw; }              // ⑩  bắt rồi ném lại — và ném vào ai?
+    }
+}
+</code></pre>
+<p><strong>Bảng 19.5 — Mười vấn đề trong bộ ghi log trên, xếp theo mức độ nguy hiểm</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Vấn đề</th>
+<th>Hậu quả thật trên máy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⑦</td>
+<td><strong>Lỗi ghi log mở hộp thoại chặn</strong></td>
+<td>Đĩa đầy lúc 2 giờ sáng → một hộp thoại phủ lên màn hình vận hành, <strong>nuốt cú bấm kế tiếp</strong> (mục 10.2.6c). Ghi log là việc phải vô hình; nó vừa trở thành việc chặn máy</td>
+</tr>
+<tr>
+<td>⑩</td>
+<td><strong><code>catch (Exception) { throw; }</code></strong></td>
+<td>Không bắt gì cả, chỉ ném tiếp — nghĩa là <strong>một lỗi ghi đĩa lan ngược vào vòng điều khiển</strong> đã gọi hàm log</td>
+</tr>
+<tr>
+<td>④</td>
+<td><strong>Đọc/xoá hàng đợi ngoài <code>lock</code></strong></td>
+<td>Bên ghi có khoá, bên đọc không → mất dòng log hoặc <code>ArgumentOutOfRangeException</code> ngẫu nhiên. Lỗi chỉ xuất hiện khi máy chạy nhanh</td>
+</tr>
+<tr>
+<td>①</td>
+<td><strong>Logger giữ một <code>DataGridView</code></strong></td>
+<td>Không log được trước khi giao diện dựng xong; không log được từ công cụ dòng lệnh; không test được. Tầng hạ tầng phụ thuộc tầng giao diện — mũi tên đi ngược (mục 7.4.3)</td>
+</tr>
+<tr>
+<td>⑤</td>
+<td><strong>Vẽ giao diện rồi mới ghi đĩa, cùng một luồng</strong></td>
+<td>Giao diện chậm thì đĩa chậm theo, và ngược lại. Một cái kẹt là cả hai kẹt</td>
+</tr>
+<tr>
+<td>⑨</td>
+<td><strong>Mở/đóng file cho mỗi dòng</strong></td>
+<td>Với vòng lặp 10 ms, đây là hàng nghìn lần mở file mỗi phút — và mục 13.1 đã nói về hao mòn SSD</td>
+</tr>
+<tr>
+<td>⑥</td>
+<td><strong>Mức log là tên màu</strong> (<code>white/yellow/red/green</code>)</td>
+<td>Mức độ bị trói vào cách hiển thị. Muốn lọc <em>&quot;mọi lỗi trong ca đêm&quot;</em> thì phải lọc theo… màu. Đổi bảng màu là đổi ngữ nghĩa dữ liệu</td>
+</tr>
+<tr>
+<td>③</td>
+<td><strong><code>while(true)</code> không có đường thoát</strong></td>
+<td>Luồng không dừng được; chỉ tắt được bằng cách kết thúc tiến trình</td>
+</tr>
+<tr>
+<td>②</td>
+<td><strong>60 dòng tạo kiểu giao diện trong lớp Log</strong></td>
+<td>Sửa màu bảng log phải mở file hạ tầng. Hai trách nhiệm trong một lớp (mục 7.2.1)</td>
+</tr>
+<tr>
+<td>⑧</td>
+<td><strong>Tên thư mục dùng chữ bản địa</strong></td>
+<td>Công cụ ngoài không tự phân tích được tên thư mục; sắp xếp theo tên cũng sai thứ tự</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Điều đáng nói nhất: bộ ghi log này KHÔNG hỏng.</strong> Nó chạy, nó hiện log lên màn hình, nó ghi
+ra file. Người viết nó không cẩu thả — họ giải quyết đúng bài toán trước mắt: <em>&quot;hiện log lên
+lưới và ghi ra đĩa&quot;</em>. Mười vấn đề ở trên đều là những thứ <strong>chỉ lộ ra về sau</strong>: khi đĩa đầy, khi
+máy chạy nhanh hơn, khi cần lọc log, khi cần log từ một chỗ chưa có giao diện. Đó chính là thứ
+phân biệt <em>code chạy được</em> với <em>code sống được nhiều năm</em>.</p>
+</blockquote>
+<h4>Bản tốt: cùng nhu cầu, 49 dòng, và lưới là một &quot;cửa ra&quot;</h4>
+<p>Một dự án khác trong bộ mẫu có <strong>đúng cùng nhu cầu</strong> — hiện log lên lưới giao diện và ghi ra file
+— nhưng giải theo hướng ngược lại: thay vì cho logger biết về lưới, họ cho lưới <strong>cắm vào</strong> đường
+ống log như một cửa ra (<em>sink</em>):</p>
+<p><strong>Code 19.14 — Cùng nhu cầu, giải bằng một &quot;cửa ra&quot; cắm vào đường ống log</strong></p>
+<pre><code class="language-csharp">// Cấu hình, đặt ở Composition Root — KHÔNG hard-code trong mã nghiệp vụ
+config.ReadFrom.Configuration(context.Configuration)   // mức log nằm trong file cấu hình
+      .Enrich.FromLogContext()
+      .WriteTo.Sink(new UiGridSink());                // lưới giao diện là MỘT cửa ra
+
+// Cửa ra: 49 dòng, và nó không biết WinForms hay WPF là gì
+public sealed class UiGridSink : ILogEventSink
+{
+    public static event Action&lt;LogModel&gt;? LogReceived;
+
+    public void Emit(LogEvent e)
+    {
+        var log = new LogModel
+        {
+            Timestamp     = e.Timestamp,
+            Level         = e.Level.ToString(),
+            Message       = e.RenderMessage(),
+            Exception     = e.Exception?.ToString(),
+            ThreadId      = GetProperty(e, &quot;ThreadId&quot;),
+            SourceContext = GetProperty(e, &quot;SourceContext&quot;),   // lớp nào ghi dòng này
+        };
+
+        LogReceived?.Invoke(log);        // phát ra; ai muốn nghe thì tự đăng ký
+    }
+}
+</code></pre>
+<p>Và cách gọi ở tầng nghiệp vụ — chú ý <strong>tham số có tên</strong>, đúng tinh thần mục 19.4.1:</p>
+<pre><code class="language-csharp">_logger.Information(&quot;Move {AxisName} to {Position} at Speed {Speed}&quot;, name, position, speed);
+_logger.Error(ex, &quot;Move Position Error for {AxisName}&quot;, name);   // ex là tham số ĐẦU TIÊN
+</code></pre>
+<p><strong>Bảng 19.6 — Hai bộ ghi log, cùng một nhu cầu</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tiêu chí</th>
+<th>Bản tự viết (213 dòng)</th>
+<th>Bản dùng thư viện + cửa ra (49 dòng)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Logger có biết giao diện không</td>
+<td><strong>Có</strong> — giữ hẳn một <code>DataGridView</code></td>
+<td><strong>Không</strong> — chỉ phát một sự kiện</td>
+</tr>
+<tr>
+<td>Thêm một nơi nhận log (file, DB, MES)</td>
+<td>Sửa lớp <code>Log</code></td>
+<td><strong>Thêm một cửa ra</strong>, không đụng mã cũ</td>
+</tr>
+<tr>
+<td>Đổi mức log ngoài hiện trường</td>
+<td>Sửa mã, build lại, cài lại</td>
+<td><strong>Sửa file cấu hình</strong>, khởi động lại</td>
+</tr>
+<tr>
+<td>Truy vấn được không</td>
+<td>Không — log là một chuỗi đã ghép</td>
+<td><strong>Có</strong> — <code>{AxisName}</code> là một trường (mục 19.4.1)</td>
+</tr>
+<tr>
+<td>Biết dòng log đến từ lớp nào</td>
+<td>Không</td>
+<td><strong>Có</strong> — <code>SourceContext</code> tự điền</td>
+</tr>
+<tr>
+<td>Lỗi khi ghi</td>
+<td>Hộp thoại + ném ra ngoài</td>
+<td>Thư viện tự nuốt, không làm sập phần gọi</td>
+</tr>
+<tr>
+<td>Số dòng phải tự bảo trì</td>
+<td>213</td>
+<td>49</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Bài học rút gọn, và nó không phải &quot;hãy dùng thư viện&quot;.</strong> Khác biệt cốt lõi giữa hai bản
+<strong>không nằm ở việc một bên dùng thư viện</strong>, mà ở <strong>chiều của mũi tên phụ thuộc</strong>: bản xấu để
+logger biết về giao diện; bản tốt để giao diện biết về logger. Bạn hoàn toàn có thể tự viết một
+bộ ghi log 60 dòng mà vẫn đúng chiều đó — chỉ cần nó <strong>phát ra một sự kiện</strong> thay vì <strong>giữ một
+control</strong>. Toàn bộ chín vấn đề còn lại ở Bảng 19.5 biến mất gần hết khi sửa đúng chỗ đó.</p>
+</blockquote>
+<hr>
 <h3>19.4.2  Log level — đúng mức, không phải càng nhiều càng tốt</h3>
 <p><strong>Bảng 19.3 — Log level cho phần mềm automation</strong></p>
 <div class="table-wrap"><table>

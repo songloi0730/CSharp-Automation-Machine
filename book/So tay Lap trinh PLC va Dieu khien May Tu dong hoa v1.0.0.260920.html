@@ -2676,6 +2676,40 @@ vòng, không phải &quot;thường là 10 ms nhưng thỉnh thoảng 200 ms&qu
 cập nhật bắt buộc nào làm hỏng thứ đang chạy.</p>
 <p>Đây là tiêu chí <strong>khả năng cung ứng dài hạn</strong> ở Chương 13, và là lý do thị trường PLC thay đổi chậm
 hơn nhiều so với thị trường máy tính.</p>
+<h3>5. ⭐⭐ Sửa được chương trình trong lúc máy đang chạy</h3>
+<p>⭐ Đây là khác biệt ít được nhắc nhất, mà lại là khác biệt <strong>thay đổi cả cách làm nghề</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Phần mềm máy tính thường</th>
+<th>PLC</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đổi một dòng lệnh</td>
+<td>Dừng chương trình, nạp bản mới, chạy lại</td>
+<td>⭐ <strong>Nạp thay đổi trong lúc máy vẫn đang chạy</strong></td>
+</tr>
+<tr>
+<td>Cái phải trả giá</td>
+<td>Thời gian dừng</td>
+<td>⚠⚠ <strong>Rủi ro ngay tại thời điểm nạp</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Vì sao thiết bị này được thiết kế như vậy:</strong> một dây chuyền dừng nửa tiếng để nạp lại chương
+trình có thể tốn hơn cả tháng lương người sửa. ⚡ Nên khả năng <strong>đổi mà không dừng</strong> không phải
+tiện nghi — với nhiều nhà máy nó là <strong>điều kiện để chấp nhận thiết bị</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Nhưng nó là con dao hai lưỡi, và đây là chỗ nguy hiểm nhất trong cả chương này.</strong> ⭐ Sửa lúc
+máy đang chạy nghĩa là cơ cấu <strong>đang ở giữa chừng một hành trình</strong> khi logic điều khiển nó đổi.
+⚠ Người đứng cạnh máy <strong>không được cảnh báo gì cả</strong> — máy không dừng, không có đèn nào đổi màu.</p>
+<p>⚡ Cả một chương của sách dành cho việc làm chuyện này an toàn: <strong>Chương 53</strong>. ⭐ Ở đây chỉ cần
+nhớ một điều: ⚠⚠ <strong>PLC cho phép bạn làm điều đó KHÔNG có nghĩa là bạn nên làm.</strong></p>
+</blockquote>
+<hr>
 <hr>
 <h2 id="23-plc-pac-dcs-ipc-hay-vi-điu-khin">2.3 PLC, PAC, DCS, IPC hay vi điều khiển</h2>
 <p>Năm loại thiết bị điều khiển, mỗi loại thắng ở một chỗ.</p>
@@ -2862,6 +2896,10 @@ và nó chạy &quot;tạm&quot; trong hai năm.
 <tr>
 <td>Tuổi đời phải tính tới</td>
 <td><strong>15–20 năm</strong> — phụ tùng, phần mềm, người biết dùng</td>
+</tr>
+<tr>
+<td>Khả năng ít được nhắc nhất</td>
+<td>⭐ <strong>Sửa chương trình khi máy đang chạy</strong> — và ⚠⚠ nó nguy hiểm đúng bằng mức nó tiện (Chương 53)</td>
 </tr>
 <tr>
 <td>Cỗ máy rời rạc</td>
@@ -20722,6 +20760,82 @@ thời gian không giảm, chỉ được chia nhỏ ra.</li>
 </tbody></table></div>
 <p>Nếu tách, quy tắc bắt buộc: <strong>dữ liệu đi qua ranh giới tác vụ phải qua một vùng đệm rõ ràng</strong>, không
 đọc chéo biến trực tiếp.</p>
+<h3>⭐⭐ Chính tài liệu hãng cũng khuyên hạn chế số tác vụ</h3>
+<p>⭐ Lời khuyên <em>&quot;mặc định là một tác vụ&quot;</em> ở trên nghe như quan điểm cá nhân. ⚡ Nó không phải: tài
+liệu quản lý tác vụ của hãng có hẳn một mục tên là <strong>&quot;thận trọng với số lượng tác vụ bạn dùng&quot;</strong>, và
+nêu đúng hai hậu quả:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hậu quả khi quá nhiều tác vụ</th>
+<th>Nghĩa là gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tác vụ nền <strong>không kịp chạy xong</strong></td>
+<td>Mỗi tác vụ lấy thời gian CPU của các tác vụ khác</td>
+</tr>
+<tr>
+<td>⚠⚠ Một tác vụ <strong>chồng lên chính nó</strong> <em>(overlap)</em></td>
+<td>Bị ngắt quá thường xuyên hoặc quá lâu → chưa chạy xong đã bị kích lần sau</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Và câu này của tài liệu hãng khép lại tranh luận &quot;chạy song song cho nhanh&quot;:</strong> ⚡ <em>bộ điều
+khiển chỉ chạy <strong>một</strong> tác vụ tại một thời điểm.</em> ⭐ Nhiều tác vụ <strong>không</strong> làm máy nhanh hơn — nó
+chỉ đổi <strong>thứ tự</strong> và <strong>độ ưu tiên</strong>, và đổi lấy một lớp phức tạp mới.</p>
+</blockquote>
+<h3>⚠⚠ Hai thứ đi kèm mỗi tác vụ mà người mới hay bỏ qua</h3>
+<p><strong>Một — điều kiện chồng tác vụ, và nó là một phép tính bạn phải làm.</strong></p>
+<blockquote>
+<p>⚠ Chu kỳ của tác vụ định kỳ <strong>phải dài hơn tổng thời gian chạy của MỌI chương trình gán vào tác vụ
+đó</strong>. ⭐ Không thoả thì tác vụ bị kích lại khi đang chạy dở → hệ báo <strong>lỗi nhẹ</strong> <em>(minor fault)</em>.</p>
+<p>⚡ Và đây là lỗi <strong>không xuất hiện lúc nghiệm thu</strong>: nó xuất hiện tháng sau, khi ai đó thêm vài
+khối vào đúng tác vụ đó. ⭐ Giống hệt cơ chế trôi dạt ở Chương 36 — ⚠ nên <strong>ghi lại thời gian chạy
+thật của từng tác vụ lúc nghiệm thu</strong> (Chương 52).</p>
+</blockquote>
+<p><strong>Hai — mỗi tác vụ có watchdog riêng của nó.</strong></p>
+<p>⭐ Chương 10 mục 10.4 nói về watchdog của <strong>cả vòng quét</strong>. ⚡ Khi đã tách tác vụ thì ⭐ <strong>mỗi tác vụ
+mang một watchdog riêng</strong>, đặt riêng — nghĩa là bạn vừa có thêm một chỗ phải đặt đúng, vừa có thêm
+một chỗ có thể đặt sai.</p>
+<h3>⭐ Ba loại tác vụ, và con số đi kèm</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Chạy khi nào</th>
+<th>⭐ Con số đáng nhớ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Liên tục</strong> <em>(continuous)</em></td>
+<td>Chạy bằng thời gian CPU còn thừa; quét xong là <strong>khởi động lại ngay</strong></td>
+<td>⭐ Dự án <strong>không bắt buộc</strong> phải có; và nếu có thì ⭐⭐ <strong>chỉ được MỘT</strong></td>
+</tr>
+<tr>
+<td><strong>Định kỳ</strong> <em>(periodic)</em></td>
+<td>Đúng chu kỳ đặt trước; ngắt các tác vụ ưu tiên thấp hơn, chạy một lần, trả quyền</td>
+<td>Chu kỳ đặt được từ <strong>0,1 ms tới 2000 s</strong>; mặc định <strong>10 ms</strong></td>
+</tr>
+<tr>
+<td><strong>Theo sự kiện</strong> <em>(event)</em></td>
+<td>Khi có kích hoạt: ngõ vào số đổi trạng thái · có mẫu analog mới · lệnh sinh sự kiện…</td>
+<td>⚠ <strong>Không phải bộ điều khiển nào cũng hỗ trợ đủ mọi loại kích hoạt</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Mức ưu tiên là một con số, và nó có một giá trị đặc biệt.</strong> Ở dòng bộ điều khiển đó có <strong>15</strong>
+mức ưu tiên, và ⭐⭐ <strong>tác vụ xử lý I/O của hệ chạy ở mức 6</strong>. Nên đặt tác vụ của bạn ở mức 1–5
+nghĩa là <strong>cho nó chen ngang cả việc cập nhật I/O</strong>; đặt ở 7–15 nghĩa là để I/O chen ngang nó.</p>
+<p>⚠ Con số 15 <strong>không phải hằng số của ngành</strong> — cùng hãng đó, dòng chạy trên máy tính chỉ có <strong>3</strong>
+mức. ⭐ Đây là lý do mọi con số trong mục này phải <strong>tra lại theo đúng dòng bộ điều khiển bạn
+dùng</strong>, chứ không chép từ máy trước.</p>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Tên gọi và mô hình khác nhau giữa các hãng</strong> — có hệ bắt khai báo tác vụ tường minh, có hệ
+dùng khối tổ chức với lớp ưu tiên sẵn, có hệ chỉ có chương trình chính quét tuần tự. ⭐ Đối chiếu
+năm hệ: <strong>Phụ lục A1</strong>.</p>
+</blockquote>
 <h3>Thứ tự gọi trong một tác vụ</h3>
 <p>Trong tác vụ duy nhất, thứ tự gọi các khối <strong>là một phần của thiết kế</strong> (Chương 10):</p>
 <pre><code class="language-text">1. Đọc và xử lý tín hiệu vào     (lọc, bắt cạnh, tính cờ điều kiện)
@@ -20885,6 +20999,13 @@ chưa trả lời: khi máy dừng giữa chừng ở một tư thế bất kỳ
 <li>Tài liệu hãng về tổ chức tác vụ, chương trình và khối tái dùng — dùng để đối chiếu khác biệt; số hiệu
 cụ thể ghi trong Phụ lục A1.</li>
 <li>Cấu hình cơ cấu và đặc tả trình tự hai trạm của DP-01 — Phụ lục J.</li>
+<li><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers Tasks, Programs, and Routines</em> (1756-PM005,
+bản 9/2025), ch. 1 <em>Manage Tasks</em>: ⭐ mục <strong>&quot;thận trọng với số lượng tác vụ&quot;</strong> và câu ⭐⭐ <em>bộ điều
+khiển chỉ chạy <strong>một</strong> tác vụ tại một thời điểm</em> — nền cho lời khuyên &quot;mặc định một tác vụ&quot; ở mục
+27.6; ba loại tác vụ (liên tục — ⭐ <strong>chỉ được một</strong> và <strong>không bắt buộc có</strong> · định kỳ
+<strong>0,1 ms–2000 s</strong>, mặc định <strong>10 ms</strong> · theo sự kiện); ⚠⚠ <strong>lỗi nhẹ khi tác vụ chồng lên chính
+nó</strong> nếu chu kỳ ngắn hơn tổng thời gian chạy; <strong>watchdog riêng cho từng tác vụ</strong>; và 15 mức ưu
+tiên với ⭐ <strong>tác vụ I/O của hệ ở mức 6</strong> (⚠ dòng chạy trên máy tính chỉ có 3 mức).</li>
 <li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, §32.4.1 <em>Developing a Program
 Structure</em>: ⭐ <strong>bốn câu hỏi để chia bài toán điều khiển</strong> (chạy cùng lúc? · độc lập? · có trình tự
 rõ? · ⭐ <strong>có ranh giới vật lý?</strong>), và ⚠ điều kiện tiên quyết <em>hiểu quy trình trước</em> — nền cho
@@ -23199,6 +23320,109 @@ theo giả định &quot;mất lệnh thì về vị trí lò xo là an toàn&qu
 <p><strong>Mỗi lần dùng lại một khối trong bối cảnh mới, phải rà lại các giả định về an toàn của nó.</strong> Khối
 càng tiện thì càng dễ dùng mà không nghĩ.</p>
 </blockquote>
+<h3>⭐⭐ Hãng cho bạn cơ chế gì để làm được kiểu thứ hai</h3>
+<p>Bảng trên nói <em>nên</em> dùng &quot;thư viện có phiên bản&quot;. ⚠ Nhưng bạn <strong>không tự dựng cơ chế đó được</strong> — nó
+phải do phần mềm lập trình hỗ trợ. Và ⭐ <strong>hai hãng lớn giải bài toán này theo hai hướng ngược nhau</strong>,
+nên câu <em>&quot;dùng thư viện có phiên bản&quot;</em> có nghĩa rất khác nhau tuỳ hệ bạn đang dùng.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Hướng <strong>CHÉP có kiểm soát</strong></th>
+<th>Hướng <strong>THAM CHIẾU tới kiểu</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ví dụ thật</td>
+<td>⭐ <strong>Rockwell — Add-On Instruction (AOI)</strong></td>
+<td>⭐ <strong>Siemens TIA Portal — &quot;type&quot; trong thư viện</strong></td>
+</tr>
+<tr>
+<td>Khối sống ở đâu</td>
+<td>⭐ <strong>Trong chính dự án</strong>; đưa sang dự án khác bằng chép/dán hoặc nhập từ tệp</td>
+<td>Trong <strong>thư viện</strong>; dự án chỉ dùng, không sở hữu</td>
+</tr>
+<tr>
+<td>Cập nhật khi sửa khối gốc</td>
+<td>⚠ <strong>Từng dự án một</strong> — nhập bản sửa đổi mới vào từng dự án</td>
+<td>⭐⭐ <strong>Cập nhật tập trung mọi chỗ dùng</strong> trong dự án, một lệnh</td>
+</tr>
+<tr>
+<td>Nhiều phiên bản cùng lúc</td>
+<td>⭐ Được — mỗi dự án giữ bản của nó</td>
+<td>⚠⚠ <strong>Chỉ MỘT phiên bản của một kiểu trong cùng một bộ điều khiển</strong></td>
+</tr>
+<tr>
+<td>Chống sửa lén</td>
+<td>⭐ <strong>Chữ ký khối</strong> — ký xong thì khối <strong>bị niêm</strong>, không sửa được nữa</td>
+<td>⭐ Hệ <strong>không cho sửa tại chỗ dùng</strong>; hệ tự giữ nhất quán</td>
+</tr>
+<tr>
+<td>⚠⚠ Cái giá</td>
+<td>Niêm rồi thì <strong>kể cả chú thích cũng không sửa được</strong> cho tới khi gỡ chữ ký</td>
+<td>⚠⚠ <strong>Xoá một kiểu là xoá luôn MỌI chỗ đang dùng nó</strong> trong chương trình</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Đọc bảng này xong thì bảng &quot;ba kiểu dùng lại&quot; ở trên có nghĩa cụ thể hơn hẳn.</strong> ⚡ Cơ chế của
+Rockwell <strong>là kiểu &quot;chép&quot;</strong> — nhưng là chép <strong>có kiểm soát</strong>: có bản sửa đổi, có chữ ký, có lịch sử.
+Cơ chế của Siemens <strong>là kiểu &quot;thư viện có phiên bản&quot;</strong> theo đúng nghĩa đen.</p>
+<p>⭐ Nghĩa là ⚠ <strong>&quot;chép&quot; không tự động xấu</strong> — cái xấu là chép mà <strong>không biết mình đã chép bản nào</strong>.</p>
+</blockquote>
+<p><strong>Hai chi tiết đáng nhớ, vì cả hai đều bất ngờ với người quen hệ kia:</strong></p>
+<blockquote>
+<p>⚠⚠ <strong>Chữ ký khối của Rockwell NIÊM cả tài liệu.</strong> ⭐ Sau khi sinh chữ ký, khối không sửa được —
+và &quot;không sửa được&quot; gồm cả <strong>chú thích nấc thang và mô tả biến</strong>. Muốn sửa một dấu phẩy trong chú
+thích cũng phải <strong>gỡ chữ ký ra rồi ký lại</strong>.</p>
+<p>⭐ Đổi lại, chữ ký cho bạn một thứ rất giá trị: ⚡ <strong>bằng chứng rằng khối này chưa bị ai đụng vào</strong>.
+Đó là lý do nó <strong>bắt buộc</strong> khi khối tham gia chức năng an toàn mức SIL 3, và hay bị yêu cầu ở các
+ngành có quản lý chặt (Chương 47).</p>
+<p>⚠ Nhưng có một lỗ hổng phải biết: ⭐ <strong>chữ ký KHÔNG khoá các khối và kiểu dữ liệu mà nó tham
+chiếu</strong>. Khối của bạn niêm rồi, mà cái nó gọi bên trong thì vẫn sửa được.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Xoá một &quot;type&quot; của Siemens là xoá mọi chỗ dùng nó.</strong> ⭐ Đây là mặt trái trực tiếp của ưu điểm
+&quot;hệ tự giữ nhất quán&quot;: hệ <strong>không cho phép tồn tại chỗ dùng mồ côi</strong>, nên nó xoá luôn.</p>
+<p>⚡ Và ràng buộc <strong>một bộ điều khiển chỉ chứa một phiên bản của mỗi kiểu</strong> nghĩa là: ⚠ nâng cấp khối
+xy-lanh lên V2 thì <strong>cả máy dùng V2</strong>, không có chuyện &quot;trạm này V1, trạm kia V2&quot;. ⭐ Nghe như hạn
+chế, nhưng nó chính là thứ <strong>chặn đứng</strong> kiểu thứ ba trong bảng trên.</p>
+</blockquote>
+<h3>⭐ Hệ của bạn thuộc hướng nào — bốn câu hỏi để tự tra</h3>
+<p>⚠ Đừng suy từ hai cột trên. Mỗi hệ một khác, và ⭐ <strong>cùng một hãng cũng đổi giữa các đời phần mềm</strong>.
+Mở tài liệu hệ bạn dùng rồi trả lời bốn câu này — trả lời xong là biết mình đang ở hướng nào:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th align="left">Câu hỏi</th>
+<th align="left">⭐ Vì sao nó quyết định</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="left">Sửa khối trong thư viện thì các dự án đang dùng <strong>tự đổi theo</strong>, hay phải <strong>nhập lại từng cái</strong>?</td>
+<td align="left">Phân biệt tham chiếu với chép</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="left">Hệ có ghi <strong>số phiên bản</strong> của khối, và có cho <strong>xem dự án nào dùng bản nào</strong> không?</td>
+<td align="left">⚠ Không có cái này thì &quot;thư viện có phiên bản&quot; chỉ là tên gọi</td>
+</tr>
+<tr>
+<td>3</td>
+<td align="left">Có cách <strong>khoá khối</strong> để người khác không sửa lén không? Khoá rồi thì <strong>còn sửa được gì</strong>?</td>
+<td align="left">Quyết định khối có dùng được cho phần an toàn không</td>
+</tr>
+<tr>
+<td>4</td>
+<td align="left">⚠⚠ <strong>Xoá hoặc đổi tên khối trong thư viện thì chuyện gì xảy ra</strong> với chỗ đang dùng?</td>
+<td align="left">⭐ Đây là câu nguy hiểm nhất, và là câu ít người thử nhất</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Câu 4 phải thử thật, trên một dự án bỏ đi.</strong> ⚡ Không tài liệu nào mô tả đủ rõ chuyện này, và
+⚠ đây là loại chuyện mà <strong>biết vào lúc đang sửa máy chạy sản xuất là quá muộn</strong>.</p>
+</blockquote>
 <h3>Ba yêu cầu với một khối đáng đưa vào thư viện</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -23593,6 +23817,17 @@ kiểu dữ liệu người dùng. <em>(tiêu chuẩn có bản quyền)</em></l
 tài liệu này bàn đúng về cấu trúc chương trình, khối tái dùng và tối ưu vùng nhớ. Số hiệu cụ thể
 ghi trong Phụ lục A1.</li>
 <li>Quy ước đặt tên và cấu trúc dùng trong sách — Phụ lục C.</li>
+<li><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers Add-On Instructions</em> (1756-PM010, bản 9/2025):
+⭐ <strong>chữ ký khối</strong> <em>(instruction signature)</em> sinh mã định danh duy nhất và <strong>niêm</strong> khối — không sửa
+được nữa, ⚠ <strong>kể cả chú thích nấc thang và mô tả biến</strong>, cho tới khi gỡ chữ ký; ⭐ <strong>bắt buộc</strong> khi
+khối tham gia chức năng an toàn mức SIL 3; ⚠ nhưng <strong>không khoá</strong> các khối và kiểu dữ liệu mà nó
+tham chiếu. Và cách phân phối: <strong>chép/dán giữa các dự án</strong>, hoặc <em>nhập bản sửa đổi mới</em> — nền cho
+cột &quot;chép có kiểm soát&quot; ở mục 30.5.</li>
+<li><strong>Siemens</strong> — <em>Programming Guideline for S7-1200/S7-1500</em>, ch. 3.7 <em>Libraries</em> (§3.7.2 <em>Type
+concept</em>, §3.7.4 <em>Versioning of a block</em>): phân biệt <strong>master copy</strong> với ⭐ <strong>type</strong>; type <strong>có
+phiên bản</strong> và <strong>cập nhật tập trung mọi chỗ dùng</strong>; ⚠⚠ <strong>chỉ một phiên bản của một type trong cùng
+một bộ điều khiển</strong>, và ⚠⚠ <strong>xoá type thì mọi chỗ dùng bị xoá theo</strong> — nền cho cột &quot;tham chiếu tới
+kiểu&quot; ở mục 30.5.</li>
 <li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, §32.5 <em>Documentation</em>: ⭐ tài liệu
 phải <strong>phát triển cùng dự án</strong>, để tới cuối thì chi tiết đã quên nên vừa lâu hơn vừa thiếu; và cách
 dùng <strong>biểu mẫu để sẵn</strong>, đặt nơi mọi người truy cập và cập nhật được khi máy thay đổi.</li>
@@ -25291,20 +25526,16 @@ Và nó <strong>không phải nhiễu</strong> — nó là một độ lệch <s
 đo bình thường. Không có cách nào phát hiện từ dữ liệu.</p>
 </blockquote>
 <h3>Ba cách đấu</h3>
-<pre><code class="language-text">2 DÂY — module không tách được điện trở dây
-   [RTD] ══════════════ [module]        ⚠ sai số cộng thẳng vào
-
-3 DÂY — thêm một dây để module ĐO ĐƯỢC điện trở dây và trừ đi
-   [RTD] ══════════════ [module]
-         ══════════════
-         ══════════════                 ⭐ bù được, chỉ cần 3 sợi
-
-4 DÂY — hai dây cấp dòng, hai dây đo áp, hoàn toàn không chịu ảnh hưởng dây
-   [RTD] ══════════════ [module]
-         ══════════════
-         ══════════════
-         ══════════════                 ⭐ chính xác nhất
-</code></pre>
+<p><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5MDAgNjQ2JyB3aWR0aD0nOTAwJyBoZWlnaHQ9JzY0Nic+DQo8cmVjdCB3aWR0aD0nOTAwJyBoZWlnaHQ9JzY0NicgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDMzLjEg4oCUIFJURCDEkeG6pXUgMiwgMyB2w6AgNCBkw6J5OiBkw7JuZyDEkWkgxJHGsOG7nW5nIG7DoG88L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nNTYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+QmEgY8OhY2ggdHLDtG5nIGdp4buRbmcgbmhhdSB0csOqbiBi4bqjbiB24bq9LiBLaMOhYyBiaeG7h3QgZHV5IG5o4bqldCwgdsOgIGzDoCBraMOhYyBiaeG7h3QgcXV54bq/dCDEkeG7i25oOiBz4bujaSBuw6BvIG1hbmcgZMOybmcga8OtY2ggdGjDrWNoLCB2w6AgxJFp4buHbiDDoXAgxJHGsOG7o2MgxJFvIOG7nyDEkcOidS48L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nNzYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5Ow6l0IMSR4buPID0gc+G7o2kgbWFuZyBkw7JuZyBrw61jaCB0aMOtY2ggICDCtyAgIE7DqXQgeGFuaCA9IHPhu6NpIGNo4buJIMSR4buDIMSQTyAgIMK3ICAgw7QgIFIgID0gxJFp4buHbiB0cuG7nyBj4bunYSBjaMOtbmggc+G7o2kgZMOieTwvdGV4dD4NCjxyZWN0IHg9JzE2JyB5PSc4OCcgd2lkdGg9Jzg2OCcgaGVpZ2h0PScxNDInIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4xJy8+DQo8dGV4dCB4PSczMCcgeT0nMTE0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEzJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPjIgRMOCWTwvdGV4dD4NCjx0ZXh0IHg9JzMwJyB5PScxMzMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQjAzQTJFJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKaoCBLaMO0bmcgYsO5IMSRxrDhu6NjPC90ZXh0Pg0KPHRleHQgeD0nMzAnIHk9JzE1OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPsSQaeG7h24gdHLhu58gaGFpIHPhu6NpIGTDonk8L3RleHQ+DQo8dGV4dCB4PSczMCcgeT0nMTczJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+buG6sW0gVFJPTkcgcGjDqXAgxJFvPC90ZXh0Pg0KPHJlY3QgeD0nMjAwJyB5PScxMzQnIHdpZHRoPSc4MCcgaGVpZ2h0PSc0OCcgcng9JzMnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9JzI0MCcgeT0nMTU1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlJURDwvdGV4dD4NCjx0ZXh0IHg9JzI0MCcgeT0nMTcxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlB0MTAwPC90ZXh0Pg0KPHJlY3QgeD0nNjAwJyB5PScxMjAnIHdpZHRoPScxMTgnIGhlaWdodD0nNzYnIHJ4PSczJyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS41Jy8+DQo8dGV4dCB4PSc2NTknIHk9JzEzNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5NT0RVTEU8L3RleHQ+DQo8bGluZSB4MT0nMjgwJyB5MT0nMTQyJyB4Mj0nNjAwJyB5Mj0nMTQyJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cmVjdCB4PSc1MDcnIHk9JzEzNScgd2lkdGg9JzI2JyBoZWlnaHQ9JzE0JyByeD0nMScgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nNTIwJyB5PScxNDYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J21pZGRsZSc+UjwvdGV4dD4NCjxsaW5lIHgxPScyODAnIHkxPScxNzQnIHgyPSc2MDAnIHkyPScxNzQnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxyZWN0IHg9JzUwNycgeT0nMTY3JyB3aWR0aD0nMjYnIGhlaWdodD0nMTQnIHJ4PScxJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMS4zJy8+DQo8dGV4dCB4PSc1MjAnIHk9JzE3OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc4JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SPC90ZXh0Pg0KPGxpbmUgeDE9JzI5OCcgeTE9JzE0MicgeDI9JzMzNicgeTI9JzE0Micgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuMicvPg0KPHBvbHlnb24gcG9pbnRzPSczNDYuMCwxNDIuMCAzMzYuMCwxNDcuMCAzMzYuMCwxMzcuMCcgZmlsbD0nI0MwMzkyQicvPg0KPGxpbmUgeDE9JzU4MicgeTE9JzE3NCcgeDI9JzU0NCcgeTI9JzE3NCcgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuMicvPg0KPHBvbHlnb24gcG9pbnRzPSc1MzQuMCwxNzQuMCA1NDQuMCwxNjkuMCA1NDQuMCwxNzkuMCcgZmlsbD0nI0MwMzkyQicvPg0KPGxpbmUgeDE9JzYxMicgeTE9JzE0MicgeDI9JzYxMicgeTI9JzE3NCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzEuNicvPg0KPGxpbmUgeDE9JzYxMicgeTE9JzE1OCcgeDI9JzYzNCcgeTI9JzE1OCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzEuNicvPg0KPGNpcmNsZSBjeD0nNjQ3JyBjeT0nMTU4JyByPScxMycgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzEuNicvPg0KPHRleHQgeD0nNjQ3JyB5PScxNjMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlY8L3RleHQ+DQo8dGV4dCB4PSc0OTknIHk9JzIxOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQjAzQTJFJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz7imqAgTW9kdWxlIGNo4buJIMSRbyDEkcaw4bujYyB04bqhaSBjaMOibiBj4bunYSBjaMOtbmggbsOzIOKAlCBkw6J5IG7hurFtIHRyb25nIGvhur90IHF14bqjPC90ZXh0Pg0KPHRleHQgeD0nNzM0JyB5PScxNTInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPk1vZHVsZSDEkW86PC90ZXh0Pg0KPHRleHQgeD0nNzM0JyB5PScxNjgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPlIoUlREKSArIDLCt1IoZMOieSk8L3RleHQ+DQo8cmVjdCB4PScxNicgeT0nMjM4JyB3aWR0aD0nODY4JyBoZWlnaHQ9JzE0Micgcng9JzMnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjEnLz4NCjx0ZXh0IHg9JzMwJyB5PScyNjQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTMnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+MyBEw4JZPC90ZXh0Pg0KPHRleHQgeD0nMzAnIHk9JzI4MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdzdGFydCc+4q2QIELDuSDEkcaw4bujYyAoY8OzIGdp4bqjIMSR4buLbmgpPC90ZXh0Pg0KPHRleHQgeD0nMzAnIHk9JzMwOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPlPhu6NpIHRo4bupIGJhIGNobyBtb2R1bGU8L3RleHQ+DQo8dGV4dCB4PSczMCcgeT0nMzIzJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+xJFvIHJpw6puZyDEkWnhu4duIHRy4bufIGTDonk8L3RleHQ+DQo8cmVjdCB4PScyMDAnIHk9JzI4NCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzQ4JyByeD0nMycgZmlsbD0nI0Y0RjVGNycgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzEuNScvPg0KPHRleHQgeD0nMjQwJyB5PSczMDUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+UlREPC90ZXh0Pg0KPHRleHQgeD0nMjQwJyB5PSczMjEnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+UHQxMDA8L3RleHQ+DQo8cmVjdCB4PSc2MDAnIHk9JzI3MCcgd2lkdGg9JzExOCcgaGVpZ2h0PSc3Nicgcng9JzMnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9JzY1OScgeT0nMjg2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPk1PRFVMRTwvdGV4dD4NCjxsaW5lIHgxPScyODAnIHkxPScyODQnIHgyPSc2MDAnIHkyPScyODQnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxyZWN0IHg9JzUwNycgeT0nMjc3JyB3aWR0aD0nMjYnIGhlaWdodD0nMTQnIHJ4PScxJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMS4zJy8+DQo8dGV4dCB4PSc1MjAnIHk9JzI4OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc4JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SPC90ZXh0Pg0KPGxpbmUgeDE9JzI4MCcgeTE9JzMwOCcgeDI9JzYwMCcgeTI9JzMwOCcgc3Ryb2tlPScjMUY1RjhCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPHJlY3QgeD0nNTA3JyB5PSczMDEnIHdpZHRoPScyNicgaGVpZ2h0PScxNCcgcng9JzEnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzFGNUY4Qicgc3Ryb2tlLXdpZHRoPScxLjMnLz4NCjx0ZXh0IHg9JzUyMCcgeT0nMzEyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzgnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxRjVGOEInIHRleHQtYW5jaG9yPSdtaWRkbGUnPlI8L3RleHQ+DQo8bGluZSB4MT0nMjgwJyB5MT0nMzMyJyB4Mj0nNjAwJyB5Mj0nMzMyJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cmVjdCB4PSc1MDcnIHk9JzMyNScgd2lkdGg9JzI2JyBoZWlnaHQ9JzE0JyByeD0nMScgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nNTIwJyB5PSczMzYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J21pZGRsZSc+UjwvdGV4dD4NCjxsaW5lIHgxPScyOTgnIHkxPScyODQnIHgyPSczMzYnIHkyPScyODQnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxwb2x5Z29uIHBvaW50cz0nMzQ2LjAsMjg0LjAgMzM2LjAsMjg5LjAgMzM2LjAsMjc5LjAnIGZpbGw9JyNDMDM5MkInLz4NCjxsaW5lIHgxPSc1ODInIHkxPSczMzInIHgyPSc1NDQnIHkyPSczMzInIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxwb2x5Z29uIHBvaW50cz0nNTM0LjAsMzMyLjAgNTQ0LjAsMzI3LjAgNTQ0LjAsMzM3LjAnIGZpbGw9JyNDMDM5MkInLz4NCjx0ZXh0IHg9JzMwMCcgeT0nMjk5JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzguNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFGNUY4QicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5z4bujaSB0aOG7qSBiYTogS0jDlE5HIG1hbmcgZMOybmc8L3RleHQ+DQo8dGV4dCB4PSc0OTknIHk9JzM2OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQjg4NjBCJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz7imqAgR2nhuqMgxJHhu4tuaDogYmEgc+G7o2kgY8O5bmcgbG/huqFpLCBjw7luZyBjaGnhu4F1IGTDoGksIMSRaSBjw7luZyBt4buZdCBjw6FwPC90ZXh0Pg0KPHRleHQgeD0nNzM0JyB5PSczMDInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPsSQbyDEkcaw4bujYyBSIG3hu5l0IHPhu6NpLDwvdGV4dD4NCjx0ZXh0IHg9JzczNCcgeT0nMzE4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5y4buTaSB0cuG7qyBraOG7j2kga+G6v3QgcXXhuqM8L3RleHQ+DQo8cmVjdCB4PScxNicgeT0nMzg4JyB3aWR0aD0nODY4JyBoZWlnaHQ9JzE0Micgcng9JzMnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjEnLz4NCjx0ZXh0IHg9JzMwJyB5PSc0MTQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTMnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+NCBEw4JZPC90ZXh0Pg0KPHRleHQgeD0nMzAnIHk9JzQzMycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdzdGFydCc+4q2QIEtow7RuZyBj4bqnbiBnaeG6oyDEkeG7i25oIGfDrDwvdGV4dD4NCjx0ZXh0IHg9JzMwJyB5PSc0NTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5Uw6FjaCBo4bqzbiBt4bqhY2ggY+G6pXAgZMOybmc8L3RleHQ+DQo8dGV4dCB4PSczMCcgeT0nNDczJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+a2jhu49pIG3huqFjaCDEkW8gw6FwPC90ZXh0Pg0KPHJlY3QgeD0nMjAwJyB5PSc0MzQnIHdpZHRoPSc4MCcgaGVpZ2h0PSc0OCcgcng9JzMnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9JzI0MCcgeT0nNDU1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlJURDwvdGV4dD4NCjx0ZXh0IHg9JzI0MCcgeT0nNDcxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlB0MTAwPC90ZXh0Pg0KPHJlY3QgeD0nNjAwJyB5PSc0MjAnIHdpZHRoPScxMTgnIGhlaWdodD0nNzYnIHJ4PSczJyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS41Jy8+DQo8dGV4dCB4PSc2NTknIHk9JzQzNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5NT0RVTEU8L3RleHQ+DQo8bGluZSB4MT0nMjgwJyB5MT0nNDI4JyB4Mj0nNjAwJyB5Mj0nNDI4JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cmVjdCB4PSc1MDcnIHk9JzQyMScgd2lkdGg9JzI2JyBoZWlnaHQ9JzE0JyByeD0nMScgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nNTIwJyB5PSc0MzInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J21pZGRsZSc+UjwvdGV4dD4NCjxsaW5lIHgxPScyODAnIHkxPSc0NDgnIHgyPSc2MDAnIHkyPSc0NDgnIHN0cm9rZT0nIzFGNUY4Qicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjxyZWN0IHg9JzUwNycgeT0nNDQxJyB3aWR0aD0nMjYnIGhlaWdodD0nMTQnIHJ4PScxJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyMxRjVGOEInIHN0cm9rZS13aWR0aD0nMS4zJy8+DQo8dGV4dCB4PSc1MjAnIHk9JzQ1MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc4JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUY1RjhCJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SPC90ZXh0Pg0KPGxpbmUgeDE9JzI4MCcgeTE9JzQ2OCcgeDI9JzYwMCcgeTI9JzQ2OCcgc3Ryb2tlPScjMUY1RjhCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPHJlY3QgeD0nNTA3JyB5PSc0NjEnIHdpZHRoPScyNicgaGVpZ2h0PScxNCcgcng9JzEnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nIzFGNUY4Qicgc3Ryb2tlLXdpZHRoPScxLjMnLz4NCjx0ZXh0IHg9JzUyMCcgeT0nNDcyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzgnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxRjVGOEInIHRleHQtYW5jaG9yPSdtaWRkbGUnPlI8L3RleHQ+DQo8bGluZSB4MT0nMjgwJyB5MT0nNDg4JyB4Mj0nNjAwJyB5Mj0nNDg4JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cmVjdCB4PSc1MDcnIHk9JzQ4MScgd2lkdGg9JzI2JyBoZWlnaHQ9JzE0JyByeD0nMScgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nNTIwJyB5PSc0OTInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J21pZGRsZSc+UjwvdGV4dD4NCjxsaW5lIHgxPScyOTgnIHkxPSc0MjgnIHgyPSczMzYnIHkyPSc0MjgnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxwb2x5Z29uIHBvaW50cz0nMzQ2LjAsNDI4LjAgMzM2LjAsNDMzLjAgMzM2LjAsNDIzLjAnIGZpbGw9JyNDMDM5MkInLz4NCjxsaW5lIHgxPSc1ODInIHkxPSc0ODgnIHgyPSc1NDQnIHkyPSc0ODgnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxwb2x5Z29uIHBvaW50cz0nNTM0LjAsNDg4LjAgNTQ0LjAsNDgzLjAgNTQ0LjAsNDkzLjAnIGZpbGw9JyNDMDM5MkInLz4NCjx0ZXh0IHg9JzMwMCcgeT0nNDQwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzguNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFGNUY4QicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5oYWkgc+G7o2kgxJBPOiBkw7JuZyDiiYggMDwvdGV4dD4NCjx0ZXh0IHg9JzQ5OScgeT0nNTE4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPuKtkCDEkG8gw6FwIMSRw7puZyB0csOqbiBoYWkgxJHhuqd1IFJURCDigJQgZMOieSBkw6BpIGJhbyBuaGnDqnUgY8WpbmcgxJHGsOG7o2M8L3RleHQ+DQo8dGV4dCB4PSc3MzQnIHk9JzQ1MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+U+G7o2kgxJFvIGtow7RuZyBjw7MgZMOybmc8L3RleHQ+DQo8dGV4dCB4PSc3MzQnIHk9JzQ2OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+4oaSIGtow7RuZyBjw7Mgc+G7pXQgw6FwPC90ZXh0Pg0KPHJlY3QgeD0nMTYnIHk9JzU0Nicgd2lkdGg9Jzg2OCcgaGVpZ2h0PSc4OCcgcng9JzMnIGZpbGw9JyNGREY2RTcnIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjMnLz4NCjx0ZXh0IHg9JzMyJyB5PSc1NzAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz7irZDirZAgVsOsIHNhbyAzIGTDonkgbMOgIG3hurdjIMSR4buLbmggY+G7p2EgbmfDoG5oOiBuw7MgYsO5IMSRxrDhu6NjIGfhuqduIGjhur90IHNhaSBz4buRIHbhu5tpIGNoaSBwaMOtIHRow6ptIMSQw5pORyBN4buYVCBT4buiSSBEw4JZLjwvdGV4dD4NCjx0ZXh0IHg9JzMyJyB5PSc1OTInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+4pqhIELGsOG7m2MgdOG7qyAyIGzDqm4gMyBkw6J5IGPhuqNpIHRoaeG7h24gcuG6pXQgbmhp4buBdTsgYsaw4bubYyB04burIDMgbMOqbiA0IGTDonkgY+G6o2kgdGhp4buHbiB0aMOqbSBy4bqldCDDrXQgdHJvbmcgxJFp4buBdSBraeG7h24gbcOheSBjw7RuZyBuZ2hp4buHcC48L3RleHQ+DQo8dGV4dCB4PSczMicgeT0nNjEyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKaoCBWw6Agbmjhu5sgZ2nhuqMgxJHhu4tuaCBj4bunYSBjw6FjaCAzIGTDonk6IG7hu5FpIHRow6ptIG3hu5l0IMSRb+G6oW4gZMOieSBraMOhYyBsb+G6oWkgdsOgbyBN4buYVCBz4bujaSBsw6AgcGjDoSBnaeG6oyDEkeG7i25oIMSRw7Mg4oCUIHNhaSBz4buRIHF1YXkgbOG6oWkgbcOgIGtow7RuZyBiw6FvIGfDrC48L3RleHQ+DQo8L3N2Zz4=" alt="RTD đấu 2, 3 và 4 dây"></p>
+<p><em>Hình 33.1 — Ba cách đấu RTD. Khác biệt không nằm ở số sợi dây, mà ở chỗ sợi nào mang dòng kích
+thích và điện áp được đo ở đâu.</em></p>
+<blockquote>
+<p>⭐⭐ <strong>Đọc hình theo một câu hỏi duy nhất: <em>&quot;sợi nào có dòng chạy qua?&quot;</em></strong> ⭐ Sợi có dòng thì có sụt
+áp trên chính nó, và sụt áp đó <strong>cộng vào phép đo</strong>. Sợi không có dòng thì không sụt áp — nên nó
+dẫn được điện áp <strong>thật trên RTD</strong> về tới module mà không làm sai lệch gì.</p>
+<p>⚡ Cả ba cách đấu chỉ là ba câu trả lời khác nhau cho câu hỏi đó, và ⭐ <strong>suy ra được cả ba mà
+không cần học thuộc</strong>.</p>
+</blockquote>
 <div class="table-wrap"><table>
 <thead>
 <tr>

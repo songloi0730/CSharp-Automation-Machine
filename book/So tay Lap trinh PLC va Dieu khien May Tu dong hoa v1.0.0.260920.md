@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260918 |
+| **Phiên bản** | v1.0.0.260920 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -605,6 +605,29 @@ thử được. Có bốn đường, khác nhau về chi phí và độ giống 
 tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra. **Phụ lục G** liệt kê các phần mềm miễn phí
 kèm giới hạn bản quyền thật của từng cái.
 
+### ⭐⭐ Cách tự học đã được kiểm chứng — bốn việc, theo đúng thứ tự
+
+⭐ Có một lối tự học được người dạy nghề đo lường – điều khiển mô tả rất gọn, và nó khác hẳn lối
+"đọc hết sách rồi mới làm":
+
+| Thứ tự | Việc | ⭐ Vì sao đúng thứ tự đó |
+|---|---|---|
+| 1 | **Có một con PLC của riêng bạn** | ⚡ Lập trình **không phải môn thể thao để xem**; chỉ học được bằng thời gian gõ thật |
+| 2 | ⭐ Đọc **tài liệu "Getting Started"** của chính con PLC đó trước tiên | Hãng nào cũng có; nó dẫn bạn qua trọn một vòng nạp – chạy – lưu |
+| 3 | ⭐⭐ Tự lắp một **bàn thực hành**: công tắc làm ngõ vào, đèn làm ngõ ra | ⭐ Học đấu mạch vào/ra **quan trọng ngang** học viết chương trình — Chương 13 |
+| 4 | Viết **chương trình mẫu bé xíu cho từng lệnh**, mỗi lệnh một bài | ⚡ Kiểu *"Hello World"* của nghề PLC: vô dụng khi chạy, cực kỳ có ích khi học |
+
+> ⭐⭐ **Việc thứ tư có một phần mà hầu hết người học bỏ qua: CHÚ THÍCH cho chính mình.** ⭐ Với mỗi
+> chương trình mẫu, ghi lại **năm thứ**: cách dùng đúng · lệnh này làm gì (bằng lời của bạn) · dùng
+> được vào việc thật nào · ⚠ **chỗ nó hành xử lạ** · ⚠⚠ **lỗi bạn đã mắc khi thử nó**.
+>
+> ⚡ Bộ chương trình mẫu có chú thích đó về sau thành **sổ tay riêng của bạn** — và mục thứ năm,
+> danh sách lỗi đã mắc, là mục có giá trị nhất, vì lỗi đã mắc một lần thì rất dễ mắc lại.
+
+> ⭐ **Vì sao "sửa ví dụ có sẵn" dễ hơn "bắt đầu từ trang trắng":** giống hệt học một ngoại ngữ —
+> người ta tập nói lại câu của người khác trước, rồi mới tự đặt câu. ⚡ Cuốn sách này được viết theo
+> đúng giả định đó: mọi chương đều có mã mẫu để bạn chép, chạy, rồi phá ra xem.
+
 > ⚡ **LƯU Ý**
 > Thông tin về bản quyền và giá phần mềm **thay đổi liên tục**. Mọi mục trong Phụ lục G đều ghi ngày
 > kiểm tra; trước khi tải, hãy tự xác nhận lại điều kiện hiện hành.
@@ -694,6 +717,15 @@ trung lập hãng, chọn máy mẫu, quy ước song ngữ) được ghi trong 
 
 - IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*. Tiêu chuẩn có bản quyền;
   sách chỉ diễn giải ở mức khái niệm và **không thay thế bản gốc**.
+- **Kuphaldt, Tony R.** — *Lessons In Industrial Instrumentation*, §12.10 *How to teach yourself PLC
+  programming*: ⭐ trình tự tự học bốn bước ở mục 1.8 — **có PLC của riêng mình** · đọc tài liệu
+  *Getting Started* trước · ⭐ **tự lắp bàn thực hành** (công tắc làm ngõ vào) vì học đấu mạch vào/ra
+  quan trọng ngang học viết chương trình · viết chương trình mẫu bé cho **từng lệnh** kiểu
+  *"Hello World"*; và ⭐⭐ **năm mục phải ghi trong chú thích** của mỗi chương trình mẫu, trong đó có
+  ⚠ *hành vi lạ* và ⚠⚠ *lỗi mình đã mắc*. Cũng là nguồn cho phép so sánh **học lập trình ≈ học một
+  ngoại ngữ**: tập nói lại câu của người khác trước khi tự đặt câu.
+- **AutomationDirect** — *PLC Handbook*: phần dẫn nhập PLC là gì và dùng vào việc gì — nền cho cách
+  đặt vấn đề ở mục 1.1. Phần chọn bộ điều khiển của tài liệu này dùng ở Chương 13.
 
 <!-- SECTION: ch02_plc_la_gi_va_khi_nao_khong_nen_dung -->
 ---
@@ -3850,6 +3882,33 @@ hay bị nhầm lẫn.
 > Hai chữ khác nhau nhưng đi cùng nhau. Lý do: cảm biến PNP **đẩy** +24 V ra dây tín hiệu, nên module
 > phải **nhận** dòng đó về — tức là sink. Nhớ nhầm cặp này là nguồn gốc của loạt lỗi ở Chương 4.
 
+⭐ Bảng trên nói **cái gì**; hình dưới nói **vì sao** — bằng thứ duy nhất quyết định chuyện này:
+đường đi của dòng điện.
+
+![Ngõ vào kiểu sink và kiểu source](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5MDAgNTMwJyB3aWR0aD0nOTAwJyBoZWlnaHQ9JzUzMCc+DQo8cmVjdCB3aWR0aD0nOTAwJyBoZWlnaHQ9JzUzMCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDkuMSDigJQgTmfDtSB2w6BvIGtp4buDdSBzaW5rIHbDoCBraeG7g3Ugc291cmNlPC90ZXh0Pg0KPHRleHQgeD0nMjQnIHk9JzU2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkhhaSBraeG7g3Uga2jDoWMgbmhhdSDEkcO6bmcgbeG7mXQgY2jhu5c6IGNow6JuIGNodW5nIG7hu5FpIDAgViBoYXkgbuG7kWkgKzI0IFYuIFThu6sgxJHDsyBzdXkgcmEgY2hp4buBdSBkw7JuZywgcuG7k2kgc3V5IHJhIHBo4bqjaSBnaMOpcCBj4bqjbSBiaeG6v24gbG/huqFpIG7DoG8uPC90ZXh0Pg0KPHRleHQgeD0nMjQnIHk9Jzc2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+TsOpdCDEkeG7jyDEkeG6rW0gPSB2w7JuZyBkw7JuZyB0w61uIGhp4buHdSwga2jDqXAga8OtbiB04burICsyNCBWIHbhu4EgMCBWICAgwrcgICBOw6l0IHjDoW0gbeG6o25oID0gY2jDom4gbmd14buTbiBjw7JuIGzhuqFpIGPhu6dhIGPhuqNtIGJp4bq/bjwvdGV4dD4NCjxyZWN0IHg9JzI0JyB5PSc4OCcgd2lkdGg9JzQxMCcgaGVpZ2h0PSczMzYnIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8cmVjdCB4PScyNCcgeT0nODgnIHdpZHRoPSc0MTAnIGhlaWdodD0nMzQnIHJ4PSczJyBmaWxsPScjREZGMEU0JyBzdHJva2U9JyMyRTdENEYnIHN0cm9rZS13aWR0aD0nMS4zJy8+DQo8dGV4dCB4PScyMjknIHk9JzEwMycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzJFN0Q0RicgdGV4dC1hbmNob3I9J21pZGRsZSc+QSDCtyBOZ8O1IHbDoG8ga2nhu4N1IFNJTks8L3RleHQ+DQo8dGV4dCB4PScyMjknIHk9JzExNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPmNow6JuIGNodW5nIG7hu5FpIDAgViAgwrcgIGdow6lwIGPhuqNtIGJp4bq/biBQTlA8L3RleHQ+DQo8bGluZSB4MT0nNjgnIHkxPScxNTAnIHgyPSczNTQnIHkyPScxNTAnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyJy8+DQo8dGV4dCB4PSc3MCcgeT0nMTQyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNDMDM5MkInIHRleHQtYW5jaG9yPSdzdGFydCc+KzI0IFY8L3RleHQ+DQo8bGluZSB4MT0nNjgnIHkxPSczMTAnIHgyPSczNTQnIHkyPSczMTAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8dGV4dCB4PSc3MCcgeT0nMzAyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+MCBWPC90ZXh0Pg0KPHJlY3QgeD0nODInIHk9JzE5Micgd2lkdGg9JzEwMCcgaGVpZ2h0PSc0Nicgcng9JzMnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjUnLz4NCjx0ZXh0IHg9JzEzMicgeT0nMjEyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkPhuqJNIEJJ4bq+TjwvdGV4dD4NCjx0ZXh0IHg9JzEzMicgeT0nMjI3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+UE5QPC90ZXh0Pg0KPHJlY3QgeD0nMjMwJyB5PScxOTInIHdpZHRoPScxMTInIGhlaWdodD0nNDYnIHJ4PSczJyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS41Jy8+DQo8dGV4dCB4PScyODYnIHk9JzIxMicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5OR8OVIFbDgE88L3RleHQ+DQo8dGV4dCB4PScyODYnIHk9JzIyNycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPmPhu6dhIG1vZHVsZTwvdGV4dD4NCjxsaW5lIHgxPScxMDAnIHkxPScxNTAnIHgyPScxMDAnIHkyPScxOTInIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxsaW5lIHgxPScxMjQnIHkxPScyMzgnIHgyPScxMjQnIHkyPSczMTAnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjxsaW5lIHgxPScxNjInIHkxPScyMzgnIHgyPScxNjInIHkyPScyNzQnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxsaW5lIHgxPScyODYnIHkxPScyMzgnIHgyPScyODYnIHkyPScyNzQnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxsaW5lIHgxPScxNjgnIHkxPScyNzQnIHgyPScyNzInIHkyPScyNzQnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjInLz4NCjxwb2x5Z29uIHBvaW50cz0nMjgyLjAsMjc0LjAgMjcyLjAsMjc5LjAgMjcyLjAsMjY5LjAnIGZpbGw9JyNDMDM5MkInLz4NCjx0ZXh0IHg9JzIyNCcgeT0nMjk0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J21pZGRsZSc+ZMOybmcgY2jhuqF5IFbDgE8gbW9kdWxlPC90ZXh0Pg0KPGxpbmUgeDE9JzM0MicgeTE9JzIxNScgeDI9JzM1NCcgeTI9JzIxNScgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPGxpbmUgeDE9JzM1NCcgeTE9JzIxNScgeDI9JzM1NCcgeTI9JzI3Nicgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPGxpbmUgeDE9JzM1NCcgeTE9JzI3NicgeDI9JzM1NCcgeTI9JzI5OCcgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPHBvbHlnb24gcG9pbnRzPSczNTQuMCwzMDguMCAzNDkuMCwyOTguMCAzNTkuMCwyOTguMCcgZmlsbD0nI0MwMzkyQicvPg0KPHRleHQgeD0nMzYwJyB5PScyMTEnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmNow6JuIGNodW5nPC90ZXh0Pg0KPHRleHQgeD0nMzYwJyB5PScyMjUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPm7hu5FpIDAgVjwvdGV4dD4NCjx0ZXh0IHg9JzIyOScgeT0nMzMyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkPhuqNtIGJp4bq/biDEkOG6qFkgKzI0IFYgcmEgZMOieSB0w61uIGhp4buHdTwvdGV4dD4NCjxyZWN0IHg9JzQ2JyB5PSczNDYnIHdpZHRoPSczNjYnIGhlaWdodD0nNTgnIHJ4PSczJyBmaWxsPScjRkRGNkU3JyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMScvPg0KPHRleHQgeD0nNTgnIHk9JzM2NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKtkCBNb2R1bGUgcGjhuqNpIE5I4bqsTiBkw7JuZyB24buBIOKGkiBn4buNaSBsw6AgbmfDtSB2w6BvIHNpbmsuPC90ZXh0Pg0KPHRleHQgeD0nNTgnIHk9JzM4NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPk7Dqm4gbsOzIGdow6lwIHbhu5tpIGPhuqNtIGJp4bq/biBQTlAuPC90ZXh0Pg0KPHJlY3QgeD0nNDY2JyB5PSc4OCcgd2lkdGg9JzQxMCcgaGVpZ2h0PSczMzYnIHJ4PSczJyBmaWxsPScjRkZGRkZGJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8cmVjdCB4PSc0NjYnIHk9Jzg4JyB3aWR0aD0nNDEwJyBoZWlnaHQ9JzM0JyByeD0nMycgZmlsbD0nI0VBRjFGNicgc3Ryb2tlPScjNTY1RTY2JyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nNjcxJyB5PScxMDMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkIgwrcgTmfDtSB2w6BvIGtp4buDdSBTT1VSQ0U8L3RleHQ+DQo8dGV4dCB4PSc2NzEnIHk9JzExNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPmNow6JuIGNodW5nIG7hu5FpICsyNCBWICDCtyAgZ2jDqXAgY+G6o20gYmnhur9uIE5QTjwvdGV4dD4NCjxsaW5lIHgxPSc1MTAnIHkxPScxNTAnIHgyPSc3OTYnIHkyPScxNTAnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyJy8+DQo8dGV4dCB4PSc1MTInIHk9JzE0MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPisyNCBWPC90ZXh0Pg0KPGxpbmUgeDE9JzUxMCcgeTE9JzMxMCcgeDI9Jzc5NicgeTI9JzMxMCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjx0ZXh0IHg9JzUxMicgeT0nMzAyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+MCBWPC90ZXh0Pg0KPHJlY3QgeD0nNTI0JyB5PScxOTInIHdpZHRoPScxMDAnIGhlaWdodD0nNDYnIHJ4PSczJyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS41Jy8+DQo8dGV4dCB4PSc1NzQnIHk9JzIxMicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5D4bqiTSBCSeG6vk48L3RleHQ+DQo8dGV4dCB4PSc1NzQnIHk9JzIyNycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPk5QTjwvdGV4dD4NCjxyZWN0IHg9JzY3MicgeT0nMTkyJyB3aWR0aD0nMTEyJyBoZWlnaHQ9JzQ2JyByeD0nMycgZmlsbD0nI0Y0RjVGNycgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzEuNScvPg0KPHRleHQgeD0nNzI4JyB5PScyMTInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+TkfDlSBWw4BPPC90ZXh0Pg0KPHRleHQgeD0nNzI4JyB5PScyMjcnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5j4bunYSBtb2R1bGU8L3RleHQ+DQo8bGluZSB4MT0nNTQyJyB5MT0nMTUwJyB4Mj0nNTQyJyB5Mj0nMTkyJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8bGluZSB4MT0nNTY2JyB5MT0nMjM4JyB4Mj0nNTY2JyB5Mj0nMzEwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi4yJy8+DQo8bGluZSB4MT0nNjA0JyB5MT0nMjM4JyB4Mj0nNjA0JyB5Mj0nMjc0JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi4yJy8+DQo8bGluZSB4MT0nNzI4JyB5MT0nMjM4JyB4Mj0nNzI4JyB5Mj0nMjc0JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi4yJy8+DQo8bGluZSB4MT0nNzIyJyB5MT0nMjc0JyB4Mj0nNjE4JyB5Mj0nMjc0JyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi4yJy8+DQo8cG9seWdvbiBwb2ludHM9JzYwOC4wLDI3NC4wIDYxOC4wLDI2OS4wIDYxOC4wLDI3OS4wJyBmaWxsPScjQzAzOTJCJy8+DQo8dGV4dCB4PSc2NjYnIHk9JzI5NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNDMDM5MkInIHRleHQtYW5jaG9yPSdtaWRkbGUnPmTDsm5nIGNo4bqheSBSQSBraOG7j2kgbW9kdWxlPC90ZXh0Pg0KPGxpbmUgeDE9Jzc4NCcgeTE9JzIxNScgeDI9Jzc5NicgeTI9JzIxNScgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPGxpbmUgeDE9Jzc5NicgeTE9JzE1MCcgeDI9Jzc5NicgeTI9JzE4MScgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPGxpbmUgeDE9Jzc5NicgeTE9JzE4MScgeDI9Jzc5NicgeTI9JzIwMycgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPHBvbHlnb24gcG9pbnRzPSc3OTYuMCwyMTMuMCA3OTEuMCwyMDMuMCA4MDEuMCwyMDMuMCcgZmlsbD0nI0MwMzkyQicvPg0KPHRleHQgeD0nODAyJyB5PScyMTEnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmNow6JuIGNodW5nPC90ZXh0Pg0KPHRleHQgeD0nODAyJyB5PScyMjUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPm7hu5FpICsyNCBWPC90ZXh0Pg0KPHRleHQgeD0nNjcxJyB5PSczMzInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J21pZGRsZSc+Q+G6o20gYmnhur9uIEvDiU8gZMOieSB0w61uIGhp4buHdSB4deG7kW5nIDAgVjwvdGV4dD4NCjxyZWN0IHg9JzQ4OCcgeT0nMzQ2JyB3aWR0aD0nMzY2JyBoZWlnaHQ9JzU4JyByeD0nMycgZmlsbD0nI0ZERjZFNycgc3Ryb2tlPScjOUFBM0FCJyBzdHJva2Utd2lkdGg9JzEnLz4NCjx0ZXh0IHg9JzUwMCcgeT0nMzY2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+4q2QIE1vZHVsZSBwaOG6o2kgQ+G6pFAgZMOybmcgcmEg4oaSIGfhu41pIGzDoCBuZ8O1IHbDoG8gc291cmNlLjwvdGV4dD4NCjx0ZXh0IHg9JzUwMCcgeT0nMzg2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwLjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+TsOqbiBuw7MgZ2jDqXAgduG7m2kgY+G6o20gYmnhur9uIE5QTi48L3RleHQ+DQo8cmVjdCB4PScyNCcgeT0nNDM4JyB3aWR0aD0nODUyJyBoZWlnaHQ9JzcyJyByeD0nMycgZmlsbD0nI0ZCRTlFNycgc3Ryb2tlPScjQjAzQTJFJyBzdHJva2Utd2lkdGg9JzEuMycvPg0KPHRleHQgeD0nMzgnIHk9JzQ2MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjN0EyRTI0JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKaoOKaoCAgUGjhuqduIGzhu5tuIG1vZHVsZSDEkeG7nWkgbeG7m2kgbMOgIGxv4bqhaSBDSFVZ4buCTiDEkMav4buiQzogY8O5bmcgbeG7mXQgbW9kdWxlLCDEkeG6pXUgY2jDom4gY2h1bmcgdsOgbyAwIFYgdGjDrCB0aMOgbmggc2luaywgdsOgbyArMjQgViB0aMOsIHRow6BuaCBzb3VyY2UuPC90ZXh0Pg0KPHRleHQgeD0nMzgnIHk9JzQ4MicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz7irZAgTmdoxKlhIGzDoCBLSMOUTkcgbmjDrG4gcmEga2nhu4N1IMSR4bqldSB04burIGjDrG5oIGTDoW5nIG1vZHVsZSDigJQgY2jhu4kgbmjDrG4gcmEgdOG7qyBz4bujaSBkw6J5IGNow6JuIGNodW5nLiBHaGkgcsO1IGtp4buDdSDEkcOjIGNo4buNbiBsw6puIGLhuqNuIHbhur0gdsOgIGzDqm4gbmjDo248L3RleHQ+DQo8dGV4dCB4PSczOCcgeT0nNTAwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPnRyb25nIHThu6c7IG5nxrDhu51pIHPhu61hIG3DoXkgaGFpIG7Eg20gc2F1IGtow7RuZyDEkW/DoW4gcmEgxJHGsOG7o2MuPC90ZXh0Pg0KPC9zdmc+)
+
+*Hình 9.1 — Cùng một module, đổi đúng một sợi dây chân chung là đổi cả chiều dòng, và đổi luôn loại
+cảm biến ghép được.*
+
+> ⭐⭐ **Đọc hình theo vòng dòng, đừng học thuộc bảng.** Vòng dòng luôn khép kín từ +24 V về 0 V —
+> nét đỏ trong hình là trọn vòng đó. ⭐ Chỉ cần hỏi một câu: *đoạn dây đi xuyên qua ngõ vào của
+> module chạy theo chiều nào?*
+>
+> ⚡ Chạy **vào** module → module đang **nhận** dòng → **sink** → phía bên kia phải là cảm biến
+> **PNP** (loại đẩy +24 V ra). Chạy **ra** khỏi module → module đang **cấp** dòng → **source** →
+> phía bên kia phải là cảm biến **NPN** (loại kéo dây xuống 0 V).
+>
+> ⭐ Suy được như vậy thì không cần nhớ cặp "sink ↔ PNP" nữa — và cũng không nhớ nhầm được.
+
+> ⭐ **Một chi tiết trong hình đáng để ý, vì nó trả lời một câu hỏi ở mục 9.5.** Cảm biến ba dây nào
+> cũng có **hai chân nguồn** riêng ngoài dây tín hiệu, và ⭐ **một trong hai chân đó nằm luôn trong
+> vòng dòng tín hiệu** — chân +24 V với cảm biến PNP, chân 0 V với cảm biến NPN.
+>
+> ⚡ Nghĩa là dòng mà ngõ vào của module lấy **không đi theo một nhánh riêng**: nó đi xuyên qua chính
+> dây nguồn của cảm biến. ⚠ Datasheet cảm biến thường ghi dòng tiêu thụ **lúc không tải** *(no
+> load)*, nên khi tính nguồn ở mục 9.5 thì dòng ngõ vào **vẫn phải cộng thêm** — chỉ là cộng vào
+> đúng sợi dây đó, không phải một phụ tải mới.
+
 Nhiều module hiện nay là **kiểu chuyển được** *(sink/source selectable)*: đấu chân chung vào 0 V thì
 thành sink, đấu vào +24 V thì thành source. Rất tiện — và cũng là một chỗ dễ đấu sai, vì cùng một
 module có thể hành xử hai kiểu tuỳ cách đấu một sợi dây.
@@ -5158,6 +5217,30 @@ Mitsubishi cho dùng nhãn, nhưng mô hình nền vẫn là **thiết bị** (`
   độ rộng bộ đếm (Chương 18);
 - tài liệu và chương trình cũ đều nói bằng ngôn ngữ thiết bị.
 
+### ⭐ Siemens — "khối tối ưu", và cái giá của việc trộn hai kiểu
+
+S7-1200/1500 cho khối dữ liệu **hai kiểu truy cập**: **chuẩn** *(standard)* và ⭐ **tối ưu**
+*(optimized)*. ⚠ Đây không phải một tuỳ chọn hình thức — nó đổi cả cách dữ liệu nằm trong bộ nhớ.
+Bảng dưới là hành vi hãng nêu cho **S7-1500**:
+
+| | Khối **chuẩn** | Khối **tối ưu** |
+|---|---|---|
+| Cách truy cập | Cả **tên** lẫn **địa chỉ tuyệt đối** | ⭐⭐ **Chỉ truy cập theo tên** — không có địa chỉ để mà dùng |
+| Sắp xếp byte | Kiểu cũ; CPU đời mới **phải đổi thứ tự byte** mỗi lần đọc | Khớp sẵn kiến trúc CPU, **không phải đổi** |
+| Đọc một bit | ⚠ CPU đọc **cả byte** rồi che — và **khoá cả byte đó** với truy cập khác | Mỗi bit được cấp một byte riêng, **không phải che** |
+| Kích thước tối đa một khối | 64 kB | ⭐ tới 16 MB |
+
+> ⭐⭐ **Phần đáng nhớ nhất không nằm trong bảng: đừng chép dữ liệu qua lại giữa hai kiểu.** ⚠ Hãng
+> nói thẳng rằng phép chuyển đổi định dạng giữa khối tối ưu và khối chuẩn **tốn nhiều thời gian xử
+> lý**, và khuyến nghị **dùng khối tối ưu cho mọi thứ**.
+>
+> ⚡ Nghĩa là một quyết định trông như chuyện cấu hình — *"khối này để chuẩn cho tiện xem địa chỉ"* —
+> có thể thành **một khoản phí thời gian quét trả lại mỗi vòng**, suốt vòng đời máy.
+
+> ⭐ **Chú ý mối liên hệ với mục 11.1:** khối tối ưu **không có địa chỉ tuyệt đối để mà dùng sai**.
+> ⚡ Cùng một cách chặn lỗi như Rockwell, đến từ một hướng hoàn toàn khác — và cả hai cho thấy
+> ⭐ **cách chặn lỗi rẻ nhất là làm cho lỗi đó không viết ra được**.
+
 Chi tiết đối chiếu năm hệ: **Phụ lục A1**.
 
 ---
@@ -5278,6 +5361,13 @@ một sợi dây mang một bit, cảm biến gửi cả tham số và trạng t
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng ở mục 11.8: mô hình tag và địa chỉ,
   nơi chứa dữ liệu, cách khai báo biến giữ được. Đây là chỗ khác nhau nhiều nhất giữa các hãng.
 - Bảng I/O của DP-01 — Phụ lục J; khối khai báo ở mục 11.7 lấy tên tag từ đó.
+- **Siemens** — *Programming Guideline for S7-1200/S7-1500*, ch. 2.6 *Optimized blocks*: ⭐ khối tối
+  ưu **chỉ truy cập được theo tên**; bảng đối chiếu cách lưu dữ liệu trên S7-1500 (có phải đổi thứ
+  tự byte không, ⚠ **đọc một bit thì khoá cả byte** ở khối chuẩn, kích thước tối đa 64 kB so với
+  16 MB); và ⚠⚠ khuyến nghị **tránh chép dữ liệu giữa khối tối ưu và khối chuẩn** vì phép chuyển đổi
+  định dạng **tốn nhiều thời gian xử lý** — nền cho mục 11.8.
+- **Rockwell Automation** — *Logix 5000 Controllers General Instructions* (bản 9/2025): dùng cho
+  hàng "kiểu tự nhiên `DINT`" và mô hình chỉ-có-tag ở bảng mục 11.8.
 
 > ⚡ Quy ước đặt tên ở mục 11.3 là **quy ước của sách này**, không phải chuẩn. Đơn vị của bạn có thể
 > đã có quy ước riêng — và nếu vậy thì **quy ước của đơn vị thắng**. Điều quan trọng không phải chọn
@@ -8064,6 +8154,54 @@ của một cơ cấu, để lên lịch bảo trì (Chương 51, mục 51.11).
 
 ---
 
+### ⭐ Cùng ba timer đó, viết bằng ladder
+
+⭐ Ba ví dụ dưới là **đúng ba ví dụ ST ở trên**, vẽ lại thành nấc thang — để đặt cạnh nhau mà so.
+
+```text
+                      ┌──────────────────┐
+                      │  T_AirFault  TON │
+   DI_AirOK           │                  │          M_AirFault
+ ────┤/├──────────────┤ IN             Q ├──────────( )───
+              T#500MS─┤ PT               │
+                      └──────────────────┘
+
+                      ┌──────────────────┐
+                      │  T_FanRun   TOF  │
+   M_HeaterOn         │                  │          DO_ExhaustFan
+ ────┤ ├──────────────┤ IN             Q ├──────────( )───
+                T#30S─┤ PT               │
+                      └──────────────────┘
+
+                      ┌──────────────────┐
+                      │  T_Buzz     TP   │
+   M_NewAlarm         │                  │          DO_Buzzer
+ ────┤ ├──────────────┤ IN             Q ├──────────( )───
+                 T#1S─┤ PT               │
+                      └──────────────────┘
+```
+
+| Ký hiệu trong hộp | Nghĩa |
+|---|---|
+| `IN` | Ngõ vào — ⭐ chính là **điều kiện bên trái nấc thang** |
+| `PT` | Thời gian đặt — thường ghi thẳng dưới `IN` |
+| `Q` | Ngõ ra của timer, nối tiếp ra cuộn dây |
+| `ET` | ⭐ Thời gian đã chạy — nhiều hệ cho thêm chân này, **rất đáng nối ra** để chẩn đoán |
+
+> ⭐⭐ **Hộp timer trong ladder cho một thứ mà ST không cho: xem trực tuyến thấy `ET` chạy.**
+> ⚡ Khi trình tự kẹt, mở màn theo dõi là thấy **con số đang đếm lên** — biết ngay máy đang chờ chứ
+> không phải treo. ⭐ Đây là lý do đáng đưa timeout của bước ra ladder, dù phần còn lại viết bằng ST
+> (Phụ lục L.18).
+
+> ⚠⚠ **Ba cái bẫy ở mục 17.6 KHÔNG biến mất khi chuyển sang ladder** — và hai trong ba còn **khó
+> thấy hơn**:
+>
+> | Bẫy | Ở ladder thì sao |
+> |---|---|
+> | Bẫy 3 — timer nằm trong nhánh không được thực thi | ⚠⚠ **Khó thấy hơn ST.** Hộp nằm trong vùng `MCR` bị tắt thì nó **không được gọi**, và nấc thang trông vẫn hoàn toàn bình thường (Chương 15 mục 15.4b) |
+> | Bẫy 5 — dùng chung một thể hiện | ⚠⚠ **Rất dễ mắc hơn ST**, vì chép–dán một nấc thang mà **quên đổi tên hộp** là thao tác một giây |
+> | Bẫy 2 — timer bị đặt lại ngoài ý muốn | Ở ladder nhìn ra dễ hơn: điều kiện đặt lại **chính là** phần bên trái nấc |
+
 ## 17.3 Độ phân giải và sai số
 
 Timer trong PLC **không phải đồng hồ độc lập**. Nó được cập nhật **mỗi lần khối timer được gọi** — tức
@@ -8308,6 +8446,15 @@ OUTHS T5  K20   →  20 ×   1 ms  =  0,02 giây
 có cách nào khác** để xoá ngoài lệnh `RES`. Quên `RES` thì timer chạy đủ một lần rồi báo xong mãi
 mãi. Ngoài ra `.PRE` là **số nguyên mili-giây**, không phải hằng số kiểu `T#`.
 
+> ⚡ **Một cập nhật đáng biết, vì nó đang xoá dần khác biệt vừa nêu.** ⭐ Tài liệu lệnh bản 9/2025
+> thêm kiểu dữ liệu **`TIMER_T`**, trong đó `.PRE` và `.ACC` mang **kiểu `TIME`** chứ không còn là
+> `DINT` mili-giây, và hiển thị theo đơn vị thời gian (ngày · giờ · phút · giây · ms · µs) —
+> ⭐ **không phải tự quy đổi ra mili-giây nữa**. Kiểu này có trên các dòng bộ điều khiển đời mới.
+>
+> ⚠ Nhưng kiểu `TIMER` cũ **vẫn tồn tại song song**, và vẫn là `DINT` mili-giây. ⭐⭐ Nên khi đọc
+> chương trình, **phải nhìn kiểu của chính biến timer** — đừng suy từ tên hãng. ⚡ Lệnh `RES` xoá
+> `.ACC` và các bit trạng thái cho **cả hai** kiểu.
+
 **3. Siemens — khối IEC cần một khối dữ liệu thể hiện.** Mỗi `TON` là một thể hiện có bộ nhớ riêng,
 khai báo trong khối dữ liệu. Đây là hệ quả trực tiếp của quy tắc "mỗi chỗ dùng một thể hiện riêng"
 (Chương 20, Bẫy 7) — hệ ép bạn làm đúng, và đó là điều tốt.
@@ -8376,6 +8523,13 @@ ngưỡng mà đếm bằng phần mềm không còn khả thi — chương sau 
 - Tài liệu hãng về khối timer và timer giữ giá trị — dùng để đối chiếu khác biệt ở mục 17.7; số hiệu
   cụ thể ghi trong Phụ lục A2.
 - Bảng thời gian bước của DP-01 — Phụ lục J.
+- **Rockwell Automation** — *Logix 5000 Controllers General Instructions* (bản 9/2025), ch. 3
+  *Timer and Counter Instructions*: phân biệt timer ⭐ **giữ được** (`RTO`, `RTOR`) với timer
+  **không giữ** (`TON`, `TOF`, `TONR`, `TOFR`); ⚠ lệnh `RES` là cách xoá `.ACC` và các bit trạng
+  thái; và ⭐ kiểu dữ liệu **`TIMER_T`** mới — `.PRE` / `.ACC` mang kiểu `TIME` thay cho `DINT`
+  mili-giây — nền cho mục 17.7.
+- **Siemens** — *S7-1200 System Manual*: khối timer IEC cần **khối dữ liệu thể hiện** riêng cho mỗi
+  chỗ dùng; dùng cho điểm 3 của mục 17.7.
 > ⚡ Mọi con số thời gian trong chương (0,6 s cho hành trình kẹp, 3 s timeout, 500 ms lọc khí) là **giá
 > trị minh hoạ của máy mẫu**. Giá trị thật phải đo trên máy của bạn.
 
@@ -8447,6 +8601,31 @@ BoardInTray := C_Board.CV;
 >
 > Đừng suy ra rằng vấn đề đã hết. Khối đếm bắt được cạnh, nhưng **cạnh giả thì nó vẫn đếm** — đó là
 > đúng cỗ máy ở mục 18.1, và là nội dung mục 18.4.
+
+### ⭐ Cùng khối đếm đó, viết bằng ladder
+
+```text
+                      ┌──────────────────┐
+                      │  C_Board     CTU │
+   DI_BoardStn1       │                  │          M_TrayFull
+ ────┤ ├──────────────┤ CU             Q ├──────────( )───
+   DI_ResetPB         │                  │
+ ────┤ ├──────────────┤ R             CV ├──────────► BoardInTray
+                   50─┤ PV               │
+                      └──────────────────┘
+```
+
+> ⭐⭐ **Chân `CV` nối ra một thanh ghi là thứ nên làm ngay từ đầu.** ⚡ Nó cho người vận hành thấy
+> **con số đang đếm tới đâu** mà không cần mở phần mềm lập trình — và cho người chẩn đoán biết bộ
+> đếm có nhích hay không.
+>
+> ⚠ Nhắc lại cảnh báo ở trên, vì ở ladder nó **dễ quên hơn**: chân `CU` đã tự bắt cạnh, nhưng
+> ⭐ **cạnh giả thì nó vẫn đếm** — mục 18.4.
+
+> ⚠⚠ **Và một bẫy chỉ có ở ladder:** ⭐ **cực tính chân `R` khác nhau giữa các hãng** (mục 18.6b).
+> Ở ST bạn viết rõ `R := DI_ResetPB`; ở ladder, một số hệ đặt lại khi nấc **thông**, số khác khi nấc
+> **hở**. ⚠ Nối nhầm thì bộ đếm **bị xoá mỗi vòng quét** và luôn đọc bằng 0 — hoặc **không bao giờ
+> xoá được**.
 
 ### CTUD — khi con số cần giảm
 
@@ -12446,8 +12625,12 @@ quả khác nhau tuỳ máy đang ở đâu. Đó là lúc bảng chân lý hế
 
 - IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*: các phép toán Boolean và
   cách biểu diễn trong LD, FBD, ST. *(tiêu chuẩn có bản quyền)*
-- Giáo trình đại số Boolean và kỹ thuật số cơ bản — dùng cho phần bảng chân lý, De Morgan và bìa
-  Karnaugh. Đây là toán học phổ thông, không gắn với hãng nào.
+- **Kuphaldt, Tony R.** — *Lessons In Electric Circuits, Volume IV: Digital*, ch. 7 *Boolean Algebra*
+  (§7.8 *DeMorgan's Theorems*, §7.9 *Converting truth tables into Boolean expressions*) và ch. 8
+  *Karnaugh Mapping*: nền toán cho các mục bảng chân lý, De Morgan và bìa Karnaugh. ⭐ Sách mở, đọc
+  được toàn văn — đây là chỗ nên tới khi cần **phần chứng minh** mà chương này cố ý lược bớt.
+- Giáo trình đại số Boolean và kỹ thuật số cơ bản nói chung — đây là toán học phổ thông, không gắn
+  với hãng nào; mọi giáo trình kỹ thuật số nhập môn đều dùng được.
 - Đặc tả trình tự và bảng I/O của DP-01 — Phụ lục J; các bảng chân lý ở mục 24.3 và 24.8 lấy điều
   kiện từ đó.
 
@@ -13167,6 +13350,69 @@ Cần chèn một bước giữa 20 và 30? Dùng 25. Không phải sửa gì kh
 
 ---
 
+### ⭐ Bit bước bằng ladder — nấc thang mà bảng trên nói tới
+
+Bảng ở trên ghi *bit bước hợp với **Ladder***, và quy tắc bất biến nói *"bật bit mới và tắt bit cũ
+trong cùng một nấc"*. ⭐ Đây là nấc thang đó:
+
+```text
+   S1_10       DI_Stop1Up                                        S1_20
+ ────┤ ├───────────┤ ├────────────────────────────┬────────────────( S )──
+                                                  │               S1_10
+                                                  └────────────────( R )──
+
+   S1_20       DI_Clamp1Up                                        S1_30
+ ────┤ ├───────────┤ ├────────────────────────────┬────────────────( S )──
+                                                  │               S1_20
+                                                  └────────────────( R )──
+```
+
+⭐ Đọc: *"đang ở bước 10 **và** chặn đã lên → sang bước 20, đồng thời tắt bước 10."*
+
+> ⭐⭐ **Vì sao hai cuộn `( S )` và `( R )` phải nằm trên CÙNG một nấc:** nếu tách ra hai nấc, giữa
+> hai nấc đó ⚠ **có một khoảnh khắc hai bit cùng bật** — và mọi nấc thang đọc bit bước nằm giữa
+> chúng sẽ thấy trạng thái không hợp lệ.
+>
+> ⚡ Đây chính là **bất biến "một bước bật, mọi bước khác tắt"** ở trên, viết ra thành hình.
+
+⭐ Và nấc giám sát bất biến — **luôn có, không bao giờ bỏ**:
+
+```text
+   [ ĐẾM số bit bước đang bật ]  →  Stn1_StepCount
+
+   Stn1_StepCount <> 1                                          M_SeqFault
+ ────────┤ ├─────────────────────────────────────────────────────( )───
+```
+
+> ⚠⚠ **Không có nấc giám sát này thì bit bước là cách viết nguy hiểm.** ⭐ Với biến số bước, bất biến
+> **do kiểu dữ liệu bảo đảm**; với bit bước, **không ai bảo đảm cả** — một lỗi làm hai bit cùng bật
+> thì hai nhánh trình tự chạy song song, và triệu chứng là máy làm những việc **không theo thứ tự
+> nào**.
+>
+> ⚡ Đây là cái giá thật của việc chọn bit bước, và nó là lý do Chương 25 mục 25.4 khuyên cân nhắc
+> kỹ trước khi chọn.
+
+## 26.2a ⭐ Có hãng coi bit bước là một LOẠI THIẾT BỊ riêng
+
+⭐ Ở mục trên, bit bước là những cờ nhớ thường mà bạn tự đặt tên (`S1_10`, `S1_20`…). ⚡ Nhưng có
+hãng đưa hẳn khái niệm này xuống tầng thiết bị: Mitsubishi có loại thiết bị **`S` — *step relay***,
+sinh ra đúng để làm bit bước, dùng kèm chương trình SFC.
+
+| | Bit bước bằng **cờ nhớ thường** | Bit bước bằng **thiết bị chuyên dụng** |
+|---|---|---|
+| Ưu | ⭐ Chạy ở **mọi hệ**, không phụ thuộc hãng; đặt tên tuỳ ý | Công cụ của hãng **hiểu** nó: xem trạng thái bước, gỡ rối trình tự |
+| Nhược | ⚠ Không công cụ nào biết đó là bit bước — bạn **tự giám sát bất biến** | ⚠⚠ **Khoá vào một hãng**, và có **luật dùng riêng** phải nhớ |
+
+> ⚠⚠ **Và đây là một cái bẫy rất cụ thể của loại thiết bị đó.** ⭐ Trong ST, gán thẳng
+> `M0 := S0;` **không hợp lệ** — phải viết `IF S0 THEN M0 := TRUE; ELSE M0 := FALSE; END_IF;`.
+> ⚠ Với dạng chỉ định theo cụm, còn phải **khai đúng kích thước dữ liệu** nữa.
+>
+> ⚡ ⭐ Bài học tổng quát, không phải bài học về một hãng: **khi một khái niệm được hạ xuống thành
+> thiết bị riêng, nó được công cụ hỗ trợ tốt hơn nhưng cũng mang theo luật riêng.** ⚠ Đọc tài liệu
+> lệnh trước khi dùng — đừng suy từ thói quen với cờ nhớ thường.
+
+---
+
 ## 26.2b ⭐ Phương pháp thứ hai — và biết KHI NÀO nó hợp lệ mới là phần khó
 
 Cách ở mục trên — lưu đồ rồi bit bước — là cách **mặc định đúng** cho máy tự động hoá. Nhưng có một
@@ -13590,6 +13836,12 @@ hai trạm chạy song song, dùng chung một chuyền — và chương này đ
   tiếp, nhánh song song và nhánh lựa chọn) — mô hình khái niệm cho chương này; lệnh `CASE` và khối
   `TON`. *(tiêu chuẩn có bản quyền; chương này chỉ diễn giải ở mức khái niệm)*
 - Đặc tả trình tự hai trạm và bảng thời gian bước của DP-01 — Phụ lục J.
+- **Mitsubishi Electric** — *MELSEC iQ-F FX5 Programming Manual (Program Design)*, ch. 8 *SFC
+  Program* và phần *step relay*: ⭐ loại thiết bị **`S`** dành riêng cho bit bước, và ⚠⚠ luật dùng
+  trong ST — **không gán thẳng** `M0 := S0;` mà phải viết bằng `IF … THEN … ELSE … END_IF`; với dạng
+  chỉ định theo cụm thì phải khai đúng kích thước dữ liệu — nền cho mục 26.2a.
+- **Rockwell Automation** — *Logix5000 Controllers Sequential Function Charts*: nhánh song song và
+  điểm hợp nhất, dùng để đối chiếu ở mục 26.5.
 - **Hugh Jack** — *Automating Manufacturing Systems with PLCs*, ch. 10 *Structured Logic Design*:
   phương pháp **bit trình tự** theo các bước đánh số, và ⭐ **thiết kế theo sơ đồ thời gian** kèm
   ⚠⚠ **điều kiện áp dụng**: chỉ hợp lệ cho quy trình *"phụ thuộc duy nhất vào thời gian"* — nền cho
@@ -14344,6 +14596,38 @@ END_IF;
 > - Trong lúc `Dry-run`, đèn tháp và màn hình phải hiển thị rõ ràng khác với chạy thật.
 
 ---
+
+### ⭐ Ba nguyên tắc đó bằng ladder
+
+⭐ Nguyên tắc **"chế độ tay vẫn giữ nguyên liên động"** dễ nói, và ⚠ **rất hay bị vi phạm** — vì ở
+chế độ tay người ta có xu hướng viết thẳng từ nút ra van. Nấc thang đúng trông như sau:
+
+```text
+  M_ManualMode  M_Jog_ClampUp  M_Itf_ClampUp  M_AllPermissive     DO_Clamp1Vlv
+ ─────┤ ├────────────┤ ├────────────┤/├────────────┤ ├───────────────( )───
+```
+
+> ⭐⭐ **Tiếp điểm thứ ba và thứ tư là toàn bộ nội dung của nguyên tắc này.** ⚡ Bỏ `M_Itf_ClampUp`
+> đi thì nấc vẫn chạy, máy vẫn nhúc nhích, và **không ai phát hiện** cho tới lần va chạm đầu tiên.
+> ⭐ Ở ladder, thiếu một tiếp điểm là **nhìn ra được**; ở ST, thiếu một vế `AND` thì không.
+
+⭐ Và nấc giám sát **chỉ một chế độ được bật**:
+
+```text
+  M_AutoMode    M_ManualMode                                      M_ModeFault
+ ─────┤ ├────────────┤ ├──────────────────────────────────────────────( )───
+
+  M_AutoMode    M_ManualMode                                      M_ModeFault
+ ─────┤/├───────────┤/├──────────────────────────────────────────────( )───
+```
+
+> ⭐ Hai nấc cùng ghi vào `M_ModeFault`: nấc trên bắt **cả hai cùng bật**, nấc dưới bắt **không cái
+> nào bật**. ⚠⚠ Nhưng ⭐ **đây chính là cuộn dây trùng** mà Chương 15 Bẫy 1 cấm — nấc sau ghi đè nấc
+> trước. Cách đúng là **gộp hai điều kiện vào một nấc** bằng nhánh song song, hoặc dùng một cờ trung
+> gian cho mỗi nấc rồi `OR` lại.
+>
+> ⚡ Tôi để nguyên hai nấc sai ở đây **có chủ ý**: nó là ví dụ đắt giá cho thấy ⭐ **ladder đọc dễ
+> không có nghĩa là ladder khó sai** — và cuộn dây trùng là lỗi ladder phổ biến nhất.
 
 ## 28.4 Về gốc — thứ tự suy ra từ phân tích, không phải tuỳ ý
 
@@ -19069,6 +19353,22 @@ lại gì.
 
 Chương này về động cơ và biến tần từ góc nhìn người lập trình PLC. Và câu hỏi trung tâm không phải
 "đặt tốc độ thế nào", mà **"làm sao biết nó có chạy đúng không"**.
+
+![Ba tháng trôi dạt mà không ai thấy](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5MDAgNTAwJyB3aWR0aD0nOTAwJyBoZWlnaHQ9JzUwMCc+DQo8cmVjdCB3aWR0aD0nOTAwJyBoZWlnaHQ9JzUwMCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDM2LjEg4oCUIEJhIHRow6FuZyB0csO0aSBk4bqhdCwgdsOgIHbDrCBzYW8ga2jDtG5nIGFpIHRo4bqleTwvdGV4dD4NCjx0ZXh0IHg9JzI0JyB5PSc1NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5Dw7luZyBt4buZdCBj4buXIG3DoXksIGPDuW5nIG3hu5l0IHF1w6NuZyB0aOG7nWkgZ2lhbi4gQmEgxJHhuqFpIGzGsOG7o25nIGTGsOG7m2kgxJHDonkgxJHhu4F1IEPDkyBT4bq0TiB0cm9uZyBiaeG6v24gdOG6p247IFBMQyBjaOG7iSBuaMOsbiDEkcaw4bujYyDEkcaw4budbmcgdHLDqm4gY8O5bmcuPC90ZXh0Pg0KPHJlY3QgeD0nMTk2JyB5PSc5Micgd2lkdGg9JzYzMicgaGVpZ2h0PSc1NCcgcng9JzMnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxJy8+DQo8dGV4dCB4PScyNCcgeT0nMTEwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkzhu4duaCDEkeG6t3QgdOG7kWMgxJHhu5k8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nMTI1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5BT19Db252U3BlZWQg4oCUIFBMQyBnaGkgcmE8L3RleHQ+DQo8cG9seWxpbmUgcG9pbnRzPScxOTYuMCwxMDkuNSAyMDYuMCwxMDkuNSAyMTYuMSwxMDkuNSAyMjYuMSwxMDkuNSAyMzYuMSwxMDkuNSAyNDYuMiwxMDkuNSAyNTYuMiwxMDkuNSAyNjYuMiwxMDkuNSAyNzYuMywxMDkuNSAyODYuMywxMDkuNSAyOTYuMywxMDkuNSAzMDYuMywxMDkuNSAzMTYuNCwxMDkuNSAzMjYuNCwxMDkuNSAzMzYuNCwxMDkuNSAzNDYuNSwxMDkuNSAzNTYuNSwxMDkuNSAzNjYuNSwxMDkuNSAzNzYuNiwxMDkuNSAzODYuNiwxMDkuNSAzOTYuNiwxMDkuNSA0MDYuNywxMDkuNSA0MTYuNywxMDkuNSA0MjYuNywxMDkuNSA0MzYuOCwxMDkuNSA0NDYuOCwxMDkuNSA0NTYuOCwxMDkuNSA0NjYuOSwxMDkuNSA0NzYuOSwxMDkuNSA0ODYuOSwxMDkuNSA0OTcuMCwxMDkuNSA1MDcuMCwxMDkuNSA1MTcuMCwxMDkuNSA1MjcuMCwxMDkuNSA1MzcuMSwxMDkuNSA1NDcuMSwxMDkuNSA1NTcuMSwxMDkuNSA1NjcuMiwxMDkuNSA1NzcuMiwxMDkuNSA1ODcuMiwxMDkuNSA1OTcuMywxMDkuNSA2MDcuMywxMDkuNSA2MTcuMywxMDkuNSA2MjcuNCwxMDkuNSA2MzcuNCwxMDkuNSA2NDcuNCwxMDkuNSA2NTcuNSwxMDkuNSA2NjcuNSwxMDkuNSA2NzcuNSwxMDkuNSA2ODcuNiwxMDkuNSA2OTcuNiwxMDkuNSA3MDcuNiwxMDkuNSA3MTcuNywxMDkuNSA3MjcuNywxMDkuNSA3MzcuNywxMDkuNSA3NDcuNywxMDkuNSA3NTcuOCwxMDkuNSA3NjcuOCwxMDkuNSA3NzcuOCwxMDkuNSA3ODcuOSwxMDkuNSA3OTcuOSwxMDkuNSA4MDcuOSwxMDkuNSA4MTguMCwxMDkuNSA4MjguMCwxMDkuNScgZmlsbD0nbm9uZScgc3Ryb2tlPScjMkU3RDRGJyBzdHJva2Utd2lkdGg9JzIuNCcvPg0KPHRleHQgeD0nODIwJyB5PScxMDAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMkU3RDRGJyB0ZXh0LWFuY2hvcj0nZW5kJz43MCAlPC90ZXh0Pg0KPHRleHQgeD0nNTEyJyB5PScxMjInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlBMQyBnaGkgNzAgJSB2w6Aga2jDtG5nIGJhbyBnaeG7nSDEkeG7lWkg4oCUIG5ow6xuIHThu6sgUExDIHRow6wgbeG7jWkgdGjhu6kgduG6q24gYsOsbmggdGjGsOG7nW5nPC90ZXh0Pg0KPHJlY3QgeD0nMTk2JyB5PScxNjInIHdpZHRoPSc2MzInIGhlaWdodD0nNjAnIHJ4PSczJyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMScvPg0KPHRleHQgeD0nMjQnIHk9JzE4MCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5U4buRYyDEkeG7mSB0aOG7sWMgY+G7p2EgxJHhu5luZyBjxqE8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nMTk1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5iaeG6v24gdOG6p24gxJFvIMSRxrDhu6NjLCBQTEMga2jDtG5nIMSR4buNYzwvdGV4dD4NCjxsaW5lIHgxPScxOTYnIHkxPScxODAnIHgyPSc4MjgnIHkyPScxODAnIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjQnIHN0cm9rZS1kYXNoYXJyYXk9JzYsNCcvPg0KPHRleHQgeD0nODM0JyB5PScxODQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0I4ODYwQicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5t4buRYyA3MCAlPC90ZXh0Pg0KPHBvbHlsaW5lIHBvaW50cz0nMTk2LjAsMTgwLjIgMjA2LjAsMTgwLjIgMjE2LjEsMTgwLjIgMjI2LjEsMTgwLjIgMjM2LjEsMTgwLjIgMjQ2LjIsMTgwLjMgMjU2LjIsMTgwLjMgMjY2LjIsMTgwLjQgMjc2LjMsMTgwLjUgMjg2LjMsMTgwLjYgMjk2LjMsMTgwLjcgMzA2LjMsMTgwLjggMzE2LjQsMTgwLjkgMzI2LjQsMTgxLjAgMzM2LjQsMTgxLjIgMzQ2LjUsMTgxLjMgMzU2LjUsMTgxLjUgMzY2LjUsMTgxLjcgMzc2LjYsMTgxLjkgMzg2LjYsMTgyLjEgMzk2LjYsMTgyLjMgNDA2LjcsMTgyLjUgNDE2LjcsMTgyLjcgNDI2LjcsMTgzLjAgNDM2LjgsMTgzLjIgNDQ2LjgsMTgzLjUgNDU2LjgsMTgzLjcgNDY2LjksMTg0LjAgNDc2LjksMTg0LjMgNDg2LjksMTg0LjYgNDk3LjAsMTg0LjkgNTA3LjAsMTg1LjIgNTE3LjAsMTg1LjYgNTI3LjAsMTg1LjkgNTM3LjEsMTg2LjMgNTQ3LjEsMTg2LjYgNTU3LjEsMTg3LjAgNTY3LjIsMTg3LjQgNTc3LjIsMTg3LjggNTg3LjIsMTg4LjIgNTk3LjMsMTg4LjYgNjA3LjMsMTg5LjAgNjE3LjMsMTg5LjUgNjI3LjQsMTg5LjkgNjM3LjQsMTkwLjQgNjQ3LjQsMTkwLjkgNjU3LjUsMTkxLjMgNjY3LjUsMTkxLjggNjc3LjUsMTkyLjMgNjg3LjYsMTkyLjggNjk3LjYsMTkzLjQgNzA3LjYsMTkzLjkgNzE3LjcsMTk0LjUgNzI3LjcsMTk1LjAgNzM3LjcsMTk1LjYgNzQ3LjcsMTk2LjEgNzU3LjgsMTk2LjcgNzY3LjgsMTk3LjMgNzc3LjgsMTk3LjkgNzg3LjksMTk4LjYgNzk3LjksMTk5LjIgODA3LjksMTk5LjggODE4LjAsMjAwLjUgODI4LjAsMjAxLjEnIGZpbGw9J25vbmUnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjx0ZXh0IHg9JzgyMCcgeT0nMjE4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J2VuZCc+NjQgJTwvdGV4dD4NCjxyZWN0IHg9JzE5NicgeT0nMjM4JyB3aWR0aD0nNjMyJyBoZWlnaHQ9JzYwJyByeD0nMycgZmlsbD0nI0Y0RjVGNycgc3Ryb2tlPScjOUFBM0FCJyBzdHJva2Utd2lkdGg9JzEnLz4NCjx0ZXh0IHg9JzI0JyB5PScyNTYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+RMOybmcgxJHhu5luZyBjxqEgKCUgScSRbSk8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nMjcxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5iaeG6v24gdOG6p24gxJFvIMSRxrDhu6NjLCBQTEMga2jDtG5nIMSR4buNYzwvdGV4dD4NCjxsaW5lIHgxPScxOTYnIHkxPScyODInIHgyPSc4MjgnIHkyPScyODInIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjQnIHN0cm9rZS1kYXNoYXJyYXk9JzYsNCcvPg0KPHRleHQgeD0nODM0JyB5PScyODYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0I4ODYwQicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5t4buRYyA1NSAlPC90ZXh0Pg0KPHBvbHlsaW5lIHBvaW50cz0nMTk2LjAsMjgyLjMgMjA2LjAsMjgyLjMgMjE2LjEsMjgyLjMgMjI2LjEsMjgyLjIgMjM2LjEsMjgyLjIgMjQ2LjIsMjgyLjEgMjU2LjIsMjgyLjAgMjY2LjIsMjgxLjkgMjc2LjMsMjgxLjggMjg2LjMsMjgxLjcgMjk2LjMsMjgxLjYgMzA2LjMsMjgxLjQgMzE2LjQsMjgxLjIgMzI2LjQsMjgxLjEgMzM2LjQsMjgwLjkgMzQ2LjUsMjgwLjcgMzU2LjUsMjgwLjQgMzY2LjUsMjgwLjIgMzc2LjYsMjc5LjkgMzg2LjYsMjc5LjcgMzk2LjYsMjc5LjQgNDA2LjcsMjc5LjEgNDE2LjcsMjc4LjggNDI2LjcsMjc4LjUgNDM2LjgsMjc4LjEgNDQ2LjgsMjc3LjggNDU2LjgsMjc3LjQgNDY2LjksMjc3LjAgNDc2LjksMjc2LjYgNDg2LjksMjc2LjIgNDk3LjAsMjc1LjggNTA3LjAsMjc1LjQgNTE3LjAsMjc0LjkgNTI3LjAsMjc0LjQgNTM3LjEsMjc0LjAgNTQ3LjEsMjczLjUgNTU3LjEsMjczLjAgNTY3LjIsMjcyLjQgNTc3LjIsMjcxLjkgNTg3LjIsMjcxLjMgNTk3LjMsMjcwLjggNjA3LjMsMjcwLjIgNjE3LjMsMjY5LjYgNjI3LjQsMjY5LjAgNjM3LjQsMjY4LjMgNjQ3LjQsMjY3LjcgNjU3LjUsMjY3LjEgNjY3LjUsMjY2LjQgNjc3LjUsMjY1LjcgNjg3LjYsMjY1LjAgNjk3LjYsMjY0LjMgNzA3LjYsMjYzLjYgNzE3LjcsMjYyLjggNzI3LjcsMjYyLjEgNzM3LjcsMjYxLjMgNzQ3LjcsMjYwLjUgNzU3LjgsMjU5LjcgNzY3LjgsMjU4LjkgNzc3LjgsMjU4LjEgNzg3LjksMjU3LjIgNzk3LjksMjU2LjQgODA3LjksMjU1LjUgODE4LjAsMjU0LjYgODI4LjAsMjUzLjcnIGZpbGw9J25vbmUnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScyLjQnLz4NCjx0ZXh0IHg9JzgyMCcgeT0nMjQ0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0MwMzkyQicgdGV4dC1hbmNob3I9J2VuZCc+OTIgJTwvdGV4dD4NCjxyZWN0IHg9JzE5NicgeT0nMzE0JyB3aWR0aD0nNjMyJyBoZWlnaHQ9JzI2JyByeD0nMycgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjOUFBM0FCJyBzdHJva2Utd2lkdGg9JzEnLz4NCjx0ZXh0IHg9JzI0JyB5PSczMjYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+Qml0ICLEkWFuZyBnaeG7m2kgaOG6oW4gZMOybmciPC90ZXh0Pg0KPHRleHQgeD0nMjQnIHk9JzM0MCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+Ymnhur9uIHThuqduIGLhuq10IGPhu50gbsOgeSwgUExDIGtow7RuZyDEkeG7jWM8L3RleHQ+DQo8cmVjdCB4PSc1MjQuNicgeT0nMzE4JyB3aWR0aD0nMjUuMycgaGVpZ2h0PScxOCcgZmlsbD0nI0IwM0EyRScgb3BhY2l0eT0nMC44NScvPg0KPHJlY3QgeD0nNTg3LjgnIHk9JzMxOCcgd2lkdGg9JzMxLjYnIGhlaWdodD0nMTgnIGZpbGw9JyNCMDNBMkUnIG9wYWNpdHk9JzAuODUnLz4NCjxyZWN0IHg9JzY0NC43JyB5PSczMTgnIHdpZHRoPSc0NC4yJyBoZWlnaHQ9JzE4JyBmaWxsPScjQjAzQTJFJyBvcGFjaXR5PScwLjg1Jy8+DQo8cmVjdCB4PSc3MTQuMicgeT0nMzE4JyB3aWR0aD0nMTEzLjgnIGhlaWdodD0nMTgnIGZpbGw9JyNCMDNBMkUnIG9wYWNpdHk9JzAuODUnLz4NCjx0ZXh0IHg9JzgzNCcgeT0nMzMxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdzdGFydCc+YuG6rXQ8L3RleHQ+DQo8bGluZSB4MT0nMTk2JyB5MT0nMzQ2JyB4Mj0nODI4JyB5Mj0nMzQ2JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8bGluZSB4MT0nMTk2JyB5MT0nMzQ2JyB4Mj0nMTk2JyB5Mj0nMzUyJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PScxOTYnIHk9JzM2NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5uZ2hp4buHbSB0aHU8L3RleHQ+DQo8bGluZSB4MT0nNDA0JyB5MT0nMzQ2JyB4Mj0nNDA0JyB5Mj0nMzUyJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PSc0MDQnIHk9JzM2NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+dGjDoW5nIDE8L3RleHQ+DQo8bGluZSB4MT0nNjEzJyB5MT0nMzQ2JyB4Mj0nNjEzJyB5Mj0nMzUyJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PSc2MTMnIHk9JzM2NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+dGjDoW5nIDI8L3RleHQ+DQo8bGluZSB4MT0nODI4JyB5MT0nMzQ2JyB4Mj0nODI4JyB5Mj0nMzUyJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PSc4MjgnIHk9JzM2NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J2VuZCc+dGjDoW5nIDM8L3RleHQ+DQo8dGV4dCB4PSc1MTInIHk9JzM4NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0IwM0EyRScgdGV4dC1hbmNob3I9J21pZGRsZSc+4pqgIFRyaeG7h3UgY2jhu6luZyBkdXkgbmjhuqV0IG3DoCBuaMOgIG3DoXkgbmjDrG4gdGjhuqV5OiBjaHUga+G7syBtw6F5IGTDoGkgdGjDqm0ga2hv4bqjbmcgOCAlPC90ZXh0Pg0KPHJlY3QgeD0nMjQnIHk9JzQwNCcgd2lkdGg9Jzg1MicgaGVpZ2h0PSc4Micgcng9JzMnIGZpbGw9JyNGREY2RTcnIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjMnLz4NCjx0ZXh0IHg9JzM4JyB5PSc0MjgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz7irZDirZAgS2jDtG5nIGPDsyBnw6wgaOG7j25nLCB2w6Aga2jDtG5nIGPDsyBiw6FvIMSR4buZbmcgbsOgbyBu4buVLiBCaeG6v24gdOG6p24gxJFhbmcgbMOgbSDEkMOaTkcgdmnhu4djIGPhu6dhIG7DszogZ2nhuqNtIHThu5FjIMSR4buDIGto4buPaSBxdcOhIGTDsm5nLjwvdGV4dD4NCjx0ZXh0IHg9JzM4JyB5PSc0NTAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+4q2QIEJhIMSRxrDhu51uZyBkxrDhu5tpIGPDuW5nIG7hurFtIHPhurVuIHRyb25nIGJp4bq/biB04bqnbiBzdeG7kXQgYmEgdGjDoW5nLiBUaOG7qSB0aGnhur91IGtow7RuZyBwaOG6o2kgcGjDqXAgxJFvIOKAlCBtw6AgbMOgIMSQxq/hu5xORyDEkOG7jEMgVuG7gC48L3RleHQ+DQo8dGV4dCB4PSczOCcgeT0nNDcwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKaoSBWw6AgxJHGsOG7nW5nICJt4buRYyIgbcOgdSB2w6BuZyBsw6AgdGjhu6kgcGjhuqNpIGdoaSBs4bqhaSBsw7pjIG5naGnhu4dtIHRodToga2jDtG5nIGPDsyBt4buRYyB0aMOsIGPDsyDEkeG7jWMgduG7gSBjxaluZyBraMO0bmcgYmnhur90IMSRw6MgdHLDtGkgYmFvIG5oacOqdS48L3RleHQ+DQo8L3N2Zz4=)
+
+*Hình 36.1 — Cùng một cỗ máy trong ba tháng. Ba đại lượng dưới đều nằm sẵn trong biến tần; PLC chỉ
+nhìn được đại lượng trên cùng, và đại lượng trên cùng thì phẳng.*
+
+> ⭐⭐ **Hình này là toàn bộ chương, gói trong một trang.** ⭐ Hỏng hóc kiểu *trôi dạt* không có thời
+> điểm bắt đầu, không có báo động, và ⚠ **không ai nhận ra bằng cách nhìn máy chạy** — vì hôm nay
+> luôn giống hôm qua. Chỉ có **so với một mốc** mới thấy.
+>
+> ⚡ Hai thứ hình đòi hỏi, và cả hai đều rẻ: **một đường đọc về** (mục 36.5, 36.8) và **một con số
+> ghi lại lúc nghiệm thu** (mục 36.11 Bẫy 8).
+
+> ⚠ **Đừng đọc hình này thành "biến tần hỏng".** ⭐ Biến tần đang làm đúng chức năng bảo vệ: tải nặng
+> lên thì nó giảm tốc để khỏi quá dòng — nếu không nó đã nhảy lỗi và dừng chuyền. ⭐⭐ Cái sai nằm ở
+> **thiết kế đường thông tin**, không nằm ở thiết bị.
 
 ---
 
@@ -31304,7 +31604,7 @@ Chương này **ráp tất cả lại theo thứ tự của một dự án thậ
 |---|---|
 | Chức năng | Tra keo lên board mạch, rồi sấy UV cho keo cứng |
 | Bố trí | ⭐ **Hai trạm nối tiếp** trên một băng tải, không có chỗ đệm giữa hai trạm |
-| Trạm 1 | Gantry 3 trục chạy đường keo (X 0–150 · Y 0–120 · Z 0–50 mm), trục Z dùng servo |
+| Trạm 1 | Gantry 3 trục chạy đường keo (X 0–150 · Y 0–120 · Z 0–50 mm), ⭐ **cả ba trục đều servo** |
 | Trạm 2 | Buồng sấy UV, ⭐ **6–12 s tuỳ công thức** |
 | Board | 100 × 80 mm |
 | Năng suất | ⭐ **300 board/giờ → chu kỳ 12,0 s** |
@@ -31421,7 +31721,7 @@ Chương trình chính
  ├── Trạm 2 — sấy UV       (máy trạng thái)  ← Ch.21, 27
  ├── Điều phối giữa hai trạm                 ← Ch.26
  ├── Công thức & tham số sản phẩm            ← Ch.32
- ├── Analog, PID gia nhiệt keo               ← Ch.31, 35
+ ├── Analog; giám sát nhiệt qua RS-485       ← Ch.31, 35
  ├── Chuyển động gantry                      ← Ch.37
  ├── Truyền thông: mã 2D, nhiệt, lên trên    ← Ch.38, 42, 45
  ├── Báo động & chẩn đoán                    ← Ch.43, 51
@@ -31456,6 +31756,69 @@ Chương trình chính
 
 ---
 
+### ⭐⭐ Khung chương trình chính — sơ đồ ở trên viết ra thành mã
+
+Sơ đồ hộp ở đầu mục này nói *có những phần nào*. ⭐ Còn đây là **đúng sơ đồ đó viết thành mã**, với
+tên thật của DP-01. Cả cuốn sách hội tụ về khoảng ba mươi dòng này:
+
+```iecst
+PROGRAM Main          // tác vụ chu kỳ, chạy liên tục — Ch.10, Ch.27 mục 27.6
+
+  Prg_IoRead();        //  1  lọc rung, bắt cạnh, ánh xạ tag        Ch.4, 23
+  Prg_Safety();        //  2  chế độ vận hành, M_AllPermissive      Ch.25, 47
+  Prg_Mechanisms();    //  3  Stop1/Clamp1/Stop2/Clamp2, gantry     Ch.27, 30, 37
+  Prg_AntiCollision(); //  4  tầng chống va chạm                    Ch.27 mục 27.3b
+  Prg_Machine();       //  5  tầng máy: tài nguyên chung, pipeline  Ch.26, 27 mục 27.5
+  Prg_Stn1Dispense();  //  6  trình tự trạm 1                       Ch.21, 26 · khung L.6
+  Prg_Stn2Cure();      //  7  trình tự trạm 2                       Ch.21, 26 · khung L.6
+  Prg_Handshake();     //  8  bắt tay máy trước / máy sau           Ch.41
+  Prg_Recipe();        //  9  nạp tham số của công thức đang chọn   Ch.32
+  Prg_Comm();          // 10  mã 2D, nhiệt RS-485, báo cáo lên trên Ch.38, 42, 45
+  Prg_Alarm();         // 11  báo động và chẩn đoán                 Ch.43, 51
+  Prg_Stats();         // 12  chu kỳ, sản lượng, bộ đếm bảo trì     Ch.53, 55
+  Prg_OutputMap();     // 13  GOM ngõ ra — đúng một chỗ ghi mỗi tag Ch.22, 27 Bẫy 2
+  Prg_Hmi();           // 14  dữ liệu cho màn hình và đèn tháp      Ch.43, 44
+
+END_PROGRAM
+```
+
+Và `Prg_OutputMap` — khối ngắn nhất, nhưng là khối giữ cho chương trình còn đọc được sau ba năm:
+
+```iecst
+// Mỗi ngõ ra xuất hiện ĐÚNG MỘT LẦN trong toàn chương trình, và là ở đây.
+DO_Stop1Vlv  := Stop1.Valve;                      // Ch.27 — FB_Cylinder2Pos
+DO_Clamp1Vlv := Clamp1.Valve;
+DO_UvLamp    := Stn2_UvReq AND M_AllPermissive AND DI_ShutterClosed;
+DO_LampRed   := M_AnyFault;                       // Ch.43 — mẫu đèn tháp L.13
+```
+
+### ⭐ Ba điều trong khung này đáng nói hơn cả danh sách
+
+| Điều | Nội dung |
+|---|---|
+| ⚠⚠ **Không có `IF` nào bao quanh các lệnh gọi** | ⭐ Mọi khối chạy **mỗi vòng quét**. Bọc một lệnh gọi trong `IF` là đóng băng mọi timer bên trong nó, và ⚠ **ngõ ra thì giữ nguyên giá trị cũ** — Ch.17 Bẫy 3, Ch.15 mục 15.4b |
+| ⭐⭐ **Thứ tự KHÔNG tuỳ ý** | Cơ cấu → máy → trạm → ghi ngõ ra (Ch.27 mục 27.6). ⭐ Gọi tầng cơ cấu **trước** để `Done` và `Fault` mà trình tự đọc là **của vòng quét này**, không phải vòng trước |
+| ⭐ **Ghi ngõ ra gom vào một khối cuối** | ⚠ Đây là cách rẻ nhất để bảo đảm *"đúng một chỗ ghi cho mỗi tag"* — dấu hiệu số một của chương trình lành mạnh khi người khác đọc lại (Ch.22 mục 22.2) |
+
+> ⚠⚠ **Thứ tự GỌI khác thứ tự VIẾT.** Bảng ở mục 57.7 ngay dưới đây là thứ tự **viết** — an toàn viết
+> trước vì mọi thứ phụ thuộc nó. ⭐ Còn thứ tự **gọi** là danh sách trên, do luồng dữ liệu trong một
+> vòng quét quyết định. ⚡ Hai thứ tự này khác nhau, và **lẫn lộn chúng là một lỗi kiến trúc thật**.
+
+> ⭐⭐ **Vì sao DP-01 chỉ có MỘT tác vụ.** Danh mục kiểm ở Chương 27 mục 27.8 hỏi: *"có bao nhiêu tác
+> vụ, và mỗi tác vụ thêm có lý do định lượng không?"* ⭐ Câu trả lời của DP-01 là **một** — vì mọi
+> vòng điều khiển liên tục của nó đều đã **giao cho thiết bị chuyên dụng**: biến tần lo tốc độ, servo
+> drive lo vị trí, bộ điều khiển rời lo nhiệt độ keo (mục 35.9, 35.11).
+>
+> ⚡ Đó không phải may mắn — ⭐ đó là **hệ quả trực tiếp của các quyết định ở giai đoạn 2**, và nó đổi
+> lại một chương trình PLC đơn giản hơn hẳn.
+
+> ⭐ **Thân của từng khối thì không lặp lại ở đây.** Trình tự trạm dùng nguyên **khung L.6**; xy-lanh
+> dùng **`FB_Cylinder2Pos`** ở Chương 27 mục 27.3; đèn tháp dùng **L.13**; tự giữ dùng **L.1**. ⚡ Đó
+> chính là điều đáng nói: ⭐ **đến chương này thì không còn gì phải phát minh nữa** — chỉ còn việc
+> ghép các mẫu đã có theo đúng thứ tự.
+
+---
+
 ## 57.7 Giai đoạn 5 — Viết chương trình theo thứ tự
 
 ⭐ **Thứ tự viết không phải thứ tự chương trình chạy.** Viết theo thứ tự phụ thuộc, và luôn giữ được
@@ -31471,7 +31834,7 @@ một bản chạy được.
 | 6 | Trình tự trạm 2 | | 21 |
 | 7 | ⭐ **Điều phối hai trạm** | ⭐ Chỉ làm được khi đã có cả hai trạm | 26 |
 | 8 | Công thức và tham số | Trình tự đã biết cần tham số nào | 32 |
-| 9 | Analog và PID gia nhiệt | Độc lập với trình tự | 31, 35 |
+| 9 | Analog; giám sát bộ điều khiển nhiệt rời | Độc lập với trình tự | 31, 35 |
 | 10 | Truyền thông: mã 2D, nhiệt, chuyền | Cắm vào trình tự đã có | 38, 41, 42 |
 | 11 | ⭐ **Báo động và chẩn đoán** | ⭐ Viết khi đã biết **cái gì có thể sai** | 43, 51 |
 | 12 | HMI | Cần biết có gì để hiện | 44 |

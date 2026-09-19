@@ -9737,6 +9737,188 @@ khiển.
 
 ---
 
+### 8.1.5  `Application.DoEvents()` — cái nạng phổ biến nhất của phần mềm máy viết bằng WinForms
+
+Mục 8.1.1 nói vòng lặp thông điệp là thứ giữ cho giao diện sống. Mục này nói về hàm mà người ta gọi
+khi vòng lặp đó **chết**, và vì sao nó tạo ra một loại lỗi khó tìm hơn hẳn thứ nó chữa.
+
+Đếm trong 13 phần mềm máy thật của bộ mẫu: `Application.DoEvents()` xuất hiện **99 lần ở 6 trong 13
+dự án**, riêng một dự án dùng **78 lần**. Không phải chuyện hiếm — đây là một trong những phản xạ
+phổ biến nhất của người viết phần mềm máy bằng WinForms.
+
+#### Vì sao người ta gọi nó, và lời giải thích đó đúng
+
+Tình huống sinh ra nó luôn giống nhau: một vòng lặp chờ chạy **trên luồng giao diện**.
+
+**Code 8.15 — Hình dạng luôn thấy: vòng chờ chặn luồng giao diện**
+
+```csharp
+private void ChayChuKy()
+{
+    var dongHo = Stopwatch.StartNew();
+    while (true)
+    {
+        Application.DoEvents();                  // ← không có dòng này thì giao diện "đơ"
+        if (DocTinHieu(DI.CamBienDen)) break;
+        if (dongHo.Elapsed > TimeSpan.FromSeconds(5)) { BaoLoi(); return; }
+    }
+}
+```
+
+Bỏ dòng `DoEvents()` đi thì cửa sổ đứng hình: không vẽ lại, không phản hồi chuột, Windows treo nhãn
+*"Không phản hồi"* sau vài giây. Thêm nó vào thì mọi thứ trông bình thường trở lại. Với người vừa
+gặp vấn đề và vừa tìm ra cách chữa trong ba mươi giây, đây là một giải pháp **hoạt động** — và đó
+chính là lý do nó lan ra 78 chỗ trong cùng một dự án.
+
+Tài liệu của Microsoft nói rõ hàm này làm gì: nó xử lý toàn bộ thông điệp đang xếp hàng. Và nó kèm
+một cảnh báo mà phần lớn người dùng nó chưa đọc — rằng nếu một thông điệp trong hàng đợi kích hoạt
+một sự kiện, thì **những phần khác của mã ứng dụng có thể chạy**, gây ra hành vi bất ngờ và khó gỡ.
+
+Với phần mềm máy, câu cảnh báo chung chung đó có một nghĩa rất cụ thể.
+
+#### Điều thật sự xảy ra: chu kỳ chạy lồng vào chu kỳ
+
+**Code 8.16 — Cùng đoạn mã trên, nhìn từ góc độ người vận hành bấm nút**
+
+```csharp
+private void btnBatDau_Click(object s, EventArgs e)
+{
+    ChayChuKy();              // (1) vào chu kỳ, mất 5 giây
+}
+
+private void ChayChuKy()
+{
+    while (true)
+    {
+        Application.DoEvents();   // (2) tại đây, Windows giao lại quyền cho các thông điệp đang chờ
+        …                         //     — kể cả thông điệp "người dùng vừa bấm nút Bắt đầu"
+    }
+}
+```
+
+Người vận hành bấm **Bắt đầu** lần thứ hai vì máy "trông như đang không làm gì". Thông điệp bấm nút
+vào hàng đợi. Lần `DoEvents()` kế tiếp lấy nó ra và gọi `btnBatDau_Click` — **trong khi lời gọi
+`ChayChuKy()` thứ nhất vẫn đang nằm trên ngăn xếp**. Bây giờ có hai chu kỳ chạy chồng nhau trên cùng
+một luồng, cùng ghi vào cùng những biến trạng thái, cùng ra lệnh cho cùng những trục.
+
+Ba hệ quả, và hệ quả thứ ba là thứ khiến lỗi này rất đắt:
+
+1. **Trục nhận hai lệnh đi tới hai vị trí khác nhau** trong cùng một khoảnh khắc; lệnh nào thắng phụ
+   thuộc vào thời điểm, tức là không lặp lại được.
+2. **Bộ đếm sản lượng tăng hai lần cho một phôi**, hoặc ngược lại bỏ sót, vì hai vòng lặp cùng sửa
+   một biến.
+3. **Không tái hiện được.** Lỗi chỉ xảy ra khi người vận hành bấm đúng vào khoảng thời gian một vòng
+   chờ đang mở. Kỹ sư ngồi thử ở văn phòng không bao giờ bấm kiểu đó. Báo cáo từ hiện trường sẽ là
+   *"thỉnh thoảng máy chạy sai một nhịp"* — câu mô tả gần như vô dụng cho việc gỡ lỗi.
+
+> ⚠️ **Đây là lỗi tái nhập (re-entrancy), không phải lỗi đa luồng — và đó là lý do nó thoát khỏi mọi
+> biện pháp phòng vệ quen thuộc.** Tất cả vẫn chạy trên **một** luồng giao diện, nên `lock` không
+> giúp gì (cùng một luồng thì vào lại `lock` được), `volatile` không liên quan, và mọi lập luận kiểu
+> *"chỉ có một luồng nên không cần đồng bộ"* đều sai. Hàm của bạn đơn giản là **bị gọi lại trước khi
+> lần gọi trước kết thúc**.
+
+Hai chỗ dùng thật trong bộ mẫu cho thấy nó lan xa tới đâu khi đã thành phản xạ: một chỗ đặt
+`DoEvents()` trong **vòng lặp đổi số thập phân sang nhị phân** — một phép tính thuần tuý chạy trong
+vài micro-giây, không có gì để chờ; một chỗ khác đặt nó ở dòng đầu của `while (true)` trong hàm đọc
+phản hồi từ một phiên đăng nhập từ xa. Ở chỗ thứ nhất, nó chỉ làm chậm và mở thêm cửa cho tái nhập,
+không đổi lại được gì cả.
+
+#### Bốn cách thay thế, và cái giá của từng cách
+
+**Bảng 8.7 — Bốn cách giữ giao diện sống mà không dùng `DoEvents()`**
+
+| Cách | Làm gì | Ưu điểm | Nhược điểm | Hợp khi |
+|---|---|---|---|---|
+| **1. `async`/`await`** | `while (…) { await Task.Delay(20, ct); }` trong hàm `async` | Giao diện sống mà **không tái nhập ngoài ý muốn**; huỷ lệnh có sẵn qua `CancellationToken` | Phải đổi chữ ký hàm lên suốt chuỗi gọi ("async lan toả" — mục 5.3) | Viết mới, hoặc tái cấu trúc có kế hoạch |
+| **2. Luồng nền + `Invoke`** | Chu trình chạy trên luồng riêng, chỉ cập nhật giao diện qua `Invoke` | Không cần đổi chữ ký hàm; hợp với mã chặn sẵn có (mục 7.6) | Sinh ra lỗi đa luồng thật — cần `lock` cho trạng thái dùng chung | Mã kế thừa nhiều, không muốn đụng chữ ký |
+| **3. Khoá nút + cờ chống tái nhập** | `btnBatDau.Enabled = false;` và một cờ `_dangChay` kiểm ở đầu hàm | **Rẻ nhất** — vài dòng, sửa được ngay hôm nay | Không chữa nguyên nhân, chỉ bịt đúng cửa đã biết; quên một nút là hở | Chữa cháy một lỗi đang xảy ra ở hiện trường |
+| **4. Giữ `DoEvents()` có kiểm soát** | Giữ nguyên, nhưng bọc toàn bộ điểm vào bằng cờ chống tái nhập | Không phải viết lại gì | Vẫn còn mọi rủi ro khác: mã lạ chạy xen giữa hai dòng của bạn | Chỉ khi ba cách trên đều không khả thi |
+
+> 💡 **Thứ tự nên làm khi bạn tiếp quản một phần mềm có 78 chỗ gọi `DoEvents()`.** Đừng xoá hết —
+> xoá một chỗ sai là giao diện đứng hình ngay, và bạn sẽ bị yêu cầu hoàn tác. Làm theo bậc: **(a)**
+> áp cách 3 cho **mọi nút khởi động chu trình** trong một buổi chiều; việc này chặn phần lớn thiệt
+> hại thật mà gần như không có rủi ro. **(b)** Lọc ra những chỗ `DoEvents()` nằm trong vòng lặp
+> **tính toán thuần tuý** (như ví dụ đổi hệ số ở trên) — xoá thẳng, không cần thay gì. **(c)** Chỉ
+> những vòng **chờ phần cứng** mới cần chuyển sang cách 1 hoặc 2, và chuyển từng cái một, mỗi cái
+> một lần kiểm tra chạy máy.
+>
+> Bậc (a) và (b) thường đã xử lý được quá nửa số chỗ gọi mà không đụng tới kiến trúc.
+
+---
+
+### 8.1.6  Tỉ lệ hiển thị của Windows — thứ làm hỏng bố cục màn hình mà không ai sửa mã
+
+Chương 10 thiết kế giao diện cho máy tính công nghiệp màn hình 21–24 inch, độ phân giải 1920×1080.
+Có một giả định ngầm trong con số đó, và nó sai ở rất nhiều máy thật: giả định rằng **1920 điểm ảnh
+vật lý bằng 1920 đơn vị bố cục**.
+
+Windows cho phép người dùng đặt **tỉ lệ hiển thị** 100 %, 125 %, 150 %, 175 %. Trên máy tính công
+nghiệp, tỉ lệ này thường **không phải 100 %**, và lý do rất đời thường: kỹ thuật viên lắp máy thấy
+chữ nhỏ quá nên chỉnh cho dễ đọc, hoặc bản Windows cài sẵn theo máy đã đặt sẵn 125 %. Không ai báo
+cho người viết phần mềm.
+
+Đo trong bộ mẫu — và con số này gây bất ngờ:
+
+**Bảng 8.8 — Khai báo nhận biết DPI trong 13 phần mềm máy thật**
+
+| Tình trạng | Số dự án |
+|---|---|
+| **Không có file manifest nào** (nên hệ điều hành coi là *không nhận biết DPI*) | **10** / 13 |
+| Có manifest khai báo `dpiAware` | 2 / 13 |
+| Gọi API đặt chế độ DPI trong mã (`SetProcessDpiAwareness`, `HighDpiMode`…) | **0** / 13 |
+| Có đặt `AutoScaleMode` trên form | 6 / 13 |
+
+#### Ba chuyện khác nhau xảy ra, tuỳ vào khai báo
+
+**1. Không khai báo gì (10/13 dự án).** Hệ điều hành coi ứng dụng là *không nhận biết DPI*, và xử lý
+bằng cách **phóng to ảnh bitmap của cửa sổ**. Kết quả ở 150 %:
+
+- Ứng dụng tin rằng nó đang chạy trên màn hình **1280×720**, không phải 1920×1080. Mọi con số bố cục
+  trong Chương 10 — vùng thao tác, chiều cao thanh lệnh 76, cỡ chữ — đều tính trên 1920 và bây giờ
+  không còn vừa. Nút bị cắt, bảng bị tràn, cửa sổ đòi thanh cuộn.
+- **Chữ bị mờ**, vì nó được vẽ ở 1280 rồi kéo dãn lên 1920 chứ không được vẽ lại ở kích thước thật.
+  Đây là dấu hiệu nhận ra ngay bằng mắt: chữ trông "nhoè" so với các ứng dụng khác của Windows.
+
+**2. Khai báo nhận biết DPI ở mức hệ thống.** Ứng dụng nhận đúng 1920×1080 và tự vẽ sắc nét. Nhưng
+nếu người dùng đổi tỉ lệ, hoặc **kéo cửa sổ sang màn hình thứ hai có tỉ lệ khác**, bố cục không cập
+nhật theo — liên quan trực tiếp tới tình huống nhiều màn hình ở mục 10.2.6d.
+
+**3. Nhận biết theo từng màn hình (Per-Monitor v2).** Ứng dụng được thông báo khi tỉ lệ đổi và vẽ
+lại. Đây là mức đúng cho máy có màn hình phụ.
+
+#### Bật nó lên như thế nào — và đây là chỗ hay bị mắc
+
+Cách khai báo **khác nhau theo nền tảng**, và đó là lý do nhiều đội tưởng đã bật mà thật ra chưa:
+
+| Nền tảng | Cách bật |
+|---|---|
+| **.NET Framework 4.7+ (WinForms)** | Là tính năng **phải tự bật**. Cần **hai** thứ cùng lúc: khai báo tương thích Windows 10 trong `app.manifest`, **và** một mục cấu hình DPI trong `app.config`. Thiếu một trong hai thì không có tác dụng. |
+| **.NET 5 trở lên (WinForms)** | Đặt ở cấu hình project (`ApplicationHighDpiMode`), hoặc gọi `Application.SetHighDpiMode(HighDpiMode.PerMonitorV2)` **trước** `Application.Run` |
+| **WPF** | Nhận biết DPI sẵn ở mức hệ thống; mức theo từng màn hình cần bật thêm trên .NET Framework |
+
+> ⚠️ **Cái bẫy của .NET Framework: phải khai báo ở HAI chỗ.** Đây là lý do phổ biến nhất khiến một
+> đội nói *"chúng tôi có bật DPI rồi mà"* trong khi chữ vẫn mờ — họ thêm manifest nhưng quên
+> `app.config`, hoặc ngược lại. Cách kiểm tra không cần đọc mã: mở **Task Manager → tab Details →
+> bấm phải tiêu đề cột → chọn cột *DPI Awareness***. Cột đó nói đúng hệ điều hành đang coi tiến
+> trình của bạn là gì, bất kể bạn nghĩ mình đã khai báo gì.
+
+#### Việc cần làm cho một phần mềm máy, theo thứ tự
+
+1. **Kiểm tra máy thật đang đặt tỉ lệ bao nhiêu** trước khi kết luận gì. Trên máy tính công nghiệp,
+   đừng giả định 100 %.
+2. **Chọn một mức và khai báo tường minh**, kể cả khi bạn chọn "không nhận biết". Không khai báo gì
+   là để hệ điều hành quyết định thay bạn, và quyết định đó đổi theo phiên bản Windows.
+3. **Thử bố cục ở 100 %, 125 % và 150 %** — ba lần chạy, mười phút. Đây là phép thử rẻ nhất trong
+   toàn bộ chương này và nó bắt được gần như mọi lỗi tràn bố cục.
+4. **Nếu máy có màn hình phụ** (mục 10.2.6d), chọn mức theo từng màn hình, và thử kéo cửa sổ qua lại.
+
+> 📌 **Vì sao mục này nằm ở Chương 8 chứ không ở Chương 10.** Chương 10 quyết định bố cục *nên* trông
+> như thế nào; đây là cơ chế quyết định bố cục đó *có được vẽ đúng hay không*. Một bản thiết kế
+> Chương 10 hoàn hảo, chạy trên một tiến trình không khai báo DPI ở màn hình đặt 150 %, sẽ hiện ra
+> sai — và sai theo kiểu khiến người ta đổ lỗi cho bản thiết kế.
+
+---
+
 ## 8.2 Advanced WinForms Controls
 
 Control chuẩn của WinForms (Label, Button, ListBox...) không đủ cho nhiều
@@ -19495,6 +19677,97 @@ Nghĩa là toàn bộ phần khó của phần mềm máy — trình tự, cản
 nguyên lý. Và nó cũng giải thích con số ở mục 13.5: **9/13 dự án khảo sát có ≤3 interface trong
 toàn bộ mã nguồn** — với những dự án đó, bảng trên không có cột "ai chịu trách nhiệm", vì câu trả
 lời luôn là *"mọi file có chạm tới trục"*.
+
+---
+
+### 13.2.5c  `Random` trong bản giả lập — và một bài học về tuổi thọ của lời khuyên
+
+Bản giả lập ở mục 13.2.5 cần số ngẫu nhiên: nhiễu của cảm biến, thời gian chuyển động xê dịch, thỉnh
+thoảng một lần đọc lỗi để thử nhánh xử lý sự cố. Đây là chỗ gần như mọi bản giả lập đều gọi `Random`,
+và cũng là chỗ có một lời khuyên rất nổi tiếng mà **ngày nay đã không còn đúng**.
+
+Đo trong bộ mẫu: `new Random(...)` xuất hiện **41 lần ở 7 trong 13 dự án**, và **0 trong 13 dự án**
+dùng một thể hiện dùng chung (`static readonly Random`). Nghĩa là gần như mọi chỗ đều tạo mới tại
+chỗ.
+
+#### Lời khuyên nổi tiếng, và phép thử
+
+Câu hỏi *"vì sao `Random` chỉ sinh ra một số duy nhất"* là một trong những câu được hỏi nhiều nhất
+về C#, từ năm 2009. Câu trả lời kinh điển: `new Random()` lấy hạt giống từ đồng hồ hệ thống, nên
+nhiều thể hiện tạo ra trong cùng một nhịp đồng hồ sẽ có **cùng hạt giống** và sinh ra **cùng dãy số**.
+
+Sách này không chép lại lời khuyên mà không thử. Chương trình kiểm chứng chạy trên **.NET 9.0.8**:
+
+**Bảng 13.12 — Bốn phép thử `Random`, đo thật trên .NET 9**
+
+| Phép thử | Kết quả đo | Kết luận |
+|---|---|---|
+| `new Random().Next(1000)` **10 lần liên tiếp** | 655, 208, 209, 228, 342, 569, 627, 845, 938, 426 — **10/10 giá trị khác nhau** | Lỗi kinh điển **không còn tái hiện** trên .NET hiện đại |
+| `new Random(42).Next(1000)` 5 lần | 668, 668, 668, 668, 668 — **1/5 giá trị khác nhau** | Cùng hạt giống vẫn cho cùng dãy — **và đây là tính năng, không phải lỗi** |
+| Một `Random` dùng chung, **8 luồng**, 1,6 triệu lần gọi, không khoá | **0 giá trị 0** | Kiểu hỏng mà tài liệu mô tả không tái hiện được |
+| `Random.Shared`, 8 luồng, 1,6 triệu lần gọi | **0 giá trị 0** | Đúng như tài liệu |
+
+Hàng đầu tiên là điều đáng nói nhất. Tài liệu .NET hiện tại mô tả hạt giống mặc định là do **một bộ
+sinh số riêng theo từng luồng** tạo ra, chứ không còn lấy thẳng từ đồng hồ — nên hai thể hiện tạo
+liên tiếp không còn trùng hạt giống. Lời khuyên năm 2009 mô tả đúng .NET Framework thời đó; nó
+**không** mô tả .NET 9.
+
+> ⚠️ **Hàng thứ ba cần đọc cẩn thận, và sách nói rõ giới hạn của phép đo.** Không quan sát thấy giá
+> trị 0 nào trong 1,6 triệu lần gọi **không chứng minh** `Random` an toàn luồng — nó chỉ chứng minh
+> **kiểu hỏng cụ thể mà tài liệu mô tả** đã không xảy ra trong lần thử này. Tài liệu Microsoft vẫn
+> nói `Random` không an toàn luồng. Kết luận đúng là: **đừng dùng chung một `Random` giữa nhiều
+> luồng**, và lý do không phải vì bạn đã thấy nó hỏng, mà vì hành vi đó không được bảo đảm.
+
+#### Vậy bản giả lập nên dùng cách nào
+
+**Bảng 13.13 — Bốn cách lấy số ngẫu nhiên trong bản giả lập**
+
+| Cách | Ưu điểm | Nhược điểm | Dùng khi |
+|---|---|---|---|
+| `new Random()` **mỗi lần gọi** | Không phải nghĩ | Cấp phát thừa; trên .NET Framework là lỗi thật; **không tái hiện được lần chạy nào** | Không nên |
+| **Một `Random` cho mỗi đối tượng thiết bị**, tạo trong hàm dựng | Mỗi thiết bị giả lập độc lập; không dùng chung giữa luồng nếu mỗi thiết bị chỉ một luồng gọi | Vẫn hỏng nếu hai luồng cùng gọi một thiết bị | Mặc định hợp lý |
+| **`Random.Shared`** (.NET 6+) | Tài liệu bảo đảm an toàn luồng; không phải giữ thể hiện nào | **Không đặt được hạt giống** → không tái hiện được lần chạy | Chỗ ngẫu nhiên không cần lặp lại |
+| **`new Random(hatGiong)` với hạt giống lấy từ cấu hình và ghi vào log** | **Tái hiện được nguyên vẹn một lần chạy** | Phải truyền hạt giống xuống tới từng thiết bị | **Khuyến nghị cho bản giả lập dùng để kiểm thử** |
+
+Cách thứ tư đáng được giải thích, vì nó biến một nhược điểm thành công cụ. Dòng thứ hai của bảng
+13.12 — cùng hạt giống cho cùng dãy số — nghe như một cái bẫy, nhưng với bản giả lập nó chính là thứ
+bạn cần:
+
+**Code 13.15 — Bản giả lập tái hiện được: hạt giống là một tham số, và được ghi lại**
+
+```csharp
+public sealed class CamBienApSuatGiaLap : ICamBienApSuat
+{
+    private readonly Random _ngauNhien;
+
+    public CamBienApSuatGiaLap(int hatGiong, ILogger logger)
+    {
+        _ngauNhien = new Random(hatGiong);
+        // Ghi hạt giống NGAY — đây là thứ cho phép chạy lại đúng lần chạy này
+        logger.Information("Cảm biến áp suất giả lập khởi tạo, hạt giống {HatGiong}", hatGiong);
+    }
+
+    public double Doc() => 6.00 + (_ngauNhien.NextDouble() - 0.5) * 0.05;   // ±0,025 bar nhiễu
+}
+```
+
+Lợi ích cụ thể: bản giả lập chạy 4.000 chu kỳ rồi dừng vì một cảnh báo. Nếu hạt giống được ghi vào
+log, bạn đặt lại đúng hạt giống đó và **chạy lại đúng kịch bản ấy** — cùng chuỗi nhiễu, cùng thời
+điểm lỗi. Nếu không, bạn có một sự cố không bao giờ tái hiện được, và đó là loại việc ngốn cả tuần.
+Đây cũng chính là tinh thần của mục 18.6.2: thứ đáng kiểm thử là thứ **lặp lại được**.
+
+> 💡 **Và nếu bạn muốn cả hai:** dùng hạt giống cố định khi chạy kiểm thử, hạt giống theo thời gian
+> khi chạy trình diễn. Một dòng cấu hình: `"HatGiongGiaLap": 12345` — để trống thì lấy
+> `Environment.TickCount`, và **dù lấy cách nào cũng ghi giá trị thật vào log**. Chi phí gần bằng
+> không, và nó là khác biệt giữa "lỗi tái hiện được" với "lỗi ma".
+
+> 📌 **Bài học rộng hơn, và nó không nói về `Random`.** Câu trả lời được nhiều phiếu nhất về chủ đề
+> này viết năm 2009, mô tả chính xác hành vi của .NET Framework thời đó, và vẫn đứng đầu kết quả tìm
+> kiếm cho tới hôm nay. Chép nó vào một dự án .NET 9 nghĩa là bạn đi phòng thủ một lỗi **đã được sửa**
+> — vô hại nhưng tốn công — trong khi cái bẫy còn nguyên giá trị (dùng chung giữa các luồng, và mất
+> khả năng tái hiện) thì lại nằm ở chỗ khác. Thói quen cần có khi đọc lời khuyên trên mạng về .NET:
+> **nhìn bảng "Applies to" trong tài liệu chính thức, và nếu nghi ngờ thì viết mười dòng để thử.**
+> Trong cuốn sách này, bảng 13.12 mất đúng mười lăm phút để dựng.
 
 ---
 
@@ -35050,7 +35323,7 @@ thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.
 - **Encapsulation (đóng gói)** — 4.1.2
 - **Entity (DDD)** — 11.1, 11.1.1, 11.3.1
 - **enum** — 3.1.4
-- **event** — 4.4, 4.4.3, 4.4.4, 8.1.1, 9.1.4, 11.1, 11.1.4, 12.3.3, 15.1.4, 15.1.6, 15.2.6, 16.1, 19.1.4
+- **event** — 4.4, 4.4.3, 4.4.4, 8.1.1, 8.1.5, 9.1.4, 11.1, 11.1.4, 12.3.3, 15.1.4, 15.1.6, 15.2.6, 16.1, 19.1.4
 - **Event Aggregator** — 16.1.2
 - **Event Storm** — 16.1.2
 - **EventArgs** — 4.4.3

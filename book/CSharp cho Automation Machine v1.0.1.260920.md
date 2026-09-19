@@ -22991,7 +22991,9 @@ vi công nghiệp vẫn giao tiếp qua cổng **Serial (RS-232/RS-485)**, đặ
 **Code 14.3b — Mở cổng Serial và nhận dữ liệu đúng chuẩn `EventHandler<T>`**
 
 ```csharp
+using System.Globalization;
 using System.IO.Ports;
+using System.Text;
 
 public sealed class ScaleReadEventArgs(double weightKg) : EventArgs
 {
@@ -23016,13 +23018,30 @@ public sealed class SerialScaleClient : IDisposable
 
     public void Open() => _port.Open();
 
+    // Bộ đệm tích luỹ: một khung có thể tới làm NHIỀU lần sự kiện, và một lần
+    // sự kiện có thể mang NHIỀU khung. Không có nó thì mất/ghép sai khung —
+    // xem mục 14.1.5b để biết vì sao đây là chỗ hay sai nhất khi đọc Serial.
+    private readonly StringBuilder _buffer = new();
+
     private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
     {
-        // ReadExisting() gộp mọi byte đã tới cổng kể từ lần đọc trước — không
-        // đảm bảo đúng 1 message trọn vẹn, cần tách khung ở tầng trên (Bảng 14.5b).
-        string raw = _port.ReadExisting();
-        if (double.TryParse(raw.Trim(), out double weightKg))
-            WeightReceived?.Invoke(this, new ScaleReadEventArgs(weightKg));
+        _buffer.Append(_port.ReadExisting());       // gom vào, CHƯA phân tích
+
+        // Cắt ra từng khung hoàn chỉnh (cân này kết thúc khung bằng CR+LF)
+        while (true)
+        {
+            string s   = _buffer.ToString();
+            int    end = s.IndexOf("
+", StringComparison.Ordinal);
+            if (end < 0) break;                     // chưa đủ một khung — chờ lần sau
+
+            string frame = s[..end];
+            _buffer.Remove(0, end + 2);             // bỏ phần đã lấy, GIỮ phần dư
+
+            if (double.TryParse(frame.Trim(), NumberStyles.Float,
+                                CultureInfo.InvariantCulture, out double weightKg))
+                WeightReceived?.Invoke(this, new ScaleReadEventArgs(weightKg));
+        }
     }
 
     public void Dispose()
@@ -23159,6 +23178,153 @@ ushort[] registers = master.ReadHoldingRegisters(slaveAddress: 1, startAddress: 
 > quy ước nào ghi rõ "dự án này dùng gì cho Modbus". Nếu một dự án đã đầu tư hạ tầng dùng
 > chung, nên ghi rõ trong tài liệu/code review checklist rằng thiết bị Modbus mới PHẢI tái
 > sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo thói quen riêng.
+
+---
+
+### 14.1.5b  Đọc cổng Serial cho đúng — chỗ sai nhiều nhất, và đo xem thực tế sai tới đâu
+
+Mục 14.1.5 và Bảng 14.5b nói *phải* tách khung. Mục này nói *làm thế nào*, vì khoảng cách giữa hai
+điều đó là nơi sinh ra nhóm câu hỏi được xem nhiều nhất về lập trình Serial bằng C# — những câu như
+*"cổng Serial không nhận được dữ liệu"*, *"đọc cổng Serial thế nào cho đúng"*, *"dùng sự kiện
+`DataReceived` ra sao"*, mỗi câu hàng trăm nghìn lượt xem và tất cả đều quay về **cùng một hiểu
+nhầm**.
+
+#### Hiểu nhầm gốc, và hai câu trong tài liệu chính thức làm nó sáng ra
+
+Người mới hình dung `DataReceived` như *"mỗi lần thiết bị gửi một bản tin thì sự kiện chạy một
+lần"*. Tài liệu của Microsoft nói khác, và nói rất thẳng ở hai chỗ:
+
+- Sự kiện này **không bảo đảm được phát cho mỗi byte nhận được**; dùng thuộc tính `BytesToRead` để
+  biết còn bao nhiêu dữ liệu trong bộ đệm.
+- Sự kiện được phát **trên một luồng phụ**, không phải luồng chính; sửa các phần tử giao diện từ đó
+  có thể sinh lỗi luồng, và nếu cần thì phải đẩy yêu cầu về đúng luồng bằng `Invoke`.
+
+Ghép hai câu đó lại thì ra bốn tình huống mà mã của bạn phải chịu được, và chúng xảy ra **hằng ngày**
+chứ không phải hãn hữu:
+
+| Điều thực tế xảy ra | Mã ngây thơ làm gì |
+|---|---|
+| Một khung tới làm **hai lần** sự kiện (`"12.3"` rồi `"4 kg\r\n"`) | Phân tích `"12.3"` → sai hoặc trượt; phần sau mất luôn |
+| **Hai khung** tới trong **một** lần sự kiện | Phân tích cả cục → thất bại, mất cả hai |
+| Khung tới đúng một lần, trọn vẹn | Chạy đúng — và đây là lý do lỗi không lộ ra khi thử ở bàn |
+| Sự kiện chạy trên luồng phụ | Gán thẳng vào ô hiển thị → lỗi luồng, hoặc tệ hơn: chạy được trên máy này, hỏng trên máy khác |
+
+Hàng thứ ba là thứ khiến lỗi này sống lâu. Ở tốc độ baud thấp, dây ngắn, thiết bị rảnh, khung gần
+như luôn tới nguyên vẹn. Lỗi chỉ xuất hiện khi máy chạy nhanh, khi dây dài hơn, khi máy tính bận —
+tức là **ở nhà máy, không phải ở bàn thử**.
+
+#### Đo thực tế: ngành này làm đúng hay sai?
+
+Đây là một trong số ít chủ đề mà số liệu cho kết quả **tích cực**, và cần nói ra cho công bằng. Phân
+tích **41 hàm xử lý `DataReceived`** tìm được trong bộ mẫu 13 dự án:
+
+**Bảng 14.5f — 41 hàm xử lý `DataReceived` trong phần mềm máy thật, phân loại theo việc chúng làm**
+
+| Hàm xử lý làm gì | Số hàm | Đánh giá |
+|---|---|---|
+| **Đọc rồi tích luỹ vào bộ đệm**, để nơi khác tách khung | **31** | ✅ Đúng cách |
+| **Ghi thẳng lên điều khiển giao diện** trong chính hàm xử lý | 6 | ❌ Hai lỗi cùng lúc — xem dưới |
+| Khác / không phân loại được | 4 | — |
+| *Trong đó có dùng `BytesToRead`* | *33 / 41* | ✅ |
+
+Ba mươi mốt hàm làm đúng gần như đến từ **một dự án duy nhất**, và cách họ làm đáng học: một **lớp
+cơ sở Serial dùng chung** được khoảng ba mươi driver thiết bị kế thừa — máy đọc mã vạch của bốn
+hãng, cân, cảm biến đo, bộ gia nhiệt, biến tần, máy in nhãn. Viết đúng **một lần**, dùng đúng ở ba
+mươi chỗ. Đây chính là lập luận của Chương 7 về chỗ đặt trừu tượng, nhìn thấy được bằng số.
+
+#### Hình dạng đúng
+
+Viết lại từ lớp cơ sở nói trên, bỏ tên thật:
+
+**Code 14.3d — Hàm xử lý chỉ làm một việc: gom byte vào bộ đệm**
+
+```csharp
+private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+{
+    var port = (SerialPort)sender;
+    int n = port.BytesToRead;               // hỏi xem có bao nhiêu byte đang chờ
+    if (n <= 0) return;
+
+    var chunk = new byte[n];
+    port.Read(chunk, 0, n);                 // đọc đúng bấy nhiêu, không hơn không kém
+
+    lock (_khoaBoDem)
+        _boDemNhan.Ghi(chunk, n);           // CHỈ gom vào — không phân tích, không hiển thị
+}
+```
+
+Bốn tính chất làm nên chất lượng của mười ba dòng này:
+
+1. **Hàm xử lý không phân tích gì cả.** Việc tách khung nằm ở một luồng riêng đọc từ `_boDemNhan`,
+   nên một khung bị chia làm ba lần sự kiện vẫn ghép lại đúng.
+2. **Hỏi `BytesToRead` rồi đọc đúng ngần ấy**, thay vì đoán kích thước hay gọi `ReadExisting()` và
+   hy vọng.
+3. **Có `lock`**, vì hàm xử lý chạy trên luồng phụ còn luồng tách khung chạy ở chỗ khác — đúng tình
+   huống `lock` sinh ra để giải quyết (Phụ lục E, mục E.13).
+4. **Không chạm vào giao diện.** Kết quả đi ra bằng sự kiện miền (`WeightReceived`), tầng giao diện
+   tự lo việc về đúng luồng của nó.
+
+#### Hình dạng sai — và nó sai hai lần
+
+Sáu hàm còn lại có hình dạng này, tất cả đều nằm trong các form giao diện:
+
+**Code 14.3e — Tám dòng, hai lỗi**
+
+```csharp
+private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+{
+    string s = _port.ReadExisting();
+    txtKetQua.Text += s;                    // ❶ chạm giao diện từ LUỒNG PHỤ
+    if (s.Contains("OK")) _daXong = true;   // ❷ quyết định dựa trên MỘT MẢNH dữ liệu
+}
+```
+
+**❶** là vi phạm luật luồng mà tài liệu cảnh báo — và nó là nguyên nhân của câu hỏi C# được xem
+nhiều thứ nhì trong lịch sử Stack Overflow (*"thao tác xuyên luồng không hợp lệ"*, hơn nửa triệu
+lượt xem). Nguy hiểm hơn cả việc nó ném lỗi là việc **đôi khi nó không ném**: WinForms chỉ phát hiện
+được ở một số thao tác, nên phần mềm có thể chạy nhiều tháng rồi mới hỏng.
+
+**❷** tinh vi hơn và đắt hơn. Thiết bị trả `"OK\r\n"`, nhưng nếu lần này sự kiện chỉ mang `"O"` thì
+điều kiện không khớp; lần sau mang `"K\r\n"` cũng không khớp. Chuỗi `"OK"` **có thật** trên đường
+truyền nhưng **không bao giờ xuất hiện trọn vẹn trong một biến** — nên máy chờ vô hạn một tín hiệu
+đã tới rồi. Đây đúng là triệu chứng *"cổng Serial không nhận được dữ liệu"*: dữ liệu có tới, chỉ là
+mã không nhìn thấy nó.
+
+> ⚠️ **Và mã mẫu của chính cuốn sách này từng mắc lỗi ❷.** Ở các bản trước, `Code 14.3b` gọi
+> `ReadExisting()` rồi `double.TryParse` thẳng, kèm một dòng chú thích nói rằng *"cần tách khung ở
+> tầng trên"*. Chú thích đúng, nhưng mã thì không làm — và người đọc chép mã chứ không chép chú
+> thích. Bản hiện tại đã sửa: `Code 14.3b` giờ có bộ đệm `StringBuilder` tích luỹ, cắt khung theo
+> `CR+LF` trong vòng lặp `while`, và **giữ lại phần dư** cho lần sau. Ghi lại ở đây thay vì sửa lặng
+> lẽ, vì đây là minh hoạ tốt cho chính điều mục này nói: *nói phải tách khung* và *cho thấy cách
+> tách khung* là hai việc khác nhau, và khoảng cách giữa chúng là nơi lỗi sinh ra.
+
+#### Bốn cách đọc, chọn cái nào
+
+**Bảng 14.14 — Bốn cách đọc dữ liệu từ `SerialPort`**
+
+| Cách | Ưu điểm | Nhược điểm | Dùng khi |
+|---|---|---|---|
+| `ReadExisting()` trong `DataReceived` | Đơn giản nhất | Trả về *"những gì đang có"* — có thể nửa khung hoặc hai khung; **bắt buộc** phải có bộ đệm tích luỹ đi kèm | Khung văn bản, có bộ đệm ở ngoài |
+| `BytesToRead` + `Read(buf, 0, n)` | Kiểm soát chính xác số byte; dùng được cho **khung nhị phân** | Dài dòng hơn vài dòng | **Mặc định nên chọn** — 33/41 hàm trong bộ mẫu dùng cách này |
+| `ReadLine()` | Ngắn nhất khi thiết bị kết thúc khung bằng ký tự cố định | **Chặn luồng** tới khi đủ khung hoặc hết `ReadTimeout`; ném `TimeoutException` — phải bắt; không dùng được cho khung nhị phân | Luồng riêng dành cho một thiết bị, khung văn bản |
+| `port.BaseStream.ReadAsync(...)` | Bất đồng bộ thật, hợp với `CancellationToken` (Chương 5) | Vẫn phải tự tách khung; ít ví dụ sẵn hơn | Mã mới viết theo lối `async` |
+
+Ba lưu ý đi kèm, đều rút từ số đo:
+
+- **`ReadTimeout` phải đặt.** Trong bộ mẫu chỉ **30 chỗ** đặt nó. Mặc định là chờ **vô hạn**, nên
+  một `ReadLine()` trên thiết bị đã rút cáp sẽ treo luồng đó mãi mãi.
+- **Huỷ đăng ký `DataReceived` khi đóng cổng.** Chỉ **6 chỗ** trong bộ mẫu có `DataReceived -=`. Đây
+  chính là dạng rò rỉ đăng ký sự kiện nói ở Phụ lục E mục E.9, và với cổng Serial nó còn kéo theo
+  một hệ quả riêng: đối tượng cổng cũ vẫn sống và vẫn có thể phát sự kiện sau khi bạn tưởng đã dừng.
+- **Rút cáp USB-Serial khi đang mở là trường hợp phải thử.** Bộ chuyển USB-Serial biến mất khỏi hệ
+  thống thì `SerialPort` có thể ném lỗi từ **luồng nội bộ của nó**, ở chỗ bạn không có `try` nào bao
+  quanh. Phép thử mười giây, làm một lần trước khi giao máy: mở phần mềm, kết nối thiết bị, **rút
+  cáp**, xem phần mềm báo lỗi tử tế hay tắt ngang.
+
+> 📌 **Một mẹo chẩn đoán đáng giá hơn mọi lập luận trong mục này.** Khi nghi ngờ phân khung, hãy ghi
+> log **độ dài của từng lần sự kiện** thay vì ghi nội dung: `_logger.Debug("Nhận {SoByte} byte",
+> n)`. Nếu nhật ký hiện `3, 2, 7, 12, 1` cho một thiết bị lẽ ra gửi khung 12 byte, bạn vừa nhìn thấy
+> bản chất vấn đề trong ba giây — và đó là thứ không đoán ra được bằng cách đọc mã.
 
 ---
 

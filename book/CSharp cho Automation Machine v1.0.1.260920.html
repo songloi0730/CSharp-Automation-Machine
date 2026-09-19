@@ -25791,7 +25791,9 @@ vi công nghiệp vẫn giao tiếp qua cổng <strong>Serial (RS-232/RS-485)</s
 đời cũ hoặc thiết bị giá rẻ chưa tích hợp Ethernet. API chuẩn của .NET cho việc này là
 <code>System.IO.Ports.SerialPort</code>.</p>
 <p><strong>Code 14.3b — Mở cổng Serial và nhận dữ liệu đúng chuẩn <code>EventHandler&lt;T&gt;</code></strong></p>
-<pre><code class="language-csharp">using System.IO.Ports;
+<pre><code class="language-csharp">using System.Globalization;
+using System.IO.Ports;
+using System.Text;
 
 public sealed class ScaleReadEventArgs(double weightKg) : EventArgs
 {
@@ -25816,13 +25818,30 @@ public sealed class SerialScaleClient : IDisposable
 
     public void Open() =&gt; _port.Open();
 
+    // Bộ đệm tích luỹ: một khung có thể tới làm NHIỀU lần sự kiện, và một lần
+    // sự kiện có thể mang NHIỀU khung. Không có nó thì mất/ghép sai khung —
+    // xem mục 14.1.5b để biết vì sao đây là chỗ hay sai nhất khi đọc Serial.
+    private readonly StringBuilder _buffer = new();
+
     private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
     {
-        // ReadExisting() gộp mọi byte đã tới cổng kể từ lần đọc trước — không
-        // đảm bảo đúng 1 message trọn vẹn, cần tách khung ở tầng trên (Bảng 14.5b).
-        string raw = _port.ReadExisting();
-        if (double.TryParse(raw.Trim(), out double weightKg))
-            WeightReceived?.Invoke(this, new ScaleReadEventArgs(weightKg));
+        _buffer.Append(_port.ReadExisting());       // gom vào, CHƯA phân tích
+
+        // Cắt ra từng khung hoàn chỉnh (cân này kết thúc khung bằng CR+LF)
+        while (true)
+        {
+            string s   = _buffer.ToString();
+            int    end = s.IndexOf(&quot;
+&quot;, StringComparison.Ordinal);
+            if (end &lt; 0) break;                     // chưa đủ một khung — chờ lần sau
+
+            string frame = s[..end];
+            _buffer.Remove(0, end + 2);             // bỏ phần đã lấy, GIỮ phần dư
+
+            if (double.TryParse(frame.Trim(), NumberStyles.Float,
+                                CultureInfo.InvariantCulture, out double weightKg))
+                WeightReceived?.Invoke(this, new ScaleReadEventArgs(weightKg));
+        }
     }
 
     public void Dispose()
@@ -25997,6 +26016,196 @@ dụng hạ tầng đã có — tạo ra 2 con đường bảo trì độc lập
 quy ước nào ghi rõ &quot;dự án này dùng gì cho Modbus&quot;. Nếu một dự án đã đầu tư hạ tầng dùng
 chung, nên ghi rõ trong tài liệu/code review checklist rằng thiết bị Modbus mới PHẢI tái
 sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo thói quen riêng.</p>
+</blockquote>
+<hr>
+<h3>14.1.5b  Đọc cổng Serial cho đúng — chỗ sai nhiều nhất, và đo xem thực tế sai tới đâu</h3>
+<p>Mục 14.1.5 và Bảng 14.5b nói <em>phải</em> tách khung. Mục này nói <em>làm thế nào</em>, vì khoảng cách giữa hai
+điều đó là nơi sinh ra nhóm câu hỏi được xem nhiều nhất về lập trình Serial bằng C# — những câu như
+<em>&quot;cổng Serial không nhận được dữ liệu&quot;</em>, <em>&quot;đọc cổng Serial thế nào cho đúng&quot;</em>, <em>&quot;dùng sự kiện
+<code>DataReceived</code> ra sao&quot;</em>, mỗi câu hàng trăm nghìn lượt xem và tất cả đều quay về <strong>cùng một hiểu
+nhầm</strong>.</p>
+<h4>Hiểu nhầm gốc, và hai câu trong tài liệu chính thức làm nó sáng ra</h4>
+<p>Người mới hình dung <code>DataReceived</code> như <em>&quot;mỗi lần thiết bị gửi một bản tin thì sự kiện chạy một
+lần&quot;</em>. Tài liệu của Microsoft nói khác, và nói rất thẳng ở hai chỗ:</p>
+<ul>
+<li>Sự kiện này <strong>không bảo đảm được phát cho mỗi byte nhận được</strong>; dùng thuộc tính <code>BytesToRead</code> để
+biết còn bao nhiêu dữ liệu trong bộ đệm.</li>
+<li>Sự kiện được phát <strong>trên một luồng phụ</strong>, không phải luồng chính; sửa các phần tử giao diện từ đó
+có thể sinh lỗi luồng, và nếu cần thì phải đẩy yêu cầu về đúng luồng bằng <code>Invoke</code>.</li>
+</ul>
+<p>Ghép hai câu đó lại thì ra bốn tình huống mà mã của bạn phải chịu được, và chúng xảy ra <strong>hằng ngày</strong>
+chứ không phải hãn hữu:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Điều thực tế xảy ra</th>
+<th>Mã ngây thơ làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Một khung tới làm <strong>hai lần</strong> sự kiện (<code>&quot;12.3&quot;</code> rồi <code>&quot;4 kg\r\n&quot;</code>)</td>
+<td>Phân tích <code>&quot;12.3&quot;</code> → sai hoặc trượt; phần sau mất luôn</td>
+</tr>
+<tr>
+<td><strong>Hai khung</strong> tới trong <strong>một</strong> lần sự kiện</td>
+<td>Phân tích cả cục → thất bại, mất cả hai</td>
+</tr>
+<tr>
+<td>Khung tới đúng một lần, trọn vẹn</td>
+<td>Chạy đúng — và đây là lý do lỗi không lộ ra khi thử ở bàn</td>
+</tr>
+<tr>
+<td>Sự kiện chạy trên luồng phụ</td>
+<td>Gán thẳng vào ô hiển thị → lỗi luồng, hoặc tệ hơn: chạy được trên máy này, hỏng trên máy khác</td>
+</tr>
+</tbody></table></div>
+<p>Hàng thứ ba là thứ khiến lỗi này sống lâu. Ở tốc độ baud thấp, dây ngắn, thiết bị rảnh, khung gần
+như luôn tới nguyên vẹn. Lỗi chỉ xuất hiện khi máy chạy nhanh, khi dây dài hơn, khi máy tính bận —
+tức là <strong>ở nhà máy, không phải ở bàn thử</strong>.</p>
+<h4>Đo thực tế: ngành này làm đúng hay sai?</h4>
+<p>Đây là một trong số ít chủ đề mà số liệu cho kết quả <strong>tích cực</strong>, và cần nói ra cho công bằng. Phân
+tích <strong>41 hàm xử lý <code>DataReceived</code></strong> tìm được trong bộ mẫu 13 dự án:</p>
+<p><strong>Bảng 14.5f — 41 hàm xử lý <code>DataReceived</code> trong phần mềm máy thật, phân loại theo việc chúng làm</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hàm xử lý làm gì</th>
+<th>Số hàm</th>
+<th>Đánh giá</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Đọc rồi tích luỹ vào bộ đệm</strong>, để nơi khác tách khung</td>
+<td><strong>31</strong></td>
+<td>✅ Đúng cách</td>
+</tr>
+<tr>
+<td><strong>Ghi thẳng lên điều khiển giao diện</strong> trong chính hàm xử lý</td>
+<td>6</td>
+<td>❌ Hai lỗi cùng lúc — xem dưới</td>
+</tr>
+<tr>
+<td>Khác / không phân loại được</td>
+<td>4</td>
+<td>—</td>
+</tr>
+<tr>
+<td><em>Trong đó có dùng <code>BytesToRead</code></em></td>
+<td><em>33 / 41</em></td>
+<td>✅</td>
+</tr>
+</tbody></table></div>
+<p>Ba mươi mốt hàm làm đúng gần như đến từ <strong>một dự án duy nhất</strong>, và cách họ làm đáng học: một <strong>lớp
+cơ sở Serial dùng chung</strong> được khoảng ba mươi driver thiết bị kế thừa — máy đọc mã vạch của bốn
+hãng, cân, cảm biến đo, bộ gia nhiệt, biến tần, máy in nhãn. Viết đúng <strong>một lần</strong>, dùng đúng ở ba
+mươi chỗ. Đây chính là lập luận của Chương 7 về chỗ đặt trừu tượng, nhìn thấy được bằng số.</p>
+<h4>Hình dạng đúng</h4>
+<p>Viết lại từ lớp cơ sở nói trên, bỏ tên thật:</p>
+<p><strong>Code 14.3d — Hàm xử lý chỉ làm một việc: gom byte vào bộ đệm</strong></p>
+<pre><code class="language-csharp">private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+{
+    var port = (SerialPort)sender;
+    int n = port.BytesToRead;               // hỏi xem có bao nhiêu byte đang chờ
+    if (n &lt;= 0) return;
+
+    var chunk = new byte[n];
+    port.Read(chunk, 0, n);                 // đọc đúng bấy nhiêu, không hơn không kém
+
+    lock (_khoaBoDem)
+        _boDemNhan.Ghi(chunk, n);           // CHỈ gom vào — không phân tích, không hiển thị
+}
+</code></pre>
+<p>Bốn tính chất làm nên chất lượng của mười ba dòng này:</p>
+<ol>
+<li><strong>Hàm xử lý không phân tích gì cả.</strong> Việc tách khung nằm ở một luồng riêng đọc từ <code>_boDemNhan</code>,
+nên một khung bị chia làm ba lần sự kiện vẫn ghép lại đúng.</li>
+<li><strong>Hỏi <code>BytesToRead</code> rồi đọc đúng ngần ấy</strong>, thay vì đoán kích thước hay gọi <code>ReadExisting()</code> và
+hy vọng.</li>
+<li><strong>Có <code>lock</code></strong>, vì hàm xử lý chạy trên luồng phụ còn luồng tách khung chạy ở chỗ khác — đúng tình
+huống <code>lock</code> sinh ra để giải quyết (Phụ lục E, mục E.13).</li>
+<li><strong>Không chạm vào giao diện.</strong> Kết quả đi ra bằng sự kiện miền (<code>WeightReceived</code>), tầng giao diện
+tự lo việc về đúng luồng của nó.</li>
+</ol>
+<h4>Hình dạng sai — và nó sai hai lần</h4>
+<p>Sáu hàm còn lại có hình dạng này, tất cả đều nằm trong các form giao diện:</p>
+<p><strong>Code 14.3e — Tám dòng, hai lỗi</strong></p>
+<pre><code class="language-csharp">private void OnDataReceived(object sender, SerialDataReceivedEventArgs e)
+{
+    string s = _port.ReadExisting();
+    txtKetQua.Text += s;                    // ❶ chạm giao diện từ LUỒNG PHỤ
+    if (s.Contains(&quot;OK&quot;)) _daXong = true;   // ❷ quyết định dựa trên MỘT MẢNH dữ liệu
+}
+</code></pre>
+<p><strong>❶</strong> là vi phạm luật luồng mà tài liệu cảnh báo — và nó là nguyên nhân của câu hỏi C# được xem
+nhiều thứ nhì trong lịch sử Stack Overflow (<em>&quot;thao tác xuyên luồng không hợp lệ&quot;</em>, hơn nửa triệu
+lượt xem). Nguy hiểm hơn cả việc nó ném lỗi là việc <strong>đôi khi nó không ném</strong>: WinForms chỉ phát hiện
+được ở một số thao tác, nên phần mềm có thể chạy nhiều tháng rồi mới hỏng.</p>
+<p><strong>❷</strong> tinh vi hơn và đắt hơn. Thiết bị trả <code>&quot;OK\r\n&quot;</code>, nhưng nếu lần này sự kiện chỉ mang <code>&quot;O&quot;</code> thì
+điều kiện không khớp; lần sau mang <code>&quot;K\r\n&quot;</code> cũng không khớp. Chuỗi <code>&quot;OK&quot;</code> <strong>có thật</strong> trên đường
+truyền nhưng <strong>không bao giờ xuất hiện trọn vẹn trong một biến</strong> — nên máy chờ vô hạn một tín hiệu
+đã tới rồi. Đây đúng là triệu chứng <em>&quot;cổng Serial không nhận được dữ liệu&quot;</em>: dữ liệu có tới, chỉ là
+mã không nhìn thấy nó.</p>
+<blockquote>
+<p>⚠️ <strong>Và mã mẫu của chính cuốn sách này từng mắc lỗi ❷.</strong> Ở các bản trước, <code>Code 14.3b</code> gọi
+<code>ReadExisting()</code> rồi <code>double.TryParse</code> thẳng, kèm một dòng chú thích nói rằng <em>&quot;cần tách khung ở
+tầng trên&quot;</em>. Chú thích đúng, nhưng mã thì không làm — và người đọc chép mã chứ không chép chú
+thích. Bản hiện tại đã sửa: <code>Code 14.3b</code> giờ có bộ đệm <code>StringBuilder</code> tích luỹ, cắt khung theo
+<code>CR+LF</code> trong vòng lặp <code>while</code>, và <strong>giữ lại phần dư</strong> cho lần sau. Ghi lại ở đây thay vì sửa lặng
+lẽ, vì đây là minh hoạ tốt cho chính điều mục này nói: <em>nói phải tách khung</em> và <em>cho thấy cách
+tách khung</em> là hai việc khác nhau, và khoảng cách giữa chúng là nơi lỗi sinh ra.</p>
+</blockquote>
+<h4>Bốn cách đọc, chọn cái nào</h4>
+<p><strong>Bảng 14.14 — Bốn cách đọc dữ liệu từ <code>SerialPort</code></strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Ưu điểm</th>
+<th>Nhược điểm</th>
+<th>Dùng khi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ReadExisting()</code> trong <code>DataReceived</code></td>
+<td>Đơn giản nhất</td>
+<td>Trả về <em>&quot;những gì đang có&quot;</em> — có thể nửa khung hoặc hai khung; <strong>bắt buộc</strong> phải có bộ đệm tích luỹ đi kèm</td>
+<td>Khung văn bản, có bộ đệm ở ngoài</td>
+</tr>
+<tr>
+<td><code>BytesToRead</code> + <code>Read(buf, 0, n)</code></td>
+<td>Kiểm soát chính xác số byte; dùng được cho <strong>khung nhị phân</strong></td>
+<td>Dài dòng hơn vài dòng</td>
+<td><strong>Mặc định nên chọn</strong> — 33/41 hàm trong bộ mẫu dùng cách này</td>
+</tr>
+<tr>
+<td><code>ReadLine()</code></td>
+<td>Ngắn nhất khi thiết bị kết thúc khung bằng ký tự cố định</td>
+<td><strong>Chặn luồng</strong> tới khi đủ khung hoặc hết <code>ReadTimeout</code>; ném <code>TimeoutException</code> — phải bắt; không dùng được cho khung nhị phân</td>
+<td>Luồng riêng dành cho một thiết bị, khung văn bản</td>
+</tr>
+<tr>
+<td><code>port.BaseStream.ReadAsync(...)</code></td>
+<td>Bất đồng bộ thật, hợp với <code>CancellationToken</code> (Chương 5)</td>
+<td>Vẫn phải tự tách khung; ít ví dụ sẵn hơn</td>
+<td>Mã mới viết theo lối <code>async</code></td>
+</tr>
+</tbody></table></div>
+<p>Ba lưu ý đi kèm, đều rút từ số đo:</p>
+<ul>
+<li><strong><code>ReadTimeout</code> phải đặt.</strong> Trong bộ mẫu chỉ <strong>30 chỗ</strong> đặt nó. Mặc định là chờ <strong>vô hạn</strong>, nên
+một <code>ReadLine()</code> trên thiết bị đã rút cáp sẽ treo luồng đó mãi mãi.</li>
+<li><strong>Huỷ đăng ký <code>DataReceived</code> khi đóng cổng.</strong> Chỉ <strong>6 chỗ</strong> trong bộ mẫu có <code>DataReceived -=</code>. Đây
+chính là dạng rò rỉ đăng ký sự kiện nói ở Phụ lục E mục E.9, và với cổng Serial nó còn kéo theo
+một hệ quả riêng: đối tượng cổng cũ vẫn sống và vẫn có thể phát sự kiện sau khi bạn tưởng đã dừng.</li>
+<li><strong>Rút cáp USB-Serial khi đang mở là trường hợp phải thử.</strong> Bộ chuyển USB-Serial biến mất khỏi hệ
+thống thì <code>SerialPort</code> có thể ném lỗi từ <strong>luồng nội bộ của nó</strong>, ở chỗ bạn không có <code>try</code> nào bao
+quanh. Phép thử mười giây, làm một lần trước khi giao máy: mở phần mềm, kết nối thiết bị, <strong>rút
+cáp</strong>, xem phần mềm báo lỗi tử tế hay tắt ngang.</li>
+</ul>
+<blockquote>
+<p>📌 <strong>Một mẹo chẩn đoán đáng giá hơn mọi lập luận trong mục này.</strong> Khi nghi ngờ phân khung, hãy ghi
+log <strong>độ dài của từng lần sự kiện</strong> thay vì ghi nội dung: <code>_logger.Debug(&quot;Nhận {SoByte} byte&quot;, n)</code>. Nếu nhật ký hiện <code>3, 2, 7, 12, 1</code> cho một thiết bị lẽ ra gửi khung 12 byte, bạn vừa nhìn thấy
+bản chất vấn đề trong ba giây — và đó là thứ không đoán ra được bằng cách đọc mã.</p>
 </blockquote>
 <hr>
 <h3>14.1.6  Robot có bộ điều khiển riêng — ba kênh, và một ranh giới trách nhiệm</h3>

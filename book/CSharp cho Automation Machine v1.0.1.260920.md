@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260918 |
+| **Phiên bản** | v1.0.1.260920 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -3971,6 +3971,11 @@ Những nền tảng này được mọi chương sau dựa vào: Chương 4 xâ
 ## Phụ lục: Từ khoá C# ít dùng trong automation
 
 Các từ khoá dưới đây ít xuất hiện trong code automation thông thường. Không cần học thuộc — tra cứu khi gặp.
+
+> 📌 **Bảng đầy đủ nằm ở Phụ lục E.** Bảng 3.4 chỉ liệt kê những từ khoá *ít gặp* mà bạn có thể
+> bối rối khi đọc mã kế thừa. **Phụ lục E** giải thích **toàn bộ 77 từ khoá dành riêng** và nhóm
+> từ khoá ngữ cảnh, kèm tần suất đo được trong 13 phần mềm máy thật và mười hai cặp từ khoá hay
+> bị dùng nhầm lẫn nhau.
 
 **Bảng 3.4 — Từ khoá C# ít dùng trong automation**
 
@@ -35412,4 +35417,560 @@ thuật ngữ được bàn tới, không chỉ nơi xuất hiện đầu tiên.
 - **[Theory] + [InlineData]** — 18.2.3
 - **[Trait]** — 18.6.3
 
+
+<!-- SECTION: Phu_Luc_E_Tu_Khoa -->
+---
+# Phụ lục E: Từ khoá C# — ý nghĩa và chỗ dùng trong phần mềm máy
+
+C# có **77 từ khoá dành riêng** (*reserved keyword* — không được dùng làm tên biến, tên hàm, tên
+lớp) và khoảng **bốn mươi từ khoá ngữ cảnh** (*contextual keyword* — chỉ mang nghĩa đặc biệt ở đúng
+một vị trí, ngoài chỗ đó vẫn dùng làm tên bình thường). Phụ lục này giải thích **tất cả**, nhóm theo
+công dụng, kèm hai thứ mà một bảng tra ngôn ngữ thông thường không có:
+
+- **Cột tần suất thật.** Mỗi từ khoá kèm số lần nó thực sự xuất hiện trong **13 phần mềm máy tự động
+  hoá thật** của bộ mẫu dùng xuyên suốt sách — tổng cộng **3.752** file `.cs`,
+  **883.160** dòng mã. Cách đo: bỏ hết chú thích và chuỗi ký tự trước khi đếm, khớp theo biên từ.
+  Con số này trả lời câu hỏi mà mọi người mới đều hỏi: *"tôi phải học thuộc bao nhiêu trong số này?"*
+- **Ghi chú theo bối cảnh máy.** Chỗ nào một từ khoá có ý nghĩa riêng trong phần mềm điều khiển máy
+  (hoặc là cái bẫy riêng của lĩnh vực này), ghi chú nói rõ.
+
+> 📌 **Cách dùng phụ lục này.** Đừng đọc từ đầu tới cuối. Ba cách dùng đúng: (1) **tra ngược** khi
+> gặp một từ khoá lạ lúc đọc mã người khác — dùng bảng chữ cái ở mục E.12; (2) **đọc một nhóm** khi
+> đang học đúng chủ đề đó, ví dụ nhóm E.6 khi bắt đầu phân vân giữa `ref` và `out`; (3) đọc **mục
+> E.13** một lần duy nhất — đó là mười hai cặp từ khoá mà người mới hay dùng nhầm cái này thay cái
+> kia, và mỗi cặp đều có ví dụ cùng một bài toán để so sánh trực tiếp.
+
+> ⚠️ **Một con số nhỏ không có nghĩa là "không cần biết".** `lock` xuất hiện ít hơn `if` hàng nghìn
+> lần, nhưng dùng sai `lock` thì máy treo giữa ca sản xuất còn dùng sai `if` thì thường lộ ra ngay.
+> Cột tần suất nói **bạn sẽ gặp nó nhiều hay ít khi đọc mã**, không nói **nó quan trọng hay không**.
+> Cột "Mức cần nắm" ở mỗi bảng mới là cột nói về độ quan trọng, và hai cột đó lệch nhau ở vài chỗ
+> rất đáng chú ý.
+
+> ⚠️ **Vì sao chỉ 77 từ khoá dành riêng có cột tần suất, còn từ khoá ngữ cảnh thì không.** Từ khoá
+> dành riêng **không thể** là tên biến, nên đếm được chính xác. Từ khoá ngữ cảnh thì ngược lại:
+> `record`, `file`, `value`, `from`, `where`, `on`, `add` đều là những tên biến **rất** phổ biến
+> trong phần mềm máy (`var record = …`, `string file = …`). Phép đếm không tách được hai thứ đó, nên
+> mọi con số cho nhóm ngữ cảnh đều sẽ thổi phồng — và sách này không in một con số mà nó không kiểm
+> chứng được. Các bảng dưới vẫn giải thích đầy đủ từ khoá ngữ cảnh, chỉ không kèm tần suất.
+>
+> Một lưu ý nữa về chính 77 con số kia: `extern` (12.575 lần), `short` và `ushort` gần như toàn bộ
+> đến từ **các file bọc SDK phần cứng** — hàng nghìn dòng khai báo `[DllImport]` sinh ra một lần rồi
+> ít khi đụng tới. Đọc chúng như *"bạn sẽ thấy nhiều dòng như thế khi mở file bọc SDK"*, không phải
+> *"bạn sẽ viết chúng hằng ngày"*.
+
+Ký hiệu cột **Mức cần nắm**: ⬤⬤⬤ *phải thuộc* — không biết thì không đọc nổi mã máy · ⬤⬤ *nên biết*
+— gặp thường xuyên, tra lại khi cần · ⬤ *biết là có* — gặp thì tra, không cần nhớ.
+
+---
+
+## E.1  Mười sáu từ khoá kiểu dựng sẵn
+
+Đây là các bí danh C# đặt cho kiểu của .NET (`int` chính là `System.Int32`). Dùng bí danh là quy ước
+phổ biến; hai cách hoàn toàn tương đương về mặt máy.
+
+| Từ khoá | Là bí danh của | Phạm vi / ý nghĩa | Mức cần nắm | Ghi chú cho phần mềm máy |
+|---|---|---|---|---|
+| `bool` | `System.Boolean` | `true` / `false` | ⬤⬤⬤ | Kiểu của mọi tín hiệu vào-ra số (DI/DO) |
+| `byte` | `System.Byte` | 0 … 255 | ⬤⬤⬤ | Đơn vị của mọi khung truyền thông nối tiếp/TCP (Chương 14) |
+| `sbyte` | `System.SByte` | −128 … 127 | ⬤ | Hiếm; gặp khi ánh xạ cấu trúc C của SDK hãng |
+| `short` | `System.Int16` | −32.768 … 32.767 | ⬤⬤ | Kiểu của **thanh ghi Modbus** và nhiều thanh ghi PLC |
+| `ushort` | `System.UInt16` | 0 … 65.535 | ⬤⬤ | Thanh ghi Modbus không dấu — nhầm dấu ở đây là lỗi kinh điển |
+| `int` | `System.Int32` | ±2,1 tỷ | ⬤⬤⬤ | Mặc định cho số nguyên; kiểu của chỉ số trục, mã cảnh báo |
+| `uint` | `System.UInt32` | 0 … 4,29 tỷ | ⬤⬤ | Hay gặp ở chữ ký hàm SDK phần cứng (P/Invoke, Phụ lục A) |
+| `long` | `System.Int64` | ±9,2 tỷ tỷ | ⬤⬤ | Đếm sản lượng tích luỹ, mốc thời gian, số xung encoder |
+| `ulong` | `System.UInt64` | 0 … 18 tỷ tỷ | ⬤ | Hiếm; gặp ở mặt nạ bit rộng và vài SDK |
+| `float` | `System.Single` | Số thực ~7 chữ số | ⬤⬤ | Đủ cho nhiệt độ/áp suất; **không đủ** cho toạ độ trục chính xác cao |
+| `double` | `System.Double` | Số thực ~15–17 chữ số | ⬤⬤⬤ | Mặc định cho toạ độ, tốc độ, kết quả đo |
+| `decimal` | `System.Decimal` | 28–29 chữ số, cơ số 10 | ⬤ | Dùng cho **tiền**, không dùng cho toạ độ — chậm hơn `double` nhiều |
+| `char` | `System.Char` | Một ký tự UTF-16 | ⬤⬤ | Ký tự kết thúc khung (`'\r'`, `'\n'`) trong giao thức nối tiếp |
+| `string` | `System.String` | Chuỗi, **bất biến** | ⬤⬤⬤ | Mỗi phép nối tạo một chuỗi mới — xem cảnh báo dưới |
+| `object` | `System.Object` | Gốc của mọi kiểu | ⬤⬤ | Gặp ở API cũ và ở `sender` của event |
+| `void` | (không có) | Hàm không trả về gì | ⬤⬤⬤ | `async void` là ngoại lệ nguy hiểm — xem mục 5.3 |
+
+> ⚠️ **Hai cái bẫy của nhóm này trong phần mềm máy.** (1) **`short`/`ushort` và thanh ghi Modbus:**
+> đọc một thanh ghi chứa giá trị 40.000 vào biến `short` cho ra số **âm**, vì 40.000 vượt 32.767 —
+> lỗi này im lặng và chỉ lộ ra khi giá trị thật vượt ngưỡng, có khi sau nhiều tháng. (2) **`float`
+> cho toạ độ:** bảy chữ số có nghĩa nghe nhiều, nhưng một trục hành trình 1.000 mm cần độ phân giải
+> 0,001 mm là đã bảy chữ số — hết sạch dự phòng. Dùng `double` cho mọi thứ liên quan tới vị trí.
+
+> 💡 **`string` là kiểu tham chiếu nhưng hành xử như kiểu giá trị.** Nó **bất biến**: `s += "x"` không
+> sửa chuỗi cũ mà tạo chuỗi mới. Nối chuỗi trong vòng lặp ghi log 10.000 dòng sẽ tạo 10.000 chuỗi rác
+> — đó là lúc dùng `StringBuilder`. Ngoài vòng lặp thì `+` hoàn toàn bình thường, đừng tối ưu sớm.
+
+---
+
+## E.2  Khai báo kiểu và không gian tên
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `class` | Kiểu tham chiếu — biến giữ **địa chỉ**, gán là chép địa chỉ | ⬤⬤⬤ | Mặc định cho gần như mọi thứ trong phần mềm máy |
+| `struct` | Kiểu giá trị — biến giữ **chính dữ liệu**, gán là chép dữ liệu | ⬤⬤ | Hợp cho gói dữ liệu nhỏ, bất biến: một lần đọc cảm biến, một toạ độ |
+| `interface` | Hợp đồng: liệt kê việc *phải làm được*, không nói *làm thế nào* | ⬤⬤⬤ | Trụ cột của Chương 7 và Chương 13 — ranh giới giữa luật máy và phần cứng |
+| `enum` | Tập giá trị có tên, cố định | ⬤⬤⬤ | Trạng thái máy, chế độ chạy, mức cảnh báo — xem mục 12.1.1b |
+| `delegate` | Kiểu của **một tham chiếu tới hàm** | ⬤⬤ | Nền của `event`; ngày nay thường viết bằng `Action`/`Func` |
+| `namespace` | Không gian tên — gom kiểu, tránh trùng tên | ⬤⬤⬤ | Xem mục 3.8 |
+| `record` *(ngữ cảnh)* | `class`/`struct` có sẵn so sánh theo **giá trị** và cú pháp gọn | ⬤⬤ | Rất hợp cho kiểu miền: `record AxisPosition(double Mm)` — mục 11.2 |
+
+> 💡 **`class` hay `struct`? Một câu hỏi quyết định được gần hết.** *Đối tượng này có "danh tính"
+> không?* Một cỗ trục X là **một vật cụ thể** — hai biến trỏ tới nó phải là cùng một trục → `class`.
+> Một phép đo áp suất *5,3 bar lúc 10:02:11* không có danh tính, hai phép đo cùng giá trị là một →
+> `struct` (hoặc `record struct`). Đặt sai chiều này gây hai loại lỗi ngược nhau: dùng `struct` cho
+> thiết bị thì **sửa một bản chép mà tưởng sửa thiết bị**; dùng `class` cho giá trị đo thì hai chỗ
+> vô tình cùng sửa một đối tượng.
+
+---
+
+## E.3  Mức truy cập, và các bổ nghĩa cho thành viên
+
+**Bốn mức truy cập** (`public`, `private`, `protected`, `internal`) trả lời câu hỏi *"ai được nhìn
+thấy thứ này"*:
+
+| Từ khoá | Ai nhìn thấy | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `public` | Mọi nơi | ⬤⬤⬤ | Mặc định bị lạm dụng nhiều nhất — xem cảnh báo dưới |
+| `private` | Chỉ bên trong chính lớp đó | ⬤⬤⬤ | **Nên là mặc định của bạn**; mở rộng ra khi có nhu cầu thật |
+| `protected` | Lớp đó và các lớp con | ⬤⬤ | Dùng khi thiết kế lớp cơ sở cho trạm/cơ cấu |
+| `internal` | Trong cùng một project (assembly) | ⬤⬤ | Cho phép chia lớp trong một thư viện mà không lộ ra ngoài |
+| `protected internal` | Cùng project **hoặc** lớp con | ⬤ | Hiếm |
+| `private protected` | Lớp con **trong cùng project** | ⬤ | Hiếm |
+
+**Các bổ nghĩa khác:**
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `static` | Thuộc về **kiểu**, không thuộc về đối tượng nào | ⬤⬤⬤ | Con dao hai lưỡi lớn nhất trong nhóm — xem cảnh báo |
+| `const` | Hằng, giá trị chốt **lúc biên dịch** | ⬤⬤ | Chỉ dùng được với số, chuỗi, `bool` |
+| `readonly` | Chỉ gán được lúc khai báo hoặc trong hàm dựng | ⬤⬤⬤ | Mặc định nên dùng cho mọi field phụ thuộc được tiêm vào |
+| `abstract` | Lớp không tạo được đối tượng / hàm buộc lớp con cài đặt | ⬤⬤ | Xem mục E.13 để so với `interface` |
+| `virtual` | Hàm **cho phép** lớp con thay đổi hành vi | ⬤⬤ | Không bắt buộc lớp con làm gì |
+| `override` | Hàm lớp con **thay** hành vi của hàm `virtual`/`abstract` | ⬤⬤ | Bắt buộc phải ghi rõ — C# không cho ghi đè ngầm |
+| `sealed` | Cấm kế thừa tiếp | ⬤⬤ | Nên đặt cho lớp lá; cho trình biên dịch tối ưu và chặn kế thừa ngoài ý muốn |
+| `new` (bổ nghĩa) | **Che** thành viên cùng tên của lớp cha | ⬤ | Gần như luôn là dấu hiệu thiết kế sai — xem E.13 |
+| `extern` | Hàm nằm trong thư viện ngoài (native) | ⬤⬤ | Đi cùng `[DllImport]` khi gọi SDK card — Phụ lục A |
+| `unsafe` | Cho phép dùng con trỏ | ⬤ | Chỉ khi buộc phải làm việc với bộ đệm ảnh / SDK native |
+| `fixed` | Ghim đối tượng để bộ gom rác không dời nó | ⬤ | Đi cùng `unsafe` |
+| `volatile` | Cấm tối ưu hoá việc đọc biến — luồng khác có thể đổi nó | ⬤⬤ | Cờ dừng giữa hai luồng; xem E.13 để so với `lock` |
+| `partial` *(ngữ cảnh)* | Một kiểu chia ra nhiều file | ⬤⬤ | Bắt buộc phải hiểu khi đọc mã WPF/WinForms tự sinh |
+| `required` *(ngữ cảnh)* | Bắt buộc phải gán khi khởi tạo đối tượng | ⬤ | C# 11 trở lên; thay cho việc kiểm tra thủ công trong hàm dựng |
+
+> ⚠️ **`static` — nơi phần lớn phần mềm máy đi chệch đường.** `static` nghĩa là *"chỉ có một bản,
+> dùng chung cho toàn chương trình"*. Với một hằng số hay một hàm tiện ích thuần tuý, đó là lựa chọn
+> đúng và rẻ. Với **dữ liệu thay đổi được**, nó tạo ra trạng thái toàn cục: ai cũng đọc được, ai cũng
+> ghi được, và không có chỗ nào để đặt một lớp kiểm tra. Đo trong 13 phần mềm máy của bộ mẫu:
+> **1.514 khai báo `public static` có thể ghi**, nhiều nhất một dự án là **640** — và đó cũng là dự
+> án mà trạng thái máy nằm ở bảy biến `bool` rời nhau. Mục 12.1.1b phân tích đúng trường hợp đó, kèm
+> lối thoát từng bước.
+>
+> Quy tắc gọn để mang đi: **`static readonly` và `static` cho hàm thuần thì thoải mái; `public
+> static` cho dữ liệu đổi được thì phải có lý do viết thành lời.**
+
+---
+
+## E.4  Điều khiển luồng chạy
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `if` / `else` | Rẽ nhánh theo điều kiện | ⬤⬤⬤ | Xem mục 3.3.3 — một điều kiện sai nghĩa mà biên dịch vẫn sạch |
+| `switch` | Chọn một trong nhiều nhánh theo giá trị | ⬤⬤⬤ | Từ C# 8 còn có *switch expression* gọn hơn nhiều |
+| `case` | Một nhánh của `switch` | ⬤⬤⬤ | |
+| `default` | Nhánh còn lại của `switch`; cũng là **giá trị mặc định** của kiểu | ⬤⬤⬤ | Hai nghĩa khác hẳn nhau — xem E.13 |
+| `for` | Lặp có bộ đếm | ⬤⬤⬤ | |
+| `foreach` | Duyệt từng phần tử của một tập | ⬤⬤⬤ | Không sửa được tập trong lúc duyệt |
+| `while` | Lặp khi điều kiện còn đúng | ⬤⬤⬤ | `while (true)` trong phần mềm máy: xem cảnh báo dưới |
+| `do` | Lặp, thân chạy **ít nhất một lần** rồi mới kiểm | ⬤⬤ | |
+| `break` | Thoát khỏi vòng lặp / kết thúc nhánh `case` | ⬤⬤⬤ | Hai công dụng khác nhau trong hai ngữ cảnh |
+| `continue` | Bỏ qua phần còn lại, sang vòng lặp kế | ⬤⬤ | |
+| `return` | Trả giá trị và thoát khỏi hàm | ⬤⬤⬤ | |
+| `goto` | Nhảy tới nhãn, hoặc sang một nhánh `case` khác | ⬤ | Xem cảnh báo |
+| `in` (trong `foreach`) | Nối biến duyệt với tập | ⬤⬤⬤ | `in` còn hai nghĩa khác — xem E.6 và E.10 |
+
+> ⚠️ **`while (true)` và `goto` — hai con số từ bộ mẫu, đọc kèm nhau.** `while (true)` xuất hiện
+> **546 lần / 12 trong 13 dự án**: đây là hình dạng của **vòng quét** mang từ tư duy PLC sang, và
+> Chương 6 bàn kỹ vì sao nó vừa tự nhiên vừa nguy hiểm trên PC (không có cơ chế dừng, ăn CPU, khó
+> kiểm thử). `goto` thì ngược lại — chỉ **2 trong 13 dự án** dùng, nhưng **một dự án dùng 991 lần**,
+> gần như toàn bộ là `goto case` để nhảy giữa các nhánh của một `switch` khổng lồ. Mục 12.1.1b mổ xẻ
+> chính đoạn mã đó. Kết luận thực dụng: `goto` không phải thứ bị cấm về đạo đức, nhưng khi nó trở
+> thành **cơ chế chuyển trạng thái chính** thì phần mềm đã mất khả năng liệt kê được trạng thái của
+> chính nó.
+
+---
+
+## E.5  Ngoại lệ
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `try` | Mở vùng có thể sinh lỗi | ⬤⬤⬤ | |
+| `catch` | Bắt lỗi thuộc loại đã nêu | ⬤⬤⬤ | `catch {}` rỗng: 646 chỗ trong bộ mẫu — mục 3.5.5 |
+| `finally` | Chạy dù có lỗi hay không | ⬤⬤⬤ | Chỗ đặt lệnh nhả kẹp, tắt nguồn, đóng cổng |
+| `throw` | Ném lỗi ra ngoài | ⬤⬤⬤ | `throw;` và `throw ex;` khác nhau — xem E.13 |
+| `when` *(ngữ cảnh)* | Bộ lọc gắn vào `catch`: chỉ bắt khi điều kiện đúng | ⬤⬤ | `catch (OperationCanceledException) when (!ct.IsCancellationRequested)` — mẫu chuẩn của hạn giờ, mục 5.5 |
+| `checked` | Bật kiểm tra tràn số — tràn thì ném lỗi | ⬤ | Xem Bảng 3.4 ở Chương 3 để có ví dụ đầy đủ |
+| `unchecked` | Tắt kiểm tra tràn — tràn thì cắt bit im lặng | ⬤ | Là hành vi **mặc định** của C# |
+
+---
+
+## E.6  Cách truyền tham số
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `ref` | Truyền **tham chiếu tới biến** — hàm đọc và ghi được biến gốc | ⬤⬤ | Biến phải được gán trước khi gọi |
+| `out` | Như `ref` nhưng chỉ để **trả ra** — hàm **buộc** phải gán | ⬤⬤ | Mẫu `TryParse(s, out var x)` là công dụng chính đáng nhất |
+| `in` | Truyền tham chiếu **chỉ đọc** | ⬤ | Tối ưu cho `struct` lớn; hiếm cần |
+| `params` | Nhận số lượng tham số tuỳ ý thành một mảng | ⬤⬤ | `Log(string mẫu, params object[] giáTrị)` |
+| `scoped` *(ngữ cảnh)* | Giới hạn tuổi thọ của tham chiếu | ⬤ | Rất hiếm; liên quan `ref struct` |
+
+> 📌 **Đo trong bộ mẫu: 908 hàm có tham số `ref`/`out`**, nhiều nhất một dự án là 255. Mục 3.4.4 đọc
+> một chữ ký có **ba tham số `ref double[]`** — tức là ba kết quả trả về đội lốt đầu vào. Đó là dấu
+> hiệu rõ nhất cho thấy hàm cần trả về một `record` kết quả thay vì nhồi qua tham số.
+
+---
+
+## E.7  Kiểm tra kiểu, chuyển kiểu, nạp chồng toán tử
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `is` | Hỏi *"có phải kiểu này không"* — và gán luôn nếu đúng | ⬤⬤⬤ | `if (dev is IAxis truc)` — nền của pattern matching |
+| `as` | Chuyển kiểu, **thất bại thì cho `null`** thay vì ném lỗi | ⬤⬤ | Xem E.13 để so với ép kiểu `(T)x` |
+| `typeof` | Lấy đối tượng mô tả một **kiểu** | ⬤⬤ | Dùng với reflection, đăng ký DI |
+| `sizeof` | Kích thước byte của một kiểu giá trị | ⬤ | Gặp khi dựng khung dữ liệu nhị phân |
+| `nameof` *(ngữ cảnh)* | Lấy **tên** của biến/thành viên thành chuỗi | ⬤⬤⬤ | Đổi tên biến thì chuỗi tự đúng theo — dùng cho log và `INotifyPropertyChanged` |
+| `explicit` | Định nghĩa phép ép kiểu **phải ghi rõ** | ⬤ | |
+| `implicit` | Định nghĩa phép chuyển kiểu **tự động** | ⬤ | Cẩn thận: chuyển ngầm giữa mm và xung là công thức gây tai nạn |
+| `operator` | Nạp chồng toán tử (`+`, `==`, …) | ⬤ | Hợp lý cho kiểu miền như `ViTri + KhoangCach` |
+| `dynamic` *(ngữ cảnh)* | Bỏ kiểm tra kiểu lúc biên dịch, kiểm lúc chạy | ⬤ | Gặp khi gọi COM (Excel Interop, mục 3.6.3b) — trả giá bằng việc mất mọi bảo vệ của trình biên dịch |
+
+---
+
+## E.8  Đối tượng, tham chiếu và giá trị đặc biệt
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `new` (toán tử) | Tạo đối tượng mới | ⬤⬤⬤ | Chương 7: nơi **duy nhất** nên `new` thiết bị là Composition Root |
+| `this` | Chính đối tượng hiện tại | ⬤⬤⬤ | Cũng dùng để gọi hàm dựng khác: `: this(...)` |
+| `base` | Lớp cha | ⬤⬤ | `base.Method()`, `: base(...)` |
+| `null` | Không trỏ tới đối tượng nào | ⬤⬤⬤ | Bật *nullable reference types* để trình biên dịch cảnh báo giúp |
+| `true` / `false` | Hai giá trị `bool` | ⬤⬤⬤ | |
+| `default` | Giá trị mặc định của kiểu (`0`, `false`, `null`) | ⬤⬤ | `CancellationToken ct = default` là mẫu rất hay gặp |
+| `var` *(ngữ cảnh)* | Để trình biên dịch tự suy ra kiểu | ⬤⬤⬤ | Kiểu vẫn cố định lúc biên dịch — **không phải** `dynamic` |
+| `using` (câu lệnh) | Tự gọi `Dispose()` khi ra khỏi phạm vi | ⬤⬤⬤ | Bắt buộc cho `CancellationTokenSource`, cổng nối tiếp, kết nối |
+| `using` (chỉ thị) | Khai báo dùng một không gian tên | ⬤⬤⬤ | Cùng một từ khoá, hai công dụng không liên quan |
+| `global` *(ngữ cảnh)* | `global using` — khai báo `using` cho cả project | ⬤ | Giảm lặp ở đầu file |
+| `file` *(ngữ cảnh)* | Kiểu chỉ nhìn thấy trong đúng file đó | ⬤ | C# 11; hiếm |
+| `stackalloc` | Cấp phát mảng trên ngăn xếp | ⬤ | Tối ưu vi mô; gần như không cần trong phần mềm máy |
+| `nint` / `nuint` | Số nguyên có kích thước theo nền tảng | ⬤ | Gặp khi khai báo con trỏ/handle trong P/Invoke |
+
+---
+
+## E.9  Đồng thời và bất đồng bộ
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `async` *(ngữ cảnh)* | Đánh dấu hàm có thể **tạm nhường** khi chờ | ⬤⬤⬤ | Chương 5; `async void` chỉ dành cho trình xử lý sự kiện |
+| `await` *(ngữ cảnh)* | Chờ một việc xong mà **không chặn luồng** | ⬤⬤⬤ | Đo được trong bộ mẫu: 9/13 dự án dùng, 4 dự án không dùng dòng nào |
+| `lock` | Cho phép **một luồng tại một thời điểm** vào đoạn mã | ⬤⬤⬤ | Đừng `await` bên trong `lock`; đừng gọi mã lạ bên trong `lock` |
+| `volatile` | Mọi lần đọc đều đọc giá trị mới nhất | ⬤⬤ | Đủ cho **một cờ `bool` dừng**, không đủ cho mọi thứ khác |
+| `yield` *(ngữ cảnh)* | Sinh phần tử tiếp theo của một dãy, theo yêu cầu | ⬤⬤ | `yield return` — hợp để phát từng bước của quy trình |
+| `event` | Khai báo sự kiện: nhiều nơi đăng ký, một nơi phát | ⬤⬤⬤ | Cơ chế chính để tầng dưới báo lên tầng trên mà không phụ thuộc ngược |
+| `add` / `remove` *(ngữ cảnh)* | Tự viết phần đăng ký/huỷ đăng ký của một `event` | ⬤ | Hiếm; mặc định đã đủ dùng |
+
+> ⚠️ **Rò rỉ đăng ký sự kiện — cái bẫy đắt nhất của `event` trong phần mềm chạy nhiều tháng liền.**
+> Đăng ký `thietBi.DataChanged += XuLy;` mà không có chỗ nào `-=` thì đối tượng đăng ký **không bao
+> giờ được thu hồi**, vì thiết bị vẫn giữ tham chiếu tới nó. Mở một cửa sổ chẩn đoán 200 lần trong ca
+> đêm là giữ lại 200 cửa sổ trong bộ nhớ. Quy tắc: **chỗ nào có `+=` thì phải trả lời được câu hỏi
+> "`-=` ở đâu"** — thường là trong `Dispose()` hoặc lúc đóng cửa sổ.
+
+---
+
+## E.10  Từ khoá truy vấn LINQ
+
+Chỉ mang nghĩa đặc biệt bên trong một biểu thức truy vấn; ngoài đó vẫn dùng làm tên biến bình thường.
+
+| Từ khoá | Nghĩa | Mức cần nắm |
+|---|---|---|
+| `from` | Nguồn dữ liệu và biến duyệt | ⬤⬤ |
+| `where` | Lọc | ⬤⬤ |
+| `select` | Chọn thứ trả ra | ⬤⬤ |
+| `orderby`, `ascending`, `descending` | Sắp xếp | ⬤⬤ |
+| `group`, `by`, `into` | Gom nhóm | ⬤ |
+| `join`, `on`, `equals` | Ghép hai nguồn | ⬤ |
+| `let` | Đặt tên cho một giá trị trung gian | ⬤ |
+
+> 💡 **Hai cú pháp, cùng một thứ.** `from a in ds where a.Code == 10001 select a` và
+> `ds.Where(a => a.Code == 10001)` biên dịch ra **cùng một mã**. Cú pháp truy vấn dễ đọc hơn khi có
+> `join`/`group`; cú pháp phương thức gọn hơn ở mọi trường hợp còn lại, và là cú pháp bạn sẽ gặp
+> nhiều hơn hẳn trong mã thật. Học cú pháp phương thức trước.
+
+---
+
+## E.11  Từ khoá ngữ cảnh còn lại
+
+| Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
+|---|---|---|---|
+| `get` / `set` | Phần đọc / phần ghi của một thuộc tính | ⬤⬤⬤ | Xem mục 7.4 để biết thứ tự dựng một lớp hoàn chỉnh |
+| `init` | Chỉ gán được **lúc khởi tạo**, sau đó bất biến | ⬤⬤ | Rất hợp cho tham số cấu hình |
+| `value` | Giá trị đang được gán, bên trong `set` | ⬤⬤⬤ | |
+| `with` | Tạo bản sao của `record`, đổi vài trường | ⬤⬤ | `congThucMoi = congThucCu with { TocDo = 120 }` |
+| `where` (ràng buộc) | Giới hạn kiểu cho generic: `where T : IStep` | ⬤⬤ | Khác hẳn `where` của LINQ |
+| `and`, `or`, `not` | Toán tử trong pattern matching: `is > 5 and < 10` | ⬤⬤ | Cách viết an toàn cho kiểm tra khoảng — liên quan trực tiếp mục 3.3.3 |
+| `when` | Điều kiện phụ cho `catch` và cho nhánh `switch` | ⬤⬤ | |
+| `notnull`, `unmanaged`, `managed`, `allows` | Các ràng buộc generic ít gặp | ⬤ | |
+| `alias` | Trong `extern alias` — gỡ xung đột hai thư viện cùng tên kiểu | ⬤ | Rất hiếm |
+| `args` | Tham số dòng lệnh trong chương trình kiểu *top-level statement* | ⬤ | |
+| `partial`, `record`, `required`, `scoped`, `file`, `global`, `dynamic`, `var`, `nameof`, `async`, `await`, `yield`, `add`, `remove` | Đã nêu ở các nhóm trên | | |
+
+---
+
+## E.12  Bảng tra nhanh theo thứ tự chữ cái
+
+Cột **Số lần xuất hiện** là tổng trên 3.752 file `.cs` của 13 phần mềm máy thật (đã bỏ chú thích
+và chuỗi ký tự trước khi đếm). Cột **Số dự án** cho biết bao nhiêu trong 13 dự án có dùng ít nhất
+một lần — cột này nói nhiều hơn cột tổng, vì nó không bị một dự án khổng lồ kéo lệch.
+
+**Bảng E.1 — 77 từ khoá dành riêng của C#, kèm tần suất thật trong 13 phần mềm máy**
+
+| Từ khoá | Nghĩa một dòng | Nhóm | Số lần xuất hiện | Số dự án |
+|---|---|---|---|---|
+| `abstract` | Lớp không tạo được đối tượng; hoặc hàm buộc lớp con phải cài đặt | E.3 | 296 | 10/13 |
+| `as` | Chuyển kiểu, thất bại thì cho `null` thay vì ném lỗi | E.7 | 1.628 | 13/13 |
+| `base` | Lớp cha — gọi hàm dựng hoặc hàm của nó | E.8 | 1.585 | 13/13 |
+| `bool` | Kiểu logic `true`/`false` | E.1 | 11.876 | 13/13 |
+| `break` | Thoát vòng lặp, hoặc kết thúc một nhánh `case` | E.4 | 7.480 | 13/13 |
+| `byte` | Số nguyên 0…255 — đơn vị của mọi khung truyền thông | E.1 | 4.790 | 13/13 |
+| `case` | Một nhánh của `switch` | E.4 | 9.178 | 13/13 |
+| `catch` | Bắt ngoại lệ | E.5 | 3.380 | 13/13 |
+| `char` | Một ký tự UTF-16 | E.1 | 211 | 11/13 |
+| `checked` | Bật kiểm tra tràn số — tràn thì ném lỗi | E.5 | 3 | 1/13 |
+| `class` | Khai báo kiểu tham chiếu | E.2 | 4.396 | 13/13 |
+| `const` | Hằng chốt lúc biên dịch, nhúng vào nơi gọi | E.3 | 8.861 | 13/13 |
+| `continue` | Bỏ qua phần còn lại, sang vòng lặp kế | E.4 | 794 | 13/13 |
+| `decimal` | Số thực cơ số 10, 28–29 chữ số — dùng cho tiền | E.1 | 123 | 8/13 |
+| `default` | Nhánh còn lại của `switch`; hoặc giá trị mặc định của kiểu | E.4 | 1.187 | 13/13 |
+| `delegate` | Kiểu của một tham chiếu tới hàm | E.2 | 398 | 11/13 |
+| `do` | Vòng lặp chạy thân ít nhất một lần rồi mới kiểm điều kiện | E.4 | 84 | 7/13 |
+| `double` | Số thực ~15–17 chữ số — mặc định cho toạ độ và kết quả đo | E.1 | 19.408 | 13/13 |
+| `else` | Nhánh còn lại của `if` | E.4 | 7.924 | 13/13 |
+| `enum` | Tập giá trị có tên, cố định | E.2 | 1.119 | 13/13 |
+| `event` | Sự kiện: nhiều nơi đăng ký, một nơi phát | E.9 | 713 | 13/13 |
+| `explicit` | Định nghĩa phép ép kiểu phải ghi rõ | E.7 | 11 | 2/13 |
+| `extern` | Hàm nằm trong thư viện native — đi cùng `[DllImport]` | E.3 | 12.575 | 13/13 |
+| `false` | Giá trị logic sai | E.8 | 15.807 | 13/13 |
+| `finally` | Khối luôn chạy, dù có lỗi hay không | E.5 | 248 | 11/13 |
+| `fixed` | Ghim đối tượng để bộ gom rác không dời | E.3 | 11 | 1/13 |
+| `float` | Số thực ~7 chữ số — không đủ cho toạ độ chính xác cao | E.1 | 953 | 11/13 |
+| `for` | Vòng lặp có bộ đếm | E.4 | 3.654 | 13/13 |
+| `foreach` | Duyệt từng phần tử của một tập | E.4 | 2.558 | 13/13 |
+| `goto` | Nhảy tới nhãn hoặc sang nhánh `case` khác | E.4 | 1.087 | 2/13 |
+| `if` | Rẽ nhánh theo điều kiện | E.4 | 36.434 | 13/13 |
+| `implicit` | Định nghĩa phép chuyển kiểu tự động | E.7 | 22 | 3/13 |
+| `in` | Ba nghĩa: biến duyệt `foreach`; tham số chỉ đọc; nguồn LINQ | E.6 | 2.575 | 13/13 |
+| `int` | Số nguyên ±2,1 tỷ — mặc định cho số nguyên | E.1 | 40.584 | 13/13 |
+| `interface` | Hợp đồng: liệt kê việc phải làm được | E.2 | 227 | 8/13 |
+| `internal` | Chỉ nhìn thấy trong cùng một project | E.3 | 847 | 12/13 |
+| `is` | Hỏi "có phải kiểu này không" và gán luôn nếu đúng | E.7 | 1.725 | 12/13 |
+| `lock` | Cho một luồng tại một thời điểm vào đoạn mã | E.9 | 609 | 11/13 |
+| `long` | Số nguyên ±9,2 tỷ tỷ | E.1 | 758 | 13/13 |
+| `namespace` | Không gian tên | E.2 | 3.486 | 13/13 |
+| `new` | Tạo đối tượng; hoặc (bổ nghĩa) che thành viên lớp cha | E.8 | 27.483 | 13/13 |
+| `null` | Không trỏ tới đối tượng nào | E.8 | 10.990 | 13/13 |
+| `object` | Kiểu gốc của mọi kiểu | E.1 | 7.422 | 13/13 |
+| `operator` | Nạp chồng toán tử | E.7 | 160 | 5/13 |
+| `out` | Tham số chỉ để trả ra — hàm buộc phải gán | E.6 | 4.146 | 13/13 |
+| `override` | Thay hành vi của hàm `virtual`/`abstract` | E.3 | 2.968 | 12/13 |
+| `params` | Nhận số lượng tham số tuỳ ý thành một mảng | E.6 | 107 | 9/13 |
+| `private` | Chỉ nhìn thấy bên trong chính lớp đó | E.3 | 17.183 | 13/13 |
+| `protected` | Lớp đó và các lớp con nhìn thấy | E.3 | 1.811 | 13/13 |
+| `public` | Mọi nơi nhìn thấy | E.3 | 61.059 | 13/13 |
+| `readonly` | Chỉ gán được lúc khai báo hoặc trong hàm dựng | E.3 | 2.522 | 12/13 |
+| `ref` | Truyền tham chiếu tới biến — đọc và ghi được biến gốc | E.6 | 10.755 | 13/13 |
+| `return` | Trả giá trị và thoát khỏi hàm | E.4 | 25.372 | 13/13 |
+| `sbyte` | Số nguyên −128…127 | E.1 | 32 | 6/13 |
+| `sealed` | Cấm kế thừa tiếp | E.3 | 167 | 7/13 |
+| `short` | Số nguyên −32.768…32.767 — kiểu của thanh ghi Modbus | E.1 | 19.668 | 10/13 |
+| `sizeof` | Kích thước byte của một kiểu giá trị | E.7 | 25 | 3/13 |
+| `stackalloc` | Cấp phát mảng trên ngăn xếp | E.8 | 0 | 0/13 |
+| `static` | Thuộc về kiểu, không thuộc đối tượng nào | E.3 | 21.024 | 13/13 |
+| `string` | Chuỗi ký tự, bất biến | E.1 | 24.753 | 13/13 |
+| `struct` | Kiểu giá trị — gán là chép toàn bộ dữ liệu | E.2 | 480 | 12/13 |
+| `switch` | Chọn một trong nhiều nhánh theo giá trị | E.4 | 1.570 | 13/13 |
+| `this` | Chính đối tượng hiện tại | E.8 | 25.808 | 13/13 |
+| `throw` | Ném ngoại lệ | E.5 | 1.973 | 12/13 |
+| `true` | Giá trị logic đúng | E.8 | 12.356 | 13/13 |
+| `try` | Mở vùng có thể sinh lỗi | E.5 | 3.297 | 13/13 |
+| `typeof` | Lấy đối tượng mô tả một kiểu | E.7 | 3.208 | 13/13 |
+| `uint` | Số nguyên không dấu 0…4,29 tỷ | E.1 | 9.176 | 13/13 |
+| `ulong` | Số nguyên không dấu 0…18 tỷ tỷ | E.1 | 144 | 5/13 |
+| `unchecked` | Tắt kiểm tra tràn — là hành vi mặc định | E.5 | 7 | 1/13 |
+| `unsafe` | Cho phép dùng con trỏ | E.3 | 306 | 4/13 |
+| `ushort` | Số nguyên không dấu 0…65.535 — thanh ghi Modbus | E.1 | 13.462 | 12/13 |
+| `using` | Tự gọi `Dispose()`; hoặc khai báo dùng một không gian tên | E.8 | 26.462 | 13/13 |
+| `virtual` | Hàm cho phép lớp con thay hành vi | E.3 | 701 | 12/13 |
+| `void` | Hàm không trả về gì | E.1 | 13.812 | 13/13 |
+| `volatile` | Mọi lần đọc đều lấy giá trị mới nhất | E.3 | 30 | 5/13 |
+| `while` | Lặp khi điều kiện còn đúng | E.4 | 1.099 | 13/13 |
+
+---
+
+## E.13  Mười hai cặp hay bị dùng nhầm
+
+Đây là phần đáng đọc một lượt ngay cả khi bạn đã biết hết các bảng trên. Mỗi cặp dùng **cùng một bài
+toán** để so sánh trực tiếp.
+
+### 1. `ref` ↔ `out` ↔ giá trị trả về
+
+```csharp
+bool DocApSuat(ref double bar)   { … }   // caller phải gán bar trước — vô nghĩa ở đây
+bool DocApSuat(out double bar)   { … }   // hàm BUỘC phải gán bar
+(bool ok, double bar) DocApSuat(){ … }   // hoặc: record KetQuaDoApSuat
+```
+
+| | Ưu | Nhược | Dùng khi |
+|---|---|---|---|
+| `ref` | Sửa được biến gốc | Người gọi phải gán trước; đọc chữ ký không biết là vào hay ra | Thật sự cần **vừa đọc vừa ghi** một biến |
+| `out` | Trình biên dịch bắt buộc hàm gán → không quên | Vẫn khó đọc khi có nhiều `out` | Mẫu `TryXxx`: một kết quả phụ + một `bool` thành công |
+| Trả `record`/tuple | Chữ ký tự đọc được; dễ thêm trường sau này | Thêm một kiểu | **Mặc định nên chọn**, nhất là khi có từ hai giá trị ra trở lên |
+
+### 2. `const` ↔ `readonly` ↔ `static readonly`
+
+```csharp
+public const     double ToDoMacDinh = 100.0;   // chốt lúc BIÊN DỊCH, nhúng vào nơi gọi
+public readonly  double ToDoToiDa;             // gán trong hàm dựng — mỗi đối tượng một giá trị
+public static readonly double GioiHanMay = DocTuCauHinh();  // gán một lần lúc chạy, dùng chung
+```
+
+Cái bẫy thật của `const`: giá trị bị **nhúng thẳng** vào mọi project tham chiếu tới nó. Đổi
+`ToDoMacDinh` trong thư viện mà chỉ biên dịch lại thư viện thì các project kia **vẫn dùng số cũ**.
+Vì vậy: `const` cho thứ không bao giờ đổi (số π, tên khoá cấu hình); `static readonly` cho hằng số
+cấu hình máy.
+
+### 3. `abstract` ↔ `virtual` ↔ `interface`
+
+| | Ràng buộc | Mang theo mã dùng chung | Kế thừa được bao nhiêu |
+|---|---|---|---|
+| `interface` | Lớp cài đặt **phải** làm đủ | Không (trừ default member) | Nhiều interface cùng lúc |
+| `abstract class` | Lớp con **phải** cài đặt thành viên `abstract` | Có — mã chung nằm ở lớp cha | **Chỉ một** lớp cha |
+| `virtual` | Lớp con **có thể** thay, không bắt buộc | Có sẵn bản mặc định | |
+
+Quy tắc chọn trong phần mềm máy: **`interface` cho ranh giới với phần cứng** (Chương 13 — để thay
+được, giả lập được, kiểm thử được); **`abstract class` cho mã khung dùng chung giữa các trạm** (vòng
+đời, xử lý lỗi, ghi log — thứ mọi trạm đều làm giống nhau).
+
+### 4. `is` ↔ `as` ↔ ép kiểu `(T)x`
+
+```csharp
+if (dev is IAxis truc) truc.Home();        // an toàn, gán luôn — nên dùng
+var truc = dev as IAxis; if (truc != null) // hai bước, dài hơn
+var truc = (IAxis)dev;                     // sai kiểu thì NÉM LỖI ngay
+```
+
+Chọn: `is` cho mọi trường hợp thông thường; `(T)x` khi sai kiểu **đáng lẽ không thể xảy ra** và bạn
+muốn biết ngay lập tức nếu nó xảy ra; `as` gần như luôn thay được bằng `is`.
+
+### 5. `class` ↔ `struct` ↔ `record`
+
+| | Gán biến là chép gì | So sánh `==` mặc định | Dùng cho |
+|---|---|---|---|
+| `class` | Chép **địa chỉ** | Cùng đối tượng hay không | Thiết bị, dịch vụ, mọi thứ có danh tính |
+| `struct` | Chép **toàn bộ dữ liệu** | Từng trường | Gói giá trị nhỏ, bất biến |
+| `record` | Theo `class` (hoặc `record struct`) | **Từng trường** | Kiểu miền, thông điệp, kết quả trả về |
+
+### 6. `lock` ↔ `volatile` ↔ `Interlocked`
+
+```csharp
+private volatile bool _yeuCauDung;              // đủ: MỘT cờ, một luồng ghi
+lock (_khoa) { _danhSach.Add(x); }              // cần: thao tác gồm nhiều bước
+Interlocked.Increment(ref _soChuKy);            // đủ: tăng một số nguyên
+```
+
+`volatile` chỉ bảo đảm **thấy giá trị mới nhất**, không bảo đảm **hai thao tác không xen vào nhau**.
+`_dem++` trên biến `volatile` vẫn sai, vì nó là ba bước đọc–cộng–ghi. Chọn: một cờ → `volatile`; một
+số đếm → `Interlocked`; từ hai thao tác trở lên phải đi cùng nhau → `lock`.
+
+### 7. `throw;` ↔ `throw ex;`
+
+```csharp
+catch (Exception ex) { GhiLog(ex); throw;    }   // ĐÚNG — giữ nguyên vết gọi hàm
+catch (Exception ex) { GhiLog(ex); throw ex; }   // SAI — xoá sạch vết, lỗi trông như phát ra từ đây
+```
+
+Một chữ khác nhau, và nó quyết định bạn có tìm được dòng gây lỗi hay không. Liên quan trực tiếp mục
+19.4.1 về ghi log.
+
+### 8. `break` ↔ `continue` ↔ `return` ↔ `goto`
+
+Trong một vòng lặp chạy chu kỳ máy: `continue` bỏ qua **một** phôi lỗi và chạy tiếp; `break` dừng
+vòng lặp nhưng vẫn chạy phần dọn dẹp phía sau; `return` thoát khỏi cả hàm — **bỏ qua luôn phần dọn
+dẹp** nếu nó không nằm trong `finally`; `goto` nhảy tới chỗ khác và nên tránh. Nhầm `return` với
+`break` ở chỗ có bước nhả kẹp phía sau là lỗi có hậu quả vật lý.
+
+### 9. `new` (tạo) ↔ `new` (che thành viên)
+
+```csharp
+var truc = new Axis();                       // tạo đối tượng
+public new void Home() { … }                 // CHE hàm Home của lớp cha
+```
+
+Nghĩa thứ hai gần như luôn là dấu hiệu sai: gọi qua biến kiểu lớp cha sẽ chạy hàm **cũ**, gọi qua
+biến kiểu lớp con sẽ chạy hàm **mới** — cùng một đối tượng, hai hành vi. Nếu định thay hành vi, hãy
+dùng `virtual` + `override`.
+
+### 10. `default` (nhánh `switch`) ↔ `default` (giá trị mặc định)
+
+```csharp
+switch (trangThai) { … default: throw new …; }   // nhánh còn lại
+public Task ChayAsync(CancellationToken ct = default)  // = CancellationToken.None
+```
+
+### 11. `string` ↔ `String`, `int` ↔ `Int32`
+
+Hoàn toàn tương đương. Quy ước phổ biến: dùng **chữ thường** (`string`, `int`) cho kiểu biến, dùng
+tên .NET khi gọi thành viên tĩnh (`String.IsNullOrEmpty`, `Int32.TryParse`) — và nhất quán trong một
+dự án quan trọng hơn chọn bên nào.
+
+### 12. `var` ↔ `dynamic`
+
+`var` là **kiểu tĩnh, do trình biên dịch suy ra** — sai kiểu thì không biên dịch được. `dynamic` là
+**bỏ kiểm tra tới lúc chạy** — sai kiểu thì máy đang chạy mới báo lỗi. Hai từ này trông giống nhau
+về mức độ "lười khai báo" nhưng khác nhau hoàn toàn về mức rủi ro. Trong phần mềm máy, `dynamic` chỉ
+nên xuất hiện ở chỗ buộc phải có (COM/Excel Interop — mục 3.6.3b).
+
+---
+
+## E.14  Vậy phải học thuộc bao nhiêu?
+
+Câu trả lời từ số liệu, và nó nhẹ nhàng hơn nhiều so với vẻ ngoài của một danh sách 77 mục.
+
+Trong 561.143 lần một từ khoá dành riêng xuất hiện ở 13 phần mềm máy thật:
+
+**Bảng E.2 — Phân bố thật: bao nhiêu từ khoá làm nên bao nhiêu phần của mã nguồn**
+
+| | Số từ khoá | Là những từ nào |
+|---|---|---|
+| Chiếm **một nửa** tổng số lần xuất hiện | **9** | `public`, `int`, `if`, `new`, `using`, `this`, `return`, `string`, `static` |
+| Chiếm **90 %** | **28** | Chín từ trên, cộng các từ ở nhóm E.1, E.4 và E.5 |
+| Có mặt ở **cả 13/13** dự án | **44** | Nhóm lõi — nếu thuộc hết nhóm này thì bạn đọc được mọi phần mềm máy trong bộ mẫu |
+| Xuất hiện **dưới 100 lần** trên toàn bộ 883.160 dòng | **10** | `do`, `sbyte`, `volatile`, `sizeof`, `implicit`, `explicit`, `fixed`, `unchecked`, `checked`, `stackalloc` |
+| **Không dự án nào dùng** | **1** | `stackalloc` |
+
+Nói cách khác: **học chắc 44 từ khoá là đọc được gần như mọi dòng mã trong ngành này**, và 9 từ đầu
+tiên chiếm một nửa những gì bạn nhìn thấy. Ba mươi ba từ còn lại thuộc loại *tra khi gặp* — đó chính
+là lý do phụ lục này tồn tại.
+
+> ⚠️ **Nhưng hãy nhìn lại dòng "dưới 100 lần" một lần nữa.** Trong mười từ khoá hiếm nhất có
+> **`volatile`** (30 lần, 5 dự án) và **`checked`** (3 lần, 1 dự án) — hai từ khoá mà mục E.13 và
+> Chương 3 đều dành hẳn một callout để giải thích. Hiếm mà quan trọng: `volatile` sai thì một cờ dừng
+> có thể không bao giờ được luồng kia nhìn thấy; thiếu `checked` thì một giá trị tràn kiểu đi thẳng
+> vào logic điều khiển mà không ai biết. Đây đúng là chỗ mà **tần suất và tầm quan trọng đi ngược
+> nhau**, và là lý do cột "Mức cần nắm" tồn tại tách khỏi cột tần suất.
+>
+> Một ví dụ nữa theo chiều ngược lại: **`interface` chỉ được khai báo 227 lần, ở 8 trong 13 dự án** —
+> con số nhỏ tới mức dễ tưởng đây là thứ thứ yếu. Nhưng 227 khai báo ấy quyết định phần mềm nào thay
+> được thiết bị, chạy được khi chưa có máy, và kiểm thử được. Chương 7 và Chương 13 nói về đúng
+> chuyện đó.
+
+> 📌 **Ba từ khoá đáng đầu tư thời gian nhất, xếp theo tỷ lệ "hậu quả khi dùng sai ÷ công sức học".**
+> (1) **`readonly`** — gõ thêm tám ký tự, đổi lại là trình biên dịch canh giúp bạn không ai gán lại
+> phụ thuộc giữa chừng. (2) **`using` (câu lệnh)** — quên nó ở một cổng nối tiếp hay một
+> `CancellationTokenSource` là rò rỉ tài nguyên trong phần mềm chạy liên tục nhiều tháng. (3)
+> **`sealed`** — miễn phí, và nó chặn trước một loại lỗi khó tìm: ai đó kế thừa lớp trạm của bạn rồi
+> ghi đè một hàm mà bạn không lường trước.
 

@@ -140,7 +140,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | 8 | [Kiến trúc phần cứng PLC](ch08_kien_truc_phan_cung_plc.md) | CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs **I/O phân tán *(remote I/O)*** — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module, và ⭐ **vì sao bản đồ khe cắm phải là một tài liệu** (bốn câu nó phải trả lời được — biểu mẫu Phụ lục C.10); pin & thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó | ✅ |
 | 9 | [Module vào/ra số — chọn đúng kiểu](ch09_module_vao_ra_so.md) | Ngõ vào sink vs source; ngõ ra **rơ-le vs transistor vs triac** — bảng đánh đổi (dòng, tốc độ đóng cắt, tuổi thọ, AC/DC, dòng rò) và bài toán chọn cho từng tải của DP-01; cách ly quang *(optical isolation)*; dòng tổng cho phép trên chân chung *(common)*; ước tính công suất nguồn 24 V cho toàn bộ I/O; module hỗn hợp và khi nào nên tránh | ✅ |
 | 10 | [⭐ Vòng quét — mô hình tinh thần quan trọng nhất](ch10_vong_quet.md) | Đọc ảnh ngõ vào → chạy chương trình → ghi ảnh ngõ ra → xử lý hệ thống; **ảnh quá trình *(process image)* vs truy cập trực tiếp *(immediate/direct I/O)***; hệ quả thực tế: vì sao đảo thứ tự hai nấc thang *(rung)* đổi kết quả, xung ngắn hơn một chu kỳ quét bị **mất hoàn toàn** (→ vì sao cần bắt cạnh hoặc bộ đếm tốc độ cao), tranh chấp *(race condition)* giữa hai POU; đo thời gian quét *(scan time)* và cái gì làm nó phình; **watchdog** và điều gì xảy ra khi vượt | ✅ |
-| 11 | [Bộ nhớ, biến & kiểu dữ liệu](ch11_bo_nho_bien_va_kieu_du_lieu.md) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; **kiểu dữ liệu người dùng *(UDT)*, struct, mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)* | ✅ |
+| 11 | [Bộ nhớ, biến & kiểu dữ liệu](ch11_bo_nho_bien_va_kieu_du_lieu.md) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; **kiểu dữ liệu người dùng *(UDT)*, struct, mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)*  ⚠⚠ **Đánh số I/O theo hệ bát phân** trên hệ kiểu thiết bị — `X10` là ngõ vào thứ **chín**, không có `X8`/`X9`; ánh xạ số dây thẳng sang số thiết bị **sai từ điểm thứ tám trở đi** mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng. | ✅ |
 | 12 | [IO-Link & lớp cảm biến thông minh](ch12_io_link_va_cam_bien_thong_minh.md) | Vì sao lớp đấu nối rời rạc/analog truyền thống đang bị thay dần; IO-Link là gì và **không** là gì (không phải bus trường); tham số hoá cảm biến từ PLC; ⭐ **thay cảm biến hỏng mà không phải chỉnh lại bằng tay** — tham số tự nạp xuống thiết bị mới; dữ liệu chẩn đoán mà cảm biến rời rạc không có (độ dự trữ tín hiệu, số giờ chạy, cảnh báo sớm); khi nào IO-Link không đáng dùng | ✅ |
 | 13 | [Chọn PLC & dựng bàn thực hành của riêng bạn](ch13_chon_plc_va_ban_thuc_hanh.md) | Tiêu chí chọn PLC cho dự án thật (số I/O + dự phòng, loại I/O, thời gian quét cần thiết, mạng, hệ sinh thái phần mềm, khả năng cung ứng dài hạn, chi phí bản quyền); ⭐ **bàn thực hành tự dựng *(PLC trainer)*** — danh sách vật tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra, cầu chì & cầu đấu; bảng đánh đổi các đường học rẻ: PLC nhỏ giá thấp / PLC cũ trên thị trường second-hand / PLC mềm *(soft-PLC)* + mô phỏng 3D / PLC mã nguồn mở trên máy tính nhúng — so theo chi phí, độ giống thực tế, giá trị khi phỏng vấn | ✅ |
 
@@ -5266,6 +5266,43 @@ Mitsubishi cho dùng nhãn, nhưng mô hình nền vẫn là **thiết bị** (`
   độ rộng bộ đếm (Chương 18);
 - tài liệu và chương trình cũ đều nói bằng ngôn ngữ thiết bị.
 
+#### ⚠⚠ Và một chi tiết đánh số mà người mới vấp ngay: `X` và `Y` đếm theo hệ **bát phân**
+
+⭐ Trên hệ kiểu thiết bị, ngõ vào và ngõ ra thường được đánh số theo **hệ 8** — chữ số chỉ chạy từ
+**0 tới 7**:
+
+```text
+   X0  X1  X2  X3  X4  X5  X6  X7   X10  X11 …
+                                     ↑
+                        ⚠ KHÔNG có X8 và X9 — sau X7 là X10
+```
+
+> ⚠⚠ **Hậu quả trực tiếp: `X10` là ngõ vào thứ CHÍN, không phải thứ mười một.** ⭐ Đánh số dây trong
+> tủ từ 1 tới 16 rồi ánh xạ thẳng sang `X1`…`X16` là **sai từ điểm thứ tám trở đi**, và
+> ⚡ **trình biên dịch không báo gì** — `X16` là một địa chỉ hợp lệ, chỉ là **không phải cái bạn
+> tưởng**.
+
+⭐ Cách xác nhận nhanh nhất là nhìn chính **dải thiết bị** ghi trong tài liệu:
+
+| Thiết bị | Dải ghi trong tài liệu | Số điểm | ⭐ Hệ đếm |
+|---|---|---|---|
+| `X` ngõ vào | `X0` – `X1777` | **1024** | ⚠ **Bát phân** |
+| `Y` ngõ ra | `Y0` – `Y1777` | **1024** | ⚠ **Bát phân** |
+| `M` cờ nhớ | `M0` – `M7999` | 8000 | Thập phân |
+
+> ⭐⭐ **Phép kiểm trong đầu, mất năm giây:** `1777` mà là **thập phân** thì phải là 1778 điểm; nó
+> ghi **1024 điểm**, mà `1777` trong hệ 8 đúng bằng **1023** — ⭐ nên dải đó **chắc chắn là bát
+> phân**. Còn `M7999` ↔ 8000 điểm thì khớp ở hệ 10.
+>
+> ⚡ Dùng chính con số trong tài liệu để tự suy ra hệ đếm — **đừng đoán, và đừng giả định cả bảng
+> dùng chung một hệ**: ⚠⚠ trong cùng một bảng thiết bị, `X`/`Y` bát phân còn `M`/`D` thập phân.
+
+> ⭐ Cách né hẳn nhóm lỗi này: **dùng nhãn có tên** cho mọi thứ trong chương trình, và để việc ánh xạ
+> tên ↔ thiết bị ở **đúng một chỗ** (mục 11.3). ⚠ Nhưng bạn vẫn phải đọc được số thiết bị, vì bảng
+> I/O, sơ đồ điện và chương trình cũ đều nói bằng ngôn ngữ đó.
+>
+> ⚡ Về các hệ đếm nói chung — hệ 16 ở mã lỗi, BCD, mã Gray — xem **Chương 19 mục 19.5b**.
+
 ### ⭐ Siemens — "khối tối ưu", và cái giá của việc trộn hai kiểu
 
 S7-1200/1500 cho khối dữ liệu **hai kiểu truy cập**: **chuẩn** *(standard)* và ⭐ **tối ưu**
@@ -5353,6 +5390,13 @@ có bảng đó.
 **Cách sửa:** tên nói **là gì**, không nói **ở đâu** (mục 11.3, Chương 30).
 
 ---
+
+### 🔍 BẪY 10 — Ánh xạ số dây sang số thiết bị trên hệ đánh số bát phân
+
+**Hiện tượng:** tám ngõ vào đầu đúng, ⭐ **từ ngõ vào thứ chín trở đi thì sai** — bit lên nhưng
+không phải bit bạn chờ. ⚠ Không có báo lỗi biên dịch, vì `X8` không tồn tại nhưng `X16` thì hợp lệ.
+**Cách sửa:** kiểm hệ đếm của dải thiết bị bằng chính con số trong tài liệu (mục 11.8); và
+⭐ **kiểm I/O 1-1 bằng cách tác động thật** — Phụ lục C.6 bắt được nhóm lỗi này ngay.
 
 ## 11.10 Bảng chốt
 
@@ -9613,6 +9657,7 @@ dạng nhị phân:
 | **Hex** | ⭐ Là **cách VIẾT** của nhị phân, không phải kiểu khác; đọc bit rất nhanh | Phải quen | ⭐ Đọc mã lỗi, mặt nạ bit, địa chỉ |
 | **BCD** | Đổi thẳng ra chữ số hiển thị | ⚠ Phí bit; ⚠⚠ không tính toán được | ⭐ **Chỉ ở biên giới với thiết bị đòi BCD** — quy đổi ngay khi vào |
 | **Gray** | ⭐⭐ Không có giá trị rác lúc chuyển | Không tính toán được | ⭐ **Chỉ trên đường truyền từ bộ mã hoá về** |
+| ⚠ **Bát phân** *(hệ 8)* | — | ⚠⚠ Không phải lựa chọn của bạn | ⭐ **Bạn không chọn nó — một số hệ ĐÁNH SỐ ngõ vào/ra theo hệ 8**, xem Chương 11 mục 11.8 |
 
 > ⭐⭐ **Quy tắc rút gọn, và nó áp cho cả ba:** ⚡ **quy đổi về nhị phân NGAY TẠI BIÊN, rồi bên trong
 > chương trình chỉ dùng nhị phân.**
@@ -34869,6 +34914,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | ⚠ **Cáp gãy lõi trong xích động** | ⭐ Chập chờn **theo tư thế**; đo tĩnh vẫn tốt | 49 mục 49.7 |
 | Đầu cốt lỏng | ⚠ **Nặng dần theo thời gian** | 3, 49 |
 | Bit bị ghi đè trong chương trình | Bit "nhấp nháy" hoặc không bao giờ giữ | 22, 51 |
+| ⭐⭐ **Tám ngõ vào đầu đúng, từ cái thứ CHÍN trở đi sai** | ⚠⚠ Hệ đánh số thiết bị theo **bát phân** — ánh xạ số dây sang số thiết bị bị lệch | ⚠ **11 mục 11.8** |
 
 > ⭐⭐ **Bước 1 loại được nhiều nhất và mất ít thời gian nhất.** Nhìn đèn trên cảm biến trước khi mở
 > phần mềm — nó chia đôi bài toán ngay lập tức.

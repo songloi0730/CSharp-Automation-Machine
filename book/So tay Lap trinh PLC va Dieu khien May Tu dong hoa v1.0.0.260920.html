@@ -1484,7 +1484,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 <tr>
 <td>11</td>
 <td><a href="ch11_bo_nho_bien_va_kieu_du_lieu.md">Bộ nhớ, biến &amp; kiểu dữ liệu</a></td>
-<td>BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; <strong>địa chỉ tuyệt đối vs tag có tên <em>(symbolic tag)</em></strong> — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ <em>(retentive / non-retentive)</em> và câu hỏi &quot;mất điện thì biến này còn không?&quot;; **kiểu dữ liệu người dùng <em>(UDT)</em>, struct, mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên <em>(overflow)</em> và bẫy so sánh bằng với số thực <em>(REAL)</em></td>
+<td>BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; <strong>địa chỉ tuyệt đối vs tag có tên <em>(symbolic tag)</em></strong> — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ <em>(retentive / non-retentive)</em> và câu hỏi &quot;mất điện thì biến này còn không?&quot;; **kiểu dữ liệu người dùng <em>(UDT)</em>, struct, mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên <em>(overflow)</em> và bẫy so sánh bằng với số thực <em>(REAL)</em>  ⚠⚠ <strong>Đánh số I/O theo hệ bát phân</strong> trên hệ kiểu thiết bị — <code>X10</code> là ngõ vào thứ <strong>chín</strong>, không có <code>X8</code>/<code>X9</code>; ánh xạ số dây thẳng sang số thiết bị <strong>sai từ điểm thứ tám trở đi</strong> mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng.</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -8713,6 +8713,61 @@ dụng ở mọi hệ, không có ngoại lệ (Chương 52).</p>
 độ rộng bộ đếm (Chương 18);</li>
 <li>tài liệu và chương trình cũ đều nói bằng ngôn ngữ thiết bị.</li>
 </ul>
+<h4>⚠⚠ Và một chi tiết đánh số mà người mới vấp ngay: <code>X</code> và <code>Y</code> đếm theo hệ <strong>bát phân</strong></h4>
+<p>⭐ Trên hệ kiểu thiết bị, ngõ vào và ngõ ra thường được đánh số theo <strong>hệ 8</strong> — chữ số chỉ chạy từ
+<strong>0 tới 7</strong>:</p>
+<pre><code class="language-text">   X0  X1  X2  X3  X4  X5  X6  X7   X10  X11 …
+                                     ↑
+                        ⚠ KHÔNG có X8 và X9 — sau X7 là X10
+</code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Hậu quả trực tiếp: <code>X10</code> là ngõ vào thứ CHÍN, không phải thứ mười một.</strong> ⭐ Đánh số dây trong
+tủ từ 1 tới 16 rồi ánh xạ thẳng sang <code>X1</code>…<code>X16</code> là <strong>sai từ điểm thứ tám trở đi</strong>, và
+⚡ <strong>trình biên dịch không báo gì</strong> — <code>X16</code> là một địa chỉ hợp lệ, chỉ là <strong>không phải cái bạn
+tưởng</strong>.</p>
+</blockquote>
+<p>⭐ Cách xác nhận nhanh nhất là nhìn chính <strong>dải thiết bị</strong> ghi trong tài liệu:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thiết bị</th>
+<th>Dải ghi trong tài liệu</th>
+<th>Số điểm</th>
+<th>⭐ Hệ đếm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>X</code> ngõ vào</td>
+<td><code>X0</code> – <code>X1777</code></td>
+<td><strong>1024</strong></td>
+<td>⚠ <strong>Bát phân</strong></td>
+</tr>
+<tr>
+<td><code>Y</code> ngõ ra</td>
+<td><code>Y0</code> – <code>Y1777</code></td>
+<td><strong>1024</strong></td>
+<td>⚠ <strong>Bát phân</strong></td>
+</tr>
+<tr>
+<td><code>M</code> cờ nhớ</td>
+<td><code>M0</code> – <code>M7999</code></td>
+<td>8000</td>
+<td>Thập phân</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Phép kiểm trong đầu, mất năm giây:</strong> <code>1777</code> mà là <strong>thập phân</strong> thì phải là 1778 điểm; nó
+ghi <strong>1024 điểm</strong>, mà <code>1777</code> trong hệ 8 đúng bằng <strong>1023</strong> — ⭐ nên dải đó <strong>chắc chắn là bát
+phân</strong>. Còn <code>M7999</code> ↔ 8000 điểm thì khớp ở hệ 10.</p>
+<p>⚡ Dùng chính con số trong tài liệu để tự suy ra hệ đếm — <strong>đừng đoán, và đừng giả định cả bảng
+dùng chung một hệ</strong>: ⚠⚠ trong cùng một bảng thiết bị, <code>X</code>/<code>Y</code> bát phân còn <code>M</code>/<code>D</code> thập phân.</p>
+</blockquote>
+<blockquote>
+<p>⭐ Cách né hẳn nhóm lỗi này: <strong>dùng nhãn có tên</strong> cho mọi thứ trong chương trình, và để việc ánh xạ
+tên ↔ thiết bị ở <strong>đúng một chỗ</strong> (mục 11.3). ⚠ Nhưng bạn vẫn phải đọc được số thiết bị, vì bảng
+I/O, sơ đồ điện và chương trình cũ đều nói bằng ngôn ngữ đó.</p>
+<p>⚡ Về các hệ đếm nói chung — hệ 16 ở mã lỗi, BCD, mã Gray — xem <strong>Chương 19 mục 19.5b</strong>.</p>
+</blockquote>
 <h3>⭐ Siemens — &quot;khối tối ưu&quot;, và cái giá của việc trộn hai kiểu</h3>
 <p>S7-1200/1500 cho khối dữ liệu <strong>hai kiểu truy cập</strong>: <strong>chuẩn</strong> <em>(standard)</em> và ⭐ <strong>tối ưu</strong>
 <em>(optimized)</em>. ⚠ Đây không phải một tuỳ chọn hình thức — nó đổi cả cách dữ liệu nằm trong bộ nhớ.
@@ -8799,6 +8854,11 @@ Nặng nhất là khi hai vòng lặp dùng chung biến đếm <code>i</code>.
 có bảng đó.
 <strong>Cách sửa:</strong> tên nói <strong>là gì</strong>, không nói <strong>ở đâu</strong> (mục 11.3, Chương 30).</p>
 <hr>
+<h3>🔍 BẪY 10 — Ánh xạ số dây sang số thiết bị trên hệ đánh số bát phân</h3>
+<p><strong>Hiện tượng:</strong> tám ngõ vào đầu đúng, ⭐ <strong>từ ngõ vào thứ chín trở đi thì sai</strong> — bit lên nhưng
+không phải bit bạn chờ. ⚠ Không có báo lỗi biên dịch, vì <code>X8</code> không tồn tại nhưng <code>X16</code> thì hợp lệ.
+<strong>Cách sửa:</strong> kiểm hệ đếm của dải thiết bị bằng chính con số trong tài liệu (mục 11.8); và
+⭐ <strong>kiểm I/O 1-1 bằng cách tác động thật</strong> — Phụ lục C.6 bắt được nhóm lỗi này ngay.</p>
 <h2 id="1110-bng-cht">11.10 Bảng chốt</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -14524,6 +14584,12 @@ Gray hay nhị phân, và ⚠⚠ <strong>đặt sai cấu hình đó thì vị t
 <td>⭐⭐ Không có giá trị rác lúc chuyển</td>
 <td>Không tính toán được</td>
 <td>⭐ <strong>Chỉ trên đường truyền từ bộ mã hoá về</strong></td>
+</tr>
+<tr>
+<td>⚠ <strong>Bát phân</strong> <em>(hệ 8)</em></td>
+<td>—</td>
+<td>⚠⚠ Không phải lựa chọn của bạn</td>
+<td>⭐ <strong>Bạn không chọn nó — một số hệ ĐÁNH SỐ ngõ vào/ra theo hệ 8</strong>, xem Chương 11 mục 11.8</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -53176,6 +53242,11 @@ phải một tình huống bình thường phải chịu đựng.</p>
 <td>Bit bị ghi đè trong chương trình</td>
 <td>Bit &quot;nhấp nháy&quot; hoặc không bao giờ giữ</td>
 <td>22, 51</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Tám ngõ vào đầu đúng, từ cái thứ CHÍN trở đi sai</strong></td>
+<td>⚠⚠ Hệ đánh số thiết bị theo <strong>bát phân</strong> — ánh xạ số dây sang số thiết bị bị lệch</td>
+<td>⚠ <strong>11 mục 11.8</strong></td>
 </tr>
 </tbody></table></div>
 <blockquote>

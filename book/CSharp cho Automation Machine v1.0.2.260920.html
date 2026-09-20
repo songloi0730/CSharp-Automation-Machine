@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.1.260920</title>
+<title>C# cho Automation Machine — v1.0.2.260920</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -555,6 +555,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#g8-ghép-ni-và-vn-hành">G.8  Ghép nối và vận hành</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g9-bn-đ-ph-thuc-bài-nào-cn-bài-nào">G.9  Bản đồ phụ thuộc — bài nào cần bài nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#g11-ghép-tht-s-và-điu-phát-hin-ra-khi-làm-vic-đó">G.11  Ghép thật sự — và điều phát hiện ra khi làm việc đó</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -574,7 +575,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.1.260920</td>
+<td>v1.0.2.260920</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -43292,16 +43293,17 @@ xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chi�
 <h2 id="g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</h2>
 <p>Mục G.9 nêu mười hai bài xương sống; <strong>cả bốn mươi bài nay đều có lời giải chạy được</strong>. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ thể</strong>, và <strong>một
 lời giải chạy được</strong> — nằm ở <code>source/MeoBench</code>, đã biên dịch với
-<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>294/294 phép kiểm đạt</strong>.</p>
+<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>356/356 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở mục G.11).</p>
 <h3>G.10.0  Chạy thử từng phần, không đợi làm xong hết</h3>
 <p>Đây là điểm quan trọng nhất của mục này. Làm xong cả bốn mươi bài rồi mới chạy thì khi hỏng bạn
 không biết hỏng ở đâu. Bộ tự kiểm cho phép <strong>chạy lẻ từng nhóm ngay khi vừa viết xong nhóm đó</strong>:</p>
 <pre><code class="language-bash">cd source/MeoBench
-dotnet run                 # chạy cả 40 bài — 294 phép kiểm
+dotnet run                 # cả 40 bài + phần ghép máy — 356 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
+dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 </code></pre>
@@ -44079,6 +44081,11 @@ sau một hợp đồng nhỏ</strong>, rồi phần còn lại kiểm được 
 <td><code>dotnet run -- G5</code> hoặc <code>G8</code></td>
 </tr>
 <tr>
+<td><code>MayHoanChinh.cs</code> + <code>KiemMayHoanChinh.cs</code></td>
+<td><strong>mục G.11</strong> — ghép toàn máy</td>
+<td><code>dotnet run -- G9</code></td>
+</tr>
+<tr>
 <td><code>Program.cs</code></td>
 <td>bộ chạy + chế độ <code>--demo</code></td>
 <td><code>dotnet run -- --demo</code></td>
@@ -44094,6 +44101,179 @@ chưa nghĩ tới</strong>.</p>
 của riêng bạn: thêm một hàm <code>KiemXxx.Chay()</code>, gọi <code>Kiem.MoBai(...)</code> rồi liệt kê các khẳng định.
 Viết phép kiểm <strong>trước</strong> khi viết mã — với G.2.3 (tách khung) thì đó gần như là cách duy nhất
 làm đúng ngay.</p>
+</blockquote>
+<hr>
+<h2 id="g11-ghép-tht-s-và-điu-phát-hin-ra-khi-làm-vic-đó">G.11  Ghép thật sự — và điều phát hiện ra khi làm việc đó</h2>
+<p>Bốn mươi bài đã xong, mỗi bài đều xanh. Câu hỏi còn lại là câu hỏi duy nhất thật sự quan trọng:
+<strong>ghép lại thì có thành một cỗ máy không, và cỗ máy đó đã đủ chưa?</strong></p>
+<p>Câu trả lời ở lần đo đầu tiên là <strong>chưa</strong>, và con số khá phũ.</p>
+<h3>G.11.1  Đo trước: bao nhiêu mảnh thật sự được nối vào máy</h3>
+<p>Đếm các kiểu công khai mà 40 bài sinh ra, rồi đếm xem bản ghép ở bài G.8.5 dùng tới bao nhiêu:</p>
+<p><strong>Bảng G.4 — Mảnh nào thật sự vào máy, đo trên chính dự án</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Trước khi ghép lại (bản G.8.5)</th>
+<th>Sau khi ghép thật (<code>MayHoanChinh</code>)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tổng số kiểu công khai 40 bài sinh ra</td>
+<td>82</td>
+<td>90</td>
+</tr>
+<tr>
+<td>Cỗ máy <strong>thật sự dùng tới</strong></td>
+<td><strong>19</strong></td>
+<td><strong>75</strong></td>
+</tr>
+<tr>
+<td>Sống trong phép kiểm mà chưa vào máy</td>
+<td><strong>63</strong></td>
+<td>4</td>
+</tr>
+</tbody></table></div>
+<p>Sáu mươi ba kiểu &quot;mồ côi&quot; ấy không phải rác — mỗi cái đều có phép kiểm xanh. Chúng chỉ đơn giản là
+<strong>chưa bao giờ được nối vào máy</strong>: công thức, nhật ký có cấu trúc, đếm ca, ghi CSV, bảng chuyển
+trạng thái, kẹp có xác nhận, giám sát khí nén, bắt tay hai dây, cả ba màn hình của nhóm G.7.</p>
+<blockquote>
+<p>📌 <strong>Đây chính là điều Chương 7 mục 7.4 nói, nhìn thấy bằng số: cái khó không nằm ở từng mảnh, nó
+nằm ở chỗ các mảnh gặp nhau.</strong> Bốn mươi bài xanh hết mà cỗ máy vẫn thiếu hai phần ba. Nếu bạn làm
+bài tập theo phụ lục này, đừng dừng ở bài G.8.5 — hãy làm tiếp đúng việc mục này làm.</p>
+</blockquote>
+<h3>G.11.2  Ba thứ máy thật cần mà cả 40 bài chưa đụng tới</h3>
+<p>Khi ghép xong mới lộ ra ba lỗ hổng, và cả ba đều là thứ không cỗ máy nào chạy được nếu thiếu:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thiếu gì</th>
+<th>Vì sao không thể thiếu</th>
+<th>Đã bổ sung thế nào</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Đường ra khỏi trạng thái báo động</strong></td>
+<td>40 bài đưa máy <em>vào</em> báo động rất tốt, nhưng <strong>không bài nào đưa nó ra</strong>. Máy dừng rồi thì ca sản xuất kết thúc ở đó</td>
+<td><code>XacNhanCanhBao(ma)</code> rồi <code>Reset()</code>; <strong>không xác nhận hết thì không cho Reset</strong></td>
+</tr>
+<tr>
+<td><strong>Tín hiệu an toàn chỉ đọc và việc khoá lệnh</strong></td>
+<td>Mục 15.2.2 nói phần mềm có bốn vai trò, trong đó có <em>khoá lệnh khi trạng thái an toàn chưa cho phép</em>. Không bài nào làm</td>
+<td><code>IAnToanChiDoc</code> — giao diện <strong>không có thuộc tính ghi được</strong>, cố ý; nút Bắt đầu mờ kèm lý do lấy từ nó</td>
+</tr>
+<tr>
+<td><strong>Tắt máy sạch</strong></td>
+<td>Ca kết thúc mà số liệu chưa chốt, nhật ký chưa đẩy, file cũ chưa dọn</td>
+<td><code>TatMay()</code>: ghi tổng kết ca vào nhật ký, dọn file quá 30 ngày, hạ cờ báo hàng</td>
+</tr>
+</tbody></table></div>
+<h3>G.11.3  Mười nhóm kiểm THÍCH HỢP — thứ kiểm từng mảnh không bắt được</h3>
+<p><code>dotnet run -- G9</code> chạy 62 phép kiểm trên <strong>cỗ máy ghép lại</strong>, không phải trên từng mảnh. Chúng bắt
+đúng loại lỗi mà kiểm đơn vị bỏ sót: <em>mảnh đúng nhưng nối sai, hoặc quên nối</em>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Khẳng định cốt lõi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>G.11.1</strong> Chạy trọn một ca</td>
+<td>12 phôi · file CSV có đúng 13 dòng · nhật ký ≥ 16 bản ghi · <strong>bảng giao diện nhận đúng bằng số bản ghi của nhật ký</strong> · tra được bản ghi của <strong>đúng phôi số 7</strong> bằng thuộc tính</td>
+</tr>
+<tr>
+<td><strong>G.11.2</strong> An toàn chỉ đọc</td>
+<td>Màn chắn bị che → <strong>0 phôi được xử lý</strong>, máy vẫn ở Sẵn sàng · <code>IAnToanChiDoc</code> <strong>không có thuộc tính ghi được</strong></td>
+</tr>
+<tr>
+<td><strong>G.11.3</strong> Ra khỏi báo động</td>
+<td>Còn cảnh báo chưa xác nhận → <strong>không cho Reset</strong> · xác nhận xong → Reset → về gốc → <strong>chạy tiếp được</strong></td>
+</tr>
+<tr>
+<td><strong>G.11.4</strong> Tạm dừng</td>
+<td>Đang tạm dừng thì sản lượng <strong>đứng yên</strong>; chạy tiếp thì đủ 30 phôi, <strong>không mất phôi nào</strong></td>
+</tr>
+<tr>
+<td><strong>G.11.5</strong> Khí nén yếu</td>
+<td>Dừng <strong>cuối chu kỳ</strong>, về Sẵn sàng chứ <strong>không phải Báo động</strong> — dừng có trật tự khác dừng vì sự cố</td>
+</tr>
+<tr>
+<td><strong>G.11.6</strong> Đói và bị chặn</td>
+<td>Máy sau đầy → 0 phôi, và <strong>không nhầm &quot;bị chặn&quot; thành &quot;đói&quot;</strong></td>
+</tr>
+<tr>
+<td><strong>G.11.7</strong> Khởi động lại</td>
+<td>Mở lại phần mềm giữa ca → <strong>sản lượng không mất</strong>, chạy tiếp cộng dồn đúng</td>
+</tr>
+<tr>
+<td><strong>G.11.8</strong> Đổi nguồn cảm biến</td>
+<td>Đổi <strong>một dòng cấu hình</strong> → cả máy chạy bằng <strong>driver nối tiếp</strong> (phân khung + tổng kiểm), không lớp nào phải sửa</td>
+</tr>
+<tr>
+<td><strong>G.11.9</strong> Nạp công thức từ file</td>
+<td>Lấy đúng công thức trong file · file <strong>hỏng</strong> thì chạy bằng dự phòng <strong>và có cảnh báo</strong>, không im lặng</td>
+</tr>
+<tr>
+<td><strong>G.11.10</strong> Kiểm lúc ráp</td>
+<td>Công thức sai bị chặn <strong>ngay lúc ráp</strong>, không đợi tới lúc chạy</td>
+</tr>
+</tbody></table></div>
+<p>Nhóm <strong>G.11.8</strong> là nhóm đáng giá nhất, vì nó là bằng chứng đo được cho lập luận của Chương 7: suốt
+40 bài, <code>ICamBienChieuDay</code> chỉ là một interface trông có vẻ thừa. Tới đây, đổi đúng <strong>một dòng</strong>
+<code>NguonCamBien = NguonCamBien.NoiTiep</code> là cỗ máy chuyển từ bản giả lập sang driver nối tiếp — đi qua
+bộ tách khung của G.2.3 và tổng kiểm của G.2.4 — mà <strong>không một lớp nào phía trên biết chuyện gì
+vừa xảy ra</strong>. Nếu bạn còn phân vân &quot;bọc interface có đáng không&quot;, hãy chạy nhóm này rồi thử làm
+điều tương tự với bản ở mục 7.7 (không interface).</p>
+<h3>G.11.4  Bốn mảnh vẫn chưa được máy dùng — và nói thẳng vì sao</h3>
+<p>Sau khi ghép, còn đúng bốn kiểu chưa vào máy. Ba cái đầu là bình thường; cái thứ tư là một bài học.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chưa dùng</th>
+<th>Lý do</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BoNhapSo</code> (G.7.3)</td>
+<td>Chỉ cần khi người vận hành <strong>sửa công thức trên màn hình</strong>. Bản ghép nạp công thức từ file nên chưa có màn sửa — hợp lý, không phải thiếu sót</td>
+</tr>
+<tr>
+<td><code>KepGiaLap</code></td>
+<td>Bị <code>KepKemGiaLap</code> thay thế: bản mới bọc <code>CumKep</code> thật (có chờ xác nhận cảm biến) thay vì giả vờ kẹp xong ngay. Đây là <strong>nâng cấp</strong>, không phải bỏ quên</td>
+</tr>
+<tr>
+<td><code>BoDieuKhien</code> (G.4.5/G.5.5)</td>
+<td>Vòng chạy của nó bị <code>MayHoanChinh</code> làm lại cho đầy đủ hơn. Giữ lại vì nó là <strong>bản tối giản dễ đọc</strong> của cùng một ý</td>
+</tr>
+<tr>
+<td><strong><code>ViTriMm</code> / <code>KhoangCachMm</code></strong> (G.1.1)</td>
+<td><strong>Đây mới là điều đáng nói</strong> — xem dưới</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Kiểu miền phải quyết định từ đầu; lắp vào sau là thay đổi xuyên tầng.</strong> Bài G.1.1 dựng
+<code>ViTriMm</code> và <code>KhoangCachMm</code> để trình biên dịch chặn việc cộng nhầm đơn vị, và bài đó xanh. Nhưng
+cỗ máy ghép lại <strong>vẫn dùng <code>double</code> trần</strong> cho mọi toạ độ. Vì sao? Vì muốn dùng chúng thì phải đổi
+<strong>cùng lúc</strong> chữ ký của <code>ITruc</code>, <code>ChuyenDong</code>, <code>CumDo</code>, <code>BoiCanh</code>, cả bảy lớp bước, cả <code>CauHinhMay</code>
+— nghĩa là gần như mọi thứ nằm giữa driver và trình tự. Mỗi chỗ đổi đều dễ; đổi hết cùng lúc mới
+là việc khó.</p>
+<p>Bài học không phải &quot;kiểu miền không đáng&quot; — mà là: <strong>nó rẻ khi bắt đầu và đắt khi lắp sau.</strong> Nếu
+dự án của bạn sẽ sống nhiều năm, quyết định này thuộc về tuần đầu tiên, không phải năm thứ hai.
+Sách để nguyên tình trạng này trong lời giải mẫu thay vì lặng lẽ sửa, vì bản thân nó là số đo cho
+chính điều Chương 11 nói.</p>
+</blockquote>
+<h3>G.11.5  Chạy thử</h3>
+<pre><code class="language-bash">cd source/MeoBench
+dotnet run -- G9        # 62 phép kiểm trên cỗ máy ghép hoàn chỉnh
+dotnet run              # toàn bộ: 356 phép kiểm, 40 bài + phần ghép
+</code></pre>
+<blockquote>
+<p>💡 <strong>Nếu bạn tự làm bốn mươi bài, đây là việc cuối cùng và cũng là việc dạy nhiều nhất.</strong> Viết
+một lớp <code>MayHoanChinh</code> của riêng bạn, nối mọi thứ đã làm vào, rồi đếm xem <strong>bao nhiêu lớp bạn viết
+ra mà chưa bao giờ được gọi từ máy</strong>. Con số đó nói về phần mềm của bạn nhiều hơn bất kỳ phép kiểm
+đơn vị nào: một lớp không ai gọi thì hoặc là bạn chưa ghép xong, hoặc là bạn đã viết một thứ không
+cần thiết — và cả hai đều đáng biết trước khi giao máy.</p>
 </blockquote>
 </div>
 </div>

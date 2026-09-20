@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.1.260920 |
+| **Phiên bản** | v1.0.2.260920 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -37521,7 +37521,7 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 
 Mục G.9 nêu mười hai bài xương sống; **cả bốn mươi bài nay đều có lời giải chạy được**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
 lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
-`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **294/294 phép kiểm đạt**.
+`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **356/356 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở mục G.11).
 
 ### G.10.0  Chạy thử từng phần, không đợi làm xong hết
 
@@ -37530,11 +37530,12 @@ không biết hỏng ở đâu. Bộ tự kiểm cho phép **chạy lẻ từng 
 
 ```bash
 cd source/MeoBench
-dotnet run                 # chạy cả 40 bài — 294 phép kiểm
+dotnet run                 # cả 40 bài + phần ghép máy — 356 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
+dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
@@ -38138,6 +38139,7 @@ bị hỏng gửi mãi không có `ETX` thì bộ đệm phải **tự giải ph
 | `GiaoDien.cs` | G.7.1 … G.7.5 (kèm bảng chuyển của G.5.4) | `dotnet run -- G7` |
 | `RapNoi.cs` | G.8.1 · G.8.5 | `dotnet run -- G8` |
 | `TrinhTuVaVanHanh2.cs` | G.4.5 · G.5.3 · G.5.4 · G.5.5 · G.8.2 · G.8.3 · G.8.4 | `dotnet run -- G5` hoặc `G8` |
+| `MayHoanChinh.cs` + `KiemMayHoanChinh.cs` | **mục G.11** — ghép toàn máy | `dotnet run -- G9` |
 | `Program.cs` | bộ chạy + chế độ `--demo` | `dotnet run -- --demo` |
 
 > 📌 **Cách dùng lời giải mẫu cho đúng.** Đừng mở nó ra trước. Trình tự có ích nhất: (1) đọc đặc tả
@@ -38150,4 +38152,104 @@ bị hỏng gửi mãi không có `ETX` thì bộ đệm phải **tự giải ph
 > của riêng bạn: thêm một hàm `KiemXxx.Chay()`, gọi `Kiem.MoBai(...)` rồi liệt kê các khẳng định.
 > Viết phép kiểm **trước** khi viết mã — với G.2.3 (tách khung) thì đó gần như là cách duy nhất
 > làm đúng ngay.
+---
+
+## G.11  Ghép thật sự — và điều phát hiện ra khi làm việc đó
+
+Bốn mươi bài đã xong, mỗi bài đều xanh. Câu hỏi còn lại là câu hỏi duy nhất thật sự quan trọng:
+**ghép lại thì có thành một cỗ máy không, và cỗ máy đó đã đủ chưa?**
+
+Câu trả lời ở lần đo đầu tiên là **chưa**, và con số khá phũ.
+
+### G.11.1  Đo trước: bao nhiêu mảnh thật sự được nối vào máy
+
+Đếm các kiểu công khai mà 40 bài sinh ra, rồi đếm xem bản ghép ở bài G.8.5 dùng tới bao nhiêu:
+
+**Bảng G.4 — Mảnh nào thật sự vào máy, đo trên chính dự án**
+
+| | Trước khi ghép lại (bản G.8.5) | Sau khi ghép thật (`MayHoanChinh`) |
+|---|---|---|
+| Tổng số kiểu công khai 40 bài sinh ra | 82 | 90 |
+| Cỗ máy **thật sự dùng tới** | **19** | **75** |
+| Sống trong phép kiểm mà chưa vào máy | **63** | 4 |
+
+Sáu mươi ba kiểu "mồ côi" ấy không phải rác — mỗi cái đều có phép kiểm xanh. Chúng chỉ đơn giản là
+**chưa bao giờ được nối vào máy**: công thức, nhật ký có cấu trúc, đếm ca, ghi CSV, bảng chuyển
+trạng thái, kẹp có xác nhận, giám sát khí nén, bắt tay hai dây, cả ba màn hình của nhóm G.7.
+
+> 📌 **Đây chính là điều Chương 7 mục 7.4 nói, nhìn thấy bằng số: cái khó không nằm ở từng mảnh, nó
+> nằm ở chỗ các mảnh gặp nhau.** Bốn mươi bài xanh hết mà cỗ máy vẫn thiếu hai phần ba. Nếu bạn làm
+> bài tập theo phụ lục này, đừng dừng ở bài G.8.5 — hãy làm tiếp đúng việc mục này làm.
+
+### G.11.2  Ba thứ máy thật cần mà cả 40 bài chưa đụng tới
+
+Khi ghép xong mới lộ ra ba lỗ hổng, và cả ba đều là thứ không cỗ máy nào chạy được nếu thiếu:
+
+| Thiếu gì | Vì sao không thể thiếu | Đã bổ sung thế nào |
+|---|---|---|
+| **Đường ra khỏi trạng thái báo động** | 40 bài đưa máy *vào* báo động rất tốt, nhưng **không bài nào đưa nó ra**. Máy dừng rồi thì ca sản xuất kết thúc ở đó | `XacNhanCanhBao(ma)` rồi `Reset()`; **không xác nhận hết thì không cho Reset** |
+| **Tín hiệu an toàn chỉ đọc và việc khoá lệnh** | Mục 15.2.2 nói phần mềm có bốn vai trò, trong đó có *khoá lệnh khi trạng thái an toàn chưa cho phép*. Không bài nào làm | `IAnToanChiDoc` — giao diện **không có thuộc tính ghi được**, cố ý; nút Bắt đầu mờ kèm lý do lấy từ nó |
+| **Tắt máy sạch** | Ca kết thúc mà số liệu chưa chốt, nhật ký chưa đẩy, file cũ chưa dọn | `TatMay()`: ghi tổng kết ca vào nhật ký, dọn file quá 30 ngày, hạ cờ báo hàng |
+
+### G.11.3  Mười nhóm kiểm THÍCH HỢP — thứ kiểm từng mảnh không bắt được
+
+`dotnet run -- G9` chạy 62 phép kiểm trên **cỗ máy ghép lại**, không phải trên từng mảnh. Chúng bắt
+đúng loại lỗi mà kiểm đơn vị bỏ sót: *mảnh đúng nhưng nối sai, hoặc quên nối*.
+
+| Nhóm | Khẳng định cốt lõi |
+|---|---|
+| **G.11.1** Chạy trọn một ca | 12 phôi · file CSV có đúng 13 dòng · nhật ký ≥ 16 bản ghi · **bảng giao diện nhận đúng bằng số bản ghi của nhật ký** · tra được bản ghi của **đúng phôi số 7** bằng thuộc tính |
+| **G.11.2** An toàn chỉ đọc | Màn chắn bị che → **0 phôi được xử lý**, máy vẫn ở Sẵn sàng · `IAnToanChiDoc` **không có thuộc tính ghi được** |
+| **G.11.3** Ra khỏi báo động | Còn cảnh báo chưa xác nhận → **không cho Reset** · xác nhận xong → Reset → về gốc → **chạy tiếp được** |
+| **G.11.4** Tạm dừng | Đang tạm dừng thì sản lượng **đứng yên**; chạy tiếp thì đủ 30 phôi, **không mất phôi nào** |
+| **G.11.5** Khí nén yếu | Dừng **cuối chu kỳ**, về Sẵn sàng chứ **không phải Báo động** — dừng có trật tự khác dừng vì sự cố |
+| **G.11.6** Đói và bị chặn | Máy sau đầy → 0 phôi, và **không nhầm "bị chặn" thành "đói"** |
+| **G.11.7** Khởi động lại | Mở lại phần mềm giữa ca → **sản lượng không mất**, chạy tiếp cộng dồn đúng |
+| **G.11.8** Đổi nguồn cảm biến | Đổi **một dòng cấu hình** → cả máy chạy bằng **driver nối tiếp** (phân khung + tổng kiểm), không lớp nào phải sửa |
+| **G.11.9** Nạp công thức từ file | Lấy đúng công thức trong file · file **hỏng** thì chạy bằng dự phòng **và có cảnh báo**, không im lặng |
+| **G.11.10** Kiểm lúc ráp | Công thức sai bị chặn **ngay lúc ráp**, không đợi tới lúc chạy |
+
+Nhóm **G.11.8** là nhóm đáng giá nhất, vì nó là bằng chứng đo được cho lập luận của Chương 7: suốt
+40 bài, `ICamBienChieuDay` chỉ là một interface trông có vẻ thừa. Tới đây, đổi đúng **một dòng**
+`NguonCamBien = NguonCamBien.NoiTiep` là cỗ máy chuyển từ bản giả lập sang driver nối tiếp — đi qua
+bộ tách khung của G.2.3 và tổng kiểm của G.2.4 — mà **không một lớp nào phía trên biết chuyện gì
+vừa xảy ra**. Nếu bạn còn phân vân "bọc interface có đáng không", hãy chạy nhóm này rồi thử làm
+điều tương tự với bản ở mục 7.7 (không interface).
+
+### G.11.4  Bốn mảnh vẫn chưa được máy dùng — và nói thẳng vì sao
+
+Sau khi ghép, còn đúng bốn kiểu chưa vào máy. Ba cái đầu là bình thường; cái thứ tư là một bài học.
+
+| Chưa dùng | Lý do |
+|---|---|
+| `BoNhapSo` (G.7.3) | Chỉ cần khi người vận hành **sửa công thức trên màn hình**. Bản ghép nạp công thức từ file nên chưa có màn sửa — hợp lý, không phải thiếu sót |
+| `KepGiaLap` | Bị `KepKemGiaLap` thay thế: bản mới bọc `CumKep` thật (có chờ xác nhận cảm biến) thay vì giả vờ kẹp xong ngay. Đây là **nâng cấp**, không phải bỏ quên |
+| `BoDieuKhien` (G.4.5/G.5.5) | Vòng chạy của nó bị `MayHoanChinh` làm lại cho đầy đủ hơn. Giữ lại vì nó là **bản tối giản dễ đọc** của cùng một ý |
+| **`ViTriMm` / `KhoangCachMm`** (G.1.1) | **Đây mới là điều đáng nói** — xem dưới |
+
+> ⚠️ **Kiểu miền phải quyết định từ đầu; lắp vào sau là thay đổi xuyên tầng.** Bài G.1.1 dựng
+> `ViTriMm` và `KhoangCachMm` để trình biên dịch chặn việc cộng nhầm đơn vị, và bài đó xanh. Nhưng
+> cỗ máy ghép lại **vẫn dùng `double` trần** cho mọi toạ độ. Vì sao? Vì muốn dùng chúng thì phải đổi
+> **cùng lúc** chữ ký của `ITruc`, `ChuyenDong`, `CumDo`, `BoiCanh`, cả bảy lớp bước, cả `CauHinhMay`
+> — nghĩa là gần như mọi thứ nằm giữa driver và trình tự. Mỗi chỗ đổi đều dễ; đổi hết cùng lúc mới
+> là việc khó.
+>
+> Bài học không phải "kiểu miền không đáng" — mà là: **nó rẻ khi bắt đầu và đắt khi lắp sau.** Nếu
+> dự án của bạn sẽ sống nhiều năm, quyết định này thuộc về tuần đầu tiên, không phải năm thứ hai.
+> Sách để nguyên tình trạng này trong lời giải mẫu thay vì lặng lẽ sửa, vì bản thân nó là số đo cho
+> chính điều Chương 11 nói.
+
+### G.11.5  Chạy thử
+
+```bash
+cd source/MeoBench
+dotnet run -- G9        # 62 phép kiểm trên cỗ máy ghép hoàn chỉnh
+dotnet run              # toàn bộ: 356 phép kiểm, 40 bài + phần ghép
+```
+
+> 💡 **Nếu bạn tự làm bốn mươi bài, đây là việc cuối cùng và cũng là việc dạy nhiều nhất.** Viết
+> một lớp `MayHoanChinh` của riêng bạn, nối mọi thứ đã làm vào, rồi đếm xem **bao nhiêu lớp bạn viết
+> ra mà chưa bao giờ được gọi từ máy**. Con số đó nói về phần mềm của bạn nhiều hơn bất kỳ phép kiểm
+> đơn vị nào: một lớp không ai gọi thì hoặc là bạn chưa ghép xong, hoặc là bạn đã viết một thứ không
+> cần thiết — và cả hai đều đáng biết trước khi giao máy.
 

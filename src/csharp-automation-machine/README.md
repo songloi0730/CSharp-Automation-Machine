@@ -26,12 +26,12 @@ cd MeoFrameMiniMixed  && dotnet run    # 368 dòng · 1 interface (IStep)
 
 ## MeoBench — lời giải mẫu Phụ lục G
 
-Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **294 phép kiểm** cho **đủ 40**
-bài thực hành. Chạy lẻ được từng nhóm — không phải làm xong hết mới biết sai ở đâu:
+Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **356 phép kiểm**: 294 cho **đủ 40**
+bài thực hành, 62 cho **cỗ máy ghép hoàn chỉnh** (mục G.11). Chạy lẻ được từng nhóm — không phải làm xong hết mới biết sai ở đâu:
 
 ```bash
 cd MeoBench
-dotnet run                 # cả 40 bài — 294 phép kiểm
+dotnet run                 # cả 40 bài + phần ghép máy — 356 phép kiểm
 dotnet run -- G1           # nhóm kiểu dữ liệu miền
 dotnet run -- G2           # logic thuần
 dotnet run -- G3           # hợp đồng thiết bị và bản giả lập
@@ -40,6 +40,7 @@ dotnet run -- G5           # trình tự
 dotnet run -- G6           # công thức, cấu hình, dữ liệu
 dotnet run -- G7           # giao diện
 dotnet run -- G8           # ráp nối và chạy máy
+dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```

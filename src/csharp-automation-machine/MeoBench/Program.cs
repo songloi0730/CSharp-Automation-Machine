@@ -7,6 +7,7 @@
 //   dotnet run                → chạy toàn bộ 40 bài
 //   dotnet run -- G4          → chỉ chạy nhóm G.4 (bài G.4.1 và G.4.3)
 //   dotnet run -- G8          → chỉ chạy nhóm G.8
+//   dotnet run -- G9          → chỉ kiểm CỖ MÁY GHÉP HOÀN CHỈNH
 //   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
 //   dotnet run -- --danhsach  → liệt kê 40 bài
 // -------------------------------------------------------
@@ -49,6 +50,8 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["G6"] = KiemDuLieu.Chay,
     ["G7"] = KiemGiaoDien.Chay,
     ["G8"] = async () => { await KiemRapNoi.Chay(); await KiemTrinhTuVaVanHanh2.Chay(); },
+    ["G9"] = KiemMayHoanChinh.Chay,          // ghép toàn máy
+    ["G11"] = KiemMayHoanChinh.Chay,
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -80,6 +83,7 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemGiaoDien.Chay();
     await KiemRapNoi.Chay();
     await KiemTrinhTuVaVanHanh2.Chay();
+    await KiemMayHoanChinh.Chay();
 }
 else
 {

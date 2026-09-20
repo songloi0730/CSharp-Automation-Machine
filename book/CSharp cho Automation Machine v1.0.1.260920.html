@@ -554,6 +554,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#g7-giao-din">G.7  Giao diện</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g8-ghép-ni-và-vn-hành">G.8  Ghép nối và vận hành</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g9-bn-đ-ph-thuc-bài-nào-cn-bài-nào">G.9  Bản đồ phụ thuộc — bài nào cần bài nào</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -43281,11 +43282,404 @@ G.2.1 · G.3.1 · G.3.4 · G.4.1 · G.4.3 · G.5.1 · G.5.2 · G.8.1 · G.8.5. C
 chiều sâu, không phải xương sống.</p>
 </blockquote>
 <blockquote>
-<p>📌 <strong>Bốn mươi bài này cố tình KHÔNG kèm lời giải.</strong> Lý do không phải để làm khó: mục <em>Kết quả mong
-đợi</em> của mỗi bài đã là một tiêu chí <strong>tự chấm được</strong>, và trong phần mềm máy, biết cách tự trả lời
-câu <em>&quot;tôi xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chiếu với một đáp án có sẵn. Nếu bí
-hoàn toàn ở một bài, mã mẫu gần nhất nằm ở <code>source/MeoFrameMini</code> và ba biến thể của nó — đọc
-<strong>cấu trúc</strong> ở đó rồi quay lại tự viết, đừng chép.</p>
+<p>📌 <strong>Hai mươi tám bài ngoài nhóm xương sống cố tình KHÔNG kèm lời giải</strong> (12 bài xương sống có
+lời giải mẫu chạy được ở mục G.10). Lý do không phải để làm khó: mục <em>Kết quả mong đợi</em> của mỗi
+bài đã là một tiêu chí <strong>tự chấm được</strong>, và trong phần mềm máy, biết cách tự trả lời câu <em>&quot;tôi
+xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chiếu với một đáp án có sẵn. Nếu bí hoàn toàn
+ở một bài, đọc <strong>cấu trúc</strong> ở <code>source/MeoBench</code> hoặc <code>source/MeoFrameMini</code> rồi quay lại tự viết,
+đừng chép.</p>
+</blockquote>
+<hr>
+<h2 id="g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</h2>
+<p>Mục G.9 nêu mười hai bài xương sống. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ
+thể</strong>, và <strong>một lời giải chạy được</strong> — nằm ở <code>source/MeoBench</code>, đã biên dịch với
+<code>TreatWarningsAsErrors=true</code> và chạy sạch 0 cảnh báo.</p>
+<h3>G.10.0  Chạy thử từng phần, không đợi làm xong hết</h3>
+<p>Đây là điểm quan trọng nhất của mục này. Làm xong cả bốn mươi bài rồi mới chạy thì khi hỏng bạn
+không biết hỏng ở đâu. Bộ tự kiểm cho phép <strong>chạy lẻ từng nhóm ngay khi vừa viết xong nhóm đó</strong>:</p>
+<pre><code class="language-bash">cd source/MeoBench
+dotnet run                 # chạy cả 12 bài — 80 phép kiểm
+dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
+dotnet run -- G2           # chỉ bài G.2.1
+dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
+dotnet run -- --danhsach   # liệt kê 12 bài
+</code></pre>
+<p>Kết quả thật khi chạy <code>dotnet run -- G4</code>:</p>
+<pre><code class="language-text">╔══════════════════════════════════════════════════════════╗
+║  MeoBench — tự kiểm 12 bài xương sống (Phụ lục G)        ║
+╚══════════════════════════════════════════════════════════╝
+Chỉ chạy nhóm khớp &#39;G4&#39;:
+
+── G.4.1 · Chuyển động có hạn giờ ──
+   ĐẠT   chưa về gốc mà ra lệnh đi → AlarmException
+   ĐẠT   đi tới 25 mm thành công
+   ĐẠT   vị trí ngoài hành trình → ArgumentOutOfRangeException
+   ĐẠT   trục treo → AlarmException mã 10001 (KHÔNG phải OperationCanceledException)
+   ĐẠT   NGƯỜI bấm Dừng → OperationCanceledException, KHÔNG sinh cảnh báo giả
+</code></pre>
+<blockquote>
+<p>💡 <strong>Bộ tự kiểm này cố ý KHÔNG dùng xUnit</strong>, và lý do là lý do của lĩnh vực này chứ không phải sở
+thích: máy tính công nghiệp ngoài hiện trường không có Visual Studio và không chạy được
+<code>dotnet test</code>. Cả bộ kiểm gói trong một file <code>Kiem.cs</code> khoảng 60 dòng, không phụ thuộc gì bên
+ngoài — nên <strong>gắn được vào một nút trên màn hình chẩn đoán của máy thật</strong>. Chương 18 mục 18.6.4
+mô tả đúng cách làm này ở một dự án trong bộ mẫu. Khi nào bạn có môi trường phát triển đầy đủ thì
+chuyển sang xUnit; hai thứ không loại trừ nhau.</p>
+</blockquote>
+<h3>G.10.1  Ba bài kiểu miền — G.1.2, G.1.3, G.1.5</h3>
+<p><strong>Chữ ký bắt buộc:</strong></p>
+<pre><code class="language-csharp">public enum TrangThaiMay { ChuaKhoiTao=0, DangVeGoc=1, SanSang=2, DangChay=3, TamDung=4, BaoDong=5 }
+public enum KetLuanDo    { ChuaDo=0, Dat=1, DuoiNguong=2, TrenNguong=3, LoiDo=4 }
+
+public readonly record struct KetQuaDo(
+    int SoHieuPhoi, double ChieuDayMm, DateTime ThoiDiem, KetLuanDo KetLuan);
+
+public sealed class AlarmException : Exception
+{
+    public AlarmException(int ma, string viTri, string thongDiep);
+    public int    Ma          { get; }
+    public string ViTri       { get; }
+    public string DongHienThi { get; }   // &quot;CẢNH BÁO [10001] TRUC_Z: …&quot;
+}
+</code></pre>
+<p><strong>Tiêu chí chấm — 16 phép kiểm, chạy bằng <code>dotnet run -- G1</code>:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phép kiểm</th>
+<th>Giá trị cụ thể</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hai bản ghi cùng giá trị thì bằng nhau</td>
+<td><code>new KetQuaDo(1, 2.005, t, Dat) == new KetQuaDo(1, 2.005, t, Dat)</code></td>
+</tr>
+<tr>
+<td>Khác số hiệu thì khác nhau</td>
+<td><code>#1 != #2</code></td>
+</tr>
+<tr>
+<td>Cùng giá trị thì cùng mã băm</td>
+<td><code>a.GetHashCode() == b.GetHashCode()</code></td>
+</tr>
+<tr>
+<td><code>ToString</code> dùng dấu chấm bất biến</td>
+<td>ra đúng chuỗi <code>&quot;#1 2.005 mm Dat&quot;</code></td>
+</tr>
+<tr>
+<td>Giá trị enum ổn định</td>
+<td><code>(int)TrangThaiMay.SanSang == 2</code></td>
+</tr>
+<tr>
+<td>Mặc định mang nghĩa đúng</td>
+<td><code>default(KetLuanDo) == KetLuanDo.ChuaDo</code></td>
+</tr>
+<tr>
+<td>Giá trị lạ bị phát hiện</td>
+<td><code>!Enum.IsDefined((TrangThaiMay)99)</code></td>
+</tr>
+<tr>
+<td>Dòng cảnh báo đúng khuôn</td>
+<td><code>&quot;CẢNH BÁO [10001] TRUC_Z: quá thời gian khi đi tới 25,0 mm&quot;</code></td>
+</tr>
+<tr>
+<td>Mã nằm đúng dải</td>
+<td><code>TrucQuaThoiGian / 10000 == 1</code>, <code>CamBienKhongPhanHoi / 10000 == 2</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>Điểm chấm chính.</strong> <code>ToString</code> phải dùng <code>CultureInfo.InvariantCulture</code>; nếu quên, trên máy đặt
+vùng miền Việt Nam bạn sẽ nhận <code>&quot;#1 2,005 mm Dat&quot;</code> và phép kiểm đỏ ngay — đúng cái bẫy mục 3.6.3b.
+Và <code>KetLuanDo.ChuaDo = 0</code> không phải ngẫu nhiên: một <code>KetQuaDo</code> chưa gán phải tự nói <em>&quot;chưa đo&quot;</em>,
+không được mặc định thành <em>&quot;đạt&quot;</em>.</p>
+<h3>G.10.2  G.2.1 — Kiểm dải đo</h3>
+<pre><code class="language-csharp">public static KetLuanDo DanhGia(double doDuocMm, double duoiMm, double trenMm);
+</code></pre>
+<p><strong>Tiêu chí chấm — 7 phép kiểm, <code>dotnet run -- G2</code>:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Đầu vào (đo, dưới, trên)</th>
+<th>Kết quả đúng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>2.000, 1.950, 2.050</code></td>
+<td><code>Dat</code></td>
+</tr>
+<tr>
+<td><code>1.950, 1.950, 2.050</code></td>
+<td><code>Dat</code> — <strong>biên tính là đạt</strong></td>
+</tr>
+<tr>
+<td><code>2.050, 1.950, 2.050</code></td>
+<td><code>Dat</code></td>
+</tr>
+<tr>
+<td><code>1.949, 1.950, 2.050</code></td>
+<td><code>DuoiNguong</code></td>
+</tr>
+<tr>
+<td><code>2.051, 1.950, 2.050</code></td>
+<td><code>TrenNguong</code></td>
+</tr>
+<tr>
+<td><code>NaN, 1.950, 2.050</code></td>
+<td><code>LoiDo</code> — <strong>không ném</strong></td>
+</tr>
+<tr>
+<td><code>2.000, 2.050, 1.950</code></td>
+<td><strong>ném <code>ArgumentException</code></strong></td>
+</tr>
+</tbody></table></div>
+<p><strong>Điểm chấm chính.</strong> Hàng cuối. Dải bị đảo là <strong>lỗi lập trình</strong>, không phải dữ liệu xấu — nên ném
+ngay thay vì im lặng trả <code>Dat</code>. Đây chính là chỗ lớp bảo vệ thật ở mục 3.3.3 đã hỏng và không ai
+biết trong nhiều năm. Hàng <code>NaN</code> thì ngược lại: dữ liệu xấu từ cảm biến là chuyện bình thường, trả
+về <code>LoiDo</code> chứ không làm sập chu trình.</p>
+<h3>G.10.3  G.3.1 và G.3.4 — Hợp đồng thiết bị và bản giả lập</h3>
+<pre><code class="language-csharp">public interface ITruc
+{
+    string Ten { get; }  double ViTriMm { get; }  bool DaVeGoc { get; }
+    Task VeGocAsync(CancellationToken ct = default);
+    Task DiToiAsync(double viTriMm, CancellationToken ct = default);
+}
+
+public sealed class CamBienGiaLap(int hatGiong, int soLanDoMoiPhoi = 3, …) : ICamBienChieuDay
+{
+    public int  HatGiong            { get; }      // lộ ra để GHI VÀO LOG
+    public bool MoPhongKhongPhanHoi { get; set; } // ép lỗi, không cần phần cứng
+}
+</code></pre>
+<p><strong>Tiêu chí chấm — 13 phép kiểm, <code>dotnet run -- G3</code>:</strong></p>
+<ul>
+<li>Trục mới tạo: <code>DaVeGoc == false</code>; sau <code>VeGocAsync()</code>: <code>true</code> và <code>ViTriMm == 0</code>.</li>
+<li><code>DiToiAsync(25.0)</code> → dừng đúng <code>25.0 ± 1e-6</code>.</li>
+<li>Huỷ giữa chuyển động → <code>OperationCanceledException</code>.</li>
+<li><strong>Hai cảm biến cùng hạt giống <code>12345</code>, đọc 20 lần → hai dãy giống hệt nhau.</strong></li>
+<li>Hạt giống <code>999</code> → dãy khác.</li>
+<li>20 giá trị có hơn 10 giá trị phân biệt (có nhiễu thật, không phải hằng).</li>
+<li><strong>3 lần đo cùng một phôi chênh nhau dưới 0,01 mm.</strong></li>
+<li><code>MoPhongKhongPhanHoi = true</code> → ném <code>AlarmException</code> mã <code>20001</code>.</li>
+</ul>
+<blockquote>
+<p>⚠️ <strong>Hai phép kiểm này hỏng ở lần chạy đầu tiên khi dựng lời giải mẫu, và cái sai đáng kể lại
+hơn cả bài.</strong> Bản giả lập đầu tiên cộng độ lệch phôi lỗi <strong>theo từng lần đọc</strong>: mỗi lần <code>DocAsync</code>
+lại tự quay xúc xắc xem &quot;lần này có lệch không&quot;. Hệ quả: (1) chạy 50 chu kỳ <strong>không có phôi NG
+nào</strong>, vì độ lệch 0,030 mm nhỏ hơn dung sai ±0,050 mm và còn bị trung bình ba lần đo pha loãng
+thêm; (2) hai hạt giống khác nhau cho ra <strong>cùng kết quả</strong> 50 đạt / 0 không đạt, nên phép kiểm
+&quot;khác hạt giống → khác kết quả&quot; cũng đỏ theo.</p>
+<p>Sai lầm ở đây không phải sai cú pháp mà là <strong>sai mô hình</strong>: một phôi có <strong>một</strong> chiều dày thật,
+cảm biến chỉ thêm nhiễu lên nó. Quay xúc xắc mỗi lần đọc tức là coi mỗi lần đọc là một phôi khác
+— và khi đó <strong>việc lấy trung bình nhiều lần đo trở nên vô nghĩa</strong>, tức là bài G.2.5 mất luôn lý
+do tồn tại. Bản sửa quyết định chiều dày thật <strong>một lần cho mỗi phôi</strong>, rồi mọi lần đọc của phôi
+đó chỉ khác nhau bằng nhiễu. Phép kiểm <em>&quot;3 lần đo cùng một phôi chênh nhau dưới 0,01 mm&quot;</em> được
+thêm vào chính là để khoá lại bài học đó.</p>
+<p>Rút ra cho người làm bài: khi bản giả lập của bạn &quot;chạy quá đẹp&quot; — không bao giờ có hàng lỗi,
+không bao giờ có cảnh báo — hãy nghi ngờ <strong>mô hình</strong>, đừng vội mừng.</p>
+</blockquote>
+<h3>G.10.4  G.4.1 — Chuyển động có hạn giờ</h3>
+<p>Đây là bài có <strong>bốn nhánh</strong> phải phân biệt được, và là bài dễ làm sai nhất nhóm G.4.</p>
+<pre><code class="language-csharp">public async Task DiToiAsync(double viTriMm, CancellationToken ct = default)
+{
+    if (!_truc.DaVeGoc)
+        throw new AlarmException(MaCanhBao.TrucChuaVeGoc, _truc.Ten, &quot;chưa về gốc mà đã ra lệnh đi&quot;);
+
+    if (viTriMm &lt; _gioiHanDuoiMm || viTriMm &gt; _gioiHanTrenMm)
+        throw new ArgumentOutOfRangeException(nameof(viTriMm), …);
+
+    using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+    cts.CancelAfter(_hanGioMs);
+    try
+    {
+        await _truc.DiToiAsync(viTriMm, cts.Token).ConfigureAwait(false);
+    }
+    // Bộ lọc này là thứ phân biệt NGƯỜI BẤM DỪNG với THIẾT BỊ HẾT GIỜ.
+    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+    {
+        throw new AlarmException(MaCanhBao.TrucQuaThoiGian, _truc.Ten, $&quot;quá {_hanGioMs} ms …&quot;);
+    }
+}
+</code></pre>
+<p><strong>Tiêu chí chấm — 5 phép kiểm:</strong> chưa về gốc → <code>AlarmException</code>; đi bình thường → tới đúng nơi;
+vị trí ngoài hành trình → <code>ArgumentOutOfRangeException</code>; <strong>trục treo → <code>AlarmException</code> mã 10001</strong>;
+<strong>người bấm Dừng → <code>OperationCanceledException</code>, không sinh cảnh báo</strong>.</p>
+<p><strong>Điểm chấm chính.</strong> Hai phép kiểm cuối. Bỏ mệnh đề <code>when (!ct.IsCancellationRequested)</code> đi thì
+phép kiểm cuối chuyển thành đỏ ngay — vì mỗi lần người vận hành bấm Dừng, máy lại đẻ ra một cảnh
+báo giả. Và cảnh báo giả là con đường ngắn nhất tới việc người ta bắt đầu bỏ qua cảnh báo thật.</p>
+<p>Bài này cũng dùng tới <code>MoPhongTreo</code> của bản giả lập (ý của bài G.3.5): không có nó thì <strong>không có
+cách nào</strong> kiểm nhánh hết giờ mà không đứng cạnh một cỗ máy đang hỏng.</p>
+<h3>G.10.5  G.4.3 — Cụm đo</h3>
+<p><strong>Điểm chấm chính nằm ở đúng một từ khoá: <code>finally</code>.</strong></p>
+<pre><code class="language-csharp">public async Task&lt;KetQuaDo&gt; DoAsync(int soHieuPhoi, CancellationToken ct = default)
+{
+    await _z.DiToiAsync(_viTriDoMm, ct).ConfigureAwait(false);       // hạ đầu đo
+    try
+    {
+        double tong = 0;
+        for (int i = 0; i &lt; _soLanDo; i++)
+            tong += await _camBien.DocAsync(ct).ConfigureAwait(false);
+
+        double trungBinh = Math.Round(tong / _soLanDo, 4);
+        return new KetQuaDo(soHieuPhoi, trungBinh,
+                            _dongHo.BayGio, KiemDai.DanhGia(trungBinh, _duoiMm, _trenMm));
+    }
+    finally
+    {
+        // Luôn nâng, KỂ CẢ khi lỗi. CancellationToken.None: việc dọn dẹp
+        // không được bỏ dở chỉ vì người vận hành vừa bấm Dừng.
+        await _z.DiToiAsync(_viTriAnToanMm, CancellationToken.None).ConfigureAwait(false);
+    }
+}
+</code></pre>
+<p><strong>Tiêu chí chấm — 7 phép kiểm:</strong> trả đúng số hiệu phôi · phôi trong dải → <code>Dat</code> · trung bình quanh
+2,000 ± 0,01 · <strong>thời điểm lấy từ đồng hồ tiêm vào</strong> (không phải <code>DateTime.Now</code>) · đo xong trục Z
+đã nâng · cảm biến lỗi → <code>AlarmException</code> lan ra ngoài · <strong>có lỗi thì trục Z VẪN được nâng</strong>.</p>
+<p>Hai chi tiết đáng nói. Thứ nhất, <code>CancellationToken.None</code> trong <code>finally</code>: dùng <code>ct</code> ở đó nghĩa là
+khi người vận hành bấm Dừng, đầu đo <strong>kẹt ở dưới</strong> — phôi kế tiếp trôi vào sẽ va. Thứ hai,
+<code>IDongHo</code> tiêm vào: không có nó thì không phép kiểm nào khẳng định được thời điểm, và bạn sẽ gặp
+lại vấn đề của 1.881 chỗ gọi thẳng <code>DateTime.Now</code> trong bộ mẫu.</p>
+<h3>G.10.6  G.5.1 và G.5.2 — Trình tự</h3>
+<pre><code class="language-csharp">public interface IBuoc
+{
+    int    Ma  { get; }      // ổn định giữa các phiên bản — cho log và MES
+    string Ten { get; }      // cho người vận hành đọc
+    Task ThucThiAsync(BoiCanh bc, CancellationToken ct);
+}
+
+public static IReadOnlyList&lt;IBuoc&gt; BayBuoc() =&gt;
+[
+    new B1ChoPhoi(), new B2Do(), new B3KetLuan(), new B4Kep(),
+    new B5DiToiMang(), new B6Nha(), new B7VeCho(),
+];
+</code></pre>
+<p><strong>Tiêu chí chấm — 10 phép kiểm:</strong> danh sách đúng 7 phần tử · mã bước không trùng · bước nào cũng có
+tên · chuỗi <code>&quot;Bước 3/7: Kết luận đạt / không đạt&quot;</code> sinh ra <strong>không cần sửa gì trong các bước</strong> ·
+chạy hết 7 bước thì phôi được kết luận · cuối chu kỳ kẹp đã nhả, trục X về chờ, trục Z an toàn ·
+<strong>phôi dày 2,5 mm đi tới máng NG ở 200 mm, không phải máng OK ở 100 mm</strong>.</p>
+<p><strong>Điểm chấm chính.</strong> Phép kiểm cuối là phép kiểm duy nhất chứng minh <strong>kết luận đo thật sự điều
+khiển đường đi của phôi</strong>. Rất dễ viết một chu trình chạy trơn tru mà mọi phôi đều rơi vào máng OK
+— và nếu chỉ nhìn nhật ký thấy &quot;chu kỳ xong&quot; thì không phát hiện ra.</p>
+<h3>G.10.7  G.8.1 và G.8.5 — Ráp nối và chạy</h3>
+<p><code>RapNoi.Tao(CauHinhMay)</code> là <strong>nơi duy nhất</strong> trong toàn chương trình xuất hiện <code>new</code> với một lớp
+thiết bị. Nó cũng là nơi <strong>kiểm tra cấu hình</strong>: dải đảo, số lần đo bằng 0, hai máng trùng vị trí đều
+bị chặn <strong>ngay lúc ráp</strong>, không đợi tới giữa chu kỳ.</p>
+<p><strong>Tiêu chí chấm của G.8.5 — 16 phép kiểm, và đây là bảng nghiệm thu thật sự của cả phụ lục:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phép kiểm</th>
+<th>Vì sao nó quan trọng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Chạy trọn 50 chu kỳ, mọi phôi được phân loại</td>
+<td>Chu trình khép kín</td>
+</tr>
+<tr>
+<td>Có phôi NG</td>
+<td>Nếu 0 NG thì <strong>mô hình giả lập sai</strong> — xem G.10.3</td>
+</tr>
+<tr>
+<td><strong>Cùng hạt giống → cùng số OK và cùng số NG</strong></td>
+<td>Tái hiện được một lần chạy</td>
+</tr>
+<tr>
+<td>Khác hạt giống → khác kết quả</td>
+<td>Ngẫu nhiên thật, không phải hằng số</td>
+</tr>
+<tr>
+<td>Cảm biến lỗi → dừng ở <code>BaoDong</code>, cảnh báo mã 20001</td>
+<td>Phân loại lỗi đúng</td>
+</tr>
+<tr>
+<td><strong>Có sự cố: trục Z vẫn ở vị trí an toàn</strong></td>
+<td><code>finally</code> của G.4.3 hoạt động ở cấp hệ thống</td>
+</tr>
+<tr>
+<td><strong>Có sự cố: kẹp không bị bỏ ở trạng thái đang kẹp</strong></td>
+<td>Không để lại phôi treo lơ lửng</td>
+</tr>
+<tr>
+<td><strong>Bấm Dừng → về <code>SanSang</code>, <code>CanhBaoCuoi</code> là null</strong></td>
+<td>Không có cảnh báo giả</td>
+</tr>
+<tr>
+<td>Phôi đã xong trước khi dừng vẫn được tính</td>
+<td>Không mất dữ liệu sản xuất</td>
+</tr>
+<tr>
+<td>Chạy khi chưa về gốc → bị từ chối</td>
+<td>Bảo vệ theo trạng thái</td>
+</tr>
+</tbody></table></div>
+<p>Chạy <code>dotnet run -- --demo</code> cho ra nhật ký thật như sau (hạt giống 2026):</p>
+<pre><code class="language-text">=== MeoBench-01 · chạy 20 chu kỳ trên bản giả lập ===
+  Đã về gốc, máy sẵn sàng
+  Chu kỳ   1 · 2.002 mm · Dat
+  Chu kỳ   2 · 2.000 mm · Dat
+  …
+  Chu kỳ   6 · 2.122 mm · TrenNguong
+  …
+  Chu kỳ  14 · 2.120 mm · TrenNguong
+  …
+  Dừng bình thường sau 20 phôi
+
+Trạng thái cuối : SanSang
+Tổng phôi       : 20
+Đạt / Không đạt : 15 / 5
+Hạt giống       : 2026  (chạy lại số này ra đúng kết quả trên)
+</code></pre>
+<p>Dòng cuối là dòng đáng chú ý nhất: <strong>hạt giống được in ra</strong>. Chạy lại với đúng số đó thì ra đúng
+mười lăm phôi đạt và đúng năm phôi ở các chu kỳ 6, 9, 12, 13, 14 — đó là điều mục 13.2.5c gọi là
+biến một cái bẫy thành công cụ.</p>
+<h3>G.10.8  Bảng tra nhanh: bài nào ở file nào</h3>
+<p><strong>Bảng G.3 — Lời giải mẫu trong <code>source/MeoBench</code></strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Bài</th>
+<th>Chạy lẻ bằng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Kiem.cs</code></td>
+<td>bộ tự kiểm dùng chung (~60 dòng, không phụ thuộc gì)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>Mien.cs</code></td>
+<td>G.1.2 · G.1.3 · G.1.5</td>
+<td><code>dotnet run -- G1</code></td>
+</tr>
+<tr>
+<td><code>LogicVaThietBi.cs</code></td>
+<td>G.2.1 · G.3.1 · G.3.4</td>
+<td><code>dotnet run -- G2</code> hoặc <code>G3</code></td>
+</tr>
+<tr>
+<td><code>NghiepVuVaTrinhTu.cs</code></td>
+<td>G.4.1 · G.4.3 · G.5.1 · G.5.2</td>
+<td><code>dotnet run -- G4</code> hoặc <code>G5</code></td>
+</tr>
+<tr>
+<td><code>RapNoi.cs</code></td>
+<td>G.8.1 · G.8.5</td>
+<td><code>dotnet run -- G8</code></td>
+</tr>
+<tr>
+<td><code>Program.cs</code></td>
+<td>bộ chạy + chế độ <code>--demo</code></td>
+<td><code>dotnet run -- --demo</code></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Cách dùng lời giải mẫu cho đúng.</strong> Đừng mở nó ra trước. Trình tự có ích nhất: (1) đọc đặc tả
+và tiêu chí chấm ở mục này; (2) <strong>chép riêng phần hàm kiểm</strong> của bài đó vào project của bạn —
+chúng chính là bản đặc tả viết bằng mã; (3) tự viết cho tới khi các phép kiểm xanh; (4) <strong>chỉ khi
+đó</strong> mới mở lời giải mẫu ra so, và chỗ đáng so không phải cú pháp mà là <strong>những nhánh lỗi mà bạn
+chưa nghĩ tới</strong>.</p>
+<p>Hai mươi tám bài còn lại không có lời giải mẫu, nhưng chúng dùng đúng khuôn này: thêm một hàm
+<code>KiemXxx.Chay()</code>, gọi <code>Kiem.MoBai(...)</code> rồi liệt kê các khẳng định. Viết phép kiểm <strong>trước</strong> khi
+viết mã cho bài đó — với G.2.3 (tách khung) thì đó gần như là cách duy nhất làm đúng ngay.</p>
 </blockquote>
 </div>
 </div>

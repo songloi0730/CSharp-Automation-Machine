@@ -153,7 +153,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | 16 | [Latch, Set/Reset & bắt cạnh](ch16_latch_set_reset_bat_canh.md) | Tự giữ *(seal-in)* vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy "không biết mình đang ở đâu"; **bắt cạnh lên/xuống *(rising/falling edge, one-shot)*** — khi nào **bắt buộc** (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên | ✅ |
 | 17 | [Timer — TON / TOF / TP / RTO](ch17_timer.md) | Sơ đồ thời gian *(timing diagram)* từng loại; độ phân giải & sai số theo chu kỳ quét; timer bị đặt lại ngoài ý muốn khi điều kiện vào nhấp nháy; nối tầng timer để có thời gian dài; ⭐ **sai lầm lớn nhất: dùng timer thay cho tín hiệu phản hồi thật** — "chờ 2 giây chắc kẹp xong rồi" — vì sao hỏng máy, và cách làm đúng (phản hồi để chuyển tiếp, timeout để báo lỗi) | ✅ |
 | 18 | [Counter & đếm xung tốc độ cao](ch18_counter_va_dem_xung_toc_do_cao.md) | CTU/CTD/CTUD; đếm cạnh chứ không đếm mức; chống đếm trùng khi board rung hoặc cảm biến nhiễu; ⭐ khi nào **bắt buộc dùng bộ đếm tốc độ cao *(HSC)* phần cứng** — công thức quyết định so tần số xung với chu kỳ quét; encoder *(bộ mã hoá vòng quay)* và đếm vị trí; bộ đếm giữ giá trị qua mất điện | ✅ |
-| 19 | [So sánh, toán học & xử lý dữ liệu](ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu.md) | MOVE / COMPARE / cộng-trừ-nhân-chia; ⚠ chia cho 0 làm gì PLC (khác nhau theo hãng!); số nguyên vs số thực, ép kiểu *(type conversion)* và mất chính xác; chuẩn hoá & quy đổi thang *(scale/normalize)*; **thanh ghi dịch *(shift register)*** — bài toán kinh điển "board lỗi phát hiện ở trạm đầu, loại bỏ ở cuối chuyền"; mảng & con trỏ *(indirect addressing)* — khi nào đáng dùng, khi nào làm code không ai đọc nổi | ✅ |
+| 19 | [So sánh, toán học & xử lý dữ liệu](ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu.md) | MOVE / COMPARE / cộng-trừ-nhân-chia; ⚠ chia cho 0 làm gì PLC (khác nhau theo hãng!); số nguyên vs số thực, ép kiểu *(type conversion)* và mất chính xác; chuẩn hoá & quy đổi thang *(scale/normalize)*; **thanh ghi dịch *(shift register)*** — bài toán kinh điển "board lỗi phát hiện ở trạm đầu, loại bỏ ở cuối chuyền"; mảng & con trỏ *(indirect addressing)* — khi nào đáng dùng, khi nào làm code không ai đọc nổi  ⭐⭐ **Ba kiểu mã hoá bạn gặp hằng ngày**: hex (mã lỗi, mặt nạ bit) · ⚠⚠ **BCD** — đọc nhầm thành nhị phân cho ra con số **sai mà trông hợp lý**, 25 thành 37 · **mã Gray** trên bộ mã hoá tuyệt đối và vì sao nó tồn tại; quy tắc: **quy đổi về nhị phân ngay tại biên**. | ✅ |
 | 20 | [Structured Text — cho người biết lập trình](ch20_structured_text.md) | Cú pháp, IF / CASE / FOR / WHILE, hàm; ⚠⚠ **vòng lặp trong môi trường quét** — vòng WHILE sai làm treo CPU và kích watchdog; khi nào ST vượt trội (toán, xử lý mảng, thuật toán, máy trạng thái bằng CASE); ⭐ khi nào ST là lựa chọn **tệ**: đội bảo trì tại nhà máy chỉ đọc được ladder — đây là bài toán **tổ chức**, không phải bài toán kỹ thuật | ✅ |
 | 21 | [FBD, SFC (và IL — đủ để đọc di sản)](ch21_fbd_sfc_va_il.md) | FBD cho luồng tín hiệu & analog; **SFC cho tuần tự** — bước *(step)* / chuyển tiếp *(transition)* / hành động *(action)*, nhánh song song & nhánh lựa chọn, quan hệ với GRAFCET; bảng "bài toán nào → ngôn ngữ nào"; IL *(Instruction List)*: vì sao vẫn gặp trong máy cũ, đọc hiểu đủ để bảo trì, và ghi chú IL đã bị rút khỏi bản mới của chuẩn | ✅ |
 | 22 | [Đọc & sửa chương trình của người khác](ch22_doc_va_sua_chuong_trinh_nguoi_khac.md) | Kỹ năng bị bỏ quên nhưng chiếm phần lớn thời gian đi làm: dò tham chiếu chéo *(cross-reference)*, tìm mọi nơi ghi vào một tag, đọc code không comment, nhận diện "phương ngữ nhà" của từng công ty; đọc chương trình đã bị sửa chắp vá qua nhiều đời; ⭐ quy tắc sửa an toàn: **hiểu trước, sao lưu, sửa nhỏ nhất, ghi lại** | ✅ |
@@ -181,7 +181,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 |---|---|---|---|
 | 31 | [Tín hiệu analog & vòng dòng 4–20 mA](ch31_tin_hieu_analog_va_vong_dong.md) | ⭐ **Vì sao 4 mA chứ không 0 mA** — phân biệt "giá trị bằng 0" với "đứt dây", chẩn đoán miễn phí; vì sao **dòng** chống nhiễu tốt hơn **áp** trên đường dài; 2 dây *(loop-powered)* vs 3/4 dây *(self-powered)* — ai cấp nguồn cho vòng, đấu sai thì sao; 0–10 V khi nào chấp nhận được; điện trở tải tối đa của vòng; **nối vỏ chống nhiễu *(shield)* một đầu** và lý do — vòng lặp đất *(ground loop)* | ✅ |
 | 32 | [Từ giá trị thô tới đại lượng kỹ thuật](ch32_tu_gia_tri_tho_toi_dai_luong_ky_thuat.md) | Độ phân giải bộ chuyển đổi *(ADC resolution)* — từ số bit ra bước nhỏ nhất đo được, và cách chọn dải đo cho đủ phân giải; công thức quy đổi thang tuyến tính + ví dụ đầy đủ với `AI_GluePress` của DP-01; lọc trung bình / lọc số *(IIR)* và cái giá phải trả là độ trễ; vùng chết *(deadband)* chống dao động báo động; ⭐ **phát hiện ngoài dải *(out-of-range)* = đứt dây / chập**; hiệu chuẩn *(calibration)*: zero & span, LRV/URV, và "hiệu chuẩn ≠ đặt lại dải đo" | ✅ |
-| 33 | [Cảm biến quá trình thường gặp](ch33_cam_bien_qua_trinh_thuong_gap.md) | Áp suất; **nhiệt độ** — RTD Pt100 2/3/4 dây và ⭐ vì sao 3 dây là mặc định, vs can nhiệt *(thermocouple)* cần bù đầu lạnh *(cold junction compensation)*; đo khoảng cách/vị trí bằng laser & siêu âm; lưu lượng; mức; cảm biến chân không; đo cường độ ánh sáng (UV của DP-01); bảng chọn "đo cái gì → dùng loại nào → bẫy gì" | ✅ |
+| 33 | [Cảm biến quá trình thường gặp](ch33_cam_bien_qua_trinh_thuong_gap.md) | Áp suất; **nhiệt độ** — RTD Pt100 2/3/4 dây và ⭐ vì sao 3 dây là mặc định, vs can nhiệt *(thermocouple)* cần bù đầu lạnh *(cold junction compensation)*; đo khoảng cách/vị trí bằng laser & siêu âm; lưu lượng; mức; cảm biến chân không; đo cường độ ánh sáng (UV của DP-01); bảng chọn "đo cái gì → dùng loại nào → bẫy gì"  ⭐ **Đọc được tên thiết bị trên bản vẽ** (`TT-101`, `PSH-205`): chữ đầu = đại lượng, chữ sau = chức năng — và vì sao chữ **thứ hai** quan trọng hơn với người lập trình, vì nó quyết định kênh **analog hay số**. | ✅ |
 | 34 | [Cân & đo lực — load cell, giám sát lực/mô-men](ch34_can_va_do_luc.md) | Vì sao lắp ráp điện tử kiểm chất lượng bằng **đường cong lực theo hành trình**, không chỉ bằng cảm biến ON/OFF; nguyên lý cầu điện trở *(strain gauge bridge)*, bộ khuếch đại, hiệu chuẩn bằng quả cân chuẩn; nhiễu cơ học & lọc; ⭐ **cửa sổ lực–vị trí** làm tiêu chí OK/NG cho ép, siết vít, cắm connector; giám sát mô-men khi siết vít; khi nào cần bộ điều khiển chuyên dụng thay vì làm trong PLC | ✅ |
 | 35 | [Điều khiển PID trên PLC](ch35_dieu_khien_pid_tren_plc.md) | Vòng hở vs vòng kín *(open/closed loop)*; P làm gì và ⭐ vì sao P thuần **luôn** để lại sai lệch tĩnh *(offset)*; I xoá offset nhưng gây vọt lố và **bão hoà tích phân *(integral windup)*** → chống windup; D và vì sao thường tắt khi tín hiệu nhiễu; chuyển chế độ êm *(bumpless transfer)* khi Manual → Auto; quy trình chỉnh định *(tuning)* thực dụng từng bước với `AI_GlueTemp`; ⭐ khi nào **on/off có trễ** là đủ và PID là làm phức tạp vô ích | ✅ 🔍 |
 | 36 | [Động cơ & biến tần](ch36_dong_co_va_bien_tan.md) | Động cơ không đồng bộ 3 pha; khởi động trực tiếp *(DOL)* qua contactor vs **biến tần *(VFD)*** — chọn theo yêu cầu gì; đặt tốc độ bằng analog vs bằng mạng — đánh đổi giữa đơn giản và **chẩn đoán được**; tham số biến tần tối thiểu phải hiểu (tần số, dốc tăng/giảm tốc, giới hạn dòng, hãm); ⚠ hãm và điện trở xả; động cơ bước *(stepper)* — khi nào đủ dùng, khi nào mất bước mà không ai biết | ✅ |
@@ -9522,6 +9522,112 @@ lệnh mặc định của mỗi hệ khác nhau. Với một chiều dài đo�
 
 ---
 
+## 19.5b ⭐⭐ Cùng một con số, ba kiểu mã hoá — và chuyện gì xảy ra khi đọc nhầm kiểu
+
+⚠ Mục này nghe như bài học ở trường. ⭐ Nó không phải — ba kiểu mã dưới đây bạn gặp **trong công
+việc hằng ngày**, và đọc nhầm kiểu là một lớp lỗi cho ra **con số sai mà trông hợp lý**.
+
+| Kiểu mã | ⭐ Bạn gặp nó ở đâu trong thực tế |
+|---|---|
+| **Thập lục phân** *(hexadecimal)* | ⭐⭐ **Mã lỗi** của CPU và của thiết bị · địa chỉ thanh ghi khi trao đổi dữ liệu · mặt nạ bit · địa chỉ thiết bị trên mạng |
+| **BCD** *(binary coded decimal)* | ⭐ Công tắc xoay số *(thumbwheel)* · đèn bảy đoạn · ⚠ **thiết bị đời cũ báo giá trị qua mạng** |
+| **Mã Gray** *(Gray code)* | ⭐ **Bộ mã hoá vị trí tuyệt đối** — và một số cảm biến vị trí nhiều bit |
+
+### ⭐ Thập lục phân — thứ bạn phải đọc được, không phải thứ phải tính nhẩm
+
+⭐ Mỗi chữ số hex = **đúng 4 bit**, nên nó là cách viết gọn của một chuỗi bit:
+
+```text
+   Bit:   0010 0101 1010 1111
+   Hex:     2    5    A    F      →  16#25AF
+```
+
+> ⭐⭐ **Vì sao nó tiện hơn thập phân trong nghề này:** ⚡ nhìn `16#25AF` là **thấy ngay bit nào bật**
+> theo từng nhóm bốn; nhìn `9647` thì không thấy gì cả. ⭐ Đó là lý do mọi tài liệu hãng viết mã lỗi
+> và mặt nạ bit bằng hex.
+>
+> ⚠ **Cách viết khác nhau giữa các hệ** — `16#25AF` theo chuẩn IEC, `H25AF` hoặc `25AFh` ở hệ khác.
+> ⭐ Cùng một con số; đừng nhầm cách viết với kiểu dữ liệu.
+
+### ⚠⚠ BCD — và cái bẫy cho ra con số sai mà trông hợp lý
+
+⭐ BCD mã hoá **từng chữ số thập phân bằng 4 bit riêng**. Số 25 trong BCD **không phải** là 25 ở
+dạng nhị phân:
+
+```text
+   Số thập phân:        2        5
+   BCD (4 bit mỗi số):  0010     0101
+   Gộp lại:             0010 0101
+
+   ⭐ Máy đọc chuỗi bit đó THEO BCD   →  25   ✓ đúng
+   ⚠ Máy đọc chuỗi bit đó THEO NHỊ PHÂN →  37   ✗ sai
+```
+
+> ⚠⚠ **Đây là cái bẫy, và nó là loại bẫy tệ nhất: kết quả sai nhưng TRÔNG HỢP LÝ.** ⭐ Không có báo
+> lỗi, không có giá trị vô lý — chỉ là một con số khác. ⚡ Và nó **lệch nhiều hơn khi giá trị lớn
+> hơn**: BCD `99` đọc nhầm thành nhị phân cho ra **153**.
+>
+> ⭐ Triệu chứng đặc trưng để nhận ra: ⭐⭐ **con số đọc về luôn LỚN HƠN giá trị thật, và sai số tăng
+> dần theo giá trị** — xem **Phụ lục E.5b**.
+
+**Hai điều nữa về BCD, cả hai đều thực dụng:**
+
+| Điều | Nội dung |
+|---|---|
+| ⭐ **Nó phí bit** | Một từ 16 bit chứa được **0–65535** ở nhị phân, nhưng chỉ **0–9999** ở BCD (bốn chữ số). ⚠ Vượt 9999 là tràn, sớm hơn bạn tưởng |
+| ⭐⭐ **Đừng tính toán trên BCD** | Quy đổi về nhị phân → tính → quy đổi lại khi hiển thị. ⚠ Cộng hai số BCD như cộng nhị phân cho ra rác |
+
+> ⭐ **Vì sao BCD vẫn còn tồn tại dù phí bit:** ⚡ vì nó **đổi thẳng ra chữ số hiển thị** mà không
+> cần phép chia. Đèn bảy đoạn và công tắc xoay số là mạch điện, không phải máy tính — với chúng,
+> mỗi chữ số một nhóm bốn bit là cách rẻ nhất.
+
+### ⭐ Mã Gray — và vì sao nó tồn tại
+
+⭐ Trong mã Gray, ⭐⭐ **hai giá trị liền nhau chỉ khác nhau đúng MỘT bit**:
+
+```text
+   Thập phân   Nhị phân      Mã Gray
+       6         0110          0101
+       7         0111          0100
+       8         1000   ⚠       1100        ← nhị phân đổi CẢ BỐN bit
+```
+
+> ⚠⚠ **Vấn đề mà mã Gray giải:** ở bộ mã hoá vị trí tuyệt đối, các bit được đọc từ **các rãnh khác
+> nhau trên cùng một đĩa**. ⭐ Khi đĩa quay qua ranh giới 7→8, bốn bit phải đổi **cùng một lúc** —
+> ⚠ mà thực tế chúng không bao giờ đổi đúng cùng một lúc.
+>
+> ⚡ Trong khoảnh khắc đó, giá trị đọc về có thể là **bất kỳ số nào từ 0 tới 15**. ⭐⭐ Với mã Gray,
+> vì chỉ **một bit** đổi, giá trị đọc về trong lúc chuyển chỉ có thể là **7 hoặc 8** — hai giá trị
+> đều **đúng hoặc gần đúng**.
+
+> ⭐ **Thực tế bạn có phải tự giải mã Gray không?** ⚡ Thường là **không** — module hoặc chính bộ mã
+> hoá đã quy đổi. ⚠ Nhưng bạn **phải biết nó tồn tại**, vì: ⭐ tài liệu thiết bị ghi rõ đầu ra là
+> Gray hay nhị phân, và ⚠⚠ **đặt sai cấu hình đó thì vị trí đọc về nhảy loạn ở đúng các ranh giới**
+> — một triệu chứng rất dễ bị đổ cho cơ khí.
+
+### ⭐⭐ Chọn kiểu nào — và câu trả lời gần như luôn giống nhau
+
+| Kiểu | ⭐ Ưu | ⚠ Nhược | Dùng khi |
+|---|---|---|---|
+| **Nhị phân** *(mặc định)* | Dùng hết dải; tính toán trực tiếp | Khó đọc bằng mắt | ⭐⭐ **Mọi tính toán và lưu trữ bên trong chương trình** |
+| **Hex** | ⭐ Là **cách VIẾT** của nhị phân, không phải kiểu khác; đọc bit rất nhanh | Phải quen | ⭐ Đọc mã lỗi, mặt nạ bit, địa chỉ |
+| **BCD** | Đổi thẳng ra chữ số hiển thị | ⚠ Phí bit; ⚠⚠ không tính toán được | ⭐ **Chỉ ở biên giới với thiết bị đòi BCD** — quy đổi ngay khi vào |
+| **Gray** | ⭐⭐ Không có giá trị rác lúc chuyển | Không tính toán được | ⭐ **Chỉ trên đường truyền từ bộ mã hoá về** |
+
+> ⭐⭐ **Quy tắc rút gọn, và nó áp cho cả ba:** ⚡ **quy đổi về nhị phân NGAY TẠI BIÊN, rồi bên trong
+> chương trình chỉ dùng nhị phân.**
+>
+> ⭐ Giống hệt nguyên tắc ở Chương 32 với tín hiệu analog: ⭐⭐ **đổi từ giá trị thô sang đại lượng kỹ
+> thuật một lần, ở một chỗ**. ⚠ Để BCD hoặc Gray len vào giữa logic là tự tạo ra một lớp lỗi mà
+> không được gì.
+
+> ⚡ **Tên lệnh quy đổi khác nhau giữa các hãng** — hệ kiểu thiết bị thường có sẵn một họ lệnh đổi
+> qua lại: nhị phân ↔ BCD, hex ↔ ASCII, tách/gộp byte, và cả lệnh **đọc thẳng công tắc xoay số** hay
+> **xuất thẳng ra đèn bảy đoạn**. ⭐ Tra Phụ lục A2 và tài liệu lệnh của hệ bạn dùng trước khi tự
+> viết phép quy đổi bằng tay.
+
+---
+
 ## 19.6 ⭐ Thanh ghi dịch — theo dõi sản phẩm dọc chuyền
 
 ### Bài toán
@@ -9823,6 +9929,13 @@ tức**, và không ai hiểu vì sao.
 ký tự và loại hẳn một nhóm lỗi (Chương 30).
 
 ---
+
+### 🔍 BẪY 10 — Đọc giá trị BCD như giá trị nhị phân
+
+**Hiện tượng:** con số đọc về từ một thiết bị **luôn lớn hơn** giá trị thật, và ⭐ **sai số tăng dần
+theo giá trị** — 25 thành 37, 99 thành 153. ⚠ Không có báo lỗi nào, và con số trông hoàn toàn hợp lý.
+**Cách sửa:** tra tài liệu thiết bị xem nó gửi BCD hay nhị phân; ⭐ dùng lệnh quy đổi **ngay tại chỗ
+đọc về**, đừng để giá trị BCD đi sâu vào chương trình (mục 19.5b).
 
 ## 19.11 Bảng chốt
 
@@ -18122,6 +18235,60 @@ Ba điều cần biết khi đo cường độ UV:
 
 ---
 
+## 33.8b ⭐⭐ Đọc được cái tên ghi trên bản vẽ: `TT-101`, `PSH-205`
+
+⭐ Mọi thiết bị đo trong mục này, khi lên **bản vẽ của khách** hoặc lên **datasheet**, đều mang một
+cái tên theo cùng một quy ước. ⚠ Không đọc được nó thì bạn không biết cái hộp trên bản vẽ là **cảm
+biến**, **bộ hiển thị** hay **công tắc** — dù cả ba đều đo cùng một đại lượng.
+
+```text
+        T  T  -  1 0 1
+        │  │     └──── số hiệu vòng đo
+        │  └────────── CHỨC NĂNG:  T = truyền tín hiệu đi  (transmitter)
+        └───────────── ĐẠI LƯỢNG:  T = nhiệt độ            (temperature)
+```
+
+| Chữ **đầu** — đo đại lượng gì | | Chữ **sau** — nó làm gì |
+|---|---|---|
+| **T** nhiệt độ | | **E** phần tử cảm biến — ⭐ cái chạm vào quá trình |
+| **P** áp suất, chân không | | **T** truyền tín hiệu đi *(transmitter)* |
+| **F** lưu lượng | | **I** hiển thị tại chỗ |
+| **L** mức | | ⭐ **S** công tắc — ⚠ chỉ cho **một bit**, không cho giá trị |
+| **S** tốc độ, tần số | | **C** bộ điều khiển |
+| **W** khối lượng, lực | | **A** báo động |
+| ⭐ **Z** vị trí, kích thước | | **V** van, cửa chắn |
+| **A** phân tích | | **Y** rơ-le, khối tính toán |
+
+⭐ Ghép lại thì đọc được ngay, và **thêm `H` / `L` ở cuối là ngưỡng cao / thấp**:
+
+| Tên | Đọc là | ⭐ Với người lập trình nghĩa là |
+|---|---|---|
+| `TE-101` | Phần tử đo nhiệt độ | Chính cái RTD hoặc can nhiệt (mục 33.3) |
+| `TT-101` | Bộ truyền tín hiệu nhiệt độ | ⭐ Cho ra **4–20 mA** → một kênh `AI_` |
+| ⭐ `PSH-205` | Công tắc áp suất, ngưỡng **cao** | ⚠ Chỉ **một bit** → một kênh `DI_`, **không đọc được giá trị** |
+| `LSL-310` | Công tắc mức, ngưỡng **thấp** | Một kênh `DI_` |
+| `FIC-402` | Bộ điều khiển lưu lượng có hiển thị | ⭐ Thiết bị **rời** tự điều khiển — mục 35.9 |
+| `ZS-12` | Công tắc vị trí | Reed xy-lanh, công tắc hành trình (Chương 4) |
+
+> ⭐⭐ **Vì sao chữ thứ hai quan trọng với bạn hơn chữ thứ nhất:** ⚡ nó quyết định **kênh loại nào**
+> trên bảng I/O của bạn. `PT` là **analog**, `PS` là **số** — cùng đo áp suất, nhưng hai dòng khác
+> nhau hoàn toàn trong Phụ lục C.1, hai module khác nhau, hai cách xử lý khác nhau.
+>
+> ⚠ Đọc nhầm `PSH` thành `PT` khi lập bảng I/O là mua nhầm module — và phát hiện lúc đấu tủ.
+
+> ⭐ **Phạm vi: quy ước này đến từ ngành quá trình** (nhà máy hoá chất, thực phẩm, nước), nơi bản vẽ
+> công nghệ dùng nó triệt để. ⚡ Máy lắp ráp rời rạc **thường không vẽ bản vẽ kiểu đó** — nhưng
+> ⭐ **datasheet của thiết bị đo thì vẫn dùng các chữ này**, và khách hàng ngành quá trình thì đưa
+> bản vẽ kiểu đó cho bạn.
+>
+> ⚠ Đây là **quy ước đọc hiểu**, không phải quy ước đặt tên tag trong chương trình — tag trong
+> chương trình vẫn theo Chương 23 và Phụ lục C.1. ⚠⚠ **Đừng trộn hai hệ tên.** ⭐ Ngay trên máy
+> mẫu: công tắc áp suất khí nén mang tên **`PSL`** trên bản vẽ của người thiết kế khí nén, còn
+> trong chương trình nó là **`DI_AirOK`** — ⭐ và **bảng I/O là chỗ duy nhất ghi cả hai cạnh
+> nhau** (Phụ lục C.1, cột ghi chú).
+
+---
+
 ## 33.9 ⭐ Bảng chọn — đo cái gì, dùng loại nào, bẫy gì
 
 | Đo cái gì | Loại thường dùng | ⚠ Bẫy chính |
@@ -18315,6 +18482,10 @@ biệt hữu ích trong lắp ráp điện tử: **lực theo hành trình** —
 
 ### Nguồn tham khảo chương 33
 
+- **Bryan, L.A. & Bryan, E.A.** — *Programmable Controllers: Theory and Implementation*,
+  Phụ lục D *P&ID Symbols*: bảng **chữ định danh thiết bị đo** — chữ đầu chỉ đại lượng, chữ
+  sau chỉ chức năng (E phần tử · T truyền · I hiển thị · S công tắc · C điều khiển · A báo
+  động · V van · Y rơ-le/tính toán) — nền cho mục 33.8b.
 - IEC 60751 — *Industrial platinum resistance thermometers and platinum temperature sensors*: đặc
   tính Pt100/Pt1000, hệ số nhiệt, và cấp chính xác. *(tiêu chuẩn có bản quyền)*
 - IEC 60584 (bộ) — *Thermocouples*: các loại can nhiệt, bảng chuyển đổi điện áp–nhiệt độ, dung sai,
@@ -34803,6 +34974,7 @@ sản lượng, bộ đếm, thời gian, giá trị tính toán.
 | Hai bộ định thời **ảnh hưởng lẫn nhau** | ⭐ Dùng chung **một thể hiện** — chép nấc thang mà quên đổi tên khối | 14 mục 14.3 · 17 mục 17.6 |
 | ⭐ Đổi công thức nhưng máy **vẫn chạy tham số cũ** | Tham số nạp một lần lúc khởi động; hoặc đổi giữa chu trình nên chưa có hiệu lực | ⭐ **29 mục 29.5** |
 | ⚠ Cùng một chương trình, **hai máy cho hai kết quả** | Độ phân giải bộ định thời theo **thiết bị/lệnh**; hoặc thời gian quét khác nhau | 17 mục 17.7 · 10 · 56 mục 56.4 |
+| ⭐⭐ Con số **luôn lớn hơn** giá trị thật, ⭐ **sai số tăng dần theo giá trị** (25→37, 99→153) | ⚠⚠ **Giá trị BCD bị đọc như nhị phân** — thiết bị đời cũ, công tắc xoay số | ⚠ **19 mục 19.5b** |
 | Con số trên màn hình **khác** con số trong PLC | Quy đổi thang ở phía màn hình; hoặc đọc biến khác | 44 · 32 mục 32.3 |
 
 > ⭐⭐ **Phép thử rẻ nhất cho cả nhóm này: đặt một bộ đếm thứ hai lên tín hiệu CHƯA lọc, rồi hiển thị

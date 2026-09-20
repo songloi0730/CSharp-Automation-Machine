@@ -515,6 +515,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#193-so-sánh">19.3 So sánh</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#194-bn-phép-tính">19.4 Bốn phép tính</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#195-ba-ch-plc-hành-x-khác-máy-tính-thưng">19.5 ⭐ Ba chỗ PLC hành xử khác máy tính thường</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#195b-cùng-mt-con-s-ba-kiu-mã-hoá-và-chuyn-gì-xy-ra-khi-đc-nhm-kiu">19.5b ⭐⭐ Cùng một con số, ba kiểu mã hoá — và chuyện gì xảy ra khi đọc nhầm kiểu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#196-thanh-ghi-dch-theo-dõi-sn-phm-dc-chuyn">19.6 ⭐ Thanh ghi dịch — theo dõi sản phẩm dọc chuyền</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#197-mng-và-đa-ch-gián-tip">19.7 Mảng và địa chỉ gián tiếp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#198-trên-máy-mu-dp-01">19.8 Trên máy mẫu DP-01</a></li>
@@ -694,6 +695,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#336-đo-khong-cách-và-v-trí">33.6 Đo khoảng cách và vị trí</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#337-lưu-lưng-mc-chân-không">33.7 Lưu lượng, mức, chân không</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#338-đo-cưng-đ-ánh-sáng-trưng-hp-aiuvintensity">33.8 Đo cường độ ánh sáng — trường hợp `AI_UvIntensity`</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#338b-đc-đưc-cái-tên-ghi-trên-bn-v-tt-101-psh-205">33.8b ⭐⭐ Đọc được cái tên ghi trên bản vẽ: `TT-101`, `PSH-205`</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#339-bng-chn-đo-cái-gì-dùng-loi-nào-by-gì">33.9 ⭐ Bảng chọn — đo cái gì, dùng loại nào, bẫy gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#3310-trên-máy-mu-dp-01">33.10 Trên máy mẫu DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#3311-khác-bit-gia-các-hãng">33.11 Khác biệt giữa các hãng</a></li>
@@ -1541,7 +1543,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 <tr>
 <td>19</td>
 <td><a href="ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu.md">So sánh, toán học &amp; xử lý dữ liệu</a></td>
-<td>MOVE / COMPARE / cộng-trừ-nhân-chia; ⚠ chia cho 0 làm gì PLC (khác nhau theo hãng!); số nguyên vs số thực, ép kiểu <em>(type conversion)</em> và mất chính xác; chuẩn hoá &amp; quy đổi thang <em>(scale/normalize)</em>; <strong>thanh ghi dịch <em>(shift register)</em></strong> — bài toán kinh điển &quot;board lỗi phát hiện ở trạm đầu, loại bỏ ở cuối chuyền&quot;; mảng &amp; con trỏ <em>(indirect addressing)</em> — khi nào đáng dùng, khi nào làm code không ai đọc nổi</td>
+<td>MOVE / COMPARE / cộng-trừ-nhân-chia; ⚠ chia cho 0 làm gì PLC (khác nhau theo hãng!); số nguyên vs số thực, ép kiểu <em>(type conversion)</em> và mất chính xác; chuẩn hoá &amp; quy đổi thang <em>(scale/normalize)</em>; <strong>thanh ghi dịch <em>(shift register)</em></strong> — bài toán kinh điển &quot;board lỗi phát hiện ở trạm đầu, loại bỏ ở cuối chuyền&quot;; mảng &amp; con trỏ <em>(indirect addressing)</em> — khi nào đáng dùng, khi nào làm code không ai đọc nổi  ⭐⭐ <strong>Ba kiểu mã hoá bạn gặp hằng ngày</strong>: hex (mã lỗi, mặt nạ bit) · ⚠⚠ <strong>BCD</strong> — đọc nhầm thành nhị phân cho ra con số <strong>sai mà trông hợp lý</strong>, 25 thành 37 · <strong>mã Gray</strong> trên bộ mã hoá tuyệt đối và vì sao nó tồn tại; quy tắc: <strong>quy đổi về nhị phân ngay tại biên</strong>.</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1652,7 +1654,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>33</td>
 <td><a href="ch33_cam_bien_qua_trinh_thuong_gap.md">Cảm biến quá trình thường gặp</a></td>
-<td>Áp suất; <strong>nhiệt độ</strong> — RTD Pt100 2/3/4 dây và ⭐ vì sao 3 dây là mặc định, vs can nhiệt <em>(thermocouple)</em> cần bù đầu lạnh <em>(cold junction compensation)</em>; đo khoảng cách/vị trí bằng laser &amp; siêu âm; lưu lượng; mức; cảm biến chân không; đo cường độ ánh sáng (UV của DP-01); bảng chọn &quot;đo cái gì → dùng loại nào → bẫy gì&quot;</td>
+<td>Áp suất; <strong>nhiệt độ</strong> — RTD Pt100 2/3/4 dây và ⭐ vì sao 3 dây là mặc định, vs can nhiệt <em>(thermocouple)</em> cần bù đầu lạnh <em>(cold junction compensation)</em>; đo khoảng cách/vị trí bằng laser &amp; siêu âm; lưu lượng; mức; cảm biến chân không; đo cường độ ánh sáng (UV của DP-01); bảng chọn &quot;đo cái gì → dùng loại nào → bẫy gì&quot;  ⭐ <strong>Đọc được tên thiết bị trên bản vẽ</strong> (<code>TT-101</code>, <code>PSH-205</code>): chữ đầu = đại lượng, chữ sau = chức năng — và vì sao chữ <strong>thứ hai</strong> quan trọng hơn với người lập trình, vì nó quyết định kênh <strong>analog hay số</strong>.</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -14394,6 +14396,150 @@ nghiệp vì nó loại hẳn cả một nhóm lỗi.</p>
 hiểu là nguồn gốc của lỗi quy đổi.</p>
 </blockquote>
 <hr>
+<h2 id="195b-cùng-mt-con-s-ba-kiu-mã-hoá-và-chuyn-gì-xy-ra-khi-đc-nhm-kiu">19.5b ⭐⭐ Cùng một con số, ba kiểu mã hoá — và chuyện gì xảy ra khi đọc nhầm kiểu</h2>
+<p>⚠ Mục này nghe như bài học ở trường. ⭐ Nó không phải — ba kiểu mã dưới đây bạn gặp <strong>trong công
+việc hằng ngày</strong>, và đọc nhầm kiểu là một lớp lỗi cho ra <strong>con số sai mà trông hợp lý</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu mã</th>
+<th>⭐ Bạn gặp nó ở đâu trong thực tế</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Thập lục phân</strong> <em>(hexadecimal)</em></td>
+<td>⭐⭐ <strong>Mã lỗi</strong> của CPU và của thiết bị · địa chỉ thanh ghi khi trao đổi dữ liệu · mặt nạ bit · địa chỉ thiết bị trên mạng</td>
+</tr>
+<tr>
+<td><strong>BCD</strong> <em>(binary coded decimal)</em></td>
+<td>⭐ Công tắc xoay số <em>(thumbwheel)</em> · đèn bảy đoạn · ⚠ <strong>thiết bị đời cũ báo giá trị qua mạng</strong></td>
+</tr>
+<tr>
+<td><strong>Mã Gray</strong> <em>(Gray code)</em></td>
+<td>⭐ <strong>Bộ mã hoá vị trí tuyệt đối</strong> — và một số cảm biến vị trí nhiều bit</td>
+</tr>
+</tbody></table></div>
+<h3>⭐ Thập lục phân — thứ bạn phải đọc được, không phải thứ phải tính nhẩm</h3>
+<p>⭐ Mỗi chữ số hex = <strong>đúng 4 bit</strong>, nên nó là cách viết gọn của một chuỗi bit:</p>
+<pre><code class="language-text">   Bit:   0010 0101 1010 1111
+   Hex:     2    5    A    F      →  16#25AF
+</code></pre>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao nó tiện hơn thập phân trong nghề này:</strong> ⚡ nhìn <code>16#25AF</code> là <strong>thấy ngay bit nào bật</strong>
+theo từng nhóm bốn; nhìn <code>9647</code> thì không thấy gì cả. ⭐ Đó là lý do mọi tài liệu hãng viết mã lỗi
+và mặt nạ bit bằng hex.</p>
+<p>⚠ <strong>Cách viết khác nhau giữa các hệ</strong> — <code>16#25AF</code> theo chuẩn IEC, <code>H25AF</code> hoặc <code>25AFh</code> ở hệ khác.
+⭐ Cùng một con số; đừng nhầm cách viết với kiểu dữ liệu.</p>
+</blockquote>
+<h3>⚠⚠ BCD — và cái bẫy cho ra con số sai mà trông hợp lý</h3>
+<p>⭐ BCD mã hoá <strong>từng chữ số thập phân bằng 4 bit riêng</strong>. Số 25 trong BCD <strong>không phải</strong> là 25 ở
+dạng nhị phân:</p>
+<pre><code class="language-text">   Số thập phân:        2        5
+   BCD (4 bit mỗi số):  0010     0101
+   Gộp lại:             0010 0101
+
+   ⭐ Máy đọc chuỗi bit đó THEO BCD   →  25   ✓ đúng
+   ⚠ Máy đọc chuỗi bit đó THEO NHỊ PHÂN →  37   ✗ sai
+</code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Đây là cái bẫy, và nó là loại bẫy tệ nhất: kết quả sai nhưng TRÔNG HỢP LÝ.</strong> ⭐ Không có báo
+lỗi, không có giá trị vô lý — chỉ là một con số khác. ⚡ Và nó <strong>lệch nhiều hơn khi giá trị lớn
+hơn</strong>: BCD <code>99</code> đọc nhầm thành nhị phân cho ra <strong>153</strong>.</p>
+<p>⭐ Triệu chứng đặc trưng để nhận ra: ⭐⭐ <strong>con số đọc về luôn LỚN HƠN giá trị thật, và sai số tăng
+dần theo giá trị</strong> — xem <strong>Phụ lục E.5b</strong>.</p>
+</blockquote>
+<p><strong>Hai điều nữa về BCD, cả hai đều thực dụng:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Điều</th>
+<th>Nội dung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Nó phí bit</strong></td>
+<td>Một từ 16 bit chứa được <strong>0–65535</strong> ở nhị phân, nhưng chỉ <strong>0–9999</strong> ở BCD (bốn chữ số). ⚠ Vượt 9999 là tràn, sớm hơn bạn tưởng</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Đừng tính toán trên BCD</strong></td>
+<td>Quy đổi về nhị phân → tính → quy đổi lại khi hiển thị. ⚠ Cộng hai số BCD như cộng nhị phân cho ra rác</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Vì sao BCD vẫn còn tồn tại dù phí bit:</strong> ⚡ vì nó <strong>đổi thẳng ra chữ số hiển thị</strong> mà không
+cần phép chia. Đèn bảy đoạn và công tắc xoay số là mạch điện, không phải máy tính — với chúng,
+mỗi chữ số một nhóm bốn bit là cách rẻ nhất.</p>
+</blockquote>
+<h3>⭐ Mã Gray — và vì sao nó tồn tại</h3>
+<p>⭐ Trong mã Gray, ⭐⭐ <strong>hai giá trị liền nhau chỉ khác nhau đúng MỘT bit</strong>:</p>
+<pre><code class="language-text">   Thập phân   Nhị phân      Mã Gray
+       6         0110          0101
+       7         0111          0100
+       8         1000   ⚠       1100        ← nhị phân đổi CẢ BỐN bit
+</code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Vấn đề mà mã Gray giải:</strong> ở bộ mã hoá vị trí tuyệt đối, các bit được đọc từ <strong>các rãnh khác
+nhau trên cùng một đĩa</strong>. ⭐ Khi đĩa quay qua ranh giới 7→8, bốn bit phải đổi <strong>cùng một lúc</strong> —
+⚠ mà thực tế chúng không bao giờ đổi đúng cùng một lúc.</p>
+<p>⚡ Trong khoảnh khắc đó, giá trị đọc về có thể là <strong>bất kỳ số nào từ 0 tới 15</strong>. ⭐⭐ Với mã Gray,
+vì chỉ <strong>một bit</strong> đổi, giá trị đọc về trong lúc chuyển chỉ có thể là <strong>7 hoặc 8</strong> — hai giá trị
+đều <strong>đúng hoặc gần đúng</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Thực tế bạn có phải tự giải mã Gray không?</strong> ⚡ Thường là <strong>không</strong> — module hoặc chính bộ mã
+hoá đã quy đổi. ⚠ Nhưng bạn <strong>phải biết nó tồn tại</strong>, vì: ⭐ tài liệu thiết bị ghi rõ đầu ra là
+Gray hay nhị phân, và ⚠⚠ <strong>đặt sai cấu hình đó thì vị trí đọc về nhảy loạn ở đúng các ranh giới</strong>
+— một triệu chứng rất dễ bị đổ cho cơ khí.</p>
+</blockquote>
+<h3>⭐⭐ Chọn kiểu nào — và câu trả lời gần như luôn giống nhau</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kiểu</th>
+<th>⭐ Ưu</th>
+<th>⚠ Nhược</th>
+<th>Dùng khi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Nhị phân</strong> <em>(mặc định)</em></td>
+<td>Dùng hết dải; tính toán trực tiếp</td>
+<td>Khó đọc bằng mắt</td>
+<td>⭐⭐ <strong>Mọi tính toán và lưu trữ bên trong chương trình</strong></td>
+</tr>
+<tr>
+<td><strong>Hex</strong></td>
+<td>⭐ Là <strong>cách VIẾT</strong> của nhị phân, không phải kiểu khác; đọc bit rất nhanh</td>
+<td>Phải quen</td>
+<td>⭐ Đọc mã lỗi, mặt nạ bit, địa chỉ</td>
+</tr>
+<tr>
+<td><strong>BCD</strong></td>
+<td>Đổi thẳng ra chữ số hiển thị</td>
+<td>⚠ Phí bit; ⚠⚠ không tính toán được</td>
+<td>⭐ <strong>Chỉ ở biên giới với thiết bị đòi BCD</strong> — quy đổi ngay khi vào</td>
+</tr>
+<tr>
+<td><strong>Gray</strong></td>
+<td>⭐⭐ Không có giá trị rác lúc chuyển</td>
+<td>Không tính toán được</td>
+<td>⭐ <strong>Chỉ trên đường truyền từ bộ mã hoá về</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Quy tắc rút gọn, và nó áp cho cả ba:</strong> ⚡ <strong>quy đổi về nhị phân NGAY TẠI BIÊN, rồi bên trong
+chương trình chỉ dùng nhị phân.</strong></p>
+<p>⭐ Giống hệt nguyên tắc ở Chương 32 với tín hiệu analog: ⭐⭐ <strong>đổi từ giá trị thô sang đại lượng kỹ
+thuật một lần, ở một chỗ</strong>. ⚠ Để BCD hoặc Gray len vào giữa logic là tự tạo ra một lớp lỗi mà
+không được gì.</p>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Tên lệnh quy đổi khác nhau giữa các hãng</strong> — hệ kiểu thiết bị thường có sẵn một họ lệnh đổi
+qua lại: nhị phân ↔ BCD, hex ↔ ASCII, tách/gộp byte, và cả lệnh <strong>đọc thẳng công tắc xoay số</strong> hay
+<strong>xuất thẳng ra đèn bảy đoạn</strong>. ⭐ Tra Phụ lục A2 và tài liệu lệnh của hệ bạn dùng trước khi tự
+viết phép quy đổi bằng tay.</p>
+</blockquote>
+<hr>
 <h2 id="196-thanh-ghi-dch-theo-dõi-sn-phm-dc-chuyn">19.6 ⭐ Thanh ghi dịch — theo dõi sản phẩm dọc chuyền</h2>
 <h3>Bài toán</h3>
 <p>Trên DP-01: board được kiểm ở <strong>trạm 1</strong>. Nếu tra keo lỗi, board đó phải bị loại — nhưng chỗ loại bỏ
@@ -14745,6 +14891,11 @@ tức</strong>, và không ai hiểu vì sao.
 <strong>Cách sửa:</strong> đưa đơn vị vào tên: <code>LengthTenthMm</code>, <code>CycleTimeMs</code>, <code>YieldPctX10</code>. Quy ước này tốn vài
 ký tự và loại hẳn một nhóm lỗi (Chương 30).</p>
 <hr>
+<h3>🔍 BẪY 10 — Đọc giá trị BCD như giá trị nhị phân</h3>
+<p><strong>Hiện tượng:</strong> con số đọc về từ một thiết bị <strong>luôn lớn hơn</strong> giá trị thật, và ⭐ <strong>sai số tăng dần
+theo giá trị</strong> — 25 thành 37, 99 thành 153. ⚠ Không có báo lỗi nào, và con số trông hoàn toàn hợp lý.
+<strong>Cách sửa:</strong> tra tài liệu thiết bị xem nó gửi BCD hay nhị phân; ⭐ dùng lệnh quy đổi <strong>ngay tại chỗ
+đọc về</strong>, đừng để giá trị BCD đi sâu vào chương trình (mục 19.5b).</p>
 <h2 id="1911-bng-cht">19.11 Bảng chốt</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -26120,6 +26271,122 @@ nhắc đổi sang 4–20 mA — dù dây ngắn.</p>
 <p>Hạng mục này đang chờ chủ dự án quyết.</p>
 </blockquote>
 <hr>
+<h2 id="338b-đc-đưc-cái-tên-ghi-trên-bn-v-tt-101-psh-205">33.8b ⭐⭐ Đọc được cái tên ghi trên bản vẽ: <code>TT-101</code>, <code>PSH-205</code></h2>
+<p>⭐ Mọi thiết bị đo trong mục này, khi lên <strong>bản vẽ của khách</strong> hoặc lên <strong>datasheet</strong>, đều mang một
+cái tên theo cùng một quy ước. ⚠ Không đọc được nó thì bạn không biết cái hộp trên bản vẽ là <strong>cảm
+biến</strong>, <strong>bộ hiển thị</strong> hay <strong>công tắc</strong> — dù cả ba đều đo cùng một đại lượng.</p>
+<pre><code class="language-text">        T  T  -  1 0 1
+        │  │     └──── số hiệu vòng đo
+        │  └────────── CHỨC NĂNG:  T = truyền tín hiệu đi  (transmitter)
+        └───────────── ĐẠI LƯỢNG:  T = nhiệt độ            (temperature)
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chữ <strong>đầu</strong> — đo đại lượng gì</th>
+<th></th>
+<th>Chữ <strong>sau</strong> — nó làm gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>T</strong> nhiệt độ</td>
+<td></td>
+<td><strong>E</strong> phần tử cảm biến — ⭐ cái chạm vào quá trình</td>
+</tr>
+<tr>
+<td><strong>P</strong> áp suất, chân không</td>
+<td></td>
+<td><strong>T</strong> truyền tín hiệu đi <em>(transmitter)</em></td>
+</tr>
+<tr>
+<td><strong>F</strong> lưu lượng</td>
+<td></td>
+<td><strong>I</strong> hiển thị tại chỗ</td>
+</tr>
+<tr>
+<td><strong>L</strong> mức</td>
+<td></td>
+<td>⭐ <strong>S</strong> công tắc — ⚠ chỉ cho <strong>một bit</strong>, không cho giá trị</td>
+</tr>
+<tr>
+<td><strong>S</strong> tốc độ, tần số</td>
+<td></td>
+<td><strong>C</strong> bộ điều khiển</td>
+</tr>
+<tr>
+<td><strong>W</strong> khối lượng, lực</td>
+<td></td>
+<td><strong>A</strong> báo động</td>
+</tr>
+<tr>
+<td>⭐ <strong>Z</strong> vị trí, kích thước</td>
+<td></td>
+<td><strong>V</strong> van, cửa chắn</td>
+</tr>
+<tr>
+<td><strong>A</strong> phân tích</td>
+<td></td>
+<td><strong>Y</strong> rơ-le, khối tính toán</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Ghép lại thì đọc được ngay, và <strong>thêm <code>H</code> / <code>L</code> ở cuối là ngưỡng cao / thấp</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tên</th>
+<th>Đọc là</th>
+<th>⭐ Với người lập trình nghĩa là</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TE-101</code></td>
+<td>Phần tử đo nhiệt độ</td>
+<td>Chính cái RTD hoặc can nhiệt (mục 33.3)</td>
+</tr>
+<tr>
+<td><code>TT-101</code></td>
+<td>Bộ truyền tín hiệu nhiệt độ</td>
+<td>⭐ Cho ra <strong>4–20 mA</strong> → một kênh <code>AI_</code></td>
+</tr>
+<tr>
+<td>⭐ <code>PSH-205</code></td>
+<td>Công tắc áp suất, ngưỡng <strong>cao</strong></td>
+<td>⚠ Chỉ <strong>một bit</strong> → một kênh <code>DI_</code>, <strong>không đọc được giá trị</strong></td>
+</tr>
+<tr>
+<td><code>LSL-310</code></td>
+<td>Công tắc mức, ngưỡng <strong>thấp</strong></td>
+<td>Một kênh <code>DI_</code></td>
+</tr>
+<tr>
+<td><code>FIC-402</code></td>
+<td>Bộ điều khiển lưu lượng có hiển thị</td>
+<td>⭐ Thiết bị <strong>rời</strong> tự điều khiển — mục 35.9</td>
+</tr>
+<tr>
+<td><code>ZS-12</code></td>
+<td>Công tắc vị trí</td>
+<td>Reed xy-lanh, công tắc hành trình (Chương 4)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao chữ thứ hai quan trọng với bạn hơn chữ thứ nhất:</strong> ⚡ nó quyết định <strong>kênh loại nào</strong>
+trên bảng I/O của bạn. <code>PT</code> là <strong>analog</strong>, <code>PS</code> là <strong>số</strong> — cùng đo áp suất, nhưng hai dòng khác
+nhau hoàn toàn trong Phụ lục C.1, hai module khác nhau, hai cách xử lý khác nhau.</p>
+<p>⚠ Đọc nhầm <code>PSH</code> thành <code>PT</code> khi lập bảng I/O là mua nhầm module — và phát hiện lúc đấu tủ.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Phạm vi: quy ước này đến từ ngành quá trình</strong> (nhà máy hoá chất, thực phẩm, nước), nơi bản vẽ
+công nghệ dùng nó triệt để. ⚡ Máy lắp ráp rời rạc <strong>thường không vẽ bản vẽ kiểu đó</strong> — nhưng
+⭐ <strong>datasheet của thiết bị đo thì vẫn dùng các chữ này</strong>, và khách hàng ngành quá trình thì đưa
+bản vẽ kiểu đó cho bạn.</p>
+<p>⚠ Đây là <strong>quy ước đọc hiểu</strong>, không phải quy ước đặt tên tag trong chương trình — tag trong
+chương trình vẫn theo Chương 23 và Phụ lục C.1. ⚠⚠ <strong>Đừng trộn hai hệ tên.</strong> ⭐ Ngay trên máy
+mẫu: công tắc áp suất khí nén mang tên <strong><code>PSL</code></strong> trên bản vẽ của người thiết kế khí nén, còn
+trong chương trình nó là <strong><code>DI_AirOK</code></strong> — ⭐ và <strong>bảng I/O là chỗ duy nhất ghi cả hai cạnh
+nhau</strong> (Phụ lục C.1, cột ghi chú).</p>
+</blockquote>
+<hr>
 <h2 id="339-bng-chn-đo-cái-gì-dùng-loi-nào-by-gì">33.9 ⭐ Bảng chọn — đo cái gì, dùng loại nào, bẫy gì</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -26436,6 +26703,10 @@ biệt hữu ích trong lắp ráp điện tử: <strong>lực theo hành trình
 đóng/tắt không bao giờ thấy được.</p>
 <h3>Nguồn tham khảo chương 33</h3>
 <ul>
+<li><strong>Bryan, L.A. &amp; Bryan, E.A.</strong> — <em>Programmable Controllers: Theory and Implementation</em>,
+Phụ lục D <em>P&amp;ID Symbols</em>: bảng <strong>chữ định danh thiết bị đo</strong> — chữ đầu chỉ đại lượng, chữ
+sau chỉ chức năng (E phần tử · T truyền · I hiển thị · S công tắc · C điều khiển · A báo
+động · V van · Y rơ-le/tính toán) — nền cho mục 33.8b.</li>
 <li>IEC 60751 — <em>Industrial platinum resistance thermometers and platinum temperature sensors</em>: đặc
 tính Pt100/Pt1000, hệ số nhiệt, và cấp chính xác. <em>(tiêu chuẩn có bản quyền)</em></li>
 <li>IEC 60584 (bộ) — <em>Thermocouples</em>: các loại can nhiệt, bảng chuyển đổi điện áp–nhiệt độ, dung sai,
@@ -53188,6 +53459,11 @@ sản lượng, bộ đếm, thời gian, giá trị tính toán.</p>
 <td>⚠ Cùng một chương trình, <strong>hai máy cho hai kết quả</strong></td>
 <td>Độ phân giải bộ định thời theo <strong>thiết bị/lệnh</strong>; hoặc thời gian quét khác nhau</td>
 <td>17 mục 17.7 · 10 · 56 mục 56.4</td>
+</tr>
+<tr>
+<td>⭐⭐ Con số <strong>luôn lớn hơn</strong> giá trị thật, ⭐ <strong>sai số tăng dần theo giá trị</strong> (25→37, 99→153)</td>
+<td>⚠⚠ <strong>Giá trị BCD bị đọc như nhị phân</strong> — thiết bị đời cũ, công tắc xoay số</td>
+<td>⚠ <strong>19 mục 19.5b</strong></td>
 </tr>
 <tr>
 <td>Con số trên màn hình <strong>khác</strong> con số trong PLC</td>

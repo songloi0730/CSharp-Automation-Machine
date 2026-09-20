@@ -556,6 +556,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#g9-bn-đ-ph-thuc-bài-nào-cn-bài-nào">G.9  Bản đồ phụ thuộc — bài nào cần bài nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g11-ghép-tht-s-và-điu-phát-hin-ra-khi-làm-vic-đó">G.11  Ghép thật sự — và điều phát hiện ra khi làm việc đó</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#g12-tách-cu-hình-ca-c-máy-khi-chương-trình">G.12  Tách cấu hình của cỗ máy khỏi chương trình</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -22043,6 +22044,13 @@ chiều chuyển động ngược nhau và tên thanh ghi trao đổi với PLC 
 <p>Cách xử lý sai — và rất phổ biến — là <strong>sao chép cả solution</strong> rồi sửa cho biến thể mới. Sáu tháng sau
 có một lỗi cần vá, bạn phải vá ở bốn nơi, và chắc chắn sẽ sót một nơi. Đây là quyết định kiến trúc
 phải làm <strong>sớm</strong>, vì đảo ngược nó về sau rất tốn kém.</p>
+<blockquote>
+<p>📌 <strong>Mục này bàn biến thể ở mức THIẾT KẾ; chỗ CẤT cấu hình là chuyện khác.</strong> Dù chọn mức nào
+dưới đây, những giá trị khác nhau giữa từng cỗ máy — điểm dạy, địa chỉ IP, hành trình — phải
+nằm ở một thư mục mà <strong>bản cập nhật phần mềm không đụng tới</strong>. Chương 17 mục 17.3.7 bàn riêng
+việc đó, kèm số đo: 294 chỗ trong bộ mẫu đặt cấu hình ngay cạnh file chạy, chỉ 6 chỗ đặt ở nơi
+an toàn khi cập nhật.</p>
+</blockquote>
 <p><strong>Bảng 13.7b — Ba mức xử lý biến thể máy, theo thứ tự nên ưu tiên</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -33136,6 +33144,184 @@ phụ trách cần biết.</p>
 <p>Và điều <strong>không</strong> nên làm: tự ý tắt phần mềm diệt vi-rút để máy chạy nhanh hơn. Đó là quyết định của
 nhà máy, không phải của người viết phần mềm — nếu nó thật sự gây vấn đề, hãy đo và trình bày bằng số
 liệu, rồi để họ quyết.</p>
+</blockquote>
+<hr>
+<h3>17.3.7  Bố trí file trên máy — cái gì của chương trình, cái gì của <strong>cỗ máy này</strong></h3>
+<p>Mục 17.3.2 nói cách đổi thư mục để cập nhật phần mềm mà vẫn lùi lại được. Nó bỏ qua một câu hỏi
+tưởng nhỏ nhưng là nguyên nhân của một loại sự cố rất hay gặp: <strong>cấu hình riêng của cỗ máy nằm ở
+đâu?</strong></p>
+<p>Bài toán xuất hiện ngay khi bạn có <strong>cỗ máy thứ hai cùng loại</strong>. Hai mươi cỗ máy chạy <strong>cùng một
+bản chương trình</strong>, nhưng mỗi cỗ có điểm dạy riêng (lắp cơ khí không bao giờ giống hệt nhau), địa
+chỉ IP riêng, số hiệu cổng nối tiếp riêng, hành trình trục hơi khác nhau. Nếu những thứ đó nằm lẫn
+trong thư mục chương trình thì <strong>mỗi lần cập nhật phần mềm là một lần đè mất cấu hình</strong> — và người
+phát hiện ra sẽ là người đi cập nhật lúc hai giờ sáng.</p>
+<h4>Đo thực tế: ngành này để cấu hình ở đâu</h4>
+<p><strong>Bảng 17.9 — Chỗ đặt cấu hình trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dấu hiệu</th>
+<th>Số chỗ</th>
+<th>Số dự án</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đọc đường dẫn <strong>cạnh file chạy</strong> (<code>BaseDirectory</code>, <code>StartupPath</code>, thư mục hiện hành)</td>
+<td><strong>294</strong></td>
+<td><strong>12 / 13</strong></td>
+</tr>
+<tr>
+<td>Dùng <strong>thư mục dữ liệu của hệ điều hành</strong> (<code>CommonApplicationData</code>, <code>ProgramData</code>)</td>
+<td><strong>6</strong></td>
+<td>4 / 13</td>
+</tr>
+<tr>
+<td><strong>Đường dẫn tuyệt đối gõ cứng</strong> trong mã (<code>&quot;D:\...&quot;</code>, <code>&quot;E:\...&quot;</code>)</td>
+<td><strong>912</strong></td>
+<td>9 / 13</td>
+</tr>
+<tr>
+<td><strong>Địa chỉ IP gõ cứng</strong> trong mã nguồn</td>
+<td><strong>133</strong></td>
+<td><strong>12 / 13</strong></td>
+</tr>
+<tr>
+<td>Có thư mục tên <code>config</code> / <code>setting</code></td>
+<td>87</td>
+<td>8 / 13</td>
+</tr>
+<tr>
+<td>Có thư mục tên <code>product</code> / <code>recipe</code> / <code>model</code></td>
+<td>157</td>
+<td>9 / 13</td>
+</tr>
+</tbody></table></div>
+<p>Hai dòng đầu đặt cạnh nhau là cả câu chuyện: <strong>294 chỗ đặt cấu hình ngay cạnh file chạy, chỉ 6 chỗ
+đặt ở nơi mà bộ cài đặt không xoá.</strong> Và trong 912 đường dẫn gõ cứng, một dự án chiếm 595 chỗ, trong
+đó <strong>một đường dẫn duy nhất xuất hiện 153 lần</strong> — đổi ổ đĩa lưu dữ liệu ở máy đó nghĩa là biên dịch
+lại phần mềm.</p>
+<blockquote>
+<p>⚠️ <strong>Dòng cuối cùng đáng sợ hơn vẻ ngoài: 133 địa chỉ IP gõ cứng ở 12/13 dự án.</strong> Địa chỉ IP là
+thứ <strong>chắc chắn khác nhau</strong> giữa hai cỗ máy và <strong>chắc chắn đổi</strong> khi nhà máy quy hoạch lại mạng.
+Gõ cứng nó nghĩa là mỗi lần bộ phận IT đổi dải mạng, phần mềm máy phải được biên dịch lại — bởi
+đúng người đã viết nó, người mà hai năm sau có thể đã chuyển công ty.</p>
+</blockquote>
+<h4>Ba thư mục, ba vòng đời khác nhau</h4>
+<p>Cách bố trí đủ dùng cho hầu hết máy phi tiêu chuẩn chỉ cần <strong>ba thư mục</strong>, và điều quyết định
+không phải tên thư mục mà là <strong>vòng đời khác nhau</strong> của từng nhóm:</p>
+<pre><code>C:\Program Files\MeoFrame\          ← CHƯƠNG TRÌNH
+    App_v2.4.2\                        cập nhật đè thoải mái, giống hệt trên mọi máy
+
+C:\ProgramData\MeoFrame\            ← GỐC DỮ LIỆU (bộ cài KHÔNG đụng tới)
+    config\                            CỦA CỖ MÁY NÀY — không chép sang máy khác
+        may.json                         mã máy, biến thể, hành trình, hệ số xung
+        diem.json                        điểm dạy: vị trí đo, máng OK/NG, vị trí chờ
+        mang.json                        IP, cổng, cổng nối tiếp, tốc độ baud
+        io.json                          bản đồ tín hiệu vào-ra
+    product\                           CỦA SẢN PHẨM — chép được giữa các máy
+        SanPhamA.json
+        SanPhamB.json
+    data\                              DO MÁY SINH RA — xoay vòng, dọn định kỳ
+        ketqua\  ca\  log\
+</code></pre>
+<p><strong>Bảng 17.10 — Ba nhóm file, và câu hỏi phân biệt chúng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Câu hỏi phân biệt</th>
+<th>Cập nhật phần mềm</th>
+<th>Chép sang máy khác</th>
+<th>Ai sửa</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chương trình</strong></td>
+<td><em>Có giống hệt trên mọi cỗ máy cùng loại không?</em> → <strong>có</strong></td>
+<td><strong>Đè</strong></td>
+<td>Được (chính là mục đích)</td>
+<td>Đội phần mềm</td>
+</tr>
+<tr>
+<td><strong><code>config/</code></strong></td>
+<td><em>Hai cỗ máy cùng loại có khác nhau chỗ này không?</em> → <strong>có</strong></td>
+<td><strong>KHÔNG được đụng</strong></td>
+<td><strong>Không</strong> — chép sang là sai</td>
+<td>Kỹ thuật viên chỉnh máy</td>
+</tr>
+<tr>
+<td><strong><code>product/</code></strong></td>
+<td><em>Có phụ thuộc vào SẢN PHẨM đang chạy không?</em> → <strong>có</strong></td>
+<td>Không đụng</td>
+<td><strong>Được</strong> — và đây là việc hay làm</td>
+<td>Kỹ sư quy trình</td>
+</tr>
+<tr>
+<td><strong><code>data/</code></strong></td>
+<td><em>Do máy sinh ra khi chạy?</em> → <strong>có</strong></td>
+<td>Không đụng</td>
+<td>Không cần</td>
+<td>Không ai sửa tay</td>
+</tr>
+</tbody></table></div>
+<p>Phân biệt <code>config/</code> với <code>product/</code> là chỗ hay bị gộp nhầm, và hậu quả chỉ lộ ra muộn: khi khách
+hàng muốn <strong>chạy cùng một sản phẩm trên hai cỗ máy</strong>, bạn phải chép được công thức mà <strong>không</strong> kéo
+theo điểm dạy của cỗ máy kia. Gộp chung một file thì việc đó không làm được, và người ta sẽ chép cả
+file — rồi trục đâm.</p>
+<h4>Gốc dữ liệu tìm ở đâu, theo thứ tự</h4>
+<p>Ba mức, và mức thứ ba <strong>phải kèm cảnh báo</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thứ tự</th>
+<th>Nguồn</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Biến môi trường</strong> (ví dụ <code>MEOBENCH_DATA</code>)</td>
+<td>Đội triển khai đổi được chỗ lưu mà không sửa mã, không biên dịch lại</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Thư mục dữ liệu của hệ điều hành</strong> (<code>ProgramData</code>)</td>
+<td>Bộ cài và bản cập nhật <strong>không xoá</strong> thư mục này</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Cạnh file chạy</strong></td>
+<td>Tiện lúc phát triển — nhưng đây đúng là chỗ bản cập nhật sẽ đè mất, nên chương trình <strong>phải ghi một dòng cảnh báo</strong> khi rơi vào mức này</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Ba quy tắc nhỏ đi kèm, mỗi cái tránh được một loại sự cố có thật.</strong></p>
+<p><strong>(1) Thiếu file thì TẠO MẶC ĐỊNH, nhưng KHÔNG BAO GIỜ đè file đã có.</strong> Một hàm
+<code>GhiNeuChuaCo(...)</code> ba dòng. Thiếu nó thì một bản cập nhật &quot;tử tế&quot; — bản có tính năng tự tạo cấu
+hình mặc định — sẽ xoá sạch điểm dạy của cả hai mươi cỗ máy trong một đêm.</p>
+<p><strong>(2) Kiểm điểm dạy có nằm TRONG hành trình của chính cỗ máy này không.</strong> Chép nhầm <code>diem.json</code>
+từ một cỗ máy hành trình dài hơn là chuyện xảy ra thường xuyên, và nếu không kiểm thì thứ phát
+hiện ra nó sẽ là <strong>cơ khí</strong>. Phép kiểm này rẻ: so từng điểm với hành trình đọc trong <code>may.json</code>,
+và từ chối chạy kèm thông báo nói rõ <em>điểm nào, giá trị bao nhiêu, hành trình tới đâu</em>.</p>
+<p><strong>(3) File cấu hình hỏng thì chạy bằng mặc định VÀ nói ra.</strong> Im lặng dùng mặc định còn tệ hơn
+dừng hẳn: máy chạy với thông số sai mà không ai biết. Đây cùng một nguyên tắc với mục 3.5.5.</p>
+</blockquote>
+<h4>Một phép thử mười phút, làm trước khi giao máy</h4>
+<p>Đây là phép thử mà <strong>không đội nào làm nhưng ai cũng nên làm</strong>, và nó trả lời đúng câu hỏi khó chịu
+nhất:</p>
+<ol>
+<li>Chỉnh điểm dạy và IP cho đúng cỗ máy, chạy thử, xác nhận đúng.</li>
+<li><strong>Cài đè bản phần mềm mới lên</strong> đúng như khi cập nhật thật.</li>
+<li>Mở lại phần mềm và kiểm: <strong>điểm dạy còn nguyên không? IP còn nguyên không? công thức khách hàng
+còn không?</strong></li>
+</ol>
+<p>Nếu câu trả lời có một chữ &quot;không&quot;, bạn vừa tìm ra thứ sẽ làm hỏng buổi cập nhật tiếp theo — và tìm
+ra nó ở xưởng rẻ hơn rất nhiều so với tìm ra ở nhà máy khách hàng lúc nửa đêm.</p>
+<blockquote>
+<p>📌 <strong>Mã chạy được cho toàn bộ mục này nằm ở <code>source/MeoBench/KhoCauHinh.cs</code></strong>, kèm 34 phép kiểm
+chạy bằng <code>dotnet run -- G12</code>. Phép kiểm quan trọng nhất mô phỏng đúng ba bước ở trên: ghi cấu
+hình riêng, dựng lại chương trình trên cùng gốc dữ liệu, rồi khẳng định <strong>điểm dạy, IP và công
+thức khách hàng đều sống sót</strong>. Phụ lục G mục G.12 nói chi tiết.</p>
 </blockquote>
 <hr>
 <h2 id="174-đi-chiu-thc-t-ngành-cái-gì-tht-s-đưc-dùng-và-nên-bt-đu-t-đâu">17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu</h2>
@@ -44274,6 +44460,60 @@ một lớp <code>MayHoanChinh</code> của riêng bạn, nối mọi thứ đã
 ra mà chưa bao giờ được gọi từ máy</strong>. Con số đó nói về phần mềm của bạn nhiều hơn bất kỳ phép kiểm
 đơn vị nào: một lớp không ai gọi thì hoặc là bạn chưa ghép xong, hoặc là bạn đã viết một thứ không
 cần thiết — và cả hai đều đáng biết trước khi giao máy.</p>
+</blockquote>
+<hr>
+<h2 id="g12-tách-cu-hình-ca-c-máy-khi-chương-trình">G.12  Tách cấu hình của cỗ máy khỏi chương trình</h2>
+<p>Bốn mươi bài và phần ghép máy ở G.11 đều chạy với cấu hình nằm trong mã. Một cỗ máy thật thì không
+được phép như vậy, vì <strong>cỗ máy thứ hai cùng loại</strong> sẽ có điểm dạy khác, IP khác, hành trình khác.</p>
+<p>Chương 17 mục 17.3.7 bàn nguyên tắc và số đo (294 chỗ đặt cấu hình cạnh file chạy trong bộ mẫu, chỉ
+6 chỗ đặt ở nơi an toàn khi cập nhật). Mục này là phần <strong>chạy được</strong> của nó:
+<code>source/MeoBench/KhoCauHinh.cs</code>, 34 phép kiểm, <code>dotnet run -- G12</code>.</p>
+<p><strong>Bảng G.5 — Sáu nhóm kiểm của phần tách cấu hình</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm</th>
+<th>Khẳng định cốt lõi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>G.12.1</strong> Ba thư mục</td>
+<td>Lần đầu tạo đủ <code>config/</code>, <code>product/</code>, <code>data/</code> và file mặc định · gọi lần hai <strong>không tạo gì thêm</strong></td>
+</tr>
+<tr>
+<td><strong>G.12.2</strong> Cập nhật không đè</td>
+<td>★ Ghi điểm dạy 41,5 mm và IP <code>10.20.30.44</code>, dựng lại chương trình trên <strong>cùng gốc dữ liệu</strong> → <strong>cả ba đều sống sót</strong>: điểm dạy, IP, công thức khách hàng</td>
+</tr>
+<tr>
+<td><strong>G.12.3</strong> Điểm dạy trong hành trình</td>
+<td>Chép nhầm <code>diem.json</code> từ máy hành trình 400 mm sang máy hành trình 300 mm → <strong>bị bắt ngay lúc nạp</strong>, thông báo nói rõ điểm nào và giá trị bao nhiêu</td>
+</tr>
+<tr>
+<td><strong>G.12.4</strong> File hỏng</td>
+<td><code>mang.json</code> là rác → dùng mặc định, <strong>không ném</strong>, và <strong>có cảnh báo nói rõ file nào</strong></td>
+</tr>
+<tr>
+<td><strong>G.12.5</strong> Gốc dữ liệu</td>
+<td>Biến môi trường → thư mục dữ liệu hệ điều hành → cạnh file chạy <strong>kèm cảnh báo</strong></td>
+</tr>
+<tr>
+<td><strong>G.12.6</strong> Chép được và không chép được</td>
+<td>Công thức chép sang máy khác <strong>dùng được ngay</strong>; còn IP thì hai cỗ máy cùng loại <strong>phải khác nhau</strong></td>
+</tr>
+</tbody></table></div>
+<p>Nhóm <strong>G.12.2</strong> là phép kiểm đáng giá nhất trong cả phụ lục, vì nó kiểm được thứ <strong>chỉ lộ ra lúc
+cập nhật phần mềm</strong> — nghĩa là thứ mà mọi phép kiểm khác, kể cả 62 phép kiểm ghép máy ở G.11, đều
+không nhìn thấy. Nó mô phỏng đúng ba bước của phép thử mười phút ở mục 17.3.7: chỉnh cấu hình cho
+cỗ máy, cài đè bản mới, rồi kiểm xem cấu hình còn không.</p>
+<blockquote>
+<p>💡 <strong>Bài tập mở rộng, và nó khó hơn vẻ ngoài: thêm ĐÁNH PHIÊN BẢN cho cấu hình.</strong> Bản phần mềm
+v3 thêm một trường mới vào <code>may.json</code>. Cỗ máy đang chạy v2 có file thiếu trường đó. Ba cách xử
+lý: (a) trường mới có <strong>giá trị mặc định</strong> trong mã, file cũ đọc vẫn chạy — rẻ nhất, nhưng không
+biết được file thuộc phiên bản nào; (b) ghi thêm <code>&quot;PhienBan&quot;: 3</code> vào file và <strong>nâng cấp file khi
+nạp</strong>, có ghi log — đúng đắn hơn, tốn một hàm chuyển đổi cho mỗi bước phiên bản; (c) từ chối chạy
+và bắt kỹ thuật viên sửa tay — an toàn nhất nhưng làm hỏng buổi cập nhật. Với máy đang sản xuất,
+(b) gần như luôn là câu trả lời đúng, và <strong>hàm chuyển đổi phải giữ lại mãi</strong> chứ không xoá sau một
+vài phiên bản, vì luôn có một cỗ máy ở góc nhà máy chưa cập nhật suốt ba năm.</p>
 </blockquote>
 </div>
 </div>

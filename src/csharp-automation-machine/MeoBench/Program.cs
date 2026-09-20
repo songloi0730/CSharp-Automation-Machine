@@ -8,9 +8,11 @@
 //   dotnet run -- G4          → chỉ chạy nhóm G.4 (bài G.4.1 và G.4.3)
 //   dotnet run -- G8          → chỉ chạy nhóm G.8
 //   dotnet run -- G9          → chỉ kiểm CỖ MÁY GHÉP HOÀN CHỈNH
+//   dotnet run -- G12         → chỉ kiểm phần TÁCH CẤU HÌNH (config/product)
 //   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
 //   dotnet run -- --danhsach  → liệt kê 40 bài
 // -------------------------------------------------------
+using System.Globalization;
 using MeoBench;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -52,6 +54,7 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["G8"] = async () => { await KiemRapNoi.Chay(); await KiemTrinhTuVaVanHanh2.Chay(); },
     ["G9"] = KiemMayHoanChinh.Chay,          // ghép toàn máy
     ["G11"] = KiemMayHoanChinh.Chay,
+    ["G12"] = KiemCauHinh.Chay,            // tách cấu hình máy khỏi chương trình
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -84,14 +87,18 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemRapNoi.Chay();
     await KiemTrinhTuVaVanHanh2.Chay();
     await KiemMayHoanChinh.Chay();
+    await KiemCauHinh.Chay();
 }
 else
 {
-    // "G4.1" / "G.4.1" / "g4" đều quy về khoá nhóm "G4"
+    // "G4.1" / "G.4.1" / "g4" đều quy về khoá nhóm "G4".
+    // Thử khoá DÀI trước: nếu không, "G12" sẽ bị cắt thành "G1" và chạy nhầm nhóm.
     string chuan = tuyChon.Replace(".", "", StringComparison.Ordinal);
-    string khoa  = chuan.Length >= 2 ? chuan[..2] : chuan;
+    Func<Task>? chay = null;
+    for (int n = Math.Min(chuan.Length, 3); n >= 2 && chay is null; n--)
+        nhom.TryGetValue(chuan[..n], out chay);
 
-    if (!nhom.TryGetValue(khoa, out var chay))
+    if (chay is null)
     {
         Console.WriteLine($"Không có nhóm nào khớp '{tuyChon}'. Các bài có sẵn:");
         foreach (var (ma, ten) in danhSachBai) Console.WriteLine($"   {ma}  {ten}");
@@ -104,19 +111,97 @@ else
 
 return Kiem.TongKet();
 
-// ── Chạy máy thật sự để nhìn bằng mắt ──────────────────────────────────
+// ── Chạy CỖ MÁY HOÀN CHỈNH để nhìn bằng mắt ───────────────────────────
 static async Task ChayDemo()
 {
-    Console.WriteLine("=== MeoBench-01 · chạy 20 chu kỳ trên bản giả lập ===");
-    var may = RapNoi.Tao(new CauHinhMay { HatGiongGiaLap = 2026 });
-    may.DaBaoCao += (_, dong) => Console.WriteLine("  " + dong);
+    string goc = Path.Combine(Path.GetTempPath(), "MeoBench_demo");
+    Directory.CreateDirectory(goc);
 
-    await may.VeGocAsync();
-    await may.ChayAsync(20);
+    var dongHo = new DongHoGia(new DateTime(2026, 9, 20, 6, 0, 0));
+    var anToan = new AnToanGiaLap();
+    double apSuat = 6.00;
+
+    var ch = new CauHinhHoanChinh
+    {
+        May          = new CauHinhMay { HatGiongGiaLap = 2026 },
+        ThuMucDuLieu = goc,
+        MaCa         = "CA-A-" + dongHo.BayGio.ToString("yyyyMMdd", CultureInfo.InvariantCulture),
+    };
+
+    using var may = new MayHoanChinh(ch, dongHo, anToan, new CongThuc { Ten = "SanPhamA" }, () => apSuat);
+
+    // In nhật ký có cấu trúc ra màn hình — đây là CỬA RA THỨ BA, cắm thêm
+    // vào đường ống log mà không lớp nào phải sửa (mục 19.4.1b).
+    may.NhatKy.ThemCuaRa(new CuaRaManHinh());
+
+    Console.WriteLine("═══ MeoBench-01 · nhật ký cỗ máy hoàn chỉnh ═══");
+    Console.WriteLine();
+
+    await may.KhoiTaoAsync();
+    await may.ChayAsync(6);
 
     Console.WriteLine();
-    Console.WriteLine($"Trạng thái cuối : {may.TrangThai}");
-    Console.WriteLine($"Tổng phôi       : {may.SoPhoi}");
-    Console.WriteLine($"Đạt / Không đạt : {may.SoOk} / {may.SoNg}");
-    Console.WriteLine($"Hạt giống       : {may.CauHinh.HatGiongGiaLap}  (chạy lại số này ra đúng kết quả trên)");
+    Console.WriteLine("--- khí nén tụt xuống 4,2 bar ---");
+    apSuat = 4.20;
+    await may.ChayAsync(6);
+
+    Console.WriteLine();
+    Console.WriteLine("--- khí phục hồi, màn chắn sáng bị che ---");
+    apSuat = 6.00;
+    anToan.ManChanBiChe = true;
+    await may.ChayAsync(3);
+
+    Console.WriteLine();
+    Console.WriteLine("--- bỏ che, cảm biến chiều dày hỏng ---");
+    anToan.ManChanBiChe = false;
+    may.CamBien.MoPhongKhongPhanHoi = true;
+    try { await may.ChayAsync(5); } catch (AlarmException) { /* đã ghi log */ }
+
+    Console.WriteLine();
+    Console.WriteLine("--- xác nhận cảnh báo, reset, chạy lại ---");
+    may.CamBien.MoPhongKhongPhanHoi = false;
+    foreach (var cb in may.BangCanhBao.DangHoatDong.ToList()) may.XacNhanCanhBao(cb.Ma);
+    may.Reset();
+    await may.KhoiTaoAsync();
+    await may.ChayAsync(4);
+
+    may.TatMay();
+
+    Console.WriteLine();
+    Console.WriteLine("┌─ TỔNG KẾT ──────────────────────────────────────────────");
+    Console.WriteLine($"│ Trạng thái cuối : {may.TrangThai}");
+    Console.WriteLine($"│ Công thức       : {may.CongThuc.Ten} "
+                    + $"({may.CongThuc.GioiHanDuoiMm:F3}–{may.CongThuc.GioiHanTrenMm:F3} mm)");
+    Console.WriteLine($"│ Sản lượng ca    : {may.BoDem.HienTai.Tong} phôi · "
+                    + $"{may.BoDem.HienTai.Ok} đạt · {may.BoDem.HienTai.Ng} không đạt · "
+                    + $"tỷ lệ {may.BoDem.TyLeDat:F1} %");
+    Console.WriteLine($"│ Bắt tay máy sau : chuyển {may.BatTay.SoPhoiDaChuyen} phôi · "
+                    + $"đói {may.BatTay.SoGiayDoiHang} nhịp · bị chặn {may.BatTay.SoGiayBiChan} nhịp");
+    Console.WriteLine($"│ Nhật ký         : {may.CuaRaBoNho.TatCa.Count} bản ghi "
+                    + $"(bảng giao diện giữ {may.BangLog.SoDongDangGiu})");
+    Console.WriteLine($"│ File kết quả    : {Path.GetFileName(may.SoGhi.DuongDanHomNay)}");
+    Console.WriteLine($"│ Hạt giống       : {ch.May.HatGiongGiaLap} — chạy lại ra đúng kết quả trên");
+    Console.WriteLine("└─────────────────────────────────────────────────────────");
+
+    try { Directory.Delete(goc, recursive: true); }
+#pragma warning disable CA1031
+    catch (Exception) { }
+#pragma warning restore CA1031
+}
+
+/// <summary>Cửa ra thứ ba: in nhật ký ra màn hình console.</summary>
+internal sealed class CuaRaManHinh : ICuaRaLog
+{
+    public void Nhan(BanGhiLog ban)
+    {
+        ArgumentNullException.ThrowIfNull(ban);
+        string muc = ban.Muc switch
+        {
+            MucLog.Loi      => "LỖI  ",
+            MucLog.CanhBao  => "CẢNH ",
+            MucLog.ThongTin => "     ",
+            _               => "gỡ   ",
+        };
+        Console.WriteLine($"  {ban.ThoiDiem:HH:mm:ss} {muc} {ban.Nguon,-9} {ban.DungCau()}");
+    }
 }

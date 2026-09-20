@@ -1203,6 +1203,18 @@
   <li style="padding-left:16px;font-size:13px"><a href="#l17-danh-mc-khi-dùng-li-cái-nào-t-vit-cái-nào-đã-có-sn">L.17 ⭐⭐ Danh mục khối dùng lại — cái nào tự viết, cái nào đã có sẵn</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l18-ladder-hay-st-mu-nào-nên-vit-bng-gì">L.18 ⭐⭐ Ladder hay ST — mẫu nào nên viết bằng gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l19-bng-tra-nhanh-mu-nào-cho-vic-gì">L.19 Bảng tra nhanh — mẫu nào cho việc gì</a></li>
+  <li><a href="#ph-lc-m-cu-hình-d-án-phn-mm-phn-trưng-không-dy">Phụ lục M — Cấu hình dự án phần mềm: phần trường không dạy</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m1-khong-cách-gia-bài-tp-và-d-án-tht">M.1 ⭐⭐ Khoảng cách giữa bài tập và dự án thật</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m2-cu-hình-phn-cng-trong-phn-mm">M.2 Cấu hình phần cứng trong phần mềm</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m3-mng-đa-ch-ip-tên-trm-và-mt-sơ-đ-phi-qun-lý">M.3 ⭐ Mạng: địa chỉ IP, tên trạm, và một sơ đồ phải quản lý</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m4-khi-đng-stop-startup-run-và-vòng-quét-đu-tiên">M.4 ⭐⭐ Khởi động: STOP, STARTUP, RUN — và vòng quét đầu tiên</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m5-đng-h-và-du-thi-gian">M.5 ⭐ Đồng hồ và dấu thời gian</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m6-chn-đoán-ca-chính-cpu-th-phi-đc-trưc-khi-đc-code">M.6 ⭐⭐ Chẩn đoán của chính CPU — thứ phải đọc TRƯỚC khi đọc code</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m7-mt-khu-mc-truy-cp-và-bo-v-mã-ngun">M.7 ⭐ Mật khẩu, mức truy cập và bảo vệ mã nguồn</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m8-np-xung-th-nh-và-khôi-phc">M.8 Nạp xuống, thẻ nhớ và khôi phục</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m9-mô-phng-không-kim-đưc-gì">M.9 ⚠⚠ Mô phỏng KHÔNG kiểm được gì</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m10-danh-mc-kim-d-án-phn-mm-đã-cu-hình-xong-chưa">M.10 ⭐ Danh mục kiểm — dự án phần mềm đã cấu hình xong chưa</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#m11-dn-v-đâu">M.11 Dẫn về đâu</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -1920,6 +1932,12 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <td>16 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm <strong>điều kiện dùng</strong> và <strong>thứ nó KHÔNG làm</strong>: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — <strong>không phải</strong> chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh &amp; chống rung · khối xy-lanh hai vị trí dùng lại được · servo theo PLCopen Motion · đảo chiều &amp; sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng · hút chân không có thổi ngược · đếm tuổi thọ vật tư. Kèm ⭐⭐ <strong>danh mục khối dùng lại (L.17)</strong> — khối nào chuẩn IEC/hãng đã có nên đừng viết lại, khối nào ⚠⚠ <strong>tuyệt đối không được tự viết</strong> vì là chức năng an toàn, khối nào mới thật sự đáng đưa vào thư viện của bạn — và bảng tra <em>việc cần làm → mẫu nào → bẫy lớn nhất</em></td>
 <td>✅</td>
 </tr>
+<tr>
+<td>M</td>
+<td><a href="pl_m_cau_hinh_du_an_phan_mem.md">⭐⭐ **Cấu hình dự án phần mềm: phần trường không dạy</a></td>
+<td>⭐ Khoảng cách giữa bài tập mô phỏng và dự án thật, liệt kê thành việc phải làm: <strong>cấu hình phần cứng trong phần mềm</strong> (khai CPU/module đúng khe, ⭐ <strong>tham số từng module</strong> — thời gian lọc ngõ vào, dải analog, loại cảm biến nhiệt, chẩn đoán đứt dây, trạng thái ngõ ra khi CPU STOP) · <strong>mạng</strong> (địa chỉ tĩnh, tên trạm, sơ đồ địa chỉ, ⭐⭐ tách mạng máy khỏi mạng nhà máy) · ⭐⭐ <strong>khởi động</strong> (STOP/STARTUP/RUN, khởi động lại nóng so với xoá bộ nhớ, ⚠ nạp lại khối dữ liệu làm mất con số tích luỹ, việc được và KHÔNG được làm ở vòng quét đầu) · <strong>đồng hồ và dấu thời gian</strong> · ⭐⭐ <strong>chẩn đoán của chính CPU</strong> (đèn, bộ đệm chẩn đoán, lỗi nặng/lỗi nhẹ, ⚠⚠ bẫy an toàn của thủ tục xoá lỗi rồi chạy tiếp) · <strong>mật khẩu &amp; bảo vệ mã nguồn</strong> như một quyết định hợp đồng · <strong>nạp xuống, thẻ nhớ, thứ tự khôi phục</strong> · ⚠⚠ <strong>bảng mô phỏng KHÔNG kiểm được gì</strong> · danh mục kiểm 18 mục trước khi chạy thử</td>
+<td>✅</td>
+</tr>
 </tbody></table></div>
 <hr>
 <h2 id="ghi-chú-phm-vi-đc-trưc-khi-vit-bt-k-chương-nào">Ghi chú phạm vi — đọc trước khi viết bất kỳ chương nào</h2>
@@ -2479,6 +2497,10 @@ máy của bạn. Một cỗ máy thật phải được đánh giá riêng — 
 <tr>
 <td>Cần một đoạn code mẫu</td>
 <td><strong>Phụ lục L</strong> — 16 mẫu dùng ngay</td>
+</tr>
+<tr>
+<td>⭐ Sắp làm dự án thật đầu tiên, không biết ngoài viết code còn phải làm gì</td>
+<td>⭐⭐ <strong>Phụ lục M</strong> — cấu hình, mạng, khởi động, chẩn đoán, bảo vệ</td>
 </tr>
 <tr>
 <td>Cần một công thức</td>
@@ -41201,11 +41223,12 @@ và giữ cho nó vẫn đúng khi chương trình đổi — thì ba năm sau, 
 <td><strong>Trạng thái ngõ ra khi CPU lỗi</strong></td>
 <td>Phải thử thật (Chương 10, mục 10.5)</td>
 </tr>
-<tr>
-<td><strong>Chức năng an toàn</strong></td>
-<td>Bắt buộc thử thật, do người có thẩm quyền</td>
-</tr>
 </tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Bảng trên là giới hạn về THẾ GIỚI VẬT LÝ. Còn một nhóm giới hạn thứ hai, ít ai nghĩ tới: CẤU HÌNH.</strong> ⚡ Mô phỏng chạy trên một cấu hình lý tưởng, nên nó <strong>không kiểm được</strong> kiểu đấu sink/source, tham số module (dải analog, thời gian lọc ngõ vào, loại cảm biến nhiệt), địa chỉ mạng, hay hành vi giữ / không giữ khi nạp lại.</p>
+<p>⭐⭐ Đó là nhóm nguy hiểm vì ⚠ <strong>logic của bạn đúng hoàn toàn mà máy vẫn sai</strong> — và không có báo lỗi biên dịch nào. Danh sách đầy đủ kèm danh mục kiểm: ⭐ <strong>Phụ lục M</strong>, đặc biệt mục <strong>M.9</strong>.
+| <strong>Chức năng an toàn</strong> | Bắt buộc thử thật, do người có thẩm quyền |</p>
+</blockquote>
 <p>Vì vậy trình tự đúng là: <strong>mô phỏng để loại hết lỗi logic → ra hiện trường chỉ để xử lý những thứ chỉ
 làm được ở đó</strong>. Chương 52.</p>
 <hr>
@@ -42082,7 +42105,7 @@ tại: người lập trình bị gọi tới vì <em>&quot;máy lỗi&quot;</em
 <tr>
 <td>CPU không vào RUN</td>
 <td>Có lỗi hệ thống; công tắc ở STOP; thiếu cấu hình phần cứng</td>
-<td>Đọc bộ đệm lỗi trong phần mềm</td>
+<td>⭐ Đọc <strong>bộ đệm chẩn đoán</strong> — cách đọc và vì sao đọc trước khi mở code: <strong>Phụ lục M.6</strong></td>
 </tr>
 <tr>
 <td>CPU tự chuyển sang STOP khi chạy</td>
@@ -44489,7 +44512,7 @@ bản sao lưu</strong>:</p>
 </thead>
 <tbody><tr>
 <td>Thứ tự khôi phục</td>
-<td>Cấu hình phần cứng → chương trình → tham số driver → HMI</td>
+<td>Cấu hình phần cứng → chương trình → tham số driver → HMI — ⭐ chi tiết <strong>Phụ lục M.8</strong></td>
 </tr>
 <tr>
 <td>Phần mềm và <strong>phiên bản</strong> cần có</td>
@@ -51818,7 +51841,7 @@ vòng đời máy.</strong></p>
 </blockquote>
 <hr>
 <h2 id="c10-bng-cu-hình-phn-cng">C.10 Bảng cấu hình phần cứng</h2>
-<p>⭐ <strong>Dùng để:</strong> ghi lại <strong>cái gì cắm ở đâu</strong> — bản đồ khe cắm, địa chỉ, phiên bản. Đây là tài liệu
+<p>⭐ <strong>Dùng để:</strong> ghi lại <strong>cái gì cắm ở đâu</strong> — bản đồ khe cắm, địa chỉ, phiên bản. ⭐ Danh sách <strong>tham số từng loại module</strong> phải đặt: <strong>Phụ lục M.2</strong>. Đây là tài liệu
 bạn đưa cho người đấu tủ, và là tài liệu bạn cần khi <strong>dựng lại một CPU đã hỏng</strong> (Chương 8 mục 8.4,
 Chương 54).</p>
 <blockquote>
@@ -59963,6 +59986,650 @@ bạn, và bỏ qua mọi thứ thuộc về thiết kế an toàn.</p>
 <p>⭐ Hãy đọc chương được dẫn để hiểu <strong>vì sao</strong> mẫu viết như vậy, rồi viết lại bằng tên biến của bạn.
 ⚠ <strong>Chép nguyên mà không hiểu là cách tạo ra lỗi rất giống code đúng</strong> — và loại lỗi đó khó tìm
 nhất, vì người đọc lại code sẽ thấy nó quen mắt rồi lướt qua.</p>
+</blockquote>
+<!-- SECTION: pl_m_cau_hinh_du_an_phan_mem -->
+<hr>
+<h1 id="ph-lc-m-cu-hình-d-án-phn-mm-phn-trưng-không-dy">Phụ lục M — Cấu hình dự án phần mềm: phần trường không dạy</h1>
+<blockquote>
+<p><strong>Ở trường, một bài PLC thường gồm: khai vài tag, viết logic, bấm mô phỏng, xong.</strong></p>
+<p>⭐ Trên máy thật, phần đó là <strong>một phần nhỏ</strong> của một dự án phần mềm PLC. Phần còn lại không phải
+lập trình — nó là <strong>cấu hình</strong>, và nó quyết định máy có chạy được hay không nhiều hơn logic.</p>
+</blockquote>
+<hr>
+<h2 id="m1-khong-cách-gia-bài-tp-và-d-án-tht">M.1 ⭐⭐ Khoảng cách giữa bài tập và dự án thật</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ở trường</th>
+<th>⭐ Trên máy thật</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tag có sẵn, hoặc tự đặt tuỳ ý</td>
+<td>⭐ Tag phải khớp <strong>số dây trong tủ</strong> và <strong>nhãn trên màn hình</strong> (Chương 23, 49, Phụ lục C.1)</td>
+</tr>
+<tr>
+<td>PLC là một hộp trừu tượng trong bộ mô phỏng</td>
+<td>⭐ Phải <strong>khai đúng CPU, đúng module, đúng khe</strong>, đúng phiên bản firmware (Phụ lục C.10)</td>
+</tr>
+<tr>
+<td>Ngõ vào là ô tích chuột</td>
+<td>Ngõ vào có <strong>kiểu đấu</strong>, <strong>thời gian lọc</strong>, <strong>dải analog</strong>, <strong>hành vi khi đứt dây</strong> — mỗi thứ là một tham số phải đặt</td>
+</tr>
+<tr>
+<td>Không có mạng</td>
+<td>⭐ Có <strong>địa chỉ IP, tên trạm, giao thức</strong> — và một sơ đồ địa chỉ phải quản lý</td>
+</tr>
+<tr>
+<td>Bật mô phỏng là chạy</td>
+<td>⭐ Có <strong>STOP / STARTUP / RUN</strong>, có vòng quét đầu tiên, có khởi động lại sau mất điện</td>
+</tr>
+<tr>
+<td>Sai thì sửa rồi chạy lại</td>
+<td>⚠⚠ Sai thì <strong>cơ cấu chuyển động thật</strong>, và có người đứng cạnh</td>
+</tr>
+<tr>
+<td>Xong bài là xong</td>
+<td>⭐ Còn <strong>sao lưu, mật khẩu, bàn giao, khôi phục</strong> (Chương 54)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Một cách đo khoảng cách đó rất gọn: đếm xem có bao nhiêu thứ phải đặt ĐÚNG trước khi dòng
+lệnh đầu tiên có ý nghĩa.</strong></p>
+<p>⚡ Trong bộ mô phỏng: gần như không có gì. ⭐ Trên máy thật: <strong>cấu hình phần cứng · tham số từng
+module · địa chỉ mạng · vùng nhớ giữ được · đồng hồ · mức truy cập</strong> — sáu nhóm, và <strong>logic của
+bạn chạy sai hoặc không chạy nếu bất kỳ nhóm nào sai</strong>, mà phần lớn chúng <strong>không báo lỗi biên
+dịch</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="m2-cu-hình-phn-cng-trong-phn-mm">M.2 Cấu hình phần cứng trong phần mềm</h2>
+<p>⭐ Đây là bước đầu tiên của mọi dự án thật, và là bước <strong>không tồn tại</strong> trong bài tập mô phỏng.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>Nội dung</th>
+<th>⚠ Sai thì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Khai <strong>CPU</strong></td>
+<td>Đúng mã, ⭐ <strong>đúng phiên bản firmware</strong></td>
+<td>Nạp không xuống được, hoặc thiếu chức năng</td>
+</tr>
+<tr>
+<td>Khai <strong>từng module, đúng khe</strong></td>
+<td>Theo bản đồ khe cắm (<strong>Phụ lục C.10</strong>)</td>
+<td>⚠⚠ Địa chỉ <strong>dịch</strong> — mọi tag trỏ sang thiết bị khác (Chương 8 mục 8.4)</td>
+</tr>
+<tr>
+<td>Đặt <strong>tham số từng module</strong></td>
+<td>Xem bảng dưới</td>
+<td>⭐ Chương trình đúng mà phép đo vẫn sai</td>
+</tr>
+<tr>
+<td>Khai <strong>thiết bị trên mạng</strong></td>
+<td>Tên trạm, địa chỉ, tệp mô tả thiết bị</td>
+<td>Thiết bị không lên mạng</td>
+</tr>
+</tbody></table></div>
+<h3>⭐ Tham số module — nhóm bị bỏ quên nhiều nhất</h3>
+<p>⚠ Đây là chỗ <em>&quot;chương trình đúng mà máy vẫn sai&quot;</em> hay xuất phát, vì ⭐ <strong>không có gì trong mã nguồn
+cho thấy các tham số này tồn tại</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại module</th>
+<th>Tham số phải đặt</th>
+<th>Chương</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Ngõ vào số</strong></td>
+<td>⭐ <strong>Thời gian lọc ngõ vào</strong> — ⚠ đặt quá dài thì mất xung ngắn, quá ngắn thì nhiễu lọt</td>
+<td>9 mục 9.3b · 10 mục 10.3</td>
+</tr>
+<tr>
+<td><strong>Ngõ ra số</strong></td>
+<td>Trạng thái ngõ ra ⭐ <strong>khi CPU chuyển sang STOP</strong> — giữ giá trị cuối hay về 0</td>
+<td>⚠ <strong>8 mục 8.8</strong> · 48</td>
+</tr>
+<tr>
+<td><strong>Analog vào</strong></td>
+<td>Kiểu tín hiệu (áp/dòng) · dải · ⭐ <strong>lọc/trung bình hoá</strong> · ⭐⭐ <strong>bật chẩn đoán đứt dây</strong></td>
+<td>31 mục 31.3 · 32</td>
+</tr>
+<tr>
+<td><strong>Analog ra</strong></td>
+<td>Dải · ⭐ giá trị khi CPU dừng</td>
+<td>31 · 48</td>
+</tr>
+<tr>
+<td><strong>Nhiệt độ</strong></td>
+<td>⭐ Loại cảm biến (Pt100/Pt1000, loại cặp nhiệt) · <strong>số dây</strong> · hệ số alpha · bù đầu lạnh</td>
+<td>⚠ <strong>33</strong></td>
+</tr>
+<tr>
+<td><strong>Bộ đếm tốc độ cao</strong></td>
+<td>Chế độ đếm · kênh nào dùng được · hướng</td>
+<td>18 mục 18.5</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Ba tham số dưới đây sai thì KHÔNG có báo lỗi nào, và triệu chứng trông y hệt lỗi lập trình:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tham số sai</th>
+<th>Triệu chứng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kiểu tín hiệu analog (áp thay vì dòng)</td>
+<td>Giá trị luôn ở đáy hoặc đỉnh thang (<strong>Phụ lục E.5</strong>)</td>
+</tr>
+<tr>
+<td>Loại cảm biến nhiệt / số dây</td>
+<td>Nhiệt độ lệch <strong>có hệ thống</strong>, đồ thị trông bình thường (Chương 33)</td>
+</tr>
+<tr>
+<td>Thời gian lọc ngõ vào đặt quá dài</td>
+<td>⭐ Xung ngắn <strong>biến mất</strong> — và mã đếm của bạn không sai một chữ nào</td>
+</tr>
+</tbody></table></div>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Vì vậy bảng cấu hình phần cứng (C.10) phải ghi cả tham số module, không chỉ khe cắm.</strong> ⚡ Nó
+là <strong>mục số 2 của bộ sao lưu bảy hạng mục</strong> (Phụ lục C.9) đúng vì lý do này: không có nó thì một
+CPU mới nạp chương trình vào <strong>vẫn không chạy đúng</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="m3-mng-đa-ch-ip-tên-trm-và-mt-sơ-đ-phi-qun-lý">M.3 ⭐ Mạng: địa chỉ IP, tên trạm, và một sơ đồ phải quản lý</h2>
+<p>⚠ Bài tập mô phỏng không có mạng. ⭐ Máy thật thì gần như luôn có — và <strong>địa chỉ là thứ phải thiết
+kế, không phải thứ gõ đại cho chạy</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hạng mục</th>
+<th>Phải quyết định</th>
+<th>⚠ Bỏ qua thì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ <strong>Địa chỉ tĩnh hay cấp động</strong></td>
+<td>⭐ Thiết bị điều khiển <strong>luôn dùng địa chỉ tĩnh</strong></td>
+<td>⚠⚠ Cấp động thì sau một lần mất điện, thiết bị <strong>đổi địa chỉ</strong> và máy mất kết nối</td>
+</tr>
+<tr>
+<td><strong>Dải địa chỉ của máy</strong></td>
+<td>Một dải riêng cho máy, ghi lại từng địa chỉ đã dùng</td>
+<td>⚠ Trùng địa chỉ với máy khác khi đưa vào chuyền</td>
+</tr>
+<tr>
+<td>⭐ <strong>Tên trạm</strong> <em>(device name)</em></td>
+<td>Nhiều giao thức định danh thiết bị <strong>bằng tên</strong>, không bằng IP</td>
+<td>Thay thiết bị mới mà quên đặt tên → không lên mạng</td>
+</tr>
+<tr>
+<td><strong>Mặt nạ mạng và cổng ra</strong></td>
+<td>Thiết bị cùng máy nên <strong>cùng một mạng con</strong></td>
+<td>Hai thiết bị không thấy nhau dù dây đúng</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Tách mạng máy khỏi mạng nhà máy</strong></td>
+<td>Máy chạy được <strong>kể cả khi mạng trên chết</strong></td>
+<td>⚠⚠ Sự cố mạng văn phòng làm dừng sản xuất (Chương 45)</td>
+</tr>
+<tr>
+<td><strong>Sơ đồ địa chỉ</strong></td>
+<td>Một bảng: thiết bị · IP · tên trạm · cổng switch</td>
+<td>⭐ Không ai biết cái gì ở đâu khi có sự cố</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Địa chỉ IP là một tài sản của dự án, không phải một thiết lập.</strong> ⚡ Nó phải nằm trong
+<strong>Phụ lục C.10.2</strong>, phải nằm trong <strong>bộ sao lưu</strong> (Phụ lục C.9, hạng mục 7), và phải <strong>dán nhãn
+trong tủ</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Một chi tiết đáng biết về việc xoá bộ nhớ CPU.</strong> Trên một số hệ, lệnh <strong>xoá bộ nhớ</strong> xoá sạch
+vùng nhớ làm việc và cả vùng giữ được — ⭐ <strong>nhưng KHÔNG xoá địa chỉ IP đã lưu và KHÔNG xoá bộ đệm
+chẩn đoán</strong>.</p>
+<p>⚡ Nghĩa là: sau khi xoá bộ nhớ, ⭐ <strong>CPU vẫn giữ địa chỉ mạng</strong> (nên bạn vẫn kết nối được), và
+⭐⭐ <strong>lịch sử sự cố vẫn còn để đọc</strong>. ⚠ Nhưng đừng suy ngược rằng mọi hệ đều vậy — <strong>kiểm tài liệu
+CPU của bạn trước khi dựa vào điều đó</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="m4-khi-đng-stop-startup-run-và-vòng-quét-đu-tiên">M.4 ⭐⭐ Khởi động: STOP, STARTUP, RUN — và vòng quét đầu tiên</h2>
+<p>⚠ Trong bộ mô phỏng, &quot;chạy&quot; là một trạng thái. ⭐ Trên máy thật có <strong>ba</strong> trạng thái, và <strong>đèn trên
+CPU cho biết đang ở trạng thái nào</strong> — đây là thứ đầu tiên phải nhìn khi tới máy.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trạng thái</th>
+<th>Xảy ra gì</th>
+<th>⭐ Việc bạn làm được</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>STOP</strong></td>
+<td>CPU <strong>không chạy</strong> chương trình</td>
+<td>⭐ Nạp dự án xuống</td>
+</tr>
+<tr>
+<td>⭐ <strong>STARTUP</strong></td>
+<td>Khối khởi động (nếu có) chạy <strong>đúng một lần</strong>; ⚠ <strong>ngắt chưa được xử lý</strong></td>
+<td>Khởi tạo giá trị ban đầu</td>
+</tr>
+<tr>
+<td><strong>RUN</strong></td>
+<td>Vòng quét chạy lặp mãi; ngắt được xử lý</td>
+<td>Chạy máy; ⭐ một phần dự án nạp được ngay khi đang RUN</td>
+</tr>
+</tbody></table></div>
+<h3>⚠⚠ Khởi động lại nóng và xoá bộ nhớ — hai thứ rất khác nhau</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Khởi động lại nóng</strong> <em>(warm restart)</em></th>
+<th><strong>Xoá bộ nhớ</strong> <em>(memory reset)</em></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dữ liệu <strong>không giữ được</strong></td>
+<td>⭐ Đưa về <strong>giá trị ban đầu</strong></td>
+<td>Xoá</td>
+</tr>
+<tr>
+<td>⭐⭐ Dữ liệu <strong>giữ được</strong></td>
+<td>⭐ <strong>Được giữ lại</strong></td>
+<td>⚠⚠ <strong>Bị xoá</strong></td>
+</tr>
+<tr>
+<td>Bộ đệm chẩn đoán</td>
+<td>Giữ</td>
+<td>⭐ <strong>Giữ</strong></td>
+</tr>
+<tr>
+<td>Địa chỉ IP đã lưu</td>
+<td>Giữ</td>
+<td>⭐ <strong>Giữ</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Và đây là cái bẫy mà không bài tập nào dạy: NẠP LẠI một khối dữ liệu có thể đặt giá trị giữ
+được về giá trị khởi tạo.</strong> ⭐ Tuỳ hệ và tuỳ đời phần mềm, nạp xuống một khối dữ liệu làm cả phần
+giữ được lẫn phần không giữ được <strong>quay về giá trị ban đầu</strong> ở lần vào RUN kế tiếp.</p>
+<p>⚡ Nghĩa là: bộ đếm sản lượng, bộ đếm tuổi thọ vật tư, số giờ chạy — ⚠ <strong>về 0 sau một lần sửa
+chương trình</strong>, và không ai nhận ra cho tới khi cần con số đó (Chương 16 mục 16.4, Chương 53).</p>
+<p>⭐⭐ <strong>Việc phải làm trước mỗi lần nạp: đọc và ghi lại các con số tích luỹ.</strong> Và đưa việc đó vào
+quy trình thay đổi ở Chương 53 mục 53.3.</p>
+</blockquote>
+<h3>⭐ Vòng quét đầu tiên — thứ phải khởi tạo, và thứ tuyệt đối không</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>⭐ Nên làm ở vòng quét đầu</th>
+<th>⚠⚠ KHÔNG được làm</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đặt biến trạng thái về giá trị an toàn đã biết</td>
+<td>⚠⚠ <strong>Tự động cho phép chuyển động</strong></td>
+</tr>
+<tr>
+<td>Xoá các cờ tạm không giữ được</td>
+<td>⚠⚠ <strong>Tự động về gốc</strong> — Chương 28 nói rõ vì sao</td>
+</tr>
+<tr>
+<td>Nạp tham số công thức đang chọn (Chương 29)</td>
+<td>⚠ Giả định cơ cấu đang ở vị trí nghỉ</td>
+</tr>
+<tr>
+<td>⭐ Đặt cờ <em>&quot;chưa về gốc&quot;</em> = TRUE</td>
+<td>Xoá lịch sử báo động</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Nguyên tắc: sau khi có điện lại, máy phải ở trạng thái AN TOÀN và BIẾT RẰNG MÌNH KHÔNG BIẾT
+GÌ</strong> — chưa về gốc, chưa biết vị trí cơ cấu, chưa biết có sản phẩm trong máy hay không.</p>
+<p>⚠ Bài tập mô phỏng không bao giờ dạy điều này vì trong mô phỏng <strong>không có mất điện giữa chừng</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="m5-đng-h-và-du-thi-gian">M.5 ⭐ Đồng hồ và dấu thời gian</h2>
+<p>⚠ Hạng mục này bị bỏ qua gần như mọi lần, và nó <strong>âm thầm làm hỏng giá trị của mọi bản ghi</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>Vì sao cần</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đặt <strong>đồng hồ CPU</strong></td>
+<td>⭐ Mọi báo động, mọi bản ghi sản xuất đều đóng dấu bằng đồng hồ này</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Đồng bộ thời gian tự động</strong></td>
+<td>⚠ Đồng hồ CPU <strong>trôi</strong>. Sau vài tháng, dấu thời gian lệch tới mức không đối chiếu được với máy khác</td>
+</tr>
+<tr>
+<td><strong>Múi giờ và quy ước ghi</strong></td>
+<td>⭐ Quan trọng khi báo cáo lên hệ thống trên (Chương 45)</td>
+</tr>
+<tr>
+<td>⭐ <strong>Pin hoặc nguồn nuôi đồng hồ</strong></td>
+<td>⚠ Hết pin → mỗi lần mất điện, đồng hồ về mốc mặc định</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Vì sao chuyện nhỏ này đáng một mục riêng:</strong> ⚡ khi đi tìm nguyên nhân một sự cố, thứ giá trị
+nhất là <strong>đối chiếu thời điểm</strong> giữa bản ghi của PLC, bản ghi của màn hình, và bản ghi của hệ
+thống trên (Chương 51, Phụ lục E.1 câu 1).</p>
+<p>⚠ Ba đồng hồ lệch nhau vài phút thì <strong>phép đối chiếu đó vô nghĩa</strong> — và bạn mất đúng công cụ mạnh
+nhất của mình. ⭐ Đây cũng là lý do hạng mục <em>&quot;mốc đo lúc nghiệm thu&quot;</em> ở <strong>Phụ lục C.9</strong> đòi ghi
+<strong>điều kiện đo</strong>, không chỉ con số.</p>
+</blockquote>
+<hr>
+<h2 id="m6-chn-đoán-ca-chính-cpu-th-phi-đc-trưc-khi-đc-code">M.6 ⭐⭐ Chẩn đoán của chính CPU — thứ phải đọc TRƯỚC khi đọc code</h2>
+<p>⚠ Khi máy có sự cố, phản xạ của người mới là <strong>mở chương trình ra đọc</strong>. ⭐ Phản xạ đúng là <strong>đọc
+những gì CPU đã tự ghi lại</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nguồn</th>
+<th>Nó cho biết gì</th>
+<th>⭐ Vì sao đọc trước</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ <strong>Đèn trên CPU và trên module</strong></td>
+<td>Trạng thái vận hành; có lỗi phần cứng hay không</td>
+<td>⚡ <strong>Không cần máy tính</strong> — nhìn là biết ở STOP hay RUN</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Bộ đệm chẩn đoán</strong> <em>(diagnostic buffer)</em></td>
+<td>⭐ Danh sách sự kiện <strong>kèm dấu thời gian</strong>: lỗi module, chuyển STOP, mất kết nối</td>
+<td>⭐ <strong>Nó sống sót qua cả lệnh xoá bộ nhớ</strong> — là bản ghi pháp y của CPU</td>
+</tr>
+<tr>
+<td><strong>Mã lỗi hệ thống</strong></td>
+<td>Loại lỗi cụ thể</td>
+<td>Tra thẳng trong tài liệu hãng</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian quét lớn nhất</strong></td>
+<td>So với con số lúc nghiệm thu</td>
+<td>Phát hiện trôi (Chương 36, 51)</td>
+</tr>
+</tbody></table></div>
+<h3>⚠⚠ Lỗi nặng, lỗi nhẹ, và một cái bẫy an toàn</h3>
+<p>⭐ Các hệ phân biệt <strong>lỗi làm dừng CPU</strong> với <strong>lỗi chỉ ghi nhận rồi chạy tiếp</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Hành vi</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠⚠ <strong>Lỗi nặng</strong></td>
+<td>⭐ <strong>Dừng thực thi</strong>, CPU vào trạng thái lỗi, đèn báo lỗi</td>
+<td>Truy cập ngoài mảng · chia cho 0 ở một số hệ · lỗi cấu hình</td>
+</tr>
+<tr>
+<td><strong>Lỗi nhẹ</strong></td>
+<td>Ghi vào bộ đệm, ⭐ <strong>chương trình chạy tiếp</strong></td>
+<td>⭐ Tác vụ chồng lên chính nó (Chương 27 mục 27.6)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Và đây là cái bẫy: nhiều hệ cho bạn viết một &quot;thủ tục xử lý lỗi&quot; để XOÁ lỗi nặng và chạy
+tiếp.</strong></p>
+<p>⭐ Về kỹ thuật nó hoạt động: lỗi được xoá, lệnh gây lỗi <strong>không chạy</strong>, chương trình chạy tiếp từ
+lệnh kế. ⚡ Về an toàn, ⚠⚠ <strong>nó là một trong những thứ nguy hiểm nhất bạn có thể viết</strong> — vì nó
+biến <em>&quot;máy dừng vì có gì đó sai&quot;</em> thành <em>&quot;máy chạy tiếp và không ai biết&quot;</em>.</p>
+<p>⭐⭐ <strong>Quy tắc:</strong> chỉ dùng thủ tục xử lý lỗi để <strong>đưa máy về trạng thái an toàn rồi dừng có kiểm
+soát và báo rõ</strong>, ⚠ <strong>không bao giờ</strong> dùng nó để giấu lỗi cho dây chuyền khỏi dừng. ⚡ Nếu áp lực
+sản lượng đòi điều đó, thì vấn đề cần giải là <strong>nguyên nhân gốc</strong>, không phải cái báo lỗi
+(Chương 48, 51).</p>
+</blockquote>
+<hr>
+<h2 id="m7-mt-khu-mc-truy-cp-và-bo-v-mã-ngun">M.7 ⭐ Mật khẩu, mức truy cập và bảo vệ mã nguồn</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cơ chế</th>
+<th>Nó chặn gì</th>
+<th>⚠ Cái giá</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mật khẩu vào CPU</strong></td>
+<td>Người lạ nạp chương trình khác xuống</td>
+<td>⚠ Mất mật khẩu = <strong>mất quyền sửa máy của chính mình</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>Nhiều mức truy cập</strong></td>
+<td>Đọc / đọc-ghi / toàn quyền — cho từng vai trò</td>
+<td>Phải quản lý nhiều mật khẩu</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Bảo vệ khối</strong> <em>(know-how protection)</em></td>
+<td>Người khác <strong>không mở xem được</strong> ruột khối</td>
+<td>⚠⚠ Khối bị khoá thì <strong>người bảo trì của khách cũng không sửa được</strong></td>
+</tr>
+<tr>
+<td><strong>Chữ ký khối</strong></td>
+<td>Bằng chứng khối chưa bị đụng vào</td>
+<td>Ký rồi thì sửa gì cũng phải gỡ ký (Chương 30 mục 30.5)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Quyết định này là quyết định HỢP ĐỒNG, không phải quyết định kỹ thuật.</strong> ⭐ Khoá mã nguồn máy
+rồi bàn giao cho khách nghĩa là: mỗi lần khách cần sửa một con số, họ phải gọi bạn — và <strong>lúc hai
+giờ sáng thì bạn không nghe máy</strong>.</p>
+<p>⭐⭐ <strong>Phải thoả thuận bằng văn bản TRƯỚC KHI làm máy</strong>: khách được nhận mã nguồn tới mức nào, ai
+giữ mật khẩu, và ⚠ <strong>chuyện gì xảy ra nếu công ty bạn không còn tồn tại</strong> (Chương 54 mục 54.6).</p>
+</blockquote>
+<hr>
+<h2 id="m8-np-xung-th-nh-và-khôi-phc">M.8 Nạp xuống, thẻ nhớ và khôi phục</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>⭐ Điểm phải biết</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Nạp toàn bộ</strong></td>
+<td>Thường phải đưa CPU về STOP — ⚠ <strong>máy dừng</strong></td>
+</tr>
+<tr>
+<td>⭐ <strong>Nạp một phần khi đang RUN</strong></td>
+<td>Làm được ở nhiều hệ, ⚠⚠ nhưng là thao tác <strong>nguy hiểm</strong> — Chương 53 mục 53.2</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Thẻ nhớ</strong></td>
+<td>Ở nhiều hệ, thẻ nhớ <strong>là</strong> chương trình. ⚠ Rút nhầm thẻ = máy mất chương trình</td>
+</tr>
+<tr>
+<td><strong>Khôi phục</strong></td>
+<td>⭐ Phải <strong>thử ít nhất một lần</strong> trước khi bàn giao (Chương 54)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Thứ tự khôi phục đúng là: cấu hình phần cứng → chương trình → tham số thiết bị rời → màn
+hình.</strong> ⚡ Đảo thứ tự thì CPU mới <strong>không nhận I/O</strong>, và bạn sẽ đi tìm lỗi trong chương trình
+(Chương 54).</p>
+</blockquote>
+<hr>
+<h2 id="m9-mô-phng-không-kim-đưc-gì">M.9 ⚠⚠ Mô phỏng KHÔNG kiểm được gì</h2>
+<p>⭐ Mô phỏng rất đáng dùng — Chương 50 nói rõ nó tiết kiệm bao nhiêu. ⚠ Nhưng phải biết <strong>ranh giới</strong>
+của nó, vì đây đúng là chỗ người học ở trường hay nhầm.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>⭐ Mô phỏng kiểm được</th>
+<th>⚠⚠ Mô phỏng KHÔNG kiểm được</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Logic trình tự, điều kiện chuyển bước</td>
+<td>⚠⚠ <strong>Kiểu đấu sink/source, PNP/NPN</strong> — Hình 9.1</td>
+</tr>
+<tr>
+<td>Máy trạng thái, chế độ vận hành</td>
+<td>⚠ <strong>Tham số module</strong> (dải analog, lọc, loại cảm biến nhiệt)</td>
+</tr>
+<tr>
+<td>Phép tính, quy đổi thang</td>
+<td>⚠⚠ <strong>Thời gian thật của cơ cấu</strong> — mọi timeout đều là số đoán</td>
+</tr>
+<tr>
+<td>Cấu trúc chương trình, cách đặt tên</td>
+<td>⚠ <strong>Thời gian quét thật</strong> và hành vi phụ thuộc nó</td>
+</tr>
+<tr>
+<td>Xử lý bất thường <strong>đã nghĩ ra</strong></td>
+<td>⚠⚠ <strong>Bất thường chưa nghĩ ra</strong> — đứt dây, nhiễu, sụt áp</td>
+</tr>
+<tr>
+<td>Bế tắc giữa hai trạm</td>
+<td>⚠⚠ <strong>Mọi thứ thuộc về điện và lắp đặt</strong> (Chương 49)</td>
+</tr>
+<tr>
+<td></td>
+<td>⚠⚠ <strong>Chức năng an toàn</strong> — Chương 47, 48</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Cách phát biểu gọn nhất về ranh giới đó:</strong> ⚡ <strong>mô phỏng kiểm được thứ bạn ĐÃ NGHĨ TỚI.</strong> ⚠
+Phần lớn sự cố trên máy thật đến từ thứ <strong>chưa ai nghĩ tới</strong> — và đó chính là phần mà kiểm thử
+tình huống xấu (Chương 50 mục 50.5) và chạy thử tại hiện trường (Chương 52) tồn tại để bắt.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Và một ranh giới tuyệt đối:</strong> ⭐ <strong>không bao giờ dùng mô phỏng để nghiệm thu chức năng an
+toàn.</strong> Chức năng an toàn nghiệm thu bằng <strong>thử thật trên máy thật</strong>, có biên bản (Phụ lục C.8,
+Chương 47, 48).</p>
+</blockquote>
+<hr>
+<h2 id="m10-danh-mc-kim-d-án-phn-mm-đã-cu-hình-xong-chưa">M.10 ⭐ Danh mục kiểm — dự án phần mềm đã cấu hình xong chưa</h2>
+<blockquote>
+<p>⚠ <strong>Đánh dấu được hết những mục dưới đây thì dự án phần mềm mới sẵn sàng để chạy thử:</strong></p>
+<p><strong>Phần cứng</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> CPU và <strong>mọi module</strong> đã khai đúng mã, đúng khe, ⭐ đúng phiên bản firmware</li>
+<li><input disabled="" type="checkbox"> ⭐ <strong>Tham số từng module</strong> đã đặt và <strong>đã ghi vào Phụ lục C.10</strong></li>
+<li><input disabled="" type="checkbox"> Trạng thái ngõ ra <strong>khi CPU sang STOP</strong> đã đặt có chủ ý (Chương 8 mục 8.8)</li>
+<li><input disabled="" type="checkbox"> ⭐ Chẩn đoán <strong>đứt dây</strong> của kênh analog đã bật ở những kênh cần</li>
+</ul>
+<p><strong>Mạng</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Mọi thiết bị dùng <strong>địa chỉ tĩnh</strong>; sơ đồ địa chỉ đã ghi lại</li>
+<li><input disabled="" type="checkbox"> ⭐ Tên trạm đã đặt cho thiết bị định danh bằng tên</li>
+<li><input disabled="" type="checkbox"> ⭐⭐ Máy <strong>chạy được khi mạng nhà máy chết</strong> — đã thử bằng cách rút dây</li>
+</ul>
+<p><strong>Khởi động và bộ nhớ</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> ⭐ Đã xác định biến nào <strong>giữ được</strong>, biến nào không (Chương 16 mục 16.4)</li>
+<li><input disabled="" type="checkbox"> ⭐⭐ Đã thử <strong>mất điện giữa chu trình</strong> rồi cấp lại — máy về trạng thái an toàn, <strong>không tự chuyển động</strong></li>
+<li><input disabled="" type="checkbox"> Con số tích luỹ (sản lượng, tuổi thọ vật tư) ⚠ <strong>đã ghi lại trước khi nạp</strong></li>
+</ul>
+<p><strong>Thời gian</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> Đồng hồ CPU đã đặt đúng; ⭐ đồng bộ tự động đã cấu hình</li>
+<li><input disabled="" type="checkbox"> ⭐ Dấu thời gian của PLC, màn hình và hệ thống trên <strong>đã đối chiếu khớp nhau</strong></li>
+</ul>
+<p><strong>Chẩn đoán và bảo vệ</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> ⭐ Đã biết cách <strong>mở bộ đệm chẩn đoán</strong> và đã đọc thử một lần</li>
+<li><input disabled="" type="checkbox"> ⚠⚠ <strong>Không có thủ tục xử lý lỗi nào xoá lỗi nặng rồi chạy tiếp</strong> mà không báo</li>
+<li><input disabled="" type="checkbox"> Mật khẩu và mức truy cập đã đặt; ⭐ <strong>đã ghi vào hồ sơ bàn giao</strong>, không chỉ trong đầu</li>
+<li><input disabled="" type="checkbox"> ⭐⭐ Thoả thuận bàn giao mã nguồn <strong>đã ký</strong> (Chương 54 mục 54.6)</li>
+</ul>
+<p><strong>Sao lưu</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> ⭐ <strong>Bộ sao lưu bảy hạng mục</strong> đã đủ (Phụ lục C.9)</li>
+<li><input disabled="" type="checkbox"> ⭐⭐ Đã <strong>thử khôi phục ít nhất một lần</strong>, theo đúng thứ tự ở mục M.8</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="m11-dn-v-đâu">M.11 Dẫn về đâu</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bạn cần</th>
+<th>Đọc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bản đồ khe cắm và tham số module — biểu mẫu</td>
+<td>⭐ <strong>Phụ lục C.10</strong></td>
+</tr>
+<tr>
+<td>Bộ sao lưu và phiếu bàn giao</td>
+<td><strong>Phụ lục C.9</strong> · Chương 54</td>
+</tr>
+<tr>
+<td>Chín bước đầu dự án</td>
+<td>⭐ <strong>Chương 23 mục 23.2b</strong></td>
+</tr>
+<tr>
+<td>Vòng quét, ảnh ngõ vào, xung ngắn</td>
+<td>⭐ <strong>Chương 10</strong></td>
+</tr>
+<tr>
+<td>Biến giữ được hay không</td>
+<td>Chương 16 mục 16.4 · Chương 11 mục 11.4</td>
+</tr>
+<tr>
+<td>Chế độ vận hành, về gốc, phục hồi</td>
+<td>⭐ <strong>Chương 28</strong></td>
+</tr>
+<tr>
+<td>Sửa chương trình khi máy đang chạy</td>
+<td>⚠ <strong>Chương 53 mục 53.2</strong></td>
+</tr>
+<tr>
+<td>Mô phỏng: dùng tới đâu</td>
+<td><strong>Chương 50</strong></td>
+</tr>
+<tr>
+<td>Tra theo triệu chứng</td>
+<td><strong>Phụ lục E</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Giới hạn của phụ lục này.</strong> ⭐ Tên gọi, số bước và cách đặt của <strong>từng hệ mỗi khác</strong> — phụ lục
+này nêu <strong>việc phải làm</strong>, không nêu cách bấm. ⚡ Cách bấm nằm trong tài liệu hãng của hệ bạn dùng
+(Phụ lục A1, A2).</p>
+<p>⚠ Và mọi con số, hành vi nêu ở đây phải <strong>kiểm lại theo đúng dòng CPU và đúng phiên bản phần mềm</strong>
+của bạn — ⭐ đặc biệt là hành vi <strong>giữ / không giữ khi nạp lại</strong>, vì nó khác nhau giữa các đời.</p>
+</blockquote>
+<hr>
+<h3>Nguồn tham khảo phụ lục M</h3>
+<ul>
+<li><strong>Siemens</strong> — <em>S7-1200 Programmable controller System Manual</em>: ba chế độ <strong>STOP / STARTUP / RUN</strong>
+và đèn báo trên CPU; ⭐ khối khởi động chạy <strong>một lần</strong> và <strong>ngắt chưa được xử lý</strong> trong STARTUP;
+phân biệt ⭐⭐ <strong>khởi động lại nóng</strong> (dữ liệu không giữ được về giá trị ban đầu, dữ liệu giữ được
+<strong>được giữ</strong>) với <strong>xoá bộ nhớ</strong> (xoá cả hai) — và ⭐ <strong>xoá bộ nhớ KHÔNG xoá bộ đệm chẩn đoán lẫn
+địa chỉ IP đã lưu</strong>; ⚠ lưu ý <strong>nạp lại khối dữ liệu có thể đặt giá trị giữ được về giá trị khởi
+tạo</strong>; truy cập I/O tức thời bỏ qua ảnh quá trình — nền cho mục M.3, M.4.</li>
+<li><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers Major, Minor, and I/O Faults</em> (1756-PM014):
+⚠⚠ <strong>lỗi nặng dừng thực thi</strong> và đưa bộ điều khiển vào trạng thái lỗi (đèn OK nháy đỏ); ⭐ có thể
+viết <strong>thủ tục xử lý lỗi</strong> để xoá lỗi và chạy tiếp — lệnh gây lỗi <strong>không chạy</strong>, thực thi tiếp
+từ lệnh kế; vị trí đặt thủ tục xử lý lỗi — nền cho mục M.6.</li>
+<li><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers Tasks, Programs, and Routines</em> (1756-PM005):
+⚠ <strong>lỗi nhẹ khi tác vụ chồng lên chính nó</strong> — ví dụ ở bảng lỗi nặng / lỗi nhẹ.</li>
+<li>Tài liệu cấu hình của từng hệ trong <strong>Phụ lục A1, A2</strong> — dùng cho tên gọi và cách đặt cụ thể.</li>
+</ul>
+<blockquote>
+<p>⚡ Các hành vi nêu trong phụ lục này <strong>có ở dạng nào đó trên hầu hết hệ hiện đại</strong>, nhưng ⚠ <strong>tên
+gọi và chi tiết khác nhau</strong>. Hai nguồn hãng ở trên được dẫn vì chúng mô tả rõ ràng và kiểm chứng
+được; ⭐ <strong>không suy ra rằng hệ của bạn hành xử y hệt</strong>.</p>
 </blockquote>
 </div>
 </div>

@@ -36710,3 +36710,809 @@ Một trang, dùng trực tiếp. Mỗi mục đều truy được về một ch
 > bấm hai lần, mở cửa giữa chu kỳ, rút cáp mạng vì tò mò. Nửa giờ của họ bắt được nhiều lỗi hơn nửa
 > ngày của người viết.
 
+<!-- SECTION: Phu_Luc_G_Thuc_Hanh -->
+---
+# Phụ lục G: Bốn mươi bài thực hành — dựng dần một cỗ máy chạy được
+
+Đọc sách xong mà chưa gõ thì kiến thức trôi rất nhanh. Nhưng bài tập rời rạc kiểu *"viết hàm tính
+giai thừa"* cũng không giúp gì cho việc dựng một phần mềm máy thật — vì cái khó của phần mềm máy
+không nằm ở từng hàm, mà nằm ở **chỗ các hàm gặp nhau**.
+
+Phụ lục này giải bài toán đó bằng một cách: **bốn mươi bài nối nhau, cùng dựng một cỗ máy.** Làm
+xong bài cuối, bạn có một chương trình chạy được — không phải bốn mươi mẩu mã rời.
+
+---
+
+## G.0  Cỗ máy bạn sẽ dựng, và cách dùng phụ lục này
+
+### Máy MeoBench-01 — kiểm chiều dày và phân loại
+
+Một cỗ máy nhỏ nhưng đủ mọi thành phần mà Chương 1 tới 19 đã bàn:
+
+```
+   [Băng tải vào]
+        │
+        ▼
+   ┌──────────────┐   Trạm 1 — ĐO
+   │  Trục Z hạ   │   · hạ đầu đo xuống phôi
+   │  đầu đo      │   · đọc chiều dày qua cảm biến RS-232
+   └──────┬───────┘   · so với dải trong công thức
+          │
+          ▼
+   ┌──────────────┐   Trạm 2 — PHÂN LOẠI
+   │  Trục X +    │   · kẹp phôi
+   │  kẹp khí     │   · đưa tới máng OK hoặc máng NG
+   └──────┬───────┘   · nhả, về vị trí chờ
+          │
+          ▼
+   [Máng OK]  [Máng NG]        Ngoài ra: đèn tháp, nút Dừng khẩn (chỉ ĐỌC),
+                               bắt tay hai dây với máy kế tiếp, ghi kết quả ra file
+```
+
+Vì sao chọn cỗ máy này: nó nhỏ đủ để một người làm xong, nhưng **chạm vào mọi thứ** — chuyển động,
+vào-ra số, truyền thông nối tiếp, công thức, cảnh báo, trình tự, giao diện, nhật ký, dữ liệu sản
+xuất, và bắt tay giữa hai máy.
+
+### Tám nhóm, bốn mươi bài
+
+**Bảng G.1 — Bản đồ toàn bộ phụ lục**
+
+| Nhóm | Nội dung | Số bài | Chương liên quan | Chạy được khi xong nhóm |
+|---|---|---|---|---|
+| **G.1** | Kiểu dữ liệu miền | 5 | 3, 4, 11 | Chưa — mới là vật liệu |
+| **G.2** | Logic thuần, kiểm thử được | 5 | 3, 18 | Chạy được bằng phép kiểm, **không cần phần cứng** |
+| **G.3** | Hợp đồng thiết bị + bản giả lập | 5 | 7, 13 | Giả lập trả về số |
+| **G.4** | Lớp nghiệp vụ | 5 | 4, 7, 13 | Gọi được "hạ trục", "kẹp" |
+| **G.5** | Trình tự | 5 | 12, 16 | **Một chu kỳ chạy trọn** |
+| **G.6** | Cấu hình, công thức, dữ liệu | 5 | 3, 13, 19 | Đổi thông số không cần biên dịch |
+| **G.7** | Giao diện | 5 | 8, 9, 10 | Bấm nút chạy được |
+| **G.8** | Ghép nối và vận hành | 5 | 5, 14, 15, 17, 19 | **Máy hoàn chỉnh** |
+
+### Cách làm mỗi bài
+
+Mỗi bài có năm phần cố định:
+
+- **Yêu cầu** — đầu vào, đầu ra, ràng buộc.
+- **Kết quả mong đợi** — một thứ **tự kiểm được**: một dòng in ra, một giá trị trả về, một phép
+  kiểm phải xanh. Không có mục này thì bạn không biết mình xong chưa.
+- **Hướng làm** — hai tới ba cách, kèm ưu/nhược. **Đừng đọc trước khi tự nghĩ mười phút.**
+- **Gợi ý** — cái bẫy hay gặp ở đúng bài đó.
+- **Ghép vào** — bài nào sau này dùng kết quả của bài này.
+
+Ký hiệu: ★ *làm được sau khi đọc chương tương ứng* · ★★ *cần ghép hai ba ý* · ★★★ *có một cái bẫy
+thật, sai lần đầu là bình thường*.
+
+> 📌 **Ba cách dùng phụ lục, chọn theo hoàn cảnh.** (1) **Tuần tự G.1 → G.8** — mất khoảng 40–60
+> giờ, ra một cỗ máy chạy được; hợp cho người mới hoặc người muốn hệ thống hoá. (2) **Nhảy vào
+> nhóm đang cần** — đang phải viết driver nối tiếp thì làm G.2.3, G.3.2, G.8.3; các bài đều nói rõ
+> phụ thuộc vào bài nào. (3) **Dùng làm đề phỏng vấn hoặc đề đào tạo nội bộ** — mỗi bài đã có sẵn
+> tiêu chí chấm là mục *Kết quả mong đợi*.
+
+> ⚠️ **Một quy ước áp cho cả bốn mươi bài: không có phần cứng thật.** Tất cả chạy trên bản giả lập.
+> Điều đó là **cố ý** và cũng là điều Chương 18 mục 18.6.3 nói: khả năng chạy khi không có máy là
+> hệ quả của kiến trúc. Nhưng đừng quên chiều ngược lại ở mục 7.7 — giả lập là một mô hình, và làm
+> xong bốn mươi bài **không** có nghĩa là phần mềm sẵn sàng chạy máy thật.
+
+---
+
+## G.1  Kiểu dữ liệu miền — vật liệu của mọi thứ phía sau
+
+### G.1.1 — Đơn vị không lẫn được ★★ ⟨Ch.11 mục 11.2⟩
+
+**Yêu cầu.** Viết hai kiểu `ChieuDayMm` và `ViTriMm` sao cho **không thể** cộng nhầm một chiều dày
+vào một vị trí, và không thể gán một `double` trần vào chúng mà không nói rõ đơn vị.
+
+**Kết quả mong đợi.** Dòng `ViTriMm v = 10.0;` **không biên dịch được**. Dòng
+`var v = new ViTriMm(10.0) + new ChieuDayMm(2.0);` cũng không. Còn
+`new ViTriMm(10.0) + KhoangCachMm.Tu(2.0)` thì được.
+
+**Hướng làm.** (a) `readonly record struct` bọc một `double` — gọn nhất, so sánh theo giá trị sẵn,
+nhưng phải tự viết toán tử nào cho phép. (b) `class` bất biến — thừa, tốn cấp phát cho một con số.
+(c) Chỉ đặt tên biến có hậu tố `Mm` mà không tạo kiểu — rẻ nhất nhưng **trình biên dịch không bắt
+được gì**, chỉ dựa vào mắt người đọc.
+
+**Gợi ý.** Nghĩ kỹ xem *cộng hai vị trí* có nghĩa gì (thường là vô nghĩa) so với *vị trí + khoảng
+cách* (có nghĩa). Đây chính là chỗ kiểu miền trả công.
+
+**Ghép vào.** G.1.2, G.2.2, G.4.1.
+
+### G.1.2 — Bản ghi một lần đo ★ ⟨Ch.3 mục 3.1⟩
+
+**Yêu cầu.** `KetQuaDo` gồm: chiều dày, thời điểm, số hiệu phôi, và trạng thái đạt/không đạt. Bất
+biến sau khi tạo.
+
+**Kết quả mong đợi.** Hai bản ghi cùng giá trị thì `==` trả `true`. Không có `set` công khai nào.
+
+**Hướng làm.** (a) `readonly record struct` — hợp vì đây là **giá trị**, không có danh tính (Phụ lục
+E mục E.2); (b) `class` có `init` — dùng khi bản ghi sẽ lớn dần hoặc cần kế thừa.
+
+**Gợi ý.** Đừng để trạng thái đạt/không đạt là `bool` — sau này sẽ có *đạt*, *không đạt*, *chưa đo*,
+*lỗi đo*. Xem G.1.3.
+
+**Ghép vào.** G.2.1, G.6.3, G.7.4.
+
+### G.1.3 — Enum trạng thái, không phải cờ bool ★ ⟨Ch.12 mục 12.1.1b⟩
+
+**Yêu cầu.** Một `TrangThaiMay` cho toàn máy (ít nhất: chưa khởi tạo, đang về gốc, sẵn sàng, đang
+chạy, tạm dừng, báo động) và một `KetLuanDo` cho từng phôi.
+
+**Kết quả mong đợi.** Không tồn tại biến `bool` nào tên kiểu `dangChay`, `dangLoi`, `daKhoiTao` ở
+phạm vi toàn cục. Trả lời được câu *"máy đang ở đâu"* bằng **đúng một** phép đọc.
+
+**Hướng làm.** (a) `enum` thuần — đủ cho bài này; (b) `enum` + bảng chuyển trạng thái (làm ở G.5.4);
+(c) lớp trạng thái theo State Pattern — mạnh hơn nhưng để dành tới khi thật sự cần.
+
+**Gợi ý.** Gán số rõ ràng cho từng giá trị (`SanSang = 2`) và **đừng đánh số lại về sau** — nhật ký
+và dữ liệu sản xuất cũ sẽ nói sai.
+
+**Ghép vào.** G.4.5, G.5.4, G.7.1.
+
+### G.1.4 — Bảng mã cảnh báo có metadata ★★ ⟨Ch.15 mục 15.1.2⟩
+
+**Yêu cầu.** Danh sách mã cảnh báo chia dải theo loại (chuyển động, cảm biến, khí, hệ thống, truyền
+thông). Mỗi mã kèm: mô tả cho người vận hành, việc nên làm, và có dừng máy hay không.
+
+**Kết quả mong đợi.** Từ một mã số bất kỳ, lấy ra được ba thông tin trên **mà không cần `switch`
+rải khắp nơi**.
+
+**Hướng làm.** (a) `const int` + attribute mang metadata, đọc bằng reflection một lần lúc khởi động
+— tự tài liệu hoá ngay cạnh mã số, nhưng cần hiểu reflection; (b) `enum` + `Dictionary` tra cứu
+nạp từ file — đổi chữ không cần biên dịch lại, hợp khi phải đa ngôn ngữ; (c) `record` tĩnh trong một
+lớp danh mục — đơn giản nhất, đủ cho máy nhỏ.
+
+**Gợi ý.** Chia dải ngay từ đầu (10000 chuyển động, 20000 cảm biến, 30000 khí…). Đổi dải về sau là
+đổi mọi tài liệu hướng dẫn xử lý sự cố đã in ra dán ở máy.
+
+**Ghép vào.** G.1.5, G.4.1, G.7.4.
+
+### G.1.5 — Ngoại lệ mang mã cảnh báo ★★ ⟨Ch.3 mục 3.5, Ch.15⟩
+
+**Yêu cầu.** `AlarmException` mang theo mã cảnh báo và tên vị trí phát sinh.
+
+**Kết quả mong đợi.** Bắt được ở vòng lặp chu trình và in ra dạng
+`CẢNH BÁO [10001] TRUC_Z: quá thời gian khi đi tới 25,0 mm`.
+
+**Gợi ý — và đây là một bẫy có thật.** Đừng đặt tên thuộc tính là `Source`: `Exception` đã có sẵn
+`Source`, trùng tên sẽ cho lỗi biên dịch `CS0114`. Sách dùng `Station`. Bẫy này lấy từ chính lần
+dựng chương trình mẫu ở mục 7.5.
+
+**Ghép vào.** G.4.1, G.5.3.
+
+---
+
+## G.2  Logic thuần — nhóm duy nhất kiểm thử được 100 % không cần phần cứng
+
+Năm bài này **không chạm vào thiết bị nào**. Đó là lý do chúng là nhóm duy nhất bạn có thể phủ kín
+bằng phép kiểm tự động — đúng như Chương 18 mục 18.6.2 xếp ưu tiên.
+
+### G.2.1 — Kiểm dải đo ★ ⟨Ch.3 mục 3.3.3⟩
+
+**Yêu cầu.** Hàm nhận chiều dày đo được, giới hạn dưới, giới hạn trên; trả về *đạt / dưới / trên*.
+
+**Kết quả mong đợi.** Bộ kiểm ít nhất 6 trường hợp: giữa dải, đúng biên dưới, đúng biên trên, dưới
+biên, trên biên, và **dải bị đảo** (dưới > trên).
+
+**Hướng làm.** (a) Hai phép so sánh — rõ ràng nhất; (b) `Math.Abs(x - giữa) > dungSai` — ngắn nhưng
+chỉ đúng khi dải đối xứng; (c) pattern matching `x switch { < lo => …, > hi => …, _ => … }` — đọc
+rất gọn.
+
+**Gợi ý.** Trường hợp **dải bị đảo** là trường hợp quan trọng nhất. Mục 3.3.3 kể một lớp bảo vệ
+thật đã viết `x > max+5 && x < max-5` và **chưa bao giờ chạy**. Hàm của bạn nên ném lỗi tham số
+thay vì im lặng trả về "đạt".
+
+**Ghép vào.** G.4.3, G.6.1.
+
+### G.2.2 — Quy đổi mm ↔ xung ★★ ⟨Ch.13⟩
+
+**Yêu cầu.** Đổi qua lại giữa mm và số xung encoder, với hệ số từ cấu hình (ví dụ 1000 xung/mm).
+
+**Kết quả mong đợi.** Đổi xuôi rồi ngược về phải ra đúng giá trị ban đầu trong dung sai một xung.
+Kiểm cả số âm.
+
+**Hướng làm.** (a) Hai hàm tĩnh nhận hệ số làm tham số — kiểm thử dễ nhất; (b) một lớp `BoQuyDoi`
+giữ hệ số — gọn ở chỗ gọi, phải tiêm vào; (c) toán tử chuyển kiểu ngầm — **đừng**: chuyển ngầm giữa
+mm và xung là công thức gây tai nạn (Phụ lục E mục E.7).
+
+**Gợi ý.** Quyết định **làm tròn hay cắt** khi đổi mm sang xung, và viết lý do vào chú thích. Cắt
+liên tục theo một chiều sẽ tích luỹ sai số sau hàng nghìn chu kỳ.
+
+**Ghép vào.** G.3.1, G.4.1.
+
+### G.2.3 — Tách khung từ dòng byte ★★★ ⟨Ch.14 mục 14.1.5b⟩
+
+**Yêu cầu.** Cảm biến chiều dày gửi khung dạng `STX` + số ASCII + `ETX`. Viết một lớp nhận **từng
+mảnh** byte tuỳ ý và phát ra **từng khung hoàn chỉnh**.
+
+**Kết quả mong đợi.** Ba phép kiểm bắt buộc: (1) một khung tới làm ba mảnh → ra đúng một khung; (2)
+hai khung tới trong một mảnh → ra đúng hai khung; (3) mảnh cụt ở cuối được **giữ lại** cho lần sau,
+không bị vứt.
+
+**Hướng làm.** (a) `StringBuilder` tích luỹ + `IndexOf` — hợp với khung văn bản; (b) `List<byte>` +
+quét chỉ số — bắt buộc nếu khung là nhị phân; (c) một bộ đệm vòng — hiệu quả nhất, phức tạp nhất,
+chỉ cần khi lưu lượng lớn.
+
+**Gợi ý.** Đây là bài có tỷ lệ sai lần đầu cao nhất trong cả bốn mươi bài, và cái sai gần như luôn
+là **quên giữ phần dư**. Viết phép kiểm (3) *trước* khi viết mã.
+
+**Ghép vào.** G.3.2, G.8.3.
+
+### G.2.4 — Tổng kiểm (checksum) ★★ ⟨Ch.14⟩
+
+**Yêu cầu.** Tính tổng kiểm XOR cho một mảng byte, và một hàm xác minh khung nhận được.
+
+**Kết quả mong đợi.** Đổi một bit bất kỳ trong khung thì xác minh phải trả `false`.
+
+**Hướng làm.** (a) XOR — đơn giản, bắt được lỗi một bit; (b) tổng bù 2 — hay gặp ở thiết bị cũ;
+(c) CRC-16 — mạnh nhất, nhưng nếu dùng Modbus thì thư viện đã làm sẵn, đừng tự viết.
+
+**Gợi ý.** Viết luôn một phép kiểm dùng **khung mẫu thật trong tài liệu thiết bị** (hầu hết tài liệu
+đều in một ví dụ kèm giá trị tổng kiểm). Đó là cách duy nhất chắc chắn bạn hiểu đúng phạm vi byte
+nào được tính.
+
+**Ghép vào.** G.8.3.
+
+### G.2.5 — Trung bình trượt và lọc nhiễu ★★ ⟨Ch.19⟩
+
+**Yêu cầu.** Giữ N phép đo gần nhất, trả về trung bình và độ lệch chuẩn; báo *"chưa đủ mẫu"* khi
+chưa đủ N.
+
+**Kết quả mong đợi.** Với dãy `[10, 10, 10, 50]` và N = 4, trung bình 20 — và bạn phải quyết định
+50 là **phôi lỗi** hay **nhiễu đo**, rồi viết quyết định đó vào chú thích.
+
+**Hướng làm.** (a) `Queue<double>` cố định độ dài — dễ đọc nhất; (b) mảng vòng + chỉ số — không cấp
+phát, hợp vòng lặp nhanh; (c) trung bình động luỹ thừa (EMA) — một biến, nhưng khó giải thích với
+người vận hành *"máy đang lấy trung bình mấy phôi?"*.
+
+**Gợi ý.** Câu hỏi thật của bài này không phải thuật toán mà là: **lọc nhiễu có che mất phôi lỗi
+thật không?** Với máy kiểm chất lượng, lọc quá tay là bỏ lọt hàng lỗi.
+
+**Ghép vào.** G.4.3, G.6.4.
+
+---
+
+## G.3  Hợp đồng thiết bị và bản giả lập
+
+### G.3.1 — `ITruc` ★★ ⟨Ch.7, Ch.13⟩
+
+**Yêu cầu.** Hợp đồng cho một trục: về gốc, đi tới vị trí, đọc vị trí hiện tại, biết đã về gốc chưa.
+Mọi thao tác có thể lâu đều nhận `CancellationToken`.
+
+**Kết quả mong đợi.** Tầng nghiệp vụ biên dịch được **mà không tham chiếu** tới bất kỳ lớp phần
+cứng nào.
+
+**Hướng làm.** (a) Toàn bộ `async Task` — theo Chương 5; (b) đồng bộ chặn + `StopFlag` — theo lối
+mục 7.6, hợp nếu đội chưa quen `Task`; (c) trộn: `async` cho chuyển động, đồng bộ cho đọc vị trí.
+
+**Gợi ý.** Đừng cho `ITruc` biết về mm hay xung của hãng nào. Giao diện nói **ngôn ngữ của máy**
+(mm), phần quy đổi nằm trong lớp cài đặt.
+
+**Ghép vào.** G.3.4, G.4.1.
+
+### G.3.2 — `ICamBienChieuDay` ★★ ⟨Ch.13, Ch.14⟩
+
+**Yêu cầu.** Đọc một lần, trả về `ChieuDayMm`, có hạn giờ, ném `AlarmException` khi hết giờ.
+
+**Kết quả mong đợi.** Gọi trên bản giả lập thì có số; gọi khi "thiết bị không phản hồi" thì ném
+đúng mã cảnh báo của G.1.4.
+
+**Hướng làm.** (a) Hợp đồng chỉ có `Task<ChieuDayMm> DocAsync(ct)` — tối giản, tốt; (b) thêm sự kiện
+`DaCoSoDoMoi` — hợp nếu thiết bị tự bắn dữ liệu liên tục; (c) cả hai.
+
+**Gợi ý.** Chọn (a) hay (b) tuỳ thiết bị **hỏi mới trả lời** hay **tự nói liên tục**. Chọn sai kiểu
+sẽ khiến lớp cài đặt phải giả vờ, và chỗ giả vờ đó là nơi lỗi sinh ra.
+
+**Ghép vào.** G.4.3, G.8.3.
+
+### G.3.3 — `IVaoRaSo` và bản đồ tín hiệu ★★ ⟨Ch.13⟩
+
+**Yêu cầu.** Đọc/ghi tín hiệu số **theo tên** (`"KEP_DONG"`, `"CAM_BIEN_PHOI"`), không theo số kênh.
+
+**Kết quả mong đợi.** Đổi một tín hiệu từ kênh 3 sang kênh 11 chỉ sửa **file bản đồ**, không sửa
+dòng mã nào.
+
+**Hướng làm.** (a) `Dictionary<string,int>` nạp từ JSON — linh hoạt nhất, nhưng gõ sai tên chỉ lộ
+lúc chạy; (b) lớp hằng sinh sẵn — trình biên dịch bắt được gõ sai, nhưng đổi bản đồ phải biên dịch
+lại; (c) enum + thuộc tính ánh xạ — đường giữa.
+
+**Gợi ý.** Với máy sẽ nhân bản nhiều phiên bản, (a) thắng. Với một máy duy nhất, (b) an toàn hơn.
+Đây đúng là câu hỏi ở mục 13.2.6.
+
+**Ghép vào.** G.4.2, G.8.1.
+
+### G.3.4 — Bản giả lập tái hiện được ★★★ ⟨mục 13.2.5c⟩
+
+**Yêu cầu.** Viết `TrucGiaLap` và `CamBienGiaLap`. Cảm biến trả về giá trị quanh một tâm, có nhiễu
+ngẫu nhiên, và thỉnh thoảng (ví dụ 2 %) trả về giá trị ngoài dải.
+
+**Kết quả mong đợi.** Chạy lại **cùng một hạt giống** thì ra **đúng cùng một dãy** kết quả, kể cả
+đúng chu kỳ thứ mấy thì gặp phôi lỗi.
+
+**Hướng làm.** (a) `new Random(hatGiong)` cho mỗi thiết bị, hạt giống lấy từ cấu hình — khuyến nghị;
+(b) `Random.Shared` — an toàn luồng nhưng **không tái hiện được**; (c) `new Random()` mỗi lần gọi —
+đừng.
+
+**Gợi ý.** **Ghi hạt giống vào log ngay khi khởi tạo.** Không có dòng đó thì khi bản giả lập dừng
+vì một cảnh báo ở chu kỳ 4.000, bạn không có cách nào quay lại đúng kịch bản ấy.
+
+**Ghép vào.** G.5.5, G.8.5.
+
+### G.3.5 — Giả lập biết hỏng ★★ ⟨Ch.18⟩
+
+**Yêu cầu.** Cho phép ra lệnh cho bản giả lập: *"lần gọi tới hãy hết giờ"*, *"lần tới trả giá trị
+ngoài dải"*, *"lần tới mất kết nối"*.
+
+**Kết quả mong đợi.** Viết được phép kiểm khẳng định: khi trục hết giờ, chu trình **dừng và phát
+đúng mã cảnh báo**, kẹp **được nhả**, và máy về trạng thái báo động.
+
+**Hướng làm.** (a) Thuộc tính `LoiLanToi` đặt từ phép kiểm — đơn giản; (b) một hàng đợi kịch bản
+lỗi — mô phỏng được chuỗi sự cố; (c) dùng thư viện tạo đối tượng giả — mạnh, nhưng thêm phụ thuộc.
+
+**Gợi ý.** Đây là bài **quan trọng nhất nhóm G.3** và hay bị bỏ qua nhất. Đường chạy thuận ai cũng
+thử; đường chạy lỗi thì chỉ có bài này thử hộ bạn.
+
+**Ghép vào.** G.5.3, G.8.5.
+
+---
+
+## G.4  Lớp nghiệp vụ — nơi luật của máy sống
+
+### G.4.1 — Chuyển động có hạn giờ ★★★ ⟨Ch.5⟩
+
+**Yêu cầu.** `DiToiAsync(ViTriMm, ct)` gói: kiểm đã về gốc chưa, kiểm vị trí trong hành trình cho
+phép, đặt hạn giờ, đổi lỗi hết giờ thành `AlarmException`.
+
+**Kết quả mong đợi.** Bấm Dừng giữa chuyển động thì thoát **êm**, không phát cảnh báo. Trục treo
+quá 5 giây thì phát cảnh báo hết giờ. Hai tình huống này **không được lẫn nhau**.
+
+**Hướng làm.** (a) `CreateLinkedTokenSource` + `CancelAfter` + bộ lọc
+`catch (OperationCanceledException) when (!ct.IsCancellationRequested)` — cách chuẩn; (b) `Stopwatch`
++ luồng theo dõi — lối chặn ở mục 7.6; (c) `Task.WhenAny` với một `Task.Delay` — chạy được nhưng
+tác vụ chuyển động vẫn chạy tiếp ở nền, dễ rò rỉ.
+
+**Gợi ý.** Phân biệt *người bấm Dừng* với *thiết bị hết giờ* chính là điều kiện trong `when(...)`.
+Thiếu nó thì mỗi lần người vận hành bấm Dừng, máy đẻ ra một cảnh báo giả — và cảnh báo giả là con
+đường ngắn nhất tới việc người ta bắt đầu bỏ qua cảnh báo thật.
+
+**Ghép vào.** G.5.2.
+
+### G.4.2 — Cụm kẹp ★★ ⟨Ch.13⟩
+
+**Yêu cầu.** `Kep()` / `Nha()` phải **chờ xác nhận bằng cảm biến**, không chỉ ghi tín hiệu ra rồi
+coi là xong.
+
+**Kết quả mong đợi.** Ghi tín hiệu kẹp mà cảm biến không lên trong 1 giây thì phát cảnh báo. Đã kẹp
+rồi mà gọi `Kep()` lần nữa thì không làm gì và không lỗi.
+
+**Hướng làm.** (a) Vòng chờ có hạn giờ — thẳng thắn; (b) chờ theo sự kiện đổi trạng thái vào-ra —
+nhanh hơn, phức tạp hơn; (c) chờ một khoảng cố định rồi coi là xong — **cách nhiều máy thật đang
+làm**, và là lý do có những lỗi "thỉnh thoảng rơi phôi".
+
+**Gợi ý.** Hỏi câu này cho mọi cơ cấu chấp hành: *"nếu khí yếu thì phần mềm có biết không?"*
+
+**Ghép vào.** G.5.2.
+
+### G.4.3 — Cụm đo ★★ ⟨Ch.13⟩
+
+**Yêu cầu.** Gộp: hạ trục Z → chờ ổn định → đọc cảm biến N lần → lấy trung bình (G.2.5) → so dải
+(G.2.1) → nâng trục → trả `KetQuaDo`.
+
+**Kết quả mong đợi.** Trả về một `KetQuaDo` đầy đủ. Nếu cảm biến lỗi giữa chừng thì **trục Z vẫn
+được nâng lên** trước khi ném lỗi ra ngoài.
+
+**Hướng làm.** (a) `try/finally` với phần nâng trục trong `finally` — đúng và ngắn; (b) bọc trong
+một lớp "phiên đo" cài `IDisposable` — hợp nếu về sau có nhiều tài nguyên phải trả; (c) để lớp gọi
+tự nâng — **đừng**: nó sẽ quên đúng lúc có lỗi.
+
+**Gợi ý.** Đây là bài đầu tiên bạn thấy `finally` **có nghĩa vật lý**: không nâng đầu đo lên thì
+phôi kế tiếp trôi vào sẽ va.
+
+**Ghép vào.** G.5.2, G.6.3.
+
+### G.4.4 — Giám sát khí nén phát sự kiện ★★ ⟨Ch.4, Ch.16⟩
+
+**Yêu cầu.** Đọc áp suất định kỳ; khi xuống dưới ngưỡng thì **phát sự kiện**, không tự dừng máy.
+
+**Kết quả mong đợi.** Lớp giám sát **không tham chiếu** tới lớp điều khiển máy. Ai muốn phản ứng thì
+tự đăng ký.
+
+**Hướng làm.** (a) `event EventHandler<T>` — chuẩn .NET; (b) `IObservable` — mạnh, thêm phụ thuộc;
+(c) gọi thẳng `machine.Stop()` — **sai chiều phụ thuộc**, và mục 7.4 giải thích vì sao.
+
+**Gợi ý.** Chỗ nào có `+=` thì phải trả lời được *"`-=` ở đâu"*. Không có câu trả lời là có rò rỉ
+(Phụ lục E mục E.9).
+
+**Ghép vào.** G.7.1, G.8.2.
+
+### G.4.5 — Bộ điều khiển máy ★★ ⟨Ch.12⟩
+
+**Yêu cầu.** Giữ `TrangThaiMay`, đếm sản lượng OK/NG, phát sự kiện khi trạng thái đổi. **Chỉ lớp này
+được đổi trạng thái.**
+
+**Kết quả mong đợi.** Tìm toàn bộ mã nguồn, chỉ có **một chỗ duy nhất** gán `TrangThai = ...`.
+
+**Hướng làm.** (a) Thuộc tính `private set` + các hàm chuyển trạng thái có tên — đủ cho bài này;
+(b) bảng chuyển trạng thái khai báo — làm ở G.5.4; (c) `public set` — mở cửa cho mọi nơi ghi vào,
+và đó là con đường dẫn tới bảy cờ bool ở mục 12.1.1b.
+
+**Ghép vào.** G.5.4, G.7.1.
+
+---
+
+## G.5  Trình tự — nơi cỗ máy bắt đầu chạy
+
+### G.5.1 — `IBuoc` ★★ ⟨Ch.7 mục 7.7, Ch.12⟩
+
+**Yêu cầu.** Hợp đồng một bước: tên hiển thị, mã số ổn định, `ThucThiAsync(ct)`, và một phép kiểm
+điều kiện trước.
+
+**Kết quả mong đợi.** Chu trình trở thành **một danh sách**, và bạn in ra được *"Bước 3/7: Kẹp
+phôi"* mà không sửa gì trong các bước.
+
+**Gợi ý.** Nhớ phân biệt của mục 7.7.4: `IBuoc` là trừu tượng của **tầng trình tự**, khác hẳn
+`ITruc` là trừu tượng của **tầng thiết bị**. Ngay cả khi đội quyết định bỏ interface cho thiết bị,
+`IBuoc` vẫn nên giữ.
+
+**Ghép vào.** G.5.2, G.5.3, G.7.2.
+
+### G.5.2 — Bảy bước của một chu kỳ ★★ ⟨Ch.12⟩
+
+**Yêu cầu.** Cài bảy bước: chờ phôi vào → hạ đo (G.4.3) → kết luận → kẹp (G.4.2) → đi tới máng đúng
+(G.4.1) → nhả → về vị trí chờ.
+
+**Kết quả mong đợi.** Chạy 20 chu kỳ trên giả lập, in ra mỗi chu kỳ một dòng gồm số chu kỳ, chiều
+dày đo được và kết luận.
+
+**Hướng làm.** (a) Mỗi bước một lớp — rõ ràng, dễ kiểm thử từng bước; (b) mỗi bước một `Func` trong
+danh sách — ít mã hơn, nhưng mất chỗ đặt điều kiện trước và tên; (c) một hàm dài gọi tuần tự —
+ngắn nhất và là cách mục 7.7 đo được trong nhiều dự án thật, kèm cái giá đã phân tích ở đó.
+
+**Ghép vào.** G.5.3, G.8.5.
+
+### G.5.3 — Bộ chạy trình tự ★★★ ⟨Ch.12⟩
+
+**Yêu cầu.** Chạy danh sách bước, bắt ba loại ngoại lệ **và chỉ ba**: cảnh báo, huỷ lệnh, lỗi bất
+ngờ. Mỗi loại xử lý khác nhau.
+
+**Kết quả mong đợi.** Dùng giả lập biết hỏng (G.3.5) để chứng minh cả ba nhánh đều chạy đúng. Sau
+cảnh báo, máy **dừng ở trạng thái báo động** chứ không chạy tiếp chu kỳ sau.
+
+**Hướng làm.** (a) Ba khối `catch` riêng với bộ lọc — chuẩn; (b) một `catch` rồi phân loại bằng
+`is` — gộp lại nhưng khó đọc; (c) một `catch (Exception)` xử lý chung — **mất khả năng phân biệt
+người bấm Dừng với sự cố thật**.
+
+**Gợi ý.** Thứ tự các khối `catch` có ý nghĩa: loại cụ thể trước, `Exception` sau cùng. Và trong
+khối bắt lỗi bất ngờ, nhớ truyền **cả đối tượng lỗi** vào logger, không chỉ `ex.Message` — mục
+19.4.1 giải thích vì sao.
+
+**Ghép vào.** G.8.5.
+
+### G.5.4 — Bảng chuyển trạng thái ★★★ ⟨Ch.12⟩
+
+**Yêu cầu.** Khai báo các chuyển trạng thái hợp lệ ở **một chỗ**. Lệnh không hợp lệ bị từ chối.
+
+**Kết quả mong đợi.** Gọi *Bắt đầu* khi đang ở trạng thái báo động thì **không có gì xảy ra** và có
+một dòng log giải thích — không cần bất kỳ câu `if` nào ở chỗ gọi.
+
+**Hướng làm.** (a) `Dictionary<(TrangThai, Lenh), TrangThai>` — không thêm phụ thuộc, đủ tốt; (b)
+thư viện máy trạng thái — thêm được hành động khi vào/ra trạng thái, đúng thứ dùng ở một dự án
+trong bộ mẫu; (c) `switch` lồng — quay lại đúng vấn đề mục 12.1.1.
+
+**Gợi ý.** Viết ra **bảng** trước trên giấy: hàng là trạng thái, cột là lệnh. Ô trống nghĩa là không
+cho phép. Bạn sẽ phát hiện vài ô mình chưa từng nghĩ tới.
+
+**Ghép vào.** G.7.1, G.8.5.
+
+### G.5.5 — Tạm dừng, dừng, và chạy lại ★★★ ⟨Ch.12 mục 12.2.4⟩
+
+**Yêu cầu.** Ba lệnh với ba ngữ nghĩa khác nhau: *tạm dừng* (dừng ở ranh giới bước, giữ nguyên
+phôi), *dừng* (kết thúc chu kỳ hiện tại rồi dừng), *dừng khẩn* (dừng ngay — nhưng chỉ **phản ánh**
+trạng thái mạch an toàn phần cứng).
+
+**Kết quả mong đợi.** Tạm dừng giữa chừng rồi chạy tiếp thì **không mất phôi và không đo lại**.
+
+**Hướng làm.** (a) Kiểm cờ tạm dừng ở ranh giới giữa các bước — an toàn nhất, độ trễ tối đa bằng một
+bước; (b) truyền token tạm dừng xuống tận trong bước — phản ứng nhanh hơn, nhưng mỗi bước phải xử lý
+việc bị cắt giữa chừng; (c) tạm dừng = huỷ rồi chạy lại từ đầu chu kỳ — đơn giản nhất nhưng **phí
+một phôi** mỗi lần.
+
+**Gợi ý.** Đây là chỗ mục 15.2.2b áp vào: phần dừng khẩn trong phần mềm chỉ **đọc** trạng thái mạch
+an toàn để hiển thị và khoá lệnh. Nó không phải là chức năng an toàn.
+
+**Ghép vào.** G.7.1, G.8.5.
+
+---
+## G.6  Cấu hình, công thức và dữ liệu
+
+### G.6.1 — Mô hình công thức có kiểm tra dải ★★ ⟨Ch.13⟩
+
+**Yêu cầu.** `CongThuc` gồm: tên, chiều dày danh định, dung sai trên/dưới, tốc độ trục, số lần đo
+mỗi phôi. Có hàm `KiemTra()` trả về **danh sách lỗi**, không ném ngoại lệ.
+
+**Kết quả mong đợi.** Nạp một công thức có dung sai âm hoặc số lần đo bằng 0 thì **bị chặn ngay khi
+nạp**, kèm thông báo nói rõ trường nào sai.
+
+**Hướng làm.** (a) Hàm `KiemTra()` trả `List<string>` — đơn giản, hiện được hết lỗi cùng lúc; (b)
+attribute mô tả dải trên từng thuộc tính rồi kiểm bằng reflection — giao diện tự dựng được ô nhập
+từ đó (xem G.7.3); (c) ném ngoại lệ ở lỗi đầu tiên — người dùng phải sửa từng lỗi một, khó chịu.
+
+**Gợi ý.** Mục 10.1.6 kể một ô nhập **có ý định kiểm dải nhưng chưa bao giờ được nối vào**. Bài này
+là chỗ tránh đúng lỗi đó: kiểm tra phải nằm ở **mô hình**, không nằm ở giao diện.
+
+**Ghép vào.** G.6.2, G.7.3.
+
+### G.6.2 — Nạp và ghi công thức ★★ ⟨mục 3.6.3b⟩
+
+**Yêu cầu.** Đọc/ghi công thức ra file. Hỗ trợ ít nhất một định dạng, và **giữ nguyên** công thức cũ
+nếu file hỏng.
+
+**Kết quả mong đợi.** Sửa file thành nội dung rác, khởi động lại phần mềm: máy báo lỗi rõ ràng và
+chạy với công thức mặc định, **không sập**.
+
+**Hướng làm.** (a) JSON — có kiểu, lồng được, công cụ sẵn; (b) INI — **13/13 dự án trong bộ mẫu
+dùng**, người bảo trì quen, nhưng phẳng và không có kiểu; (c) SQLite — hợp khi cần lịch sử đổi công
+thức, nặng hơn cho một máy nhỏ.
+
+**Gợi ý.** Dù chọn gì, khi phân tích số **phải nói rõ văn hoá**. Trên máy đặt vùng miền Việt Nam,
+`double.Parse("5.0")` cho ra **50** — mục 3.6.3b.
+
+**Ghép vào.** G.8.1.
+
+### G.6.3 — Ghi kết quả sản xuất ★★ ⟨Ch.19⟩
+
+**Yêu cầu.** Mỗi phôi ghi một dòng: thời gian, số hiệu, chiều dày, kết luận, tên công thức. File
+chia theo ngày.
+
+**Kết quả mong đợi.** Chạy 100 chu kỳ ra một file mở được bằng Excel, **số thập phân không bị hiểu
+sai** khi máy đặt vùng miền khác.
+
+**Hướng làm.** (a) CSV tự ghi — nhẹ nhất, mở được mọi nơi; (b) thư viện đọc/ghi Excel — ra file
+`.xlsx` thật, không cần cài Office; (c) Excel Interop — **đừng**: rò tiến trình `EXCEL.EXE` và biến
+giấy phép Office thành phụ thuộc lúc chạy (mục 3.6.3b).
+
+**Gợi ý.** Ghi thời gian theo ISO 8601 và số theo văn hoá bất biến. Tên thư mục theo ngày thì dùng
+định dạng cố định `yyyy-MM-dd`, đừng dùng tên tháng theo ngôn ngữ máy.
+
+**Ghép vào.** G.6.4.
+
+### G.6.4 — Đếm sản lượng và tỷ lệ đạt ★★ ⟨Ch.12⟩
+
+**Yêu cầu.** Đếm tổng, OK, NG theo ca; tính tỷ lệ đạt và nhịp máy (giây/phôi). Reset khi đổi ca.
+
+**Kết quả mong đợi.** Số liệu **sống sót qua một lần khởi động lại phần mềm** giữa ca.
+
+**Hướng làm.** (a) Ghi xuống file sau mỗi phôi — an toàn nhất, tốn ghi đĩa; (b) ghi định kỳ 30 giây
+— ít ghi hơn, mất tối đa 30 giây dữ liệu khi mất điện; (c) chỉ giữ trong bộ nhớ — mất sạch khi khởi
+động lại, và mất điện giữa ca là chuyện có thật.
+
+**Gợi ý.** Định nghĩa "một ca" cho rõ **trước khi** viết mã: theo giờ cố định, hay theo lần bấm nút
+đổi ca? Hai cách cho ra hai con số khác nhau, và người quản lý sản xuất sẽ hỏi.
+
+**Ghép vào.** G.7.5.
+
+### G.6.5 — Xoay vòng và dọn file cũ ★★ ⟨Ch.19⟩
+
+**Yêu cầu.** File log và file kết quả tự xoay vòng theo ngày, tự xoá file quá N ngày.
+
+**Kết quả mong đợi.** Chạy giả lập 400 ngày (tiêm đồng hồ giả) thì thư mục không phình vô hạn.
+
+**Hướng làm.** (a) Thư viện log lo sẵn việc xoay vòng — rẻ nhất, khuyến nghị; (b) tự viết — kiểm
+soát hoàn toàn, nhưng phải tự xử lý file đang bị mở; (c) một tác vụ theo lịch của Windows — nằm
+ngoài phần mềm, dễ bị quên khi cài lại máy.
+
+**Gợi ý.** Đây là bài dạy một thói quen quan trọng hơn chính nó: **tiêm đồng hồ** (một giao diện
+`IDongHo` thay vì gọi thẳng `DateTime.Now`). Không có nó thì mọi thứ liên quan tới thời gian đều
+không kiểm thử được. Trong bộ mẫu có **1.881** chỗ gọi thẳng `DateTime.Now`.
+
+**Ghép vào.** G.8.2.
+
+---
+
+## G.7  Giao diện
+
+### G.7.1 — ViewModel trạng thái máy ★★ ⟨Ch.9⟩
+
+**Yêu cầu.** Một lớp cho giao diện đọc: trạng thái hiện tại, bước đang chạy, sản lượng, cảnh báo
+đang có. Cập nhật khi tầng dưới phát sự kiện.
+
+**Kết quả mong đợi.** Giao diện **không tham chiếu** tới lớp thiết bị nào. Chạy được với một lớp
+điều khiển giả.
+
+**Hướng làm.** (a) Tự cài `INotifyPropertyChanged` — không phụ thuộc; (b) thư viện sinh mã sẵn —
+ít mã lặp; (c) thăm dò định kỳ bằng bộ đếm giờ — đơn giản nhưng trễ và tốn, dùng khi tầng dưới
+không phát sự kiện.
+
+**Gợi ý.** Sự kiện từ tầng thiết bị đến trên **luồng phụ**. Phải đưa về luồng giao diện trước khi
+gán — đây đúng là câu hỏi C# được xem nhiều thứ nhì mọi thời đại (mục 8.1.2).
+
+**Ghép vào.** G.7.5.
+
+### G.7.2 — Thanh tiến độ bước ★ ⟨Ch.10⟩
+
+**Yêu cầu.** Hiện *"Bước 3/7: Kẹp phôi"* kèm thanh tiến độ, dùng danh sách bước của G.5.1.
+
+**Kết quả mong đợi.** Thêm một bước thứ tám vào danh sách thì giao diện tự hiện 8 bước, **không sửa
+mã giao diện**.
+
+**Gợi ý.** Đây là phần thưởng cụ thể của việc trình tự là **dữ liệu** chứ không phải mã — bốn thứ
+mục 7.7 liệt kê là sẽ mất nếu bỏ `IBuoc`.
+
+**Ghép vào.** G.7.5.
+
+### G.7.3 — Ô nhập số có dải ★★★ ⟨mục 10.1.6⟩
+
+**Yêu cầu.** Ô nhập thông số công thức: chỉ nhận số, có dải nhỏ nhất/lớn nhất lấy từ G.6.1, hiện
+đơn vị, báo đỏ khi ngoài dải, và **không cho lưu** khi còn lỗi.
+
+**Kết quả mong đợi.** Gõ chữ cái thì không vào được. Gõ giá trị ngoài dải thì viền đỏ và nút Lưu mờ
+đi. Dấu thập phân hoạt động đúng trên máy đặt vùng miền Việt Nam.
+
+**Hướng làm.** (a) Chặn phím lúc gõ — người dùng không gõ được ký tự sai, nhưng dán từ clipboard
+vẫn lọt; (b) cho gõ tự do rồi kiểm khi rời ô — dễ cài, phản hồi chậm hơn; (c) ràng buộc dữ liệu có
+quy tắc kiểm tra — chuẩn của WPF, tốn công học nhưng dùng lại được cho mọi ô.
+
+**Gợi ý.** Câu hỏi khó nhất của bài này không phải kỹ thuật: **dấu thập phân là dấu chấm hay dấu
+phẩy?** Nếu máy dùng bàn phím ảo tự vẽ thì bạn kiểm soát được; nếu dùng ô nhập thường thì nó theo
+vùng miền của Windows. Đây là lỗi mà mục 10.1.6 và mục 3.6.3b đều cảnh báo, từ hai hướng khác nhau.
+
+**Ghép vào.** G.7.5.
+
+### G.7.4 — Bảng nhật ký và bảng cảnh báo ★★ ⟨mục 19.4.1b⟩
+
+**Yêu cầu.** Bảng cuộn hiện log thời gian thực (mức, thời gian, nguồn, nội dung), lọc theo mức. Và
+một bảng cảnh báo đang hoạt động, có nút xác nhận.
+
+**Kết quả mong đợi.** Lớp ghi log **không biết gì** về bảng hiển thị. Muốn bỏ bảng đi thì xoá một
+dòng đăng ký, không sửa lớp log.
+
+**Hướng làm.** (a) Giao diện **cắm vào** đường ống log như một cửa ra — khuyến nghị, đúng mẫu tốt ở
+mục 19.4.1b; (b) lớp log giữ tham chiếu tới bảng — **sai chiều**, chính là ví dụ xấu ở mục đó; (c)
+giao diện đọc file log — tách bạch nhất nhưng trễ và tốn đĩa.
+
+**Gợi ý.** Giới hạn số dòng giữ trong bộ nhớ (ví dụ 2.000 dòng gần nhất). Bảng log chạy 12 tiếng
+không giới hạn sẽ ăn hết bộ nhớ, và đó là một trong mười vấn đề liệt kê ở mục 19.4.1b.
+
+**Ghép vào.** G.7.5, G.8.2.
+
+### G.7.5 — Màn hình chính ★★ ⟨Ch.10⟩
+
+**Yêu cầu.** Ghép bốn bài trên thành một màn hình: trạng thái, bước, sản lượng, cảnh báo, và các
+nút Bắt đầu/Tạm dừng/Dừng/Reset. Nút bị **khoá theo trạng thái** (dùng bảng của G.5.4).
+
+**Kết quả mong đợi.** Ở trạng thái báo động, nút Bắt đầu **mờ đi và có lời giải thích vì sao** —
+không phải bấm vào rồi không có gì xảy ra.
+
+**Hướng làm.** (a) Mỗi nút một điều kiện khoá riêng — dễ viết, dễ sót; (b) lấy điều kiện từ chính
+bảng chuyển trạng thái — một nguồn sự thật, khuyến nghị; (c) khoá bằng phân quyền người dùng — bổ
+sung cho (b), không thay thế.
+
+**Gợi ý.** *"Nút mờ mà không nói vì sao"* là một trong những lỗi giao diện gây ức chế nhất cho người
+vận hành. Luôn kèm một dòng lý do.
+
+**Ghép vào.** G.8.5.
+
+---
+
+## G.8  Ghép nối và vận hành
+
+### G.8.1 — Điểm ráp nối ★★ ⟨Ch.7 mục 7.4⟩
+
+**Yêu cầu.** Một chỗ duy nhất tạo mọi đối tượng, đọc cấu hình, và quyết định **thật hay giả lập**.
+
+**Kết quả mong đợi.** Đổi một dòng cấu hình là toàn máy chuyển sang thiết bị thật. Tìm toàn bộ mã
+nguồn, từ khoá `new` với lớp thiết bị chỉ xuất hiện **ở file này**.
+
+**Hướng làm.** (a) Tự tạo bằng tay trong `Main` — không thêm phụ thuộc, nhìn thấy hết, đủ cho máy
+nhỏ; (b) thùng chứa tiêm phụ thuộc — hợp khi số lớp lớn; (c) cờ giả lập bên trong từng lớp thiết bị
+— **đừng**: quyết định thật/giả rải ra mọi nơi, và mục 7.7 đo được 10 nhánh rẽ như vậy trong một
+chương trình mẫu nhỏ.
+
+**Ghép vào.** G.8.5.
+
+### G.8.2 — Nhật ký có cấu trúc ★★ ⟨mục 19.4.1⟩
+
+**Yêu cầu.** Thay mọi `Console.WriteLine` bằng log có cấu trúc, có mức, có nguồn, ghi ra cả file
+lẫn bảng giao diện.
+
+**Kết quả mong đợi.** Tìm được **mọi lần trục Z quá thời gian** bằng một phép lọc theo thuộc tính,
+không phải tìm chuỗi văn bản.
+
+**Hướng làm.** (a) Thư viện log có khuôn thông điệp — khuyến nghị; (b) tự viết bộ ghi log — trong
+bộ mẫu **8/13 dự án** làm vậy, và mục 19.4.1b mổ xẻ mười vấn đề của một bản như thế; (c) giữ
+`Console.WriteLine` — **11/13 dự án** vẫn còn trong mã sản xuất, và không tra cứu được gì.
+
+**Gợi ý.** Ghi `_logger.Information("Trục {Ten} tới {ViTri} mm", ten, viTri)` chứ không nối chuỗi.
+Khác biệt là thứ cho phép lọc theo `Ten` về sau.
+
+**Ghép vào.** G.8.5.
+
+### G.8.3 — Driver cảm biến nối tiếp ★★★ ⟨mục 14.1.5b⟩
+
+**Yêu cầu.** Cài `ICamBienChieuDay` thật bằng `SerialPort`, dùng bộ tách khung G.2.3 và tổng kiểm
+G.2.4.
+
+**Kết quả mong đợi.** Hàm xử lý sự kiện **chỉ gom byte vào bộ đệm**, không phân tích, không chạm
+giao diện. Rút cáp giữa chừng thì phát cảnh báo tử tế, không làm sập chương trình.
+
+**Hướng làm.** (a) `BytesToRead` rồi `Read(buf, 0, n)` và đẩy vào bộ đệm — **33/41 hàm trong bộ mẫu
+làm cách này**; (b) `ReadExisting()` cộng bộ đệm chuỗi — được, chỉ dùng cho khung văn bản; (c)
+`ReadLine()` trên luồng riêng — ngắn nhất, nhưng chặn và phải bắt lỗi hết giờ.
+
+**Gợi ý.** Nếu không có cảm biến thật, dùng một cặp cổng ảo nối chéo và viết một chương trình nhỏ
+đóng vai thiết bị — **cố tình cắt khung làm nhiều mảnh** để chứng minh bộ tách khung của bạn đúng.
+
+**Ghép vào.** G.8.5.
+
+### G.8.4 — Bắt tay với máy kế tiếp ★★ ⟨mục 14.1.7⟩
+
+**Yêu cầu.** Hai tín hiệu: *"tôi có hàng"* và *"tôi sẵn sàng nhận"*. Xử lý đủ hai tình huống: máy
+sau đầy (bị chặn) và máy trước hết hàng (bị đói).
+
+**Kết quả mong đợi.** Phân biệt được trong nhật ký: máy dừng vì **đói** hay vì **bị chặn**. Hai
+nguyên nhân này dẫn tới hai hành động sửa chữa hoàn toàn khác nhau.
+
+**Hướng làm.** (a) Hai tín hiệu số mức — đơn giản nhất, không phân biệt được "mất kết nối" với
+"không sẵn sàng"; (b) thêm một nhịp tim — phát hiện được máy bên kia chết; (c) qua mạng — giàu
+thông tin, nhưng thêm một thứ có thể hỏng.
+
+**Gợi ý.** Đừng bọc lời gọi nhịp tim trong khối bắt lỗi rỗng. Mục 3.5.5 kể đúng trường hợp đó: máy
+im lặng "chết" với hệ thống nhà máy trong khi màn hình vẫn hiện đang chạy.
+
+**Ghép vào.** G.8.5.
+
+### G.8.5 — Ghép tất cả và chạy ★★★ ⟨toàn sách⟩
+
+**Yêu cầu.** Ghép ba mươi chín bài trên thành một chương trình chạy được: khởi động, về gốc, chạy
+tự động, xử lý được cảnh báo, tạm dừng và chạy tiếp, dừng sạch.
+
+**Kết quả mong đợi — chín điều, tự chấm được:**
+
+| ✔ | Điều phải làm được |
+|---|---|
+| ☐ | Chạy 200 chu kỳ liên tục không rò rỉ bộ nhớ, không treo |
+| ☐ | Cùng hạt giống giả lập cho ra **cùng dãy kết quả**, lặp lại được |
+| ☐ | Ép cảm biến lỗi thì máy dừng đúng chỗ, phát đúng mã, **trục Z đã nâng, kẹp đã nhả** |
+| ☐ | Bấm Dừng giữa chu kỳ thì thoát êm, **không có cảnh báo giả** |
+| ☐ | Tạm dừng rồi chạy tiếp thì không mất phôi, không đo lại |
+| ☐ | Đổi công thức trong file thì máy chạy theo giá trị mới, **không biên dịch lại** |
+| ☐ | File kết quả mở bằng Excel đúng số thập phân |
+| ☐ | Nhật ký đủ để trả lời *"chu kỳ 137 hỏng vì cái gì"* mà không cần gỡ lỗi |
+| ☐ | Chuyển cấu hình sang thiết bị thật thì vẫn biên dịch được, chỉ thiếu phần cứng |
+
+**Gợi ý cuối.** Khi chạy được, hãy làm thêm **bài thử một giờ** ở mục 7.7: thử **thêm một trục thứ
+hai của hãng khác**. Nếu việc đó là thêm một file và sửa một dòng ở điểm ráp nối, cấu trúc của bạn
+đúng. Nếu phải mở năm file đang chạy tốt ra sửa, hãy quay lại nhóm G.3 và đọc lại mục 7.7.
+
+---
+
+## G.9  Bản đồ phụ thuộc — bài nào cần bài nào
+
+**Bảng G.2 — Thứ tự làm và phụ thuộc**
+
+| Bài | Cần trước | Bài dùng lại nó |
+|---|---|---|
+| G.1.1 … G.1.5 | — | gần như mọi bài sau |
+| G.2.1 | G.1.1 | G.4.3, G.6.1 |
+| G.2.2 | G.1.1 | G.3.1, G.4.1 |
+| G.2.3, G.2.4 | — | G.3.2, G.8.3 |
+| G.2.5 | G.1.2 | G.4.3, G.6.4 |
+| G.3.1 … G.3.3 | G.1.x, G.2.2 | G.4.x |
+| G.3.4, G.3.5 | G.3.1–G.3.3 | G.5.3, G.8.5 |
+| G.4.1 … G.4.5 | G.3.x | G.5.x |
+| G.5.1, G.5.2 | G.4.x | G.5.3, G.7.2 |
+| G.5.3 … G.5.5 | G.5.1, G.3.5 | G.7.5, G.8.5 |
+| G.6.1 … G.6.5 | G.1.x | G.7.3, G.8.1 |
+| G.7.1 … G.7.5 | G.4.5, G.5.4, G.6.1 | G.8.5 |
+| G.8.1 … G.8.4 | mọi nhóm trên | G.8.5 |
+| **G.8.5** | **tất cả** | — |
+
+> 💡 **Đường tắt cho người đã đi làm, khoảng 12 giờ.** Nếu không có thời gian làm cả bốn mươi bài,
+> làm đúng **mười hai bài xương sống** này là đã có một cỗ máy chạy được: G.1.2 · G.1.3 · G.1.5 ·
+> G.2.1 · G.3.1 · G.3.4 · G.4.1 · G.4.3 · G.5.1 · G.5.2 · G.8.1 · G.8.5. Các bài còn lại bổ sung
+> chiều sâu, không phải xương sống.
+
+> 📌 **Bốn mươi bài này cố tình KHÔNG kèm lời giải.** Lý do không phải để làm khó: mục *Kết quả mong
+> đợi* của mỗi bài đã là một tiêu chí **tự chấm được**, và trong phần mềm máy, biết cách tự trả lời
+> câu *"tôi xong chưa"* là kỹ năng quan trọng hơn hẳn việc đối chiếu với một đáp án có sẵn. Nếu bí
+> hoàn toàn ở một bài, mã mẫu gần nhất nằm ở `source/MeoFrameMini` và ba biến thể của nó — đọc
+> **cấu trúc** ở đó rồi quay lại tự viết, đừng chép.
+

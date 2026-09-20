@@ -9,10 +9,10 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260906 |
+| **Phiên bản** | v1.0.0.260921 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
-| **Nội dung** | 30 chương + 7 phụ lục · 137 sơ đồ tự vẽ · 32 ảnh thật |
+| **Nội dung** | 30 chương + 7 phụ lục · 138 sơ đồ tự vẽ · 32 ảnh thật |
 | **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |
 
@@ -679,11 +679,11 @@ an toàn.
 | Chỉ biết **triệu chứng** ("cảm biến báo ON giả") | ⭐ **[Phụ lục E — Chỉ mục tra cứu theo triệu chứng](#phan-pl-e-chi-muc-trieu-chung)** |
 
 > ⭐ **Nếu bạn chỉ biết máy đang bị gì, hãy vào thẳng [Phụ lục E](#phan-pl-e-chi-muc-trieu-chung).**
-> Nó gom **toàn bộ 602 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
+> Nó gom **toàn bộ 611 dòng triệu chứng** của cả sách vào một chỗ, có bảng quyết định
 > *"bạn quan sát thấy gì → mở chương nào"*, một mục riêng cho **triệu chứng liên quan an toàn**,
 > và chỉ mục đầy đủ để `Ctrl+F`.
 >
-> 💡 **29 trong 30 chương** kết thúc bằng bảng **"Sai lầm thường gặp"** dạng *triệu chứng → nguyên
+> 💡 **30 trong 30 chương** kết thúc bằng bảng **"Sai lầm thường gặp"** dạng *triệu chứng → nguyên
 > nhân → cách xử lý* (Ch.1 là chương giới thiệu, không có). **19 chương** có thêm **bảng tóm tắt
 > một trang** để in dán cạnh máy — các chương còn lại dùng chính bảng "Sai lầm thường gặp" làm bản
 > tóm tắt, vì với những chủ đề đó thì danh sách lỗi hữu ích hơn danh sách khái niệm.
@@ -742,6 +742,15 @@ nhảy thẳng tới chương cần.
 ### 1.4 Đọc bản vẽ điện máy
 
 Phần này không thay thế được một khoá học vẽ điện, nhưng đủ để bạn **mở bản vẽ ra và không bị lạc**.
+
+![Mảnh bản vẽ điện máy: mạch tự giữ contactor, có số dây, số tiếp điểm, tham chiếu chéo](data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5MDAgNjkwIiB3aWR0aD0iOTAwIiBoZWlnaHQ9IjY5MCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLCBBcmlhbCwgc2Fucy1zZXJpZiI+CiAgPHJlY3Qgd2lkdGg9IjkwMCIgaGVpZ2h0PSI2OTAiIGZpbGw9IiNmZmZmZmYiLz4KICA8dGV4dCB4PSIzMCIgeT0iMjgiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMTExIj7EkOG7jWMgbeG7mXQgbeG6o25oIGLhuqNuIHbhur0gxJFp4buHbiBtw6F5IOKAlCB04bqldCBj4bqjIHF1eSDGsOG7m2MgY+G7p2EgbeG7pWMgMS40IHRyw6puIGPDuW5nIG3hu5l0IGjDrG5oPC90ZXh0PgogIDx0ZXh0IHg9IjMwIiB5PSI0NyIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNDc1NTY5Ij5N4bqhY2ggdOG7sSBnaeG7ryAoc2VsZi1ob2xkKSBj4bunYSBt4buZdCBjb250YWN0b3Ig4oCUIG3huqFjaCBjw7MgbeG6t3QgdHLDqm4gZ+G6p24gbmjGsCBt4buNaSBtw6F5PC90ZXh0PgoKICA8IS0tID09PT09PT09PT09PT09PT09IEtIVU5HIFRSQU5HIELhuqJOIFbhurwgPT09PT09PT09PT09PT09PT0gLS0+CiAgPHJlY3QgeD0iMzAiIHk9IjYyIiB3aWR0aD0iNDUwIiBoZWlnaHQ9IjQwNCIgZmlsbD0iI2ZkZmRmZCIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDwhLS0gdGjGsOG7m2MgY+G7mXQgLS0+CiAgPGxpbmUgeDE9IjMwIiB5MT0iODgiIHgyPSI0ODAiIHkyPSI4OCIgc3Ryb2tlPSIjOTRhM2I4IiBzdHJva2Utd2lkdGg9IjEiLz4KICA8dGV4dCB4PSI0NCIgeT0iODIiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzY0NzQ4YiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MTwvdGV4dD4KICA8dGV4dCB4PSIxMTYiIHk9IjgyIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM2NDc0OGIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjI8L3RleHQ+CiAgPHRleHQgeD0iMTg4IiB5PSI4MiIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNjQ3NDhiIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4zPC90ZXh0PgogIDx0ZXh0IHg9IjI2MCIgeT0iODIiIGZvbnQtc2l6ZT0iMTAuNSIgZmlsbD0iIzY0NzQ4YiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+NDwvdGV4dD4KICA8dGV4dCB4PSIzMzIiIHk9IjgyIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM2NDc0OGIiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjU8L3RleHQ+CiAgPHRleHQgeD0iNDA0IiB5PSI4MiIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNjQ3NDhiIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj42PC90ZXh0PgogIDxsaW5lIHgxPSI4MCIgeTE9Ijg4IiB4Mj0iODAiIHkyPSI0NjYiIHN0cm9rZT0iI2UyZThmMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGxpbmUgeDE9IjE1MiIgeTE9Ijg4IiB4Mj0iMTUyIiB5Mj0iNDY2IiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDxsaW5lIHgxPSIyMjQiIHkxPSI4OCIgeDI9IjIyNCIgeTI9IjQ2NiIgc3Ryb2tlPSIjZTJlOGYwIiBzdHJva2Utd2lkdGg9IjEiLz4KICA8bGluZSB4MT0iMjk2IiB5MT0iODgiIHgyPSIyOTYiIHkyPSI0NjYiIHN0cm9rZT0iI2UyZThmMCIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPGxpbmUgeDE9IjM2OCIgeTE9Ijg4IiB4Mj0iMzY4IiB5Mj0iNDY2IiBzdHJva2U9IiNlMmU4ZjAiIHN0cm9rZS13aWR0aD0iMSIvPgogIDwhLS0ga2h1bmcgdMOqbiBnw7NjIC0tPgogIDxyZWN0IHg9IjMwMCIgeT0iNDMwIiB3aWR0aD0iMTgwIiBoZWlnaHQ9IjM2IiBmaWxsPSIjZjFmNWY5IiBzdHJva2U9IiM5NGEzYjgiIHN0cm9rZS13aWR0aD0iMSIvPgogIDx0ZXh0IHg9IjMwOCIgeT0iNDQ1IiBmb250LXNpemU9IjkuNSIgZmlsbD0iIzMzNDE1NSI+TeG6oWNoIMSRaeG7gXUga2hp4buDbiDigJQgY+G7pW0gYsSDbmcgdOG6o2k8L3RleHQ+CiAgPHRleHQgeD0iMzA4IiB5PSI0NTkiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMGYxNzJhIj5UcmFuZyAxMjwvdGV4dD4KICA8dGV4dCB4PSI0NzIiIHk9IjQ1OSIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiM2NDc0OGIiIHRleHQtYW5jaG9yPSJlbmQiPi8xMjwvdGV4dD4KCiAgPCEtLSByYXkgbmd14buTbiAtLT4KICA8bGluZSB4MT0iNjAiIHkxPSIxMTYiIHgyPSI0NTAiIHkyPSIxMTYiIHN0cm9rZT0iI2I5MWMxYyIgc3Ryb2tlLXdpZHRoPSIzIi8+CiAgPHRleHQgeD0iNTYiIHk9IjExMiIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNiOTFjMWMiIHRleHQtYW5jaG9yPSJlbmQiPisyNCBWPC90ZXh0PgogIDxsaW5lIHgxPSI2MCIgeTE9IjQxMCIgeDI9IjQ1MCIgeTI9IjQxMCIgc3Ryb2tlPSIjMWUzYThhIiBzdHJva2Utd2lkdGg9IjMiLz4KICA8dGV4dCB4PSI1NiIgeT0iNDE0IiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzFlM2E4YSIgdGV4dC1hbmNob3I9ImVuZCI+MCBWPC90ZXh0PgoKICA8IS0tID09PT09IG5ow6FuaCBjaMOtbmggeD0xNTIgPT09PT0gLS0+CiAgPGxpbmUgeDE9IjE1MiIgeTE9IjExNiIgeDI9IjE1MiIgeTI9IjE0NiIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIxNjAiIHk9IjEzNiIgZm9udC1zaXplPSIxMC41IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzdjM2FlZCI+MTwvdGV4dD4KCiAgPCEtLSBj4bqndSBjaMOsIEYxIC0tPgogIDxyZWN0IHg9IjE0MCIgeT0iMTQ2IiB3aWR0aD0iMjQiIGhlaWdodD0iMzQiIGZpbGw9IiNmZmY3ZWQiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjE1MiIgeTE9IjE0NiIgeDI9IjE1MiIgeTI9IjE4MCIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjEuMiIvPgogIDx0ZXh0IHg9IjEyOCIgeT0iMTY3IiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzExMTgyNyIgdGV4dC1hbmNob3I9ImVuZCI+RjE8L3RleHQ+CgogIDxsaW5lIHgxPSIxNTIiIHkxPSIxODAiIHgyPSIxNTIiIHkyPSIyMTIiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPHRleHQgeD0iMTYwIiB5PSIyMDAiIGZvbnQtc2l6ZT0iMTAuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiM3YzNhZWQiPjI8L3RleHQ+CgogIDwhLS0gU0IxIG7DunQgROG7qk5HLCB0aeG6v3AgxJFp4buDbSBOQyAyMS0yMiAtLT4KICA8bGluZSB4MT0iMTUyIiB5MT0iMjEyIiB4Mj0iMTUyIiB5Mj0iMjE4IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxMzgiIHkxPSIyMTgiIHgyPSIxNjYiIHkyPSIyMTgiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjEzOCIgeTE9IjI0NiIgeDI9IjE2NiIgeTI9IjI0NiIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMTQxIiB5MT0iMjQ4IiB4Mj0iMTY4IiB5Mj0iMjE0IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxNTIiIHkxPSIyNDYiIHgyPSIxNTIiIHkyPSIyNTIiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iMTUyIiBjeT0iMjE4IiByPSIyLjYiIGZpbGw9IiMxMTE4MjciLz4KICA8Y2lyY2xlIGN4PSIxNTIiIGN5PSIyNDYiIHI9IjIuNiIgZmlsbD0iIzExMTgyNyIvPgogIDx0ZXh0IHg9IjEzMiIgeT0iMjE2IiBmb250LXNpemU9IjkuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwZjc2NmUiIHRleHQtYW5jaG9yPSJlbmQiPjIxPC90ZXh0PgogIDx0ZXh0IHg9IjEzMiIgeT0iMjUyIiBmb250LXNpemU9IjkuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwZjc2NmUiIHRleHQtYW5jaG9yPSJlbmQiPjIyPC90ZXh0PgogIDx0ZXh0IHg9IjE3NiIgeT0iMjI4IiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzExMTgyNyI+U0IxPC90ZXh0PgogIDx0ZXh0IHg9IjE3NiIgeT0iMjQyIiBmb250LXNpemU9IjkuNSIgZmlsbD0iIzY0NzQ4YiI+ROG7qk5HIChOQyk8L3RleHQ+CiAgPHRleHQgeD0iMTc2IiB5PSIyNTYiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iIzk0YTNiOCI+bMaw4buhaSBC4bquQyBRVUEg4oeSIE5DPC90ZXh0PgoKICA8IS0tIG7DunQgZ2lhbyBuaMOhbmggdOG7sSBnaeG7ryAtLT4KICA8bGluZSB4MT0iMTUyIiB5MT0iMjUyIiB4Mj0iMTUyIiB5Mj0iMjcyIiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxjaXJjbGUgY3g9IjE1MiIgY3k9IjI3MiIgcj0iMy42IiBmaWxsPSIjMTExODI3Ii8+CiAgPHRleHQgeD0iMTYwIiB5PSIyNjgiIGZvbnQtc2l6ZT0iMTAuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiM3YzNhZWQiPjM8L3RleHQ+CgogIDwhLS0gU0IyIG7DunQgQ0jhuqBZLCB0aeG6v3AgxJFp4buDbSBOTyAxMy0xNCAtLT4KICA8bGluZSB4MT0iMTUyIiB5MT0iMjcyIiB4Mj0iMTUyIiB5Mj0iMjg2IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxMzgiIHkxPSIyODYiIHgyPSIxNjYiIHkyPSIyODYiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjEzOCIgeTE9IjMxNCIgeDI9IjE2NiIgeTI9IjMxNCIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMTQxIiB5MT0iMzE2IiB4Mj0iMTY2IiB5Mj0iMjkzIiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxNTIiIHkxPSIzMTQiIHgyPSIxNTIiIHkyPSIzMjgiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGNpcmNsZSBjeD0iMTUyIiBjeT0iMjg2IiByPSIyLjYiIGZpbGw9IiMxMTE4MjciLz4KICA8Y2lyY2xlIGN4PSIxNTIiIGN5PSIzMTQiIHI9IjIuNiIgZmlsbD0iIzExMTgyNyIvPgogIDx0ZXh0IHg9IjEzMiIgeT0iMjg0IiBmb250LXNpemU9IjkuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwZjc2NmUiIHRleHQtYW5jaG9yPSJlbmQiPjEzPC90ZXh0PgogIDx0ZXh0IHg9IjEzMiIgeT0iMzIwIiBmb250LXNpemU9IjkuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMwZjc2NmUiIHRleHQtYW5jaG9yPSJlbmQiPjE0PC90ZXh0PgogIDx0ZXh0IHg9IjE3NiIgeT0iMjk2IiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzExMTgyNyI+U0IyPC90ZXh0PgogIDx0ZXh0IHg9IjE3NiIgeT0iMzEwIiBmb250LXNpemU9IjkuNSIgZmlsbD0iIzY0NzQ4YiI+Q0jhuqBZIChOTyk8L3RleHQ+CiAgPHRleHQgeD0iMTc2IiB5PSIzMjQiIGZvbnQtc2l6ZT0iOSIgZmlsbD0iIzk0YTNiOCI+bMaw4buhaSBLSMOUTkcgY2jhuqFtIOKHkiBOTzwvdGV4dD4KCiAgPGxpbmUgeDE9IjE1MiIgeTE9IjMyOCIgeDI9IjE1MiIgeTI9IjM0MCIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIxNjAiIHk9IjMzOCIgZm9udC1zaXplPSIxMC41IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzdjM2FlZCI+NDwvdGV4dD4KCiAgPCEtLSBjdeG7mW4gZMOieSBLTTEgLS0+CiAgPHJlY3QgeD0iMTI2IiB5PSIzNDAiIHdpZHRoPSI1MiIgaGVpZ2h0PSIzNCIgZmlsbD0iI2ZlZjNjNyIgc3Ryb2tlPSIjYjQ1MzA5IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIxNTIiIHk9IjM2MiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiM3ODM1MGYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPktNMTwvdGV4dD4KICA8dGV4dCB4PSIxMjAiIHk9IjM0OCIgZm9udC1zaXplPSI5IiBmaWxsPSIjNzgzNTBmIiB0ZXh0LWFuY2hvcj0iZW5kIj5BMTwvdGV4dD4KICA8dGV4dCB4PSIxMjAiIHk9IjM3NCIgZm9udC1zaXplPSI5IiBmaWxsPSIjNzgzNTBmIiB0ZXh0LWFuY2hvcj0iZW5kIj5BMjwvdGV4dD4KICA8bGluZSB4MT0iMTUyIiB5MT0iMzc0IiB4Mj0iMTUyIiB5Mj0iNDEwIiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgoKICA8IS0tIHRoYW0gY2hp4bq/dSBjaMOpbyBkxrDhu5tpIGN14buZbiBkw6J5IC0tPgogIDxsaW5lIHgxPSIxNzgiIHkxPSIzNTciIHgyPSIyMDYiIHkyPSIzNTciIHN0cm9rZT0iI2RjMjYyNiIgc3Ryb2tlLXdpZHRoPSIxLjMiIHN0cm9rZS1kYXNoYXJyYXk9IjMgMiIvPgogIDxyZWN0IHg9IjIwNiIgeT0iMzQ1IiB3aWR0aD0iODYiIGhlaWdodD0iMjQiIHJ4PSIzIiBmaWxsPSIjZmVmMmYyIiBzdHJva2U9IiNkYzI2MjYiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHRleHQgeD0iMjQ5IiB5PSIzNjEiIGZvbnQtc2l6ZT0iMTEuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNkYzI2MjYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPi8xMi40ICAvMzEuMjwvdGV4dD4KCiAgPCEtLSA9PT09PSBuaMOhbmggdOG7sSBnaeG7ryB4PTI5NiA9PT09PSAtLT4KICA8bGluZSB4MT0iMTUyIiB5MT0iMjcyIiB4Mj0iMjk2IiB5Mj0iMjcyIiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIyOTYiIHkxPSIyNzIiIHgyPSIyOTYiIHkyPSIyODYiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjI4MiIgeTE9IjI4NiIgeDI9IjMxMCIgeTI9IjI4NiIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMjgyIiB5MT0iMzE0IiB4Mj0iMzEwIiB5Mj0iMzE0IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxjaXJjbGUgY3g9IjI5NiIgY3k9IjI4NiIgcj0iMi42IiBmaWxsPSIjMTExODI3Ii8+CiAgPGNpcmNsZSBjeD0iMjk2IiBjeT0iMzE0IiByPSIyLjYiIGZpbGw9IiMxMTE4MjciLz4KICA8dGV4dCB4PSIyNzYiIHk9IjI4NCIgZm9udC1zaXplPSI5LjUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMGY3NjZlIiB0ZXh0LWFuY2hvcj0iZW5kIj4xMzwvdGV4dD4KICA8dGV4dCB4PSIyNzYiIHk9IjMyMCIgZm9udC1zaXplPSI5LjUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMGY3NjZlIiB0ZXh0LWFuY2hvcj0iZW5kIj4xNDwvdGV4dD4KICA8dGV4dCB4PSIzMjAiIHk9IjI5NiIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxMTE4MjciPktNMTwvdGV4dD4KICA8dGV4dCB4PSIzMjAiIHk9IjMxMCIgZm9udC1zaXplPSI5LjUiIGZpbGw9IiM2NDc0OGIiPnRp4bq/cCDEkWnhu4NtIHBo4bulPC90ZXh0PgogIDxsaW5lIHgxPSIyODUiIHkxPSIzMTYiIHgyPSIzMTAiIHkyPSIyOTMiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjI5NiIgeTE9IjMxNCIgeDI9IjI5NiIgeTI9IjM0MCIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMjk2IiB5MT0iMzQwIiB4Mj0iMTUyIiB5Mj0iMzQwIiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxjaXJjbGUgY3g9IjE1MiIgY3k9IjM0MCIgcj0iMy42IiBmaWxsPSIjMTExODI3Ii8+CgogIDwhLS0gPT09PT09PT09PT09PT09PT0gQ0jDmiBHSeG6okkgQsOKTiBQSOG6okkgPT09PT09PT09PT09PT09PT0gLS0+CiAgPHRleHQgeD0iNTA0IiB5PSI4MCIgZm9udC1zaXplPSIxMy41IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzBmNzY2ZSI+xJDhu4xDIEjDjE5IIE7DgFkgVEhFTyBC4buQTiBM4buaUDwvdGV4dD4KCiAgPHJlY3QgeD0iNTA0IiB5PSI5MiIgd2lkdGg9IjM2NiIgaGVpZ2h0PSI3NiIgcng9IjQiIGZpbGw9IiNmMGZkZmEiIHN0cm9rZT0iIzBmNzY2ZSIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSI1MTYiIHk9IjExMCIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzBmNzY2ZSI+4pGgIENo4buvIGPDoWkgPSBMT+G6oEkgdGhp4bq/dCBi4buLIChJRUMgODEzNDYpIOKAlCBt4bulYyAxLjQuNDwvdGV4dD4KICA8dGV4dCB4PSI1MTYiIHk9IjEyOCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzEzNGU0YSI+RjEgPSBi4bqjbyB24buHIMK3IFNCMSwgU0IyID0gdGhhbyB0w6FjIHRheSDCtyBLTTEgPSBjb250YWN0b3I8L3RleHQ+CiAgPHRleHQgeD0iNTE2IiB5PSIxNDUiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMxMzRlNGEiPk5ow6xuIGNo4buvIMSR4bqndSBsw6AgYmnhur90IGxv4bqhaSwgY2jGsGEgY+G6p24gxJHhu41jIGNow7ogdGjDrWNoLjwvdGV4dD4KICA8dGV4dCB4PSI1MTYiIHk9IjE2MSIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzBmNzY2ZSI+4pqgIE5oaeG7gXUgbmjDoCBtw6F5IGTDuW5nIHF1eSDGsOG7m2MgcmnDqm5nIOKAlCBsdcO0biB0w6xtIHRyYW5nIGxlZ2VuZC48L3RleHQ+CgogIDxyZWN0IHg9IjUwNCIgeT0iMTc4IiB3aWR0aD0iMzY2IiBoZWlnaHQ9IjkyIiByeD0iNCIgZmlsbD0iI2VmZjZmZiIgc3Ryb2tlPSIjMWQ0ZWQ4IiBzdHJva2Utd2lkdGg9IjEuMyIvPgogIDx0ZXh0IHg9IjUxNiIgeT0iMTk2IiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjMWQ0ZWQ4Ij7ikaEgU+G7kSB0aeG6v3AgxJFp4buDbSBoYWkgY2jhu68gc+G7kSDigJQgbeG7pWMgMS40LjM8L3RleHQ+CiAgPHRleHQgeD0iNTE2IiB5PSIyMTQiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMxZTNhOGEiPkNo4buvIHPhu5EgxJDhuqZVID0gdGnhur9wIMSRaeG7g20gdGjhu6kgbeG6pXkgwrcgY2jhu68gc+G7kSBDVeG7kEkgPSBraeG7g3U8L3RleHQ+CiAgPHRleHQgeD0iNTE2IiB5PSIyMzIiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiMxZTNhOGEiPmN14buRaSBsw6AgMS0yIOKHkiBOQyAoU0IxIGTDuW5nIDIxLTIyKTwvdGV4dD4KICA8dGV4dCB4PSI1MTYiIHk9IjI1MCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzFlM2E4YSI+Y3Xhu5FpIGzDoCAzLTQg4oeSIE5PIChTQjIgdsOgIHRp4bq/cCDEkWnhu4NtIHBo4bulIEtNMSBkw7luZyAxMy0xNCk8L3RleHQ+CiAgPHRleHQgeD0iNTE2IiB5PSIyNjUiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiMxZDRlZDgiPkN14buZbiBkw6J5IGNvbnRhY3RvciBraMO0bmcgdGhlbyBo4buHIG7DoHk6IGx1w7RuIGzDoCBBMSDigJMgQTIuPC90ZXh0PgoKICA8cmVjdCB4PSI1MDQiIHk9IjI4MCIgd2lkdGg9IjM2NiIgaGVpZ2h0PSI4OCIgcng9IjQiIGZpbGw9IiNmZWYyZjIiIHN0cm9rZT0iI2RjMjYyNiIgc3Ryb2tlLXdpZHRoPSIxLjMiLz4KICA8dGV4dCB4PSI1MTYiIHk9IjI5OCIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2RjMjYyNiI+4pGiIFRoYW0gY2hp4bq/dSBjaMOpbyBkxrDhu5tpIGN14buZbiBkw6J5IOKAlCBt4bulYyAxLjQuMjwvdGV4dD4KICA8dGV4dCB4PSI1MTYiIHk9IjMxNiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzdmMWQxZCI+LzEyLjQgPSB0cmFuZyAxMiwgY+G7mXQgNCDCtyAvMzEuMiA9IHRyYW5nIDMxLCBj4buZdCAyPC90ZXh0PgogIDx0ZXh0IHg9IjUxNiIgeT0iMzM0IiBmb250LXNpemU9IjExIiBmaWxsPSIjN2YxZDFkIj7EkMOieSBsw6AgREFOSCBTw4FDSCBN4buMSSBOxqBJIHRp4bq/cCDEkWnhu4NtIGPhu6dhIEtNMSB4deG6pXQgaGnhu4duLjwvdGV4dD4KICA8dGV4dCB4PSI1MTYiIHk9IjM1MiIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjZGMyNjI2Ij7irZAgRMOyIGzhu5dpIGLhuq90IMSR4bqndSB04burIMSRw6J5OiBiaeG6v3QgbmdheSBjb250YWN0b3IgbsOgeSBjw7JuPC90ZXh0PgogIDx0ZXh0IHg9IjUxNiIgeT0iMzY1IiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiNkYzI2MjYiPsSRaeG7gXUga2hp4buDbiBjw6FpIGfDrCDhu58gdHJhbmcga2jDoWMsIGto4buPaSBs4bqtdCBj4bqjIGLhu5kgYuG6o24gduG6vS48L3RleHQ+CgogIDxyZWN0IHg9IjUwNCIgeT0iMzc4IiB3aWR0aD0iMzY2IiBoZWlnaHQ9Ijg4IiByeD0iNCIgZmlsbD0iI2ZhZjVmZiIgc3Ryb2tlPSIjN2MzYWVkIiBzdHJva2Utd2lkdGg9IjEuMyIvPgogIDx0ZXh0IHg9IjUxNiIgeT0iMzk2IiBmb250LXNpemU9IjExLjUiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjN2MzYWVkIj7ikaMgU+G7kSBkw6J5IHTDrW0gMSDCtyAyIMK3IDMgwrcgNCDigJQgbeG7pWMgMS40LjU8L3RleHQ+CiAgPHRleHQgeD0iNTE2IiB5PSI0MTQiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM0YzFkOTUiPsSQw6J5IGzDoCBjw6FjaCDEkcOhbmggc+G7kSBUSEVPIMSQSeG7gk0gTuG7kEk6IG3hu41pIHPhu6NpIG7hu5FpIGNodW5nPC90ZXh0PgogIDx0ZXh0IHg9IjUxNiIgeT0iNDMyIiBmb250LXNpemU9IjExIiBmaWxsPSIjNGMxZDk1Ij5t4buZdCDEkWnhu4NtIMSRaeG7h24gbWFuZyBjw7luZyBt4buZdCBz4buRLjwvdGV4dD4KICA8dGV4dCB4PSI1MTYiIHk9IjQ1MCIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjN2MzYWVkIj7irZAgxJBvIGhhaSDEkWnhu4NtIGPDuW5nIHPhu5EgbcOgIGtow6FjIMSRaeG7h24gdGjhur8g4oeSIMSR4bupdCBob+G6t2MgbOG7j25nPC90ZXh0PgogIDx0ZXh0IHg9IjUxNiIgeT0iNDYzIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM3YzNhZWQiPuG7nyBnaeG7r2EuIFN1eSByYSDEkcaw4bujYyBtw6Aga2jDtG5nIGPhuqduIG3hu58gYuG6o24gduG6vS48L3RleHQ+CgogIDwhLS0gPT09PT09PT09PT09PT09PT0gROG6okkgRMav4buaSTogVFLhuqBORyBUSMOBSSBOR0jhu4ggPT09PT09PT09PT09PT09PT0gLS0+CiAgPHJlY3QgeD0iMzAiIHk9IjQ4MiIgd2lkdGg9Ijg0MCIgaGVpZ2h0PSIxOTAiIHJ4PSI1IiBmaWxsPSIjZmZmYmViIiBzdHJva2U9IiNiNDUzMDkiIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjQ2IiB5PSI1MDYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjOTI0MDBlIj7imqAgQuG6q3kgbOG7m24gbmjhuqV0IGtoaSDEkeG7jWMgYuG6o24gduG6vSDigJQgbeG7pWMgMS40Ljc6IGLhuqNuIHbhur0gTFXDlE4gduG6vSDhu58gVFLhuqBORyBUSMOBSSBOR0jhu4g8L3RleHQ+CiAgPHRleHQgeD0iNDYiIHk9IjUyNiIgZm9udC1zaXplPSIxMS41IiBmaWxsPSIjNzgzNTBmIj5UcuG6oW5nIHRow6FpIG5naOG7iSA9IGNoxrBhIGPhuqVwIMSRaeG7h24sIGNoxrBhIGFpIGLhuqVtLCBjaMawYSBjw7MgduG6rXQgbsOgbyB0w6FjIMSR4buZbmcuIEtIw5RORyBwaOG6o2kgdHLhuqFuZyB0aMOhaSBsw7pjIG3DoXkgxJFhbmcgY2jhuqF5LjwvdGV4dD4KCiAgPCEtLSBiZW4gdHJhaTogdHJlbiBiYW4gdmUgLS0+CiAgPHRleHQgeD0iMTIwIiB5PSI1NTIiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjOTI0MDBlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5UUsOKTiBC4bqiTiBW4bq8IChuZ2jhu4kpPC90ZXh0PgogIDxsaW5lIHgxPSIxMjAiIHkxPSI1NjIiIHgyPSIxMjAiIHkyPSI1NzYiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjEwNiIgeTE9IjU3NiIgeDI9IjEzNCIgeTI9IjU3NiIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iMTA2IiB5MT0iNjA0IiB4Mj0iMTM0IiB5Mj0iNjA0IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSIxMDkiIHkxPSI2MDYiIHgyPSIxMzYiIHkyPSI1NzIiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjEyMCIgeTE9IjYwNCIgeDI9IjEyMCIgeTI9IjYxOCIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8dGV4dCB4PSIxMjAiIHk9IjYzOCIgZm9udC1zaXplPSIxMSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiMxNTgwM2QiIHRleHQtYW5jaG9yPSJtaWRkbGUiPjIxLTIyIMSQQU5HIFRIw5RORzwvdGV4dD4KICA8dGV4dCB4PSIxMjAiIHk9IjY1NCIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNzgzNTBmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5uw7p0IGThu6tuZyBjaMawYSBi4buLIGLhuqVtPC90ZXh0PgoKICA8dGV4dCB4PSIzMDAiIHk9IjU5MCIgZm9udC1zaXplPSIyMiIgZmlsbD0iI2I0NTMwOSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+4p6cPC90ZXh0PgogIDx0ZXh0IHg9IjMwMCIgeT0iNjEyIiBmb250LXNpemU9IjEwLjUiIGZpbGw9IiM3ODM1MGYiIHRleHQtYW5jaG9yPSJtaWRkbGUiPmLhuqVtIG7DunQgZOG7q25nPC90ZXh0PgoKICA8IS0tIGJlbiBwaGFpOiBraGkgdGFjIGRvbmcgLS0+CiAgPHRleHQgeD0iNDgwIiB5PSI1NTIiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjOTI0MDBlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5LSEkgQuG7iiBUw4FDIMSQ4buYTkc8L3RleHQ+CiAgPGxpbmUgeDE9IjQ4MCIgeTE9IjU2MiIgeDI9IjQ4MCIgeTI9IjU3NiIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iNDY2IiB5MT0iNTc2IiB4Mj0iNDk0IiB5Mj0iNTc2IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDxsaW5lIHgxPSI0NjYiIHkxPSI2MDQiIHgyPSI0OTQiIHkyPSI2MDQiIHN0cm9rZT0iIzExMTgyNyIgc3Ryb2tlLXdpZHRoPSIyIi8+CiAgPGxpbmUgeDE9IjQ2OSIgeTE9IjYwNiIgeDI9IjUwMCIgeTI9IjU4NiIgc3Ryb2tlPSIjMTExODI3IiBzdHJva2Utd2lkdGg9IjIiLz4KICA8bGluZSB4MT0iNDgwIiB5MT0iNjA0IiB4Mj0iNDgwIiB5Mj0iNjE4IiBzdHJva2U9IiMxMTE4MjciIHN0cm9rZS13aWR0aD0iMiIvPgogIDx0ZXh0IHg9IjQ4MCIgeT0iNjM4IiBmb250LXNpemU9IjExIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI2I5MWMxYyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MjEtMjIgSOG7niBSQTwvdGV4dD4KICA8dGV4dCB4PSI0ODAiIHk9IjY1NCIgZm9udC1zaXplPSIxMC41IiBmaWxsPSIjNzgzNTBmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5t4bqhY2ggS00xIG3huqV0IMSRaeG7h248L3RleHQ+CgogIDxsaW5lIHgxPSI2MDAiIHkxPSI1NDAiIHgyPSI2MDAiIHkyPSI2NjAiIHN0cm9rZT0iI2I0NTMwOSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtZGFzaGFycmF5PSI0IDMiLz4KICA8dGV4dCB4PSI2MjAiIHk9IjU1NiIgZm9udC1zaXplPSIxMS41IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzkyNDAwZSI+SOG6rXUgcXXhuqMgbuG6v3UgcXXDqm4gcXV5IMaw4bubYyBuw6B5OjwvdGV4dD4KICA8dGV4dCB4PSI2MjAiIHk9IjU3NiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc4MzUwZiI+4oCiIFRo4bqleSB0aeG6v3AgxJFp4buDbSBUSMOUTkcgdHLDqm4gZ2nhuqV5LCB0xrDhu59uZyBtw6F5IMSRYW5nIGNo4bqheTwvdGV4dD4KICA8dGV4dCB4PSI2MjAiIHk9IjU5NCIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzc4MzUwZiI+ICB0aMOsIG7DsyBjxaluZyB0aMO0bmcg4oCUIHNhaSB24bubaSBt4buNaSB0aeG6v3AgxJFp4buDbSBOQy48L3RleHQ+CiAgPHRleHQgeD0iNjIwIiB5PSI2MTQiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IiM3ODM1MGYiPuKAoiDEkG8gdGjhu7FjIHThur8gdGjhuqV5IEjhu54sIHTGsOG7n25nIGjhu49uZywgxJFpIHRoYXkgbsO6dC48L3RleHQ+CiAgPHRleHQgeD0iNjIwIiB5PSI2MzQiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjYjkxYzFjIj7irZAgSOG7j2kgdHLGsOG7m2Mga2hpIGvhur90IGx14bqtbjogbMO6YyB0w7RpIMSRbywgdGhp4bq/dCBi4buLIG7DoHk8L3RleHQ+CiAgPHRleHQgeD0iNjIwIiB5PSI2NTAiIGZvbnQtc2l6ZT0iMTEiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSIjYjkxYzFjIj4gICDEkWFuZyBi4buLIHTDoWMgxJHhu5luZyBoYXkga2jDtG5nPzwvdGV4dD4KPC9zdmc+Cg==)
+
+**Hình 1.1** — Một mảnh bản vẽ thật, gói đủ mọi quy ước mà bảy mục dưới đây giải thích. ⭐ **Đọc
+hình này trước, rồi mới đọc phần chữ** — mỗi ô chú giải bên phải ghi rõ nó ứng với mục nào. Mạch
+được chọn là **mạch tự giữ (self-hold)**: nhấn `SB2` thì `KM1` có điện, tiếp điểm phụ `13-14` của
+chính `KM1` **tự nối song song** với `SB2` để giữ mạch sau khi buông tay; nhấn `SB1` cắt dòng qua
+cuộn dây thì mạch nhả. Đây là mạch có mặt trên gần như mọi máy, nên nhận ra được hình dạng của nó
+là đã đọc được một phần lớn bản vẽ.
 
 #### 1.4.1 Một bộ bản vẽ máy gồm những gì
 
@@ -906,6 +915,24 @@ Một checklist rút gọn (bản đầy đủ ở Phụ lục D):
 
 ---
 
+### 1.7 Sai lầm thường gặp khi đọc bản vẽ
+
+| # | Sai lầm | Vì sao sai | Làm đúng |
+|---|---|---|---|
+| 1 | ⚠⚠ Thấy tiếp điểm **vẽ đóng** thì tin là lúc máy chạy nó cũng đóng | Bản vẽ ở **trạng thái nghỉ** (mục 1.4.7). Mọi tiếp điểm NC đều vẽ đóng — kể cả nút dừng khẩn cấp | Hỏi *"lúc tôi đo, thiết bị này đang bị tác động hay không?"* trước khi kết luận |
+| 2 | ⚠ Đo thấy NC đang **hở** → kết luận hỏng, đi thay | Nó hở vì **đang bị tác động** (cữ đè, nút bị nhấn, cửa mở) | Đưa cơ cấu về vị trí gốc rồi đo lại. Chỉ sau đó mới kết luận |
+| 3 | Đọc `21-22` mà phải tra chú thích mới biết NO hay NC | Chữ số **cuối** đã nói: `1-2` ⇒ NC, `3-4` ⇒ NO (mục 1.4.3) | Nhớ đúng một quy tắc đó, dùng được cho gần như mọi hãng |
+| 4 | Nhầm **số dây** với **số chân thiết bị** | Số dây (ví dụ `3`) là **điểm điện**; số chân (`13`, `A1`) là vị trí trên thân thiết bị. Hai hệ khác nhau, in cạnh nhau | Số chân luôn đi kèm một thiết bị cụ thể; số dây chạy dọc sợi dây |
+| 5 | Tìm tiếp điểm của một contactor bằng cách **lật hết bộ bản vẽ** | Tham chiếu chéo dưới cuộn dây đã liệt kê **mọi nơi** nó xuất hiện (mục 1.4.2) | Đọc dãy `/12.4  /31.2` dưới cuộn dây trước khi lật trang |
+| 6 | Giả định mọi bản vẽ theo **IEC 81346** | Rất nhiều nhà máy có quy ước chữ cái riêng; bản vẽ một số nước dùng hệ khác | **Luôn mở trang legend** ở đầu bộ bản vẽ trước khi đọc trang đầu tiên |
+| 7 | ⚠ Tin bản vẽ hơn tủ thật khi hai bên khác nhau | Tủ bị sửa nhiều lần mà bản vẽ **không được cập nhật** là chuyện bình thường | Đo để xác nhận. Và **ghi lại thay đổi lên bản vẽ** — người sau sẽ gặp đúng cái bẫy bạn vừa gặp |
+| 8 | Đọc sơ đồ **nguyên lý** rồi đi đấu dây theo nó | Sơ đồ nguyên lý vẽ theo **logic**, không theo **vị trí thật**; dây thật đi theo sơ đồ đấu nối/bố trí (mục 1.4.1) | Nguyên lý để **hiểu**, đấu nối để **làm**. Hai loại bản vẽ, hai mục đích |
+
+> ⭐ **Sáu trong tám lỗi trên đều là một lỗi:** đọc bản vẽ như đọc ảnh chụp cái tủ, trong khi nó là
+> **một sơ đồ ở trạng thái quy ước**. Nhớ được điều đó là tránh được phần lớn.
+
+---
+
 ### Nguồn tham khảo
 
 - **IEC 81346** — *Industrial systems, installations and equipment and industrial products —
@@ -921,6 +948,11 @@ Một checklist rút gọn (bản đầy đủ ở Phụ lục D):
 > ⚠ Chương này chỉ **giới thiệu cách đọc bản vẽ**, không thay thế tài liệu bản vẽ của chính máy
 > bạn đang làm. Mỗi nhà chế tạo có thể có quy ước riêng — khi hai bên khác nhau thì **bản vẽ của
 > máy là đúng**.
+
+---
+
+**Chương sau:** [Chương 2 — Ngôn ngữ chung của đấu nối](#phan-ch02-ngon-ngu-chung) ·
+**Mục lục:** [Mục lục toàn sách](#muc-luc-ban-gop) · [Tài liệu tham khảo](#phan-00c-tai-lieu-tham-khao)
 
 
 ---
@@ -1495,6 +1527,10 @@ kim**, **DC 3 dây NPN**, tiếp điểm **NO**, đầu nối **M12**.
 
 ### Nguồn tham khảo
 
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
+
 - Omron, *E2E Standard Proximity Sensor Datasheet* (E62I-E-03) — Model Number Legend & Ordering
   Information: <https://assets.omron.com/m/24413d8c320a900c/original/E2E-Standard-Proximity-Sensor-Datasheet.pdf>
 - Mitsubishi Electric, *MELSEC iQ-F FX5U User's Manual (Hardware)* — mục Input Wiring, chân S/S
@@ -1502,9 +1538,6 @@ kim**, **DC 3 dây NPN**, tiếp điểm **NO**, đầu nối **M12**.
 - IEC 61131-2 — phân loại ngõ vào số Type 1/2/3
 
 ---
-
-**Chương tiếp theo:** [Chương 3 — Nguồn & phân phối điện](#phan-ch03-nguon-phan-phoi-dien) ·
-Hoặc nhảy thẳng tới [Chương 7 — Cảm biến tiệm cận](#phan-ch07-cam-bien-tiem-can)
 
 
 ---
@@ -2924,6 +2957,10 @@ RTEX (Panasonic) — xem [Ch.12 mục 12.2](#phan-ch12-servo-ac).
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - Mitsubishi Electric, *MELSEC iQ-F FX5U* — hậu tố mã hàng phân biệt kiểu ngõ ra: `MT/ES` transistor
   sink (0,5 A/điểm, nguồn ngoài 5–30 VDC), `MT/ESS` transistor source, `MR/ES` relay (≤ 30 VDC hoặc
@@ -4450,6 +4487,10 @@ Các vị trí khác trong mã: **`5`** sau chữ số tiếp điểm = model **
 
 ### Nguồn tham khảo
 
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
+
 - Omron, *E2E Standard Proximity Sensor Datasheet* (E62I-E-03) — Model Number Legend, Ordering
   Information, Influence of Surrounding Metal, Mutual Interference, Tightening torque:
   <https://assets.omron.com/m/24413d8c320a900c/original/E2E-Standard-Proximity-Sensor-Datasheet.pdf>
@@ -4788,6 +4829,10 @@ ví dụ `E3Z-T61-L 2M` và `E3Z-T61-D 2M`.
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - Omron, *E3Z Compact Photoelectric Sensor with Built-in Amplifier — Datasheet* (CSM_E3Z_DS_E_18_10):
   Ordering Information, Ratings/Specifications, Mutual Interference Protection Filter:
@@ -6441,6 +6486,10 @@ phá huỷ. Phải đọc đúng model của bạn — đừng dùng con số nh
 
 ### Nguồn tham khảo
 
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
+
 - SMC, *ZSE30A(F)/ISE30A Series — 2-Color Display High-Precision Digital Pressure Switch*
   (catalogue, trang 31–43): How to Order, Specifications, Internal Circuits and Wiring Examples,
   Set Pressure Range and Rated Pressure Range, Function Details (auto-preset `F5`, anti-chattering
@@ -6970,6 +7019,10 @@ hơn: cũng êm. Đúng dải đó: rung dữ.
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - Leadshine, *DM542 Digital Microstep Drive User Manual*, Revision 3.0 (2019) — Features, P1 Control
   Connector (mức 4,5–5 V hoặc 24 V, mặc định 24 V, công tắc S3, PUL ≥ 2,5 µs, DIR sớm ≥ 5 µs,
@@ -7800,6 +7853,10 @@ cứng. Nếu thiết bị có, hãy dùng — đây là khác biệt giữa *"c
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - Mitsubishi Electric, *MR-J4-_A_(-RJ) Servo Amplifier Instruction Manual* — sơ đồ đấu nối và ghi chú:
   công tắc dừng cưỡng bức phải là **tiếp điểm thường đóng**; khi vận hành phải bật **EM2, LSP, LSN
@@ -9849,6 +9906,10 @@ cuộn **24 VDC**, **có LED + dập xung**, gạt tay **kiểu vặn có khoá*
 
 ### Nguồn tham khảo
 
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
+
 - SMC, *Solenoid Valves Series SY3000 / SY5000 / SY7000* — How to Order (kiểu van, kiểu lắp, điện áp,
   đèn & dập xung, gạt tay, cỡ cửa), Specifications (áp làm việc theo kiểu van, tần số tối đa, thời
   gian đáp ứng, công suất cuộn), Flow Capacity of SY Series Valves:
@@ -10291,6 +10352,10 @@ Một giác hút ø40 có diện tích hiệu dụng ≈ 1257 mm² → **một g
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - SMC, *Compact Cylinder Series CQ2* — How to Order, Built-in Magnet Cylinder Model, dải đường kính
   ø12–ø100: <https://content2.smcetech.com/pdf/cq2.pdf>
@@ -11809,30 +11874,24 @@ khối đặc.
 > ⚠ **Phải dùng đúng kìm bấm.** Kìm bấm ferrule tạo tiết diện **vuông, lục giác hoặc thang** tuỳ
 > chuẩn. Dùng kìm điện thường bóp bẹp là mối bấm **không đủ lực giữ**, tuột ra sau vài tháng rung.
 
-#### 18.4.3 Bảng tra tiết diện — dòng — ferrule
+#### 18.4.3 Chọn tiết diện và ferrule cho cầu đấu — tra ở đâu
 
-| Tiết diện | AWG | Dòng cho phép* | Màu ferrule (chuẩn DIN 46228-4) |
-|---|---|---|---|
-| 0,5 mm² | 20 | ~9 A | Trắng |
-| 0,75 mm² | 18 | ~12 A | Xám |
-| **1,0 mm²** | 17 | ~15 A | **Đỏ** |
-| **1,5 mm²** | 16 | ~18 A | **Đen** |
-| 2,5 mm² | 14 | ~26 A | Xanh dương |
-| 4,0 mm² | 12 | ~34 A | Xám đậm |
-| 6,0 mm² | 10 | ~44 A | Xanh lá |
-| 10 mm² | 8 | ~61 A | Nâu |
+Ba câu hỏi hay gặp ở cầu đấu, và mỗi câu có **một chỗ trả lời duy nhất** trong sách này để không
+có hai bảng lệch nhau:
 
-\* Giá trị tham khảo cho dây đơn trong không khí ở 30 °C. ⚠ Dây bó trong máng kín, nhiệt độ tủ cao,
-hoặc nhiều dây mang tải cùng lúc → **phải giảm định mức đáng kể**. Tra tiêu chuẩn lắp đặt áp dụng
-(IEC 60364-5-52) cho công trình thật.
+| Câu hỏi | Tra ở | Vì sao không đặt ở đây |
+|---|---|---|
+| **Dây bao nhiêu mm² thì bao nhiêu ampe?** | [Phụ lục B.2](#phan-pl-b-tiet-dien-awg) — quy trình **4 bước** | ⚠⚠ Một bảng hai cột `mm² → A` đã bỏ mất **năm** yếu tố (cách lắp, số dây đi chung, nhiệt độ tủ, loại cách điện, sụt áp). Chọn thiếu tiết diện mà tưởng đủ thì **cháy** |
+| **mm² ↔ AWG quy đổi thế nào?** | [23.5.4](#phan-ch23-dau-noi-day-ky-thuat-dau) | Quy đổi đơn vị thuần tuý, thuộc chương kỹ thuật đấu dây |
+| **Ferrule màu gì cho cỡ nào?** | [23.5.3](#phan-ch23-dau-noi-day-ky-thuat-dau) — bảng **DIN 46228-4** | ⚠ Màu **xám xuất hiện hai lần** (0,75 và 4,0 mm² — chênh hơn 5 lần), nên màu chỉ là trợ giúp thị giác; giải thích đầy đủ nằm ở đó |
 
-> ⚠ **Màu ferrule là trợ giúp thị giác, KHÔNG phải mã duy nhất.** Trong dải trên, **màu xám xuất hiện
-> hai lần**: 0,75 mm² và 4,0 mm² — hai cỡ chênh nhau hơn 5 lần. Ngoài ra còn có **hệ màu T
-> (T-System)** dùng bảng màu khác DIN.
->
-> 💡 Dùng màu để **rà soát nhanh** thì rất tiện — thấy một ferrule đỏ (1,0 mm²) nằm giữa dãy ferrule
-> xanh (2,5 mm²) là nghi ngay có người thay dây sai cỡ. Nhưng khi **chọn ferrule hoặc kết luận**,
-> phải đối chiếu **tiết diện dây** trước. Chi tiết ở [Ch.23 mục 23.5.3](#phan-ch23-dau-noi-day-ky-thuat-dau).
+> ⭐ **Điều riêng của cầu đấu, không nằm ở Ch.23:** mỗi cầu đấu có **dải tiết diện chấp nhận được**
+> ghi trên thân hoặc trong catalogue (ví dụ `0,14–1,5 mm²`). Dây **nhỏ hơn cận dưới** thì kẹp không
+> chặt dù siết đủ lực; dây **lớn hơn cận trên** thì không vào hết, chỉ một phần sợi được kẹp. Cả
+> hai đều cho mối nối **trông thì xong** mà điện trở tiếp xúc cao — nóng dần rồi hỏng.
+
+> ⚠ Khi cầu đấu và ferrule **mua từ hai nguồn khác nhau**, kiểm lại: có **hệ màu T (T-System)** dùng
+> bảng màu khác DIN 46228-4, nên màu trong cùng một tủ có thể không nhất quán.
 
 #### 18.4.4 Các loại cầu đấu chuyên dụng
 
@@ -12400,6 +12459,8 @@ Mọi thứ tới đây lo **lắp và đấu**. Mục này lo cái quyết đ�
 bốn năm con số trong phần mềm camera. Chỉnh sai thì hệ vẫn chạy, vẫn ra kết quả — chỉ là kết quả
 **sai một tỉ lệ nhỏ**, mỗi ngày một ít.
 
+> ⚠ **Tên và thang đo của mỗi tham số dưới đây khác nhau theo hãng và theo phần mềm.** Ở chỗ này sách nói về **cái tham số đó làm gì** và **chỉnh nó thì đánh đổi cái gì** — không phải về con số cụ thể. Giá trị khởi đầu nêu ra là **để thử trên máy của bạn rồi đo lại**, không phải trị số nghiệm thu. ⭐ Sau mỗi lần chỉnh, kiểm bằng **biên độ dự trữ** (mục 19.8.5) chứ đừng kiểm bằng "nhìn ảnh thấy đẹp".
+
 ⚠ **NG giả là tốn kém hơn NG thật.** NG thật thì loại đúng hàng hỏng. NG giả thì loại **hàng tốt**,
 làm người vận hành mất tin vào máy, và sớm muộn có người **nới ngưỡng cho đỡ phiền** — lúc đó hệ
 vision thành đồ trang trí.
@@ -12551,6 +12612,10 @@ khi bắt đầu sai:
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - Basler, *acA3800-10gc — Product Documentation* (I/O Connector: Hirose HR10A-7R-6PB, mating plug
   HR10A-7P-6S; pin assignment; opto-coupled input/output electrical specifications; power supply
@@ -12881,7 +12946,7 @@ trở lại ống kính**. Ảnh thu được là một vùng trắng loá, khô
 | Đọc nhiều tag cùng lúc | Không | Hạn chế | **Có, hàng chục tag** |
 | Chịu **kim loại / nước** | **Tốt nhất** | Trung bình | **Kém nhất** |
 | Tốc độ truyền | Chậm | Trung bình | Nhanh |
-| Chuẩn hay gặp | — | **ISO/IEC 15693**, ISO 14443 | ISO 18000-6C (EPC Gen2) |
+| Chuẩn hay gặp | — | **ISO/IEC 15693**, ISO/IEC 14443 | ISO/IEC 18000-6C (EPC Gen2) |
 | Tần số có bị quản lý theo quốc gia | Không | Không | **Có** ⚠ |
 | Dùng trong máy tự động hoá | Ít | ⭐ **Phổ biến nhất** | Kho, logistics |
 
@@ -13039,6 +13104,10 @@ Ba việc phải làm khi thiết kế bố trí:
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - Omron, *MicroHAWK V430-F Autofocus Multicode Reader — Datasheet* (Q274): Part Number Structure
   `V430-F[XXX][Y][ZZZ]-[L][C][P]` đầy đủ (khoảng cách lấy nét, ống kính W/M/N/L, cảm biến
@@ -14019,6 +14088,10 @@ Buộc người vận hành **dùng cả hai tay** để khởi động — nên
 
 ### Nguồn tham khảo
 
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
+
 - **IEC 60204-1** (bản 2021) — màu bộ phận tác động (actuator): **START/ON dùng trắng (ưu tiên),
   xám, đen hoặc xanh lá — ĐỎ không được dùng**; **STOP/OFF dùng đen, xám hoặc trắng**;
   **dừng khẩn cấp dùng ĐỎ trên nền VÀNG**; **vàng cho tình trạng bất thường**;
@@ -14239,24 +14312,33 @@ Kìm bấm ferrule tạo tiết diện **vuông, lục giác, hoặc hình thang
 > Ngoài ra còn có **hệ màu T (T-System)** dùng bảng màu khác DIN — nếu tủ dùng ferrule hai nguồn
 > khác nhau thì màu không nhất quán.
 
-#### 23.5.4 Bảng tiết diện — dòng cho phép
+#### 23.5.4 Bảng quy đổi tiết diện ↔ AWG
 
-| Tiết diện | AWG | Dòng tham khảo* |
-|---|---|---|
-| 0,5 mm² | 20 | ~9 A |
-| 0,75 mm² | 18 | ~12 A |
-| 1,0 mm² | 17 | ~15 A |
-| 1,5 mm² | 16 | ~18 A |
-| 2,5 mm² | 14 | ~26 A |
-| 4,0 mm² | 12 | ~34 A |
-| 6,0 mm² | 10 | ~44 A |
-| 10 mm² | 8 | ~61 A |
+Bảng này chỉ để **quy đổi đơn vị** — đọc bản vẽ Mỹ ra mm², chọn ferrule, đặt hàng dây. Đây là các
+cặp quy đổi **quy ước** dùng trong catalogue ferrule và cáp công nghiệp châu Âu (AWG là thang rời
+rạc nên không cặp nào trùng khít tuyệt đối).
 
-\* ⚠ **Giá trị tham khảo cho dây đơn trong không khí ở 30 °C.** Phải **giảm định mức đáng kể** khi:
-dây bó trong máng kín, nhiệt độ tủ cao, nhiều dây mang tải cùng lúc, hoặc dây đi trong ống. Với công
-trình thật, tra tiêu chuẩn lắp đặt áp dụng (**IEC 60364-5-52**) — đừng dùng bảng này làm căn cứ thiết kế.
+| Tiết diện | AWG (quy ước) |
+|---|---|
+| 0,5 mm² | 20 |
+| 0,75 mm² | 18 |
+| 1,0 mm² | 17 |
+| 1,5 mm² | 16 |
+| 2,5 mm² | 14 |
+| 4,0 mm² | 12 |
+| 6,0 mm² | 10 |
+| 10 mm² | 8 |
 
----
+> ⚠⚠ **Bảng này KHÔNG có cột "bao nhiêu ampe" — và đó là cố ý.** Dòng cho phép của cùng một sợi dây
+> thay đổi theo **ít nhất năm yếu tố** (cách lắp, số dây đi chung, nhiệt độ tủ, loại cách điện, sụt
+> áp). Một bảng hai cột `mm² → A` đã **bỏ mất cả năm**, và hậu quả của việc chọn thiếu tiết diện mà
+> tưởng là đủ là **cháy**. Cách chọn đúng gồm **bốn bước**, xem
+> [Phụ lục B.2](#phan-pl-b-tiet-dien-awg) — và **bước kiểm sụt áp** ở [Phụ lục B.3](#phan-pl-b-tiet-dien-awg)
+> thường mới là bước quyết định, không phải bước tra dòng.
+
+> ⭐ Riêng với tủ tự động hoá: bảng dòng gốc của **IEC 60364-5-52** cho **30 °C**, trong khi tủ thật
+> chạy **45–55 °C** ([Ch.24](#phan-ch24-nhiet-moi-truong-tu-dien)) và dây thường **bó thành bó dày** —
+> tức phải nhân **hai** hệ số hiệu chỉnh. Đây là bước hay bị bỏ nhất.
 
 #### 23.5.5 ⚠⚠ Tuyệt đối KHÔNG tráng thiếc đầu dây bện rồi bắt vào cầu đấu vít
 
@@ -15685,6 +15767,10 @@ dừng, xoay 90°, dừng…).
 Bảy mục trước lo **đấu nối và an toàn**. Mục này lo phần người vận hành đụng vào hằng ngày: robot
 chạy **nhanh hay chậm**, **êm hay giật**, và **gắp trúng hay trượt**.
 
+> ⚠⚠ **Mọi con số tốc độ, gia tốc và dung sai trong mục này là ĐIỂM KHỞI ĐẦU để thử, không phải trị số nghiệm thu.** Mỗi hãng robot đặt tên tham số khác nhau, thang đo khác nhau (phần trăm, mm/s, hay bậc 1–100), và giới hạn an toàn khác nhau — **luôn tra sổ tay của chính con robot đang dùng**. Ở đây sách nói về **cái gì ảnh hưởng tới cái gì**.
+>
+> ⚠⚠ Và trước khi tăng bất cứ con số nào: **chạy thử ở tốc độ thấp với người đứng ngoài vùng nguy hiểm**. Sai một điểm dạy ở tốc độ cao là va chạm, không phải cảnh báo.
+
 #### 26.8.1 Ba hệ toạ độ phải phân biệt — nhầm là mọi điểm dạy sai
 
 | Hệ | Là gì | Đổi nó thì sao |
@@ -15822,6 +15908,10 @@ thẳng thì một khớp phải quay **cực nhanh**.
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - **Yamaha**, *Robot Controller Safety Standards Application Guide* (RCX340 / RCX240 / RCX221 /
   RCX222 / SR1-X / SR1-P), Ver. 1.00: §1.4 **SERVICE mode** — định nghĩa (làm việc bằng tay dạy
@@ -16216,6 +16306,10 @@ Phần cơ bản đã có ở [Ch.17](#phan-ch17-co-cau-chap-hanh-khac). Ba đi�
 ---
 
 ### Nguồn tham khảo
+
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
 
 - **Nippon Avionics (Avio)**, *Pulse Heat (Hot Bar) Soldering Machine, General Purpose Type
   `TCW-315`* — trang sản phẩm: nguồn vào **1 pha AC 200–230 V ±10 %, 15 A** (tuỳ chọn
@@ -17302,6 +17396,10 @@ chi tiết rồi đọc ra vị trí thật.
 
 ### Nguồn tham khảo
 
+<!-- TRO-TRANG-THAI-MA -->
+> 🔎 **Mã hàng trong chương này ở trạng thái nào?** Sách phân biệt rõ **mã đã xác minh trong tài liệu gốc** với **mã mới ở cấp dòng sản phẩm** (có thật, nhưng **chưa tra How-to-Order nên chưa đặt hàng được**). Tra theo chương ở [Phần F — Trạng thái mã hàng](#phan-00c-tai-lieu-tham-khao), mục **F.1** (đã xác minh) và **F.2 / F.2b** (cấp dòng sản phẩm — ⚠ gồm **cả** Omron, SMC, Mitsubishi, CKD).
+
+
 - **Keyence**, *High Power Digital Ultrasonic Sensors — FW Series* (catalogue): bảng thông số đầu
   dò — **`FW-H02` 50–200 mm**, **`FW-H07` 150–700 mm** (loại tiêu chuẩn) và **`FW-H10R`
   150–1000 mm** (loại độ chính xác cao); tốc độ đáp ứng **250 / 300 / 1000 ms**;
@@ -17939,7 +18037,7 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 > **Phụ lục này giải quyết đúng một tình huống:** bạn đang đứng trước cái máy, **chỉ biết nó đang
 > bị gì**, và không biết mở chương nào.
 >
-> Sách có **602 dòng triệu chứng** nằm rải rác trong 29 bảng *"Sai lầm thường gặp"*. Nếu không có
+> Sách có **611 dòng triệu chứng** nằm rải rác trong 30 bảng *"Sai lầm thường gặp"*. Nếu không có
 > chỉ mục này thì bạn phải **đoán xem là chương nào** — đúng cái mà người đang sửa máy lúc 2 giờ
 > sáng không có thời gian làm.
 
@@ -18085,14 +18183,28 @@ Rút từ mục *"Sai lầm thường gặp"* của toàn bộ 30 chương:
 
 <!-- AUTO:BEGIN — phần dưới do scripts/tao_chi_muc_trieu_chung.py sinh, đừng sửa tay -->
 
-### E.4 Chỉ mục đầy đủ — **602 triệu chứng** theo chương
+### E.4 Chỉ mục đầy đủ — **611 triệu chứng** theo chương
 
 > 💡 **Cách dùng nhanh nhất: `Ctrl+F` rồi gõ đúng từ bạn quan sát được** —
 > ví dụ `chập chờn`, `không quay`, `nóng`, `PASS`, `trôi`, `rơi`, `nhảy`.
 >
-> Bảng này **sinh tự động từ chính 29 bảng "Sai lầm thường gặp"** trong sách,
+> Bảng này **sinh tự động từ chính 30 bảng "Sai lầm thường gặp"** trong sách,
 > nên không bao giờ lệch với nội dung chương. Cột **nguyên nhân** chỉ ghi vắn tắt để bạn
 > nhận ra đúng dòng — **cách xử lý nằm ở bảng gốc trong chương**.
+
+#### Chương 1 — [Cách dùng sách này & cách đọc bản vẽ điện máy](#phan-ch01-cach-dung-sach) · 9 triệu chứng
+
+| Triệu chứng bạn quan sát | Nguyên nhân hay gặp nhất |
+|---|---|
+| # | Sai lầm |
+| 1 | ⚠⚠ Thấy tiếp điểm vẽ đóng thì tin là lúc máy chạy nó cũng đóng |
+| 2 | ⚠ Đo thấy NC đang hở → kết luận hỏng, đi thay |
+| 3 | Đọc 21-22 mà phải tra chú thích mới biết NO hay NC |
+| 4 | Nhầm số dây với số chân thiết bị |
+| 5 | Tìm tiếp điểm của một contactor bằng cách lật hết bộ bản vẽ |
+| 6 | Giả định mọi bản vẽ theo IEC 81346 |
+| 7 | ⚠ Tin bản vẽ hơn tủ thật khi hai bên khác nhau |
+| 8 | Đọc sơ đồ nguyên lý rồi đi đấu dây theo nó |
 
 #### Chương 2 — [Ngôn ngữ chung của đấu nối](#phan-ch02-ngon-ngu-chung) · 16 triệu chứng
 
@@ -19071,7 +19183,7 @@ nhiều lần nó là thứ duy nhất còn lại.
 
 | # | Bước | Ghi chú |
 |---|---|---|
-| 1 | **Cô lập nguồn (LOTO)** và chờ tụ xả | Biến tần và driver servo giữ điện sau khi ngắt | 
+| 1 | **Cô lập nguồn (LOTO)** và chờ tụ xả | Biến tần và driver servo giữ điện sau khi ngắt |
 | 2 | **Chụp ảnh hiện trạng** trước khi tháo bất cứ gì | Vị trí dây, số hiệu, hướng lắp, DIP switch |
 | 3 | **Đọc mã hàng đầy đủ trên con cũ**, cả hậu tố | Xem G.4 — hậu tố là chỗ sai nhiều nhất |
 | 4 | Lắp con mới, **đấu lại theo ảnh**, siết đúng lực | |
@@ -19187,6 +19299,11 @@ tiêu chuẩn và **không thay thế** việc đọc bản gốc.
 | **ISO/TS 15066** | Robot cộng tác: **4 chế độ** (SMS · HG · SSM · PFL) + **giới hạn cơ sinh học** ở phụ lục. ⭐ Đã **hợp nhất vào ISO 10218-2:2025** | 26 |
 | **IEC 60825-1** | An toàn thiết bị laser: phạm vi **180 nm – 1 mm**, phân cấp **1/1C/1M/2/2M/3R/3B/4**. ⭐⭐ Ranh giới **3B** (phản xạ khuếch tán an toàn) vs **4** (phản xạ khuếch tán **cũng nguy hiểm**, hại da, **gây cháy**) | 27 |
 | **IEC 60950 · IEC 60335 · IEC 60065 · IEC 61010 / JIS C 1010** | Quy trình **thử cao áp thường quy** khác nhau theo loại thiết bị (tốc độ tăng áp, điện áp khởi đầu, thời gian giữ) | 28 |
+| **IEC 81346** | Nguyên tắc cấu trúc và **ký hiệu tham chiếu thiết bị** (chữ cái loại + số thứ tự) trên bản vẽ máy | 1 |
+| **ISO/IEC 14443** | RFID tầm gần **13,56 MHz** (proximity) — cùng dải HF với 15693 nhưng khác giao thức và tầm | 20 |
+| **ISO/IEC 15693 · ISO/IEC 18000-3 · ISO/IEC 18000-6C** | RFID **HF 13,56 MHz** (15693 / 18000-3) và **UHF** (18000-6C, EPC Gen2) — ⚠ cả ba đều là chuẩn **liên danh ISO/IEC**, ghi thiếu tiền tố là sai | 20 |
+| **IEEE 754** | Dạng số thực nhị phân — cơ sở của việc đọc 4 byte thô từ thanh ghi (`1.0` = `3F 80 00 00`) | 21 |
+| **IEEE 802.3** | Ethernet lớp vật lý — nền của các bus công nghiệp chạy trên cáp xoắn đôi/quang | 21 |
 | **IEC/TR3 60890** | Xác định độ tăng nhiệt tủ phân phối bằng ngoại suy tính toán — cơ sở cách tính **diện tích hiệu dụng A** | 24 |
 
 ### A.2 ISO — an toàn máy và khí nén
@@ -19496,6 +19613,7 @@ mục **Nguồn tham khảo của Ch.21**.
 
 | Chương | Mã đã xác minh |
 |---|---|
+| 2 | Omron `E2E-X10ME1-M1` — dùng làm **ví dụ giải mã mã hàng**; từng cụm đối chiếu với **Model Number Legend** trong datasheet E2E (`E62I-E-03`), xem Phần B |
 | 2, 7 | Omron `E2E-X…E/F…` (bảng 32 mã hàng DC 3 dây), `-M1`, `-M3` |
 | 6 | `FX5-…`, `FX-16E…-TB`, `FX-16E-…CAB`, `FX5-4AD`, `FX5-4DA`, `ADAM-60xx`, `AS04AD-A`, `AS04DA-A`, `NX-ECC20□` |
 | 8 | Omron `E3Z-T/R/D/L/LS/B` toàn bộ bảng NPN/PNP × ra dây/đầu nối M8 |
@@ -19623,6 +19741,7 @@ ghi ở dạng họ). Những chỗ **rủi ro cao nhất** đã được kiểm
 | Số liệu ở các chương dựa trên **nguồn đối chiếu phụ** (hàn siêu âm ở Ch.27, an toàn CT ở Ch.29) | Trung bình — đã đối chiếu ≥ 2 nguồn độc lập, nhưng **không phải datasheet hãng**. Xem Phần D |
 | Các con số **tôi tự tính ra** từ hệ số của hãng (bảng mm/°C ở Ch.30, dòng tổng băng tải ở Ch.25) | Thấp — phép tính được ghi rõ trong sách để bạn kiểm lại |
 | **Toàn bộ nội dung an toàn** (Ch.4, 26, 27, 28) | ⚠⚠ Sách **không thay thế tiêu chuẩn gốc và không thay thế đánh giá rủi ro của người có năng lực**. Đây là giới hạn cố hữu, không phải thiếu sót có thể "rà soát cho hết" |
+| ⭐ **Nội dung CHỈNH MÁY thêm ở các phiên 2026-08** — §12.11 và §12.12 (chỉnh servo, trục đồng bộ), §13.4 (tự dò thông số biến tần), §19.8 (tham số chụp ảnh), §26.8 (chuyển động robot), §6.9 (ánh xạ remote I/O): khoảng **10.900 từ, không trích nguồn nào** | Đây là **kiến thức nghề**, không phải số liệu datasheet: "vặn độ lợi lên thì được gì mất gì", "tiếng kêu xuất hiện lúc nào thì nghĩa là gì". Không hãng nào in những điều này, nên **không có nguồn để dẫn** — và sách nói thẳng như vậy thay vì gắn một trích dẫn cho có. ⚠ Hệ quả: **các bước và ngưỡng trong những mục đó là điểm khởi đầu để thử trên máy của bạn, không phải trị số nghiệm thu.** Mọi *con số của thiết bị cụ thể* (dải tham số, đơn vị, mã lỗi) vẫn phải tra **sổ tay của chính driver/biến tần/robot đang dùng** — cùng một khái niệm nhưng mỗi hãng đặt tên và đánh số tham số khác nhau |
 
 > ⭐ **Kết luận trung thực của cuộc rà soát:** không tìm thấy **mã hàng bịa ra** trong các chương
 > được kiểm sâu — kể cả các chương do agent viết, nơi rủi ro cao nhất. Hai lỗi thật tìm được là

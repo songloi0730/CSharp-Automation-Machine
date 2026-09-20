@@ -37520,9 +37520,10 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 ---
 ## G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống
 
-Mục G.9 nêu mười hai bài xương sống. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ
-thể**, và **một lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
-`TreatWarningsAsErrors=true` và chạy sạch 0 cảnh báo.
+Mục G.9 nêu mười hai bài xương sống; **nhóm G.6 và G.7 nay cũng có lời giải đầy đủ** — tổng cộng
+**22 trong 40 bài**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
+lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
+`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **155/155 phép kiểm đạt**.
 
 ### G.10.0  Chạy thử từng phần, không đợi làm xong hết
 
@@ -37531,18 +37532,20 @@ không biết hỏng ở đâu. Bộ tự kiểm cho phép **chạy lẻ từng 
 
 ```bash
 cd source/MeoBench
-dotnet run                 # chạy cả 12 bài — 80 phép kiểm
+dotnet run                 # chạy cả 22 bài — 155 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # chỉ bài G.2.1
+dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
+dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
-dotnet run -- --danhsach   # liệt kê 12 bài
+dotnet run -- --danhsach   # liệt kê 22 bài
 ```
 
 Kết quả thật khi chạy `dotnet run -- G4`:
 
 ```text
 ╔══════════════════════════════════════════════════════════╗
-║  MeoBench — tự kiểm 12 bài xương sống (Phụ lục G)        ║
+║  MeoBench — tự kiểm 22 bài của Phụ lục G                 ║
 ╚══════════════════════════════════════════════════════════╝
 Chỉ chạy nhóm khớp 'G4':
 
@@ -37813,9 +37816,229 @@ Dòng cuối là dòng đáng chú ý nhất: **hạt giống được in ra**. 
 mười lăm phôi đạt và đúng năm phôi ở các chu kỳ 6, 9, 12, 13, 14 — đó là điều mục 13.2.5c gọi là
 biến một cái bẫy thành công cụ.
 
-### G.10.8  Bảng tra nhanh: bài nào ở file nào
+### G.10.8  Nhóm G.6 — công thức, cấu hình, dữ liệu sản xuất
 
-**Bảng G.3 — Lời giải mẫu trong `source/MeoBench`**
+`dotnet run -- G6` · 33 phép kiểm · file `DuLieu.cs`.
+
+#### Một phân biệt phải làm rõ trước: CÔNG THỨC khác CẤU HÌNH MÁY
+
+`CauHinhMay` (bài G.8.1) mô tả **cỗ máy**: hành trình trục, vị trí máng, hạt giống giả lập.
+`CongThuc` (bài G.6.1) mô tả **sản phẩm đang chạy**: chiều dày danh định, dung sai, tốc độ, số lần
+đo. Một máy chạy nhiều công thức; đổi công thức **không** đụng tới cấu hình máy. Trộn hai thứ này
+vào một file là lỗi hay gặp, và hậu quả lộ ra vào ngày bạn phải chép cấu hình sang máy thứ hai —
+lúc đó mới thấy nửa số giá trị là của sản phẩm chứ không phải của máy.
+
+#### Bài G.6.1 — Chữ ký và tiêu chí chấm
+
+```csharp
+public sealed record CongThuc
+{
+    public string Ten                { get; init; } = "MacDinh";
+    public double ChieuDayDanhDinhMm { get; init; } = 2.000;
+    public double DungSaiDuoiMm      { get; init; } = 0.050;
+    public double DungSaiTrenMm      { get; init; } = 0.050;
+    public double TocDoTrucMmS       { get; init; } = 50.0;
+    public int    SoLanDoMoiPhoi     { get; init; } = 3;
+
+    public double GioiHanDuoiMm => ChieuDayDanhDinhMm - DungSaiDuoiMm;
+    public double GioiHanTrenMm => ChieuDayDanhDinhMm + DungSaiTrenMm;
+
+    public IReadOnlyList<string> KiemTra();   // trả DANH SÁCH lỗi, KHÔNG ném
+    public bool HopLe { get; }
+}
+```
+
+**Tiêu chí chấm:** công thức mặc định hợp lệ · `GioiHanDuoiMm == 1.950`, `GioiHanTrenMm == 2.050` ·
+với công thức sai bốn trường thì **`KiemTra()` trả về 5 thông báo** · thông báo nói rõ **tên trường**
+sai.
+
+> 💡 **Vì sao 5 chứ không phải 4 — và đây là chỗ phép kiểm của chính sách này sai lần đầu.** Công
+> thức sai đặt bốn trường: tên rỗng, `SoLanDoMoiPhoi = 0`, `TocDoTrucMmS = 0`, và
+> `DungSaiDuoiMm = -1`. Nhưng trường cuối sinh ra **hai** thông báo: nó vừa âm, vừa làm
+> `GioiHanDuoiMm = 3.000 > GioiHanTrenMm = 2.050`, tức **làm đảo dải**. Một trường sai kéo theo một
+> hậu quả ở chỗ khác, và hàm kiểm bắt được cả hai — đó là hành vi đúng, không phải trùng lặp. Bài
+> học nhỏ: khi viết phép kiểm cho hàm xác thực, **đừng đếm số lỗi theo số trường bạn cố tình làm
+> sai**; hãy liệt kê đích danh những thông báo phải xuất hiện.
+
+#### Bài G.6.2 — Nạp và ghi: điểm chấm là BA cách file có thể hỏng
+
+```csharp
+public static CongThuc Nap(string duongDan, CongThuc duPhong, out string? lyDo);
+```
+
+**Tiêu chí chấm — 8 phép kiểm:**
+
+| Tình huống | Kết quả bắt buộc |
+|---|---|
+| Chưa có file | trả công thức dự phòng, `lyDo` nói "Không thấy file" |
+| Ghi rồi nạp lại | ra **đúng** công thức cũ, `lyDo == null` |
+| **File là rác** (`"{ đây không phải JSON"`) | vẫn chạy bằng dự phòng, **không sập**, `lyDo` nói "hỏng" |
+| **File đúng cú pháp nhưng sai dải** | **cũng bị chặn**, `lyDo` nói rõ trường `DungSaiDuoiMm` |
+
+Hàng thứ tư là hàng hay bị bỏ sót. Đọc được JSON **không** có nghĩa là dữ liệu dùng được. Một file
+`DungSaiDuoiMm: -5` hoàn toàn hợp lệ về cú pháp nhưng sẽ làm mọi phôi thành "đạt" — và không ai
+phát hiện cho tới khi khách hàng trả hàng về.
+
+`JsonSerializerOptions` phải là `static readonly` (quy tắc CA1869 ở Phụ lục F, Bảng F.5) — tạo mới
+trong mỗi lời gọi là một lỗi hiệu năng âm thầm.
+
+#### Bài G.6.3 — Ghi CSV: điểm chấm nằm ở một dòng văn bản
+
+**Tiêu chí chấm:** dòng dữ liệu đầu tiên phải **chính xác** là
+
+```text
+2026-09-20T08:00:00,1,2.0035,Dat,SanPhamA
+```
+
+Ba thứ được khoá lại trong một dòng đó: thời gian **ISO 8601** (sắp xếp được bằng chuỗi, không phụ
+thuộc ngôn ngữ), số dùng **dấu chấm** (`CultureInfo.InvariantCulture`), và **không có dấu phẩy thập
+phân** — vì dấu phẩy thập phân trong file CSV thì phá luôn cấu trúc cột. Trên máy đặt vùng miền
+Việt Nam, bỏ `InvariantCulture` đi là dòng trên thành `2,0035` và file có sáu cột thay vì năm.
+
+Tên file cũng theo định dạng cố định `KetQua_2026-09-20.csv`, không dùng tên tháng theo ngôn ngữ
+máy — lý do sẽ rõ ở bài kế tiếp.
+
+#### Bài G.6.4 — Đếm sản lượng: điểm chấm là "khởi động lại"
+
+**Tiêu chí chấm — 8 phép kiểm:** đếm đúng 10 phôi / 8 đạt / 2 không đạt · tỷ lệ đạt 80 % · nhịp máy
+100 giây ÷ 10 phôi = **10 s mỗi phôi** · **tạo lại `BoDemCa` với cùng mã ca thì số liệu vẫn còn** ·
+mã ca khác thì đếm lại từ 0.
+
+Phép kiểm áp chót mô phỏng đúng tình huống thật: mất điện hoặc khởi động lại phần mềm giữa ca. Lời
+giải ghi xuống file **sau mỗi phôi**; ghi định kỳ 30 giây thì rẻ hơn nhưng mất tối đa 30 giây dữ
+liệu, và bạn phải nói được mình chọn cái nào và vì sao.
+
+Nhịp máy dùng `IDongHo` tiêm vào (`DongHoGia`) nên kiểm được mà không phải chờ 100 giây thật.
+
+#### Bài G.6.5 — Dọn file cũ: hai quyết định thiết kế đáng nói
+
+```csharp
+public static int Don(string thuMuc, string tienTo, int soNgayGiu, IDongHo dongHo);
+```
+
+**Quyết định 1 — lấy ngày từ TÊN FILE, không từ thời gian sửa đổi.** OneDrive đồng bộ, sao lưu,
+hay chỉ một lần chép thư mục đều làm thời gian sửa đổi sai bét. Tên file thì không đổi.
+
+**Quyết định 2 — file tên lạ thì KHÔNG đụng tới.** Phép kiểm tạo một file `KetQua_ghi-chu-tay.csv`
+và khẳng định nó **còn nguyên** sau khi dọn. Một hàm dọn dẹp đoán bừa rồi xoá nhầm ghi chú của kỹ
+thuật viên là loại lỗi không ai tha thứ.
+
+**Tiêu chí chấm:** xoá đúng 2 file (31 ngày và 400 ngày) · file hôm nay còn · **file đúng 30 ngày
+còn nguyên** (kiểm biên) · file 31 ngày đã xoá · file tên lạ còn nguyên · thư mục không tồn tại thì
+trả 0 chứ không ném.
+
+---
+
+### G.10.9  Nhóm G.7 — giao diện, kiểm được mà không cần mở cửa sổ nào
+
+`dotnet run -- G7` · 42 phép kiểm · file `GiaoDien.cs`.
+
+> 📌 **Điều đáng chú ý nhất của nhóm này: cả năm bài chạy và kiểm được trong một ứng dụng CONSOLE.**
+> Không WPF, không WinForms, không mở cửa sổ nào. Đó không phải mẹo lách để dễ chấm — đó chính là
+> phép thử của Chương 9: **nếu ViewModel của bạn cần một cửa sổ thật mới chạy được thì logic giao
+> diện đã dính vào khung nhìn.** Nếu bạn làm bài G.7 mà không tách ra được như vậy, đó là tín hiệu
+> cần đọc lại mục 9.x về phân tách View và ViewModel trước khi đi tiếp.
+
+#### Bài G.7.1 — ViewModel: chỗ đưa về luồng giao diện phải TRỪU TƯỢNG HOÁ
+
+```csharp
+public interface IDieuPhoi { void Chay(Action hanhDong); }   // WPF: Dispatcher · WinForms: Invoke
+```
+
+Đây là mấu chốt của bài. Sự kiện từ tầng thiết bị đến trên **luồng phụ**; gán thẳng vào thuộc tính
+ViewModel rồi để ràng buộc dữ liệu chạm vào điều khiển là vi phạm luật luồng (mục 8.1.2 — câu hỏi
+C# được xem nhiều thứ nhì mọi thời đại). Nhưng nếu ViewModel gọi thẳng `Dispatcher` của WPF thì nó
+không kiểm được bằng console nữa. Tiêm `IDieuPhoi` giải cả hai.
+
+**Tiêu chí chấm — 6 phép kiểm:** cập nhật trạng thái thì phát `PropertyChanged` · **`SoLanGoi` của
+bộ điều phối tăng lên 1** (chứng minh việc cập nhật *có đi qua* chỗ chuyển luồng) · **gán lại cùng
+một giá trị thì KHÔNG phát sự kiện** · thuộc tính suy ra (`TyLeDat`) cũng được báo đổi.
+
+Phép kiểm "gán lại cùng giá trị thì không phát sự kiện" đáng giá hơn vẻ ngoài: một ViewModel bắn
+`PropertyChanged` mỗi 50 ms cho một giá trị không đổi sẽ làm giao diện vẽ lại liên tục, và trên máy
+tính công nghiệp cấu hình thấp thì đó là nguyên nhân màn hình giật.
+
+#### Bài G.7.2 — Tiến độ bước: phép kiểm chứng minh trình tự là DỮ LIỆU
+
+**Tiêu chí chấm:** chưa chạy thì hiện `"Chưa chạy"` (không phải `"Bước 0/0"`) · với bảy bước thì ra
+đúng chuỗi `"Bước 3/7: Kết luận đạt / không đạt"` · phần trăm 3/7 ≈ 42,9 % · **thêm bước thứ tám
+vào danh sách thì giao diện tự hiện `"Bước 8/8"` mà không sửa một dòng mã giao diện nào**.
+
+Phép kiểm cuối là phần thưởng cụ thể của quyết định ở bài G.5.1 — và là một trong bốn thứ mục 7.7
+nói sẽ mất nếu bỏ `IBuoc`.
+
+#### Bài G.7.3 — Ô nhập số: bài khó nhất nhóm, và cái khó không phải kỹ thuật
+
+```csharp
+public sealed record KetQuaNhap(bool HopLe, double GiaTri, string? ThongBao);
+public bool ChoPhepKyTu(char c, string dangCo);     // chặn ngay lúc gõ
+public KetQuaNhap Kiem(string? vanBan);             // kiểm khi rời ô
+```
+
+**Tiêu chí chấm — 12 phép kiểm.** Ba phép quan trọng nhất:
+
+| Người dùng gõ | Kết quả bắt buộc |
+|---|---|
+| `"2.0"` | hợp lệ, giá trị 2,0 |
+| **`"2,0"`** | **cũng hợp lệ, giá trị 2,0 — KHÔNG thành 20** |
+| `"3.0"` với dải 1,5–2,5 | không hợp lệ, thông báo **kèm dải và kèm đơn vị** |
+
+Lời giải mẫu chấp nhận **cả dấu chấm lẫn dấu phẩy** làm dấu thập phân, rồi chuẩn hoá về dấu chấm
+trước khi phân tích bằng `InvariantCulture`. Lý do là lý do của hiện trường, không phải của lập
+trình: người vận hành gõ theo thói quen và theo bàn phím số họ có, không theo vùng miền Windows
+đang đặt. Tin vào `double.Parse` mặc định là cách nhanh nhất để một thông số 2,0 mm trở thành
+20 mm — đúng cái bẫy mục 3.6.3b đo được.
+
+Ba phép kiểm còn lại nhắm vào `ChoPhepKyTu`: chặn chữ cái, chặn **dấu thập phân thứ hai**, và chặn
+dấu trừ khi dải không cho phép số âm.
+
+#### Bài G.7.4 — Bảng log: hai bất biến phải giữ
+
+**Tiêu chí chấm — 10 phép kiểm.** Hai phép mang tính quyết định:
+
+- Nhận 250 dòng với giới hạn 100 → **chỉ giữ 100 dòng gần nhất**. Bảng log chạy 12 tiếng không giới
+  hạn sẽ ăn hết bộ nhớ; đó là một trong mười vấn đề của bộ ghi log ở mục 19.4.1b.
+- Phát **cùng một mã cảnh báo hai lần** → bảng cảnh báo chỉ có **một** dòng. Đây là chống lũ cảnh
+  báo ở mức đơn giản nhất (mục 15.1.6): một cảm biến chập chờn có thể bắn cùng một mã hàng trăm lần
+  một phút.
+
+Và bất biến về **chiều phụ thuộc**: `BangLogVM` **nhận** dòng log qua `Nhan(...)`; nó không được lớp
+ghi log giữ tham chiếu tới. Muốn bỏ bảng đi thì chỉ xoá một dòng đăng ký. Đảo chiều này chính là
+toàn bộ khác biệt giữa ví dụ xấu và ví dụ tốt ở mục 19.4.1b.
+
+#### Bài G.7.5 — Nút khoá theo trạng thái: một nguồn sự thật
+
+Bài này cần **bảng chuyển trạng thái của G.5.4**, nên lời giải mẫu cài luôn nó:
+
+```csharp
+public static class BangChuyen
+{
+    public static bool ChoPhep(TrangThaiMay tu, LenhMay lenh);
+    public static bool ThuChuyen(TrangThaiMay tu, LenhMay lenh, out TrangThaiMay den);
+}
+
+public sealed record TrangThaiNut(bool BatDuoc, string? LyDoMo);
+public static TrangThaiNut Tinh(TrangThaiMay tt, LenhMay lenh);
+```
+
+**Điểm chấm chính: điều kiện bật/tắt nút lấy TỪ CHÍNH bảng chuyển trạng thái**, không viết lại ở
+mỗi nút. Viết lại là quên — và quên ở đây nghĩa là một nút vẫn bấm được trong trạng thái đáng lẽ
+phải cấm.
+
+**Tiêu chí chấm — 10 phép kiểm:** Sẵn sàng → Bắt đầu bật · Báo động → Bắt đầu mờ, **kèm đúng câu
+"Máy đang báo động — bấm Reset trước"** · Sẵn sàng → Tạm dừng mờ · Đang chạy → Tạm dừng bật · Tạm
+dừng → Chạy tiếp bật · chuyển sai bị bảng từ chối mà **không cần một câu `if` nào ở chỗ gọi**.
+
+> ⚠️ **Nút mờ mà không nói vì sao là lỗi giao diện gây ức chế nhất cho người vận hành** — và nó dẫn
+> thẳng tới hành vi tệ hơn: người ta bắt đầu bấm loạn các nút khác để "thử xem cái nào ăn". Vì vậy
+> `TrangThaiNut` bắt buộc mang theo `LyDoMo`, và phép kiểm khẳng định **đúng chuỗi** lý do chứ
+> không chỉ khẳng định "khác null".
+
+---
+
+### G.10.10  Bảng tra nhanh: bài nào ở file nào
+
+**Bảng G.3 — Lời giải mẫu trong `source/MeoBench` (22/40 bài)**
 
 | File | Bài | Chạy lẻ bằng |
 |---|---|---|
@@ -37823,6 +38046,8 @@ biến một cái bẫy thành công cụ.
 | `Mien.cs` | G.1.2 · G.1.3 · G.1.5 | `dotnet run -- G1` |
 | `LogicVaThietBi.cs` | G.2.1 · G.3.1 · G.3.4 | `dotnet run -- G2` hoặc `G3` |
 | `NghiepVuVaTrinhTu.cs` | G.4.1 · G.4.3 · G.5.1 · G.5.2 | `dotnet run -- G4` hoặc `G5` |
+| `DuLieu.cs` | G.6.1 · G.6.2 · G.6.3 · G.6.4 · G.6.5 | `dotnet run -- G6` |
+| `GiaoDien.cs` | G.7.1 … G.7.5 (kèm bảng chuyển của G.5.4) | `dotnet run -- G7` |
 | `RapNoi.cs` | G.8.1 · G.8.5 | `dotnet run -- G8` |
 | `Program.cs` | bộ chạy + chế độ `--demo` | `dotnet run -- --demo` |
 
@@ -37832,7 +38057,7 @@ biến một cái bẫy thành công cụ.
 > đó** mới mở lời giải mẫu ra so, và chỗ đáng so không phải cú pháp mà là **những nhánh lỗi mà bạn
 > chưa nghĩ tới**.
 >
-> Hai mươi tám bài còn lại không có lời giải mẫu, nhưng chúng dùng đúng khuôn này: thêm một hàm
+> Mười tám bài còn lại không có lời giải mẫu, nhưng chúng dùng đúng khuôn này: thêm một hàm
 > `KiemXxx.Chay()`, gọi `Kiem.MoBai(...)` rồi liệt kê các khẳng định. Viết phép kiểm **trước** khi
 > viết mã cho bài đó — với G.2.3 (tách khung) thì đó gần như là cách duy nhất làm đúng ngay.
 

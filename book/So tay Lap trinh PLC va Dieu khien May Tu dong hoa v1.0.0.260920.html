@@ -564,6 +564,7 @@
   <li><a href="#chương-23-t-yêu-cu-ti-đc-t-điu-khin">Chương 23 — Từ yêu cầu tới đặc tả điều khiển</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#231-hai-loi-sai-và-loi-đt-hơn-nhiu">23.1 Hai loại sai — và loại đắt hơn nhiều</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#232-b-đc-t-gm-sáu-phn">23.2 Bộ đặc tả gồm sáu phần</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#232b-chín-bưc-đu-d-án-th-t-sn-phm-và-cái-gì-chn-cái-gì">23.2b ⭐⭐ Chín bước đầu dự án — thứ tự, sản phẩm, và cái gì chặn cái gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#233-bng-io-làm-trưc-không-làm-sau">23.3 Bảng I/O — làm trước, không làm sau</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#234-mô-t-trình-t-bng-li-có-cu-trúc">23.4 Mô tả trình tự bằng lời có cấu trúc</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#235-nhng-câu-phi-hi-khách-hàng">23.5 ⭐ Những câu phải hỏi khách hàng</a></li>
@@ -1094,7 +1095,9 @@
   <li style="padding-left:16px;font-size:13px"><a href="#c7-danh-sách-ca-kim-th">C.7 Danh sách ca kiểm thử</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#c8-biên-bn-nghim-thu-chc-năng-an-toàn">C.8 ⚠ Biên bản nghiệm thu chức năng an toàn</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#c9-phiu-bàn-giao">C.9 Phiếu bàn giao</a></li>
-  <li style="padding-left:16px;font-size:13px"><a href="#c10-cách-dùng-b-biu-mu-này">C.10 Cách dùng bộ biểu mẫu này</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#c10-bng-cu-hình-phn-cng">C.10 Bảng cấu hình phần cứng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#c11-danh-mc-vt-tư">C.11 Danh mục vật tư</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#c12-cách-dùng-b-biu-mu-này">C.12 Cách dùng bộ biểu mẫu này</a></li>
   <li><a href="#ph-lc-d-checklist-đu-dây-bt-ngun-ln-đu">Phụ lục D — Checklist đấu dây & bật nguồn lần đầu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#d1-nguyên-tc-ca-c-ph-lc">D.1 ⭐ Nguyên tắc của cả phụ lục</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#d2-trưc-khi-có-đin-kim-ngui">D.2 Trước khi có điện — kiểm nguội</a></li>
@@ -1447,7 +1450,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 <tbody><tr>
 <td>8</td>
 <td><a href="ch08_kien_truc_phan_cung_plc.md">Kiến trúc phần cứng PLC</a></td>
-<td>CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs <strong>I/O phân tán <em>(remote I/O)</em></strong> — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module; pin &amp; thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó</td>
+<td>CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs <strong>I/O phân tán <em>(remote I/O)</em></strong> — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module, và ⭐ <strong>vì sao bản đồ khe cắm phải là một tài liệu</strong> (bốn câu nó phải trả lời được — biểu mẫu Phụ lục C.10); pin &amp; thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1564,7 +1567,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tbody><tr>
 <td>23</td>
 <td><a href="ch23_tu_yeu_cau_toi_dac_ta.md">Từ yêu cầu tới đặc tả điều khiển</a></td>
-<td>Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của &quot;code chạy nhưng máy sai&quot;; lập <strong>bảng I/O <em>(I/O list)</em></strong> trước; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ &amp; điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?)</td>
+<td>Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của &quot;code chạy nhưng máy sai&quot;; lập <strong>bảng I/O <em>(I/O list)</em></strong> trước; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ &amp; điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐⭐ <strong>chín bước đầu dự án</strong> — thứ tự, sản phẩm từng bước, ai duyệt, ⭐ định nghĩa <strong>&quot;xong&quot; kiểm được</strong> cho từng bước, và ⚠ <strong>ba quan hệ chặn</strong> (đánh giá rủi ro chặn việc chọn phần cứng · bảng I/O chặn việc đấu tủ · phép tính nguồn chặn việc chốt đơn hàng); ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?)</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1816,7 +1819,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>57</td>
 <td><a href="ch57_case_study_dp01_day_du.md">⭐ Case study đầy đủ: DP-01 từ trang giấy tới máy chạy</a></td>
-<td>Ráp toàn bộ sách thành một dự án hoàn chỉnh: đặc tả (Ch.23) → bảng I/O → sơ đồ đấu (Ch.4, 5, 6, 9) → máy trạng thái 2 trạm (Ch.25, 27) → trình tự song song (Ch.26) → FB tái dùng (Ch.30) → công thức sản phẩm (Ch.29) → analog &amp; PID gia nhiệt keo (Ch.32, 35) → gantry (Ch.37) → mã 2D &amp; MES (Ch.42) → SMEMA (Ch.41) → HMI (Ch.44) → mạch an toàn (Ch.47) → kiểm thử (Ch.50) → chạy thử (Ch.52) → đo chu kỳ (Ch.55). Mỗi bước dẫn ngược đúng chương đã dạy</td>
+<td>Ráp toàn bộ sách thành một dự án hoàn chỉnh: đặc tả (Ch.23) → bảng I/O → ⭐ <strong>cấu hình phần cứng và danh mục vật tư</strong> (Phụ lục C.10, C.11) → sơ đồ đấu (Ch.4, 5, 6, 9) → máy trạng thái 2 trạm (Ch.25, 27) → trình tự song song (Ch.26) → FB tái dùng (Ch.30) → công thức sản phẩm (Ch.29) → analog &amp; giám sát bộ điều khiển nhiệt rời (Ch.32, 35) → gantry (Ch.37) → mã 2D &amp; MES (Ch.42) → SMEMA (Ch.41) → HMI (Ch.44) → mạch an toàn (Ch.47) → kiểm thử (Ch.50) → chạy thử (Ch.52) → đo chu kỳ (Ch.55). Mỗi bước dẫn ngược đúng chương đã dạy</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1858,7 +1861,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>C</td>
 <td><a href="pl_c_bieu_mau_dung_ngay.md">Biểu mẫu dùng ngay</a></td>
-<td>Bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu · phiếu bàn giao (dẫn Ch.23, 25, 29, 50, 52)</td>
+<td><strong>Mười một biểu mẫu</strong>: bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu an toàn · phiếu bàn giao · ⭐ <strong>bảng cấu hình phần cứng</strong> (bản đồ khe cắm + thiết bị mạng) · ⭐ <strong>danh mục vật tư</strong> (có cột <em>sinh từ</em> và quy tắc chọn phụ tùng dự phòng). Mỗi biểu mẫu kèm ⭐ <strong>danh mục kiểm &quot;đạt yêu cầu khi&quot;</strong> (dẫn Ch.8, 13, 23, 25, 29, 49, 50, 52)</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -5832,7 +5835,8 @@ dải, không phải cần tối đa hoá.</p>
 <h3>🔍 BẪY 1 — Thay linh kiện cơ khí bằng loại &quot;tương đương&quot; mà không xét vật liệu</h3>
 <p>Sự cố ở mục 7.1. Người thay gá thấy hai miếng nhựa giống hệt nhau về hình dạng và cứng như nhau — và
 không có cách nào <strong>nhìn</strong> ra một miếng là tiêu tán, một miếng là cách điện.</p>
-<p><strong>Cách phòng:</strong> ghi rõ yêu cầu vật liệu tiêu tán <strong>trong danh mục vật tư và trên bản vẽ</strong>, không chỉ
+<p><strong>Cách phòng:</strong> ghi rõ yêu cầu vật liệu tiêu tán <strong>trong danh mục vật tư (Phụ lục C.11) và trên bản
+vẽ</strong>, không chỉ
 trong đầu người thiết kế. Và dán nhãn trên chi tiết đó.</p>
 <h3>🔍 BẪY 2 — Tin rằng &quot;không thấy giật thì không sao&quot;</h3>
 <p>Ngưỡng cảm nhận của người cao hơn ngưỡng gây hỏng linh kiện rất nhiều. <strong>Không cảm thấy gì không có
@@ -6185,6 +6189,50 @@ mục 52.4. Không có ngoại lệ &quot;chỉ thêm một module thôi mà&quo
 <h3>Chừa khe trống</h3>
 <p>Chừa sẵn khe trống ở <strong>cuối</strong> rack, không phải ở giữa. Thêm module vào cuối thì địa chỉ các module cũ
 không đổi.</p>
+<h3>⭐⭐ Bản đồ khe cắm phải là một TÀI LIỆU</h3>
+<p>⭐ Hai mục trên dẫn tới một kết luận mà người ta hay bỏ qua: nếu <strong>thứ tự khe quyết định địa chỉ</strong>,
+thì ⭐⭐ <strong>thứ tự khe là một phần của chương trình</strong> — chỉ có điều nó <strong>không nằm trong tệp dự án</strong>.
+Nó nằm trong cái rack, và trong đầu người đã lắp.</p>
+<blockquote>
+<p>⚠⚠ <strong>Cả hai chỗ đó đều không đáng tin sau hai năm.</strong> Người lắp đã đổi việc; còn cái rack thì
+⭐ <strong>không nói được vì sao khe 5 để trống</strong> — để dự phòng, hay vì module ở đó đã tháo đi mà chưa
+ai cập nhật gì?</p>
+</blockquote>
+<p>⭐ Vì vậy cấu hình phần cứng phải được ghi thành một bảng, và bảng đó phải trả lời được <strong>bốn câu</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Câu hỏi</th>
+<th>⚠ Không trả lời được thì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Tag này nằm ở <strong>module nào, khe nào, kênh nào</strong>?</td>
+<td>Phải mở tủ đếm — mỗi lần chẩn đoán mất thêm mười phút</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⭐ <strong>Còn bao nhiêu kênh dự phòng</strong> trên mỗi module?</td>
+<td>Không trả lời được khách khi họ hỏi <em>&quot;thêm một cảm biến được không&quot;</em></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Module này <strong>phiên bản firmware nào</strong>?</td>
+<td>⚠ Thay bằng module cùng mã khác phiên bản có thể <strong>đổi hành vi</strong> mà không báo gì</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⭐⭐ Khe trống này để <strong>dự phòng</strong> hay là <strong>chỗ module đã tháo</strong>?</td>
+<td>⚠ Người sau sẽ cắm vào đó, và <strong>địa chỉ dịch</strong> — đúng lỗi im lặng ở khung trên</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Biểu mẫu sẵn có: Phụ lục C.10.</strong> Nó cũng là <strong>mục số 2</strong> trong bộ sao lưu bảy hạng mục ở
+Phụ lục C.9 — ⚡ nghĩa là không có nó thì <strong>bộ sao lưu của bạn chưa đầy đủ</strong>, dù tệp dự án PLC đã
+lưu đủ (Chương 54).</p>
+</blockquote>
 <hr>
 <h2 id="85-io-ti-ch-m-rng-và-phân-tán">8.5 I/O tại chỗ, mở rộng, và phân tán</h2>
 <p>Ba cách đưa tín hiệu về CPU:</p>
@@ -9841,6 +9889,12 @@ nó cũng là thứ bạn đưa ra khi cần giải thích lựa chọn cho ngư
 </tr>
 </tbody></table></div>
 <p>Mục 8, 9, 10 là ba mục hay để trống. Chúng cũng là ba mục gây đau đớn nhất về sau.</p>
+<blockquote>
+<p>⭐ <strong>Điền xong bảng này chưa phải là xong việc chọn.</strong> ⚡ Bước kế tiếp là biến lựa chọn đó thành
+<strong>bản đồ khe cắm</strong> — module nào ở khe nào, địa chỉ nào, còn mấy kênh dự phòng — rồi từ đó ra
+<strong>danh mục vật tư</strong> để đặt hàng. ⭐ Hai biểu mẫu: <strong>Phụ lục C.10</strong> và <strong>C.11</strong>; thứ tự chín bước
+của cả giai đoạn: <strong>Chương 23 mục 23.2b</strong>.</p>
+</blockquote>
 <hr>
 <h2 id="135-sai-lm-thưng-gp-khi-chn">13.5 Sai lầm thường gặp khi chọn</h2>
 <div class="table-wrap"><table>
@@ -17400,6 +17454,240 @@ nghiệm thu — nên <strong>phác trước, hoàn thiện sau</strong>: xem m�
 Tài liệu mẫu, phần mềm quản lý dự án, và người nước ngoài trong dự án đều dùng các tên viết tắt
 này. Khi ai đó hỏi <em>&quot;đã có SOO chưa?&quot;</em>, họ đang hỏi phần 3. Không biết từ này thì bạn mất thời gian
 hỏi lại, hoặc tệ hơn, gật đầu nhầm thứ.</p>
+</blockquote>
+<hr>
+<h3>⭐⭐ Sáu phần đó đạt yêu cầu khi nào — và chỗ hay thiếu nhất ở từng phần</h3>
+<p>⚠ <em>&quot;Đã có đủ sáu phần&quot;</em> không nói được gì về chất lượng. ⭐ Bảng dưới là <strong>nội dung tối thiểu</strong> và
+<strong>phát biểu kiểm được</strong> cho từng phần — cộng với ⚠ <strong>chỗ hay thiếu nhất</strong>, là chỗ mà đặc tả trông
+đầy đủ nhưng sẽ vỡ ở khâu lập trình.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Phần</th>
+<th align="left">⭐ Nội dung tối thiểu</th>
+<th align="left">⭐⭐ Đạt khi</th>
+<th align="left">⚠ Chỗ hay thiếu nhất</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Bảng I/O</strong></td>
+<td align="left">Mọi tín hiệu vật lý · kiểu thiết bị · NO/NC · PNP/NPN · trạng thái nghỉ · ⭐ <strong>phân loại</strong> (an toàn / quá trình / chẩn đoán)</td>
+<td align="left">Danh mục kiểm ở <strong>C.1</strong> đạt hết, không mục nào bỏ trống</td>
+<td align="left">⚠⚠ <strong>Cột phân loại</strong> — thiếu nó thì tín hiệu an toàn bị xử lý như tín hiệu thường (Bẫy 3)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Danh sách chế độ</strong></td>
+<td align="left">Tên chế độ · ai được dùng · làm được gì · ⭐ <strong>điều kiện vào VÀ điều kiện ra</strong> · ngõ ra nào còn tác dụng trong chế độ đó</td>
+<td align="left">Vẽ được <strong>bảng chuyển trạng thái C.4</strong> mà không phải hỏi lại ai</td>
+<td align="left">⚠⚠ <strong>Điều kiện RA khỏi chế độ</strong>, và ⭐ <strong>cơ cấu đang giữa chừng thì sao</strong> khi đổi chế độ</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Mô tả trình tự</strong></td>
+<td align="left">Từng bước: điều kiện vào · hành động · ⭐ <strong>điều kiện ra là PHẢN HỒI THẬT</strong> · ⭐ <strong>thời gian tối đa</strong></td>
+<td align="left">Người khác đọc rồi <strong>vẽ lại lưu đồ trùng với lưu đồ của bạn</strong></td>
+<td align="left">⚠ <strong>Thời gian tối đa từng bước</strong> — nó chính là timeout về sau; thiếu ở đây thì lập trình sẽ <strong>đoán</strong> (Chương 26 mục 26.4)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Xử lý bất thường</strong></td>
+<td align="left">Với mỗi lỗi: máy làm gì <strong>ngay</strong> · ngõ ra nào <strong>giữ nguyên</strong> · phục hồi ra sao · ⭐ <strong>ai được phép reset</strong></td>
+<td align="left">⭐⭐ <strong>Mọi thiết bị trong bảng I/O</strong> đều xuất hiện ít nhất một lần trong câu hỏi <em>&quot;nếu cái này hỏng thì sao&quot;</em></td>
+<td align="left">⚠⚠ <strong>Phần phục hồi.</strong> Người ta viết <em>&quot;báo lỗi và dừng&quot;</em> rồi hết — nhưng <strong>dừng rồi làm sao chạy tiếp</strong> mới là phần tốn thời gian nhất khi lập trình</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Tham số &amp; công thức</strong></td>
+<td align="left">Tên · đơn vị · ⭐ <strong>dải hợp lệ</strong> · giá trị mặc định · ai được sửa · ⭐ <strong>sửa được lúc nào</strong></td>
+<td align="left">Điền kín <strong>C.5</strong>, không ô nào để trống dải hợp lệ</td>
+<td align="left">⚠ <strong>Dải hợp lệ</strong> và ⚠⚠ <strong>&quot;sửa được lúc nào&quot;</strong> — đổi công thức giữa chu trình là một lớp lỗi riêng (Chương 29)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Tiêu chí nghiệm thu</strong></td>
+<td align="left">Mỗi chỉ tiêu: <strong>làm gì · kỳ vọng gì · đo bao lâu</strong></td>
+<td align="left">Không dòng nào chứa từ <em>&quot;ổn định&quot;</em>, <em>&quot;tốt&quot;</em>, <em>&quot;đạt yêu cầu&quot;</em> — xem mục 23.6</td>
+<td align="left">⚠ <strong>Cách đo</strong>. Có chỉ tiêu mà không có cách đo thì nó sẽ được <strong>đo theo cách có lợi cho bên đang vội</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Phần 2 và phần 4 là nơi chi phí ẩn nấp, và cũng là hai phần bị viết sơ sài nhất.</strong></p>
+<p>⚡ Phần 1, 3, 5 dễ viết vì chúng mô tả <strong>máy chạy đúng</strong> — ai cũng hình dung được. ⚠ Phần 2 và 4
+mô tả <strong>máy không chạy đúng</strong>, và đó là trạng thái mà lúc ngồi viết đặc tả <strong>chưa ai từng thấy</strong>.</p>
+<p>⭐ Kinh nghiệm dùng được: khi đặc tả có phần 3 dài gấp nhiều lần phần 4, ⚠ <strong>gần như chắc chắn
+phần 4 còn thiếu</strong> — chứ không phải máy này ít lỗi.</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Một quy tắc về người duyệt.</strong> ⭐ Phần 1 và 3 nên có <strong>người vận hành thật</strong> đọc, không chỉ kỹ
+sư — họ là người phát hiện <em>&quot;chỗ này thực tế không làm thế&quot;</em>. ⚠⚠ Còn phần liên quan an toàn thì
+⭐ <strong>kỹ sư duyệt không thay được người có thẩm quyền về an toàn</strong> (Chương 6, 47).</p>
+</blockquote>
+<hr>
+<h2 id="232b-chín-bưc-đu-d-án-th-t-sn-phm-và-cái-gì-chn-cái-gì">23.2b ⭐⭐ Chín bước đầu dự án — thứ tự, sản phẩm, và cái gì chặn cái gì</h2>
+<p>Mục trên nói <strong>đặc tả gồm gì</strong>. ⭐ Mục này nói <strong>làm theo thứ tự nào, mỗi bước đẻ ra tài liệu gì, và
+bước nào không xong thì kẹt bước nào</strong> — vì sai lầm đắt nhất ở đầu dự án hiếm khi là viết sai một
+tài liệu; nó là <strong>làm đúng tài liệu nhưng sai thứ tự</strong>.</p>
+<blockquote>
+<p>⭐ Chín bước này nằm gọn trong <strong>giai đoạn 1 và 2 của Chương 57</strong>. Chương 57 kể chúng như một câu
+chuyện về một cỗ máy cụ thể; ⭐ ở đây chúng là một <strong>bảng công tác</strong> dùng được cho máy của bạn.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Bước</th>
+<th>⭐ Sản phẩm</th>
+<th>⚠ Không xong thì chặn</th>
+<th>Ai duyệt</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Nhận yêu cầu, <strong>hỏi bốn nhóm câu hỏi</strong> (mục 23.5)</td>
+<td>Biên bản họp, có <strong>danh sách câu chưa trả lời được</strong></td>
+<td>Mọi bước sau</td>
+<td>Khách hàng</td>
+</tr>
+<tr>
+<td>2</td>
+<td>⚠⚠ <strong>Đánh giá rủi ro</strong></td>
+<td>Hồ sơ rủi ro + <strong>mức an toàn yêu cầu</strong> cho từng chức năng</td>
+<td>⭐ <strong>Bước 5 và 6</strong> — chưa biết mức thì không chọn được thiết bị</td>
+<td>⭐ <strong>Người có thẩm quyền về an toàn</strong></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Viết đặc tả sáu phần (mục 23.2)</td>
+<td>FS, kèm biểu mẫu <strong>C.3 · C.4 · C.5</strong></td>
+<td>Bước 4, và mọi việc lập trình</td>
+<td>⭐⭐ Khách hàng <strong>ký</strong> (Bẫy 5)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>⭐⭐ <strong>Lập bảng I/O</strong> (mục 23.3)</td>
+<td>⭐ <strong>C.1</strong></td>
+<td>Bước 5, 6, 7 và <strong>đấu tủ</strong></td>
+<td>Nội bộ + khách xem</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Chọn PLC</td>
+<td>Bảng công tác <strong>§13.4</strong> đã điền đủ 11 mục</td>
+<td>Bước 6</td>
+<td>Nội bộ</td>
+</tr>
+<tr>
+<td>6</td>
+<td>⭐ <strong>Lập cấu hình phần cứng</strong></td>
+<td>⭐ <strong>C.10</strong> — bản đồ khe cắm + thiết bị mạng</td>
+<td>Bước 7, <strong>đấu tủ</strong>, và việc dựng lại CPU sau này</td>
+<td>Nội bộ</td>
+</tr>
+<tr>
+<td>7</td>
+<td>⭐ <strong>Lập danh mục vật tư</strong></td>
+<td>⭐ <strong>C.11</strong></td>
+<td>⚠ <strong>Đặt hàng</strong> — và thời gian có hàng quyết định tiến độ</td>
+<td>Mua hàng</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Các phép tính</td>
+<td>Công suất nguồn 24 V (§8.7, §9.5) · tuổi thọ van và cáp (§9.3, §49.7)</td>
+<td>⭐ Chốt bước 7 — đổi kết quả tính là đổi đơn hàng</td>
+<td>Nội bộ</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Phác <strong>tiêu chí nghiệm thu</strong> (mục 23.6)</td>
+<td>Bản phác, hoàn thiện sau</td>
+<td>—</td>
+<td>Khách hàng</td>
+</tr>
+</tbody></table></div>
+<h3>⭐⭐ &quot;Xong&quot; nghĩa là gì — định nghĩa kiểm được cho từng bước</h3>
+<p>⚠ <em>&quot;Đã viết đặc tả rồi&quot;</em> không phải một trạng thái kiểm được. ⭐ Dưới đây là phát biểu kiểm được, và
+⭐⭐ <strong>mỗi dòng phải trả lời được bằng có hoặc không, không có &quot;gần xong&quot;</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th align="left">⭐ Bước này xong khi…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="left">⭐ <strong>Danh sách câu chưa trả lời được đã rỗng</strong>, hoặc mỗi câu còn lại có <strong>tên người chịu trách nhiệm và hạn</strong></td>
+</tr>
+<tr>
+<td>2</td>
+<td align="left">Mọi mối nguy đã liệt kê đều có <strong>biện pháp và mức yêu cầu</strong>; ⚠ không mối nguy nào ở trạng thái <em>&quot;sẽ xử lý bằng phần mềm, tính sau&quot;</em></td>
+</tr>
+<tr>
+<td>3</td>
+<td align="left">⭐⭐ Một người <strong>không tham gia viết</strong> đọc đặc tả và <strong>mô tả lại được một chu trình</strong> cùng <strong>hai tình huống lỗi</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td align="left">Mọi tag có <strong>một</strong> nghĩa; ⭐ còn <strong>≥ 20 % kênh dự phòng</strong>; tín hiệu an toàn đã tách riêng — xem danh mục kiểm ở <strong>C.1</strong></td>
+</tr>
+<tr>
+<td>5</td>
+<td align="left">Cả <strong>11 mục</strong> của §13.4 đã điền, ⚠ <strong>kể cả mục 8, 9, 10</strong> — ba mục hay để trống nhất</td>
+</tr>
+<tr>
+<td>6</td>
+<td align="left">⭐ Phép thử một phút ở <strong>C.10</strong> đạt: người chưa mở tủ chỉ ra được một tag nằm ở khe nào, kênh nào</td>
+</tr>
+<tr>
+<td>7</td>
+<td align="left">⭐ Phép thử một phút ở <strong>C.11</strong> đạt: ba tag bất kỳ đều trả lời được <em>mã gì, bao lâu có hàng, có dự phòng không</em></td>
+</tr>
+<tr>
+<td>8</td>
+<td align="left">⭐⭐ Mọi con số đã <strong>nhân hệ số dự phòng</strong>, và ⚠ <strong>ghi rõ giả định</strong> — dòng đỉnh giả định mấy cơ cấu cùng tác động</td>
+</tr>
+<tr>
+<td>9</td>
+<td align="left">Mỗi chỉ tiêu có <strong>cách đo</strong> đi kèm; ⚠ <em>&quot;máy chạy ổn định&quot;</em> không phải tiêu chí — xem mục 23.6</td>
+</tr>
+</tbody></table></div>
+<h3>⚠⚠ Ba quan hệ chặn quan trọng nhất, và vì sao đảo thứ tự là tốn tiền thật</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Quan hệ</th>
+<th>Đảo thứ tự thì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⚠⚠ <strong>Bước 2 chặn bước 5 và 6</strong></td>
+<td>Chọn xong phần cứng rồi mới đánh giá rủi ro thì chỉ còn hai lối: <strong>sửa thiết kế</strong> (mất tiền) hoặc ⚠⚠ <strong>hạ chuẩn an toàn cho vừa thiết kế</strong> (không được phép). Chương 57 Bẫy 2</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Bước 4 chặn bước 6, 7 và việc đấu tủ</strong></td>
+<td>Đấu tủ trước khi có bảng I/O thì <strong>số dây không khớp tên tag</strong>, và cái lệch đó <strong>theo máy suốt vòng đời</strong> — không sửa được rẻ ở bất kỳ thời điểm nào sau đó. Chương 57 Bẫy 3</td>
+</tr>
+<tr>
+<td>⭐ <strong>Bước 8 chặn chốt bước 7</strong></td>
+<td>Tính công suất nguồn <strong>sau khi</strong> đã đặt hàng nghĩa là hoặc đổi đơn, hoặc ⚠ dùng nguồn thiếu — và nguồn thiếu cho ra <strong>lỗi lạ khi nhiều cơ cấu cùng tác động</strong>, loại lỗi bị đi tìm trong chương trình (Chương 8 mục 8.7)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Một cách kiểm tra rất nhanh xem dự án có đang đi đúng thứ tự không:</strong> hỏi <em>&quot;đã đặt hàng
+chưa?&quot;</em> và <em>&quot;bảng I/O đã ký chưa?&quot;</em>. ⚠ Nếu câu đầu là <strong>rồi</strong> mà câu sau là <strong>chưa</strong>, ⭐ dự án
+đang đi ngược, và phần chênh sẽ hiện ra ở khâu đấu tủ.</p>
+</blockquote>
+<blockquote>
+<p>⚡ <strong>Về việc chín bước này mất bao lâu.</strong> ⚠ Không có con số chung — tuỳ quy mô máy. ⭐ Nhưng có một
+tỉ lệ đáng tham khảo: với máy cỡ máy mẫu của sách, ⭐⭐ <strong>phần việc từ bước 1 tới bước 9 thường
+chiếm 15–25 % tổng thời gian dự án</strong>, và ⚠ nhóm nào rút nó xuống dưới 10 % gần như luôn trả lại
+phần chênh đó ở khâu chạy thử — cộng lãi.</p>
+<p>⭐ Con số này là <strong>kinh nghiệm nghề, không phải chuẩn</strong>. Hãy tự đo trên hai, ba dự án của chính bạn
+rồi dùng con số của mình.</p>
 </blockquote>
 <hr>
 <h2 id="233-bng-io-làm-trưc-không-làm-sau">23.3 Bảng I/O — làm trước, không làm sau</h2>
@@ -39385,7 +39673,7 @@ từ thế giới thật hay từ chính chương trình?&quot;</em></p>
 <p>Bẫy trung tâm của chương. Nó xảy ra vì thiết bị phụ trợ thường được mua và lắp bởi người khác, ở giai
 đoạn khác, và <strong>không ai đặt câu hỏi ở mục 48.6</strong>.</p>
 <p><strong>Cách phòng:</strong> đưa câu hỏi đó vào biểu mẫu đặc tả (Chương 23) như một mục bắt buộc, áp cho <strong>mọi</strong>
-thiết bị trong danh mục vật tư — kể cả những thứ không nối vào PLC.</p>
+thiết bị trong danh mục vật tư (<strong>Phụ lục C.11</strong>) — kể cả những thứ không nối vào PLC.</p>
 <h3>🔍 BẪY 7 — Báo động cho mọi thứ</h3>
 <p>Ngược lại với Bẫy 6, và cũng có hại: đưa mọi tín hiệu tình trạng vào và cho mỗi cái một báo động dừng
 máy. Kết quả là máy dừng liên tục vì những chuyện nhỏ, người vận hành <strong>học cách bỏ qua báo động</strong> —
@@ -40150,7 +40438,7 @@ khi máy chạy nghĩa là thay thiết bị và đấu lại dây.</p>
 </thead>
 <tbody><tr>
 <td>Đúng thiết bị, đúng mã</td>
-<td>Đối chiếu nhãn với danh mục vật tư</td>
+<td>Đối chiếu nhãn với danh mục vật tư (<strong>Phụ lục C.11</strong>)</td>
 </tr>
 <tr>
 <td>⭐ <strong>Dây có số ở hai đầu, khớp bản vẽ</strong></td>
@@ -42451,7 +42739,7 @@ chuyện quên làm. Ghi rõ trong biên bản: &quot;SIT gộp vào SAT do máy
 </thead>
 <tbody><tr>
 <td>Đúng thiết bị, đúng mã</td>
-<td>Đối chiếu nhãn với danh mục vật tư</td>
+<td>Đối chiếu nhãn với danh mục vật tư (<strong>Phụ lục C.11</strong>)</td>
 </tr>
 <tr>
 <td>Dây đúng cỡ, đầu cốt siết đủ chặt</td>
@@ -43983,7 +44271,7 @@ chú thích</strong>.</p>
 </tr>
 <tr>
 <td>2</td>
-<td>⭐ <strong>Cấu hình phần cứng</strong> <em>(hardware configuration)</em> — khe cắm, module, địa chỉ, tham số module</td>
+<td>⭐ <strong>Cấu hình phần cứng</strong> <em>(hardware configuration)</em> — khe cắm, module, địa chỉ, tham số module; ⭐ biểu mẫu <strong>Phụ lục C.10</strong></td>
 <td>CPU mới không nhận I/O</td>
 </tr>
 <tr>
@@ -46853,6 +47141,60 @@ vừa thiết kế. ⚠ Cả hai đều tệ.</p>
 <td>47, 48</td>
 </tr>
 </tbody></table></div>
+<h3>⭐ Đầu ra của giai đoạn 2</h3>
+<p>⚠ Bảng trên liệt kê <strong>việc phải làm</strong>. ⭐ Còn đây là <strong>thứ phải cầm được trên tay</strong> khi giai đoạn này
+kết thúc — vì một giai đoạn không đẻ ra tài liệu thì không có cách nào biết nó đã xong.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tài liệu</th>
+<th>Biểu mẫu</th>
+<th>⭐ Coi là xong khi</th>
+<th>Ai duyệt</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐⭐ <strong>Bảng I/O</strong></td>
+<td><strong>C.1</strong></td>
+<td>Mọi tag có một nghĩa · ⭐ còn <strong>≥ 20 %</strong> kênh dự phòng · tín hiệu an toàn tách riêng</td>
+<td>Nội bộ, khách xem</td>
+</tr>
+<tr>
+<td>Bảng công tác chọn PLC</td>
+<td><strong>§13.4</strong></td>
+<td>Đủ <strong>11 mục</strong>, ⚠ kể cả ba mục hay để trống: bản quyền · thời gian có hàng thay thế · dòng còn sản xuất bao lâu</td>
+<td>Nội bộ</td>
+</tr>
+<tr>
+<td>⭐ <strong>Bảng cấu hình phần cứng</strong></td>
+<td><strong>C.10</strong></td>
+<td>⭐ Phép thử một phút đạt; khe dự phòng ở <strong>cuối</strong> rack; firmware đã ghi</td>
+<td>Nội bộ</td>
+</tr>
+<tr>
+<td>⭐ <strong>Danh mục vật tư</strong></td>
+<td><strong>C.11</strong></td>
+<td>Mọi dòng có cột <em>&quot;Sinh từ&quot;</em>; ⚠ <strong>thời gian có hàng</strong> điền bằng tuần cho mọi dòng</td>
+<td>Mua hàng</td>
+</tr>
+<tr>
+<td>Các phép tính</td>
+<td>—</td>
+<td>Công suất nguồn 24 V · tuổi thọ van và cáp — ⭐ <strong>có ghi giả định</strong>, đã nhân hệ số dự phòng</td>
+<td>Nội bộ</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Hai tài liệu giữa bảng là hai tài liệu mà Phiếu bàn giao đòi.</strong> Bộ sao lưu bảy hạng mục ở
+C.9 có <em>&quot;cấu hình phần cứng&quot;</em> là mục 2, và phiếu bàn giao có <em>&quot;danh mục vật tư + phụ tùng khuyến
+nghị&quot;</em> là mục 9. ⚡ Lập chúng <strong>ở đây</strong> thì cuối dự án chỉ việc cập nhật; ⚠ để tới lúc bàn giao
+mới lập thì chúng sẽ được <strong>dựng lại từ trí nhớ</strong>, và sẽ sai.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Giai đoạn này là điểm không quay lại của phần cứng.</strong> ⭐ Sau khi đặt hàng, mọi thay đổi về số
+kênh, kiểu ngõ ra hay kiểu đấu <strong>đều tốn tiền và tốn thời gian chờ hàng</strong>. ⚡ Đó là lý do bảng I/O
+phải xong <strong>trước</strong>, không phải song song — chín bước và quan hệ chặn ở <strong>Chương 23 mục 23.2b</strong>.</p>
+</blockquote>
 <h3>⭐ Bảng I/O rút gọn của DP-01</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -50784,14 +51126,14 @@ tế</strong> — đừng suy từ bảng này.</p>
 <hr>
 <h1 id="ph-lc-c-biu-mu-dùng-ngay">Phụ lục C — Biểu mẫu dùng ngay</h1>
 <blockquote>
-<p><strong>Chín biểu mẫu trống, chép ra dùng được cho dự án của bạn.</strong></p>
+<p><strong>Mười một biểu mẫu trống, chép ra dùng được cho dự án của bạn.</strong></p>
 <p>Mỗi biểu mẫu có: ⭐ <strong>một dòng nói nó dùng để làm gì</strong>, các cột với giải thích ngắn, một hàng ví dụ
 lấy từ DP-01, và ⚠ <strong>danh mục kiểm trước khi coi là xong</strong>.</p>
 </blockquote>
 <hr>
 <blockquote>
-<p>⭐ <strong>Nguyên tắc chung cho cả chín biểu mẫu: một biểu mẫu phải điền được trong thời gian hợp lý, nếu
-không nó sẽ không được điền.</strong></p>
+<p>⭐ <strong>Nguyên tắc chung cho cả mười một biểu mẫu: một biểu mẫu phải điền được trong thời gian hợp
+lý, nếu không nó sẽ không được điền.</strong></p>
 <p>Nếu bạn thấy một cột không bao giờ dùng tới, bỏ cột đó đi. ⚠ Một biểu mẫu bị bỏ trống hoàn toàn tệ
 hơn một biểu mẫu đơn giản được điền đầy đủ.</p>
 </blockquote>
@@ -51473,7 +51815,401 @@ mốc thì không ai trả lời được. ⭐ <strong>Mười phút lúc nghi�
 vòng đời máy.</strong></p>
 </blockquote>
 <hr>
-<h2 id="c10-cách-dùng-b-biu-mu-này">C.10 Cách dùng bộ biểu mẫu này</h2>
+<h2 id="c10-bng-cu-hình-phn-cng">C.10 Bảng cấu hình phần cứng</h2>
+<p>⭐ <strong>Dùng để:</strong> ghi lại <strong>cái gì cắm ở đâu</strong> — bản đồ khe cắm, địa chỉ, phiên bản. Đây là tài liệu
+bạn đưa cho người đấu tủ, và là tài liệu bạn cần khi <strong>dựng lại một CPU đã hỏng</strong> (Chương 8 mục 8.4,
+Chương 54).</p>
+<blockquote>
+<p>⚠⚠ <strong>Vì sao bảng này phải là TÀI LIỆU, không phải trí nhớ.</strong> Với hệ đánh địa chỉ theo khe, chèn một
+module vào <strong>giữa</strong> rack sẽ <strong>dịch địa chỉ của mọi module phía sau</strong> (Chương 8 mục 8.4). ⭐ Nghĩa là
+thứ tự khe <strong>là một phần của chương trình</strong> — chỉ có điều nó không nằm trong tệp dự án.</p>
+</blockquote>
+<h3>C.10.1 Bản đồ khe cắm</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Rack·Khe</th>
+<th>Mã sản phẩm</th>
+<th>Loại</th>
+<th>Số kênh</th>
+<th>Địa chỉ đầu–cuối</th>
+<th>Dùng / Dự phòng</th>
+<th>Firmware</th>
+<th>Nguồn cấp</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0·PS</td>
+<td></td>
+<td>Nguồn của rack</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td></td>
+</tr>
+<tr>
+<td>0·CPU</td>
+<td></td>
+<td>CPU</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td></td>
+<td></td>
+<td>Ghi mã <strong>thẻ nhớ</strong> và <strong>pin</strong> ở đây</td>
+</tr>
+<tr>
+<td>0·1</td>
+<td></td>
+<td>DI 16 kênh</td>
+<td>16</td>
+<td><code>%I0.0</code>–<code>%I1.7</code></td>
+<td>13 / 3</td>
+<td></td>
+<td>PSU1</td>
+<td>⭐ <strong>Sink</strong>, chân chung 0 V</td>
+</tr>
+<tr>
+<td>0·2</td>
+<td></td>
+<td>DO transistor 16 kênh</td>
+<td>16</td>
+<td><code>%Q0.0</code>–<code>%Q1.7</code></td>
+<td>11 / 5</td>
+<td></td>
+<td>PSU1</td>
+<td>⚠ Tổng dòng chân chung: ___ A</td>
+</tr>
+<tr>
+<td>0·3</td>
+<td></td>
+<td>AI 4 kênh</td>
+<td>4</td>
+<td><code>%IW64</code>–<code>%IW71</code></td>
+<td>3 / 1</td>
+<td></td>
+<td>PSU1</td>
+<td>4–20 mA, <strong>nguồn do module cấp</strong></td>
+</tr>
+<tr>
+<td>0·4</td>
+<td></td>
+<td>AO 2 kênh</td>
+<td>2</td>
+<td><code>%QW80</code>–<code>%QW83</code></td>
+<td>2 / 0</td>
+<td></td>
+<td>PSU1</td>
+<td>0–10 V</td>
+</tr>
+<tr>
+<td>0·5</td>
+<td><em>(để trống)</em></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>⭐ Khe dự phòng — ⚠ <strong>phải ở CUỐI</strong></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cột</th>
+<th>Vì sao có</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Rack·Khe</strong></td>
+<td>⭐ Thứ tự khe quyết định địa chỉ — đây là cột không được sai</td>
+</tr>
+<tr>
+<td><strong>Mã sản phẩm</strong></td>
+<td>⭐⭐ Mã <strong>đầy đủ kèm hậu tố</strong>; hai module khác nhau ở một chữ cái cuối có thể khác cả kiểu ngõ ra</td>
+</tr>
+<tr>
+<td>⭐ <strong>Dùng / Dự phòng</strong></td>
+<td>⚠ Cột trả lời câu <em>&quot;còn chỗ không&quot;</em> mà không phải mở tủ. Mục tiêu: <strong>≥ 20 % dự phòng</strong> (Chương 13 mục 13.2)</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Firmware</strong></td>
+<td>⚠ Thay module cùng mã nhưng <strong>khác phiên bản firmware</strong> có thể đổi hành vi. Ghi lúc nghiệm thu, không ghi sau</td>
+</tr>
+<tr>
+<td><strong>Nguồn cấp</strong></td>
+<td>Module này ăn từ nhánh 24 V nào — ⭐ cần khi tính phụ tải và khi tìm nguyên nhân sụt áp (Chương 8 mục 8.7, Chương 49 mục 49.5)</td>
+</tr>
+<tr>
+<td><strong>Ghi chú</strong></td>
+<td>⭐ Nơi ghi <strong>kiểu đấu sink/source đã chọn</strong> — thứ không nhìn ra được từ hình dáng module (Chương 9, Hình 9.1)</td>
+</tr>
+</tbody></table></div>
+<h3>C.10.2 Thiết bị trên mạng</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tên thiết bị</th>
+<th>Vai trò</th>
+<th>Giao thức</th>
+<th>Địa chỉ / trạm</th>
+<th>Tệp mô tả thiết bị</th>
+<th>Phiên bản</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>NET_Scanner</code></td>
+<td>Đầu đọc mã 2D</td>
+<td>Ethernet</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Ví dụ DP-01</td>
+</tr>
+<tr>
+<td><code>NET_TempCtrl</code></td>
+<td>Bộ điều khiển nhiệt keo</td>
+<td>RS-485, Modbus RTU</td>
+<td>Trạm ___</td>
+<td>—</td>
+<td></td>
+<td>⭐ Tốc độ baud, chẵn lẻ, bit dừng</td>
+</tr>
+<tr>
+<td><code>NET_Drives</code></td>
+<td>3 servo drive</td>
+<td>Ethernet công nghiệp</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Cột &quot;Tệp mô tả thiết bị&quot; là cột hay bị bỏ và tốn nhất khi thiếu.</strong> ⚠ Không có đúng tệp và đúng
+phiên bản thì <strong>không dựng lại được cấu hình mạng</strong> trên một máy tính mới — mục 7 của bộ sao lưu ở
+C.9 đòi chính thứ này.</p>
+</blockquote>
+<h3>⭐⭐ Yêu cầu với kết quả — bảng này đạt khi</h3>
+<blockquote>
+<p>⚠ <strong>Trước khi coi là xong:</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> ⭐ <strong>Mọi khe đều có một dòng</strong>, kể cả khe trống — khe trống cũng là thông tin</li>
+<li><input disabled="" type="checkbox"> Khe dự phòng nằm ở <strong>cuối</strong> rack, không nằm giữa (Chương 8 mục 8.4)</li>
+<li><input disabled="" type="checkbox"> Mỗi module ngõ ra có <strong>tổng dòng qua chân chung</strong> đã tính và ghi (Chương 9 Bẫy 1)</li>
+<li><input disabled="" type="checkbox"> Kiểu <strong>sink / source</strong> đã chọn được ghi rõ — ⚠ và <strong>cũng đã ghi lên nhãn trong tủ</strong></li>
+<li><input disabled="" type="checkbox"> Dải địa chỉ trong bảng này <strong>khớp cột &quot;Địa chỉ&quot; của C.1</strong>, không sai một kênh</li>
+<li><input disabled="" type="checkbox"> ⭐ Phiên bản firmware của CPU và mọi module đã ghi, <strong>ghi lúc nghiệm thu</strong></li>
+<li><input disabled="" type="checkbox"> Còn <strong>≥ 20 %</strong> kênh dự phòng trên mỗi loại module</li>
+<li><input disabled="" type="checkbox"> Bảng này đã nằm trong bộ sao lưu (C.9, mục 2 của bộ bảy hạng mục)</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Phép thử một phút.</strong> Đưa bảng cho một người <strong>chưa từng mở tủ này</strong>, hỏi:
+<em>&quot;tín hiệu <code>DI_BoardStn1</code> vào module nào, khe mấy, kênh mấy?&quot;</em> ⚡ Trả lời được trong một phút
+thì bảng đạt. ⚠ Phải mở tủ ra đếm mới biết thì bảng chưa đạt — và <strong>sáu tháng nữa nó sẽ vô dụng</strong>.</p>
+</blockquote>
+<hr>
+<h2 id="c11-danh-mc-vt-tư">C.11 Danh mục vật tư</h2>
+<p>⭐ <strong>Dùng để:</strong> đặt hàng, đối chiếu khi nhận hàng, đối chiếu nhãn khi nghiệm thu đấu tủ, và <strong>quyết
+định mua phụ tùng dự phòng</strong> (Chương 49 mục 49.10, Chương 52, Phụ lục D).</p>
+<blockquote>
+<p>⭐⭐ <strong>Nguyên tắc quan trọng nhất của biểu mẫu này: ĐỪNG viết nó như một tài liệu độc lập.</strong></p>
+<p>Mọi dòng phải <strong>sinh ra từ</strong> bảng I/O (C.1) hoặc bảng cấu hình phần cứng (C.10). ⚠ Viết tay một
+danh mục riêng nghĩa là có <strong>ba tài liệu nói về cùng một cỗ máy</strong>, và chúng sẽ lệch nhau trong
+vòng một tháng. ⚡ Cột <em>&quot;Sinh từ&quot;</em> tồn tại để chuyện đó không xảy ra âm thầm.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mã hãng</th>
+<th>Mô tả</th>
+<th>SL</th>
+<th>Vị trí lắp</th>
+<th>⭐ Sinh từ</th>
+<th>Thời gian có hàng</th>
+<th>Phụ tùng khuyến nghị</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td>CPU</td>
+<td>1</td>
+<td>Rack 0 · CPU</td>
+<td>C.10</td>
+<td></td>
+<td>0</td>
+<td>⚠ Đặt khi hỏng — xem ghi chú dưới</td>
+</tr>
+<tr>
+<td></td>
+<td>Module DI 16 kênh</td>
+<td>1</td>
+<td>Rack 0 · khe 1</td>
+<td>C.10</td>
+<td></td>
+<td>⭐ 1</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>Cảm biến quang thu-phát PNP</td>
+<td>4</td>
+<td><code>DI_BoardStn1</code>, …</td>
+<td>⭐ <strong>C.1</strong></td>
+<td></td>
+<td>⭐ 2</td>
+<td>Loại hay hỏng nhất</td>
+</tr>
+<tr>
+<td></td>
+<td>Van khí 5/2 lò xo về, 24 VDC</td>
+<td>4</td>
+<td><code>DO_Clamp1Vlv</code>, …</td>
+<td>⭐ <strong>C.1</strong></td>
+<td></td>
+<td>1</td>
+<td>⚠ Kèm diode dập</td>
+</tr>
+<tr>
+<td></td>
+<td>Nguồn 24 V ___ A</td>
+<td>1</td>
+<td>Tủ, ray DIN</td>
+<td>Phép tính §8.7</td>
+<td></td>
+<td>1</td>
+<td>Đã nhân hệ số 1,3–1,5</td>
+</tr>
+<tr>
+<td></td>
+<td>Rơ-le an toàn</td>
+<td>1</td>
+<td>Tủ</td>
+<td>⚠ Hồ sơ rủi ro</td>
+<td></td>
+<td>0</td>
+<td>⚠⚠ Đổi là phải đánh giá lại</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cột</th>
+<th>Vì sao có</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mã hãng</strong></td>
+<td>⚠ Mã <strong>đầy đủ</strong>, gồm cả hậu tố điện áp và kiểu ngõ ra</td>
+</tr>
+<tr>
+<td><strong>Vị trí lắp</strong></td>
+<td>⭐ Với thiết bị trường thì ghi <strong>tag</strong>, không ghi &quot;trạm 1&quot; — tag mới truy ngược được</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Sinh từ</strong></td>
+<td>Dòng này đến từ bảng nào. ⚠ Dòng <strong>không sinh từ đâu cả</strong> là dòng đáng ngờ — hoặc thiếu trong C.1, hoặc thừa trong đơn hàng</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian có hàng</strong></td>
+<td>⚠ Là tiêu chí số 9 ở bảng công tác §13.4 — <strong>hay để trống nhất, và đau nhất</strong>. Ghi bằng <strong>tuần</strong>, không ghi &quot;có sẵn&quot;</td>
+</tr>
+<tr>
+<td>⭐ <strong>Phụ tùng khuyến nghị</strong></td>
+<td>C.9 mục 9 đòi cột này khi bàn giao. ⭐ Quy tắc chọn: xem bảng dưới</td>
+</tr>
+</tbody></table></div>
+<h3>⭐ Chọn phụ tùng dự phòng — ba câu hỏi, không phải cảm tính</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Nếu &quot;có&quot; thì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hỏng cái này thì máy <strong>dừng hẳn</strong> không?</td>
+<td>⭐ Nghiêng về có dự phòng</td>
+</tr>
+<tr>
+<td>⭐ <strong>Thời gian có hàng dài hơn mức dừng máy chấp nhận được</strong> không?</td>
+<td>⭐⭐ <strong>Bắt buộc có dự phòng</strong> — đây là câu quyết định</td>
+</tr>
+<tr>
+<td>Nó là loại <strong>hao mòn theo số lần tác động</strong> không?</td>
+<td>⭐ Dự phòng theo số lượng, không phải một cái</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Câu thứ hai là câu duy nhất thật sự quyết định, và nó là một phép so sánh, không phải cảm
+tính.</strong> ⚡ Một module rẻ mà <strong>giao hàng tám tuần</strong> đáng dự phòng hơn một CPU đắt <strong>có sẵn trong
+nước ngày mai</strong>. ⚠ Phần lớn danh mục phụ tùng bị lập ngược: theo giá, không theo thời gian chờ.</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Thiết bị an toàn là trường hợp riêng.</strong> ⭐ Dự phòng một rơ-le an toàn <strong>không</strong> nghĩa là thay
+vào là chạy: đổi thiết bị trong chuỗi an toàn thường kéo theo <strong>đánh giá lại và nghiệm thu lại</strong>
+chức năng đó (Chương 47, 48, biểu mẫu C.8). ⭐ Ghi rõ điều này vào cột ghi chú, ngay từ lúc lập
+danh mục — để người mua hàng sáu tháng sau <strong>không tự ý đổi sang mã tương đương</strong>.</p>
+</blockquote>
+<h3>⭐⭐ Yêu cầu với kết quả — danh mục này đạt khi</h3>
+<blockquote>
+<p>⚠ <strong>Trước khi coi là xong:</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"> ⭐ <strong>Mọi dòng có cột &quot;Sinh từ&quot; điền đầy đủ</strong> — không dòng nào mồ côi</li>
+<li><input disabled="" type="checkbox"> Ngược lại: ⭐⭐ <strong>mọi thiết bị trường trong C.1 đều tìm được một dòng ở đây</strong></li>
+<li><input disabled="" type="checkbox"> Mọi module trong C.10 đều có mặt, kèm <strong>nguồn của rack</strong> và <strong>thẻ nhớ / pin</strong></li>
+<li><input disabled="" type="checkbox"> ⚠ Có cả những thứ <strong>không nối vào PLC</strong> nhưng cần cho an toàn (Chương 48) — che chắn, khoá cửa, biển báo</li>
+<li><input disabled="" type="checkbox"> <strong>Thời gian có hàng</strong> điền bằng <strong>tuần</strong> cho mọi dòng, không bỏ trống dòng nào</li>
+<li><input disabled="" type="checkbox"> Cột phụ tùng đã trả lời <strong>ba câu hỏi</strong> ở bảng trên, không chọn theo giá</li>
+<li><input disabled="" type="checkbox"> ⚠⚠ Thiết bị thuộc chuỗi an toàn đã <strong>đánh dấu rõ là không được đổi mã tự do</strong></li>
+<li><input disabled="" type="checkbox"> Yêu cầu vật liệu đặc biệt (ví dụ vật liệu tiêu tán tĩnh điện) đã ghi <strong>ở đây và trên bản vẽ</strong> (Chương 7)</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Phép thử một phút.</strong> Chọn ngẫu nhiên <strong>ba dòng bất kỳ trong bảng I/O</strong>, rồi hỏi:
+<em>&quot;thiết bị này mã gì, mua ở đâu, bao lâu có hàng, có dự phòng trong kho không?&quot;</em> ⚡ Trả lời được
+cả ba dòng thì danh mục đạt. ⚠ Chỉ cần một dòng không trả lời được, ⭐ <strong>danh mục đang thiếu đúng
+chỗ nó sẽ được cần tới</strong> — vì người ta chỉ mở nó ra lúc có thứ hỏng.</p>
+</blockquote>
+<hr>
+<h2 id="c12-cách-dùng-b-biu-mu-này">C.12 Cách dùng bộ biểu mẫu này</h2>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -51488,9 +52224,19 @@ vòng đời máy.</strong></p>
 <td>23, 25, 32</td>
 </tr>
 <tr>
-<td>Bảng I/O &amp; phần cứng</td>
+<td>Bảng I/O</td>
 <td>⭐ <strong>C.1</strong></td>
 <td>23</td>
+</tr>
+<tr>
+<td>⭐ <strong>Chọn và cấu hình phần cứng</strong></td>
+<td>⭐ <strong>C.10</strong></td>
+<td>8, 13</td>
+</tr>
+<tr>
+<td>⭐ <strong>Đặt hàng &amp; nhận hàng</strong></td>
+<td>⭐ <strong>C.11</strong></td>
+<td>13, 49</td>
 </tr>
 <tr>
 <td>Viết chương trình</td>
@@ -51595,7 +52341,8 @@ sai&quot; là tình huống tệ nhất — bạn không biết bắt đầu t�
 <h3>Cơ khí và lắp đặt</h3>
 <ul>
 <li><input disabled="" type="checkbox"> Thiết bị lắp chắc, đúng chiều, đủ khoảng thoát nhiệt theo hướng dẫn nhà sản xuất</li>
-<li><input disabled="" type="checkbox"> ⭐ Nhãn thiết bị <strong>khớp danh mục vật tư</strong> — đúng mã, đúng phiên bản</li>
+<li><input disabled="" type="checkbox"> ⭐ Nhãn thiết bị <strong>khớp danh mục vật tư</strong> (Phụ lục C.11) — đúng mã, đúng phiên bản</li>
+<li><input disabled="" type="checkbox"> ⭐ Module cắm <strong>đúng khe</strong> theo bảng cấu hình phần cứng (Phụ lục C.10) — ⚠ sai khe là <strong>dịch địa chỉ</strong></li>
 <li><input disabled="" type="checkbox"> ⚠⚠ <strong>Bộ nguồn 24 V có nhãn SELV / PELV / Class 2 / Limited Power</strong> — ⭐ <strong>không có nhãn thì
 tra datasheet, đừng giả định</strong> (Chương 3, mục 3.3)</li>
 <li><input disabled="" type="checkbox"> Không có mạt kim loại, đầu dây thừa, dụng cụ bỏ quên trong tủ</li>

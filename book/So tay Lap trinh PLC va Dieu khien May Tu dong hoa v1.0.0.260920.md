@@ -137,7 +137,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 8 | [Kiến trúc phần cứng PLC](ch08_kien_truc_phan_cung_plc.md) | CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs **I/O phân tán *(remote I/O)*** — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module; pin & thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó | ✅ |
+| 8 | [Kiến trúc phần cứng PLC](ch08_kien_truc_phan_cung_plc.md) | CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs **I/O phân tán *(remote I/O)*** — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module, và ⭐ **vì sao bản đồ khe cắm phải là một tài liệu** (bốn câu nó phải trả lời được — biểu mẫu Phụ lục C.10); pin & thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó | ✅ |
 | 9 | [Module vào/ra số — chọn đúng kiểu](ch09_module_vao_ra_so.md) | Ngõ vào sink vs source; ngõ ra **rơ-le vs transistor vs triac** — bảng đánh đổi (dòng, tốc độ đóng cắt, tuổi thọ, AC/DC, dòng rò) và bài toán chọn cho từng tải của DP-01; cách ly quang *(optical isolation)*; dòng tổng cho phép trên chân chung *(common)*; ước tính công suất nguồn 24 V cho toàn bộ I/O; module hỗn hợp và khi nào nên tránh | ✅ |
 | 10 | [⭐ Vòng quét — mô hình tinh thần quan trọng nhất](ch10_vong_quet.md) | Đọc ảnh ngõ vào → chạy chương trình → ghi ảnh ngõ ra → xử lý hệ thống; **ảnh quá trình *(process image)* vs truy cập trực tiếp *(immediate/direct I/O)***; hệ quả thực tế: vì sao đảo thứ tự hai nấc thang *(rung)* đổi kết quả, xung ngắn hơn một chu kỳ quét bị **mất hoàn toàn** (→ vì sao cần bắt cạnh hoặc bộ đếm tốc độ cao), tranh chấp *(race condition)* giữa hai POU; đo thời gian quét *(scan time)* và cái gì làm nó phình; **watchdog** và điều gì xảy ra khi vượt | ✅ |
 | 11 | [Bộ nhớ, biến & kiểu dữ liệu](ch11_bo_nho_bien_va_kieu_du_lieu.md) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; **kiểu dữ liệu người dùng *(UDT)*, struct, mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)* | ✅ |
@@ -166,7 +166,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 23 | [Từ yêu cầu tới đặc tả điều khiển](ch23_tu_yeu_cau_toi_dac_ta.md) | Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của "code chạy nhưng máy sai"; lập **bảng I/O *(I/O list)*** trước; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ & điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?) | ✅ |
+| 23 | [Từ yêu cầu tới đặc tả điều khiển](ch23_tu_yeu_cau_toi_dac_ta.md) | Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của "code chạy nhưng máy sai"; lập **bảng I/O *(I/O list)*** trước; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ & điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐⭐ **chín bước đầu dự án** — thứ tự, sản phẩm từng bước, ai duyệt, ⭐ định nghĩa **"xong" kiểm được** cho từng bước, và ⚠ **ba quan hệ chặn** (đánh giá rủi ro chặn việc chọn phần cứng · bảng I/O chặn việc đấu tủ · phép tính nguồn chặn việc chốt đơn hàng); ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?) | ✅ |
 | 24 | [Đại số Boolean & bảng chân lý dùng được](ch24_dai_so_boolean_va_bang_chan_ly.md) | AND/OR/NOT/XOR; **định luật De Morgan** áp vào ladder — vì sao "NOT(A AND B)" đổi hình dạng nấc thang; bảng chân lý → biểu thức → nấc thang; **bìa Karnaugh** ở mức thực dụng; ⭐ khi nào **không** nên tối ưu — logic gọn nhưng không ai đọc nổi thì đã sai mục tiêu | ✅ |
 | 25 | [⭐ Thiết kế theo máy trạng thái](ch25_thiet_ke_theo_may_trang_thai.md) | Mô hình chuẩn cho một máy: Uninitialized → Homing → Idle → Running → Hold → Alarm → Reset; **bảng chuyển trạng thái *(state transition table)*** và sơ đồ; hiện thực bằng biến trạng thái + CASE (ST) hoặc bit trạng thái (LD); ⭐ vì sao mô hình trạng thái thắng "mớ nấc thang chằng chịt": mỗi lúc máy chỉ ở **một** trạng thái, gỡ lỗi chỉ cần đọc một biến; trạng thái máy tổng vs trạng thái từng trạm | ✅ |
 | 26 | [Thiết kế theo lưu đồ & bit trình tự](ch26_luu_do_va_bit_trinh_tu.md) | Lưu đồ *(flowchart)* → bit bước *(step bit)*; một bước bật thì bước trước tắt; **nhánh song song** và điểm hợp nhất; ⚠ **bế tắc *(deadlock)*** — hai bước cùng chờ nhau, cách phát hiện sớm bằng timeout mỗi bước; nguyên tắc: timeout của bước là **cơ chế báo lỗi**, không phải cơ chế điều khiển | ✅ |
@@ -223,7 +223,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 |---|---|---|---|
 | 55 | [Tính chu kỳ máy & năng suất](ch55_tinh_chu_ky_may_va_nang_suat.md) | Câu hỏi khách hàng luôn hỏi: máy chạy được bao nhiêu sản phẩm mỗi giờ? Chu kỳ *(cycle time)* → sản lượng giờ *(UPH)*; **nút cổ chai *(bottleneck)*** — vì sao chu kỳ máy nhiều trạm bằng chu kỳ trạm chậm nhất, không phải tổng; tính lý thuyết vs **đo thật bằng PLC** (ghi thời gian từng bước — dữ liệu này gần như miễn phí mà ít ai lấy); ⭐ tối ưu bằng song song hoá: thao tác nào có thể chạy chồng lấn; thời gian chết do chờ máy trước/máy sau; nhập môn **OEE** (khả dụng × hiệu suất × chất lượng) và vì sao con số OEE dễ bị bóp méo | ✅ |
 | 56 | [Nâng cấp máy cũ — retrofit](ch56_nang_cap_may_cu_retrofit.md) | Phần lớn công việc thực tế là sửa máy cũ, không phải làm máy mới. Khảo sát máy **không có tài liệu**: dựng lại bảng I/O từ tủ thật, dò dây, chụp ảnh có hệ thống; đọc chương trình PLC đời cũ và chuyển sang nền mới; thay PLC hết vòng đời — tìm hàng thay thế, đối chiếu thời gian quét & tập lệnh; ⚠ **rủi ro đặc thù của retrofit**: hành vi cũ không ai mô tả được nhưng người vận hành đã quen; giữ nguyên hay sửa "sai sót cũ"; nâng cấp phần an toàn khi chạm vào máy cũ — nghĩa vụ pháp lý phát sinh | ✅ ⚠ |
-| 57 | [⭐ Case study đầy đủ: DP-01 từ trang giấy tới máy chạy](ch57_case_study_dp01_day_du.md) | Ráp toàn bộ sách thành một dự án hoàn chỉnh: đặc tả (Ch.23) → bảng I/O → sơ đồ đấu (Ch.4, 5, 6, 9) → máy trạng thái 2 trạm (Ch.25, 27) → trình tự song song (Ch.26) → FB tái dùng (Ch.30) → công thức sản phẩm (Ch.29) → analog & PID gia nhiệt keo (Ch.32, 35) → gantry (Ch.37) → mã 2D & MES (Ch.42) → SMEMA (Ch.41) → HMI (Ch.44) → mạch an toàn (Ch.47) → kiểm thử (Ch.50) → chạy thử (Ch.52) → đo chu kỳ (Ch.55). Mỗi bước dẫn ngược đúng chương đã dạy | ✅ |
+| 57 | [⭐ Case study đầy đủ: DP-01 từ trang giấy tới máy chạy](ch57_case_study_dp01_day_du.md) | Ráp toàn bộ sách thành một dự án hoàn chỉnh: đặc tả (Ch.23) → bảng I/O → ⭐ **cấu hình phần cứng và danh mục vật tư** (Phụ lục C.10, C.11) → sơ đồ đấu (Ch.4, 5, 6, 9) → máy trạng thái 2 trạm (Ch.25, 27) → trình tự song song (Ch.26) → FB tái dùng (Ch.30) → công thức sản phẩm (Ch.29) → analog & giám sát bộ điều khiển nhiệt rời (Ch.32, 35) → gantry (Ch.37) → mã 2D & MES (Ch.42) → SMEMA (Ch.41) → HMI (Ch.44) → mạch an toàn (Ch.47) → kiểm thử (Ch.50) → chạy thử (Ch.52) → đo chu kỳ (Ch.55). Mỗi bước dẫn ngược đúng chương đã dạy | ✅ |
 | 58 | [Học tiếp thế nào & vào nghề thật](ch58_hoc_tiep_the_nao_va_vao_nghe_that.md) | Lộ trình 0 → 3 tháng → 1 năm → 3 năm, mỗi mốc kèm **"làm được gì thì coi là đạt"**; ⭐ **xây hồ sơ chứng minh năng lực khi chưa có kinh nghiệm** — video máy mô phỏng chạy, kho code có comment, viết lại bài toán–giải pháp–kết quả; phần mềm miễn phí & mô phỏng (Phụ lục G); diễn đàn & cộng đồng nghề; chứng chỉ và tổ chức nghề — cái gì đáng tiền; ⭐ **bốn nhánh nghề** (OEM chế tạo máy / tích hợp hệ thống / bảo trì nhà máy / dịch vụ hiện trường) — bảng đánh đổi: đi công tác, áp lực, chiều sâu kỹ thuật, thu nhập, khả năng chuyển việc; câu hỏi phỏng vấn thường gặp & cách trả lời bằng ví dụ thật | ✅ |
 
 ---
@@ -235,7 +235,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | A1 | [⭐ **Đối chiếu khái niệm 5 hệ](pl_a1_doi_chieu_khai_niem_5_he.md) | Siemens · Mitsubishi · Inovance · CODESYS · Rockwell. Bảng đối chiếu: tag/ký hiệu, khối dữ liệu vs UDT vs struct, thể hiện FB, task & chu kỳ, ảnh ngõ vào, vùng nhớ giữ, cách đánh địa chỉ module. **CODESYS làm cột neo** — khi 4 hệ khác nhau thì cột này cho biết chuẩn IEC nói gì | ✅ |
 | A2 | [⭐ **Đối chiếu lệnh + cùng một đoạn logic viết 5 lần](pl_a2_doi_chieu_lenh_va_cung_doan_logic.md) | TON, CTU, MOVE, quy đổi thang, bắt cạnh, khối PID, khối chuyển động; cùng một đoạn trình tự của DP-01 hiện thực trên cả 5 hệ; ⚠ những chỗ **không tương đương 1-1** — nêu rõ, không giả vờ. Phụ lục **mô tả khác biệt, không xếp hạng hãng** | ✅ |
 | B | [Tra nhanh lệnh IEC 61131-3](pl_b_tra_nhanh_lenh_iec.md) | Một trang in được: lệnh cơ bản theo nhóm, ký hiệu LD & ST tương ứng, kiểu dữ liệu, thứ tự ưu tiên toán tử | ✅ |
-| C | [Biểu mẫu dùng ngay](pl_c_bieu_mau_dung_ngay.md) | Bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu · phiếu bàn giao (dẫn Ch.23, 25, 29, 50, 52) | ✅ |
+| C | [Biểu mẫu dùng ngay](pl_c_bieu_mau_dung_ngay.md) | **Mười một biểu mẫu**: bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu an toàn · phiếu bàn giao · ⭐ **bảng cấu hình phần cứng** (bản đồ khe cắm + thiết bị mạng) · ⭐ **danh mục vật tư** (có cột *sinh từ* và quy tắc chọn phụ tùng dự phòng). Mỗi biểu mẫu kèm ⭐ **danh mục kiểm "đạt yêu cầu khi"** (dẫn Ch.8, 13, 23, 25, 29, 49, 50, 52) | ✅ |
 | D | [Checklist đấu dây & bật nguồn lần đầu](pl_d_checklist_dau_day_va_bat_nguon.md) | Trước khi cấp điện lần đầu: thứ tự kiểm, cái gì đo trước, cái gì tuyệt đối không bỏ qua | ✅ ⚠ |
 | E | [⭐ Chỉ mục tra theo triệu chứng](pl_e_tra_theo_trieu_chung.md) | "Máy không khởi động được", "một ngõ vào không lên", "giá trị analog nhảy loạn", "mạng rớt ngẫu nhiên", "chu trình dừng giữa chừng", "board hỏng mà máy báo OK", "chuyền tắc"… → dẫn đúng mục chương. Hiện thực hoá Đường tra cứu 3 đã hứa ở Ch.1 | ✅ |
 | F | [Thuật ngữ Việt–Anh](pl_f_thuat_ngu_viet_anh.md) | Bảng đối chiếu đầy đủ, sắp theo chủ đề và theo vần. Bổ trợ cho bất biến B11 — tài liệu hãng và diễn đàn đều tiếng Anh, người đọc phải tra được đúng lúc cần tra nhất | ✅ |
@@ -3208,7 +3208,8 @@ Dòng thứ ba đáng chú ý với người làm điều khiển: van khí tron
 Sự cố ở mục 7.1. Người thay gá thấy hai miếng nhựa giống hệt nhau về hình dạng và cứng như nhau — và
 không có cách nào **nhìn** ra một miếng là tiêu tán, một miếng là cách điện.
 
-**Cách phòng:** ghi rõ yêu cầu vật liệu tiêu tán **trong danh mục vật tư và trên bản vẽ**, không chỉ
+**Cách phòng:** ghi rõ yêu cầu vật liệu tiêu tán **trong danh mục vật tư (Phụ lục C.11) và trên bản
+vẽ**, không chỉ
 trong đầu người thiết kế. Và dán nhãn trên chi tiết đó.
 
 ### 🔍 BẪY 2 — Tin rằng "không thấy giật thì không sao"
@@ -3447,6 +3448,29 @@ Hai cách gán địa chỉ, và khác biệt giữa chúng ảnh hưởng trự
 
 Chừa sẵn khe trống ở **cuối** rack, không phải ở giữa. Thêm module vào cuối thì địa chỉ các module cũ
 không đổi.
+
+### ⭐⭐ Bản đồ khe cắm phải là một TÀI LIỆU
+
+⭐ Hai mục trên dẫn tới một kết luận mà người ta hay bỏ qua: nếu **thứ tự khe quyết định địa chỉ**,
+thì ⭐⭐ **thứ tự khe là một phần của chương trình** — chỉ có điều nó **không nằm trong tệp dự án**.
+Nó nằm trong cái rack, và trong đầu người đã lắp.
+
+> ⚠⚠ **Cả hai chỗ đó đều không đáng tin sau hai năm.** Người lắp đã đổi việc; còn cái rack thì
+> ⭐ **không nói được vì sao khe 5 để trống** — để dự phòng, hay vì module ở đó đã tháo đi mà chưa
+> ai cập nhật gì?
+
+⭐ Vì vậy cấu hình phần cứng phải được ghi thành một bảng, và bảng đó phải trả lời được **bốn câu**:
+
+| # | Câu hỏi | ⚠ Không trả lời được thì |
+|---|---|---|
+| 1 | Tag này nằm ở **module nào, khe nào, kênh nào**? | Phải mở tủ đếm — mỗi lần chẩn đoán mất thêm mười phút |
+| 2 | ⭐ **Còn bao nhiêu kênh dự phòng** trên mỗi module? | Không trả lời được khách khi họ hỏi *"thêm một cảm biến được không"* |
+| 3 | Module này **phiên bản firmware nào**? | ⚠ Thay bằng module cùng mã khác phiên bản có thể **đổi hành vi** mà không báo gì |
+| 4 | ⭐⭐ Khe trống này để **dự phòng** hay là **chỗ module đã tháo**? | ⚠ Người sau sẽ cắm vào đó, và **địa chỉ dịch** — đúng lỗi im lặng ở khung trên |
+
+> ⭐ **Biểu mẫu sẵn có: Phụ lục C.10.** Nó cũng là **mục số 2** trong bộ sao lưu bảy hạng mục ở
+> Phụ lục C.9 — ⚡ nghĩa là không có nó thì **bộ sao lưu của bạn chưa đầy đủ**, dù tệp dự án PLC đã
+> lưu đủ (Chương 54).
 
 ---
 
@@ -6075,6 +6099,11 @@ nó cũng là thứ bạn đưa ra khi cần giải thích lựa chọn cho ngư
 | 11 | Còn khe / còn bộ nhớ để mở rộng không | |
 
 Mục 8, 9, 10 là ba mục hay để trống. Chúng cũng là ba mục gây đau đớn nhất về sau.
+
+> ⭐ **Điền xong bảng này chưa phải là xong việc chọn.** ⚡ Bước kế tiếp là biến lựa chọn đó thành
+> **bản đồ khe cắm** — module nào ở khe nào, địa chỉ nào, còn mấy kênh dự phòng — rồi từ đó ra
+> **danh mục vật tư** để đặt hàng. ⭐ Hai biểu mẫu: **Phụ lục C.10** và **C.11**; thứ tự chín bước
+> của cả giai đoạn: **Chương 23 mục 23.2b**.
 
 ---
 
@@ -11807,6 +11836,95 @@ nghiệm thu — nên **phác trước, hoàn thiện sau**: xem mục 23.6.
 > Tài liệu mẫu, phần mềm quản lý dự án, và người nước ngoài trong dự án đều dùng các tên viết tắt
 > này. Khi ai đó hỏi *"đã có SOO chưa?"*, họ đang hỏi phần 3. Không biết từ này thì bạn mất thời gian
 > hỏi lại, hoặc tệ hơn, gật đầu nhầm thứ.
+
+---
+
+### ⭐⭐ Sáu phần đó đạt yêu cầu khi nào — và chỗ hay thiếu nhất ở từng phần
+
+⚠ *"Đã có đủ sáu phần"* không nói được gì về chất lượng. ⭐ Bảng dưới là **nội dung tối thiểu** và
+**phát biểu kiểm được** cho từng phần — cộng với ⚠ **chỗ hay thiếu nhất**, là chỗ mà đặc tả trông
+đầy đủ nhưng sẽ vỡ ở khâu lập trình.
+
+| # | Phần | ⭐ Nội dung tối thiểu | ⭐⭐ Đạt khi | ⚠ Chỗ hay thiếu nhất |
+|---|---|:--|:--|:--|
+| 1 | **Bảng I/O** | Mọi tín hiệu vật lý · kiểu thiết bị · NO/NC · PNP/NPN · trạng thái nghỉ · ⭐ **phân loại** (an toàn / quá trình / chẩn đoán) | Danh mục kiểm ở **C.1** đạt hết, không mục nào bỏ trống | ⚠⚠ **Cột phân loại** — thiếu nó thì tín hiệu an toàn bị xử lý như tín hiệu thường (Bẫy 3) |
+| 2 | **Danh sách chế độ** | Tên chế độ · ai được dùng · làm được gì · ⭐ **điều kiện vào VÀ điều kiện ra** · ngõ ra nào còn tác dụng trong chế độ đó | Vẽ được **bảng chuyển trạng thái C.4** mà không phải hỏi lại ai | ⚠⚠ **Điều kiện RA khỏi chế độ**, và ⭐ **cơ cấu đang giữa chừng thì sao** khi đổi chế độ |
+| 3 | **Mô tả trình tự** | Từng bước: điều kiện vào · hành động · ⭐ **điều kiện ra là PHẢN HỒI THẬT** · ⭐ **thời gian tối đa** | Người khác đọc rồi **vẽ lại lưu đồ trùng với lưu đồ của bạn** | ⚠ **Thời gian tối đa từng bước** — nó chính là timeout về sau; thiếu ở đây thì lập trình sẽ **đoán** (Chương 26 mục 26.4) |
+| 4 | **Xử lý bất thường** | Với mỗi lỗi: máy làm gì **ngay** · ngõ ra nào **giữ nguyên** · phục hồi ra sao · ⭐ **ai được phép reset** | ⭐⭐ **Mọi thiết bị trong bảng I/O** đều xuất hiện ít nhất một lần trong câu hỏi *"nếu cái này hỏng thì sao"* | ⚠⚠ **Phần phục hồi.** Người ta viết *"báo lỗi và dừng"* rồi hết — nhưng **dừng rồi làm sao chạy tiếp** mới là phần tốn thời gian nhất khi lập trình |
+| 5 | **Tham số & công thức** | Tên · đơn vị · ⭐ **dải hợp lệ** · giá trị mặc định · ai được sửa · ⭐ **sửa được lúc nào** | Điền kín **C.5**, không ô nào để trống dải hợp lệ | ⚠ **Dải hợp lệ** và ⚠⚠ **"sửa được lúc nào"** — đổi công thức giữa chu trình là một lớp lỗi riêng (Chương 29) |
+| 6 | **Tiêu chí nghiệm thu** | Mỗi chỉ tiêu: **làm gì · kỳ vọng gì · đo bao lâu** | Không dòng nào chứa từ *"ổn định"*, *"tốt"*, *"đạt yêu cầu"* — xem mục 23.6 | ⚠ **Cách đo**. Có chỉ tiêu mà không có cách đo thì nó sẽ được **đo theo cách có lợi cho bên đang vội** |
+
+> ⭐⭐ **Phần 2 và phần 4 là nơi chi phí ẩn nấp, và cũng là hai phần bị viết sơ sài nhất.**
+>
+> ⚡ Phần 1, 3, 5 dễ viết vì chúng mô tả **máy chạy đúng** — ai cũng hình dung được. ⚠ Phần 2 và 4
+> mô tả **máy không chạy đúng**, và đó là trạng thái mà lúc ngồi viết đặc tả **chưa ai từng thấy**.
+>
+> ⭐ Kinh nghiệm dùng được: khi đặc tả có phần 3 dài gấp nhiều lần phần 4, ⚠ **gần như chắc chắn
+> phần 4 còn thiếu** — chứ không phải máy này ít lỗi.
+
+> ⚠ **Một quy tắc về người duyệt.** ⭐ Phần 1 và 3 nên có **người vận hành thật** đọc, không chỉ kỹ
+> sư — họ là người phát hiện *"chỗ này thực tế không làm thế"*. ⚠⚠ Còn phần liên quan an toàn thì
+> ⭐ **kỹ sư duyệt không thay được người có thẩm quyền về an toàn** (Chương 6, 47).
+
+---
+
+## 23.2b ⭐⭐ Chín bước đầu dự án — thứ tự, sản phẩm, và cái gì chặn cái gì
+
+Mục trên nói **đặc tả gồm gì**. ⭐ Mục này nói **làm theo thứ tự nào, mỗi bước đẻ ra tài liệu gì, và
+bước nào không xong thì kẹt bước nào** — vì sai lầm đắt nhất ở đầu dự án hiếm khi là viết sai một
+tài liệu; nó là **làm đúng tài liệu nhưng sai thứ tự**.
+
+> ⭐ Chín bước này nằm gọn trong **giai đoạn 1 và 2 của Chương 57**. Chương 57 kể chúng như một câu
+> chuyện về một cỗ máy cụ thể; ⭐ ở đây chúng là một **bảng công tác** dùng được cho máy của bạn.
+
+| # | Bước | ⭐ Sản phẩm | ⚠ Không xong thì chặn | Ai duyệt |
+|---|---|---|---|---|
+| 1 | Nhận yêu cầu, **hỏi bốn nhóm câu hỏi** (mục 23.5) | Biên bản họp, có **danh sách câu chưa trả lời được** | Mọi bước sau | Khách hàng |
+| 2 | ⚠⚠ **Đánh giá rủi ro** | Hồ sơ rủi ro + **mức an toàn yêu cầu** cho từng chức năng | ⭐ **Bước 5 và 6** — chưa biết mức thì không chọn được thiết bị | ⭐ **Người có thẩm quyền về an toàn** |
+| 3 | Viết đặc tả sáu phần (mục 23.2) | FS, kèm biểu mẫu **C.3 · C.4 · C.5** | Bước 4, và mọi việc lập trình | ⭐⭐ Khách hàng **ký** (Bẫy 5) |
+| 4 | ⭐⭐ **Lập bảng I/O** (mục 23.3) | ⭐ **C.1** | Bước 5, 6, 7 và **đấu tủ** | Nội bộ + khách xem |
+| 5 | Chọn PLC | Bảng công tác **§13.4** đã điền đủ 11 mục | Bước 6 | Nội bộ |
+| 6 | ⭐ **Lập cấu hình phần cứng** | ⭐ **C.10** — bản đồ khe cắm + thiết bị mạng | Bước 7, **đấu tủ**, và việc dựng lại CPU sau này | Nội bộ |
+| 7 | ⭐ **Lập danh mục vật tư** | ⭐ **C.11** | ⚠ **Đặt hàng** — và thời gian có hàng quyết định tiến độ | Mua hàng |
+| 8 | Các phép tính | Công suất nguồn 24 V (§8.7, §9.5) · tuổi thọ van và cáp (§9.3, §49.7) | ⭐ Chốt bước 7 — đổi kết quả tính là đổi đơn hàng | Nội bộ |
+| 9 | Phác **tiêu chí nghiệm thu** (mục 23.6) | Bản phác, hoàn thiện sau | — | Khách hàng |
+
+### ⭐⭐ "Xong" nghĩa là gì — định nghĩa kiểm được cho từng bước
+
+⚠ *"Đã viết đặc tả rồi"* không phải một trạng thái kiểm được. ⭐ Dưới đây là phát biểu kiểm được, và
+⭐⭐ **mỗi dòng phải trả lời được bằng có hoặc không, không có "gần xong"**:
+
+| # | ⭐ Bước này xong khi… |
+|---|:--|
+| 1 | ⭐ **Danh sách câu chưa trả lời được đã rỗng**, hoặc mỗi câu còn lại có **tên người chịu trách nhiệm và hạn** |
+| 2 | Mọi mối nguy đã liệt kê đều có **biện pháp và mức yêu cầu**; ⚠ không mối nguy nào ở trạng thái *"sẽ xử lý bằng phần mềm, tính sau"* |
+| 3 | ⭐⭐ Một người **không tham gia viết** đọc đặc tả và **mô tả lại được một chu trình** cùng **hai tình huống lỗi** |
+| 4 | Mọi tag có **một** nghĩa; ⭐ còn **≥ 20 % kênh dự phòng**; tín hiệu an toàn đã tách riêng — xem danh mục kiểm ở **C.1** |
+| 5 | Cả **11 mục** của §13.4 đã điền, ⚠ **kể cả mục 8, 9, 10** — ba mục hay để trống nhất |
+| 6 | ⭐ Phép thử một phút ở **C.10** đạt: người chưa mở tủ chỉ ra được một tag nằm ở khe nào, kênh nào |
+| 7 | ⭐ Phép thử một phút ở **C.11** đạt: ba tag bất kỳ đều trả lời được *mã gì, bao lâu có hàng, có dự phòng không* |
+| 8 | ⭐⭐ Mọi con số đã **nhân hệ số dự phòng**, và ⚠ **ghi rõ giả định** — dòng đỉnh giả định mấy cơ cấu cùng tác động |
+| 9 | Mỗi chỉ tiêu có **cách đo** đi kèm; ⚠ *"máy chạy ổn định"* không phải tiêu chí — xem mục 23.6 |
+
+### ⚠⚠ Ba quan hệ chặn quan trọng nhất, và vì sao đảo thứ tự là tốn tiền thật
+
+| Quan hệ | Đảo thứ tự thì sao |
+|---|---|
+| ⚠⚠ **Bước 2 chặn bước 5 và 6** | Chọn xong phần cứng rồi mới đánh giá rủi ro thì chỉ còn hai lối: **sửa thiết kế** (mất tiền) hoặc ⚠⚠ **hạ chuẩn an toàn cho vừa thiết kế** (không được phép). Chương 57 Bẫy 2 |
+| ⭐⭐ **Bước 4 chặn bước 6, 7 và việc đấu tủ** | Đấu tủ trước khi có bảng I/O thì **số dây không khớp tên tag**, và cái lệch đó **theo máy suốt vòng đời** — không sửa được rẻ ở bất kỳ thời điểm nào sau đó. Chương 57 Bẫy 3 |
+| ⭐ **Bước 8 chặn chốt bước 7** | Tính công suất nguồn **sau khi** đã đặt hàng nghĩa là hoặc đổi đơn, hoặc ⚠ dùng nguồn thiếu — và nguồn thiếu cho ra **lỗi lạ khi nhiều cơ cấu cùng tác động**, loại lỗi bị đi tìm trong chương trình (Chương 8 mục 8.7) |
+
+> ⭐⭐ **Một cách kiểm tra rất nhanh xem dự án có đang đi đúng thứ tự không:** hỏi *"đã đặt hàng
+> chưa?"* và *"bảng I/O đã ký chưa?"*. ⚠ Nếu câu đầu là **rồi** mà câu sau là **chưa**, ⭐ dự án
+> đang đi ngược, và phần chênh sẽ hiện ra ở khâu đấu tủ.
+
+> ⚡ **Về việc chín bước này mất bao lâu.** ⚠ Không có con số chung — tuỳ quy mô máy. ⭐ Nhưng có một
+> tỉ lệ đáng tham khảo: với máy cỡ máy mẫu của sách, ⭐⭐ **phần việc từ bước 1 tới bước 9 thường
+> chiếm 15–25 % tổng thời gian dự án**, và ⚠ nhóm nào rút nó xuống dưới 10 % gần như luôn trả lại
+> phần chênh đó ở khâu chạy thử — cộng lãi.
+>
+> ⭐ Con số này là **kinh nghiệm nghề, không phải chuẩn**. Hãy tự đo trên hai, ba dự án của chính bạn
+> rồi dùng con số của mình.
 
 ---
 
@@ -27311,7 +27429,7 @@ Bẫy trung tâm của chương. Nó xảy ra vì thiết bị phụ trợ thư�
 đoạn khác, và **không ai đặt câu hỏi ở mục 48.6**.
 
 **Cách phòng:** đưa câu hỏi đó vào biểu mẫu đặc tả (Chương 23) như một mục bắt buộc, áp cho **mọi**
-thiết bị trong danh mục vật tư — kể cả những thứ không nối vào PLC.
+thiết bị trong danh mục vật tư (**Phụ lục C.11**) — kể cả những thứ không nối vào PLC.
 
 ### 🔍 BẪY 7 — Báo động cho mọi thứ
 
@@ -27772,7 +27890,7 @@ Việc của người lập trình khi tiếp nhận tủ (Chương 52, mục 52
 
 | Kiểm | Cách |
 |---|---|
-| Đúng thiết bị, đúng mã | Đối chiếu nhãn với danh mục vật tư |
+| Đúng thiết bị, đúng mã | Đối chiếu nhãn với danh mục vật tư (**Phụ lục C.11**) |
 | ⭐ **Dây có số ở hai đầu, khớp bản vẽ** | Lấy mẫu vài chục dây |
 | **Đầu cốt siết đủ chặt** | Kéo nhẹ từng dây; siết lại theo lực quy định |
 | ⭐ **Tách máng đúng ba nhóm** | Nhìn — đây là thứ dễ kiểm nhất và hay sai nhất |
@@ -29148,7 +29266,7 @@ Làm khi **chưa cấp điện**, đối chiếu với bản vẽ và bảng I/O
 
 | Kiểm | Cách |
 |---|---|
-| Đúng thiết bị, đúng mã | Đối chiếu nhãn với danh mục vật tư |
+| Đúng thiết bị, đúng mã | Đối chiếu nhãn với danh mục vật tư (**Phụ lục C.11**) |
 | Dây đúng cỡ, đầu cốt siết đủ chặt | Kéo nhẹ từng dây; siết lại theo lực quy định |
 | Không có dây thừa, không có đầu dây hở | Nhìn kỹ; đầu hở là nguồn ngắn mạch |
 | Nối đất đầy đủ | Đo thông mạch từ vỏ tủ tới thanh đất |
@@ -30080,7 +30198,7 @@ của nó rất đắt.
 | # | Hạng mục | ⚠ Bỏ quên thì hậu quả |
 |---|---|---|
 | 1 | ⭐ **Dự án PLC** (logic + chú thích + tên biến) | Có logic nhưng không đọc được |
-| 2 | ⭐ **Cấu hình phần cứng** *(hardware configuration)* — khe cắm, module, địa chỉ, tham số module | CPU mới không nhận I/O |
+| 2 | ⭐ **Cấu hình phần cứng** *(hardware configuration)* — khe cắm, module, địa chỉ, tham số module; ⭐ biểu mẫu **Phụ lục C.10** | CPU mới không nhận I/O |
 | 3 | ⭐ **Tham số biến tần / servo driver** — ⚠⚠ **kể cả tham số CHỨC NĂNG AN TOÀN của drive** | ⚠ **Động cơ chạy sai hoặc không chạy**; chỉnh lại tay mất hàng ngày (Chương 36–37). ⚠⚠ Và nếu thiếu tham số an toàn: máy **chạy bình thường** nhưng chức năng an toàn **không còn như đã nghiệm thu**, ⭐ **không báo động nào nói điều đó** (Chương 37 mục 37.6b) |
 | 4 | ⭐ **Dự án HMI / SCADA** | Có máy chạy nhưng ⚠ **không ai điều khiển được** (Chương 44) |
 | 5 | **Công thức và tham số sản phẩm** | Mất toàn bộ dữ liệu sản phẩm (Chương 32) |
@@ -31808,6 +31926,28 @@ Số liệu đầy đủ: **Phụ lục J**.
 | Chọn module analog và dải tín hiệu | 31 |
 | Chọn thiết bị mạng và kiến trúc | 40 |
 | ⚠ Chọn thiết bị an toàn theo mức đã xác định ở giai đoạn 1 | 47, 48 |
+
+### ⭐ Đầu ra của giai đoạn 2
+
+⚠ Bảng trên liệt kê **việc phải làm**. ⭐ Còn đây là **thứ phải cầm được trên tay** khi giai đoạn này
+kết thúc — vì một giai đoạn không đẻ ra tài liệu thì không có cách nào biết nó đã xong.
+
+| Tài liệu | Biểu mẫu | ⭐ Coi là xong khi | Ai duyệt |
+|---|---|---|---|
+| ⭐⭐ **Bảng I/O** | **C.1** | Mọi tag có một nghĩa · ⭐ còn **≥ 20 %** kênh dự phòng · tín hiệu an toàn tách riêng | Nội bộ, khách xem |
+| Bảng công tác chọn PLC | **§13.4** | Đủ **11 mục**, ⚠ kể cả ba mục hay để trống: bản quyền · thời gian có hàng thay thế · dòng còn sản xuất bao lâu | Nội bộ |
+| ⭐ **Bảng cấu hình phần cứng** | **C.10** | ⭐ Phép thử một phút đạt; khe dự phòng ở **cuối** rack; firmware đã ghi | Nội bộ |
+| ⭐ **Danh mục vật tư** | **C.11** | Mọi dòng có cột *"Sinh từ"*; ⚠ **thời gian có hàng** điền bằng tuần cho mọi dòng | Mua hàng |
+| Các phép tính | — | Công suất nguồn 24 V · tuổi thọ van và cáp — ⭐ **có ghi giả định**, đã nhân hệ số dự phòng | Nội bộ |
+
+> ⭐⭐ **Hai tài liệu giữa bảng là hai tài liệu mà Phiếu bàn giao đòi.** Bộ sao lưu bảy hạng mục ở
+> C.9 có *"cấu hình phần cứng"* là mục 2, và phiếu bàn giao có *"danh mục vật tư + phụ tùng khuyến
+> nghị"* là mục 9. ⚡ Lập chúng **ở đây** thì cuối dự án chỉ việc cập nhật; ⚠ để tới lúc bàn giao
+> mới lập thì chúng sẽ được **dựng lại từ trí nhớ**, và sẽ sai.
+
+> ⚠⚠ **Giai đoạn này là điểm không quay lại của phần cứng.** ⭐ Sau khi đặt hàng, mọi thay đổi về số
+> kênh, kiểu ngõ ra hay kiểu đấu **đều tốn tiền và tốn thời gian chờ hàng**. ⚡ Đó là lý do bảng I/O
+> phải xong **trước**, không phải song song — chín bước và quan hệ chặn ở **Chương 23 mục 23.2b**.
 
 ### ⭐ Bảng I/O rút gọn của DP-01
 
@@ -33743,15 +33883,15 @@ Mạch tự giữ — mẫu cơ bản nhất:
 
 # Phụ lục C — Biểu mẫu dùng ngay
 
-> **Chín biểu mẫu trống, chép ra dùng được cho dự án của bạn.**
+> **Mười một biểu mẫu trống, chép ra dùng được cho dự án của bạn.**
 >
 > Mỗi biểu mẫu có: ⭐ **một dòng nói nó dùng để làm gì**, các cột với giải thích ngắn, một hàng ví dụ
 > lấy từ DP-01, và ⚠ **danh mục kiểm trước khi coi là xong**.
 
 ---
 
-> ⭐ **Nguyên tắc chung cho cả chín biểu mẫu: một biểu mẫu phải điền được trong thời gian hợp lý, nếu
-> không nó sẽ không được điền.**
+> ⭐ **Nguyên tắc chung cho cả mười một biểu mẫu: một biểu mẫu phải điền được trong thời gian hợp
+> lý, nếu không nó sẽ không được điền.**
 >
 > Nếu bạn thấy một cột không bao giờ dùng tới, bỏ cột đó đi. ⚠ Một biểu mẫu bị bỏ trống hoàn toàn tệ
 > hơn một biểu mẫu đơn giản được điền đầy đủ.
@@ -34012,12 +34152,144 @@ và hồ sơ bàn giao. ⚠ **Làm trước khi đấu tủ** (Chương 23, 49).
 
 ---
 
-## C.10 Cách dùng bộ biểu mẫu này
+## C.10 Bảng cấu hình phần cứng
+
+⭐ **Dùng để:** ghi lại **cái gì cắm ở đâu** — bản đồ khe cắm, địa chỉ, phiên bản. Đây là tài liệu
+bạn đưa cho người đấu tủ, và là tài liệu bạn cần khi **dựng lại một CPU đã hỏng** (Chương 8 mục 8.4,
+Chương 54).
+
+> ⚠⚠ **Vì sao bảng này phải là TÀI LIỆU, không phải trí nhớ.** Với hệ đánh địa chỉ theo khe, chèn một
+> module vào **giữa** rack sẽ **dịch địa chỉ của mọi module phía sau** (Chương 8 mục 8.4). ⭐ Nghĩa là
+> thứ tự khe **là một phần của chương trình** — chỉ có điều nó không nằm trong tệp dự án.
+
+### C.10.1 Bản đồ khe cắm
+
+| Rack·Khe | Mã sản phẩm | Loại | Số kênh | Địa chỉ đầu–cuối | Dùng / Dự phòng | Firmware | Nguồn cấp | Ghi chú |
+|---|---|---|---|---|---|---|---|---|
+| 0·PS | | Nguồn của rack | — | — | — | — | — | |
+| 0·CPU | | CPU | — | — | — | | | Ghi mã **thẻ nhớ** và **pin** ở đây |
+| 0·1 | | DI 16 kênh | 16 | `%I0.0`–`%I1.7` | 13 / 3 | | PSU1 | ⭐ **Sink**, chân chung 0 V |
+| 0·2 | | DO transistor 16 kênh | 16 | `%Q0.0`–`%Q1.7` | 11 / 5 | | PSU1 | ⚠ Tổng dòng chân chung: ___ A |
+| 0·3 | | AI 4 kênh | 4 | `%IW64`–`%IW71` | 3 / 1 | | PSU1 | 4–20 mA, **nguồn do module cấp** |
+| 0·4 | | AO 2 kênh | 2 | `%QW80`–`%QW83` | 2 / 0 | | PSU1 | 0–10 V |
+| 0·5 | *(để trống)* | — | — | — | — | — | — | ⭐ Khe dự phòng — ⚠ **phải ở CUỐI** |
+| | | | | | | | | |
+
+| Cột | Vì sao có |
+|---|---|
+| **Rack·Khe** | ⭐ Thứ tự khe quyết định địa chỉ — đây là cột không được sai |
+| **Mã sản phẩm** | ⭐⭐ Mã **đầy đủ kèm hậu tố**; hai module khác nhau ở một chữ cái cuối có thể khác cả kiểu ngõ ra |
+| ⭐ **Dùng / Dự phòng** | ⚠ Cột trả lời câu *"còn chỗ không"* mà không phải mở tủ. Mục tiêu: **≥ 20 % dự phòng** (Chương 13 mục 13.2) |
+| ⭐⭐ **Firmware** | ⚠ Thay module cùng mã nhưng **khác phiên bản firmware** có thể đổi hành vi. Ghi lúc nghiệm thu, không ghi sau |
+| **Nguồn cấp** | Module này ăn từ nhánh 24 V nào — ⭐ cần khi tính phụ tải và khi tìm nguyên nhân sụt áp (Chương 8 mục 8.7, Chương 49 mục 49.5) |
+| **Ghi chú** | ⭐ Nơi ghi **kiểu đấu sink/source đã chọn** — thứ không nhìn ra được từ hình dáng module (Chương 9, Hình 9.1) |
+
+### C.10.2 Thiết bị trên mạng
+
+| Tên thiết bị | Vai trò | Giao thức | Địa chỉ / trạm | Tệp mô tả thiết bị | Phiên bản | Ghi chú |
+|---|---|---|---|---|---|---|
+| `NET_Scanner` | Đầu đọc mã 2D | Ethernet | | | | Ví dụ DP-01 |
+| `NET_TempCtrl` | Bộ điều khiển nhiệt keo | RS-485, Modbus RTU | Trạm ___ | — | | ⭐ Tốc độ baud, chẵn lẻ, bit dừng |
+| `NET_Drives` | 3 servo drive | Ethernet công nghiệp | | | | |
+| | | | | | | |
+
+> ⭐ **Cột "Tệp mô tả thiết bị" là cột hay bị bỏ và tốn nhất khi thiếu.** ⚠ Không có đúng tệp và đúng
+> phiên bản thì **không dựng lại được cấu hình mạng** trên một máy tính mới — mục 7 của bộ sao lưu ở
+> C.9 đòi chính thứ này.
+
+### ⭐⭐ Yêu cầu với kết quả — bảng này đạt khi
+
+> ⚠ **Trước khi coi là xong:**
+>
+> - [ ] ⭐ **Mọi khe đều có một dòng**, kể cả khe trống — khe trống cũng là thông tin
+> - [ ] Khe dự phòng nằm ở **cuối** rack, không nằm giữa (Chương 8 mục 8.4)
+> - [ ] Mỗi module ngõ ra có **tổng dòng qua chân chung** đã tính và ghi (Chương 9 Bẫy 1)
+> - [ ] Kiểu **sink / source** đã chọn được ghi rõ — ⚠ và **cũng đã ghi lên nhãn trong tủ**
+> - [ ] Dải địa chỉ trong bảng này **khớp cột "Địa chỉ" của C.1**, không sai một kênh
+> - [ ] ⭐ Phiên bản firmware của CPU và mọi module đã ghi, **ghi lúc nghiệm thu**
+> - [ ] Còn **≥ 20 %** kênh dự phòng trên mỗi loại module
+> - [ ] Bảng này đã nằm trong bộ sao lưu (C.9, mục 2 của bộ bảy hạng mục)
+
+> ⭐⭐ **Phép thử một phút.** Đưa bảng cho một người **chưa từng mở tủ này**, hỏi:
+> *"tín hiệu `DI_BoardStn1` vào module nào, khe mấy, kênh mấy?"* ⚡ Trả lời được trong một phút
+> thì bảng đạt. ⚠ Phải mở tủ ra đếm mới biết thì bảng chưa đạt — và **sáu tháng nữa nó sẽ vô dụng**.
+
+---
+
+## C.11 Danh mục vật tư
+
+⭐ **Dùng để:** đặt hàng, đối chiếu khi nhận hàng, đối chiếu nhãn khi nghiệm thu đấu tủ, và **quyết
+định mua phụ tùng dự phòng** (Chương 49 mục 49.10, Chương 52, Phụ lục D).
+
+> ⭐⭐ **Nguyên tắc quan trọng nhất của biểu mẫu này: ĐỪNG viết nó như một tài liệu độc lập.**
+>
+> Mọi dòng phải **sinh ra từ** bảng I/O (C.1) hoặc bảng cấu hình phần cứng (C.10). ⚠ Viết tay một
+> danh mục riêng nghĩa là có **ba tài liệu nói về cùng một cỗ máy**, và chúng sẽ lệch nhau trong
+> vòng một tháng. ⚡ Cột *"Sinh từ"* tồn tại để chuyện đó không xảy ra âm thầm.
+
+| Mã hãng | Mô tả | SL | Vị trí lắp | ⭐ Sinh từ | Thời gian có hàng | Phụ tùng khuyến nghị | Ghi chú |
+|---|---|---|---|---|---|---|---|
+| | CPU | 1 | Rack 0 · CPU | C.10 | | 0 | ⚠ Đặt khi hỏng — xem ghi chú dưới |
+| | Module DI 16 kênh | 1 | Rack 0 · khe 1 | C.10 | | ⭐ 1 | |
+| | Cảm biến quang thu-phát PNP | 4 | `DI_BoardStn1`, … | ⭐ **C.1** | | ⭐ 2 | Loại hay hỏng nhất |
+| | Van khí 5/2 lò xo về, 24 VDC | 4 | `DO_Clamp1Vlv`, … | ⭐ **C.1** | | 1 | ⚠ Kèm diode dập |
+| | Nguồn 24 V ___ A | 1 | Tủ, ray DIN | Phép tính §8.7 | | 1 | Đã nhân hệ số 1,3–1,5 |
+| | Rơ-le an toàn | 1 | Tủ | ⚠ Hồ sơ rủi ro | | 0 | ⚠⚠ Đổi là phải đánh giá lại |
+| | | | | | | | |
+
+| Cột | Vì sao có |
+|---|---|
+| **Mã hãng** | ⚠ Mã **đầy đủ**, gồm cả hậu tố điện áp và kiểu ngõ ra |
+| **Vị trí lắp** | ⭐ Với thiết bị trường thì ghi **tag**, không ghi "trạm 1" — tag mới truy ngược được |
+| ⭐⭐ **Sinh từ** | Dòng này đến từ bảng nào. ⚠ Dòng **không sinh từ đâu cả** là dòng đáng ngờ — hoặc thiếu trong C.1, hoặc thừa trong đơn hàng |
+| ⭐ **Thời gian có hàng** | ⚠ Là tiêu chí số 9 ở bảng công tác §13.4 — **hay để trống nhất, và đau nhất**. Ghi bằng **tuần**, không ghi "có sẵn" |
+| ⭐ **Phụ tùng khuyến nghị** | C.9 mục 9 đòi cột này khi bàn giao. ⭐ Quy tắc chọn: xem bảng dưới |
+
+### ⭐ Chọn phụ tùng dự phòng — ba câu hỏi, không phải cảm tính
+
+| Câu hỏi | Nếu "có" thì |
+|---|---|
+| Hỏng cái này thì máy **dừng hẳn** không? | ⭐ Nghiêng về có dự phòng |
+| ⭐ **Thời gian có hàng dài hơn mức dừng máy chấp nhận được** không? | ⭐⭐ **Bắt buộc có dự phòng** — đây là câu quyết định |
+| Nó là loại **hao mòn theo số lần tác động** không? | ⭐ Dự phòng theo số lượng, không phải một cái |
+
+> ⭐⭐ **Câu thứ hai là câu duy nhất thật sự quyết định, và nó là một phép so sánh, không phải cảm
+> tính.** ⚡ Một module rẻ mà **giao hàng tám tuần** đáng dự phòng hơn một CPU đắt **có sẵn trong
+> nước ngày mai**. ⚠ Phần lớn danh mục phụ tùng bị lập ngược: theo giá, không theo thời gian chờ.
+
+> ⚠ **Thiết bị an toàn là trường hợp riêng.** ⭐ Dự phòng một rơ-le an toàn **không** nghĩa là thay
+> vào là chạy: đổi thiết bị trong chuỗi an toàn thường kéo theo **đánh giá lại và nghiệm thu lại**
+> chức năng đó (Chương 47, 48, biểu mẫu C.8). ⭐ Ghi rõ điều này vào cột ghi chú, ngay từ lúc lập
+> danh mục — để người mua hàng sáu tháng sau **không tự ý đổi sang mã tương đương**.
+
+### ⭐⭐ Yêu cầu với kết quả — danh mục này đạt khi
+
+> ⚠ **Trước khi coi là xong:**
+>
+> - [ ] ⭐ **Mọi dòng có cột "Sinh từ" điền đầy đủ** — không dòng nào mồ côi
+> - [ ] Ngược lại: ⭐⭐ **mọi thiết bị trường trong C.1 đều tìm được một dòng ở đây**
+> - [ ] Mọi module trong C.10 đều có mặt, kèm **nguồn của rack** và **thẻ nhớ / pin**
+> - [ ] ⚠ Có cả những thứ **không nối vào PLC** nhưng cần cho an toàn (Chương 48) — che chắn, khoá cửa, biển báo
+> - [ ] **Thời gian có hàng** điền bằng **tuần** cho mọi dòng, không bỏ trống dòng nào
+> - [ ] Cột phụ tùng đã trả lời **ba câu hỏi** ở bảng trên, không chọn theo giá
+> - [ ] ⚠⚠ Thiết bị thuộc chuỗi an toàn đã **đánh dấu rõ là không được đổi mã tự do**
+> - [ ] Yêu cầu vật liệu đặc biệt (ví dụ vật liệu tiêu tán tĩnh điện) đã ghi **ở đây và trên bản vẽ** (Chương 7)
+
+> ⭐⭐ **Phép thử một phút.** Chọn ngẫu nhiên **ba dòng bất kỳ trong bảng I/O**, rồi hỏi:
+> *"thiết bị này mã gì, mua ở đâu, bao lâu có hàng, có dự phòng trong kho không?"* ⚡ Trả lời được
+> cả ba dòng thì danh mục đạt. ⚠ Chỉ cần một dòng không trả lời được, ⭐ **danh mục đang thiếu đúng
+> chỗ nó sẽ được cần tới** — vì người ta chỉ mở nó ra lúc có thứ hỏng.
+
+---
+
+## C.12 Cách dùng bộ biểu mẫu này
 
 | Giai đoạn dự án | Biểu mẫu | Chương |
 |---|---|---|
 | Đặc tả | C.3 · C.4 · C.5 | 23, 25, 32 |
-| Bảng I/O & phần cứng | ⭐ **C.1** | 23 |
+| Bảng I/O | ⭐ **C.1** | 23 |
+| ⭐ **Chọn và cấu hình phần cứng** | ⭐ **C.10** | 8, 13 |
+| ⭐ **Đặt hàng & nhận hàng** | ⭐ **C.11** | 13, 49 |
 | Viết chương trình | C.2 | 22 |
 | Kiểm thử | C.6 · C.7 | 50, 52 |
 | ⚠ Nghiệm thu an toàn | ⚠ **C.8** | 48 |
@@ -34082,7 +34354,8 @@ và hồ sơ bàn giao. ⚠ **Làm trước khi đấu tủ** (Chương 23, 49).
 ### Cơ khí và lắp đặt
 
 - [ ] Thiết bị lắp chắc, đúng chiều, đủ khoảng thoát nhiệt theo hướng dẫn nhà sản xuất
-- [ ] ⭐ Nhãn thiết bị **khớp danh mục vật tư** — đúng mã, đúng phiên bản
+- [ ] ⭐ Nhãn thiết bị **khớp danh mục vật tư** (Phụ lục C.11) — đúng mã, đúng phiên bản
+- [ ] ⭐ Module cắm **đúng khe** theo bảng cấu hình phần cứng (Phụ lục C.10) — ⚠ sai khe là **dịch địa chỉ**
 - [ ] ⚠⚠ **Bộ nguồn 24 V có nhãn SELV / PELV / Class 2 / Limited Power** — ⭐ **không có nhãn thì
       tra datasheet, đừng giả định** (Chương 3, mục 3.3)
 - [ ] Không có mạt kim loại, đầu dây thừa, dụng cụ bỏ quên trong tủ

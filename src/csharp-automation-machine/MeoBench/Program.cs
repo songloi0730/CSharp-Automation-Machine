@@ -9,6 +9,7 @@
 //   dotnet run -- G8          → chỉ chạy nhóm G.8
 //   dotnet run -- G9          → chỉ kiểm CỖ MÁY GHÉP HOÀN CHỈNH
 //   dotnet run -- G12         → chỉ kiểm phần TÁCH CẤU HÌNH (config/product)
+//   dotnet run -- G13         → năng lực vận hành máy thật (quyền, jog, đèn tháp…)
 //   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
 //   dotnet run -- --danhsach  → liệt kê 40 bài
 // -------------------------------------------------------
@@ -55,6 +56,7 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["G9"] = KiemMayHoanChinh.Chay,          // ghép toàn máy
     ["G11"] = KiemMayHoanChinh.Chay,
     ["G12"] = KiemCauHinh.Chay,            // tách cấu hình máy khỏi chương trình
+    ["G13"] = KiemVanHanhThuc.Chay,        // năng lực vận hành máy thật            // tách cấu hình máy khỏi chương trình
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -88,6 +90,7 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemTrinhTuVaVanHanh2.Chay();
     await KiemMayHoanChinh.Chay();
     await KiemCauHinh.Chay();
+    await KiemVanHanhThuc.Chay();
 }
 else
 {

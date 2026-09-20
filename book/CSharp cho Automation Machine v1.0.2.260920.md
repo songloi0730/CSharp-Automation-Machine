@@ -37642,7 +37642,8 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 
 Mục G.9 nêu mười hai bài xương sống; **cả bốn mươi bài nay đều có lời giải chạy được**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
 lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
-`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **356/356 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở mục G.11).
+`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **458/458 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở
+G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13).
 
 ### G.10.0  Chạy thử từng phần, không đợi làm xong hết
 
@@ -37651,12 +37652,14 @@ không biết hỏng ở đâu. Bộ tự kiểm cho phép **chạy lẻ từng 
 
 ```bash
 cd source/MeoBench
-dotnet run                 # cả 40 bài + phần ghép máy — 356 phép kiểm
+dotnet run                 # tất cả — 458 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
 dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
+dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
+dotnet run -- G13          # năng lực vận hành máy thật — 68 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
@@ -38261,6 +38264,8 @@ bị hỏng gửi mãi không có `ETX` thì bộ đệm phải **tự giải ph
 | `RapNoi.cs` | G.8.1 · G.8.5 | `dotnet run -- G8` |
 | `TrinhTuVaVanHanh2.cs` | G.4.5 · G.5.3 · G.5.4 · G.5.5 · G.8.2 · G.8.3 · G.8.4 | `dotnet run -- G5` hoặc `G8` |
 | `MayHoanChinh.cs` + `KiemMayHoanChinh.cs` | **mục G.11** — ghép toàn máy | `dotnet run -- G9` |
+| `KhoCauHinh.cs` + `KiemCauHinh.cs` | **mục G.12** — tách cấu hình cỗ máy | `dotnet run -- G12` |
+| `VanHanhThuc.cs` + `KiemVanHanhThuc.cs` | **mục G.13** — năng lực vận hành máy thật | `dotnet run -- G13` |
 | `Program.cs` | bộ chạy + chế độ `--demo` | `dotnet run -- --demo` |
 
 > 📌 **Cách dùng lời giải mẫu cho đúng.** Đừng mở nó ra trước. Trình tự có ích nhất: (1) đọc đặc tả
@@ -38409,4 +38414,127 @@ cỗ máy, cài đè bản mới, rồi kiểm xem cấu hình còn không.
 > và bắt kỹ thuật viên sửa tay — an toàn nhất nhưng làm hỏng buổi cập nhật. Với máy đang sản xuất,
 > (b) gần như luôn là câu trả lời đúng, và **hàm chuyển đổi phải giữ lại mãi** chứ không xoá sau một
 > vài phiên bản, vì luôn có một cỗ máy ở góc nhà máy chưa cập nhật suốt ba năm.
+---
+
+## G.13  Đối chiếu với máy thật — cỗ máy mẫu còn thiếu gì
+
+Mục G.11 ghép đủ mọi thứ bốn mươi bài sinh ra, và 62 phép kiểm đều xanh. Nhưng "ghép đủ những gì
+mình đã làm" khác hẳn "đủ những gì một cỗ máy cần". Mục này trả lời câu hỏi thứ hai bằng cách **đo
+trên 13 phần mềm máy thật**: liệt kê những năng lực chúng có, rồi đối chiếu với bản mẫu.
+
+### G.13.1  Đo: máy thật có gì
+
+Quét 13 dự án tìm dấu vết của từng năng lực, xếp theo **số dự án có** (không phải số lần xuất hiện,
+vì số lần dễ bị một dự án khổng lồ kéo lệch):
+
+**Bảng G.6 — Năng lực của phần mềm máy thật, và bản mẫu có hay không**
+
+| Năng lực | Số dự án có | Bản mẫu trước G.13 | Sau khi bổ sung |
+|---|---|---|---|
+| Phân quyền theo mức người dùng | **13 / 13** | ✗ không có | ✓ `PhienDangNhap` |
+| Đếm giờ chạy / tuổi thọ linh kiện | **13 / 13** | ✗ chỉ có nhịp giây/phôi | ✓ `SoBaoTri` |
+| Đăng nhập | 12 / 13 | ✗ | ✓ (phần phân quyền) |
+| **Thử lại khi thiết bị lỗi thoáng qua** | **12 / 13** | ✗ **không có chỗ nào thử lại** | ✓ `ThuLai` |
+| Chạy tay / jog trục | 11 / 13 | ✗ | ✓ `ChayTay` |
+| Truy xuất nguồn gốc (số sê-ri từng phôi) | 9 / 13 | ✗ chỉ có số đếm `int` | ✓ `SoSeriPhoi` |
+| Chế độ tay riêng | 7 / 13 | ✗ | ✓ (phần jog) |
+| Đèn tháp và còi | 7 / 13 | ✗ | ✓ `DenThap` |
+| Sao lưu / khôi phục cấu hình | 7 / 13 | ✗ | ✓ `SaoLuuCauHinh` |
+| Đa ngôn ngữ | 7 / 13 | ✗ | ✗ — **cố ý không làm**, xem G.13.11 |
+| Giao tiếp MES / host | 7 / 13 | ✗ | ✗ — **cố ý không làm** |
+| Watchdog phát hiện treo | 5 / 13 | ✗ | ✓ `WatchdogChuKy` |
+| Chạy từng bước | 4 / 13 | ✗ | ✗ — để làm bài tập |
+| Lịch sử cảnh báo lưu ra file | 3 / 13 | ✗ chỉ có cảnh báo đang hoạt động | ✓ `LichSuCanhBao` |
+| **Vết kiểm toán** | **0 / 13** | ✗ | ✓ `VetKiemToan` — xem callout |
+
+> 📌 **Dòng đáng chú ý nhất là dòng "thử lại": 12/13 dự án có, bản mẫu KHÔNG có chỗ nào.** Suốt bốn
+> mươi bài, mọi lỗi thiết bị đều dẫn thẳng tới cảnh báo và dừng máy. Nghe thì "an toàn", nhưng một
+> cỗ máy dừng vì **một lần** cảm biến trả lời chậm là cỗ máy không ai chịu được: mỗi ca sẽ dừng vài
+> chục lần, và người vận hành sẽ học được cách bấm Reset thật nhanh mà không đọc cảnh báo — đó là
+> lúc phần mềm mất hết tác dụng bảo vệ.
+
+> ⚠️ **Và dòng cuối là điều bất ngờ nhất của cả đợt đo: KHÔNG dự án nào trong 13 có vết kiểm toán.**
+> Không dự án nào ghi lại *ai đã đổi thông số gì, lúc nào, từ giá trị nào sang giá trị nào*. Đây
+> không phải tính năng xa xỉ: nó là thứ **đầu tiên bị hỏi khi một lô hàng bị trả về** — *"hôm đó ai
+> sửa công thức?"*. Bản mẫu bổ sung nó (`VetKiemToan`, 40 dòng) và sách khuyến nghị nó, nhưng phải
+> nói rõ: **đây là khuyến nghị của sách, không phải thực hành quan sát được** — khác với mọi mục
+> khác trong bảng trên.
+
+### G.13.2  Bốn nguyên tắc rút ra khi cài mười năng lực đó
+
+Cài xong mười thứ trên (`VanHanhThuc.cs`, 67 phép kiểm, `dotnet run -- G13`), bốn điều lặp lại đủ
+nhiều để đáng gọi tên:
+
+**1. Từ chối phải nói rõ PHẢI LÀM GÌ, không chỉ nói "không được".** Mọi phép từ chối trong nhóm này
+đều trả về lý do dạng *"Cần đăng nhập mức KyThuat để jog trục"* chứ không phải `false`. Người vận
+hành không đọc mã nguồn để đoán mình thiếu gì.
+
+**2. Ba cửa theo đúng thứ tự: quyền → an toàn → giới hạn vật lý.** `ChayTay.JogAsync` kiểm quyền
+trước, vì từ chối vì thiếu quyền là thông báo rõ nhất và **không cần đọc thiết bị**; rồi mới tới
+tín hiệu an toàn; cuối cùng là hành trình. Đảo thứ tự này thì người dùng nhận được thông báo khó
+hiểu hơn mà chẳng được gì.
+
+**3. Cảnh báo phải báo MỘT lần rồi tính lại.** `WatchdogChuKy` sau khi báo treo thì đặt lại mốc thời
+gian; `GiamSatKhiNen` chỉ phát sự kiện khi **đổi trạng thái**. Không có kỷ luật này thì một sự cố
+kéo dài ba phút sẽ đẻ ra hàng nghìn dòng cảnh báo — đúng cái lũ cảnh báo mà mục 15.1.6 bàn.
+
+**4. Thao tác nguy hiểm phải tự sao lưu trước khi làm.** `SaoLuuCauHinh.KhoiPhuc` **tự sao lưu bản
+hiện tại trước khi đè**, vì khôi phục nhầm bản là chuyện xảy ra, và khi đó thứ vừa mất chính là bản
+"hiện tại" mà không ai nghĩ tới việc giữ.
+
+### G.13.3  Một lỗi thiết kế thật, do phép kiểm bắt được
+
+Bản đầu tiên của số sê-ri ghép ba trường bằng dấu gạch nối:
+
+```text
+MEOBENCH-01-CA-A-20260920-000042
+```
+
+Ghép thì đẹp. Nhưng tách ngược lại **không được**, vì cả mã máy (`MEOBENCH-01`) lẫn mã ca
+(`CA-A-20260920`) đều **chứa dấu gạch nối**. Hàm tách trả về mã máy là `MEOBENCH` và mã ca là
+`01-CA-A-20260920` — sai cả hai, và sai im lặng.
+
+Đây là lỗi hạng nặng với một mã truy xuất, vì mã truy xuất tồn tại **chính để tra ngược**: khi khách
+hàng trả về một sản phẩm lỗi kèm mã, bạn phải tách ra được nó chạy trên máy nào, ca nào. Bản sửa
+đổi dấu phân cách thành `_` và — quan trọng hơn — **hàm dựng từ chối** giá trị chứa dấu phân cách:
+
+```csharp
+if (maMay.Contains(DauPhanCach, StringComparison.Ordinal))
+    throw new ArgumentException($"Mã máy không được chứa '{DauPhanCach}'", nameof(maMay));
+```
+
+> 💡 **Quy tắc mang đi cho mọi mã định danh ghép từ nhiều trường:** dấu phân cách phải là ký tự
+> **bị cấm bên trong từng trường**, và chỗ ép luật đó là **hàm dựng**, không phải hàm tách. Ép ở hàm
+> tách thì đã muộn — mã sai đã nằm trên nhãn dán vào sản phẩm rồi.
+
+### G.13.4  Ba năng lực CỐ Ý không cài, và lý do
+
+Trung thực hơn là im lặng bỏ qua:
+
+| Không cài | Số dự án có | Lý do |
+|---|---|---|
+| **Đa ngôn ngữ** | 7/13 | Thuần tầng giao diện, và cách làm (tệp tài nguyên, `CultureInfo`) không có gì riêng của phần mềm máy. Cài vào chỉ làm dài bản mẫu mà không dạy thêm điều gì |
+| **Giao tiếp MES / host** | 7/13 | Chương 14 đã bàn kỹ SECS/GEM và giao thức tuỳ biến; bản mẫu đã có bắt tay hai dây (G.8.4) làm đại diện cho lớp "nói chuyện với bên ngoài" |
+| **Chạy từng bước** | 4/13 | Khuôn đã có sẵn: cổng tạm dừng ở ranh giới bước của G.5.5. Biến nó thành chế độ chạy từng bước là **bài tập mở rộng tốt** — và người làm sẽ gặp đúng câu hỏi thú vị: *chạy từng bước có được phép ở mức Vận hành không?* |
+
+### G.13.5  Vẫn còn một khoảng cách, và nói thẳng ra
+
+Sau tất cả, bản mẫu **vẫn không phải phần mềm máy thật**, và ba khác biệt lớn nhất nên nói rõ để
+không ai nhầm:
+
+- **Không có giao diện thật.** Nhóm G.7 kiểm được logic giao diện trong console, nhưng một màn hình
+  WPF thật còn kéo theo bố cục, cỡ chạm, tỉ lệ hiển thị (mục 8.1.6), đa ngôn ngữ và hàng trăm quyết
+  định nhỏ mà Chương 10 dành cả chương để bàn.
+- **Không có phần cứng.** Mọi driver đều là bản giả lập. Mục 7.7 đã nói và nhắc lại ở đây: giả lập
+  là một **mô hình**, và mô hình nào cũng sai ở đâu đó — mục G.10.3 kể chuyện chính bản mẫu này đã
+  sai mô hình phôi **hai lần**.
+- **Không có áp lực thời gian thật.** Bản mẫu chạy chu kỳ trong vài mili-giây trên bản giả lập. Một
+  cỗ máy thật có nhịp 3–8 giây, chạy 20 tiếng một ngày, 300 ngày một năm — và phần lớn lỗi thú vị
+  nhất chỉ xuất hiện ở quy mô đó: rò rỉ bộ nhớ, trôi số, file phình, kết nối rụng lúc 3 giờ sáng.
+
+> 📌 **Vậy bản mẫu dùng để làm gì?** Để bạn gặp **đúng những quyết định** mà một cỗ máy thật bắt bạn
+> phải ra — chiều phụ thuộc, phân biệt lỗi với dừng chủ ý, cấu hình sống sót qua cập nhật, mã truy
+> xuất tách ngược được, cảnh báo báo một lần — trong một môi trường mà **sai thì chỉ tốn một phép
+> kiểm đỏ**, chứ không tốn một trục đâm. Khoảng cách còn lại giữa nó và máy thật không phải là thứ
+> đọc sách lấp được; nó là thứ chỉ có đứng cạnh máy mới lấp được.
 

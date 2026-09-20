@@ -29278,6 +29278,11 @@ khả năng biết mình vừa sửa gì.
 
 ### 17.4.1  Bậc thang áp dụng — theo thứ tự lợi ích trên công sức
 
+> 📌 **Bản gói lại của toàn bộ quy trình nằm ở Phụ lục F.** Chương này bàn phần hạ tầng
+> (Git, CI, triển khai). **Phụ lục F** gộp cả sáu bước của một thay đổi, hai mươi quy tắc viết
+> mã dễ đọc và giữ cấu trúc, lưới an toàn tự động, phần về trợ lý AI, và một danh sách kiểm
+> trước khi giao máy — mỗi mục đều truy được về một chương hoặc một số đo trên 13 dự án.
+
 **Bảng 17.7b — Nên làm gì trước khi đội chưa có gì**
 
 | Bậc | Việc làm | Công sức | Lợi ích chính |
@@ -36412,4 +36417,296 @@ là lý do phụ lục này tồn tại.
 > `CancellationTokenSource` là rò rỉ tài nguyên trong phần mềm chạy liên tục nhiều tháng. (3)
 > **`sealed`** — miễn phí, và nó chặn trước một loại lỗi khó tìm: ai đó kế thừa lớp trạm của bạn rồi
 > ghi đè một hàm mà bạn không lường trước.
+
+<!-- SECTION: Phu_Luc_F_Quy_Trinh -->
+---
+# Phụ lục F: Quy trình viết code và bộ quy tắc cho phần mềm máy
+
+Mười chín chương dạy **từng bộ phận**. Phụ lục này gói lại thành **một quy trình làm việc** và **một
+bộ quy tắc** đủ ngắn để in ra dán cạnh màn hình.
+
+Ba điều cần nói trước để bạn biết mình đang đọc gì:
+
+- **Mỗi quy tắc ở đây đều truy ngược được** về một mục trong sách, hoặc về một **con số đo trên 13
+  phần mềm máy thật** của bộ mẫu. Không có quy tắc nào đưa vào vì "người ta hay khuyên thế".
+- **Đây không phải chuẩn bắt buộc.** Đội bạn có thể đổi bất kỳ điều nào — miễn là đổi **có chủ ý** và
+  ghi lại lý do. Mục F.2 nói về chỗ ghi.
+- **Mục F.6 nói về việc có trợ lý AI tham gia viết mã**, và nó nói cả những chỗ **không áp dụng
+  được** cho phần mềm máy. Đó là phần quan trọng nhất của mục ấy.
+
+> 📌 **Đọc theo nhu cầu.** Bắt đầu một dự án mới → F.1 và F.2. Tiếp quản mã người khác → F.3 và F.4.
+> Muốn giảm số lỗi lọt ra hiện trường mà không thêm họp hành → F.5. Đội đang dùng trợ lý AI → F.6.
+> Sắp giao máy → F.7, một trang, dùng được ngay.
+
+---
+
+## F.1  Sáu bước của một thay đổi
+
+Mọi thay đổi trong phần mềm máy — từ "thêm một trạm" tới "sửa một cảnh báo báo nhầm" — đều đi qua
+sáu bước. Trong đội nhỏ, sáu bước này có thể do **một người** làm hết trong một buổi; điều đó không
+làm chúng biến mất, chỉ làm chúng vô hình. Viết chúng ra để không bỏ sót bước nào.
+
+**Bảng F.1 — Sáu bước, và thứ phải có ở cuối mỗi bước**
+
+| # | Bước | Trả lời câu hỏi | Kết thúc bằng | Ai quyết định |
+|---|---|---|---|---|
+| 1 | **Ý định** | *Vấn đề thật là gì? Ai đang chịu?* | `intent.md` — vấn đề, ai bị ảnh hưởng, ràng buộc, cái gì ngoài phạm vi | Người gặp vấn đề (vận hành, kỹ thuật, khách hàng) |
+| 2 | **Đặc tả** | *Máy phải làm gì, đo bằng gì?* | `spec.md` — hành vi mong muốn, tiêu chí nghiệm thu, tác động an toàn | Chủ dự án + kỹ sư cơ/điện |
+| 3 | **Kế hoạch** | *Sửa file nào, theo thứ tự nào, rủi ro ở đâu?* | `plan.md` — danh sách file, thứ tự, rủi ro, cách quay lui | Người sẽ viết mã |
+| 4 | **Viết** | *Mã chạy được chưa?* | Nhánh Git + mã + phép kiểm | Người viết mã |
+| 5 | **Kiểm** | *Có đúng đặc tả không, và có làm hỏng gì không?* | Kết quả chạy giả lập + **chạy trên máy thật** | Người thứ hai, không phải người viết |
+| 6 | **Giao & theo dõi** | *Chạy ổn ngoài hiện trường chứ?* | Bản phát hành có thẻ phiên bản + nhật ký theo dõi | Chủ dự án |
+
+**Bước hay bị bỏ nhất là bước 1**, và nó đắt nhất khi bỏ. Yêu cầu tới dưới dạng *giải pháp* chứ
+không phải *vấn đề*: *"thêm cho tôi nút bỏ qua trạm kiểm tra"*. Nếu đi thẳng vào viết mã, bạn sẽ làm
+đúng thứ được yêu cầu. Nếu hỏi *"vì sao cần bỏ qua?"*, câu trả lời có thể là *"vì trạm đó báo lỗi
+giả mười lần một ca"* — và việc cần làm là sửa lỗi giả, không phải thêm một nút vô hiệu hoá kiểm
+tra chất lượng sẽ nằm lại vĩnh viễn.
+
+> ⚠️ **Bước 5 có một phần không thay thế được: chạy trên máy thật.** Giả lập kiểm được **luật của
+> phần mềm**; nó không kiểm được thứ sẽ hỏng ngoài hiện trường — rung, trượt, nhiễu, cảm biến bẩn,
+> khí yếu vào giờ cao điểm. Mục 7.7 nói thẳng: bản giả lập sẽ nói dối khi nó và đường chạy thật trôi
+> xa nhau. Coi giả lập là **bộ lọc rẻ chạy trước**, không phải bằng chứng nghiệm thu.
+
+#### Bốn loại thay đổi, và mức nghiêm ngặt khác nhau
+
+Không phải thay đổi nào cũng cần đủ sáu bước. Chương 17 mục 17.5 phân bốn loại; đây là mức áp dụng
+tương ứng:
+
+| Loại thay đổi | Ví dụ | Bước tối thiểu |
+|---|---|---|
+| **Sửa lỗi** | Cảnh báo báo nhầm, chữ hiển thị sai | 3 → 4 → 5, ghi một dòng vào nhật ký |
+| **Thêm chức năng** | Thêm một trạm, thêm báo cáo | Đủ 1 → 6 |
+| **Thích ứng** | Hãng ngừng bán dòng card đang dùng | Đủ 1 → 6, và bước 2 phải có kỹ sư điện |
+| **Cải thiện nội bộ** | Tái cấu trúc, đổi tên, gom trùng lặp | 3 → 4 → 5, **không trộn chung commit với ba loại trên** |
+
+Dòng cuối là quy tắc nhỏ nhưng tiết kiệm nhiều nhất: **đừng trộn tái cấu trúc với sửa lỗi trong một
+commit**. Khi bản phát hành có vấn đề, bạn cần trả lời *"thay đổi nào gây ra?"* — một commit vừa đổi
+tên 40 file vừa sửa một điều kiện làm câu hỏi đó không trả lời được.
+
+---
+
+## F.2  Chuỗi tài liệu sống trong Git
+
+Ba file ở Bảng F.1 (`intent.md`, `spec.md`, `plan.md`) không phải thủ tục giấy tờ. Chúng giải quyết
+một vấn đề rất cụ thể của phần mềm máy: **máy sống mười năm, người thì không**. Người viết máy này
+sẽ nghỉ, chuyển bộ phận, hoặc đơn giản là quên. Thứ còn lại là kho mã — nên **lý do** phải nằm trong
+kho mã, không nằm trong hộp thư hay trong đầu ai cả.
+
+**Bảng F.2 — Ba tài liệu, và câu hỏi mỗi cái trả lời cho người đọc sau bạn ba năm**
+
+| File | Trả lời | Nếu thiếu thì hậu quả |
+|---|---|---|
+| `intent.md` | *Vì sao lại có tính năng kỳ lạ này?* | Người sau xoá nó đi vì "trông thừa", rồi một tháng sau khách hàng phàn nàn |
+| `spec.md` | *Hành vi này là cố ý hay là lỗi?* | Không ai dám sửa gì, vì không biết cái gì là đúng |
+| `plan.md` | *Lần đó đã cân nhắc những gì?* | Lặp lại đúng một phương án đã bị loại vì một lý do đã quên |
+
+#### Đặt ở đâu, và đặt thế nào
+
+Đơn giản nhất là một thư mục trong chính kho mã của máy:
+
+```
+docs/
+  changes/
+    2026-09-20-them-tram-quet-ma/
+      intent.md
+      spec.md
+      plan.md
+```
+
+Ba quy ước đi kèm, và quy ước thứ ba là quan trọng nhất:
+
+1. **Đặt tên thư mục theo ngày + việc**, không theo số ticket — số ticket chết theo hệ thống quản lý
+   công việc, ngày tháng thì không.
+2. **Commit tài liệu trước khi viết mã**, trong một commit riêng. Lịch sử Git khi đó tự kể đúng thứ
+   tự đã xảy ra.
+3. **Mỗi file có một dòng trạng thái ở đầu.**
+
+> ⚠️ **Vấn đề lớn nhất của cách làm này, và phải xử lý ngay từ đầu: tài liệu lỗi thời còn nguy hiểm
+> hơn không có tài liệu.** Một `spec.md` mô tả hành vi của máy hai năm trước sẽ khiến người đọc tin
+> vào một thứ không còn đúng — và họ sẽ tin, vì nó nằm trong kho mã và trông chính thức.
+>
+> Cách chữa rẻ nhất là **một dòng trạng thái bắt buộc ở đầu mỗi file**:
+> ```markdown
+> > Trạng thái: ĐANG HIỆU LỰC · cập nhật 20/09/2026 · áp cho máy AOI-01 từ bản v2.3
+> ```
+> hoặc:
+> ```markdown
+> > Trạng thái: ĐÃ THAY THẾ bởi docs/changes/2027-03-11-doi-camera/spec.md — giữ lại để tra lịch sử
+> ```
+> Quy tắc kèm theo: **ai sửa hành vi thì người đó sửa dòng trạng thái**, trong cùng commit. Nếu đội
+> không giữ nổi kỷ luật này, thà **chỉ giữ `intent.md`** — lý do thì hiếm khi lỗi thời, còn đặc tả
+> thì lỗi thời rất nhanh.
+
+---
+
+## F.3  Mười hai quy tắc để mã dễ đọc
+
+Mỗi quy tắc kèm **con số đo được** trên 13 phần mềm máy thật, để bạn biết nó phổ biến tới đâu chứ
+không chỉ nghe lời khuyên.
+
+**Bảng F.3 — Mười hai quy tắc đọc được, và bằng chứng**
+
+| # | Quy tắc | Đo được trong bộ mẫu | Chi tiết |
+|---|---|---|---|
+| 1 | **Tên nói việc, không nói kiểu.** `DiToViTriGap()` chứ không `DoWork2()` | — | Ch.3 |
+| 2 | **Hàm không quá 5 tham số.** Nhiều hơn thì gom thành `record` | 905 hàm ≥5 tham số, **275 hàm ≥8**, dài nhất **27** | mục 3.4.4 |
+| 3 | **Kết quả đi ra bằng giá trị trả về**, không bằng `ref`/`out` | **908** hàm có `ref`/`out` | mục 3.4.4 |
+| 4 | **File không quá ~1.000 dòng.** Quá thì tách theo trách nhiệm | 43 file >2.000 dòng; lớn nhất **28.635 dòng** | mục 12.1.1b |
+| 5 | **Điều kiện ghép hai phép so sánh cùng một biến phải đọc lại hai lần** | 1 lớp bảo vệ **không bao giờ chạy** | mục 3.3.3 |
+| 6 | **Không so sánh số thực bằng `==`** — luôn so theo dung sai | 13 chỗ | mục 3.3.3 |
+| 7 | **Không để số ma.** Ngưỡng, thời gian chờ, chỉ số trục → hằng có tên | — | Ch.3 |
+| 8 | **Xoá mã đã chú thích.** Git nhớ hộ bạn rồi | **13.976** dòng mã bị chú thích | Ch.17 |
+| 9 | **`catch` phải nói.** Ít nhất một dòng log có ngữ cảnh | **646** khối `catch` rỗng, 156 trong đó bọc thiết bị | mục 3.5.5 |
+| 10 | **Log bằng khuôn có tham số**, không nối chuỗi | 11/13 dự án còn `Console.WriteLine` trong mã sản xuất | mục 19.4.1 |
+| 11 | **Phân tích số phải nói rõ văn hoá** (`InvariantCulture`) | `"5.0"` thành **50** trên máy đặt vùng miền Việt Nam | mục 3.6.3b |
+| 12 | **Đơn vị nằm trong tên hoặc trong kiểu.** `viTriMm`, không `viTri` | — | Ch.11 |
+
+> 💡 **Nếu chỉ chọn được ba quy tắc để áp ngay hôm nay**, chọn 9, 2 và 4 — theo đúng thứ tự đó. Quy
+> tắc 9 rẻ nhất (thêm một dòng log) và cứu được nhiều giờ chẩn đoán nhất. Quy tắc 2 và 4 là hai dấu
+> hiệu sớm nhất cho thấy một lớp đang gánh quá nhiều việc — sửa lúc hàm mới có 6 tham số dễ hơn
+> nhiều so với lúc nó có 27.
+
+#### Ba mẹo nhỏ, hiệu quả lớn, gần như không tốn gì
+
+- **Viết tên theo cách người vận hành gọi.** Nếu ngoài xưởng gọi cụm đó là *"trạm ép"*, đừng đặt
+  `Station3`. Khi có sự cố lúc 2 giờ sáng, người đọc log là người vận hành, không phải bạn.
+- **Một dòng chú thích trả lời "vì sao", không trả lời "cái gì".** `// tăng biến đếm` là vô dụng;
+  `// chờ 200 ms vì van cần thời gian đóng hết, đo thực tế 150 ms` là vàng. Chú thích loại hai còn
+  cứu bạn khỏi việc ai đó "tối ưu" cái `Thread.Sleep` đó đi.
+- **Đặt tên hằng theo lý do, không theo giá trị.** `ThoiGianVanDong_ms = 200` tốt hơn `Delay200`.
+  Khi thay van khác, giá trị đổi mà tên vẫn đúng.
+
+---
+
+## F.4  Tám quy tắc để cấu trúc không mục ruỗng
+
+Mục F.3 làm mã dễ đọc **hôm nay**. Mục này giữ cho nó còn sửa được **sau ba năm**.
+
+**Bảng F.4 — Tám quy tắc cấu trúc**
+
+| # | Quy tắc | Vì sao | Chi tiết |
+|---|---|---|---|
+| 1 | **Mũi tên phụ thuộc chỉ đi xuống.** Luật máy không được biết tên lớp phần cứng | Không có nó thì không biên dịch được tầng nghiệp vụ nếu thiếu mã phần cứng | mục 7.4 |
+| 2 | **Bọc đúng thứ có khả năng đổi**, không bọc mọi thứ. Ba câu hỏi: đổi hãng được không? cần chạy khi không có nó không? cần test không? | Bọc thừa tốn công mỗi ngày; bọc thiếu trả giá một lần rất đắt | mục 7.7 |
+| 3 | **Chỉ một chỗ được `new` thiết bị** — điểm ráp nối | Quyết định thật/giả nằm một chỗ, không rải khắp nơi | mục 7.4 |
+| 4 | **Trạng thái máy là một `enum`, không phải nhiều cờ `bool`** | Bảy cờ = 128 tổ hợp, 8 hợp lệ, 120 tổ hợp vô nghĩa vẫn biểu diễn được | mục 12.1.1b |
+| 5 | **Trình tự là dữ liệu (danh sách bước), không phải mã** | Hiện được "bước 3/7", chạy tay từng bước, đổi thứ tự theo công thức, hạn giờ gói một chỗ | mục 7.7 |
+| 6 | **Cấu hình nằm ngoài mã**, và có kiểm tra dải khi nạp | Đổi thông số không cần biên dịch lại; sai thông số bị chặn tại cửa | mục 3.6.3b |
+| 7 | **Thư viện thiết bị dùng chung phải đánh phiên bản** | Hai mươi máy cùng trỏ một bản chép tay = mỗi lần sửa là một lần đánh cược với cả đội máy | mục 7.7.4 |
+| 8 | **Một luật chỉ được viết ở một chỗ** | Luật *"đang lỗi thì không được chạy tự động"* rải ở 97 file thì chắc chắn có chỗ quên | mục 12.1.1b |
+
+> 📌 **Dấu hiệu cấu trúc đang mục ruỗng — ba câu hỏi tự kiểm, mỗi câu mười giây.** (1) *Muốn thử một
+> thay đổi nhỏ, tôi có phải ra đứng cạnh máy không?* (2) *Có lớp nào không ai dám sửa không?* (3)
+> *Thêm một trạm nữa thì tôi phải đụng vào bao nhiêu file?* Trả lời "có / có / rất nhiều" thì phần
+> mềm đã bước vào giai đoạn **chỉ thêm, không sửa** — và từ đó mọi thay đổi đắt dần. Mục 7.7 gọi đây
+> là dấu hiệu nặng nhất.
+
+---
+
+## F.5  Lưới an toàn tự động — để quy tắc không phụ thuộc trí nhớ
+
+Hai mục trên là hai mươi quy tắc. Không ai nhớ hết, và nhắc nhau trong review thì mệt mỏi và không
+đều. Cách bền hơn: **cái gì máy kiểm được thì để máy kiểm**.
+
+**Bảng F.5 — Quy tắc nào máy tự kiểm được, quy tắc nào chỉ người mới thấy**
+
+| Cách chặn | Chặn được gì | Chi phí dựng |
+|---|---|---|
+| **Bật cảnh báo thành lỗi biên dịch** (`TreatWarningsAsErrors`) | Biến không dùng, ép kiểu mất dữ liệu, `async` không `await` | 1 dòng trong file project |
+| **Bộ phân tích mã** (analyzer) + file quy tắc | Tên sai quy ước, `catch` rỗng, so sánh số thực bằng `==`, `Thread.Sleep` trong mã async | Nửa buổi |
+| **Hook trước khi commit** | Định dạng lộn xộn, file quá lớn, mã bị chú thích còn sót, khoá/mật khẩu lọt vào kho | Một buổi |
+| **Phép kiểm tự động cho logic thuần** | Ngưỡng, quy đổi đơn vị, tính toán — đúng loại lỗi ở mục 3.3.3 | Vài ngày |
+| **Máy dựng tự động** (CI) | "Chạy được trên máy tôi" | Ch.17 mục 17.2 |
+| — **Chỉ người mới thấy** — | Tên đặt vô nghĩa nhưng đúng quy ước · luật nghiệp vụ sai · **mọi thứ liên quan an toàn** | Review |
+
+Dòng cuối là dòng cần đọc kỹ. Công cụ bắt được *hình dạng* sai, không bắt được *ý nghĩa* sai. Một
+điều kiện an toàn bị chú thích đi (mục 15.2.2b) biên dịch hoàn hảo và qua mọi analyzer.
+
+> 💡 **Bậc thang áp dụng — nếu hôm nay bạn chưa có gì.** Đừng dựng cả năm thứ. Theo thứ tự lợi ích
+> trên công sức: **(1)** bật cảnh báo thành lỗi trên **một project nhỏ** trước, sửa hết rồi mới mở
+> rộng — bật toàn bộ ngay sẽ cho ra hàng nghìn lỗi và đội sẽ tắt nó đi. **(2)** Thêm analyzer với
+> **năm luật** thôi, chọn năm luật ở Bảng F.3 mà đội hay vi phạm nhất. **(3)** Hook chặn khoá/mật
+> khẩu lọt vào kho — rẻ và tránh được một loại sự cố rất khó gỡ. Ba bậc này gọn trong một tuần và
+> không cần ai đồng ý về mặt quy trình.
+
+---
+
+## F.6  Khi có trợ lý AI tham gia viết mã
+
+Từ khoảng 2025, phần lớn đội phần mềm đều có ít nhất một người dùng trợ lý AI để sinh mã. Mục này
+không bàn nên hay không nên — nó bàn **cách làm việc đó mà không đánh mất những gì mười chín chương
+trước xây dựng**.
+
+Khung tham chiếu tốt nhất hiện có là cẩm nang *The AI-Native SDLC playbook* của nhóm Applied AI
+thuộc Anthropic (Louis Claxton, 21/08/2026, `claude.com/blog/the-ai-native-sdlc-playbook`). Luận
+điểm trung tâm của nó rất đáng mang sang đây: **khi viết mã không còn là nút thắt, nút thắt chuyển
+sang các bước xung quanh** — lập kế hoạch, duyệt, triển khai, quản trị — vì những bước đó vẫn chạy
+ở tốc độ con người. Sinh mã nhanh gấp mười mà hàng đợi duyệt dài gấp mười thì tổng thời gian không
+đổi, chỉ đổi chỗ tắc.
+
+#### Bốn thực hành chuyển sang phần mềm máy rất tốt
+
+| Thực hành | Vì sao hợp với phần mềm máy |
+|---|---|
+| **Lập kế hoạch trước, viết mã sau** — thống nhất danh sách file sẽ sửa và rủi ro trước khi gõ dòng đầu tiên | Chính là bước 3 ở Bảng F.1. Với máy, "rủi ro" có nghĩa vật lý, nên bước này đáng giá hơn hẳn so với phần mềm web |
+| **Chuỗi tài liệu nằm trong Git** | Đúng mục F.2 — và giải đúng bài toán "máy sống mười năm, người thì không" |
+| **Một file quy tắc dự án mà trợ lý đọc được** | Hai mươi quy tắc ở F.3/F.4 viết thành một file ngắn trong kho mã; trợ lý đọc nó mỗi phiên, người mới cũng đọc nó ngày đầu tiên. Giữ **dưới 200 dòng** — dài hơn thì cả người lẫn máy đều bỏ qua |
+| **Quy tắc thực thi được bằng mã** (hook chặn, kiểm tự động) | Đúng tinh thần mục F.5: luật nào máy chặn được thì đừng để nó sống bằng lời nhắc |
+
+#### Và bốn thứ **không** chuyển sang được — đây mới là phần quan trọng
+
+**Bảng F.6 — Bốn điểm cẩm nang nói đúng cho phần mềm chạy trên máy chủ, nhưng sai cho phần mềm chạy trên máy cơ khí**
+
+| Thực hành | Đúng với dịch vụ phần mềm | Vì sao **không** áp thẳng cho máy |
+|---|---|---|
+| **Tự động quay lui khi thấy bất thường** | Đổi lại phiên bản cũ, vài giây, không ai bị thương | Máy đang kẹp một phôi, một trục đang đi giữa hành trình. **Không có "quay lui" cho trạng thái vật lý.** Quay lui phần mềm giữa chu kỳ có thể để lại phôi trong kẹp, van đang mở, trục mất gốc |
+| **Tự động mở PR sửa lỗi lúc 3 giờ sáng** | Rất hợp lý — lỗi phần mềm thì sửa bằng phần mềm | Bất thường ở máy **thường không phải lỗi phần mềm**: vòi hút bẩn, dây đai giãn, khí yếu vào ca đêm. Sửa phần mềm cho một vấn đề cơ khí là **giấu triệu chứng đi** |
+| **Kiểm thử liên tục thay cho duyệt tay** | Bộ kiểm chạy trên cùng môi trường sẽ chạy thật | Bộ kiểm chạy trên **giả lập**, mà giả lập là một mô hình. Mục 7.7 đã cảnh báo: hai đường chạy trôi xa nhau theo thời gian. Xanh hết vẫn **không thay được** một lần chạy trên máy thật |
+| **Cổng duyệt tự động cho triển khai** | Chữ ký số + kiểm tự động là đủ | Với chức năng an toàn thì **không cổng phần mềm nào đủ** — nó thuộc về mạch an toàn phần cứng (mục 15.2.2b). Một cổng tự động ở đây tạo cảm giác an toàn giả |
+
+> ⚠️ **Một quy tắc gọn để mang đi: trợ lý AI được phép chạm vào mọi thứ TRƯỚC khi mã tới máy, và
+> không được chạm vào gì SAU đó.** Sinh mã, viết kiểm thử, đọc nhật ký, đề xuất bản vá, mở PR — tốt.
+> Tự quyết định nạp bản mới vào máy đang sản xuất, tự quay lui, tự bỏ qua một cảnh báo — không.
+> Ranh giới ấy không phải vì trợ lý kém tin cậy hơn người, mà vì **phía sau ranh giới đó, sai lầm
+> không còn là dữ liệu — nó là kim loại đang chuyển động.**
+
+#### Ba mẹo thực dụng khi dùng trợ lý AI trên mã máy
+
+1. **Bắt nó đọc trước khi sửa.** Yêu cầu liệt kê những file sẽ đụng và lý do, trước khi cho sửa.
+   Bước này bắt được phần lớn hiểu nhầm khi nó chưa tốn gì.
+2. **Đừng để nó tự "dọn dẹp" quanh chỗ đang sửa.** Trong phần mềm máy, một đoạn mã trông thừa có
+   thể là một lớp bảo vệ ai đó thêm sau một sự cố — và lý do thì nằm trong `intent.md`, không nằm
+   trong mã.
+3. **Xem nó như một đồng nghiệp mới rất nhanh tay nhưng chưa đứng cạnh máy bao giờ.** Nó không biết
+   rằng trục Z phải về gốc trước trục X, rằng van kẹp cần 200 ms, rằng khách hàng này không cho dừng
+   giữa chu kỳ. Những thứ đó phải nằm trong file quy tắc dự án — hoặc bạn sẽ phải nói lại mỗi lần.
+
+---
+
+## F.7  Danh sách kiểm trước khi giao máy
+
+Một trang, dùng trực tiếp. Mỗi mục đều truy được về một chỗ trong sách.
+
+**Bảng F.7 — Danh sách kiểm trước khi giao**
+
+| ✔ | Mục kiểm | Vì sao | Chi tiết |
+|---|---|---|---|
+| ☐ | Phần mềm chạy được khi **rút cáp** thiết bị nối tiếp/mạng | Báo lỗi tử tế thay vì tắt ngang | mục 14.1.5b |
+| ☐ | Thử bố cục ở tỉ lệ hiển thị **100 %, 125 %, 150 %** | Máy tính công nghiệp thường không đặt 100 % | mục 8.1.6 |
+| ☐ | Mọi lệnh xuống thiết bị đều có **hạn giờ** | Không có thì một lệnh treo là treo cả chu kỳ | Ch.5 |
+| ☐ | Không còn `catch` rỗng nào bọc lời gọi thiết bị | 156 chỗ như vậy trong bộ mẫu | mục 3.5.5 |
+| ☐ | Nhật ký ghi đủ để chẩn đoán **mà không cần nối máy tính** | Ca đêm không có kỹ sư | mục 19.4.1b |
+| ☐ | Mở phần mềm **hai lần** thì lần hai bị chặn | Hai tiến trình cùng ra lệnh một card | Ch.5 |
+| ☐ | Điều kiện an toàn nằm ở **mạch phần cứng**, không phải trong `if` | Một dòng `if` chú thích được trong ba giây | mục 15.2.2b |
+| ☐ | Tìm trong mã các dòng **bị chú thích** có tên tín hiệu an toàn | Mỗi dòng là một câu hỏi phải trả lời | mục 15.2.2b |
+| ☐ | Cấu hình máy này **không nằm trong mã**, và đã sao lưu | Cài lại máy tính là chuyện sẽ xảy ra | Ch.17 mục 17.3.6 |
+| ☐ | Bản giao có **thẻ phiên bản** trong Git, khớp với số hiện trên màn hình | Không có thì không biết hiện trường đang chạy bản nào | Ch.17 mục 17.1.3 |
+| ☐ | `intent.md` / `spec.md` của các thay đổi lớn đã commit và **đúng trạng thái** | Người sau bạn cần lý do, không cần đoán | mục F.2 |
+| ☐ | Có **một người thứ hai** đã chạy thử máy | Người viết mã luôn thử đúng những gì mình nghĩ tới | Bảng F.1, bước 5 |
+
+> 📌 **Mục cuối cùng là mục hay bị bỏ nhất và cứu được nhiều nhất.** Người viết mã thử đúng những
+> đường đi mà họ đã hình dung khi viết — đó là định nghĩa của điểm mù. Người thứ hai bấm sai nút,
+> bấm hai lần, mở cửa giữa chu kỳ, rút cáp mạng vì tò mò. Nửa giờ của họ bắt được nhiều lỗi hơn nửa
+> ngày của người viết.
 

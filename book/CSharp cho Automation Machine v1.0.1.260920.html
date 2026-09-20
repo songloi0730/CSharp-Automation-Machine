@@ -535,6 +535,14 @@
   <li style="padding-left:16px;font-size:13px"><a href="#e12-bng-tra-nhanh-theo-th-t-ch-cái">E.12  Bảng tra nhanh theo thứ tự chữ cái</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e13-mưi-hai-cp-hay-b-dùng-nhm">E.13  Mười hai cặp hay bị dùng nhầm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e14-vy-phi-hc-thuc-bao-nhiêu">E.14  Vậy phải học thuộc bao nhiêu?</a></li>
+  <li><a href="#ph-lc-f-quy-trình-vit-code-và-b-quy-tc-cho-phn-mm-máy">Phụ lục F: Quy trình viết code và bộ quy tắc cho phần mềm máy</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f1-sáu-bưc-ca-mt-thay-đi">F.1  Sáu bước của một thay đổi</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f2-chui-tài-liu-sng-trong-git">F.2  Chuỗi tài liệu sống trong Git</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f3-mưi-hai-quy-tc-đ-mã-d-đc">F.3  Mười hai quy tắc để mã dễ đọc</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f4-tám-quy-tc-đ-cu-trúc-không-mc-rung">F.4  Tám quy tắc để cấu trúc không mục ruỗng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f5-lưi-an-toàn-t-đng-đ-quy-tc-không-ph-thuc-trí-nh">F.5  Lưới an toàn tự động — để quy tắc không phụ thuộc trí nhớ</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f6-khi-có-tr-lý-ai-tham-gia-vit-mã">F.6  Khi có trợ lý AI tham gia viết mã</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#f7-danh-sách-kim-trưc-khi-giao-máy">F.7  Danh sách kiểm trước khi giao máy</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -33197,6 +33205,12 @@ Xoá hẳn, commit với thông điệp nói rõ vì sao xoá. Nếu lo quên, g
 vào tài liệu — vẫn gọn hơn là để code chết trong file đang đọc hằng ngày.</p>
 </blockquote>
 <h3>17.4.1  Bậc thang áp dụng — theo thứ tự lợi ích trên công sức</h3>
+<blockquote>
+<p>📌 <strong>Bản gói lại của toàn bộ quy trình nằm ở Phụ lục F.</strong> Chương này bàn phần hạ tầng
+(Git, CI, triển khai). <strong>Phụ lục F</strong> gộp cả sáu bước của một thay đổi, hai mươi quy tắc viết
+mã dễ đọc và giữ cấu trúc, lưới an toàn tự động, phần về trợ lý AI, và một danh sách kiểm
+trước khi giao máy — mỗi mục đều truy được về một chương hoặc một số đo trên 13 dự án.</p>
+</blockquote>
 <p><strong>Bảng 17.7b — Nên làm gì trước khi đội chưa có gì</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -41975,6 +41989,595 @@ phụ thuộc giữa chừng. (2) <strong><code>using</code> (câu lệnh)</stro
 <code>CancellationTokenSource</code> là rò rỉ tài nguyên trong phần mềm chạy liên tục nhiều tháng. (3)
 <strong><code>sealed</code></strong> — miễn phí, và nó chặn trước một loại lỗi khó tìm: ai đó kế thừa lớp trạm của bạn rồi
 ghi đè một hàm mà bạn không lường trước.</p>
+</blockquote>
+<!-- SECTION: Phu_Luc_F_Quy_Trinh -->
+<hr>
+<h1 id="ph-lc-f-quy-trình-vit-code-và-b-quy-tc-cho-phn-mm-máy">Phụ lục F: Quy trình viết code và bộ quy tắc cho phần mềm máy</h1>
+<p>Mười chín chương dạy <strong>từng bộ phận</strong>. Phụ lục này gói lại thành <strong>một quy trình làm việc</strong> và <strong>một
+bộ quy tắc</strong> đủ ngắn để in ra dán cạnh màn hình.</p>
+<p>Ba điều cần nói trước để bạn biết mình đang đọc gì:</p>
+<ul>
+<li><strong>Mỗi quy tắc ở đây đều truy ngược được</strong> về một mục trong sách, hoặc về một <strong>con số đo trên 13
+phần mềm máy thật</strong> của bộ mẫu. Không có quy tắc nào đưa vào vì &quot;người ta hay khuyên thế&quot;.</li>
+<li><strong>Đây không phải chuẩn bắt buộc.</strong> Đội bạn có thể đổi bất kỳ điều nào — miễn là đổi <strong>có chủ ý</strong> và
+ghi lại lý do. Mục F.2 nói về chỗ ghi.</li>
+<li><strong>Mục F.6 nói về việc có trợ lý AI tham gia viết mã</strong>, và nó nói cả những chỗ <strong>không áp dụng
+được</strong> cho phần mềm máy. Đó là phần quan trọng nhất của mục ấy.</li>
+</ul>
+<blockquote>
+<p>📌 <strong>Đọc theo nhu cầu.</strong> Bắt đầu một dự án mới → F.1 và F.2. Tiếp quản mã người khác → F.3 và F.4.
+Muốn giảm số lỗi lọt ra hiện trường mà không thêm họp hành → F.5. Đội đang dùng trợ lý AI → F.6.
+Sắp giao máy → F.7, một trang, dùng được ngay.</p>
+</blockquote>
+<hr>
+<h2 id="f1-sáu-bưc-ca-mt-thay-đi">F.1  Sáu bước của một thay đổi</h2>
+<p>Mọi thay đổi trong phần mềm máy — từ &quot;thêm một trạm&quot; tới &quot;sửa một cảnh báo báo nhầm&quot; — đều đi qua
+sáu bước. Trong đội nhỏ, sáu bước này có thể do <strong>một người</strong> làm hết trong một buổi; điều đó không
+làm chúng biến mất, chỉ làm chúng vô hình. Viết chúng ra để không bỏ sót bước nào.</p>
+<p><strong>Bảng F.1 — Sáu bước, và thứ phải có ở cuối mỗi bước</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Bước</th>
+<th>Trả lời câu hỏi</th>
+<th>Kết thúc bằng</th>
+<th>Ai quyết định</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Ý định</strong></td>
+<td><em>Vấn đề thật là gì? Ai đang chịu?</em></td>
+<td><code>intent.md</code> — vấn đề, ai bị ảnh hưởng, ràng buộc, cái gì ngoài phạm vi</td>
+<td>Người gặp vấn đề (vận hành, kỹ thuật, khách hàng)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Đặc tả</strong></td>
+<td><em>Máy phải làm gì, đo bằng gì?</em></td>
+<td><code>spec.md</code> — hành vi mong muốn, tiêu chí nghiệm thu, tác động an toàn</td>
+<td>Chủ dự án + kỹ sư cơ/điện</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Kế hoạch</strong></td>
+<td><em>Sửa file nào, theo thứ tự nào, rủi ro ở đâu?</em></td>
+<td><code>plan.md</code> — danh sách file, thứ tự, rủi ro, cách quay lui</td>
+<td>Người sẽ viết mã</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Viết</strong></td>
+<td><em>Mã chạy được chưa?</em></td>
+<td>Nhánh Git + mã + phép kiểm</td>
+<td>Người viết mã</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Kiểm</strong></td>
+<td><em>Có đúng đặc tả không, và có làm hỏng gì không?</em></td>
+<td>Kết quả chạy giả lập + <strong>chạy trên máy thật</strong></td>
+<td>Người thứ hai, không phải người viết</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Giao &amp; theo dõi</strong></td>
+<td><em>Chạy ổn ngoài hiện trường chứ?</em></td>
+<td>Bản phát hành có thẻ phiên bản + nhật ký theo dõi</td>
+<td>Chủ dự án</td>
+</tr>
+</tbody></table></div>
+<p><strong>Bước hay bị bỏ nhất là bước 1</strong>, và nó đắt nhất khi bỏ. Yêu cầu tới dưới dạng <em>giải pháp</em> chứ
+không phải <em>vấn đề</em>: <em>&quot;thêm cho tôi nút bỏ qua trạm kiểm tra&quot;</em>. Nếu đi thẳng vào viết mã, bạn sẽ làm
+đúng thứ được yêu cầu. Nếu hỏi <em>&quot;vì sao cần bỏ qua?&quot;</em>, câu trả lời có thể là <em>&quot;vì trạm đó báo lỗi
+giả mười lần một ca&quot;</em> — và việc cần làm là sửa lỗi giả, không phải thêm một nút vô hiệu hoá kiểm
+tra chất lượng sẽ nằm lại vĩnh viễn.</p>
+<blockquote>
+<p>⚠️ <strong>Bước 5 có một phần không thay thế được: chạy trên máy thật.</strong> Giả lập kiểm được <strong>luật của
+phần mềm</strong>; nó không kiểm được thứ sẽ hỏng ngoài hiện trường — rung, trượt, nhiễu, cảm biến bẩn,
+khí yếu vào giờ cao điểm. Mục 7.7 nói thẳng: bản giả lập sẽ nói dối khi nó và đường chạy thật trôi
+xa nhau. Coi giả lập là <strong>bộ lọc rẻ chạy trước</strong>, không phải bằng chứng nghiệm thu.</p>
+</blockquote>
+<h4>Bốn loại thay đổi, và mức nghiêm ngặt khác nhau</h4>
+<p>Không phải thay đổi nào cũng cần đủ sáu bước. Chương 17 mục 17.5 phân bốn loại; đây là mức áp dụng
+tương ứng:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại thay đổi</th>
+<th>Ví dụ</th>
+<th>Bước tối thiểu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Sửa lỗi</strong></td>
+<td>Cảnh báo báo nhầm, chữ hiển thị sai</td>
+<td>3 → 4 → 5, ghi một dòng vào nhật ký</td>
+</tr>
+<tr>
+<td><strong>Thêm chức năng</strong></td>
+<td>Thêm một trạm, thêm báo cáo</td>
+<td>Đủ 1 → 6</td>
+</tr>
+<tr>
+<td><strong>Thích ứng</strong></td>
+<td>Hãng ngừng bán dòng card đang dùng</td>
+<td>Đủ 1 → 6, và bước 2 phải có kỹ sư điện</td>
+</tr>
+<tr>
+<td><strong>Cải thiện nội bộ</strong></td>
+<td>Tái cấu trúc, đổi tên, gom trùng lặp</td>
+<td>3 → 4 → 5, <strong>không trộn chung commit với ba loại trên</strong></td>
+</tr>
+</tbody></table></div>
+<p>Dòng cuối là quy tắc nhỏ nhưng tiết kiệm nhiều nhất: <strong>đừng trộn tái cấu trúc với sửa lỗi trong một
+commit</strong>. Khi bản phát hành có vấn đề, bạn cần trả lời <em>&quot;thay đổi nào gây ra?&quot;</em> — một commit vừa đổi
+tên 40 file vừa sửa một điều kiện làm câu hỏi đó không trả lời được.</p>
+<hr>
+<h2 id="f2-chui-tài-liu-sng-trong-git">F.2  Chuỗi tài liệu sống trong Git</h2>
+<p>Ba file ở Bảng F.1 (<code>intent.md</code>, <code>spec.md</code>, <code>plan.md</code>) không phải thủ tục giấy tờ. Chúng giải quyết
+một vấn đề rất cụ thể của phần mềm máy: <strong>máy sống mười năm, người thì không</strong>. Người viết máy này
+sẽ nghỉ, chuyển bộ phận, hoặc đơn giản là quên. Thứ còn lại là kho mã — nên <strong>lý do</strong> phải nằm trong
+kho mã, không nằm trong hộp thư hay trong đầu ai cả.</p>
+<p><strong>Bảng F.2 — Ba tài liệu, và câu hỏi mỗi cái trả lời cho người đọc sau bạn ba năm</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File</th>
+<th>Trả lời</th>
+<th>Nếu thiếu thì hậu quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>intent.md</code></td>
+<td><em>Vì sao lại có tính năng kỳ lạ này?</em></td>
+<td>Người sau xoá nó đi vì &quot;trông thừa&quot;, rồi một tháng sau khách hàng phàn nàn</td>
+</tr>
+<tr>
+<td><code>spec.md</code></td>
+<td><em>Hành vi này là cố ý hay là lỗi?</em></td>
+<td>Không ai dám sửa gì, vì không biết cái gì là đúng</td>
+</tr>
+<tr>
+<td><code>plan.md</code></td>
+<td><em>Lần đó đã cân nhắc những gì?</em></td>
+<td>Lặp lại đúng một phương án đã bị loại vì một lý do đã quên</td>
+</tr>
+</tbody></table></div>
+<h4>Đặt ở đâu, và đặt thế nào</h4>
+<p>Đơn giản nhất là một thư mục trong chính kho mã của máy:</p>
+<pre><code>docs/
+  changes/
+    2026-09-20-them-tram-quet-ma/
+      intent.md
+      spec.md
+      plan.md
+</code></pre>
+<p>Ba quy ước đi kèm, và quy ước thứ ba là quan trọng nhất:</p>
+<ol>
+<li><strong>Đặt tên thư mục theo ngày + việc</strong>, không theo số ticket — số ticket chết theo hệ thống quản lý
+công việc, ngày tháng thì không.</li>
+<li><strong>Commit tài liệu trước khi viết mã</strong>, trong một commit riêng. Lịch sử Git khi đó tự kể đúng thứ
+tự đã xảy ra.</li>
+<li><strong>Mỗi file có một dòng trạng thái ở đầu.</strong></li>
+</ol>
+<blockquote>
+<p>⚠️ <strong>Vấn đề lớn nhất của cách làm này, và phải xử lý ngay từ đầu: tài liệu lỗi thời còn nguy hiểm
+hơn không có tài liệu.</strong> Một <code>spec.md</code> mô tả hành vi của máy hai năm trước sẽ khiến người đọc tin
+vào một thứ không còn đúng — và họ sẽ tin, vì nó nằm trong kho mã và trông chính thức.</p>
+<p>Cách chữa rẻ nhất là <strong>một dòng trạng thái bắt buộc ở đầu mỗi file</strong>:</p>
+<pre><code class="language-markdown">&gt; Trạng thái: ĐANG HIỆU LỰC · cập nhật 20/09/2026 · áp cho máy AOI-01 từ bản v2.3
+</code></pre>
+<p>hoặc:</p>
+<pre><code class="language-markdown">&gt; Trạng thái: ĐÃ THAY THẾ bởi docs/changes/2027-03-11-doi-camera/spec.md — giữ lại để tra lịch sử
+</code></pre>
+<p>Quy tắc kèm theo: <strong>ai sửa hành vi thì người đó sửa dòng trạng thái</strong>, trong cùng commit. Nếu đội
+không giữ nổi kỷ luật này, thà <strong>chỉ giữ <code>intent.md</code></strong> — lý do thì hiếm khi lỗi thời, còn đặc tả
+thì lỗi thời rất nhanh.</p>
+</blockquote>
+<hr>
+<h2 id="f3-mưi-hai-quy-tc-đ-mã-d-đc">F.3  Mười hai quy tắc để mã dễ đọc</h2>
+<p>Mỗi quy tắc kèm <strong>con số đo được</strong> trên 13 phần mềm máy thật, để bạn biết nó phổ biến tới đâu chứ
+không chỉ nghe lời khuyên.</p>
+<p><strong>Bảng F.3 — Mười hai quy tắc đọc được, và bằng chứng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Quy tắc</th>
+<th>Đo được trong bộ mẫu</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Tên nói việc, không nói kiểu.</strong> <code>DiToViTriGap()</code> chứ không <code>DoWork2()</code></td>
+<td>—</td>
+<td>Ch.3</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Hàm không quá 5 tham số.</strong> Nhiều hơn thì gom thành <code>record</code></td>
+<td>905 hàm ≥5 tham số, <strong>275 hàm ≥8</strong>, dài nhất <strong>27</strong></td>
+<td>mục 3.4.4</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Kết quả đi ra bằng giá trị trả về</strong>, không bằng <code>ref</code>/<code>out</code></td>
+<td><strong>908</strong> hàm có <code>ref</code>/<code>out</code></td>
+<td>mục 3.4.4</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>File không quá ~1.000 dòng.</strong> Quá thì tách theo trách nhiệm</td>
+<td>43 file &gt;2.000 dòng; lớn nhất <strong>28.635 dòng</strong></td>
+<td>mục 12.1.1b</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Điều kiện ghép hai phép so sánh cùng một biến phải đọc lại hai lần</strong></td>
+<td>1 lớp bảo vệ <strong>không bao giờ chạy</strong></td>
+<td>mục 3.3.3</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Không so sánh số thực bằng <code>==</code></strong> — luôn so theo dung sai</td>
+<td>13 chỗ</td>
+<td>mục 3.3.3</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Không để số ma.</strong> Ngưỡng, thời gian chờ, chỉ số trục → hằng có tên</td>
+<td>—</td>
+<td>Ch.3</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Xoá mã đã chú thích.</strong> Git nhớ hộ bạn rồi</td>
+<td><strong>13.976</strong> dòng mã bị chú thích</td>
+<td>Ch.17</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong><code>catch</code> phải nói.</strong> Ít nhất một dòng log có ngữ cảnh</td>
+<td><strong>646</strong> khối <code>catch</code> rỗng, 156 trong đó bọc thiết bị</td>
+<td>mục 3.5.5</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>Log bằng khuôn có tham số</strong>, không nối chuỗi</td>
+<td>11/13 dự án còn <code>Console.WriteLine</code> trong mã sản xuất</td>
+<td>mục 19.4.1</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>Phân tích số phải nói rõ văn hoá</strong> (<code>InvariantCulture</code>)</td>
+<td><code>&quot;5.0&quot;</code> thành <strong>50</strong> trên máy đặt vùng miền Việt Nam</td>
+<td>mục 3.6.3b</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Đơn vị nằm trong tên hoặc trong kiểu.</strong> <code>viTriMm</code>, không <code>viTri</code></td>
+<td>—</td>
+<td>Ch.11</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Nếu chỉ chọn được ba quy tắc để áp ngay hôm nay</strong>, chọn 9, 2 và 4 — theo đúng thứ tự đó. Quy
+tắc 9 rẻ nhất (thêm một dòng log) và cứu được nhiều giờ chẩn đoán nhất. Quy tắc 2 và 4 là hai dấu
+hiệu sớm nhất cho thấy một lớp đang gánh quá nhiều việc — sửa lúc hàm mới có 6 tham số dễ hơn
+nhiều so với lúc nó có 27.</p>
+</blockquote>
+<h4>Ba mẹo nhỏ, hiệu quả lớn, gần như không tốn gì</h4>
+<ul>
+<li><strong>Viết tên theo cách người vận hành gọi.</strong> Nếu ngoài xưởng gọi cụm đó là <em>&quot;trạm ép&quot;</em>, đừng đặt
+<code>Station3</code>. Khi có sự cố lúc 2 giờ sáng, người đọc log là người vận hành, không phải bạn.</li>
+<li><strong>Một dòng chú thích trả lời &quot;vì sao&quot;, không trả lời &quot;cái gì&quot;.</strong> <code>// tăng biến đếm</code> là vô dụng;
+<code>// chờ 200 ms vì van cần thời gian đóng hết, đo thực tế 150 ms</code> là vàng. Chú thích loại hai còn
+cứu bạn khỏi việc ai đó &quot;tối ưu&quot; cái <code>Thread.Sleep</code> đó đi.</li>
+<li><strong>Đặt tên hằng theo lý do, không theo giá trị.</strong> <code>ThoiGianVanDong_ms = 200</code> tốt hơn <code>Delay200</code>.
+Khi thay van khác, giá trị đổi mà tên vẫn đúng.</li>
+</ul>
+<hr>
+<h2 id="f4-tám-quy-tc-đ-cu-trúc-không-mc-rung">F.4  Tám quy tắc để cấu trúc không mục ruỗng</h2>
+<p>Mục F.3 làm mã dễ đọc <strong>hôm nay</strong>. Mục này giữ cho nó còn sửa được <strong>sau ba năm</strong>.</p>
+<p><strong>Bảng F.4 — Tám quy tắc cấu trúc</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Quy tắc</th>
+<th>Vì sao</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Mũi tên phụ thuộc chỉ đi xuống.</strong> Luật máy không được biết tên lớp phần cứng</td>
+<td>Không có nó thì không biên dịch được tầng nghiệp vụ nếu thiếu mã phần cứng</td>
+<td>mục 7.4</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Bọc đúng thứ có khả năng đổi</strong>, không bọc mọi thứ. Ba câu hỏi: đổi hãng được không? cần chạy khi không có nó không? cần test không?</td>
+<td>Bọc thừa tốn công mỗi ngày; bọc thiếu trả giá một lần rất đắt</td>
+<td>mục 7.7</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Chỉ một chỗ được <code>new</code> thiết bị</strong> — điểm ráp nối</td>
+<td>Quyết định thật/giả nằm một chỗ, không rải khắp nơi</td>
+<td>mục 7.4</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Trạng thái máy là một <code>enum</code>, không phải nhiều cờ <code>bool</code></strong></td>
+<td>Bảy cờ = 128 tổ hợp, 8 hợp lệ, 120 tổ hợp vô nghĩa vẫn biểu diễn được</td>
+<td>mục 12.1.1b</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Trình tự là dữ liệu (danh sách bước), không phải mã</strong></td>
+<td>Hiện được &quot;bước 3/7&quot;, chạy tay từng bước, đổi thứ tự theo công thức, hạn giờ gói một chỗ</td>
+<td>mục 7.7</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Cấu hình nằm ngoài mã</strong>, và có kiểm tra dải khi nạp</td>
+<td>Đổi thông số không cần biên dịch lại; sai thông số bị chặn tại cửa</td>
+<td>mục 3.6.3b</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Thư viện thiết bị dùng chung phải đánh phiên bản</strong></td>
+<td>Hai mươi máy cùng trỏ một bản chép tay = mỗi lần sửa là một lần đánh cược với cả đội máy</td>
+<td>mục 7.7.4</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Một luật chỉ được viết ở một chỗ</strong></td>
+<td>Luật <em>&quot;đang lỗi thì không được chạy tự động&quot;</em> rải ở 97 file thì chắc chắn có chỗ quên</td>
+<td>mục 12.1.1b</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Dấu hiệu cấu trúc đang mục ruỗng — ba câu hỏi tự kiểm, mỗi câu mười giây.</strong> (1) <em>Muốn thử một
+thay đổi nhỏ, tôi có phải ra đứng cạnh máy không?</em> (2) <em>Có lớp nào không ai dám sửa không?</em> (3)
+<em>Thêm một trạm nữa thì tôi phải đụng vào bao nhiêu file?</em> Trả lời &quot;có / có / rất nhiều&quot; thì phần
+mềm đã bước vào giai đoạn <strong>chỉ thêm, không sửa</strong> — và từ đó mọi thay đổi đắt dần. Mục 7.7 gọi đây
+là dấu hiệu nặng nhất.</p>
+</blockquote>
+<hr>
+<h2 id="f5-lưi-an-toàn-t-đng-đ-quy-tc-không-ph-thuc-trí-nh">F.5  Lưới an toàn tự động — để quy tắc không phụ thuộc trí nhớ</h2>
+<p>Hai mục trên là hai mươi quy tắc. Không ai nhớ hết, và nhắc nhau trong review thì mệt mỏi và không
+đều. Cách bền hơn: <strong>cái gì máy kiểm được thì để máy kiểm</strong>.</p>
+<p><strong>Bảng F.5 — Quy tắc nào máy tự kiểm được, quy tắc nào chỉ người mới thấy</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách chặn</th>
+<th>Chặn được gì</th>
+<th>Chi phí dựng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Bật cảnh báo thành lỗi biên dịch</strong> (<code>TreatWarningsAsErrors</code>)</td>
+<td>Biến không dùng, ép kiểu mất dữ liệu, <code>async</code> không <code>await</code></td>
+<td>1 dòng trong file project</td>
+</tr>
+<tr>
+<td><strong>Bộ phân tích mã</strong> (analyzer) + file quy tắc</td>
+<td>Tên sai quy ước, <code>catch</code> rỗng, so sánh số thực bằng <code>==</code>, <code>Thread.Sleep</code> trong mã async</td>
+<td>Nửa buổi</td>
+</tr>
+<tr>
+<td><strong>Hook trước khi commit</strong></td>
+<td>Định dạng lộn xộn, file quá lớn, mã bị chú thích còn sót, khoá/mật khẩu lọt vào kho</td>
+<td>Một buổi</td>
+</tr>
+<tr>
+<td><strong>Phép kiểm tự động cho logic thuần</strong></td>
+<td>Ngưỡng, quy đổi đơn vị, tính toán — đúng loại lỗi ở mục 3.3.3</td>
+<td>Vài ngày</td>
+</tr>
+<tr>
+<td><strong>Máy dựng tự động</strong> (CI)</td>
+<td>&quot;Chạy được trên máy tôi&quot;</td>
+<td>Ch.17 mục 17.2</td>
+</tr>
+<tr>
+<td>— <strong>Chỉ người mới thấy</strong> —</td>
+<td>Tên đặt vô nghĩa nhưng đúng quy ước · luật nghiệp vụ sai · <strong>mọi thứ liên quan an toàn</strong></td>
+<td>Review</td>
+</tr>
+</tbody></table></div>
+<p>Dòng cuối là dòng cần đọc kỹ. Công cụ bắt được <em>hình dạng</em> sai, không bắt được <em>ý nghĩa</em> sai. Một
+điều kiện an toàn bị chú thích đi (mục 15.2.2b) biên dịch hoàn hảo và qua mọi analyzer.</p>
+<blockquote>
+<p>💡 <strong>Bậc thang áp dụng — nếu hôm nay bạn chưa có gì.</strong> Đừng dựng cả năm thứ. Theo thứ tự lợi ích
+trên công sức: <strong>(1)</strong> bật cảnh báo thành lỗi trên <strong>một project nhỏ</strong> trước, sửa hết rồi mới mở
+rộng — bật toàn bộ ngay sẽ cho ra hàng nghìn lỗi và đội sẽ tắt nó đi. <strong>(2)</strong> Thêm analyzer với
+<strong>năm luật</strong> thôi, chọn năm luật ở Bảng F.3 mà đội hay vi phạm nhất. <strong>(3)</strong> Hook chặn khoá/mật
+khẩu lọt vào kho — rẻ và tránh được một loại sự cố rất khó gỡ. Ba bậc này gọn trong một tuần và
+không cần ai đồng ý về mặt quy trình.</p>
+</blockquote>
+<hr>
+<h2 id="f6-khi-có-tr-lý-ai-tham-gia-vit-mã">F.6  Khi có trợ lý AI tham gia viết mã</h2>
+<p>Từ khoảng 2025, phần lớn đội phần mềm đều có ít nhất một người dùng trợ lý AI để sinh mã. Mục này
+không bàn nên hay không nên — nó bàn <strong>cách làm việc đó mà không đánh mất những gì mười chín chương
+trước xây dựng</strong>.</p>
+<p>Khung tham chiếu tốt nhất hiện có là cẩm nang <em>The AI-Native SDLC playbook</em> của nhóm Applied AI
+thuộc Anthropic (Louis Claxton, 21/08/2026, <code>claude.com/blog/the-ai-native-sdlc-playbook</code>). Luận
+điểm trung tâm của nó rất đáng mang sang đây: <strong>khi viết mã không còn là nút thắt, nút thắt chuyển
+sang các bước xung quanh</strong> — lập kế hoạch, duyệt, triển khai, quản trị — vì những bước đó vẫn chạy
+ở tốc độ con người. Sinh mã nhanh gấp mười mà hàng đợi duyệt dài gấp mười thì tổng thời gian không
+đổi, chỉ đổi chỗ tắc.</p>
+<h4>Bốn thực hành chuyển sang phần mềm máy rất tốt</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thực hành</th>
+<th>Vì sao hợp với phần mềm máy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Lập kế hoạch trước, viết mã sau</strong> — thống nhất danh sách file sẽ sửa và rủi ro trước khi gõ dòng đầu tiên</td>
+<td>Chính là bước 3 ở Bảng F.1. Với máy, &quot;rủi ro&quot; có nghĩa vật lý, nên bước này đáng giá hơn hẳn so với phần mềm web</td>
+</tr>
+<tr>
+<td><strong>Chuỗi tài liệu nằm trong Git</strong></td>
+<td>Đúng mục F.2 — và giải đúng bài toán &quot;máy sống mười năm, người thì không&quot;</td>
+</tr>
+<tr>
+<td><strong>Một file quy tắc dự án mà trợ lý đọc được</strong></td>
+<td>Hai mươi quy tắc ở F.3/F.4 viết thành một file ngắn trong kho mã; trợ lý đọc nó mỗi phiên, người mới cũng đọc nó ngày đầu tiên. Giữ <strong>dưới 200 dòng</strong> — dài hơn thì cả người lẫn máy đều bỏ qua</td>
+</tr>
+<tr>
+<td><strong>Quy tắc thực thi được bằng mã</strong> (hook chặn, kiểm tự động)</td>
+<td>Đúng tinh thần mục F.5: luật nào máy chặn được thì đừng để nó sống bằng lời nhắc</td>
+</tr>
+</tbody></table></div>
+<h4>Và bốn thứ <strong>không</strong> chuyển sang được — đây mới là phần quan trọng</h4>
+<p><strong>Bảng F.6 — Bốn điểm cẩm nang nói đúng cho phần mềm chạy trên máy chủ, nhưng sai cho phần mềm chạy trên máy cơ khí</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thực hành</th>
+<th>Đúng với dịch vụ phần mềm</th>
+<th>Vì sao <strong>không</strong> áp thẳng cho máy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Tự động quay lui khi thấy bất thường</strong></td>
+<td>Đổi lại phiên bản cũ, vài giây, không ai bị thương</td>
+<td>Máy đang kẹp một phôi, một trục đang đi giữa hành trình. <strong>Không có &quot;quay lui&quot; cho trạng thái vật lý.</strong> Quay lui phần mềm giữa chu kỳ có thể để lại phôi trong kẹp, van đang mở, trục mất gốc</td>
+</tr>
+<tr>
+<td><strong>Tự động mở PR sửa lỗi lúc 3 giờ sáng</strong></td>
+<td>Rất hợp lý — lỗi phần mềm thì sửa bằng phần mềm</td>
+<td>Bất thường ở máy <strong>thường không phải lỗi phần mềm</strong>: vòi hút bẩn, dây đai giãn, khí yếu vào ca đêm. Sửa phần mềm cho một vấn đề cơ khí là <strong>giấu triệu chứng đi</strong></td>
+</tr>
+<tr>
+<td><strong>Kiểm thử liên tục thay cho duyệt tay</strong></td>
+<td>Bộ kiểm chạy trên cùng môi trường sẽ chạy thật</td>
+<td>Bộ kiểm chạy trên <strong>giả lập</strong>, mà giả lập là một mô hình. Mục 7.7 đã cảnh báo: hai đường chạy trôi xa nhau theo thời gian. Xanh hết vẫn <strong>không thay được</strong> một lần chạy trên máy thật</td>
+</tr>
+<tr>
+<td><strong>Cổng duyệt tự động cho triển khai</strong></td>
+<td>Chữ ký số + kiểm tự động là đủ</td>
+<td>Với chức năng an toàn thì <strong>không cổng phần mềm nào đủ</strong> — nó thuộc về mạch an toàn phần cứng (mục 15.2.2b). Một cổng tự động ở đây tạo cảm giác an toàn giả</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Một quy tắc gọn để mang đi: trợ lý AI được phép chạm vào mọi thứ TRƯỚC khi mã tới máy, và
+không được chạm vào gì SAU đó.</strong> Sinh mã, viết kiểm thử, đọc nhật ký, đề xuất bản vá, mở PR — tốt.
+Tự quyết định nạp bản mới vào máy đang sản xuất, tự quay lui, tự bỏ qua một cảnh báo — không.
+Ranh giới ấy không phải vì trợ lý kém tin cậy hơn người, mà vì <strong>phía sau ranh giới đó, sai lầm
+không còn là dữ liệu — nó là kim loại đang chuyển động.</strong></p>
+</blockquote>
+<h4>Ba mẹo thực dụng khi dùng trợ lý AI trên mã máy</h4>
+<ol>
+<li><strong>Bắt nó đọc trước khi sửa.</strong> Yêu cầu liệt kê những file sẽ đụng và lý do, trước khi cho sửa.
+Bước này bắt được phần lớn hiểu nhầm khi nó chưa tốn gì.</li>
+<li><strong>Đừng để nó tự &quot;dọn dẹp&quot; quanh chỗ đang sửa.</strong> Trong phần mềm máy, một đoạn mã trông thừa có
+thể là một lớp bảo vệ ai đó thêm sau một sự cố — và lý do thì nằm trong <code>intent.md</code>, không nằm
+trong mã.</li>
+<li><strong>Xem nó như một đồng nghiệp mới rất nhanh tay nhưng chưa đứng cạnh máy bao giờ.</strong> Nó không biết
+rằng trục Z phải về gốc trước trục X, rằng van kẹp cần 200 ms, rằng khách hàng này không cho dừng
+giữa chu kỳ. Những thứ đó phải nằm trong file quy tắc dự án — hoặc bạn sẽ phải nói lại mỗi lần.</li>
+</ol>
+<hr>
+<h2 id="f7-danh-sách-kim-trưc-khi-giao-máy">F.7  Danh sách kiểm trước khi giao máy</h2>
+<p>Một trang, dùng trực tiếp. Mỗi mục đều truy được về một chỗ trong sách.</p>
+<p><strong>Bảng F.7 — Danh sách kiểm trước khi giao</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>✔</th>
+<th>Mục kiểm</th>
+<th>Vì sao</th>
+<th>Chi tiết</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>☐</td>
+<td>Phần mềm chạy được khi <strong>rút cáp</strong> thiết bị nối tiếp/mạng</td>
+<td>Báo lỗi tử tế thay vì tắt ngang</td>
+<td>mục 14.1.5b</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Thử bố cục ở tỉ lệ hiển thị <strong>100 %, 125 %, 150 %</strong></td>
+<td>Máy tính công nghiệp thường không đặt 100 %</td>
+<td>mục 8.1.6</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Mọi lệnh xuống thiết bị đều có <strong>hạn giờ</strong></td>
+<td>Không có thì một lệnh treo là treo cả chu kỳ</td>
+<td>Ch.5</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Không còn <code>catch</code> rỗng nào bọc lời gọi thiết bị</td>
+<td>156 chỗ như vậy trong bộ mẫu</td>
+<td>mục 3.5.5</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Nhật ký ghi đủ để chẩn đoán <strong>mà không cần nối máy tính</strong></td>
+<td>Ca đêm không có kỹ sư</td>
+<td>mục 19.4.1b</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Mở phần mềm <strong>hai lần</strong> thì lần hai bị chặn</td>
+<td>Hai tiến trình cùng ra lệnh một card</td>
+<td>Ch.5</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Điều kiện an toàn nằm ở <strong>mạch phần cứng</strong>, không phải trong <code>if</code></td>
+<td>Một dòng <code>if</code> chú thích được trong ba giây</td>
+<td>mục 15.2.2b</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Tìm trong mã các dòng <strong>bị chú thích</strong> có tên tín hiệu an toàn</td>
+<td>Mỗi dòng là một câu hỏi phải trả lời</td>
+<td>mục 15.2.2b</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Cấu hình máy này <strong>không nằm trong mã</strong>, và đã sao lưu</td>
+<td>Cài lại máy tính là chuyện sẽ xảy ra</td>
+<td>Ch.17 mục 17.3.6</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Bản giao có <strong>thẻ phiên bản</strong> trong Git, khớp với số hiện trên màn hình</td>
+<td>Không có thì không biết hiện trường đang chạy bản nào</td>
+<td>Ch.17 mục 17.1.3</td>
+</tr>
+<tr>
+<td>☐</td>
+<td><code>intent.md</code> / <code>spec.md</code> của các thay đổi lớn đã commit và <strong>đúng trạng thái</strong></td>
+<td>Người sau bạn cần lý do, không cần đoán</td>
+<td>mục F.2</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Có <strong>một người thứ hai</strong> đã chạy thử máy</td>
+<td>Người viết mã luôn thử đúng những gì mình nghĩ tới</td>
+<td>Bảng F.1, bước 5</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Mục cuối cùng là mục hay bị bỏ nhất và cứu được nhiều nhất.</strong> Người viết mã thử đúng những
+đường đi mà họ đã hình dung khi viết — đó là định nghĩa của điểm mù. Người thứ hai bấm sai nút,
+bấm hai lần, mở cửa giữa chu kỳ, rút cáp mạng vì tò mò. Nửa giờ của họ bắt được nhiều lỗi hơn nửa
+ngày của người viết.</p>
 </blockquote>
 </div>
 </div>

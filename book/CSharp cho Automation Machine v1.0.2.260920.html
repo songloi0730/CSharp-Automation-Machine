@@ -18600,7 +18600,7 @@ không chạy) — phục vụ debug/bảo trì mà không phải sửa state ma
 <tr>
 <td><strong>Stop</strong></td>
 <td>Operator/MES</td>
-<td>Execute, Starting, Held, Suspended</td>
+<td><strong>Mọi trạng thái trừ</strong> Stopped, Stopping, Aborting, Aborted, Clearing (tức 12 trạng thái: Idle, Starting, Execute, Completing, Complete, Resetting, Holding, Held, Unholding, Suspending, Suspended, Unsuspending)</td>
 <td>Stopping</td>
 </tr>
 <tr>
@@ -18646,6 +18646,22 @@ không chạy) — phục vụ debug/bảo trì mà không phải sửa state ma
 <td>Resetting</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Dòng Stop trong bảng trên là dòng dễ cài thiếu nhất, và cài thiếu là một lỗi an toàn.</strong>
+Trực giác nói rằng Stop chỉ có nghĩa khi máy &quot;đang chạy&quot;, nên nhiều bản cài chỉ nhận Stop từ
+<code>Execute</code> và vài trạng thái nghỉ. Chuẩn thì ngược lại: Stop được chấp nhận từ <strong>mọi</strong> trạng thái
+trừ năm trạng thái đang trên đường dừng hoặc đã dừng (<code>Stopping</code>, <code>Stopped</code>, <code>Aborting</code>,
+<code>Aborted</code>, <code>Clearing</code>) — kể cả từ các trạng thái chuyển tiếp như <code>Resetting</code>, <code>Holding</code>,
+<code>Unholding</code>, <code>Suspending</code>.</p>
+<p>Lý do rất cụ thể: các trạng thái chuyển tiếp <strong>không ngắn</strong> như tên gọi gợi ý. Một <code>Resetting</code>
+có home đủ sáu trục mất 30–60 giây; một <code>Holding</code> giảm tốc có kiểm soát mất vài giây. Nếu người
+vận hành thấy có gì đó sai trong khoảng thời gian đó và bấm Stop, một bản cài &quot;chỉ nhận Stop từ
+Execute&quot; sẽ <strong>im lặng bỏ qua</strong> — và điều họ học được là &quot;nút Stop đôi khi không ăn&quot;, thứ tệ hơn
+nhiều so với không có nút. (Abort thì luôn nhận từ mọi trạng thái, nhưng Abort là dừng khẩn, để
+lại máy ở <code>Aborted</code> cần Clear + Reset — không phải thứ đúng cho một &quot;tôi muốn dừng lại đã&quot;.)</p>
+<p>Đó cũng là lý do mục 12.3.2 đặt bảng transition thành một <code>Dictionary</code> tường minh thay vì <code>switch</code>:
+một bảng thiếu dòng thì <strong>đếm được và test được</strong>, còn một <code>switch</code> thiếu nhánh thì không.</p>
+</blockquote>
 <p><strong>Hình 12.2 — Sơ đồ tổng thể trạng thái PackML</strong></p>
 <pre><code>                       ┌──────────────────────────────────────────────────────┐
                        │          LUỒNG CHÍNH (Normal Production Flow)        │
@@ -18926,10 +18942,13 @@ public enum MachineState {
 <pre><code class="language-csharp">/// &lt;summary&gt;17 trạng thái theo chuẩn ISA-TR88.00.02.&lt;/summary&gt;
 public enum PackMlState
 {
-    // Trạng thái nghỉ (Resting states)
-    Stopped, Idle, Execute, Complete, Held, Suspended, Aborted,
+    // Trạng thái nghỉ (Wait states) — 6 cái
+    Stopped, Idle, Complete, Held, Suspended, Aborted,
  
-    // Trạng thái chuyển tiếp (Transitional states)
+    // Trạng thái kép (Dual state) — 1 cái, xem chú thích Bảng 12.4
+    Execute,
+ 
+    // Trạng thái chuyển tiếp (Acting states) — 10 cái
     Resetting, Starting, Completing,
     Holding,   Unholding,
     Suspending, Unsuspending,
@@ -18962,7 +18981,9 @@ nhau cho gọn thay vì gọi <code>.Add(...)</code> nhiều dòng.</p>
 <pre><code class="language-csharp">public sealed class PackMlStateMachine
 {
     // Bảng transition: (state hiện tại, lệnh nhận) → state tiếp theo
-    // Null = lệnh không hợp lệ ở state này (bỏ qua hoặc log warning)
+    // Không có khoá = lệnh không hợp lệ ở state này (bỏ qua hoặc log warning)
+    // Hai bất biến phải test được (mục 18.5.2): Abort nhận từ MỌI state;
+    // Stop nhận từ mọi state TRỪ Stopping/Stopped/Aborting/Aborted/Clearing.
     // internal (không private) để test project có thể kiểm tra tính đầy đủ invariant Abort
     internal static readonly Dictionary&lt;(PackMlState, PackMlCommand), PackMlState&gt; Transitions
         = new()
@@ -18973,10 +18994,12 @@ nhau cho gọn thay vì gọi <code>.Add(...)</code> nhiều dòng.</p>
  
         // Từ Resetting (chuyển tiếp → SC → Idle)
         { (PackMlState.Resetting,  PackMlCommand.SC),        PackMlState.Idle       },
+        { (PackMlState.Resetting,  PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Resetting,  PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Idle
         { (PackMlState.Idle,       PackMlCommand.Start),     PackMlState.Starting   },
+        { (PackMlState.Idle,       PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Idle,       PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Starting (chuyển tiếp → SC → Execute)
@@ -18994,14 +19017,17 @@ nhau cho gọn thay vì gọi <code>.Add(...)</code> nhiều dòng.</p>
  
         // Từ Completing → SC → Complete (single-cycle mode)
         { (PackMlState.Completing, PackMlCommand.SC),        PackMlState.Complete   },
+        { (PackMlState.Completing, PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Completing, PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Complete (nghỉ sau 1 chu kỳ) → Reset để chạy lại
         { (PackMlState.Complete,   PackMlCommand.Reset),     PackMlState.Resetting  },
+        { (PackMlState.Complete,   PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Complete,   PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Holding → SC → Held
         { (PackMlState.Holding,    PackMlCommand.SC),        PackMlState.Held       },
+        { (PackMlState.Holding,    PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Holding,    PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Held
@@ -19011,10 +19037,12 @@ nhau cho gọn thay vì gọi <code>.Add(...)</code> nhiều dòng.</p>
  
         // Từ Unholding → SC → Execute
         { (PackMlState.Unholding,  PackMlCommand.SC),        PackMlState.Execute    },
+        { (PackMlState.Unholding,  PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Unholding,  PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Suspending → SC → Suspended
         { (PackMlState.Suspending, PackMlCommand.SC),        PackMlState.Suspended  },
+        { (PackMlState.Suspending, PackMlCommand.Stop),      PackMlState.Stopping   },
         { (PackMlState.Suspending, PackMlCommand.Abort),     PackMlState.Aborting   },
  
         // Từ Suspended
@@ -19024,6 +19052,7 @@ nhau cho gọn thay vì gọi <code>.Add(...)</code> nhiều dòng.</p>
  
         // Từ Unsuspending → SC → Execute
         { (PackMlState.Unsuspending, PackMlCommand.SC),      PackMlState.Execute    },
+        { (PackMlState.Unsuspending, PackMlCommand.Stop),    PackMlState.Stopping   },
         { (PackMlState.Unsuspending, PackMlCommand.Abort),   PackMlState.Aborting   },
  
         // Từ Stopping → SC → Stopped
@@ -24308,10 +24337,13 @@ thành công nhưng không nhận được data vì Subscription chưa được 
 khi <code>Session.Create()</code> thành công, gọi lại toàn bộ luồng tạo Subscription.</p>
 </blockquote>
 <p><strong>Code 14.1 — Kết nối OPC UA và đọc giá trị Variable</strong></p>
-<pre><code class="language-csharp">using Opc.Ua;
+<pre><code class="language-csharp">using System.Globalization;
+using Opc.Ua;
 using Opc.Ua.Client;
 
-// Sử dụng thư viện OPC Foundation UA-.NETStandard (NuGet: OPCFoundation.NetStandard.Opc.Ua)
+// Thư viện OPC Foundation UA-.NETStandard
+// NuGet: OPCFoundation.NetStandard.Opc.Ua.Client 1.5.378.176 (dòng 1.x)
+// ⚠ API dưới đây là của dòng 1.x — dòng 2.0 hoàn toàn khác, xem callout cuối mục.
 public sealed class OpcUaChannelStrategy : IProtocolClient  // IProtocolClient từ Ch13
 {
     private Session? _session;
@@ -24372,10 +24404,13 @@ public sealed class OpcUaChannelStrategy : IProtocolClient  // IProtocolClient t
         if (!StatusCode.IsGood(readResult.StatusCode))
             throw new OpcUaException(readResult.StatusCode, nodeId);
 
-        // OPC UA SDK trả object — cast trực tiếp có thể lỗi nếu server trả
-        // Int16 khi T là int (numeric widening). Production nên dùng:
-        // return (T)Convert.ChangeType(readResult.Value, typeof(T));
-        return (T)readResult.Value;
+        // SDK trả object nên cast thẳng sẽ ném InvalidCastException khi server
+        // trả Int16 trong lúc T là int (numeric widening). Hai cách đúng:
+        //   1. overload generic có sẵn: await _session.ReadValueAsync&lt;T&gt;(node, ct)
+        //      — nó tự bóc ExtensionObject và tự đổi kiểu;
+        //   2. tự đổi: (T)Convert.ChangeType(readResult.Value, typeof(T),
+        //              CultureInfo.InvariantCulture)
+        return (T)Convert.ChangeType(readResult.Value, typeof(T), CultureInfo.InvariantCulture);
     }
 
     public async ValueTask DisposeAsync()
@@ -24393,6 +24428,48 @@ public sealed class OpcUaChannelStrategy : IProtocolClient  // IProtocolClient t
 trong production, OPC UA server phải reject certificate chưa được trust. Quy trình chuẩn:
 client gửi certificate → server reject lần đầu (Rejected) → admin approve → kết nối thành công.
 Quản lý certificate sai là lỗi bảo mật phổ biến nhất trong OPC UA deployment.</p>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Ba đời API trong cùng một thư viện — lý do phần lớn ví dụ OPC UA trên mạng không biên dịch
+được.</strong> Kho nguồn chính thức UA-.NETStandard hiện có hai nhánh sống song song, và bản thân nhánh
+1.x cũng đã đánh dấu lỗi thời những gì Code 14.1 đang dùng:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Đời</th>
+<th>Ở đâu</th>
+<th>Cách tạo phiên</th>
+<th>Trạng thái</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1.x — kiểu cũ</td>
+<td>nhánh <code>master378</code>, NuGet <strong>1.5.378.176</strong></td>
+<td><code>Session.Create(config, endpoint, …)</code></td>
+<td>còn chạy, nhưng đã <code>[Obsolete(&quot;Use ISessionFactory.CreateAsync&quot;)]</code></td>
+</tr>
+<tr>
+<td>1.x — kiểu mới</td>
+<td>cùng nhánh đó</td>
+<td><code>ISessionFactory.CreateAsync(…)</code>, <code>CoreClientUtils.SelectEndpointAsync(…, ITelemetryContext, ct)</code></td>
+<td>khuyến nghị cho dòng 1.x</td>
+</tr>
+<tr>
+<td>2.0</td>
+<td>nhánh <code>master</code></td>
+<td><code>services.AddOpcUa()</code> + fluent builder, DI của <code>Microsoft.Extensions</code></td>
+<td>dòng phát triển mới</td>
+</tr>
+</tbody></table></div>
+<p>Code 14.1 giữ nguyên kiểu cũ vì đó là thứ bạn sẽ gặp trong hầu hết mã nguồn đang chạy ngoài nhà
+máy, và vì nó <strong>vẫn biên dịch</strong> — nhưng nó sinh cảnh báo lỗi thời. Trong một dự án bật
+<code>TreatWarningsAsErrors</code> (Chương 17), cảnh báo đó <strong>là lỗi build</strong>, và đó chính là tác dụng của nó:
+trình biên dịch đang chỉ đúng chỗ cần di trú. Đừng tắt cảnh báo; hãy <strong>ghim phiên bản gói trong
+<code>.csproj</code></strong> rồi lên lịch di trú sang <code>ISessionFactory</code>.</p>
+<p>💡 Cách đọc số phiên bản của gói này cũng khác thường và đáng biết: bốn phần <code>1.5.378.176</code> —
+<strong>hai số đầu là phiên bản đặc tả OPC UA</strong> (1.05), số thứ ba tăng khi có thay đổi phá vỡ tương
+thích, số cuối là bản vá. Nghĩa là <code>1.5.378.x</code> → <code>1.5.379.x</code> là một lần <strong>breaking change</strong>, dù
+nhìn qua tưởng chỉ là bản vá nhỏ.</p>
 </blockquote>
 <p><strong>Subscription và Monitored Items</strong> — thay vì polling (đọc định kỳ, tốn bandwidth), OPC UA
 cho phép đăng ký nhận thông báo khi giá trị thay đổi vượt ngưỡng (<code>deadband</code>):</p>
@@ -24686,57 +24763,75 @@ thuần) để tính đúng địa chỉ. Gặp code đọc/ghi PLC dùng tên b
 thay vì số thanh ghi trực tiếp — đây là dấu hiệu, không phải lỗi viết sai chuẩn Modbus.</p>
 </blockquote>
 <p><strong>Code 14.3 — Đọc Holding Registers bằng FluentModbus (.NET)</strong></p>
-<pre><code class="language-csharp">using FluentModbus;  // NuGet: FluentModbus
+<pre><code class="language-csharp">using System.Net;
+using FluentModbus;  // NuGet: FluentModbus 5.3.2
 
 public sealed class ModbusTcpChannelStrategy : IProtocolClient  // IProtocolClient từ Ch13
 {
     private readonly ModbusTcpClient _client = new();
-    private readonly string _host;
-    private readonly int _port;
+    private readonly IPEndPoint _endpoint;
 
     public ModbusTcpChannelStrategy(string host, int port = 502)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(host);
-        _host = host;
-        _port = port;
+        // Connect(string) cũng nhận &quot;192.168.0.10:502&quot;; dựng sẵn IPEndPoint thì lỗi cấu
+        // hình nổ ngay lúc khởi tạo thay vì lúc kết nối — fail fast, xem mục 3.3.1.
+        _endpoint = new IPEndPoint(IPAddress.Parse(host), port);
     }
 
     public string ProtocolName =&gt; &quot;ModbusTcp&quot;;
 
-    public async Task ConnectAsync(CancellationToken ct = default)
+    public Task ConnectAsync(CancellationToken ct = default)
     {
-        await _client.ConnectAsync(_host, _port, ct).ConfigureAwait(false);
+        _client.ConnectTimeout = 2_000;   // mặc định chỉ 1 giây
+        _client.ReadTimeout    = 1_000;   // mặc định Timeout.Infinite — PHẢI đặt lại
+        _client.WriteTimeout   = 1_000;
+        // FluentModbus KHÔNG có ConnectAsync: Connect() là đồng bộ và chặn tối đa
+        // ConnectTimeout. Bọc Task.Run để giữ nguyên hình dạng async của IProtocolClient.
+        // Endianness PHẢI nêu rõ — mặc định của thư viện là LittleEndian, không phải
+        // big-endian như chuẩn Modbus. Xem ngay mục dưới.
+        return Task.Run(() =&gt; _client.Connect(_endpoint, ModbusEndianness.BigEndian), ct);
     }
 
-    // Đọc Holding Registers (FC03) — trả về Span&lt;short&gt;
+    // Đọc Holding Registers (FC03) — overload generic trả về Task&lt;Memory&lt;short&gt;&gt;
     // startAddress: địa chỉ 0-based (40001 trong tài liệu = address 0 ở đây)
     public async Task&lt;short[]&gt; ReadHoldingRegistersAsync(
         byte unitId, ushort startAddress, ushort count,
         CancellationToken ct = default)
     {
-        var memory = new short[count];
-        var span = await _client.ReadHoldingRegistersAsync&lt;short&gt;(
-            unitId, startAddress, count, ct).ConfigureAwait(false);
-        span.CopyTo(memory);
-        return memory;
+        Memory&lt;short&gt; data = await _client
+            .ReadHoldingRegistersAsync&lt;short&gt;(unitId, startAddress, count, ct)
+            .ConfigureAwait(false);
+        return data.ToArray();
     }
 
     // Ghi nhiều Holding Registers (FC16)
-    public async Task WriteMultipleRegistersAsync(
+    // Overload generic nhận T[] — KHÔNG nhận Memory&lt;T&gt;, nên truyền thẳng mảng.
+    public Task WriteMultipleRegistersAsync(
         byte unitId, ushort startAddress, short[] values,
         CancellationToken ct = default)
-    {
-        await _client.WriteMultipleRegistersAsync(
-            unitId, startAddress, values.AsMemory(), ct).ConfigureAwait(false);
-    }
+        =&gt; _client.WriteMultipleRegistersAsync(unitId, startAddress, values, ct);
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         _client.Dispose();
-        await Task.CompletedTask.ConfigureAwait(false);
+        return ValueTask.CompletedTask;
     }
 }
 </code></pre>
+<blockquote>
+<p>⚠️ <strong>Đính chính — bản in trước của Code 14.3 gọi ba API không tồn tại.</strong> Bản đầu tiên viết
+<code>await _client.ConnectAsync(_host, _port, ct)</code>, truyền <code>values.AsMemory()</code> cho
+<code>WriteMultipleRegistersAsync</code>, và chú thích rằng FC03 &quot;trả về <code>Span&lt;short&gt;</code>&quot;. Đối chiếu mã nguồn
+FluentModbus: lớp <code>ModbusTcpClient</code> chỉ có <strong>tám overload <code>Connect(...)</code> đồng bộ</strong> và không có
+<code>ConnectAsync</code> nào; overload generic <code>WriteMultipleRegistersAsync&lt;T&gt;</code> nhận <code>T[]</code> chứ không nhận
+<code>Memory&lt;T&gt;</code>; và <code>ReadHoldingRegistersAsync&lt;T&gt;</code> trả <code>Task&lt;Memory&lt;T&gt;&gt;</code> chứ không phải <code>Span&lt;T&gt;</code> —
+điều bắt buộc, vì <code>Span&lt;T&gt;</code> là <code>ref struct</code> nên <strong>không thể</strong> làm kiểu kết quả của <code>Task&lt;&gt;</code>.
+Sách giữ lại đính chính này thay vì sửa lặng lẽ, vì nó minh hoạ đúng cái bẫy mà cả Chương 14 đang
+nói: <strong>một đoạn mã trông hợp lý không phải là một đoạn mã biên dịch được.</strong> Cách duy nhất chắc
+chắn là mở mã nguồn thư viện (hoặc bấm F12 vào ký hiệu trong IDE), không dựa vào cảm giác &quot;thư
+viện nào mà chẳng có ConnectAsync&quot;.</p>
+</blockquote>
 <h4>Byte order và float 32-bit — nguồn gốc của bug khó tìm nhất</h4>
 <p>Modbus dùng <strong>big-endian</strong> (MSB trước) cho từng 16-bit word. Khi đọc float 32-bit, cần
 đọc <strong>2 thanh ghi liên tiếp</strong> và ghép lại — nhưng thứ tự ghép phụ thuộc vendor:</p>
@@ -25999,18 +26094,156 @@ không cần chờ có sẵn 1 interface tổng thể mới dám refactor.</p>
 NModbus xử lý cả CRC16 lẫn framing sẵn — không cần tự viết lại hạ tầng của mục 14.1.2:</p>
 <p><strong>Code 14.3c — Modbus RTU qua Serial bằng NModbus, đối chiếu với Code 14.3 (Modbus TCP)</strong></p>
 <pre><code class="language-csharp">using System.IO.Ports;
-using Modbus.Device;   // NuGet: NModbus
+using NModbus;          // NuGet: NModbus 3.0.83   — lõi giao thức
+using NModbus.Serial;   // NuGet: NModbus.Serial   — BẮT BUỘC thêm, cho RTU/ASCII
 
 using var port = new SerialPort(&quot;COM3&quot;, 9600, Parity.Even, 8, StopBits.One);
 port.Open();
 
-using ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(port);
-master.Transport.ReadTimeout = 200;
+// Từ NModbus 3.x mọi thứ đi qua factory — không còn phương thức tĩnh CreateRtu
+var factory = new ModbusFactory();
+using IModbusSerialMaster master = factory.CreateRtuMaster(port);
+
+master.Transport.ReadTimeout  = 200;
 master.Transport.WriteTimeout = 200;
+master.Transport.Retries      = 2;   // thư viện tự thử lại — xem G.13.1 về &quot;thử lại&quot;
 
 // FC03 — giống hệt Code 14.3 (FluentModbus/Modbus TCP), chỉ khác lớp vận chuyển
 ushort[] registers = master.ReadHoldingRegisters(slaveAddress: 1, startAddress: 0x0801, numberOfPoints: 6);
 </code></pre>
+<blockquote>
+<p>⚠️ <strong>Hai cái bẫy của riêng NModbus, cả hai đều đủ sức làm mất buổi đầu tiên nếu không biết trước:</strong></p>
+<ol>
+<li><strong>Gói <code>NModbus</code> không có Serial.</strong> Mô tả gói ghi rõ chỉ &quot;TCP, and UDP&quot;; lớp <code>SerialPortAdapter</code>
+và phương thức mở rộng <code>CreateRtuMaster(SerialPort)</code> nằm ở gói <strong><code>NModbus.Serial</code></strong> riêng.
+Thiếu gói này thì <code>factory.CreateRtuMaster(port)</code> không biên dịch, với thông báo lỗi chỉ nói
+&quot;không tìm thấy phương thức&quot; — không gợi ý gì về gói còn thiếu.</li>
+<li><strong>Các hàm <code>...Async</code> của NModbus KHÔNG nhận <code>CancellationToken</code>.</strong> Chữ ký đúng là
+<code>Task&lt;ushort[]&gt; ReadHoldingRegistersAsync(byte, ushort, ushort)</code> — hết. Muốn huỷ được thì cách
+<em>duy nhất</em> an toàn là đặt <code>Transport.ReadTimeout</code> để lời gọi tự kết thúc; bọc bằng
+<code>Task.WhenAny</code> với <code>Task.Delay(ct)</code> chỉ làm <strong>lời gọi của bạn</strong> trả về sớm, còn thao tác đọc
+cổng COM vẫn chạy tiếp và vẫn giữ cổng — đúng cái bẫy mà mục 5.2 mô tả cho <code>Task.Run</code>. Đây là
+khác biệt thực chất so với FluentModbus, nơi <code>CancellationToken</code> đi xuyên tới tận
+<code>NetworkStream.ReadAsync</code>.</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>⚠️ <strong>Đính chính — bản in trước của Code 14.3c dùng API của một thư viện khác.</strong> Nó viết
+<code>using Modbus.Device;</code> và <code>ModbusSerialMaster.CreateRtu(port)</code> nhưng chú thích là <code>// NuGet: NModbus</code>. Hai dòng đó là API của <strong>NModbus4</strong> (namespace <code>Modbus.Device</code>, phương thức tĩnh
+<code>CreateRtu</code>) — đúng cú pháp, nhưng của gói khác, và gói đó không dùng được với .NET 9 (Bảng 14.5d
+ngay dưới). Đây là dạng sai khó bắt nhất khi tra cứu: hai thư viện <strong>cùng được gọi dân dã là
+&quot;NModbus&quot;</strong>, phần lớn ví dụ trên mạng viết cho bản cũ, và trình biên dịch chỉ báo &quot;không tìm thấy
+namespace <code>Modbus</code>&quot; — không ai nói cho bạn biết mình đang đọc tài liệu sai đời.</p>
+</blockquote>
+<h4>Bốn thư viện Modbus cho C# — chọn cái nào, và vì sao rất dễ chọn nhầm</h4>
+<p>Gõ &quot;C# Modbus library&quot; ra bốn cái tên, và <strong>ba trong bốn cái đều từng là lựa chọn đúng</strong> — ở những
+năm khác nhau. Đó là lý do phần lớn ví dụ tìm được trên mạng không biên dịch nổi trên .NET 9:</p>
+<p><strong>Bảng 14.5d — Bốn thư viện Modbus .NET, số liệu tra trên NuGet</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Thư viện</th>
+<th>Bản mới nhất</th>
+<th>Nền tảng đích</th>
+<th>Cập nhật lần cuối</th>
+<th>Dùng được với .NET 9?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>NModbus</strong></td>
+<td>3.0.83</td>
+<td>net6.0 / netstandard1.3 / net4.6</td>
+<td>2026</td>
+<td>✅ Được</td>
+</tr>
+<tr>
+<td><strong>FluentModbus</strong></td>
+<td>5.3.2</td>
+<td>netstandard2.0 / 2.1</td>
+<td>3/2025</td>
+<td>✅ Được</td>
+</tr>
+<tr>
+<td>NModbus4</td>
+<td>2.1.0</td>
+<td><strong>chỉ .NET Framework 4.0</strong></td>
+<td><strong>8/2015</strong></td>
+<td>❌ Không</td>
+</tr>
+<tr>
+<td>EasyModbusTCP</td>
+<td>5.6.0</td>
+<td><strong>chỉ .NET Framework 4.0</strong></td>
+<td>1/2021</td>
+<td>❌ Không</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Cách tự kiểm tra 20 giây, áp dụng cho MỌI gói NuGet chứ không riêng Modbus:</strong> mở trang gói
+trên nuget.org và đọc đúng hai dòng — <strong>&quot;This package targets …&quot;</strong> và <strong>&quot;Last updated&quot;</strong>. Một gói
+chỉ nhắm .NET Framework 4.0 thì <code>dotnet add package</code> vẫn <em>thành công</em> và vẫn <em>biên dịch được</em> trên
+.NET 9 (nhờ cơ chế tương thích), rồi hỏng lúc chạy hoặc kéo theo cả rừng cảnh báo NU1701. Sai lầm
+tốn nhiều giờ nhất không phải là gói không cài được, mà là gói <strong>cài được nhưng không nên dùng</strong>.</p>
+</blockquote>
+<p>Hai thư viện còn sống khác nhau ở đúng những điểm quyết định lựa chọn:</p>
+<p><strong>Bảng 14.5e — NModbus 3.x và FluentModbus 5.x khác nhau ở đâu</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>NModbus 3.x</strong></th>
+<th><strong>FluentModbus 5.x</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Namespace / cách tạo</td>
+<td><code>NModbus</code>, qua <code>new ModbusFactory()</code></td>
+<td><code>FluentModbus</code>, <code>new ModbusTcpClient()</code></td>
+</tr>
+<tr>
+<td>Serial RTU</td>
+<td>gói <strong>riêng</strong> <code>NModbus.Serial</code></td>
+<td>có sẵn trong gói chính (<code>ModbusRtuClient</code>)</td>
+</tr>
+<tr>
+<td><code>CancellationToken</code></td>
+<td><strong>không có</strong> ở API công khai</td>
+<td>có, xuyên tới tầng stream</td>
+</tr>
+<tr>
+<td>Kết nối</td>
+<td>qua <code>TcpClient</code>/<code>SerialPort</code> bạn tự mở</td>
+<td><code>Connect(...)</code> <strong>đồng bộ</strong>, không có <code>ConnectAsync</code></td>
+</tr>
+<tr>
+<td>Kiểu trả về</td>
+<td><code>ushort[]</code>, <code>bool[]</code> — thẳng và đơn giản</td>
+<td><code>Memory&lt;T&gt;</code> generic (<code>&lt;short&gt;</code>, <code>&lt;float&gt;</code>…)</td>
+</tr>
+<tr>
+<td>Endianness</td>
+<td>theo chuẩn Modbus (big-endian)</td>
+<td><strong>mặc định LittleEndian</strong> — phải nêu rõ</td>
+</tr>
+<tr>
+<td>Thời gian chờ mặc định</td>
+<td>có sẵn <code>Retries</code>, <code>WaitToRetryMilliseconds</code></td>
+<td><code>Timeout.Infinite</code> — <strong>bắt buộc tự đặt</strong></td>
+</tr>
+<tr>
+<td>Làm được server (slave)</td>
+<td>có, <code>IModbusSlaveNetwork</code></td>
+<td>có, <code>ModbusTcpServer</code> / <code>ModbusRtuServer</code></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Quy tắc chọn, gọn trong hai dòng:</strong> cần <strong>huỷ được giữa chừng</strong> hoặc cần <strong>giả lập một thiết
+bị Modbus</strong> để thử phần mềm khi máy chưa về — chọn <strong>FluentModbus</strong>. Cần <strong>Modbus ASCII</strong>, cần
+nhiều slave trên <strong>cùng một cổng RS-485</strong>, hoặc muốn kiểu trả về <code>ushort[]</code> khớp thẳng với bảng
+địa chỉ của vendor — chọn <strong>NModbus</strong>. Điều <strong>không</strong> nên làm là để mỗi thiết bị trong một dự án
+chọn một thư viện theo thói quen của người viết nó — đúng cái bệnh mà callout &quot;2 con đường Modbus
+song song&quot; ngay dưới đây mô tả.</p>
+</blockquote>
 <blockquote>
 <p>⚠️ <strong>Bẫy kinh điển khi tự đọc cổng COM: một lần <code>Read</code> KHÔNG đảm bảo đủ khung.</strong> Nếu vì lý do nào
 đó bạn phải tự dựng khung thay vì dùng thư viện, đoạn code dưới đây là mẫu sai hay gặp nhất:</p>
@@ -26385,7 +26618,7 @@ VLAN cho bạn. Hai sợi dây thì cắm là chạy.</li>
 này không kéo bên kia theo — điều mà một sợi cáp mạng chung switch không bảo đảm.</li>
 </ol>
 <h4>Mẫu kinh điển: mỗi chiều một tín hiệu</h4>
-<p><strong>Bảng 14.5d — Bắt tay hai dây giữa hai máy liền kề</strong></p>
+<p><strong>Bảng 14.5g — Bắt tay hai dây giữa hai máy liền kề</strong></p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -26441,7 +26674,7 @@ một sự cố.</p>
 <h4>Đói và nghẽn — hai lý do khác nhau, và chúng chỉ về hai máy khác nhau</h4>
 <p>Đây là điểm mà mục này nối thẳng vào cách tính OEE ở Chương 12 mục 12.5.2, và là thứ đáng giá
 nhất mà một dây chuyền dạy cho người viết phần mềm:</p>
-<p><strong>Bảng 14.5e — Hai kiểu dừng do hàng xóm, và ý nghĩa quản lý của chúng</strong></p>
+<p><strong>Bảng 14.5h — Hai kiểu dừng do hàng xóm, và ý nghĩa quản lý của chúng</strong></p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -26931,8 +27164,8 @@ run. GEM định nghĩa protocol upload/download, không định nghĩa format b
 <tbody><tr>
 <td><strong>secs4net</strong></td>
 <td>MIT</td>
-<td>GitHub: <code>mkjeff/secs4net</code></td>
-<td>.NET 6+, async/await, đang được maintain tích cực</td>
+<td>GitHub: <code>mkjeff/secs4net</code> (nhánh mặc định <code>base</code>)</td>
+<td>NuGet <code>Secs4Net</code> 3.1.0, .NET 8+, API async/<code>IAsyncEnumerable</code></td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -26942,73 +27175,158 @@ kèm support hợp đồng. Trong dự án thực tế, nếu equipment vendor y
 (thường là điều kiện warranty), ưu tiên theo yêu cầu đó. secs4net phù hợp cho host-side (MES/SCADA
 tự viết) hoặc khi không bị ràng buộc vendor SDK.</p>
 </blockquote>
-<p><strong>Code 14.6 — Kết nối HSMS và trao đổi S1F1/S1F2 dùng secs4net</strong></p>
-<pre><code class="language-csharp">using Secs4Net;
-using Secs4Net.Sml;
-
-// Active mode: ứng dụng C# đóng vai host (kết nối đến equipment)
-var settings = new SecsGemOptions
+<p><strong>Code 14.6 — Cấu hình secs4net và bắt tay S1F13/S1F14</strong></p>
+<p>secs4net cấu hình qua <code>IOptions&lt;SecsGemOptions&gt;</code>, và <strong>mọi mốc thời gian là <code>int</code> mili-giây</strong>, không
+phải <code>TimeSpan</code> — đặt nhầm đơn vị ở đây là loại lỗi chạy được nhưng sai hành vi:</p>
+<pre><code class="language-jsonc">// appsettings.json
 {
-    IsActive        = true,      // host kết nối đến equipment
-    DeviceId        = 0,
-    IpAddress       = IPAddress.Parse(&quot;192.168.1.100&quot;),
-    Port            = 5000,
-    T3              = TimeSpan.FromSeconds(45),   // reply timeout
-    T5              = TimeSpan.FromSeconds(10),   // connect separation
-    T6              = TimeSpan.FromSeconds(5),    // control transaction timeout (chờ Linktest.rsp)
-    T7              = TimeSpan.FromSeconds(10),   // not selected timeout
-    T8              = TimeSpan.FromSeconds(5),    // network intercharacter
-    LinkTestInterval = TimeSpan.FromSeconds(10)   // chu kỳ gửi Linktest — không thuộc T1-T8
-};
-
-await using var secsGem = new SecsGem(settings, primaryMsgHandler: OnPrimaryMessage,
-    logger: loggerFactory.CreateLogger&lt;SecsGem&gt;());
-
-// Chờ kết nối và Communication State = COMMUNICATING
-await secsGem.WaitForConnectedAsync(CancellationToken.None);
-
-// Gửi S1F13 (Establish Communications Request) — bước đầu tiên theo GEM
-var s1f13 = new SecsMessage(1, 13, replyExpected: true,
-    root: Item.L());  // S1F13 không có data body
-
-var s1f14 = await secsGem.SendAsync(s1f13);  // nhận S1F14 reply
-// Kiểm tra COMMACK (Communication Acknowledge) trong S1F14
-var commAck = s1f14.SecsItem[0].GetValue&lt;byte&gt;();
-if (commAck != 0) throw new SecsException($&quot;S1F14 COMMACK={commAck}: refused&quot;);
-
-// Gửi S1F1 (Are You There)
-var s1f1 = new SecsMessage(1, 1, replyExpected: true, root: Item.L());
-var s1f2 = await secsGem.SendAsync(s1f1);
-// S1F2 trả MDLN (model name) và SOFTREV (software rev)
-var mdln    = s1f2.SecsItem[0].GetValue&lt;string&gt;();
-var softRev = s1f2.SecsItem[1].GetValue&lt;string&gt;();
-_logger.LogInformation(&quot;Connected to {Model} rev {Rev}&quot;, mdln, softRev);
+  &quot;secs4net&quot;: {
+    &quot;DeviceId&quot;: 0,
+    &quot;IsActive&quot;: true,              // host chủ động kết nối tới equipment
+    &quot;IpAddress&quot;: &quot;192.168.1.100&quot;,  // chuỗi, KHÔNG phải IPAddress
+    &quot;Port&quot;: 5000,
+    &quot;T3&quot;: 45000,                   // ms — chờ secondary message
+    &quot;T5&quot;: 10000,                   // ms — connect separation
+    &quot;T6&quot;: 5000,                    // ms — control transaction
+    &quot;T7&quot;: 10000,                   // ms — not-selected
+    &quot;T8&quot;: 5000,                    // ms — network intercharacter
+    &quot;LinkTestInterval&quot;: 60000      // ms — chu kỳ Linktest, không thuộc T1–T8
+  }
+}
 </code></pre>
-<p><strong>Code 14.7 — Xử lý Event Report S6F11 từ equipment</strong></p>
-<pre><code class="language-csharp">// Handler nhận Primary message từ equipment
-// secs4net yêu cầu delegate Action&lt;SecsMessage, Action&lt;SecsMessage&gt;&gt; —
-// không hỗ trợ Func&lt;..., Task&gt;. async void ở đây là bắt buộc theo API
-// thư viện; exception trong handler sẽ được secs4net bắt nội bộ.
-// Không đổi thành Task: sẽ làm sai signature và không compile được.
-async void OnPrimaryMessage(SecsMessage primaryMsg, Action&lt;SecsMessage&gt; reply)
+<pre><code class="language-csharp">using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Secs4Net;
+using static Secs4Net.Item;   // để gọi L(), B(), A()... không cần tiền tố
+
+// ⚠ secs4net KHÔNG có sẵn hàm mở rộng DI: đoạn dưới nằm ở project MẪU của thư viện,
+//   phải tự chép vào dự án mình. README của gói viết như thể nó có sẵn.
+public static IServiceCollection AddSecs4Net&lt;TLogger&gt;(
+    this IServiceCollection services, IConfiguration configuration)
+    where TLogger : class, ISecsGemLogger
 {
-    if (primaryMsg.S == 6 &amp;&amp; primaryMsg.F == 11)
+    services.Configure&lt;SecsGemOptions&gt;(configuration.GetSection(&quot;secs4net&quot;));
+    services.AddSingleton&lt;ISecsConnection, HsmsConnection&gt;();
+    services.AddSingleton&lt;ISecsGem, SecsGem&gt;();
+    services.AddSingleton&lt;ISecsGemLogger, TLogger&gt;();   // KHÔNG phải ILogger&lt;T&gt; của MS
+    return services;
+}
+</code></pre>
+<pre><code class="language-csharp">// Bắt tay GEM: chờ HSMS vào trạng thái Selected rồi gửi S1F13
+public sealed class BatTayGem(
+    ISecsConnection conn, ISecsGem secsGem, ILogger&lt;BatTayGem&gt; log)
+{
+    public async Task ChayAsync(CancellationToken ct)
     {
-        // S6F11: Event Report Send
-        // Cấu trúc: L[DATAID, CEID, L[RPT[RPTID, L[V...]]]]
-        var dataId = primaryMsg.SecsItem[0].GetValue&lt;uint&gt;();   // DATAID
-        var ceid   = primaryMsg.SecsItem[1].GetValue&lt;uint&gt;();   // Collection Event ID
+        conn.Start(ct);   // không chặn; tự kết nối lại khi rớt (trạng thái Retry)
+        await ChoTrangThaiAsync(ConnectionState.Selected, ct).ConfigureAwait(false);
 
-        _logger.LogInformation(&quot;Event CEID={Ceid} DataId={DataId}&quot;, ceid, dataId);
+        // S1F13 — Establish Communications Request, thân là danh sách rỗng
+        using var s1f13 = new SecsMessage(1, 13, replyExpected: true)
+        {
+            Name     = &quot;EstablishCommunicationsRequest&quot;,
+            SecsItem = L(),        // gán qua property, KHÔNG qua tham số hàm dựng
+        };
+        using var s1f14 = await secsGem.SendAsync(s1f13, ct).ConfigureAwait(false);
 
-        // Publish Domain Event nội bộ (→ xem Chương 11, 12)
-        _eventBus.Publish(new SecsEventReceived(ceid, dataId, DateTimeOffset.UtcNow));
+        // S1F14 = L[ COMMACK, L[ MDLN, SOFTREV ] ]
+        byte commAck = s1f14.SecsItem![0].FirstValue&lt;byte&gt;();
+        if (commAck != 0)
+            throw new SecsException($&quot;S1F14 COMMACK={commAck}: thiết bị từ chối bắt tay&quot;);
 
-        // Reply S6F12 (Acknowledge)
-        reply(primaryMsg.ToAcknowledge());
+        string mdln    = s1f14.SecsItem[1][0].GetString();
+        string softRev = s1f14.SecsItem[1][1].GetString();
+        log.LogInformation(&quot;Đã bắt tay với {Model} rev {Rev}&quot;, mdln, softRev);
+    }
+
+    // ISecsConnection chỉ phát sự kiện đổi trạng thái — không có sẵn hàm &quot;chờ kết nối&quot;
+    private async Task ChoTrangThaiAsync(ConnectionState mong, CancellationToken ct)
+    {
+        if (conn.State == mong) return;
+
+        var xong = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        void Theo(object? _, ConnectionState st) { if (st == mong) xong.TrySetResult(); }
+
+        conn.ConnectionChanged += Theo;
+        try
+        {
+            // Kiểm LẠI sau khi đăng ký: nếu không, trạng thái đổi đúng vào khe giữa
+            // hai dòng lệnh sẽ bị bỏ lỡ và hàm treo vĩnh viễn (mục 5.2).
+            if (conn.State == mong) return;
+            using var huy = ct.Register(() =&gt; xong.TrySetCanceled(ct));
+            await xong.Task.ConfigureAwait(false);
+        }
+        finally { conn.ConnectionChanged -= Theo; }
     }
 }
 </code></pre>
+<p><strong>Code 14.7 — Xử lý Event Report S6F11 từ equipment</strong></p>
+<pre><code class="language-csharp">// secs4net đưa primary message qua IAsyncEnumerable, KHÔNG qua callback.
+// Nhờ vậy vòng xử lý là async bình thường — không cần async void, không cần
+// đánh đổi gì với quy tắc &quot;không async void&quot; của mục 5.1.4.
+protected override async Task ExecuteAsync(CancellationToken ct)
+{
+    _conn.Start(ct);
+
+    await foreach (var e in _secsGem.GetPrimaryMessageAsync(ct).ConfigureAwait(false))
+    {
+        using var msg = e.PrimaryMessage;   // Item giữ bộ đệm gộp — PHẢI giải phóng
+        try
+        {
+            if (msg.S == 6 &amp;&amp; msg.F == 11)
+            {
+                // S6F11 = L[ DATAID, CEID, L[ L[RPTID, L[V…]] ] ]
+                uint dataId = msg.SecsItem![0].FirstValue&lt;uint&gt;();
+                uint ceid   = msg.SecsItem[1].FirstValue&lt;uint&gt;();
+
+                _logger.LogInformation(&quot;Event CEID={Ceid} DataId={DataId}&quot;, ceid, dataId);
+                _eventBus.Publish(new SecsEventReceived(ceid, dataId, DateTimeOffset.UtcNow));
+
+                if (msg.ReplyExpected)   // W-bit; không có thì trả lời là SAI chuẩn
+                {
+                    // S6F12 — Event Report Acknowledge, ACKC6 = 0 (accepted)
+                    using var s6f12 = new SecsMessage(6, 12, replyExpected: false)
+                    {
+                        Name = &quot;EventReportAcknowledge&quot;,
+                        SecsItem = B(0),
+                    };
+                    await e.TryReplyAsync(s6f12, ct).ConfigureAwait(false);
+                }
+            }
+            else if (msg.ReplyExpected)
+            {
+                // Không hiểu bản tin, nhưng thiết bị ĐANG CHỜ trả lời.
+                // TryReplyAsync(null) tự dựng S9F7 đúng chuẩn. Im lặng thì thiết bị
+                // đợi hết T3 rồi coi như mất liên lạc — tệ hơn nhiều so với báo lỗi.
+                await e.TryReplyAsync(null, ct).ConfigureAwait(false);
+            }
+        }
+#pragma warning disable CA1031 // một bản tin hỏng không được làm chết vòng nhận
+        catch (Exception ex)
+#pragma warning restore CA1031
+        {
+            _logger.LogError(ex, &quot;Lỗi khi xử lý S{S}F{F}&quot;, msg.S, msg.F);
+        }
+    }
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Đính chính — hai bản in trước của Code 14.6/14.7 mô tả một API không tồn tại.</strong> Chúng viết
+<code>new SecsGem(settings, primaryMsgHandler: …, logger: loggerFactory.CreateLogger&lt;SecsGem&gt;())</code>,
+<code>await secsGem.WaitForConnectedAsync(…)</code>, <code>new SecsMessage(1, 13, replyExpected: true, root: …)</code>,
+<code>item.GetValue&lt;T&gt;()</code>, <code>IpAddress = IPAddress.Parse(…)</code> và <code>T3 = TimeSpan.FromSeconds(45)</code>.
+Đối chiếu mã nguồn secs4net 3.1.0: hàm dựng thật là
+<code>SecsGem(IOptions&lt;SecsGemOptions&gt;, ISecsConnection, ISecsGemLogger)</code>; <code>ISecsGem</code> chỉ có
+<code>SendAsync</code> và <code>GetPrimaryMessageAsync</code>; <code>SecsMessage</code> nhận <code>(byte s, byte f, bool replyExpected)</code>
+rồi gán <code>SecsItem</code> qua property; <code>Item</code> có <code>FirstValue&lt;T&gt;()</code>/<code>GetString()</code>/<code>GetMemory&lt;T&gt;()</code> chứ
+không có <code>GetValue&lt;T&gt;()</code>; <code>IpAddress</code> là <code>string</code> và T3–T8 là <code>int</code> mili-giây.</p>
+<p><strong>Điều đáng nói nhất không phải là các tên gọi sai, mà là hệ quả của chúng.</strong> Bản cũ còn kèm một
+đoạn chú thích dài để <em>bào chữa</em> cho <code>async void</code>, với lý do &quot;API thư viện bắt buộc&quot;. Lý do đó
+không có thật: secs4net trả primary message qua <code>IAsyncEnumerable</code>, nên vòng xử lý là <code>async Task</code>
+hoàn toàn bình thường. Đây là cái bẫy nguy hiểm nhất của việc chép API theo trí nhớ — <strong>một API
+tưởng tượng kéo theo một lời biện minh tưởng tượng cho một anti-pattern có thật</strong>, và người đọc
+mất nhiều thời gian hơn để gỡ lời biện minh đó ra khỏi đầu so với việc sửa vài dòng mã.</p>
+</blockquote>
 <blockquote>
 <p>🔍 <strong>Đào sâu thêm:</strong> GEM có nhiều GEM Capability Groups tùy chọn bên cạnh Fundamental
 Requirements: Spooling (lưu message khi mất kết nối), Remote Control, Material Movement
@@ -27595,7 +27913,7 @@ khối riêng, không phải &quot;vài ngày cuối dự án&quot;.</p>
 <tr>
 <td><strong>Tích hợp C# .NET</strong></td>
 <td>OPCFoundation.NetStandard.Opc.Ua</td>
-<td>FluentModbus / NModbus4 / EasyModbus</td>
+<td>FluentModbus hoặc NModbus 3.x (Bảng 14.5d)</td>
 <td>secs4net (MIT)</td>
 </tr>
 <tr>
@@ -27879,8 +28197,8 @@ xem thêm Chương 1 mục 1.3.1.</p>
 <tr>
 <td>Modbus TCP</td>
 <td><code>IProtocolClient</code> Strategy (Ch13)</td>
-<td>FluentModbus / NModbus4</td>
-<td>Kiểm tra byte/word order khi đọc float</td>
+<td>FluentModbus hoặc NModbus 3.x — <strong>không</strong> dùng NModbus4/EasyModbus, cả hai chỉ chạy .NET Framework 4.0 (Bảng 14.5d)</td>
+<td>Kiểm tra byte/word order khi đọc float; FluentModbus mặc định LittleEndian</td>
 </tr>
 <tr>
 <td>SECS/GEM (HSMS)</td>
@@ -34461,6 +34779,11 @@ public async Task Sequence_HaiTramChoTinHieuKhacNhau_ChayTatDinh()
 <td>Xác nhận invariant &quot;Abort từ mọi state&quot;</td>
 </tr>
 <tr>
+<td><code>[Fact]</code> — invariant có loại trừ</td>
+<td><code>MoiState_TruNhomDangDung_PhaiCoTransitionStop</code></td>
+<td>Xác nhận Stop có mặt ở mọi state trừ nhóm đang dừng (Code 18.8b)</td>
+</tr>
+<tr>
 <td><code>[Fact]</code> — invalid</td>
 <td><code>LenhKhongHopLe_TroVeFalse_KhongThayDoiState</code></td>
 <td>Xác nhận state machine không thay đổi khi nhận lệnh không hợp lệ</td>
@@ -34493,6 +34816,47 @@ public void MoiState_TruAbortingVaAborted_PhaiCoTransitionAbort()
 }
 </code></pre>
 <p>Đây là test quan trọng nhất của toàn bộ state machine. Nếu sau này có kỹ sư thêm state <code>MaintenanceMode</code> vào enum mà quên thêm transition Abort, test này sẽ fail ngay trong CI — trước khi code đến tay QA hay máy thật.</p>
+<p>Bất biến thứ hai của PackML ít được nhớ hơn nhưng cũng quan trọng không kém, và nó có dạng khác:
+không phải &quot;mọi state&quot; mà là &quot;mọi state <strong>trừ một danh sách loại trừ</strong>&quot;. Viết danh sách loại trừ ra
+tường minh trong test có một tác dụng phụ rất đáng giá — nó buộc người thêm state mới phải <strong>quyết
+định</strong>, thay vì để trạng thái mới lặng lẽ rơi vào nhóm không nhận Stop:</p>
+<p><strong>Code 18.8b — Test invariant Stop, với danh sách loại trừ tường minh</strong></p>
+<pre><code class="language-csharp">[Fact]
+public void MoiState_TruNhomDangDung_PhaiCoTransitionStop()
+{
+    // 5 state này KHÔNG nhận Stop vì chúng đã đang dừng hoặc đang trên đường dừng.
+    // Danh sách viết cứng là CHỦ Ý: thêm state mới mà quên xử lý thì test đỏ,
+    // buộc người thêm phải quyết định state đó thuộc nhóm nào.
+    var khongNhanStop = new[]
+    {
+        PackMlState.Stopping, PackMlState.Stopped,
+        PackMlState.Aborting, PackMlState.Aborted, PackMlState.Clearing,
+    };
+
+    foreach (var state in Enum.GetValues&lt;PackMlState&gt;().Except(khongNhanStop))
+    {
+        Assert.True(
+            PackMlStateMachine.Transitions.ContainsKey((state, PackMlCommand.Stop)),
+            $&quot;State {state} thiếu transition Stop — người vận hành bấm Stop sẽ không có gì xảy ra&quot;);
+    }
+
+    // Và chiều ngược lại: 5 state kia PHẢI KHÔNG có Stop.
+    // Thiếu nửa này thì một bảng &quot;state nào cũng nhận Stop&quot; vẫn qua được test trên.
+    foreach (var state in khongNhanStop)
+    {
+        Assert.False(
+            PackMlStateMachine.Transitions.ContainsKey((state, PackMlCommand.Stop)),
+            $&quot;State {state} không được nhận Stop — nó đã đang dừng rồi&quot;);
+    }
+}
+</code></pre>
+<blockquote>
+<p>💡 <strong>Nửa sau của test đó là phần dễ quên nhất khi viết test cho bất biến dạng danh sách.</strong> Một
+test chỉ kiểm &quot;những cái phải có&quot; luôn xanh với một bảng <em>thừa</em> — và bảng thừa ở đây nghĩa là
+<code>Aborted + Stop → Stopping</code>, tức máy đang ở trạng thái lỗi bỗng trượt về luồng dừng bình thường,
+bỏ qua Clear. Quy tắc mang đi: <strong>bất biến nào phát biểu bằng chữ &quot;trừ&quot; thì test phải có hai vòng
+lặp</strong>, một cho tập trong và một cho tập loại trừ.</p>
+</blockquote>
 <h3>18.5.3  State machine không cần mock phức tạp</h3>
 <p>Một thiết kế state machine tốt — như <code>PackMlStateMachine</code> theo Domain Event pattern (Chương 12, mục 12.3.3) — tích luỹ events vào list nội bộ thay vì gọi thẳng <code>IAlarmService</code> hay <code>IEventPublisher</code>. Hệ quả: <strong>test không cần mock bất kỳ dependency nào ngoài logger</strong>:</p>
 <pre><code class="language-csharp">var sm = new PackMlStateMachine(NullLogger&lt;PackMlStateMachine&gt;.Instance);

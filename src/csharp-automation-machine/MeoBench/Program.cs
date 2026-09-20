@@ -1,14 +1,14 @@
 // -------------------------------------------------------
 // File:    Program.cs
-// Project: MeoBench — lời giải mẫu 22 bài của Phụ lục G
+// Project: MeoBench — lời giải mẫu ĐỦ 40 bài của Phụ lục G
 // Purpose: Bộ chạy tự kiểm. Chạy được TỪNG NHÓM riêng, không phải làm xong
 //          hết mới biết sai ở đâu.
 //
-//   dotnet run                → chạy toàn bộ 22 bài
+//   dotnet run                → chạy toàn bộ 40 bài
 //   dotnet run -- G4          → chỉ chạy nhóm G.4 (bài G.4.1 và G.4.3)
 //   dotnet run -- G8          → chỉ chạy nhóm G.8
 //   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
-//   dotnet run -- --danhsach  → liệt kê 22 bài
+//   dotnet run -- --danhsach  → liệt kê 40 bài
 // -------------------------------------------------------
 using MeoBench;
 
@@ -16,30 +16,39 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 
 var danhSachBai = new[]
 {
-    ("G.1.2", "Bản ghi một lần đo"),        ("G.1.3", "Enum trạng thái"),
+    ("G.1.1", "Đơn vị không lẫn được"),     ("G.1.2", "Bản ghi một lần đo"),
+    ("G.1.3", "Enum trạng thái"),           ("G.1.4", "Bảng mã cảnh báo có metadata"),
     ("G.1.5", "Ngoại lệ mang mã cảnh báo"), ("G.2.1", "Kiểm dải đo"),
-    ("G.3.1", "Hợp đồng ITruc"),            ("G.3.4", "Bản giả lập tái hiện được"),
-    ("G.4.1", "Chuyển động có hạn giờ"),    ("G.4.3", "Cụm đo"),
+    ("G.2.2", "Quy đổi mm ↔ xung"),         ("G.2.3", "Tách khung từ dòng byte"),
+    ("G.2.4", "Tổng kiểm"),                 ("G.2.5", "Cửa sổ trượt và lọc nhiễu"),
+    ("G.3.1", "Hợp đồng ITruc"),            ("G.3.2", "Hạn giờ cho cảm biến"),
+    ("G.3.3", "Vào-ra số theo tên"),        ("G.3.4", "Bản giả lập tái hiện được"),
+    ("G.3.5", "Giả lập biết hỏng"),         ("G.4.1", "Chuyển động có hạn giờ"),
+    ("G.4.2", "Cụm kẹp chờ xác nhận"),      ("G.4.3", "Cụm đo"),
+    ("G.4.4", "Giám sát khí nén"),          ("G.4.5", "Bộ điều khiển máy"),
     ("G.5.1", "Hợp đồng IBuoc"),            ("G.5.2", "Bảy bước của một chu kỳ"),
-    ("G.6.1", "Mô hình công thức"),         ("G.6.2", "Nạp và ghi công thức"),
-    ("G.6.3", "Ghi kết quả sản xuất"),      ("G.6.4", "Đếm sản lượng theo ca"),
-    ("G.6.5", "Xoay vòng và dọn file cũ"),  ("G.7.1", "ViewModel trạng thái máy"),
-    ("G.7.2", "Thanh tiến độ bước"),        ("G.7.3", "Ô nhập số có dải"),
-    ("G.7.4", "Bảng nhật ký và cảnh báo"),  ("G.7.5", "Nút khoá theo trạng thái"),
-    ("G.8.1", "Điểm ráp nối"),              ("G.8.5", "Ghép tất cả và chạy"),
+    ("G.5.3", "Bộ chạy trình tự"),          ("G.5.4", "Bảng chuyển trạng thái"),
+    ("G.5.5", "Tạm dừng và chạy tiếp"),     ("G.6.1", "Mô hình công thức"),
+    ("G.6.2", "Nạp và ghi công thức"),      ("G.6.3", "Ghi kết quả sản xuất"),
+    ("G.6.4", "Đếm sản lượng theo ca"),     ("G.6.5", "Xoay vòng và dọn file cũ"),
+    ("G.7.1", "ViewModel trạng thái máy"),  ("G.7.2", "Thanh tiến độ bước"),
+    ("G.7.3", "Ô nhập số có dải"),          ("G.7.4", "Bảng nhật ký và cảnh báo"),
+    ("G.7.5", "Nút khoá theo trạng thái"),  ("G.8.1", "Điểm ráp nối"),
+    ("G.8.2", "Nhật ký có cấu trúc"),       ("G.8.3", "Driver cảm biến nối tiếp"),
+    ("G.8.4", "Bắt tay hai dây"),           ("G.8.5", "Ghép tất cả và chạy"),
 };
 
 // Mỗi nhóm là một hàm kiểm chạy độc lập được.
 var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
 {
-    ["G1"] = KiemMien.Chay,
-    ["G2"] = KiemLogicVaThietBi.Chay,
-    ["G3"] = KiemLogicVaThietBi.Chay,
-    ["G4"] = KiemNghiepVuVaTrinhTu.Chay,
-    ["G5"] = KiemNghiepVuVaTrinhTu.Chay,
+    ["G1"] = async () => { await KiemMien.Chay(); await KiemMienVaLogic2.Chay(); },
+    ["G2"] = async () => { await KiemLogicVaThietBi.Chay(); await KiemMienVaLogic2.Chay(); },
+    ["G3"] = async () => { await KiemLogicVaThietBi.Chay(); await KiemThietBiVaNghiepVu2.Chay(); },
+    ["G4"] = async () => { await KiemNghiepVuVaTrinhTu.Chay(); await KiemThietBiVaNghiepVu2.Chay(); },
+    ["G5"] = async () => { await KiemNghiepVuVaTrinhTu.Chay(); await KiemTrinhTuVaVanHanh2.Chay(); },
     ["G6"] = KiemDuLieu.Chay,
     ["G7"] = KiemGiaoDien.Chay,
-    ["G8"] = KiemRapNoi.Chay,
+    ["G8"] = async () => { await KiemRapNoi.Chay(); await KiemTrinhTuVaVanHanh2.Chay(); },
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -57,17 +66,20 @@ if (tuyChon == "--danhsach")
 }
 
 Console.WriteLine("╔══════════════════════════════════════════════════════════╗");
-Console.WriteLine("║  MeoBench — tự kiểm 22 bài của Phụ lục G                 ║");
+Console.WriteLine("║  MeoBench — tự kiểm ĐỦ 40 bài của Phụ lục G              ║");
 Console.WriteLine("╚══════════════════════════════════════════════════════════╝");
 
 if (string.IsNullOrEmpty(tuyChon))
 {
     await KiemMien.Chay();
+    await KiemMienVaLogic2.Chay();
     await KiemLogicVaThietBi.Chay();
     await KiemNghiepVuVaTrinhTu.Chay();
+    await KiemThietBiVaNghiepVu2.Chay();
     await KiemDuLieu.Chay();
     await KiemGiaoDien.Chay();
     await KiemRapNoi.Chay();
+    await KiemTrinhTuVaVanHanh2.Chay();
 }
 else
 {

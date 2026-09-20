@@ -9,7 +9,7 @@ phần cụ thể trong sách.
 | [`MeoFrameMiniSync/`](MeoFrameMiniSync/) | Mục 7.6 — cùng cỗ máy, viết theo lối **chặn luồng** | `dotnet run` |
 | [`MeoFrameMiniDirect/`](MeoFrameMiniDirect/) | Mục 7.7 — **bỏ cả interface**, và cái giá phải trả | `dotnet run` |
 | [`MeoFrameMiniMixed/`](MeoFrameMiniMixed/) | Mục 7.7.4 — bản pha trộn được khuyến nghị | `dotnet run` |
-| [`MeoBench/`](MeoBench/) | **Phụ lục G** — lời giải mẫu 22/40 bài thực hành | xem bên dưới |
+| [`MeoBench/`](MeoBench/) | **Phụ lục G** — lời giải mẫu **đủ 40/40** bài thực hành | xem bên dưới |
 | [`RandomProbe/`](RandomProbe/) | Mục 13.2.5c — đo hành vi thật của `Random` trên .NET 9 | `dotnet run` |
 
 ## Bốn biến thể MeoFrameMini
@@ -26,22 +26,22 @@ cd MeoFrameMiniMixed  && dotnet run    # 368 dòng · 1 interface (IStep)
 
 ## MeoBench — lời giải mẫu Phụ lục G
 
-Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **155 phép kiểm** cho 22
+Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **294 phép kiểm** cho **đủ 40**
 bài thực hành. Chạy lẻ được từng nhóm — không phải làm xong hết mới biết sai ở đâu:
 
 ```bash
 cd MeoBench
-dotnet run                 # cả 22 bài — 155 phép kiểm
+dotnet run                 # cả 40 bài — 294 phép kiểm
 dotnet run -- G1           # nhóm kiểu dữ liệu miền
 dotnet run -- G2           # logic thuần
 dotnet run -- G3           # hợp đồng thiết bị và bản giả lập
 dotnet run -- G4           # lớp nghiệp vụ
 dotnet run -- G5           # trình tự
-dotnet run -- G6           # công thức, cấu hình, dữ liệu — 33 phép kiểm
-dotnet run -- G7           # giao diện — 42 phép kiểm
+dotnet run -- G6           # công thức, cấu hình, dữ liệu
+dotnet run -- G7           # giao diện
 dotnet run -- G8           # ráp nối và chạy máy
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
-dotnet run -- --danhsach   # liệt kê 22 bài
+dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
 
 Bộ tự kiểm (`Kiem.cs`, khoảng 60 dòng) **cố ý không dùng xUnit**: máy tính công nghiệp ngoài hiện

@@ -43282,8 +43282,7 @@ G.2.1 · G.3.1 · G.3.4 · G.4.1 · G.4.3 · G.5.1 · G.5.2 · G.8.1 · G.8.5. C
 chiều sâu, không phải xương sống.</p>
 </blockquote>
 <blockquote>
-<p>📌 <strong>Hai mươi tám bài ngoài nhóm xương sống cố tình KHÔNG kèm lời giải</strong> (12 bài xương sống có
-lời giải mẫu chạy được ở mục G.10). Lý do không phải để làm khó: mục <em>Kết quả mong đợi</em> của mỗi
+<p>📌 <strong>Cả bốn mươi bài đều có lời giải mẫu chạy được ở mục G.10</strong> — nhưng hãy dùng chúng đúng cách. Lý do không phải để làm khó: mục <em>Kết quả mong đợi</em> của mỗi
 bài đã là một tiêu chí <strong>tự chấm được</strong>, và trong phần mềm máy, biết cách tự trả lời câu <em>&quot;tôi
 xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chiếu với một đáp án có sẵn. Nếu bí hoàn toàn
 ở một bài, đọc <strong>cấu trúc</strong> ở <code>source/MeoBench</code> hoặc <code>source/MeoFrameMini</code> rồi quay lại tự viết,
@@ -43291,25 +43290,24 @@ xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chi�
 </blockquote>
 <hr>
 <h2 id="g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</h2>
-<p>Mục G.9 nêu mười hai bài xương sống; <strong>nhóm G.6 và G.7 nay cũng có lời giải đầy đủ</strong> — tổng cộng
-<strong>22 trong 40 bài</strong>. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ thể</strong>, và <strong>một
+<p>Mục G.9 nêu mười hai bài xương sống; <strong>cả bốn mươi bài nay đều có lời giải chạy được</strong>. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ thể</strong>, và <strong>một
 lời giải chạy được</strong> — nằm ở <code>source/MeoBench</code>, đã biên dịch với
-<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>155/155 phép kiểm đạt</strong>.</p>
+<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>294/294 phép kiểm đạt</strong>.</p>
 <h3>G.10.0  Chạy thử từng phần, không đợi làm xong hết</h3>
 <p>Đây là điểm quan trọng nhất của mục này. Làm xong cả bốn mươi bài rồi mới chạy thì khi hỏng bạn
 không biết hỏng ở đâu. Bộ tự kiểm cho phép <strong>chạy lẻ từng nhóm ngay khi vừa viết xong nhóm đó</strong>:</p>
 <pre><code class="language-bash">cd source/MeoBench
-dotnet run                 # chạy cả 22 bài — 155 phép kiểm
+dotnet run                 # chạy cả 40 bài — 294 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
-dotnet run -- G2           # chỉ bài G.2.1
+dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
-dotnet run -- --danhsach   # liệt kê 22 bài
+dotnet run -- --danhsach   # liệt kê đủ 40 bài
 </code></pre>
 <p>Kết quả thật khi chạy <code>dotnet run -- G4</code>:</p>
 <pre><code class="language-text">╔══════════════════════════════════════════════════════════╗
-║  MeoBench — tự kiểm 22 bài của Phụ lục G                 ║
+║  MeoBench — tự kiểm ĐỦ 40 bài của Phụ lục G              ║
 ╚══════════════════════════════════════════════════════════╝
 Chỉ chạy nhóm khớp &#39;G4&#39;:
 
@@ -43830,8 +43828,198 @@ thẳng tới hành vi tệ hơn: người ta bắt đầu bấm loạn các nú
 không chỉ khẳng định &quot;khác null&quot;.</p>
 </blockquote>
 <hr>
-<h3>G.10.10  Bảng tra nhanh: bài nào ở file nào</h3>
-<p><strong>Bảng G.3 — Lời giải mẫu trong <code>source/MeoBench</code> (22/40 bài)</strong></p>
+<h3>G.10.10  Mười tám bài còn lại — đặc tả và điểm chấm</h3>
+<p>Ba nhóm còn thiếu nay đã đủ. Mục này ghi <strong>chữ ký bắt buộc</strong> và <strong>điểm chấm chính</strong> của từng bài;
+chi tiết đầy đủ nằm trong các hàm kiểm của lời giải mẫu — chúng chính là bản đặc tả viết bằng mã.</p>
+<h4>Nhóm kiểu miền và logic thuần — <code>dotnet run -- G1</code>, <code>-- G2</code></h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bài</th>
+<th>Chữ ký bắt buộc</th>
+<th>★ Điểm chấm chính</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>G.1.1</strong></td>
+<td><code>ViTriMm</code>, <code>KhoangCachMm</code>, <code>ChieuDayMm</code> — ba <code>readonly record struct</code></td>
+<td><code>viTri − viTri = KhoangCachMm</code> (không phải vị trí) · <code>ViTriMm v = 10.0;</code> <strong>không biên dịch được</strong> · 120 mm vị trí <strong>khác</strong> 120 mm chiều dày</td>
+</tr>
+<tr>
+<td><strong>G.1.4</strong></td>
+<td><code>ThongTinCanhBao(Ma, MoTa, ViecNenLam, HanhDong)</code> · <code>DanhMucCanhBao.Tra(int)</code></td>
+<td>Mã <strong>chưa khai báo</strong> vẫn tra được và <strong>không ném</strong> · mã lạ mặc định <code>DungNgay</code> — chọn phía an toàn khi không biết</td>
+</tr>
+<tr>
+<td><strong>G.2.2</strong></td>
+<td><code>BoQuyDoi.SangXung(double) → long</code> · <code>SangMm(long) → double</code></td>
+<td>Làm tròn <strong>ra xa 0</strong> chứ không cắt: cắt về một phía sẽ tích luỹ sai số sau hàng nghìn chu kỳ · hệ số 0 bị chặn ở hàm dựng</td>
+</tr>
+<tr>
+<td><strong>G.2.3</strong></td>
+<td><code>BoTachKhung.Nap(ReadOnlySpan&lt;byte&gt;) → IReadOnlyList&lt;byte[]&gt;</code></td>
+<td>Ba tình huống bắt buộc, xem dưới</td>
+</tr>
+<tr>
+<td><strong>G.2.4</strong></td>
+<td><code>TongKiem.Xor</code> · <code>Dong</code> · <code>XacMinh</code></td>
+<td>Lật <strong>một bit</strong> → trượt · nhưng <strong>hoán vị hai byte thì XOR KHÔNG bắt được</strong></td>
+</tr>
+<tr>
+<td><strong>G.2.5</strong></td>
+<td><code>CuaSoTruotDo.Them</code> · <code>Tinh() → ThongKeDo(DuMau, TrungBinh, DoLech, SoMau)</code></td>
+<td>Chưa đủ mẫu thì báo <strong>chưa đủ</strong>, không trả số bừa · <code>[10,10,10,50]</code> cho độ lệch chuẩn 17,3 — con số <strong>tố cáo</strong> rằng 50 bất thường</td>
+</tr>
+</tbody></table></div>
+<p><strong>G.2.3 có ba phép kiểm bắt buộc</strong>, và đây là bài sai lần đầu nhiều nhất cả phụ lục:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tình huống</th>
+<th>Kết quả đúng</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Một khung tới làm <strong>ba mảnh</strong>: <code>[STX,&#39;2&#39;]</code>, <code>[&#39;.&#39;,&#39;0&#39;]</code>, <code>[&#39;1&#39;,ETX]</code></td>
+<td>phát ra <strong>đúng một</strong> khung, nội dung <code>&quot;2.01&quot;</code></td>
+</tr>
+<tr>
+<td><strong>Hai khung</strong> trong một mảnh: <code>[STX,&#39;1&#39;,ETX,STX,&#39;2&#39;,ETX]</code></td>
+<td>phát ra <strong>hai</strong> khung, <code>&quot;1&quot;</code> rồi <code>&quot;2&quot;</code></td>
+</tr>
+<tr>
+<td>Khung trọn + khung dở: <code>[STX,&#39;9&#39;,ETX,STX,&#39;8&#39;]</code></td>
+<td>phát 1 khung, <strong>giữ lại 1 byte</strong>; nạp tiếp <code>[&#39;7&#39;,ETX]</code> ra <code>&quot;87&quot;</code></td>
+</tr>
+</tbody></table></div>
+<p>Cộng thêm hai bất biến ít ai nghĩ tới: byte <strong>ngoài khung</strong> bị bỏ qua chứ không tích luỹ, và thiết
+bị hỏng gửi mãi không có <code>ETX</code> thì bộ đệm phải <strong>tự giải phóng</strong> thay vì phình vô hạn.</p>
+<blockquote>
+<p>💡 <strong>Một bẫy số thực mà chính phép kiểm của sách đã dính.</strong> Bài G.1.1 có phép kiểm
+<em>&quot;2,12 − 2,00 phải bằng 0,12&quot;</em>. Nó <strong>trượt</strong>, với thông báo trông vô lý:
+<em>mong đợi <code>0.120 mm</code>, thực tế <code>0.120 mm</code></em> — hai chuỗi giống hệt nhau. Lý do:
+<code>2.12 - 2.00 = 0.12000000000000011</code>, và <code>ToString(&quot;F3&quot;)</code> làm tròn cả hai về <code>&quot;0.120&quot;</code>. Đây đúng
+là quy tắc 6 ở Bảng F.3 tự cắn người viết. Lời giải giữ <strong>cả hai</strong> phép kiểm — một chứng minh
+<code>==</code> trượt, một chứng minh so theo dung sai thì đúng — để bài học không bị mất.</p>
+</blockquote>
+<h4>Nhóm thiết bị — <code>dotnet run -- G3</code></h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bài</th>
+<th>Chữ ký bắt buộc</th>
+<th>★ Điểm chấm chính</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>G.3.2</strong></td>
+<td><code>CamBienCoHanGio(ICamBienChieuDay trong, string ten, int hanGioMs)</code></td>
+<td>Là <strong>lớp bọc</strong>, không sửa bản cài đặt nào: bọc được bản giả lập, driver nối tiếp, hay hàng của hãng khác · cảm biến chậm → <code>AlarmException</code>; <strong>người bấm Dừng → <code>OperationCanceledException</code></strong>, hai thứ không lẫn</td>
+</tr>
+<tr>
+<td><strong>G.3.3</strong></td>
+<td><code>IVaoRaSo.Doc/Ghi(string)</code> · <code>BanDoTinHieu.KenhVao/KenhRa</code> · <code>KiemTra()</code></td>
+<td>Tên lạ <strong>ném ngay</strong>, không âm thầm trả <code>false</code> · <code>KiemTra()</code> bắt được <strong>hai tín hiệu trùng kênh</strong> — lỗi đấu nối kinh điển</td>
+</tr>
+<tr>
+<td><strong>G.3.5</strong></td>
+<td><code>CamBienTheoKichBan.Xep(params LoaiLoiGiaLap[])</code></td>
+<td>Mô phỏng được <strong>một chuỗi</strong> sự cố: tốt, tốt, mất kết nối, ngoài dải, tốt trở lại · ghép với lớp bọc hạn giờ thì dựng được tình huống <strong>treo</strong> mà không cần phần cứng</td>
+</tr>
+</tbody></table></div>
+<h4>Nhóm nghiệp vụ và trình tự — <code>dotnet run -- G4</code>, <code>-- G5</code></h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bài</th>
+<th>Chữ ký bắt buộc</th>
+<th>★ Điểm chấm chính</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>G.4.2</strong></td>
+<td><code>CumKep : IKep</code> dùng <code>IVaoRaSo</code>, chờ tín hiệu xác nhận</td>
+<td>Ghi tín hiệu ra mà <strong>cảm biến không lên</strong> → cảnh báo, <strong>không coi là xong</strong> · gọi <code>Kep()</code> lần nữa khi đã kẹp thì không làm gì và <strong>không lỗi</strong></td>
+</tr>
+<tr>
+<td><strong>G.4.4</strong></td>
+<td><code>GiamSatKhiNen(Func&lt;double&gt; doc, double nguong)</code> + hai sự kiện</td>
+<td>Áp thấp <strong>ba nhịp liên tiếp</strong> chỉ phát <strong>một</strong> sự kiện (phát khi <em>đổi trạng thái</em>, không phát mỗi nhịp) · lớp này <strong>không nhận <code>May</code></strong> — nó chỉ đo và kêu, không tự dừng máy</td>
+</tr>
+<tr>
+<td><strong>G.4.5</strong></td>
+<td><code>BoDieuKhien</code> với <code>DatTrangThai</code> là <strong>một chỗ duy nhất</strong> gán trạng thái</td>
+<td>Mọi lần đổi đều phát sự kiện, đúng thứ tự <code>SanSang→DangChay→SanSang</code></td>
+</tr>
+<tr>
+<td><strong>G.5.3</strong></td>
+<td>Vòng chạy bắt <strong>đúng ba</strong> loại ngoại lệ</td>
+<td>Xem callout dưới — đây là chỗ lời giải mẫu <strong>đã có lỗi thật</strong></td>
+</tr>
+<tr>
+<td><strong>G.5.4</strong></td>
+<td><code>BangChuyen.ChoPhep</code> · <code>ThuChuyen(…, out …)</code></td>
+<td>Chuyển sai bị từ chối <strong>ở bảng</strong>, không cần <code>if</code> ở chỗ gọi · duyệt <strong>toàn bộ ma trận</strong>: mỗi trạng thái phải có ít nhất một lối ra, nếu không máy vào đó rồi kẹt vĩnh viễn</td>
+</tr>
+<tr>
+<td><strong>G.5.5</strong></td>
+<td><code>TamDung()</code> · <code>ChayTiep()</code> với cổng ở <strong>ranh giới bước</strong></td>
+<td>Tạm dừng rồi chạy tiếp, mỗi bước vẫn chạy <strong>đúng 5 lần</strong> cho 5 chu kỳ — không bước nào chạy lại</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Lời giải mẫu của G.5.3 có một lỗi thật ở lần chạy đầu, và chính phép kiểm của nó bắt được.</strong>
+Vòng chạy bắt <code>AlarmException</code> (đặt báo động) và <code>OperationCanceledException</code> (về sẵn sàng), rồi
+để mọi lỗi khác <strong>nổi thẳng lên</strong> — nghe thì đúng tinh thần <em>&quot;đừng nuốt lỗi lạ&quot;</em>. Nhưng phép kiểm
+<em>&quot;gặp lỗi lạ thì không được ở lại trạng thái Đang chạy&quot;</em> đỏ: máy <strong>vẫn báo <code>DangChay</code></strong> trong khi
+thực tế đã ngừng chạy. Giao diện sẽ hiện &quot;đang chạy&quot;, người vận hành đứng chờ, và không có gì
+xảy ra cả.</p>
+<p>Chỗ sai là lẫn giữa hai việc: <strong>không nuốt lỗi</strong> và <strong>không cập nhật trạng thái</strong>. Bản sửa thêm
+nhánh thứ ba <code>catch (Exception) { DatTrangThai(BaoDong); throw; }</code> — vẫn ném tiếp cho tầng trên
+xử lý, nhưng máy được đưa về trạng thái an toàn trước. Rút ra: <em>rethrow</em> không miễn cho bạn
+trách nhiệm để lại hệ thống ở một trạng thái đúng.</p>
+<p>Còn một phép kiểm nữa hỏng cùng lúc, nhưng <strong>lỗi nằm ở kỳ vọng chứ không ở mã</strong>: tôi khẳng định
+&quot;tạm dừng thì không bước nào chạy thêm&quot;, trong khi thiết kế là <strong>tạm dừng ở ranh giới bước</strong> nên
+bước đang bay phải chạy nốt. Kỳ vọng đúng là <em>&quot;sau khi bước đang dở chạy nốt, không bước nào chạy
+thêm nữa&quot;</em>. Hai phép hỏng cạnh nhau, một cái lỗi mã một cái lỗi kỳ vọng — phân biệt được hai thứ
+đó là kỹ năng chính khi đọc kết quả kiểm thử.</p>
+</blockquote>
+<h4>Nhóm vận hành — <code>dotnet run -- G8</code></h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bài</th>
+<th>Chữ ký bắt buộc</th>
+<th>★ Điểm chấm chính</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>G.8.2</strong></td>
+<td><code>NhatKy.Ghi(muc, nguon, khuon, params (Ten, GiaTri)[])</code> · <code>ICuaRaLog</code></td>
+<td>Lọc <strong>theo thuộc tính</strong> <code>Ten = &quot;Z&quot;</code> ra 3 bản ghi, không tìm chuỗi văn bản · đếm được <em>&quot;mọi lần trục quá thời gian&quot;</em> bằng <strong>khuôn</strong> · bỏ bảng hiển thị chỉ là <strong>gỡ một cửa ra</strong>, lớp log không đổi</td>
+</tr>
+<tr>
+<td><strong>G.8.3</strong></td>
+<td><code>DriverCamBienNoiTiep(INguonByte)</code> dùng <code>BoTachKhung</code> + <code>TongKiem</code></td>
+<td>Khung bị cắt <strong>ba mảnh, có rác ở đầu</strong> → vẫn đọc đúng 2,015 · khung <strong>sai tổng kiểm bị bỏ</strong>, không trả về giá trị rác 9,999 · không có dữ liệu → cảnh báo, <strong>không treo vô hạn</strong></td>
+</tr>
+<tr>
+<td><strong>G.8.4</strong></td>
+<td><code>BatTayHaiDay(coPhoi, maySauSanSang, baoCoHang)</code></td>
+<td>Phân biệt được <strong>ĐÓI</strong> (máy trước hết hàng) với <strong>BỊ CHẶN</strong> (máy sau đầy), đếm riêng hai loại — hai nguyên nhân này dẫn tới hai hành động sửa chữa hoàn toàn khác nhau</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong><code>INguonByte</code> của G.8.3 là mẹo đáng mang đi chỗ khác.</strong> Driver không nhận <code>SerialPort</code> mà nhận
+một <strong>nguồn byte</strong> trừu tượng. Bản thật bọc <code>SerialPort</code>; bản giả trả về từng mảnh do phép kiểm
+dựng — kể cả mảnh <strong>cố ý cắt giữa khung</strong>. Nhờ vậy toàn bộ phần khó nhất của driver nối tiếp
+(phân khung, tổng kiểm, khung hỏng) kiểm được <strong>không cần một cổng COM nào</strong>. Đây là cùng một ý
+với <code>IDieuPhoi</code> ở G.7.1 và <code>IDongHo</code> ở G.6.5: <strong>thứ gì gắn bạn vào thế giới thật thì bọc nó lại
+sau một hợp đồng nhỏ</strong>, rồi phần còn lại kiểm được trên bàn.</p>
+</blockquote>
+<hr>
+<h3>G.10.11  Bảng tra nhanh: bài nào ở file nào</h3>
+<p><strong>Bảng G.3 — Lời giải mẫu trong <code>source/MeoBench</code> (đủ 40/40 bài)</strong></p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -43851,9 +44039,19 @@ không chỉ khẳng định &quot;khác null&quot;.</p>
 <td><code>dotnet run -- G1</code></td>
 </tr>
 <tr>
+<td><code>MienVaLogic2.cs</code></td>
+<td>G.1.1 · G.1.4 · G.2.2 · G.2.3 · G.2.4 · G.2.5</td>
+<td><code>dotnet run -- G1</code> hoặc <code>G2</code></td>
+</tr>
+<tr>
 <td><code>LogicVaThietBi.cs</code></td>
 <td>G.2.1 · G.3.1 · G.3.4</td>
 <td><code>dotnet run -- G2</code> hoặc <code>G3</code></td>
+</tr>
+<tr>
+<td><code>ThietBiVaNghiepVu2.cs</code></td>
+<td>G.3.2 · G.3.3 · G.3.5 · G.4.2 · G.4.4</td>
+<td><code>dotnet run -- G3</code> hoặc <code>G4</code></td>
 </tr>
 <tr>
 <td><code>NghiepVuVaTrinhTu.cs</code></td>
@@ -43876,6 +44074,11 @@ không chỉ khẳng định &quot;khác null&quot;.</p>
 <td><code>dotnet run -- G8</code></td>
 </tr>
 <tr>
+<td><code>TrinhTuVaVanHanh2.cs</code></td>
+<td>G.4.5 · G.5.3 · G.5.4 · G.5.5 · G.8.2 · G.8.3 · G.8.4</td>
+<td><code>dotnet run -- G5</code> hoặc <code>G8</code></td>
+</tr>
+<tr>
 <td><code>Program.cs</code></td>
 <td>bộ chạy + chế độ <code>--demo</code></td>
 <td><code>dotnet run -- --demo</code></td>
@@ -43887,9 +44090,10 @@ và tiêu chí chấm ở mục này; (2) <strong>chép riêng phần hàm kiể
 chúng chính là bản đặc tả viết bằng mã; (3) tự viết cho tới khi các phép kiểm xanh; (4) <strong>chỉ khi
 đó</strong> mới mở lời giải mẫu ra so, và chỗ đáng so không phải cú pháp mà là <strong>những nhánh lỗi mà bạn
 chưa nghĩ tới</strong>.</p>
-<p>Mười tám bài còn lại không có lời giải mẫu, nhưng chúng dùng đúng khuôn này: thêm một hàm
-<code>KiemXxx.Chay()</code>, gọi <code>Kiem.MoBai(...)</code> rồi liệt kê các khẳng định. Viết phép kiểm <strong>trước</strong> khi
-viết mã cho bài đó — với G.2.3 (tách khung) thì đó gần như là cách duy nhất làm đúng ngay.</p>
+<p><strong>Cả bốn mươi bài đều có lời giải</strong>, nhưng khuôn viết phép kiểm thì vẫn nên tự làm cho bài tập
+của riêng bạn: thêm một hàm <code>KiemXxx.Chay()</code>, gọi <code>Kiem.MoBai(...)</code> rồi liệt kê các khẳng định.
+Viết phép kiểm <strong>trước</strong> khi viết mã — với G.2.3 (tách khung) thì đó gần như là cách duy nhất
+làm đúng ngay.</p>
 </blockquote>
 </div>
 </div>

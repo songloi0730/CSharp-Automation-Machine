@@ -37510,8 +37510,7 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 > G.2.1 · G.3.1 · G.3.4 · G.4.1 · G.4.3 · G.5.1 · G.5.2 · G.8.1 · G.8.5. Các bài còn lại bổ sung
 > chiều sâu, không phải xương sống.
 
-> 📌 **Hai mươi tám bài ngoài nhóm xương sống cố tình KHÔNG kèm lời giải** (12 bài xương sống có
-> lời giải mẫu chạy được ở mục G.10). Lý do không phải để làm khó: mục *Kết quả mong đợi* của mỗi
+> 📌 **Cả bốn mươi bài đều có lời giải mẫu chạy được ở mục G.10** — nhưng hãy dùng chúng đúng cách. Lý do không phải để làm khó: mục *Kết quả mong đợi* của mỗi
 > bài đã là một tiêu chí **tự chấm được**, và trong phần mềm máy, biết cách tự trả lời câu *"tôi
 > xong chưa"* là kỹ năng quan trọng hơn hẳn việc đối chiếu với một đáp án có sẵn. Nếu bí hoàn toàn
 > ở một bài, đọc **cấu trúc** ở `source/MeoBench` hoặc `source/MeoFrameMini` rồi quay lại tự viết,
@@ -37520,10 +37519,9 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 ---
 ## G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống
 
-Mục G.9 nêu mười hai bài xương sống; **nhóm G.6 và G.7 nay cũng có lời giải đầy đủ** — tổng cộng
-**22 trong 40 bài**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
+Mục G.9 nêu mười hai bài xương sống; **cả bốn mươi bài nay đều có lời giải chạy được**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
 lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
-`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **155/155 phép kiểm đạt**.
+`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **294/294 phép kiểm đạt**.
 
 ### G.10.0  Chạy thử từng phần, không đợi làm xong hết
 
@@ -37532,20 +37530,20 @@ không biết hỏng ở đâu. Bộ tự kiểm cho phép **chạy lẻ từng 
 
 ```bash
 cd source/MeoBench
-dotnet run                 # chạy cả 22 bài — 155 phép kiểm
+dotnet run                 # chạy cả 40 bài — 294 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
-dotnet run -- G2           # chỉ bài G.2.1
+dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
-dotnet run -- --danhsach   # liệt kê 22 bài
+dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
 
 Kết quả thật khi chạy `dotnet run -- G4`:
 
 ```text
 ╔══════════════════════════════════════════════════════════╗
-║  MeoBench — tự kiểm 22 bài của Phụ lục G                 ║
+║  MeoBench — tự kiểm ĐỦ 40 bài của Phụ lục G              ║
 ╚══════════════════════════════════════════════════════════╝
 Chỉ chạy nhóm khớp 'G4':
 
@@ -38036,19 +38034,110 @@ dừng → Chạy tiếp bật · chuyển sai bị bảng từ chối mà **kh�
 
 ---
 
-### G.10.10  Bảng tra nhanh: bài nào ở file nào
+### G.10.10  Mười tám bài còn lại — đặc tả và điểm chấm
 
-**Bảng G.3 — Lời giải mẫu trong `source/MeoBench` (22/40 bài)**
+Ba nhóm còn thiếu nay đã đủ. Mục này ghi **chữ ký bắt buộc** và **điểm chấm chính** của từng bài;
+chi tiết đầy đủ nằm trong các hàm kiểm của lời giải mẫu — chúng chính là bản đặc tả viết bằng mã.
+
+#### Nhóm kiểu miền và logic thuần — `dotnet run -- G1`, `-- G2`
+
+| Bài | Chữ ký bắt buộc | ★ Điểm chấm chính |
+|---|---|---|
+| **G.1.1** | `ViTriMm`, `KhoangCachMm`, `ChieuDayMm` — ba `readonly record struct` | `viTri − viTri = KhoangCachMm` (không phải vị trí) · `ViTriMm v = 10.0;` **không biên dịch được** · 120 mm vị trí **khác** 120 mm chiều dày |
+| **G.1.4** | `ThongTinCanhBao(Ma, MoTa, ViecNenLam, HanhDong)` · `DanhMucCanhBao.Tra(int)` | Mã **chưa khai báo** vẫn tra được và **không ném** · mã lạ mặc định `DungNgay` — chọn phía an toàn khi không biết |
+| **G.2.2** | `BoQuyDoi.SangXung(double) → long` · `SangMm(long) → double` | Làm tròn **ra xa 0** chứ không cắt: cắt về một phía sẽ tích luỹ sai số sau hàng nghìn chu kỳ · hệ số 0 bị chặn ở hàm dựng |
+| **G.2.3** | `BoTachKhung.Nap(ReadOnlySpan<byte>) → IReadOnlyList<byte[]>` | Ba tình huống bắt buộc, xem dưới |
+| **G.2.4** | `TongKiem.Xor` · `Dong` · `XacMinh` | Lật **một bit** → trượt · nhưng **hoán vị hai byte thì XOR KHÔNG bắt được** |
+| **G.2.5** | `CuaSoTruotDo.Them` · `Tinh() → ThongKeDo(DuMau, TrungBinh, DoLech, SoMau)` | Chưa đủ mẫu thì báo **chưa đủ**, không trả số bừa · `[10,10,10,50]` cho độ lệch chuẩn 17,3 — con số **tố cáo** rằng 50 bất thường |
+
+**G.2.3 có ba phép kiểm bắt buộc**, và đây là bài sai lần đầu nhiều nhất cả phụ lục:
+
+| Tình huống | Kết quả đúng |
+|---|---|
+| Một khung tới làm **ba mảnh**: `[STX,'2']`, `['.','0']`, `['1',ETX]` | phát ra **đúng một** khung, nội dung `"2.01"` |
+| **Hai khung** trong một mảnh: `[STX,'1',ETX,STX,'2',ETX]` | phát ra **hai** khung, `"1"` rồi `"2"` |
+| Khung trọn + khung dở: `[STX,'9',ETX,STX,'8']` | phát 1 khung, **giữ lại 1 byte**; nạp tiếp `['7',ETX]` ra `"87"` |
+
+Cộng thêm hai bất biến ít ai nghĩ tới: byte **ngoài khung** bị bỏ qua chứ không tích luỹ, và thiết
+bị hỏng gửi mãi không có `ETX` thì bộ đệm phải **tự giải phóng** thay vì phình vô hạn.
+
+> 💡 **Một bẫy số thực mà chính phép kiểm của sách đã dính.** Bài G.1.1 có phép kiểm
+> *"2,12 − 2,00 phải bằng 0,12"*. Nó **trượt**, với thông báo trông vô lý:
+> *mong đợi `0.120 mm`, thực tế `0.120 mm`* — hai chuỗi giống hệt nhau. Lý do:
+> `2.12 - 2.00 = 0.12000000000000011`, và `ToString("F3")` làm tròn cả hai về `"0.120"`. Đây đúng
+> là quy tắc 6 ở Bảng F.3 tự cắn người viết. Lời giải giữ **cả hai** phép kiểm — một chứng minh
+> `==` trượt, một chứng minh so theo dung sai thì đúng — để bài học không bị mất.
+
+#### Nhóm thiết bị — `dotnet run -- G3`
+
+| Bài | Chữ ký bắt buộc | ★ Điểm chấm chính |
+|---|---|---|
+| **G.3.2** | `CamBienCoHanGio(ICamBienChieuDay trong, string ten, int hanGioMs)` | Là **lớp bọc**, không sửa bản cài đặt nào: bọc được bản giả lập, driver nối tiếp, hay hàng của hãng khác · cảm biến chậm → `AlarmException`; **người bấm Dừng → `OperationCanceledException`**, hai thứ không lẫn |
+| **G.3.3** | `IVaoRaSo.Doc/Ghi(string)` · `BanDoTinHieu.KenhVao/KenhRa` · `KiemTra()` | Tên lạ **ném ngay**, không âm thầm trả `false` · `KiemTra()` bắt được **hai tín hiệu trùng kênh** — lỗi đấu nối kinh điển |
+| **G.3.5** | `CamBienTheoKichBan.Xep(params LoaiLoiGiaLap[])` | Mô phỏng được **một chuỗi** sự cố: tốt, tốt, mất kết nối, ngoài dải, tốt trở lại · ghép với lớp bọc hạn giờ thì dựng được tình huống **treo** mà không cần phần cứng |
+
+#### Nhóm nghiệp vụ và trình tự — `dotnet run -- G4`, `-- G5`
+
+| Bài | Chữ ký bắt buộc | ★ Điểm chấm chính |
+|---|---|---|
+| **G.4.2** | `CumKep : IKep` dùng `IVaoRaSo`, chờ tín hiệu xác nhận | Ghi tín hiệu ra mà **cảm biến không lên** → cảnh báo, **không coi là xong** · gọi `Kep()` lần nữa khi đã kẹp thì không làm gì và **không lỗi** |
+| **G.4.4** | `GiamSatKhiNen(Func<double> doc, double nguong)` + hai sự kiện | Áp thấp **ba nhịp liên tiếp** chỉ phát **một** sự kiện (phát khi *đổi trạng thái*, không phát mỗi nhịp) · lớp này **không nhận `May`** — nó chỉ đo và kêu, không tự dừng máy |
+| **G.4.5** | `BoDieuKhien` với `DatTrangThai` là **một chỗ duy nhất** gán trạng thái | Mọi lần đổi đều phát sự kiện, đúng thứ tự `SanSang→DangChay→SanSang` |
+| **G.5.3** | Vòng chạy bắt **đúng ba** loại ngoại lệ | Xem callout dưới — đây là chỗ lời giải mẫu **đã có lỗi thật** |
+| **G.5.4** | `BangChuyen.ChoPhep` · `ThuChuyen(…, out …)` | Chuyển sai bị từ chối **ở bảng**, không cần `if` ở chỗ gọi · duyệt **toàn bộ ma trận**: mỗi trạng thái phải có ít nhất một lối ra, nếu không máy vào đó rồi kẹt vĩnh viễn |
+| **G.5.5** | `TamDung()` · `ChayTiep()` với cổng ở **ranh giới bước** | Tạm dừng rồi chạy tiếp, mỗi bước vẫn chạy **đúng 5 lần** cho 5 chu kỳ — không bước nào chạy lại |
+
+> ⚠️ **Lời giải mẫu của G.5.3 có một lỗi thật ở lần chạy đầu, và chính phép kiểm của nó bắt được.**
+> Vòng chạy bắt `AlarmException` (đặt báo động) và `OperationCanceledException` (về sẵn sàng), rồi
+> để mọi lỗi khác **nổi thẳng lên** — nghe thì đúng tinh thần *"đừng nuốt lỗi lạ"*. Nhưng phép kiểm
+> *"gặp lỗi lạ thì không được ở lại trạng thái Đang chạy"* đỏ: máy **vẫn báo `DangChay`** trong khi
+> thực tế đã ngừng chạy. Giao diện sẽ hiện "đang chạy", người vận hành đứng chờ, và không có gì
+> xảy ra cả.
+>
+> Chỗ sai là lẫn giữa hai việc: **không nuốt lỗi** và **không cập nhật trạng thái**. Bản sửa thêm
+> nhánh thứ ba `catch (Exception) { DatTrangThai(BaoDong); throw; }` — vẫn ném tiếp cho tầng trên
+> xử lý, nhưng máy được đưa về trạng thái an toàn trước. Rút ra: *rethrow* không miễn cho bạn
+> trách nhiệm để lại hệ thống ở một trạng thái đúng.
+>
+> Còn một phép kiểm nữa hỏng cùng lúc, nhưng **lỗi nằm ở kỳ vọng chứ không ở mã**: tôi khẳng định
+> "tạm dừng thì không bước nào chạy thêm", trong khi thiết kế là **tạm dừng ở ranh giới bước** nên
+> bước đang bay phải chạy nốt. Kỳ vọng đúng là *"sau khi bước đang dở chạy nốt, không bước nào chạy
+> thêm nữa"*. Hai phép hỏng cạnh nhau, một cái lỗi mã một cái lỗi kỳ vọng — phân biệt được hai thứ
+> đó là kỹ năng chính khi đọc kết quả kiểm thử.
+
+#### Nhóm vận hành — `dotnet run -- G8`
+
+| Bài | Chữ ký bắt buộc | ★ Điểm chấm chính |
+|---|---|---|
+| **G.8.2** | `NhatKy.Ghi(muc, nguon, khuon, params (Ten, GiaTri)[])` · `ICuaRaLog` | Lọc **theo thuộc tính** `Ten = "Z"` ra 3 bản ghi, không tìm chuỗi văn bản · đếm được *"mọi lần trục quá thời gian"* bằng **khuôn** · bỏ bảng hiển thị chỉ là **gỡ một cửa ra**, lớp log không đổi |
+| **G.8.3** | `DriverCamBienNoiTiep(INguonByte)` dùng `BoTachKhung` + `TongKiem` | Khung bị cắt **ba mảnh, có rác ở đầu** → vẫn đọc đúng 2,015 · khung **sai tổng kiểm bị bỏ**, không trả về giá trị rác 9,999 · không có dữ liệu → cảnh báo, **không treo vô hạn** |
+| **G.8.4** | `BatTayHaiDay(coPhoi, maySauSanSang, baoCoHang)` | Phân biệt được **ĐÓI** (máy trước hết hàng) với **BỊ CHẶN** (máy sau đầy), đếm riêng hai loại — hai nguyên nhân này dẫn tới hai hành động sửa chữa hoàn toàn khác nhau |
+
+> 📌 **`INguonByte` của G.8.3 là mẹo đáng mang đi chỗ khác.** Driver không nhận `SerialPort` mà nhận
+> một **nguồn byte** trừu tượng. Bản thật bọc `SerialPort`; bản giả trả về từng mảnh do phép kiểm
+> dựng — kể cả mảnh **cố ý cắt giữa khung**. Nhờ vậy toàn bộ phần khó nhất của driver nối tiếp
+> (phân khung, tổng kiểm, khung hỏng) kiểm được **không cần một cổng COM nào**. Đây là cùng một ý
+> với `IDieuPhoi` ở G.7.1 và `IDongHo` ở G.6.5: **thứ gì gắn bạn vào thế giới thật thì bọc nó lại
+> sau một hợp đồng nhỏ**, rồi phần còn lại kiểm được trên bàn.
+
+---
+
+### G.10.11  Bảng tra nhanh: bài nào ở file nào
+
+**Bảng G.3 — Lời giải mẫu trong `source/MeoBench` (đủ 40/40 bài)**
 
 | File | Bài | Chạy lẻ bằng |
 |---|---|---|
 | `Kiem.cs` | bộ tự kiểm dùng chung (~60 dòng, không phụ thuộc gì) | — |
 | `Mien.cs` | G.1.2 · G.1.3 · G.1.5 | `dotnet run -- G1` |
+| `MienVaLogic2.cs` | G.1.1 · G.1.4 · G.2.2 · G.2.3 · G.2.4 · G.2.5 | `dotnet run -- G1` hoặc `G2` |
 | `LogicVaThietBi.cs` | G.2.1 · G.3.1 · G.3.4 | `dotnet run -- G2` hoặc `G3` |
+| `ThietBiVaNghiepVu2.cs` | G.3.2 · G.3.3 · G.3.5 · G.4.2 · G.4.4 | `dotnet run -- G3` hoặc `G4` |
 | `NghiepVuVaTrinhTu.cs` | G.4.1 · G.4.3 · G.5.1 · G.5.2 | `dotnet run -- G4` hoặc `G5` |
 | `DuLieu.cs` | G.6.1 · G.6.2 · G.6.3 · G.6.4 · G.6.5 | `dotnet run -- G6` |
 | `GiaoDien.cs` | G.7.1 … G.7.5 (kèm bảng chuyển của G.5.4) | `dotnet run -- G7` |
 | `RapNoi.cs` | G.8.1 · G.8.5 | `dotnet run -- G8` |
+| `TrinhTuVaVanHanh2.cs` | G.4.5 · G.5.3 · G.5.4 · G.5.5 · G.8.2 · G.8.3 · G.8.4 | `dotnet run -- G5` hoặc `G8` |
 | `Program.cs` | bộ chạy + chế độ `--demo` | `dotnet run -- --demo` |
 
 > 📌 **Cách dùng lời giải mẫu cho đúng.** Đừng mở nó ra trước. Trình tự có ích nhất: (1) đọc đặc tả
@@ -38057,7 +38146,8 @@ dừng → Chạy tiếp bật · chuyển sai bị bảng từ chối mà **kh�
 > đó** mới mở lời giải mẫu ra so, và chỗ đáng so không phải cú pháp mà là **những nhánh lỗi mà bạn
 > chưa nghĩ tới**.
 >
-> Mười tám bài còn lại không có lời giải mẫu, nhưng chúng dùng đúng khuôn này: thêm một hàm
-> `KiemXxx.Chay()`, gọi `Kiem.MoBai(...)` rồi liệt kê các khẳng định. Viết phép kiểm **trước** khi
-> viết mã cho bài đó — với G.2.3 (tách khung) thì đó gần như là cách duy nhất làm đúng ngay.
+> **Cả bốn mươi bài đều có lời giải**, nhưng khuôn viết phép kiểm thì vẫn nên tự làm cho bài tập
+> của riêng bạn: thêm một hàm `KiemXxx.Chay()`, gọi `Kiem.MoBai(...)` rồi liệt kê các khẳng định.
+> Viết phép kiểm **trước** khi viết mã — với G.2.3 (tách khung) thì đó gần như là cách duy nhất
+> làm đúng ngay.
 

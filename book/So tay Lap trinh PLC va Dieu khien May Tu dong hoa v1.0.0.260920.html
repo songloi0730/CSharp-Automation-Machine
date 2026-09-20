@@ -1112,7 +1112,9 @@
   <li style="padding-left:16px;font-size:13px"><a href="#e2-máy-không-khi-đng-đưc">E.2 Máy không khởi động được</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e3-mt-ngõ-vào-không-lên">E.3 Một ngõ vào không lên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e4-mt-ngõ-ra-không-tác-đng">E.4 Một ngõ ra không tác động</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#e4b-thao-tác-ca-ngưi-vn-hành-không-ăn">E.4b ⭐ Thao tác của người vận hành không ăn</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e5-giá-tr-analog-sai-hoc-nhy-lon">E.5 Giá trị analog sai hoặc nhảy loạn</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#e5b-máy-chy-bình-thưng-nhưng-con-s-sai">E.5b ⭐⭐ Máy chạy bình thường nhưng CON SỐ sai</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e6-mng-rt-hoc-thit-b-mt-kt-ni">E.6 Mạng rớt hoặc thiết bị mất kết nối</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e7-chu-trình-dng-gia-chng">E.7 Chu trình dừng giữa chừng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#e8-sn-phm-hng-mà-máy-báo-ok">E.8 Sản phẩm hỏng mà máy báo OK</a></li>
@@ -1873,7 +1875,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>E</td>
 <td><a href="pl_e_tra_theo_trieu_chung.md">⭐ Chỉ mục tra theo triệu chứng</a></td>
-<td>&quot;Máy không khởi động được&quot;, &quot;một ngõ vào không lên&quot;, &quot;giá trị analog nhảy loạn&quot;, &quot;mạng rớt ngẫu nhiên&quot;, &quot;chu trình dừng giữa chừng&quot;, &quot;board hỏng mà máy báo OK&quot;, &quot;chuyền tắc&quot;… → dẫn đúng mục chương. Hiện thực hoá Đường tra cứu 3 đã hứa ở Ch.1</td>
+<td>&quot;Máy không khởi động được&quot;, &quot;một ngõ vào không lên&quot;, &quot;giá trị analog nhảy loạn&quot;, &quot;mạng rớt ngẫu nhiên&quot;, &quot;chu trình dừng giữa chừng&quot;, &quot;board hỏng mà máy báo OK&quot;, &quot;chuyền tắc&quot;… → dẫn đúng mục chương. ⭐ Kèm hai nhóm mà <strong>máy vẫn chạy</strong> nên sống lâu nhất trước khi có ai đi tìm: <strong>E.4b — thao tác của người vận hành không ăn</strong> (nhấn một lần ra hai lần · phải giữ nút mới chạy · nút Dừng không dừng được · cuộn dây trùng) và <strong>E.5b — máy chạy bình thường nhưng con số sai</strong> (đếm thiếu/thừa · tràn số · bộ định thời đóng băng · đổi công thức mà vẫn chạy tham số cũ). Hiện thực hoá Đường tra cứu 3 đã hứa ở Ch.1</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -44771,7 +44773,7 @@ nhất được coi là chính thức.</strong></p>
 </tr>
 <tr>
 <td>6 — ⚠⚠ <strong>Cấu hình rơ-le an toàn + mã kiểm tra</strong></td>
-<td>Kèm hồ sơ kiểm định (Chương 48)</td>
+<td>Kèm hồ sơ kiểm định (Chương 47)</td>
 </tr>
 <tr>
 <td>7 — Cấu hình mạng</td>
@@ -46407,7 +46409,7 @@ viết lại, và bạn <strong>đã có một bản chạy được để so</s
 </thead>
 <tbody><tr>
 <td>⚠ <strong>Thời gian quét khác</strong></td>
-<td>⭐ Logic phụ thuộc thời gian quét sẽ <strong>chạy khác</strong> (Chương 7)</td>
+<td>⭐ Logic phụ thuộc thời gian quét sẽ <strong>chạy khác</strong> (Chương 10)</td>
 </tr>
 <tr>
 <td>Cách xử lý bộ định thời khi bị ngắt giữa chừng</td>
@@ -49174,7 +49176,7 @@ lỗi rất khó tìm</strong>.</p>
 <blockquote>
 <p>⚠⚠ <strong>Hàng cuối là khác biệt về HÀNH VI có hậu quả thật.</strong></p>
 <p>Mô hình cổ điển — đọc toàn bộ ngõ vào ở đầu vòng quét, chạy chương trình, ghi toàn bộ ngõ ra ở cuối
-— làm cho ⭐ <strong>giá trị ngõ vào KHÔNG đổi trong suốt một vòng quét</strong> (Chương 7).</p>
+— làm cho ⭐ <strong>giá trị ngõ vào KHÔNG đổi trong suốt một vòng quét</strong> (Chương 10).</p>
 <p>⚠ Ở hệ mà I/O cập nhật không đồng bộ với việc quét chương trình (đặc trưng của Rockwell
 ControlLogix), giả định đó <strong>không còn đúng</strong> — cùng một tag ngõ vào có thể cho hai giá trị khác
 nhau ở hai chỗ trong một lần quét.</p>
@@ -52660,6 +52662,9 @@ bật nguồn</strong>, không phải sau.</p>
 <p><strong>Bạn đang đứng trước một cỗ máy không chạy đúng. Bắt đầu từ đây.</strong></p>
 <p>Phụ lục này sắp xếp theo <strong>thứ bạn quan sát được</strong>, không theo thứ bạn cần biết — vì lúc máy hỏng,
 bạn chưa biết mình cần biết gì.</p>
+<p>⭐ Và <strong>không phải triệu chứng nào cũng là máy dừng</strong>: hai nhóm <strong>E.4b</strong> <em>(thao tác không ăn)</em>
+và <strong>E.5b</strong> <em>(máy chạy bình thường nhưng con số sai)</em> là những nhóm mà máy <strong>vẫn chạy</strong> — nên
+⚠ chúng sống lâu nhất trước khi có ai đi tìm.</p>
 </blockquote>
 <hr>
 <blockquote>
@@ -52964,6 +52969,78 @@ phần mềm — nó chia đôi bài toán ngay lập tức.</p>
 trước khi nghi module.</strong></p>
 </blockquote>
 <hr>
+<h2 id="e4b-thao-tác-ca-ngưi-vn-hành-không-ăn">E.4b ⭐ Thao tác của người vận hành không ăn</h2>
+<p>⚠ <strong>Nhóm này bị bỏ sót nhiều nhất khi chẩn đoán, vì người ta coi nó là &quot;người dùng thao tác sai&quot;.</strong>
+⭐ Phần lớn lần thì không phải.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Quan sát</th>
+<th>Nghi trước</th>
+<th>Chương</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nhấn nút, <strong>không có gì xảy ra</strong></td>
+<td>Điều kiện cho phép chưa đạt — ⭐ đi theo <strong>E.2</strong> trước khi nghi nút</td>
+<td>E.2 · 25</td>
+</tr>
+<tr>
+<td>⭐ <strong>Nhấn một lần, máy làm hai lần</strong></td>
+<td>⭐⭐ <strong>Thiếu bắt cạnh</strong>, hoặc rung tiếp điểm chưa được chống</td>
+<td>16 mục 16.5 · 17 mục 17.4</td>
+</tr>
+<tr>
+<td>⭐ Phải <strong>giữ nút</strong> mới chạy, nhả ra là dừng</td>
+<td>⭐⭐ <strong>Thiếu mạch tự giữ</strong> — hoặc nhánh tự giữ mắc sai</td>
+<td>15 mục 15.4</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Nút Dừng không dừng được máy</strong></td>
+<td>⭐⭐ Nhánh tự giữ <strong>vòng qua cả nút Dừng</strong> — xem Hình 15.2</td>
+<td>⚠ <strong>15 mục 15.4</strong></td>
+</tr>
+<tr>
+<td>Nút Reset <strong>không xoá được lỗi</strong></td>
+<td>Nguyên nhân gốc <strong>chưa hết</strong>; hoặc bit lỗi là loại <strong>giữ được</strong> nên cần lệnh xoá tường minh</td>
+<td>16 mục 16.4 · 28</td>
+</tr>
+<tr>
+<td>⭐ Ngõ ra <strong>bật rồi tự tắt ngay trong cùng vòng quét</strong></td>
+<td>⭐⭐ <strong>Cuộn dây trùng</strong> — một tag được ghi ở hai chỗ, chỗ sau đè chỗ trước</td>
+<td>⚠ <strong>15 mục 15.3</strong> · 22</td>
+</tr>
+<tr>
+<td>Đổi công tắc chế độ mà máy <strong>không đổi chế độ</strong></td>
+<td>Điều kiện chuyển chế độ không cho phép đổi khi đang chạy dở</td>
+<td>28</td>
+</tr>
+<tr>
+<td>⭐ Nút <strong>chỉ ăn đôi khi</strong>, càng cũ càng hay trượt</td>
+<td>Rung tiếp điểm; tiếp điểm mòn — ⚠ <strong>xung ngắn hơn một vòng quét thì PLC không thấy</strong></td>
+<td>4 · ⭐ <strong>10 mục 10.3</strong></td>
+</tr>
+<tr>
+<td>Thao tác ăn trên màn hình nhưng <strong>không ăn trên nút cứng</strong> (hoặc ngược lại)</td>
+<td>Hai đường lệnh không đi qua cùng một chỗ — ⭐ kiểm chỗ <strong>gom lệnh</strong></td>
+<td>44 · 27</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Phép thử tách đôi bài toán trong ba mươi giây:</strong> mở màn hình theo dõi, <strong>nhìn bit của nút</strong>
+khi nhấn.</p>
+<p>⚡ Bit <strong>không lên</strong> → bài toán nằm ở <strong>phần cứng</strong>: nút, dây, module, kiểu đấu (đi tiếp theo E.3).
+⚡ Bit <strong>lên mà máy không phản ứng</strong> → bài toán nằm ở <strong>logic</strong>: điều kiện cho phép, bắt cạnh,
+tự giữ, hoặc cuộn dây trùng.</p>
+<p>⭐ Hai nhánh đó dẫn tới hai nhóm chương hoàn toàn khác nhau — <strong>đừng đoán, hãy nhìn bit</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Một cảnh báo riêng cho hàng &quot;nút Dừng không dừng được&quot;.</strong> ⭐ Đây <strong>không</strong> phải lỗi để
+&quot;xử lý sau&quot;. Và quan trọng hơn: ⚠⚠ <strong>nút Dừng trong chương trình không phải chức năng dừng khẩn
+cấp</strong> — dừng khẩn cấp phải cắt bằng phần cứng, không đi qua logic PLC (Chương 47, 48). ⭐ Nếu máy
+đang dựa vào nút Dừng mềm để đảm bảo an toàn thì vấn đề lớn hơn một nấc thang mắc sai.</p>
+</blockquote>
+<hr>
 <h2 id="e5-giá-tr-analog-sai-hoc-nhy-lon">E.5 Giá trị analog sai hoặc nhảy loạn</h2>
 <div class="table-wrap"><table>
 <thead>
@@ -53020,6 +53097,94 @@ trông giống một giá trị bình thường — chỉ là bình thường c�
 trước.</p>
 <p>⭐ Đây là lý do phải <strong>ghi mốc lúc nghiệm thu</strong> (Chương 8, 36, 40, 49): một phép đo chỉ có nghĩa khi
 có cái để so.</p>
+</blockquote>
+<hr>
+<h2 id="e5b-máy-chy-bình-thưng-nhưng-con-s-sai">E.5b ⭐⭐ Máy chạy bình thường nhưng CON SỐ sai</h2>
+<p>⚠ <strong>Máy không dừng, không báo động, không ai thấy gì lạ — chỉ có con số là sai.</strong> ⭐ Nhóm này gần
+với E.8, nhưng khác ở chỗ: ở E.8 <strong>sản phẩm</strong> hỏng; ở đây <strong>sản phẩm vẫn tốt</strong>, chỉ <strong>con số</strong> sai —
+sản lượng, bộ đếm, thời gian, giá trị tính toán.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Quan sát</th>
+<th>Nghi trước</th>
+<th>Chương</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Sản lượng đếm thiếu</strong> so với đếm tay</td>
+<td>⭐⭐ Xung ngắn hơn một vòng quét → <strong>PLC không thấy</strong>; hoặc thiếu bộ đếm tốc độ cao</td>
+<td>⭐ <strong>10 mục 10.3</strong> · 18 mục 18.5</td>
+</tr>
+<tr>
+<td>⭐ <strong>Sản lượng đếm thừa</strong></td>
+<td>⭐⭐ <strong>Cạnh giả</strong> do rung tiếp điểm hoặc nhiễu — chân đếm tự bắt cạnh nhưng <strong>cạnh giả thì vẫn đếm</strong></td>
+<td>⚠ <strong>18 mục 18.4</strong></td>
+</tr>
+<tr>
+<td>Bộ đếm <strong>về 0 sau mỗi lần mất điện</strong></td>
+<td>Biến khai là <strong>không giữ được</strong></td>
+<td>16 mục 16.4 · 11 mục 11.4</td>
+</tr>
+<tr>
+<td>⚠⚠ Bộ đếm <strong>luôn bằng 0</strong> hoặc <strong>không bao giờ xoá được</strong></td>
+<td>⭐ <strong>Cực tính chân đặt lại khác nhau giữa các hãng</strong> — nối nhầm thì bị xoá mỗi vòng quét</td>
+<td>⚠ <strong>18 mục 18.6b</strong></td>
+</tr>
+<tr>
+<td>⭐ Con số <strong>nhảy âm</strong> hoặc nhảy sang một giá trị rất lớn</td>
+<td>⭐⭐ <strong>Tràn số</strong> — bộ đếm tích luỹ khai <code>INT</code> thay vì <code>DINT</code></td>
+<td>⚠ <strong>19 mục 19.4</strong> · 18</td>
+</tr>
+<tr>
+<td>Phép chia cho kết quả <strong>bằng 0</strong> hoặc mất phần lẻ</td>
+<td>Chia số nguyên; hoặc thứ tự phép tính làm mất độ chính xác</td>
+<td>19 mục 19.3</td>
+</tr>
+<tr>
+<td>⭐ Một bước <strong>kéo dài không đúng con số đã đặt</strong></td>
+<td>Độ phân giải bộ định thời; hoặc giá trị đặt bị hiểu theo <strong>đơn vị khác</strong></td>
+<td>⭐ <strong>17 mục 17.3</strong> · 17 mục 17.7</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Bộ định thời không bao giờ chạy xong</strong></td>
+<td>⭐⭐ Khối nằm trong <strong>nhánh không được thực thi</strong> ở vòng quét này — nó <strong>đóng băng</strong>, không chạy tiếp</td>
+<td>⚠ <strong>17 mục 17.6</strong> · 15 mục 15.4b</td>
+</tr>
+<tr>
+<td>Hai bộ định thời <strong>ảnh hưởng lẫn nhau</strong></td>
+<td>⭐ Dùng chung <strong>một thể hiện</strong> — chép nấc thang mà quên đổi tên khối</td>
+<td>14 mục 14.3 · 17 mục 17.6</td>
+</tr>
+<tr>
+<td>⭐ Đổi công thức nhưng máy <strong>vẫn chạy tham số cũ</strong></td>
+<td>Tham số nạp một lần lúc khởi động; hoặc đổi giữa chu trình nên chưa có hiệu lực</td>
+<td>⭐ <strong>29 mục 29.5</strong></td>
+</tr>
+<tr>
+<td>⚠ Cùng một chương trình, <strong>hai máy cho hai kết quả</strong></td>
+<td>Độ phân giải bộ định thời theo <strong>thiết bị/lệnh</strong>; hoặc thời gian quét khác nhau</td>
+<td>17 mục 17.7 · 10 · 56 mục 56.4</td>
+</tr>
+<tr>
+<td>Con số trên màn hình <strong>khác</strong> con số trong PLC</td>
+<td>Quy đổi thang ở phía màn hình; hoặc đọc biến khác</td>
+<td>44 · 32 mục 32.3</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Phép thử rẻ nhất cho cả nhóm này: đặt một bộ đếm thứ hai lên tín hiệu CHƯA lọc, rồi hiển thị
+cả hai.</strong> ⚡ Hiệu số giữa hai con số <strong>chính là số cạnh giả</strong> — bạn <strong>đo</strong> được vấn đề thay vì đoán,
+và biết luôn việc lọc có tác dụng hay không (Chương 18).</p>
+<p>⭐ Cùng tinh thần đó áp cho mọi con số nghi ngờ: <strong>thêm một phép đo độc lập</strong> rồi so, đừng tranh
+luận xem con số nào đúng.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Vì sao nhóm này nguy hiểm hơn vẻ ngoài của nó.</strong> ⭐ Con số sai <strong>không làm máy dừng</strong>, nên
+nó sống rất lâu — và nó đi thẳng vào những chỗ người ta ra quyết định: báo cáo sản lượng, tính
+hiệu suất, lịch bảo trì theo số lần tác động, truy xuất nguồn gốc.</p>
+<p>⚡ Một bộ đếm sai 2 % không ai để ý trong ba tháng, nhưng nó làm <strong>lịch thay vật tư lệch đi ba
+tháng</strong> (Chương 53) và làm <strong>mọi phép tính hiệu suất sai</strong> (Chương 55).</p>
 </blockquote>
 <hr>
 <h2 id="e6-mng-rt-hoc-thit-b-mt-kt-ni">E.6 Mạng rớt hoặc thiết bị mất kết nối</h2>
@@ -53413,6 +53578,14 @@ nói vậy, lần trước là vậy. ⭐ Kiểm lại một trong số đó.</p
 <tbody><tr>
 <td>Phương pháp chẩn đoán có hệ thống</td>
 <td>⭐ <strong>Chương 51</strong></td>
+</tr>
+<tr>
+<td>⭐ Thao tác không ăn: tự giữ, bắt cạnh, cuộn dây trùng</td>
+<td>Chương 15, 16 — và <strong>mục E.4b</strong></td>
+</tr>
+<tr>
+<td>⭐ Con số sai mà máy vẫn chạy: đếm, thời gian, tràn số</td>
+<td>Chương 17, 18, 19 — và <strong>mục E.5b</strong></td>
 </tr>
 <tr>
 <td>Thiết kế báo động nói được <strong>phải làm gì</strong></td>

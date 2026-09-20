@@ -3922,7 +3922,6 @@ vài mili-giây khi đóng cắt, có thể làm bộ đếm đếm nhiều lầ
 <p>Phát hiện <strong>kim loại</strong> không cần chạm. Rất bền, chịu bẩn tốt, tốc độ cao. Tầm phát hiện ngắn — thường
 vài mm tới hơn chục mm tuỳ kích thước. Tầm phát hiện <strong>phụ thuộc loại kim loại</strong>: thép cho tầm xa nhất,
 nhôm và đồng ngắn hơn đáng kể (datasheet có hệ số quy đổi).</p>
-<p>Đây là loại được dùng nhiều nhất trong máy tự động hoá.</p>
 <h3>Cảm biến tiệm cận điện dung <em>(capacitive proximity)</em></h3>
 <p>Phát hiện được <strong>hầu hết vật liệu</strong> — nhựa, thuỷ tinh, chất lỏng, bột. Đổi lại: nhạy với độ ẩm, bụi bám,
 và cần chỉnh độ nhạy. Dùng khi vật cần phát hiện không phải kim loại.</p>
@@ -3977,6 +3976,80 @@ báo</strong> ở một số vị trí. Kiểm tra khi lắp, đừng giả đ�
 </ul>
 <p>Loại cảm biến này chính là thứ cho phép <strong>giám sát phản hồi thay vì tin lệnh</strong> (Chương 48) — ra lệnh
 kẹp rồi chờ reed xác nhận, thay vì chờ một khoảng thời gian rồi đoán.</p>
+<h3>⭐⭐ Loại nào dùng nhiều nhất? Đó là câu hỏi sai</h3>
+<p>⚠ Bạn sẽ nghe <em>&quot;cảm biến tiệm cận là loại phổ biến nhất&quot;</em> hoặc <em>&quot;cảm biến quang là phổ biến nhất&quot;</em>.
+⭐ Cả hai đều <strong>đúng ở một nhóm máy và sai ở nhóm khác</strong> — vì loại nào chiếm đa số là do <strong>cỗ máy đó
+chạm vào cái gì</strong>, không phải do loại cảm biến nào tốt hơn.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm máy</th>
+<th>⭐ Loại chiếm đa số</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Máy lắp ráp dùng khí nén</strong></td>
+<td>⭐⭐ <strong>Reed trên xy-lanh</strong></td>
+<td>Mỗi xy-lanh <strong>1–2 cái</strong>; số xy-lanh quyết định tất cả</td>
+</tr>
+<tr>
+<td><strong>Băng tải, chia làn, đếm sản phẩm</strong></td>
+<td><strong>Quang</strong></td>
+<td>Vật đi qua không chạm; vật liệu bất kỳ</td>
+</tr>
+<tr>
+<td>⭐ <strong>Gia công kim loại, dập, hàn</strong></td>
+<td>⭐⭐ <strong>Tiệm cận cảm ứng</strong></td>
+<td>Vật <strong>là kim loại</strong>; môi trường dầu, phoi, va đập — chỗ cảm quang chịu không nổi</td>
+</tr>
+<tr>
+<td><strong>Lắp ráp điện tử</strong></td>
+<td><strong>Quang</strong></td>
+<td>Board mạch <strong>không phải khối kim loại liền</strong> nên tiệm cận cảm ứng không bắt ổn định</td>
+</tr>
+<tr>
+<td><strong>Thực phẩm, đóng gói, hoá chất</strong></td>
+<td>Quang · <strong>điện dung</strong> cho mức</td>
+<td>Vật liệu phi kim; cần rửa được</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Đếm thử trên chính máy mẫu của sách thì thấy rõ.</strong> Bảng I/O đầy đủ của DP-01 (Phụ lục J
+mục J.2) có: <strong>10 cảm biến reed xy-lanh · 4 cảm biến quang · 0 cảm biến tiệm cận cảm ứng.</strong></p>
+<p>⚡ DP-01 là máy lắp ráp điện tử dùng khí nén, nên nó nằm gọn vào hai hàng đầu của bảng trên. ⭐ Một
+cỗ máy dập kim loại cùng kích cỡ sẽ cho ra bảng <strong>gần như ngược lại</strong>.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Quy tắc chọn, và nó không nhắc tới chữ &quot;phổ biến&quot; nào:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hỏi</th>
+<th>Trả lời dẫn tới</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Vật cần phát hiện <strong>là gì</strong>?</td>
+<td>Kim loại → cảm ứng · phi kim → quang hoặc điện dung · <strong>piston trong xy-lanh</strong> → reed</td>
+</tr>
+<tr>
+<td>Có <strong>chạm vào vật</strong> được không?</td>
+<td>Không chạm được → loại không tiếp xúc</td>
+</tr>
+<tr>
+<td>⚠ <strong>Môi trường</strong> thế nào?</td>
+<td>Dầu, phoi, va đập → cảm ứng · bụi bám, hơi nước → ⚠ tránh khuếch tán và điện dung</td>
+</tr>
+<tr>
+<td>Cần <strong>tầm bao xa</strong>?</td>
+<td>Vài mm → cảm ứng · hàng mét → quang thu-phát</td>
+</tr>
+</tbody></table></div>
+<p>⚠⚠ <strong>Chọn theo &quot;loại nào phổ biến&quot; là cách chọn sai</strong>, vì nó bỏ qua đúng bốn câu hỏi trên — và
+bốn câu đó mới là thứ quyết định cảm biến có chạy được trên máy của bạn hay không.</p>
+</blockquote>
+<hr>
 <hr>
 <h2 id="46-trên-máy-mu-dp-01">4.6 Trên máy mẫu DP-01</h2>
 <p>Toàn bộ cảm biến số của DP-01 dùng <strong>PNP</strong>, module ngõ vào có <strong>chân chung nối 0 V</strong> — tổ hợp 1.</p>
@@ -4168,8 +4241,13 @@ module định kỳ, cộng những giờ dừng máy không báo trước.</p>
 định máy chạy được bao lâu.</p>
 <hr>
 <h2 id="52-van-đin-t">5.2 Van điện từ</h2>
-<p><strong>Van điện từ</strong> <em>(solenoid valve)</em> là cơ cấu chấp hành phổ biến nhất trên máy tự động hoá: PLC cấp
-điện cho cuộn hút, cuộn hút đẩy lõi van, van đổi đường khí (Chương 6).</p>
+<p><strong>Van điện từ</strong> <em>(solenoid valve)</em> là cơ cấu chấp hành <strong>chiếm đa số trên máy lắp ráp dùng khí
+nén</strong>: PLC cấp điện cho cuộn hút, cuộn hút đẩy lõi van, van đổi đường khí (Chương 6).</p>
+<blockquote>
+<p>⚠ <strong>Chiếm đa số ở nhóm máy nào thì tuỳ máy đó chạm vào cái gì</strong> — máy gia công kim loại thì động
+cơ và trục servo chiếm đa số, không phải van. ⭐ Cùng lý do với cảm biến ở <strong>Chương 4 mục 4.5</strong>:
+đừng chọn theo <em>&quot;loại nào phổ biến&quot;</em>, chọn theo <strong>việc cần làm và môi trường</strong>.</p>
+</blockquote>
 <p>Về mặt <strong>điện</strong>, van điện từ chỉ là một cuộn dây. Ba thông số cần đọc:</p>
 <div class="table-wrap"><table>
 <thead>
@@ -30981,7 +31059,7 @@ không phải hạn chế.</p>
 <tbody><tr>
 <td><strong>Bộ điều khiển nhiệt độ keo</strong></td>
 <td>⭐ <strong>RS-485, Modbus RTU</strong></td>
-<td>Thiết bị nối tiếp phổ biến nhất trong chế tạo máy; đủ dùng cho dữ liệu đổi chậm</td>
+<td>⚠ Ghép nối tiếp vẫn thường gặp ở thiết bị loại này — ⭐ nhưng xem Phụ lục J mục J.9; đủ dùng cho dữ liệu đổi chậm</td>
 </tr>
 <tr>
 <td>Đầu đọc mã 2D</td>
@@ -31355,8 +31433,14 @@ bị, cũng không sai với PLC.</p>
 ít nhất một lần. Mục 39.4 giải thích.</p>
 <hr>
 <h2 id="392-vì-sao-modbus-khp-nơi">39.2 Vì sao Modbus ở khắp nơi</h2>
-<p>Modbus ra đời từ những năm 1970 và vẫn là giao thức phổ biến nhất trong tự động hoá công nghiệp. Lý
-do không phải vì nó tốt nhất.</p>
+<p>Modbus ra đời từ những năm 1970 và ⭐ <strong>vẫn có mặt ở gần như mọi nhà máy</strong> — hiếm thiết bị công
+nghiệp nào không hỗ trợ nó ở dạng nào đó. Lý do không phải vì nó tốt nhất.</p>
+<blockquote>
+<p>⚠ <strong>Không nên phát biểu thành &quot;giao thức phổ biến nhất&quot;.</strong> ⭐ Đếm theo <strong>số nút mạng</strong> thì các
+giao thức Ethernet công nghiệp ở Chương 40 đã vượt từ lâu ở máy đời mới; đếm theo <strong>số chủng loại
+thiết bị có hỗ trợ</strong> thì Modbus vẫn dẫn. ⚡ Hai cách đếm, hai câu trả lời — nên câu đáng nói là
+<strong>&quot;ở đâu cũng gặp&quot;</strong>, không phải <strong>&quot;nhiều nhất&quot;</strong>.</p>
+</blockquote>
 <div class="table-wrap"><table>
 <thead>
 <tr>

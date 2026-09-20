@@ -1817,8 +1817,6 @@ Phát hiện **kim loại** không cần chạm. Rất bền, chịu bẩn tốt
 vài mm tới hơn chục mm tuỳ kích thước. Tầm phát hiện **phụ thuộc loại kim loại**: thép cho tầm xa nhất,
 nhôm và đồng ngắn hơn đáng kể (datasheet có hệ số quy đổi).
 
-Đây là loại được dùng nhiều nhất trong máy tự động hoá.
-
 ### Cảm biến tiệm cận điện dung *(capacitive proximity)*
 
 Phát hiện được **hầu hết vật liệu** — nhựa, thuỷ tinh, chất lỏng, bột. Đổi lại: nhạy với độ ẩm, bụi bám,
@@ -1852,6 +1850,40 @@ Hai lưu ý thực tế:
 
 Loại cảm biến này chính là thứ cho phép **giám sát phản hồi thay vì tin lệnh** (Chương 48) — ra lệnh
 kẹp rồi chờ reed xác nhận, thay vì chờ một khoảng thời gian rồi đoán.
+
+### ⭐⭐ Loại nào dùng nhiều nhất? Đó là câu hỏi sai
+
+⚠ Bạn sẽ nghe *"cảm biến tiệm cận là loại phổ biến nhất"* hoặc *"cảm biến quang là phổ biến nhất"*.
+⭐ Cả hai đều **đúng ở một nhóm máy và sai ở nhóm khác** — vì loại nào chiếm đa số là do **cỗ máy đó
+chạm vào cái gì**, không phải do loại cảm biến nào tốt hơn.
+
+| Nhóm máy | ⭐ Loại chiếm đa số | Vì sao |
+|---|---|---|
+| ⭐ **Máy lắp ráp dùng khí nén** | ⭐⭐ **Reed trên xy-lanh** | Mỗi xy-lanh **1–2 cái**; số xy-lanh quyết định tất cả |
+| **Băng tải, chia làn, đếm sản phẩm** | **Quang** | Vật đi qua không chạm; vật liệu bất kỳ |
+| ⭐ **Gia công kim loại, dập, hàn** | ⭐⭐ **Tiệm cận cảm ứng** | Vật **là kim loại**; môi trường dầu, phoi, va đập — chỗ cảm quang chịu không nổi |
+| **Lắp ráp điện tử** | **Quang** | Board mạch **không phải khối kim loại liền** nên tiệm cận cảm ứng không bắt ổn định |
+| **Thực phẩm, đóng gói, hoá chất** | Quang · **điện dung** cho mức | Vật liệu phi kim; cần rửa được |
+
+> ⭐⭐ **Đếm thử trên chính máy mẫu của sách thì thấy rõ.** Bảng I/O đầy đủ của DP-01 (Phụ lục J
+> mục J.2) có: **10 cảm biến reed xy-lanh · 4 cảm biến quang · 0 cảm biến tiệm cận cảm ứng.**
+>
+> ⚡ DP-01 là máy lắp ráp điện tử dùng khí nén, nên nó nằm gọn vào hai hàng đầu của bảng trên. ⭐ Một
+> cỗ máy dập kim loại cùng kích cỡ sẽ cho ra bảng **gần như ngược lại**.
+
+> ⭐ **Quy tắc chọn, và nó không nhắc tới chữ "phổ biến" nào:**
+>
+> | Hỏi | Trả lời dẫn tới |
+> |---|---|
+> | Vật cần phát hiện **là gì**? | Kim loại → cảm ứng · phi kim → quang hoặc điện dung · **piston trong xy-lanh** → reed |
+> | Có **chạm vào vật** được không? | Không chạm được → loại không tiếp xúc |
+> | ⚠ **Môi trường** thế nào? | Dầu, phoi, va đập → cảm ứng · bụi bám, hơi nước → ⚠ tránh khuếch tán và điện dung |
+> | Cần **tầm bao xa**? | Vài mm → cảm ứng · hàng mét → quang thu-phát |
+>
+> ⚠⚠ **Chọn theo "loại nào phổ biến" là cách chọn sai**, vì nó bỏ qua đúng bốn câu hỏi trên — và
+> bốn câu đó mới là thứ quyết định cảm biến có chạy được trên máy của bạn hay không.
+
+---
 
 ---
 
@@ -2018,8 +2050,12 @@ Chương này về những gì nằm ở **đầu ra** của PLC — và về m�
 
 ## 5.2 Van điện từ
 
-**Van điện từ** *(solenoid valve)* là cơ cấu chấp hành phổ biến nhất trên máy tự động hoá: PLC cấp
-điện cho cuộn hút, cuộn hút đẩy lõi van, van đổi đường khí (Chương 6).
+**Van điện từ** *(solenoid valve)* là cơ cấu chấp hành **chiếm đa số trên máy lắp ráp dùng khí
+nén**: PLC cấp điện cho cuộn hút, cuộn hút đẩy lõi van, van đổi đường khí (Chương 6).
+
+> ⚠ **Chiếm đa số ở nhóm máy nào thì tuỳ máy đó chạm vào cái gì** — máy gia công kim loại thì động
+> cơ và trục servo chiếm đa số, không phải van. ⭐ Cùng lý do với cảm biến ở **Chương 4 mục 4.5**:
+> đừng chọn theo *"loại nào phổ biến"*, chọn theo **việc cần làm và môi trường**.
 
 Về mặt **điện**, van điện từ chỉ là một cuộn dây. Ba thông số cần đọc:
 
@@ -21531,7 +21567,7 @@ Theo số liệu đã chốt (Phụ lục J §J.1):
 
 | Liên kết | Giao diện | Vì sao |
 |---|---|---|
-| **Bộ điều khiển nhiệt độ keo** | ⭐ **RS-485, Modbus RTU** | Thiết bị nối tiếp phổ biến nhất trong chế tạo máy; đủ dùng cho dữ liệu đổi chậm |
+| **Bộ điều khiển nhiệt độ keo** | ⭐ **RS-485, Modbus RTU** | ⚠ Ghép nối tiếp vẫn thường gặp ở thiết bị loại này — ⭐ nhưng xem Phụ lục J mục J.9; đủ dùng cho dữ liệu đổi chậm |
 | Đầu đọc mã 2D | **Ethernet** | Theo thực tế thị trường (Chương 42) |
 | Màn hình vận hành | Ethernet | Chương 44 |
 | Hệ thống trên (MES) | Ethernet | Chương 42, 45 |
@@ -21776,8 +21812,13 @@ bị, cũng không sai với PLC.
 
 ## 39.2 Vì sao Modbus ở khắp nơi
 
-Modbus ra đời từ những năm 1970 và vẫn là giao thức phổ biến nhất trong tự động hoá công nghiệp. Lý
-do không phải vì nó tốt nhất.
+Modbus ra đời từ những năm 1970 và ⭐ **vẫn có mặt ở gần như mọi nhà máy** — hiếm thiết bị công
+nghiệp nào không hỗ trợ nó ở dạng nào đó. Lý do không phải vì nó tốt nhất.
+
+> ⚠ **Không nên phát biểu thành "giao thức phổ biến nhất".** ⭐ Đếm theo **số nút mạng** thì các
+> giao thức Ethernet công nghiệp ở Chương 40 đã vượt từ lâu ở máy đời mới; đếm theo **số chủng loại
+> thiết bị có hỗ trợ** thì Modbus vẫn dẫn. ⚡ Hai cách đếm, hai câu trả lời — nên câu đáng nói là
+> **"ở đâu cũng gặp"**, không phải **"nhiều nhất"**.
 
 | Lý do | Giải thích |
 |---|---|

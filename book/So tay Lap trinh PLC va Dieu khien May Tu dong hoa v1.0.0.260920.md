@@ -603,8 +603,8 @@ thử được. Có bốn đường, khác nhau về chi phí và độ giống 
 | PLC cũ mua lại | Thấp | Cao, đúng thiết bị đang chạy ngoài nhà máy | Người muốn sát thực tế nhất |
 
 **Chương 13** so sánh đầy đủ bốn đường này, kèm hướng dẫn **tự dựng một bàn thực hành** — danh sách vật
-tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra. **Phụ lục G** liệt kê các phần mềm miễn phí
-kèm giới hạn bản quyền thật của từng cái.
+tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra. **Phụ lục G** liệt kê **công cụ nào tồn tại** và
+mỗi loại làm được gì.
 
 ### ⭐⭐ Cách tự học đã được kiểm chứng — bốn việc, theo đúng thứ tự
 
@@ -629,9 +629,13 @@ kèm giới hạn bản quyền thật của từng cái.
 > người ta tập nói lại câu của người khác trước, rồi mới tự đặt câu. ⚡ Cuốn sách này được viết theo
 > đúng giả định đó: mọi chương đều có mã mẫu để bạn chép, chạy, rồi phá ra xem.
 
-> ⚡ **LƯU Ý**
-> Thông tin về bản quyền và giá phần mềm **thay đổi liên tục**. Mọi mục trong Phụ lục G đều ghi ngày
-> kiểm tra; trước khi tải, hãy tự xác nhận lại điều kiện hiện hành.
+> ⚡ **LƯU Ý — và đây là lý do Phụ lục G được viết theo cách khác thường**
+> ⭐ Điều kiện bản quyền và giá phần mềm **thay đổi liên tục**: miễn phí năm nay có thể thu phí năm
+> sau, bản dùng thử 30 ngày có thể thành 21 ngày. ⚠ Nên Phụ lục G **cố ý KHÔNG liệt kê điều kiện
+> bản quyền cụ thể** — một bảng như vậy sẽ sai trước khi bạn đọc tới.
+>
+> ⭐⭐ Thay vào đó nó cho bạn **danh mục câu hỏi phải tự kiểm** (mục G.5), và yêu cầu **bạn** ghi
+> lại ngày mình kiểm. ⚡ Một danh mục câu hỏi thì không hết hạn; một bảng điều kiện thì có.
 
 ---
 
@@ -8846,7 +8850,7 @@ và cả bốn đều tạo ra **cạnh thật** mà khối đếm không có c�
 | Nguyên nhân | Hiện tượng | Cách chặn |
 |---|---|---|
 | **Sản phẩm rung / lùi lại** | Đếm thừa, số lẻ tẻ | Khoảng chết theo thời gian (bên dưới) |
-| **Cảm biến nhiễu** | Đếm thừa ngẫu nhiên, cả khi không có sản phẩm | Lọc rung bằng `TON`; kiểm nối đất, đi dây tách khỏi cáp động lực (Chương 51) |
+| **Cảm biến nhiễu** | Đếm thừa ngẫu nhiên, cả khi không có sản phẩm | Lọc rung bằng `TON`; kiểm nối đất, đi dây tách khỏi cáp động lực (Chương 49) |
 | **Sản phẩm trong suốt / bề mặt lỗ** | Một sản phẩm cho nhiều cạnh khi đi qua | Đổi loại cảm biến; hoặc chốt trạng thái bằng cơ cấu chặn |
 | **Rung tiếp điểm** (nếu đếm từ nút bấm hoặc tiếp điểm cơ khí) | Một lần tác động ra nhiều cạnh | Lọc rung **trước** khi đưa vào chân đếm (Chương 17, mục 17.4) |
 
@@ -30130,7 +30134,7 @@ Cách duy nhất hiệu quả là làm nó thành **một phần của việc s�
 
 | Cách | Nội dung |
 |---|---|
-| ⭐ **Chú thích trong chính chương trình** | Chương 24 — comment ngay chỗ sửa, kèm ngày và lý do; nó **đi theo chương trình**, không lạc mất |
+| ⭐ **Chú thích trong chính chương trình** | Chương 30 mục 30.4 — comment ngay chỗ sửa, kèm ngày và lý do; nó **đi theo chương trình**, không lạc mất |
 | ⭐ **Sao lưu là hành động ghi chép** | Tên tệp sao lưu chứa ngày + lý do (Chương 54) |
 | **Ảnh chụp** | Nhanh hơn vẽ lại sơ đồ; ⚡ đủ dùng cho thay đổi nhỏ |
 | **Một trang duy nhất trong tủ** | Nhật ký thay đổi in sẵn, treo trong tủ điện |
@@ -31916,7 +31920,7 @@ cỗ máy ai đó sẽ retrofit trong mười năm nữa.**
 
 | Việc làm hôm nay | Cứu ai đó năm 2036 |
 |---|---|
-| ⭐ Chú thích giải thích **vì sao** | Chương 24 — thứ duy nhất không lạc bản (Ch.53 mục 53.4) |
+| ⭐ Chú thích giải thích **vì sao** | Chương 30 mục 30.4 — thứ duy nhất không lạc bản (Ch.53 mục 53.4) |
 | ⭐⭐ **Tài liệu as-built cập nhật** | Chương 53 — ⭐ **giá trị lớn nhất** |
 | Bảng I/O khớp số dây và tên tag | Chương 23, 49 mục 49.6 |
 | ⭐ Quy trình sao lưu bảy hạng mục | Chương 54 |
@@ -32867,7 +32871,7 @@ Nguyên nhân   → hoá ra là gì
 | "Bạn làm gì khi máy dừng mà chưa biết vì sao?" | Có phương pháp hay đoán mò | Chương 51 — thu hẹp dần, ⭐ **đổi một thứ mỗi lần** |
 | ⚠ "Bạn xử lý phần an toàn thế nào?" | ⭐⭐ **Bạn có biết giới hạn của mình không** | ⭐ Nói thật: hiểu nguyên lý, ⚠ **và biết khi nào phải chuyển cho người có thẩm quyền** |
 | "Bạn sửa chương trình khi máy đang chạy chứ?" | Bạn có coi trọng rủi ro không | Chương 53 — ⭐ **nêu điều kiện, không trả lời có/không** |
-| "Bạn ghi tài liệu thế nào?" | ⭐ Người sau bạn có làm việc được không | Chương 24, 53 — ⭐ **và cho xem** |
+| "Bạn ghi tài liệu thế nào?" | ⭐ Người sau bạn có làm việc được không | Chương 30, 53 — ⭐ **và cho xem** |
 | "Bạn chưa có kinh nghiệm, sao chúng tôi nên nhận bạn?" | Bạn tự đánh giá được không | ⭐ Đưa bằng chứng (mục 58.3) + nói rõ mình cần học gì |
 
 > ⭐⭐ **Câu về an toàn là câu quan trọng nhất, và nhiều người trả lời sai theo hướng tự tin quá.**
@@ -33393,7 +33397,7 @@ Nếu bạn chỉ nhớ bốn điều từ phụ lục này:
 |---|---|
 | ⭐ **Đối chiếu LỆNH và cùng một đoạn logic viết 5 lần** | ⭐ **Phụ lục A2** |
 | Khái niệm gốc theo chuẩn IEC | Chương 13–21, 30 · **Phụ lục B** |
-| Vì sao vòng quét quan trọng | Chương 7 |
+| Vì sao vòng quét quan trọng | Chương 10 |
 | ⚠ Chuyển chương trình sang nền mới | ⚠ **Chương 56 mục 56.4** |
 | Vùng nhớ giữ được | Chương 11 · Chương 53 mục 53.5 |
 
@@ -36006,7 +36010,7 @@ rồi đối chiếu với những gì tài liệu sẵn có đã trả lời t�
 | 1 | ⭐⭐ **VIẾT BẢNG I/O TRƯỚC KHI VẼ RUNG ĐẦU TIÊN** | ⭐ Đây là thói quen quan trọng nhất của cả cuốn sách (Chương 23, 57) |
 | 2 | ⭐ **Viết ra: "chạy đúng nghĩa là gì?"** trước khi viết chương trình | Không có tiêu chí thì không biết lúc nào xong |
 | 3 | ⭐ **Nghĩ tình huống xấu**: mất điện giữa chừng, nhấn nút hai lần, cảm biến hỏng | Chương 57 mục 57.8 |
-| 4 | Chú thích giải thích **vì sao**, không phải **cái gì** | Chương 24 |
+| 4 | Chú thích giải thích **vì sao**, không phải **cái gì** | Chương 30 mục 30.4 |
 | 5 | ⭐ Chạy thử **cả trường hợp sai**, không chỉ trường hợp đúng | Chương 50 |
 
 > ⭐⭐ **Quy tắc 1 nghe thừa với bài "đèn giao thông" — và đó chính là lý do phải làm.**

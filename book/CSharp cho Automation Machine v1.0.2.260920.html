@@ -558,6 +558,26 @@
   <li style="padding-left:16px;font-size:13px"><a href="#g11-ghép-tht-s-và-điu-phát-hin-ra-khi-làm-vic-đó">G.11  Ghép thật sự — và điều phát hiện ra khi làm việc đó</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g12-tách-cu-hình-ca-c-máy-khi-chương-trình">G.12  Tách cấu hình của cỗ máy khỏi chương trình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g13-đi-chiu-vi-máy-tht-c-máy-mu-còn-thiu-gì">G.13  Đối chiếu với máy thật — cỗ máy mẫu còn thiếu gì</a></li>
+  <li><a href="#ph-lc-h-t-đin-khái-nim-và-pattern-là-gì-vì-sao-tn-ti-dùng-đâu">Phụ lục H: Từ điển khái niệm và pattern — *là gì, vì sao tồn tại, dùng ở đâu*</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h0-cách-đc-ph-lc-này">H.0  Cách đọc phụ lục này</a></li>
+  <li><a href="#phn-a-khái-nim-c">Phần A — Khái niệm C#</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h1-boxing-cái-giá-ca-vic-nhét-mt-con-s-vào-mt-cái-ô-hình-object">H.1  Boxing — cái giá của việc nhét một con số vào một cái ô hình `object`</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h2-closure-lambda-mang-theo-cái-gì-và-th-nó-mang-theo-sng-bao-lâu">H.2  Closure — lambda mang theo cái gì, và thứ nó mang theo sống bao lâu</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h3-thc-thi-trì-hoãn-linq-chưa-chy-vào-lúc-bn-tưng-nó-chy">H.3  Thực thi trì hoãn — LINQ chưa chạy vào lúc bạn tưởng nó chạy</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h4-yield-return-sinh-tng-phn-t-theo-yêu-cu">H.4  `yield return` — sinh từng phần tử theo yêu cầu</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h5-in-out-hip-bin-và-nghch-bin">H.5  `in` / `out` — hiệp biến và nghịch biến</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h6-spant-memoryt-và-ref-struct-nhìn-vào-b-nh-mà-không-chép">H.6  `Span<T>`, `Memory<T>` và `ref struct` — nhìn vào bộ nhớ mà không chép</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h7-flags-enum-nhiu-c-bttt-trong-mt-con-s">H.7  `[Flags]` enum — nhiều cờ bật/tắt trong một con số</a></li>
+  <li><a href="#phn-b-pattern-khuôn-chung-và-cách-phân-bit">Phần B — Pattern: khuôn chung và cách phân biệt</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h8-mi-pattern-tr-li-cùng-mt-câu-hi">H.8  Mọi pattern trả lời cùng một câu hỏi</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h9-strategy-state-hai-pattern-có-sơ-đ-lp-ging-ht-nhau">H.9  Strategy ↔ State — hai pattern có sơ đồ lớp giống hệt nhau</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h10-năm-kiu-bc-adapter-decorator-proxy-facade-bridge">H.10  Năm kiểu "bọc": Adapter ↔ Decorator ↔ Proxy ↔ Facade ↔ Bridge</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h11-bn-kiu-to-simple-factory-factory-method-abstract-factory-builder">H.11  Bốn kiểu "tạo": Simple Factory ↔ Factory Method ↔ Abstract Factory ↔ Builder</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h12-template-method-strategy-composite-chain-of-responsibility">H.12  Template Method ↔ Strategy, Composite ↔ Chain of Responsibility</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h13-mediator-observer-shared-tag-table-ba-cách-đ-các-thành-phn-khi-gi-thng-nhau">H.13  Mediator ↔ Observer ↔ Shared Tag Table — ba cách để các thành phần khỏi gọi thẳng nhau</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h14-ba-pattern-mã-mu-ca-sách-đã-hin-thc-mà-chưa-gi-tên">H.14  Ba pattern mã mẫu của sách đã hiện thực mà chưa gọi tên</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h15-nhng-pattern-sách-c-ý-không-dy-và-vì-sao">H.15  Những pattern sách cố ý không dạy, và vì sao</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#h16-bng-tra-30-giây-t-triu-chng-ti-pattern">H.16  Bảng tra 30 giây — từ triệu chứng tới pattern</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -4701,7 +4721,7 @@ public void Tick()
 <p>Bốn nguồn jitter/GC phổ biến nhất trong vòng quét:</p>
 <ul>
 <li><strong>LINQ trong tick</strong> — <code>alarmList.Where(a =&gt; a.Active).ToList()</code> tạo iterator + list mới (cấp phát). Trong tick, viết <code>for</code>/<code>foreach</code> rõ ràng thay vì LINQ.</li>
-<li><strong>Boxing</strong> <!--idx:Boxing--> — value type bị &quot;đóng hộp&quot; thành <code>object</code> khi đưa vào collection không generic (<code>ArrayList</code>) hoặc API nhận <code>object</code>. Luôn dùng collection generic (<code>List&lt;T&gt;</code>) để tránh.</li>
+<li><strong>Boxing</strong> <!--idx:Boxing--> — value type bị &quot;đóng hộp&quot; thành <code>object</code> khi đưa vào collection không generic (<code>ArrayList</code>) hoặc API nhận <code>object</code>. Boxing <strong>không phải một phép ép kiểu mà là một lần cấp phát heap</strong> — cơ chế đầy đủ, hai chỗ nó hay nấp, và vì sao nó là động cơ thật đằng sau quy tắc &quot;tách bảng tag theo kiểu&quot; ở mục 16.3.5: xem <strong>Phụ lục H, mục H.1</strong>. Luôn dùng collection generic (<code>List&lt;T&gt;</code>) để tránh.</li>
 <li><strong>Tạo string trong tick</strong> — format chuỗi log mỗi tick là cấp phát. Đẩy sự kiện log (dạng struct) vào queue, để thread logger format và ghi.</li>
 <li><strong>Chia sẻ collection với UI mà không snapshot</strong> — UI và luồng điều khiển đọc/ghi cùng một list dẫn đến lock, contention, hoặc crash. Giải pháp: snapshot định kỳ hoặc double-buffer.</li>
 </ul>
@@ -5601,6 +5621,11 @@ Action onEStopPressed = () =&gt; { motion.StopAll(); alarm.Raise(&quot;E-STOP&qu
 <h3>4.4.2  Lambda — hàm ẩn danh ngắn gọn</h3>
 <p><strong>Lambda</strong> <!--idx:Lambda--> là cách viết nhanh một hàm tại chỗ: <code>(tham số) =&gt; biểu thức</code>. Bạn đã thấy nó ở Code 4.7. Lambda phổ biến cho callback ngắn, đăng ký event, và truy vấn dữ liệu (LINQ, mục 4.6). Hai dạng: biểu thức (<code>x =&gt; x * 2</code>) và khối lệnh (<code>(sender, e) =&gt; { ...; ... }</code>).</p>
 <blockquote>
+<p><em>(Cơ chế đằng sau — vì sao biến bị <strong>chia sẻ</strong> chứ không được chép, vì sao <code>foreach</code> đã được sửa
+từ C# 5.0 còn <code>for</code> thì không, và closure giữ đối tượng sống gây rò rỉ bộ nhớ trong HMI chạy dài
+ngày như thế nào — xem <strong>Phụ lục H, mục H.2</strong>.)</em></p>
+</blockquote>
+<blockquote>
 <p>📌 <strong>Lưu ý — closure trong vòng lặp <code>for</code>:</strong> Lambda có thể &quot;bắt&quot; (capture) biến bên ngoài. Trong vòng lặp <code>for</code> đăng ký handler, bắt biến đếm dùng chung qua các lần lặp tạo bug khó thấy (mọi handler dùng chung giá trị cuối cùng của biến đếm). Khi cần, tạo biến cục bộ trong mỗi vòng, hoặc dùng method group. Lưu ý: <code>foreach</code> <strong>không</strong> gặp lỗi này từ C# 5.0 trở đi — compiler đã tự tạo một bản sao biến lặp riêng cho mỗi vòng, không còn cần biện pháp phòng thủ thủ công như <code>for</code>.</p>
 </blockquote>
 <h3>4.4.3  Event — phát thông báo, giảm phụ thuộc</h3>
@@ -5789,7 +5814,7 @@ là vấn đề thật, vì caller không biết chắc nên <code>try/catch</co
 </ul>
 </blockquote>
 <blockquote>
-<p>📌 <strong>Lưu ý về độ sâu generic:</strong> Ở Chương 4 chỉ cần dùng generic ở mức &quot;<code>T</code> là một kiểu cụ thể do nơi gọi chỉ định&quot;. Các kỹ thuật nâng cao hơn — <em>generic constraint</em> (<code>where T : ...</code>, dùng thật ở Chương 13), covariance/contravariance (<code>in</code>/<code>out</code>, dùng thật ở Chương 16) — nằm ngoài phạm vi chương này, gặp lại khi thực sự cần ở các chương đó. Đừng vội phức tạp hoá khi <code>Result&lt;T&gt;</code> đơn giản đã giải quyết được phần lớn nhu cầu.</p>
+<p>📌 <strong>Lưu ý về độ sâu generic:</strong> Ở Chương 4 chỉ cần dùng generic ở mức &quot;<code>T</code> là một kiểu cụ thể do nơi gọi chỉ định&quot;. Các kỹ thuật nâng cao hơn — <em>generic constraint</em> (<code>where T : ...</code>, giải thích ở mục 13.3.2 khi dùng thật cho connection pool) và <em>covariance/contravariance</em> (<code>in</code>/<code>out</code>, xem <strong>Phụ lục H, mục H.5</strong>) — nằm ngoài phạm vi chương này. Đừng vội phức tạp hoá khi <code>Result&lt;T&gt;</code> đơn giản đã giải quyết được phần lớn nhu cầu.</p>
 <p>📌 <strong>Vì sao đặt tên tham số kiểu là <code>T</code>:</strong> cũng là quy ước, không phải luật —
 <code>T</code> là chữ viết tắt của &quot;Type&quot;, dùng khi generic chỉ có MỘT tham số kiểu và
 ý nghĩa của nó đã rõ từ ngữ cảnh (<code>Result&lt;T&gt;</code>: T là kiểu dữ liệu trả về, không
@@ -5815,6 +5840,11 @@ var topDefects = records
 <p>Đọc gần như tiếng Anh: lọc NG → gom theo mã lỗi → đếm → sắp giảm dần → lấy 5 đầu. Viết tay bằng vòng lặp + <code>Dictionary</code> sẽ dài gấp nhiều lần và khó đọc hơn. <code>.Where()</code> nhận một <code>Func&lt;T,bool&gt;</code> (chính là lambda ở mục 4.4) — đây là lý do lambda và LINQ luôn đi cùng nhau.</p>
 <blockquote>
 <p>⚠️ <strong>Cảnh báo — LINQ không thuộc về vòng quét:</strong> Mỗi chuỗi LINQ tạo một hoặc nhiều iterator object (deferred execution — chỉ thực thi khi enumerate); nếu kết thúc bằng <code>ToList()</code>/<code>ToArray()</code> thì tạo thêm collection mới. Cả hai đều là cấp phát heap. LINQ cũng có thể giấu một thao tác O(n) sau cú pháp gọn. <strong>Không dùng LINQ trong control loop / callback tần suất cao</strong> (đã nêu ở Chương 3). LINQ dành cho tầng báo cáo, cấu hình, khởi tạo — nơi sự rõ ràng quan trọng hơn vài micro-giây.</p>
+<p>Bản thân <em>deferred execution</em> còn sinh ba hệ quả nữa mà cảnh báo trên chưa nói: truy vấn <strong>chạy
+lại mỗi lần bạn đụng vào</strong> (hai lần đi xuống CSDL nếu là EF Core), kết quả <strong>đổi theo dữ liệu</strong>
+nếu danh sách bị sửa giữa chừng, và ngoại lệ <strong>nổ ở dòng duyệt chứ không ở dòng gây lỗi</strong> — nên
+<code>try/catch</code> bọc quanh chuỗi LINQ không bắt được gì. Xem <strong>Phụ lục H, mục H.3</strong>, kèm phân biệt
+<code>IEnumerable</code> ↔ <code>IQueryable</code>.</p>
 </blockquote>
 <hr>
 <blockquote>
@@ -17621,6 +17651,12 @@ vài chỗ</strong> trước khi kết luận. Sai lầm này rất dễ mắc k
 <h1 id="chương-12-sequence-engine-state-machine-chun-packml">Chương 12: Sequence Engine &amp; State Machine chuẩn PackML</h1>
 <p>Nhà máy bánh kẹo vận hành máy đóng gói 8 trục với bốn yêu cầu vận hành: khởi động bình thường, giữ máy (hold) để bổ sung nguyên liệu giữa ca, tạm hoãn (suspend) khi băng chuyền phía sau đầy, và dừng khẩn cấp. Sáu tháng sau khi máy chạy, đội phần mềm gặp một lỗi: nhấn Hold khi máy đang Suspend không chạy đúng — nhưng kỹ sư phải mất ba ngày mới tìm ra chỗ sai trong đống if/else dài 200 dòng.</p>
 <p>Vấn đề không phải logic sai. Vấn đề là <strong>kiến trúc không mô hình hoá trạng thái</strong> — code tăng trưởng tuyến tính theo số trạng thái nhân với số lệnh, và bất kỳ sự thay đổi nhỏ nào đều có nguy cơ làm hỏng một tổ hợp trạng thái khác.</p>
+<blockquote>
+<p>📌 <strong>Trước khi bắt đầu — State và Strategy có sơ đồ lớp giống hệt nhau</strong>, và đây là cặp pattern
+bị nhầm nhiều nhất. Khác biệt nằm ở một câu hỏi: <em>các lựa chọn có tự chuyển sang nhau không?</em>
+Có → State (chương này). Không, người ngoài cắm vào → Strategy (mục 13.2.3). Xem
+<strong>Phụ lục H, mục H.9</strong>.</p>
+</blockquote>
 <p>Chương này giải quyết vấn đề đó bằng hai công cụ: <strong>GoF State Pattern</strong> (cấu trúc code) và <strong>chuẩn PackML/ISA-TR88.00.02</strong> (mô hình trạng thái công nghiệp). Hai công cụ độc lập nhau — dùng Pattern mà không theo chuẩn cũng được, nhưng kết hợp cả hai cho phép MES và SCADA đọc trạng thái máy theo ngôn ngữ chung mà không cần tài liệu thêm.</p>
 <blockquote>
 <p><strong>Sau chương này, bạn sẽ:</strong></p>
@@ -18967,6 +19003,11 @@ public enum PackMlCommand
 </code></pre>
 <h3>12.3.2  Triển khai state machine PackML-compliant</h3>
 <p>State Pattern (mục 12.1) và Transition Table không phải hai kỹ thuật cạnh tranh — chúng giải quyết hai vấn đề khác nhau và có thể <strong>kết hợp</strong>. State Pattern phù hợp khi cần đóng gói <strong>hành vi</strong> phức tạp cho từng state: entry action khởi động servo, exit action tắt motor, phản ứng với lệnh khác nhau hoàn toàn giữa các state. Transition Table phù hợp khi cần <strong>chuẩn hoá quan hệ chuyển trạng thái</strong> — danh sách tường minh &quot;state A + lệnh B → state C&quot;, dễ visualize, dễ test, dễ audit. Trong dự án thực tế, có thể kết hợp cả hai: Transition Table validate xem transition có hợp lệ không, rồi gọi vào State object tương ứng để thực thi hành vi OnEntry/OnExit. Phần này dùng Transition Table thuần để triển khai PackML vì 17 state có chuyển đổi đồng nhất và rõ ràng — đây là use case điển hình của bảng transition, không phải &quot;thay thế&quot; cho State Pattern đã học.</p>
+<blockquote>
+<p>💡 <strong>Khi trình tự là một dãy bước tuyến tính</strong> (không phải state machine), có một cách viết
+khác đọc gần như tờ quy trình dán trên máy: <code>yield return</code> từng bước thay vì <code>.Add()</code> vào một
+<code>List</code>. Xem <strong>Phụ lục H, mục H.4</strong> — kèm hai cái bẫy của nó.</p>
+</blockquote>
 <p>Với 17 trạng thái, viết 17 class riêng có thể là lựa chọn đúng cho project lớn (mỗi class có thể unit-test độc lập). Với project nhỏ hơn, dùng bảng transition là đủ:</p>
 <p><strong>Code 12.7 — State machine dựa trên bảng transition</strong></p>
 <blockquote>
@@ -20967,6 +21008,12 @@ IDevice device = (config.DeviceKind, config.Vendor) switch {
 này và thêm case — nguy cơ sót hoặc nhầm case khi có hàng chục thiết bị. Factory
 registry-based đảo ngược trách nhiệm: mỗi <code>IDeviceBuilder</code> tự khai báo loại thiết bị
 nó xây được, <code>DeviceFactory</code> chỉ tìm builder phù hợp và delegate:</p>
+<blockquote>
+<p>📌 <strong>&quot;Factory&quot; là tên chung của bốn thứ khác nhau.</strong> Cái dùng ở đây là <em>Simple Factory</em> dạng
+registry. Còn <em>Factory Method</em> (đẩy việc tạo xuống lớp con), <em>Abstract Factory</em> (tạo cả một bộ
+thiết bị phải khớp nhau) và <em>Builder</em> (gom tham số từng bước) giải ba bài toán khác — phân biệt
+đầy đủ kèm dấu hiệu chọn ở <strong>Phụ lục H, mục H.11</strong>.</p>
+</blockquote>
 <p>Factory tập trung hoá việc tạo device và inject dependency (channel, protocol client,
 logger, tag mapping). Mẫu registry-based tránh switch-case phình to và cho phép đăng
 ký builder mới mà không sửa Factory:</p>
@@ -21154,6 +21201,11 @@ public sealed class ProtocolClientResolver : IProtocolClientResolver
 }
 </code></pre>
 <h3>13.2.4 Bridge Pattern cho Hardware Abstraction</h3>
+<blockquote>
+<p>📌 <strong>Năm pattern &quot;bọc&quot; có sơ đồ lớp gần như giống hệt nhau</strong> — Adapter, Decorator, Proxy, Facade,
+Bridge — và chỉ phân biệt được bằng <strong>ý định</strong>, không bằng hình dạng. Ba câu hỏi tách được cả
+năm, cùng lý do Decorator hợp với driver phần cứng đến vậy: <strong>Phụ lục H, mục H.10</strong>.</p>
+</blockquote>
 <p>Adapter chỉ bọc API vendor để khớp interface. Bridge đi xa hơn: tách Abstraction (khái
 niệm nghiệp vụ — <code>MotionAxis</code>) khỏi Implementor (cách hãng thực thi —
 <code>BeckhoffAdsAxisDriver</code>, <code>SiemensAxisDriver</code>, <code>SimulatedAxisDriver</code>). Cùng một &quot;trục X&quot;
@@ -26287,6 +26339,13 @@ sử dụng hạ tầng đó — nếu không, mỗi kỹ sư sẽ chọn theo t
 <em>&quot;cổng Serial không nhận được dữ liệu&quot;</em>, <em>&quot;đọc cổng Serial thế nào cho đúng&quot;</em>, <em>&quot;dùng sự kiện
 <code>DataReceived</code> ra sao&quot;</em>, mỗi câu hàng trăm nghìn lượt xem và tất cả đều quay về <strong>cùng một hiểu
 nhầm</strong>.</p>
+<blockquote>
+<p>💡 <strong>Tách khung mà không chép byte nào.</strong> Mọi ví dụ trong mục này dùng <code>byte[]</code> và <code>Array.Copy</code>
+cho dễ đọc, nhưng ở tầng giao thức chạy hàng trăm khung mỗi giây thì mỗi lần chép là một mảng
+rác. <code>ReadOnlySpan&lt;byte&gt;</code> là một <strong>cửa sổ</strong> nhìn vào bộ đệm có sẵn — <code>buffer.AsSpan(3, n)</code> không
+cấp phát gì. Kèm lời giải thích vì sao <code>Span&lt;T&gt;</code> bắt buộc phải là <code>ref struct</code> và vì sao điều đó
+khiến <code>Task&lt;Span&lt;T&gt;&gt;</code> không tồn tại: <strong>Phụ lục H, mục H.6</strong>.</p>
+</blockquote>
 <h4>Hiểu nhầm gốc, và hai câu trong tài liệu chính thức làm nó sáng ra</h4>
 <p>Người mới hình dung <code>DataReceived</code> như <em>&quot;mỗi lần thiết bị gửi một bản tin thì sự kiện chạy một
 lần&quot;</em>. Tài liệu của Microsoft nói khác, và nói rất thẳng ở hai chỗ:</p>
@@ -31853,6 +31912,13 @@ im <strong>là</strong> trạng thái đúng.</p>
 nhất trong sách mà trình biên dịch <strong>không</strong> kiểm tra được tính đúng đắn cho bạn (xem mục tiếp), nên
 công cụ duy nhất còn lại để lần dấu là tìm kiếm toàn văn theo tên cờ.</p>
 <h3>16.3.4  Nhược điểm phải biết trước khi chọn</h3>
+<blockquote>
+<p>📌 <strong>Bảng cờ không phải lựa chọn duy nhất để các trạm khỏi gọi thẳng nhau.</strong> Có ba cách, và
+chúng khác nhau ở một điểm quyết định: <em>ai biết luật phối hợp</em>. Observer: không ai. Bảng cờ:
+không ai — mỗi trạm tự đọc và tự quyết. <strong>Mediator</strong>: đúng một chỗ, nên đọc một file là thấy
+hết luồng. Câu hỏi để chọn — <em>&quot;khi khách đổi luật phối hợp, phải sửa mấy file?&quot;</em> — và bảng so
+sánh ba cách ở <strong>Phụ lục H, mục H.13</strong>.</p>
+</blockquote>
 <p><strong>Bảng 16.3b — Gọi hàm trực tiếp, Event, và Shared Tag Table</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -31942,6 +32008,12 @@ không có cả hai nhu cầu đó, <code>ManualResetEventSlim</code> gọn hơn
 <p>Bốn quy tắc ở trên rút ra từ nguyên tắc. Mục này mở một bảng cờ thật của máy tám trạm đang chạy sản
 xuất, và lấy ra bốn chi tiết mà chỉ đọc code mới thấy.</p>
 <h4>1. Tách bảng theo KIỂU dữ liệu, không gộp một bảng cho tất cả</h4>
+<blockquote>
+<p>📌 <strong>Quy tắc này nghe như chuyện gọn gàng, nhưng động cơ thật là hiệu năng.</strong> Một bảng
+<code>Dictionary&lt;string, object&gt;</code> <strong>box</strong> mỗi giá trị số ghi vào — 500 tag cập nhật 100 lần/giây là
+50.000 đối tượng rác mỗi giây, và mỗi lần thu gom rác là một lần khựng khó đoán. Xem
+<strong>Phụ lục H, mục H.1</strong>.</p>
+</blockquote>
 <p>Dự án đó không có một bảng cờ duy nhất mà có <strong>bốn bảng, mỗi bảng một kiểu</strong>:</p>
 <pre><code class="language-csharp">public enum ThanhGhiBit    { … }   // cờ đúng/sai — phần lớn việc bắt tay nằm ở đây
 public enum ThanhGhiSo     { … }   // số nguyên: phần trăm tiến độ, số khay, số lần làm lại
@@ -43844,19 +43916,20 @@ xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chi�
 <h2 id="g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</h2>
 <p>Mục G.9 nêu mười hai bài xương sống; <strong>cả bốn mươi bài nay đều có lời giải chạy được</strong>. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ thể</strong>, và <strong>một
 lời giải chạy được</strong> — nằm ở <code>source/MeoBench</code>, đã biên dịch với
-<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>458/458 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở
-G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13).</p>
+<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>485/485 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở
+G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H).</p>
 <h3>G.10.0  Chạy thử từng phần, không đợi làm xong hết</h3>
 <p>Đây là điểm quan trọng nhất của mục này. Làm xong cả bốn mươi bài rồi mới chạy thì khi hỏng bạn
 không biết hỏng ở đâu. Bộ tự kiểm cho phép <strong>chạy lẻ từng nhóm ngay khi vừa viết xong nhóm đó</strong>:</p>
 <pre><code class="language-bash">cd source/MeoBench
-dotnet run                 # tất cả — 458 phép kiểm
+dotnet run                 # tất cả — 485 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
 dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
+dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H) — 27 phép kiểm
 dotnet run -- G13          # năng lực vận hành máy thật — 68 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
@@ -45097,6 +45170,1197 @@ phải ra — chiều phụ thuộc, phân biệt lỗi với dừng chủ ý, c
 xuất tách ngược được, cảnh báo báo một lần — trong một môi trường mà <strong>sai thì chỉ tốn một phép
 kiểm đỏ</strong>, chứ không tốn một trục đâm. Khoảng cách còn lại giữa nó và máy thật không phải là thứ
 đọc sách lấp được; nó là thứ chỉ có đứng cạnh máy mới lấp được.</p>
+</blockquote>
+<!-- SECTION: Phu_Luc_H_Khai_Niem -->
+<hr>
+<h1 id="ph-lc-h-t-đin-khái-nim-và-pattern-là-gì-vì-sao-tn-ti-dùng-đâu">Phụ lục H: Từ điển khái niệm và pattern — <em>là gì, vì sao tồn tại, dùng ở đâu</em></h1>
+<p>Mười tám chương trước dạy <strong>cách làm</strong>. Phụ lục này dạy <strong>vì sao thứ đó tồn tại</strong> — phần mà người
+đọc thường bỏ qua khi đang gấp, rồi trả giá sáu tháng sau bằng một quyết định thiết kế sai.</p>
+<p>Nó ra đời từ một lần đo. Tôi tách toàn bộ bản thảo thành phần <em>mã</em> và phần <em>văn</em>, đếm mỗi khái niệm
+xuất hiện ở đâu, rồi đối chiếu. Kết quả: có những thứ sách <strong>dùng trong mã</strong> nhưng <strong>chưa bao giờ
+gọi tên</strong> — và cái tệ nhất trong số đó là ba mẫu thiết kế mà chính mã mẫu của sách đã hiện thực đầy
+đủ, chỉ là không ai nói ra (mục H.14).</p>
+<blockquote>
+<p>✅ <strong>Mọi khẳng định về hành vi trong phần A đều chạy được.</strong> Chúng nằm trong bộ tự kiểm của sách,
+ở <code>source/MeoBench/KiemPhuLucH.cs</code> — 27 phép kiểm, chạy bằng:</p>
+<pre><code class="language-bash">cd source/MeoBench
+dotnet run -- H
+</code></pre>
+<p>Sách không nói điều gì về ngôn ngữ mà mã không chứng minh được. Và một trong những phép kiểm đó
+đã bắt được chính tôi sắp đưa một con số sai vào sách — chuyện kể ở callout trong mục H.1.</p>
+</blockquote>
+<hr>
+<h2 id="h0-cách-đc-ph-lc-này">H.0  Cách đọc phụ lục này</h2>
+<h3>Khuôn bốn phần</h3>
+<p>Mỗi mục trả lời đúng bốn câu, theo đúng thứ tự này:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phần</th>
+<th>Trả lời câu hỏi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Là gì</strong></td>
+<td>Định nghĩa gọn nhất có thể đúng — một hai câu, không thuật ngữ vòng quanh</td>
+</tr>
+<tr>
+<td><strong>Vì sao tồn tại</strong></td>
+<td>Trước khi có nó người ta làm thế nào, và <strong>đau ở đâu</strong>. Không có phần này thì khái niệm chỉ là từ vựng</td>
+</tr>
+<tr>
+<td><strong>Trong phần mềm máy</strong></td>
+<td>Chỗ dùng thật, kèm mã. Không dùng ví dụ <code>Animal</code>/<code>Dog</code>/<code>Cat</code></td>
+</tr>
+<tr>
+<td><strong>Phân biệt với</strong></td>
+<td>Những thứ <em>trông giống</em> mà khác. Đây là phần người mới sai nhiều nhất</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Vì sao phần &quot;Phân biệt với&quot; chiếm nhiều chỗ nhất.</strong> Học một pattern riêng lẻ thì dễ; sai thì
+thường không phải vì <em>không biết</em> pattern, mà vì <strong>biết ba pattern trông giống nhau và chọn nhầm</strong>.
+Adapter, Decorator và Proxy có sơ đồ lớp <strong>giống hệt nhau</strong> — cùng một interface, cùng một tham
+chiếu tới đối tượng bên trong. Chúng khác nhau <strong>hoàn toàn ở ý định</strong>, không ở hình dạng. Không ai
+nhìn sơ đồ mà phân biệt được; phải hỏi &quot;cái này sinh ra để làm gì&quot;.</p>
+</blockquote>
+<h3>Cái phụ lục này KHÔNG nhắc lại</h3>
+<p>Để khỏi mất thời gian tra: những khái niệm dưới đây đã được giải thích đầy đủ trong thân sách, phụ
+lục này chỉ trỏ tới, không viết lại.</p>
+<p><strong>Bảng H.1 — Khái niệm đã có sẵn trong chương, tra thẳng ở đó</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Khái niệm</th>
+<th>Ở đâu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Value type ↔ reference type, stack/heap/GC</td>
+<td>mục 3.1.1, 3.1.2</td>
+</tr>
+<tr>
+<td>Nội suy chuỗi <code>$&quot;…&quot;</code></td>
+<td>mục 3.5.3</td>
+</tr>
+<tr>
+<td><code>partial</code> — một class nhiều file</td>
+<td>mục 3.6.4, Phụ lục E</td>
+</tr>
+<tr>
+<td>Delegate, <code>Func</code>, <code>Action</code>, lambda, <code>event</code></td>
+<td>mục 4.4</td>
+</tr>
+<tr>
+<td>Generic cơ bản, <code>Result&lt;T&gt;</code></td>
+<td>mục 4.5</td>
+</tr>
+<tr>
+<td><code>ConfigureAwait</code>, <code>SynchronizationContext</code></td>
+<td>mục 5.1.3</td>
+</tr>
+<tr>
+<td><code>CancellationToken</code>, huỷ có hợp tác</td>
+<td>mục 5.2</td>
+</tr>
+<tr>
+<td><code>volatile</code>, <code>Interlocked</code>, <code>lock</code></td>
+<td>mục 5.3.2, 5.3.3</td>
+</tr>
+<tr>
+<td><code>IDisposable</code></td>
+<td>mục 5.5</td>
+</tr>
+<tr>
+<td>Vòng đời DI: Singleton / Scoped / Transient</td>
+<td>Chương 7 + Phụ lục B</td>
+</tr>
+<tr>
+<td>Generic constraint <code>where T : …</code></td>
+<td>mục 13.3.2</td>
+</tr>
+<tr>
+<td>Null Object Pattern</td>
+<td>mục 16.2.2 (callout)</td>
+</tr>
+<tr>
+<td>Chain of Responsibility</td>
+<td>mục 16.1.4</td>
+</tr>
+<tr>
+<td>77 từ khoá C#</td>
+<td>Phụ lục E</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h1 id="phn-a-khái-nim-c">Phần A — Khái niệm C#</h1>
+<h2 id="h1-boxing-cái-giá-ca-vic-nhét-mt-con-s-vào-mt-cái-ô-hình-object">H.1  Boxing — cái giá của việc nhét một con số vào một cái ô hình <code>object</code></h2>
+<p><strong>Là gì.</strong> Boxing là việc runtime <strong>sao chép</strong> một giá trị kiểu value type (<code>int</code>, <code>double</code>, <code>bool</code>,
+<code>struct</code>) vào một vùng nhớ mới trên heap, để nó có thể được tham chiếu như một <code>object</code>. Unboxing là
+chiều ngược lại: đọc giá trị ra và <strong>sao chép lần nữa</strong> trở lại stack.</p>
+<p>Điểm cốt lõi, và là chỗ hay hiểu nhầm nhất: <strong>boxing không phải một phép ép kiểu, nó là một lần cấp
+phát bộ nhớ.</strong> <code>(object)5</code> không &quot;nhìn số 5 dưới dạng object&quot; — nó tạo một đối tượng mới trên heap
+và chép số 5 vào đó.</p>
+<p><strong>Vì sao tồn tại.</strong> Vì .NET có hai họ kiểu sống ở hai chỗ khác nhau: value type nằm thẳng trong ô
+nhớ của nó (stack, hoặc nhúng trong đối tượng cha), reference type nằm trên heap và biến chỉ giữ
+địa chỉ. Nhưng hệ thống kiểu lại hứa rằng <strong>mọi thứ đều là <code>object</code></strong> — <code>int</code> cũng có <code>.ToString()</code>,
+cũng bỏ vào <code>List&lt;object&gt;</code> được. Boxing là cây cầu bắt buộc phải có để giữ lời hứa đó.</p>
+<p>Trước khi có generic (C# 1.0, năm 2002), mọi collection đều là <code>ArrayList</code> — tức là <code>object[]</code>. Nhét
+một triệu <code>int</code> vào <code>ArrayList</code> là một triệu lần cấp phát heap. Generic (C# 2.0) ra đời phần lớn
+chính là để giết boxing: <code>List&lt;int&gt;</code> lưu thẳng các <code>int</code> cạnh nhau, không hộp nào cả.</p>
+<p><strong>Trong phần mềm máy.</strong> Chỗ boxing lẻn vào nhiều nhất không phải collection — sách đã cảnh báo ở mục
+3.7.2 rồi — mà là <strong>bảng cờ dùng chung</strong> ở mục 16.3. Một bảng tag kiểu <code>Dictionary&lt;string, object&gt;</code>
+trông rất tiện: một bảng chứa được cả <code>bool</code>, <code>int</code>, <code>double</code>, <code>string</code>. Cái giá là mỗi lần ghi một
+<code>double</code> vào đó là một lần cấp phát heap, và một bảng 500 tag cập nhật 100 lần/giây sinh <strong>50.000
+đối tượng rác mỗi giây</strong>:</p>
+<pre><code class="language-csharp">// ❌ Tiện khi viết, đắt khi chạy — mỗi phép gán là một lần boxing
+private readonly Dictionary&lt;string, object&gt; _tags = new();
+_tags[&quot;Tram3.ViTriZ&quot;] = 125.4;        // boxing: cấp phát heap
+double z = (double)_tags[&quot;Tram3.ViTriZ&quot;];  // unboxing: chép ngược lại
+</code></pre>
+<p>Đây chính là lý do mục 16.3.5 nêu quy tắc <strong>&quot;tách bảng theo KIỂU dữ liệu, không gộp một bảng cho tất
+cả&quot;</strong> — nó nghe như chuyện gọn gàng, nhưng động cơ thật là boxing:</p>
+<pre><code class="language-csharp">// ✅ Mỗi kiểu một bảng — không hộp nào, và đọc ra không phải ép kiểu
+private readonly Dictionary&lt;string, double&gt; _tagSo  = new();
+private readonly Dictionary&lt;string, bool&gt;   _tagCo  = new();
+</code></pre>
+<p>Đổi lại, bảng riêng theo kiểu còn bắt lỗi ngay lúc biên dịch: ghi một <code>bool</code> vào bảng số là lỗi
+build, còn với bảng <code>object</code> thì nó chạy ngon lành cho tới khi ai đó unbox và nhận
+<code>InvalidCastException</code> lúc 3 giờ sáng.</p>
+<blockquote>
+<p>🔍 <strong>Một &quot;sự thật về boxing&quot; ai cũng nhắc — đem đi đo thì ra một câu trả lời thú vị hơn nhiều.</strong></p>
+<p>Lời khuyên kinh điển: <em>&quot;nội suy chuỗi <code>$&quot;...&quot;</code> box mọi đối số value type.&quot;</em> Đúng cho tới C# 9. Từ
+<strong>C# 10 / .NET 6</strong>, trình biên dịch dịch <code>$&quot;...&quot;</code> thành <code>DefaultInterpolatedStringHandler</code> với nạp
+chồng <strong>generic</strong> <code>AppendFormatted&lt;T&gt;(T value)</code> — không đi qua <code>object</code>, nên không cần hộp nào.</p>
+<p>Đo bằng <code>GC.GetAllocatedBytesForCurrentThread()</code> trên .NET 9 Release, với
+<code>$&quot;Truc {so} tai {d}&quot;</code> (<code>so</code> là <code>int</code>, <code>d</code> là <code>double</code>, chuỗi kết quả 19 ký tự):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Byte cấp phát mỗi lần</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>$&quot;Truc {so} tai {d}&quot;</code></td>
+<td><strong>64</strong></td>
+</tr>
+<tr>
+<td><code>string.Format(..., &quot;Truc {0} tai {1}&quot;, so, d)</code></td>
+<td><strong>112</strong></td>
+</tr>
+</tbody></table></div>
+<p>64 byte là <strong>đúng bằng chuỗi kết quả</strong> (22 byte phần đầu + 2×19, làm tròn bội số 8) — không thêm
+gì. Chênh 48 byte của <code>string.Format</code> là đúng hai lần box (24 byte mỗi hộp trên x64), vì chữ ký
+của nó nhận <code>object</code>. Lời khuyên cũ <strong>vẫn đúng nguyên văn cho <code>string.Format</code>, và đã sai cho
+<code>$&quot;...&quot;</code></strong>.</p>
+<p><strong>Nhưng phép đo đó suýt đưa một con số sai vào sách.</strong> Khi chạy phép kiểm một mình, nội suy đo
+được 64 byte. Khi chạy nó trong cả bộ 483 phép kiểm, con số thành <strong>88</strong> — ổn định, lặp lại y hệt
+qua nhiều lần chạy, thừa đúng 24 byte, tức đúng một cái hộp. Cùng chuỗi, cùng độ dài, cùng
+<code>CultureInfo</code>. Thủ phạm lộ ra khi tắt biên dịch phân tầng:</p>
+<pre><code class="language-text">dotnet run                              -&gt; nội suy = 88 byte
+DOTNET_TieredCompilation=0 dotnet run   -&gt; nội suy = 64 byte
+</code></pre>
+<p><strong>Cái hộp đó do mã tier-0 sinh ra, và JIT tối ưu xoá nó đi.</strong> Bên trong handler có một phép thử
+<code>value is IFormattable</code>; với <code>T</code> là struct, trình tối ưu giải được nó lúc biên dịch và bỏ hẳn phép
+box, còn QuickJit của tier-0 thì cứ box thật. Chạy riêng, hàm kịp lên tier-1 trước khi đo; chạy
+trong cả bộ, nó vẫn còn ở tier-0.</p>
+<p>Hai điều mang đi, và điều thứ hai mới là điều quan trọng:</p>
+<ol>
+<li><strong>&quot;Đoạn mã này có box không&quot; không phải một tính chất của mã nguồn</strong> — nó là tính chất của mã
+<em>đã được JIT sinh ra</em>, và nó đổi theo tầng. Mã chỉ chạy vài lần (khởi động, nhánh xử lý lỗi)
+sống gần như cả đời ở tier-0 và <strong>vẫn box</strong>; mã chạy nóng thì không.</li>
+<li><strong>Mọi micro-benchmark có bước làm nóng đều đang đo tier-1.</strong> Đó thường là điều bạn muốn — nhưng
+nếu thứ bạn định tối ưu là một nhánh hiếm gặp, con số benchmark đang nói về một đoạn mã khác
+với đoạn thật sự chạy lúc 3 giờ sáng.</li>
+</ol>
+<p>Vì vậy <code>KiemPhuLucH.cs</code> trong mã mẫu <strong>không chốt một con số</strong>: nó khẳng định <code>string.Format</code> luôn
+cấp phát nhiều hơn, và nội suy phải bằng <em>hoặc</em> kích thước chuỗi kết quả <em>hoặc</em> kích thước đó cộng
+đúng một hộp. Một phép kiểm chốt &quot;64&quot; sẽ đỏ tuỳ theo thứ tự chạy — và đó là loại phép kiểm dạy
+người ta tắt phép kiểm.</p>
+<p><strong>Và đừng kết luận <code>$&quot;...&quot;</code> giờ miễn phí:</strong> nó vẫn cấp phát chuỗi kết quả — đúng 64 byte đó — và
+đó mới là điều mục 19.3.3 cảnh báo. Trong ghi nhật ký, cách tránh được cả hai là dùng <strong>mẫu thông
+điệp</strong> (<code>_logger.LogDebug(&quot;Trục {Truc} tại {ViTri}&quot;, truc, viTri)</code>): chuỗi chỉ được dựng nếu mức
+log đó thực sự được ghi.</p>
+<p>Chỗ boxing thứ hai hay được nhắc — <strong><code>Enum.HasFlag</code></strong> — cũng cùng số phận: box hai lần trên .NET
+Framework, còn trên .NET hiện đại JIT nhận ra mẫu này và sinh đúng một phép <code>and</code> bit.</p>
+</blockquote>
+<p><strong>Phân biệt với.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Boxing</th>
+<th>Ép kiểu (<code>(double)x</code> từ <code>int</code>)</th>
+<th>Generic</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Có cấp phát heap không</td>
+<td><strong>Có</strong></td>
+<td>Không</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Có đổi giá trị không</td>
+<td>Không</td>
+<td>Có thể (mất phần thập phân)</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Bắt lỗi lúc nào</td>
+<td>Lúc chạy (<code>InvalidCastException</code>)</td>
+<td>Lúc biên dịch</td>
+<td>Lúc biên dịch</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="h2-closure-lambda-mang-theo-cái-gì-và-th-nó-mang-theo-sng-bao-lâu">H.2  Closure — lambda mang theo cái gì, và thứ nó mang theo sống bao lâu</h2>
+<p>Mục 4.4.2 đã cảnh báo về biến bị bắt trong vòng lặp. Mục này nói <strong>cơ chế</strong>, vì hiểu cơ chế mới đoán
+được những chỗ khác nó sẽ cắn.</p>
+<p><strong>Là gì.</strong> Closure là một lambda (hoặc hàm ẩn danh) cùng với <strong>những biến bên ngoài mà nó dùng</strong>. Khi
+trình biên dịch thấy một lambda tham chiếu tới biến địa phương, nó <strong>không chép giá trị</strong> — nó dựng
+một class ẩn, chuyển biến đó thành field của class ấy, và cả hàm chứa lẫn lambda đều đọc/ghi vào
+cùng field đó.</p>
+<p>Đó là toàn bộ câu chuyện, và mọi bất ngờ về closure đều suy ra từ một câu: <strong>biến được chia sẻ, không
+được sao chép.</strong></p>
+<p><strong>Vì sao tồn tại.</strong> Vì nếu không có nó, mọi callback đều phải mang theo một &quot;gói dữ liệu ngữ cảnh&quot;
+tự tay đóng. Lập trình viên C đời đầu sẽ nhận ra ngay: <code>void (*callback)(void* userData)</code> — tham số
+<code>void* userData</code> chính là closure làm bằng tay, và nó là nguồn của vô số lỗi con trỏ treo. Closure
+là trình biên dịch làm việc đó thay bạn, và làm đúng.</p>
+<p><strong>Trong phần mềm máy.</strong> Chỗ cắn đau nhất là <strong>đăng ký handler trong vòng lặp</strong> — mẫu rất hay gặp khi
+dựng giao diện từ cấu hình:</p>
+<pre><code class="language-csharp">// ❌ Cả 8 nút đều điều khiển trục cuối cùng
+for (int i = 0; i &lt; 8; i++)
+{
+    var nut = new Button { Content = $&quot;Jog trục {i}&quot; };
+    nut.Click += (s, e) =&gt; JogAsync(i);   // &#39;i&#39; bị CHIA SẺ, không chép
+    panel.Children.Add(nut);
+}
+</code></pre>
+<p>Cả tám lambda cùng trỏ vào <strong>một</strong> biến <code>i</code>. Vòng lặp kết thúc, <code>i</code> bằng 8 — và cả tám nút gọi
+<code>JogAsync(8)</code>. Với một danh sách nút trên màn hình thì đây là phiền phức; với <strong>tám trục servo</strong> thì
+đây là bảy cái nút chạy sai trục.</p>
+<pre><code class="language-csharp">// ✅ Sao chép vào một biến MỚI trong mỗi vòng lặp
+for (int i = 0; i &lt; 8; i++)
+{
+    int truc = i;                          // biến mới mỗi lần lặp
+    nut.Click += (s, e) =&gt; JogAsync(truc);
+}
+</code></pre>
+<blockquote>
+<p>📌 <strong><code>foreach</code> đã được sửa, <code>for</code> thì không.</strong> Từ C# 5.0, biến lặp của <code>foreach</code> được tạo mới mỗi
+vòng, nên <code>foreach (var t in trucs) nut.Click += (s,e) =&gt; Jog(t);</code> là <strong>đúng</strong>. Biến của <code>for</code> thì
+vẫn chỉ có một, vì <code>for</code> cho phép bạn sửa nó trong thân vòng lặp nên không thể tự ý chép. Hệ quả
+thực tế: cùng một mẫu mã, đổi <code>foreach</code> thành <code>for</code> có thể làm nó hỏng mà không có cảnh báo nào.</p>
+</blockquote>
+<p>Mặt thứ hai, ít người nghĩ tới: <strong>closure giữ đối tượng sống</strong>. Một lambda bắt <code>this</code> và được gán vào
+một <code>event</code> của đối tượng sống lâu (một <code>IDeviceManager</code> singleton chẳng hạn) sẽ <strong>giữ cả màn hình
+không cho thu gom</strong> sau khi người dùng đã đóng nó. Đây là một trong những nguồn rò rỉ bộ nhớ phổ biến
+nhất trong ứng dụng HMI chạy liên tục nhiều ngày:</p>
+<pre><code class="language-csharp">// Màn hình đã đóng, nhưng _deviceManager vẫn giữ lambda, lambda giữ &#39;this&#39;
+_deviceManager.TrangThaiDoi += (s, e) =&gt; CapNhatDen(e);   // không gỡ được!
+</code></pre>
+<p>Không gỡ được vì <code>-=</code> cần <strong>đúng đối tượng delegate đã cộng vào</strong>, mà lambda viết thẳng như trên thì
+không có tên để tham chiếu lại. Cách đúng là đặt tên cho nó:</p>
+<pre><code class="language-csharp">private void KhiTrangThaiDoi(object? s, TrangThaiEventArgs e) =&gt; CapNhatDen(e);
+// đăng ký:  _deviceManager.TrangThaiDoi += KhiTrangThaiDoi;
+// gỡ ra:    _deviceManager.TrangThaiDoi -= KhiTrangThaiDoi;
+</code></pre>
+<p><strong>Phân biệt với.</strong> Closure ≠ lambda. Lambda là <em>cú pháp</em> viết hàm ngắn; closure là <em>hiện tượng</em> lambda
+nắm giữ biến bên ngoài. Một lambda không dùng biến ngoài (<code>x =&gt; x * 2</code>) không tạo closure, và trình
+biên dịch còn dùng lại một thể hiện duy nhất của nó — không cấp phát gì.</p>
+<hr>
+<h2 id="h3-thc-thi-trì-hoãn-linq-chưa-chy-vào-lúc-bn-tưng-nó-chy">H.3  Thực thi trì hoãn — LINQ chưa chạy vào lúc bạn tưởng nó chạy</h2>
+<p><strong>Là gì.</strong> Phần lớn toán tử LINQ (<code>Where</code>, <code>Select</code>, <code>OrderBy</code>, <code>Take</code>…) <strong>không làm gì cả</strong> khi được
+gọi. Chúng trả về một đối tượng mô tả <em>ý định</em>. Công việc thật chỉ xảy ra khi có ai đó duyệt qua kết
+quả — bằng <code>foreach</code>, <code>ToList()</code>, <code>Count()</code>, <code>First()</code>…</p>
+<p><strong>Vì sao tồn tại.</strong> Để ghép được nhiều bước mà chỉ duyệt dữ liệu <strong>một lần</strong>. Nếu <code>Where</code> chạy ngay
+và trả một <code>List</code> mới, thì <code>dsA.Where(...).Select(...).Take(5)</code> sẽ tạo ba danh sách trung gian và
+duyệt hết cả triệu bản ghi ba lần — dù bạn chỉ cần 5 phần tử. Với thực thi trì hoãn, chuỗi trên duyệt
+đúng số phần tử cần rồi dừng.</p>
+<p><strong>Trong phần mềm máy.</strong> Ba hệ quả, cái thứ ba là cái làm mất buổi chiều:</p>
+<p><strong>1. Truy vấn chạy lại mỗi lần bạn đụng vào.</strong></p>
+<pre><code class="language-csharp">var ng = ketQua.Where(r =&gt; !r.Dat);     // chưa chạy gì
+
+int soLuong = ng.Count();               // duyệt lần 1
+var danhSach = ng.ToList();             // duyệt lần 2 — làm lại từ đầu
+</code></pre>
+<p>Vô hại với danh sách trong bộ nhớ, <strong>rất không vô hại</strong> khi <code>ketQua</code> là một truy vấn EF Core: đó là
+hai lần đi xuống cơ sở dữ liệu. Quy tắc: <strong>vật chất hoá một lần bằng <code>ToList()</code> rồi dùng lại.</strong></p>
+<p><strong>2. Dữ liệu đổi giữa chừng thì kết quả đổi theo.</strong></p>
+<pre><code class="language-csharp">var canhBaoNang = _danhSachCanhBao.Where(a =&gt; a.Muc &gt;= MucCanhBao.Nang);
+_danhSachCanhBao.Add(new CanhBao(MucCanhBao.Nang, &quot;Quá nhiệt&quot;));
+foreach (var a in canhBaoNang) { … }    // CÓ cảnh báo quá nhiệt trong này
+</code></pre>
+<p>Truy vấn nhìn vào danh sách <strong>tại thời điểm duyệt</strong>, không phải thời điểm viết. Và nếu một luồng khác
+<code>Add</code> vào giữa lúc <code>foreach</code> đang chạy thì bạn nhận <code>InvalidOperationException: Collection was modified</code> — một lỗi chỉ xuất hiện khi máy chạy tải thật.</p>
+<p><strong>3. Ngoại lệ nổ ở dòng khác với dòng gây lỗi.</strong></p>
+<pre><code class="language-csharp">var q = files.Select(f =&gt; File.ReadAllText(f));   // dòng này KHÔNG ném gì
+// … 40 dòng sau …
+foreach (var s in q) { … }                        // FileNotFoundException nổ Ở ĐÂY
+</code></pre>
+<p>Bẫy này đặc biệt hiểm khi chuỗi LINQ nằm trong một <code>try</code> mà chỗ duyệt lại nằm ngoài — <code>try/catch</code>
+không bắt được gì, vì lúc chạy qua khối <code>try</code> thì chưa có gì được thực thi.</p>
+<blockquote>
+<p>💡 <strong>Quy tắc mang đi, gọn trong một câu:</strong> hàm trả <code>IEnumerable&lt;T&gt;</code> là hàm trả về một <strong>lời hứa</strong>,
+không phải dữ liệu. Nếu hàm của bạn trả dữ liệu đã đọc xong từ thiết bị hay từ file, hãy trả
+<code>IReadOnlyList&lt;T&gt;</code> (tức đã <code>ToList()</code>) — kiểu trả về nói thật với người gọi rằng việc đã làm xong,
+và không ai vô tình chạy lại nó lần thứ hai.</p>
+</blockquote>
+<p><strong>Phân biệt với.</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><code>IEnumerable&lt;T&gt;</code></th>
+<th><code>IQueryable&lt;T&gt;</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lambda được dịch thành</td>
+<td>mã máy, chạy trong tiến trình</td>
+<td><strong>cây biểu thức</strong>, dịch tiếp thành SQL</td>
+</tr>
+<tr>
+<td><code>Where</code> chạy ở đâu</td>
+<td>trong bộ nhớ ứng dụng</td>
+<td><strong>trên máy chủ CSDL</strong></td>
+</tr>
+<tr>
+<td>Lọc 1 triệu bản ghi lấy 10</td>
+<td>tải cả triệu về rồi lọc</td>
+<td>CSDL lọc, chỉ 10 bản ghi qua mạng</td>
+</tr>
+</tbody></table></div>
+<p>Đây là lý do một dòng <code>AsEnumerable()</code> đặt nhầm chỗ có thể biến một truy vấn nhanh thành một lần tải
+toàn bảng: mọi thứ sau <code>AsEnumerable()</code> không còn dịch được sang SQL nữa. Trong mã báo cáo sản xuất,
+hãy đặt nó <strong>sau</strong> mọi <code>Where</code>/<code>OrderBy</code>, không bao giờ trước.</p>
+<hr>
+<h2 id="h4-yield-return-sinh-tng-phn-t-theo-yêu-cu">H.4  <code>yield return</code> — sinh từng phần tử theo yêu cầu</h2>
+<p><strong>Là gì.</strong> <code>yield return</code> cho phép viết một hàm <strong>trả về nhiều giá trị lần lượt</strong> mà không dựng danh
+sách. Trình biên dịch biến hàm đó thành một máy trạng thái: mỗi lần người gọi xin phần tử tiếp theo,
+thân hàm chạy tiếp <strong>từ đúng chỗ nó dừng lần trước</strong>.</p>
+<p><strong>Vì sao tồn tại.</strong> Trước C# 2.0, muốn cho người khác duyệt qua dữ liệu của mình thì phải tự viết một
+class <code>IEnumerator</code> với <code>MoveNext()</code>, <code>Current</code>, <code>Reset()</code>, và tự tay giữ biến đếm, biến trạng thái.
+Khoảng 40 dòng mã mẫu cho một việc mà ý tưởng chỉ có ba dòng. <code>yield return</code> là trình biên dịch sinh
+40 dòng đó thay bạn — nó <strong>chính là Iterator Pattern</strong> của GoF, được đưa thẳng vào ngôn ngữ.</p>
+<p><strong>Trong phần mềm máy.</strong> Chỗ hợp nhất là <strong>sinh trình tự bước</strong> — đúng bài toán của <code>IStep</code> ở Chương 12
+và Phụ lục G. So sánh hai cách viết cùng một trình tự:</p>
+<pre><code class="language-csharp">// Cách thường: dựng cả danh sách trước
+public IReadOnlyList&lt;IBuoc&gt; TaoTrinhTu(CongThuc ct)
+{
+    var ds = new List&lt;IBuoc&gt; { new BuocVeGoc(), new BuocChoPhoi() };
+    for (int i = 0; i &lt; ct.SoDiemDo; i++) ds.Add(new BuocDo(i));
+    ds.Add(new BuocXuatPhoi());
+    return ds;
+}
+
+// Cách yield: mô tả trình tự, không dựng danh sách
+public IEnumerable&lt;IBuoc&gt; TaoTrinhTu(CongThuc ct)
+{
+    yield return new BuocVeGoc();
+    yield return new BuocChoPhoi();
+    for (int i = 0; i &lt; ct.SoDiemDo; i++)
+        yield return new BuocDo(i);
+    yield return new BuocXuatPhoi();
+}
+</code></pre>
+<p>Bản <code>yield</code> đọc <strong>giống hệt tờ quy trình dán trên máy</strong> — đó là giá trị thật của nó ở đây, hơn cả
+chuyện tiết kiệm bộ nhớ. Người bảo trì đọc mười dòng đó biết ngay máy làm gì theo thứ tự nào, không
+phải lần theo các lệnh <code>.Add()</code> rải rác.</p>
+<p>Chỗ hợp thứ hai là <strong>đọc file lớn</strong>: nhật ký sản xuất 2 GB không nên nạp hết vào <code>List&lt;string&gt;</code>.</p>
+<pre><code class="language-csharp">public static IEnumerable&lt;BanGhi&gt; DocNhatKy(string duongDan)
+{
+    using var sr = new StreamReader(duongDan);
+    string? dong;
+    while ((dong = sr.ReadLine()) is not null)
+        if (BanGhi.ThuPhanTich(dong, out var ban))
+            yield return ban;          // trả từng bản ghi, bộ nhớ luôn ~1 dòng
+}
+</code></pre>
+<blockquote>
+<p>⚠️ <strong>Hai cái bẫy đi kèm, cả hai đều là hệ quả của thực thi trì hoãn (mục H.3).</strong></p>
+<ol>
+<li><strong>Thân hàm không chạy cho tới lần duyệt đầu tiên.</strong> Mọi kiểm tra tham số đặt trong hàm <code>yield</code>
+sẽ nổ <strong>muộn</strong>, ở chỗ người gọi duyệt, không ở chỗ họ gọi. Cách xử lý chuẩn là tách đôi: một
+hàm thường kiểm tra tham số rồi gọi một hàm <code>private</code> chứa <code>yield</code>.</li>
+<li><strong><code>using</code> bên trong chỉ được giải phóng khi duyệt hết hoặc <code>Dispose</code> iterator.</strong> Người gọi
+<code>.First()</code> rồi bỏ đi — <code>foreach</code> sinh ra bởi C# vẫn tự gọi <code>Dispose</code>, nên vẫn an toàn; nhưng
+nếu bạn tự gọi <code>GetEnumerator()</code> bằng tay thì file sẽ <strong>bị giữ mở</strong>. Đây là lý do luôn duyệt
+bằng <code>foreach</code>, đừng tự điều khiển enumerator.</li>
+</ol>
+</blockquote>
+<p><strong>Phân biệt với.</strong> <code>yield return</code> trả <strong>nhiều</strong> giá trị lần lượt; <code>return</code> trả <strong>một</strong> giá trị rồi kết
+thúc. Một hàm không thể dùng cả hai kiểu. Còn <code>yield break</code> là &quot;dừng dãy tại đây&quot; — tương đương
+<code>return</code> trong hàm iterator.</p>
+<hr>
+<h2 id="h5-in-out-hip-bin-và-nghch-bin">H.5  <code>in</code> / <code>out</code> — hiệp biến và nghịch biến</h2>
+<blockquote>
+<p>📌 <strong>Mục này trả một món nợ.</strong> Mục 4.5 viết rằng covariance/contravariance &quot;dùng thật ở Chương 16&quot;.
+Khi soát lại, Chương 16 <strong>không</strong> dùng và cũng không giải thích — lời hứa bị bỏ lửng. Mục này thay
+chỗ cho lời hứa đó, và tham chiếu ở 4.5 đã được sửa để trỏ về đây.</p>
+</blockquote>
+<p><strong>Là gì.</strong> Hai chú thích đặt trên tham số kiểu của một interface hay delegate generic, cho phép trình
+biên dịch chấp nhận một phép gán mà mặc định nó từ chối:</p>
+<ul>
+<li><strong><code>out T</code> (hiệp biến — covariance)</strong>: <code>IEnumerable&lt;TrucServo&gt;</code> gán được cho <code>IEnumerable&lt;ITruc&gt;</code>.
+Đọc ra được, nên &quot;hẹp hơn&quot; thay được cho &quot;rộng hơn&quot;.</li>
+<li><strong><code>in T</code> (nghịch biến — contravariance)</strong>: <code>IComparer&lt;ITruc&gt;</code> gán được cho <code>IComparer&lt;TrucServo&gt;</code>.
+Chỉ nhận vào, nên cái xử lý được &quot;rộng hơn&quot; thì chắc chắn xử lý được &quot;hẹp hơn&quot;.</li>
+</ul>
+<p>Mẹo nhớ đúng bản chất, không phải mẹo học vẹt: <strong><code>out</code> = T chỉ đi RA khỏi interface (kiểu trả về);
+<code>in</code> = T chỉ đi VÀO (tham số).</strong> Trình biên dịch ép đúng luật đó — khai báo <code>out T</code> rồi dùng <code>T</code> làm
+tham số là lỗi biên dịch.</p>
+<p><strong>Vì sao tồn tại.</strong> Vì mặc định, generic trong .NET là <strong>bất biến</strong> (invariant): <code>List&lt;TrucServo&gt;</code>
+<em>không phải</em> <code>List&lt;ITruc&gt;</code>, dù <code>TrucServo</code> là <code>ITruc</code>. Sự khắt khe đó là cần thiết — nếu cho phép, ta
+sẽ làm được điều này:</p>
+<pre><code class="language-csharp">List&lt;ITruc&gt; ds = dsTrucServo;        // giả sử được phép…
+ds.Add(new TrucKhiNen());            // …thì bây giờ dsTrucServo chứa một trục khí nén
+</code></pre>
+<p>Nhưng sự khắt khe ấy quá tay với những interface <strong>chỉ đọc</strong>: <code>IEnumerable&lt;T&gt;</code> không có <code>Add</code>, nên
+không có nguy hiểm gì. <code>out</code>/<code>in</code> là cách nói với trình biên dịch: <em>&quot;interface này an toàn theo một
+chiều, hãy nới luật cho nó.&quot;</em></p>
+<p><strong>Trong phần mềm máy.</strong> Chỗ gặp thật nhất là khi hàm nhận danh sách thiết bị:</p>
+<pre><code class="language-csharp">// KHÔNG có hiệp biến thì dòng gọi thứ hai không biên dịch được
+void KiemTraTatCa(IEnumerable&lt;IThietBi&gt; ds) { … }
+
+List&lt;TrucServo&gt;  trucs  = LayTrucs();
+List&lt;CamBienAnh&gt; cameras = LayCameras();
+
+KiemTraTatCa(trucs);     // ✅ được, nhờ IEnumerable&lt;out T&gt;
+KiemTraTatCa(cameras);   // ✅ được
+</code></pre>
+<p>Nếu không có <code>out T</code>, bạn sẽ phải viết <code>trucs.Cast&lt;IThietBi&gt;()</code> ở mọi nơi gọi — hoặc tệ hơn, khai báo
+tham số là <code>IEnumerable&lt;object&gt;</code> và mất hết an toàn kiểu.</p>
+<p>Khi <strong>tự viết</strong> interface, quy tắc thực dụng: nếu interface chỉ trả <code>T</code> ra thì đánh dấu <code>out</code>; chỉ
+nhận <code>T</code> vào thì <code>in</code>; vừa nhận vừa trả thì để nguyên.</p>
+<pre><code class="language-csharp">// Chỉ phát dữ liệu ra → out. Nhờ vậy INguonDo&lt;KetQuaDo&gt; dùng được ở nơi cần INguonDo&lt;IKetQua&gt;
+public interface INguonDo&lt;out T&gt; { T DocGanNhat(); }
+
+// Chỉ nhận vào để xử lý → in. Nhờ vậy IXuLy&lt;IKetQua&gt; cắm được vào chỗ cần IXuLy&lt;KetQuaDo&gt;
+public interface IXuLy&lt;in T&gt; { void Nhan(T ban); }
+</code></pre>
+<blockquote>
+<p>📌 <strong>Chỉ áp dụng cho interface và delegate, và chỉ cho reference type.</strong> Không đánh dấu được trên
+class. Và <code>IEnumerable&lt;int&gt;</code> <strong>không</strong> gán được cho <code>IEnumerable&lt;object&gt;</code> — hiệp biến không hoạt
+động với value type, vì nó cần cùng một cách biểu diễn trong bộ nhớ (chuyển <code>int</code> → <code>object</code> là
+boxing, mục H.1, tức đổi hẳn cách biểu diễn).</p>
+</blockquote>
+<p><strong>Phân biệt với.</strong> Từ khoá <code>out</code> ở đây <strong>không liên quan gì</strong> tới <code>out</code> trong tham số hàm
+(<code>TryParse(s, out var x)</code>). Hai thứ trùng chữ, khác hoàn toàn. Tương tự <code>in T</code> khác <code>in</code> của tham số
+truyền tham chiếu chỉ-đọc. C# tái sử dụng từ khoá để khỏi thêm từ mới — tiện cho trình biên dịch,
+gây nhầm cho người đọc.</p>
+<hr>
+<h2 id="h6-spant-memoryt-và-ref-struct-nhìn-vào-b-nh-mà-không-chép">H.6  <code>Span&lt;T&gt;</code>, <code>Memory&lt;T&gt;</code> và <code>ref struct</code> — nhìn vào bộ nhớ mà không chép</h2>
+<p><strong>Là gì.</strong> <code>Span&lt;T&gt;</code> là một <strong>cửa sổ</strong> nhìn vào một vùng nhớ liên tục đã tồn tại — một mảng, một phần
+của mảng, một vùng trên stack. Nó gồm đúng hai thứ: một con trỏ và một độ dài. Cắt một <code>Span</code> ra
+không chép một byte nào.</p>
+<p><code>Memory&lt;T&gt;</code> là phiên bản cất giữ được: <code>Span&lt;T&gt;</code> không được phép nằm trên heap (xem dưới), nên khi
+cần giữ một cửa sổ qua một <code>await</code> hay trong một field, dùng <code>Memory&lt;T&gt;</code> rồi lấy <code>.Span</code> ra khi cần
+đọc.</p>
+<p><strong>Vì sao tồn tại.</strong> Vì xử lý một khung dữ liệu nhị phân bằng công cụ cũ nghĩa là <strong>chép liên tục</strong>.
+Tách một khung Modbus 9 byte ra thành phần đầu và phần thân theo cách cũ:</p>
+<pre><code class="language-csharp">byte[] than = new byte[n];
+Array.Copy(buffer, 3, than, 0, n);      // một mảng mới, một lần chép
+</code></pre>
+<p>Một cổng nối tiếp nhận 100 khung/giây, mỗi khung tách ba lần → 300 mảng rác mỗi giây, mỗi mảng vài
+chục byte. Không đủ để làm chậm máy, nhưng đủ để bộ thu gom rác chạy thường xuyên hơn — và ở một
+ứng dụng điều khiển, <strong>mỗi lần thu gom rác là một lần khựng khó đoán</strong> (mục 3.1.2).</p>
+<pre><code class="language-csharp">ReadOnlySpan&lt;byte&gt; than = buffer.AsSpan(3, n);   // không cấp phát, không chép
+</code></pre>
+<p><strong>Trong phần mềm máy.</strong> Đúng chỗ nó sinh ra: <strong>tách khung</strong> ở tầng giao thức (mục 14.1.5b). Hàm phân
+tích nhận <code>ReadOnlySpan&lt;byte&gt;</code> thì gọi được từ mọi nguồn — mảng, bộ đệm gộp, hay dữ liệu từ
+<code>PipeReader</code> — mà không ai phải chép gì:</p>
+<pre><code class="language-csharp">// Nhận một cửa sổ, không quan tâm dữ liệu gốc nằm ở đâu
+public static bool ThuDocKhung(ReadOnlySpan&lt;byte&gt; khung, out double giaTri)
+{
+    giaTri = 0;
+    if (khung.Length &lt; 9 || khung[0] != Stx) return false;
+
+    ReadOnlySpan&lt;byte&gt; than = khung.Slice(3, 4);   // vẫn không chép
+    giaTri = BinaryPrimitives.ReadInt32BigEndian(than) / 1000.0;
+    return true;
+}
+</code></pre>
+<p><code>int.Parse</code>, <code>double.TryParse</code>, <code>Encoding.UTF8.GetString</code> đều đã có nạp chồng nhận <code>ReadOnlySpan&lt;char&gt;</code>
+— nên tách một chuỗi CSV thành các trường mà không sinh chuỗi con nào là chuyện làm được.</p>
+<p><strong><code>ref struct</code> là gì và vì sao <code>Span&lt;T&gt;</code> phải là nó.</strong> <code>Span&lt;T&gt;</code> giữ một con trỏ vào bộ nhớ của người
+khác. Nếu nó được phép sống trên heap — làm field của một class, bị bắt trong một closure, hay nằm
+trong một <code>Task</code> — thì nó có thể sống lâu hơn vùng nhớ nó trỏ tới, và ta có lại đúng thứ C# sinh ra
+để tránh: con trỏ treo. <code>ref struct</code> là lời hứa của trình biên dịch rằng <strong>kiểu này chỉ sống trên
+stack</strong>. Hệ quả cụ thể bạn sẽ gặp:</p>
+<ul>
+<li>Không làm field của class được (làm field của <code>ref struct</code> khác thì được).</li>
+<li><strong>Không dùng được qua <code>await</code></strong> — đây là lý do <code>Task&lt;Span&lt;T&gt;&gt;</code> không tồn tại, và cũng chính là lỗi
+mà bản in trước của Code 14.3 mắc phải (xem đính chính ở mục 14.1.2).</li>
+<li>Không bỏ vào <code>List&lt;&gt;</code>, không box.</li>
+</ul>
+<blockquote>
+<p>💡 <strong>Khi nào KHÔNG cần bận tâm.</strong> <code>Span&lt;T&gt;</code> đáng dùng ở tầng giao thức và xử lý đệm — nơi mã chạy
+hàng trăm lần mỗi giây trên dữ liệu nhị phân. Ở tầng cấu hình, công thức, báo cáo, giao diện thì
+<code>string</code> và <code>byte[]</code> bình thường là lựa chọn đúng: rõ hơn, ít ràng buộc hơn, và khác biệt hiệu
+năng không ai đo được. Dùng <code>Span</code> ở chỗ không cần chỉ làm mã khó đọc.</p>
+</blockquote>
+<hr>
+<h2 id="h7-flags-enum-nhiu-c-bttt-trong-mt-con-s">H.7  <code>[Flags]</code> enum — nhiều cờ bật/tắt trong một con số</h2>
+<p><strong>Là gì.</strong> <code>[Flags]</code> là một chú thích nói rằng enum này được dùng như một <strong>tập hợp cờ bit</strong>: mỗi
+thành viên là một bit riêng, và một giá trị có thể mang nhiều thành viên cùng lúc.</p>
+<pre><code class="language-csharp">[Flags]
+public enum CoTrangThaiTruc
+{
+    Khong       = 0,
+    DaVeGoc     = 1 &lt;&lt; 0,   // 1
+    DangChay    = 1 &lt;&lt; 1,   // 2
+    ChamGioiHan = 1 &lt;&lt; 2,   // 4
+    LoiServo    = 1 &lt;&lt; 3,   // 8
+    ServoBat    = 1 &lt;&lt; 4,   // 16
+}
+</code></pre>
+<p><strong>Vì sao tồn tại.</strong> Vì phần cứng nói chuyện bằng bit. Một thanh ghi trạng thái trục đọc về từ card
+điều khiển là <strong>một con số 16 bit</strong>, trong đó mỗi bit là một tín hiệu. Không có <code>[Flags]</code>, mã đọc
+thanh ghi đó sẽ trông như thế này:</p>
+<pre><code class="language-csharp">// ❌ Số ma thuật, không tự mô tả, sai một chữ số là sai một tín hiệu khác
+bool daVeGoc     = (raw &amp; 0x0001) != 0;
+bool dangChay    = (raw &amp; 0x0002) != 0;
+bool chamGioiHan = (raw &amp; 0x0004) != 0;
+</code></pre>
+<p>Mã trên chạy đúng, nhưng khi ghi nhật ký thì bạn chỉ có <code>raw = 21</code> — con số không nói gì. Với
+<code>[Flags]</code>, chính <code>ToString()</code> làm việc dịch ngược:</p>
+<pre><code class="language-csharp">var co = (CoTrangThaiTruc)raw;
+_log.Ghi($&quot;Trục X: {co}&quot;);          // &quot;DaVeGoc, ChamGioiHan, ServoBat&quot;
+</code></pre>
+<p>Đó là toàn bộ công dụng của chú thích <code>[Flags]</code>: nó <strong>không</strong> đổi cách enum hoạt động (phép <code>&amp;</code>, <code>|</code>
+vốn đã làm được), nó đổi cách <code>ToString()</code> in ra. Và trong một hệ thống mà việc gỡ lỗi chủ yếu là đọc
+nhật ký của đêm hôm trước, khác biệt đó lớn hơn vẻ ngoài của nó rất nhiều.</p>
+<p><strong>Trong phần mềm máy.</strong> Ba thao tác cần thuộc:</p>
+<pre><code class="language-csharp">co |=  CoTrangThaiTruc.DangChay;                 // bật một cờ
+co &amp;= ~CoTrangThaiTruc.DangChay;                 // tắt một cờ
+bool dangChay = co.HasFlag(CoTrangThaiTruc.DangChay);   // kiểm tra
+</code></pre>
+<p>Và một mẫu rất hay dùng — <strong>kiểm tra nhiều điều kiện cùng lúc</strong>, thay cho một chuỗi <code>&amp;&amp;</code> dài:</p>
+<pre><code class="language-csharp">const CoTrangThaiTruc CanCoDeChay = CoTrangThaiTruc.DaVeGoc | CoTrangThaiTruc.ServoBat;
+const CoTrangThaiTruc CamChay     = CoTrangThaiTruc.LoiServo | CoTrangThaiTruc.ChamGioiHan;
+
+bool chayDuoc = (co &amp; CanCoDeChay) == CanCoDeChay &amp;&amp; (co &amp; CamChay) == 0;
+</code></pre>
+<p>Hai hằng số đó đặt <strong>điều kiện cho phép chạy thành dữ liệu có tên</strong>, thay vì rải rác trong một biểu
+thức logic — đúng tinh thần mục 15.2.1 về interlock khai báo bằng dữ liệu.</p>
+<blockquote>
+<p>⚠️ <strong>Ba lỗi kinh điển.</strong> (1) <strong>Quên <code>= 1 &lt;&lt; n</code></strong>: enum mặc định đánh số 0,1,2,3… nên <code>LoiServo</code>
+sẽ là 3 = <code>DaVeGoc | DangChay</code>, và mọi phép kiểm sẽ sai một cách khó hiểu. (2) <strong>Quên thành viên
+<code>Khong = 0</code></strong>: cần nó để biểu diễn &quot;không cờ nào&quot;, và <code>HasFlag(Khong)</code> luôn trả <code>true</code> nên đừng
+dùng để kiểm tra. (3) <strong>Dùng <code>[Flags]</code> cho enum không phải cờ</strong> — <code>TrangThaiMay</code> chỉ có thể là MỘT
+giá trị tại một thời điểm, đánh <code>[Flags]</code> lên nó là nói sai với người đọc.</p>
+</blockquote>
+<p><strong>Phân biệt với.</strong> Enum thường trả lời <em>&quot;cái này đang ở trạng thái nào?&quot;</em> — một lựa chọn trong nhiều.
+<code>[Flags]</code> enum trả lời <em>&quot;những tính chất nào đang đúng?&quot;</em> — nhiều lựa chọn cùng lúc. <code>TrangThaiMay</code>
+(Idle / Running / Paused) là loại thứ nhất; <code>CoTrangThaiTruc</code> là loại thứ hai. Nhầm hai loại này là
+nhầm ở tầng mô hình hoá, không phải tầng cú pháp.</p>
+<hr>
+<h1 id="phn-b-pattern-khuôn-chung-và-cách-phân-bit">Phần B — Pattern: khuôn chung và cách phân biệt</h1>
+<h2 id="h8-mi-pattern-tr-li-cùng-mt-câu-hi">H.8  Mọi pattern trả lời cùng một câu hỏi</h2>
+<p>Trước khi đi vào từng cái, một khung tư duy giúp nhớ cả họ thay vì học thuộc từng tên.</p>
+<p><strong>Mọi mẫu thiết kế đều là một câu trả lời cho: <em>&quot;cái gì trong hệ thống này sẽ thay đổi, và tôi muốn
+thay đổi đó xảy ra ở đâu?&quot;</em></strong> Không có pattern nào làm chương trình chạy nhanh hơn hay ít lỗi hơn ở
+thời điểm bạn viết nó. Chúng chỉ làm một việc: <strong>dồn sự thay đổi vào một chỗ đã chuẩn bị sẵn</strong>, để
+lần sau sửa thì chỉ sửa ở đó.</p>
+<p>Từ đó suy ra ba câu hỏi để tự kiểm, trước khi quyết định dùng bất kỳ pattern nào:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Câu hỏi</th>
+<th>Nếu câu trả lời là…</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cái gì sẽ thay đổi?</td>
+<td><em>&quot;Không có gì&quot;</em> → <strong>đừng dùng pattern nào cả.</strong> Viết thẳng</td>
+</tr>
+<tr>
+<td>Thay đổi đó đã xảy ra <strong>lần thứ hai</strong> chưa?</td>
+<td><em>&quot;Chưa&quot;</em> → chờ. Pattern thêm trước khi đau là chi phí thuần</td>
+</tr>
+<tr>
+<td>Nếu không có pattern, thay đổi đó buộc tôi sửa bao nhiêu file?</td>
+<td><em>&quot;Một&quot;</em> → không cần. <em>&quot;Hơn ba&quot;</em> → cần</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Bảng 16.4 ở Chương 16 trả lời &quot;dùng khi nào&quot;. Phần này trả lời &quot;sao nó giống cái kia&quot;.</strong> Hai
+phần bổ sung cho nhau: đọc Bảng 16.4 để chọn, đọc phần này khi đã chọn xong mà vẫn phân vân giữa
+hai cái trông na ná.</p>
+</blockquote>
+<p>Bốn nhóm dưới đây gom những pattern <strong>hay bị nhầm với nhau</strong>, mỗi nhóm một bảng phân biệt và một câu
+hỏi quyết định.</p>
+<hr>
+<h2 id="h9-strategy-state-hai-pattern-có-sơ-đ-lp-ging-ht-nhau">H.9  Strategy ↔ State — hai pattern có sơ đồ lớp giống hệt nhau</h2>
+<p>Đây là cặp gây nhầm nhiều nhất trong cả họ GoF, vì nếu vẽ sơ đồ lớp ra thì <strong>chúng giống nhau từng
+nét</strong>: một interface, nhiều lớp hiện thực, một đối tượng ngữ cảnh giữ tham chiếu tới interface đó.</p>
+<p>Chúng khác nhau ở hai chỗ, và <strong>cả hai đều không nhìn thấy trên sơ đồ</strong>.</p>
+<p><strong>Bảng H.2 — Strategy và State: giống hình, khác ruột</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Strategy</strong></th>
+<th><strong>State</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ai chọn cái nào được dùng</td>
+<td><strong>Người bên ngoài</strong> — cấu hình, người gọi, DI container</td>
+<td><strong>Chính đối tượng đó</strong>, dựa vào việc vừa xảy ra</td>
+</tr>
+<tr>
+<td>Các lựa chọn có biết nhau không</td>
+<td><strong>Không.</strong> <code>ModbusTcpChannelStrategy</code> không biết <code>OpcUaChannelStrategy</code> tồn tại</td>
+<td><strong>Có.</strong> <code>Starting</code> biết bước tiếp theo là <code>Execute</code></td>
+</tr>
+<tr>
+<td>Đổi lúc nào</td>
+<td>Thường một lần, lúc khởi động</td>
+<td>Liên tục trong lúc chạy</td>
+</tr>
+<tr>
+<td>Câu hỏi nó trả lời</td>
+<td><em>&quot;Làm việc này bằng cách nào?&quot;</em></td>
+<td><em>&quot;Bây giờ máy đang ở đâu, và làm gì tiếp?&quot;</em></td>
+</tr>
+<tr>
+<td>Trong sách</td>
+<td>mục 13.2.3 — chọn giao thức theo cấu hình</td>
+<td>mục 12.1, 12.3 — PackML 17 trạng thái</td>
+</tr>
+</tbody></table></div>
+<p><strong>Câu hỏi quyết định, một câu:</strong> <em>các lựa chọn có tự chuyển sang nhau không?</em></p>
+<ul>
+<li><strong>Không</strong> → Strategy. <code>ModbusTcpChannelStrategy</code> không bao giờ tự biến thành <code>OpcUaChannelStrategy</code>.
+Ai đó ở ngoài cắm nó vào lúc khởi động và nó ở đó suốt đời.</li>
+<li><strong>Có</strong> → State. <code>Starting</code> <strong>tự</strong> chuyển sang <code>Execute</code> khi trình tự khởi động xong. Sự chuyển tiếp
+đó là một phần của bản thân mô hình, không phải quyết định của người ngoài.</li>
+</ul>
+<p>Hệ quả thực tế của việc phân biệt đúng: một bảng chuyển trạng thái
+(<code>Dictionary&lt;(State, Command), State&gt;</code> ở mục 12.3.2) chỉ có nghĩa với State. Nếu bạn thấy mình đang
+muốn viết một bảng &quot;strategy nào chuyển sang strategy nào&quot; thì bạn không có Strategy — bạn có một
+state machine và nên gọi đúng tên nó, để được hưởng những thứ đi kèm: kiểm tra bất biến (mục 18.5.2),
+vẽ được sơ đồ, báo cáo được cho MES.</p>
+<blockquote>
+<p>⚠️ <strong>Nhầm theo chiều ngược lại cũng có giá.</strong> Cài một lựa chọn giao thức bằng state machine nghĩa
+là bạn vừa tạo ra khả năng &quot;đang chạy thì tự đổi từ Modbus sang OPC UA&quot; — một khả năng không ai
+muốn có, nhưng giờ nó tồn tại trong mã và sẽ có người dùng.</p>
+</blockquote>
+<hr>
+<h2 id="h10-năm-kiu-bc-adapter-decorator-proxy-facade-bridge">H.10  Năm kiểu &quot;bọc&quot;: Adapter ↔ Decorator ↔ Proxy ↔ Facade ↔ Bridge</h2>
+<p>Năm pattern này đều có hình dạng &quot;một lớp giữ tham chiếu tới một lớp khác và gọi vào nó&quot;. Nhìn mã thì
+gần như không phân biệt được. Nhưng chúng sinh ra để giải <strong>năm bài toán khác hẳn nhau</strong>, và chọn sai
+tên nghĩa là người đọc sau bạn hiểu sai ý định.</p>
+<p><strong>Bảng H.3 — Năm kiểu bọc, phân biệt bằng ý định</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Interface ngoài so với trong</th>
+<th>Sinh ra để</th>
+<th>Dấu hiệu nhận ra trong mã</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Adapter</strong></td>
+<td><strong>Khác</strong></td>
+<td>Làm cái có sẵn khớp với hợp đồng mình cần</td>
+<td>Bọc SDK hãng, tên method đổi hẳn</td>
+</tr>
+<tr>
+<td><strong>Decorator</strong></td>
+<td><strong>Giống hệt</strong></td>
+<td>Thêm hành vi mà không sửa cái gốc</td>
+<td>Nhận vào chính interface nó hiện thực</td>
+</tr>
+<tr>
+<td><strong>Proxy</strong></td>
+<td><strong>Giống hệt</strong></td>
+<td>Kiểm soát <em>việc truy cập</em> — hoãn, đệm, chặn, ghi vết</td>
+<td>Giống Decorator, nhưng có thể <strong>không gọi</strong> vào trong</td>
+</tr>
+<tr>
+<td><strong>Facade</strong></td>
+<td><strong>Khác, hẹp hơn nhiều</strong></td>
+<td>Gộp nhiều thứ phức tạp thành một cửa đơn giản</td>
+<td>Một đối tượng, nhiều thành phần con bên trong</td>
+</tr>
+<tr>
+<td><strong>Bridge</strong></td>
+<td>Hai <strong>cây phân cấp</strong> thay đổi độc lập</td>
+<td>Cho abstraction và implementation tiến hoá riêng</td>
+<td>Có sẵn hai interface từ lúc thiết kế, không phải bọc sau</td>
+</tr>
+</tbody></table></div>
+<p>Ba câu hỏi tách được cả năm:</p>
+<ol>
+<li><strong>Interface bên ngoài có giống bên trong không?</strong>
+Khác → Adapter hoặc Facade. Giống → Decorator hoặc Proxy.</li>
+<li><em>(Nếu khác)</em> <strong>Bọc một thứ hay gộp nhiều thứ?</strong>
+Một → Adapter. Nhiều → Facade.</li>
+<li><em>(Nếu giống)</em> <strong>Có bao giờ nó KHÔNG gọi vào bên trong không?</strong>
+Luôn gọi, chỉ thêm việc → Decorator. Có thể từ chối / hoãn / trả từ bộ đệm → Proxy.</li>
+</ol>
+<p>Bridge đứng riêng: nó không phải chuyện &quot;bọc một cái đã có&quot;, mà là <strong>quyết định từ đầu</strong> rằng có hai
+trục thay đổi độc lập. Mục 13.2.4 nói đúng điều này — nhưng đáng nhấn thêm một dấu hiệu định lượng:
+bạn <strong>cần</strong> Bridge khi không có nó, số lớp phải viết là <strong>tích</strong> của hai chiều. Ba loại trục × bốn
+hãng = 12 lớp. Với Bridge thì là 3 + 4 = 7, và thêm hãng thứ năm chỉ tốn một lớp thay vì ba.</p>
+<h3>Decorator trong máy — và vì sao nó hợp với phần cứng đến vậy</h3>
+<p>Decorator là pattern <strong>bị dùng nhiều nhất mà ít được gọi tên nhất</strong> trong phần mềm máy, vì hầu hết
+những thứ người ta muốn thêm vào một driver đều có dạng &quot;vẫn là driver đó, nhưng thêm một lớp nữa&quot;:
+hạn giờ, thử lại, ghi nhật ký, đếm số lần gọi, giả lập lỗi để thử.</p>
+<pre><code class="language-csharp">// Mỗi lớp bọc thêm đúng MỘT việc, và thứ tự bọc có ý nghĩa
+ICamBienChieuDay cb = new CamBienThat(cong);
+cb = new CamBienCoHanGio(cb, &quot;CB1&quot;, hanGioMs: 500);   // hạn giờ TỪNG lần đọc
+cb = new CamBienThuLai(cb, soLan: 3);                 // thử lại 3 lần, mỗi lần có hạn giờ riêng
+cb = new CamBienGhiNhatKy(cb, _log);                  // ghi cả 3 lần thử
+</code></pre>
+<blockquote>
+<p>💡 <strong>Thứ tự bọc là một quyết định thiết kế, không phải chuyện gõ phím.</strong> Trong ví dụ trên, hạn giờ
+nằm <strong>trong</strong> thử lại, nên mỗi lần thử có 500 ms riêng — tổng xấu nhất 1,5 giây. Đảo lại (thử lại
+nằm trong hạn giờ) thì cả ba lần thử phải xong trong 500 ms, tức lần thử thứ ba gần như chắc chắn
+bị cắt giữa chừng. Cả hai đều hợp lệ, nhưng chúng là <strong>hai chính sách khác nhau</strong> và phải chọn có
+ý thức. Đây là thứ mà một chuỗi <code>if</code> lồng nhau không bao giờ nói ra được — còn thứ tự bọc thì nói
+ra, ngay trên ba dòng mã.</p>
+</blockquote>
+<hr>
+<h2 id="h11-bn-kiu-to-simple-factory-factory-method-abstract-factory-builder">H.11  Bốn kiểu &quot;tạo&quot;: Simple Factory ↔ Factory Method ↔ Abstract Factory ↔ Builder</h2>
+<p>Chương 13 dùng chữ &quot;Factory Pattern&quot; cho một thứ cụ thể (registry-based, mục 13.2.2). Nhưng khi đọc
+tài liệu hay mã của người khác, bạn sẽ gặp bốn thứ khác nhau cùng đội tên &quot;factory&quot;, và chúng không
+thay thế nhau được.</p>
+<p><strong>Bảng H.4 — Bốn cách đưa việc &quot;tạo đối tượng&quot; ra khỏi chỗ dùng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Hình dạng</th>
+<th>Giải bài toán</th>
+<th>Ví dụ trong ngữ cảnh máy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Simple Factory</strong></td>
+<td>Một hàm/lớp có <code>switch</code> theo cấu hình</td>
+<td>&quot;Chọn một trong vài loại đã biết&quot;</td>
+<td><code>ch.NguonCamBien switch { NoiTiep =&gt; new DriverCamBienNoiTiep(…), _ =&gt; new CamBienGiaLap(…) }</code></td>
+</tr>
+<tr>
+<td><strong>Factory Method</strong></td>
+<td>Lớp cha để <strong>method tạo</strong> cho lớp con override</td>
+<td>&quot;Khung chung, phần tạo do lớp con quyết&quot;</td>
+<td><code>TramBase.TaoBuocKiemTra()</code> — mỗi trạm tạo bước kiểm của riêng nó</td>
+</tr>
+<tr>
+<td><strong>Abstract Factory</strong></td>
+<td>Một interface tạo <strong>cả một bộ</strong> đối tượng đi cùng nhau</td>
+<td>&quot;Cả họ phải khớp nhau, không được trộn&quot;</td>
+<td><code>IBoThietBiTram</code> tạo cùng lúc trục + kẹp + cảm biến <strong>của cùng một đời máy</strong></td>
+</tr>
+<tr>
+<td><strong>Builder</strong></td>
+<td>Đối tượng gom tham số từng bước rồi <code>Build()</code></td>
+<td>&quot;Quá nhiều tham số, nhiều cái tuỳ chọn&quot;</td>
+<td><code>new CauHinhTrucBuilder(&quot;X&quot;).HanhTrinh(0, 300).TocDo(200).Build()</code></td>
+</tr>
+</tbody></table></div>
+<p><strong>Phân biệt Simple Factory và Factory Method</strong> — chỗ nhầm phổ biến nhất: <em>Simple Factory không phải
+một mẫu GoF</em>, nó chỉ là một hàm có <code>switch</code>. Factory Method thì dùng <strong>kế thừa</strong>: quyết định &quot;tạo cái
+gì&quot; được đẩy xuống lớp con. Nếu mã của bạn không có lớp con nào override gì cả, bạn đang có Simple
+Factory — và điều đó hoàn toàn ổn, chỉ đừng gọi nhầm tên. (Mã mẫu của sách dùng Simple Factory ở
+<code>RapNoi.Tao()</code>, và đó là lựa chọn đúng cho hai lựa chọn nguồn cảm biến.)</p>
+<p><strong>Khi nào cần Abstract Factory</strong> — và vì sao nó hiếm hơn người ta tưởng: chỉ khi <strong>trộn nhầm bộ là
+hỏng</strong>. Một máy đời cũ dùng trục servo A + bộ kẹp A; đời mới dùng trục B + kẹp B; lắp trục A với kẹp
+B thì hành trình không khớp. Abstract Factory biến &quot;không được trộn&quot; thành một ràng buộc mà trình
+biên dịch giữ hộ. Nếu các thành phần <strong>trộn thoải mái được</strong> thì đừng dùng — mấy interface thừa chỉ
+làm mã khó đọc.</p>
+<p><strong>Khi nào cần Builder</strong> — dấu hiệu rất cụ thể: hàm dựng có <strong>hơn năm tham số</strong>, hoặc có nhiều tham số
+tuỳ chọn khiến bạn phải viết bốn nạp chồng. Mục 3.4.4 đã đo một chữ ký 27 tham số trong mã thật và
+nói vì sao nó không gọi nổi. Ưu điểm thật của Builder không phải &quot;đẹp&quot; mà là <strong>mỗi tham số có tên tại
+chỗ gọi</strong>:</p>
+<pre><code class="language-csharp">// ❌ Sáu tháng sau không ai đọc được: 300 là gì, 200 là gì, true là gì
+var truc = new CauHinhTruc(&quot;X&quot;, 0, 300, 200, 50, true, false, 1000);
+
+// ✅ Đọc như một tờ đặc tả
+var truc = new CauHinhTrucBuilder(&quot;X&quot;)
+    .HanhTrinh(tuMm: 0, denMm: 300)
+    .TocDo(toiDaMmGiay: 200, veGocMmGiay: 50)
+    .CoPhanhGiu()
+    .HanGioDiChuyen(1000)
+    .Build();
+</code></pre>
+<blockquote>
+<p>📌 <strong>C# hiện đại có hai lối ra rẻ hơn Builder — thử chúng trước.</strong> (1) <strong>Tham số có tên</strong>:
+<code>new CauHinhTruc(ten: &quot;X&quot;, tuMm: 0, denMm: 300, …)</code> được gần hết lợi ích mà không thêm lớp nào.
+(2) <strong>Object initializer với <code>required</code>/<code>init</code></strong> — mã mẫu của sách dùng đúng cách này trong
+<code>CauHinhMay</code> và <code>CauHinhHoanChinh</code>: đọc rõ như Builder, và trình biên dịch vẫn ép đủ trường bắt
+buộc. Builder chỉ thực sự đáng giá khi việc dựng có <strong>thứ tự</strong> hoặc có <strong>kiểm tra hợp lệ giữa
+chừng</strong> — ví dụ <code>.HanhTrinh()</code> phải gọi trước <code>.DiemDay()</code> để còn kiểm điểm dạy có nằm trong hành
+trình không (đúng bài toán của <code>BoDiemDay.KiemTraTrongHanhTrinh()</code> ở mục G.12).</p>
+</blockquote>
+<hr>
+<h2 id="h12-template-method-strategy-composite-chain-of-responsibility">H.12  Template Method ↔ Strategy, Composite ↔ Chain of Responsibility</h2>
+<p>Hai cặp còn lại, mỗi cặp một bảng gọn.</p>
+<h3>Template Method ↔ Strategy — cùng mục tiêu, khác cơ chế</h3>
+<p>Cả hai đều để &quot;phần chung giữ nguyên, phần khác nhau thay được&quot;. Khác ở chỗ <strong>thay bằng gì</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Template Method</strong> (mục 4.3.2, 13.2.4b)</th>
+<th><strong>Strategy</strong> (mục 13.2.3)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cơ chế</td>
+<td><strong>Kế thừa</strong> — lớp con override vài method</td>
+<td><strong>Composition</strong> — cắm một đối tượng vào</td>
+</tr>
+<tr>
+<td>Chọn lúc nào</td>
+<td>Lúc biên dịch, cố định theo lớp</td>
+<td>Lúc chạy, đổi được</td>
+</tr>
+<tr>
+<td>Số phần thay đổi</td>
+<td>Nhiều điểm nhỏ trong một quy trình</td>
+<td>Thường một thuật toán trọn vẹn</td>
+</tr>
+<tr>
+<td>Rủi ro</td>
+<td>Lớp con phụ thuộc chi tiết lớp cha; sửa lớp cha vỡ hết lớp con</td>
+<td>Nhiều đối tượng nhỏ hơn phải nối dây</td>
+</tr>
+</tbody></table></div>
+<p>Quy tắc thực dụng: <strong>khác nhau ở ba chi tiết nhỏ trong một quy trình mười bước</strong> → Template Method
+(mục 13.2.4b về driver scanner là ví dụ đúng). <strong>Khác nhau ở cả cách làm</strong> → Strategy. Và theo tinh
+thần mục 4.3.1 (&quot;ưu tiên composition&quot;), nếu lưỡng lự thì chọn Strategy — nó không khoá bạn vào một
+cây kế thừa.</p>
+<h3>Composite ↔ Chain of Responsibility — cùng là &quot;một dãy đối tượng&quot;, khác ở luồng đi</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Composite</strong> (mục 16.4)</th>
+<th><strong>Chain of Responsibility</strong> (mục 16.1.4)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Hình</td>
+<td><strong>Cây</strong> — nút chứa nút</td>
+<td><strong>Chuỗi thẳng</strong> — mỗi khâu biết khâu sau</td>
+</tr>
+<tr>
+<td>Mọi thành viên có chạy không</td>
+<td><strong>Có</strong>, theo thứ tự cây</td>
+<td><strong>Không nhất thiết</strong> — một khâu có quyền dừng</td>
+</tr>
+<tr>
+<td>Câu nó trả lời</td>
+<td><em>&quot;Làm tất cả những việc này&quot;</em></td>
+<td><em>&quot;Ai trong số này xử lý được?&quot;</em></td>
+</tr>
+<tr>
+<td>Trong máy</td>
+<td>Cây tác vụ: trình tự lồng trình tự</td>
+<td>Chuỗi xử lý giá trị: lọc → quy đổi → so ngưỡng</td>
+</tr>
+</tbody></table></div>
+<p>Dấu hiệu bạn đang dùng nhầm: nếu các &quot;nút con&quot; trong cây tác vụ bắt đầu có quyền nói <em>&quot;tôi xong rồi,
+đừng chạy mấy đứa sau&quot;</em> thì bạn đã trượt từ Composite sang Chain of Responsibility mà không biết — và
+một cây tác vụ mà nhánh có thể tự cắt là một cây rất khó suy luận, vì nhìn cấu trúc không còn đoán
+được cái gì sẽ chạy.</p>
+<hr>
+<h2 id="h13-mediator-observer-shared-tag-table-ba-cách-đ-các-thành-phn-khi-gi-thng-nhau">H.13  Mediator ↔ Observer ↔ Shared Tag Table — ba cách để các thành phần khỏi gọi thẳng nhau</h2>
+<p>Mediator là pattern duy nhất trong nhóm này chưa được sách nhắc tới, nên nói kỹ hơn một chút.</p>
+<p><strong>Là gì.</strong> Mediator là <strong>một đối tượng trung tâm biết luật phối hợp</strong>. Các thành phần không nói
+chuyện với nhau; chúng báo cho mediator, và mediator quyết định ai làm gì tiếp.</p>
+<p><strong>Vì sao tồn tại.</strong> Vì khi N thành phần cần phối hợp trực tiếp, số đường dây là N×(N−1)/2 — tám trạm
+là hai mươi tám mối quan hệ, và thêm trạm thứ chín là thêm tám đường nữa. Mediator đổi N² đường dây
+lấy N đường (mọi thành phần chỉ nối với trung tâm), <strong>với cái giá là toàn bộ độ phức tạp dồn vào
+trung tâm đó</strong>.</p>
+<p><strong>Phân biệt ba cách, và chọn cái nào:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Observer</strong> (16.1)</th>
+<th><strong>Shared Tag Table</strong> (16.3)</th>
+<th><strong>Mediator</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ai biết luật phối hợp</td>
+<td>Không ai — bên phát chỉ phát</td>
+<td>Không ai — mỗi trạm tự đọc cờ và tự quyết</td>
+<td><strong>Một chỗ duy nhất</strong></td>
+</tr>
+<tr>
+<td>Bên nhận có biết bên gửi</td>
+<td>Không</td>
+<td>Không</td>
+<td>Không</td>
+</tr>
+<tr>
+<td>Đọc luồng nghiệp vụ ở đâu</td>
+<td>Không đọc được — phải lần theo từng subscriber</td>
+<td>Không đọc được — rải trong các trạm</td>
+<td><strong>Đọc một file là thấy hết</strong></td>
+</tr>
+<tr>
+<td>Hợp khi</td>
+<td>Thông báo một chiều, nhiều người nghe</td>
+<td>Nhiều trạm <strong>chạy song song</strong>, cần nhìn trạng thái từ HMI</td>
+<td>Luật phối hợp <strong>phức tạp</strong> và hay đổi</td>
+</tr>
+<tr>
+<td>Rủi ro</td>
+<td>Luồng nghiệp vụ tàng hình</td>
+<td>Không an toàn kiểu, dễ trùng bí danh</td>
+<td>Trung tâm phình thành &quot;God object&quot;</td>
+</tr>
+</tbody></table></div>
+<p>Câu hỏi quyết định: <strong>&quot;khi khách hàng đổi luật phối hợp, tôi phải sửa mấy file?&quot;</strong> Nếu câu trả lời là
+<em>&quot;phải mở từng trạm ra sửa&quot;</em> thì luật phối hợp đang rải rác, và một Mediator sẽ gom nó lại. Nếu luật
+phối hợp gần như không đổi (trạm nào cũng chỉ chờ trạm trước xong) thì Shared Tag Table đơn giản hơn
+và đủ dùng — đừng dựng cả một trung tâm điều phối cho một luật ba dòng.</p>
+<blockquote>
+<p>⚠️ <strong>Mediator là pattern dễ biến chất nhất.</strong> Nó bắt đầu bằng &quot;một chỗ giữ luật phối hợp&quot; và kết
+thúc bằng một lớp 3.000 dòng biết mọi thứ về mọi trạm. Giới hạn nên tự đặt và ghi vào tài liệu
+thiết kế: <strong>mediator chỉ được biết <em>trình tự</em>, không được biết <em>cách làm</em>.</strong> Ngay khi nó bắt đầu
+gọi <code>_trucX.MoveAbsAsync(...)</code>, nó đã vượt ranh giới và phần đó phải tách xuống cho trạm.</p>
+</blockquote>
+<hr>
+<h2 id="h14-ba-pattern-mã-mu-ca-sách-đã-hin-thc-mà-chưa-gi-tên">H.14  Ba pattern mã mẫu của sách đã hiện thực mà chưa gọi tên</h2>
+<p>Phần này không phải lý thuyết. Đọc lại mã mẫu trong <code>source/MeoBench/</code>, có ba chỗ hiện thực đầy đủ
+một mẫu kinh điển — nhưng sách gọi chúng bằng tên mô tả công việc, không bằng tên pattern. Nêu ra ở
+đây vì <strong>nhận ra một pattern trong mã mình đã tự viết</strong> là cách học nó chắc hơn mọi định nghĩa.</p>
+<p><strong>Bảng H.5 — Pattern có sẵn trong mã mẫu, và tên thật của nó</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trong mã mẫu</th>
+<th>Tệp</th>
+<th>Thật ra là</th>
+<th>Vì sao khớp</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>CamBienCoHanGio(ICamBienChieuDay trong, …) : ICamBienChieuDay</code></td>
+<td><code>ThietBiVaNghiepVu2.cs</code></td>
+<td><strong>Decorator</strong></td>
+<td>Hiện thực đúng interface nó nhận vào; thêm hạn giờ rồi luôn gọi tiếp vào trong</td>
+</tr>
+<tr>
+<td><code>May</code> — <code>VeGocAsync()</code>, <code>ChayAsync()</code></td>
+<td><code>RapNoi.cs</code></td>
+<td><strong>Facade</strong></td>
+<td>Người gọi chỉ thấy hai method; bên trong là trục, cảm biến, kẹp, danh sách bước, cấu hình</td>
+</tr>
+<tr>
+<td><code>IDieuPhoi { void Chay(Action); }</code></td>
+<td><code>GiaoDien.cs</code></td>
+<td><strong>Adapter</strong></td>
+<td>Bọc cơ chế đẩy việc về luồng giao diện (<code>Dispatcher.Invoke</code>) vào một hợp đồng một-method</td>
+</tr>
+</tbody></table></div>
+<p>Ba quan sát rút ra, và chúng đáng giá hơn ba cái tên:</p>
+<p><strong>1. <code>CamBienCoHanGio</code> là Decorator, nghĩa là nó <em>xếp chồng được</em>.</strong> Khi viết nó, bài G.3.2 chỉ nhắm
+một việc: thêm hạn giờ. Nhưng vì nó nhận đúng <code>ICamBienChieuDay</code> và <strong>trả về</strong> <code>ICamBienChieuDay</code>, nó
+tự động xếp chồng được với bất kỳ lớp bọc nào khác cùng hình dạng — thử lại, ghi nhật ký, đếm số lần
+đọc. Đó là món quà miễn phí mà hình dạng Decorator cho, và bạn chỉ nhận ra mình đang có nó khi gọi
+đúng tên pattern.</p>
+<p><strong>2. <code>May</code> là Facade, nghĩa là nó <em>không được có logic nghiệp vụ riêng</em>.</strong> Facade chỉ điều phối; mọi
+quyết định nghiệp vụ phải nằm ở các thành phần bên trong. Đây là ranh giới rất dễ trượt: mỗi lần thêm
+một <code>if</code> vào <code>May</code> thay vì vào bước tương ứng, Facade nhích một bước về phía God object. Cách tự
+kiểm, hỏi một câu: <em>nếu xoá <code>May</code> đi, có kiến thức nghiệp vụ nào biến mất không?</em> Câu trả lời đúng
+là <strong>không</strong> — chỉ mất sự tiện lợi.</p>
+<p><strong>3. <code>IDieuPhoi</code> là Adapter, và nó là lý do nhóm bài G.7 kiểm thử được giao diện trong console.</strong> Bọc
+<code>Dispatcher.Invoke</code> vào một interface một-method nghe như chuyện nhỏ, nhưng chính nó cắt sợi dây duy
+nhất buộc mã giao diện vào WPF. Bài học tổng quát: <strong>Adapter mỏng nhất mà vẫn có ích thường chỉ có
+đúng một method</strong> — đừng nghĩ Adapter phải là một lớp lớn bọc cả bộ SDK.</p>
+<hr>
+<h2 id="h15-nhng-pattern-sách-c-ý-không-dy-và-vì-sao">H.15  Những pattern sách cố ý không dạy, và vì sao</h2>
+<p>Trong 23 mẫu GoF, một số không xuất hiện ở đâu trong sách. Im lặng bỏ qua sẽ để người đọc tự hỏi
+&quot;mình có đang thiếu gì không&quot;, nên nói thẳng:</p>
+<p><strong>Bảng H.6 — Mẫu không đưa vào sách, kèm lý do</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Vì sao không dạy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Visitor</strong></td>
+<td>Giải bài &quot;thêm thao tác mới lên một cây kiểu cố định&quot;. Phần mềm máy hiếm khi có cây kiểu cố định mà lại thường xuyên thêm thao tác — và cái giá (double dispatch, mã khó lần) rất cao</td>
+</tr>
+<tr>
+<td><strong>Flyweight</strong></td>
+<td>Giải bài &quot;hàng triệu đối tượng nhỏ giống nhau&quot;. Một cỗ máy có hàng chục thiết bị, không phải hàng triệu. Đây là mẫu của game và trình soạn thảo văn bản</td>
+</tr>
+<tr>
+<td><strong>Interpreter</strong></td>
+<td>Dựng một ngôn ngữ nhỏ. Nếu cần cấu hình biểu đạt hơn, dùng JSON/YAML (mục 3.6) chứ đừng phát minh ngôn ngữ — bạn sẽ phải viết cả trình gỡ lỗi cho nó</td>
+</tr>
+<tr>
+<td><strong>Prototype</strong></td>
+<td>Nhân bản đối tượng. C# có <code>record</code> với <code>with</code> (mục 11.1.2) làm đúng việc đó, gọn hơn nhiều</td>
+</tr>
+<tr>
+<td><strong>Memento</strong></td>
+<td>Lưu/khôi phục trạng thái để undo. Có nêu dưới dạng <code>UndoAsync</code> ở mục 16.2.2, nhưng <strong>undo vật lý trên máy phần lớn là không an toàn</strong> (mở kẹp khi chi tiết chưa được đỡ = rơi), nên sách cố tình không khuyến khích</td>
+</tr>
+<tr>
+<td><strong>Singleton</strong> (dạng <code>Instance</code> tĩnh)</td>
+<td>Không phải vì sai, mà vì <strong>DI container làm việc đó tốt hơn</strong>: <code>AddSingleton</code> cho đúng một thể hiện, nhưng vẫn thay được khi kiểm thử. Singleton viết tay thì không</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Quy tắc chung để tự quyết với bất kỳ pattern nào bạn đọc được ở đâu đó:</strong> hỏi <em>&quot;bài toán gốc
+mà nó giải có xuất hiện trong phần mềm máy không?&quot;</em> Phần lớn mẫu GoF sinh ra từ trình biên dịch,
+trình soạn thảo đồ hoạ và giao diện người dùng những năm 1990. Một số áp thẳng được; một số thì
+không, và ép chúng vào chỉ tạo ra mã mà người bảo trì phải học thêm một thứ không cần thiết.</p>
+</blockquote>
+<hr>
+<h2 id="h16-bng-tra-30-giây-t-triu-chng-ti-pattern">H.16  Bảng tra 30 giây — từ triệu chứng tới pattern</h2>
+<p>Khi đang code và thấy một mùi khó chịu, tra bảng này trước: nó chỉ tên pattern và chỗ đọc.</p>
+<p><strong>Bảng H.7 — Từ triệu chứng tới pattern</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bạn đang thấy gì</th>
+<th>Nghĩ tới</th>
+<th>Đọc ở</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&quot;Phải sửa cùng một <code>switch</code> mỗi lần thêm thiết bị&quot;</td>
+<td>Factory (registry)</td>
+<td>13.2.2, H.11</td>
+</tr>
+<tr>
+<td>&quot;Đổi giao thức phải sửa bên trong driver&quot;</td>
+<td>Strategy</td>
+<td>13.2.3, H.9</td>
+</tr>
+<tr>
+<td>&quot;Đổi hãng servo phải sửa 30 file&quot;</td>
+<td>Bridge</td>
+<td>13.2.4, H.10</td>
+</tr>
+<tr>
+<td>&quot;SDK hãng có API kỳ quặc không khớp hệ thống&quot;</td>
+<td>Adapter</td>
+<td>13.2, H.10</td>
+</tr>
+<tr>
+<td>&quot;Muốn thêm hạn giờ/thử lại/nhật ký mà không sửa driver&quot;</td>
+<td><strong>Decorator</strong></td>
+<td><strong>H.10</strong></td>
+</tr>
+<tr>
+<td>&quot;Người gọi phải biết sáu đối tượng mới chạy nổi một chu kỳ&quot;</td>
+<td><strong>Facade</strong></td>
+<td><strong>H.14</strong></td>
+</tr>
+<tr>
+<td>&quot;Muốn hoãn kết nối tới lúc dùng thật, hoặc đệm kết quả đọc&quot;</td>
+<td><strong>Proxy</strong></td>
+<td><strong>H.10</strong></td>
+</tr>
+<tr>
+<td>&quot;Hàm dựng 15 tham số, bốn nạp chồng&quot;</td>
+<td><code>required</code>/<code>init</code>, rồi mới Builder</td>
+<td>3.4.4, <strong>H.11</strong></td>
+</tr>
+<tr>
+<td>&quot;Logic đổi hoàn toàn theo trạng thái máy&quot;</td>
+<td>State</td>
+<td>12.1, 12.3, H.9</td>
+</tr>
+<tr>
+<td>&quot;<code>switch</code> theo trạng thái dài 200 dòng&quot;</td>
+<td>Transition Table</td>
+<td>12.3.2</td>
+</tr>
+<tr>
+<td>&quot;Tám trạm phối hợp, luật phối hợp hay đổi&quot;</td>
+<td><strong>Mediator</strong> (hoặc Shared Tag Table)</td>
+<td><strong>H.13</strong>, 16.3</td>
+</tr>
+<tr>
+<td>&quot;Thêm subscriber phải sửa lớp đang ổn định&quot;</td>
+<td>Observer</td>
+<td>16.1</td>
+</tr>
+<tr>
+<td>&quot;Giá trị đọc về cần lọc → quy đổi → so ngưỡng&quot;</td>
+<td>Chain of Responsibility</td>
+<td>16.1.4, H.12</td>
+</tr>
+<tr>
+<td>&quot;Trình tự lồng trình tự, muốn chạy cả nhánh&quot;</td>
+<td>Composite</td>
+<td>16.4, H.12</td>
+</tr>
+<tr>
+<td>&quot;Ba driver giống nhau 90%, khác ba chi tiết&quot;</td>
+<td>Template Method</td>
+<td>4.3.2, 13.2.4b, H.12</td>
+</tr>
+<tr>
+<td>&quot;Rải <code>if (x != null)</code> khắp mã nghiệp vụ&quot;</td>
+<td>Null Object</td>
+<td>16.2.2</td>
+</tr>
+<tr>
+<td>&quot;Chuỗi lệnh thiết bị cần queue, log, thử lại&quot;</td>
+<td>Command</td>
+<td>16.2</td>
+</tr>
+<tr>
+<td>&quot;Thanh ghi trạng thái 16 bit, đọc nhật ký không hiểu gì&quot;</td>
+<td><strong><code>[Flags]</code> enum</strong></td>
+<td><strong>H.7</strong></td>
+</tr>
+<tr>
+<td>&quot;Bảng tag <code>object</code> sinh rác, ép kiểu khắp nơi&quot;</td>
+<td>Tách bảng theo kiểu (<strong>boxing</strong>)</td>
+<td>16.3.5, <strong>H.1</strong></td>
+</tr>
+<tr>
+<td>&quot;Tám nút jog đều chạy trục cuối cùng&quot;</td>
+<td><strong>Closure bắt biến vòng lặp</strong></td>
+<td><strong>H.2</strong></td>
+</tr>
+<tr>
+<td>&quot;Truy vấn CSDL chạy hai lần, hoặc ngoại lệ nổ sai dòng&quot;</td>
+<td><strong>Thực thi trì hoãn</strong></td>
+<td><strong>H.3</strong></td>
+</tr>
+<tr>
+<td>&quot;Tách khung nối tiếp sinh mảng rác mỗi lần&quot;</td>
+<td><strong><code>Span&lt;T&gt;</code></strong></td>
+<td><strong>H.6</strong>, 14.1.5b</td>
+</tr>
+<tr>
+<td>&quot;Danh sách bước dựng bằng 20 lệnh <code>.Add()</code> khó đọc&quot;</td>
+<td><strong><code>yield return</code></strong></td>
+<td><strong>H.4</strong></td>
+</tr>
+<tr>
+<td>&quot;Hàm nhận <code>IEnumerable&lt;ITruc&gt;</code> mà không truyền <code>List&lt;TrucServo&gt;</code> vào được&quot;</td>
+<td><strong>Hiệp biến <code>out T</code></strong></td>
+<td><strong>H.5</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Dòng in đậm là những mục chỉ có trong phụ lục này</strong> — tức những triệu chứng mà trước đây sách
+không có chỗ nào trả lời.</p>
 </blockquote>
 </div>
 </div>

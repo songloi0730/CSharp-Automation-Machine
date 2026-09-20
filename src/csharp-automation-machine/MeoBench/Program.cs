@@ -11,6 +11,7 @@
 //   dotnet run -- G12         → chỉ kiểm phần TÁCH CẤU HÌNH (config/product)
 //   dotnet run -- G13         → năng lực vận hành máy thật (quyền, jog, đèn tháp…)
 //   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
+//   dotnet run -- H           → kiểm các khẳng định của Phụ lục H (boxing, closure, Span…)
 //   dotnet run -- --danhsach  → liệt kê 40 bài
 // -------------------------------------------------------
 using System.Globalization;
@@ -57,6 +58,7 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["G11"] = KiemMayHoanChinh.Chay,
     ["G12"] = KiemCauHinh.Chay,            // tách cấu hình máy khỏi chương trình
     ["G13"] = KiemVanHanhThuc.Chay,        // năng lực vận hành máy thật            // tách cấu hình máy khỏi chương trình
+    ["H"]   = KiemPhuLucH.Chay,            // Phụ lục H: khẳng định về ngôn ngữ C#
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -91,14 +93,15 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemMayHoanChinh.Chay();
     await KiemCauHinh.Chay();
     await KiemVanHanhThuc.Chay();
+    await KiemPhuLucH.Chay();
 }
 else
 {
-    // "G4.1" / "G.4.1" / "g4" đều quy về khoá nhóm "G4".
+    // "G4.1" / "G.4.1" / "g4" đều quy về khoá nhóm "G4"; "H" là khoá một ký tự.
     // Thử khoá DÀI trước: nếu không, "G12" sẽ bị cắt thành "G1" và chạy nhầm nhóm.
     string chuan = tuyChon.Replace(".", "", StringComparison.Ordinal);
     Func<Task>? chay = null;
-    for (int n = Math.Min(chuan.Length, 3); n >= 2 && chay is null; n--)
+    for (int n = Math.Min(chuan.Length, 3); n >= 1 && chay is null; n--)
         nhom.TryGetValue(chuan[..n], out chay);
 
     if (chay is null)

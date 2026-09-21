@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260920</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260921</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -1235,7 +1235,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260920</td>
+<td>v1.0.0.260921</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -1519,7 +1519,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 <tr>
 <td>15</td>
 <td><a href="ch15_ladder_diagram.md">⭐ Ladder Diagram — nền tảng</a></td>
-<td>Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa <strong>giúp</strong> vừa <strong>hại</strong>; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ <strong>bảng 4 tổ hợp</strong> (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng <em>(power flow)</em>, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; <strong>cuộn dây trùng <em>(double coil)</em></strong> — vì sao sai, hậu quả, và hãng nào cảnh báo</td>
+<td>Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa <strong>giúp</strong> vừa <strong>hại</strong>; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ <strong>bảng 4 tổ hợp</strong> (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng <em>(power flow)</em>, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; <strong>cuộn dây trùng <em>(double coil)</em></strong> — vì sao sai, hậu quả, và hãng nào cảnh báo  ⭐⭐ <strong>Vì sao thực tế đầy tổ hợp 2</strong> (nút Dừng NO + tiếp điểm thường đóng trong code) dù nó nguy hiểm — sáu lý do thật kèm phán xét từng cái, và ⭐ phân biệt <strong>chức năng được định mức</strong> với <strong>chức năng được người vận hành tin tưởng</strong>; hai cách sửa, trong đó cách hai đấu <strong>cả hai khối tiếp điểm</strong> vào hai ngõ vào rồi kiểm chúng luôn ngược nhau — bắt được cả đứt dây lẫn khối hỏng.</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -4095,13 +4095,11 @@ bốn câu đó mới là thứ quyết định cảm biến có chạy được
 <td><strong>NC</strong></td>
 <td>Tín hiệu an toàn: đứt dây → bit 0 → dừng</td>
 </tr>
-<tr>
-<td><code>DI_AirOK</code></td>
-<td>Công tắc áp suất</td>
-<td>Kín khi đủ khí</td>
-<td>Mất khí <strong>hoặc</strong> đứt dây đều cho bit 0 → dừng</td>
-</tr>
 </tbody></table></div>
+<blockquote>
+<p>⚠ <strong>Ngoài thực tế bạn sẽ gặp rất nhiều nút Dừng đấu NO</strong>, và đó không phải vì mọi người không biết. ⭐ Lý do thật — cùng cách xử lý khi gặp — ở <strong>Chương 15 mục 15.3</strong>.
+| <code>DI_AirOK</code> | Công tắc áp suất | Kín khi đủ khí | Mất khí <strong>hoặc</strong> đứt dây đều cho bit 0 → dừng |</p>
+</blockquote>
 <blockquote>
 <p>⚡ <strong>LƯU Ý</strong>
 <code>DI_AirOK</code> đáng chú ý: về danh mục nó là tiếp điểm NO (hở khi không có áp), nhưng nó <strong>hành xử đúng
@@ -11505,6 +11503,106 @@ bảo vệ, công tắc áp suất, phản hồi mạch an toàn:</p>
 <p><strong>Tiếp điểm vật lý phải là NC. Trong code dùng <code>┤ ├</code>.</strong></p>
 <p>Và với <strong>dừng khẩn cấp</strong> <em>(E-Stop)</em> thì còn một tầng nữa: nó <strong>không được chỉ dựa vào logic PLC</strong>,
 bất kể bạn dùng tổ hợp nào. Lý do: CPU treo thì logic chết theo, còn mối nguy thì không. Chương 47.</p>
+</blockquote>
+<h3>⭐⭐ Vậy tại sao ngoài thực tế lại đầy tổ hợp 2?</h3>
+<p>⚠ Bạn sẽ đi một vòng nhà máy và thấy <strong>rất nhiều</strong> nút Dừng đấu NO, trong code dùng <code>┤/├</code> — đúng tổ
+hợp vừa bị gọi là tổ hợp giết người. ⭐ Chuyện đó là thật, và nếu không biết <strong>vì sao</strong>, bạn sẽ nghĩ
+hoặc là sách sai, hoặc là cả ngành sai. ⚡ Không cái nào đúng cả: <strong>lý do có thật, nhưng phần lớn
+không phải lý do kỹ thuật</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>Lý do thật sự</th>
+<th>⭐ Nó có chính đáng không</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td><strong>Khối tiếp điểm trong ngăn kéo là NO</strong> — nút nhấn bán ra thường kèm sẵn khối NO; khối NC phải đặt thêm</td>
+<td>⚠ Ràng buộc <strong>có thật</strong>, nhưng giá một khối tiếp điểm là <strong>không đáng kể</strong> so với hậu quả</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>⭐ <strong>Chép từ cỗ máy trước</strong></td>
+<td>⚡ Đây là <strong>lý do mạnh nhất trong thực tế</strong>, và nó không phải quyết định — nó là <strong>quán tính</strong></td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><strong>Học trên mô phỏng và trên màn hình cảm ứng</strong> — nút vẽ trên màn hình vốn dĩ là &quot;nhấn thì lên 1&quot;</td>
+<td>⭐ Giải thích được, nhưng ⚠ nút trên màn hình <strong>không có sợi dây để đứt</strong>; nút vật lý thì có</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td><em>&quot;Để mọi ngõ vào bằng 0 lúc nghỉ cho dễ nhìn&quot;</em> trên màn theo dõi</td>
+<td>❌ <strong>Nguỵ biện.</strong> Ngõ vào NC nằm ở 1 lúc nghỉ là <strong>đúng như thiết kế</strong>, không phải &quot;dính&quot;</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td><em>&quot;Ngõ vào NC lúc nào cũng có dòng, tốn điện và mòn tiếp điểm&quot;</em></td>
+<td>❌ <strong>Sai về lượng.</strong> Dòng một ngõ vào cỡ vài mA; và tiếp điểm mòn vì <strong>đóng cắt</strong>, không vì nằm yên ở trạng thái kín</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td>⭐ <em>&quot;Dừng khẩn cấp đã là mạch cứng rồi — nút Dừng này chỉ là lệnh vận hành&quot;</em></td>
+<td>⭐⭐ <strong>Đây là lý do DUY NHẤT có lập luận.</strong> Nhưng nó có một cái bẫy, xem ngay dưới</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Lý do 6 đúng một nửa, và nửa sai là nửa nguy hiểm.</strong></p>
+<p>⭐ Đúng ở chỗ: nếu <strong>dừng khẩn cấp</strong> là mạch cứng riêng (Chương 47), thì nút Dừng trên bảng điều
+khiển <strong>không phải chức năng an toàn</strong> theo nghĩa kỹ thuật — hỏng nó là mất sản lượng, không phải
+mất an toàn.</p>
+<p>⚠⚠ <strong>Sai ở chỗ: người vận hành không biết sự phân biệt đó.</strong> Với họ, nút đỏ ghi &quot;DỪNG&quot; là thứ
+dừng được máy. ⚡ Dây đứt → họ nhấn → <strong>không có gì xảy ra</strong> → và phản xạ tiếp theo của một người
+đang vội thường là <strong>thò tay vào máy</strong> để gỡ cái đang kẹt.</p>
+<p>⭐ Nghĩa là: chức năng <strong>được định mức</strong> của cái nút không phải là an toàn, nhưng chức năng <strong>được
+người dùng tin tưởng</strong> thì có. ⚠ Và tai nạn xảy ra theo cái người ta tin, không theo cái ghi trong
+hồ sơ.</p>
+</blockquote>
+<h3>⭐ Hai cách sửa, và cả hai đều rẻ</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>Làm gì</th>
+<th>Được gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Tối thiểu</strong></td>
+<td>Lắp <strong>khối tiếp điểm NC</strong> và đấu nó vào PLC — phần lớn nút nhấn công nghiệp nhận <strong>hai khối</strong></td>
+<td>Về đúng tổ hợp 3. Chi phí: một khối tiếp điểm</td>
+</tr>
+<tr>
+<td>⭐⭐ <strong>Tốt hơn</strong></td>
+<td>Đấu <strong>cả hai khối</strong> NO và NC vào <strong>hai ngõ vào</strong>, rồi kiểm trong chương trình: hai bit phải <strong>luôn ngược nhau</strong></td>
+<td>⚡ Phát hiện được <strong>đứt dây</strong> và <strong>khối tiếp điểm hỏng</strong> — thứ mà tổ hợp 3 một mình không phát hiện được</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Hai khối tiếp điểm của <strong>cùng một nút</strong> đi vào <strong>hai ngõ vào riêng</strong>; gọi tạm là <em>kênh NC</em> và
+<em>kênh NO</em>. Bình thường chúng luôn ngược nhau — nên <strong>giống nhau là có chuyện</strong>:</p>
+<pre><code class="language-text">    kênh NC        kênh NO                                     M_StopFault
+ ──────┤ ├───────────┤ ├────────────────────────────────────────────( )───    ⚠ cùng 1: hỏng
+
+    kênh NC        kênh NO                                     M_StopFault
+ ──────┤/├──────────┤/├─────────────────────────────────────────────( )───    ⚠ cùng 0: đứt dây
+</code></pre>
+<blockquote>
+<p>⭐ <strong>Ý tưởng này không mới — nó chính là cách giám sát cặp tiếp điểm ngược chiều mà thiết bị an
+toàn vẫn dùng</strong> (Chương 47 mục 47.5). ⚡ Điểm đáng nói là bạn <strong>dùng lại được ý tưởng đó cho một
+nút thường</strong>, bằng hai ngõ vào và hai nấc thang, <strong>không cần thiết bị an toàn nào</strong>.</p>
+<p>⚠ Nhưng nói cho rõ: làm vậy <strong>không biến nút đó thành chức năng an toàn</strong>. Nó chỉ cho bạn <strong>biết
+khi nó hỏng</strong> — và với một nút mà người vận hành tin tưởng, biết khi nó hỏng đã là rất nhiều.</p>
+</blockquote>
+<blockquote>
+<p>⭐⭐ <strong>Gặp tổ hợp 2 trên máy người khác thì làm gì?</strong></p>
+<p>⚡ Không phải cứ thấy là phải sửa ngay — sửa một nút trên máy đang chạy sản xuất là một thay đổi
+có quy trình (Chương 53). ⭐ Nhưng <strong>phải ghi nó lại</strong>: vào hồ sơ bàn giao, vào bảng I/O (cột ghi
+chú), và nói với người vận hành.</p>
+<p>⚠⚠ <strong>Lý do phải ghi: người sau bạn sẽ mặc định là NC.</strong> Họ đọc <code>DI_StopPB</code> trong code, thấy
+<code>┤/├</code>, và có thể &quot;sửa lại cho đúng sách&quot; thành <code>┤ ├</code> — ⭐ lúc đó máy <strong>không chạy được nữa</strong>, hoặc
+tệ hơn, họ đổi luôn cả đấu dây mà chỉ đổi một nửa.</p>
 </blockquote>
 <h3>⚠⚠ Giới hạn của chính bảng này — tổ hợp 3 chống được hỏng kiểu HỞ, không chống hỏng kiểu CHẬP</h3>
 <p>Cả bảng 4 tổ hợp được xây trên <strong>một</strong> kiểu hỏng: ⭐ <strong>mạch bị HỞ</strong> — đứt dây, tuột đầu cốt, tiếp
@@ -53451,6 +53549,11 @@ trước khi nghi module.</strong></p>
 <td>⚠⚠ <strong>Nút Dừng không dừng được máy</strong></td>
 <td>⭐⭐ Nhánh tự giữ <strong>vòng qua cả nút Dừng</strong> — xem Hình 15.2</td>
 <td>⚠ <strong>15 mục 15.4</strong></td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Nút Dừng không dừng được, và chưa bao giờ có ai thử đứt dây</strong></td>
+<td>⭐⭐ Nút đấu <strong>NO</strong> trong khi code dùng <code>┤/├</code> <em>(tổ hợp 2)</em> — đứt dây thì máy <strong>vẫn chạy</strong>. ⚠ Kiểm bằng cách rút dây nút Dừng lúc máy dừng</td>
+<td>⚠⚠ <strong>15 mục 15.3</strong></td>
 </tr>
 <tr>
 <td>Nút Reset <strong>không xoá được lỗi</strong></td>

@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260920 |
+| **Phiên bản** | v1.0.0.260921 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -149,7 +149,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
 | 14 | [Tổng quan IEC 61131-3](ch14_tong_quan_iec_61131_3.md) | 5 ngôn ngữ và vì sao có 5; **đơn vị tổ chức chương trình *(POU)*** — Program / Function Block / Function khác nhau ở chỗ **có bộ nhớ riêng hay không**; thể hiện *(instance)* của FB; tác vụ *(task)* chu kỳ / sự kiện / tự do; ⚠ sự thật về "tính khả chuyển" *(portability)*: chuẩn giúp **kỹ năng** chuyển được, **code** thì hiếm khi — dẫn Phụ lục A | ✅ |
-| 15 | [⭐ Ladder Diagram — nền tảng](ch15_ladder_diagram.md) | Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa **giúp** vừa **hại**; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ **bảng 4 tổ hợp** (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng *(power flow)*, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; **cuộn dây trùng *(double coil)*** — vì sao sai, hậu quả, và hãng nào cảnh báo | ✅ |
+| 15 | [⭐ Ladder Diagram — nền tảng](ch15_ladder_diagram.md) | Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa **giúp** vừa **hại**; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ **bảng 4 tổ hợp** (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng *(power flow)*, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; **cuộn dây trùng *(double coil)*** — vì sao sai, hậu quả, và hãng nào cảnh báo  ⭐⭐ **Vì sao thực tế đầy tổ hợp 2** (nút Dừng NO + tiếp điểm thường đóng trong code) dù nó nguy hiểm — sáu lý do thật kèm phán xét từng cái, và ⭐ phân biệt **chức năng được định mức** với **chức năng được người vận hành tin tưởng**; hai cách sửa, trong đó cách hai đấu **cả hai khối tiếp điểm** vào hai ngõ vào rồi kiểm chúng luôn ngược nhau — bắt được cả đứt dây lẫn khối hỏng. | ✅ |
 | 16 | [Latch, Set/Reset & bắt cạnh](ch16_latch_set_reset_bat_canh.md) | Tự giữ *(seal-in)* vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy "không biết mình đang ở đâu"; **bắt cạnh lên/xuống *(rising/falling edge, one-shot)*** — khi nào **bắt buộc** (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên | ✅ |
 | 17 | [Timer — TON / TOF / TP / RTO](ch17_timer.md) | Sơ đồ thời gian *(timing diagram)* từng loại; độ phân giải & sai số theo chu kỳ quét; timer bị đặt lại ngoài ý muốn khi điều kiện vào nhấp nháy; nối tầng timer để có thời gian dài; ⭐ **sai lầm lớn nhất: dùng timer thay cho tín hiệu phản hồi thật** — "chờ 2 giây chắc kẹp xong rồi" — vì sao hỏng máy, và cách làm đúng (phản hồi để chuyển tiếp, timeout để báo lỗi) | ✅ |
 | 18 | [Counter & đếm xung tốc độ cao](ch18_counter_va_dem_xung_toc_do_cao.md) | CTU/CTD/CTUD; đếm cạnh chứ không đếm mức; chống đếm trùng khi board rung hoặc cảm biến nhiễu; ⭐ khi nào **bắt buộc dùng bộ đếm tốc độ cao *(HSC)* phần cứng** — công thức quyết định so tần số xung với chu kỳ quét; encoder *(bộ mã hoá vòng quay)* và đếm vị trí; bộ đếm giữ giá trị qua mất điện | ✅ |
@@ -1902,6 +1902,8 @@ Toàn bộ cảm biến số của DP-01 dùng **PNP**, module ngõ vào có **c
 | `DI_Stop1Up` / `DI_Stop1Dn` | Reed trên xy-lanh chặn, PNP | NO | Phản hồi vị trí — dùng để chuyển bước, kèm timeout |
 | `DI_Clamp1Up` / `DI_Clamp1Dn` | Reed trên xy-lanh kẹp, PNP | NO | như trên |
 | `DI_StopPB` | Nút nhấn | **NC** | Tín hiệu an toàn: đứt dây → bit 0 → dừng |
+
+> ⚠ **Ngoài thực tế bạn sẽ gặp rất nhiều nút Dừng đấu NO**, và đó không phải vì mọi người không biết. ⭐ Lý do thật — cùng cách xử lý khi gặp — ở **Chương 15 mục 15.3**.
 | `DI_AirOK` | Công tắc áp suất | Kín khi đủ khí | Mất khí **hoặc** đứt dây đều cho bit 0 → dừng |
 
 > ⚡ **LƯU Ý**
@@ -7184,6 +7186,71 @@ tới trạng thái an toàn, chứ không phải trạng thái nguy hiểm. Ch�
 >
 > Và với **dừng khẩn cấp** *(E-Stop)* thì còn một tầng nữa: nó **không được chỉ dựa vào logic PLC**,
 > bất kể bạn dùng tổ hợp nào. Lý do: CPU treo thì logic chết theo, còn mối nguy thì không. Chương 47.
+
+### ⭐⭐ Vậy tại sao ngoài thực tế lại đầy tổ hợp 2?
+
+⚠ Bạn sẽ đi một vòng nhà máy và thấy **rất nhiều** nút Dừng đấu NO, trong code dùng `┤/├` — đúng tổ
+hợp vừa bị gọi là tổ hợp giết người. ⭐ Chuyện đó là thật, và nếu không biết **vì sao**, bạn sẽ nghĩ
+hoặc là sách sai, hoặc là cả ngành sai. ⚡ Không cái nào đúng cả: **lý do có thật, nhưng phần lớn
+không phải lý do kỹ thuật**.
+
+| # | Lý do thật sự | ⭐ Nó có chính đáng không |
+|:-:|---|---|
+| 1 | **Khối tiếp điểm trong ngăn kéo là NO** — nút nhấn bán ra thường kèm sẵn khối NO; khối NC phải đặt thêm | ⚠ Ràng buộc **có thật**, nhưng giá một khối tiếp điểm là **không đáng kể** so với hậu quả |
+| 2 | ⭐ **Chép từ cỗ máy trước** | ⚡ Đây là **lý do mạnh nhất trong thực tế**, và nó không phải quyết định — nó là **quán tính** |
+| 3 | **Học trên mô phỏng và trên màn hình cảm ứng** — nút vẽ trên màn hình vốn dĩ là "nhấn thì lên 1" | ⭐ Giải thích được, nhưng ⚠ nút trên màn hình **không có sợi dây để đứt**; nút vật lý thì có |
+| 4 | *"Để mọi ngõ vào bằng 0 lúc nghỉ cho dễ nhìn"* trên màn theo dõi | ❌ **Nguỵ biện.** Ngõ vào NC nằm ở 1 lúc nghỉ là **đúng như thiết kế**, không phải "dính" |
+| 5 | *"Ngõ vào NC lúc nào cũng có dòng, tốn điện và mòn tiếp điểm"* | ❌ **Sai về lượng.** Dòng một ngõ vào cỡ vài mA; và tiếp điểm mòn vì **đóng cắt**, không vì nằm yên ở trạng thái kín |
+| 6 | ⭐ *"Dừng khẩn cấp đã là mạch cứng rồi — nút Dừng này chỉ là lệnh vận hành"* | ⭐⭐ **Đây là lý do DUY NHẤT có lập luận.** Nhưng nó có một cái bẫy, xem ngay dưới |
+
+> ⭐⭐ **Lý do 6 đúng một nửa, và nửa sai là nửa nguy hiểm.**
+>
+> ⭐ Đúng ở chỗ: nếu **dừng khẩn cấp** là mạch cứng riêng (Chương 47), thì nút Dừng trên bảng điều
+> khiển **không phải chức năng an toàn** theo nghĩa kỹ thuật — hỏng nó là mất sản lượng, không phải
+> mất an toàn.
+>
+> ⚠⚠ **Sai ở chỗ: người vận hành không biết sự phân biệt đó.** Với họ, nút đỏ ghi "DỪNG" là thứ
+> dừng được máy. ⚡ Dây đứt → họ nhấn → **không có gì xảy ra** → và phản xạ tiếp theo của một người
+> đang vội thường là **thò tay vào máy** để gỡ cái đang kẹt.
+>
+> ⭐ Nghĩa là: chức năng **được định mức** của cái nút không phải là an toàn, nhưng chức năng **được
+> người dùng tin tưởng** thì có. ⚠ Và tai nạn xảy ra theo cái người ta tin, không theo cái ghi trong
+> hồ sơ.
+
+### ⭐ Hai cách sửa, và cả hai đều rẻ
+
+| Cách | Làm gì | Được gì |
+|---|---|---|
+| ⭐ **Tối thiểu** | Lắp **khối tiếp điểm NC** và đấu nó vào PLC — phần lớn nút nhấn công nghiệp nhận **hai khối** | Về đúng tổ hợp 3. Chi phí: một khối tiếp điểm |
+| ⭐⭐ **Tốt hơn** | Đấu **cả hai khối** NO và NC vào **hai ngõ vào**, rồi kiểm trong chương trình: hai bit phải **luôn ngược nhau** | ⚡ Phát hiện được **đứt dây** và **khối tiếp điểm hỏng** — thứ mà tổ hợp 3 một mình không phát hiện được |
+
+⭐ Hai khối tiếp điểm của **cùng một nút** đi vào **hai ngõ vào riêng**; gọi tạm là *kênh NC* và
+*kênh NO*. Bình thường chúng luôn ngược nhau — nên **giống nhau là có chuyện**:
+
+```text
+    kênh NC        kênh NO                                     M_StopFault
+ ──────┤ ├───────────┤ ├────────────────────────────────────────────( )───    ⚠ cùng 1: hỏng
+
+    kênh NC        kênh NO                                     M_StopFault
+ ──────┤/├──────────┤/├─────────────────────────────────────────────( )───    ⚠ cùng 0: đứt dây
+```
+
+> ⭐ **Ý tưởng này không mới — nó chính là cách giám sát cặp tiếp điểm ngược chiều mà thiết bị an
+> toàn vẫn dùng** (Chương 47 mục 47.5). ⚡ Điểm đáng nói là bạn **dùng lại được ý tưởng đó cho một
+> nút thường**, bằng hai ngõ vào và hai nấc thang, **không cần thiết bị an toàn nào**.
+>
+> ⚠ Nhưng nói cho rõ: làm vậy **không biến nút đó thành chức năng an toàn**. Nó chỉ cho bạn **biết
+> khi nó hỏng** — và với một nút mà người vận hành tin tưởng, biết khi nó hỏng đã là rất nhiều.
+
+> ⭐⭐ **Gặp tổ hợp 2 trên máy người khác thì làm gì?**
+>
+> ⚡ Không phải cứ thấy là phải sửa ngay — sửa một nút trên máy đang chạy sản xuất là một thay đổi
+> có quy trình (Chương 53). ⭐ Nhưng **phải ghi nó lại**: vào hồ sơ bàn giao, vào bảng I/O (cột ghi
+> chú), và nói với người vận hành.
+>
+> ⚠⚠ **Lý do phải ghi: người sau bạn sẽ mặc định là NC.** Họ đọc `DI_StopPB` trong code, thấy
+> `┤/├`, và có thể "sửa lại cho đúng sách" thành `┤ ├` — ⭐ lúc đó máy **không chạy được nữa**, hoặc
+> tệ hơn, họ đổi luôn cả đấu dây mà chỉ đổi một nửa.
 
 ### ⚠⚠ Giới hạn của chính bảng này — tổ hợp 3 chống được hỏng kiểu HỞ, không chống hỏng kiểu CHẬP
 
@@ -35002,6 +35069,7 @@ Trả lời bốn câu này thường thu hẹp được nửa danh sách nghi p
 | ⭐ **Nhấn một lần, máy làm hai lần** | ⭐⭐ **Thiếu bắt cạnh**, hoặc rung tiếp điểm chưa được chống | 16 mục 16.5 · 17 mục 17.4 |
 | ⭐ Phải **giữ nút** mới chạy, nhả ra là dừng | ⭐⭐ **Thiếu mạch tự giữ** — hoặc nhánh tự giữ mắc sai | 15 mục 15.4 |
 | ⚠⚠ **Nút Dừng không dừng được máy** | ⭐⭐ Nhánh tự giữ **vòng qua cả nút Dừng** — xem Hình 15.2 | ⚠ **15 mục 15.4** |
+| ⚠⚠ **Nút Dừng không dừng được, và chưa bao giờ có ai thử đứt dây** | ⭐⭐ Nút đấu **NO** trong khi code dùng `┤/├` *(tổ hợp 2)* — đứt dây thì máy **vẫn chạy**. ⚠ Kiểm bằng cách rút dây nút Dừng lúc máy dừng | ⚠⚠ **15 mục 15.3** |
 | Nút Reset **không xoá được lỗi** | Nguyên nhân gốc **chưa hết**; hoặc bit lỗi là loại **giữ được** nên cần lệnh xoá tường minh | 16 mục 16.4 · 28 |
 | ⭐ Ngõ ra **bật rồi tự tắt ngay trong cùng vòng quét** | ⭐⭐ **Cuộn dây trùng** — một tag được ghi ở hai chỗ, chỗ sau đè chỗ trước | ⚠ **15 mục 15.3** · 22 |
 | Đổi công tắc chế độ mà máy **không đổi chế độ** | Điều kiện chuyển chế độ không cho phép đổi khi đang chạy dở | 28 |

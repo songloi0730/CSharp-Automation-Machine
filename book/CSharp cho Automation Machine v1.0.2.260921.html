@@ -597,6 +597,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#i14-đng-thi-nhóm-bài-concurrency-ca-leetcode">I.14  Đồng thời — nhóm bài Concurrency của LeetCode</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#i15-điu-leetcode-không-dy-và-danh-sách-này-dài-hơn-danh-sách-nó-dy">I.15  Điều LeetCode KHÔNG dạy — và danh sách này dài hơn danh sách nó dạy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#i16-vài-lưu-ý-khi-luyn-bng-c">I.16  Vài lưu ý khi luyện bằng C#</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#i17-li-gii-mu-c-cho-hai-mươi-bài-xương-sng">I.17  Lời giải mẫu C# cho hai mươi bài xương sống</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -44110,13 +44111,13 @@ xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chi�
 <h2 id="g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</h2>
 <p>Mục G.9 nêu mười hai bài xương sống; <strong>cả bốn mươi bài nay đều có lời giải chạy được</strong>. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ thể</strong>, và <strong>một
 lời giải chạy được</strong> — nằm ở <code>source/MeoBench</code>, đã biên dịch với
-<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>494/494 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở
-G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H).</p>
+<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>581/581 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở
+G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H, 87 cho hai mươi mốt lời giải xương sống ở Phụ lục I).</p>
 <h3>G.10.0  Chạy thử từng phần, không đợi làm xong hết</h3>
 <p>Đây là điểm quan trọng nhất của mục này. Làm xong cả bốn mươi bài rồi mới chạy thì khi hỏng bạn
 không biết hỏng ở đâu. Bộ tự kiểm cho phép <strong>chạy lẻ từng nhóm ngay khi vừa viết xong nhóm đó</strong>:</p>
 <pre><code class="language-bash">cd source/MeoBench
-dotnet run                 # tất cả — 494 phép kiểm
+dotnet run                 # tất cả — 581 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
@@ -44125,6 +44126,7 @@ dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
 dotnet run -- G14          # kiểm ngược: đối chiếu bất biến với mã thật — 9 phép kiểm
 dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H) — 27 phép kiểm
+dotnet run -- I            # lời giải xương sống (Phụ lục I) — 87 phép kiểm
 dotnet run -- G13          # năng lực vận hành máy thật — 68 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
@@ -47879,6 +47881,823 @@ và trên LeetCode nó nhanh hơn thật.</li>
 gì, và nó khác ở chỗ nào&quot;</em>. Ví dụ bài 239 (cửa sổ trượt lấy max) trên LeetCode nhận cả mảng một
 lúc; phiên bản máy nhận <strong>từng mẫu một, mãi mãi, và phải trả lời ngay</strong>. Chuyển từ bản LeetCode
 sang bản máy chính là bài G.2.5 — và chỗ khác nhau giữa hai bản là chỗ đáng học nhất.</p>
+</blockquote>
+<h2 id="i17-li-gii-mu-c-cho-hai-mươi-bài-xương-sng">I.17  Lời giải mẫu C# cho hai mươi bài xương sống</h2>
+<p><strong>Hai mươi mốt lời giải</strong> dưới đây phủ <strong>28 bài</strong> trong bảng — xương sống của cả mười bốn nhóm. Làm hết chúng thì phần lớn các bài còn lại là biến thể. Mỗi lời giải gồm ba phần:</p>
+<ol>
+<li><strong>Mã C#</strong> — trích thẳng từ <code>source/MeoBench/BaiXuongSong.cs</code> và <code>BaiXuongSong2.cs</code>, nên mã in trong sách và mã trong kho <strong>không thể lệch nhau</strong>.</li>
+<li><strong>Tên lớp đặt theo việc nó làm trong máy</strong>, không theo tên bài — vì đó mới là thứ bạn gõ lại khi viết phần mềm máy thật.</li>
+<li><strong>“Bản máy khác bản LeetCode ở chỗ nào”</strong> — phần đáng đọc nhất, và là lý do mục I.16 khuyên giải xong thì hỏi tiếp <em>&quot;phiên bản máy của bài này là gì&quot;</em>.</li>
+</ol>
+<blockquote>
+<p>✅ <strong>Cả hai mươi lời giải đều có phép kiểm, mỗi bài ít nhất một ca thường và một ca biên</strong> — tổng 87 phép kiểm, nằm trong <code>KiemBaiXuongSong.cs</code>. Chạy bằng:</p>
+<pre><code class="language-bash">cd source/MeoBench
+dotnet run -- I
+</code></pre>
+<p>Bài luyện mà chỉ chạy ca thường thì không luyện được gì: phần lớn lỗi thật nằm ở ca biên — cửa sổ rộng hơn dữ liệu, khung rỗng, hai khoảng chạm mép nhau, tấm ảnh sạch, danh sách việc rỗng.</p>
+</blockquote>
+<h3>LeetCode 239 — Đỉnh trong cửa sổ trượt</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 239 — Sliding Window Maximum.&lt;/b&gt; Giá trị lớn nhất trong mỗi cửa sổ k mẫu,
+/// bằng &lt;b&gt;hàng đợi đơn điệu&lt;/b&gt;: O(n) cho cả dãy thay vì O(n·k).
+/// Trong máy: &quot;áp suất đỉnh trong 30 giây gần nhất&quot; hỏi mỗi vòng quét.
+/// &lt;/summary&gt;
+public static class DinhCuaSoTruot
+{
+    /// &lt;summary&gt;Trả về mảng max của từng cửa sổ độ rộng &lt;paramref name=&quot;k&quot;/&gt;.&lt;/summary&gt;
+    public static double[] Tinh(double[] mau, int k)
+    {
+        ArgumentNullException.ThrowIfNull(mau);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(k);
+        if (mau.Length &lt; k) return [];
+
+        var ketQua = new double[mau.Length - k + 1];
+        var chiSo = new LinkedList&lt;int&gt;();          // giữ CHỈ SỐ, giảm dần theo giá trị
+
+        for (int i = 0; i &lt; mau.Length; i++)
+        {
+            // Bỏ phần tử đã trôi ra khỏi cửa sổ
+            if (chiSo.Count &gt; 0 &amp;&amp; chiSo.First!.Value &lt;= i - k) chiSo.RemoveFirst();
+
+            // Mọi giá trị nhỏ hơn mẫu mới thì không bao giờ còn là max nữa
+            while (chiSo.Count &gt; 0 &amp;&amp; mau[chiSo.Last!.Value] &lt;= mau[i]) chiSo.RemoveLast();
+
+            chiSo.AddLast(i);
+            if (i &gt;= k - 1) ketQua[i - k + 1] = mau[chiSo.First!.Value];
+        }
+        return ketQua;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Bản LeetCode nhận cả mảng một lúc. <strong>Bản máy nhận từng mẫu một, mãi mãi, và phải trả lời ngay</strong> — nên nó không trả mảng kết quả mà là một đối tượng có hàm <code>Nap(giaTri)</code>. Đó chính là bài G.2.5, và chỗ khác nhau giữa hai bản là chỗ đáng học nhất.</p>
+<h3>LeetCode 346 — Trung bình trượt trên bộ đệm vòng</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 346 — Moving Average from Data Stream.&lt;/b&gt; Trung bình trượt trên bộ đệm vòng.
+/// Trong máy: làm mượt một kênh đo. Khác bản LeetCode ở chỗ &lt;b&gt;không giữ lịch sử&lt;/b&gt; —
+/// cộng dồn và trừ đi mẫu rơi ra, nên bộ nhớ cố định dù chạy nhiều tháng.
+/// &lt;/summary&gt;
+public sealed class TrungBinhTruot
+{
+    private readonly double[] _dem;
+    private int _viTri;
+    private int _soMau;
+    private double _tong;
+
+    public TrungBinhTruot(int cuaSo)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cuaSo);
+        _dem = new double[cuaSo];
+    }
+
+    /// &lt;summary&gt;Nạp một mẫu mới, trả về trung bình hiện tại.&lt;/summary&gt;
+    public double Nap(double giaTri)
+    {
+        if (_soMau == _dem.Length) _tong -= _dem[_viTri];
+        else _soMau++;
+
+        _dem[_viTri] = giaTri;
+        _tong += giaTri;
+        _viTri = (_viTri + 1) % _dem.Length;
+        return _tong / _soMau;
+    }
+
+    /// &lt;summary&gt;Số mẫu đang có trong cửa sổ.&lt;/summary&gt;
+    public int SoMau =&gt; _soMau;
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Bản máy <strong>cộng dồn và trừ đi mẫu rơi ra</strong> thay vì cộng lại cả cửa sổ mỗi lần: O(1) mỗi mẫu, và bộ nhớ cố định dù chạy nhiều tháng. Đánh đổi phải biết: sai số dấu phẩy động tích luỹ dần, nên với cửa sổ rất dài hoặc chạy rất lâu thì nên tính lại tổng định kỳ.</p>
+<h3>LeetCode 933 — Đếm sự kiện trong cửa sổ thời gian</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 933 — Number of Recent Calls.&lt;/b&gt; Đếm sự kiện trong cửa sổ thời gian trượt.
+/// Trong máy: đây CHÍNH LÀ lõi của chống lũ cảnh báo ở mục 15.1.7 —
+/// &quot;mã lỗi này đã kêu mấy lần trong 60 giây qua&quot;.
+/// &lt;/summary&gt;
+public sealed class DemSuKienGanDay
+{
+    private readonly Queue&lt;long&gt; _moc = new();
+    private readonly long _cuaSoMs;
+
+    public DemSuKienGanDay(long cuaSoMs)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cuaSoMs);
+        _cuaSoMs = cuaSoMs;
+    }
+
+    /// &lt;summary&gt;Ghi nhận một sự kiện tại mốc &lt;paramref name=&quot;tMs&quot;/&gt;, trả về số sự kiện trong cửa sổ.&lt;/summary&gt;
+    public int Ghi(long tMs)
+    {
+        _moc.Enqueue(tMs);
+        while (_moc.Count &gt; 0 &amp;&amp; _moc.Peek() &lt; tMs - _cuaSoMs) _moc.Dequeue();
+        return _moc.Count;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Đây <strong>chính là</strong> lõi chống lũ cảnh báo của mục 15.1.7. Khác bản LeetCode ở chỗ bản máy nhận mốc thời gian từ ngoài (<code>IDongHo</code> của bài G.1.5) chứ không gọi <code>DateTime.Now</code> — nếu không thì không kiểm thử được, phải ngồi chờ thật.</p>
+<h3>LeetCode 1438 — Đoạn ổn định dài nhất</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 1438 — Longest Continuous Subarray With Absolute Diff ≤ Limit.&lt;/b&gt;
+/// Hai hàng đợi đơn điệu cùng lúc: một giữ max, một giữ min.
+/// Trong máy: &quot;đoạn dài nhất mà biên độ dao động không vượt ngưỡng&quot; — phát hiện rung,
+/// và cũng là cách đo xem một đại lượng đã &lt;i&gt;ổn định&lt;/i&gt; đủ lâu chưa trước khi lấy mẫu.
+/// &lt;/summary&gt;
+public static class DoanOnDinhDaiNhat
+{
+    /// &lt;summary&gt;Độ dài đoạn liên tiếp dài nhất có (max − min) ≤ &lt;paramref name=&quot;bienDo&quot;/&gt;.&lt;/summary&gt;
+    public static int Tinh(double[] mau, double bienDo)
+    {
+        ArgumentNullException.ThrowIfNull(mau);
+        var qMax = new LinkedList&lt;int&gt;();
+        var qMin = new LinkedList&lt;int&gt;();
+        int trai = 0, dai = 0;
+
+        for (int phai = 0; phai &lt; mau.Length; phai++)
+        {
+            while (qMax.Count &gt; 0 &amp;&amp; mau[qMax.Last!.Value] &lt;= mau[phai]) qMax.RemoveLast();
+            while (qMin.Count &gt; 0 &amp;&amp; mau[qMin.Last!.Value] &gt;= mau[phai]) qMin.RemoveLast();
+            qMax.AddLast(phai);
+            qMin.AddLast(phai);
+
+            while (mau[qMax.First!.Value] - mau[qMin.First!.Value] &gt; bienDo)
+            {
+                if (qMax.First!.Value == trai) qMax.RemoveFirst();
+                if (qMin.First!.Value == trai) qMin.RemoveFirst();
+                trai++;
+            }
+            dai = Math.Max(dai, phai - trai + 1);
+        }
+        return dai;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Trong máy, câu hỏi thường ngược lại: <em>&quot;đại lượng này đã ổn định đủ lâu chưa để lấy mẫu&quot;</em>. Cùng hai hàng đợi đơn điệu đó, nhưng chạy trên dòng và trả lời <strong>có/không</strong> tại mỗi nhịp.</p>
+<h3>LeetCode 155 — Ngăn xếp lấy đáy trong O(1)</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 155 — Min Stack.&lt;/b&gt; Lấy min trong O(1) bằng cách mỗi phần tử tự nhớ min tại thời điểm nó vào.
+/// Trong máy: đáy áp suất của phiên hiện tại, bỏ được theo từng lớp khi lùi trạng thái.
+/// &lt;/summary&gt;
+public sealed class NganXepCoDay
+{
+    private readonly Stack&lt;(double GiaTri, double Day)&gt; _s = new();
+
+    public void Day(double giaTri)
+        =&gt; _s.Push((giaTri, _s.Count == 0 ? giaTri : Math.Min(giaTri, _s.Peek().Day)));
+
+    public double Lay() =&gt; _s.Pop().GiaTri;
+    public double Dinh =&gt; _s.Peek().GiaTri;
+
+    /// &lt;summary&gt;Giá trị nhỏ nhất đang có — O(1).&lt;/summary&gt;
+    public double CucTieu =&gt; _s.Peek().Day;
+    public int SoPhanTu =&gt; _s.Count;
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Mẹo cốt lõi: <strong>mỗi phần tử tự nhớ min tại thời điểm nó vào</strong>. Trong máy dùng để giữ đáy áp suất của phiên hiện tại, bỏ được theo từng lớp khi lùi trạng thái.</p>
+<h3>LeetCode 901 — Độ dài xu hướng trên một dòng</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 901 — Online Stock Span.&lt;/b&gt; Ngăn xếp đơn điệu chạy trên một DÒNG, không phải mảng.
+/// Trong máy: &quot;giá trị hiện tại đã là mức cao nhất trong bao nhiêu mẫu liên tiếp&quot; —
+/// độ dài một xu hướng, dùng để phát hiện trôi dần (drift) trước khi chạm ngưỡng.
+/// &lt;/summary&gt;
+public sealed class DoDaiXuHuong
+{
+    private readonly Stack&lt;(double GiaTri, int Dai)&gt; _s = new();
+
+    /// &lt;summary&gt;Nạp mẫu mới, trả về số mẫu liên tiếp (kể cả mẫu này) không lớn hơn nó.&lt;/summary&gt;
+    public int Nap(double giaTri)
+    {
+        int dai = 1;
+        while (_s.Count &gt; 0 &amp;&amp; _s.Peek().GiaTri &lt;= giaTri) dai += _s.Pop().Dai;
+        _s.Push((giaTri, dai));
+        return dai;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Bài hiếm hoi mà <strong>bản LeetCode đã là bản dòng</strong> — nó nhận từng mẫu một, đúng như máy. Dùng để phát hiện trôi dần (drift) trước khi chạm ngưỡng: &quot;giá trị này đã là cao nhất trong 400 mẫu liền&quot;.</p>
+<h3>LeetCode 56 / 253 — Gộp khoảng và đếm tài nguyên song song</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 56 — Merge Intervals&lt;/b&gt; và &lt;b&gt;253 — Meeting Rooms II&lt;/b&gt;.
+/// Trong máy: gộp cửa sổ bảo trì (56) và &quot;cần bao nhiêu trạm song song mới kịp&quot; (253).
+/// &lt;/summary&gt;
+public static class LichKhoang
+{
+    /// &lt;summary&gt;Gộp các khoảng chồng lấn, trả về danh sách đã sắp và rời nhau.&lt;/summary&gt;
+    public static List&lt;Khoang&gt; Gop(IEnumerable&lt;Khoang&gt; nguon)
+    {
+        ArgumentNullException.ThrowIfNull(nguon);
+        var ds = nguon.ToList();
+        ds.Sort((a, b) =&gt; a.BatDau.CompareTo(b.BatDau));
+
+        var kq = new List&lt;Khoang&gt;();
+        foreach (var k in ds)
+        {
+            if (kq.Count &gt; 0 &amp;&amp; k.BatDau &lt;= kq[^1].KetThuc)
+                kq[^1] = new Khoang(kq[^1].BatDau, Math.Max(kq[^1].KetThuc, k.KetThuc));
+            else
+                kq.Add(k);
+        }
+        return kq;
+    }
+
+    /// &lt;summary&gt;
+    /// Số tài nguyên song song tối thiểu để chứa hết các khoảng — quét đường (sweep line).
+    /// Trong máy: số đồ gá, số trạm, hay số vị trí đệm cần có.
+    /// &lt;/summary&gt;
+    public static int SoTaiNguyenCanThiet(IEnumerable&lt;Khoang&gt; nguon)
+    {
+        ArgumentNullException.ThrowIfNull(nguon);
+        var moc = new List&lt;(long T, int Delta)&gt;();
+        foreach (var k in nguon)
+        {
+            moc.Add((k.BatDau, +1));
+            moc.Add((k.KetThuc, -1));
+        }
+        // Kết thúc xử lý TRƯỚC bắt đầu tại cùng một mốc: [0;5) và [5;9) KHÔNG chồng nhau.
+        moc.Sort((a, b) =&gt; a.T != b.T ? a.T.CompareTo(b.T) : a.Delta.CompareTo(b.Delta));
+
+        int dang = 0, dinh = 0;
+        foreach (var (_, d) in moc)
+        {
+            dang += d;
+            if (dang &gt; dinh) dinh = dang;
+        }
+        return dinh;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Chú ý dòng sắp xếp trong <code>SoTaiNguyenCanThiet</code>: <strong>kết thúc phải xử lý trước bắt đầu tại cùng một mốc</strong>, nếu không thì <code>[0;5)</code> và <code>[5;9)</code> bị tính là chồng nhau và bạn mua thừa một đồ gá. Phép kiểm có đúng ca biên đó.</p>
+<h3>LeetCode 1094 — Tải theo khoảng bằng mảng hiệu</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 1094 — Car Pooling.&lt;/b&gt; Mảng hiệu (difference array): cộng dồn trên khoảng
+/// trong O(1) mỗi lần, chỉ trả giá O(n) một lần khi cần đọc.
+/// Trong máy: tải của băng tải/khay theo thời gian, hay kế hoạch sản lượng theo lô.
+/// &lt;/summary&gt;
+public static class TaiTheoKhoang
+{
+    /// &lt;summary&gt;Có lúc nào tổng tải vượt &lt;paramref name=&quot;sucChua&quot;/&gt; không.&lt;/summary&gt;
+    public static bool CoQuaTai(IEnumerable&lt;(Khoang K, int Tai)&gt; nguon, int sucChua, int mocToiDa)
+    {
+        ArgumentNullException.ThrowIfNull(nguon);
+        var hieu = new int[mocToiDa + 2];
+        foreach (var (k, tai) in nguon)
+        {
+            hieu[k.BatDau] += tai;
+            hieu[k.KetThuc] -= tai;
+        }
+        int dang = 0;
+        foreach (int d in hieu)
+        {
+            dang += d;
+            if (dang &gt; sucChua) return true;
+        }
+        return false;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Mảng hiệu cho phép <strong>cộng dồn trên cả một khoảng trong O(1)</strong>, chỉ trả giá O(n) một lần khi đọc. Trong máy: cập nhật kế hoạch theo lô rồi mới hỏi &quot;có lúc nào quá tải không&quot;.</p>
+<h3>LeetCode 622 — Bộ đệm vòng dung lượng cố định</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 622 — Design Circular Queue.&lt;/b&gt; Bộ đệm vòng dung lượng cố định.
+/// Trong máy: đây là cấu trúc nền của mọi vùng đệm dữ liệu thời gian thực — nó
+/// &lt;b&gt;không bao giờ cấp phát thêm&lt;/b&gt;, nên không gây khựng vì thu gom rác (mục 3.1.2).
+/// &lt;/summary&gt;
+public sealed class HangDoiVong&lt;T&gt;
+{
+    private readonly T[] _o;
+    private int _dau, _soPhanTu;
+
+    public HangDoiVong(int sucChua)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sucChua);
+        _o = new T[sucChua];
+    }
+
+    public int SoPhanTu =&gt; _soPhanTu;
+    public bool Day =&gt; _soPhanTu == _o.Length;
+    public bool Rong =&gt; _soPhanTu == 0;
+
+    /// &lt;summary&gt;Thêm vào cuối. Trả về false nếu đầy — KHÔNG ném, vì đầy là chuyện bình thường.&lt;/summary&gt;
+    public bool ThemCuoi(T x)
+    {
+        if (Day) return false;
+        _o[(_dau + _soPhanTu) % _o.Length] = x;
+        _soPhanTu++;
+        return true;
+    }
+
+    /// &lt;summary&gt;Lấy khỏi đầu.&lt;/summary&gt;
+    public bool LayDau([MaybeNullWhen(false)] out T x)
+    {
+        if (Rong) { x = default; return false; }
+        x = _o[_dau];
+        _o[_dau] = default!;                 // nhả tham chiếu, tránh giữ đối tượng sống
+        _dau = (_dau + 1) % _o.Length;
+        _soPhanTu--;
+        return true;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Hai điểm bản máy khác hẳn: (1) <strong>đầy thì trả <code>false</code>, không ném</strong> — đầy là chuyện bình thường của một bộ đệm, không phải lỗi; (2) khi lấy phần tử ra thì <strong>gán lại <code>default!</code></strong> để nhả tham chiếu, nếu không thì bộ đệm giữ đối tượng sống mãi (mục H.2 về rò rỉ qua tham chiếu).</p>
+<h3>LeetCode 146 — Bộ nhớ đệm loại theo &quot;ít dùng gần đây&quot;</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 146 — LRU Cache.&lt;/b&gt; Dictionary + danh sách liên kết đôi, mọi thao tác O(1).
+/// Trong máy: bộ nhớ đệm ảnh kiểm hoặc công thức — giữ thứ vừa dùng, bỏ thứ lâu không đụng.
+/// &lt;/summary&gt;
+public sealed class DemLruCache&lt;TKhoa, TGiaTri&gt; where TKhoa : notnull
+{
+    private readonly int _sucChua;
+    private readonly Dictionary&lt;TKhoa, LinkedListNode&lt;(TKhoa K, TGiaTri V)&gt;&gt; _bang;
+    private readonly LinkedList&lt;(TKhoa K, TGiaTri V)&gt; _thuTu = new();
+
+    public DemLruCache(int sucChua)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(sucChua);
+        _sucChua = sucChua;
+        _bang = new Dictionary&lt;TKhoa, LinkedListNode&lt;(TKhoa, TGiaTri)&gt;&gt;(sucChua);
+    }
+
+    public bool ThuLay(TKhoa khoa, [MaybeNullWhen(false)] out TGiaTri giaTri)
+    {
+        if (!_bang.TryGetValue(khoa, out var nut)) { giaTri = default; return false; }
+        _thuTu.Remove(nut);
+        _thuTu.AddFirst(nut);
+        giaTri = nut.Value.V;
+        return true;
+    }
+
+    public void Dat(TKhoa khoa, TGiaTri giaTri)
+    {
+        if (_bang.TryGetValue(khoa, out var cu))
+        {
+            _thuTu.Remove(cu);
+            _bang.Remove(khoa);
+        }
+        else if (_bang.Count == _sucChua)
+        {
+            var bo = _thuTu.Last!;
+            _thuTu.RemoveLast();
+            _bang.Remove(bo.Value.K);
+        }
+        var nut = new LinkedListNode&lt;(TKhoa, TGiaTri)&gt;((khoa, giaTri));
+        _thuTu.AddFirst(nut);
+        _bang[khoa] = nut;
+    }
+
+    public int SoPhanTu =&gt; _bang.Count;
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Trong máy dùng cho ảnh kiểm và công thức. Điểm phải cẩn thận: <code>Dictionary</code> + <code>LinkedList</code> cho O(1) nhưng <strong>không an toàn đa luồng</strong> — nếu luồng ảnh và luồng giao diện cùng đụng thì phải khoá, và lúc đó cân nhắc <code>ConcurrentDictionary</code> + chính sách loại bỏ đơn giản hơn.</p>
+<h3>LeetCode 359 — Chặn lặp thông điệp theo thời gian</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 359 — Logger Rate Limiter.&lt;/b&gt; Chặn lặp cùng một thông điệp trong cửa sổ thời gian.
+/// Trong máy: đúng cơ chế chống lũ cảnh báo của mục 15.1.7 — và khác bản LeetCode một điểm
+/// quan trọng: bản máy phải &lt;b&gt;đếm số lần bị chặn&lt;/b&gt; để còn báo &quot;đã kêu 412 lần trong 5 phút&quot;.
+/// &lt;/summary&gt;
+public sealed class ChanLapTheoThoiGian
+{
+    private readonly Dictionary&lt;string, long&gt; _lanCuoi = new(StringComparer.Ordinal);
+    private readonly Dictionary&lt;string, int&gt; _soLanChan = new(StringComparer.Ordinal);
+    private readonly long _cuaSoMs;
+
+    public ChanLapTheoThoiGian(long cuaSoMs)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cuaSoMs);
+        _cuaSoMs = cuaSoMs;
+    }
+
+    /// &lt;summary&gt;Có cho phép phát thông điệp này tại mốc &lt;paramref name=&quot;tMs&quot;/&gt; không.&lt;/summary&gt;
+    public bool ChoPhep(string thongDiep, long tMs)
+    {
+        ArgumentNullException.ThrowIfNull(thongDiep);
+        if (_lanCuoi.TryGetValue(thongDiep, out long cuoi) &amp;&amp; tMs &lt; cuoi + _cuaSoMs)
+        {
+            _soLanChan[thongDiep] = _soLanChan.GetValueOrDefault(thongDiep) + 1;
+            return false;
+        }
+        _lanCuoi[thongDiep] = tMs;
+        return true;
+    }
+
+    /// &lt;summary&gt;Số lần thông điệp này đã bị nuốt — thứ bản LeetCode không cần mà máy thì cần.&lt;/summary&gt;
+    public int SoLanBiChan(string thongDiep) =&gt; _soLanChan.GetValueOrDefault(thongDiep);
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> <strong>Bản máy có thêm một thứ bản LeetCode không cần: <code>SoLanBiChan</code>.</strong> Chặn mà không đếm thì người vận hành không bao giờ biết &quot;cảnh báo này đã kêu 412 lần trong 5 phút&quot; — mà chính con số đó mới nói lên mức nghiêm trọng. Đây là khác biệt tiêu biểu giữa một bài luyện và một tính năng.</p>
+<h3>LeetCode 20 — Khớp cặp lồng nhau</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 20 — Valid Parentheses.&lt;/b&gt; Khớp cặp bằng ngăn xếp.
+/// Trong máy: nền của mọi bộ phân tích khung có lồng nhau — và là cách kiểm nhanh
+/// một tệp cấu hình JSON/XML có bị cắt cụt giữa chừng không.
+/// &lt;/summary&gt;
+public static class KhopCapLongNhau
+{
+    private static readonly Dictionary&lt;char, char&gt; Cap =
+        new() { [&#39;)&#39;] = &#39;(&#39;, [&#39;]&#39;] = &#39;[&#39;, [&#39;}&#39;] = &#39;{&#39; };
+
+    public static bool HopLe(string s)
+    {
+        ArgumentNullException.ThrowIfNull(s);
+        var xep = new Stack&lt;char&gt;();
+        foreach (char c in s)
+        {
+            if (c is &#39;(&#39; or &#39;[&#39; or &#39;{&#39;) xep.Push(c);
+            else if (Cap.TryGetValue(c, out char mo))
+            {
+                if (xep.Count == 0 || xep.Pop() != mo) return false;
+            }
+        }
+        return xep.Count == 0;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Ứng dụng máy không phải là kiểm dấu ngoặc, mà là <strong>kiểm nhanh một tệp cấu hình JSON/XML có bị cắt cụt giữa chừng không</strong> — đúng tình huống mất điện lúc đang ghi mà mục G.12 bàn.</p>
+<h3>LeetCode 65 — Số hợp lệ — viết bằng bảng chuyển trạng thái</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 65 — Valid Number.&lt;/b&gt; Bài dạy máy trạng thái rõ nhất của LeetCode.
+/// Viết bằng &lt;b&gt;bảng chuyển trạng thái&lt;/b&gt; chứ không bằng rừng &lt;c&gt;if&lt;/c&gt; — đúng lý do
+/// mục 12.3.2 nêu: bảng thì đếm được, test được, và nhìn ra được chỗ thiếu.
+/// Trong máy: kiểm một trường số đọc về từ thiết bị trước khi đem đi tính.
+/// &lt;/summary&gt;
+public static class SoHopLe
+{
+    private enum T { Dau, Dau_, So, Cham, ChamSo, E, EDau, ESo, Loi }
+
+    private static T Chuyen(T t, char c)
+    {
+        bool so = c is &gt;= &#39;0&#39; and &lt;= &#39;9&#39;;
+        return t switch
+        {
+            T.Dau      =&gt; c is &#39;+&#39; or &#39;-&#39; ? T.Dau_ : so ? T.So : c == &#39;.&#39; ? T.Cham : T.Loi,
+            T.Dau_     =&gt; so ? T.So : c == &#39;.&#39; ? T.Cham : T.Loi,
+            T.So       =&gt; so ? T.So : c == &#39;.&#39; ? T.ChamSo : c is &#39;e&#39; or &#39;E&#39; ? T.E : T.Loi,
+            T.Cham     =&gt; so ? T.ChamSo : T.Loi,
+            T.ChamSo   =&gt; so ? T.ChamSo : c is &#39;e&#39; or &#39;E&#39; ? T.E : T.Loi,
+            T.E        =&gt; c is &#39;+&#39; or &#39;-&#39; ? T.EDau : so ? T.ESo : T.Loi,
+            T.EDau     =&gt; so ? T.ESo : T.Loi,
+            T.ESo      =&gt; so ? T.ESo : T.Loi,
+            _          =&gt; T.Loi,
+        };
+    }
+
+    /// &lt;summary&gt;Chuỗi có phải một số hợp lệ không.&lt;/summary&gt;
+    public static bool KiemTra(string s)
+    {
+        ArgumentNullException.ThrowIfNull(s);
+        if (s.Length == 0) return false;
+
+        var t = T.Dau;
+        foreach (char c in s)
+        {
+            t = Chuyen(t, c);
+            if (t == T.Loi) return false;
+        }
+        // Chỉ ba trạng thái này là kết thúc hợp lệ — thiếu dòng này là lỗi hay gặp nhất.
+        return t is T.So or T.ChamSo or T.ESo;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Bài này gần như luôn được giải bằng rừng <code>if</code>. Bản ở đây viết bằng <strong>bảng chuyển trạng thái</strong>, đúng lý do mục 12.3.2 nêu: bảng thì đếm được, test được, và nhìn ra được chỗ thiếu. Dòng cuối (<em>chỉ ba trạng thái là kết thúc hợp lệ</em>) là chỗ sai nhiều nhất — thiếu nó thì <code>&quot;1e&quot;</code> được coi là số.</p>
+<h3>LeetCode 191 / 136 / 89 — Đếm bit, checksum XOR và mã Gray</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 191 — Number of 1 Bits&lt;/b&gt;, &lt;b&gt;136 — Single Number&lt;/b&gt;, &lt;b&gt;89 — Gray Code&lt;/b&gt;.
+/// Ba bài bit mà phần mềm máy dùng thật: đếm tín hiệu đang tích cực, checksum XOR (mục G.2.4),
+/// và mã Gray — thứ encoder tuyệt đối dùng để không bao giờ đọc nhầm quá một bit khi chuyển vạch.
+/// &lt;/summary&gt;
+public static class ThaoTacBit
+{
+    /// &lt;summary&gt;Số bit đang bật — số tín hiệu đang tích cực trong một thanh ghi.&lt;/summary&gt;
+    public static int DemBitBat(uint thanhGhi)
+    {
+        int n = 0;
+        while (thanhGhi != 0)
+        {
+            thanhGhi &amp;= thanhGhi - 1;      // xoá bit 1 thấp nhất
+            n++;
+        }
+        return n;
+    }
+
+    /// &lt;summary&gt;Checksum XOR của một khung — đúng phép dùng ở mục G.2.4.&lt;/summary&gt;
+    public static byte TongKiemXor(ReadOnlySpan&lt;byte&gt; khung)
+    {
+        byte t = 0;
+        foreach (byte b in khung) t ^= b;
+        return t;
+    }
+
+    /// &lt;summary&gt;Đổi số nhị phân thường sang mã Gray (encoder tuyệt đối dùng mã này).&lt;/summary&gt;
+    public static uint SangGray(uint x) =&gt; x ^ (x &gt;&gt; 1);
+
+    /// &lt;summary&gt;Đổi ngược mã Gray đọc từ encoder về số vạch thật.&lt;/summary&gt;
+    public static uint TuGray(uint g)
+    {
+        uint x = g;
+        for (uint d = g &gt;&gt; 1; d != 0; d &gt;&gt;= 1) x ^= d;
+        return x;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Ba bài bit mà phần mềm máy dùng <strong>thật</strong>, không phải để luyện: đếm tín hiệu đang tích cực, checksum XOR của mục G.2.4, và mã Gray. Phép kiểm chứng minh tính chất khiến encoder tuyệt đối chọn mã Gray: <strong>hai vạch liền nhau chỉ khác đúng một bit</strong>, nên đọc đúng lúc chuyển vạch cũng không nhảy giá trị.</p>
+<h3>LeetCode 48 / 2022 — Xoay khay và đổi danh sách thành lưới</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 48 — Rotate Image&lt;/b&gt; và &lt;b&gt;2022 — Convert 1D Array Into 2D Array&lt;/b&gt;.
+/// Trong máy: khay đặt xoay 90° thì bản đồ vị trí phải xoay theo, và danh sách vị trí
+/// đọc từ tệp cấu hình (một chiều) phải đổi thành lưới (hai chiều) — mục 13.4.6.
+/// &lt;/summary&gt;
+public static class BanDoKhay
+{
+    /// &lt;summary&gt;Xoay ma trận vuông 90° theo chiều kim đồng hồ, &lt;b&gt;tại chỗ&lt;/b&gt;.&lt;/summary&gt;
+    public static void Xoay90(int[,] o)
+    {
+        ArgumentNullException.ThrowIfNull(o);
+        int n = o.GetLength(0);
+        // Chuyển vị rồi lật ngang — hai bước đơn giản, không cần mảng phụ.
+        for (int i = 0; i &lt; n; i++)
+            for (int j = i + 1; j &lt; n; j++)
+                (o[i, j], o[j, i]) = (o[j, i], o[i, j]);
+
+        for (int i = 0; i &lt; n; i++)
+            for (int j = 0; j &lt; n / 2; j++)
+                (o[i, j], o[i, n - 1 - j]) = (o[i, n - 1 - j], o[i, j]);
+    }
+
+    /// &lt;summary&gt;Đổi danh sách vị trí một chiều thành lưới &lt;paramref name=&quot;hang&quot;/&gt;×&lt;paramref name=&quot;cot&quot;/&gt;.&lt;/summary&gt;
+    public static int[,]? ThanhLuoi(int[] phang, int hang, int cot)
+    {
+        ArgumentNullException.ThrowIfNull(phang);
+        if (hang &lt;= 0 || cot &lt;= 0 || phang.Length != hang * cot) return null;   // không đoán bừa
+
+        var luoi = new int[hang, cot];
+        for (int i = 0; i &lt; phang.Length; i++) luoi[i / cot, i % cot] = phang[i];
+        return luoi;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> <code>ThanhLuoi</code> <strong>trả <code>null</code> khi số phần tử không khớp</strong> thay vì cắt bớt cho vừa. Trong máy, một tệp điểm khay thiếu một dòng mà chương trình vẫn chạy nghĩa là gắp sai vị trí — thà từ chối nạp.</p>
+<h3>LeetCode 200 — Đếm vùng khuyết tật tách biệt</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 200 — Number of Islands.&lt;/b&gt; Đếm vùng liên thông bằng loang (BFS).
+/// Trong máy: đếm số khuyết tật TÁCH BIỆT trên một tấm ảnh kiểm — khác hẳn đếm số điểm ảnh lỗi.
+/// Dùng BFS lặp chứ không đệ quy: ảnh 4000×3000 sẽ làm tràn ngăn xếp nếu đệ quy.
+/// &lt;/summary&gt;
+public static class DemVungLoi
+{
+    private static readonly (int R, int C)[] Huong = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+
+    /// &lt;summary&gt;Số vùng liên thông gồm các ô &lt;c&gt;true&lt;/c&gt;.&lt;/summary&gt;
+    public static int Dem(bool[,] anh)
+    {
+        ArgumentNullException.ThrowIfNull(anh);
+        int h = anh.GetLength(0), c = anh.GetLength(1);
+        var daXet = new bool[h, c];
+        int vung = 0;
+        var hang = new Queue&lt;(int R, int C)&gt;();
+
+        for (int r = 0; r &lt; h; r++)
+            for (int k = 0; k &lt; c; k++)
+            {
+                if (!anh[r, k] || daXet[r, k]) continue;
+                vung++;
+                hang.Enqueue((r, k));
+                daXet[r, k] = true;
+                while (hang.Count &gt; 0)
+                {
+                    var (x, y) = hang.Dequeue();
+                    foreach (var (dr, dc) in Huong)
+                    {
+                        int nx = x + dr, ny = y + dc;
+                        if (nx &lt; 0 || ny &lt; 0 || nx &gt;= h || ny &gt;= c) continue;
+                        if (!anh[nx, ny] || daXet[nx, ny]) continue;
+                        daXet[nx, ny] = true;
+                        hang.Enqueue((nx, ny));
+                    }
+                }
+            }
+        return vung;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Viết bằng <strong>BFS lặp, không đệ quy</strong>. Đây không phải chuyện phong cách: ảnh kiểm 4000×3000 mà toàn vùng lỗi thì đệ quy tràn ngăn xếp và làm chết tiến trình. Đếm <em>vùng</em> khác hẳn đếm <em>điểm ảnh lỗi</em> — tiêu chí loại hàng thường theo kích thước vùng lớn nhất.</p>
+<h3>LeetCode 207 / 210 — Thứ tự trạm và phát hiện khoá chết</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 207/210 — Course Schedule.&lt;/b&gt; Sắp xếp tô-pô bằng thuật toán Kahn.
+/// Trong máy: đây là câu trả lời cho câu hỏi mà mục 16.3.4 nêu ra —
+/// &lt;b&gt;các trạm chờ nhau có bao giờ chờ vòng tròn không&lt;/b&gt;. Có chu trình = khoá chết.
+/// &lt;/summary&gt;
+public static class ThuTuTram
+{
+    /// &lt;summary&gt;
+    /// Trả về thứ tự chạy hợp lệ, hoặc &lt;c&gt;null&lt;/c&gt; nếu có chu trình (khoá chết).
+    /// &lt;paramref name=&quot;phuThuoc&quot;/&gt;: cặp (A, B) nghĩa là A phải xong trước B.
+    /// &lt;/summary&gt;
+    public static int[]? SapThuTu(int soTram, IEnumerable&lt;(int Truoc, int Sau)&gt; phuThuoc)
+    {
+        ArgumentNullException.ThrowIfNull(phuThuoc);
+        ArgumentOutOfRangeException.ThrowIfNegative(soTram);
+
+        var ke = new List&lt;int&gt;[soTram];
+        for (int i = 0; i &lt; soTram; i++) ke[i] = [];
+        var bacVao = new int[soTram];
+
+        foreach (var (a, b) in phuThuoc)
+        {
+            ke[a].Add(b);
+            bacVao[b]++;
+        }
+
+        var hang = new Queue&lt;int&gt;();
+        for (int i = 0; i &lt; soTram; i++)
+            if (bacVao[i] == 0) hang.Enqueue(i);
+
+        var thuTu = new List&lt;int&gt;(soTram);
+        while (hang.Count &gt; 0)
+        {
+            int t = hang.Dequeue();
+            thuTu.Add(t);
+            foreach (int s in ke[t])
+                if (--bacVao[s] == 0) hang.Enqueue(s);
+        }
+        // Còn trạm chưa xếp được = chúng nằm trong một vòng chờ nhau.
+        return thuTu.Count == soTram ? [.. thuTu] : null;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Đây là câu trả lời cho câu hỏi mục 16.3.4 nêu ra mà không giải: <strong>các trạm chờ nhau có bao giờ chờ vòng tròn không.</strong> Trả về <code>null</code> nghĩa là có chu trình, tức có khoá chết — và phát hiện được lúc <em>nạp cấu hình</em> thì rẻ hơn phát hiện lúc máy đứng im giữa ca rất nhiều.</p>
+<h3>LeetCode 875 / 1011 — Tìm nhị phân trên đáp án</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 875 — Koko Eating Bananas&lt;/b&gt; và &lt;b&gt;1011 — Capacity To Ship Packages&lt;/b&gt;.
+/// Kỹ thuật &lt;b&gt;tìm nhị phân trên ĐÁP ÁN&lt;/b&gt;: không tìm trong dữ liệu, mà tìm trong tập giá trị
+/// có thể của câu trả lời, với một hàm kiểm &quot;mức này có đủ không&quot; đơn điệu.
+/// Trong máy: &quot;tốc độ tối thiểu để kịp nhịp&quot;, &quot;cỡ khay tối thiểu để xong lô trong ca&quot;.
+/// &lt;/summary&gt;
+public static class TimNhiPhanTrenDapAn
+{
+    /// &lt;summary&gt;
+    /// Giá trị nhỏ nhất trong [thap; cao] mà &lt;paramref name=&quot;du&quot;/&gt; trả về true.
+    /// Yêu cầu: &lt;paramref name=&quot;du&quot;/&gt; phải ĐƠN ĐIỆU — false… rồi true… và không quay lại.
+    /// &lt;/summary&gt;
+    public static long NhoNhatThoaMan(long thap, long cao, Func&lt;long, bool&gt; du)
+    {
+        ArgumentNullException.ThrowIfNull(du);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(thap, cao);
+        while (thap &lt; cao)
+        {
+            long giua = thap + (cao - thap) / 2;      // tránh tràn, không dùng (thap+cao)/2
+            if (du(giua)) cao = giua;
+            else thap = giua + 1;
+        }
+        return thap;
+    }
+
+    /// &lt;summary&gt;Nhịp tối thiểu (phôi/giờ) để xử lý hết &lt;paramref name=&quot;loHang&quot;/&gt; trong &lt;paramref name=&quot;soGio&quot;/&gt;.&lt;/summary&gt;
+    public static long NhipToiThieu(int[] loHang, int soGio)
+    {
+        ArgumentNullException.ThrowIfNull(loHang);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(soGio);
+        long max = 1;
+        foreach (int x in loHang) max = Math.Max(max, x);
+
+        return NhoNhatThoaMan(1, max, nhip =&gt;
+        {
+            long gio = 0;
+            foreach (int x in loHang) gio += (x + nhip - 1) / nhip;   // trần của phép chia
+            return gio &lt;= soGio;
+        });
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Kỹ thuật mà nhiều người viết máy chưa từng gặp: <strong>không tìm trong dữ liệu mà tìm trong tập giá trị của câu trả lời</strong>. Điều kiện duy nhất là hàm kiểm phải đơn điệu. Giải được cả lớp câu hỏi &quot;ít nhất bao nhiêu thì kịp&quot;: tốc độ tối thiểu, cỡ khay tối thiểu, số trạm tối thiểu.</p>
+<h3>LeetCode 621 — Lập lịch có thời gian hồi bắt buộc</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 621 — Task Scheduler.&lt;/b&gt; Xếp lịch có thời gian nghỉ bắt buộc giữa hai lần
+/// cùng loại. Trong máy: nguội khuôn, chờ keo khô, chờ buồng hút phục hồi chân không —
+/// cùng một tài nguyên không được dùng lại trước khi hết thời gian hồi.
+/// &lt;/summary&gt;
+public static class LichCoThoiGianHoi
+{
+    /// &lt;summary&gt;
+    /// Tổng số nhịp tối thiểu để chạy hết các việc, biết hai việc CÙNG LOẠI phải cách nhau
+    /// ít nhất &lt;paramref name=&quot;nhipHoi&quot;/&gt; nhịp.
+    /// &lt;/summary&gt;
+    public static int TongNhip(IEnumerable&lt;char&gt; viec, int nhipHoi)
+    {
+        ArgumentNullException.ThrowIfNull(viec);
+        ArgumentOutOfRangeException.ThrowIfNegative(nhipHoi);
+
+        var dem = new Dictionary&lt;char, int&gt;();
+        int tong = 0;
+        foreach (char v in viec)
+        {
+            dem[v] = dem.GetValueOrDefault(v) + 1;
+            tong++;
+        }
+        if (tong == 0) return 0;
+
+        int nhieuNhat = 0, soLoaiNhieuNhat = 0;
+        foreach (int n in dem.Values)
+        {
+            if (n &gt; nhieuNhat) { nhieuNhat = n; soLoaiNhieuNhat = 1; }
+            else if (n == nhieuNhat) soLoaiNhieuNhat++;
+        }
+
+        // Khung do loại việc nhiều nhất dựng nên; nếu việc khác lấp đầy hết khe thì tổng = số việc.
+        int khung = (nhieuNhat - 1) * (nhipHoi + 1) + soLoaiNhieuNhat;
+        return Math.Max(khung, tong);
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Trong máy: nguội khuôn, chờ keo khô, chờ buồng hút phục hồi chân không. Lời giải là một <strong>công thức đếm</strong>, không phải mô phỏng — nhưng hãy đọc kỹ dòng <code>Math.Max(khung, tong)</code>: khi các việc khác lấp đầy hết khe trống thì thời gian hồi không còn tốn gì thêm.</p>
+<h3>LeetCode 303 / 560 — Tổng tiền tố cho thống kê ca</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 303 — Range Sum Query&lt;/b&gt; và &lt;b&gt;560 — Subarray Sum Equals K&lt;/b&gt;.
+/// Trong máy: &quot;từ 8 giờ tới 14 giờ làm được bao nhiêu&quot; trả lời trong O(1) nếu giữ tổng tiền tố.
+/// &lt;/summary&gt;
+public sealed class ThongKeCa
+{
+    private readonly long[] _tienTo;
+
+    public ThongKeCa(int[] sanLuongMoiGio)
+    {
+        ArgumentNullException.ThrowIfNull(sanLuongMoiGio);
+        _tienTo = new long[sanLuongMoiGio.Length + 1];
+        for (int i = 0; i &lt; sanLuongMoiGio.Length; i++)
+            _tienTo[i + 1] = _tienTo[i] + sanLuongMoiGio[i];
+    }
+
+    /// &lt;summary&gt;Tổng sản lượng trong khoảng giờ [tu; den) — O(1).&lt;/summary&gt;
+    public long Tong(int tu, int den)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(tu);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(den, _tienTo.Length - 1);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(tu, den);
+        return _tienTo[den] - _tienTo[tu];
+    }
+
+    /// &lt;summary&gt;Số đoạn giờ liên tiếp có tổng đúng bằng &lt;paramref name=&quot;muc&quot;/&gt; (LeetCode 560).&lt;/summary&gt;
+    public static int DemDoanCoTong(int[] sanLuong, long muc)
+    {
+        ArgumentNullException.ThrowIfNull(sanLuong);
+        var daGap = new Dictionary&lt;long, int&gt; { [0] = 1 };
+        long cong = 0;
+        int dem = 0;
+        foreach (int x in sanLuong)
+        {
+            cong += x;
+            if (daGap.TryGetValue(cong - muc, out int n)) dem += n;
+            daGap[cong] = daGap.GetValueOrDefault(cong) + 1;
+        }
+        return dem;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Câu <em>&quot;từ 8 giờ tới 14 giờ làm được bao nhiêu&quot;</em> trả lời trong O(1) nếu giữ tổng tiền tố, O(n) nếu không. Với một bảng dữ liệu ca cập nhật mỗi giây thì khác biệt đó <strong>nhìn thấy được trên màn hình</strong>.</p>
+<h3>LeetCode 1114 — Ép thứ tự giữa các luồng</h3>
+<pre><code class="language-csharp">/// &lt;summary&gt;
+/// &lt;b&gt;LeetCode 1114 — Print in Order.&lt;/b&gt; Ép thứ tự giữa ba luồng chạy song song.
+/// Trong máy: đúng bài &quot;trạm B không được bắt đầu trước khi trạm A báo xong&quot; —
+/// và bản máy dùng &lt;see cref=&quot;SemaphoreSlim&quot;/&gt; chứ không &lt;c&gt;lock&lt;/c&gt;, vì phải
+/// &lt;b&gt;chờ được bất đồng bộ&lt;/b&gt; và &lt;b&gt;huỷ được&lt;/b&gt; (mục 5.2, 5.3.2).
+/// &lt;/summary&gt;
+public sealed class ChotThuTu : IDisposable
+{
+    private readonly SemaphoreSlim[] _cong;
+    private bool _daHuy;
+
+    /// &lt;summary&gt;Tạo &lt;paramref name=&quot;soBuoc&quot;/&gt; cổng; bước 0 mở sẵn, các bước sau đóng.&lt;/summary&gt;
+    public ChotThuTu(int soBuoc)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(soBuoc, 1);
+        _cong = new SemaphoreSlim[soBuoc];
+        _cong[0] = new SemaphoreSlim(1, 1);
+        for (int i = 1; i &lt; soBuoc; i++) _cong[i] = new SemaphoreSlim(0, 1);
+    }
+
+    /// &lt;summary&gt;Chờ tới lượt bước &lt;paramref name=&quot;buoc&quot;/&gt;, chạy &lt;paramref name=&quot;viec&quot;/&gt;, rồi mở cổng kế tiếp.&lt;/summary&gt;
+    public async Task ChayDungLuotAsync(int buoc, Func&lt;Task&gt; viec, CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(viec);
+        await _cong[buoc].WaitAsync(ct).ConfigureAwait(false);
+        try
+        {
+            await viec().ConfigureAwait(false);
+        }
+        finally
+        {
+            // Mở cổng kế tiếp trong finally: việc lỗi cũng không được làm KẸT cả dây chuyền.
+            if (buoc + 1 &lt; _cong.Length) _cong[buoc + 1].Release();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_daHuy) return;
+        foreach (var c in _cong) c.Dispose();
+        _daHuy = true;
+    }
+}
+</code></pre>
+<p><strong>Bản máy khác ở chỗ nào.</strong> Bản máy dùng <code>SemaphoreSlim</code> chứ không <code>lock</code>, vì phải <strong>chờ được bất đồng bộ</strong> và <strong>huỷ được</strong> (mục 5.2, 5.3.2). Và dòng quan trọng nhất là <code>finally</code>: <strong>bước trước lỗi thì cổng kế tiếp vẫn phải mở</strong>, nếu không một lỗi ở trạm 1 làm kẹt cả dây chuyền vĩnh viễn. Phép kiểm có đúng ca đó.</p>
+<hr>
+<blockquote>
+<p>📌 <strong>Đọc xong hai mươi bài này, thứ đáng mang đi không phải hai mươi thuật toán.</strong> Nhìn lại cả loạt, ba thói quen lặp đi lặp lại trong các bản máy mà không bản LeetCode nào có: <strong>(1) nhận thời gian từ ngoài</strong> thay vì gọi <code>DateTime.Now</code>, để kiểm thử được; <strong>(2) trả về <code>false</code>/<code>null</code> cho tình huống bình thường</strong>, chỉ ném cho tình huống bất thường; <strong>(3) đếm cả những thứ mình từ chối</strong> — số lần bị chặn, số khung hỏng, số lần thử lại. Ba thói quen đó không xuất hiện trong bất kỳ bài luyện thuật toán nào, nhưng chúng là thứ phân biệt một hàm chạy được với một hàm dùng được.</p>
 </blockquote>
 </div>
 </div>

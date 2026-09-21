@@ -128,6 +128,8 @@ Sách có 19 chương chia làm 6 phần. Bạn **không cần** đọc tuần t
 | **Lập trình viên C# mới vào ngành máy** | Chương 1 → **6** → 12 → 13 → 14 → 15, rồi quay lại 8/9/10 khi phải làm giao diện |
 | **Vừa được giao tiếp quản một máy đang chạy** | **Phụ lục B** (giải phẫu phần mềm máy — đọc trước tiên) → Chương 2 mục 2.4–2.5 (đọc code người khác) → 16 (nhận diện pattern trong mã cũ) → 19 (gỡ lỗi tại hiện trường) |
 | **Cần làm giao diện vận hành** | Chương 9 → 10 (ISA-101) → 15 mục 15.1 (cảnh báo) |
+| **Muốn học bằng cách gõ, không bằng cách đọc** | **Phụ lục G** (40 bài dựng nên một cỗ máy chạy được) → **Phụ lục I** (114 bài LeetCode lọc riêng cho lĩnh vực máy) — theo tỉ lệ tám phần G, hai phần I, lý do ở mục I.15 |
+| **Gặp một khái niệm hay pattern lạ** | **Phụ lục H** (là gì → vì sao tồn tại → dùng ở đâu → phân biệt với cái nào) |
 | **Đã biết nghề, tra cứu điểm cụ thể** | Mục lục tra cứu (Index) và Bảng thuật ngữ ở cuối sách |
 
 Chương 6 xuất hiện trong hầu hết các đường đọc là có lý do: nó là chương **chuyển đổi tư
@@ -40111,4 +40113,346 @@ Khi đang code và thấy một mùi khó chịu, tra bảng này trước: nó 
 
 > 📌 **Dòng in đậm là những mục chỉ có trong phụ lục này** — tức những triệu chứng mà trước đây sách
 > không có chỗ nào trả lời.
+
+<!-- SECTION: Phu_Luc_I_LeetCode -->
+---
+
+---
+
+# Phụ lục I: Một trăm bài LeetCode cho người lập trình máy
+
+Phụ lục G cho bạn bốn mươi bài **dựng nên một cỗ máy**. Phụ lục này khác hẳn về mục đích: 114 bài luyện **những mảnh thuật toán** mà phần mềm máy thật sự dùng — và chỉ những mảnh đó.
+
+> ✅ **Mọi số hiệu và tên bài trong phụ lục này đều lấy từ API công khai của LeetCode, không chép từ trí nhớ.** Danh sách ứng viên ban đầu có 174 bài; đối chiếu với dữ liệu thật thì 2 bài không tồn tại và đã bị loại. Còn lại 114 bài, trong đó **11 bài cần tài khoản trả phí** (đánh dấu 🔒). Cột cuối mỗi bảng là **phân tích của sách**, không phải đề bài.
+
+## I.0  Vì sao một người lập trình máy lại cần LeetCode — và cần tới đâu
+
+Nói thẳng trước: **phần lớn LeetCode vô dụng với phần mềm máy.** Quy hoạch động trên chuỗi, cây nhị phân tìm kiếm cân bằng, backtracking sinh hoán vị — bạn sẽ không gặp chúng trong mười năm viết phần mềm máy. Nếu bạn luyện LeetCode theo danh sách phỏng vấn của các công ty phần mềm, bạn đang tiêu thời gian vào đúng những thứ ít dùng nhất.
+
+Nhưng có một phần **rất** dùng được, và nó dùng được vì một lý do cụ thể:
+
+> 📌 **Phần mềm máy làm việc với DÒNG dữ liệu theo thời gian, và với LƯỚI toạ độ.** Cảm biến sinh ra một dòng số; trạm sinh ra một dòng sự kiện; khay là một lưới; ảnh kiểm là một lưới. Hai hình dạng đó chiếm gần hết công việc thuật toán thật của một cỗ máy — và LeetCode có rất nhiều bài về đúng hai hình dạng đó.
+
+Phụ lục này lọc lấy đúng phần đó, chia làm mười bốn nhóm, mỗi nhóm nối với mục tương ứng trong sách. Ba mức dùng:
+
+| Bạn đang ở đâu | Làm gì với phụ lục này |
+|---|---|
+| Mới học C#, chưa viết máy | Làm hết các bài **Dễ** của N1, N4, N6, N7, N13 — chúng dạy đúng những cấu trúc dữ liệu Chương 3 nhắc tới |
+| Đang viết máy, muốn chắc tay | Làm **toàn bộ N1–N5 và N14**. Đây là năm nhóm bạn sẽ đụng trong tháng tới, không phải trong mười năm tới |
+| Muốn đi sâu | Thêm N9 (khoá chết), N11 (tìm nhị phân trên đáp án), N12 (lập lịch) — ba nhóm trả lời những câu hỏi mà một cỗ máy tám trạm bắt buộc phải trả lời |
+
+> ⚠️ **Đọc mục I.15 trước khi bắt đầu.** Nó liệt kê những thứ LeetCode **không** dạy được, và danh sách đó dài hơn danh sách nó dạy được. Luyện thuật toán mà tưởng mình đang học viết phần mềm máy là hiểu nhầm tốn thời gian nhất mà phụ lục này có thể gây ra.
+
+## I.1  Cửa sổ trượt — lọc tín hiệu cảm biến
+
+Mọi kênh đo đều ồn. Nhóm này là nền của mục G.2.5 và của mọi bộ lọc bạn sẽ viết: trung bình trượt, trung vị trượt, và câu hỏi khó nhất — *giữ bao nhiêu mẫu thì đủ*.
+
+**Liên hệ trong sách:** mục G.2.5, 16.1.4.
+
+**Bảng I.1 — Cửa sổ trượt — lọc tín hiệu cảm biến (10 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 346 | Moving Average from Data Stream 🔒 | Dễ | Trung bình trượt cho một kênh đo — đúng bài G.2.5 |
+| 643 | Maximum Average Subarray I | Dễ | Cửa sổ cố định: nhiệt độ trung bình trong 10 giây gần nhất |
+| 933 | Number of Recent Calls | Dễ | Đếm sự kiện trong cửa sổ thời gian — nền của chống lũ cảnh báo (15.1.7) |
+| 209 | Minimum Size Subarray Sum | TB | Cửa sổ co giãn: bao nhiêu mẫu liên tiếp thì đủ để kết luận |
+| 1004 | Max Consecutive Ones III | TB | Chuỗi dài nhất còn “đạt” khi cho phép k mẫu lỗi — bỏ nhiễu đơn lẻ |
+| 1438 | Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit | TB | Đoạn dài nhất mà biên độ dao động không vượt ngưỡng — phát hiện rung |
+| 239 | Sliding Window Maximum | Khó | Đỉnh/đáy trong cửa sổ trượt bằng hàng đợi đơn điệu — giám sát ngưỡng tức thời |
+| 480 | Sliding Window Median | Khó | Trung vị trượt — lọc gai nhiễu tốt hơn trung bình |
+| 295 | Find Median from Data Stream | Khó | Trung vị của cả dòng dữ liệu, không giữ hết mẫu |
+| 862 | Shortest Subarray with Sum at Least K | Khó | Cửa sổ ngắn nhất đạt tổng — thời gian ngắn nhất tích đủ liều/đủ lực |
+
+## I.2  Ngăn xếp / hàng đợi đơn điệu — đỉnh, đáy và ngưỡng
+
+Câu “áp suất có tụt dưới ngưỡng trong 30 giây qua không” chính là bài tìm min trong cửa sổ trượt. Làm sai thì mỗi lần hỏi lại quét cả cửa sổ; làm đúng thì O(1) khấu hao.
+
+**Liên hệ trong sách:** mục 15.1.6, mô-đun Analog.
+
+**Bảng I.2 — Ngăn xếp / hàng đợi đơn điệu — đỉnh, đáy và ngưỡng (8 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 496 | Next Greater Element I | Dễ | Giá trị lớn kế tiếp — nền của mọi bài ngăn xếp đơn điệu |
+| 155 | Min Stack | TB | Lấy min trong O(1) — giữ đáy áp suất phiên hiện tại |
+| 739 | Daily Temperatures | TB | Bao lâu nữa thì vượt giá trị hiện tại — dự báo chạm ngưỡng |
+| 901 | Online Stock Span | TB | Chuỗi liên tiếp không vượt mức hiện tại — độ dài một trạng thái ổn định |
+| 907 | Sum of Subarray Minimums | TB | Tổng cực tiểu mọi đoạn con — thống kê đáy theo mọi khung thời gian |
+| 1425 | Constrained Subsequence Sum | Khó | Tối ưu có ràng buộc khoảng cách — chọn mẫu cách nhau tối thiểu k |
+| 84 | Largest Rectangle in Histogram | Khó | Hình chữ nhật lớn nhất — vùng ổn định rộng nhất dưới một đường bao |
+| 42 | Trapping Rain Water | Khó | Lượng nước giữ lại — thể tích dưới đường bao, dùng cho phân tích biên dạng |
+
+## I.3  Khoảng thời gian — lịch trạm, bảo trì, chồng lấn
+
+Bất cứ khi nào hai thứ không được dùng cùng một tài nguyên cùng lúc, bạn đang giải một bài khoảng. Xếp lịch bảo trì, đặt đồ gá, tính số trạm song song cần thiết.
+
+**Liên hệ trong sách:** mục 16.3, G.13.
+
+**Bảng I.3 — Khoảng thời gian — lịch trạm, bảo trì, chồng lấn (10 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 56 | Merge Intervals | TB | Gộp khoảng chồng lấn — gộp cửa sổ bảo trì, gộp ca chạy |
+| 57 | Insert Interval | TB | Chèn một khoảng vào lịch đã sắp — đặt thêm một lần dừng máy |
+| 435 | Non-overlapping Intervals | TB | Bỏ ít khoảng nhất để hết chồng lấn — xếp lịch bảo trì không đụng nhau |
+| 986 | Interval List Intersections | TB | Giao của hai lịch — khoảng thời gian cả hai trạm cùng rảnh |
+| 252 | Meeting Rooms 🔒 | Dễ | Có chồng lấn không — kiểm tra nhanh xung đột tài nguyên |
+| 253 | Meeting Rooms II 🔒 | TB | Cần bao nhiêu tài nguyên song song — bao nhiêu trạm/đồ gá là đủ |
+| 729 | My Calendar I | TB | Đặt chỗ có từ chối — cấp phát tài nguyên độc quyền theo thời gian |
+| 1094 | Car Pooling | TB | Sức chứa theo thời gian — băng tải/khay có quá tải lúc nào không |
+| 1109 | Corporate Flight Bookings | TB | Cộng dồn trên khoảng bằng mảng hiệu — cập nhật kế hoạch theo lô |
+| 218 | The Skyline Problem | Khó | Đường bao trên của nhiều khoảng — biểu đồ tải theo thời gian |
+
+## I.4  Thiết kế cấu trúc — bộ đệm vòng, giới hạn tốc độ, ảnh chụp
+
+Đây là nhóm **giống việc thật nhất** trong cả phụ lục: đề bài đưa cho bạn một *hợp đồng* và bắt bạn chọn cấu trúc dữ liệu bên trong — đúng việc bạn làm khi viết một lớp thiết bị.
+
+**Liên hệ trong sách:** mục G.6.5, 15.1.7, 5.4.
+
+**Bảng I.4 — Thiết kế cấu trúc — bộ đệm vòng, giới hạn tốc độ, ảnh chụp (10 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 622 | Design Circular Queue | TB | Bộ đệm vòng — cấu trúc nền của mọi vùng đệm dữ liệu thời gian thực |
+| 641 | Design Circular Deque | TB | Bộ đệm vòng hai đầu — cửa sổ trượt cần bỏ cả hai phía |
+| 1670 | Design Front Middle Back Queue | TB | Hàng đợi có thao tác giữa — chèn lệnh ưu tiên vào giữa hàng lệnh |
+| 146 | LRU Cache | TB | Loại bỏ theo “ít dùng gần đây” — bộ nhớ đệm ảnh/công thức có hạn |
+| 460 | LFU Cache | Khó | Loại bỏ theo tần suất — giữ lại công thức hay dùng nhất |
+| 359 | Logger Rate Limiter 🔒 | Dễ | Chặn lặp trong cửa sổ thời gian — đúng bài chống lũ cảnh báo (15.1.7) |
+| 362 | Design Hit Counter 🔒 | TB | Đếm lượt trong 5 phút gần nhất — nhịp sản xuất tức thời |
+| 1188 | Design Bounded Blocking Queue 🔒 | TB | Hàng đợi chặn có giới hạn — mẫu producer–consumer của mục 5.4 |
+| 981 | Time Based Key-Value Store | TB | Tra giá trị theo mốc thời gian — “lúc 14:32 thông số là bao nhiêu” |
+| 1146 | Snapshot Array | TB | Ảnh chụp trạng thái theo phiên bản — lịch sử thay đổi công thức |
+
+## I.5  Phân tích chuỗi và máy trạng thái — tách khung giao thức
+
+Mục 14.1.7b nói tách khung là chỗ sai nhiều nhất khi đọc cổng nối tiếp. Nhóm này là phòng tập cho đúng kỹ năng đó: đọc một dòng ký tự và quyết định từng bước mà không lùi lại được.
+
+**Liên hệ trong sách:** mục 14.1.7b, G.2.3.
+
+**Bảng I.5 — Phân tích chuỗi và máy trạng thái — tách khung giao thức (9 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 20 | Valid Parentheses | Dễ | Khớp cặp bằng ngăn xếp — nền của mọi bộ phân tích khung có lồng nhau |
+| 8 | String to Integer (atoi) | TB | Phân tích số từ chuỗi có rác — đúng việc đọc một trường từ khung thiết bị |
+| 394 | Decode String | TB | Giải mã chuỗi có lồng nhau — khung dữ liệu có cấu trúc phân cấp |
+| 93 | Restore IP Addresses | TB | Chia chuỗi theo ràng buộc dải giá trị — kiểm định dạng địa chỉ trong cấu hình |
+| 227 | Basic Calculator II | TB | Máy phân tích biểu thức — nền cho công thức tính trong recipe |
+| 65 | Valid Number | Khó | Kiểm một chuỗi có phải số hợp lệ — bài học máy trạng thái rõ nhất của LeetCode |
+| 224 | Basic Calculator | Khó | Phân tích biểu thức có ngoặc — biểu thức điều kiện trong cấu hình |
+| 32 | Longest Valid Parentheses | Khó | Đoạn khớp hợp lệ dài nhất — phục hồi sau khi dòng byte bị lệch khung |
+| 68 | Text Justification | Khó | Ngắt dòng có ràng buộc — dàn chữ cho nhãn in và báo cáo |
+
+## I.6  Thao tác bit — thanh ghi trạng thái và checksum
+
+Một thanh ghi trạng thái trục là một con số 16 bit. Checksum XOR ở mục G.2.4 là bài 136 khoác áo khác. Và mã Gray ở bài 89 thì encoder tuyệt đối dùng thật.
+
+**Liên hệ trong sách:** mục H.7, G.2.4, 14.1.2.
+
+**Bảng I.6 — Thao tác bit — thanh ghi trạng thái và checksum (8 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 191 | Number of 1 Bits | Dễ | Đếm bit bật — đếm số tín hiệu đang tích cực trong một thanh ghi |
+| 338 | Counting Bits | Dễ | Đếm bit cho cả dải — dựng bảng tra trạng thái |
+| 136 | Single Number | Dễ | XOR khử cặp — nền của checksum XOR ở mục G.2.4 |
+| 190 | Reverse Bits | Dễ | Đảo bit — đổi thứ tự bit giữa hai hãng thiết bị |
+| 137 | Single Number II | TB | Đếm bit theo nhóm ba — bộ đếm bit tổng quát hoá |
+| 201 | Bitwise AND of Numbers Range | TB | AND cả dải — tìm phần bit chung của một khoảng địa chỉ |
+| 89 | Gray Code | TB | Mã Gray — mã encoder tuyệt đối thật sự dùng mã này |
+| 78 | Subsets | TB | Sinh mọi tổ hợp bằng mặt nạ bit — duyệt mọi tổ hợp cờ trạng thái |
+
+## I.7  Ma trận và lưới — bản đồ khay, định hướng phôi
+
+Máy làm việc với khay là máy làm việc với ma trận. Đổi chỉ số một chiều sang hai chiều, xoay khay 90°, đánh dấu cả hàng khi phát hiện lỗi hệ thống — tất cả có trong nhóm này.
+
+**Liên hệ trong sách:** mục 13.4.6.
+
+**Bảng I.7 — Ma trận và lưới — bản đồ khay, định hướng phôi (10 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 867 | Transpose Matrix | Dễ | Chuyển vị — đổi hệ toạ độ khay giữa hai cách đánh số |
+| 1572 | Matrix Diagonal Sum | Dễ | Tổng đường chéo — kiểm tra nhanh một ma trận hiệu chỉnh |
+| 566 | Reshape the Matrix | Dễ | Đổi hình dạng mảng — chuyển danh sách vị trí thành lưới khay |
+| 2022 | Convert 1D Array Into 2D Array | Dễ | Một chiều thành hai chiều — đúng phép đổi chỉ số khay của mục 13.4.6 |
+| 48 | Rotate Image | TB | Xoay ma trận tại chỗ — phôi đặt xoay 90°, bản đồ khay phải xoay theo |
+| 54 | Spiral Matrix | TB | Duyệt xoắn ốc — thứ tự gắp theo đường xoắn để giảm quãng đường |
+| 73 | Set Matrix Zeroes | TB | Đánh dấu cả hàng và cột — loại cả hàng/cột khay khi phát hiện lỗi hệ thống |
+| 498 | Diagonal Traverse | TB | Duyệt chéo — thứ tự quét đầu đo theo đường chéo |
+| 289 | Game of Life | TB | Cập nhật đồng thời theo hàng xóm — phải đọc trạng thái CŨ, đúng bẫy vòng quét |
+| 74 | Search a 2D Matrix | TB | Tìm nhị phân trên lưới — tra bảng hiệu chỉnh hai chiều |
+
+## I.8  Loang vùng và đường đi trên lưới — xử lý ảnh kiểm, dẫn đường
+
+Đếm số khuyết tật trên một tấm, đo diện tích vết lớn nhất, phân biệt vết trong lòng với vết chạm biên — đó là loang vùng. Dẫn đường gắp tránh vật cản là đường ngắn nhất trên lưới.
+
+**Liên hệ trong sách:** mục 13.4.2, 13.4.3.
+
+**Bảng I.8 — Loang vùng và đường đi trên lưới — xử lý ảnh kiểm, dẫn đường (8 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 733 | Flood Fill | Dễ | Loang vùng — khoanh một vết lỗi trên ảnh kiểm |
+| 200 | Number of Islands | TB | Đếm vùng rời nhau — đếm số khuyết tật tách biệt trên một tấm |
+| 695 | Max Area of Island | TB | Diện tích vùng lớn nhất — kích thước khuyết tật lớn nhất, so với ngưỡng loại |
+| 994 | Rotting Oranges | TB | Loang theo lớp thời gian — lan truyền theo nhịp, mô hình một quá trình lan |
+| 542 | 01 Matrix | TB | Khoảng cách tới điểm gần nhất — khoảng cách từ mỗi điểm tới vùng an toàn |
+| 286 | Walls and Gates 🔒 | TB | Khoảng cách tới cổng gần nhất — đường ngắn nhất tới vị trí xả phôi |
+| 130 | Surrounded Regions | TB | Vùng bị bao kín — phân biệt khuyết tật trong lòng với khuyết tật chạm biên |
+| 1091 | Shortest Path in Binary Matrix | TB | Đường ngắn nhất trên lưới — dẫn đường gắp tránh vật cản |
+
+## I.9  Đồ thị và thứ tự — phụ thuộc trạm, khoá chết
+
+Tám trạm chờ nhau bằng bảng cờ thì câu hỏi *“có bao giờ chúng chờ vòng tròn không”* chính là bài phát hiện chu trình. Đây là nhóm trả lời được câu hỏi mà mục 16.3.4 nêu ra.
+
+**Liên hệ trong sách:** mục 16.3.4, 12.
+
+**Bảng I.9 — Đồ thị và thứ tự — phụ thuộc trạm, khoá chết (8 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 207 | Course Schedule | TB | Có chu trình phụ thuộc không — phát hiện khoá chết giữa các trạm |
+| 210 | Course Schedule II | TB | Thứ tự thực hiện hợp lệ — thứ tự khởi động/về gốc các trạm |
+| 802 | Find Eventual Safe States | TB | Nút an toàn — trạng thái nào chắc chắn dẫn tới kết thúc, không kẹt vòng |
+| 310 | Minimum Height Trees | TB | Tâm đồ thị — chọn trạm đặt bộ điều phối để đường liên lạc ngắn nhất |
+| 743 | Network Delay Time | TB | Thời gian lan tín hiệu — bao lâu thì mọi trạm nhận được lệnh dừng |
+| 787 | Cheapest Flights Within K Stops | TB | Đường rẻ nhất có giới hạn số chặng — định tuyến có ràng buộc |
+| 261 | Graph Valid Tree 🔒 | TB | Đồ thị có phải cây — kiểm cấu hình liên kết trạm không có vòng |
+| 269 | Alien Dictionary 🔒 | Khó | Suy thứ tự từ các quan sát rời rạc — dựng thứ tự bước từ nhật ký |
+
+## I.10  Mô phỏng chuyển động và robot
+
+Bài 1041 hỏi một chuỗi lệnh lặp lại có trôi vị trí không — đúng câu hỏi về tích luỹ sai số qua nhiều chu kỳ. Bài 874 là khung của một bài mô phỏng chuyển động có vật cản.
+
+**Liên hệ trong sách:** mục G.4, 13.2.6.
+
+**Bảng I.10 — Mô phỏng chuyển động và robot (6 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 657 | Robot Return to Origin | Dễ | Chuỗi lệnh có về gốc không — kiểm tra một chu trình khép kín |
+| 1041 | Robot Bounded In Circle | TB | Chuỗi lệnh lặp có trôi vị trí không — phát hiện tích luỹ sai số qua chu kỳ |
+| 874 | Walking Robot Simulation | TB | Mô phỏng robot có vật cản — đúng khung một bài mô phỏng chuyển động |
+| 64 | Minimum Path Sum | TB | Đường đi rẻ nhất trên lưới — tối ưu quãng đường gắp |
+| 63 | Unique Paths II | TB | Đường đi có vật cản — vùng cấm trong không gian làm việc |
+| 752 | Open the Lock | TB | Tìm kiếm theo lớp trên không gian trạng thái — dò tổ hợp cài đặt hợp lệ |
+
+## I.11  Tìm kiếm nhị phân — tra bảng hiệu chỉnh và chia tải
+
+Nửa đầu là tra bảng hiệu chỉnh. Nửa sau là kỹ thuật **tìm nhị phân trên đáp án** — thứ giải được cả lớp bài “ít nhất bao nhiêu thì kịp”, mà rất nhiều người chưa từng gặp.
+
+**Liên hệ trong sách:** mục 13.4.7.
+
+**Bảng I.11 — Tìm kiếm nhị phân — tra bảng hiệu chỉnh và chia tải (8 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 704 | Binary Search | Dễ | Tìm nhị phân chuẩn — nền của mọi bài tra bảng hiệu chỉnh |
+| 35 | Search Insert Position | Dễ | Vị trí chèn — tra bảng hiệu chỉnh rồi nội suy giữa hai điểm |
+| 34 | Find First and Last Position of Element in Sorted Array | TB | Biên trái/phải của một giá trị — tìm dải mẫu cùng một mức |
+| 162 | Find Peak Element | TB | Tìm đỉnh cục bộ — dò đỉnh trên đường cong đo |
+| 875 | Koko Eating Bananas | TB | Tìm nhị phân trên ĐÁP ÁN — tốc độ tối thiểu để kịp nhịp |
+| 1011 | Capacity To Ship Packages Within D Days | TB | Sức chứa tối thiểu để xong trong D ngày — cỡ khay/lô tối thiểu |
+| 410 | Split Array Largest Sum | Khó | Chia mảng sao cho tổng lớn nhất nhỏ nhất — chia tải giữa các trạm |
+| 774 | Minimize Max Distance to Gas Station 🔒 | Khó | Cực tiểu hoá khoảng cách lớn nhất — đặt điểm đo sao cho khoảng hở đều nhất |
+
+## I.12  Hàng đợi ưu tiên và lập lịch tác vụ
+
+Hàng lệnh thiết bị ở mục 16.2 là một bài lập lịch. Gộp nhật ký nhiều trạm theo mốc thời gian là trộn k dòng đã sắp. Báo cáo Pareto mã lỗi là bài “k phần tử hay gặp nhất”.
+
+**Liên hệ trong sách:** mục 16.2, G.6.4.
+
+**Bảng I.12 — Hàng đợi ưu tiên và lập lịch tác vụ (7 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 703 | Kth Largest Element in a Stream | Dễ | Giữ k lớn nhất của một dòng — k lần đo tệ nhất trong ca |
+| 347 | Top K Frequent Elements | TB | k phần tử hay gặp nhất — k mã lỗi hay gặp nhất, đúng báo cáo Pareto |
+| 621 | Task Scheduler | TB | Xếp lịch có thời gian nghỉ bắt buộc — nguội khuôn, chờ keo khô |
+| 1834 | Single-Threaded CPU | TB | Một bộ xử lý, hàng đợi ưu tiên theo thời điểm sẵn sàng — hàng lệnh của mục 16.2 |
+| 1882 | Process Tasks Using Servers | TB | Nhiều máy chủ, gán tác vụ cho máy rảnh sớm nhất — nhiều trạm song song |
+| 23 | Merge k Sorted Lists | Khó | Trộn k dòng đã sắp — gộp nhật ký từ nhiều trạm theo mốc thời gian |
+| 871 | Minimum Number of Refueling Stops | Khó | Ít lần tiếp liệu nhất — ít lần nạp vật tư nhất để chạy hết lô |
+
+## I.13  Tổng tiền tố — thống kê sản xuất
+
+Câu “từ 8 giờ tới 14 giờ làm được bao nhiêu” trả lời trong O(1) nếu bạn giữ tổng tiền tố, và trong O(n) nếu không. Với bảng dữ liệu ca thì khác biệt đó nhìn thấy được trên màn hình.
+
+**Liên hệ trong sách:** mục G.6.4, 13.4.8.
+
+**Bảng I.13 — Tổng tiền tố — thống kê sản xuất (7 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 303 | Range Sum Query - Immutable | Dễ | Tổng tiền tố — tổng sản lượng giữa hai mốc trong O(1) |
+| 1480 | Running Sum of 1d Array | Dễ | Tổng luỹ tiến — biểu đồ sản lượng cộng dồn theo giờ |
+| 238 | Product of Array Except Self | TB | Tích trừ chính nó — chuẩn hoá một kênh theo các kênh còn lại |
+| 560 | Subarray Sum Equals K | TB | Đếm đoạn có tổng bằng k — đếm lần đạt một mức tích luỹ |
+| 525 | Contiguous Array | TB | Đoạn cân bằng dài nhất — khoảng thời gian tỉ lệ đạt/lỗi cân bằng |
+| 974 | Subarray Sums Divisible by K | TB | Đoạn chia hết cho k — chu kỳ lặp trong dữ liệu sản xuất |
+| 307 | Range Sum Query - Mutable | TB | Tổng đoạn khi dữ liệu còn thay đổi — thống kê trên dữ liệu đang chạy |
+
+## I.14  Đồng thời — nhóm bài Concurrency của LeetCode
+
+Nhóm duy nhất trên LeetCode dạy đúng thứ phần mềm máy cần hằng ngày: ép thứ tự giữa các luồng. Bài 1114 chính là “trạm B phải chờ trạm A”; bài 1226 là khoá chết kinh điển.
+
+**Liên hệ trong sách:** mục 5.3, 5.4, 16.3.
+
+**Bảng I.14 — Đồng thời — nhóm bài Concurrency của LeetCode (5 bài)**
+
+| # | Bài | Độ khó | Dùng vào việc gì trong máy |
+|---|---|---|---|
+| 1114 | Print in Order | Dễ | Ép thứ tự giữa ba luồng — đúng bài “trạm B phải chờ trạm A” |
+| 1115 | Print FooBar Alternately | TB | Hai luồng luân phiên — bắt tay hai chiều giữa hai trạm |
+| 1117 | Building H2O | TB | Rào đồng bộ theo nhóm — chờ đủ n phôi mới cho chạy mẻ |
+| 1226 | The Dining Philosophers | TB | Khoá chết kinh điển — đúng bài tranh tài nguyên giữa các trạm |
+| 1279 | Traffic Light Controlled Intersection 🔒 | Dễ | Điều phối truy cập độc quyền theo hướng — giao cắt băng tải |
+## I.15  Điều LeetCode KHÔNG dạy — và danh sách này dài hơn danh sách nó dạy
+
+Một trăm mười bốn bài ở trên luyện được **lõi thuật toán**. Chúng không luyện được gì khác, và
+biết trước điều đó sẽ tránh cho bạn một hiểu nhầm tốn hàng tháng.
+
+**Bảng I.15 — Bảy thứ quyết định chất lượng phần mềm máy mà không bài LeetCode nào chạm tới**
+
+| LeetCode luôn giả định | Trong máy thật | Sách nói ở đâu |
+|---|---|---|
+| Dữ liệu vào **đúng định dạng** và có sẵn | Khung tới từng mảnh, có khi nửa khung, có khi rác | 14.1.7b |
+| Hàm **trả về ngay** | Lời gọi thiết bị mất 3 giây, hoặc treo mãi | G.4.1, G.14.5 |
+| Không có gì **hỏng giữa chừng** | Cáp rụng, PLC khởi động lại, khí yếu lúc cao điểm | 13.3.5, 15.2.6 |
+| Chương trình **chạy xong rồi thoát** | Chạy 20 tiếng/ngày, 300 ngày/năm; rò rỉ mới lộ ra | G.13.5 |
+| Không có **trạng thái sống lâu hơn tiến trình** | Công thức, điểm dạy, số liệu ca phải sống qua cập nhật | G.12 |
+| Một luồng, không ai **tranh** gì | Nhiều trạm chạy song song, tranh tài nguyên | 5.3, 16.3 |
+| Sai thì **kết quả sai** | Sai thì **trục đâm** | 15.2, R01 |
+
+Dòng cuối là dòng quan trọng nhất, và nó không phải chuyện tu từ. Trên LeetCode, một thuật toán
+đúng nhưng chậm thì "Time Limit Exceeded" và bạn thử lại. Trên máy, một thuật toán đúng nhưng chậm
+là một chu kỳ trượt nhịp; một thuật toán đúng nhưng không xử lý được dữ liệu vào bẩn là một lần
+dừng máy lúc hai giờ sáng; và một thuật toán đúng nhưng không có đường lùi là mục G.14.5.
+
+> 📌 **Tỉ lệ đúng giữa hai loại luyện tập.** Nếu bạn có mười giờ rảnh: dùng **hai giờ** cho phụ lục
+> này và **tám giờ** cho Phụ lục G. Lý do không phải vì thuật toán không quan trọng, mà vì phần
+> thuật toán của phần mềm máy **nhỏ hơn người ta tưởng rất nhiều** — phần lớn thời gian viết máy
+> là dựng ranh giới, xử lý lỗi, và làm cho thứ chạy được lúc 2 giờ sáng. Đợt kiểm ngược ở mục G.14
+> đo được điều đó theo một cách khác: không một bất biến nào trong mười bất biến làm mười ba dự án
+> thật trượt là bất biến **thuật toán** — tất cả đều là bất biến về **hình dạng và kỷ luật**.
+
+## I.16  Vài lưu ý khi luyện bằng C#
+
+Ba điều khiến người viết C# mất điểm oan trên LeetCode, và cả ba đều là thói quen tốt cho việc thật:
+
+1. **Đừng dùng LINQ trong vòng nóng của lời giải.** Chương 4 mục 4.6 đã nói lý do; trên LeetCode nó
+   hiện ra thành "Time Limit Exceeded" trên đúng những bài mà thuật toán của bạn vốn đã đúng.
+   Đây là chỗ hiếm hoi LeetCode dạy được một bài học thật.
+2. **`int` tràn ở bài 8 và các bài cộng dồn.** `checked`/`long` là bạn. Trong máy, cùng lỗi đó xuất
+   hiện ở bộ đếm sản lượng chạy liên tục nhiều tháng.
+3. **`List<T>.Find`/`Exists` thay cho LINQ `FirstOrDefault`/`Any`** — quy ước của sách (Chương 3),
+   và trên LeetCode nó nhanh hơn thật.
+
+> 💡 **Một cách luyện đáng giá gấp đôi:** giải xong một bài, hãy hỏi *"phiên bản máy của bài này là
+> gì, và nó khác ở chỗ nào"*. Ví dụ bài 239 (cửa sổ trượt lấy max) trên LeetCode nhận cả mảng một
+> lúc; phiên bản máy nhận **từng mẫu một, mãi mãi, và phải trả lời ngay**. Chuyển từ bản LeetCode
+> sang bản máy chính là bài G.2.5 — và chỗ khác nhau giữa hai bản là chỗ đáng học nhất.
 

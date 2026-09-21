@@ -37,34 +37,62 @@ public sealed class ChuyenDong
                 string.Format(CultureInfo.InvariantCulture,
                     "{0} nằm ngoài hành trình [{1}; {2}]", viTriMm, _gioiHanDuoiMm, _gioiHanTrenMm));
 
-        using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        cts.CancelAfter(_hanGioMs);
-
-        try
-        {
-            await _truc.DiToiAsync(viTriMm, cts.Token).ConfigureAwait(false);
-        }
-        // Bộ lọc này là thứ phân biệt NGƯỜI BẤM DỪNG với THIẾT BỊ HẾT GIỜ.
-        // Thiếu nó: mỗi lần bấm Dừng máy lại đẻ ra một cảnh báo giả.
-        catch (OperationCanceledException) when (!ct.IsCancellationRequested)
-        {
-            throw new AlarmException(MaCanhBao.TrucQuaThoiGian, _truc.Ten,
-                string.Format(CultureInfo.InvariantCulture,
-                    "quá {0} ms khi đi tới {1:F1} mm", _hanGioMs, viTriMm));
-        }
+        await ChoHoacDungAsync(
+            huy => _truc.DiToiAsync(viTriMm, huy),
+            string.Format(CultureInfo.InvariantCulture,
+                "quá {0} ms khi đi tới {1:F1} mm", _hanGioMs, viTriMm),
+            ct).ConfigureAwait(false);
     }
 
     public async Task VeGocAsync(CancellationToken ct = default)
     {
+        await ChoHoacDungAsync(
+            huy => _truc.VeGocAsync(huy),
+            $"quá {_hanGioMs} ms khi về gốc",
+            ct).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Chờ một lệnh chuyển động, và nếu quá hạn giờ thì <b>RA LỆNH DỪNG</b> rồi mới báo lỗi.
+    /// </summary>
+    /// <remarks>
+    /// Vì sao không chỉ dùng <c>CancelAfter</c>: nó chỉ có tác dụng khi bên được gọi
+    /// <i>chịu nhìn</i> token. Phần lớn SDK hãng gọi qua P/Invoke thì không — huỷ token
+    /// khi đó <b>không làm gì cả</b>, kể cả người gọi cũng không thoát sớm. Đợt kiểm ngược
+    /// ở mục G.14 phát hiện chính bản mẫu này từng mắc lỗi đó, và bản giả lập "ngoan" đã
+    /// che nó suốt bốn mươi bài.
+    ///
+    /// Vẫn truyền token xuống dưới, để thiết bị NÀO hợp tác thì dừng sớm hơn.
+    /// </remarks>
+    private async Task ChoHoacDungAsync(Func<CancellationToken, Task> lenh, string moTaQuaGio,
+                                        CancellationToken ct)
+    {
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
         cts.CancelAfter(_hanGioMs);
+
+        Task viec = lenh(cts.Token);
+        // Hạn giờ đo bằng đồng hồ của CHÍNH mình, không nhờ bên kia tự báo.
+        Task hetGio = Task.Delay(_hanGioMs, CancellationToken.None);
+
+        if (await Task.WhenAny(viec, hetGio).ConfigureAwait(false) != viec)
+        {
+            // Hết giờ mà lệnh chưa xong. Thôi chờ KHÔNG làm trục dừng — phải nói thêm câu này.
+            await _truc.DungAsync(CancellationToken.None).ConfigureAwait(false);
+
+            // Người bấm Dừng thì không phải lỗi thiết bị — đừng đẻ ra cảnh báo giả.
+            ct.ThrowIfCancellationRequested();
+            throw new AlarmException(MaCanhBao.TrucQuaThoiGian, _truc.Ten, moTaQuaGio);
+        }
+
         try
         {
-            await _truc.VeGocAsync(cts.Token).ConfigureAwait(false);
+            await viec.ConfigureAwait(false);       // quan sát ngoại lệ của chính lệnh
         }
         catch (OperationCanceledException) when (!ct.IsCancellationRequested)
         {
-            throw new AlarmException(MaCanhBao.TrucQuaThoiGian, _truc.Ten, $"quá {_hanGioMs} ms khi về gốc");
+            // Thiết bị CÓ hợp tác và đã tự dừng theo token — vẫn ra lệnh dừng cho chắc.
+            await _truc.DungAsync(CancellationToken.None).ConfigureAwait(false);
+            throw new AlarmException(MaCanhBao.TrucQuaThoiGian, _truc.Ten, moTaQuaGio);
         }
     }
 }

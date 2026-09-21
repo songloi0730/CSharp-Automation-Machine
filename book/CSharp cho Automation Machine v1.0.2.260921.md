@@ -38050,8 +38050,8 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 
 Mục G.9 nêu mười hai bài xương sống; **cả bốn mươi bài nay đều có lời giải chạy được**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
 lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
-`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **485/485 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở
-G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H).
+`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **494/494 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở
+G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H).
 
 ### G.10.0  Chạy thử từng phần, không đợi làm xong hết
 
@@ -38060,13 +38060,14 @@ không biết hỏng ở đâu. Bộ tự kiểm cho phép **chạy lẻ từng 
 
 ```bash
 cd source/MeoBench
-dotnet run                 # tất cả — 485 phép kiểm
+dotnet run                 # tất cả — 494 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
 dotnet run -- G7           # nhóm giao diện — 42 phép kiểm
 dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
+dotnet run -- G14          # kiểm ngược: đối chiếu bất biến với mã thật — 9 phép kiểm
 dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H) — 27 phép kiểm
 dotnet run -- G13          # năng lực vận hành máy thật — 68 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
@@ -38948,6 +38949,233 @@ không ai nhầm:
 > xuất tách ngược được, cảnh báo báo một lần — trong một môi trường mà **sai thì chỉ tốn một phép
 > kiểm đỏ**, chứ không tốn một trục đâm. Khoảng cách còn lại giữa nó và máy thật không phải là thứ
 > đọc sách lấp được; nó là thứ chỉ có đứng cạnh máy mới lấp được.
+
+---
+
+## G.14  Kiểm ngược — đem phép kiểm của sách chạy lên mã máy thật
+
+Mục G.13 hỏi *"bản mẫu còn thiếu năng lực gì so với máy thật"*. Mục này hỏi câu ngược lại, và
+nó khó chịu hơn nhiều:
+
+> **Những hàm trong mười ba phần mềm máy thật có qua nổi các phép kiểm của bản mẫu không?**
+
+Câu trả lời ngắn: **phần lớn không — nhưng gần như không phải vì mã thật tệ.** Lý do đằng sau
+mới là thứ đáng đọc, và một trong số đó đã bắt được một lỗi trong chính bản mẫu này.
+
+### G.14.1  Cách làm, và giới hạn của nó
+
+Chọn **mười bất biến** mà bản mẫu khẳng định, mỗi cái ứng với một phép kiểm có thật trong
+`source/MeoBench`, rồi viết bộ dò tĩnh quét toàn bộ mã nguồn mười ba dự án.
+
+> ⚠️ **Nói trước giới hạn, vì nó lớn.** Đây là **phân tích tĩnh bằng biểu thức tìm kiếm**, không
+> phải chạy phép kiểm thật (mã thật không biên dịch được ngoài môi trường của nó, và phần lớn cần
+> phần cứng). Nên mỗi con số dưới đây là **dấu hiệu**, không phải bản án. Mục G.14.4 kể chuyện một
+> bộ dò trong số đó đã sai gần như hoàn toàn — và vì sao chuyện đó đáng kể lại.
+
+### G.14.2  Kết quả
+
+**Bảng G.7 — Mười bất biến của bản mẫu, đối chiếu mười ba dự án thật**
+
+| Mã | Bất biến bản mẫu khẳng định | Dự án đạt | Vì sao |
+|---|---|---|---|
+| RT-1 | Mọi lời gọi thiết bị có hạn giờ | **2/13** | ⓝ hình dạng |
+| RT-2 | Method async nhận `CancellationToken` | **0/13** | ⓝ hình dạng |
+| RT-3 | Cấu hình hỏng → chạy bằng dự phòng | **3/13** | ⓕ trượt thật |
+| RT-4 | Cấu hình sống sót qua cập nhật | **3/13** | ⓕ trượt thật |
+| RT-5 | Số ghi ra file không lệ thuộc máy | **4/13** | ⓕ trượt thật |
+| RT-6 | Phần mềm chỉ **đọc** tín hiệu an toàn | **13/13** | ⓧ *bộ dò của tôi sai* |
+| RT-7 | Điểm dạy kiểm theo hành trình lúc nạp | **8/13** | ⓟ đạt |
+| RT-8 | Nhật ký có cấu trúc, tra được | **0/13** | ⓕ trượt thật |
+| RT-9 | Phân biệt dừng chủ ý với lỗi thật | **0/13** | ⓝ hình dạng |
+| RT-10 | Số liệu ca sống sót khởi động lại | **13/13** | ⓟ đạt |
+
+Bốn nhóm nguyên nhân, xếp theo mức đáng suy nghĩ giảm dần: **ⓝ** không áp được vì hình dạng kiến
+trúc · **ⓕ** áp được và trượt thật · **ⓧ** phép kiểm sai · **ⓟ** đạt.
+
+### G.14.3  Nguyên nhân lớn nhất: phép kiểm không *trượt*, nó **không áp được**
+
+Ba dòng RT-1, RT-2, RT-9 không nói mã thật kém. Chúng nói rằng **phép kiểm của sách giả định một
+hình dạng kiến trúc mà phần lớn mã thật không có.** Đo hình dạng đó:
+
+**Bảng G.8 — Hình dạng kiến trúc của mười ba phần mềm máy thật**
+
+| Tính chất | Số dự án |
+|---|---|
+| **Hoàn toàn đồng bộ** (dưới 20 chỗ `await` trong cả dự án) | **9 / 13** |
+| Có ránh cắm được bản giả (≥10 interface **và** ≥10 hàm dựng nhận interface) | 4 / 13 |
+| **Vừa bất đồng bộ vừa có ránh** — tức hình dạng bản mẫu giả định | **2 / 13** |
+
+Và con số giải thích *vì sao* chúng đồng bộ:
+
+> **12.612 khai báo `[DllImport]`** trong mười ba dự án. Cùng với **1.592 `Thread.Sleep`** và
+> **594 chỗ `.Result` / `.Wait()`**.
+
+Mã máy nói chuyện với phần cứng qua **P/Invoke vào DLL của hãng**, và một lời gọi P/Invoke thì
+**chặn luồng, không nhìn `CancellationToken`, không có phiên bản `Async`**. Viết `async` quanh nó
+không làm nó bất đồng bộ; nó chỉ đẩy chỗ chặn sang luồng khác.
+
+Nói cách khác: **dạng đồng bộ của mã máy phần lớn không phải lựa chọn của người viết, mà là hình
+dạng mà SDK hãng áp xuống.** Chê nó "chưa hiện đại" là chê nhầm chỗ.
+
+> 📌 **Hệ quả cho việc đọc sách này.** Bản mẫu ở Phụ lục G bất đồng bộ từ đầu tới cuối, và điều đó
+> **đúng cho mã bạn viết mới**. Nhưng nếu việc của bạn là bảo trì một trong chín dự án đồng bộ kia,
+> đừng bắt đầu bằng việc chuyển cả phần mềm sang `async` — đó là một dự án riêng, rủi ro cao, và
+> nó **không tự làm mã dễ kiểm thử hơn**. Thứ làm mã dễ kiểm thử hơn là **ránh cắm** (interface +
+> hàm dựng nhận interface), và ránh cắm thì **thêm được vào mã đồng bộ** mà không đụng gì tới
+> `async`. Mục 8.3.9 (Strangler) và mục 7.7 nói cách làm.
+
+### G.14.4  Nguyên nhân thứ hai: một phép kiểm sai, và nó sai theo kiểu hay gặp
+
+Dòng RT-6 trong Bảng G.7 ghi 13/13, nhưng lần chạy đầu nó ghi **6/13** — tức bảy dự án bị cáo buộc
+**ghi vào tín hiệu an toàn**, một lỗi rất nặng nếu có thật. Mở từng chỗ khớp ra xem:
+
+| Chỗ bị bắt | Thật ra là gì |
+|---|---|
+| `GemCtrl.SetAlarm("ER_EMG")` | báo cảnh báo lên host — không đụng mạch an toàn |
+| `SetCtl_BckColor(Btn_EMG, …)` | **đọc** trạng thái E-stop rồi tô màu nút trên màn hình |
+| `new ION(PIN_BTN_EMG_15, "急停按钮")` | một dòng trong **bảng khai báo** IO |
+| `Set(ref mIsEmergency, value)` | hàm đặt thuộc tính MVVM của một cờ hiển thị |
+| `SetValue(AppliesToProperty, value)` | thuộc tính phụ thuộc của WPF, không liên quan gì |
+
+Không có chỗ nào là ghi vào mạch an toàn. Con số đúng là **13/13 đạt** — thực hành ngoài đời **xác
+nhận** nguyên tắc ở mục 15.2.2b, chứ không mâu thuẫn với nó.
+
+> ⚠️ **Bài học của riêng dòng này, và nó lớn hơn kết quả.** Bộ dò của tôi tìm **từ đáng sợ**
+> (`EMG`, `EStop`, `Emergency`) đứng cạnh **động từ đáng sợ** (`Write`, `Set`, `Reset`), rồi kết
+> luận về **hành vi**. Nhưng tên gọi không phải hành vi. Trong một mã nguồn công nghiệp, chữ `EMG`
+> xuất hiện nhiều nhất ở ba chỗ vô hại nhất: **bảng khai báo IO**, **mã hiển thị**, và **mã báo cáo
+> lên host** — đúng ba chỗ mà một phần mềm tử tế *phải* nhắc tới E-stop.
+>
+> Quy tắc mang đi cho mọi lần bạn quét mã nguồn để kết luận điều gì đó: **một phép đếm từ khoá chỉ
+> là một danh sách chỗ cần đọc, không phải một kết quả.** Nếu con số sắp trở thành một lời cáo
+> buộc, hãy mở đủ số chỗ khớp để tự bác bỏ mình trước.
+
+### G.14.5  Nguyên nhân thứ ba: bản mẫu đạt vì bản giả lập quá ngoan
+
+Đây là phát hiện đắt nhất của cả đợt, vì nó không nói về mã thật — nó nói về **bản mẫu của chính
+sách này**.
+
+Bài G.4.1 dạy hạn giờ cho chuyển động, và phép kiểm của nó xanh suốt bốn mươi bài:
+
+```csharp
+using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+cts.CancelAfter(_hanGioMs);
+await _truc.DiToiAsync(viTriMm, cts.Token);      // hết giờ → ném OperationCanceled
+```
+
+Nó xanh vì `TrucGiaLap` **hợp tác**: mỗi vòng lặp nó gọi `ct.ThrowIfCancellationRequested()`.
+Nhưng mười hai nghìn khai báo `[DllImport]` kia nói rằng trục thật **không hợp tác**. Viết một bản
+giả lập mô phỏng đúng điều đó — `TrucKhongHopTac`, cố tình không nhận token — rồi chạy lại đúng
+phép kiểm cũ:
+
+- Không có `AlarmException` nào được ném.
+- Không có `OperationCanceledException` nào.
+- Lời gọi **chạy tới hết** rồi trả về bình thường, sau 4 giây, dù hạn giờ đặt 120 ms.
+
+**`CancelAfter` không làm gì cả.** Không phải "trục vẫn chạy còn người gọi thoát sớm" — mà là
+*ngay cả người gọi cũng không thoát sớm*. Toàn bộ cơ chế hạn giờ trơ ra.
+
+Và khi nhìn lại hợp đồng, lỗi thứ hai lộ ra, nặng hơn:
+
+```csharp
+public interface ITruc
+{
+    Task VeGocAsync(CancellationToken ct = default);
+    Task DiToiAsync(double viTriMm, CancellationToken ct = default);
+    // ← không có đường nào để nói "dừng lại"
+}
+```
+
+**Hợp đồng có lệnh RA mà không có lệnh THÔI.** Với bản giả lập ngoan thì không ai thấy thiếu, vì
+nó tự dừng. Với trục thật thì phần mềm báo cảnh báo quá giờ, người vận hành đọc cảnh báo — và
+**trục vẫn đang đi tới cữ cứng**.
+
+Bản sửa, nay nằm trong `NghiepVuVaTrinhTu.cs`:
+
+```csharp
+Task viec    = lenh(cts.Token);                      // vẫn truyền token: ai hợp tác thì dừng sớm
+Task hetGio  = Task.Delay(_hanGioMs, CancellationToken.None);   // đồng hồ của CHÍNH mình
+
+if (await Task.WhenAny(viec, hetGio) != viec)
+{
+    await _truc.DungAsync(CancellationToken.None);   // ← câu quyết định
+    ct.ThrowIfCancellationRequested();               // người bấm Dừng ≠ thiết bị hết giờ
+    throw new AlarmException(MaCanhBao.TrucQuaThoiGian, _truc.Ten, moTaQuaGio);
+}
+await viec;                                          // quan sát ngoại lệ của chính lệnh
+```
+
+Ba điều trong tám dòng đó, cả ba đều rút ra từ đợt kiểm ngược:
+
+1. **Đo hạn giờ bằng đồng hồ của chính mình** (`Task.Delay` + `WhenAny`), đừng nhờ bên kia tự báo.
+   `CancelAfter` là *lời đề nghị*; `WhenAny` là *sự thật*.
+2. **Hết giờ thì phải RA LỆNH DỪNG.** Thôi chờ không làm trục dừng. Đây là lý do `ITruc` nay có
+   `DungAsync`, và là lý do mọi hợp đồng thiết bị chuyển động đều cần một đường lùi.
+3. **Vẫn truyền token xuống dưới**, để thiết bị nào *có* hợp tác thì dừng sớm hơn — không vì một
+   số SDK điếc mà bỏ luôn cơ chế đúng.
+
+> ⚠️ **Một hệ quả không dễ chịu, và sách nói thẳng thay vì giấu.** Với SDK điếc token, lệnh Dừng
+> của người vận hành **không thể nhanh hơn hạn giờ của lời gọi đang chạy**. Bấm Dừng lúc trục vừa
+> bắt đầu một lệnh di chuyển 3 giây thì phần mềm phải đợi hết 3 giây đó mới ra được lệnh dừng.
+> Cách duy nhất rút ngắn là **đường dừng đi vòng khác**: một lời gọi `StopAxis` từ luồng khác,
+> hoặc một bit dừng ghi thẳng xuống card. Nếu SDK của bạn có `StopAxis` gọi được từ luồng khác —
+> và phần lớn có — thì đó là thứ phải nối vào nút Dừng, **không phải** `CancellationToken`.
+
+Phép kiểm cho cả ba điều trên nằm ở `KiemNguoc.cs`, chạy bằng:
+
+```bash
+cd source/MeoBench
+dotnet run -- G14
+```
+
+Trong đó có một phép kiểm **đối chứng** đáng chú ý: cùng đoạn mã đó, chạy với `TrucGiaLap` (bản
+ngoan) thì **xanh cả khi thiếu lệnh dừng**. Nó nằm lại trong bộ kiểm như một lời nhắc rằng bản giả
+lập vừa là công cụ vừa là chỗ trú của lỗi.
+
+### G.14.6  Nguyên nhân thứ tư: trượt thật, và sách đúng
+
+Bốn dòng ⓕ trong Bảng G.7 là những chỗ phép kiểm **áp được** và mã thật **trượt thật**:
+
+| Bất biến | Kết quả | Chi tiết đã đo |
+|---|---|---|
+| Nhật ký có cấu trúc (RT-8) | **0/13** | 0 mẫu thông điệp `{Ten}`; hơn 350 lời gọi nối chuỗi |
+| Cấu hình sống sót cập nhật (RT-4) | 3/13 | một dự án có **151** lần lấy đường dẫn cạnh file chạy |
+| Cấu hình hỏng → dự phòng (RT-3) | 3/13 | phần lớn chỗ nạp cấu hình không có `try/catch` quanh |
+| Số không lệ thuộc máy (RT-5) | 4/13 | `ToString("F2")` không nêu culture nhiều hơn `InvariantCulture` |
+
+Bốn chỗ này khác hẳn ba nguyên nhân trên: **không có SDK nào ép, không có hình dạng kiến trúc nào
+cản.** Thêm `InvariantCulture` vào một lời gọi `ToString` tốn mười lăm ký tự. Bọc `try/catch` quanh
+chỗ nạp cấu hình tốn bốn dòng. Chúng không được làm vì **không ai đau cho tới khi đau**, và lúc đau
+thì đang ở nhà máy khách lúc hai giờ sáng.
+
+> 💡 **Nếu bạn chỉ lấy đi một dòng từ cả mục G.14 này, lấy dòng RT-8.** Không một dự án nào trong
+> mười ba có nhật ký tra được. Mọi dự án đều *có* nhật ký — hàng trăm lời gọi — nhưng tất cả đều là
+> chuỗi đã nối sẵn, nên không lọc được theo trục, không đếm được theo mã lỗi, không trả lời được
+> câu *"đêm qua trạm 3 hỏng bao nhiêu lần"* mà không mở file ra đọc bằng mắt. Đây là khoảng cách
+> **rẻ nhất để rút ngắn** trong cả bảng: đổi `Log("Trục " + ten + " lỗi")` thành
+> `Log("Trục {Truc} lỗi", ten)` không tốn thêm phút nào khi gõ, và đổi hẳn việc gỡ lỗi sáu tháng sau.
+
+### G.14.7  Tổng kết: kiểm ngược đáng làm vì nó kiểm cả hai chiều
+
+Đợt này bắt đầu với ý định chấm điểm mã thật. Kết quả thực tế chia làm bốn, và **hai trong bốn nói
+về sách chứ không về mã thật**:
+
+| Nguyên nhân | Số dòng | Ai sai |
+|---|---|---|
+| ⓝ Hình dạng kiến trúc khác (đồng bộ, P/Invoke) | 3 | **không ai** — SDK hãng áp xuống |
+| ⓕ Mã thật trượt thật | 4 | mã thật, và sửa rất rẻ |
+| ⓧ Bộ dò của sách sai | 1 | **sách** |
+| ⓟ Mã thật đạt | 2 | — |
+
+Cộng thêm một lỗi **trong mã mẫu của sách** mà chỉ đợt kiểm ngược mới lôi ra được: hợp đồng thiết
+bị thiếu đường dừng, và cơ chế hạn giờ trơ khi bên kia không hợp tác.
+
+> 📌 **Quy trình này lặp lại được, và nên lặp.** Nó gồm đúng bốn bước: (1) viết ra các bất biến mà
+> mã của bạn khẳng định — thường chúng đã nằm sẵn trong tên các phép kiểm; (2) tìm mã thật cùng
+> loại, dù chỉ là một dự án cũ của chính công ty; (3) hỏi từng bất biến *"mã kia có qua nổi không,
+> và nếu không thì vì ba lý do nào — hình dạng, trượt thật, hay phép kiểm sai"*; (4) với mỗi lý do
+> "hình dạng", hỏi tiếp *"bản giả lập của mình có đang che mất điều đó không"*. Bước bốn là bước
+> tìm ra thứ đắt nhất.
 
 <!-- SECTION: Phu_Luc_H_Khai_Niem -->
 ---

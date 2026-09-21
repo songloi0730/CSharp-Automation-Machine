@@ -42,6 +42,13 @@ public interface ITruc
     bool   DaVeGoc  { get; }
     Task VeGocAsync(CancellationToken ct = default);
     Task DiToiAsync(double viTriMm, CancellationToken ct = default);
+
+    /// <summary>
+    /// Ra lệnh cho trục dừng NGAY. Bắt buộc phải có: khi lời gọi di chuyển hết hạn giờ,
+    /// người gọi bỏ chờ KHÔNG làm trục dừng lại — phải nói với trục một câu nữa.
+    /// Xem mục G.14.3 về vì sao bản mẫu từng thiếu hàm này mà không ai thấy.
+    /// </summary>
+    Task DungAsync(CancellationToken ct = default);
 }
 
 public interface ICamBienChieuDay
@@ -86,10 +93,25 @@ public sealed class TrucGiaLap : ITruc
     public Task DiToiAsync(double viTriMm, CancellationToken ct = default)
         => DiChuyenAsync(viTriMm, ct);
 
+    /// <summary>Số lần bị ra lệnh dừng — để phép kiểm xác nhận lệnh dừng CÓ được gửi.</summary>
+    public int SoLanBiDung { get; private set; }
+
+    public Task DungAsync(CancellationToken ct = default)
+    {
+        SoLanBiDung++;
+        DangChay = false;
+        return Task.CompletedTask;
+    }
+
+    /// <summary>Trục có đang trong một lệnh di chuyển dở dang không.</summary>
+    public bool DangChay { get; private set; }
+
     private async Task DiChuyenAsync(double dich, CancellationToken ct)
     {
+        DangChay = true;
         while (Math.Abs(ViTriMm - dich) > 1e-6)
         {
+            if (!DangChay) return;              // đã bị ra lệnh dừng
             ct.ThrowIfCancellationRequested();
             await Task.Delay(_msMoiBuoc, ct).ConfigureAwait(false);
 

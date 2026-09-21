@@ -4964,8 +4964,8 @@ tin đầu vào lớn hơn rất nhiều.
 
 ---
 
-Phụ lục này sinh ra từ nội dung đã viết ở các chương — khi sách được cập nhật thêm chương/mục
-mới có bảng "Sai lầm thường gặp", nên bổ sung dòng tương ứng vào đây để chỉ mục luôn đầy đủ.
+Phụ lục này tổng hợp từ mục "Sai lầm thường gặp" của mọi chương — mỗi dòng dẫn thẳng về đúng mục
+giải thích chi tiết **vì sao** triệu chứng đó xảy ra và cách xử lý, thay vì chỉ liệt kê triệu chứng.
 
 <!-- SECTION: pl_I_bang_sut_ap_dong_ro -->
 ---

@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.2.260921 |
+| **Phiên bản** | v1.0.2.260922 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -38052,8 +38052,8 @@ hai của hãng khác**. Nếu việc đó là thêm một file và sửa một 
 
 Mục G.9 nêu mười hai bài xương sống; **cả bốn mươi bài nay đều có lời giải chạy được**. Mục này cho chúng **đặc tả chính xác**, **tiêu chí chấm cụ thể**, và **một
 lời giải chạy được** — nằm ở `source/MeoBench`, đã biên dịch với
-`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **581/581 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở
-G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H, 87 cho hai mươi mốt lời giải xương sống ở Phụ lục I).
+`TreatWarningsAsErrors=true`, chạy sạch **0 cảnh báo** và **601/601 phép kiểm đạt** (294 cho 40 bài, 62 cho phần ghép máy ở
+G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 20 cho đối chiếu cấu trúc ở G.15, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H, 87 cho hai mươi mốt lời giải xương sống ở Phụ lục I).
 
 ### G.10.0  Chạy thử từng phần, không đợi làm xong hết
 
@@ -38062,7 +38062,7 @@ không biết hỏng ở đâu. Bộ tự kiểm cho phép **chạy lẻ từng 
 
 ```bash
 cd source/MeoBench
-dotnet run                 # tất cả — 581 phép kiểm
+dotnet run                 # tất cả — 601 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
@@ -38071,6 +38071,7 @@ dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
 dotnet run -- G14          # kiểm ngược: đối chiếu bất biến với mã thật — 9 phép kiểm
 dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H) — 27 phép kiểm
+dotnet run -- G15          # đối chiếu cấu trúc: kiểm thử với tới đâu — 20 phép kiểm
 dotnet run -- I            # lời giải xương sống (Phụ lục I) — 87 phép kiểm
 dotnet run -- G13          # năng lực vận hành máy thật — 68 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
@@ -39179,6 +39180,228 @@ bị thiếu đường dừng, và cơ chế hạn giờ trơ khi bên kia khôn
 > và nếu không thì vì ba lý do nào — hình dạng, trượt thật, hay phép kiểm sai"*; (4) với mỗi lý do
 > "hình dạng", hỏi tiếp *"bản giả lập của mình có đang che mất điều đó không"*. Bước bốn là bước
 > tìm ra thứ đắt nhất.
+
+---
+
+## G.15  Cấu trúc — mã thật tổ chức thế nào, và sách khác ở đâu
+
+Mục G.14 đối chiếu **bất biến**. Mục này đối chiếu **hình dạng**: mười ba phần mềm máy thật chia
+mã ra sao, so với cách sách đề xuất, và — câu hỏi quyết định — **phép kiểm với tới đâu trong mỗi
+cách**.
+
+### G.15.1  Đo trước: hình dạng tổng thể
+
+**Bảng G.9 — Cấu trúc tổng thể của mười ba dự án**
+
+| Chỉ số | Kết quả |
+|---|---|
+| Số project (`.csproj`) mỗi dự án | từ **1** tới **22** |
+| Dự án chỉ có **đúng một** project | **4 / 13** |
+| Dự án có **file ≥ 1.000 dòng** | **13 / 13** |
+| Tổng số file ≥ 1.000 dòng | **167** |
+| File dài nhất | **28.635 dòng** |
+| Dự án có **kiểm thử tự động** | **1 / 13** |
+
+Dòng cuối là dòng cần nói kỹ, vì lần đo đầu tiên của tôi cho ra **4/13** — rồi hoá ra ba trong số
+đó chỉ có **thư mục tên là `test`** chứ không có phép kiểm nào. Đếm lại bằng `[Fact]`, `[Theory]`,
+`[Test]`, `Assert.`:
+
+- **Một** dự án có kiểm thử thật: 203 phép kiểm, 446 câu `Assert`, 46 file, dùng xUnit.
+- **Mười hai** dự án còn lại: **0**. Không một câu `Assert` nào trong toàn bộ mã nguồn.
+
+> 📌 **Và dự án duy nhất có kiểm thử cũng là một trong bốn dự án có ránh cắm** (82 interface, 102
+> hàm dựng nhận interface — đo ở mục G.14.3). Nhưng chiều ngược lại **không đúng**: ba dự án kia
+> cũng có ránh mà vẫn không có phép kiểm nào. Ránh cắm là **điều kiện cần, không phải điều kiện
+> đủ** — nó cho bạn khả năng viết phép kiểm, không cho bạn thói quen viết.
+
+### G.15.2  Mã nằm ở đâu: gần một nửa nằm trong giao diện
+
+Phân loại 879.408 dòng theo *file có phải giao diện không* (tên chứa `Form`/`Window`/`View`/…,
+hoặc kế thừa `Window`, hoặc dùng `System.Windows.Forms`):
+
+**Bảng G.10 — Tỉ lệ dòng mã nằm trong file giao diện**
+
+| Dự án | A | B | C | D | E | F | G | H | I | K | L | M | N | **Chung** |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| % dòng ở giao diện | 21 | 26 | 32 | 28 | 23 | **74** | **86** | 12 | 33 | 51 | **64** | **70** | 49 | **46 %** |
+
+Gần một nửa mã của phần mềm máy nằm trong file giao diện, và bốn dự án thì giao diện chiếm **64–86 %**.
+
+Nhưng con số đó một mình chưa nói được gì — giao diện máy vốn nhiều. Câu hỏi thật là: **cái gì
+nằm trong đó?**
+
+**Bảng G.11 — Dấu vết logic máy, nằm trong hay ngoài file giao diện**
+
+| Dấu vết | Trong file giao diện | Ngoài | **% nằm ở giao diện** |
+|---|---|---|---|
+| Gọi phần cứng qua `[DllImport]` | 913 | 11.699 | **7 %** |
+| Lệnh chuyển động (`MoveAbs`, `Home`, `Jog`…) | 412 | 417 | **50 %** |
+| Ghi file trực tiếp | 143 | 102 | **58 %** |
+| Chờ bằng `Thread.Sleep` | 966 | 626 | **61 %** |
+| Đọc/ghi tín hiệu vào-ra | 1.082 | 599 | **64 %** |
+
+> ⚠️ **Đây là phát hiện cấu trúc quan trọng nhất của mục này, và nó tinh tế hơn "mã lộn xộn".**
+> Dòng đầu cho thấy **driver ĐÃ được tách ra tử tế**: chỉ 7 % lời gọi P/Invoke nằm trong file giao
+> diện. Người viết những phần mềm này *biết* phải bọc SDK hãng lại, và họ đã làm.
+>
+> Nhưng bốn dòng dưới cho thấy **thứ được tách ra chỉ là driver, không phải logic dùng driver**.
+> Quyết định "bật van nào, chờ bao lâu, khi nào thì được phép" vẫn sống trong thân hàm xử lý nút
+> bấm. Tầng trừu tượng thiết bị có tồn tại; tầng nghiệp vụ thì không.
+>
+> Và dòng `Thread.Sleep` — **966 lần trong file giao diện** — là dòng đắt nhất: mỗi lần như vậy là
+> một lần **luồng giao diện đứng hình**. Người vận hành thấy màn hình treo, tưởng máy hỏng, bấm
+> tiếp. Mục 8.1.5 bàn `Application.DoEvents()` như cái nạng phổ biến nhất của WinForms; đây là lý
+> do người ta cần tới cái nạng đó.
+
+### G.15.3  Nhìn gần: hai nghìn nút bấm
+
+Bắt toàn bộ hàm xử lý sự kiện nút/menu trong mười ba dự án — **2.041 hàm**:
+
+| Chỉ số | Kết quả |
+|---|---|
+| Độ dài thân hàm, trung vị | **7 dòng** |
+| 90 % nằm dưới | 32 dòng |
+| Dài nhất | **652 dòng** |
+| Có gọi thẳng thiết bị trong thân hàm | 154 (8 %) |
+| Có chặn luồng (`Sleep` / `.Wait()` / `.Result` / `DoEvents`) | 70 (3 %) |
+| **Có `await`** | **8 (0,4 %)** |
+
+Trung vị 7 dòng là một tin **tốt**: phần lớn nút bấm ngắn. Nhưng hai con số hai đầu mới đáng chú ý:
+một hàm xử lý nút dài **652 dòng**, và trong hai nghìn nút bấm chỉ có **tám** cái dùng `await` —
+khớp với phát hiện ở G.14.3 rằng 9/13 dự án hoàn toàn đồng bộ.
+
+Đọc mã thật của các hàm ấy, **hình dạng lặp lại nhiều nhất** trông như sau (đã tổng quát hoá):
+
+```csharp
+// Hình dạng quan sát được, viết lại bằng tên chung
+private void btnBat_Click(object sender, EventArgs e)
+{
+    var thietBi = this.DataContext as ThietBiNaoDo;      // (1)
+    try
+    {
+        if (ten == "OUT_53" || ten == "OUT_54" || ten == "OUT_55" ||
+            ten == "OUT_57" || ten == "OUT_60" || /* …thêm 5 chuỗi nữa… */)   // (2)
+        {
+            if (MessageBox.Show("Bật tín hiệu bắt tay?", "", OKCancel) != OK) return;   // (3)
+        }
+        thietBi.Dao();
+        Thread.Sleep(100);                                // (4)
+    }
+    catch (Exception ex) { MessageBox.Show(ex.ToString()); }   // (5)
+}
+```
+
+Năm chi tiết, và mỗi cái chặn một loại phép kiểm:
+
+| | Chi tiết | Vì sao không kiểm thử được |
+|---|---|---|
+| (1) | Lấy đối tượng qua `DataContext as …` | Phải dựng được một cửa sổ thật mới có `DataContext` |
+| (2) | **Luật an toàn là mười chuỗi viết cứng** | Muốn sửa danh sách phải sửa mã giao diện và build lại |
+| (3) | Hộp thoại gọi thẳng | Phép kiểm không bấm được nút "OK" |
+| (4) | `Thread.Sleep(100)` sau lệnh thiết bị | Số 100 không dựa trên gì; và nó **treo luồng giao diện** |
+| (5) | Lỗi biến thành hộp thoại | Không ghi nhật ký, không thành cảnh báo, không đếm được |
+
+> 📌 **Dòng (2) là dòng đáng lo nhất, và nó dễ bị đọc lướt qua.** Mười chuỗi đó **là một interlock**:
+> chúng nói "những cổng ra này bắt tay với máy bên cạnh, đừng bật bừa". Đó là tri thức an toàn về
+> dây chuyền — và nó đang sống dưới dạng ký tự, trong một hàm xử lý sự kiện, trong một file giao
+> diện. Mục 15.2.1 gọi đúng tên chuyện này: **interlock viết bằng code thì không ai rà soát được**.
+> Người kiểm định an toàn không mở file `.xaml.cs` ra đọc.
+
+### G.15.4  So với cấu trúc sách đề xuất — và cái giá của cả hai bên
+
+**Bảng G.12 — Hai cách tổ chức, đối chiếu thẳng**
+
+| | **Mã thật (hình dạng phổ biến)** | **Sách đề xuất (mục 7.4, Phụ lục G)** |
+|---|---|---|
+| Driver hãng | đã tách ra (93 % ngoài giao diện) | tách ra, sau một interface năng lực |
+| Luật nghiệp vụ | trong hàm xử lý nút | trong lớp riêng, không biết gì về cửa sổ |
+| Luật an toàn | chuỗi viết cứng trong giao diện | dữ liệu cấu hình + một cửa kiểm tập trung |
+| Chờ thiết bị | `Thread.Sleep` trên luồng giao diện | hạn giờ + lệnh dừng (G.14.5) |
+| Báo lỗi | `MessageBox` tại chỗ | ném `AlarmException`, tầng trên quyết định hiển thị |
+| Thêm một nút mới | chép một hàm cũ rồi sửa | thêm một lệnh vào lớp quyết định |
+| Kiểm thử | cần cửa sổ thật, người thật | chạy trong console |
+
+Nhưng nói cho đủ: **cách tổ chức của mã thật không phải không có lý.**
+
+> 💡 **Ba lý do cách làm ấy tồn tại, và chúng đều là lý do thật:**
+> 1. **Nó nhanh.** Thêm một nút để thử một van mới: mở trình thiết kế, kéo một nút, gõ bốn dòng.
+>    Cách của sách đòi thêm một phương thức vào lớp quyết định, có khi thêm một mục cấu hình.
+>    Lúc đang chỉnh máy tại hiện trường, bốn dòng thắng.
+> 2. **Máy chỉ có một.** Phần lớn phần mềm máy chạy trên **đúng một cỗ máy**, không phát hành cho
+>    nghìn người dùng. Cái giá của "khó sửa về sau" thấp hơn nhiều so với phần mềm thương mại.
+> 3. **Không ai đòi kiểm thử.** Khách nghiệm thu bằng cách chạy máy, không bằng cách chạy phép kiểm.
+>
+> Ba lý do đó đúng — cho tới lúc cỗ máy thứ hai xuất hiện. Từ cỗ máy thứ hai trở đi, mọi chuỗi viết
+> cứng là một chỗ phải nhớ sửa, và "nhớ" là thứ hỏng trước tiên.
+
+### G.15.5  Đo lại: phép kiểm với tới đâu
+
+Đây là chỗ mục này trả lời câu hỏi thứ ba, và nó trả lời **bằng mã chạy được** chứ không bằng lập
+luận. Cùng một hành vi — *đảo một cổng ra, hỏi trước nếu là tín hiệu bắt tay, chặn nếu mạch an toàn
+hở* — viết theo hai cách, rồi đếm số phép kiểm viết được cho mỗi cách:
+
+**Bảng G.13 — Cùng một hành vi, hai cấu trúc, số phép kiểm viết được**
+
+| Muốn kiểm điều gì | Kiểu "làm thẳng trong nút" | Kiểu "tách lớp quyết định" |
+|---|---|---|
+| Tín hiệu thường thì đảo ngay, không hỏi | ✗ | ✓ |
+| Tín hiệu bắt tay thì **có hỏi** | ✗ | ✓ |
+| Câu hỏi **nói rõ lý do**, không phải "Bạn có chắc không?" | ✗ | ✓ |
+| Người dùng huỷ → **không ghi gì** xuống cổng ra | ✗ | ✓ |
+| Dừng khẩn chặn **trước cả khi kịp hỏi** | ✗ | ✓ |
+| Màn chắn bị che → cũng chặn | ✗ | ✓ |
+| Từ chối luôn kèm lý do đọc được | ✗ | ✓ |
+| Đảo hai lần thì về trạng thái cũ | ✗ | ✓ |
+| **Tổng phép kiểm chạy được** | **0** | **20** |
+
+Cột trái là **không** — không phải "khó", mà là không: muốn kiểm một trong tám dòng đó, bạn phải
+dựng được một cửa sổ thật, bấm được một nút thật, và trả lời được một hộp thoại thật. Ba thứ đó
+không chạy trong một máy chủ tích hợp liên tục.
+
+Mã của cả hai kiểu nằm ở `source/MeoBench/BonKieuNutBam.cs`, phép kiểm ở `KiemCauTruc.cs`:
+
+```bash
+cd source/MeoBench
+dotnet run -- G15
+```
+
+Và đây là toàn bộ thân hàm nút bấm sau khi tách — **tất cả** những gì còn lại trong file giao diện:
+
+```csharp
+public static string KhiBamNutBat(QuyetDinhBatTinHieu quyetDinh, string tenTinHieu)
+{
+    var kq = quyetDinh.ThuDao(tenTinHieu);
+    return kq.ChoPhep ? string.Empty : kq.LyDo;   // chuỗi rỗng = không cần báo gì
+}
+```
+
+Hai dòng. Không luật, không hộp thoại, không hạn giờ, không `Sleep`. Và vì nó không quyết định gì
+nên **không có gì trong đó đáng kiểm thử** — đúng như mong muốn.
+
+> 📌 **Một chi tiết nhỏ mà thật:** trong dự án thật hàm này tên là `btnBat_Click` — do trình thiết
+> kế đặt, và cái tên đó **vi phạm chính luật CA1707 của sách** (không gạch dưới trong tên). Trình
+> phân tích bắt được nó khi tôi viết mã mẫu. Đó là một lý do nữa để thân hàm ấy rỗng: nó thuộc về
+> công cụ, không thuộc về bạn.
+
+### G.15.6  Lối đi nhỏ nhất, không viết lại cả phần mềm
+
+Mười hai dự án không có phép kiểm nào không thể sửa bằng cách viết lại. Lối đi rẻ nhất, rút ra từ
+đúng những con số trên:
+
+1. **Chọn MỘT nút** — nút nguy hiểm nhất, thường là nút có `MessageBox` xác nhận. Nút đó đang giữ
+   một luật an toàn, và luật đó đang không ai rà soát được.
+2. **Đẩy thân hàm xuống một lớp mới**, đổi mọi thứ nó chạm tới thành tham số hàm dựng: cổng ra,
+   cách hỏi người dùng, tín hiệu an toàn. Đây là bước duy nhất tốn công, và nó tốn khoảng một giờ.
+3. **Đem danh sách chuỗi viết cứng ra tệp cấu hình** (mục G.12). Từ đây, đổi danh sách không phải
+   build lại phần mềm — và người kiểm định đọc được nó.
+4. **Viết phép kiểm cho ba ca**: cho phép, bị chặn vì an toàn, bị huỷ bởi người dùng. Ba phép kiểm
+   đó chạy trong console, không cần máy.
+5. **Nút thứ hai thì dễ hơn nhiều**, vì ba interface ở bước 2 đã có sẵn.
+
+> 💡 **Đừng bắt đầu bằng việc chuyển cả phần mềm sang `async`.** Mục G.14.3 đã đo: dạng đồng bộ là
+> do SDK hãng áp xuống, không phải do người viết chọn, và chuyển sang `async` **không làm mã dễ
+> kiểm thử hơn một chút nào**. Thứ làm mã dễ kiểm thử là **ránh cắm** — và ránh cắm thêm được vào
+> mã đồng bộ mà không đụng gì tới `async`. Toàn bộ hai mươi phép kiểm ở Bảng G.13 là **mã đồng bộ**.
 
 <!-- SECTION: Phu_Luc_H_Khai_Niem -->
 ---

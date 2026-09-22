@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.2.260921</title>
+<title>C# cho Automation Machine — v1.0.2.260922</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -559,6 +559,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#g12-tách-cu-hình-ca-c-máy-khi-chương-trình">G.12  Tách cấu hình của cỗ máy khỏi chương trình</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g13-đi-chiu-vi-máy-tht-c-máy-mu-còn-thiu-gì">G.13  Đối chiếu với máy thật — cỗ máy mẫu còn thiếu gì</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#g14-kim-ngưc-đem-phép-kim-ca-sách-chy-lên-mã-máy-tht">G.14  Kiểm ngược — đem phép kiểm của sách chạy lên mã máy thật</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#g15-cu-trúc-mã-tht-t-chc-th-nào-và-sách-khác-đâu">G.15  Cấu trúc — mã thật tổ chức thế nào, và sách khác ở đâu</a></li>
   <li><a href="#ph-lc-h-t-đin-khái-nim-và-pattern-là-gì-vì-sao-tn-ti-dùng-đâu">Phụ lục H: Từ điển khái niệm và pattern — *là gì, vì sao tồn tại, dùng ở đâu*</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#h0-cách-đc-ph-lc-này">H.0  Cách đọc phụ lục này</a></li>
   <li><a href="#phn-a-khái-nim-c">Phần A — Khái niệm C#</a></li>
@@ -617,7 +618,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.2.260921</td>
+<td>v1.0.2.260922</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -44111,13 +44112,13 @@ xong chưa&quot;</em> là kỹ năng quan trọng hơn hẳn việc đối chi�
 <h2 id="g10-li-gii-mu-và-b-t-kim-cho-12-bài-xương-sng">G.10  Lời giải mẫu và bộ tự kiểm cho 12 bài xương sống</h2>
 <p>Mục G.9 nêu mười hai bài xương sống; <strong>cả bốn mươi bài nay đều có lời giải chạy được</strong>. Mục này cho chúng <strong>đặc tả chính xác</strong>, <strong>tiêu chí chấm cụ thể</strong>, và <strong>một
 lời giải chạy được</strong> — nằm ở <code>source/MeoBench</code>, đã biên dịch với
-<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>581/581 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở
-G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H, 87 cho hai mươi mốt lời giải xương sống ở Phụ lục I).</p>
+<code>TreatWarningsAsErrors=true</code>, chạy sạch <strong>0 cảnh báo</strong> và <strong>601/601 phép kiểm đạt</strong> (294 cho 40 bài, 62 cho phần ghép máy ở
+G.11, 34 cho tách cấu hình ở G.12, 68 cho các năng lực vận hành thật ở G.13, 9 cho đợt kiểm ngược ở G.14, 20 cho đối chiếu cấu trúc ở G.15, 27 cho các khẳng định về ngôn ngữ C# ở Phụ lục H, 87 cho hai mươi mốt lời giải xương sống ở Phụ lục I).</p>
 <h3>G.10.0  Chạy thử từng phần, không đợi làm xong hết</h3>
 <p>Đây là điểm quan trọng nhất của mục này. Làm xong cả bốn mươi bài rồi mới chạy thì khi hỏng bạn
 không biết hỏng ở đâu. Bộ tự kiểm cho phép <strong>chạy lẻ từng nhóm ngay khi vừa viết xong nhóm đó</strong>:</p>
 <pre><code class="language-bash">cd source/MeoBench
-dotnet run                 # tất cả — 581 phép kiểm
+dotnet run                 # tất cả — 601 phép kiểm
 dotnet run -- G4           # CHỈ nhóm G.4 (bài G.4.1 và G.4.3)
 dotnet run -- G2           # nhóm logic thuần
 dotnet run -- G6           # nhóm dữ liệu — 33 phép kiểm
@@ -44126,6 +44127,7 @@ dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
 dotnet run -- G14          # kiểm ngược: đối chiếu bất biến với mã thật — 9 phép kiểm
 dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H) — 27 phép kiểm
+dotnet run -- G15          # đối chiếu cấu trúc: kiểm thử với tới đâu — 20 phép kiểm
 dotnet run -- I            # lời giải xương sống (Phụ lục I) — 87 phép kiểm
 dotnet run -- G13          # năng lực vận hành máy thật — 68 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
@@ -45695,6 +45697,414 @@ loại, dù chỉ là một dự án cũ của chính công ty; (3) hỏi từng
 và nếu không thì vì ba lý do nào — hình dạng, trượt thật, hay phép kiểm sai&quot;</em>; (4) với mỗi lý do
 &quot;hình dạng&quot;, hỏi tiếp <em>&quot;bản giả lập của mình có đang che mất điều đó không&quot;</em>. Bước bốn là bước
 tìm ra thứ đắt nhất.</p>
+</blockquote>
+<hr>
+<h2 id="g15-cu-trúc-mã-tht-t-chc-th-nào-và-sách-khác-đâu">G.15  Cấu trúc — mã thật tổ chức thế nào, và sách khác ở đâu</h2>
+<p>Mục G.14 đối chiếu <strong>bất biến</strong>. Mục này đối chiếu <strong>hình dạng</strong>: mười ba phần mềm máy thật chia
+mã ra sao, so với cách sách đề xuất, và — câu hỏi quyết định — <strong>phép kiểm với tới đâu trong mỗi
+cách</strong>.</p>
+<h3>G.15.1  Đo trước: hình dạng tổng thể</h3>
+<p><strong>Bảng G.9 — Cấu trúc tổng thể của mười ba dự án</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chỉ số</th>
+<th>Kết quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Số project (<code>.csproj</code>) mỗi dự án</td>
+<td>từ <strong>1</strong> tới <strong>22</strong></td>
+</tr>
+<tr>
+<td>Dự án chỉ có <strong>đúng một</strong> project</td>
+<td><strong>4 / 13</strong></td>
+</tr>
+<tr>
+<td>Dự án có <strong>file ≥ 1.000 dòng</strong></td>
+<td><strong>13 / 13</strong></td>
+</tr>
+<tr>
+<td>Tổng số file ≥ 1.000 dòng</td>
+<td><strong>167</strong></td>
+</tr>
+<tr>
+<td>File dài nhất</td>
+<td><strong>28.635 dòng</strong></td>
+</tr>
+<tr>
+<td>Dự án có <strong>kiểm thử tự động</strong></td>
+<td><strong>1 / 13</strong></td>
+</tr>
+</tbody></table></div>
+<p>Dòng cuối là dòng cần nói kỹ, vì lần đo đầu tiên của tôi cho ra <strong>4/13</strong> — rồi hoá ra ba trong số
+đó chỉ có <strong>thư mục tên là <code>test</code></strong> chứ không có phép kiểm nào. Đếm lại bằng <code>[Fact]</code>, <code>[Theory]</code>,
+<code>[Test]</code>, <code>Assert.</code>:</p>
+<ul>
+<li><strong>Một</strong> dự án có kiểm thử thật: 203 phép kiểm, 446 câu <code>Assert</code>, 46 file, dùng xUnit.</li>
+<li><strong>Mười hai</strong> dự án còn lại: <strong>0</strong>. Không một câu <code>Assert</code> nào trong toàn bộ mã nguồn.</li>
+</ul>
+<blockquote>
+<p>📌 <strong>Và dự án duy nhất có kiểm thử cũng là một trong bốn dự án có ránh cắm</strong> (82 interface, 102
+hàm dựng nhận interface — đo ở mục G.14.3). Nhưng chiều ngược lại <strong>không đúng</strong>: ba dự án kia
+cũng có ránh mà vẫn không có phép kiểm nào. Ránh cắm là <strong>điều kiện cần, không phải điều kiện
+đủ</strong> — nó cho bạn khả năng viết phép kiểm, không cho bạn thói quen viết.</p>
+</blockquote>
+<h3>G.15.2  Mã nằm ở đâu: gần một nửa nằm trong giao diện</h3>
+<p>Phân loại 879.408 dòng theo <em>file có phải giao diện không</em> (tên chứa <code>Form</code>/<code>Window</code>/<code>View</code>/…,
+hoặc kế thừa <code>Window</code>, hoặc dùng <code>System.Windows.Forms</code>):</p>
+<p><strong>Bảng G.10 — Tỉ lệ dòng mã nằm trong file giao diện</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dự án</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+<th>F</th>
+<th>G</th>
+<th>H</th>
+<th>I</th>
+<th>K</th>
+<th>L</th>
+<th>M</th>
+<th>N</th>
+<th><strong>Chung</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>% dòng ở giao diện</td>
+<td>21</td>
+<td>26</td>
+<td>32</td>
+<td>28</td>
+<td>23</td>
+<td><strong>74</strong></td>
+<td><strong>86</strong></td>
+<td>12</td>
+<td>33</td>
+<td>51</td>
+<td><strong>64</strong></td>
+<td><strong>70</strong></td>
+<td>49</td>
+<td><strong>46 %</strong></td>
+</tr>
+</tbody></table></div>
+<p>Gần một nửa mã của phần mềm máy nằm trong file giao diện, và bốn dự án thì giao diện chiếm <strong>64–86 %</strong>.</p>
+<p>Nhưng con số đó một mình chưa nói được gì — giao diện máy vốn nhiều. Câu hỏi thật là: <strong>cái gì
+nằm trong đó?</strong></p>
+<p><strong>Bảng G.11 — Dấu vết logic máy, nằm trong hay ngoài file giao diện</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dấu vết</th>
+<th>Trong file giao diện</th>
+<th>Ngoài</th>
+<th><strong>% nằm ở giao diện</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Gọi phần cứng qua <code>[DllImport]</code></td>
+<td>913</td>
+<td>11.699</td>
+<td><strong>7 %</strong></td>
+</tr>
+<tr>
+<td>Lệnh chuyển động (<code>MoveAbs</code>, <code>Home</code>, <code>Jog</code>…)</td>
+<td>412</td>
+<td>417</td>
+<td><strong>50 %</strong></td>
+</tr>
+<tr>
+<td>Ghi file trực tiếp</td>
+<td>143</td>
+<td>102</td>
+<td><strong>58 %</strong></td>
+</tr>
+<tr>
+<td>Chờ bằng <code>Thread.Sleep</code></td>
+<td>966</td>
+<td>626</td>
+<td><strong>61 %</strong></td>
+</tr>
+<tr>
+<td>Đọc/ghi tín hiệu vào-ra</td>
+<td>1.082</td>
+<td>599</td>
+<td><strong>64 %</strong></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Đây là phát hiện cấu trúc quan trọng nhất của mục này, và nó tinh tế hơn &quot;mã lộn xộn&quot;.</strong>
+Dòng đầu cho thấy <strong>driver ĐÃ được tách ra tử tế</strong>: chỉ 7 % lời gọi P/Invoke nằm trong file giao
+diện. Người viết những phần mềm này <em>biết</em> phải bọc SDK hãng lại, và họ đã làm.</p>
+<p>Nhưng bốn dòng dưới cho thấy <strong>thứ được tách ra chỉ là driver, không phải logic dùng driver</strong>.
+Quyết định &quot;bật van nào, chờ bao lâu, khi nào thì được phép&quot; vẫn sống trong thân hàm xử lý nút
+bấm. Tầng trừu tượng thiết bị có tồn tại; tầng nghiệp vụ thì không.</p>
+<p>Và dòng <code>Thread.Sleep</code> — <strong>966 lần trong file giao diện</strong> — là dòng đắt nhất: mỗi lần như vậy là
+một lần <strong>luồng giao diện đứng hình</strong>. Người vận hành thấy màn hình treo, tưởng máy hỏng, bấm
+tiếp. Mục 8.1.5 bàn <code>Application.DoEvents()</code> như cái nạng phổ biến nhất của WinForms; đây là lý
+do người ta cần tới cái nạng đó.</p>
+</blockquote>
+<h3>G.15.3  Nhìn gần: hai nghìn nút bấm</h3>
+<p>Bắt toàn bộ hàm xử lý sự kiện nút/menu trong mười ba dự án — <strong>2.041 hàm</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chỉ số</th>
+<th>Kết quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Độ dài thân hàm, trung vị</td>
+<td><strong>7 dòng</strong></td>
+</tr>
+<tr>
+<td>90 % nằm dưới</td>
+<td>32 dòng</td>
+</tr>
+<tr>
+<td>Dài nhất</td>
+<td><strong>652 dòng</strong></td>
+</tr>
+<tr>
+<td>Có gọi thẳng thiết bị trong thân hàm</td>
+<td>154 (8 %)</td>
+</tr>
+<tr>
+<td>Có chặn luồng (<code>Sleep</code> / <code>.Wait()</code> / <code>.Result</code> / <code>DoEvents</code>)</td>
+<td>70 (3 %)</td>
+</tr>
+<tr>
+<td><strong>Có <code>await</code></strong></td>
+<td><strong>8 (0,4 %)</strong></td>
+</tr>
+</tbody></table></div>
+<p>Trung vị 7 dòng là một tin <strong>tốt</strong>: phần lớn nút bấm ngắn. Nhưng hai con số hai đầu mới đáng chú ý:
+một hàm xử lý nút dài <strong>652 dòng</strong>, và trong hai nghìn nút bấm chỉ có <strong>tám</strong> cái dùng <code>await</code> —
+khớp với phát hiện ở G.14.3 rằng 9/13 dự án hoàn toàn đồng bộ.</p>
+<p>Đọc mã thật của các hàm ấy, <strong>hình dạng lặp lại nhiều nhất</strong> trông như sau (đã tổng quát hoá):</p>
+<pre><code class="language-csharp">// Hình dạng quan sát được, viết lại bằng tên chung
+private void btnBat_Click(object sender, EventArgs e)
+{
+    var thietBi = this.DataContext as ThietBiNaoDo;      // (1)
+    try
+    {
+        if (ten == &quot;OUT_53&quot; || ten == &quot;OUT_54&quot; || ten == &quot;OUT_55&quot; ||
+            ten == &quot;OUT_57&quot; || ten == &quot;OUT_60&quot; || /* …thêm 5 chuỗi nữa… */)   // (2)
+        {
+            if (MessageBox.Show(&quot;Bật tín hiệu bắt tay?&quot;, &quot;&quot;, OKCancel) != OK) return;   // (3)
+        }
+        thietBi.Dao();
+        Thread.Sleep(100);                                // (4)
+    }
+    catch (Exception ex) { MessageBox.Show(ex.ToString()); }   // (5)
+}
+</code></pre>
+<p>Năm chi tiết, và mỗi cái chặn một loại phép kiểm:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Chi tiết</th>
+<th>Vì sao không kiểm thử được</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(1)</td>
+<td>Lấy đối tượng qua <code>DataContext as …</code></td>
+<td>Phải dựng được một cửa sổ thật mới có <code>DataContext</code></td>
+</tr>
+<tr>
+<td>(2)</td>
+<td><strong>Luật an toàn là mười chuỗi viết cứng</strong></td>
+<td>Muốn sửa danh sách phải sửa mã giao diện và build lại</td>
+</tr>
+<tr>
+<td>(3)</td>
+<td>Hộp thoại gọi thẳng</td>
+<td>Phép kiểm không bấm được nút &quot;OK&quot;</td>
+</tr>
+<tr>
+<td>(4)</td>
+<td><code>Thread.Sleep(100)</code> sau lệnh thiết bị</td>
+<td>Số 100 không dựa trên gì; và nó <strong>treo luồng giao diện</strong></td>
+</tr>
+<tr>
+<td>(5)</td>
+<td>Lỗi biến thành hộp thoại</td>
+<td>Không ghi nhật ký, không thành cảnh báo, không đếm được</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Dòng (2) là dòng đáng lo nhất, và nó dễ bị đọc lướt qua.</strong> Mười chuỗi đó <strong>là một interlock</strong>:
+chúng nói &quot;những cổng ra này bắt tay với máy bên cạnh, đừng bật bừa&quot;. Đó là tri thức an toàn về
+dây chuyền — và nó đang sống dưới dạng ký tự, trong một hàm xử lý sự kiện, trong một file giao
+diện. Mục 15.2.1 gọi đúng tên chuyện này: <strong>interlock viết bằng code thì không ai rà soát được</strong>.
+Người kiểm định an toàn không mở file <code>.xaml.cs</code> ra đọc.</p>
+</blockquote>
+<h3>G.15.4  So với cấu trúc sách đề xuất — và cái giá của cả hai bên</h3>
+<p><strong>Bảng G.12 — Hai cách tổ chức, đối chiếu thẳng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Mã thật (hình dạng phổ biến)</strong></th>
+<th><strong>Sách đề xuất (mục 7.4, Phụ lục G)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Driver hãng</td>
+<td>đã tách ra (93 % ngoài giao diện)</td>
+<td>tách ra, sau một interface năng lực</td>
+</tr>
+<tr>
+<td>Luật nghiệp vụ</td>
+<td>trong hàm xử lý nút</td>
+<td>trong lớp riêng, không biết gì về cửa sổ</td>
+</tr>
+<tr>
+<td>Luật an toàn</td>
+<td>chuỗi viết cứng trong giao diện</td>
+<td>dữ liệu cấu hình + một cửa kiểm tập trung</td>
+</tr>
+<tr>
+<td>Chờ thiết bị</td>
+<td><code>Thread.Sleep</code> trên luồng giao diện</td>
+<td>hạn giờ + lệnh dừng (G.14.5)</td>
+</tr>
+<tr>
+<td>Báo lỗi</td>
+<td><code>MessageBox</code> tại chỗ</td>
+<td>ném <code>AlarmException</code>, tầng trên quyết định hiển thị</td>
+</tr>
+<tr>
+<td>Thêm một nút mới</td>
+<td>chép một hàm cũ rồi sửa</td>
+<td>thêm một lệnh vào lớp quyết định</td>
+</tr>
+<tr>
+<td>Kiểm thử</td>
+<td>cần cửa sổ thật, người thật</td>
+<td>chạy trong console</td>
+</tr>
+</tbody></table></div>
+<p>Nhưng nói cho đủ: <strong>cách tổ chức của mã thật không phải không có lý.</strong></p>
+<blockquote>
+<p>💡 <strong>Ba lý do cách làm ấy tồn tại, và chúng đều là lý do thật:</strong></p>
+<ol>
+<li><strong>Nó nhanh.</strong> Thêm một nút để thử một van mới: mở trình thiết kế, kéo một nút, gõ bốn dòng.
+Cách của sách đòi thêm một phương thức vào lớp quyết định, có khi thêm một mục cấu hình.
+Lúc đang chỉnh máy tại hiện trường, bốn dòng thắng.</li>
+<li><strong>Máy chỉ có một.</strong> Phần lớn phần mềm máy chạy trên <strong>đúng một cỗ máy</strong>, không phát hành cho
+nghìn người dùng. Cái giá của &quot;khó sửa về sau&quot; thấp hơn nhiều so với phần mềm thương mại.</li>
+<li><strong>Không ai đòi kiểm thử.</strong> Khách nghiệm thu bằng cách chạy máy, không bằng cách chạy phép kiểm.</li>
+</ol>
+<p>Ba lý do đó đúng — cho tới lúc cỗ máy thứ hai xuất hiện. Từ cỗ máy thứ hai trở đi, mọi chuỗi viết
+cứng là một chỗ phải nhớ sửa, và &quot;nhớ&quot; là thứ hỏng trước tiên.</p>
+</blockquote>
+<h3>G.15.5  Đo lại: phép kiểm với tới đâu</h3>
+<p>Đây là chỗ mục này trả lời câu hỏi thứ ba, và nó trả lời <strong>bằng mã chạy được</strong> chứ không bằng lập
+luận. Cùng một hành vi — <em>đảo một cổng ra, hỏi trước nếu là tín hiệu bắt tay, chặn nếu mạch an toàn
+hở</em> — viết theo hai cách, rồi đếm số phép kiểm viết được cho mỗi cách:</p>
+<p><strong>Bảng G.13 — Cùng một hành vi, hai cấu trúc, số phép kiểm viết được</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Muốn kiểm điều gì</th>
+<th>Kiểu &quot;làm thẳng trong nút&quot;</th>
+<th>Kiểu &quot;tách lớp quyết định&quot;</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tín hiệu thường thì đảo ngay, không hỏi</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Tín hiệu bắt tay thì <strong>có hỏi</strong></td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Câu hỏi <strong>nói rõ lý do</strong>, không phải &quot;Bạn có chắc không?&quot;</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Người dùng huỷ → <strong>không ghi gì</strong> xuống cổng ra</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Dừng khẩn chặn <strong>trước cả khi kịp hỏi</strong></td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Màn chắn bị che → cũng chặn</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Từ chối luôn kèm lý do đọc được</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Đảo hai lần thì về trạng thái cũ</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><strong>Tổng phép kiểm chạy được</strong></td>
+<td><strong>0</strong></td>
+<td><strong>20</strong></td>
+</tr>
+</tbody></table></div>
+<p>Cột trái là <strong>không</strong> — không phải &quot;khó&quot;, mà là không: muốn kiểm một trong tám dòng đó, bạn phải
+dựng được một cửa sổ thật, bấm được một nút thật, và trả lời được một hộp thoại thật. Ba thứ đó
+không chạy trong một máy chủ tích hợp liên tục.</p>
+<p>Mã của cả hai kiểu nằm ở <code>source/MeoBench/BonKieuNutBam.cs</code>, phép kiểm ở <code>KiemCauTruc.cs</code>:</p>
+<pre><code class="language-bash">cd source/MeoBench
+dotnet run -- G15
+</code></pre>
+<p>Và đây là toàn bộ thân hàm nút bấm sau khi tách — <strong>tất cả</strong> những gì còn lại trong file giao diện:</p>
+<pre><code class="language-csharp">public static string KhiBamNutBat(QuyetDinhBatTinHieu quyetDinh, string tenTinHieu)
+{
+    var kq = quyetDinh.ThuDao(tenTinHieu);
+    return kq.ChoPhep ? string.Empty : kq.LyDo;   // chuỗi rỗng = không cần báo gì
+}
+</code></pre>
+<p>Hai dòng. Không luật, không hộp thoại, không hạn giờ, không <code>Sleep</code>. Và vì nó không quyết định gì
+nên <strong>không có gì trong đó đáng kiểm thử</strong> — đúng như mong muốn.</p>
+<blockquote>
+<p>📌 <strong>Một chi tiết nhỏ mà thật:</strong> trong dự án thật hàm này tên là <code>btnBat_Click</code> — do trình thiết
+kế đặt, và cái tên đó <strong>vi phạm chính luật CA1707 của sách</strong> (không gạch dưới trong tên). Trình
+phân tích bắt được nó khi tôi viết mã mẫu. Đó là một lý do nữa để thân hàm ấy rỗng: nó thuộc về
+công cụ, không thuộc về bạn.</p>
+</blockquote>
+<h3>G.15.6  Lối đi nhỏ nhất, không viết lại cả phần mềm</h3>
+<p>Mười hai dự án không có phép kiểm nào không thể sửa bằng cách viết lại. Lối đi rẻ nhất, rút ra từ
+đúng những con số trên:</p>
+<ol>
+<li><strong>Chọn MỘT nút</strong> — nút nguy hiểm nhất, thường là nút có <code>MessageBox</code> xác nhận. Nút đó đang giữ
+một luật an toàn, và luật đó đang không ai rà soát được.</li>
+<li><strong>Đẩy thân hàm xuống một lớp mới</strong>, đổi mọi thứ nó chạm tới thành tham số hàm dựng: cổng ra,
+cách hỏi người dùng, tín hiệu an toàn. Đây là bước duy nhất tốn công, và nó tốn khoảng một giờ.</li>
+<li><strong>Đem danh sách chuỗi viết cứng ra tệp cấu hình</strong> (mục G.12). Từ đây, đổi danh sách không phải
+build lại phần mềm — và người kiểm định đọc được nó.</li>
+<li><strong>Viết phép kiểm cho ba ca</strong>: cho phép, bị chặn vì an toàn, bị huỷ bởi người dùng. Ba phép kiểm
+đó chạy trong console, không cần máy.</li>
+<li><strong>Nút thứ hai thì dễ hơn nhiều</strong>, vì ba interface ở bước 2 đã có sẵn.</li>
+</ol>
+<blockquote>
+<p>💡 <strong>Đừng bắt đầu bằng việc chuyển cả phần mềm sang <code>async</code>.</strong> Mục G.14.3 đã đo: dạng đồng bộ là
+do SDK hãng áp xuống, không phải do người viết chọn, và chuyển sang <code>async</code> <strong>không làm mã dễ
+kiểm thử hơn một chút nào</strong>. Thứ làm mã dễ kiểm thử là <strong>ránh cắm</strong> — và ránh cắm thêm được vào
+mã đồng bộ mà không đụng gì tới <code>async</code>. Toàn bộ hai mươi phép kiểm ở Bảng G.13 là <strong>mã đồng bộ</strong>.</p>
 </blockquote>
 <!-- SECTION: Phu_Luc_H_Khai_Niem -->
 <hr>

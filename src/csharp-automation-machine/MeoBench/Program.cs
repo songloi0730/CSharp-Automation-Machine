@@ -61,6 +61,7 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["H"]   = KiemPhuLucH.Chay,            // Phụ lục H: khẳng định về ngôn ngữ C#
     ["G14"] = KiemNguoc.Chay,              // kiểm ngược: đối chiếu bất biến với mã thật
     ["I"]   = KiemBaiXuongSong.Chay,       // Phụ lục I: 20 lời giải xương sống
+    ["G15"] = KiemCauTruc.Chay,            // cấu trúc: kiểm thử với tới đâu
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -98,6 +99,7 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemPhuLucH.Chay();
     await KiemNguoc.Chay();
     await KiemBaiXuongSong.Chay();
+    await KiemCauTruc.Chay();
 }
 else
 {

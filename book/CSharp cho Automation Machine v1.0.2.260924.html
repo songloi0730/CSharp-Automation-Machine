@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.2.260922</title>
+<title>C# cho Automation Machine — v1.0.2.260924</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -618,7 +618,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.2.260922</td>
+<td>v1.0.2.260924</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -2652,7 +2652,7 @@ hại&quot;.</p>
 <tr>
 <td>Tên class</td>
 <td><code>AxisController</code></td>
-<td>Theo quy ước <code>PascalCase</code> (mục 3.6.1)</td>
+<td>Theo quy ước <code>PascalCase</code> (Bảng 3.0e, cuối phần này)</td>
 </tr>
 <tr>
 <td>Thân class <code>{ }</code></td>
@@ -2660,18 +2660,47 @@ hại&quot;.</p>
 <td>Chứa field, property, constructor, method của class này</td>
 </tr>
 </tbody></table></div>
-<p><strong>Ví dụ tối giản</strong> (không có ý nghĩa nghiệp vụ, chỉ để thấy hình dạng):</p>
+<p><strong>Ví dụ tối giản</strong> (không có ý nghĩa nghiệp vụ, chỉ để thấy hình dạng), viết ở dạng đầy đủ trước:</p>
 <pre><code class="language-csharp">public sealed class Counter
 {
     private int _value;                  // field
 
-    public Counter(int start) =&gt; _value = start;   // constructor
+    public Counter(int start)            // constructor
+    {
+        _value = start;
+    }
 
-    public int Value =&gt; _value;          // property chỉ đọc
+    public int Value                     // property chỉ đọc
+    {
+        get { return _value; }
+    }
 
-    public void Increment() =&gt; _value++; // method
+    public void Increment()              // method
+    {
+        _value++;
+    }
 }
 </code></pre>
+<p>Khi thân chỉ có <strong>một câu lệnh</strong>, C# cho bỏ cặp <code>{ }</code> và viết gọn bằng mũi tên <code>=&gt;</code>. Class trên viết
+gọn thành:</p>
+<pre><code class="language-csharp">public sealed class Counter
+{
+    private int _value;
+
+    public Counter(int start) =&gt; _value = start;   // &quot;khi tạo: gán _value = start&quot;
+    public int Value =&gt; _value;                    // &quot;khi đọc Value: trả về _value&quot;
+    public void Increment() =&gt; _value++;           // &quot;khi gọi Increment: tăng _value&quot;
+}
+</code></pre>
+<p>Hai bản <strong>giống hệt nhau</strong> về hành vi — trình biên dịch dịch ra cùng một thứ. Đọc <code>=&gt;</code> là <em>&quot;làm đúng
+việc này&quot;</em> (với method, constructor) hoặc <em>&quot;trả về cái này&quot;</em> (với property). Sách dùng dạng gọn rất
+nhiều, nên gặp <code>=&gt;</code> ngay sau tên một method hay property thì biết: thân của nó chỉ có một câu.</p>
+<blockquote>
+<p>⚠️ <strong>Cùng ký hiệu <code>=&gt;</code>, một nghĩa thứ hai sẽ gặp ở Chương 4.</strong> Khi <code>=&gt;</code> đứng <strong>bên trong ngoặc đơn
+của một lời gọi hàm</strong> — ví dụ <code>ds.Where(x =&gt; x &gt; 0)</code> — nó là <em>lambda</em>, một hàm nhỏ không tên (mục
+4.4.2). Phân biệt bằng vị trí: ngay sau tên method/property là thân rút gọn; nằm trong ngoặc của một
+lời gọi là lambda.</p>
+</blockquote>
 <h3>Khai báo <code>interface</code></h3>
 <pre><code>[access modifier] interface ITênInterface
 {
@@ -2772,7 +2801,7 @@ hại&quot;.</p>
 <td><code>public double X { get; init; }</code></td>
 <td>Có</td>
 <td>Chỉ lúc khởi tạo object (object-initializer), không sau đó</td>
-<td>Thường dùng với <code>record</code> (Chương 7, 10)</td>
+<td>Thường dùng với <code>record</code> (Phụ lục E, mục E.13 cặp 5; mục 11.1.2)</td>
 </tr>
 <tr>
 <td><code>public double X =&gt; bieu_thuc;</code></td>
@@ -2835,6 +2864,205 @@ hại&quot;.</p>
 <td>Mục 3.5.1</td>
 </tr>
 </tbody></table></div>
+<h3>Quy ước đặt tên</h3>
+<p>Trình biên dịch không bắt buộc, nhưng gần như mọi mã nguồn C# — kể cả sách này — đặt tên theo cùng
+một quy ước. Nhờ đó <strong>nhìn tên là biết loại</strong>, không phải lần lên đầu class để tra:</p>
+<p><strong>Bảng 3.0e — Quy ước đặt tên trong C#</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Quy ước</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Class, struct, record, enum</td>
+<td><code>PascalCase</code> — viết hoa chữ đầu mỗi từ</td>
+<td><code>AxisController</code>, <code>MachineState</code></td>
+</tr>
+<tr>
+<td>Method, property <code>public</code></td>
+<td><code>PascalCase</code> — method thường là động từ</td>
+<td><code>MoveAbs</code>, <code>Position</code></td>
+</tr>
+<tr>
+<td>Interface</td>
+<td><code>I</code> + <code>PascalCase</code></td>
+<td><code>IMotionDriver</code></td>
+</tr>
+<tr>
+<td>Method bất đồng bộ</td>
+<td>kết thúc bằng <code>Async</code></td>
+<td><code>HomeAsync</code> (Chương 5)</td>
+</tr>
+<tr>
+<td>Field <code>private</code></td>
+<td><code>_camelCase</code> — gạch dưới, chữ đầu viết thường</td>
+<td><code>_driver</code>, <code>_value</code></td>
+</tr>
+<tr>
+<td>Biến cục bộ, tham số</td>
+<td><code>camelCase</code> — không gạch dưới</td>
+<td><code>axisId</code>, <code>timeoutMs</code></td>
+</tr>
+<tr>
+<td>Hằng số <code>const</code></td>
+<td><code>PascalCase</code></td>
+<td><code>MaxAxisCount</code></td>
+</tr>
+</tbody></table></div>
+<p>Dấu <code>_</code> đầu tên chỉ mang đúng một ý: đây là <strong>field</strong> — sống suốt đời object, khác biến cục bộ chỉ
+sống trong một method. Nhìn <code>_value = start;</code> trong constructor là biết đang gán vào field đã khai ở
+đầu class, không phải khai một biến mới.</p>
+<h3>Những ký hiệu bạn sẽ gặp trước khi được học kỹ</h3>
+<p>Ví dụ trong các chương đầu là <strong>mã thật</strong> — viết theo đúng cách một phần mềm máy được viết — nên chúng
+dùng vài ký hiệu mà phải vài chương sau sách mới dạy đầy đủ. Viết ví dụ giả để né các ký hiệu đó thì
+dễ hơn, nhưng bạn sẽ học một thứ C# không ai viết ngoài đời. Bảng dưới là cách dung hoà: nó đủ để
+<strong>đọc hiểu</strong> ví dụ ngay từ bây giờ; hiểu <strong>vì sao</strong> thì theo cột cuối.</p>
+<p><strong>Bảng 3.0f — Ký hiệu sẽ gặp sớm, đọc thế nào, học kỹ ở đâu</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Ký hiệu</th>
+<th>Ví dụ</th>
+<th>Đọc là</th>
+<th>Học kỹ ở</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var</code></td>
+<td><code>var ds = new List&lt;int&gt;();</code></td>
+<td>&quot;để trình biên dịch tự suy ra kiểu từ vế phải&quot; — kiểu vẫn cố định, không phải kiểu động</td>
+<td>mục 3.2.1</td>
+</tr>
+<tr>
+<td><code>new()</code></td>
+<td><code>List&lt;int&gt; ds = new();</code></td>
+<td>&quot;tạo mới, kiểu lấy theo vế trái&quot;</td>
+<td>mục 3.6.1</td>
+</tr>
+<tr>
+<td><code>new … { A = 1 }</code></td>
+<td><code>new Thread(f) { IsBackground = true }</code></td>
+<td><em>object initializer</em>: tạo object rồi gán luôn thuộc tính, gọn hơn viết thêm dòng</td>
+<td>mục 3.6.1</td>
+</tr>
+<tr>
+<td><code>$&quot;…{x}…&quot;</code></td>
+<td><code>$&quot;Trục {ten} lỗi&quot;</code></td>
+<td>chuỗi có chèn giá trị biến vào chỗ <code>{ }</code></td>
+<td>mục 3.5.3</td>
+</tr>
+<tr>
+<td><code>&lt;T&gt;</code> sau tên kiểu</td>
+<td><code>List&lt;double&gt;</code>, <code>class RingBuffer&lt;T&gt;</code></td>
+<td>&quot;danh sách <strong>chỉ</strong> chứa <code>double</code>&quot; — kiểu được tham số hoá. Khi <em>tự khai báo</em> thì <code>T</code> là chỗ trống cho kiểu phần tử, người dùng điền vào lúc tạo: <code>new RingBuffer&lt;double&gt;(100)</code></td>
+<td>mục 3.7.1 (dùng), 4.5 (tự viết)</td>
+</tr>
+<tr>
+<td><code>out var</code></td>
+<td><code>q.TryDequeue(out var cmd)</code></td>
+<td>hàm trả kết quả <strong>qua tham số</strong>: lấy được thì trả <code>true</code> và <code>cmd</code> có giá trị, không lấy được thì trả <code>false</code></td>
+<td>mục 3.4.1</td>
+</tr>
+<tr>
+<td><code>? :</code></td>
+<td><code>ok ? &quot;ĐẠT&quot; : &quot;LỖI&quot;</code></td>
+<td>&quot;nếu <code>ok</code> thì lấy <code>&quot;ĐẠT&quot;</code>, ngược lại lấy <code>&quot;LỖI&quot;</code>&quot; — <code>if/else</code> gói trong một biểu thức</td>
+<td>mục 3.2.3</td>
+</tr>
+<tr>
+<td><code>?</code> sau tên kiểu</td>
+<td><code>string? ghiChu</code></td>
+<td>&quot;biến này được phép không có giá trị (<code>null</code>)&quot;</td>
+<td>mục 5.6</td>
+</tr>
+<tr>
+<td><code>??</code></td>
+<td><code>ghiChu ?? &quot;—&quot;</code></td>
+<td>&quot;nếu vế trái là <code>null</code> thì lấy vế phải&quot;</td>
+<td>mục 5.6</td>
+</tr>
+<tr>
+<td><code>?.</code></td>
+<td><code>logger?.Log(x)</code></td>
+<td>&quot;nếu <code>logger</code> là <code>null</code> thì bỏ qua, không gọi&quot;</td>
+<td>mục 5.6</td>
+</tr>
+<tr>
+<td><code>: Tên</code> sau tên class</td>
+<td><code>class ServoAxis : IAxis</code></td>
+<td>&quot;<code>ServoAxis</code> thực hiện hợp đồng <code>IAxis</code>&quot; — hoặc kế thừa lớp <code>Tên</code></td>
+<td>mục 4.2, 4.3</td>
+</tr>
+<tr>
+<td><code>override</code></td>
+<td><code>public override string ToString()</code></td>
+<td>&quot;viết lại một hành vi mà lớp cha đã có sẵn&quot;</td>
+<td>mục 4.3.3</td>
+</tr>
+<tr>
+<td><code>class X(…)</code></td>
+<td><code>sealed class Scaled(ISensor inner)</code></td>
+<td><em>primary constructor</em>: tham số hàm dựng viết ngay sau tên class</td>
+<td>mục 4.1.2</td>
+</tr>
+<tr>
+<td>tên method <strong>không có</strong> <code>()</code></td>
+<td><code>new Thread(WorkerLoop)</code></td>
+<td>truyền <strong>chính hàm</strong> (chưa gọi) để nơi khác gọi sau</td>
+<td>mục 4.4.1</td>
+</tr>
+<tr>
+<td><code>x =&gt; …</code> trong ngoặc của lời gọi</td>
+<td><code>ds.Where(x =&gt; x &gt; 0)</code></td>
+<td><em>lambda</em>: &quot;với mỗi <code>x</code>, trả về <code>x &gt; 0</code>&quot; — hàm nhỏ không tên</td>
+<td>mục 4.4.2</td>
+</tr>
+<tr>
+<td><code>.Where(…).Select(…)</code></td>
+<td>chuỗi lời gọi nối bằng dấu chấm</td>
+<td><em>LINQ</em>: truy vấn trên danh sách, đọc từ trái sang phải</td>
+<td>mục 4.6</td>
+</tr>
+<tr>
+<td><code>[Tên]</code> đứng trên một khai báo</td>
+<td><code>[Flags]</code>, <code>[AlarmInfo(...)]</code></td>
+<td><em>attribute</em>: nhãn gắn thêm thông tin cho trình biên dịch hay công cụ — tự nó không chạy gì</td>
+<td>mục 15.1.3; Phụ lục H mục H.7</td>
+</tr>
+<tr>
+<td><code>async</code> / <code>await</code> / <code>Task</code></td>
+<td><code>await axis.HomeAsync();</code></td>
+<td>&quot;bắt đầu việc tốn thời gian, chờ nó xong mà chương trình không đứng hình&quot;</td>
+<td>mục 5.1</td>
+</tr>
+<tr>
+<td><code>CancellationToken ct</code></td>
+<td><code>ReadAsync(ct)</code></td>
+<td>&quot;nút dừng&quot; do bên gọi đưa vào — hàm phải để ý nó để dừng khi được yêu cầu</td>
+<td>mục 5.2</td>
+</tr>
+<tr>
+<td><code>using var</code></td>
+<td><code>using var f = File.OpenRead(p);</code></td>
+<td>&quot;tự đóng, giải phóng <code>f</code> khi ra khỏi khối lệnh&quot;</td>
+<td>mục 3.6.2, 5.5</td>
+</tr>
+<tr>
+<td><code>catch (…) when (…)</code></td>
+<td><code>catch (Exception) when (!ct.IsCancellationRequested)</code></td>
+<td>&quot;chỉ bắt lỗi này <strong>khi</strong> điều kiện sau <code>when</code> đúng&quot;</td>
+<td>mục 7.5.4</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>📌 <strong>Bảng này là một lời hứa của sách.</strong> Mọi ký hiệu xuất hiện trong ví dụ ở Chương 3–4 hoặc đã được
+dạy trước chỗ đó, hoặc có mặt trong bảng này. Gặp một ký hiệu lạ không thuộc cả hai — đó là lỗi của
+sách, không phải của bạn. (Lời hứa này được một công cụ kiểm tra tự động mỗi lần sách được biên
+dịch lại.)</p>
+</blockquote>
 <p>Từ đây trở đi, mỗi khi một class/method/property mới xuất hiện, bạn có thể quay lại các bảng trên để đối chiếu hình dạng — sách sẽ không nhắc lại &quot;đây là access modifier, đây là kiểu trả về&quot; mỗi lần nữa.</p>
 <hr>
 <h2 id="31-h-thng-kiu-và-b-cc-b-nh">3.1  Hệ thống kiểu và bố cục bộ nhớ</h2>
@@ -3125,6 +3353,19 @@ so với tổng số field), điều không thể làm được khi hằng số 
 <p>⚠️ <strong>Cảnh báo:</strong> KHÔNG so sánh số thực bằng <code>==</code> trong logic điều khiển. <code>if (position == 100.0)</code> gần như không bao giờ đúng vì sai số dấu phẩy động — trục có thể dừng ở 99.9997mm. Luôn so sánh theo <strong>ngưỡng (tolerance)</strong>: <code>if (Math.Abs(position - target) &lt; 0.01)</code>. Một servo &quot;không bao giờ báo tới vị trí&quot; thường là do lỗi này.</p>
 </blockquote>
 <p>Toán tử logic (<code>&amp;&amp;</code>, <code>||</code>, <code>!</code>) là nền tảng của interlock và safety condition — đúng phần mà kỹ sư PLC quen nhất qua các rung điều kiện. Nguyên tắc: nếu một điều kiện khó đọc, nó sẽ khó bảo trì và dễ sai.</p>
+<p><strong>Toán tử điều kiện <code>? :</code></strong> — hay gọi là toán tử <em>ba ngôi</em> vì có ba vế — gói một <code>if/else</code> vào <strong>một
+biểu thức</strong>. Dùng khi cần <em>chọn một trong hai giá trị</em>, không phải chọn một trong hai hành động:</p>
+<pre><code class="language-csharp">// Dài: if/else chỉ để chọn MỘT giá trị
+string result1;
+if (thickness &lt;= upperLimit) result1 = &quot;PASS&quot;;
+else                         result1 = &quot;FAIL&quot;;
+
+// Gọn: cùng ý, một dòng — đọc là &quot;nếu … thì PASS, ngược lại FAIL&quot;
+string result2 = thickness &lt;= upperLimit ? &quot;PASS&quot; : &quot;FAIL&quot;;
+</code></pre>
+<p>Hai bản giống hệt nhau về hành vi. Một tầng thì gọn hơn <code>if</code>; lồng hai tầng (<code>a ? x : b ? y : z</code>)
+vẫn đọc được và sách có dùng ở vài chỗ; từ ba tầng trở lên thì nên đổi sang <code>switch</code> (mục 3.3.1).
+Và đừng dùng <code>? :</code> để <em>làm</em> việc — gọi hàm có tác dụng phụ ở hai vế — vì nó sinh ra để <em>chọn giá trị</em>.</p>
 <p><strong>Toán tử bitwise</strong> <!--idx:Toán tử bitwise--> (<code>&amp; | ^ ~ &lt;&lt; &gt;&gt;</code>) đặc biệt quan trọng khi xử lý I/O dạng word — đúng kiểu PLC đọc một word 16 bit rồi mask từng bit:</p>
 <p><strong>Code 3.5 — Đọc/ghi Digital I/O bằng toán tử bitwise</strong></p>
 <pre><code class="language-csharp">// Mỗi bit trong 1 word đại diện 1 sensor (giống thanh ghi I/O của PLC)
@@ -4165,7 +4406,9 @@ phần mềm.</p>
 (N2) trông giống nhau thoáng qua nhưng có/không dấu phẩy đổi hẳn cách đọc trong ngữ cảnh số lớn.</p>
 <h3>3.6.1  File text và logger không chặn luồng</h3>
 <p>File text hợp cho log vận hành và config đơn giản — mạnh về truy vết, đọc được bằng mắt. Một dòng log tốt trả lời nhanh: <em>khi nào, máy nào, mode/state nào, làm gì, kết quả ra sao</em>. Điểm mấu chốt là tách việc ghi file khỏi luồng điều khiển bằng một hàng đợi + thread nền:</p>
-<p><strong>Code 3.16 — Logger ghi text theo batch, không chặn điều khiển</strong></p>
+<p>Lớp dưới đây có hai nửa chạy trên <strong>hai luồng khác nhau</strong>, nên đọc từng nửa một. Nửa đầu là phần luồng
+điều khiển nhìn thấy:</p>
+<p><strong>Code 3.16 — Logger không chặn điều khiển (nửa 1: phía luồng điều khiển)</strong></p>
 <pre><code class="language-csharp">public sealed class TextFileLogger
 {
     private readonly BlockingCollection&lt;string&gt; _queue = new();
@@ -4186,7 +4429,21 @@ phần mềm.</p>
     // Gọi khi tắt máy: worker ghi nốt phần còn lại rồi mới kết thúc
     public void Stop() =&gt; _queue.CompleteAdding();
 
-    // Thread nền: rút từng dòng khỏi hàng đợi, ghi ra file theo ngày
+    // … nửa 2 (WorkerLoop) ở Code 3.16b, vẫn nằm trong class này
+</code></pre>
+<p>Dòng đáng đọc chậm nhất là <code>_worker = new Thread(WorkerLoop) { IsBackground = true };</code> — nó gói ba
+việc vào một dòng:</p>
+<ul>
+<li><code>new Thread(WorkerLoop)</code> — tạo một luồng mới và <strong>đưa cho nó chính hàm <code>WorkerLoop</code></strong> để chạy. Tên hàm
+đứng một mình, không có <code>()</code>, nghĩa là <em>&quot;đây là hàm, hãy gọi nó sau&quot;</em> chứ không phải <em>&quot;gọi nó ngay&quot;</em>
+(mục 4.4.1).</li>
+<li><code>{ IsBackground = true }</code> — <em>object initializer</em>: tạo xong thì gán luôn thuộc tính. Luồng nền không
+giữ chương trình lại khi người dùng tắt máy.</li>
+<li><code>_worker.Start()</code> ở dòng sau mới thật sự cho luồng chạy.</li>
+</ul>
+<p>Nửa thứ hai là thứ chạy trên luồng nền đó — luồng điều khiển không bao giờ đi vào đây:</p>
+<p><strong>Code 3.16b — Logger không chặn điều khiển (nửa 2: luồng nền ghi đĩa)</strong></p>
+<pre><code class="language-csharp">    // Thread nền: rút từng dòng khỏi hàng đợi, ghi ra file theo ngày
     private void WorkerLoop()
     {
         foreach (var line in _queue.GetConsumingEnumerable())
@@ -4195,47 +4452,17 @@ phần mềm.</p>
             File.AppendAllText(path, line + Environment.NewLine);
         }
     }
-}
+}   // hết class TextFileLogger
 </code></pre>
+<p><code>GetConsumingEnumerable()</code> là chỗ luồng nền <strong>ngồi chờ</strong>: hàng đợi rỗng thì nó đứng yên, không tốn CPU;
+có dòng mới là nó chạy tiếp. Khi <code>Stop()</code> gọi <code>CompleteAdding()</code>, vòng <code>foreach</code> ghi nốt những dòng còn
+lại rồi kết thúc.</p>
 <p>Ý chính dễ nhớ: luồng điều khiển gọi <code>Log(...)</code> để bỏ dòng log vào hàng đợi rồi đi tiếp ngay; việc ghi đĩa (chậm) do thread nền lo — nên vòng quét không bao giờ bị chặn vì I/O.</p>
 <blockquote>
-<p>📌 <strong>Quy ước đặt tên trong C# — vì sao có dấu <code>_</code> trước <code>_worker</code>:</strong> khác C
-(nơi coder tự do đặt tên, mỗi dự án một kiểu), cộng đồng C# theo một quy ước
-gần như thống nhất — compiler KHÔNG bắt buộc, nhưng gần như mọi codebase C#
-(kể cả sách này) đều theo, vì nhìn tên là biết ngay &quot;cái này là gì&quot; mà không
-cần lần lên đầu class để tra:</p>
-<div class="table-wrap"><table>
-<thead>
-<tr>
-<th>Loại định danh</th>
-<th>Quy ước</th>
-<th>Ví dụ trong Code 3.16</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Field cấp lớp (<code>private</code>)</td>
-<td><code>_camelCase</code> — gạch dưới + chữ thường đầu</td>
-<td><code>_queue</code>, <code>_worker</code>, <code>_logDir</code></td>
-</tr>
-<tr>
-<td>Biến cục bộ / tham số</td>
-<td><code>camelCase</code> — chữ thường đầu, KHÔNG gạch dưới</td>
-<td><code>logDir</code> (tham số), <code>line</code>, <code>path</code></td>
-</tr>
-<tr>
-<td>Class / method / property <code>public</code></td>
-<td><code>PascalCase</code> — viết hoa chữ đầu mỗi từ</td>
-<td><code>TextFileLogger</code>, <code>Log</code>, <code>Stop</code></td>
-</tr>
-</tbody></table></div>
-<p>Dấu <code>_</code> đầu tên chỉ mang đúng một ý nghĩa: đây là <strong>field</strong> — biến sống suốt
-vòng đời của object (gán một lần trong constructor, dùng lại ở mọi method
-khác trong class) — khác biến cục bộ chỉ sống trong phạm vi một method rồi
-mất. Nhìn dòng <code>_worker = new Thread(...)</code> trong constructor là biết ngay
-đang gán vào field đã khai báo ở đầu class, không phải khai một biến mới
-trùng tên (C# không cho khai 2 biến trùng tên trong cùng phạm vi — nếu đó là
-khai biến mới, compiler sẽ báo lỗi). Quy ước này dùng lại xuyên suốt sách,
-không nhắc lại nữa từ đây.</p>
+<p>📌 <strong>Tên <code>_queue</code>, <code>_worker</code>, <code>_logDir</code></strong> theo quy ước ở Bảng 3.0e đầu chương: dấu <code>_</code> nghĩa là
+<strong>field</strong> — gán một lần trong constructor, dùng lại ở mọi method. Còn <code>logDir</code> không có <code>_</code> vì nó là
+<em>tham số</em> của constructor, chỉ sống trong constructor. Nhìn <code>_logDir = logDir;</code> là thấy cả hai loại
+trên cùng một dòng: lấy giá trị của tham số, cất vào field để các method khác dùng tiếp.</p>
 <p>⚠️ <strong>Bẫy dễ tự mắc: đặt tên field TRÙNG tên KIỂU của chính nó.</strong> <code>_camelCase</code> giúp phân biệt field
 với biến cục bộ — nhưng nếu bỏ qua quy ước này, một field kiểu <code>Random</code> đặt tên PascalCase <code>Random</code>
 (<code>private Random Random = new Random();</code>) sẽ khiến <code>Random.Next()</code> ở nơi khác trong class trông
@@ -4254,7 +4481,7 @@ làm khó chính mình khi đọc lại code sau này — luôn giữ đúng <co
 <p>Log gần như luôn ghi <strong>nối đuôi (append)</strong> và <strong>chia file theo ngày/giờ (rolling)</strong> để tránh file khổng lồ. Flush quá thường xuyên thì chậm; quá thưa thì rủi ro mất log khi mất điện — ghi theo batch là điểm cân bằng.</p>
 <h3>3.6.2  File binary và bài toán phiên bản</h3>
 <p>Binary hợp khi cần dung lượng nhỏ, đọc/ghi nhanh, cấu trúc cố định (recipe dạng số, historical data). Nhưng binary rất dễ &quot;chết&quot; khi cập nhật phần mềm nếu không có phiên bản. Quy tắc: <strong>luôn có header tối thiểu</strong> gồm <em>magic number</em> (nhận diện file) và <em>version</em> (chọn parser đúng):</p>
-<p><strong>Code 3.17 — Ghi/đọc recipe binary có header version</strong></p>
+<p><strong>Code 3.17 — Ghi recipe binary có header version</strong></p>
 <pre><code class="language-csharp">public static class RecipeBinaryIO
 {
     private const int Magic   = 0x41524358;   // &quot;ARCX&quot; — nhận diện file
@@ -4272,7 +4499,14 @@ làm khó chính mình khi đọc lại code sau này — luôn giữ đúng <co
         bw.Write(maxAcc);
     }
 
-    public static bool TryLoad(string path, out int modelId, out double maxVel, out double maxAcc)
+    // … TryLoad ở Code 3.17b, vẫn nằm trong class này
+</code></pre>
+<p>Từ khoá <code>using</code> ở đây (<code>using var fs = ...</code>) đảm bảo file/stream được <strong>đóng và giải phóng</strong> tự động khi
+ra khỏi scope, kể cả khi có lỗi — đây là cách C# quản lý tài nguyên cần dọn dẹp.</p>
+<p>Đọc lại phải theo <strong>đúng thứ tự đã ghi</strong>, và kiểm hai con số đầu trước khi tin phần còn lại — một file
+không phải của mình, hay của phiên bản khác, thì dừng ngay:</p>
+<p><strong>Code 3.17b — Đọc recipe binary, kiểm header trước khi tin dữ liệu</strong></p>
+<pre><code class="language-csharp">    public static bool TryLoad(string path, out int modelId, out double maxVel, out double maxAcc)
     {
         modelId = 0; maxVel = 0; maxAcc = 0;
         using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -4287,23 +4521,26 @@ làm khó chính mình khi đọc lại code sau này — luôn giữ đúng <co
         maxAcc  = br.ReadDouble();
         return true;
     }
-}
+}   // hết class RecipeBinaryIO
 </code></pre>
-<p>Từ khoá <code>using</code> ở đây (<code>using var fs = ...</code>) đảm bảo file/stream được <strong>đóng và giải phóng</strong> tự động khi ra khỏi scope, kể cả khi có lỗi — đây là cách C# quản lý tài nguyên cần dọn dẹp.</p>
 <blockquote>
 <p>🔍 <strong>Đào sâu thêm:</strong> Cơ chế đằng sau <code>using</code> là interface <code>IDisposable</code> (và <code>IAsyncDisposable</code> cho dọn dẹp bất đồng bộ). Mọi đối tượng giữ tài nguyên hệ thống (file, socket, handle SDK) đều nên hỗ trợ nó. Tìm hiểu thêm ở Chương 5 và Chương 13.</p>
 </blockquote>
 <h3>3.6.3  CSV và JSON</h3>
 <p><strong>CSV</strong> phổ biến để export dữ liệu sản xuất (dễ mở bằng Excel, dễ trao đổi). Bẫy lớn nhất là <strong>culture số</strong>: <code>12.34</code> ở môi trường này thành <code>12,34</code> ở môi trường khác. Luôn ghi số bằng <code>InvariantCulture</code> và thời gian bằng ISO. <strong>JSON</strong> là lựa chọn tốt nhất cho config: nhiều tham số có phân nhóm, dễ đọc, dễ diff trên Git, đổi được mà không build lại phần mềm.</p>
-<p><strong>Code 3.18 — Đọc/ghi JSON config theo atomic write</strong></p>
+<p><strong>Code 3.18 — Lớp cấu hình: chỉ là dữ liệu</strong></p>
 <pre><code class="language-csharp">public sealed class MachineConfig
 {
     public int    ConfigVersion { get; set; } = 1;   // để migrate khi format đổi
     public string MachineId     { get; set; } = &quot;M01&quot;;
     public double MaxVelocity   { get; set; } = 100.0;
 }
-
-public static class JsonConfigIO
+</code></pre>
+<p><code>= 1</code> đứng sau <code>{ get; set; }</code> là <strong>giá trị mặc định</strong> — object mới tạo ra đã có sẵn giá trị đó, file
+cấu hình thiếu trường nào thì trường đó giữ mặc định. Lớp này không biết gì về file: việc đọc/ghi nằm ở
+một lớp riêng, để sau này đổi JSON sang định dạng khác mà không phải đụng tới dữ liệu:</p>
+<p><strong>Code 3.18b — Đọc/ghi JSON config theo atomic write</strong></p>
+<pre><code class="language-csharp">public static class JsonConfigIO
 {
     // CA1869: JsonSerializerOptions là static readonly, không tạo mới mỗi lần
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
@@ -4331,7 +4568,7 @@ public static class JsonConfigIO
 </code></pre>
 <p>Tóm lại chiến lược file cho một dự án PC-Based Control: <strong>Log</strong> → text + rolling + batch; <strong>Config</strong> → JSON + version + atomic + backup; <strong>Recipe/Historical</strong> → binary (compact) hoặc JSON/CSV (dễ kiểm); <strong>Export sản xuất</strong> → CSV với invariant culture.</p>
 <h3>3.6.4  Hai định dạng sách chưa nhắc mà dự án nào cũng có: INI và Excel</h3>
-<p>Ba mục trên bàn CSV, JSON, XML, YAML — những định dạng bạn <strong>nên</strong> chọn khi bắt đầu mới. Nhưng
+<p>Mục trên bàn CSV và JSON — hai định dạng bạn <strong>nên</strong> chọn khi bắt đầu mới; hai mục sau bàn XML và YAML, thứ bạn sẽ gặp trong mã kế thừa. Nhưng
 khi mở một dự án máy có sẵn, hai định dạng khác mới là thứ đập vào mắt trước, và sách sẽ thiếu
 sót nếu không nói về chúng.</p>
 <p>Đếm dấu vết trong bộ mẫu 13 dự án:</p>
@@ -4482,7 +4719,7 @@ lần xuất, ngay trong giai đoạn chạy thử.</p>
 thật — nhất là máy đã hoạt động 10-15 năm — vẫn dùng <strong>XML</strong> làm định dạng file cấu hình (danh sách
 trục, danh sách IO, tham số trạm...), vì XML phổ biến hơn JSON ở thời điểm những máy đó được viết.
 Không cần chọn XML cho dự án mới, nhưng cần đọc hiểu được khi kế thừa code cũ:</p>
-<p><strong>Code 3.18b — Đọc XML thủ công bằng <code>XmlDocument</code></strong></p>
+<p><strong>Code 3.18c — Đọc XML thủ công bằng <code>XmlDocument</code></strong></p>
 <pre><code class="language-csharp">// SystemCfg.xml:
 // &lt;Config&gt;
 //   &lt;Axis Name=&quot;AxisX&quot; CardType=&quot;EtherCatCard01&quot; MaxVelocity=&quot;200&quot; /&gt;
@@ -4567,7 +4804,7 @@ dưới dạng <code>partial</code> ngay từ đầu.</p>
 <pre><code class="language-csharp">var doc = XElement.Load(path);
 var names = doc.Elements(&quot;Axis&quot;).Select(e =&gt; e.Attribute(&quot;Name&quot;)?.Value).ToList();
 </code></pre>
-<p>So với <code>XmlDocument.SelectNodes(&quot;//Axis&quot;)</code> (Code 3.18b), <code>XElement</code>/<code>.Elements()</code>/<code>.Attribute()</code> đọc
+<p>So với <code>XmlDocument.SelectNodes(&quot;//Axis&quot;)</code> (Code 3.18c), <code>XElement</code>/<code>.Elements()</code>/<code>.Attribute()</code> đọc
 tự nhiên hơn và dùng được trực tiếp với <code>Select</code>/<code>Where</code> đã học ở mục LINQ — cùng vai trò với
 <code>XmlDocument</code>, khác thế hệ API (giống cách sách đã đối chiếu Newtonsoft.Json cũ với
 <code>System.Text.Json</code> mới).</p>
@@ -4577,7 +4814,7 @@ tự nhiên hơn và dùng được trực tiếp với <code>Select</code>/<cod
 hình/recipe/teaching point — thư viện phổ biến nhất là <strong>YamlDotNet</strong> (NuGet). Cú pháp gần giống
 <code>System.Text.Json</code>/Newtonsoft.Json đã học ở mục 3.6.3 (cùng là &quot;đưa 1 object C# ra thành text và
 ngược lại&quot;), chỉ khác API bề mặt:</p>
-<p><strong>Code 3.18c — Đọc/ghi YAML bằng YamlDotNet</strong></p>
+<p><strong>Code 3.18d — Đọc/ghi YAML bằng YamlDotNet</strong></p>
 <pre><code class="language-csharp">using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -5094,7 +5331,8 @@ phạm vi thời gian thực tế).</p>
 <li><strong>Constructor</strong>: khởi tạo object về <strong>trạng thái hợp lệ tối thiểu</strong>, nhận sẵn dependency (driver, config).</li>
 </ul>
 <p><code>Axis</code> không gọi SDK vendor trực tiếp — nó gọi qua hợp đồng <code>IMotionDriver</code>. Chương 13 xây cả tầng driver này; ở đây chỉ cần biết interface đó tồn tại.</p>
-<p><strong>Code 4.1 — Hợp đồng <code>IMotionDriver</code> và class <code>Axis</code></strong></p>
+<p>Đọc theo ba bước: hợp đồng mà <code>Axis</code> dựa vào, rồi phần dữ liệu của <code>Axis</code>, rồi phần hành vi.</p>
+<p><strong>Code 4.1 — Hợp đồng <code>IMotionDriver</code></strong></p>
 <pre><code class="language-csharp">// Hợp đồng với tầng driver — mỗi vendor implement khác nhau
 public interface IMotionDriver
 {
@@ -5102,8 +5340,12 @@ public interface IMotionDriver
     bool TryHome(int axisId, out string error);
     double ReadPosition(int axisId);
 }
-
-public sealed class Axis
+</code></pre>
+<p>Ba dòng, không thân hàm nào: interface chỉ nói <em>&quot;driver nào cũng phải làm được ba việc này&quot;</em>, không nói
+làm thế nào (hình dạng đã gặp ở phần mở đầu Chương 3). <code>Axis</code> sẽ chỉ biết tới ba dòng này.</p>
+<p>Tiếp theo là <strong>dữ liệu</strong> của <code>Axis</code> — ba nhóm đầu trong danh sách trên: định danh, cấu hình, trạng thái.</p>
+<p><strong>Code 4.1b — Class <code>Axis</code>: phần dữ liệu</strong></p>
+<pre><code class="language-csharp">public sealed class Axis
 {
     // Định danh — chỉ đọc, gán trong constructor
     public int    AxisId { get; }
@@ -5120,7 +5362,19 @@ public sealed class Axis
 
     private readonly IMotionDriver _driver;   // phụ thuộc interface, KHÔNG phải SDK vendor cụ thể
 
-    public Axis(int axisId, string name, IMotionDriver driver, double maxVelocity)
+    // … constructor và hành vi ở Code 4.1c, vẫn nằm trong class này
+</code></pre>
+<p>Để ý ba kiểu property khác nhau, và mỗi kiểu nói một điều khác nhau với người dùng class (Bảng 3.0c):</p>
+<ul>
+<li><code>{ get; }</code> — định danh và cấu hình: gán <strong>một lần</strong> trong constructor, sau đó không ai đổi được, kể
+cả chính <code>Axis</code>.</li>
+<li><code>{ get; private set; }</code> — trạng thái runtime: <strong>ai cũng đọc được, chỉ <code>Axis</code> tự ghi</strong>. Đây là <em>đóng
+gói</em>: màn hình đọc được <code>Alarm</code> để tô đỏ, nhưng không thể tự &quot;xoá&quot; lỗi bằng cách gán <code>Alarm = false</code>.</li>
+<li>field <code>private readonly</code> — thứ <strong>không ai bên ngoài</strong> cần biết: <code>Axis</code> đang nói chuyện với driver nào.</li>
+</ul>
+<p>Cuối cùng là <strong>hành vi</strong> — constructor đưa object về trạng thái hợp lệ, và một method làm việc:</p>
+<p><strong>Code 4.1c — Class <code>Axis</code>: constructor và hành vi</strong></p>
+<pre><code class="language-csharp">    public Axis(int axisId, string name, IMotionDriver driver, double maxVelocity)
     {
         // .NET 6+ helper — thay cho: if (driver == null) throw new ArgumentNullException(...)
         ArgumentNullException.ThrowIfNull(driver);
@@ -5141,9 +5395,9 @@ public sealed class Axis
 
         return _driver.TryMoveAbs(AxisId, position, velocity, out error);
     }
-}
+}   // hết class Axis
 </code></pre>
-<p>Chú ý ba điểm thiết kế công nghiệp trong Code 4.1: trạng thái là <code>private set</code> (UI không &quot;set bừa&quot; được), <code>Axis</code> chỉ biết <code>_driver</code> qua interface (không khoá vào hãng nào), và các điều kiện &quot;dùng sai&quot; bị chặn ngay đầu method.</p>
+<p>Chú ý ba điểm thiết kế công nghiệp trong Code 4.1–4.1c: trạng thái là <code>private set</code> (UI không &quot;set bừa&quot; được), <code>Axis</code> chỉ biết <code>_driver</code> qua interface (không khoá vào hãng nào), và các điều kiện &quot;dùng sai&quot; bị chặn ngay đầu method.</p>
 <blockquote>
 <p>📌 <strong>Vì sao <code>IMotionDriver</code> bắt đầu bằng <code>I</code>:</strong> cũng là quy ước đặt tên (như
 <code>_camelCase</code> cho field ở Chương 3), không phải luật compiler — nhưng gần
@@ -5158,7 +5412,38 @@ khiển chuyển động&quot;), không theo tên class hiện thực nó.</p>
 <p>📌 <strong>Lưu ý — constructor không được &quot;chạy máy&quot;:</strong> Constructor chỉ chuẩn bị object, <strong>tuyệt đối không</strong> gọi hành động có side-effect như connect thiết bị hay bật servo. Những việc đó nằm trong <code>Initialize()</code>/<code>Connect()</code> để Sequence kiểm soát đúng thứ tự và thời điểm. Một object vừa <code>new</code> xong mà đã tự bật servo là một tai nạn chờ xảy ra.</p>
 </blockquote>
 <blockquote>
-<p>📌 <strong>Quy ước ngầm: property nên &quot;rẻ&quot;.</strong> <code>get</code>/<code>set</code> ở Code 4.1 chỉ trả về/gán một field trong bộ
+<p>📌 <strong>Cách viết constructor gọn hơn mà bạn sẽ gặp nhiều trong sách: <em>primary constructor</em>.</strong> Khi
+constructor chỉ làm mỗi việc nhận tham số rồi cất lại, C# 12 cho viết tham số <strong>ngay sau tên class</strong>.
+Hai cách viết dưới đây cho ra cùng một lớp:</p>
+<pre><code class="language-csharp">// Dạng đầy đủ
+public sealed class ScaledSensor : ISensor
+{
+    private readonly ISensor _inner;
+    private readonly double  _factor;
+
+    public ScaledSensor(ISensor inner, double factor)
+    {
+        _inner  = inner;
+        _factor = factor;
+    }
+
+    public double Read() =&gt; _inner.Read() * _factor;
+}
+
+// Primary constructor — cùng hành vi, không cần khai field
+public sealed class ScaledSensor(ISensor inner, double factor) : ISensor
+{
+    public double Read() =&gt; inner.Read() * factor;
+}
+</code></pre>
+<p>Tham số <code>inner</code>, <code>factor</code> dùng được ở <strong>mọi method</strong> trong class, như field. Cái giá: không có chỗ
+kiểm tra đầu vào (<code>ArgumentNullException.ThrowIfNull</code>) trước khi dùng. Nên sách dùng dạng đầy đủ khi
+cần kiểm tra — như <code>Axis</code> ở Code 4.1c — và dạng gọn cho lớp nhỏ, nhất là bản giả lập và lớp bọc
+thêm một hành vi. Khác với <code>record</code> (Phụ lục E, cặp 5): ở <code>record</code>, tham số tự thành property công
+khai; ở <code>class</code>, tham số <strong>không</strong> thành property — nó chỉ là một field ẩn, bên ngoài không nhìn thấy.</p>
+</blockquote>
+<blockquote>
+<p>📌 <strong>Quy ước ngầm: property nên &quot;rẻ&quot;.</strong> <code>get</code>/<code>set</code> ở Code 4.1b chỉ trả về/gán một field trong bộ
 nhớ — gần như tức thời. Đây là kỳ vọng ngầm của mọi lập trình viên C#: gọi <code>axis.Position</code> trông
 giống đọc một biến, không ai ngờ nó có thể mở file, gọi mạng, hay tốn thời gian đáng kể. Code kế
 thừa đôi khi vi phạm điều này — ví dụ một property mà mỗi lần <code>get</code> đều đọc lại một file cấu hình
@@ -8697,8 +8982,10 @@ ngay tại biên, domain không biết sự tồn tại của <code>LegacyTempCo
 <!--idx:Dependency Inversion Principle (DIP)--><p><strong>Nguyên tắc:</strong> (1) Module cấp cao không phụ thuộc module cấp thấp — cả hai cùng
 phụ thuộc abstraction. (2) Chi tiết phụ thuộc abstraction, không phải ngược lại.</p>
 <blockquote>
-<p>📌 <strong>DIP ≠ Dependency Injection (DI).</strong> DI (đã học ở Chương 4) là <em>kỹ thuật</em>
-truyền dependency từ ngoài vào — constructor injection, property injection. DIP
+<p>📌 <strong>DIP ≠ Dependency Injection (DI).</strong> DI là <em>kỹ thuật</em> truyền dependency từ
+ngoài vào — bạn đã thấy nó ở Code 4.1c, khi <code>Axis</code> nhận <code>IMotionDriver</code> qua
+constructor thay vì tự <code>new</code> một driver; cách cắm dây cho cả phần mềm theo kiểu
+đó làm ở mục 7.4, bước ⑤ (constructor injection, property injection). DIP
 là <em>nguyên lý</em> nói về <em>hướng</em> của phụ thuộc: domain không được phụ thuộc hạ
 tầng. DI là công cụ thực hiện DIP, nhưng DIP quan trọng hơn — dùng DI mà vẫn
 nhận <code>new BeckhoffPlcClient()</code> trong constructor thì DIP vẫn bị vi phạm.</p>
@@ -12511,7 +12798,7 @@ không truyền tham số, compiler tự điền tên property/method đang gọ
 <code>OnPropertyChanged(nameof(PositionMm))</code>. Thiếu attribute này, mỗi lần raise
 sự kiện phải truyền tên property thủ công.</p>
 <blockquote>
-<p>📌 <strong><code>AxisState</code> dùng toán tử điều kiện (ternary) nối chuỗi:</strong>
+<p>📌 <strong><code>AxisState</code> dùng toán tử điều kiện (ternary) nối chuỗi</strong> — dạng một tầng đã gặp ở mục 3.2.3:
 <code>điều-kiện ? giá-trị-nếu-đúng : giá-trị-nếu-sai</code> gọn hơn <code>if/else</code> khi chỉ
 cần <strong>chọn một giá trị</strong> (không phải chạy một hành động). Nối chuỗi nhiều
 <code>? :</code> như ở <code>AxisState</code> tương đương <code>if/else if/else</code> lồng nhau — đọc từ
@@ -29227,7 +29514,11 @@ public sealed class AlarmClearedEventArgs(
 </code></pre>
 <blockquote>
 <p>📌 <strong>Lưu ý:</strong> <code>AlarmRaised</code> không phải <code>AlarmRaisedEvent</code> (thêm &quot;Event&quot; vào cuối) — CA1003 yêu cầu tên event là verb/noun, EventArgs subclass mới mang hậu tố &quot;EventArgs&quot;. Nếu bạn dùng Prism <code>EventAggregator</code>, wrap thêm một lớp <code>PrismEvent&lt;AlarmRaisedEventArgs&gt;</code> ở Modules layer.</p>
-<p>🔍 <strong>Đào sâu thêm — primary constructor trên class:</strong> <code>class Foo(int x)</code> (không có từ <code>record</code>) khai báo constructor ngay trên dòng tên class — tham số <code>x</code> chỉ dùng được để gán vào property/field trong phần thân, không tự sinh property như record. Cú pháp này (C# 12) hữu ích khi bạn muốn constructor gọn nhưng vẫn cần class thường (ví dụ để kế thừa một class có sẵn như <code>EventArgs</code>).</p>
+<p>🔍 <strong>Đào sâu thêm — primary constructor trên class</strong> (cú pháp giới thiệu ở mục 4.1.2): <code>class Foo(int x)</code>
+không có từ <code>record</code> thì tham số <code>x</code> <strong>không</strong> tự thành property công khai như ở <code>record</code> — nhưng nó
+<strong>dùng được trong mọi method</strong> của class, trình biên dịch tự giữ nó như một field ẩn. Cú pháp này
+(C# 12) hữu ích khi bạn muốn constructor gọn nhưng vẫn cần class thường, ví dụ để kế thừa một class
+có sẵn như <code>EventArgs</code>.</p>
 </blockquote>
 <h3>15.1.6  AlarmService.RaiseAsync — implementation cốt lõi</h3>
 <p><strong>Code 15.4 — AlarmService.RaiseAsync với thread-safety và event publish</strong></p>

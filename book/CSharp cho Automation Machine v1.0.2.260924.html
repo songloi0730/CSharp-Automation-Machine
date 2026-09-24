@@ -2997,6 +2997,12 @@ dễ hơn, nhưng bạn sẽ học một thứ C# không ai viết ngoài đời
 <td>mục 4.2, 4.3</td>
 </tr>
 <tr>
+<td><code>: base(…)</code> sau một constructor</td>
+<td><code>public Loi(string m) : base(m)</code></td>
+<td>&quot;trước khi chạy thân constructor này, gọi constructor của lớp cha với đối số <code>m</code>&quot;</td>
+<td>mục 4.3.2</td>
+</tr>
+<tr>
 <td><code>override</code></td>
 <td><code>public override string ToString()</code></td>
 <td>&quot;viết lại một hành vi mà lớp cha đã có sẵn&quot;</td>
@@ -3035,7 +3041,7 @@ dễ hơn, nhưng bạn sẽ học một thứ C# không ai viết ngoài đời
 <tr>
 <td><code>async</code> / <code>await</code> / <code>Task</code></td>
 <td><code>await axis.HomeAsync();</code></td>
-<td>&quot;bắt đầu việc tốn thời gian, chờ nó xong mà chương trình không đứng hình&quot;</td>
+<td>&quot;bắt đầu việc tốn thời gian, chờ nó xong mà chương trình không đứng hình&quot;. <code>Task.CompletedTask</code> và <code>Task.FromResult(x)</code> là việc <strong>đã xong sẵn</strong> — dùng khi hàm buộc phải trả <code>Task</code> mà không có gì phải chờ</td>
 <td>mục 5.1</td>
 </tr>
 <tr>
@@ -3054,11 +3060,23 @@ dễ hơn, nhưng bạn sẽ học một thứ C# không ai viết ngoài đời
 <td><code>catch (…) when (…)</code></td>
 <td><code>catch (Exception) when (!ct.IsCancellationRequested)</code></td>
 <td>&quot;chỉ bắt lỗi này <strong>khi</strong> điều kiện sau <code>when</code> đúng&quot;</td>
-<td>mục 7.5.4</td>
+<td>mục 5.2</td>
+</tr>
+<tr>
+<td><code>[]</code>, <code>[1, 2, 3]</code></td>
+<td><code>List&lt;double&gt; ds = [];</code></td>
+<td><em>collection expression</em>: danh sách rỗng, hoặc có sẵn phần tử — kiểu lấy theo vế trái</td>
+<td>mục 9.1.5</td>
+</tr>
+<tr>
+<td><code>IReadOnlyList&lt;T&gt;</code></td>
+<td><code>IReadOnlyList&lt;IAxis&gt; TatCaTruc()</code></td>
+<td>danh sách mà người nhận <strong>chỉ đọc được</strong>, không thêm hay xoá được; <code>IReadOnlyDictionary&lt;K, V&gt;</code> cũng vậy cho bảng tra</td>
+<td>Phụ lục H mục H.3</td>
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>📌 <strong>Bảng này là một lời hứa của sách.</strong> Mọi ký hiệu xuất hiện trong ví dụ ở Chương 3–4 hoặc đã được
+<p>📌 <strong>Bảng này là một lời hứa của sách.</strong> Mọi ký hiệu xuất hiện trong ví dụ ở Chương 3–7 hoặc đã được
 dạy trước chỗ đó, hoặc có mặt trong bảng này. Gặp một ký hiệu lạ không thuộc cả hai — đó là lỗi của
 sách, không phải của bạn. (Lời hứa này được một công cụ kiểm tra tự động mỗi lần sách được biên
 dịch lại.)</p>
@@ -4454,7 +4472,8 @@ giữ chương trình lại khi người dùng tắt máy.</li>
     }
 }   // hết class TextFileLogger
 </code></pre>
-<p><code>GetConsumingEnumerable()</code> là chỗ luồng nền <strong>ngồi chờ</strong>: hàng đợi rỗng thì nó đứng yên, không tốn CPU;
+<p><code>_queue</code> là một <code>BlockingCollection&lt;string&gt;</code> — hàng đợi làm riêng cho đúng tình huống này: một luồng
+bỏ vào, một luồng khác lấy ra, không phải tự khoá gì. <code>GetConsumingEnumerable()</code> là chỗ luồng nền <strong>ngồi chờ</strong>: hàng đợi rỗng thì nó đứng yên, không tốn CPU;
 có dòng mới là nó chạy tiếp. Khi <code>Stop()</code> gọi <code>CompleteAdding()</code>, vòng <code>foreach</code> ghi nốt những dòng còn
 lại rồi kết thúc.</p>
 <p>Ý chính dễ nhớ: luồng điều khiển gọi <code>Log(...)</code> để bỏ dòng log vào hàng đợi rồi đi tiếp ngay; việc ghi đĩa (chậm) do thread nền lo — nên vòng quét không bao giờ bị chặn vì I/O.</p>
@@ -5794,6 +5813,17 @@ của nó. Lợi ích: nếu sau này đổi tên tham số <code>vel</code> th�
 <code>&quot;vel&quot;</code> thì không ai nhắc, dễ quên sửa, exception báo sai tên tham số.</p>
 </blockquote>
 <blockquote>
+<p>📌 <strong>Hai cú pháp mới trong <code>EtherCatAxis</code>:</strong></p>
+<ul>
+<li><strong><code>: base(maxVelocity)</code></strong> đứng sau constructor nghĩa là <em>&quot;trước khi chạy thân constructor này, gọi
+constructor của lớp cha <code>AxisBase</code> với đối số <code>maxVelocity</code>&quot;</em>. Lớp cha cần giá trị đó để tự kiểm
+vận tốc; lớp con chỉ chuyển nó lên, không tự lưu. Thân <code>{ }</code> rỗng vì lớp con không còn gì để làm thêm.</li>
+<li><strong><code>Task.CompletedTask</code></strong> là một <code>Task</code> <strong>đã xong sẵn</strong>. Method <code>MoveAbsoluteCoreAsync</code> bắt buộc phải trả
+<code>Task</code> (vì lớp cha khai báo như vậy), nhưng bản mẫu này không gọi SDK nào để chờ — nên trả về một việc
+đã hoàn tất. Bản thật sẽ <code>await</code> lời gọi SDK ở đây (Chương 5).</li>
+</ul>
+</blockquote>
+<blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Đây là sức mạnh thật của kế thừa trong automation — không phải để &quot;xài lại code&quot;, mà để <strong>đóng khung quy trình an toàn</strong> sao cho lớp con (mỗi vendor) chỉ điền được phần kỹ thuật, không sửa được phần kiểm tra. Lớp cha giữ kỷ luật, lớp con giữ chi tiết.</p>
 </blockquote>
 <h3>4.3.3  Đa hình: một API, nhiều triển khai</h3>
@@ -6758,6 +6788,12 @@ nhau — nhầm lẫn giữa chúng là nguồn gốc của cả hai bẫy vừa
 }
 </code></pre>
 <p>Hai cách phản ứng với token: kiểm tra <code>ct.IsCancellationRequested</code> trong điều kiện vòng lặp (dừng êm ở ranh giới an toàn), hoặc gọi <code>ct.ThrowIfCancellationRequested()</code> để dừng ngay tại một điểm (ném <code>OperationCanceledException</code>). Truyền <code>ct</code> vào cả <code>Task.Delay</code>, <code>ReadAsync</code>, <code>WriteAsync</code> để chúng cũng nhả ra khi bị hủy.</p>
+<p><strong><code>catch (…) when (…)</code> — bắt lỗi có điều kiện.</strong> Dòng <code>catch (OperationCanceledException) when (ct.IsCancellationRequested)</code> đọc là: <em>&quot;bắt <code>OperationCanceledException</code>, nhưng <strong>chỉ khi</strong> token của
+chính hàm này đã bị huỷ&quot;</em>. Phần sau <code>when</code> gọi là <strong>bộ lọc ngoại lệ</strong> (exception filter). Nếu điều
+kiện sai, <code>catch</code> đó coi như không tồn tại — lỗi đi tiếp lên hàm gọi, nguyên vẹn như chưa ai chạm vào.</p>
+<p>Ở Code 5.5, điều đó có nghĩa: huỷ vì <em>người gọi yêu cầu</em> thì nuốt êm (đó là kết thúc bình thường);
+còn một <code>OperationCanceledException</code> đến từ <strong>chỗ khác</strong> — một thư viện bên dưới tự hết giờ chẳng hạn —
+thì không bị nuốt, vì nó không phải lần dừng mình đã xin. Viết <code>catch</code> không có <code>when</code> là nuốt cả hai.</p>
 <blockquote>
 <p>💡 <strong><code>PeriodicTimer</code> (từ .NET 6+) — tránh trôi thời gian (drift) khi polling liên tục.</strong>
 <code>Task.Delay(100, ct)</code> trong Code 5.5 đếm thời gian từ <em>lúc gọi Delay</em>, không phải
@@ -6826,28 +6862,39 @@ catch (OperationCanceledException) when (!ct.IsCancellationRequested)
 }
 </code></pre>
 <p><code>using var cts = ...</code> đảm bảo <code>CancellationTokenSource</code> được giải phóng (nó là <code>IDisposable</code> — mục 5.5). Phân biệt &quot;operator hủy&quot; với &quot;timeout&quot; bằng <code>when (!ct.IsCancellationRequested)</code> — nếu token ngoài chưa bị hủy mà vẫn <code>OperationCanceledException</code>, thì nguyên nhân là timeout.</p>
+<p>Đặt cạnh Code 5.5 để thấy <strong>hai bộ lọc ngược dấu nhau, cho hai ý ngược nhau</strong>: 5.5 bắt <em>khi chính
+mình bị huỷ</em> — bình thường, nuốt êm; 5.6 bắt <em>khi <strong>không</strong> phải mình bị huỷ</em> — tức là hết giờ, phải
+biến thành cảnh báo. Cùng một loại ngoại lệ, chỉ một dấu <code>!</code> quyết định đó là chuyện bình thường
+hay là sự cố.</p>
 <p><strong>Gộp cả bốn việc vào một lời gọi.</strong> Trong một vòng chờ tín hiệu điển hình của sequence (chờ cảm biến, kiểm tra Pause/Stop, có ngưỡng timeout, tự bắn alarm nếu quá hạn), viết tay từng bước rất dễ quên một điều kiện. Tư duy PLC/SFC kinh điển (&quot;chờ tín hiệu&quot; là một khối lệnh polling gộp sẵn cả bốn việc đó) dịch thẳng sang C# hiện đại chính là một helper <code>await</code>:</p>
 <pre><code class="language-csharp">// Gộp: chờ tín hiệu + kiểm tra Pause/Stop + timeout có ngưỡng + tự bắn alarm
 public async Task WaitForSignalAsync(Func&lt;bool&gt; conditionMet, int timeoutMs,
     int alarmCode, string station, CancellationToken ct)
 {
-    using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-    cts.CancelAfter(timeoutMs);
+    using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);   // ② Pause/Stop
+    cts.CancelAfter(timeoutMs);                                           // ③ timeout
     try
     {
-        while (!conditionMet())
-            await Task.Delay(20, cts.Token).ConfigureAwait(false);   // ct truyền cả Pause/Stop lẫn timeout
+        while (!conditionMet())                                           // ① chờ tín hiệu
+            await Task.Delay(20, cts.Token).ConfigureAwait(false);
     }
     catch (OperationCanceledException) when (!ct.IsCancellationRequested)
     {
-        throw new AlarmException(alarmCode, station, $&quot;Chờ tín hiệu quá {timeoutMs}ms&quot;);
+        throw new AlarmException(alarmCode, station, $&quot;Chờ tín hiệu quá {timeoutMs}ms&quot;);   // ④ alarm
     }
 }
-
-// Gọi — một dòng thay vì bốn bước viết tay riêng lẻ
+</code></pre>
+<p>Bốn việc, bốn chỗ — và mỗi chỗ là một thứ đã gặp: ① vòng <code>while</code> hỏi điều kiện mỗi 20 ms; ② linked
+token của Code 5.6, để Pause/Stop từ bên ngoài vẫn dừng được vòng chờ; ③ <code>CancelAfter</code> đặt hạn giờ;
+④ bộ lọc <code>when</code> của Code 5.6 biến <em>hết giờ</em> thành cảnh báo, còn <em>người bấm Dừng</em> thì cho đi qua.</p>
+<p>Tham số đầu <code>Func&lt;bool&gt; conditionMet</code> là <strong>một hàm</strong> trả <code>bool</code> (mục 4.4.1) — hàm chờ không cần biết
+đang chờ cảm biến nào, chỉ cần hỏi được &quot;đã xong chưa&quot;. Nơi gọi đưa điều kiện vào bằng một lambda:</p>
+<pre><code class="language-csharp">// Gọi — một dòng thay vì bốn bước viết tay riêng lẻ
 await WaitForSignalAsync(() =&gt; sensor.IsTriggered, timeoutMs: 3000,
     AlarmCodes.SensorTimeout, &quot;STATION_A&quot;, ct);
 </code></pre>
+<p><code>() =&gt; sensor.IsTriggered</code> đọc là <em>&quot;một hàm không nhận gì, trả về <code>sensor.IsTriggered</code>&quot;</em> (mục 4.4.2) —
+mỗi 20 ms hàm chờ gọi nó một lần để đọc lại giá trị mới nhất.</p>
 <p>Bản chất không đổi so với vòng polling PLC — chỉ khác cú pháp: <code>ct</code> bên ngoài đã mang theo cả tín hiệu Pause/Stop (vì nó là linked token từ CancellationToken của toàn sequence), <code>cts.CancelAfter</code> mang theo timeout, và catch/throw mang theo alarm. Một lời gọi <code>await WaitForSignalAsync(...)</code> thay cho một khối <code>while</code> viết tay dễ quên một trong bốn điều kiện.</p>
 <blockquote>
 <p>📌 <strong>Liên hệ Chương 15 (Safety):</strong> <code>CancellationToken</code> là cơ chế dừng ở <strong>tầng phần mềm</strong> — nó hợp tác (cooperative): thao tác phải tự kiểm tra token mới dừng. Nó <strong>không thay thế</strong> E-Stop phần cứng. Mạch an toàn vật lý (E-Stop, Safe Torque Off) vẫn là tầng dưới cùng, cắt nguồn mô-men bất kể phần mềm đang làm gì. Hai tầng bổ sung cho nhau, không thay nhau.</p>
@@ -10230,7 +10277,7 @@ sẽ thấy toàn bộ cấu trúc chương trình gói gọn trong hai mươi d
 vận hành bấm Dừng, bước đang chạy <strong>không hề biết</strong> — nó vẫn chạy nốt hạn giờ 5 giây của mình.
 Nối hai nguồn lại bằng <code>CreateLinkedTokenSource</code> khiến bước dừng vì <strong>bất kỳ lý do nào trong
 hai</strong>. Và <code>using</code> ở đó là bắt buộc, không phải tuỳ chọn.</p>
-<p><strong>3. Mệnh đề <code>when (!ct.IsCancellationRequested)</code></strong> phân biệt hai loại huỷ trông giống hệt nhau:
+<p><strong>3. Mệnh đề <code>when (!ct.IsCancellationRequested)</code></strong> (cú pháp ở mục 5.2) phân biệt hai loại huỷ trông giống hệt nhau:
 <em>hết giờ</em> (là cảnh báo) và <em>người bấm Dừng</em> (là bình thường). Không có mệnh đề <code>when</code> đó, mọi lần
 bấm Dừng sẽ sinh ra một cảnh báo giả — và người vận hành sẽ học được rằng cảnh báo của máy này
 không đáng tin.</p>

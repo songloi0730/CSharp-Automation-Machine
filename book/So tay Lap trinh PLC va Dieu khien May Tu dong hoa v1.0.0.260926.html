@@ -594,6 +594,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#254-bng-chuyn-trng-thái-công-c-làm-vic-tht">25.4 Bảng chuyển trạng thái — công cụ làm việc thật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#255-hin-thc-hoá-hai-cách">25.5 Hiện thực hoá — hai cách</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#255b-bt-bin-nm-dưi-mi-cách-hin-thc-và-câu-hi-ưu-tiên">25.5b ⭐⭐ Bất biến nằm dưới mọi cách hiện thực — và câu hỏi ưu tiên</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#255c-đưng-đi-ca-li-cht-ngun-gom-mt-ch-xoá-qua-resetting">25.5c ⭐⭐ Đường đi của lỗi — chốt ở nguồn, gom một chỗ, xoá qua <code>Resetting</code></a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#256-trng-thái-máy-tng-và-trng-thái-tng-trm">25.6 Trạng thái máy tổng và trạng thái từng trạm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#257-by-thưng-gp">25.7 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#258-khác-bit-gia-các-hãng">25.8 Khác biệt giữa các hãng</a></li>
@@ -655,6 +656,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#303b-hai-quy-ưc-làm-cho-cu-trúc-mc-303-gi-đưc-khi-máy-ln-lên">30.3b ⭐ Hai quy ước làm cho cấu trúc ở mục 30.3 <strong>giữ được</strong> khi máy lớn lên</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#304-comment-vit-như-nht-ký-k-thut">30.4 Comment — viết như nhật ký kỹ thuật</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#305-thư-vin-dùng-li-và-cái-giá-ca-dùng-li-sai">30.5 Thư viện dùng lại — và cái giá của dùng lại sai</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#305b-vit-khi-ca-mình-theo-cùng-hp-đng-vi-khi-ca-hãng">30.5b ⭐⭐ Viết khối của mình theo cùng &quot;hợp đồng&quot; với khối của hãng</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#306-qun-lý-phiên-bn-chương-trình-plc">30.6 Quản lý phiên bản chương trình PLC</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#307-by-thưng-gp">30.7 Bẫy thường gặp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#308-bng-cht">30.8 Bảng chốt</a></li>
@@ -1194,6 +1196,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#l6-khung-trình-t-bưc-có-timeout-dùng-cho-mi-trm">L.6 Khung trình tự bước có timeout — dùng cho mọi trạm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l7-bt-cnh-làm-đúng-mt-ln-chng-rung">L.7 Bắt cạnh, làm đúng một lần, chống rung</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l8-cơ-cu-hai-v-trí-khi-dùng-li-cho-mi-xy-lanh">L.8 Cơ cấu hai vị trí — khối dùng lại cho mọi xy-lanh</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#l8b-khi-kích-bng-sưn-khung-execute-done-t-vit">L.8b ⭐ Khối kích bằng sườn — khung <code>Execute</code> / <code>Done</code> tự viết</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l9-servo-cp-mô-men-v-gc-di-chuyn">L.9 Servo — cấp mô-men, về gốc, di chuyển</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l10-đo-chiu-có-khoá-chéo-saotam-giác">L.10 Đảo chiều có khoá chéo · sao–tam giác</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#l11-báo-đng-có-xác-nhn-và-báo-đng-đu-tiên">L.11 Báo động có xác nhận, và &quot;báo động đầu tiên&quot;</a></li>
@@ -1492,7 +1495,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 <tr>
 <td>11</td>
 <td><a href="ch11_bo_nho_bien_va_kieu_du_lieu.md">Bộ nhớ, biến &amp; kiểu dữ liệu</a></td>
-<td>BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; <strong>địa chỉ tuyệt đối vs tag có tên <em>(symbolic tag)</em></strong> — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ <em>(retentive / non-retentive)</em> và câu hỏi &quot;mất điện thì biến này còn không?&quot;; <strong>kiểu dữ liệu người dùng</strong> <em>(UDT)</em>, <strong>struct</strong>, <strong>mảng</strong> — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên <em>(overflow)</em> và bẫy so sánh bằng với số thực <em>(REAL)</em>  ⚠⚠ <strong>Đánh số I/O theo hệ bát phân</strong> trên hệ kiểu thiết bị — <code>X10</code> là ngõ vào thứ <strong>chín</strong>, không có <code>X8</code>/<code>X9</code>; ánh xạ số dây thẳng sang số thiết bị <strong>sai từ điểm thứ tám trở đi</strong> mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng.</td>
+<td>BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; <strong>địa chỉ tuyệt đối vs tag có tên <em>(symbolic tag)</em></strong> — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ <em>(retentive / non-retentive)</em> và câu hỏi &quot;mất điện thì biến này còn không?&quot;; ⭐ phạm vi biến — <code>VAR_EXTERNAL</code>, và vì sao <strong>khối chức năng không đọc biến toàn cục</strong>; <strong>kiểu dữ liệu người dùng</strong> <em>(UDT)</em>, <strong>struct</strong>, <strong>mảng</strong> — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên <em>(overflow)</em> và bẫy so sánh bằng với số thực <em>(REAL)</em>  ⚠⚠ <strong>Đánh số I/O theo hệ bát phân</strong> trên hệ kiểu thiết bị — <code>X10</code> là ngõ vào thứ <strong>chín</strong>, không có <code>X8</code>/<code>X9</code>; ánh xạ số dây thẳng sang số thiết bị <strong>sai từ điểm thứ tám trở đi</strong> mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng.</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1603,7 +1606,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>25</td>
 <td><a href="ch25_thiet_ke_theo_may_trang_thai.md">⭐ Thiết kế theo máy trạng thái</a></td>
-<td>Mô hình chuẩn cho một máy: Uninitialized → Homing → Idle → Running → Hold → Alarm → Reset; <strong>bảng chuyển trạng thái <em>(state transition table)</em></strong> và sơ đồ; hiện thực bằng biến trạng thái + CASE (ST) hoặc bit trạng thái (LD); ⭐ vì sao mô hình trạng thái thắng &quot;mớ nấc thang chằng chịt&quot;: mỗi lúc máy chỉ ở <strong>một</strong> trạng thái, gỡ lỗi chỉ cần đọc một biến; trạng thái máy tổng vs trạng thái từng trạm</td>
+<td>Mô hình chuẩn cho một máy: Uninitialized → Homing → Idle → Running → Hold → Alarm → Reset; <strong>bảng chuyển trạng thái <em>(state transition table)</em></strong> và sơ đồ; hiện thực bằng biến trạng thái + CASE (ST) hoặc bit trạng thái (LD); ⭐ vì sao mô hình trạng thái thắng &quot;mớ nấc thang chằng chịt&quot;: mỗi lúc máy chỉ ở <strong>một</strong> trạng thái, gỡ lỗi chỉ cần đọc một biến; trạng thái máy tổng vs trạng thái từng trạm; ⭐⭐ <strong>đường đi của lỗi</strong> — mỗi nguồn chốt cờ riêng, <code>M_AnyFault</code> gán đúng một chỗ, xoá qua <code>Resetting</code>, và vì sao viết <code>Reset AND NOT M_AnyFault</code> làm máy <strong>khoá chết</strong> ở <code>Alarm</code></td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1633,7 +1636,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>30</td>
 <td><a href="ch30_chuan_hoa_va_tai_su_dung.md">Chuẩn hoá &amp; tái sử dụng</a></td>
-<td>Quy ước đặt tên tag — <strong>nhất quán quan trọng hơn &quot;đẹp&quot;</strong>; cấu trúc chương trình theo cơ cấu (FB cho xy-lanh, cho trạm, cho chuyền) thay vì theo bước; UDT gói trạng thái một cơ cấu; ⭐ <strong>comment viết cho người sẽ sửa lúc 2 giờ sáng</strong> — comment như nhật ký kỹ thuật, ghi cả cái đã thử mà không được; thư viện dùng lại giữa các dự án và cái giá của việc dùng lại sai; quản lý phiên bản chương trình PLC — cái gì so sánh được, cái gì không</td>
+<td>Quy ước đặt tên tag — <strong>nhất quán quan trọng hơn &quot;đẹp&quot;</strong>; cấu trúc chương trình theo cơ cấu (FB cho xy-lanh, cho trạm, cho chuyền) thay vì theo bước; UDT gói trạng thái một cơ cấu; ⭐ <strong>comment viết cho người sẽ sửa lúc 2 giờ sáng</strong> — comment như nhật ký kỹ thuật, ghi cả cái đã thử mà không được; thư viện dùng lại giữa các dự án và cái giá của việc dùng lại sai; ⭐⭐ <strong>viết khối của mình theo hợp đồng của hãng</strong> — <code>Execute</code>/<code>Done</code> và <code>Enable</code>/<code>Valid</code> của PLCopen, năm quy tắc kèm một khối viết đúng cả năm; quản lý phiên bản chương trình PLC — cái gì so sánh được, cái gì không</td>
 <td>✅</td>
 </tr>
 </tbody></table></div>
@@ -1939,7 +1942,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>L</td>
 <td><a href="pl_l_thu_vien_mau_code.md">⭐ <strong>Thư viện mẫu code dùng ngay</strong></a></td>
-<td>16 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm <strong>điều kiện dùng</strong> và <strong>thứ nó KHÔNG làm</strong>: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — <strong>không phải</strong> chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh &amp; chống rung · khối xy-lanh hai vị trí dùng lại được · servo theo PLCopen Motion · đảo chiều &amp; sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng · hút chân không có thổi ngược · đếm tuổi thọ vật tư. Kèm ⭐⭐ <strong>danh mục khối dùng lại (L.17)</strong> — khối nào chuẩn IEC/hãng đã có nên đừng viết lại, khối nào ⚠⚠ <strong>tuyệt đối không được tự viết</strong> vì là chức năng an toàn, khối nào mới thật sự đáng đưa vào thư viện của bạn — và bảng tra <em>việc cần làm → mẫu nào → bẫy lớn nhất</em></td>
+<td>17 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm <strong>điều kiện dùng</strong> và <strong>thứ nó KHÔNG làm</strong>: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — <strong>không phải</strong> chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh &amp; chống rung · khối xy-lanh hai vị trí dùng lại được · khung khối <code>Execute</code>/<code>Done</code> tự viết · servo theo PLCopen Motion · đảo chiều &amp; sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng · hút chân không có thổi ngược · đếm tuổi thọ vật tư. Kèm ⭐⭐ <strong>danh mục khối dùng lại (L.17)</strong> — khối nào chuẩn IEC/hãng đã có nên đừng viết lại, khối nào ⚠⚠ <strong>tuyệt đối không được tự viết</strong> vì là chức năng an toàn, khối nào mới thật sự đáng đưa vào thư viện của bạn — và bảng tra <em>việc cần làm → mẫu nào → bẫy lớn nhất</em></td>
 <td>✅</td>
 </tr>
 <tr>
@@ -8679,6 +8682,76 @@ Biến cục bộ thì danh sách nghi phạm chỉ gồm một POU.</p>
 </blockquote>
 <p>Biến đếm vòng lặp <code>i</code> là ví dụ điển hình của biến <strong>phải</strong> cục bộ. Nếu nó toàn cục và hai POU cùng
 dùng, một vòng lặp có thể phá chỉ số của vòng lặp kia.</p>
+<h3>⭐ Biến toàn cục đi vào một POU bằng cửa nào</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>IEC 61131-3 nói</th>
+<th>Thực tế ở các hệ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Khai lại bằng <code>VAR_EXTERNAL</code></strong> trong POU</td>
+<td>⭐ <strong>Cách duy nhất</strong> được phép dùng một biến toàn cục bên trong một POU</td>
+<td>Có hệ bắt buộc</td>
+</tr>
+<tr>
+<td><strong>Gọi thẳng tên</strong> biến toàn cục</td>
+<td>Không cho phép</td>
+<td>⚠ Nhiều hệ <strong>cho phép</strong> — tài liệu CODESYS ghi rõ là không bắt khai <code>VAR_EXTERNAL</code>, từ khoá chỉ giữ để tương thích chuẩn</td>
+</tr>
+</tbody></table></div>
+<pre><code class="language-iecst">PROGRAM Prg_Stn1Seq
+VAR_EXTERNAL
+    DI_BoardStn1 : BOOL;         // &quot;chương trình này dùng biến toàn cục DI_BoardStn1&quot; — viết ra
+END_VAR
+    …
+END_PROGRAM
+</code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Hệ cho gọi thẳng thì tiện — và chính cái tiện đó giấu mất sự phụ thuộc.</strong> Đọc phần khai báo
+của một POU, bạn không còn biết nó đọc những gì từ bên ngoài. ⭐ <code>VAR_EXTERNAL</code> biến sự phụ thuộc
+thành <strong>một dòng nhìn thấy được</strong>.</p>
+</blockquote>
+<h3>⭐⭐ Quy tắc của sách: khối chức năng KHÔNG đọc biến toàn cục — mọi thứ đi qua chân</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>✗ Khối đọc thẳng biến toàn cục</th>
+<th>⭐ Mọi thứ đi qua chân</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ví dụ, trong khối xy-lanh</td>
+<td><code>Done := DI_Clamp1Up;</code></td>
+<td><code>Done := SensWork;</code> — bên gọi nối <code>SensWork := DI_Clamp1Up</code></td>
+</tr>
+<tr>
+<td>Dùng cho xy-lanh thứ hai</td>
+<td>⚠ <strong>Không được</strong> — khối dính chặt vào <code>DI_Clamp1Up</code></td>
+<td>⭐ Tạo thể hiện mới, nối chân khác</td>
+</tr>
+<tr>
+<td>Kiểm thử riêng khối</td>
+<td>⚠ Phải dựng cả biến toàn cục mà nó lén đọc</td>
+<td>⭐ Chỉ cần cấp giá trị cho chân</td>
+</tr>
+<tr>
+<td>Đọc hiểu</td>
+<td>Phải đọc <strong>thân</strong> khối mới biết nó phụ thuộc gì</td>
+<td>⭐ Nhìn <strong>giao diện</strong> là biết</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Vậy biến toàn cục gặp chân khối ở đâu? Ở <strong>chương trình</strong> (<code>PROGRAM</code>) — tầng nối dây: nó đọc tag
+I/O toàn cục và nối vào chân của các thể hiện (Chương 27 mục 27.3). Bộ quy tắc viết mã của PLCopen ghi
+đúng điều này thành quy tắc CP6, mức ưu tiên <strong>cao</strong> (Phụ lục N).</p>
+<blockquote>
+<p>⚠ Với biến toàn cục mà nhiều phần cùng <strong>đọc</strong>, giữ đúng một luật: <strong>chỉ một nơi ghi</strong>. Hai nơi cùng
+ghi một cờ toàn cục thì phép ghi chạy sau thắng — và một lỗi có thể <strong>xoá mất</strong> lỗi khác (Chương 25
+mục 25.5c).</p>
+</blockquote>
 <hr>
 <h2 id="117-trên-máy-mu-dp-01-khai-báo-hoàn-chnh">11.7 Trên máy mẫu DP-01 — khai báo hoàn chỉnh</h2>
 <p>Gom cả chương thành một khối khai báo dùng được:</p>
@@ -9052,6 +9125,11 @@ tự byte không, ⚠ <strong>đọc một bit thì khoá cả byte</strong> ở
 định dạng <strong>tốn nhiều thời gian xử lý</strong> — nền cho mục 11.8.</li>
 <li><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers General Instructions</em> (bản 9/2025): dùng cho
 hàng &quot;kiểu tự nhiên <code>DINT</code>&quot; và mô hình chỉ-có-tag ở bảng mục 11.8.</li>
+<li><strong>CODESYS</strong> — trợ giúp trực tuyến, mục <em>Variable: VAR_EXTERNAL</em> (đối chiếu 2026-09-26): ⭐ hệ này
+<strong>không bắt</strong> khai <code>VAR_EXTERNAL</code> để dùng biến toàn cục trong POU — từ khoá chỉ giữ để tương thích
+IEC 61131-3; nền cho bảng <em>&quot;Biến toàn cục đi vào một POU bằng cửa nào&quot;</em> ở mục 11.6.</li>
+<li><strong>PLCopen</strong> — <em>Coding Guidelines</em> v1.0, quy tắc CP6 (tránh biến ngoài trong hàm và khối chức năng) —
+nền cho quy tắc <em>&quot;khối không đọc biến toàn cục&quot;</em> ở mục 11.6.</li>
 </ul>
 <blockquote>
 <p>⚡ Quy ước đặt tên ở mục 11.3 là <strong>quy ước của sách này</strong>, không phải chuẩn. Đơn vị của bạn có thể
@@ -11060,29 +11138,34 @@ lại phần việc tay.</strong></p>
 <p>Áp tất cả khái niệm của chương vào một bố cục cụ thể:</p>
 <pre><code class="language-text">   Tác vụ chu kỳ (ví dụ 10 ms)
       │
-      ├── PRG_Main ─────────────── gọi các phần theo thứ tự
-      │     │
-      │     ├── PRG_Safety     (LD)  ── đọc trạng thái mạch an toàn, điều kiện cho phép
-      │     ├── PRG_Mode       (ST)  ── máy trạng thái: chế độ máy (Ch.25)
-      │     ├── PRG_Stn1Seq    (ST)  ── trình tự trạm 1 bằng CASE (Ch.26)
-      │     ├── PRG_Stn2Seq    (ST)  ── trình tự trạm 2
-      │     ├── PRG_Outputs    (LD)  ── ⭐ điều khiển ngõ ra cuối cùng, có liên động
-      │     └── PRG_Stats      (ST)  ── đếm, tính chu kỳ, hiệu suất (Ch.19)
-      │
-      └── các thể hiện FB dùng chung:
-            Stop1, Clamp1, Stop2, Clamp2  : FB_Cylinder2Pos
+      └── Main ─────────────────── gọi các phần theo ĐÚNG thứ tự này, mỗi vòng quét
+            │
+            ├── Prg_IoRead        (ST)  ── lọc rung, bắt cạnh (Ch.16, 17)
+            ├── Prg_Safety        (LD)  ── đọc trạng thái mạch an toàn, điều kiện cho phép
+            ├── Prg_Mechanisms    (ST)  ── gọi bốn thể hiện FB_Cylinder2Pos:
+            │                                Stop1, Clamp1, Stop2, Clamp2
+            ├── Prg_Alarm         (ST)  ── GOM LỖI: đúng một chỗ gán M_AnyFault (Ch.25)
+            ├── Prg_Machine       (ST)  ── máy trạng thái: chế độ máy (Ch.25)
+            ├── Prg_Stn1Dispense  (ST)  ── trình tự trạm 1 bằng CASE (Ch.26)
+            ├── Prg_Stn2Cure      (ST)  ── trình tự trạm 2
+            ├── Prg_Stats         (ST)  ── đếm, tính chu kỳ, hiệu suất (Ch.19)
+            └── Prg_OutputMap     (LD)  ── ⭐ ghi ngõ ra — đúng một chỗ, cuối cùng
 </code></pre>
 <p>Bốn điều rút ra từ bố cục này:</p>
 <ul>
-<li><strong>Ngôn ngữ chọn theo từng phần</strong>, đúng bảng phân chia ở Chương 20 mục 20.6. <code>PRG_Safety</code> và
-<code>PRG_Outputs</code> là LD vì đó là chỗ người bảo trì nhìn đầu tiên.</li>
-<li><strong>Thứ tự gọi có ý nghĩa.</strong> An toàn và chế độ chạy trước, trình tự chạy giữa, ngõ ra chạy <strong>cuối
-cùng</strong> — để mọi quyết định đã xong trước khi ghi ra thế giới thật (Chương 10).</li>
-<li><strong>Ngõ ra được ghi ở đúng một chỗ</strong>: <code>PRG_Outputs</code>. Trình tự chỉ đặt <strong>yêu cầu</strong> (<code>M_Stn1_ClampReq</code>),
+<li><strong>Ngôn ngữ chọn theo từng phần</strong>, đúng bảng phân chia ở Chương 20 mục 20.6. <code>Prg_Safety</code> và
+<code>Prg_OutputMap</code> là LD vì đó là chỗ người bảo trì nhìn đầu tiên.</li>
+<li><strong>Thứ tự gọi có ý nghĩa.</strong> Đọc vào → an toàn → cơ cấu → gom lỗi → máy → trình tự → ghi ra: mỗi phần
+dùng kết quả <strong>của vòng quét này</strong> do phần đứng trước tính, và ngõ ra được ghi <strong>cuối cùng</strong> — khi
+mọi quyết định đã xong (Chương 10, Chương 27 mục 27.6).</li>
+<li><strong>Ngõ ra được ghi ở đúng một chỗ</strong>: <code>Prg_OutputMap</code>. Trình tự chỉ đặt <strong>yêu cầu</strong> (<code>M_Stn1_ClampReq</code>),
 không chạm trực tiếp vào <code>DO_</code>. Đây là cách tránh lỗi ghi trùng một cách có hệ thống, chứ không
 dựa vào việc nhớ (Chương 15 Bẫy 1, Chương 20 Bẫy 2).</li>
-<li><strong>Bốn xy-lanh dùng chung một FB, bốn thể hiện riêng</strong> — đúng quy tắc ở mục 14.3.</li>
+<li><strong>Bốn xy-lanh dùng chung một FB, bốn thể hiện riêng</strong>, gọi ở đúng một chỗ là <code>Prg_Mechanisms</code> —
+đúng quy tắc ở mục 14.3.</li>
 </ul>
+<p>Chương 57 thêm các phần của những lát cắt sau — chống va chạm, bắt tay dây chuyền, công thức, truyền
+thông, màn hình — vào <strong>cùng khung này</strong>, không đổi nguyên tắc thứ tự.</p>
 <p>Bố cục này là thứ bạn sẽ xây dần qua các chương còn lại của Phần III và Phần IV.</p>
 <hr>
 <h2 id="148-khác-bit-gia-các-hãng">14.8 Khác biệt giữa các hãng</h2>
@@ -11169,7 +11252,7 @@ chứa chúng. Chuẩn chỉ phủ phần lõi.</p>
 không sợ hỏng phần khác.
 <strong>Cách sửa:</strong> chia theo <strong>chức năng</strong> như bố cục ở mục 14.7. Mỗi POU trả lời một câu hỏi.</p>
 <h3>🔍 BẪY 4 — Chia POU theo bước trình tự</h3>
-<p>Viết <code>PRG_Step10</code>, <code>PRG_Step20</code>, <code>PRG_Step30</code>…</p>
+<p>Viết <code>Prg_Step10</code>, <code>Prg_Step20</code>, <code>Prg_Step30</code>…</p>
 <p><strong>Hiện tượng:</strong> logic của cùng một xy-lanh nằm rải ở sáu khối; sửa hành vi của nó phải mở sáu chỗ.
 <strong>Cách sửa:</strong> chia theo <strong>cơ cấu</strong>, không theo bước. Trình tự chỉ ra lệnh; cơ cấu tự lo phần của nó
 (Chương 27, Chương 30).</p>
@@ -11265,7 +11348,7 @@ tránh là gì?</li>
 <li>⭐ Chuẩn IEC 61131-3 làm cho cái gì khả chuyển và cái gì <strong>không</strong> khả chuyển? Nêu ít nhất ba thứ
 mỗi bên.</li>
 <li>Vì sao chương trình thật gần như luôn gắn chặt với một hãng, dù hãng đó tuân theo chuẩn?</li>
-<li>Trong bố cục ở mục 14.7, vì sao <code>PRG_Outputs</code> chạy <strong>cuối cùng</strong> và vì sao nó là <strong>nơi duy nhất</strong>
+<li>Trong bố cục ở mục 14.7, vì sao <code>Prg_OutputMap</code> chạy <strong>cuối cùng</strong> và vì sao nó là <strong>nơi duy nhất</strong>
 ghi vào các tag <code>DO_</code>?</li>
 <li>⭐ Vì sao chia POU theo <strong>cơ cấu</strong> tốt hơn chia theo <strong>bước trình tự</strong>? Nêu hậu quả cụ thể của
 cách chia sai.</li>
@@ -12249,7 +12332,7 @@ mạch an toàn phần cứng, không nằm trong logic PLC thường (Chương 
 <td>Phụ thuộc điều kiện hiện tại, không cần nhớ</td>
 </tr>
 <tr>
-<td><code>M_AnyFault</code> — đã có lỗi</td>
+<td><code>M_Alm_AirLow</code> — đã từng mất khí</td>
 <td><strong>SET/RESET</strong></td>
 <td>Lỗi phải <strong>dính</strong> cho tới khi người vận hành xác nhận, dù nguyên nhân đã hết</td>
 </tr>
@@ -12259,24 +12342,30 @@ mạch an toàn phần cứng, không nằm trong logic PLC thường (Chương 
 <td>Đánh dấu một lần, giữ tới khi board rời trạm</td>
 </tr>
 </tbody></table></div>
-<p>Trường hợp <code>M_AnyFault</code> cho thấy rõ vì sao SET/RESET tồn tại. Giả sử mất khí trong 200 ms rồi có lại.
+<p>Trường hợp <code>M_Alm_AirLow</code> cho thấy rõ vì sao SET/RESET tồn tại. Giả sử mất khí trong 200 ms rồi có lại.
 Nếu dùng cuộn dây thường, cờ lỗi lên rồi tắt ngay — người vận hành quay lại chỉ thấy máy đứng im mà
 không có lỗi nào. Với SET/RESET, lỗi <strong>dính</strong>, và chỉ mất khi có người nhấn Reset:</p>
-<pre><code class="language-iecst">// SET: bất kỳ nguyên nhân nào cũng đặt cờ lỗi
-IF M_AirFault OR M_Stn1Timeout OR M_Stn2Timeout THEN
-    M_AnyFault := TRUE;
+<pre><code class="language-iecst">// SET: mất khí — dù chỉ 200 ms — cũng phải để lại dấu vết
+IF NOT DI_AirOK THEN
+    M_Alm_AirLow := TRUE;
 END_IF;
 
 // RESET: chỉ người vận hành gỡ được, VÀ chỉ khi nguyên nhân đã hết
-IF DI_ResetPB AND NOT M_AirFault
-              AND NOT M_Stn1Timeout
-              AND NOT M_Stn2Timeout THEN
-    M_AnyFault := FALSE;
+IF DI_ResetPB AND DI_AirOK THEN
+    M_Alm_AirLow := FALSE;
 END_IF;
 </code></pre>
-<p>Dòng <code>AND NOT …</code> ở nhánh RESET là chỗ người mới hay bỏ. Không có nó, người vận hành nhấn Reset khi
+<p>Vế <code>AND DI_AirOK</code> ở nhánh RESET là chỗ người mới hay bỏ. Không có nó, người vận hành nhấn Reset khi
 vẫn còn mất khí thì cờ lỗi tắt trong một vòng quét rồi lên lại — máy nháy đèn lỗi liên tục và không
 ai hiểu chuyện gì.</p>
+<blockquote>
+<p>⭐ <strong>Một cờ cho một nguồn lỗi.</strong> Máy thật có hàng chục nguồn lỗi. ⚠ Đừng dồn chúng vào <strong>một</strong> cờ
+chung rồi liệt kê lại mọi nguyên nhân ở nhánh RESET: thêm một nguồn mới là phải sửa <strong>hai</strong> chỗ, và
+quên chỗ thứ hai thì Reset xoá một lỗi còn nguyên nhân. ⭐ Mỗi nguồn giữ <strong>cờ chốt của riêng nó</strong>
+như <code>M_Alm_AirLow</code> ở trên; cờ tổng <code>M_AnyFault</code> là <strong>phép OR</strong> của chúng, gán ở đúng một chỗ. Khi
+máy đã có máy trạng thái, lệnh xoá cũng không đi thẳng từ nút nữa mà đi qua trạng thái <code>Resetting</code>
+— Chương 25 mục 25.5c.</p>
+</blockquote>
 <h3>⚠ Vì sao lạm dụng SET/RESET làm máy &quot;không biết mình đang ở đâu&quot;</h3>
 <p>Đây là lý do chương này tồn tại.</p>
 <p>SET/RESET rất tiện: cần nhớ gì thì đặt một bit. Nhưng mỗi bit như vậy là <strong>một mẩu trạng thái nằm rời
@@ -12361,7 +12450,7 @@ khai báo biến</strong>.</p>
 <td>Sau mất điện, cơ cấu có thể đã ở tư thế khác; chạy tiếp từ bước cũ là nguy hiểm</td>
 </tr>
 <tr>
-<td><code>M_AnyFault</code> — có lỗi</td>
+<td>Cờ lỗi đã chốt (<code>M_Alm_…</code>)</td>
 <td>⚠ Tuỳ</td>
 <td>Xem ghi chú bên dưới</td>
 </tr>
@@ -12376,7 +12465,7 @@ cầu của IEC 60204-1 (Chương 28, Chương 48).</p>
 đã tụt về do hết khí. Bước 40 ra lệnh cho cơ cấu tiếp theo chạy, tin rằng board đang được kẹp. Nó
 không được kẹp.</p>
 </blockquote>
-<p>Với <code>M_AnyFault</code>: giữ thì sau khi có điện lại máy vẫn báo lỗi cũ — người vận hành phải Reset có chủ
+<p>Với cờ lỗi đã chốt: giữ thì sau khi có điện lại máy vẫn báo lỗi cũ — người vận hành phải Reset có chủ
 ý, và đó thường là điều tốt. Nhưng nếu giữ, phải bảo đảm nguyên nhân được đánh giá lại chứ không chỉ
 hiển thị cờ cũ. Đơn giản nhất: <strong>không giữ cờ lỗi, nhưng luôn vào trạng thái yêu cầu về gốc</strong> sau khi
 có điện lại — cách này không phụ thuộc bộ nhớ giữ được, nên ít sai hơn.</p>
@@ -13121,7 +13210,7 @@ END_IF;
 T_Step20(IN := (Stn1_Step = 20), PT := T#3S);
 IF T_Step20.Q THEN
     Stn1_FaultStep := 20;
-    M_AnyFault     := TRUE;      // &quot;S1.20 quá thời gian — chờ DI_Clamp1Up&quot;
+    Stn1_Fault     := TRUE;      // &quot;S1.20 quá thời gian — chờ DI_Clamp1Up&quot; · cờ của trạm (Ch.25 mục 25.5c)
 END_IF;
 </code></pre>
 <p>Hai khối này <strong>làm hai việc khác nhau và không thay thế nhau</strong>:</p>
@@ -19630,7 +19719,7 @@ mấu chốt: lỗi có thể xảy ra ở bất cứ đâu.</em></p>
 <tr>
 <td><strong>Resetting</strong></td>
 <td>Đang xoá lỗi và kiểm tra điều kiện</td>
-<td>Sạch lỗi → <code>Homing</code> (không về thẳng <code>Idle</code> — xem dưới)</td>
+<td>Sạch lỗi → <code>Homing</code> (không về thẳng <code>Idle</code> — xem dưới); còn lỗi → <code>Alarm</code></td>
 </tr>
 </tbody></table></div>
 <h3>Ba quyết định thiết kế cần hiểu, không chỉ chép</h3>
@@ -19722,15 +19811,21 @@ dòng code đầu tiên, và là thứ đội kiểm thử dùng để soát.</p
 </tr>
 <tr>
 <td>Alarm</td>
-<td><code>DI_ResetPB</code> và nguyên nhân đã hết</td>
+<td>Sườn lên <code>DI_ResetPB</code></td>
 <td>Resetting</td>
-<td>Xoá cờ lỗi; tắt còi</td>
+<td>Tắt còi; ra lệnh xoá mọi cờ lỗi (<code>M_ClearFaults</code>)</td>
 </tr>
 <tr>
 <td>Resetting</td>
-<td>Đã xoá xong</td>
+<td>Hết thời lượng xoá, <strong>không còn cờ nào</strong></td>
 <td>Homing</td>
 <td>Bắt đầu trình tự về gốc</td>
+</tr>
+<tr>
+<td>Resetting</td>
+<td>Hết thời lượng xoá, <strong>còn cờ chốt lại</strong> — nguyên nhân chưa hết</td>
+<td>Alarm</td>
+<td>Giữ đèn đỏ; còi không kêu lại</td>
 </tr>
 <tr>
 <td><strong>Mọi trạng thái</strong></td>
@@ -19759,7 +19854,10 @@ END_TYPE
 
 VAR
     MachineState : E_MachineState := Uninitialized;
+    T_Resetting  : TON;
 END_VAR
+
+// M_AnyFault đã được GOM ở đúng một chỗ, ngay trước đoạn này (mục 25.5c)
 
 // ── Chuyển tiếp ưu tiên cao nhất: lỗi từ BẤT KỲ trạng thái nào ──
 // Đặt TRƯỚC khối CASE để nó luôn thắng
@@ -19769,6 +19867,9 @@ IF M_AnyFault AND MachineState &lt;&gt; Alarm AND MachineState &lt;&gt; Resettin
     DO_Buzzer   := TRUE;
     M_MotionEnable := FALSE;          // cắt mọi lệnh chuyển động
 END_IF;
+
+// Thời lượng của Resetting — gọi đúng MỘT lần, ngoài CASE (Chương 17, Bẫy 5)
+T_Resetting(IN := (MachineState = Resetting), PT := T#200MS);
 
 CASE MachineState OF
 
@@ -19785,7 +19886,7 @@ CASE MachineState OF
             M_CycleStep := 0;                  // xoá bước chu trình
             MachineState := Idle;
         END_IF;
-        // timeout xử lý bên trong trình tự về gốc → bật M_AnyFault
+        // timeout xử lý bên trong trình tự về gốc → chốt M_Alm_HomeTimeout (Ch.28)
 
     Idle:
         DO_LampYellow := TRUE;
@@ -19811,16 +19912,20 @@ CASE MachineState OF
 
     Alarm:
         DO_LampRed := TRUE;
-        IF R_TRIG_Reset.Q AND NOT M_AnyFault THEN   // nguyên nhân phải hết TRƯỚC
-            MachineState := Resetting;
+        IF R_TRIG_Reset.Q THEN                 // chỉ cần SƯỜN LÊN — việc xét nguyên nhân
+            MachineState := Resetting;         // giao cho Resetting (mục 25.5c)
         END_IF;
 
     Resetting:
-        M_ClearFaults := TRUE;
+        M_ClearFaults := TRUE;                 // mọi chủ cờ lỗi tự xoá cờ của mình…
         DO_Buzzer     := FALSE;
-        IF M_FaultsCleared THEN
+        IF T_Resetting.Q THEN                  // …và đã có đủ vòng quét để làm việc đó
             M_ClearFaults := FALSE;
-            MachineState  := Homing;           // KHÔNG về thẳng Idle
+            IF M_AnyFault THEN
+                MachineState := Alarm;         // nguyên nhân còn → cờ đã chốt lại
+            ELSE
+                MachineState := Homing;        // KHÔNG về thẳng Idle
+            END_IF;
         END_IF;
 
 END_CASE;
@@ -19832,8 +19937,11 @@ chuyển trạng thái. Nếu nhét điều kiện lỗi vào từng nhánh <cod
 và sẽ quên ít nhất một chỗ.</li>
 <li><strong>Dùng kiểu liệt kê, không dùng số trần.</strong> <code>MachineState := 3</code> không nói lên điều gì khi bạn xem
 trạng thái trực tuyến lúc hai giờ sáng; <code>Running</code> thì nói.</li>
-<li><strong>Reset đòi hỏi <code>NOT M_AnyFault</code>.</strong> Nhấn Reset khi nguyên nhân còn nguyên thì không được chuyển —
-nếu không, máy sẽ quay vòng <code>Alarm → Resetting → Alarm</code> liên tục.</li>
+<li><strong>Reset chỉ cần sườn lên — việc xét nguyên nhân thuộc về <code>Resetting</code>.</strong> Nó ra lệnh xoá, chờ đủ
+lâu cho mọi nơi giữ cờ lỗi tự xoá rồi <strong>phát hiện lại</strong>, sau đó mới xem còn lỗi không. Nguyên nhân
+còn thì cờ đã chốt lại → quay về <code>Alarm</code>, <strong>một lần cho mỗi lần nhấn</strong> — không quay vòng. ⚠⚠ Đừng
+viết <code>IF R_TRIG_Reset.Q AND NOT M_AnyFault</code>: khi cờ lỗi chỉ được xoá <strong>bên trong</strong> <code>Resetting</code>,
+điều kiện đó không bao giờ đúng và máy <strong>khoá chết</strong> ở <code>Alarm</code> (mục 25.5c).</li>
 </ul>
 <h3>Cách 2 — bit trạng thái (Ladder Diagram)</h3>
 <p>Khi phải viết bằng ladder — thường vì đội bảo trì tại nhà máy chỉ đọc được ladder (xem Chương 20) —
@@ -19847,8 +19955,9 @@ Cách này <strong>đưa trở lại đúng rủi ro mà máy trạng thái sinh
 tổ hợp. Nó chỉ an toàn nếu bạn <strong>cưỡng chế bất biến &quot;đúng một bit bật&quot;</strong> bằng cấu trúc code:</p>
 <ul>
 <li>Mọi chuyển tiếp viết theo mẫu <strong>bật bit mới, tắt bit cũ, trong cùng một nấc thang</strong>.</li>
-<li>Thêm một nấc <strong>giám sát</strong>: đếm số bit đang bật; khác 1 thì bật <code>M_AnyFault</code>. Nấc này là lưới an
-toàn — nó biến một lỗi logic âm thầm thành một báo động nhìn thấy được.</li>
+<li>Thêm một nấc <strong>giám sát</strong>: đếm số bit đang bật; khác 1 thì <strong>chốt</strong> một cờ lỗi riêng,
+<code>M_Alm_StateInvalid</code>, gom vào <code>M_AnyFault</code> như mọi nguồn lỗi khác (mục 25.5c). Nấc này là lưới
+an toàn — nó biến một lỗi logic âm thầm thành một báo động nhìn thấy được.</li>
 </ul>
 </blockquote>
 <pre><code class="language-text">// Nấc chuyển tiếp: Idle → Running
@@ -19859,7 +19968,8 @@ toàn — nó biến một lỗi logic âm thầm thành một báo động nhì
 
 // Nấc giám sát bất biến — luôn có, không bao giờ bỏ
    [ĐẾM số bit trạng thái đang bật] → M_StateCount
-   M_StateCount &lt;&gt; 1  ────────────────────────────────( M_AnyFault )
+   M_ClearFaults      ─────────────────────────────( R )──  M_Alm_StateInvalid   // xoá TRƯỚC
+   M_StateCount &lt;&gt; 1  ─────────────────────────────( S )──  M_Alm_StateInvalid   // phát hiện SAU
 </code></pre>
 <h3>Chọn cách nào</h3>
 <div class="table-wrap"><table>
@@ -20025,6 +20135,118 @@ máy, đó là đánh đổi <strong>đúng</strong>, đúng theo tiêu chí t�
 sáng?</em></p>
 </blockquote>
 <hr>
+<h2 id="255c-đưng-đi-ca-li-cht-ngun-gom-mt-ch-xoá-qua-resetting">25.5c ⭐⭐ Đường đi của lỗi — chốt ở nguồn, gom một chỗ, xoá qua <code>Resetting</code></h2>
+<p>Máy trạng thái ở mục 25.5 <strong>đọc</strong> một cờ <code>M_AnyFault</code>. Nhưng nó bỏ ngỏ hai câu hỏi: <strong>ai ghi cờ đó, và
+ai xoá nó?</strong> ⚠ Trả lời sai hai câu này thì một máy trạng thái đúng từng dòng vẫn <strong>khoá chết</strong>.</p>
+<h3>Ba cách hay gặp — cùng một bài toán</h3>
+<p>Bài toán: DP-01 có ba nguồn lỗi — mất khí, một bước của trạm 1 quá giờ, trình tự về gốc quá giờ.</p>
+<pre><code class="language-iecst">// ── A · Một cờ chung, SET/RESET ──
+IF NOT DI_AirOK OR T_Stn1Step.Q OR T_Home.Q THEN
+    M_AnyFault := TRUE;
+END_IF;
+IF DI_ResetPB AND DI_AirOK AND NOT T_Stn1Step.Q AND NOT T_Home.Q THEN
+    M_AnyFault := FALSE;
+END_IF;
+
+// ── B · Mỗi nguồn ghi thẳng cờ chung ──
+IF T_Stn1Step.Q THEN  Stn1_Fault := TRUE;  M_AnyFault := TRUE;  END_IF;   // trong trạm 1
+IF T_Home.Q     THEN  M_AnyFault := TRUE;                       END_IF;   // trong trình tự về gốc
+
+// ── C · Mỗi nguồn MỘT cờ của riêng nó, gom MỘT chỗ, xoá qua Resetting ──
+IF M_ClearFaults THEN  Stn1_Fault := FALSE;  END_IF;       // chủ cờ: xoá TRƯỚC…
+IF T_Stn1Step.Q  THEN  Stn1_Fault := TRUE;   END_IF;       // …phát hiện SAU
+M_AnyFault := M_Alm_AirLow OR Stn1_Fault OR M_Alm_HomeTimeout;    // đúng MỘT chỗ gán
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách</th>
+<th>⭐ Ưu</th>
+<th>⚠ Nhược</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A — một cờ chung</td>
+<td>Ngắn nhất</td>
+<td>Mất thông tin <em>lỗi gì</em>. Nhánh RESET phải <strong>liệt kê lại</strong> mọi nguyên nhân — thêm một nguồn là sửa <strong>hai</strong> chỗ, quên chỗ thứ hai thì Reset xoá một lỗi còn nguyên nhân</td>
+</tr>
+<tr>
+<td>B — mỗi nơi ghi thẳng</td>
+<td>Đoạn nào cũng tự đứng được</td>
+<td>⚠⚠ <strong>Nhiều nơi ghi một biến</strong>, và <strong>không ai xoá</strong> — chính là thứ gây khoá chết ở dưới</td>
+</tr>
+<tr>
+<td>⭐ <strong>C — chốt ở nguồn, gom một chỗ</strong></td>
+<td>Mỗi cờ <strong>một nơi ghi</strong>; biết đích danh lỗi gì; thêm nguồn = thêm một cờ và một vế <code>OR</code>; ⭐ <strong>không phụ thuộc thứ tự gọi</strong></td>
+<td>Thêm một biến lệnh xoá, và <code>Resetting</code> phải kéo dài vài trăm mili-giây</td>
+</tr>
+</tbody></table></div>
+<p>⭐ <strong>Sách dùng cách C</strong> — ở mọi chương về sau.</p>
+<h3>⚠⚠ Vì sao cách B khoá chết máy</h3>
+<p>Viết <code>Alarm → Resetting</code> với điều kiện <code>R_TRIG_Reset.Q AND NOT M_AnyFault</code>, trong khi cờ lỗi chỉ được
+xoá <strong>bên trong</strong> <code>Resetting</code> — thì:</p>
+<ol>
+<li>Lỗi xảy ra → cờ chốt → <code>M_AnyFault</code> = TRUE → máy vào <code>Alarm</code>.</li>
+<li>Muốn rời <code>Alarm</code> phải có <code>NOT M_AnyFault</code>.</li>
+<li>Muốn <code>M_AnyFault</code> về FALSE phải vào được <code>Resetting</code>.</li>
+</ol>
+<p>⚡ Vòng tròn khép kín. <strong>Máy chỉ ra khỏi <code>Alarm</code> bằng cách tắt nguồn.</strong> Và ⚠ không phải chỉ lý thuyết:
+cờ quá giờ của trạm được chốt ở một chỗ mà khi máy dừng thì <strong>không còn được thực thi</strong> — thân trình tự
+bị cửa vào chặn lại (Chương 26), nên kể cả thêm dòng <em>&quot;xoá khi nguyên nhân hết&quot;</em> vào đó cũng vô ích:
+dòng đó không bao giờ chạy.</p>
+<blockquote>
+<p>⭐ Mô phỏng từng vòng quét ba khối — nguồn lỗi, gom, tầng máy — ở <strong>cả sáu</strong> thứ tự gọi có thể: cách B
+kẹt ở <code>Alarm</code> ở <strong>cả sáu</strong> với lỗi quá giờ, và với lỗi mất khí thì nhấn Reset một lần có thành công
+hay không <strong>tuỳ vào thứ tự gọi</strong>. Cách C cho đúng kết quả ở cả sáu.</p>
+</blockquote>
+<h3>⭐ Ba quy tắc của cách C</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>Quy tắc</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td><strong>Mỗi nguồn lỗi tự chốt cờ của chính nó</strong> — <code>M_Alm_…</code> cho nguồn chung, <code>Stn1_Fault</code> cho trạm, <code>.Fault</code> cho khối cơ cấu. Không ai khác ghi vào cờ đó</td>
+<td>Một biến, một nơi ghi (Chương 10). Và cờ nói được <strong>lỗi gì</strong></td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>⭐ <strong><code>M_AnyFault</code> được GÁN đúng một chỗ</strong> — phép <code>OR</code> của mọi cờ, tính lại mỗi vòng, đặt <strong>sau</strong> tầng cơ cấu và <strong>trước</strong> tầng máy. Không nguồn nào ghi thẳng <code>M_AnyFault</code></td>
+<td>Hai nơi cùng ghi thì phép gán chạy sau <strong>xoá mất</strong> lỗi của phép chạy trước</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>⭐⭐ <strong>Xoá đi qua <code>Resetting</code>.</strong> Chủ cờ xoá cờ của mình <strong>khi thấy <code>M_ClearFaults</code></strong>, đặt dòng xoá <strong>trước</strong> dòng phát hiện</td>
+<td>Nguyên nhân còn thì cờ chốt lại ngay trong vòng đó — <code>Resetting</code> nhìn thấy và đưa máy về <code>Alarm</code>. ⭐ Việc <em>&quot;nguyên nhân đã hết chưa&quot;</em> giao cho <strong>đúng nơi biết nguyên nhân</strong></td>
+</tr>
+</tbody></table></div>
+<p>⭐ <strong>Vì sao cách C không phụ thuộc thứ tự gọi:</strong> <code>M_ClearFaults</code> kéo dài <strong>nhiều vòng quét</strong>
+(<code>T_Resetting</code>), nên chủ cờ đứng trước hay sau tầng máy đều kịp thấy nó; và tầng máy chỉ đọc kết quả
+<strong>sau khi</strong> lệnh xoá đã tắt. Thời lượng 200 ms ở đoạn mã trên phải <strong>lớn hơn vài lần chu kỳ tác vụ chậm
+nhất</strong> có chứa cờ lỗi (Chương 27 mục 27.6).</p>
+<h3>Gom lỗi trên DP-01</h3>
+<pre><code class="language-iecst">// ── GOM LỖI — đúng MỘT chỗ gán M_AnyFault; chạy SAU các nguồn lỗi, TRƯỚC tầng máy ──
+M_AnyFault := M_Alm_AirLow                    // nguồn chung (Phụ lục L mục L.11)
+              OR Stn1_Fault OR Stn2_Fault     // tầng trạm (Chương 26)
+              OR M_Alm_HomeTimeout            // trình tự về gốc (Chương 28)
+              OR M_Alm_StateInvalid;          // giám sát bit trạng thái (mục 25.5)
+// Chương 27 thêm cờ của các khối cơ cấu: … OR Clamp1.Fault OR …
+</code></pre>
+<blockquote>
+<p>⚡ <strong>Quy ước cho mọi đoạn trích từ đây về sau:</strong> mỗi nguồn lỗi chỉ viết dòng <strong>chốt</strong>
+(<code>M_Alm_… := TRUE</code>). Dòng <strong>xoá</strong> luôn theo đúng một mẫu nên sách không lặp lại —
+<code>IF M_ClearFaults AND &lt;nguyên nhân đã hết&gt; THEN M_Alm_… := FALSE; END_IF;</code> — đặt <strong>trước</strong> dòng chốt;
+và mỗi cờ mới là <strong>một vế <code>OR</code></strong> thêm vào phép gom.</p>
+</blockquote>
+<blockquote>
+<p>⭐ Đây chính là cách một khối cơ cấu tốt tự làm bên trong nó — <em>xoá trước, phát hiện sau</em> (khối
+<code>FB_Cylinder2Pos</code> ở Chương 27 mục 27.3). Cách C chỉ là áp đúng nguyên tắc đó cho cả cỗ máy.</p>
+</blockquote>
+<hr>
 <h2 id="256-trng-thái-máy-tng-và-trng-thái-tng-trm">25.6 Trạng thái máy tổng và trạng thái từng trạm</h2>
 <p>DP-01 có <strong>hai trạm</strong>. Câu hỏi tự nhiên: một máy trạng thái hay ba?</p>
 <p>Câu trả lời: <strong>ba</strong> — một cho máy tổng, một cho mỗi trạm — xếp thành hai tầng.</p>
@@ -20077,6 +20299,9 @@ nhấp nháy giữa hai trạng thái mỗi vòng quét, đèn chớp loạn, v�
 sao?&quot;</em> Mọi trạng thái phải có ít nhất một đường ra khả thi.</li>
 <li>Với trạng thái xử lý (<code>Homing</code>, <code>Resetting</code>), đặt <strong>timeout</strong> — quá thời gian thì sang <code>Alarm</code> với
 mã lỗi nói rõ kẹt ở đâu. Trạng thái không có đường thoát là trạng thái chưa thiết kế xong.</li>
+<li>⭐ Kích Reset bằng <strong>sườn lên</strong>, không bằng mức: giữ nút là đủ cho một lần thử, không phải một
+vòng lặp. Và để <code>Resetting</code> — không phải điều kiện vào của nó — quyết định còn lỗi hay không
+(mục 25.5c).</li>
 </ol>
 <h3>🔍 BẪY 3 — Nhồi trình tự vào máy trạng thái</h3>
 <p>Người mới hay tưởng mỗi <em>bước</em> của chu trình là một <em>trạng thái</em>, rồi tạo ra máy trạng thái ba mươi
@@ -20258,6 +20483,11 @@ bản quyền riêng hoặc ấn bản phần mềm cao hơn</strong>. Kiểm tr
 <td>11</td>
 <td>Với bit trạng thái: <strong>cưỡng chế ưu tiên tường minh</strong></td>
 <td>Đường ưu tiên thấp kèm <em>&quot;và đường cao không đúng&quot;</em></td>
+</tr>
+<tr>
+<td>12</td>
+<td>⭐⭐ Soát <strong>đường đi của lỗi</strong></td>
+<td>Mỗi nguồn chốt cờ riêng; <code>M_AnyFault</code> gán <strong>đúng một chỗ</strong>; <code>Resetting</code> xoá (mục 25.5c)</td>
 </tr>
 </tbody></table></div>
 <hr>
@@ -20709,17 +20939,18 @@ END_IF;
 <p>Cột phải chính là sai lầm ở Chương 17: <em>&quot;chờ 2 giây chắc kẹp xong rồi&quot;</em>. Nó biến một cơ chế phát hiện
 lỗi thành một cơ chế <strong>giấu lỗi</strong>.</p>
 <h3>Cách hiện thực — một bộ đếm dùng chung</h3>
-<p>Không cần một timer cho mỗi bước. Một timer dùng chung, tự đặt lại mỗi khi bước đổi:</p>
+<p>Không cần một timer cho mỗi bước. Một timer dùng chung, tự đặt lại mỗi khi bước đổi — và <strong>gọi đúng
+một lần</strong> mỗi vòng quét (Chương 17, Bẫy 5):</p>
 <pre><code class="language-iecst">VAR
     Stn1_StepPrev  : INT;
     T_StepTimeout  : TON;
     Stn1_StepLimit : TIME;
 END_VAR
 
-// ── Đặt lại timer mỗi khi bước thay đổi ──
-IF Stn1_Step &lt;&gt; Stn1_StepPrev THEN
-    T_StepTimeout(IN := FALSE);               // xoá timer
-    Stn1_StepPrev := Stn1_Step;
+// ── Xoá cờ lỗi của trạm khi tầng máy ra lệnh — đặt NGOÀI cửa vào của trình tự,
+//    vì lúc máy đang Resetting thì trình tự không chạy (Chương 25 mục 25.5c) ──
+IF M_ClearFaults THEN
+    Stn1_Fault := FALSE;
 END_IF;
 
 // ── Thời gian cho phép của từng bước ──
@@ -20733,13 +20964,14 @@ CASE Stn1_Step OF
    60:   Stn1_StepLimit := T#10S;             // chuyển board đi
 END_CASE;
 
-// ── Chạy timer và báo lỗi ──
-T_StepTimeout(IN := (Stn1_StepLimit &gt; T#0S), PT := Stn1_StepLimit);
+// ── Chạy timer: bước vừa đổi thì IN = FALSE đúng MỘT vòng → timer tự xoá về 0 ──
+T_StepTimeout(IN := (Stn1_StepLimit &gt; T#0S) AND (Stn1_Step = Stn1_StepPrev),
+              PT := Stn1_StepLimit);
+Stn1_StepPrev := Stn1_Step;
 
 IF T_StepTimeout.Q THEN
     Stn1_FaultStep := Stn1_Step;              // GHI LẠI bước bị kẹt
-    Stn1_Fault     := TRUE;
-    M_AnyFault     := TRUE;
+    Stn1_Fault     := TRUE;                   // cờ của TRẠM — gom vào M_AnyFault (Ch.25 mục 25.5c)
 END_IF;
 </code></pre>
 <h3>Hai bước cố ý <strong>không</strong> đặt giới hạn</h3>
@@ -21268,8 +21500,8 @@ hành vi. Vậy viết một khối:</p>
 <pre><code class="language-iecst">FUNCTION_BLOCK FB_Cylinder2Pos
 VAR_INPUT
     Req       : BOOL;            // TRUE = yêu cầu tới vị trí LÀM VIỆC — giữ mức, không phải xung
-    Enable    : BOOL;            // tầng máy cho phép ĐỔI vị trí (Chương 25)
-    Reset     : BOOL;            // xoá lỗi đã chốt — nối sườn lên nút Reset
+    Permit    : BOOL;            // tầng máy cho phép ĐỔI vị trí — ⚠ không phải Enable kiểu PLCopen
+    Reset     : BOOL;            // xoá lỗi đã chốt — nối lệnh xoá M_ClearFaults (Chương 25)
     SensWork  : BOOL;            // cảm biến báo đã tới vị trí làm việc
     SensHome  : BOOL;            // cảm biến báo đã về vị trí gốc
     Limit     : TIME := T#3S;    // thời gian tối đa cho một hành trình
@@ -21288,7 +21520,7 @@ VAR
 END_VAR
 
 // ── 1. Lệnh ra van: CHỈ đổi khi được phép. Mất phép → GIỮ nguyên, không &quot;về lò xo&quot; (Ch.27 Bẫy 7)
-IF Enable THEN
+IF Permit THEN
     Valve := Req;
 END_IF;
 
@@ -21360,8 +21592,8 @@ END_VAR
 
 // Gọi mỗi vòng quét — tầng cơ cấu chạy TRƯỚC tầng trạm
 Clamp1(Req      := M_Stn1_ClampReq,
-       Enable   := M_MotionEnable,
-       Reset    := M_ResetPB_Rise,       // sườn lên nút Reset — Phụ lục L mục L.7
+       Permit   := M_MotionEnable,
+       Reset    := M_ClearFaults,        // lệnh xoá của tầng máy — Chương 25 mục 25.5c
        SensWork := DI_Clamp1Up,
        SensHome := DI_Clamp1Dn,
        Limit    := T#3S);
@@ -21374,7 +21606,7 @@ DO_Clamp1Vlv := Clamp1.Valve;             // ← đúng MỘT dòng ghi vào ng�
 <li><strong>Phát hiện tư thế &quot;giữa chừng&quot;</strong> ở mọi cơ cấu, không sót.</li>
 <li><strong>Phát hiện cảm biến hỏng</strong> — cả hai cùng bật là tình huống vật lý bất khả, nên chắc chắn là hỏng.
 Rất ít người viết kiểm tra này khi code rải rác.</li>
-<li><strong>Một cửa duy nhất để thêm liên động.</strong> Cần chặn chuyển động khi mất khí? Thêm vào <code>Enable</code>, một
+<li><strong>Một cửa duy nhất để thêm liên động.</strong> Cần chặn chuyển động khi mất khí? Thêm vào <code>Permit</code>, một
 chỗ, áp cho cả bốn. ⚠ Và <em>&quot;chặn&quot;</em> ở đây là <strong>không đổi vị trí</strong> — bảng ngay trên.</li>
 </ol>
 <blockquote>
@@ -21527,11 +21759,14 @@ và đổi <code>Step 0</code> thành <code>Step 1</code> → trạm 1 hỏng, m
 </ul>
 <h3>Cách đúng — trạm 2 công bố một giao diện</h3>
 <p>Mỗi trạm công bố một <strong>tập biến ra nhỏ, ổn định</strong>, và đó là <strong>thứ duy nhất</strong> người khác được đọc:</p>
-<pre><code class="language-iecst">// Giao diện công bố của trạm 2 — coi như hợp đồng, hạn chế thay đổi
-Stn2_Ready      : BOOL;     // sẵn sàng nhận board mới
-Stn2_Busy       : BOOL;     // đang xử lý
-Stn2_Fault      : BOOL;     // trạm này có lỗi
-Stn2_BoardDone  : BOOL;     // board đã xử lý xong, chờ chuyển đi
+<pre><code class="language-iecst">VAR_GLOBAL
+    // Giao diện công bố của trạm 2 — coi như hợp đồng, hạn chế thay đổi.
+    // ⭐ Toàn cục CÓ CHỦ Ý: nhiều phần cần đọc — và CHỈ trạm 2 được ghi (Chương 11 mục 11.6)
+    Stn2_Ready      : BOOL;     // sẵn sàng nhận board mới
+    Stn2_Busy       : BOOL;     // đang xử lý
+    Stn2_Fault      : BOOL;     // trạm này có lỗi
+    Stn2_BoardDone  : BOOL;     // board đã xử lý xong, chờ chuyển đi
+END_VAR
 </code></pre>
 <p>Bên trong trạm 2, cứ đổi bao nhiêu bước tuỳ ý — miễn là bốn biến trên vẫn đúng nghĩa. Trạm 1 chỉ đọc:</p>
 <pre><code class="language-iecst">// ✓ ĐÚNG — đọc giao diện đã công bố, không đọc ruột
@@ -21551,9 +21786,10 @@ khối dính chặt vào nhau</strong>. Cách chữa là như trên: chờ trên
 <p>Chuyền là tài nguyên <strong>dùng chung</strong>: cả hai trạm đều có lúc cần nó chạy. Nếu mỗi trạm tự bật
 <code>DO_ConvRun</code> thì đó là cuộn dây trùng, và tệ hơn — hai trạm có thể yêu cầu ngược nhau.</p>
 <p>Quy tắc: <strong>tài nguyên dùng chung do tầng trên quản lý</strong>. Hai trạm chỉ <em>yêu cầu</em>:</p>
-<pre><code class="language-iecst">// Mỗi trạm nêu yêu cầu
-M_Stn1_ConvReq : BOOL;
-M_Stn2_ConvReq : BOOL;
+<pre><code class="language-iecst">VAR_GLOBAL
+    M_Stn1_ConvReq : BOOL;     // trạm 1 nêu yêu cầu — chỉ trạm 1 ghi
+    M_Stn2_ConvReq : BOOL;     // trạm 2 nêu yêu cầu — chỉ trạm 2 ghi
+END_VAR
 
 // Tầng máy quyết định — đúng MỘT nơi ghi vào ngõ ra chuyền
 DO_ConvRun := (M_Stn1_ConvReq OR M_Stn2_ConvReq)
@@ -21729,13 +21965,15 @@ năm hệ: <strong>Phụ lục A1</strong>.</p>
 <p>Trong tác vụ duy nhất, thứ tự gọi các khối <strong>là một phần của thiết kế</strong> (Chương 10):</p>
 <pre><code class="language-text">1. Đọc và xử lý tín hiệu vào     (lọc, bắt cạnh, tính cờ điều kiện)
 2. Tầng cơ cấu                    (các FB xy-lanh — tính Done/Fault)
-3. Tầng máy                       (máy trạng thái — dùng Fault vừa tính)
-4. Tầng trạm                      (trình tự — dùng Done vừa tính, ra yêu cầu)
-5. Gom yêu cầu → ghi ngõ ra       (đúng một nơi cho mỗi ngõ ra)
-6. Hiển thị, đèn tháp, ghi log
+3. Gom lỗi                        (M_AnyFault — đúng MỘT chỗ gán, Chương 25 mục 25.5c)
+4. Tầng máy                       (máy trạng thái — dùng M_AnyFault vừa gom)
+5. Tầng trạm                      (trình tự — dùng Done vừa tính, ra yêu cầu)
+6. Gom yêu cầu → ghi ngõ ra       (đúng một nơi cho mỗi ngõ ra)
+7. Hiển thị, đèn tháp, ghi log
 </code></pre>
 <p>Thứ tự này không tuỳ ý. Tầng cơ cấu chạy <strong>trước</strong> để <code>Done</code> và <code>Fault</code> là của <strong>vòng quét này</strong>; nếu
-gọi sau, tầng trạm sẽ dùng giá trị của vòng quét trước và mọi phản ứng chậm thêm một chu kỳ.</p>
+gọi sau, tầng trạm sẽ dùng giá trị của vòng quét trước và mọi phản ứng chậm thêm một chu kỳ. ⭐ Gom
+lỗi đứng ngay trước tầng máy vì cùng lý do: máy vào <code>Alarm</code> <strong>trong chính vòng quét</strong> lỗi được chốt.</p>
 <hr>
 <h2 id="277-by-thưng-gp">27.7 Bẫy thường gặp</h2>
 <h3>🔍 BẪY 1 — Chép trình tự trạm 1 sang làm trạm 2</h3>
@@ -21783,7 +22021,7 @@ tác vụ và dữ liệu đọc chéo lẫn nhau, gộp lại rất tốn công
 cầu định lượng về thời gian</strong> viết ra được thành con số.</p>
 <h3>🔍 BẪY 7 — Cổng cho phép viết bằng phép AND vào van</h3>
 <pre><code class="language-iecst">// ✗ SAI với van 5/2 lò xo về — trông đúng, và chạy đúng cho tới lần Alarm đầu tiên
-Valve := Req AND Enable AND NOT Fault;
+Valve := Req AND Permit AND NOT Fault;
 </code></pre>
 <p>⚠⚠ Dòng này nói <em>&quot;không được phép thì tắt van&quot;</em>. Nhưng với van một cuộn, <strong>tắt van là ra lệnh cho
 xy-lanh chạy về vị trí lò xo</strong>. Máy vào <code>Alarm</code> (Chương 25 cắt <code>M_MotionEnable</code>) → mọi van tắt → kẹp
@@ -21801,13 +22039,13 @@ nhả, chặn hạ — đúng lúc máy đang báo có sự cố. ⭐ Và thêm 
 </thead>
 <tbody><tr>
 <td>A — AND vào van</td>
-<td><code>Valve := Req AND Enable</code></td>
+<td><code>Valve := Req AND Permit</code></td>
 <td>Ngắn; <em>&quot;mất phép là tắt&quot;</em> dễ nói</td>
 <td>⚠⚠ Mất phép <strong>gây ra</strong> chuyển động — về lò xo. Trái SF6 của DP-01</td>
 </tr>
 <tr>
 <td>⭐ B — <strong>Giữ lệnh khi mất phép</strong></td>
-<td><code>IF Enable THEN Valve := Req; END_IF;</code></td>
+<td><code>IF Permit THEN Valve := Req; END_IF;</code></td>
 <td>⭐ Mất phép = <strong>không có chuyển động MỚI</strong>; vị trí hiện tại được giữ. Đúng nghĩa <em>&quot;dừng&quot;</em> của <code>Hold</code> và <code>Alarm</code> (Chương 25)</td>
 <td>Khối có nhớ; <code>Done</code> phải so với <strong>yêu cầu</strong> để không báo xong nhầm (bảng ở mục 27.3)</td>
 </tr>
@@ -21822,9 +22060,15 @@ nhả, chặn hạ — đúng lúc máy đang báo có sự cố. ⭐ Và thêm 
 định phục hồi</strong> (Chương 28) hoặc <strong>một chức năng an toàn</strong> (Chương 47, 48) — nó phải được <strong>viết ra có
 chủ ý</strong>, không phải xảy ra như tác dụng phụ của việc mất một bit cho phép.</p>
 <blockquote>
+<p>⚠ <strong>Vì sao chân này tên là <code>Permit</code>, không phải <code>Enable</code>?</strong> PLCopen dành chữ <code>Enable</code> cho khối
+<strong>điều khiển theo mức</strong>: <code>Enable</code> tắt thì khối <strong>ngừng và xoá ngõ ra</strong> (Chương 30 mục 30.5b). Người
+quen quy ước đó đọc <code>Enable</code> = FALSE là <em>&quot;tắt van&quot;</em> — ⚠ đúng cách A. Tên chân phải nói đúng nghĩa
+của nó.</p>
+</blockquote>
+<blockquote>
 <p>⚠ <strong>Với van HAI cuộn thì sao?</strong> Van hai cuộn tự giữ vị trí khi mất điện (Chương 6), nên cách A
 không làm xy-lanh chạy. Nhưng khối vẫn nên theo cách B: ⭐ cùng một khối, cùng một nghĩa của
-<code>Enable</code>, cho <strong>mọi</strong> loại van — người đọc chương trình không phải nhớ loại van nào đang lắp.</p>
+<code>Permit</code>, cho <strong>mọi</strong> loại van — người đọc chương trình không phải nhớ loại van nào đang lắp.</p>
 </blockquote>
 <hr>
 <h2 id="278-bng-cht-kim-tra-kin-trúc">27.8 Bảng chốt — kiểm tra kiến trúc</h2>
@@ -21899,7 +22143,7 @@ không làm xy-lanh chạy. Nhưng khối vẫn nên theo cách B: ⭐ cùng m�
 </tr>
 <tr>
 <td>13</td>
-<td>⚠⚠ Mất <code>Enable</code> thì van <strong>giữ nguyên</strong> hay <strong>tắt</strong>?</td>
+<td>⚠⚠ Mất <code>Permit</code> thì van <strong>giữ nguyên</strong> hay <strong>tắt</strong>?</td>
 <td>Giữ nguyên — tắt van một cuộn là ra lệnh chuyển động (Bẫy 7)</td>
 </tr>
 </tbody></table></div>
@@ -21921,7 +22165,7 @@ xuống 5 giây thì năng suất đổi thế nào — <strong>vì sao</strong>
 đó gây khó cho người bảo trì, dù bản thân code có thể chạy đúng.</li>
 <li>⭐ Vì sao Chương 23 (từ yêu cầu tới đặc tả) phải đứng <strong>trước</strong> chương này? Chuyện gì xảy ra khi
 chia kiến trúc lúc mới hiểu một nửa quy trình?</li>
-<li>⚠⚠ <code>Valve := Req AND Enable</code> trông đúng. Vì sao nó sai với van 5/2 lò xo về, và hậu quả trên
+<li>⚠⚠ <code>Valve := Req AND Permit</code> trông đúng. Vì sao nó sai với van 5/2 lò xo về, và hậu quả trên
 DP-01 khi máy vào <code>Alarm</code> lúc board đang bị kẹp là gì? Khối <code>FB_Cylinder2Pos</code> tránh nó bằng cách nào,
 và vì sao khi đó <code>Done</code> phải so với <strong>yêu cầu</strong> chứ không chỉ với van?</li>
 </ol>
@@ -22273,8 +22517,8 @@ Hai nguyên tắc này đúng với gần như mọi máy, không riêng DP-01:<
 <p>Mỗi bước về gốc phải có <strong>thời gian tối đa</strong>. Quá thời gian → quay lại <code>Alarm</code> với mã lỗi <strong>nói rõ kẹt
 ở bước nào</strong>:</p>
 <pre><code class="language-iecst">IF HomingStep = 1 AND T_StepTimeout.Q THEN
-    FaultCode  := &#39;HOME-01: kẹp không hạ được trong 3 giây&#39;;
-    M_AnyFault := TRUE;
+    FaultCode         := &#39;HOME-01: kẹp không hạ được trong 3 giây&#39;;
+    M_Alm_HomeTimeout := TRUE;       // cờ của trình tự về gốc — gom vào M_AnyFault (Ch.25 mục 25.5c)
 END_IF;
 </code></pre>
 <p>Không có timeout thì trình tự về gốc kẹt vĩnh viễn ở một bước, và không ai biết bước nào — người sửa
@@ -23945,10 +24189,12 @@ vi — viết một khối, tạo bốn thể hiện (Chương 27, mục 27.3).<
 <p>Khi một cơ cấu có nhiều biến liên quan, gom chúng vào một <strong>kiểu dữ liệu người dùng</strong> <em>(user-defined
 type, UDT)</em> thay vì để rời rạc:</p>
 <pre><code class="language-iecst">// ✗ Rời rạc — bốn biến không có gì nối chúng lại
-M_Stn1_Step      : INT;
-M_Stn1_Fault     : BOOL;
-M_Stn1_FaultStep : INT;
-M_Stn1_Ready     : BOOL;
+VAR_GLOBAL
+    M_Stn1_Step      : INT;
+    M_Stn1_Fault     : BOOL;
+    M_Stn1_FaultStep : INT;
+    M_Stn1_Ready     : BOOL;
+END_VAR
 
 // ✓ Gói lại — một kiểu, dùng cho mọi trạm
 TYPE ST_Station :
@@ -24477,6 +24723,222 @@ cáo viết một lần. Biểu mẫu đặt tại chỗ mọi người lấy đ
 tài liệu chỉ sống nếu người bảo trì sửa được nó (Chương 53).</p>
 </blockquote>
 <hr>
+<h2 id="305b-vit-khi-ca-mình-theo-cùng-hp-đng-vi-khi-ca-hãng">30.5b ⭐⭐ Viết khối của mình theo cùng &quot;hợp đồng&quot; với khối của hãng</h2>
+<p>Bạn sẽ gặp khối chuyển động (Chương 37) và khối truyền thông (Chương 38) ở vai <strong>người dùng</strong>: kích
+<code>Execute</code>, chờ <code>Done</code>, xem <code>Error</code>. Mục này là phía <strong>người viết</strong>. ⭐ Khối bạn tự viết nên theo đúng
+hợp đồng đó — vì người dùng khối của bạn, kể cả bạn sau sáu tháng, đã quen hợp đồng đó từ khối của hãng.</p>
+<h3>Hai hợp đồng — và một loại khối không thuộc hợp đồng nào</h3>
+<p>PLCopen chia khối có hành vi kéo dài thành <strong>hai loại</strong>, mỗi loại một cặp chân:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Cặp chân</th>
+<th>Chạy khi nào</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Kích bằng sườn</strong></td>
+<td><code>Execute</code> ↔ <code>Done</code> (kèm <code>Busy</code>, <code>Error</code>, <code>ErrorID</code>)</td>
+<td><strong>Một việc</strong>: từ sườn lên của <code>Execute</code> tới khi xong hoặc lỗi</td>
+<td>Chuyển một board sang trạm sau (ngay dưới) · một lệnh di chuyển (Chương 37) · đọc một thanh ghi qua mạng (Chương 38)</td>
+</tr>
+<tr>
+<td>⭐ <strong>Điều khiển theo mức</strong></td>
+<td><code>Enable</code> ↔ <code>Valid</code></td>
+<td><strong>Liên tục, chừng nào</strong> <code>Enable</code> còn bật; <code>Enable</code> tắt thì khối <strong>ngừng và xoá ngõ ra</strong></td>
+<td>Cấp nguồn cho một trục (Chương 37) · đọc trạng thái thiết bị theo chu kỳ</td>
+</tr>
+<tr>
+<td>Khối thiết bị, lệnh theo mức</td>
+<td><code>Req</code> + <code>Permit</code> ↔ <code>Done</code> + <code>Fault</code></td>
+<td><strong>Luôn chạy</strong>, gọi mỗi vòng, bám theo lệnh</td>
+<td><code>FB_Cylinder2Pos</code> (Chương 27 mục 27.3)</td>
+</tr>
+</tbody></table></div>
+<p>⭐ <strong>Chọn loại nào:</strong></p>
+<ul>
+<li>Việc <strong>có điểm kết thúc</strong> — chuyển xong một board, đi tới một vị trí — thì kích bằng sườn.</li>
+<li>Hoạt động <strong>kéo dài, không có điểm kết thúc</strong> — giữ nguồn, đọc liên tục — thì điều khiển theo mức.</li>
+<li>⚡ Và một lý do kỹ thuật tài liệu PLCopen nêu thẳng: <strong>phát hiện sườn cần hai vòng quét</strong>. Khối phải
+nhận một giá trị mới <strong>ở mỗi vòng</strong> thì không thể dùng mô hình sườn — phải dùng mô hình mức.</li>
+<li>Khối điều khiển <strong>một thiết bị</strong> bám theo lệnh — như xy-lanh — không cần khớp hai hợp đồng trên; nó
+là loại thứ ba, và ⚠ <strong>đừng mượn tên chân của hai loại kia</strong> cho nó.</li>
+</ul>
+<blockquote>
+<p>⚠⚠ <strong>Dùng tên chân của hợp đồng thì phải theo đúng nghĩa của hợp đồng.</strong> <code>Enable</code> là tên dành cho
+mô hình mức — tắt là <strong>xoá ngõ ra</strong>. Chân cho phép của khối xy-lanh mà đặt tên <code>Enable</code>, người quen
+PLCopen sẽ hiểu <em>&quot;tắt Enable là tắt van&quot;</em> — đúng lỗi ở Chương 27 Bẫy 7. Vì vậy sách đặt tên nó là
+<code>Permit</code>.</p>
+</blockquote>
+<h3>⭐⭐ Năm quy tắc của hợp đồng <code>Execute</code> / <code>Done</code></h3>
+<p>Tài liệu thư viện khối chuyển động của <strong>hai hãng khác nhau</strong>, cùng mô tả <em>&quot;quy tắc chung&quot;</em> theo
+PLCopen, khớp nhau ở bốn điểm đầu — và ⚠ <strong>lệch nhau ở điểm thứ năm</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>Quy tắc</th>
+<th>Vi phạm thì người gọi gặp gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>Tham số được <strong>chốt ở sườn lên</strong> của <code>Execute</code>; đổi tham số giữa chừng <strong>không</strong> ảnh hưởng việc đang chạy</td>
+<td>Đổi giới hạn thời gian giữa chừng và khối <em>tự</em> đổi hành vi</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td><code>Busy</code> bật <strong>ngay ở sườn lên</strong> và giữ tới khi xong hoặc lỗi; trong lúc <code>Busy</code>, khối phải được <strong>gọi mỗi vòng</strong></td>
+<td>Khối không được gọi thì <strong>đứng yên</strong> — không xong, không lỗi (Chương 14 mục 14.3)</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><code>Busy</code>, <code>Done</code>, <code>Error</code> <strong>loại trừ nhau</strong> — mỗi lúc nhiều nhất một cái</td>
+<td>Thấy vừa <code>Done</code> vừa <code>Error</code>, không biết tin cái nào</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>⭐ <code>Done</code>/<code>Error</code> <strong>xoá ở sườn xuống</strong> của <code>Execute</code>; nếu <code>Execute</code> tắt <strong>giữa chừng</strong>, kết quả vẫn <strong>hiện ít nhất một vòng quét</strong> lúc xong</td>
+<td>Người gọi dùng <code>Execute</code> dạng xung <strong>không bao giờ thấy</strong> <code>Done</code></td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>⚠ Kích lại khi <strong>đang <code>Busy</code></strong></td>
+<td>⚠ <strong>Hãng xử lý khác nhau</strong>: một tài liệu ghi là lệnh mới bị <strong>bỏ qua</strong>, tài liệu kia ghi là lệnh cũ <strong>mất phản hồi</strong>. ⭐ Khối của bạn nên <strong>bỏ qua</strong>; còn người gọi thì <strong>đừng làm</strong> — chờ <code>Busy</code> tắt</td>
+</tr>
+</tbody></table></div>
+<pre><code class="language-text">  Execute giữ mức tới khi xong          Execute chỉ là một xung
+  Execute ▁▁████████████▁▁▁▁            Execute ▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁
+  Busy    ▁▁██████▁▁▁▁▁▁▁▁▁▁            Busy    ▁▁██████▁▁▁▁▁▁▁▁
+  Done    ▁▁▁▁▁▁▁▁██████▁▁▁▁            Done    ▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁   ← đúng MỘT vòng quét
+</code></pre>
+<h3>Một khối viết theo đúng năm quy tắc</h3>
+<p>Bài toán: đưa board từ trạm 1 sang trạm 2 — bước 60 ở Chương 26. Xin chuyền chạy, chờ tới nơi, và
+không được chờ mãi.</p>
+<pre><code class="language-iecst">FUNCTION_BLOCK FB_BoardTransfer
+VAR_INPUT
+    Execute   : BOOL;            // ⭐ SƯỜN LÊN = bắt đầu · tham số được CHỐT tại sườn này
+    Arrived   : BOOL;            // &quot;đã tới nơi&quot; — board tới chặn, hoặc đã rời trạm, tuỳ chỗ gọi
+    TimeOut   : TIME := T#10S;   // thời gian tối đa cho một lần chuyển
+END_VAR
+VAR_OUTPUT
+    Busy      : BOOL;            // ⭐ Busy · Done · Error LOẠI TRỪ nhau
+    Done      : BOOL;
+    Error     : BOOL;
+    ErrorID   : INT;             // 0 = không lỗi · 1 = quá thời gian
+    ConvReq   : BOOL;            // xin tầng máy chạy chuyền — chuyền là tài nguyên chung (Chương 27)
+END_VAR
+VAR
+    ExecEdge  : R_TRIG;
+    T_Out     : TON;
+    LimitCopy : TIME;            // bản CHỐT của TimeOut
+END_VAR
+VAR_TEMP
+    Start     : BOOL;            // vòng này vừa NHẬN một lệnh mới
+    NewResult : BOOL;            // kết quả vừa có trong vòng này
+END_VAR
+
+ExecEdge(CLK := Execute);
+
+// ── 1. Sườn lên khi đang rỗi → nhận lệnh, CHỐT tham số. Sườn lên khi đang bận → bỏ qua ──
+Start := ExecEdge.Q AND NOT Busy;
+IF Start THEN
+    Busy      := TRUE;
+    Done      := FALSE;
+    Error     := FALSE;
+    ErrorID   := 0;
+    LimitCopy := TimeOut;
+END_IF;
+
+// ── 2. Đang bận: chờ tới nơi, giám sát thời gian. T_Out gọi đúng MỘT lần, về 0 ở vòng nhận lệnh ──
+T_Out(IN := Busy AND NOT Start, PT := LimitCopy);
+IF Busy AND Arrived THEN
+    Busy      := FALSE;
+    Done      := TRUE;
+    NewResult := TRUE;
+ELSIF Busy AND T_Out.Q THEN
+    Busy      := FALSE;
+    Error     := TRUE;
+    ErrorID   := 1;
+    NewResult := TRUE;
+END_IF;
+ConvReq := Busy;                 // ngõ ra suy ra SAU khi trạng thái đã cập nhật
+
+// ── 3. Execute đã tắt và việc đã xong → xoá kết quả. Kết quả VỪA có thì vẫn hiện
+//       ít nhất MỘT vòng, kể cả khi Execute đã tắt từ giữa chừng ──
+IF NOT Execute AND NOT Busy AND NOT NewResult THEN
+    Done    := FALSE;
+    Error   := FALSE;
+    ErrorID := 0;
+END_IF;
+END_FUNCTION_BLOCK
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Quy tắc</th>
+<th>Dòng nào lo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1 — chốt tham số</td>
+<td><code>LimitCopy := TimeOut;</code> chỉ chạy ở vòng <strong>nhận lệnh</strong></td>
+</tr>
+<tr>
+<td>2 — <code>Busy</code> ngay ở sườn lên</td>
+<td>Phần 1; và khối được gọi <strong>mỗi vòng</strong> bởi bên gọi, ngoài <code>CASE</code></td>
+</tr>
+<tr>
+<td>3 — loại trừ nhau</td>
+<td>Mỗi nhánh bật một cờ thì <strong>tắt</strong> hai cờ kia</td>
+</tr>
+<tr>
+<td>4 — kết quả hiện ít nhất một vòng</td>
+<td><code>NewResult</code> là biến <code>VAR_TEMP</code> — tính lại <strong>mỗi lần gọi</strong>, nên nó chỉ đúng trong chính vòng có kết quả</td>
+</tr>
+<tr>
+<td>5 — kích lại khi bận</td>
+<td><code>Start := ExecEdge.Q AND NOT Busy</code> — sườn lên lúc bận bị bỏ qua</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚡ <strong>Hai chi tiết mô phỏng tìm ra khi soạn khối này.</strong> Bản nháp đầu đặt <code>ConvReq := Busy</code> <strong>trước</strong>
+phép kiểm tới nơi — nên ở đúng vòng board tới nơi, khối vừa báo <code>Done</code> vừa <strong>còn xin chạy chuyền</strong>.
+Và nếu đồng hồ không được đưa về 0 ở vòng nhận lệnh (<code>AND NOT Start</code>), một lệnh nhận <strong>ngay vòng
+sau</strong> khi lệnh trước vừa xong sẽ <strong>thừa hưởng thời gian đã đếm</strong> — rồi báo quá giờ sớm. ⭐ Cả hai
+đều không lộ ra khi đọc mã; chúng lộ ra khi chạy thử từng vòng quét (Chương 50).</p>
+</blockquote>
+<h3>Bên gọi dùng nó thế nào</h3>
+<pre><code class="language-iecst">VAR
+    Xfer1 : FB_BoardTransfer;
+END_VAR
+
+// Gọi MỖI vòng quét, ngoài CASE — Execute lấy thẳng từ bước: vào bước là sườn lên, rời bước là sườn xuống
+Xfer1(Execute := (Stn1_Step = 60),
+      Arrived := NOT DI_BoardStn1,          // ở bước 60, &quot;tới nơi&quot; nghĩa là board đã RỜI trạm 1
+      TimeOut := T#10S);
+M_Stn1_ConvReq := Xfer1.ConvReq;            // đúng MỘT chỗ ghi yêu cầu chuyền của trạm 1
+
+CASE Stn1_Step OF
+    …
+    60: // Hạ chặn, chuyển board sang — khối lo phần &quot;chờ và giám sát&quot;
+        M_Stn1_StopReq := FALSE;
+        IF Xfer1.Done THEN
+            Stn1_BoardDone := FALSE;
+            Stn1_Step      := 0;
+        ELSIF Xfer1.Error THEN
+            Stn1_Fault := TRUE;             // khối BÁO — trạm chốt cờ của nó (Chương 25 mục 25.5c)
+        END_IF;
+END_CASE;
+</code></pre>
+<blockquote>
+<p>⭐ So với bước 60 viết thẳng ở Chương 26: yêu cầu chuyền nay có <strong>một</strong> chỗ ghi thay vì hai, và giới
+hạn thời gian nằm <strong>trong</strong> khối — đặt giới hạn của bước 60 trong bộ đếm dùng chung về <code>T#0S</code> để
+khỏi giám sát hai lần. ⚡ Khối này đứng sẵn trong <strong>Phụ lục L mục L.8b</strong> để chép.</p>
+</blockquote>
+<hr>
 <h2 id="306-qun-lý-phiên-bn-chương-trình-plc">30.6 Quản lý phiên bản chương trình PLC</h2>
 <h3>Cái gì so sánh được, cái gì không</h3>
 <p>Đây là chỗ chương trình PLC khác phần mềm thông thường, và khác biệt đó quyết định cách làm:</p>
@@ -24753,26 +25215,43 @@ một lớp: analog và chuyển động.</p>
 <hr>
 <h3>Nguồn tham khảo chương 30</h3>
 <ul>
-<li>IEC 61131-3 — <em>Programmable controllers, Part 3: Programming languages</em>: khối chức năng, thể hiện,
-kiểu dữ liệu người dùng. <em>(tiêu chuẩn có bản quyền)</em></li>
-<li>Hướng dẫn lập trình và quy ước phong cách của các hãng PLC — nguồn chính cho mục 30.2 và 30.3; các
+<li><p>IEC 61131-3 — <em>Programmable controllers, Part 3: Programming languages</em>: khối chức năng, thể hiện,
+kiểu dữ liệu người dùng. <em>(tiêu chuẩn có bản quyền)</em></p>
+</li>
+<li><p>Hướng dẫn lập trình và quy ước phong cách của các hãng PLC — nguồn chính cho mục 30.2 và 30.3; các
 tài liệu này bàn đúng về cấu trúc chương trình, khối tái dùng và tối ưu vùng nhớ. Số hiệu cụ thể
-ghi trong Phụ lục A1.</li>
-<li>Quy ước đặt tên và cấu trúc dùng trong sách — Phụ lục C.</li>
-<li><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers Add-On Instructions</em> (1756-PM010, bản 9/2025):
+ghi trong Phụ lục A1.</p>
+</li>
+<li><p>Quy ước đặt tên và cấu trúc dùng trong sách — Phụ lục C.</p>
+</li>
+<li><p><strong>Rockwell Automation</strong> — <em>Logix 5000 Controllers Add-On Instructions</em> (1756-PM010, bản 9/2025):
 ⭐ <strong>chữ ký khối</strong> <em>(instruction signature)</em> sinh mã định danh duy nhất và <strong>niêm</strong> khối — không sửa
 được nữa, ⚠ <strong>kể cả chú thích nấc thang và mô tả biến</strong>, cho tới khi gỡ chữ ký; ⭐ <strong>bắt buộc</strong> khi
 khối tham gia chức năng an toàn mức SIL 3; ⚠ nhưng <strong>không khoá</strong> các khối và kiểu dữ liệu mà nó
 tham chiếu. Và cách phân phối: <strong>chép/dán giữa các dự án</strong>, hoặc <em>nhập bản sửa đổi mới</em> — nền cho
-cột &quot;chép có kiểm soát&quot; ở mục 30.5.</li>
-<li><strong>Siemens</strong> — <em>Programming Guideline for S7-1200/S7-1500</em>, ch. 3.7 <em>Libraries</em> (§3.7.2 <em>Type
+cột &quot;chép có kiểm soát&quot; ở mục 30.5.</p>
+</li>
+<li><p><strong>Siemens</strong> — <em>Programming Guideline for S7-1200/S7-1500</em>, ch. 3.7 <em>Libraries</em> (§3.7.2 <em>Type
 concept</em>, §3.7.4 <em>Versioning of a block</em>): phân biệt <strong>master copy</strong> với ⭐ <strong>type</strong>; type <strong>có
 phiên bản</strong> và <strong>cập nhật tập trung mọi chỗ dùng</strong>; ⚠⚠ <strong>chỉ một phiên bản của một type trong cùng
 một bộ điều khiển</strong>, và ⚠⚠ <strong>xoá type thì mọi chỗ dùng bị xoá theo</strong> — nền cho cột &quot;tham chiếu tới
-kiểu&quot; ở mục 30.5.</li>
-<li><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, §32.5 <em>Documentation</em>: ⭐ tài liệu
+kiểu&quot; ở mục 30.5.</p>
+</li>
+<li><p><strong>Hugh Jack</strong> — <em>Automating Manufacturing Systems with PLCs</em>, §32.5 <em>Documentation</em>: ⭐ tài liệu
 phải <strong>phát triển cùng dự án</strong>, để tới cuối thì chi tiết đã quên nên vừa lâu hơn vừa thiếu; và cách
-dùng <strong>biểu mẫu để sẵn</strong>, đặt nơi mọi người truy cập và cập nhật được khi máy thay đổi.</li>
+dùng <strong>biểu mẫu để sẵn</strong>, đặt nơi mọi người truy cập và cập nhật được khi máy thay đổi.</p>
+</li>
+<li><p><strong>PLCopen</strong> — <em>Creating PLCopen compliant Function Block libraries</em> (tờ tóm tắt, bản 1.0 phát hành
+5/2017): hai loại khối — <strong>kích bằng sườn</strong> (<code>Execute</code> ↔ <code>Done</code>) và <strong>điều khiển theo mức</strong>
+(<code>Enable</code> ↔ <code>Valid</code>); ⭐ phát hiện sườn cần <strong>hai vòng quét</strong> nên khối phải nhận giá trị mới mỗi vòng
+thì dùng mô hình mức — nền cho mục 30.5b. Bản đặc tả đầy đủ chưa có trong bộ tài liệu.</p>
+</li>
+<li><p>Tài liệu thư viện khối chuyển động của <strong>hai hãng khác nhau</strong>, mục <em>quy tắc chung cho khối</em> theo
+PLCopen (đối chiếu 2026-09-26): tham số chốt ở sườn lên; <code>Busy</code>/<code>Done</code>/<code>Error</code> loại trừ nhau; kết
+quả xoá ở sườn xuống và vẫn hiện ít nhất một vòng nếu <code>Execute</code> tắt giữa chừng; <code>Enable</code> tắt thì
+khối ngừng và xoá ngõ ra. ⚠ Hai tài liệu <strong>lệch nhau</strong> ở hành vi kích lại khi đang <code>Busy</code> — bảng
+năm quy tắc ở mục 30.5b ghi rõ chỗ lệch.</p>
+</li>
 </ul>
 <blockquote>
 <p>⚡ Quy ước đặt tên ở mục 30.2 là <strong>quy ước của cuốn sách này</strong>, không phải chuẩn ngành. Dự án của bạn
@@ -25250,13 +25729,13 @@ vào <strong>hậu quả của việc đọc sai mà không biết</strong>.</p>
 <h3>Xử lý lỗi cảm biến analog trên DP-01</h3>
 <pre><code class="language-iecst">// Áp khí: điều kiện an toàn — mất tín hiệu phải CẤM CHẠY
 IF M_AirPressSensorFault THEN
-    M_CanStart := FALSE;
-    M_AnyFault := TRUE;           // dừng, không đoán
+    M_CanStart           := FALSE;
+    M_Alm_AirPressSensor := TRUE; // dừng, không đoán — cờ chốt, gom vào M_AnyFault (Ch.25 mục 25.5c)
 END_IF;
 
 // Cường độ UV: suy giảm dần — mức &quot;cảnh báo, vẫn chạy&quot; (Chương 48, mục 48.6)
 IF M_UvSensorFault THEN
-    M_AnyFault := TRUE;           // mất phép đo chất lượng → không được chạy tiếp
+    M_Alm_UvSensor := TRUE;       // mất phép đo chất lượng → không được chạy tiếp
 ELSIF UvIntensity &lt; RecipeUvMinWarn THEN
     M_UvLowWarn := TRUE;          // còn đo được, chỉ là đang yếu → cảnh báo
 END_IF;
@@ -31320,7 +31799,7 @@ M_TempCommFault := CommErrCount &gt;= 3;
 // ⚠⚠ Mất kết nối → KHÔNG dùng giá trị cũ cho quyết định
 IF M_TempCommFault THEN
     M_TempValid := FALSE;
-    M_AnyFault  := TRUE;                  // theo phân tích ở Chương 48
+    M_Alm_TempComm := TRUE;               // cờ chốt — gom vào M_AnyFault (Ch.25 mục 25.5c); vì sao dừng: Ch.48
 END_IF;
 
 M_CanStart := ... AND M_TempValid AND NOT M_TempCommFault;
@@ -33307,7 +33786,7 @@ có thể không cấu hình được thiết bị — và tệp cho đời sả
 </tbody></table></div>
 <pre><code class="language-iecst">// ⭐ Mất một cụm I/O phân tán → mọi ngõ vào của cụm đó VÔ NGHĨA
 IF NOT M_RemoteIo1Ok THEN
-    M_AnyFault := TRUE;
+    M_Alm_RemoteIo1 := TRUE;        // cờ chốt — gom vào M_AnyFault (Ch.25 mục 25.5c)
     M_FaultCode := 501;             // mã riêng — nói rõ SAI Ở ĐÂU
     // ⚠ KHÔNG dùng giá trị ngõ vào của cụm này cho bất kỳ quyết định nào
 END_IF;
@@ -33908,7 +34387,7 @@ xuống đếm sản phẩm đã hoàn tất</strong>.</p>
 <pre><code class="language-iecst">// Board vào vùng chuyển giao nhưng không tới nơi trong thời gian dự kiến
 T_TransferIn(IN := M_TransferInActive, PT := T#5S);
 IF T_TransferIn.Q THEN
-    M_AnyFault := TRUE;
+    M_Alm_TransferIn := TRUE;        // cờ chốt — gom vào M_AnyFault (Ch.25 mục 25.5c)
     M_FaultCode := 410;              // &quot;board kẹt ở vùng chuyển giao vào&quot;
     DO_SmemaInRdy := FALSE;        // ⭐ ngừng nhận thêm
 END_IF;
@@ -34275,7 +34754,7 @@ END_CASE;
 // ⚠ Timeout cho mọi bước có chờ (Chương 26)
 T_Infeed(IN := (InfeedStep &gt; 0), PT := T#10S);
 IF T_Infeed.Q THEN
-    M_AnyFault := TRUE;  M_FaultCode := 410;
+    M_Alm_TransferIn := TRUE;  M_FaultCode := 410;
     DO_SmemaInRdy := FALSE;
 END_IF;
 </code></pre>
@@ -34947,7 +35426,7 @@ IF M_MesCommFault THEN
 
     // ⚠ Giới hạn — theo đặc tả, không tự đặt
     IF DegradedCount &gt; MAX_DEGRADED_BOARDS THEN
-        M_AnyFault := TRUE;                     // buộc dừng
+        M_Alm_MesLost := TRUE;                  // buộc dừng — cờ chốt, gom vào M_AnyFault (Ch.25)
         M_FaultCode := 420;
     END_IF;
 END_IF;
@@ -35042,7 +35521,7 @@ Bẫy 10: <strong>một cơ chế bảo vệ mà người dùng đi vòng đư�
             M_DegradedMode := TRUE;
             Stn1_Step := 35;                     // chạy tạm với công thức hiện tại
         ELSE
-            M_AnyFault := TRUE;  M_FaultCode := 420;
+            M_Alm_MesLost := TRUE;  M_FaultCode := 420;
         END_IF;
 
     35: // Nạp công thức nếu khác công thức đang dùng (Chương 29)
@@ -35767,8 +36246,8 @@ quyết định thuộc đặc tả (Chương 23).</p>
     END_IF;
 ELSIF M_VisionNoResult OR M_VisionTimeout THEN
     // ⚠⚠ KHÔNG BIẾT — không phải OK, không phải NG
-    M_PartUnknown := TRUE;
-    M_AnyFault := TRUE;
+    M_PartUnknown        := TRUE;
+    M_Alm_VisionNoAnswer := TRUE;      // cờ chốt — gom vào M_AnyFault (Ch.25 mục 25.5c)
     M_FaultCode := 430;                // &quot;vision không cho kết quả&quot;
     // sản phẩm này cần người xử lý
 END_IF;
@@ -38515,7 +38994,7 @@ CASE LoadStep OF
         IF DI_RobotDone THEN
             Step := 40;
         ELSIF DI_RobotError THEN
-            M_AnyFault := TRUE;
+            M_Alm_Robot := TRUE;               // cờ chốt — gom vào M_AnyFault (Ch.25)
             M_FaultCode := 460 + RobotErrorCode;  // ⭐ mã cụ thể
         END_IF;
 
@@ -38533,7 +39012,7 @@ END_CASE;
 // ⚠ Timeout cho mọi bước chờ (Chương 26)
 T_Robot(IN := (LoadStep &gt; 0), PT := T#20S);
 IF T_Robot.Q THEN
-    M_AnyFault := TRUE;  M_FaultCode := 469;
+    M_Alm_Robot := TRUE;  M_FaultCode := 469;
 END_IF;
 </code></pre>
 <blockquote>
@@ -40239,12 +40718,10 @@ IF T_Heartbeat.Q THEN
     Hb_ToB := NOT Hb_ToB;
 END_IF;
 
-// Bên B: giám sát bit đó có đổi không
-IF Hb_FromA &lt;&gt; Hb_FromA_Prev THEN
-    T_HbTimeout(IN := FALSE);         // có nhịp → đặt lại đồng hồ
-    Hb_FromA_Prev := Hb_FromA;
-END_IF;
-T_HbTimeout(IN := TRUE, PT := T#2S);
+// Bên B: giám sát bit đó có đổi không — bit vừa đổi thì IN = FALSE đúng một vòng → đồng hồ
+// đặt lại. Gọi T_HbTimeout ĐÚNG MỘT lần mỗi vòng quét (Chương 17, Bẫy 5)
+T_HbTimeout(IN := (Hb_FromA = Hb_FromA_Prev), PT := T#2S);
+Hb_FromA_Prev := Hb_FromA;
 
 IF T_HbTimeout.Q THEN
     M_PartnerLost := TRUE;            // bên A đã im quá lâu
@@ -48194,13 +48671,13 @@ tên thật của DP-01. Cả cuốn sách hội tụ về khoảng ba mươi d�
   Prg_Safety();        //  2  chế độ vận hành, M_AllPermissive      Ch.25, 28, 47
   Prg_Mechanisms();    //  3  Stop1/Clamp1/Stop2/Clamp2, gantry     Ch.27, 30, 37
   Prg_AntiCollision(); //  4  tầng chống va chạm                    Ch.27 mục 27.3b
-  Prg_Machine();       //  5  tầng máy: tài nguyên chung, pipeline  Ch.26, 27 mục 27.5
-  Prg_Stn1Dispense();  //  6  trình tự trạm 1                       Ch.21, 26 · khung L.6
-  Prg_Stn2Cure();      //  7  trình tự trạm 2                       Ch.21, 26 · khung L.6
-  Prg_Handshake();     //  8  bắt tay máy trước / máy sau           Ch.41
-  Prg_Recipe();        //  9  nạp tham số của công thức đang chọn   Ch.29
-  Prg_Comm();          // 10  mã 2D, nhiệt RS-485, báo cáo lên trên Ch.38, 42, 45
-  Prg_Alarm();         // 11  báo động và chẩn đoán                 Ch.44, 51 · L.11
+  Prg_Alarm();         //  5  báo động + GOM LỖI (một chỗ gán)      Ch.25 mục 25.5c, 44 · L.11
+  Prg_Machine();       //  6  tầng máy: tài nguyên chung, pipeline  Ch.26, 27 mục 27.5
+  Prg_Stn1Dispense();  //  7  trình tự trạm 1                       Ch.21, 26 · khung L.6
+  Prg_Stn2Cure();      //  8  trình tự trạm 2                       Ch.21, 26 · khung L.6
+  Prg_Handshake();     //  9  bắt tay máy trước / máy sau           Ch.41
+  Prg_Recipe();        // 10  nạp tham số của công thức đang chọn   Ch.29
+  Prg_Comm();          // 11  mã 2D, nhiệt RS-485, báo cáo lên trên Ch.38, 42, 45
   Prg_Stats();         // 12  chu kỳ, sản lượng, bộ đếm bảo trì     Ch.53, 55
   Prg_OutputMap();     // 13  GOM ngõ ra — đúng một chỗ ghi mỗi tag Ch.22, 27 Bẫy 2
   Prg_Hmi();           // 14  dữ liệu cho màn hình và đèn tháp      Ch.5, 44
@@ -48228,7 +48705,7 @@ DO_LampRed   := M_AnyFault;                       // Ch.5, 25 — mẫu đèn th
 </tr>
 <tr>
 <td>⭐⭐ <strong>Thứ tự KHÔNG tuỳ ý</strong></td>
-<td>Cơ cấu → máy → trạm → ghi ngõ ra (Ch.27 mục 27.6). ⭐ Gọi tầng cơ cấu <strong>trước</strong> để <code>Done</code> và <code>Fault</code> mà trình tự đọc là <strong>của vòng quét này</strong>, không phải vòng trước</td>
+<td>Cơ cấu → <strong>gom lỗi</strong> → máy → trạm → ghi ngõ ra (Ch.27 mục 27.6). ⭐ Gọi tầng cơ cấu <strong>trước</strong> để <code>Done</code> và <code>Fault</code> mà trình tự đọc là <strong>của vòng quét này</strong>, không phải vòng trước. ⭐ Gom lỗi đứng ngay trước tầng máy để máy vào <code>Alarm</code> trong <strong>cùng</strong> vòng quét lỗi được chốt (Ch.25 mục 25.5c)</td>
 </tr>
 <tr>
 <td>⭐ <strong>Ghi ngõ ra gom vào một khối cuối</strong></td>
@@ -50924,12 +51401,12 @@ giới hạn thời gian, chuyển bước, và báo lỗi khi không đạt.</p
 </tr>
 </tbody></table></div>
 <h3>⭐ CODESYS — cột neo (ST)</h3>
-<pre><code class="language-text">CASE Stn1_Step OF
+<pre><code class="language-text">tmrClamp1(IN := (Stn1_Step = 40), PT := T#2S);  // ⭐ gọi MỖI vòng, ngoài CASE — rời bước là tự xoá
+
+CASE Stn1_Step OF
   40:
     DO_Clamp1Vlv := TRUE;
-    tmrClamp1(IN := TRUE, PT := T#2S);      // thể hiện riêng cho bước này
     IF DI_Clamp1Up THEN
-        tmrClamp1(IN := FALSE);
         Stn1_Step := 50;                     // ← phản hồi thật chuyển bước
     ELSIF tmrClamp1.Q THEN
         MaLoi := 3041;                       // ← timeout chỉ báo lỗi
@@ -50938,12 +51415,12 @@ giới hạn thời gian, chuyển bước, và báo lỗi khi không đạt.</p
 END_CASE
 </code></pre>
 <h3>Siemens (SCL — rất gần CODESYS)</h3>
-<pre><code class="language-text">CASE #Stn1_Step OF
+<pre><code class="language-text">#tmrClamp1(IN := (#Stn1_Step = 40), PT := T#2S);  // FB + Instance DB — gọi mỗi vòng, ngoài CASE
+
+CASE #Stn1_Step OF
   40:
     #DO_Clamp1Vlv := TRUE;
-    #tmrClamp1(IN := TRUE, PT := T#2S);      // FB + Instance DB
     IF #DI_Clamp1Up THEN
-        #tmrClamp1(IN := FALSE);
         #Stn1_Step := 50;
     ELSIF #tmrClamp1.Q THEN
         #MaLoi := 3041;
@@ -50954,6 +51431,11 @@ END_CASE;
 <blockquote>
 <p>⭐ <strong>Khác biệt so với CODESYS gần như chỉ là dấu <code>#</code> cho biến cục bộ</strong> và việc bộ định thời cần
 Instance DB. Cấu trúc tư duy giống hệt — vì cả hai bám IEC 61131-3.</p>
+<p>⚠⚠ <strong>Vì sao bộ định thời gọi NGOÀI <code>CASE</code> ở cả hai bản:</strong> một thể hiện khối <strong>không được gọi thì
+giữ nguyên trạng thái</strong>. Gọi nó bên trong nhánh <code>40</code> thì rời bước là nó đứng yên với <code>Q</code> = TRUE
+(nếu vừa quá giờ) — lần sau vào bước 40 là <strong>báo lỗi ngay</strong> ở vòng quét đầu. Gọi ngoài <code>CASE</code> với
+<code>IN</code> lấy từ bước thì rời bước là <code>IN</code> = FALSE → tự xoá, và mỗi thể hiện được gọi <strong>đúng một lần</strong>
+mỗi vòng (PLCopen CP20, Phụ lục N).</p>
 </blockquote>
 <h3>Mitsubishi (Ladder — mô tả cấu trúc)</h3>
 <pre><code class="language-text">// So sánh bước, không có CASE ở dòng cũ → dùng so sánh + nhánh
@@ -50987,14 +51469,19 @@ Instance DB. Cấu trúc tư duy giống hệt — vì cả hai bám IEC 61131-3
 <td>Cùng ý tưởng, khác cách gọi</td>
 </tr>
 <tr>
-<td>⚠ Bộ định thời <code>T5</code> phải <strong>xoá khi rời bước</strong></td>
-<td>⭐ Nếu không, lần sau vào bước nó đã chạy sẵn</td>
+<td>⭐ <code>OUT T5</code> nằm <strong>dưới</strong> phép so sánh bước</td>
+<td>⭐ Lệnh <strong>vẫn được thực thi</strong> mỗi vòng quét với điều kiện là phép so sánh — rời bước là điều kiện tắt, bộ định thời thường <strong>tự về 0</strong> (loại giữ giá trị thì không)</td>
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>⚠⚠ <strong>Hàng cuối là bẫy thật trên hệ kiểu thiết bị:</strong> bộ định thời là <strong>tài nguyên toàn cục</strong>, không
-phải biến cục bộ của bước. ⭐ <strong>Phải chủ động xoá nó khi rời bước</strong> — điều mà thể hiện FB trên hệ
-khác xử lý tự nhiên hơn.</p>
+<p>⚠⚠ <strong>Hàng cuối ngược với trực giác của người quen CODESYS.</strong> ⭐ Ở đây chính <strong>bộ định thời kiểu
+thiết bị</strong> mới là bên tự xoá — vì lệnh <code>OUT T5</code> luôn được thực thi, chỉ có điều kiện của nó thay
+đổi. Còn thể hiện khối ở hai bản ST thì <strong>không</strong> tự xoá khi không được gọi — nên chúng mới phải gọi
+ngoài <code>CASE</code>.</p>
+<p>⚠ <strong>Bẫy thật của hệ kiểu thiết bị nằm ở chỗ khác:</strong> <code>T5</code> là <strong>tài nguyên toàn cục</strong>, không phải biến
+của bước — dùng lại <code>T5</code> ở một bước khác là <strong>cuộn dây trùng</strong>. Và theo chính tài liệu hãng, bộ định
+thời đang bật mà bị <strong>lệnh nhảy bỏ qua</strong> thì <strong>không đo đúng thời gian nữa</strong> — đừng đặt <code>OUT T5</code>
+trong đoạn có thể bị nhảy qua.</p>
 </blockquote>
 <h3>Inovance (tuỳ dòng)</h3>
 <div class="table-wrap"><table>
@@ -51019,14 +51506,14 @@ cùng hãng có thể thuộc <strong>hai mô hình tư duy khác nhau</strong> 
 hỏi &quot;hãng nào?&quot;</strong>.</p>
 </blockquote>
 <h3>Rockwell (ST — mô tả cấu trúc)</h3>
-<pre><code class="language-text">CASE Stn1_Step OF
+<pre><code class="language-text">tmrClamp1.PRE         := 2000;               // ⭐ mili giây, không phải kiểu TIME
+tmrClamp1.TimerEnable := (Stn1_Step = 40);   // gọi mỗi vòng, ngoài CASE — rời bước là tự xoá
+TONR(tmrClamp1);
+
+CASE Stn1_Step OF
   40:
     DO_Clamp1Vlv := 1;
-    tmrClamp1.PRE := 2000;                   // ⭐ mili giây, không phải kiểu TIME
-    tmrClamp1.TimerEnable := 1;
-    TONR(tmrClamp1);
     IF DI_Clamp1Up THEN
-        tmrClamp1.TimerEnable := 0;
         Stn1_Step := 50;
     ELSIF tmrClamp1.DN THEN
         MaLoi := 3041;
@@ -51193,7 +51680,7 @@ trong bảng trên</strong>.</p>
 </tr>
 <tr>
 <td>Vì sao chuyển bước bằng phản hồi thật</td>
-<td>⭐ <strong>Chương 21</strong></td>
+<td>⭐ <strong>Chương 17, 26</strong></td>
 </tr>
 </tbody></table></div>
 <hr>
@@ -51204,6 +51691,11 @@ chân khối, cách khai báo biến và cách cấu hình bộ định thời p
 phẩm và phiên bản phần mềm bạn đang dùng</strong>.</p>
 <p>⚠ Phụ lục <strong>mô tả khác biệt, không xếp hạng hãng</strong>. Mỗi hệ có lý do riêng cho các lựa chọn thiết kế
 của nó, và ⭐ <strong>hệ tốt nhất cho bạn thường là hệ mà nơi bạn làm việc đang dùng</strong>.</p>
+<p>⭐ <strong>Nguồn đối chiếu cho hành vi bộ định thời ở A2.8</strong> (kiểm 2026-09-26): tài liệu hướng dẫn lệnh
+của dòng FX5 — lệnh <code>OUT</code> với bộ định thời khi điều kiện chuyển sang OFF (giá trị hiện tại về 0;
+loại giữ giá trị thì không), và lưu ý của lệnh nhảy <code>CJ</code> (bộ định thời đang bật mà bị nhảy qua thì
+không đo đúng thời gian); tài liệu lệnh chung của Logix 5000 — <code>TONR</code> là bộ định thời <strong>không giữ</strong>,
+đếm khi <code>TimerEnable</code> bật.</p>
 <p>⚠⚠ Riêng phần <strong>an toàn</strong>: không có bảng đối chiếu nào ở đây áp dụng được. Chức năng an toàn phải
 được thiết kế và kiểm định cho <strong>hệ thống cụ thể</strong>, bởi <strong>người có thẩm quyền</strong> (Chương 47, 48).</p>
 </blockquote>
@@ -52074,7 +52566,7 @@ thiết kế cần xem lại.</p>
 </blockquote>
 <hr>
 <h2 id="c3-đc-t-trình-t">C.3 Đặc tả trình tự</h2>
-<p>⭐ <strong>Dùng để:</strong> mô tả máy làm gì, theo thứ tự nào, và chuyển bước khi nào (Chương 21, 23).</p>
+<p>⭐ <strong>Dùng để:</strong> mô tả máy làm gì, theo thứ tự nào, và chuyển bước khi nào (Chương 23, 26).</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -59426,9 +59918,9 @@ IF M_EStopActive THEN
     M_Stn1_ClampReq := FALSE;
     M_Stn1_StopReq  := FALSE;
 
-    // 2. Ghi nhận MỘT LẦN để truy vết (Chương 44)
-    IF NOT M_EStopLogged THEN
-        M_EStopLogged := TRUE;
+    // 2. Chốt cờ lỗi và ghi nhận MỘT LẦN để truy vết (Chương 44) — gom vào M_AnyFault (Chương 25)
+    IF NOT M_Alm_EStop THEN
+        M_Alm_EStop := TRUE;
         RaiseAlarm(ALM_ESTOP);
     END_IF;
 
@@ -59436,9 +59928,9 @@ IF M_EStopActive THEN
     M_Homed := FALSE;
 END_IF;
 
-// ── Phục hồi: KHÔNG tự động. Phải có thao tác CÓ CHỦ Ý của người vận hành ──
-IF NOT M_EStopActive AND M_ResetPB_Rise THEN
-    M_EStopLogged := FALSE;          // M_Homed vẫn FALSE → buộc về gốc lại
+// ── Phục hồi: KHÔNG tự động. Thao tác CÓ CHỦ Ý — nhấn Reset → tầng máy vào Resetting → lệnh xoá ──
+IF NOT M_EStopActive AND M_ClearFaults THEN
+    M_Alm_EStop := FALSE;            // M_Homed vẫn FALSE → buộc về gốc lại
 END_IF;
 </code></pre>
 <blockquote>
@@ -59578,6 +60070,12 @@ mục 16.4).</p>
     Stn1_StepLimit : TIME;
 END_VAR
 
+// ── 0. Xoá cờ lỗi của trạm khi tầng máy ra lệnh — đặt NGOÀI cửa vào, vì lúc máy đang
+//       Resetting thì trình tự không chạy (Chương 25 mục 25.5c) ──
+IF M_ClearFaults THEN
+    Stn1_Fault := FALSE;
+END_IF;
+
 // ── 1. MỘT cửa vào: tạm dừng, hoặc tầng máy chưa cho phép → GIỮ NGUYÊN bước và ngõ ra ──
 //    ⚠ Huỷ chu trình KHÔNG làm ở đây. Nó là một chuyển trạng thái riêng ở tầng máy
 //      (Hold → Idle, Chương 25), và bước được xoá ở đó — không phải mỗi lần cờ này tắt.
@@ -59585,12 +60083,8 @@ IF M_Paused OR NOT M_CycleEnable THEN
     ;                                    // ⭐ CỐ Ý không làm gì (L.4, Chương 25)
 ELSE
 
-    // ── 2. Một timer dùng chung, tự đặt lại mỗi khi bước đổi (Chương 26) ──
-    IF Stn1_Step &lt;&gt; Stn1_StepPrev THEN
-        T_StepTimeout(IN := FALSE);
-        Stn1_StepPrev := Stn1_Step;
-    END_IF;
-
+    // ── 2. Một timer dùng chung: bước vừa đổi thì IN = FALSE đúng một vòng → tự xoá.
+    //       Gọi ĐÚNG MỘT lần mỗi vòng quét (Chương 26 · Chương 17 Bẫy 5 · PLCopen CP20) ──
     CASE Stn1_Step OF
         0:   Stn1_StepLimit := T#0S;         // 0 = chờ vô hạn, CÓ CHỦ Ý
        10:   Stn1_StepLimit := T#3S;
@@ -59598,12 +60092,13 @@ ELSE
        30:   Stn1_StepLimit := T#60S;
     END_CASE;
 
-    T_StepTimeout(IN := (Stn1_StepLimit &gt; T#0S), PT := Stn1_StepLimit);
+    T_StepTimeout(IN := (Stn1_StepLimit &gt; T#0S) AND (Stn1_Step = Stn1_StepPrev),
+                  PT := Stn1_StepLimit);
+    Stn1_StepPrev := Stn1_Step;
 
     IF T_StepTimeout.Q THEN
         Stn1_FaultStep := Stn1_Step;         // ⭐ GHI LẠI bước bị kẹt — không chỉ &quot;lỗi trạm 1&quot;
-        Stn1_Fault     := TRUE;
-        M_AnyFault     := TRUE;
+        Stn1_Fault     := TRUE;              // cờ của TRẠM — không ghi thẳng M_AnyFault (Chương 25 mục 25.5c)
     END_IF;
 
     // ── 3. Thân trình tự — chuyển bước bằng PHẢN HỒI THẬT ──
@@ -59742,8 +60237,8 @@ lý do của từng quyết định thiết kế nằm ở đó; ở đây là b
 <pre><code class="language-iecst">FUNCTION_BLOCK FB_Cylinder2Pos
 VAR_INPUT
     Req       : BOOL;            // TRUE = yêu cầu tới vị trí LÀM VIỆC — giữ mức, không phải xung
-    Enable    : BOOL;            // tầng máy cho phép ĐỔI vị trí (Chương 25)
-    Reset     : BOOL;            // xoá lỗi đã chốt — nối sườn lên nút Reset
+    Permit    : BOOL;            // tầng máy cho phép ĐỔI vị trí — ⚠ không phải Enable kiểu PLCopen
+    Reset     : BOOL;            // xoá lỗi đã chốt — nối lệnh xoá M_ClearFaults (Chương 25)
     SensWork  : BOOL;            // cảm biến báo đã tới vị trí làm việc
     SensHome  : BOOL;            // cảm biến báo đã về vị trí gốc
     Limit     : TIME := T#3S;    // thời gian tối đa cho một hành trình
@@ -59762,7 +60257,7 @@ VAR
 END_VAR
 
 // ── 1. Lệnh ra van: CHỈ đổi khi được phép. Mất phép → GIỮ nguyên, không &quot;về lò xo&quot; (Ch.27 Bẫy 7)
-IF Enable THEN
+IF Permit THEN
     Valve := Req;
 END_IF;
 
@@ -59799,8 +60294,8 @@ END_FUNCTION_BLOCK
    M_Stn1_ClampReq    │                        │   DO_Clamp1Vlv
  ────┤ ├──────────────┤ Req              Valve ├────────( )───
    M_MotionEnable     │                        │   M_Clamp1Done
- ────┤ ├──────────────┤ Enable            Done ├────────( )───
-   M_ResetPB_Rise     │                        │   M_Clamp1Fault
+ ────┤ ├──────────────┤ Permit            Done ├────────( )───
+   M_ClearFaults      │                        │   M_Clamp1Fault
  ────┤ ├──────────────┤ Reset            Fault ├────────( )───
    DI_Clamp1Up        │                        │
  ────┤ ├──────────────┤ SensWork     FaultCode ├
@@ -59826,6 +60321,75 @@ cho <strong>kiểu</strong> (Phụ lục N, N10). Hai xy-lanh dùng chung một 
 <p>⚠ Đừng quên tư thế <strong>giữa chừng</strong>: cả hai cảm biến cùng <strong>bằng 0</strong> là bình thường khi đang di
 chuyển — và cũng là trạng thái sau khi <strong>mất khí</strong>. ⭐ Vì vậy <strong>không được suy tư thế từ cảm biến
 đối diện</strong> (Chương 28).</p>
+</blockquote>
+<hr>
+<h2 id="l8b-khi-kích-bng-sưn-khung-execute-done-t-vit">L.8b ⭐ Khối kích bằng sườn — khung <code>Execute</code> / <code>Done</code> tự viết</h2>
+<p>⭐ Khung cho <strong>mọi việc có điểm kết thúc</strong> mà bạn muốn đóng gói thành khối: chuyển một board, chạy một
+chu trình con, đọc một thanh ghi. Viết theo đúng năm quy tắc chung của PLCopen để người gọi dùng nó
+<strong>y như khối của hãng</strong> — lý do và bảng quy tắc ở Chương 30 mục 30.5b; ở đây là bản để chép.</p>
+<pre><code class="language-iecst">FUNCTION_BLOCK FB_BoardTransfer
+VAR_INPUT
+    Execute   : BOOL;            // ⭐ SƯỜN LÊN = bắt đầu · tham số được CHỐT tại sườn này
+    Arrived   : BOOL;            // &quot;đã tới nơi&quot; — board tới chặn, hoặc đã rời trạm, tuỳ chỗ gọi
+    TimeOut   : TIME := T#10S;   // thời gian tối đa cho một lần chuyển
+END_VAR
+VAR_OUTPUT
+    Busy      : BOOL;            // ⭐ Busy · Done · Error LOẠI TRỪ nhau
+    Done      : BOOL;
+    Error     : BOOL;
+    ErrorID   : INT;             // 0 = không lỗi · 1 = quá thời gian
+    ConvReq   : BOOL;            // xin tầng máy chạy chuyền — chuyền là tài nguyên chung (Chương 27)
+END_VAR
+VAR
+    ExecEdge  : R_TRIG;
+    T_Out     : TON;
+    LimitCopy : TIME;            // bản CHỐT của TimeOut
+END_VAR
+VAR_TEMP
+    Start     : BOOL;            // vòng này vừa NHẬN một lệnh mới
+    NewResult : BOOL;            // kết quả vừa có trong vòng này
+END_VAR
+
+ExecEdge(CLK := Execute);
+
+// ── 1. Sườn lên khi đang rỗi → nhận lệnh, CHỐT tham số. Sườn lên khi đang bận → bỏ qua ──
+Start := ExecEdge.Q AND NOT Busy;
+IF Start THEN
+    Busy      := TRUE;
+    Done      := FALSE;
+    Error     := FALSE;
+    ErrorID   := 0;
+    LimitCopy := TimeOut;
+END_IF;
+
+// ── 2. Đang bận: chờ tới nơi, giám sát thời gian. T_Out gọi đúng MỘT lần, về 0 ở vòng nhận lệnh ──
+T_Out(IN := Busy AND NOT Start, PT := LimitCopy);
+IF Busy AND Arrived THEN
+    Busy      := FALSE;
+    Done      := TRUE;
+    NewResult := TRUE;
+ELSIF Busy AND T_Out.Q THEN
+    Busy      := FALSE;
+    Error     := TRUE;
+    ErrorID   := 1;
+    NewResult := TRUE;
+END_IF;
+ConvReq := Busy;                 // ngõ ra suy ra SAU khi trạng thái đã cập nhật
+
+// ── 3. Execute đã tắt và việc đã xong → xoá kết quả. Kết quả VỪA có thì vẫn hiện
+//       ít nhất MỘT vòng, kể cả khi Execute đã tắt từ giữa chừng ──
+IF NOT Execute AND NOT Busy AND NOT NewResult THEN
+    Done    := FALSE;
+    Error   := FALSE;
+    ErrorID := 0;
+END_IF;
+END_FUNCTION_BLOCK
+</code></pre>
+<blockquote>
+<p>⭐ <strong>Đổi thân, giữ khung.</strong> Muốn làm việc khác thì thay phần 2 — điều kiện tới nơi và ngõ ra xin
+tài nguyên — bằng việc của bạn. ⚠ Giữ nguyên phần 1 và phần 3: chúng là <strong>hợp đồng</strong> với bên gọi.</p>
+<p>⚠ Gọi khối <strong>mỗi vòng quét, ngoài <code>CASE</code></strong>, với <code>Execute</code> lấy từ bước (Chương 30 mục 30.5b). Gọi
+bên trong một nhánh <code>CASE</code> thì rời bước là khối <strong>đứng yên</strong> — quy tắc 2 bị phá.</p>
 </blockquote>
 <hr>
 <h2 id="l9-servo-cp-mô-men-v-gc-di-chuyn">L.9 Servo — cấp mô-men, về gốc, di chuyển</h2>
@@ -59863,7 +60427,7 @@ MoveZ(Axis     := AX_Z, Execute := TrigMove.Q,
       Error          =&gt; M_ZMoveError);
 
 StopZ (Axis := AX_Z, Execute := (AxZ_Step = 90));
-ResetZ(Axis := AX_Z, Execute := M_ResetPB_Rise);
+ResetZ(Axis := AX_Z, Execute := M_ClearFaults);    // sườn lên của lệnh xoá (Chương 25 mục 25.5c)
 
 // ── 3. Máy trạng thái của trục ──
 CASE AxZ_Step OF
@@ -59888,10 +60452,12 @@ CASE AxZ_Step OF
           AxZ_Step := 90;
       END_IF;
 
- 90:  M_Homed    := FALSE;                // toạ độ không còn tin được
-      M_AnyFault := TRUE;
-      IF M_ResetPB_Rise THEN  AxZ_Step := 0;  END_IF;
+ 90:  M_Homed := FALSE;                   // toạ độ không còn tin được
+      IF M_ClearFaults THEN  AxZ_Step := 0;  END_IF;    // tầng máy ra lệnh xoá
 END_CASE;
+
+// ⭐ Cờ lỗi của trục CHÍNH LÀ bước 90 — không cần cờ chốt riêng; gom vào M_AnyFault (Chương 25)
+M_Alm_AxisZ := (AxZ_Step = 90);
 </code></pre>
 <blockquote>
 <p>⭐⭐ <strong>Bốn điều hay sai nhất với servo:</strong></p>
@@ -59941,26 +60507,30 @@ VAR
     SD_Step : INT;
 END_VAR
 
+// ⭐ Timer của từng bước gọi NGOÀI CASE, mỗi cái đúng MỘT lần: IN lấy thẳng từ bước, nên
+//    rời bước là timer tự xoá — không cần gọi lần hai với IN := FALSE (Chương 17, Bẫy 5)
+T_Star(IN := (SD_Step = 10), PT := T_StarTime);      // chạy kiểu sao
+T_Dead(IN := (SD_Step = 20), PT := T#80MS);          // ⚠⚠ KHOẢNG CHẾT
+
+// ⭐ Lệnh dừng có hiệu lực ở MỌI bước — không chỉ khi đã sang tam giác
+IF NOT M_MotorStart OR NOT M_AllPermissive THEN
+    SD_Step := 0;
+END_IF;
+
 CASE SD_Step OF
   0:  IF M_MotorStart AND M_AllPermissive THEN
           SD_Step := 10;
       END_IF;
 
- 10:  T_Star(IN := TRUE, PT := T_StarTime);          // chạy kiểu sao
-      IF T_Star.Q THEN
-          T_Star(IN := FALSE);
+ 10:  IF T_Star.Q THEN
           SD_Step := 20;                             // sang khoảng chết
       END_IF;
 
- 20:  T_Dead(IN := TRUE, PT := T#80MS);              // ⚠⚠ KHOẢNG CHẾT
-      IF T_Dead.Q THEN
-          T_Dead(IN := FALSE);
+ 20:  IF T_Dead.Q THEN
           SD_Step := 30;
       END_IF;
 
- 30:  IF NOT M_MotorStart OR NOT M_AllPermissive THEN
-          SD_Step := 0;
-      END_IF;
+ 30:  ;                                              // chạy tam giác — dừng xử lý ở trên
 END_CASE;
 
 // ⭐ Ngõ ra SUY RA TỪ BƯỚC, và đặt SAU khối CASE — để đổi bước là ngõ ra đổi NGAY
@@ -59994,7 +60564,10 @@ thể <strong>hàn dính</strong>, và lúc đó code không biết gì (Chươn
 </blockquote>
 <hr>
 <h2 id="l11-báo-đng-có-xác-nhn-và-báo-đng-đu-tiên">L.11 Báo động có xác nhận, và &quot;báo động đầu tiên&quot;</h2>
-<pre><code class="language-iecst">// ── Một báo động: phát hiện · CHỐT · xác nhận ──
+<pre><code class="language-iecst">// ── Một báo động: XOÁ (khi được lệnh VÀ nguyên nhân đã hết) · rồi mới PHÁT HIỆN · CHỐT ──
+IF M_ClearFaults AND DI_AirOK THEN          // lệnh xoá đến từ tầng máy — Chương 25 mục 25.5c
+    M_Alm_AirLow := FALSE;
+END_IF;
 IF NOT DI_AirOK AND NOT M_Alm_AirLow THEN
     M_Alm_AirLow := TRUE;                    // chốt lại, không tự mất
     RaiseAlarm(ALM_AIR_LOW);
@@ -60006,14 +60579,11 @@ IF NOT M_AnyAlarmActive AND M_NewAlarm THEN
     FirstAlarmTime := CurrentTime;
 END_IF;
 
-// ── Xác nhận: chỉ xoá được khi NGUYÊN NHÂN ĐÃ HẾT ──
-IF M_AckPB_Rise AND M_Alm_AirLow AND DI_AirOK THEN
-    M_Alm_AirLow := FALSE;
-END_IF;
-
-// ── Gom ──
-M_AnyAlarmActive := M_Alm_AirLow OR M_Alm_Clamp1Timeout OR M_Alm_VisionNoAnswer;
-M_AnyFault       := M_AnyAlarmActive OR Stn1_Fault OR Stn2_Fault;
+// ── GOM — đúng MỘT chỗ gán M_AnyFault (Chương 25 mục 25.5c) ──
+M_AnyAlarmActive := M_Alm_EStop OR M_Alm_AirLow OR M_Alm_VisionNoAnswer OR M_Alm_AxisZ;
+M_AnyFault       := M_AnyAlarmActive
+                    OR Stop1.Fault OR Clamp1.Fault OR Stop2.Fault OR Clamp2.Fault
+                    OR Stn1_Fault OR Stn2_Fault;
 
 IF NOT M_AnyAlarmActive THEN
     FirstAlarmCode := ALM_NONE;              // hết sạch mới xoá
@@ -60022,8 +60592,11 @@ END_IF;
 <blockquote>
 <p>⭐⭐ <strong><code>FirstAlarmCode</code> là thứ giúp người bảo trì nhiều nhất.</strong> Một sự cố thường kéo theo năm báo
 động; ⚠ cái xuất hiện <strong>đầu tiên</strong> mới là nguyên nhân, bốn cái sau là hậu quả (Chương 44).</p>
-<p>⚠ <strong>Không cho xác nhận khi nguyên nhân còn đó.</strong> Nếu không, người vận hành sẽ bấm Ack cho im rồi
+<p>⚠ <strong>Không cho xoá khi nguyên nhân còn đó.</strong> Nếu không, người vận hành sẽ bấm Reset cho im rồi
 quên mất — và hệ báo động biến thành tiếng ồn.</p>
+<p>⭐ <strong>Mỗi nguồn một cờ, gom ở một chỗ.</strong> Không nguồn nào ghi thẳng <code>M_AnyFault</code> — nó chỉ được <strong>gán</strong>
+ở dòng gom trên. Hai nơi cùng ghi một cờ thì phép gán chạy sau <strong>xoá mất</strong> lỗi của phép chạy trước
+(Chương 25 mục 25.5c).</p>
 <p>⚡ Một dòng báo động đủ dùng phải nói <strong>bước nào · đang chờ gì · nên kiểm tra gì</strong>, không phải
 <em>&quot;Lỗi trạm 1&quot;</em> (Chương 26, Chương 44).</p>
 </blockquote>
@@ -61654,7 +62227,7 @@ dùng tới</strong> (quy tắc vẫn đúng) · ➕ <strong>chưa chương nào
 <tr>
 <td>CP6</td>
 <td>Tránh biến ngoài (<code>VAR_EXTERNAL</code>) trong hàm và khối</td>
-<td>Ch.30 mục 30.5 — <em>&quot;không phụ thuộc biến toàn cục&quot;</em></td>
+<td>Ch.11 mục 11.6 — <em>&quot;khối không đọc biến toàn cục, mọi thứ qua chân&quot;</em> · Ch.30 mục 30.5</td>
 <td align="center">✔</td>
 </tr>
 <tr>
@@ -62164,6 +62737,11 @@ trong dự án thật.</p>
 <td>CP23</td>
 <td>Một POU tối đa bao nhiêu chân?</td>
 <td>⭐ Khoảng <strong>10</strong>, như PLCopen gợi ý. Khối xy-lanh ở Chương 27 có <strong>11</strong> (6 vào, 5 ra) — nhỉnh hơn gợi ý, chấp nhận vì mỗi chân trả lời một câu người bảo trì hỏi thật; ⚠ quá ~12 thì tách khối</td>
+</tr>
+<tr>
+<td>—</td>
+<td>⭐ Tên chân của khối tự viết?</td>
+<td>Khối thuộc một trong hai hợp đồng của PLCopen thì dùng <strong>đúng tên và đúng nghĩa</strong> của hợp đồng đó: <code>Execute</code>/<code>Done</code>/<code>Busy</code>/<code>Error</code>/<code>ErrorID</code> (kích bằng sườn), <code>Enable</code>/<code>Valid</code> (theo mức — tắt là xoá ngõ ra). ⚠ <strong>Không mượn</strong> các tên đó cho nghĩa khác: chân cho phép của khối xy-lanh tên là <code>Permit</code>, không phải <code>Enable</code> (Chương 30 mục 30.5b)</td>
 </tr>
 <tr>
 <td>CP24</td>

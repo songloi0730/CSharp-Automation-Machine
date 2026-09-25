@@ -148,7 +148,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 14 | [Tổng quan IEC 61131-3](ch14_tong_quan_iec_61131_3.md) | 5 ngôn ngữ và vì sao có 5; **đơn vị tổ chức chương trình *(POU)*** — Program / Function Block / Function khác nhau ở chỗ **có bộ nhớ riêng hay không**; thể hiện *(instance)* của FB; tác vụ *(task)* chu kỳ / sự kiện / tự do; ⚠ sự thật về "tính khả chuyển" *(portability)*: chuẩn giúp **kỹ năng** chuyển được, **code** thì hiếm khi — dẫn Phụ lục A | ✅ |
+| 14 | [Tổng quan IEC 61131-3](ch14_tong_quan_iec_61131_3.md) | ⭐ các bản của chuẩn — 2013 đưa hướng đối tượng vào, 2025 **bỏ hẳn IL**; các ngôn ngữ và vì sao cần nhiều ngôn ngữ; **đơn vị tổ chức chương trình *(POU)*** — Program / Function Block / Function khác nhau ở chỗ **có bộ nhớ riêng hay không**; thể hiện *(instance)* của FB; tác vụ *(task)* chu kỳ / sự kiện / tự do; ⚠ sự thật về "tính khả chuyển" *(portability)*: chuẩn giúp **kỹ năng** chuyển được, **code** thì hiếm khi — dẫn Phụ lục A | ✅ |
 | 15 | [⭐ Ladder Diagram — nền tảng](ch15_ladder_diagram.md) | Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa **giúp** vừa **hại**; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ **bảng 4 tổ hợp** (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng *(power flow)*, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; **cuộn dây trùng *(double coil)*** — vì sao sai, hậu quả, và hãng nào cảnh báo  ⭐⭐ **Vì sao thực tế đầy tổ hợp 2** (nút Dừng NO + tiếp điểm thường đóng trong code) dù nó nguy hiểm — sáu lý do thật kèm phán xét từng cái, và ⭐ phân biệt **chức năng được định mức** với **chức năng được người vận hành tin tưởng**; hai cách sửa, trong đó cách hai đấu **cả hai khối tiếp điểm** vào hai ngõ vào rồi kiểm chúng luôn ngược nhau — bắt được cả đứt dây lẫn khối hỏng. | ✅ |
 | 16 | [Latch, Set/Reset & bắt cạnh](ch16_latch_set_reset_bat_canh.md) | Tự giữ *(seal-in)* vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy "không biết mình đang ở đâu"; **bắt cạnh lên/xuống *(rising/falling edge, one-shot)*** — khi nào **bắt buộc** (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên | ✅ |
 | 17 | [Timer — TON / TOF / TP / RTO](ch17_timer.md) | Sơ đồ thời gian *(timing diagram)* từng loại; độ phân giải & sai số theo chu kỳ quét; timer bị đặt lại ngoài ý muốn khi điều kiện vào nhấp nháy; nối tầng timer để có thời gian dài; ⭐ **sai lầm lớn nhất: dùng timer thay cho tín hiệu phản hồi thật** — "chờ 2 giây chắc kẹp xong rồi" — vì sao hỏng máy, và cách làm đúng (phản hồi để chuyển tiếp, timeout để báo lỗi) | ✅ |
@@ -173,7 +173,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | 27 | [⭐ **Kiến trúc chương trình cho máy nhiều trạm**](ch27_kien_truc_chuong_trinh_nhieu_tram.md) | Chỗ code của người mới sụp đổ khi máy lớn lên. Phân tầng **máy → trạm → cơ cấu**, ai được ra lệnh cho ai và ai **không** được; vì sao trạm không gọi thẳng thiết bị; **đồng bộ giữa các trạm mà không chờ bận *(busy-wait)*** — cơ chế báo hiệu; bài toán pipeline của DP-01 (hai trạm, hai board, một chỗ trống); phân chia tác vụ *(task)* và thứ tự thực thi; khi nào tách chương trình con, khi nào đừng | ✅ |
 | 28 | [⭐ Chế độ vận hành & phục hồi sau lỗi](ch28_che_do_van_hanh_va_phuc_hoi.md) | Auto / Manual / Jog / Home / chạy khô *(dry-run)* và quyền được làm gì ở từng chế độ; ⭐ **"về gốc" *(homing)* là bài toán khó nhất thực tế**: máy dừng ở tư thế bất kỳ, đưa về an toàn mà không va chạm — thứ tự về gốc là kết quả của **phân tích va chạm và mối nguy**, không phải thứ tự tuỳ ý (ví dụ DP-01: tắt UV → nâng Z → mới nhả kẹp); dừng giữa chừng rồi chạy tiếp vs bỏ sản phẩm khởi động lại chu trình; **xử lý sản phẩm dở dang** — đánh dấu NG, không để lẫn vào hàng tốt | ✅ |
 | 29 | [Công thức sản phẩm & quản lý tham số](ch29_cong_thuc_san_pham_va_tham_so.md) | Vì sao máy điện tử **bắt buộc** phải tách tham số khỏi logic: cùng một máy chạy nhiều mã hàng trong một ca; cấu trúc một công thức *(recipe)*; ⭐ **kiểm tra hợp lệ là việc của PLC, không phải của MES** — dải hợp lệ, từ chối công thức sai, cái gì xảy ra nếu nhận nhầm; đổi công thức khi đang chạy — được phép ở điểm nào của chu trình; phiên bản & vết thay đổi của công thức; ai được sửa (liên hệ phân quyền Ch.44) | ✅ |
-| 30 | [Chuẩn hoá & tái sử dụng](ch30_chuan_hoa_va_tai_su_dung.md) | Quy ước đặt tên tag — **nhất quán quan trọng hơn "đẹp"**; cấu trúc chương trình theo cơ cấu (FB cho xy-lanh, cho trạm, cho chuyền) thay vì theo bước; UDT gói trạng thái một cơ cấu; ⭐ **comment viết cho người sẽ sửa lúc 2 giờ sáng** — comment như nhật ký kỹ thuật, ghi cả cái đã thử mà không được; thư viện dùng lại giữa các dự án và cái giá của việc dùng lại sai; ⭐⭐ **viết khối của mình theo hợp đồng của hãng** — `Execute`/`Done` và `Enable`/`Valid` của PLCopen, năm quy tắc kèm một khối viết đúng cả năm; quản lý phiên bản chương trình PLC — cái gì so sánh được, cái gì không | ✅ |
+| 30 | [Chuẩn hoá & tái sử dụng](ch30_chuan_hoa_va_tai_su_dung.md) | Quy ước đặt tên tag — **nhất quán quan trọng hơn "đẹp"**; cấu trúc chương trình theo cơ cấu (FB cho xy-lanh, cho trạm, cho chuyền) thay vì theo bước; UDT gói trạng thái một cơ cấu; ⭐ **comment viết cho người sẽ sửa lúc 2 giờ sáng** — comment như nhật ký kỹ thuật, ghi cả cái đã thử mà không được; thư viện dùng lại giữa các dự án và cái giá của việc dùng lại sai; ⭐⭐ **viết khối của mình theo hợp đồng của hãng** — `Execute`/`Done` và `Enable`/`Valid` của PLCopen, năm quy tắc kèm một khối viết đúng cả năm; ⭐⭐ **hướng đối tượng** — phương thức, interface, kế thừa, tham chiếu: cùng một bài toán ba cách, năm cái bẫy chỉ có trên PLC, hệ nào có và hệ nào không; quản lý phiên bản chương trình PLC — cái gì so sánh được, cái gì không | ✅ |
 
 ## PHẦN V — ANALOG, ĐO LƯỜNG & ĐIỀU KHIỂN LIÊN TỤC
 
@@ -6495,7 +6495,7 @@ cảm biến, đảo một chân chung — rồi tự tìm ra. Đây là bài t�
 
 ### Chương tiếp theo
 
-Chương 14 — **Năm ngôn ngữ của IEC 61131-3**. Bạn đã có phần cứng và biết chọn nó. Từ đây sách chuyển
+Chương 14 — **Các ngôn ngữ của IEC 61131-3**. Bạn đã có phần cứng và biết chọn nó. Từ đây sách chuyển
 sang lập trình: chuẩn cho những ngôn ngữ nào, mỗi ngôn ngữ hợp với việc gì, và vì sao ladder vẫn
 chiếm ưu thế ở tầng máy.
 
@@ -6542,8 +6542,20 @@ chiếm ưu thế ở tầng máy.
 Trước khi có chuẩn, mỗi hãng PLC là một thế giới riêng: ngôn ngữ riêng, tên lệnh riêng, cách tổ chức
 chương trình riêng. Chuyển hãng nghĩa là học lại từ đầu.
 
-**IEC 61131-3** ra đời để chấm dứt chuyện đó. Nó định nghĩa năm ngôn ngữ, một cách tổ chức chương
-trình, và một bộ kiểu dữ liệu chung. Ngày nay gần như mọi hãng đều tuyên bố tuân theo nó.
+**IEC 61131-3** ra đời để chấm dứt chuyện đó. Nó định nghĩa một bộ ngôn ngữ lập trình, một cách tổ
+chức chương trình, và một bộ kiểu dữ liệu chung. Ngày nay gần như mọi hãng đều tuyên bố tuân theo nó.
+
+> ⭐ **Chuẩn có nhiều bản — và câu *"theo IEC 61131-3"* chưa trả lời bản nào.**
+>
+> | Bản | Năm | Điều đáng nhớ với người lập trình |
+> |---|---|---|
+> | 2 | 2003 | Năm ngôn ngữ: LD, FBD, ST, SFC, IL |
+> | 3 | 2013 | ⭐ Đưa **hướng đối tượng** vào chuẩn — phương thức, interface, kế thừa (Chương 30 mục 30.5c); ⚠ IL bị đánh dấu **không khuyến khích** |
+> | ⭐ 4 | 5/2025 | ⚠ **Bỏ hẳn IL** — chuẩn còn LD, FBD, ST và các phần tử SFC; thêm chuỗi UTF-8, **thuộc tính** (`PROPERTY`), công cụ đồng bộ giữa các tác vụ (mutex, semaphore) |
+>
+> ⚠ Chuẩn bỏ IL **không** có nghĩa là hãng bỏ: mỗi hãng tự quyết định có giữ IL trong công cụ hay
+> không, và máy cũ viết bằng IL còn chạy nhiều năm nữa — Chương 21 dạy đủ để **đọc** nó. ⭐ Khi một
+> hệ tuyên bố tuân theo chuẩn, hỏi thêm **theo bản nào** (mục 14.6b).
 
 Nhưng có một điều phải nói thẳng ngay từ đầu, vì hiểu nhầm nó sẽ dẫn tới những kỳ vọng sai:
 
@@ -6559,8 +6571,8 @@ Nhưng lấy tệp chương trình từ hệ này nạp sang hệ khác thì **k
 
 ## 14.2 Năm ngôn ngữ — và vì sao cần tới năm
 
-Chuẩn định nghĩa năm ngôn ngữ. Không phải vì thừa, mà vì **năm nhóm bài toán khác nhau**, và ép tất
-cả vào một ngôn ngữ thì luôn có nhóm bị thiệt.
+Bản 2013 của chuẩn định nghĩa năm ngôn ngữ; bản 2025 giữ bốn và bỏ IL (mục 14.1). Không phải vì
+thừa, mà vì **những nhóm bài toán khác nhau**, và ép tất cả vào một ngôn ngữ thì luôn có nhóm bị thiệt.
 
 | Ngôn ngữ | Dạng | Sinh ra cho | Chương |
 |---|---|---|---|
@@ -6568,7 +6580,7 @@ cả vào một ngôn ngữ thì luôn có nhóm bị thiệt.
 | **FBD** — *Function Block Diagram* | Đồ hoạ, các khối nối bằng đường tín hiệu | Luồng tín hiệu, xử lý analog, chuỗi khối chức năng | 21 |
 | **ST** — *Structured Text* | Văn bản, giống Pascal | Tính toán, thuật toán, mảng, máy trạng thái | 20 |
 | **SFC** — *Sequential Function Chart* | Đồ hoạ, bước và chuyển tiếp | **Trình tự** có thứ tự trước sau | 21, 26 |
-| **IL** — *Instruction List* | Văn bản, giống hợp ngữ | ⚠ Di sản — chỉ để **đọc** chương trình cũ | 21 |
+| **IL** — *Instruction List* | Văn bản, giống hợp ngữ | ⚠ Di sản — **đã bị bỏ khỏi chuẩn ở bản 2025**; chỉ để **đọc** chương trình cũ | 21 |
 
 ### Chọn ngôn ngữ theo bài toán
 
@@ -6578,7 +6590,7 @@ cả vào một ngôn ngữ thì luôn có nhóm bị thiệt.
 | "Nếu tín hiệu vượt ngưỡng thì lọc rồi đưa qua bộ điều khiển" | **FBD** | Luồng tín hiệu đi từ trái sang phải, thấy được đường đi |
 | "Tính hiệu suất, quy đổi thang đo, xử lý mảng" | **ST** | Ladder làm việc này rất tệ |
 | "Bước 10 chờ board, bước 20 nâng kẹp, bước 30…" | **SFC** hoặc **ST (`CASE`)** | Trình tự là cấu trúc, không phải logic tổ hợp |
-| "Đọc chương trình máy 1998 để sửa" | **IL** | Không có lựa chọn — xem mục 21 |
+| "Đọc chương trình máy 1998 để sửa" | **IL** | Không có lựa chọn — xem Chương 21 |
 
 > ⚠ **Nhắc lại quy tắc quan trọng nhất về chọn ngôn ngữ** (Chương 20, mục 20.6):
 > **chọn theo người sẽ SỬA chương trình, không theo người viết nó.** Bảng trên nói cái gì *hợp*; câu
@@ -7037,8 +7049,15 @@ bằng ngôn ngữ chiếm ưu thế ở tầng máy và cũng là ngôn ngữ c
 
 ### Nguồn tham khảo chương 14
 
-- IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*: định nghĩa năm ngôn ngữ,
-  ba loại POU, mô hình tác vụ, và bộ kiểu dữ liệu chuẩn. *(tiêu chuẩn có bản quyền)*
+- **IEC** — trang giới thiệu *IEC 61131-3:2025* trên cửa hàng của IEC (đối chiếu 2026-09-26): bản 4.0
+  phát hành 22/05/2025; bộ ngôn ngữ gồm ST, LD, FBD và các phần tử SFC; thay đổi kỹ thuật lớn gồm chuỗi
+  UTF-8, và phụ lục B liệt kê các tính năng thêm, bỏ hoặc không khuyến khích so với bản 2013.
+- **Stefan Henneken** — *IEC 61131-3: Comparison of Edition 3 and Edition 4* (6/2025), so trực tiếp văn
+  bản hai bản: chương IL bị bỏ ở bản 4 nhưng hãng vẫn có thể giữ IL trong công cụ; thêm thuộc tính
+  (`PROPERTY_GET` / `PROPERTY_SET`), mutex và semaphore, `ASSERT`; bỏ hằng bát phân và `TRUNC` không
+  kiểu; hàm BCD bị đánh dấu không khuyến khích.
+- IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*: định nghĩa các ngôn ngữ
+  (năm ở bản 2013, bốn ở bản 2025), ba loại POU, mô hình tác vụ, và bộ kiểu dữ liệu chuẩn. *(tiêu chuẩn có bản quyền)*
 - IEC 61131-1 — *Programmable controllers, Part 1: General information*: mô hình phần mềm tổng thể.
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng đối chiếu ở mục 14.8: tên gọi POU,
   cách khai báo tác vụ, cơ chế bộ nhớ thể hiện, và tên gói SFC của từng hãng.
@@ -11261,8 +11280,9 @@ Vài lệnh hay gặp, đủ để bạn dò được logic:
 
 ### ⚠ IL đã bị rút khỏi chuẩn
 
-Bản mới của IEC 61131-3 **không còn IL** như một ngôn ngữ được duy trì — nó được xếp vào diện lỗi
-thời. Hệ quả thực tế:
+Bản 3 của IEC 61131-3 (2013) đánh dấu IL là **không khuyến khích**; ⚠ bản 4 (5/2025) **bỏ hẳn** chương
+IL khỏi chuẩn — chuẩn giờ chỉ còn LD, FBD, ST và các phần tử SFC. ⭐ Nhưng chuẩn bỏ không có nghĩa là
+hãng bỏ: mỗi hãng tự quyết định có giữ IL trong công cụ hay không. Hệ quả thực tế:
 
 - **Đừng viết code mới bằng IL.** Không có lý do kỹ thuật nào để làm vậy hôm nay.
 - **Vẫn phải đọc được nó**, vì máy cũ không biến mất theo tiêu chuẩn.
@@ -11476,6 +11496,8 @@ có tài liệu, và phải sửa nó mà không làm hỏng thứ đang chạy.
 
 ### Nguồn tham khảo chương 21
 
+- IEC 61131-3:2025 (bản 4) — IL không còn trong chuẩn; đối chiếu qua trang giới thiệu của IEC và bài so
+  sánh bản 3 – bản 4 của Stefan Henneken (chi tiết ở nguồn của Chương 14).
 - IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*: định nghĩa FBD, SFC (bước,
   chuyển tiếp, hành động, bổ ngữ hành động, các kiểu nhánh) và IL. *(tiêu chuẩn có bản quyền)*
 - Tài liệu về **GRAFCET** — phương pháp mô tả trình tự mà SFC bắt nguồn từ đó, có tiêu chuẩn riêng.
@@ -15013,6 +15035,11 @@ Khi nào tách là chính đáng:
 Nếu tách, quy tắc bắt buộc: **dữ liệu đi qua ranh giới tác vụ phải qua một vùng đệm rõ ràng**, không
 đọc chéo biến trực tiếp.
 
+> ⭐ **Bản 4 của IEC 61131-3 (2025) đưa công cụ chuẩn cho việc này vào chuẩn:** **mutex** — khối
+> `MUTEX` với các phương thức khoá, mở, thử khoá — và **semaphore** (`SEMA`), kèm dạng hàm tương ứng.
+> ⚠ Hệ bạn đang dùng có thể chưa theo bản 4 (Chương 14 mục 14.1); vùng đệm rõ ràng ở trên vẫn là
+> cách chạy được trên **mọi** hệ.
+
 ### ⭐⭐ Chính tài liệu hãng cũng khuyên hạn chế số tác vụ
 
 ⭐ Lời khuyên *"mặc định là một tác vụ"* ở trên nghe như quan điểm cá nhân. ⚡ Nó không phải: tài
@@ -15245,6 +15272,8 @@ chưa trả lời: khi máy dừng giữa chừng ở một tư thế bất kỳ
 
 ### Nguồn tham khảo chương 27
 
+- **Stefan Henneken** — *IEC 61131-3: Comparison of Edition 3 and Edition 4* (6/2025): bản 4 thêm chương
+  *đồng bộ thực thi song song* — khối `MUTEX`, `SEMA` và dạng hàm — nền cho ghi chú ở mục 27.6.
 - IEC 61131-3 — *Programmable controllers, Part 3: Programming languages*: khối chức năng, thể hiện,
   đơn vị tổ chức chương trình, và mô hình tác vụ. *(tiêu chuẩn có bản quyền; chương này chỉ diễn giải
   ở mức khái niệm)*
@@ -17177,6 +17206,156 @@ END_CASE;
 
 ---
 
+## 30.5c ⭐⭐ Hướng đối tượng — thêm một cách tổ chức, không thay cách cũ
+
+Bản 3 của IEC 61131-3 (2013) đưa lập trình **hướng đối tượng** *(object-oriented programming, OOP)*
+vào chuẩn; bản 4 (2025) thêm **thuộc tính** (Chương 14 mục 14.1). ⭐ Chính PLCopen nói rõ: cách lập
+trình cổ điển **không bị thay thế** — hai cách cùng tồn tại, và mỗi cách dùng ở chỗ nó hợp nhất.
+
+> ⚠⚠ **Đọc bảng hãng ở cuối mục TRƯỚC khi đọc cú pháp.** Hướng đối tượng chạy được trên CODESYS và
+> các nền dựng trên nó. Trong TIA Portal, trên Rockwell Logix và trên dòng FX5 của Mitsubishi thì
+> **không** — mục này vô ích với bạn nếu máy của bạn chạy trên các hệ đó. Cú pháp dưới đây theo
+> CODESYS, viết liền thành văn bản để đọc được trên giấy.
+
+### Năm công cụ — mỗi cái trả lời một câu hỏi
+
+| Công cụ | Là gì | ⭐ Trả lời câu hỏi |
+|---|---|---|
+| `METHOD` | Một đoạn mã **thuộc về** một khối, gọi được từ ngoài: `Stn2.IsEmpty()` | *"Hỏi khối này một câu, hoặc ra một lệnh, mà không cần biết bên trong nó"* |
+| `PROPERTY` | Một giá trị đọc/ghi được như biến, nhưng đi qua mã kiểm soát | *"Cho đọc giá trị này, nhưng qua một cửa có kiểm tra"* |
+| ⭐ `INTERFACE` + `IMPLEMENTS` | Một **danh sách phương thức** mà nhiều loại khối cam kết cùng có | ⭐ *"Đối xử với nhiều loại khối khác nhau theo cùng một cách"* |
+| `EXTENDS` | Khối mới **kế thừa** mọi biến và phương thức của khối cũ | *"Khối này là một phiên bản đặc biệt của khối kia"* |
+| `REFERENCE TO` | Một **tên khác** trỏ tới một biến có sẵn | *"Làm việc trên biến ở chỗ khác mà không chép nó"* |
+
+### Cùng một bài toán, ba cách
+
+Bài toán — lấy thẳng từ Chương 27: tầng máy phải biết **mọi trạm đã hết board chưa** trước khi coi là
+xả xong (Chương 27 mục 27.5, bảng chốt dòng 10: *"không chỉ trạm đầu"*).
+
+```iecst
+// ── A · Cách của sách: mỗi trạm công bố biến toàn cục, tầng máy đọc từng cái ──
+M_AllEmpty := Stn1_Ready AND NOT Stn1_Busy
+              AND Stn2_Ready AND NOT Stn2_Busy;
+
+// ── B · Trạm là khối có phương thức: tầng máy HỎI, không đọc biến bên trong ──
+M_AllEmpty := Station1.IsEmpty() AND Station2.IsEmpty();
+
+// ── C · Interface: mọi trạm cam kết cùng một câu trả lời, tầng máy hỏi trong một vòng lặp ──
+M_AllEmpty := TRUE;
+FOR i := 1 TO 2 DO
+    M_AllEmpty := M_AllEmpty AND aStation[i].IsEmpty();
+END_FOR;
+```
+
+Cách C cần hai phần khai báo: interface, và mỗi trạm cam kết thực hiện nó.
+
+```iecst
+INTERFACE I_Station
+    METHOD IsReady : BOOL        // sẵn sàng nhận board mới
+    END_METHOD
+    METHOD IsEmpty : BOOL        // không còn board nào trong trạm
+    END_METHOD
+    METHOD HasFault : BOOL
+    END_METHOD
+END_INTERFACE
+
+FUNCTION_BLOCK FB_Stn2Cure IMPLEMENTS I_Station
+    // … khai báo và trình tự của trạm 2 — như Chương 26, nhưng nằm trong khối …
+
+    METHOD IsReady : BOOL
+        IsReady := (Stn2_Step = 0);
+    END_METHOD
+
+    METHOD IsEmpty : BOOL
+        IsEmpty := (Stn2_Step = 0) AND NOT DI_BoardStn2;
+    END_METHOD
+
+    METHOD HasFault : BOOL
+        HasFault := Stn2_Fault;
+    END_METHOD
+END_FUNCTION_BLOCK
+
+// ── Tầng máy ──
+VAR
+    Station1 : FB_Stn1Dispense;          // khối trạm 1 cũng IMPLEMENTS I_Station
+    Station2 : FB_Stn2Cure;
+    aStation : ARRAY[1..2] OF I_Station; // ⭐ biến kiểu interface là THAM CHIẾU tới một thể hiện
+    i        : INT;
+END_VAR
+
+aStation[1] := Station1;                 // gắn — trước lần gắn đầu tiên, biến chứa 0
+aStation[2] := Station2;
+```
+
+| Cách | ⭐ Ưu | ⚠ Nhược |
+|---|---|---|
+| A — biến toàn cục công bố | Chạy trên **mọi hệ**; người bảo trì đọc được bằng ladder | Tầng máy phải **liệt kê từng trạm** — thêm trạm 3 mà quên sửa dòng này thì *"xả xong"* sai; và ⚠ thật ra chỉ có một chỗ ghi mỗi biến là nhờ kỷ luật, không nhờ ngôn ngữ |
+| B — phương thức | Tầng máy **không thấy** bên trong trạm — đổi cách trạm tính *"trống"* không ảnh hưởng ai | Vẫn liệt kê từng trạm; chỉ chạy trên hệ có OOP |
+| ⭐ C — interface | ⭐ Thêm trạm 3 = thêm **một dòng gắn** và sửa giới hạn vòng lặp; mọi trạm **buộc** phải trả lời đủ ba câu — thiếu một phương thức là **không biên dịch được** | Khó đọc nhất với người chỉ quen ladder; chỉ chạy trên hệ có OOP; ⚠ thêm một loại lỗi mới — tham chiếu chưa gắn |
+
+⭐ **Khuyến nghị:** máy cỡ DP-01, đội bảo trì đọc ladder, hoặc máy có thể phải chuyển nền → **cách A**,
+đúng như sách đang dùng. Máy có **nhiều trạm hoặc nhiều loại cơ cấu cùng vai trò**, chạy trên **một
+nền có OOP suốt đời**, và đội có nền tảng phần mềm → **cách C** trả công xứng đáng. Cách B đứng giữa:
+dùng khi muốn đóng gói mà chưa cần đa hình.
+
+### ⚠⚠ Năm cái bẫy chỉ có khi dùng hướng đối tượng TRÊN PLC
+
+Người đến từ C# hay Java mang theo thói quen đúng ở đó và **sai ở đây**, vì PLC chạy theo vòng quét.
+
+| # | Bẫy | ⭐ Cách đúng |
+|:-:|---|---|
+| 1 | ⚠⚠ **Khai bộ định thời trong phương thức.** Biến khai trong phương thức là biến **tạm** — tài liệu CODESYS ghi rõ chúng được **khởi tạo lại mỗi lần gọi**. Bộ định thời ở đó về 0 ở mỗi lần gọi: **không bao giờ** tới giờ | Mọi thứ cần **nhớ qua các vòng quét** — bộ định thời, bộ đếm, cờ, bước — khai ở **khối**, không ở phương thức |
+| 2 | ⚠ **Đặt logic chạy theo thời gian vào phương thức.** Phương thức chỉ chạy **khi được gọi** — không ai gọi thì nó đứng yên, y như khối không được gọi (mục 30.5b, quy tắc 2) | Logic chạy theo vòng quét nằm ở **thân khối**, và thân khối vẫn được gọi **mỗi vòng**. ⭐ Phương thức chỉ để **hỏi** và **ra lệnh** |
+| 3 | ⚠⚠ **Gọi phương thức qua một biến interface chưa gắn.** Biến kiểu interface là **tham chiếu**, và bằng 0 tới lần gắn đầu tiên | Gắn **một lần** lúc khởi động; và ở chỗ nào không chắc, kiểm `aStation[i] <> 0` **trước** khi gọi |
+| 4 | ⚠ **Dùng `:=` với tham chiếu để "trỏ sang chỗ khác".** Với `REFERENCE TO`, `:=` **chép giá trị** vào chỗ tham chiếu đang trỏ — muốn trỏ sang chỗ khác phải dùng `REF=`. Và không khai được **mảng các tham chiếu** | Đọc kỹ từng phép gán có tham chiếu; ⭐ và như PLCopen yêu cầu: **không** tính toán trên con trỏ, **không** so lớn–nhỏ trên con trỏ hay tham chiếu (quy tắc E2, E3, Phụ lục N) |
+| 5 | ⚠ **Kế thừa theo kiểu "có liên quan".** Máy bơm **dùng** một động cơ, nhưng máy bơm **không phải là** một động cơ — cho `FB_Pump EXTENDS FB_Motor` là trộn hai quan hệ | Hỏi *"khối con **có phải là** khối cha không?"* — không phải thì **chứa** một thể hiện của nó thay vì kế thừa. ⭐ PLCopen đặt đúng câu hỏi này cho người viết thư viện: *kết hợp hay kế thừa?* |
+
+> ⚡ **Thêm hai điều về kế thừa trên CODESYS:** một khối chỉ kế thừa được **một** khối (nhưng thực hiện
+> được **nhiều** interface); và khối con **không được** khai lại biến trùng tên với khối cha. Khi sửa
+> chương trình đang chạy mà có tham chiếu interface, hệ phải định địa chỉ lại các tham chiếu đó — tài
+> liệu hãng cảnh báo việc này tốn thêm thời gian và có thể gây **rung thời gian quét**.
+
+### Thuộc tính — và vì sao sách dùng phương thức thay cho nó
+
+Bản 4 của chuẩn định nghĩa thuộc tính bằng hai phương thức đặc biệt, `PROPERTY_GET` và `PROPERTY_SET`.
+Đọc và ghi thuộc tính **viết như biến**, nhưng thật ra là **gọi mã**:
+
+```iecst
+FUNCTION_BLOCK FB_Foo
+    VAR PRIVATE
+        _nFoo : INT;             // biến thật, giấu bên trong
+    END_VAR
+    PROPERTY_GET PUBLIC nFoo : INT
+        nFoo := _nFoo;
+    END_PROPERTY
+    PROPERTY_SET PUBLIC nFoo : INT
+        _nFoo := nFoo;           // chỗ đặt phép kiểm giới hạn, nếu cần
+    END_PROPERTY
+END_FUNCTION_BLOCK
+```
+
+⚠ CODESYS có thuộc tính từ trước bản 4, với cách khai riêng — mỗi thuộc tính có hai phương thức truy
+cập `Get` và `Set`. ⭐ Sách dùng **phương thức trả về giá trị** (`IsEmpty()`) thay cho thuộc tính ở ví dụ
+chính, vì hai lý do: dấu `()` nói với người đọc *"đây là lời gọi, có mã chạy"* — thuộc tính thì trông
+**y hệt** một biến; và cú pháp phương thức giống nhau hơn giữa các hệ.
+
+### Hệ nào có — đối chiếu ngày 2026-09-26
+
+| Hệ | Hướng đối tượng | Căn cứ |
+|---|---|---|
+| ⭐ **CODESYS** và các nền dựng trên nó | ✅ `METHOD`, `PROPERTY`, `INTERFACE`, `EXTENDS`, `IMPLEMENTS`, `THIS^`, `SUPER^`, `REFERENCE TO`, và phương thức khởi tạo riêng `FB_init` | Trợ giúp trực tuyến CODESYS |
+| **Siemens** — TIA Portal (LAD / FBD / SCL) | ❌ Trong TIA Portal thì không. Hướng đối tượng nằm ở **SIMATIC AX** — môi trường viết ST riêng; thư viện AX nhập vào TIA Portal thì lớp thành FB, phương thức thành FC, và ⚠ **không dùng trực tiếp được** trong chương trình TIA | Tài liệu TIA Portal V20, mục về lập trình hướng đối tượng trong thư viện SIMATIC AX |
+| **Rockwell** — Logix | ❌ Tài liệu tuân thủ IEC 61131-3 bản 3 của Logix liệt kê từng tính năng được hỗ trợ — **không có** mục nào cho lớp, phương thức hay interface. Tái dùng bằng lệnh tự định nghĩa (mục 30.5) | Tài liệu tuân thủ IEC 61131-3 của Logix, bản 3/2022 |
+| **Mitsubishi** — dòng FX5 | ⚠ Không thấy `METHOD` / `INTERFACE` / `EXTENDS` trong tài liệu lệnh và khối của dòng FX5 có trong bộ nguồn — tra tài liệu lập trình của dòng bạn dùng | Tài liệu lệnh FX5 |
+| **Inovance** | Dòng dựng trên CODESYS: theo nền CODESYS — ⚠ kiểm phiên bản. Dòng nhỏ (họ H5U / Easy): không thấy trong tài liệu lập trình | Tài liệu H5U / Easy |
+
+> ⭐⭐ **Câu chốt của mục này:** hướng đối tượng là **một cách tổ chức thêm**, không phải bậc thang
+> trên của lập trình PLC. Một chương trình cổ điển tổ chức tốt theo ba tầng (Chương 27) dễ bảo trì hơn
+> một chương trình hướng đối tượng mà người sửa lúc hai giờ sáng không đọc nổi. ⚡ Chọn nó khi nó làm
+> cho **người sửa** đỡ việc — đúng tiêu chí ở mục 30.1.
+
+---
+
 ## 30.6 Quản lý phiên bản chương trình PLC
 
 ### Cái gì so sánh được, cái gì không
@@ -17389,6 +17568,24 @@ một lớp: analog và chuyển động.
   quả xoá ở sườn xuống và vẫn hiện ít nhất một vòng nếu `Execute` tắt giữa chừng; `Enable` tắt thì
   khối ngừng và xoá ngõ ra. ⚠ Hai tài liệu **lệch nhau** ở hành vi kích lại khi đang `Busy` — bảng
   năm quy tắc ở mục 30.5b ghi rõ chỗ lệch.
+
+- **PLCopen** — *Guidelines for Object Orientation* (tờ giới thiệu 1 trang): bản 3 của IEC 61131-3 cho
+  phép lập trình hướng đối tượng; cách cổ điển **không bị thay thế** mà cùng tồn tại; các câu hỏi thiết
+  kế — chỉ dùng phương thức hay cả truy cập biến trực tiếp, interface, *kết hợp hay kế thừa* — nền cho
+  mục 30.5c. Bản hướng dẫn đầy đủ chưa có trong bộ tài liệu.
+- **CODESYS** — trợ giúp trực tuyến (đối chiếu 2026-09-26), các mục *Method*, *Property*, *Interface*,
+  *Implementation of an Interface*, *Extension of a Function Block*, *REFERENCE TO*, *THIS*, *SUPER*,
+  *FB_Init*: biến trong phương thức **khởi tạo lại mỗi lần gọi**; phương thức không đọc được `VAR_TEMP`
+  của khối; biến kiểu interface là tham chiếu và bằng 0 tới lần gắn đầu; `:=` với tham chiếu chép giá
+  trị, `REF=` mới gắn; không có mảng tham chiếu; không đa kế thừa nhưng nhiều interface; sửa chương
+  trình đang chạy có tham chiếu interface thì tốn thêm thời gian — nền cho bảng năm cái bẫy.
+- **Siemens** — tài liệu TIA Portal V20, mục *Object-oriented programming in SIMATIC AX libraries*:
+  hướng đối tượng thuộc SIMATIC AX; nhập vào TIA Portal thì lớp thành FB, phương thức thành FC và không
+  dùng trực tiếp được.
+- **Rockwell Automation** — *Logix 5000 Controllers IEC 61131-3 Compliance* (1756-PM018I, 3/2022):
+  bảng tuân thủ theo từng tính năng — không có mục cho lớp, phương thức hay interface.
+- **Stefan Henneken** — *IEC 61131-3: Comparison of Edition 3 and Edition 4* (6/2025): cú pháp thuộc
+  tính của bản 4, ví dụ `FB_Foo` ở mục 30.5c lấy theo bài này.
 
 > ⚡ Quy ước đặt tên ở mục 30.2 là **quy ước của cuốn sách này**, không phải chuẩn ngành. Dự án của bạn
 > có thể dùng quy ước khác — điều bắt buộc là **có một quy ước, viết ra thành văn, và dùng nhất quán**.
@@ -33750,6 +33947,7 @@ Khi bốn hệ kia làm khác nhau, ⭐ **cột CODESYS cho biết chuẩn IEC 6
 | **Khối có bộ nhớ riêng** | ⭐ **FB + Instance DB** | ⚠ Dòng cũ: không có khái niệm này | Tuỳ dòng | ⭐ **Thể hiện FB** | ⭐ **Add-On Instruction (AOI)** |
 | **Khối không bộ nhớ** | FC | Chương trình con | | FUNCTION | Routine thường |
 | **Điểm vào chương trình** | OB1 (và OB khác) | Quét từ đầu chương trình chính | | ⭐ Task gọi PROGRAM | ⭐ **Task → Program → Routine** |
+| ⭐ **Hướng đối tượng** *(phương thức, interface, kế thừa)* | ❌ trong TIA Portal — có ở **SIMATIC AX**, nhập vào TIA thì không dùng trực tiếp được | ⚠ Không thấy ở dòng FX5 | Dòng nền CODESYS: theo CODESYS · dòng nhỏ: không thấy | ✅ Có | ❌ Không có trong bảng tuân thủ |
 
 > ⭐⭐ **Đây là chỗ khác biệt lớn nhất giữa năm hệ, và là chỗ hay gây hiểu nhầm nhất.**
 >
@@ -33764,7 +33962,7 @@ Khi bốn hệ kia làm khác nhau, ⭐ **cột CODESYS cho biết chuẩn IEC 6
 > → ⭐ **bạn phải tự quản lý bằng cách truyền địa chỉ hoặc dùng độ lệch** — và ⚠ **quên điều đó là một
 > lỗi rất khó tìm**.
 >
-> Xem Chương 30 và Phụ lục B.9.
+> Xem Chương 30 và Phụ lục B.9. Hàng *hướng đối tượng* — căn cứ và cách dùng ở Chương 30 mục 30.5c.
 
 ---
 
@@ -39287,8 +39485,8 @@ dùng tới** (quy tắc vẫn đúng) · ➕ **chưa chương nào bàn — quy
 | CP18 | Hạn chế biến toàn cục | Ch.30 mục 30.5 | ✔ |
 | L7 | Đóng đúng các nhánh song song trong SFC | Ch.26 mục 26.5 | ✔ |
 | E1 | Không cấp phát bộ nhớ động | Sách không dùng | ◯ |
-| E2 | Không tính toán trên con trỏ | Sách không dùng; áp cho `REFERENCE` ở Ch.30 | ◯ |
-| E3 | Không dùng `<` `>` `<=` `>=` trên con trỏ hay tham chiếu | Như trên | ◯ |
+| E2 | Không tính toán trên con trỏ | Ch.30 mục 30.5c — bẫy 4 của hướng đối tượng | ✔ |
+| E3 | Không dùng `<` `>` `<=` `>=` trên con trỏ hay tham chiếu | Ch.30 mục 30.5c — chỉ so `<> 0` để biết đã gắn chưa | ✔ |
 
 > ⭐⭐ **Các dòng ⭐ là những chỗ sách TỪNG SAI hoặc THIẾU, và đều sửa trong cùng một đợt rà.** Soát mã
 > mẫu theo đúng bộ quy tắc này tìm ra: khung trình tự dùng `RETURN` ở Phụ lục L và Ch.26 (CP14); một

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260926</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260927</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -1087,6 +1087,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#b7-ép-kiu">B.7 Ép kiểu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b8-cu-trúc-điu-khin-trong-st">B.8 Cấu trúc điều khiển trong ST</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b9-khi-hàm-và-hàm">B.9 Khối hàm và hàm</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#b9b-hành-vi-thc-thi-khi-chy-th-nào-vòng-đu-và-khi-không-đưc-gi">B.9b ⭐⭐ Hành vi thực thi — khối chạy thế nào ở vòng đầu, và khi KHÔNG được gọi</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b10-đa-ch-trc-tip">B.10 Địa chỉ trực tiếp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b11-ladder-ký-hiu">B.11 Ladder — ký hiệu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#b12-dn-v-đâu">B.12 Dẫn về đâu</a></li>
@@ -1247,7 +1248,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260926</td>
+<td>v1.0.0.260927</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -1537,7 +1538,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 <tr>
 <td>16</td>
 <td><a href="ch16_latch_set_reset_bat_canh.md">Latch, Set/Reset &amp; bắt cạnh</a></td>
-<td>Tự giữ <em>(seal-in)</em> vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy &quot;không biết mình đang ở đâu&quot;; <strong>bắt cạnh lên/xuống <em>(rising/falling edge, one-shot)</em></strong> — khi nào <strong>bắt buộc</strong> (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên</td>
+<td>Tự giữ <em>(seal-in)</em> vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy &quot;không biết mình đang ở đâu&quot;; <strong>bắt cạnh lên/xuống <em>(rising/falling edge, one-shot)</em></strong> — khi nào <strong>bắt buộc</strong> (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên · ⚠⚠ <strong>sườn giả ở vòng quét đầu</strong> — nút kẹt lúc cấp điện thành một lần nhấn</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1735,7 +1736,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>42</td>
 <td><a href="ch42_ma_2d_va_truy_xuat_nguon_goc.md">⭐ <strong>Mã vạch, mã 2D &amp; truy xuất nguồn gốc</strong></a></td>
-<td>Bắt buộc trong sản xuất điện tử. Mã vạch 1D vs mã 2D <em>(Data Matrix, QR)</em> — vì sao điện tử dùng 2D; đầu đọc cố định vs cầm tay, chiếu sáng &amp; tiêu cự; ghép đầu đọc vào PLC qua serial hay Ethernet; ⭐ <strong>luồng truy xuất đầy đủ</strong>: đọc mã → hỏi MES &quot;board này có được làm ở công đoạn này không&quot; → nhận công thức → làm → báo kết quả; ⚠ <strong>chống nhảy cóc công đoạn và chống làm trùng</strong> — vì sao đây là lý do tồn tại của truy xuất; ⚠⚠ <strong>xử lý khi mất kết nối MES</strong>: dừng chuyền hay chạy tạm rồi gửi bù? Quyết định này thuộc về khách hàng, sách chỉ trình bày đánh đổi; đọc mã lỗi &amp; quy trình nhập tay có kiểm soát</td>
+<td>Bắt buộc trong sản xuất điện tử. Mã vạch 1D vs mã 2D <em>(Data Matrix, QR)</em> — vì sao điện tử dùng 2D; đầu đọc cố định vs cầm tay, chiếu sáng &amp; tiêu cự; ghép đầu đọc vào PLC qua serial hay Ethernet; ⭐ <strong>luồng truy xuất đầy đủ</strong>: đọc mã → hỏi MES &quot;board này có được làm ở công đoạn này không&quot; → nhận công thức → làm → báo kết quả; ⚠ <strong>chống nhảy cóc công đoạn và chống làm trùng</strong> — vì sao đây là lý do tồn tại của truy xuất; ⚠⚠ <strong>xử lý khi mất kết nối MES</strong>: dừng chuyền hay chạy tạm rồi gửi bù? Quyết định này thuộc về khách hàng, sách chỉ trình bày đánh đổi; đọc mã lỗi &amp; quy trình nhập tay có kiểm soát · ⭐ kiểm định dạng mã bằng hàm chuỗi, tách mã lô, bảng ca thử</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -1883,7 +1884,7 @@ tự → kiến trúc nhiều trạm → tham số hoá → chuẩn hoá.</p>
 <tr>
 <td>B</td>
 <td><a href="pl_b_tra_nhanh_lenh_iec.md">Tra nhanh lệnh IEC 61131-3</a></td>
-<td>Một trang in được: lệnh cơ bản theo nhóm, ký hiệu LD &amp; ST tương ứng, kiểu dữ liệu, thứ tự ưu tiên toán tử</td>
+<td>Một trang in được: lệnh cơ bản theo nhóm, ký hiệu LD &amp; ST tương ứng, kiểu dữ liệu, thứ tự ưu tiên toán tử · hàm chuỗi (vị trí đếm từ 1), dịch bit · ⭐⭐ <strong>hành vi thực thi</strong> — khối chạy thế nào ở vòng quét đầu và khi <strong>không</strong> được gọi · các thay đổi của bản 2025</td>
 <td>✅</td>
 </tr>
 <tr>
@@ -12888,6 +12889,51 @@ một lần nhấn.</p>
 <p><strong>Hiện tượng:</strong> một lần nhấn nhảy hai, ba bước; hoặc bộ đếm tăng vài đơn vị.
 <strong>Cách sửa:</strong> lọc rung trước, bắt cạnh sau — cho tín hiệu qua <code>TON</code> ngắn rồi mới đưa vào <code>R_TRIG</code>
 (Chương 17, mục 17.4). Thứ tự này quan trọng: lọc <strong>trước</strong>, bắt cạnh <strong>sau</strong>.</p>
+<h3>🔍 BẪY 9 — Sườn giả ở vòng quét đầu tiên</h3>
+<p>Bắt cạnh so với <strong>giá trị của vòng quét trước</strong>. ⚠ Ở vòng quét <strong>đầu tiên</strong> sau khi cấp điện, &quot;vòng
+trước&quot; chưa từng có: bộ nhớ đang giữ <strong>giá trị khởi tạo</strong> — với cách viết tay ở mục 16.5 là
+<code>M_BoardPrev</code> = FALSE. Tín hiệu <strong>đã bằng 1 từ trước khi bật máy</strong> thì phép so sánh thấy một sườn 0→1
+<strong>không có thật</strong>.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Lúc cấp điện</th>
+<th>Hậu quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Board còn nằm ở trạm từ lần mất điện trước, che cảm biến</td>
+<td>Bộ đếm board <strong>tăng 1</strong> mỗi lần bật máy</td>
+</tr>
+<tr>
+<td>⚠⚠ Nút Reset kẹt, hoặc dây đấu nhầm luôn có điện</td>
+<td>Máy &quot;thấy&quot; một lần nhấn Reset — và từ <code>Uninitialized</code> <strong>tự đi về gốc</strong> (Chương 25) mà không ai ra lệnh: đúng điều Phụ lục M mục M.4 cấm</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Khối chuẩn <code>R_TRIG</code> cũng thế — tài liệu một hãng mô tả <code>Q</code> lên một chu kỳ <em>&quot;ngay khi <code>CLK</code> = TRUE&quot;</em>.
+⚠ Còn <code>F_TRIG</code>, theo các thử nghiệm được ghi lại, <strong>không</strong> báo sườn xuống giả khi tín hiệu đã bằng 0
+từ đầu: hai khối <strong>không đối xứng</strong>. Kiểm trên hệ của bạn.</p>
+<p><strong>Cách sửa:</strong> một cờ vòng quét đầu, và <strong>che</strong> — không bỏ gọi — sườn của vòng đó:</p>
+<pre><code class="language-iecst">VAR
+    M_FirstScan : BOOL := TRUE;   // biến KHÔNG giữ — về TRUE ở mỗi lần khởi động (Phụ lục M mục M.4)
+    R_Reset     : R_TRIG;
+END_VAR
+
+R_Reset(CLK := DI_ResetPB);                          // VẪN gọi ở vòng đầu — để bộ nhớ lấy giá trị thật
+M_ResetPB_Rise := R_Reset.Q AND NOT M_FirstScan;     // …nhưng không tin sườn của vòng đầu
+
+// … toàn bộ phần còn lại của chương trình …
+
+M_FirstScan := FALSE;                                // ⭐ dòng CUỐI của chương trình chính
+</code></pre>
+<blockquote>
+<p>⚠ <strong>Đừng &quot;sửa&quot; bằng cách không gọi <code>R_TRIG</code> ở vòng đầu.</strong> Khối không được gọi thì bộ nhớ của nó vẫn
+là giá trị khởi tạo — sườn giả chỉ <strong>dời sang vòng thứ hai</strong>, lúc cờ đã tắt và không còn gì che.</p>
+<p>⚠ Và cờ vòng đầu <strong>không đủ</strong> cho tín hiệu đã qua lọc rung (Bẫy 8): bộ lọc giữ đầu ra ở 0 trong
+suốt thời gian lọc, nên sườn giả tới <strong>muộn hơn</strong> vòng đầu đúng bằng thời gian đó. Với bộ đếm sản
+phẩm, đếm ở chỗ sản phẩm <strong>rời máy đã xong</strong> (Phụ lục L mục L.14), không đếm ở sườn của cảm biến đầu
+vào.</p>
+</blockquote>
 <hr>
 <h2 id="169-bng-cht">16.9 Bảng chốt</h2>
 <div class="table-wrap"><table>
@@ -14707,7 +14753,7 @@ END_IF;
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>⭐ Đây là cùng một ý với việc <strong>không so sánh bằng hai số thực</strong> (Chương 14): với số thực, ⭐ <strong>mọi
+<p>⭐ Đây là cùng một ý với việc <strong>không so sánh bằng hai số thực</strong> (mục 19.3): với số thực, ⭐ <strong>mọi
 phép so sánh đều phải có dung sai</strong> — kể cả phép so sánh với 0.</p>
 </blockquote>
 <h4>⭐ Ba nguyên nhân thật sự làm mẫu số bằng 0</h4>
@@ -14894,6 +14940,9 @@ dần theo giá trị</strong> — xem <strong>Phụ lục E.5b</strong>.</p>
 <p>⭐ <strong>Vì sao BCD vẫn còn tồn tại dù phí bit:</strong> ⚡ vì nó <strong>đổi thẳng ra chữ số hiển thị</strong> mà không
 cần phép chia. Đèn bảy đoạn và công tắc xoay số là mạch điện, không phải máy tính — với chúng,
 mỗi chữ số một nhóm bốn bit là cách rẻ nhất.</p>
+<p>⚠ <strong>Bản 4 của IEC 61131-3 (2025) đánh dấu các hàm đổi BCD là <em>không khuyến khích</em>.</strong> Hệ theo bản 3
+vẫn có đủ, và dữ liệu BCD từ thiết bị cũ vẫn còn đó — nếu hệ của bạn bỏ các hàm này, phép đổi tự
+viết chỉ là chia và lấy dư cho 16 theo từng nhóm bốn bit (Chương 14 mục 14.1).</p>
 </blockquote>
 <h3>⭐ Mã Gray — và vì sao nó tồn tại</h3>
 <p>⭐ Trong mã Gray, ⭐⭐ <strong>hai giá trị liền nhau chỉ khác nhau đúng MỘT bit</strong>:</p>
@@ -15081,6 +15130,11 @@ BoardNG[i] := TRUE;
 </code></pre>
 <p>Một số hệ có kiểm tra dải tự động; <strong>đừng dựa vào đó</strong> — nó không có ở mọi hệ, và có hệ chỉ bật khi
 biên dịch ở chế độ gỡ lỗi.</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>Chuỗi ký tự cũng là dữ liệu phải xử lý</strong> — tách, ghép, tìm. ⚠ Vị trí trong chuỗi đếm <strong>từ 1</strong>, và
+thứ tự tham số của <code>MID</code> là chỗ sai nhiều nhất. Bảng hàm chuỗi ở Phụ lục B mục B.6b; ví dụ thật —
+kiểm định dạng và tách một mã sản phẩm — ở Chương 42 mục 42.4.</p>
 </blockquote>
 <hr>
 <h2 id="198-trên-máy-mu-dp-01">19.8 Trên máy mẫu DP-01</h2>
@@ -33176,7 +33230,7 @@ thức.</p>
 <p>⚠ <strong>Đây là lỗi rất hay gặp khi đọc một khối dữ liệu lớn</strong>: viết lệnh đọc 200 thanh ghi, thiết bị
 trả mã 03, và thông báo trên HMI chỉ ghi &quot;lỗi Modbus&quot;. ⭐ <strong>Chia thành nhiều lệnh đọc.</strong></p>
 <p>⭐⭐ <strong>Hệ quả thiết kế:</strong> việc bảo vệ máy khỏi giá trị công thức vô lý là việc của <strong>chương trình
-PLC</strong>, không phải của giao thức (Chương 32, Phụ lục C.5).</p>
+PLC</strong>, không phải của giao thức (Chương 29 mục 29.4, Phụ lục C.5).</p>
 </blockquote>
 <p><em>(Đối chiếu: MODBUS Application Protocol Specification V1.1b3 — mục MODBUS Exception Codes và các
 mục mô tả mã hàm 0x01–0x10.)</em></p>
@@ -35544,7 +35598,12 @@ vật thật, trong điều kiện thật.</strong></p>
    3. Đầu đọc trả về:  chuỗi mã, hoặc báo KHÔNG ĐỌC ĐƯỢC
    4. PLC nhận, kiểm hợp lệ, xử lý
 </code></pre>
-<pre><code class="language-iecst">// ⭐ Kích đọc bằng cạnh lên, có timeout (Chương 38, mục 38.8)
+<pre><code class="language-iecst">// TrigReadCode được gọi TRƯỚC đoạn này, ngoài CASE: TrigReadCode(CLK := (Stn1_Step = 20)) — mục 42.7
+IF TrigReadCode.Q THEN                       // ⭐ lệnh đọc MỚI → xoá kết quả của board TRƯỚC
+    M_CodeValid := FALSE;
+END_IF;
+
+// ⭐ Kích đọc bằng cạnh lên, có timeout (Chương 38, mục 38.8)
 ReadCode(Execute := TrigReadCode.Q,
          Timeout := T#2S,
          Done    =&gt; M_CodeRead,
@@ -35568,6 +35627,102 @@ END_IF;
 <p>⭐ <strong>Luôn kiểm định dạng mã, đừng tin chuỗi nhận được.</strong>
 Đầu đọc có thể đọc nhầm một mã khác trong tầm nhìn — nhãn vận chuyển, mã của đồ gá, mã của board
 bên cạnh. Kiểm độ dài, tiền tố, và ký tự hợp lệ <strong>trước khi</strong> dùng nó.</p>
+</blockquote>
+<h3>⭐ Kiểm định dạng và tách mã lô — hàm chuỗi làm việc thật</h3>
+<p>Định dạng mã do <strong>khách hàng</strong> quy định trong đặc tả (Chương 23). Giả sử đặc tả ghi: <code>DP1-L2409A-000457</code>
+— tiền tố 3 ký tự, gạch nối, <strong>mã lô</strong> 6 ký tự bắt đầu bằng <code>L</code>, gạch nối, số thứ tự 6 chữ số, tổng
+17 ký tự. ⚠ Định dạng này là <strong>ví dụ</strong>; định dạng thật lấy từ đặc tả của bạn.</p>
+<pre><code class="language-iecst">FUNCTION KiemTraMaHopLe : BOOL
+VAR_INPUT
+    Ma : STRING(40);
+END_VAR
+VAR
+    i  : INT;
+    OK : BOOL;
+END_VAR
+
+// Vị trí đếm TỪ 1:  D P 1 - L 2 4 0 9 A  -  0  0  0  4  5  7
+//                   1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17
+OK := (LEN(Ma) = 17)
+      AND (LEFT(Ma, 3) = &#39;DP1&#39;)
+      AND (MID(Ma, 1, 4) = &#39;-&#39;)              // MID(chuỗi, SỐ KÝ TỰ, VỊ TRÍ)
+      AND (MID(Ma, 1, 5) = &#39;L&#39;)
+      AND (MID(Ma, 1, 11) = &#39;-&#39;);
+IF OK THEN
+    FOR i := 12 TO 17 DO                     // sáu ký tự cuối phải là chữ số
+        IF FIND(&#39;0123456789&#39;, MID(Ma, 1, i)) = 0 THEN
+            OK := FALSE;                     // FIND trả 0 = không thấy trong tập chữ số
+        END_IF;
+    END_FOR;
+END_IF;
+KiemTraMaHopLe := OK;
+END_FUNCTION
+</code></pre>
+<p>Rồi tách mã lô để ghi vào bản ghi truy xuất:</p>
+<pre><code class="language-iecst">LotCode := MID(CurrentBoardCode, 6, 5);     // 6 ký tự, bắt đầu ở vị trí 5 → &#39;L2409A&#39;
+</code></pre>
+<p>⭐ Hàm như thế này phải đi kèm <strong>bảng ca thử</strong> — cả ca đúng lẫn ca sai — và chạy lại mỗi khi sửa
+(Chương 50). Tám ca dưới đây đã chạy qua đúng hàm trên:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chuỗi nhận được</th>
+<th align="center">Kết quả</th>
+<th>Vì sao</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DP1-L2409A-000457</code></td>
+<td align="center">✔</td>
+<td>Đúng định dạng</td>
+</tr>
+<tr>
+<td><code>DP1-L2409A-00045</code></td>
+<td align="center">✘</td>
+<td>Thiếu một chữ số — độ dài 16</td>
+</tr>
+<tr>
+<td><code>DP1-L2409A-00045X</code></td>
+<td align="center">✘</td>
+<td>Ký tự lạ ở phần số</td>
+</tr>
+<tr>
+<td><code>XX1-L2409A-000457</code></td>
+<td align="center">✘</td>
+<td>Sai tiền tố</td>
+</tr>
+<tr>
+<td><code>DP1-K2409A-000457</code></td>
+<td align="center">✘</td>
+<td>Mã lô không bắt đầu bằng <code>L</code></td>
+</tr>
+<tr>
+<td><code>DP1_L2409A-000457</code></td>
+<td align="center">✘</td>
+<td>Sai dấu phân cách</td>
+</tr>
+<tr>
+<td>⭐ <code>SHIP-2409-000123-AB</code></td>
+<td align="center">✘</td>
+<td><strong>Nhãn vận chuyển</strong> trong tầm nhìn đầu đọc — đúng tình huống ở trên</td>
+</tr>
+<tr>
+<td><em>(chuỗi rỗng)</em></td>
+<td align="center">✘</td>
+<td>Đầu đọc trả về rỗng</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Ba chi tiết quyết định hàm này đúng hay sai</strong> — bảng đầy đủ ở Phụ lục B mục B.6b:</p>
+<ul>
+<li><strong>Vị trí đếm từ 1</strong>, không từ 0.</li>
+<li>⚠ <code>MID(chuỗi, SỐ KÝ TỰ, VỊ TRÍ)</code> — <strong>số ký tự đứng trước vị trí</strong>. Đảo hai tham số vẫn biên dịch
+được, và cho ra một chuỗi <strong>trông hợp lý</strong> — <code>MID(Ma, 5, 1)</code> trả <code>&#39;DP1-L&#39;</code>. ⭐ Chính một giáo trình
+quốc tế cũng in ví dụ lệch một vị trí; hãy thử mọi hàm chuỗi với một chuỗi mà <strong>mỗi ký tự khác
+nhau</strong> trước khi tin nó.</li>
+<li><code>FIND</code> trả <strong>0</strong> khi không thấy — nên <code>FIND(&#39;0123456789&#39;, c) = 0</code> là phép thử <em>&quot;c có phải chữ số
+không&quot;</em> ngắn nhất, không cần so sánh lớn nhỏ trên chuỗi.</li>
+</ul>
 </blockquote>
 <blockquote>
 <p>⭐ <strong>Đếm số lần không đọc được và theo dõi xu hướng.</strong>
@@ -35771,14 +35926,27 @@ Bẫy 10: <strong>một cơ chế bảo vệ mà người dùng đi vòng đư�
 <hr>
 <h2 id="427-trên-máy-mu-dp-01">42.7 Trên máy mẫu DP-01</h2>
 <h3>Luồng đầy đủ ở trạm 1</h3>
-<pre><code class="language-iecst">CASE Stn1_Step OF
+<pre><code class="language-iecst">// ⭐ Mọi khối gọi MỖI vòng quét, NGOÀI CASE — sườn lên sinh từ chính bước (Chương 30 mục 30.5b)
+TrigReadCode(CLK := (Stn1_Step = 20));      // vào bước 20 → đúng MỘT sườn → một lần đọc
+TrigAskMes(CLK := (Stn1_Step = 30));
+// … khối đọc và kiểm mã của mục 42.4 chạy tại đây …
+AskMes(Execute := TrigAskMes.Q,
+       BoardCode := CurrentBoardCode,
+       StationId := 1,
+       Timeout := T#3S,
+       Done =&gt; M_MesReplied,
+       Error =&gt; M_MesError,
+       Allowed =&gt; M_MesAllowed,
+       RecipeId =&gt; MesRecipeId,
+       Reason =&gt; MesRejectReason);
+
+CASE Stn1_Step OF
     10: // Board tới trạm 1
         IF DI_BoardStn1 THEN
             Stn1_Step := 20;
         END_IF;
 
-    20: // ⭐ Đọc mã 2D
-        TrigReadCode(CLK := TRUE);
+    20: // ⭐ Đọc mã 2D — lệnh đọc phát ra ở sườn TrigReadCode, ngoài CASE
         IF M_CodeValid THEN
             Stn1_Step := 30;
         ELSIF M_CodeError THEN
@@ -35794,17 +35962,7 @@ Bẫy 10: <strong>một cơ chế bảo vệ mà người dùng đi vòng đư�
             Stn1_Step := 90;                     // đưa ra, đánh dấu NG
         END_IF;
 
-    30: // ⭐ HỎI MES trước khi làm
-        AskMes(Execute := TrigAskMes.Q,
-               BoardCode := CurrentBoardCode,
-               StationId := 1,
-               Timeout := T#3S,
-               Done =&gt; M_MesReplied,
-               Error =&gt; M_MesError,
-               Allowed =&gt; M_MesAllowed,
-               RecipeId =&gt; MesRecipeId,
-               Reason =&gt; MesRejectReason);
-
+    30: // ⭐ HỎI MES trước khi làm — khối AskMes gọi ngoài CASE, ở trên
         IF M_MesReplied AND M_MesAllowed THEN
             RequestedRecipeId := MesRecipeId;
             Stn1_Step := 35;                     // nạp công thức
@@ -35831,6 +35989,20 @@ ELSE
     Stn1_Step := 0;
 END_CASE;
 </code></pre>
+<blockquote>
+<p>⚠⚠ <strong>Bản trước của đoạn này có hai lỗi — và cả hai chỉ lộ ra từ board THỨ HAI.</strong></p>
+<ol>
+<li>Nó gọi <code>TrigReadCode(CLK := TRUE)</code> <strong>bên trong</strong> nhánh bước 20. <code>R_TRIG</code> chỉ báo sườn khi <code>CLK</code>
+đổi từ FALSE sang TRUE <strong>giữa hai lần gọi</strong>; gọi mãi với TRUE thì bộ nhớ của nó nằm ở TRUE, và từ
+board thứ hai trở đi đầu đọc <strong>không bao giờ được kích</strong> (Phụ lục B mục B.9b).</li>
+<li>⚠⚠ Cờ <code>M_CodeValid</code> <strong>không bao giờ được xoá</strong> giữa hai board. Board thứ hai vào bước 20, thấy
+cờ còn TRUE từ board trước, và đi tiếp với <strong>mã của board trước</strong> — ghi sai lịch sử của <strong>hai</strong>
+sản phẩm cùng lúc, đúng loại sai sót mà cả chương này sinh ra để chống.</li>
+</ol>
+<p>⭐ Cách sửa: lấy <code>CLK</code> từ chính bước và gọi <strong>ngoài</strong> <code>CASE</code>; và <strong>xoá kết quả cũ đúng lúc phát lệnh
+đọc mới</strong> (mục 42.4). ⚡ Bài học chung: một đoạn mã trình tự phải được thử với <strong>ít nhất hai chu
+trình liên tiếp</strong> — chu trình đầu tiên luôn chạy trên những giá trị khởi tạo sạch sẽ.</p>
+</blockquote>
 <blockquote>
 <p>⭐ <strong>Bước 30 là bước quan trọng nhất, và nó nằm TRƯỚC bước gia công.</strong>
 Nhiều hệ đặt việc hỏi MES song song với gia công cho nhanh — và mất luôn khả năng chống nhảy cóc.
@@ -45349,7 +45521,7 @@ lỗi khác, lúc nửa đêm.</p>
 <p>⭐⭐ <strong>Chú thích trong chương trình là dạng tài liệu duy nhất không thể lạc mất bản.</strong> Sơ đồ giấy
 thất lạc, tệp trên máy tính bị thay, nhưng comment nằm trong chương trình thì <strong>luôn đi cùng bản
 đang chạy</strong> — kể cả khi ai đó tải nó từ PLC về.</p>
-<p>Đây là lý do Chương 24 nhấn mạnh comment giải thích <strong>vì sao</strong>, không phải <strong>cái gì</strong>.</p>
+<p>Đây là lý do Chương 30 mục 30.4 nhấn mạnh comment giải thích <strong>vì sao</strong>, không phải <strong>cái gì</strong>.</p>
 </blockquote>
 <hr>
 <h2 id="535-bo-trì-phòng-nga-nhìn-t-plc">53.5 Bảo trì phòng ngừa nhìn từ PLC</h2>
@@ -45608,7 +45780,7 @@ tích luỹ nhiều năm — và người dọn dẹp không hề biết mình v
 <h3>🔍 BẪY 10 — Chỉ ghi &quot;cái gì&quot;, không ghi &quot;vì sao&quot;</h3>
 <p><strong>Hiện tượng:</strong> sáu tháng sau, người khác thấy dòng trễ 200 ms, <strong>không biết vì sao có</strong>, và xoá nó
 đi khi &quot;dọn dẹp&quot;.
-<strong>Cách sửa:</strong> ⭐ lý do là trường <strong>quan trọng nhất</strong> trong nhật ký thay đổi (mục 53.3, Chương 24).</p>
+<strong>Cách sửa:</strong> ⭐ lý do là trường <strong>quan trọng nhất</strong> trong nhật ký thay đổi (mục 53.3, Chương 30 Bẫy 7).</p>
 <hr>
 <h2 id="538-bng-cht">53.8 Bảng chốt</h2>
 <div class="table-wrap"><table>
@@ -47979,7 +48151,7 @@ viết lại, và bạn <strong>đã có một bản chạy được để so</s
 </tr>
 <tr>
 <td>Thứ tự quét khối / ngắt</td>
-<td>Chương 19</td>
+<td>Chương 10, 27</td>
 </tr>
 <tr>
 <td>Vùng nhớ giữ được qua mất điện</td>
@@ -47987,7 +48159,7 @@ viết lại, và bạn <strong>đã có một bản chạy được để so</s
 </tr>
 <tr>
 <td>Cách làm tròn số thực</td>
-<td>Chương 14</td>
+<td>Chương 19</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -48981,6 +49153,7 @@ tên thật của DP-01. Cả cuốn sách hội tụ về khoảng ba mươi d�
   Prg_Stats();         // 12  chu kỳ, sản lượng, bộ đếm bảo trì     Ch.53, 55
   Prg_OutputMap();     // 13  GOM ngõ ra — đúng một chỗ ghi mỗi tag Ch.22, 27 Bẫy 2
   Prg_Hmi();           // 14  dữ liệu cho màn hình và đèn tháp      Ch.5, 44
+  M_FirstScan := FALSE; // 15 ⭐ dòng CUỐI — hết vòng quét đầu       Ch.16 Bẫy 9, Phụ lục M.4
 
 END_PROGRAM
 </code></pre>
@@ -51310,7 +51483,7 @@ mục lệnh <code>OUT</code> cho bộ định thời.)</em></p>
 <blockquote>
 <p>⭐ <strong>Điểm chung của cả năm hệ — nhắc lại vì nó quan trọng hơn mọi khác biệt cú pháp:</strong>
 ⚠⚠ <strong>Bộ định thời KHÔNG dùng để chuyển bước trình tự</strong> — chỉ để báo lỗi khi phản hồi không tới
-(Chương 21).</p>
+(Chương 17, 26).</p>
 </blockquote>
 <hr>
 <h2 id="a23-b-đm">A2.3 Bộ đếm</h2>
@@ -51498,7 +51671,7 @@ trọng</strong> — đọc tài liệu trước khi chọn.</p>
 nhớ trạng thái đó ở đâu đó.</p>
 <p>⚠ <strong>Dùng chung một bit nhớ cho hai chỗ bắt cạnh là lỗi kinh điển</strong>, và nó tạo ra hành vi rất khó
 hiểu: một chỗ &quot;ăn mất&quot; cạnh của chỗ kia. Trên hệ có thể hiện FB, mỗi <code>R_TRIG</code> phải là <strong>một thể
-hiện riêng</strong> (Chương 11, Phụ lục B.9).</p>
+hiện riêng</strong> (Chương 16, Phụ lục B.9).</p>
 </blockquote>
 <hr>
 <h2 id="a26-quy-đi-thang-analog">A2.6 Quy đổi thang analog</h2>
@@ -52119,7 +52292,7 @@ tài liệu của hãng khác hoặc chuyển giữa các nền.</p>
 </tbody></table></div>
 <blockquote>
 <p>⚠⚠ <strong><code>INT</code> tràn sau 32 767 — với một máy làm 300 sản phẩm/giờ, đó là khoảng 4,5 ngày.</strong>
-⭐ Dùng <code>DINT</code> cho mọi bộ đếm tích luỹ. Xem Chương 14.</p>
+⭐ Dùng <code>DINT</code> cho mọi bộ đếm tích luỹ. Xem Chương 11, 19.</p>
 </blockquote>
 <hr>
 <h2 id="b2-toán-t-th-t-ưu-tiên">B.2 Toán tử — thứ tự ưu tiên</h2>
@@ -52237,13 +52410,13 @@ tài liệu của hãng khác hoặc chuyển giữa các nền.</p>
 <td><code>S</code></td>
 <td>Đặt (giữ 1)</td>
 <td>Cuộn dây Set</td>
-<td>15</td>
+<td>16</td>
 </tr>
 <tr>
 <td><code>R</code></td>
 <td>Xoá (giữ 0)</td>
 <td>Cuộn dây Reset</td>
-<td>15</td>
+<td>16</td>
 </tr>
 <tr>
 <td><code>R_TRIG</code></td>
@@ -52261,19 +52434,34 @@ tài liệu của hãng khác hoặc chuyển giữa các nền.</p>
 <td><code>SR</code></td>
 <td>Flip-flop ưu tiên Set</td>
 <td></td>
-<td>15</td>
+<td>16</td>
 </tr>
 <tr>
 <td><code>RS</code></td>
 <td>Flip-flop ưu tiên Reset</td>
 <td></td>
-<td>15</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>SHL</code> · <code>SHR</code></td>
+<td>Dịch trái · phải N bit, chỗ trống <strong>điền 0</strong></td>
+<td></td>
+<td>19</td>
+</tr>
+<tr>
+<td><code>ROL</code> · <code>ROR</code></td>
+<td>Xoay trái · phải N bit — bit rơi ra đầu này <strong>quay lại</strong> đầu kia</td>
+<td></td>
+<td>19</td>
 </tr>
 </tbody></table></div>
 <blockquote>
 <p>⭐⭐ <strong><code>SR</code> và <code>RS</code> khác nhau ở chỗ: khi CẢ HAI đầu vào cùng lên, cái nào thắng.</strong></p>
 <p>⚠ Với mạch liên quan an toàn, câu hỏi &quot;cái nào thắng&quot; <strong>không được để mặc định</strong> — nó phải là một
-quyết định có lý do (Chương 15, 22).</p>
+quyết định có lý do (Chương 16, 22).</p>
+<p>⚠ Dịch bit làm việc trên <strong>chuỗi bit</strong> (<code>BYTE</code>, <code>WORD</code>, <code>DWORD</code>), không trên số có dấu. Dịch trái
+một bit <strong>không</strong> an toàn để &quot;nhân 2&quot; một số có thể âm — dùng phép nhân. Ứng dụng thật của dịch
+bit là <strong>thanh ghi dịch</strong> theo dõi sản phẩm dọc chuyền (Chương 19 mục 19.6).</p>
 </blockquote>
 <hr>
 <h2 id="b4-b-đnh-thi">B.4 Bộ định thời</h2>
@@ -52332,7 +52520,7 @@ quyết định có lý do (Chương 15, 22).</p>
 <blockquote>
 <p>⚠⚠ <strong>Bộ định thời KHÔNG dùng để chuyển bước trình tự.</strong></p>
 <p>⭐ Chuyển bước bằng <strong>tín hiệu phản hồi thật</strong>; bộ định thời chỉ để <strong>báo lỗi khi phản hồi không
-tới</strong>. Một bộ định thời không biết khi cơ cấu không tới nơi (Chương 21).</p>
+tới</strong>. Một bộ định thời không biết khi cơ cấu không tới nơi (Chương 17, 26).</p>
 </blockquote>
 <hr>
 <h2 id="b5-b-đm">B.5 Bộ đếm</h2>
@@ -52363,6 +52551,9 @@ tới</strong>. Một bộ định thời không biết khi cơ cấu không t�
 <blockquote>
 <p>⭐ <strong><code>CU</code> đếm theo CẠNH LÊN</strong>, không theo mức. Nếu tín hiệu vào giữ ở 1, bộ đếm <strong>không</strong> đếm liên
 tục.</p>
+<p>⚠ <strong>Tên chân không giống nhau ở mọi hệ.</strong> Chuẩn đặt chân xoá của <code>CTU</code> là <code>R</code>; thư viện chuẩn của
+CODESYS đặt là <code>RESET</code>, và kiểu của <code>PV</code>, <code>CV</code> là <code>WORD</code>. Gọi theo tên chân thì phải theo đúng tên
+của hệ đang dùng.</p>
 <p>⚠ Với xung tần số cao — nhanh hơn khoảng <strong>1 / (2 × thời gian quét)</strong> — phải dùng <strong>bộ đếm tốc độ
 cao</strong> của phần cứng; bộ đếm phần mềm sẽ ⚠ <strong>bỏ sót xung một cách âm thầm</strong> (Chương 18, Phụ lục K.5).</p>
 </blockquote>
@@ -52390,7 +52581,7 @@ cao</strong> của phần cứng; bộ đếm phần mềm sẽ ⚠ <strong>bỏ
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>⚠ <strong>Không so sánh bằng hai số <code>REAL</code>.</strong> Dùng <code>ABS(a - b) &lt; dung_sai</code> (Chương 14).</p>
+<p>⚠ <strong>Không so sánh bằng hai số <code>REAL</code>.</strong> Dùng <code>ABS(a - b) &lt; dung_sai</code> (Chương 19 mục 19.3).</p>
 </blockquote>
 <h3>Toán học</h3>
 <div class="table-wrap"><table>
@@ -52454,7 +52645,7 @@ cao</strong> của phần cứng; bộ đếm phần mềm sẽ ⚠ <strong>bỏ
 <tr>
 <td><code>MAX</code> · <code>MIN</code></td>
 <td>Lớn nhất · nhỏ nhất</td>
-<td></td>
+<td><code>MAX(ApLucA, ApLucB)</code> — số đầu vào tuỳ ý</td>
 </tr>
 <tr>
 <td>⭐ <code>LIMIT</code></td>
@@ -52464,13 +52655,86 @@ cao</strong> của phần cứng; bộ đếm phần mềm sẽ ⚠ <strong>bỏ
 <tr>
 <td><code>MUX</code></td>
 <td>Chọn theo số</td>
-<td><code>MUX(K, IN0, IN1, …)</code></td>
+<td><code>MUX(K, IN0, IN1, …)</code> — ⭐ <code>K</code> đếm <strong>từ 0</strong>; ⚠ <code>K</code> ngoài khoảng thì hành vi <strong>tuỳ hệ</strong> — kẹp <code>K</code> bằng <code>LIMIT</code> trước khi gọi</td>
 </tr>
 </tbody></table></div>
 <blockquote>
 <p>⭐ <strong><code>LIMIT</code> rất hữu ích cho giá trị analog và tham số công thức</strong> — nhưng ⚠ <strong>kẹp về biên KHÔNG
 phải cách xử lý công thức sai</strong>. Công thức ngoài dải phải bị <strong>từ chối và báo lỗi</strong>, không phải âm
-thầm kẹp về giới hạn (Chương 32).</p>
+thầm kẹp về giới hạn (Chương 29 mục 29.4).</p>
+</blockquote>
+<h3>⭐ Hàm chuỗi — vị trí đếm từ 1</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Hàm</th>
+<th>Làm gì</th>
+<th>Ví dụ → kết quả</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>LEN(STR)</code></td>
+<td>Số ký tự</td>
+<td><code>LEN(&#39;SUSI&#39;)</code> → <code>4</code></td>
+</tr>
+<tr>
+<td><code>LEFT(STR, L)</code></td>
+<td><code>L</code> ký tự <strong>đầu</strong></td>
+<td><code>LEFT(&#39;SUSI&#39;, 3)</code> → <code>&#39;SUS&#39;</code></td>
+</tr>
+<tr>
+<td><code>RIGHT(STR, L)</code></td>
+<td><code>L</code> ký tự <strong>cuối</strong></td>
+<td><code>RIGHT(&#39;SUSI&#39;, 3)</code> → <code>&#39;USI&#39;</code></td>
+</tr>
+<tr>
+<td>⭐ <code>MID(STR, L, P)</code></td>
+<td><code>L</code> ký tự, <strong>bắt đầu ở vị trí <code>P</code></strong></td>
+<td><code>MID(&#39;SUSI&#39;, 2, 2)</code> → <code>&#39;US&#39;</code></td>
+</tr>
+<tr>
+<td><code>CONCAT(STR1, STR2, …)</code></td>
+<td>Nối</td>
+<td><code>CONCAT(&#39;SU&#39;, &#39;SI&#39;)</code> → <code>&#39;SUSI&#39;</code></td>
+</tr>
+<tr>
+<td><code>INSERT(STR1, STR2, P)</code></td>
+<td>Chèn <code>STR2</code> vào <strong>sau</strong> vị trí <code>P</code></td>
+<td><code>INSERT(&#39;SUSI&#39;, &#39;XY&#39;, 2)</code> → <code>&#39;SUXYSI&#39;</code></td>
+</tr>
+<tr>
+<td><code>DELETE(STR, L, P)</code></td>
+<td>Xoá <code>L</code> ký tự từ vị trí <code>P</code></td>
+<td><code>DELETE(&#39;SUXYSI&#39;, 2, 3)</code> → <code>&#39;SUSI&#39;</code></td>
+</tr>
+<tr>
+<td><code>REPLACE(STR1, STR2, L, P)</code></td>
+<td>Thay <code>L</code> ký tự từ vị trí <code>P</code> bằng <code>STR2</code></td>
+<td><code>REPLACE(&#39;SUXYSI&#39;, &#39;K&#39;, 2, 2)</code> → <code>&#39;SKYSI&#39;</code></td>
+</tr>
+<tr>
+<td>⭐ <code>FIND(STR1, STR2)</code></td>
+<td>Vị trí <strong>đầu tiên</strong> của <code>STR2</code> trong <code>STR1</code>; ⚠ <strong>không thấy thì trả 0</strong></td>
+<td><code>FIND(&#39;abcdef&#39;, &#39;de&#39;)</code> → <code>4</code></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Thứ tự tham số là chỗ sai nhiều nhất — kể cả trong sách giáo khoa.</strong> Một giáo trình quốc tế
+dùng trong sách này in ví dụ <code>MID</code> chọn <strong>lệch một vị trí</strong> so với chính quy ước nó mô tả. ⭐ Cách tự
+vệ rẻ nhất: thử hàm với một chuỗi <strong>mỗi ký tự khác nhau</strong> (<code>&#39;ABCDEF&#39;</code>) trước khi dùng — nhìn kết quả
+là biết ngay tham số nào là độ dài, tham số nào là vị trí.</p>
+<p>⚠ <strong>Vị trí đếm từ 1, không từ 0.</strong> Tài liệu CODESYS ghi rằng <code>P = 0</code> được coi như vị trí 1 — và tự
+ghi luôn là <code>DELETE</code>, <code>REPLACE</code> <strong>xử lý <code>P = 0</code> chưa đúng</strong>. Đừng bao giờ truyền 0.</p>
+<p>⚠ <strong>Độ dài có giới hạn.</strong> <code>STRING</code> không khai độ dài thì mặc định <strong>80</strong> ký tự ở CODESYS, và các hàm
+chuỗi của thư viện chuẩn trả về tối đa 255 ký tự — phần thừa <strong>bị cắt im lặng</strong>.</p>
+<p>⚠ <strong>Không phải hệ nào cũng đủ bộ.</strong> Bảng tuân thủ IEC 61131-3 của Logix liệt kê <code>LEN</code>, <code>MID</code>,
+<code>CONCAT</code>, <code>INSERT</code>, <code>DELETE</code>, <code>FIND</code> — không có <code>LEFT</code>, <code>RIGHT</code>, <code>REPLACE</code>; <code>LEFT(S, 3)</code> viết thành
+<code>MID(S, 3, 1)</code>.</p>
+<p>⚠⚠ <strong>Chữ tiếng Việt có dấu không nằm được trong <code>STRING</code>.</strong> Một ký tự <code>CHAR</code> chỉ có 256 giá trị, và
+các chữ như <code>ệ</code>, <code>ở</code> nằm ngoài khoảng đó. Cần chuỗi hai byte <code>WSTRING</code>, hoặc chuỗi UTF-8 <code>USTRING</code>
+mà bản 4 của chuẩn (2025) mới thêm — ⚠ khi đó số <strong>byte</strong> không còn bằng số <strong>ký tự</strong>, và bản 4
+thêm <code>LEN_CODE_UNIT</code> để đếm byte, <code>LEN_MAX</code> để biết độ dài đã khai.</p>
+<p>⭐ Ví dụ thật: kiểm định dạng mã 2D và tách mã lô — Chương 42 mục 42.4.</p>
 </blockquote>
 <hr>
 <h2 id="b7-ép-kiu">B.7 Ép kiểu</h2>
@@ -52504,7 +52768,13 @@ thầm kẹp về giới hạn (Chương 32).</p>
 </tbody></table></div>
 <blockquote>
 <p>⭐ <strong>Quy tắc thực dụng:</strong> ép sang <code>REAL</code> <strong>trước</strong> khi tính, ép về số nguyên <strong>sau</strong> khi tính xong.
-Nó tránh cả <strong>tràn số</strong> lẫn <strong>mất phần thập phân do chia số nguyên</strong> (Chương 14, Phụ lục K.6).</p>
+Nó tránh cả <strong>tràn số</strong> lẫn <strong>mất phần thập phân do chia số nguyên</strong> (Chương 11, 19, Phụ lục K.6).</p>
+</blockquote>
+<blockquote>
+<p>⚠ <strong>Bản 4 của IEC 61131-3 (2025) dọn lại nhóm này.</strong> <code>TRUNC(x)</code> không ghi kiểu <strong>bị bỏ</strong> — dùng dạng
+có kiểu như <code>TRUNC_DINT(x)</code>; các hàm đổi <strong>BCD</strong> bị đánh dấu <strong>không khuyến khích</strong>; và có thêm phép
+đổi giữa chuỗi với mảng byte. ⭐ Hệ theo bản 3 vẫn giữ nguyên các hàm cũ — kiểm hệ của bạn theo bản
+nào (Chương 14 mục 14.1).</p>
 </blockquote>
 <hr>
 <h2 id="b8-cu-trúc-điu-khin-trong-st">B.8 Cấu trúc điều khiển trong ST</h2>
@@ -52578,17 +52848,84 @@ vòng ⭐ <strong>luôn chạy ít nhất một lần</strong>. ⚠ <code>EXIT</
 </tr>
 </tbody></table></div>
 <pre><code class="language-text">VAR
-    TimerKep  : TON;        // ← khai báo thể hiện
+    T_Clamp1  : TON;        // ← khai báo thể hiện
     Stn1      : FB_Station; // ← mỗi trạm một thể hiện riêng
 END_VAR
 
-TimerKep(IN := DangKep, PT := T#2s);
-IF TimerKep.Q THEN ... END_IF;
+T_Clamp1(IN := M_Stn1_ClampReq, PT := T#2S);
+IF T_Clamp1.Q THEN ... END_IF;
 </code></pre>
 <blockquote>
 <p>⭐⭐ <strong>Điểm dễ nhầm nhất: hai chỗ dùng CÙNG một thể hiện <code>TON</code> sẽ ghi đè lẫn nhau.</strong></p>
 <p>Mỗi chỗ cần một bộ định thời riêng phải có <strong>thể hiện riêng</strong>. Đây là lý do khối hàm phải khai báo
-thể hiện, còn hàm thì không (Chương 30).</p>
+thể hiện, còn hàm thì không (Chương 14 mục 14.3).</p>
+</blockquote>
+<hr>
+<h2 id="b9b-hành-vi-thc-thi-khi-chy-th-nào-vòng-đu-và-khi-không-đưc-gi">B.9b ⭐⭐ Hành vi thực thi — khối chạy thế nào ở vòng đầu, và khi KHÔNG được gọi</h2>
+<p>Ba câu hỏi mà bảng lệnh không trả lời, nhưng quyết định chương trình có chạy đúng không:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Khối</th>
+<th>⭐ Cập nhật khi nào</th>
+<th>Lần gọi đầu sau khởi động</th>
+<th>⚠ Khi <strong>không</strong> được gọi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>TON</code> · <code>TOF</code> · <code>TP</code></td>
+<td><strong>Chỉ trong lần gọi</strong> — <code>ET</code>, <code>Q</code> tính lại ở mỗi lần gọi</td>
+<td><code>ET</code> = 0, <code>Q</code> = FALSE; <code>IN</code> đã TRUE thì bắt đầu đếm từ lần này</td>
+<td>⚠⚠ <strong>Đứng yên</strong> — <code>ET</code> không tăng, <code>Q</code> giữ giá trị cũ. Khác hẳn lệnh <code>OUT</code> bộ định thời của hệ kiểu thiết bị: điều kiện tắt là <strong>về 0</strong> (Phụ lục A2 mục A2.8)</td>
+</tr>
+<tr>
+<td><code>R_TRIG</code></td>
+<td>So <code>CLK</code> với giá trị <strong>ở lần gọi trước</strong></td>
+<td>⚠⚠ <code>CLK</code> đã TRUE thì báo <strong>một sườn lên giả</strong> (Chương 16 Bẫy 9)</td>
+<td>Không thấy những gì xảy ra lúc không gọi; lần gọi sau so với một giá trị <strong>có thể đã rất cũ</strong></td>
+</tr>
+<tr>
+<td><code>F_TRIG</code></td>
+<td>Như trên</td>
+<td>⭐ <code>CLK</code> đã FALSE thì <strong>không</strong> báo sườn — ⚠ <strong>không đối xứng</strong> với <code>R_TRIG</code></td>
+<td>Như trên</td>
+</tr>
+<tr>
+<td><code>CTU</code> · <code>CTD</code> · <code>CTUD</code></td>
+<td>Đếm theo <strong>sườn</strong> của <code>CU</code> / <code>CD</code></td>
+<td>⚠ Sườn được nhận như <code>R_TRIG</code> — đầu vào đã TRUE ở lần đầu thì có thể đếm một lần; kiểm trên hệ</td>
+<td>Không đếm những sườn xảy ra lúc không gọi</td>
+</tr>
+<tr>
+<td><code>SR</code> · <code>RS</code></td>
+<td>Mỗi lần gọi</td>
+<td><code>Q1</code> = FALSE, trừ khi khai giữ được</td>
+<td>Giữ nguyên</td>
+</tr>
+<tr>
+<td>Khối <code>Execute</code> / <code>Done</code> (chuyển động, truyền thông, khối tự viết)</td>
+<td>Tham số chốt ở <strong>sườn lên</strong> của <code>Execute</code></td>
+<td>Như <code>R_TRIG</code>: <code>Execute</code> đã TRUE ở lần đầu thì <strong>có thể</strong> phát một lệnh — kiểm trên hệ</td>
+<td>⚠⚠ <strong>Đứng yên</strong> giữa chừng — không xong, không lỗi. Phải gọi <strong>mỗi vòng</strong> trong lúc <code>Busy</code> (Chương 30 mục 30.5b)</td>
+</tr>
+<tr>
+<td>Hàm (<code>LIMIT</code>, <code>MID</code>, <code>MAX</code>…)</td>
+<td>Không có bộ nhớ — kết quả chỉ phụ thuộc đầu vào của chính lần gọi</td>
+<td>—</td>
+<td>— không có gì để giữ</td>
+</tr>
+<tr>
+<td>Biến trong <strong>phương thức</strong></td>
+<td>Khởi tạo lại <strong>mỗi lần gọi</strong></td>
+<td>—</td>
+<td>— (Chương 30 mục 30.5c)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⭐⭐ <strong>Một quy tắc gói cả bảng: gọi mọi thể hiện khối ĐÚNG MỘT LẦN mỗi vòng quét, NGOÀI mọi nhánh
+điều kiện, với đầu vào lấy từ trạng thái.</strong> Muốn bộ định thời chạy ở bước 20 thì viết
+<code>T_Step20(IN := (Stn1_Step = 20), …)</code> ngoài <code>CASE</code> — rời bước là tự xoá, không bao giờ đứng yên với
+giá trị cũ, và không bao giờ phải gọi lần hai để xoá (PLCopen CP20, Phụ lục N).</p>
 </blockquote>
 <hr>
 <h2 id="b10-đa-ch-trc-tip">B.10 Địa chỉ trực tiếp</h2>
@@ -52907,7 +53244,7 @@ thiết kế cần xem lại.</p>
 <p>⭐⭐ <strong>Cột &quot;Điều kiện chuyển tiếp&quot; phải là TÍN HIỆU PHẢN HỒI THẬT, không phải bộ định thời.</strong></p>
 <p>Cột &quot;Hết giờ&quot; chỉ để <strong>báo lỗi</strong>. Nếu hai cột này giống nhau — chuyển bước bằng chính bộ định thời
 — thì máy <strong>không biết khi cơ cấu không tới nơi</strong>, và nó sẽ chạy tiếp như thể mọi thứ ổn
-(Chương 21).</p>
+(Chương 17, 26).</p>
 </blockquote>
 <blockquote>
 <p>⚠ <strong>Trước khi coi là xong:</strong></p>
@@ -52971,7 +53308,7 @@ thiết kế cần xem lại.</p>
 <hr>
 <h2 id="c5-bng-công-thc-sn-phm">C.5 Bảng công thức sản phẩm</h2>
 <p>⭐ <strong>Dùng để:</strong> tách tham số sản phẩm khỏi logic, để đổi hàng không phải sửa chương trình
-(Chương 32).</p>
+(Chương 29).</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -53817,7 +54154,7 @@ chỗ nó sẽ được cần tới</strong> — vì người ta chỉ mở nó 
 <tbody><tr>
 <td>Đặc tả</td>
 <td>C.3 · C.4 · C.5</td>
-<td>23, 25, 32</td>
+<td>23, 25, 29</td>
 </tr>
 <tr>
 <td>Bảng I/O</td>
@@ -59379,7 +59716,7 @@ KyThuat  =  ──────────────────────�
 </tr>
 <tr>
 <td>⚠ Bẫy</td>
-<td><strong>Tràn số và chia số nguyên</strong> — xem K.6 và Chương 14</td>
+<td><strong>Tràn số và chia số nguyên</strong> — xem K.6 và Chương 11, 19</td>
 </tr>
 <tr>
 <td>Chương</td>
@@ -59824,7 +60161,7 @@ lệnh xử lý dữ liệu — chương trình nhiều phép tính phải tra c
 <blockquote>
 <p>⚠⚠ <strong><code>INT</code> tràn ở 32 767 — con số này nhỏ hơn bạn tưởng.</strong> Một bộ đếm sản lượng dùng <code>INT</code> tràn
 sau <strong>32 767 sản phẩm</strong> — với DP-01 ở 300 board/giờ, đó là <strong>khoảng 4,5 ngày</strong>.</p>
-<p>⭐ Dùng <code>DINT</code> cho mọi bộ đếm tích luỹ. Xem Chương 14.</p>
+<p>⭐ Dùng <code>DINT</code> cho mọi bộ đếm tích luỹ. Xem Chương 11, 19.</p>
 </blockquote>
 <h3>⚠ Thứ tự phép tính để tránh tràn</h3>
 <pre><code class="language-text">✗ SAI:   KetQua := (Tho * KTmax) / ThoMax        // ← tràn ở phép nhân
@@ -60485,10 +60822,10 @@ hạn phải được <strong>giám sát ở tầng trên</strong> bằng một 
 END_VAR
 
 R_Start(CLK := DI_StartPB);
-M_StartPB_Rise := R_Start.Q;             // TRUE đúng MỘT vòng quét
+M_StartPB_Rise := R_Start.Q AND NOT M_FirstScan;   // MỘT vòng quét — trừ vòng đầu (Chương 16 Bẫy 9)
 
 R_Reset(CLK := DI_ResetPB);
-M_ResetPB_Rise := R_Reset.Q;
+M_ResetPB_Rise := R_Reset.Q AND NOT M_FirstScan;
 
 // ── Chống rung TRƯỚC, bắt cạnh SAU — thứ tự này bắt buộc ──
 T_Debounce(IN := DI_BoardStn1, PT := T#20MS);
@@ -60533,9 +60870,15 @@ này rồi dán mà quên đổi tên hộp thì ⚠⚠ <strong>hai tín hiệu 
 </blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Đảo thứ tự là một lần nhấn ra nhiều xung.</strong> Lọc rung phải đứng <strong>trước</strong> bắt cạnh
-(Chương 18).</p>
+(Chương 16 Bẫy 8).</p>
 <p>⚠ <strong>Mỗi tín hiệu một thể hiện <code>R_TRIG</code> riêng.</strong> Dùng chung một thể hiện cho hai tín hiệu thì
 ⭐ <strong>hai tín hiệu ghi đè bộ nhớ trạng thái của nhau</strong> — lỗi cùng loại với Chương 14 mục 14.3.</p>
+</blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Sườn ở vòng quét đầu là sườn giả</strong> khi tín hiệu đã bằng 1 từ trước lúc bật máy — nút kẹt,
+board đang che cảm biến. Hai nút ở trên được che bằng <code>M_FirstScan</code> — cờ khai <code>BOOL := TRUE</code>, đặt về
+FALSE ở dòng cuối chương trình chính (Chương 57). ⚠ Với <code>M_BoardArrived</code> thì cờ này <strong>không đủ</strong>,
+vì bộ lọc rung làm sườn giả tới muộn — Chương 16 Bẫy 9.</p>
 </blockquote>
 <hr>
 <h2 id="l8-cơ-cu-hai-v-trí-khi-dùng-li-cho-mi-xy-lanh">L.8 Cơ cấu hai vị trí — khối dùng lại cho mọi xy-lanh</h2>
@@ -61997,6 +62340,10 @@ quy trình thay đổi ở Chương 53 mục 53.3.</p>
 <tr>
 <td>⭐ Đặt cờ <em>&quot;chưa về gốc&quot;</em> = TRUE</td>
 <td>Xoá lịch sử báo động</td>
+</tr>
+<tr>
+<td>⭐ <strong>Che sườn lên</strong> của vòng này bằng cờ <code>M_FirstScan</code> (Chương 16 Bẫy 9)</td>
+<td>⚠⚠ <strong>Tin một sườn lên</strong> ở vòng này — nút kẹt hay cảm biến đang che cũng thành <em>&quot;vừa nhấn&quot;</em>, <em>&quot;vừa tới&quot;</em></td>
 </tr>
 </tbody></table></div>
 <blockquote>

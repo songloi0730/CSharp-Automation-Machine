@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260928</title>
+<title>So tay Lap trinh PLC va Dieu khien May Tu dong hoa — v1.0.0.260929</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -906,6 +906,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#476-dng-khn-cp">47.6 Dừng khẩn cấp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#477-thit-b-bo-v-chn-loi-nào">47.7 Thiết bị bảo vệ — chọn loại nào</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#477b-các-chc-năng-an-toàn-đã-đưc-chun-hoá-thành-khi-đng-vit-li">47.7b ⭐⭐ Các chức năng an toàn đã được chuẩn hoá thành KHỐI — đừng viết lại</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#477c-khi-đưng-an-toàn-chm-hơn-đưng-vưt-qua-thit-k-đ-không-ai-mun-vưt">47.7c ⭐⭐ Khi đường an toàn chậm hơn đường vượt qua — thiết kế để không ai muốn vượt</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#478-sto-dng-an-toàn-cho-truyn-đng">47.8 STO — dừng an toàn cho truyền động</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#479-chc-năng-an-toàn-ca-dp-01">47.9 Chức năng an toàn của DP-01</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#4710-loto-trong-thit-k">47.10 LOTO trong thiết kế</a></li>
@@ -1249,7 +1250,7 @@ và sinh viên muốn làm được một cỗ máy thật</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260928</td>
+<td>v1.0.0.260929</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -12312,6 +12313,195 @@ này đóng?&quot;</em>. Quy tắc này đúng ở mọi hệ và miễn nhiễm
 <td>Siemens <code>(S)</code>/<code>(R)</code>; Mitsubishi <code>SET</code>/<code>RST</code>; Rockwell <code>OTL</code>/<code>OTU</code>. ⚠ Hành vi khi mất điện: ở hệ IEC phụ thuộc <strong>khai báo biến</strong>, còn <code>OTL</code>/<code>OTU</code> của Rockwell <strong>tự nó đã giữ được</strong> — Chương 16, mục 16.7</td>
 </tr>
 </tbody></table></div>
+<h3>⭐⭐ Cùng một nấc thang — ba phong cách viết</h3>
+<p>Hai bảng trên là khác biệt về <strong>tên lệnh</strong>. Nhưng mở một chương trình máy thật, thứ làm bạn lạ lẫm là
+chuyện khác: <strong>người ta tổ chức và viết chương trình theo phong cách nào</strong>. Mỗi hệ kéo theo một phong
+cách riêng, và bạn nhận ra nó ngay từ nấc thang đầu tiên. Dưới đây là cùng nấc 1 ở mục 15.4, viết theo ba
+phong cách.</p>
+<p><strong>Kiểu thiết bị — Mitsubishi, và dòng nhỏ của Inovance.</strong> Tên trên nấc thang là <strong>địa chỉ thiết bị</strong>;
+nghĩa của nó nằm trong <strong>bảng chú thích</strong> gắn với từng thiết bị. Dòng iQ-F có thêm <strong>nhãn</strong> <em>(label)</em> —
+tên có nghĩa gán cho thiết bị, gần với tag.</p>
+<pre><code class="language-text">   X0            X1            X2                                   M100
+ ┌───┤ ├──────┬──────┤ ├──────────┤ ├────────────────────────────────( )───┐
+ │            │
+ │ M100       │
+ └───┤ ├──────┘
+
+ Chú thích thiết bị:  X0 Nút Start · X1 Nút Dừng (NC) · X2 Đủ khí · M100 Cho phép chuyền chạy
+ Dạng danh sách lệnh: LD X0 · OR M100 · AND X1 · AND X2 · OUT M100
+</code></pre>
+<p><strong>Kiểu khối — Siemens TIA Portal.</strong> Nấc thang nằm <strong>trong một khối chức năng</strong>, dùng biến <strong>cục bộ</strong> của
+khối (dấu <code>#</code>); khối tổ chức chính <code>OB1</code> gọi khối và nối tag toàn cục (trong ngoặc kép) vào chân của nó.
+Mỗi <em>network</em> có tiêu đề và chú thích riêng.</p>
+<pre><code class="language-text"> FB_Conveyor — Network 1: Cho phép chuyền chạy — tự giữ Start/Stop
+   #StartPB        #StopPB        #AirOK                             #RunCmd
+ ┌───┤ ├──────┬──────┤ ├────────────┤ ├──────────────────────────────( )───┐
+ │            │
+ │ #RunCmd    │
+ └───┤ ├──────┘
+
+ OB1 — Network 1: gọi khối chuyền (vẽ lại bằng chữ)
+                   &quot;InstConveyor&quot;
+                ┌─────────────────────┐
+ ───────────────┤EN   FB_Conveyor  ENO├──
+ &quot;DI_StartPB&quot; ──┤StartPB        RunCmd├── &quot;M_ConvRunCmd&quot;
+ &quot;DI_StopPB&quot;  ──┤StopPB               │
+ &quot;DI_AirOK&quot;   ──┤AirOK                │
+                └─────────────────────┘
+</code></pre>
+<p><strong>Kiểu tag — Rockwell Logix.</strong> Không có địa chỉ tuyệt đối: tên trên nấc thang <strong>là</strong> tag. Nấc thang nằm
+trong một <em>routine</em>, được routine chính gọi bằng lệnh <code>JSR</code>.</p>
+<pre><code class="language-text">   XIC DI_StartPB      XIC DI_StopPB      XIC DI_AirOK            OTE M_ConvRunCmd
+ ┌───┤ ├──────────┬──────┤ ├────────────────┤ ├────────────────────────( )───┐
+ │                │
+ │ XIC M_ConvRunCmd
+ └───┤ ├──────────┘
+</code></pre>
+<p>Logic giống hệt nhau. Khác nhau là <strong>mọi thứ xung quanh nó</strong>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Khía cạnh</th>
+<th>⭐ Kiểu thiết bị — Mitsubishi, Inovance dòng nhỏ</th>
+<th>Kiểu khối — Siemens TIA</th>
+<th>Kiểu tag — Rockwell Logix</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Tên trên nấc thang</td>
+<td>Địa chỉ <code>X0</code>, <code>M100</code>, <code>D100</code>; nghĩa ở <strong>bảng chú thích</strong>; dòng iQ-F có thêm nhãn</td>
+<td>Tag toàn cục <code>&quot;DI_StartPB&quot;</code>; trong khối là biến cục bộ <code>#StartPB</code></td>
+<td>Chỉ có tag</td>
+</tr>
+<tr>
+<td>Tổ chức chương trình</td>
+<td>Kiểu truyền thống: <strong>một chương trình chính dài</strong>, chia đoạn bằng chú thích; chương trình con đặt sau <code>FEND</code>, gọi bằng <code>CALL</code> theo con trỏ <code>P</code>. Dòng mới có thêm khối chương trình và FB</td>
+<td>⭐ <code>OB1</code> gọi các khối; mỗi thiết bị hay trạm là <strong>một FB có dữ liệu thể hiện riêng</strong>; ruột khối chỉ dùng chân vào/ra của nó</td>
+<td>Task → Program → Routine; routine chính gọi routine khác bằng <code>JSR</code>; khối dùng lại là lệnh tự định nghĩa (AOI)</td>
+</tr>
+<tr>
+<td>Tự giữ viết thế nào</td>
+<td>⚠ Hay gặp <strong>cặp <code>SET</code>/<code>RST</code></strong> thay cho nhánh tự giữ (xem ngay dưới)</td>
+<td>Nhánh tự giữ, hoặc cuộn <code>(S)</code>/<code>(R)</code></td>
+<td>Nhánh tự giữ, hoặc <code>OTL</code>/<code>OTU</code></td>
+</tr>
+<tr>
+<td>Làm một lần ở sườn</td>
+<td><code>LDP</code>/<code>LDF</code>, <code>PLS</code>/<code>PLF</code>; ⭐ <strong>lệnh kiểu xung</strong>: thêm <code>P</code> vào tên lệnh (<code>MOVP</code>, <code>INCP</code>) — lệnh chạy <strong>một lần</strong> ở sườn lên</td>
+<td>Tiếp điểm <code>P</code>/<code>N</code> cần một <strong>bit nhớ sườn riêng</strong>; hoặc khối <code>R_TRIG</code></td>
+<td><code>ONS</code>/<code>OSR</code>/<code>OSF</code> cần một bit lưu riêng</td>
+</tr>
+<tr>
+<td>Bộ định thời</td>
+<td>Thiết bị <code>T</code>: <code>OUT T0 K20</code> — số nguyên nhân độ phân giải (Phụ lục A2 mục A2.2)</td>
+<td>Khối IEC <code>TON</code> có dữ liệu thể hiện — Siemens khuyên đặt nó <strong>bên trong</strong> FB dùng nó</td>
+<td>Tag kiểu <code>TIMER</code>: <code>.PRE</code> tính bằng mili giây, <code>.DN</code>, <code>.TT</code></td>
+</tr>
+<tr>
+<td>Trình tự</td>
+<td>Số bước trong thanh ghi <code>D</code>, so bằng <code>LD=</code>; hoặc bit <code>M</code> bật tắt bằng <code>SET</code>/<code>RST</code>; hoặc bậc thang bước <code>STL</code> / SFC</td>
+<td>SCL <code>CASE</code> trong FB; hoặc GRAPH — gói riêng (Chương 21 mục 21.7)</td>
+<td>Số bước so bằng <code>EQU</code>; routine SFC; ST <code>CASE</code></td>
+</tr>
+<tr>
+<td>Tín hiệu vòng quét đầu (Chương 16 Bẫy 9)</td>
+<td><code>SM402</code> ở dòng iQ-F · <code>M8002</code> ở dòng FX cũ và Inovance H3U</td>
+<td>Khối tổ chức <strong>khởi động</strong> <em>(startup OB)</em> chạy một lần trước vòng quét đầu</td>
+<td>Bit hệ thống <code>S:FS</code></td>
+</tr>
+<tr>
+<td>⭐ Mở một chương trình lạ: bắt đầu từ</td>
+<td>Bảng chú thích thiết bị · tham chiếu chéo thanh ghi bước</td>
+<td>⭐ Cây gọi khối từ <code>OB1</code> · bảng tag</td>
+<td>Cây Task/Program/Routine · tham chiếu chéo tag</td>
+</tr>
+</tbody></table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Phong cách</th>
+<th>⭐ Mạnh</th>
+<th>⚠ Yếu</th>
+<th>Hợp khi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Kiểu thiết bị</td>
+<td>Nấc thang <strong>nhìn thẳng ra phần cứng</strong> — thợ điện dò <code>X0</code> từ bản vẽ tới chương trình không cần tra; giám sát trực tuyến rất trực quan</td>
+<td>Thiếu chú thích là <strong>mất nghĩa</strong>; tài nguyên toàn cục (<code>T5</code>, <code>M100</code>) dễ bị dùng trùng (Phụ lục A2 mục A2.8); khó chép một cụm sang máy khác</td>
+<td>Máy nhỏ, một người viết, đội bảo trì quen ladder</td>
+</tr>
+<tr>
+<td>Kiểu khối</td>
+<td>⭐ Dùng lại được — <strong>thêm một trạm giống hệt là thêm một thể hiện</strong>; nhiều người cùng làm một dự án</td>
+<td>Người bảo trì phải lần theo <strong>cây gọi</strong> và <strong>thể hiện</strong> mới tới được nấc có lỗi; ruột khối viết SCL thì khó chẩn đoán với thợ chỉ quen ladder</td>
+<td>Máy nhiều trạm giống nhau, có đội phần mềm</td>
+</tr>
+<tr>
+<td>Kiểu tag</td>
+<td>Tên có nghĩa ngay trên nấc thang; không thể trùng địa chỉ</td>
+<td>⚠ Ảnh I/O không đồng bộ với vòng quét (Phụ lục A1 mục A1.5); nhiều tag thì phải có quy ước đặt tên chặt</td>
+<td>Máy lớn, dự án nhiều routine</td>
+</tr>
+</tbody></table></div>
+<p><strong>Cặp <code>SET</code>/<code>RST</code> — khác nhánh tự giữ ở đâu.</strong> Cùng mạch cho phép chạy, viết theo phong cách hay gặp
+trong chương trình máy Nhật:</p>
+<pre><code class="language-text"> Nấc a:   X0 (sườn lên)
+        ──┤↑├────────────────────────────────────────────[ SET  M100 ]──
+ Nấc b:   X1 (Dừng, NC — nhấn là 0)
+        ──┤/├───┬────────────────────────────────────────[ RST  M100 ]──
+          X2    │
+        ──┤/├───┘
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Nhánh tự giữ (mục 15.4)</th>
+<th>Cặp <code>SET</code>/<code>RST</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Start và Dừng cùng lúc</td>
+<td>Dừng thắng — Dừng nằm <strong>nối tiếp</strong> ngay trong nấc</td>
+<td>Nấc <strong>viết sau</strong> thắng: <code>RST</code> viết sau <code>SET</code> thì Dừng thắng; ⚠ đảo thứ tự hai nấc là Start thắng</td>
+</tr>
+<tr>
+<td>Mất điện rồi có lại</td>
+<td>Bit về 0 — trừ khi bạn khai nó là biến giữ</td>
+<td>⚠⚠ Nếu <code>M100</code> nằm trong <strong>dải chốt</strong> — Mitsubishi đặt việc giữ theo dải thiết bị (Chương 16 mục 16.7) — bit <strong>còn 1</strong> khi có điện lại, trái nguyên tắc khởi động lại phải có chủ ý (Chương 47 Bẫy 4)</td>
+</tr>
+<tr>
+<td>Tìm chỗ tắt khi chẩn đoán</td>
+<td>Một nấc</td>
+<td>Phải tìm <strong>mọi</strong> <code>RST</code> của bit — có thể rải khắp chương trình</td>
+</tr>
+<tr>
+<td>Thêm điều kiện dừng về sau</td>
+<td>Thêm một tiếp điểm nối tiếp</td>
+<td>Thêm một nhánh <code>RST</code> — dễ quên một chỗ</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Sách viết lệnh chạy bằng nhánh tự giữ vì hai hàng đầu: Dừng thắng ngay trong nấc, và mất điện là
+tắt. Gặp cặp <code>SET</code>/<code>RST</code> trong máy thật — đó là phong cách hợp lệ — thì kiểm ba thứ: <code>RST</code> đã viết sau
+<code>SET</code> chưa, bit có nằm trong dải chốt không, và bạn đã tìm hết mọi <code>RST</code> của nó chưa.</p>
+<blockquote>
+<p>⚠ <strong>Một lời phản biện chính cuốn sách.</strong> Mọi ví dụ của sách dùng tên tag kiểu <code>DI_StartPB</code>, và phần lớn
+mã trình tự viết bằng ST — tức gần phong cách Siemens, CODESYS, Rockwell. Ở nhà máy chạy nhiều máy
+Nhật, bạn sẽ mở ra <code>X0</code>, <code>M100</code>, <code>D100</code> và rất nhiều <code>SET</code>/<code>RST</code>. ⭐ Nguyên tắc của sách không đổi — chỉ
+phải đọc qua bảng chú thích thiết bị. Và khi <strong>viết</strong> cho nhà máy đó, hãy viết theo phong cách đội bảo
+trì ở đó đọc được (Chương 20 mục 20.6). Chính Siemens, trong hướng dẫn phong cách lập trình của mình,
+khuyên viết ruột khối bằng SCL — nhưng chọn LAD hoặc FBD cho khối chủ yếu là logic nhị phân, <em>vì người
+bảo trì chẩn đoán nhanh hơn</em>.</p>
+</blockquote>
+<p>⭐⭐ <strong>Năm điều mang theo, phong cách nào cũng vậy:</strong></p>
+<ol>
+<li>Mọi tín hiệu có <strong>tên hoặc chú thích</strong> nói được nghĩa — <code>X0</code> không có chú thích là một món nợ.</li>
+<li>Mỗi bit, mỗi ngõ ra <strong>một chỗ ghi</strong> (Bẫy 1); với cặp <code>SET</code>/<code>RST</code>: mọi <code>RST</code> phải tìm thấy được.</li>
+<li>Chuyển bước bằng <strong>phản hồi thật</strong>; bộ định thời chỉ để báo lỗi (Chương 17, 26).</li>
+<li>Mỗi chỗ bắt sườn một <strong>bit nhớ riêng</strong> (Phụ lục A2 mục A2.5).</li>
+<li>Lệnh chạy <strong>không được sống qua mất điện</strong> mà thiếu một hành động khởi động có chủ ý (Chương 16, 47).</li>
+</ol>
 <p>Đối chiếu chi tiết năm hệ: <strong>Phụ lục A2</strong>.</p>
 <blockquote>
 <p>⚡ <strong>LƯU Ý</strong>
@@ -12401,6 +12591,19 @@ cầu hành vi khi hỏng, làm cơ sở cho quy tắc fail-safe ở mục 15.3.
 <li>Tài liệu hãng về ngôn ngữ Ladder Diagram — dùng để đối chiếu khác biệt ở mục 15.6; số hiệu cụ thể ghi
 trong Phụ lục A2.</li>
 <li>Cấu hình I/O của DP-01 (kiểu tiếp điểm từng thiết bị) — Phụ lục J.</li>
+<li><strong>Siemens</strong> — <em>Programming Styleguide for S7-1200/S7-1500</em> (V1.2, 10/2016), mục 4.1: ⭐ khuyên viết
+ruột khối bằng SCL, còn LAD/FBD để nối các khối trong OB và cho khối chủ yếu là logic nhị phân — vì
+người bảo trì chẩn đoán dễ hơn; trong khối chỉ dùng biến cục bộ; ưu tiên đa thể hiện; tiền tố <code>Inst</code>
+cho thể hiện. Tài liệu S7-1200 tiếng Việt, mục lệnh sườn: tiếp điểm <code>P</code>/<code>N</code> và <code>P_TRIG</code> cần một <strong>bit
+nhớ sườn</strong> <em>(edge memory bit)</em>.</li>
+<li><strong>Mitsubishi</strong> — <em>MELSEC iQ-F FX5 Programming Manual (Instructions, Standard Functions/Function
+Blocks)</em>: điều kiện thực thi lệnh và lệnh kiểu xung (thêm <code>P</code>), <code>LDP</code>/<code>LDF</code>, <code>PLS</code>/<code>PLF</code>,
+<code>MPS</code>/<code>MRD</code>/<code>MPP</code>, <code>CALL</code>/<code>CALLP</code> gọi chương trình con theo con trỏ <code>P</code> đặt sau <code>FEND</code>, <code>STL</code>/<code>RETSTL</code>,
+<code>SM400</code> luôn bật, <code>SM402</code> xung vòng quét đầu; <em>(Program Design)</em>: nhãn toàn cục và cục bộ, SFC.
+<code>M8002</code> của dòng FX cũ: tài liệu lệnh cơ bản Mitsubishi tiếng Việt; Inovance H3U dùng cùng bit.</li>
+<li><strong>Rockwell Automation</strong> — <em>Logix 5000 Tasks, Programs, and Routines</em> (1756-PM005): Task → Program →
+Routine, gọi routine bằng <code>JSR</code>, bit vòng quét đầu <code>S:FS</code>; <em>General Instructions</em> (1756-RM003):
+<code>ONS</code>/<code>OSR</code>/<code>OSF</code> cần bit lưu riêng. Kiểm 2026-09-29.</li>
 <li>⚠ <strong>Giới hạn của bảng 4 tổ hợp</strong> (mục 15.3): nó chỉ phủ <strong>hỏng kiểu hở</strong>. Cơ chế chống <strong>hỏng kiểu
 chập</strong> — tiếp điểm dẫn động cưỡng bức, hai kênh, xung kiểm tra OSSD — nằm ở Chương 3 mục 3.5 và
 Chương 47 mục 47.7.</li>
@@ -23877,6 +24080,11 @@ của người lập trình</strong> — nhưng người lập trình phải tr�
 <td>Sản phẩm rẻ, chu trình ngắn</td>
 <td>Sản phẩm rất đắt, chu trình rất dài</td>
 </tr>
+<tr>
+<td>⚠⚠ Thời gian phục hồi</td>
+<td><strong>Dài</strong> — về gốc, xả hàng, mỗi lần</td>
+<td><strong>Ngắn</strong> — nếu tư thế xác minh được</td>
+</tr>
 </tbody></table></div>
 <blockquote>
 <p>⚠ <strong>NGUY HIỂM</strong>
@@ -23888,9 +24096,44 @@ Chạy tiếp từ chỗ dừng chỉ chấp nhận được khi <strong>cả ba
 </ol>
 <p>Thiếu bất kỳ điều nào — chọn huỷ chu trình. Một sản phẩm hỏng rẻ hơn một cỗ máy hỏng rất nhiều.</p>
 </blockquote>
+<blockquote>
+<p>⚠⚠ <strong>Phản biện chính bảng trên — nó thiếu một chiều: TẦN SUẤT.</strong> <em>&quot;Huỷ chu trình&quot;</em> đúng với lỗi
+<strong>hiếm</strong>. Với một lỗi lặp <strong>mỗi giờ</strong>, đường phục hồi dài nhân với số máy mỗi người trông sẽ đẩy người
+vận hành tới chỗ <strong>vượt qua cửa an toàn</strong> — và khi đó máy kém an toàn hơn hẳn một máy phục hồi nhanh
+(Chương 47 mục 47.7c). ⭐ Cách giữ được cả hai: <strong>chia lỗi theo cách phục hồi</strong>, không dùng một đường
+cho mọi lỗi.</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Nhóm lỗi</th>
+<th>Ví dụ trên DP-01</th>
+<th>Cách phục hồi</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>⭐ <strong>Lặp lại, không làm mất tư thế, xử lý được từ ngoài</strong></td>
+<td>Board lệch cảm biến; board tới chặn chậm hơn giới hạn</td>
+<td><strong>Thử lại bước</strong> bằng một nút trên tủ điều khiển, cửa vẫn đóng — không về gốc</td>
+</tr>
+<tr>
+<td><strong>Cần tay người, nhưng tư thế còn xác minh được</strong></td>
+<td>Gỡ một board kẹt ở chặn</td>
+<td>Mở cửa theo đường an toàn → đóng → <strong>kiểm tư thế bằng cảm biến</strong> → khớp thì chạy tiếp, không khớp thì về gốc — đúng ba điều kiện ở trên</td>
+</tr>
+<tr>
+<td><strong>Làm mất tư thế</strong></td>
+<td>Mất khí giữa hành trình; cơ cấu bị đẩy bằng tay khi cửa mở</td>
+<td>⚠ <strong>Về gốc toàn bộ</strong> — không có đường tắt (mục 28.2)</td>
+</tr>
+</tbody></table></div>
+<p>⭐ Coi <strong>thời gian phục hồi</strong> là một thông số thiết kế: đo nó khi chạy thử (Chương 52). Đường phục hồi
+tốn gấp nhiều lần việc thật là tín hiệu phải thiết kế lại — thường bắt đầu bằng việc <strong>sửa cho lỗi đó
+thôi lặp lại</strong>.</p>
 <p>Ở DP-01, <code>Hold</code> (dừng có chủ ý, máy vẫn lành) thì chạy tiếp được. Còn <code>Alarm</code> (dừng vì sự cố, tư thế
 không chắc chắn) thì <strong>luôn đi qua về gốc</strong> — đó chính là lý do Chương 25 quy định <code>Resetting → Homing</code>
-chứ không về thẳng <code>Idle</code>.</p>
+chứ không về thẳng <code>Idle</code>. Ở lát cắt này, về gốc của DP-01 chỉ gồm các xy-lanh nên ngắn; máy có trục
+và trình tự về gốc dài thì nhóm lỗi thứ hai ở bảng trên mới thật sự đáng làm.</p>
 <hr>
 <h2 id="286-sn-phm-d-dang-th-hay-b-quên-nht">28.6 Sản phẩm dở dang — thứ hay bị quên nhất</h2>
 <p>Board A ở mục 28.1 đã được kẹp, và có thể đã được xử lý một phần trước khi máy dừng. Nó <strong>không phải
@@ -24072,6 +24315,11 @@ xuất thật mà vẫn bỏ qua kiểm tra có board, cho ra hàng loạt sản
 <td>Lập <strong>danh sách tư thế xuất phát</strong> để kiểm thử</td>
 <td>Có ít nhất 5 tư thế, gồm cả tư thế giữa chừng</td>
 </tr>
+<tr>
+<td>12</td>
+<td>⭐ Chia <strong>nhóm lỗi theo cách phục hồi</strong>; đo <strong>thời gian phục hồi</strong> khi chạy thử</td>
+<td>Lỗi lặp lại không buộc mở cửa; đường an toàn không dài hơn nhiều việc thật (Chương 47 mục 47.7c)</td>
+</tr>
 </tbody></table></div>
 <hr>
 <h2 id="289-t-kim">28.9 Tự kiểm</h2>
@@ -24092,6 +24340,8 @@ và ba cách xử lý là gì?</li>
 chiều</strong>?</li>
 <li>⚠⚠ Phân biệt <strong>về gốc bằng cảm biến</strong> với <strong>về gốc nhanh</strong>. Sau khi mất điện với encoder gia số,
 được dùng cái nào? ⭐ Nêu cách kiểm rẻ nhất để không dùng nhầm.</li>
+<li>⭐⭐ Một lỗi lặp <strong>mỗi giờ</strong>. Vì sao <em>&quot;luôn huỷ chu trình và về gốc&quot;</em> có thể làm máy <strong>kém an toàn
+hơn</strong>? Nêu ba nhóm lỗi theo cách phục hồi, mỗi nhóm một ví dụ trên DP-01.</li>
 </ol>
 <p>Câu 2, 3 và 7 là ba câu phân loại. Trả lời được cả ba nghĩa là bạn đã có phản xạ <em>suy thứ tự từ phân
 tích va chạm</em> — thứ phân biệt người viết được máy chạy an toàn với người viết được máy chạy.</p>
@@ -24113,6 +24363,9 @@ bảng va chạm ở mục 28.4.</li>
 tự ⭐ <strong>tốc độ về gốc → cữ báo gần gốc → tốc độ bò → tín hiệu điểm không → dừng</strong>, thời gian dừng
 tuỳ chọn, và ⭐ <strong>về gốc nhanh</strong> bằng định vị tuyệt đối tới địa chỉ gốc đã thiết lập — ⚠ <strong>không dùng
 cữ và điểm không</strong>. <em>(Tên gọi khác nhau giữa các hãng; cơ chế giống nhau.)</em></li>
+<li><strong>SICK</strong> — <em>Guidelines for Safe Machinery — Six Steps</em>, mục ước lượng rủi ro: biện pháp bảo vệ <strong>làm
+chậm sản xuất</strong> là một động cơ để vượt qua nó — nền cho chiều <em>tần suất</em> ở mục 28.5; chi tiết và các
+nguồn khác ở Chương 47 mục 47.7c. Kiểm 2026-09-29.</li>
 </ul>
 <blockquote>
 <p>⚠ Bảng va chạm và trình tự về gốc trong chương là <strong>ví dụ dạy học cho DP-01 ở lát cắt 2</strong>. Máy thật
@@ -41740,6 +41993,121 @@ mức hiệu năng bao nhiêu, kiến trúc mấy kênh — là kết quả củ
 ⚠⚠ nội dung chương này <strong>không thay thế</strong> việc đó.</p>
 </blockquote>
 <hr>
+<h2 id="477c-khi-đưng-an-toàn-chm-hơn-đưng-vưt-qua-thit-k-đ-không-ai-mun-vưt">47.7c ⭐⭐ Khi đường an toàn chậm hơn đường vượt qua — thiết kế để không ai muốn vượt</h2>
+<p>Mọi thứ từ đầu chương tới đây đều <strong>đúng trên giấy</strong>. Giờ nhìn nó qua một ca làm việc thật.</p>
+<p>Trạm 1 của một máy kẹt board <strong>mỗi giờ một lần</strong> — board lệch chặn, gỡ ra mất <strong>20 giây</strong>. Nhưng để chạm
+được vào board, người vận hành phải đi hết con đường an toàn mà máy được thiết kế:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bước</th>
+<th>Thời gian — ví dụ minh hoạ, không phải số đo</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Máy báo lỗi, người vận hành đi tới</td>
+<td>30 s</td>
+</tr>
+<tr>
+<td>Yêu cầu mở cửa, chờ khoá cửa nhả</td>
+<td>10 s</td>
+</tr>
+<tr>
+<td>⭐ Gỡ board — <strong>việc thật</strong></td>
+<td>20 s</td>
+</tr>
+<tr>
+<td>Đóng cửa, nhấn Reset</td>
+<td>10 s</td>
+</tr>
+<tr>
+<td>Máy về gốc toàn bộ (Chương 28)</td>
+<td>60 s</td>
+</tr>
+<tr>
+<td>Xử lý board dở dang, nhấn Start</td>
+<td>30 s</td>
+</tr>
+<tr>
+<td><strong>Tổng</strong></td>
+<td><strong>≈ 2 phút 40 giây — gấp tám lần việc thật</strong></td>
+</tr>
+</tbody></table></div>
+<p>Một người trông <strong>bốn</strong> máy như thế mất gần <strong>11 phút mỗi giờ</strong> chỉ để đi con đường an toàn — trong khi
+sản lượng của ca được tính vào tên họ. ⚠⚠ Đó là lúc người ta tìm cách <strong>cho máy chạy khi cửa mở</strong>. Và một
+khi đã vậy, mọi tính toán mức hiệu năng ở mục 47.5 thành vô nghĩa: chức năng an toàn tốt nhất cũng không
+bảo vệ được ai khi nó đã bị vô hiệu hoá.</p>
+<blockquote>
+<p>⭐⭐ <strong>Đây là lỗi thiết kế, không phải lỗi kỷ luật</strong> — và các tài liệu an toàn máy nói đúng như vậy:</p>
+<ul>
+<li>Đánh giá rủi ro phải tính cả <strong>sử dụng sai có thể lường trước</strong>, trong đó có việc <strong>vô hiệu hoá thiết
+bị bảo vệ</strong> (báo cáo IFA 2/2017e).</li>
+<li>Hướng dẫn của SICK liệt kê đúng những thứ sinh ra <strong>động cơ vượt qua</strong>: biện pháp bảo vệ khiến <strong>không
+làm được việc</strong>, <strong>làm chậm sản xuất</strong>, <strong>cản trở việc khác</strong>, hoặc <strong>khó dùng</strong>.</li>
+<li>Thiết bị khoá liên động phải được chọn và lắp để <strong>khó bị vô hiệu hoá</strong>, và che chắn nói chung <strong>không
+được cản trở sản xuất quá mức cần thiết</strong> (hướng dẫn an toàn máy của Schneider).</li>
+<li>⭐ ISO 14119 dành hẳn một chương cho việc này — chương 8 ở bản 2024 (ở bản 2013 là mục 7): <em>thiết kế để
+giảm động cơ vô hiệu hoá</em>. Trình tự của nó: làm biện pháp cơ bản → kiểm xem có <strong>động cơ vô hiệu hoá
+có thể lường trước</strong> không → <strong>loại bỏ</strong> động cơ nếu được → còn động cơ thì <strong>bắt buộc</strong> thêm biện pháp.</li>
+</ul>
+</blockquote>
+<h3>Năm tầng biện pháp — theo thứ tự, như mục 47.3</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>Tầng</th>
+<th>Làm gì</th>
+<th>Trên DP-01</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>⭐⭐ <strong>Bỏ lý do phải vào</strong></td>
+<td>Một lỗi lặp mỗi giờ là lỗi <strong>quy trình hoặc cơ khí</strong> cần sửa từ gốc — không phải việc người vận hành cần làm nhanh hơn. Đếm lỗi theo nguyên nhân (Chương 53), sửa cái đứng đầu</td>
+<td>Board lệch chặn: kiểm dẫn hướng và tốc độ chuyền lúc board vào chặn</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>⭐ <strong>Làm được việc thường xuyên mà không mở cửa</strong></td>
+<td>Việc lặp lại được thiết kế để làm <strong>từ ngoài</strong> che chắn: thử lại bước từ màn hình, chạy lùi chuyền chậm khi cửa <strong>đóng</strong>, ô kính để nhìn</td>
+<td>Nút <em>thử lại bước</em> trên màn hình vận hành (Chương 44), chỉ cho phép khi cửa đóng</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>⭐ <strong>Làm cho đường an toàn nhanh</strong></td>
+<td><strong>Chia vùng</strong> — mở cửa trạm 1 chỉ dừng mối nguy ở trạm 1, nếu đánh giá rủi ro cho phép; nút <strong>yêu cầu vào</strong> — máy dừng ở tư thế an toàn rồi mới nhả khoá; thời gian nhả khoá bằng <strong>thời gian dừng đo thật</strong>, không đặt dư &quot;cho chắc&quot;; sau khi đóng cửa, <strong>phục hồi có kiểm chứng</strong> thay vì luôn về gốc toàn bộ (Chương 28 mục 28.5)</td>
+<td>DP-01 có sẵn hai cửa cho hai trạm (SF3, mục 47.9) — nền để chia vùng, nếu đánh giá rủi ro cho phép</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td><strong>Làm cho việc vượt qua khó</strong></td>
+<td>Thiết bị khoá liên động có <strong>mã hoá</strong> (cơ, điện, từ hoặc quang); gắn chắc, tháo phải dùng dụng cụ; che không cho với tới thiết bị khi cửa mở; giá đỡ đủ cứng (Schneider) — và không vượt qua được bằng <strong>vật dụng sẵn có</strong> (SICK)</td>
+<td>Mức mã hoá lấy theo đánh giá rủi ro, không chọn theo giá</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td><strong>Làm cho việc vượt qua lộ ra</strong></td>
+<td>Ghi mỗi lần mở và đóng cửa, mỗi lần xử lý lỗi, thời gian phục hồi; báo cáo lên người quản lý</td>
+<td>⚠ Đây là <strong>dữ liệu tổ chức</strong>, không phải chức năng an toàn — chạy trên PLC thường được, nhưng không bao giờ được coi là biện pháp bảo vệ</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠⚠ <strong>Thứ tự là phần quan trọng nhất.</strong> Tầng 4 và 5 chỉ đỡ phần còn sót. Bỏ trống tầng 1–3 rồi dồn tiền
+vào thiết bị mã hoá cao nhất thì <strong>động cơ vẫn còn nguyên</strong> — và người ta sẽ tìm ra cách khác.</p>
+<p>⚠ Chia vùng, dừng ở tư thế an toàn, phục hồi nhanh đều là <strong>thay đổi thiết kế an toàn</strong>: chúng phải nằm
+trong đánh giá rủi ro và do người có thẩm quyền quyết định. Mục này đặt đúng câu hỏi — nó <strong>không</strong> cho
+phép bạn tự nới một chức năng an toàn nào (Bẫy 5).</p>
+</blockquote>
+<p>⭐ <strong>Đo được, nên phải đo.</strong> Khi chạy thử (Chương 52), ghi lại mọi việc buộc người vận hành vào trong che
+chắn, tần suất của từng việc, và thời gian đi hết đường an toàn. Đường an toàn tốn gấp nhiều lần việc
+thật là tín hiệu phải thiết kế lại — trước khi người vận hành tự &quot;thiết kế lại&quot; giúp bạn.</p>
+<blockquote>
+<p>⭐ Sách đã gặp nguyên tắc này ba lần: cảnh báo sớm làm dừng máy (Chương 12), ức chế báo động (Chương 44),
+quy trình nặng tới mức bị lách (Chương 53 Bẫy 5). Ở đây nó chạm tới tính mạng. ⭐⭐ <strong>Thứ gây phiền sẽ bị
+vô hiệu hoá — hãy thiết kế để cách an toàn cũng là cách nhanh nhất.</strong></p>
+</blockquote>
+<hr>
 <h2 id="478-sto-dng-an-toàn-cho-truyn-đng">47.8 STO — dừng an toàn cho truyền động</h2>
 <p>Với trục có servo hoặc biến tần, cách &quot;cắt năng lượng&quot; ngây thơ là <strong>ngắt contactor phía trước bộ điều
 khiển truyền động</strong>. Cách đó dừng được, nhưng có ba nhược điểm thật:</p>
@@ -41946,6 +42314,14 @@ một trục &quot;đang ở STO&quot; vẫn có thể bị điện giật từ 
 <p>Thử đúng phải bao gồm: nhấn E-Stop <strong>ở từng bước của chu trình</strong>, mở từng cửa <strong>trong lúc máy đang
 chạy</strong>, cắt từng kênh của mạch hai kênh <strong>riêng lẻ</strong> để xác nhận phát hiện được. Danh mục này thuộc
 Chương 52, và nó là phần bắt buộc.</p>
+<h3>🔍 BẪY 8 — Đường phục hồi sau khi mở cửa dài hơn chính việc sửa lỗi</h3>
+<p>Mọi chức năng an toàn đều đạt khi nghiệm thu: mở cửa là dừng, đóng cửa phải Reset, sau Reset máy về gốc.
+Vài tuần sau, người ta phát hiện khoá liên động của một cửa <strong>đã bị vô hiệu hoá</strong>. Không ai cố ý phá
+hoại — mỗi lần kẹt board chỉ mất 20 giây để gỡ, còn đường an toàn mất gần ba phút, và mỗi người trông
+bốn máy.</p>
+<p>Cách tránh: coi <strong>thời gian phục hồi</strong> là một thông số thiết kế, như thời gian chu kỳ. Liệt kê các việc
+buộc người vận hành vào trong che chắn, tần suất và thời gian đi đường an toàn của từng việc, rồi áp năm
+tầng ở mục 47.7c — <strong>bắt đầu từ tầng 1</strong>.</p>
 <hr>
 <h2 id="4712-bng-cht-làm-gì-vi-chc-năng-an-toàn">47.12 Bảng chốt — làm gì với chức năng an toàn</h2>
 <div class="table-wrap"><table>
@@ -42024,6 +42400,12 @@ Chương 52, và nó là phần bắt buộc.</p>
 <td>⭐ Con số tra từ <strong>bảng tiêu chuẩn</strong> và <strong>có người ký</strong> — không ước lượng</td>
 </tr>
 <tr>
+<td>2c</td>
+<td>⭐⭐ Liệt kê <strong>các việc buộc người vận hành vào trong che chắn</strong>, tần suất, thời gian đi đường an toàn</td>
+<td>Nhóm thiết kế + người vận hành</td>
+<td>⭐ Việc lặp lại đã được <strong>loại bỏ</strong>, làm được <strong>từ ngoài</strong>, hoặc đường an toàn <strong>không dài hơn nhiều</strong> việc thật (mục 47.7c)</td>
+</tr>
+<tr>
 <td>9</td>
 <td><strong>Không phát hành</strong> khi mục 1, 4, 8 chưa có</td>
 <td>—</td>
@@ -42059,8 +42441,11 @@ cùng nhau, và <em>&quot;kích thước lỗ&quot;</em> được đo thế nào
 <li>⭐⭐ Chống kẹp có <strong>hai</strong> cách. Cách nào <strong>loại bỏ</strong> mối nguy, cách nào chỉ <strong>giảm</strong> rủi ro?</li>
 <li>⚠⚠ <strong>Điểm cuốn</strong> là gì, và nêu bốn cấu hình sinh ra nó. ⭐ Vì sao <strong>không cảm biến nào và không
 logic nào</strong> bảo vệ được? Băng tải của DP-01 thuộc cấu hình nào?</li>
+<li>⭐⭐ Một lỗi lặp mỗi giờ, gỡ mất 20 giây, nhưng đi hết đường an toàn mất ba phút. Vì sao đây là <strong>lỗi
+thiết kế</strong> chứ không phải lỗi kỷ luật? Nêu năm tầng biện pháp theo thứ tự — và vì sao thiết bị mã
+hoá cao không được đứng đầu danh sách.</li>
 </ol>
-<p>Câu 1, 4 và 7 là ba câu phân loại. Nhưng lưu ý: <strong>trả lời trôi chảy mười câu này không có nghĩa là bạn
+<p>Câu 1, 4 và 7 là ba câu phân loại. Nhưng lưu ý: <strong>trả lời trôi chảy các câu này không có nghĩa là bạn
 đủ thẩm quyền thiết kế mạch an toàn.</strong> Nó có nghĩa là bạn đủ hiểu để làm việc được với người có thẩm
 quyền — và biết khi nào phải gọi họ.</p>
 <hr>
@@ -42118,6 +42503,17 @@ không đặt vấn đề) — nền cho mục 47.4b.</p>
 ⭐ quan hệ giữa <strong>kích thước lỗ trên che chắn</strong> và <strong>khoảng cách an toàn</strong>; hai cách chống kẹp
 (⭐ <strong>khe hở tối thiểu</strong> — loại bỏ mối nguy — so với <strong>giảm lực/năng lượng</strong>); và ⚠⚠ <strong>bốn cấu hình
 sinh ra điểm cuốn</strong>, trong đó có <strong>con lăn tiếp xúc băng tải</strong> — nền cho mục 47.7.</p>
+</li>
+<li><p>⭐ <strong>Động cơ vô hiệu hoá thiết bị bảo vệ</strong> (mục 47.7c): <strong>SICK</strong> — <em>Guidelines for Safe Machinery — Six
+Steps</em>, mục ước lượng rủi ro: khả năng vượt qua biện pháp bảo vệ và động cơ vượt qua (không làm được
+việc, làm chậm sản xuất, cản trở việc khác, khó dùng); mục che chắn di động: không vượt qua được bằng
+vật dụng sẵn có; <em>Safety Guide for the Americas</em>: yếu tố con người. <strong>Schneider Electric</strong> — <em>Machine
+Safety Guide</em>, mục thiết bị khoá liên động: chọn và lắp để giảm khả năng bị vô hiệu hoá, không cản trở
+sản xuất quá mức cần thiết, bốn biện pháp (gắn chắc, mã hoá, che thiết bị, giá đỡ cứng). <strong>DGUV / IFA
+Report 2/2017e</strong>: sử dụng sai có thể lường trước gồm cả vô hiệu hoá thiết bị bảo vệ. <strong>ISO 14119:2024</strong>,
+chương 8 <em>thiết kế để giảm động cơ vô hiệu hoá</em> (bản 2013: mục 7) — đối chiếu qua bản tóm tắt công khai
+của một đơn vị tư vấn an toàn máy (GT Engineering, trang về EN ISO 14119:2024 chương 8). Kiểm
+2026-09-29.</p>
 </li>
 </ul>
 <blockquote>
@@ -52679,7 +53075,7 @@ văn.</strong> Cú pháp chính xác, tên chân và cách khai báo phải lấ
 <tr>
 <td>Trễ khi tắt</td>
 <td><code>TOF</code></td>
-<td>⚠ <strong>Thường phải tự dựng</strong></td>
+<td>⚠ Thiết bị <code>T</code> <strong>chỉ có trễ khi bật</strong>; dòng iQ-F có khối chuẩn <code>TOF</code> và lệnh <code>STMR</code></td>
 <td><code>TOF</code></td>
 <td><code>TOF</code></td>
 <td><code>TOF</code></td>
@@ -52687,7 +53083,7 @@ văn.</strong> Cú pháp chính xác, tên chân và cách khai báo phải lấ
 <tr>
 <td>Xung</td>
 <td><code>TP</code></td>
-<td>⚠ Tự dựng</td>
+<td>Dòng iQ-F: khối chuẩn <code>TP</code>; dòng cũ: tra tài liệu dòng</td>
 <td><code>TP</code></td>
 <td><code>TP</code></td>
 <td>⚡ <code>TP</code>/tự dựng</td>
@@ -52709,6 +53105,11 @@ văn.</strong> Cú pháp chính xác, tên chân và cách khai báo phải lấ
 <td>⚡ Gần</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>⚠ <em>Bản trước của phụ lục ghi Mitsubishi &quot;phải tự dựng&quot; trễ khi tắt và xung — sai với dòng iQ-F: chính
+sổ tay lập trình FX5 liệt kê khối chuẩn <code>TOF</code>, <code>TP</code> (kèm biến thể <code>_10</code>, <code>_E</code>) và lệnh <code>STMR</code> (sửa ở
+đợt 64). Cái thật sự khác là <strong>thiết bị <code>T</code></strong> — ngay dưới đây.</em></p>
+</blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Cột Mitsubishi là chỗ khác biệt thật, không phải khác tên.</strong></p>
 <p>⭐ Ở hệ kiểu thiết bị, giá trị đặt là <strong>số nguyên đếm theo độ phân giải của bộ định thời</strong>, không
@@ -52926,6 +53327,12 @@ trọng</strong> — đọc tài liệu trước khi chọn.</p>
 <td>⚡ Gần</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>⭐ <strong>Riêng Mitsubishi: lệnh kiểu xung.</strong> Thêm <code>P</code> vào tên lệnh — <code>MOVP</code>, <code>INCP</code>, <code>CALLP</code> — thì lệnh chỉ
+chạy <strong>một lần</strong>, ở sườn lên của điều kiện; không có <code>P</code> thì lệnh chạy <strong>mọi vòng quét</strong> chừng nào điều
+kiện còn bật. ⚠ <code>INC D0</code> và <code>INCP D0</code> khác nhau giữa <em>&quot;cộng 1 mỗi vòng quét&quot;</em> và <em>&quot;cộng 1 một lần&quot;</em> —
+và nhìn nấc thang thì chỉ khác <strong>một chữ</strong>. <em>(Sổ tay lập trình FX5 — điều kiện thực thi lệnh.)</em></p>
+</blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Điểm chung phải nhớ trên MỌI hệ: mỗi chỗ bắt cạnh cần một BIT NHỚ RIÊNG.</strong></p>
 <p>Bắt cạnh hoạt động bằng cách so trạng thái hiện tại với trạng thái vòng quét trước — nên nó phải
@@ -53173,6 +53580,10 @@ END_CASE;
 <blockquote>
 <p>⭐ <strong>Khác biệt so với CODESYS gần như chỉ là dấu <code>#</code> cho biến cục bộ</strong> và việc bộ định thời cần
 Instance DB. Cấu trúc tư duy giống hệt — vì cả hai bám IEC 61131-3.</p>
+<p>⚡ <strong>Vì sao bản Siemens ở đây là SCL, không phải LAD:</strong> hướng dẫn phong cách lập trình của chính Siemens
+khuyên viết ruột khối bằng SCL, còn LAD/FBD để nối các khối trong OB và cho khối chủ yếu là logic nhị
+phân. ⚠ Ngoài hiện trường bạn vẫn gặp rất nhiều chương trình Siemens viết LAD từ đầu tới cuối — phong
+cách LAD của Siemens, đặt cạnh Mitsubishi và Rockwell: Chương 15 mục 15.6.</p>
 <p>⚠⚠ <strong>Vì sao bộ định thời gọi NGOÀI <code>CASE</code> ở cả hai bản:</strong> một thể hiện khối <strong>không được gọi thì
 giữ nguyên trạng thái</strong>. Gọi nó bên trong nhánh <code>40</code> thì rời bước là nó <strong>đứng yên</strong> — và lần sau
 vào bước 40, <code>IN</code> vẫn TRUE nên không có sườn lên nào để đếm lại: <code>Q</code> còn TRUE từ lần trước, hoặc
@@ -53190,8 +53601,8 @@ mỗi vòng (PLCopen CP20, Phụ lục N).</p>
                     │
                     ├──[LD  X5]──[MOV K50 D100]   // X5 = DI_Clamp1Up → bước 50
                     │
-                    └──[LD  T5]──┬──[MOV K3041 D200]
-                                 └──[MOV K900  D100]
+                    └──[LD  T5]──[ANI  X5]──┬──[MOV K3041 D200]   // ⭐ ANI X5: xem bảng dưới
+                                            └──[MOV K900  D100]
 </code></pre>
 <div class="table-wrap"><table>
 <thead>
@@ -53211,6 +53622,10 @@ mỗi vòng (PLCopen CP20, Phụ lục N).</p>
 <tr>
 <td>⭐ <strong>Số bước nằm trong thanh ghi <code>D100</code></strong></td>
 <td>Cùng ý tưởng, khác cách gọi</td>
+</tr>
+<tr>
+<td>⚠⚠ <strong>Nấc thang không có <code>ELSIF</code></strong></td>
+<td>⭐ Mọi nhánh sau <code>LD= D100 K40</code> dùng <strong>chung một kết quả đã lưu</strong> (<code>MPS</code>/<code>MRD</code>/<code>MPP</code>) và chạy lần lượt trong <strong>cùng</strong> vòng quét. Kẹp lên đúng vòng quét hết giờ thì thiếu <code>ANI X5</code>, cả <code>MOV K50</code> lẫn <code>MOV K900</code> cùng chạy — bước cuối là <strong>900</strong>, trong khi bản ST cho <strong>50</strong>. <code>ANI X5</code> làm phản hồi thật thắng, như <code>ELSIF</code></td>
 </tr>
 <tr>
 <td>⭐ <code>OUT T5</code> nằm <strong>dưới</strong> phép so sánh bước</td>

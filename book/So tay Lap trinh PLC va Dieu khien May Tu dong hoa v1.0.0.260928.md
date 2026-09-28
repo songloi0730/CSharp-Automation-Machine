@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260927 |
+| **Phiên bản** | v1.0.0.260928 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -35,7 +35,7 @@
 > đánh giá rủi ro cho cỗ máy cụ thể của bạn · thiết kế điện do người có chuyên
 > môn thực hiện · bản gốc tiêu chuẩn · quy định hiện hành tại thị trường của bạn.
 >
-> ⚠ Các chương chạm phần an toàn — **Chương 3, 6, 47, 48 và Phụ lục D** — mang
+> ⚠ Các chương chạm phần an toàn — **Chương 3, 6, 47, 48, 56 và Phụ lục D** — mang
 > cờ cảnh báo và **đang chờ chuyên gia an toàn máy rà soát**. Không dùng chúng
 > làm căn cứ thiết kế cho tới khi có.
 
@@ -562,8 +562,24 @@ AI_  ngõ vào analog    AO_  ngõ ra analog
 AX_  trục              NET_ kết nối mạng
 ```
 
-Mọi đoạn code trong sách đều **tự kiểm được về mặt logic**: không có cuộn dây trùng, không có vòng lặp
-vô hạn, có xử lý điều kiện biên, và mọi bước chờ đều có timeout báo lỗi.
+Mọi khối mã được viết theo bốn luật: không có cuộn dây trùng, không có vòng lặp vô hạn, có xử lý điều
+kiện biên, và mọi bước chờ đều có timeout báo lỗi. ⭐ Sách có **hai loại khối mã**, và bạn nên phân biệt
+chúng trước khi chép:
+
+| Loại | Nhận ra bằng | Chép vào phần mềm được không |
+|---|---|---|
+| ⭐ **Ví dụ hoàn chỉnh** | Dòng đầu là `// ✔ VÍ DỤ HOÀN CHỈNH` | ✅ **Được** — tự đủ khai báo; cần một kiểu hay một khối ở chương khác thì dòng đầu ghi rõ ở đâu |
+| **Đoạn trích** | Không có dòng đó | ⚠ Minh hoạ **một ý** — tag lấy theo bảng I/O của máy mẫu (Phụ lục J), biến nội bộ suy từ ngữ cảnh; chỗ lược bớt đánh dấu `…` |
+
+Mỗi chương dạy viết mã (Chương 14–21, 24–30) có ít nhất một ví dụ hoàn chỉnh; Chương 22, 23 dạy cách
+đọc mã và viết đặc tả nên không có. Cả hai loại khối đều đi qua **bộ kiểm mã của sách** (Phụ lục N mục
+N.7) — và các ví dụ hoàn chỉnh viết bằng ST còn được **chạy thử** qua nhiều vòng quét, nhiều chu trình
+liên tiếp (ví dụ LD, SFC thì chưa: bộ chạy thử chỉ hiểu ST).
+
+> ⚠ **Kiểm bằng công cụ không thay được việc chạy trên phần mềm và phần cứng của bạn.** Bộ kiểm không
+> biết kiểu dữ liệu của từng biểu thức, bộ chạy thử là một mô hình chứ không phải PLC thật, và mỗi hãng
+> có chỗ khác chuẩn (Phụ lục A2). ⭐ Hãy coi ví dụ hoàn chỉnh là **điểm xuất phát đã được kiểm**, không
+> phải một bản đã được nghiệm thu trên máy của bạn.
 
 ---
 
@@ -5095,29 +5111,34 @@ vì giữ nó nghĩa là máy tự chạy lại khi có điện trở lại.
 
 ### Bài toán
 
-DP-01 có hai trạm gần giống nhau. Mỗi trạm cần theo dõi: bước hiện tại, bước đang lỗi, cờ lỗi, số
-board đã làm, board hiện tại có NG không.
+DP-01 có hai trạm gần giống nhau. Mỗi trạm cần **công bố** cho phần còn lại của máy: sẵn sàng nhận
+board chưa, có đang bận không, có lỗi không và lỗi ở bước nào, board đã xong chưa, đã làm bao nhiêu
+board, chu kỳ gần nhất mất bao lâu.
 
 Cách ngây thơ — khai báo rời rạc:
 
 ```iecst
 VAR
-    Stn1_Step       : INT;
-    Stn1_FaultStep  : INT;
-    Stn1_AnyFault   : BOOL;
-    Stn1_DoneCount  : DINT;
-    Stn1_BoardIsNG  : BOOL;
+    Stn1_Ready       : BOOL;
+    Stn1_Busy        : BOOL;
+    Stn1_Fault       : BOOL;
+    Stn1_FaultStep   : INT;
+    Stn1_BoardDone   : BOOL;
+    Stn1_DoneCount   : DINT;
+    Stn1_LastCycleMs : DINT;
 
-    Stn2_Step       : INT;
-    Stn2_FaultStep  : INT;
-    Stn2_AnyFault   : BOOL;
-    Stn2_DoneCount  : DINT;
-    Stn2_BoardIsNG  : BOOL;
+    Stn2_Ready       : BOOL;
+    Stn2_Busy        : BOOL;
+    Stn2_Fault       : BOOL;
+    Stn2_FaultStep   : INT;
+    Stn2_BoardDone   : BOOL;
+    Stn2_DoneCount   : DINT;
+    Stn2_LastCycleMs : DINT;
 END_VAR
 ```
 
-Mười biến, chép hai lần. Thêm trạm thứ ba là chép lần nữa. Thêm một trường mới là sửa ba chỗ — và
-quên một chỗ là lỗi.
+Mười bốn biến — bảy cái, chép hai lần. Thêm trạm thứ ba là chép lần nữa. Thêm một trường mới là sửa
+ba chỗ — và quên một chỗ là lỗi.
 
 ### Cách đúng: một kiểu, nhiều biến
 
@@ -5125,17 +5146,19 @@ quên một chỗ là lỗi.
 liên quan thành **một kiểu**:
 
 ```iecst
-TYPE ST_Station :
+TYPE ST_Station :                      // giao diện CÔNG BỐ của một trạm — chỉ trạm đó ghi
 STRUCT
-    Step        : INT;      // bước hiện tại
-    FaultStep   : INT;      // bước đang lỗi, 0 nếu không lỗi
-    AnyFault    : BOOL;
-    DoneCount   : DINT;
-    BoardIsNG   : BOOL;
+    Ready       : BOOL;                // sẵn sàng nhận board mới
+    Busy        : BOOL;                // đang xử lý
+    Fault       : BOOL;                // trạm có lỗi — cờ đã chốt (Chương 25 mục 25.5c)
+    FaultStep   : INT;                 // bước lúc lỗi, 0 nếu không lỗi
+    BoardDone   : BOOL;                // board đã xong, chờ chuyển đi
+    DoneCount   : DINT;                // ⭐ DINT, không phải INT — sẽ tràn
+    LastCycleMs : DINT;                // ⭐ đơn vị trong tên
 END_STRUCT
 END_TYPE
 
-VAR
+VAR_GLOBAL
     Stn1 : ST_Station;
     Stn2 : ST_Station;
 END_VAR
@@ -5144,19 +5167,21 @@ END_VAR
 Dùng bằng dấu chấm:
 
 ```iecst
-IF Stn1.Step = 20 AND DI_Clamp1Up THEN
-    Stn1.Step := 30;
-END_IF;
-
-TotalDone := Stn1.DoneCount + Stn2.DoneCount;
+M_AllStnReady := Stn1.Ready AND Stn2.Ready;          // cả hai trạm đang trống
+TotalDone     := Stn1.DoneCount + Stn2.DoneCount;
 ```
 
 Bốn lợi ích cụ thể:
 
 - **Thêm trường là sửa một chỗ** — mọi trạm có ngay trường mới.
 - **Không thể quên trạm nào**, vì cấu trúc là chung.
-- **Truyền cả cụm** vào một khối chức năng bằng một tham số, thay vì năm tham số rời.
-- **Đọc rõ nghĩa**: `Stn2.AnyFault` nói ngay nó thuộc về ai.
+- **Truyền cả cụm** vào một khối chức năng bằng một tham số, thay vì bảy tham số rời.
+- **Đọc rõ nghĩa**: `Stn2.Fault` nói ngay nó thuộc về ai.
+
+> ⚠ **Bước hiện tại KHÔNG nằm trong kiểu này — có chủ ý.** `ST_Station` là thứ trạm **công bố** cho
+> phần còn lại của máy đọc. Bước là **ruột** của trạm: chỉ chương trình của trạm đó đọc và ghi, nên
+> nó là biến của chương trình trạm — `Stn1_Step`, mục 11.7. ⭐ Chương 27 mục 27.4 cho thấy vì sao để
+> lộ nó ra cả máy là nguồn lỗi: sớm muộn sẽ có người ở trạm khác viết `IF Stn2_Step = 0 …`.
 
 ### Mảng — khi các đối tượng đánh số được
 
@@ -5224,7 +5249,7 @@ dùng, một vòng lặp có thể phá chỉ số của vòng lặp kia.
 | **Gọi thẳng tên** biến toàn cục | Không cho phép | ⚠ Nhiều hệ **cho phép** — tài liệu CODESYS ghi rõ là không bắt khai `VAR_EXTERNAL`, từ khoá chỉ giữ để tương thích chuẩn |
 
 ```iecst
-PROGRAM Prg_Stn1Seq
+PROGRAM Prg_Stn1Dispense
 VAR_EXTERNAL
     DI_BoardStn1 : BOOL;         // "chương trình này dùng biến toàn cục DI_BoardStn1" — viết ra
 END_VAR
@@ -5260,15 +5285,15 @@ I/O toàn cục và nối vào chân của các thể hiện (Chương 27 mục 
 Gom cả chương thành một khối khai báo dùng được:
 
 ```iecst
-// ── Kiểu dữ liệu của một trạm ──
-TYPE ST_Station :
+// ── Kiểu dữ liệu: giao diện CÔNG BỐ của một trạm (mục 11.5) ──
+TYPE ST_Station :                      // giao diện CÔNG BỐ của một trạm — chỉ trạm đó ghi
 STRUCT
-    Step        : INT;                 // bước hiện tại
-    FaultStep   : INT;                 // bước đang lỗi
-    AnyFault    : BOOL;
+    Ready       : BOOL;                // sẵn sàng nhận board mới
+    Busy        : BOOL;                // đang xử lý
+    Fault       : BOOL;                // trạm có lỗi — cờ đã chốt (Chương 25 mục 25.5c)
+    FaultStep   : INT;                 // bước lúc lỗi, 0 nếu không lỗi
+    BoardDone   : BOOL;                // board đã xong, chờ chuyển đi
     DoneCount   : DINT;                // ⭐ DINT, không phải INT — sẽ tràn
-    NgCount     : DINT;
-    BoardIsNG   : BOOL;
     LastCycleMs : DINT;                // ⭐ đơn vị trong tên
 END_STRUCT
 END_TYPE
@@ -5289,7 +5314,8 @@ VAR_GLOBAL
     M_Running       : BOOL;            // ⚠⚠ KHÔNG giữ qua mất điện (Chương 16)
     M_AnyFault      : BOOL;
 
-    Stn1            : ST_Station;      // ⚠ Step KHÔNG giữ qua mất điện
+    // Giao diện công bố của hai trạm — CHỈ trạm N ghi vào StnN (Chương 27 mục 27.4)
+    Stn1            : ST_Station;
     Stn2            : ST_Station;
 END_VAR
 
@@ -5300,17 +5326,29 @@ VAR_GLOBAL RETAIN
     TotalCycleCount : DINT;            // tổng chu trình trọn đời — cho lịch bảo trì
     CurrentRecipeId : INT;             // mã hàng đang chạy
 END_VAR
+
+// ── Ruột của trạm 1: biến của CHƯƠNG TRÌNH trạm, không toàn cục ──
+PROGRAM Prg_Stn1Dispense
+VAR
+    Stn1_Step       : INT;             // ⚠⚠ bước hiện tại — KHÔNG giữ qua mất điện
+END_VAR
+    …
+END_PROGRAM
 ```
 
-Ba điều đáng chú ý trong khối trên:
+Bốn điều đáng chú ý trong khối trên:
 
 - **Bộ đếm dùng `DINT`, không dùng `INT`.** Sản lượng một ca có thể vượt 32 767 ở máy chạy nhanh, và
   tổng chu trình trọn đời thì chắc chắn vượt.
 - **`LastCycleMs` mang đơn vị trong tên.** Không có nó, người sửa sau sáu tháng phải đoán là giây hay
   mili-giây.
-- ⚠ **`Stn1.Step` nằm ở nhóm không giữ.** Đây là quyết định an toàn, không phải quyết định tiện lợi:
+- ⚠ **Bước của trạm nằm ở nhóm không giữ.** Đây là quyết định an toàn, không phải quyết định tiện lợi:
   giữ số bước qua mất điện nghĩa là máy chạy tiếp từ bước cũ trong khi cơ cấu có thể đã ở tư thế khác
   (Chương 16, Bẫy 4; Chương 28).
+- ⭐ **Thứ công bố thì toàn cục, ruột thì cục bộ.** `Stn1` (kiểu `ST_Station`) nằm trong
+  `VAR_GLOBAL` vì cả máy cần đọc; `Stn1_Step` nằm trong chương trình trạm 1 vì không ai khác được đọc.
+  Trong dự án thật, biến bước trong `Prg_Stn1Dispense` chỉ cần tên `Step`; ⚠ sách giữ tiền tố `Stn1_`
+  để mỗi đoạn trích đứng một mình vẫn biết là của trạm nào (Phụ lục N mục N.7).
 
 ---
 
@@ -6718,6 +6756,89 @@ END_VAR
 
 Sửa một lỗi trong FB là sửa cho cả bốn. Chương 27 và Chương 30 nói kỹ cách viết FB dùng lại được.
 
+### ⭐ Ba loại POU trong một ví dụ hoàn chỉnh
+
+Khối dưới đây có đủ ba loại, mỗi loại làm đúng việc của nó: **hàm** tính một con số từ đầu vào, **khối**
+nhớ số đếm của riêng mình, **chương trình** nối biến toàn cục vào chân khối. Nó cũng dùng đủ ba cách
+khai báo của mục 11.6: `VAR_GLOBAL` cho biến dùng chung, `VAR_EXTERNAL` cho *"chương trình này dùng biến
+toàn cục nào"*, `VAR` cho biến riêng.
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — ba loại POU trong một ví dụ: hàm, khối chức năng, chương trình
+FUNCTION PercentOf : INT                 // HÀM — không nhớ gì: cùng đầu vào, luôn cùng kết quả
+VAR_INPUT
+    Part  : DINT;
+    Whole : DINT;
+END_VAR
+IF Whole > 0 THEN
+    PercentOf := DINT_TO_INT((Part * 100) / Whole);    // nhân trước, chia sau (Chương 19)
+ELSE
+    PercentOf := 0;                                     // mẫu số 0: trả 0, không để CPU dừng
+END_IF;
+END_FUNCTION
+
+FUNCTION_BLOCK FB_BoardCounter           // KHỐI — mỗi thể hiện có bộ nhớ RIÊNG
+VAR_INPUT
+    Board : BOOL;                        // board đang ở trạm (tín hiệu đã lọc rung — Chương 17)
+    IsNG  : BOOL;                        // board đang rời trạm bị đánh dấu NG
+    Clear : BOOL;                        // xoá số đếm — ví dụ đầu ca
+END_VAR
+VAR_OUTPUT
+    Total : DINT;
+    NgQty : DINT;
+END_VAR
+VAR
+    Leave : F_TRIG;                      // đếm lúc board RỜI đi — sườn xuống
+END_VAR
+Leave(CLK := Board);
+IF Clear THEN
+    Total := 0;
+    NgQty := 0;
+ELSIF Leave.Q THEN
+    Total := Total + 1;
+    IF IsNG THEN
+        NgQty := NgQty + 1;
+    END_IF;
+END_IF;
+END_FUNCTION_BLOCK
+
+VAR_GLOBAL
+    M_Board1Present : BOOL;
+    M_Board1IsNG    : BOOL;
+    M_ShiftStart    : BOOL;
+    Stn1Total       : DINT;
+    Stn1NgQty       : DINT;
+    Stn1NgPct       : INT;
+END_VAR
+
+PROGRAM Prg_Stn1Count                    // CHƯƠNG TRÌNH — nơi nối biến toàn cục vào chân khối
+VAR_EXTERNAL
+    M_Board1Present, M_Board1IsNG, M_ShiftStart : BOOL;
+    Stn1Total, Stn1NgQty                        : DINT;
+    Stn1NgPct                                   : INT;
+END_VAR
+VAR
+    Counter1 : FB_BoardCounter;          // một THỂ HIỆN — trạm 2 sẽ có Counter2 của riêng nó
+END_VAR
+Counter1(Board := M_Board1Present, IsNG := M_Board1IsNG, Clear := M_ShiftStart);
+Stn1Total := Counter1.Total;
+Stn1NgQty := Counter1.NgQty;
+Stn1NgPct := PercentOf(Part := Stn1NgQty, Whole := Stn1Total);
+END_PROGRAM
+```
+
+Ba điều nhìn thấy được khi chạy thử (ba board đi qua, một board NG):
+
+- **`Counter1` nhớ** — `Total` tăng dần qua từng board. Hàm `PercentOf` thì **không nhớ gì**: gọi với
+  `(1, 3)` lúc nào cũng ra 33.
+- **Tạo `Counter2 : FB_BoardCounter` cho trạm 2** là có ngay một bộ đếm thứ hai, bộ nhớ riêng, không
+  đụng gì tới `Counter1` — đúng hình ảnh *bản thiết kế và cái máy* ở mục 14.3.
+- ⚠ **Hàm được bảo vệ khỏi mẫu số 0**: đầu ca `Total` = 0, hàm trả 0 thay vì làm CPU dừng (Chương 19).
+
+> ⭐ **Một khối hoàn chỉnh trong sách có thể gồm nhiều phần** — danh sách biến toàn cục, kiểu dữ liệu,
+> hàm, khối, chương trình. Trong phần mềm của bạn, **mỗi phần là một đối tượng riêng** (danh sách biến
+> toàn cục là một đối tượng, mỗi POU là một đối tượng); chép từng phần vào đúng chỗ của nó.
+
 ---
 
 ## 14.4 Tác vụ — chương trình chạy khi nào
@@ -7429,6 +7550,55 @@ board. Khó chịu, nhưng không nguy hiểm cho người.
  ────┤ ├──────────────────────────────────────────────────────────────( )───
 ```
 
+### ⭐ Ghép ba nấc — một chương trình LD hoàn chỉnh
+
+Một POU viết bằng LD có hai phần: **phần khai báo** — viết bằng chữ, giống hệt ST — và **thân** là các
+nấc thang. Khối đầu là phần khai báo, chép được nguyên văn; khối sau là thân, vẽ lại trong trình soạn
+thảo ladder của bạn đúng từng tiếp điểm.
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — chương trình LD của DP-01 ở lát cắt 1: phần khai báo; sơ đồ ở khối kế tiếp
+VAR_GLOBAL
+    DI_StartPB   : BOOL;                 // nút Start — NO
+    DI_StopPB    : BOOL;                 // nút Stop — NC, bình thường bằng 1
+    DI_AirOK     : BOOL;                 // công tắc áp suất — kín khi đủ khí
+    DI_BoardStn1 : BOOL;                 // cảm biến board ở trạm 1
+    DO_ConvRun   : BOOL;                 // cho phép chuyền chạy
+    DO_Stop1Vlv  : BOOL;                 // van chặn trạm 1
+END_VAR
+
+PROGRAM Prg_ConvLd                       // thân POU là ba nấc thang ở khối kế tiếp
+VAR_EXTERNAL
+    DI_StartPB, DI_StopPB, DI_AirOK, DI_BoardStn1 : BOOL;
+    DO_ConvRun, DO_Stop1Vlv                       : BOOL;
+END_VAR
+VAR
+    M_ConvRunCmd : BOOL;                 // lệnh chạy đã tự giữ — CHỈ nấc 1 ghi
+END_VAR
+END_PROGRAM
+```
+
+```text
+ Nấc 1 — tự giữ: (Start HOẶC đã chạy) VÀ Stop chưa nhấn VÀ đủ khí
+   DI_StartPB      DI_StopPB      DI_AirOK                        M_ConvRunCmd
+ ┌───┤ ├──────┬──────┤ ├────────────┤ ├──────────────────────────────( )───┐
+ │            │
+ │ M_ConvRunCmd
+ └───┤ ├──────┘
+
+ Nấc 2 — chuyền chỉ chạy khi trạm 1 còn trống
+   M_ConvRunCmd   DI_BoardStn1                                    DO_ConvRun
+ ────┤ ├─────────────┤/├──────────────────────────────────────────────( )───
+
+ Nấc 3 — có board ở trạm 1 thì nâng chặn
+   DI_BoardStn1                                                    DO_Stop1Vlv
+ ────┤ ├──────────────────────────────────────────────────────────────( )───
+```
+
+> ⭐ **Mỗi ngõ ra một nấc, mỗi cờ một nấc** — `M_ConvRunCmd` chỉ nấc 1 ghi, `DO_ConvRun` chỉ nấc 2,
+> `DO_Stop1Vlv` chỉ nấc 3 (Bẫy 1). Bộ kiểm mã của sách soát mọi tên trong sơ đồ này đều đã được khai ở
+> khối trên — thiếu một dòng khai báo là không biên dịch được.
+
 ---
 
 ## 15.4b ⚠⚠ Vùng điều khiển `MCR` — và một cái tên nguy hiểm
@@ -8063,30 +8233,51 @@ phải nhấn Start lần nữa: một hành động có chủ ý của người
 ### Đánh dấu board lỗi — SET/RESET đúng chỗ
 
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — đánh dấu board NG ở trạm 1: cạnh lên xoá, SET giữ dấu, cạnh xuống chốt số
+VAR_GLOBAL
+    M_Board1Present : BOOL;              // board ở trạm 1 — tín hiệu ĐÃ LỌC RUNG (Chương 17)
+    M_Stn1Timeout   : BOOL;              // trạm 1 báo quá thời gian (Chương 26)
+    M_DispFault     : BOOL;              // lỗi tra keo (Chương 32)
+    M_Board1IsNG    : BOOL;              // dấu NG của board đang ở trạm 1
+END_VAR
+
+VAR_GLOBAL RETAIN
+    Stn1OkCount : DINT;                  // ⭐ giữ qua mất điện — số đã đếm là sự thật đã xảy ra
+    Stn1NgCount : DINT;
+END_VAR
+
+PROGRAM Prg_Board1Mark
+VAR_EXTERNAL
+    M_Board1Present, M_Stn1Timeout, M_DispFault, M_Board1IsNG : BOOL;
+    Stn1OkCount, Stn1NgCount                                  : DINT;
+END_VAR
 VAR
     TrigIn  : R_TRIG;
     TrigOut : F_TRIG;
 END_VAR
 
-TrigIn(CLK := DI_BoardStn1);
-TrigOut(CLK := DI_BoardStn1);
+TrigIn(CLK := M_Board1Present);
+TrigOut(CLK := M_Board1Present);
 
-// Board mới vào: xoá dấu của board TRƯỚC ĐÓ
+// 1 · Board mới vào: xoá dấu của board TRƯỚC — đặt TRƯỚC dòng đánh dấu
 IF TrigIn.Q THEN
     M_Board1IsNG := FALSE;
 END_IF;
 
-// Trong lúc gia công, bất kỳ chỗ nào cũng có thể đánh dấu
+// 2 · Trong lúc gia công, lỗi nào cũng đánh dấu được — và dấu DÍNH tới khi board mới vào
 IF M_Stn1Timeout OR M_DispFault THEN
     M_Board1IsNG := TRUE;
 END_IF;
 
-// Board rời trạm: chốt số liệu
+// 3 · Board rời trạm: chốt số liệu, đúng MỘT lần
 IF TrigOut.Q THEN
-    IF M_Board1IsNG THEN  NgCount := NgCount + 1;
-    ELSE                  OkCount := OkCount + 1;
+    IF M_Board1IsNG THEN
+        Stn1NgCount := Stn1NgCount + 1;
+    ELSE
+        Stn1OkCount := Stn1OkCount + 1;
     END_IF;
 END_IF;
+END_PROGRAM
 ```
 
 Ba mẩu trên minh hoạ trọn vẹn chương này: **cạnh lên** để xoá dấu đúng một lần khi board mới vào,
@@ -8095,6 +8286,12 @@ board rời đi.
 
 Chú ý thứ tự: nấc xoá dấu đặt **trước** nấc đánh dấu. Nếu đảo lại, một lỗi xảy ra đúng vào vòng quét
 board mới vào sẽ bị xoá mất.
+
+> ⭐ **Đây là ví dụ hoàn chỉnh của chương** — chép vào phần mềm là biên dịch được. Nó bắt cạnh trên
+> `M_Board1Present`, tín hiệu board **đã lọc rung** (Chương 17 mục 17.4), chứ không trên `DI_BoardStn1`
+> thô — đúng thứ tự *lọc trước, bắt cạnh sau* của Bẫy 8. ⚠ Và sườn giả lúc cấp điện (Bẫy 9) ở đây vô
+> hại: nó chỉ **xoá** một dấu NG, không đếm gì. Chạy thử với hai board, board đầu có lỗi thoáng qua: dấu
+> NG dính suốt lúc gia công, board sau vào thì dấu được xoá, mỗi board được đếm **đúng một lần**.
 
 ### Nút một chạm đổi trạng thái đèn báo
 
@@ -8543,13 +8740,18 @@ Quy tắc thực dụng:
 | Lớn hơn 100 lần chu kỳ quét | ✅ Tốt | Dùng thoải mái |
 
 > 🔍 **BẪY — timer trong nhánh chương trình không phải lúc nào cũng chạy**
-> Nếu khối timer nằm trong một nhánh `IF` **không được thực thi ở vòng quét này**, thì timer đó
-> **không được cập nhật** — nó đứng yên chứ không chạy tiếp.
+> Nếu khối timer nằm trong một nhánh `IF` **không được thực thi ở vòng quét này**, thì ngõ ra của nó
+> **không được cập nhật** — `Q` và `ET` đứng yên ở giá trị cũ.
 >
-> Nhiều người tưởng timer chạy nền như đồng hồ. Không phải: nó chỉ tiến khi được gọi.
+> ⚠⚠ Nhưng *đứng yên* **không** có nghĩa là *tạm dừng*. Nhiều hệ ghi lại **thời điểm bắt đầu** theo
+> một đồng hồ chạy nền của CPU, rồi mỗi lần được gọi thì tính `ET` = *bây giờ trừ lúc bắt đầu*
+> (Siemens S7-1200), hoặc cộng *thời gian kể từ lần quét trước* (Rockwell). Bị bỏ không gọi mười
+> phút, rồi được gọi lại với `IN` vẫn TRUE → `ET` **nhảy vọt** mười phút, và `Q` lên **ngay** ở vòng
+> quét đầu tiên.
 >
-> Nếu cần timer chạy liên tục bất kể logic, hãy **gọi khối đó ở ngoài nhánh điều kiện**, và đưa điều
-> kiện vào chân `IN` thay vì bọc cả khối trong `IF`.
+> Cách đúng: **gọi khối ở ngoài nhánh điều kiện**, và đưa điều kiện vào chân `IN` thay vì bọc cả khối
+> trong `IF`. ⭐ Muốn timer ngưng đếm khi máy giữ, đưa **chính điều kiện giữ** vào `IN`: tắt `IN` là
+> xoá về 0, bật lại là đếm lại từ đầu (Phụ lục L mục L.6).
 
 ---
 
@@ -8577,6 +8779,64 @@ T_StartDeb(IN := DI_StartPB, PT := T#20MS);
 M_StartClean := T_StartDeb.Q;
 ```
 
+### ⭐ Lọc hai chiều — khối dùng lại, ví dụ hoàn chỉnh
+
+`TON` ở hai mục trên chỉ lọc **một chiều**: tín hiệu phải ổn định mới được công nhận là **có**, nhưng
+mất một cái là công nhận **không** ngay. Với cảm biến board, một lần nháy tắt ở giữa board là một
+sườn xuống giả — và một board bị đếm thành hai. Khối dưới lọc cả hai chiều, và chương trình đi kèm
+dùng nó cho hai tín hiệu với hai thời gian lọc khác nhau:
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — khối lọc rung hai chiều, và chương trình lọc các ngõ vào dùng nó
+FUNCTION_BLOCK FB_Debounce
+VAR_INPUT
+    Raw     : BOOL;                      // tín hiệu thô từ ngõ vào
+    TimeOn  : TIME := T#20MS;            // phải ổn định TRUE bấy lâu mới công nhận TRUE
+    TimeOff : TIME := T#20MS;            // phải ổn định FALSE bấy lâu mới công nhận FALSE
+END_VAR
+VAR_OUTPUT
+    Out : BOOL;                          // tín hiệu đã lọc
+END_VAR
+VAR
+    T_On  : TON;
+    T_Off : TON;
+END_VAR
+// Mỗi TON chỉ chạy khi thô KHÁC đã lọc — nháy ngắn hơn thời gian lọc thì TON về 0, Out đứng yên
+T_On(IN := Raw AND NOT Out, PT := TimeOn);
+T_Off(IN := NOT Raw AND Out, PT := TimeOff);
+IF T_On.Q THEN
+    Out := TRUE;
+ELSIF T_Off.Q THEN
+    Out := FALSE;
+END_IF;
+END_FUNCTION_BLOCK
+
+VAR_GLOBAL
+    DI_BoardStn1    : BOOL;
+    DI_StartPB      : BOOL;
+    M_Board1Present : BOOL;              // board ở trạm 1 — đã lọc (Chương 16 dùng tín hiệu này)
+    M_StartPB       : BOOL;              // nút Start — đã lọc
+END_VAR
+
+PROGRAM Prg_Inputs
+VAR_EXTERNAL
+    DI_BoardStn1, DI_StartPB, M_Board1Present, M_StartPB : BOOL;
+END_VAR
+VAR
+    FltBoard1 : FB_Debounce;
+    FltStart  : FB_Debounce;
+END_VAR
+FltBoard1(Raw := DI_BoardStn1, TimeOn := T#50MS, TimeOff := T#50MS);   // chống nháy ở mép board
+FltStart(Raw := DI_StartPB, TimeOn := T#20MS, TimeOff := T#20MS);      // chống nảy tiếp điểm
+M_Board1Present := FltBoard1.Out;
+M_StartPB       := FltStart.Out;
+END_PROGRAM
+```
+
+Chạy thử: nháy ngắn hơn thời gian lọc — ở cả sườn lên lẫn giữa lúc có board — **không** làm đổi đầu
+ra; tín hiệu ổn định đủ lâu thì được công nhận. ⚠ Cái giá phải trả: đầu ra **trễ đúng bằng thời gian
+lọc**, nên thời gian lọc phải nhỏ hơn nhiều lần khoảng cách thật giữa hai sản phẩm (Chương 18 mục 18.4).
+
 ### Timeout của bước — ⭐ dùng để **báo lỗi**, không để chuyển bước
 
 Đây là cách dùng timer đúng đắn nhất trong toàn bộ chương trình trình tự:
@@ -8593,8 +8853,8 @@ END_IF;
 // BÁO LỖI: bằng timer, chạy song song
 T_Step20(IN := (Stn1_Step = 20), PT := T#3S);
 IF T_Step20.Q THEN
-    Stn1_FaultStep := 20;
-    Stn1_Fault     := TRUE;      // "S1.20 quá thời gian — chờ DI_Clamp1Up" · cờ của trạm (Ch.25 mục 25.5c)
+    Stn1.FaultStep := 20;
+    Stn1.Fault     := TRUE;      // "S1.20 quá thời gian — chờ DI_Clamp1Up" · cờ của trạm (Ch.25 mục 25.5c)
 END_IF;
 ```
 
@@ -8609,6 +8869,12 @@ Hai khối này **làm hai việc khác nhau và không thay thế nhau**:
 
 Dòng cuối là toàn bộ lý do. Hai câu hỏi trùng nhau khi mọi thứ ổn, và **tách nhau đúng lúc bạn cần
 câu trả lời đúng nhất**.
+
+> ⚠ **Máy có trạng thái giữ (Hold) thì `IN` cần thêm một điều kiện.** Đang giữ ở bước 20, trình tự
+> đứng yên — đó **không** phải bước bị kẹt. Với `IN := (Stn1_Step = 20)`, giữ máy quá 3 giây là báo
+> lỗi giả. Khung ở Phụ lục L mục L.6 đưa luôn *"trình tự đang được phép chạy"* vào `IN`
+> (`M_CycleEnable`, Chương 25). ⚠ Đừng giải bằng cách đặt bộ định thời vào nhánh bị giữ — xem ô bẫy ở
+> mục 17.3.
 
 ---
 
@@ -8682,6 +8948,10 @@ nguyên nhân — và vấn đề nằm ở **điều kiện vào**, không ở 
 
 **Cách phân biệt hai bẫy:** xem giá trị đếm hiện tại. Nhảy về 0 liên tục → Bẫy 2. Đứng im một chỗ →
 Bẫy 3.
+
+⚠ Bẫy 3 còn một triệu chứng **ngược lại**, khó đoán hơn: nhánh chạy lại thì timer **hết giờ ngay lập
+tức** — vì lần gọi đó tính luôn cả khoảng thời gian nó đã không được gọi (mục 17.3). ⭐ Thấy một báo
+lỗi quá thời gian bật **đúng lúc máy vừa chạy tiếp** sau một lần dừng lâu → nghĩ tới bẫy này trước.
 
 ### 🔍 BẪY 4 — Đặt thời gian quá gần chu kỳ quét
 
@@ -9067,6 +9337,76 @@ bộ đếm phần cứng ở mục 18.5.
 > Nghi đếm trùng thì thêm một bộ đếm thứ hai trên tín hiệu **chưa lọc**, và hiển thị cả hai. Hiệu số
 > giữa hai con số chính là số cạnh giả — bạn đo được vấn đề thay vì đoán, và biết được việc lọc có
 > thật sự cần thiết không.
+
+### ⭐ Ghép lại — ví dụ hoàn chỉnh
+
+Ba câu hỏi của chương trong một chương trình: *đang có bao nhiêu board trong máy* (`CTUD`), *đã ra
+bao nhiêu board tốt, bao nhiêu board NG* (đếm ở lối ra), và *làm sao để một lần nháy không thành hai
+lần đếm* (lọc hai chiều bằng khối của Chương 17):
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — đếm board ĐANG TRONG máy (CTUD) và sản lượng OK/NG ở lối ra
+//   Cần thêm: khối FB_Debounce (Chương 17)
+VAR_GLOBAL
+    DI_BoardInfeed  : BOOL;              // board vào máy — cảm biến đầu chuyền
+    DI_BoardOutfeed : BOOL;              // board ra khỏi máy — cảm biến cuối chuyền
+    M_Board2IsNG    : BOOL;              // dấu NG của board đang rời trạm 2 (Chương 16)
+    M_ShiftStart    : BOOL;              // xoá sản lượng đầu ca
+    M_MachineEmpty  : BOOL;              // đã xả hết và người vận hành xác nhận máy rỗng
+    M_MachineFull   : BOOL;              // đủ 2 board — không cho board thứ ba vào
+    BoardsInMachine : INT;
+END_VAR
+
+VAR_GLOBAL RETAIN
+    OkCount : DINT;                      // sản lượng ca — giữ qua mất điện (Chương 11)
+    NgCount : DINT;
+END_VAR
+
+PROGRAM Prg_Counting
+VAR_EXTERNAL
+    DI_BoardInfeed, DI_BoardOutfeed, M_Board2IsNG : BOOL;
+    M_ShiftStart, M_MachineEmpty, M_MachineFull   : BOOL;
+    BoardsInMachine                               : INT;
+    OkCount, NgCount                              : DINT;
+END_VAR
+VAR
+    FltIn       : FB_Debounce;
+    FltOut      : FB_Debounce;
+    TrigLeave   : F_TRIG;
+    C_InMachine : CTUD;
+END_VAR
+
+// ⭐ Lọc HAI chiều trước, bắt cạnh sau (Chương 16 Bẫy 8) — một lần nháy không thành hai lần đếm
+FltIn(Raw := DI_BoardInfeed, TimeOn := T#30MS, TimeOff := T#30MS);
+FltOut(Raw := DI_BoardOutfeed, TimeOn := T#30MS, TimeOff := T#30MS);
+TrigLeave(CLK := FltOut.Out);            // cạnh XUỐNG: board đã rời hẳn cảm biến lối ra
+
+C_InMachine(CU := FltIn.Out,             // CTUD tự bắt cạnh lên của CU và CD
+            CD := TrigLeave.Q,
+            R  := M_MachineEmpty,        // ⭐ đồng bộ lại sau khi xả — sửa được cả sườn giả lúc cấp điện
+            LD := FALSE,
+            PV := 2);                    // DP-01 chứa tối đa 2 board
+BoardsInMachine := C_InMachine.CV;
+M_MachineFull   := C_InMachine.CV >= 2;
+
+// Sản lượng đếm ở chỗ board RỜI máy — chỗ duy nhất một board chắc chắn đã xong (Phụ lục L mục L.14)
+IF M_ShiftStart THEN
+    OkCount := 0;
+    NgCount := 0;
+ELSIF TrigLeave.Q THEN
+    IF M_Board2IsNG THEN
+        NgCount := NgCount + 1;
+    ELSE
+        OkCount := OkCount + 1;
+    END_IF;
+END_IF;
+END_PROGRAM
+```
+
+Chạy thử với hai board vào và hai board ra, mỗi chiều có một board **nháy** giữa chừng: trong máy lên 2
+rồi về 0, sản lượng 1 NG + 1 OK — không cạnh giả nào lọt vào phép đếm. ⭐ Chân `R` nối vào *"máy đã xả
+và được xác nhận rỗng"* là **điểm đồng bộ** mà Bẫy 6 đòi hỏi — và nó cũng sửa luôn con số sai do sườn
+giả lúc cấp điện (Chương 16 Bẫy 9).
 
 ---
 
@@ -9962,32 +10302,69 @@ Thông tin "NG" đi cùng board qua từng vị trí. Tới chỗ loại bỏ, �
 
 ### Hiện thực
 
+Đóng gói thành một khối — vì máy nào có thanh ghi dịch thì thường cần nó ở nhiều chỗ — và đây là ví
+dụ hoàn chỉnh của chương:
+
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — thanh ghi dịch mang dấu NG theo board, đóng gói thành khối dùng lại
+FUNCTION_BLOCK FB_NgShift
+VAR_INPUT
+    Shift    : BOOL;                     // chuyền đã tiến ĐÚNG một vị trí — sự kiện thật, không theo giờ
+    MarkNG   : BOOL;                     // trạm 1 thấy lỗi trên board ở vị trí 0
+    AtReject : BOOL;                     // có board ở chỗ loại bỏ
+    Clear    : BOOL;                     // máy đã xả hết — đồng bộ lại
+END_VAR
+VAR_OUTPUT
+    RejectNow : BOOL;                    // board ở chỗ loại bỏ chính là board NG → loại
+END_VAR
 VAR
-    BoardNG   : ARRAY[0..3] OF BOOL;    // 4 vị trí trên chuyền
+    BoardNG   : ARRAY[0..3] OF BOOL;     // 0 trạm 1 · 1 giữa · 2 trạm 2 · 3 chỗ loại bỏ
     TrigShift : R_TRIG;
     i         : INT;
 END_VAR
-
-// Dịch khi chuyền tiến đúng một vị trí — dùng chính tín hiệu tiến của chuyền
-TrigShift(CLK := M_ConveyorIndexDone);
-
-IF TrigShift.Q THEN
-    // Dịch từ CUỐI về ĐẦU — nếu làm ngược sẽ sao chép một giá trị ra cả mảng
-    FOR i := 3 TO 1 BY -1 DO
+TrigShift(CLK := Shift);
+IF Clear THEN
+    FOR i := 0 TO 3 DO
+        BoardNG[i] := FALSE;
+    END_FOR;
+ELSIF TrigShift.Q THEN
+    FOR i := 3 TO 1 BY -1 DO             // dịch từ CUỐI về ĐẦU — ngược lại là nhân bản ô 0
         BoardNG[i] := BoardNG[i - 1];
     END_FOR;
-    BoardNG[0] := FALSE;                // vị trí đầu: board mới, chưa đánh dấu
+    BoardNG[0] := FALSE;                 // vị trí đầu: board mới, chưa đánh dấu
 END_IF;
-
-// Đánh dấu tại trạm 1
-IF M_Stn1DispenseFault THEN
+IF MarkNG THEN
     BoardNG[0] := TRUE;
 END_IF;
+RejectNow := BoardNG[3] AND AtReject;
+END_FUNCTION_BLOCK
 
-// Quyết định tại chỗ loại bỏ
-M_RejectNow := BoardNG[3] AND M_BoardAtReject;
+VAR_GLOBAL
+    M_ConveyorIndexDone : BOOL;
+    M_Stn1DispenseFault : BOOL;
+    M_BoardAtReject     : BOOL;
+    M_MachineEmpty      : BOOL;
+    M_RejectNow         : BOOL;
+END_VAR
+
+PROGRAM Prg_NgTrack
+VAR_EXTERNAL
+    M_ConveyorIndexDone, M_Stn1DispenseFault, M_BoardAtReject : BOOL;
+    M_MachineEmpty, M_RejectNow                               : BOOL;
+END_VAR
+VAR
+    NgTrack : FB_NgShift;
+END_VAR
+NgTrack(Shift    := M_ConveyorIndexDone,
+        MarkNG   := M_Stn1DispenseFault,
+        AtReject := M_BoardAtReject,
+        Clear    := M_MachineEmpty);
+M_RejectNow := NgTrack.RejectNow;
+END_PROGRAM
 ```
+
+Chạy thử: đánh dấu NG cho board ở vị trí 0, dịch ba lần — board OK phía trước **không** bị loại, đúng
+board NG bị loại khi tới vị trí 3, và board OK đi sau nó cũng **không** bị loại.
 
 > ⚠ **Chiều của vòng lặp dịch là chỗ sai kinh điển.**
 > Phải dịch từ **chỉ số lớn về chỉ số nhỏ**. Làm ngược lại, `BoardNG[1] := BoardNG[0]` chạy trước, rồi
@@ -10837,7 +11214,53 @@ END_IF;
 ### ST — tính toán
 
 Phần thống kê chu kỳ và hiệu suất ở Chương 19, mục 19.8. Không ai muốn viết nó bằng ladder, và người
-bảo trì cũng không cần đọc nó để sửa máy.
+bảo trì cũng không cần đọc nó để sửa máy. Một ví dụ hoàn chỉnh — xếp loại chu kỳ gần đây so với chu kỳ
+chuẩn của công thức, dùng đủ các cấu trúc của mục 20.2:
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — một hàm ST dùng đủ các cấu trúc của chương: hằng có tên, FOR, IF, CASE
+FUNCTION CycleClass : INT                // 0 chưa đủ số liệu · 1 bình thường · 2 chậm · 3 rất chậm
+VAR_INPUT
+    CycleMs  : ARRAY[1..8] OF DINT;      // 8 chu kỳ gần nhất; 0 = ô chưa có số liệu
+    RecipeMs : DINT;                     // chu kỳ chuẩn theo công thức (Chương 29)
+END_VAR
+VAR CONSTANT
+    N_CYCLE : INT := 8;                  // phải khớp cận trên của mảng CycleMs
+END_VAR
+VAR
+    i       : INT;
+    Count   : INT;
+    SumMs   : DINT;
+    LoadPct : DINT;
+END_VAR
+
+SumMs := 0;
+Count := 0;
+FOR i := 1 TO N_CYCLE DO
+    IF CycleMs[i] > 0 THEN
+        SumMs := SumMs + CycleMs[i];
+        Count := Count + 1;
+    END_IF;
+END_FOR;
+
+IF Count = 0 OR RecipeMs <= 0 THEN
+    CycleClass := 0;                     // chưa đủ số liệu — và KHÔNG BAO GIỜ chia cho 0
+ELSE
+    LoadPct := (SumMs * 100) / (Count * RecipeMs);      // nhân trước, chia sau (Chương 19)
+    CASE LoadPct OF
+        0..119:   CycleClass := 1;       // bình thường
+        120..149: CycleClass := 2;       // chậm — cảnh báo (Chương 19 mục 19.8)
+    ELSE
+        CycleClass := 3;                 // rất chậm
+    END_CASE;
+END_IF;
+END_FUNCTION
+```
+
+Bốn chỗ đáng xem: **hằng có tên** làm trần vòng lặp (mục 20.2); `FOR` có trần cố định, không tính từ
+dữ liệu (Bẫy 4); **kiểm mẫu số trước khi chia** — và kiểm cả phía chu kỳ chuẩn, vì công thức có thể
+chưa nạp; `CASE` theo **dải giá trị** thay cho một chuỗi `IF` so sánh. Chạy thử: không có số liệu → 0;
+quanh 12 s với chuẩn 12 s → 1; 15 s → 2; 19 s → 3; chuẩn bằng 0 → 0, không dừng CPU.
 
 Sự phân chia này là **ranh giới thực dụng**: thứ người bảo trì cần nhìn thì để ở dạng nhìn được; thứ
 họ không cần nhìn thì viết ở dạng gọn nhất.
@@ -11203,20 +11626,39 @@ Chuẩn có nhiều **bổ ngữ hành động** *(action qualifier)*; ba cái b
 
 | Bổ ngữ | Nghĩa |
 |---|---|
-| **N** — *non-stored* | Hành động chạy **suốt thời gian** đang ở bước đó, tự tắt khi rời bước |
+| **N** — *non-stored* | Hành động chạy **suốt thời gian** đang ở bước đó. ⚠ *"Tự tắt khi rời bước"* chỉ đúng khi hành động là **một biến BOOL** — xem lưu ý dưới bảng |
 | **S** — *set* | Bật và **giữ**, kể cả sau khi rời bước — phải có `R` ở đâu đó để tắt |
 | **R** — *reset* | Tắt một hành động đã `S` |
 
 > ⚠ Dùng `S` mà quên `R` là biến thể SFC của bẫy SET/RESET ở Chương 16: một thứ được bật rồi không ai
 > tắt. Quy tắc giống hệt — **mỗi `S` phải có một `R` tương ứng**, và bạn phải chỉ ra được nó ở đâu.
 
-**Ba bổ ngữ nữa đáng biết, vì mỗi cái thay được cả một khối chức năng:**
+> ⚠⚠ **Hành động `N` "tự tắt" — nhưng thứ nó đã GÁN thì không.**
+>
+> Một hành động có hai dạng. ⭐ Dạng **biến BOOL** (`N: M_Stn1_ClampReq` ở sơ đồ trên): biến đó TRUE
+> khi bước hoạt động và **về FALSE khi rời bước** — đúng nghĩa "tự tắt". ⚠ Dạng **đoạn mã**
+> (`DO_Clamp1Vlv := TRUE;` viết trong hành động): cái dừng là **đoạn mã**, còn giá trị nó đã gán thì **ở
+> nguyên**. Sổ tay SFC của Rockwell ghi thẳng: với tuỳ chọn mặc định, khi rời bước *"mọi dữ liệu giữ
+> giá trị hiện tại"* — muốn tắt thì phải tự viết lệnh tắt. CODESYS thì **chạy đoạn mã thêm một lần**
+> sau khi rời bước (ở vòng quét kế tiếp) — tức một hành động `N` luôn chạy ít nhất hai lần.
+>
+> ⭐ Hệ quả thực hành: ngõ ra và yêu cầu của máy, hoặc là **hành động biến BOOL**, hoặc là **gán ở
+> ngoài sơ đồ theo cờ bước** (`M_Stn1_ClampReq := S20.X OR S30.X;`) — đừng gán TRUE trong đoạn mã rồi
+> tin nó tự tắt.
+
+**Mấy bổ ngữ nữa đáng biết — mỗi cái thay được cả một khối chức năng, và một cái có bẫy:**
 
 | Bổ ngữ | Nghĩa | ⭐ Nó thay cho cái gì |
 |---|---|---|
-| **P** — *pulse* | Chạy **đúng một lần** mỗi khi bước được kích hoạt | ⭐ Khối bắt cạnh `R_TRIG` (Chương 16) |
+| **P1** — *pulse, rising* | Chạy **đúng một lần** khi bước được kích hoạt | ⭐ Khối bắt cạnh `R_TRIG` (Chương 16) |
+| **P0** — *pulse, falling* | Chạy **đúng một lần** khi rời bước | ⭐ Khối `F_TRIG` |
+| ⚠ **P** — *pulse* | ⚠⚠ Ở CODESYS: chạy **đúng hai lần** — một lần khi vào bước, một lần khi rời bước | ⚠ **Không** thay được `R_TRIG`: đoạn `Count := Count + 1` trong hành động `P` cộng **hai** mỗi lần đi qua bước |
 | **L** — *time limited* | Chạy rồi **tự dừng sau một khoảng**, hoặc khi rời bước | ⭐ Một `TP` (Chương 17) |
 | **D** — *time delayed* | ⭐ **Bắt đầu sau một khoảng**, nếu lúc đó vẫn còn ở bước | ⭐ Một `TON` |
+
+> ⚠ `P1`/`P0` có trong chuẩn và trong SFC của Rockwell; ⚠ bảng bổ ngữ trong tài liệu CODESYS **không
+> liệt kê** hai bổ ngữ này. Trên hệ chỉ có `P`, "làm đúng một lần khi vào bước" viết bằng `R_TRIG` trên
+> cờ bước (`TrigS20(CLK := S20.X)`, gọi ngoài sơ đồ) — đừng dùng `P` rồi tin nó chạy một lần.
 
 Chuẩn còn vài bổ ngữ kết hợp nữa (lưu kèm trễ…). ⚠ Số bổ ngữ **thực sự được hiện thực** khác nhau
 theo hãng — tra tài liệu trước khi dùng cái ngoài `N`/`S`/`R`.
@@ -11233,10 +11675,11 @@ tự động, không phải khai báo**:
 | Biến | Kiểu | Nội dung |
 |---|---|---|
 | `TênBước.X` | `BOOL` | ⭐ **TRUE khi bước đang hoạt động**, FALSE khi không |
-| ⭐⭐ `TênBước.T` | `TIME` | ⭐ **Thời gian đã ở trong bước** — chạy từ lúc vào bước, **về `t#0s`** khi rời bước |
+| ⭐⭐ `TênBước.T` | `TIME` | ⭐ **Thời gian đã ở trong bước** — **về `t#0s` khi VÀO bước**, rồi chạy suốt lúc bước hoạt động. ⚠ Khi **rời** bước thì **tuỳ hệ**: có hệ giữ nguyên giá trị cuối, có tài liệu nói về 0 — xem ô dưới |
 
-> ⚠ **Cả hai chỉ đọc.** Chương trình không sửa được; sửa thì trình biên dịch báo lỗi. Đó là điều tốt —
-> chúng luôn nói đúng sự thật về trạng thái trình tự.
+> ⚠ **Coi cả hai là chỉ đọc.** Nhiều hệ báo lỗi khi chương trình gán vào chúng. ⚠ Nhưng không phải mọi
+> hệ: CODESYS **cho** ghi cờ bước để ép một bước hoạt động — và chính tài liệu của nó cảnh báo làm vậy
+> có thể đưa sơ đồ vào trạng thái không ổn định. Hệ cho ghi hay không — **đừng ghi**.
 
 > ⭐⭐ **Công dụng một — timeout của bước gần như miễn phí.**
 >
@@ -11244,13 +11687,20 @@ tự động, không phải khai báo**:
 > một `TON` riêng cho **từng** bước. ⭐ Trong SFC thì không phải khai báo gì:
 >
 > ```iecst
-> IF Step30_Clamp.T > T#3s THEN
->     M_Alarm_ClampTimeout := TRUE;      // bước 30 chờ kẹp quá 3 giây
+> IF Step30_Clamp.X AND Step30_Clamp.T > T#3S THEN
+>     M_Alm_ClampTimeout := TRUE;        // bước 30 chờ kẹp quá 3 giây — cờ chốt (Chương 25)
 > END_IF;
 > ```
 >
-> ⚡ Và vì `.T` **tự về 0 khi rời bước**, bạn không phải nhớ đặt lại timer — ⚠ đúng cái hay quên nhất
-> khi tự dựng bằng `TON` (Chương 17, Bẫy 2).
+> ⚡ Và vì `.T` **tự về 0 mỗi lần vào bước**, bạn không phải nhớ đặt lại timer — ⚠ đúng cái hay quên
+> nhất khi tự dựng bằng `TON` (Chương 17, Bẫy 2).
+>
+> ⚠⚠ **Nhưng luôn kèm `.X`.** Tài liệu của một hệ SFC theo chuẩn (Horner) ghi rõ: rời bước thì `.T`
+> **giữ nguyên**, chỉ về 0 ở lần vào bước sau — bộ đếm thời gian bước của Rockwell cũng vậy. Trên hệ
+> như thế, một bước từng chờ 3,2 giây rồi mới đi tiếp để lại `.T` = 3,2 s: điều kiện thiếu `.X` **đúng
+> mãi**, cờ lỗi **chốt lại ngay sau mỗi lần Reset**, và máy kẹt ở `Alarm` (Chương 25 mục 25.5c). ⚡ Giáo
+> trình Hanssen (viết trên CoDeSys) lại nói `.T` về 0 khi rời bước — hai nguồn ngược nhau, nên viết
+> sao cho **đúng với cả hai**: thêm `.X`.
 
 > ⭐ **Công dụng hai — `.X` là cách đúng để phần còn lại của chương trình biết trình tự đang ở đâu.**
 >
@@ -11288,6 +11738,30 @@ tên này trong tài liệu và trong bản vẽ của một số nhà chế t�
 Điểm cần nắm: **GRAFCET là phương pháp mô tả, SFC là ngôn ngữ lập trình.** Bạn có thể vẽ GRAFCET trên
 giấy để thiết kế trình tự (Chương 26) rồi hiện thực bằng bất kỳ ngôn ngữ nào — SFC, `CASE`, hay bit
 trình tự trong ladder. Vẽ GRAFCET không bắt buộc bạn phải lập trình bằng SFC.
+
+### ⭐⭐ Nên và không nên khi viết SFC
+
+Trước hết, hai luật của **chuẩn** — không phải lời khuyên: SFC **chỉ** dùng được trong khối chức năng
+và chương trình, **không** trong hàm — vì sơ đồ phải **nhớ** bước nào đang hoạt động; và một phần
+của POU đã viết bằng SFC thì **cả POU** phải chia thành bước và chuyển tiếp (tờ giới thiệu của PLCopen
+về SFC). Còn lại là các lựa chọn — và mỗi dòng dưới đây có một sự cố thật đứng sau:
+
+| # | ⭐ Nên | ⚠ Không nên | Vì sao |
+|:-:|---|---|---|
+| 1 | Mở nhánh song song bằng vạch đôi thì **đóng bằng vạch đôi**; nhánh con bên trong đóng **trước** khi ra khỏi vùng song song | ⚠⚠ Nối từ một bước bên trong vùng song song **ra ngoài** vùng, hoặc từ ngoài **vào giữa** vùng | Một nhánh thoát ra, nhánh kia vẫn hoạt động → **nhiều bước sống cùng lúc ngoài ý muốn** *(token proliferation)*, và hành vi **tuỳ hệ**. PLCopen xếp quy tắc này mức **cao** (L7); sổ tay SFC Rockwell: *"không nối vào, ra, hay giữa một nhánh song song"* |
+| 2 | Viết **hành động** bằng ST, LD hoặc FBD | Viết hành động bằng **chính SFC** (SFC lồng) | Chuẩn **không quy định** SFC con chạy thế nào; nhiều hệ chỉ chạy nó khi hành động cha đang hoạt động — SFC con không phản ứng được lúc cần. Cần máy trạng thái con thì gói vào một khối riêng (PLCopen L8) |
+| 3 | Giữ mỗi sơ đồ **nhỏ** — gợi ý khoảng 32 phần tử, vừa một màn hình; lớn hơn thì tách | Một sơ đồ trăm bước | Mất đúng lợi thế lớn nhất của SFC — **nhìn thấy toàn cảnh** (PLCopen L9) |
+| 4 | Điều kiện chuyển là **biểu thức thuần**: đọc, so sánh, kết hợp | Gán biến hay gọi khối **trong** điều kiện chuyển | CODESYS **không cho** gán hay gọi khối trong điều kiện viết thẳng trên sơ đồ; điều kiện có tác dụng phụ chạy theo thứ tự rất khó đoán |
+| 5 | Nhánh lựa chọn: các điều kiện **loại trừ nhau** | Hai điều kiện có thể cùng đúng | Hệ xét từ trái sang phải và đi nhánh **đầu tiên** đúng — nhánh nào "thắng" do **vị trí vẽ**, không do logic. Giáo trình Hanssen coi hai nhánh lựa chọn cùng kích hoạt là **lỗi** |
+| 6 | Ngõ ra, yêu cầu: hành động **biến BOOL**, hoặc gán **ngoài** sơ đồ theo `.X` | Gán TRUE trong hành động đoạn mã rồi tin nó tự tắt | Giá trị đã gán **ở nguyên** khi rời bước — ngõ ra kẹt (lưu ý dưới bảng bổ ngữ) |
+| 7 | Timeout bước: `S30.X AND S30.T > T#3S` | `S30.T > T#3S` một mình | Ở hệ giữ `.T` sau khi rời bước, báo động **chốt lại mãi** (mục trên) |
+| 8 | Lên kế hoạch **đưa sơ đồ về bước đầu** khi Reset hay huỷ chu trình — bằng cơ chế của hệ: CODESYS có cờ `SFCInit`/`SFCReset`, Rockwell có lệnh `SFR` | ⚠ Ép bước bằng cách **ghi cờ bước** | Ghi cờ bước có thể đưa sơ đồ vào trạng thái không ổn định — chính tài liệu CODESYS cảnh báo |
+| 9 | SFC cho trình tự **bên trong** chế độ `Running` | SFC cho **chế độ máy** | Mục trên: "mọi trạng thái → `Alarm`" vẽ ra thành mớ bòng bong |
+
+> ⭐⭐ **Dòng 6, 7 và 8 là ba dạng của cùng một câu hỏi — câu hỏi mà Chương 25 và Chương 26 cũng hỏi:**
+> *"lần thứ hai đi qua đây, cái gì còn sót lại từ lần thứ nhất?"* Ngõ ra đã gán, thời gian của bước cũ,
+> bước còn đang sống sau một lần dừng giữa chừng. ⚡ SFC gói sẵn nhiều thứ cho bạn — nhưng **không gói
+> câu trả lời cho câu hỏi đó**.
 
 ---
 
@@ -11406,6 +11880,97 @@ nhiều. Sách chọn `CASE` cho trình tự, và Chương 26 đi theo hướng 
 Nếu máy của bạn chỉ có **một** trình tự dài, không lặp lại, và đội bảo trì quen SFC — thì SFC là lựa
 chọn tốt hơn. Không có đáp án chung.
 
+### ⭐ Trạm 1 bằng SFC — ví dụ hoàn chỉnh, ở dạng văn bản của chuẩn
+
+SFC là ngôn ngữ đồ hoạ, nhưng chuẩn có **một dạng văn bản** tương đương từng phần tử: `INITIAL_STEP`,
+`STEP`, `TRANSITION FROM … TO …`, `ACTION`. Dạng này **chép được, kiểm được** — và phần mềm đồ hoạ vẽ
+lại đúng từng bước, từng chuyển tiếp của nó. ⚠ Không nhiều hệ **nhập** được dạng văn bản; với hệ chỉ có
+trình soạn thảo đồ hoạ, dùng khối dưới như bản vẽ chính xác để vẽ lại.
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — trạm 1 bằng SFC, viết ở DẠNG VĂN BẢN của chuẩn IEC 61131-3
+//   Phần mềm đồ hoạ vẽ lại đúng từng bước, chuyển tiếp và hành động dưới đây
+VAR_GLOBAL
+    DI_BoardStn1    : BOOL;
+    DI_Clamp1Up     : BOOL;
+    DI_Clamp1Dn     : BOOL;
+    DI_ResetPB      : BOOL;
+    M_ProcessDone   : BOOL;              // xử lý board xong — lát cắt sau
+    M_Stn1_ClampReq : BOOL;              // hành động BOOL: yêu cầu nâng kẹp
+    M_Stn1_ConvReq  : BOOL;              // hành động BOOL: yêu cầu chuyền chạy
+    M_Alm_Stn1Seq   : BOOL;              // hành động BOOL: báo động của trình tự trạm 1
+END_VAR
+
+PROGRAM Prg_Stn1Sfc
+VAR_EXTERNAL
+    DI_BoardStn1, DI_Clamp1Up, DI_Clamp1Dn, DI_ResetPB : BOOL;
+    M_ProcessDone                                      : BOOL;
+    M_Stn1_ClampReq, M_Stn1_ConvReq, M_Alm_Stn1Seq     : BOOL;
+END_VAR
+
+INITIAL_STEP S10 :                       // chờ board — không giới hạn thời gian, CÓ CHỦ Ý
+END_STEP
+
+STEP S20 :                               // nâng kẹp
+    M_Stn1_ClampReq(N);
+END_STEP
+
+STEP S30 :                               // gia công — kẹp vẫn phải giữ
+    M_Stn1_ClampReq(N);                  // ⭐ cùng một hành động gắn vào HAI bước
+END_STEP
+
+STEP S40 :                               // hạ kẹp — không còn bước nào giữ M_Stn1_ClampReq
+END_STEP
+
+STEP S50 :                               // chuyển board đi
+    M_Stn1_ConvReq(N);
+END_STEP
+
+STEP S90 :                               // lỗi — đứng đây tới khi người nhấn Reset
+    M_Alm_Stn1Seq(N);                    // ⭐ cờ lỗi CHÍNH LÀ bước này — rời bước là tắt
+END_STEP
+
+// Trong điều kiện chuyển, `.X` là NGẦM ĐỊNH: chuyển tiếp chỉ được xét khi bước trước nó đang hoạt động
+TRANSITION FROM S10 TO S20 := DI_BoardStn1;
+END_TRANSITION
+
+// Sau mỗi bước chờ là nhánh LỰA CHỌN — hai điều kiện LOẠI TRỪ nhau (bảng "nên", dòng 5)
+TRANSITION FROM S20 TO S30 := DI_Clamp1Up;
+END_TRANSITION
+TRANSITION FROM S20 TO S90 := S20.T > T#3S AND NOT DI_Clamp1Up;
+END_TRANSITION
+
+TRANSITION FROM S30 TO S40 := M_ProcessDone;
+END_TRANSITION
+TRANSITION FROM S30 TO S90 := S30.T > T#60S AND NOT M_ProcessDone;
+END_TRANSITION
+
+TRANSITION FROM S40 TO S50 := DI_Clamp1Dn;
+END_TRANSITION
+TRANSITION FROM S40 TO S90 := S40.T > T#3S AND NOT DI_Clamp1Dn;
+END_TRANSITION
+
+TRANSITION FROM S50 TO S10 := NOT DI_BoardStn1;
+END_TRANSITION
+TRANSITION FROM S50 TO S90 := S50.T > T#10S AND DI_BoardStn1;
+END_TRANSITION
+
+// Lỗi xong: kẹp đã hạ (không bước nào giữ nó) → xả board đang dở ra, KHÔNG gia công lại
+TRANSITION FROM S90 TO S50 := DI_ResetPB AND DI_Clamp1Dn;
+END_TRANSITION
+END_PROGRAM
+```
+
+Chương trình này áp **năm dòng** của bảng *nên và không nên* ở mục 21.3:
+
+| Dòng | Ở đâu trong chương trình |
+|:-:|---|
+| 4 | Mọi điều kiện chuyển là **biểu thức thuần** — không gán, không gọi khối |
+| 5 | Sau mỗi bước chờ là nhánh lựa chọn với hai điều kiện **loại trừ nhau** (`… AND NOT DI_Clamp1Up`) |
+| 6 | Mọi hành động là **biến BOOL** — `M_Stn1_ClampReq` gắn vào **hai** bước S20, S30 nên nó TRUE suốt hai bước và về FALSE đúng lúc vào S40 |
+| 7 | Timeout nằm trong **điều kiện chuyển** — chỉ được xét khi bước đó đang hoạt động, nên `.T` còn sót của lần trước không bao giờ được đọc |
+| 8 | Lỗi xong **không** quay về bước đầu mà đi **xả board** (S90 → S50): board đang dở không bị gia công lại |
+
 ---
 
 ## 21.7 Khác biệt giữa các hãng
@@ -11502,9 +12067,11 @@ thực bằng ngôn ngữ nào cũng được (mục 21.3, Chương 26).
 | GRAFCET với SFC | GRAFCET là **cách mô tả**, SFC là **ngôn ngữ**. Không bắt buộc đi cùng nhau |
 | IL | ⚠ Đã bị **rút khỏi chuẩn** — chỉ đọc, không viết mới |
 | Siemens STL | Phương ngữ riêng, mạnh hơn IL chuẩn; phổ biến ở S7-300/400 đời cũ |
-| ⭐⭐ Mỗi bước SFC tự có | `TênBước.X` (đang ở bước) và ⭐ **`TênBước.T` — timer sẵn, tự về 0** |
+| ⭐⭐ Mỗi bước SFC tự có | `TênBước.X` (đang ở bước) và ⭐ **`TênBước.T` — timer sẵn, về 0 khi vào bước** — ⚠ luôn dùng kèm `.X` |
 | Timeout bước trong SFC | ⭐ **Không phải khai `TON`** — dùng thẳng `.T` |
-| Bổ ngữ `P` / `L` / `D` | Thay cho `R_TRIG` / `TP` / `TON` |
+| Bổ ngữ `P1` / `L` / `D` | Thay cho `R_TRIG` / `TP` / `TON` — ⚠ `P` (không số) ở CODESYS chạy **hai lần** |
+| ⚠⚠ Hành động `N` dạng đoạn mã | Giá trị đã gán **không** tự tắt khi rời bước — ngõ ra dùng hành động biến BOOL, hoặc gán ngoài sơ đồ theo `.X` |
+| ⭐⭐ Nhánh song song | Đóng bằng vạch đôi; **không** nối vào, ra, hay giữa vùng song song (PLCopen L7) |
 | ⚠⚠ Thứ tự thực thi FBD khi có hồi tiếp | ⭐ **Chuẩn KHÔNG quy định** — tuỳ hãng; đưa hồi tiếp qua **biến trung gian có tên** |
 | Khi bảng kỹ thuật mâu thuẫn với người bảo trì | ⭐ **Người bảo trì thắng** |
 
@@ -11527,9 +12094,14 @@ thực bằng ngôn ngữ nào cũng được (mục 21.3, Chương 26).
     tình huống nào thì SFC lại là lựa chọn tốt hơn?
 11. ⭐⭐ Mỗi bước SFC tự có hai biến nào? Nêu **hai** việc mà `.T` làm được và giải thích vì sao nó tiện
     hơn tự dựng một `TON` cho từng bước.
-12. ⭐ Bổ ngữ `P`, `L`, `D` mỗi cái thay cho khối chức năng nào ở LD/ST?
+12. ⭐ Bổ ngữ `P1`, `L`, `D` mỗi cái thay cho khối chức năng nào ở LD/ST? ⚠ Vì sao trên CODESYS, bổ ngữ
+    `P` **không** thay được `R_TRIG`?
 13. ⚠⚠ Một sơ đồ FBD có đường hồi tiếp chạy đúng trên hệ A, sai trên hệ B. ⭐ Vì sao điều này **không**
     phải lỗi của hãng nào? Cách viết nào tránh được hẳn?
+14. ⚠⚠ Một hành động `N` viết `DO_Clamp1Vlv := TRUE;`. Rời bước, van có tắt không? Viết lại sao cho chắc chắn
+    tắt — hai cách.
+15. ⚠⚠ Vì sao điều kiện timeout `S30.T > T#3S` **thiếu** `.X` có thể làm máy kẹt ở `Alarm`? Hai tài
+    liệu nói ngược nhau về `.T` khi rời bước — viết thế nào để đúng với cả hai?
 
 > Câu 3, 5 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: **không có ngôn ngữ nào tốt
 > nhất — chỉ có ngôn ngữ hợp với bài toán này, cỗ máy này, và đội ngũ này.**
@@ -11555,7 +12127,25 @@ có tài liệu, và phải sửa nó mà không làm hỏng thứ đang chạy.
   CoDeSys*, §10.3 và ch. 12: ⭐ **chuẩn không quy định thứ tự thực thi FBD khi có hồi tiếp** (tuỳ hiện
   thực; có hãng không cho vẽ hồi tiếp tường minh); ⭐⭐ **`Step.X` và `Step.T`** — mọi bước SFC có sẵn
   cờ trạng thái và **timer nội**, cả hai chỉ đọc; bảng **bổ ngữ hành động** `N`/`S`/`R`/`P`/`L`/`D`;
-  và luật **không đặt hai bước liền nhau không có bước chuyển**.
+  và luật **không đặt hai bước liền nhau không có bước chuyển**. ⚠ Giáo trình này ghi `.T` về 0 khi
+  rời bước — ngược với Horner và Rockwell bên dưới; sách viết mã đúng với cả hai (đợt 62).
+- **PLCopen** — *Coding Guidelines v1.0* (2016), nhóm quy tắc ngôn ngữ SFC: L7 đóng đúng nhánh song
+  song (mức cao), L8 không viết hành động bằng SFC, L9 giới hạn độ phức tạp một sơ đồ (gợi ý 32 phần
+  tử); và danh sách tính năng bị bỏ ở bản 3 (biến chỉ báo của khối hành động). Tờ giới thiệu
+  *"Structuring with SFC — do's and don'ts"*: SFC chỉ trong khối chức năng và chương trình; một phần
+  POU là SFC thì cả POU là SFC.
+- **Rockwell Automation** — *Logix 5000 Sequential Function Charts* (1756-PM006L, 9/2024): chọn cỡ
+  bước; bước đầu dùng để khởi tạo; *"không nối vào, ra, hay giữa một nhánh song song"*; bộ đếm thời
+  gian bước về 0 khi bước **bắt đầu** hoạt động; tuỳ chọn *Don't scan* mặc định — rời bước thì mọi dữ
+  liệu **giữ giá trị**; `P1`/`P0`; lệnh `SFR` đưa sơ đồ về một bước.
+- **CODESYS Online Help** — các trang *Qualifiers for Actions in SFC* (`P` chạy đúng hai lần), *SFC
+  Element: Action* (hành động IEC chạy thêm một lần khi bước tắt; biến BOOL làm hành động), *Processing
+  Order in SFC* (nhánh lựa chọn xét trái sang phải), *SFC Elements: Step and Transition* (điều kiện
+  viết thẳng không chứa phép gán hay lời gọi khối), *Implicit Variables* (ghi cờ bước để ép bước — có
+  thể mất ổn định), *SFC flags* (`SFCInit`, `SFCReset`). Kiểm 2026-09-28.
+- **Horner Automation** — trợ giúp Cscape, mục IEC SFC: `.T` giữ nguyên khi bước tắt, về 0 ở lần
+  kích hoạt sau. **Fernhill Software** — trợ giúp IEC 61131-3, mục SFC Step: bảng bổ ngữ có `P1`/`P0`;
+  gán vào thành phần của bước là lỗi. Kiểm 2026-09-28.
 
 > ⚡ Nhận định "IL đã bị rút khỏi bản mới của chuẩn" là **thay đổi giữa các phiên bản tiêu chuẩn**.
 > Khi cần dẫn chiếu chính thức, kiểm phiên bản IEC 61131-3 đang hiệu lực tại thị trường của bạn —
@@ -12043,10 +12633,10 @@ chỗ — khối giám sát thời gian bước. Tốt, chương trình có kỷ
 **Bước 4 — truy ngược.** Đoạn code liên quan:
 
 ```iecst
-T_Step20(IN := (Stn1.Step = 20), PT := T#3S);
+T_Step20(IN := (Stn1_Step = 20), PT := T#3S);
 IF T_Step20.Q THEN
     Stn1.FaultStep := 20;
-    Stn1.AnyFault  := TRUE;
+    Stn1.Fault     := TRUE;
 END_IF;
 ```
 
@@ -13100,6 +13690,39 @@ Ba dòng này là cách viết gọn của bảng bốn dòng. Điểm mấu ch�
 — chương trình không bao giờ phải đoán. Đây là nội dung Chương 28, và bảng chân lý là cách chứng minh
 ba dòng code trên phủ hết bốn tổ hợp.
 
+### ⭐ Từ bảng chân lý tới một hàm dùng lại — ví dụ hoàn chỉnh
+
+Máy có bốn xy-lanh thì ba dòng trên phải chép bốn lần. Viết thành **một hàm**, mỗi **dòng của bảng**
+thành **một nhánh**, và kết quả là một kiểu liệt kê — đọc lên là hiểu, không phải giải mã hai bit:
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — bảng chân lý bốn dòng thành một hàm: tư thế xy-lanh từ hai cảm biến
+TYPE E_CylPose :
+    (AtHome, AtWork, Unknown, SensorFault);
+END_TYPE
+
+FUNCTION CylPose : E_CylPose
+VAR_INPUT
+    SensHome : BOOL;                     // cảm biến vị trí gốc
+    SensWork : BOOL;                     // cảm biến vị trí làm việc
+END_VAR
+IF SensHome AND NOT SensWork THEN
+    CylPose := AtHome;                   // dòng 1 · chắc chắn ở gốc
+ELSIF SensWork AND NOT SensHome THEN
+    CylPose := AtWork;                   // dòng 2 · chắc chắn ở vị trí làm việc
+ELSIF NOT SensHome AND NOT SensWork THEN
+    CylPose := Unknown;                  // dòng 3 · giữa hành trình — HOẶC một cảm biến đứt dây
+ELSE
+    CylPose := SensorFault;              // dòng 4 · cả hai cùng bật — vô lý về vật lý, chắc chắn hỏng
+END_IF;
+END_FUNCTION
+```
+
+Đặt hàm cạnh bảng ở trên: bốn dòng, bốn nhánh, không thừa không thiếu. ⭐ Nhánh cuối là `ELSE` chứ
+không phải `ELSIF SensHome AND SensWork` — nhờ vậy **không tổ hợp nào** rơi ra ngoài, kể cả khi ai đó
+sửa ba nhánh trên sai. Chạy thử đủ bốn tổ hợp: ra đúng bốn giá trị. Chương 28 dùng đúng phép phân loại
+này ở bước đầu tiên của trình tự về gốc — *"xác định tư thế thật, không nhớ tư thế cũ"*.
+
 ---
 
 ## 24.9 Khác biệt giữa các hãng
@@ -13328,7 +13951,7 @@ làm. Với một biến bốn trạng thái, bạn thử bốn trạng thái. V
 Máy tự động hoá, dù làm gì, gần như luôn quy về **bảy trạng thái** dưới đây. Bạn có thể bớt (máy đơn
 giản không cần `Hold`) nhưng hiếm khi cần thêm.
 
-![Máy trạng thái chuẩn cho một cỗ máy](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5NDAgNTYwJyB3aWR0aD0nOTQwJyBoZWlnaHQ9JzU2MCc+DQo8cmVjdCB3aWR0aD0nOTQwJyBoZWlnaHQ9JzU2MCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDI1LjEg4oCUIE3DoXkgdHLhuqFuZyB0aMOhaSBjaHXhuqluIGNobyBt4buZdCBj4buXIG3DoXk8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nNTYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+VOG6oWkgbeG7jWkgdGjhu51pIMSRaeG7g20gbcOheSDhu58gxJDDmk5HIE3hu5hUIHRy4bqhbmcgdGjDoWkuIMSQxrDhu51uZyDEkeG7jzogbOG7l2kgeOG6o3kgcmEgxJHGsOG7o2Mg4bufIGLhuqV0IGPhu6kgxJHDonUsIG7Dqm4gbeG7jWkgdHLhuqFuZyB0aMOhaSDEkeG7gXUgcGjhuqNpIGPDsyBs4buRaSB2w6BvIEFsYXJtLjwvdGV4dD4NCjxyZWN0IHg9JzMwJyB5PScxMTInIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PScxMDYnIHk9JzEzNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5VbmluaXRpYWxpemVkPC90ZXh0Pg0KPHRleHQgeD0nMTA2JyB5PScxNTMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz524burYSBj4bqlcCBuZ3Xhu5NuPC90ZXh0Pg0KPHJlY3QgeD0nMjUwJyB5PScxMTInIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PSczMjYnIHk9JzEzNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5Ib21pbmc8L3RleHQ+DQo8dGV4dCB4PSczMjYnIHk9JzE1MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPsSRYW5nIHbhu4EgZ+G7kWM8L3RleHQ+DQo8cmVjdCB4PSc0NzAnIHk9JzExMicgd2lkdGg9JzE1MicgaGVpZ2h0PSc1NCcgcng9JzcnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjcnLz4NCjx0ZXh0IHg9JzU0NicgeT0nMTM2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPklkbGU8L3RleHQ+DQo8dGV4dCB4PSc1NDYnIHk9JzE1MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPnPhurVuIHPDoG5nLCBjaOG7nSBs4buHbmg8L3RleHQ+DQo8cmVjdCB4PSc2OTAnIHk9JzExMicgd2lkdGg9JzE1MicgaGVpZ2h0PSc1NCcgcng9JzcnIGZpbGw9JyNFOEYyRUMnIHN0cm9rZT0nIzJFN0Q0Ricgc3Ryb2tlLXdpZHRoPScxLjcnLz4NCjx0ZXh0IHg9Jzc2NicgeT0nMTM2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlJ1bm5pbmc8L3RleHQ+DQo8dGV4dCB4PSc3NjYnIHk9JzE1MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPsSRYW5nIGNo4bqheSBjaHUgdHLDrG5oPC90ZXh0Pg0KPHJlY3QgeD0nNjkwJyB5PScyMzInIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PSc3NjYnIHk9JzI1NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5Ib2xkPC90ZXh0Pg0KPHRleHQgeD0nNzY2JyB5PScyNzMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5k4burbmcsIEdJ4buuIG5ndXnDqm4gduG7iyB0csOtPC90ZXh0Pg0KPHJlY3QgeD0nMjUwJyB5PSczODQnIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PSczMjYnIHk9JzQwOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SZXNldHRpbmc8L3RleHQ+DQo8dGV4dCB4PSczMjYnIHk9JzQyNScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPsSRYW5nIHhvw6EgbOG7l2k8L3RleHQ+DQo8cmVjdCB4PSc0NzAnIHk9JzM4NCcgd2lkdGg9JzE1MicgaGVpZ2h0PSc1NCcgcng9JzcnIGZpbGw9JyNGOEU3RTQnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjcnLz4NCjx0ZXh0IHg9JzU0NicgeT0nNDA4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkFsYXJtPC90ZXh0Pg0KPHRleHQgeD0nNTQ2JyB5PSc0MjUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5jw7MgbOG7l2ksIMSRw6MgZOG7q25nPC90ZXh0Pg0KPGxpbmUgeDE9JzE4MicgeTE9JzEzOScgeDI9JzIzNicgeTI9JzEzOScgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxwb2x5Z29uIHBvaW50cz0nMjQ2LjAsMTM5LjAgMjM2LjAsMTQ0LjAgMjM2LjAsMTM0LjAnIGZpbGw9JyMxQTFEMjEnLz4NCjx0ZXh0IHg9JzIxNicgeT0nMTI3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SZXNldDwvdGV4dD4NCjxsaW5lIHgxPSc0MDInIHkxPScxMzknIHgyPSc0NTYnIHkyPScxMzknIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzQ2Ni4wLDEzOS4wIDQ1Ni4wLDE0NC4wIDQ1Ni4wLDEzNC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc0MzYnIHk9JzEyNycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+duG7gSBn4buRYyB4b25nPC90ZXh0Pg0KPGxpbmUgeDE9JzYyMicgeTE9JzEzOScgeDI9JzY3NicgeTI9JzEzOScgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxwb2x5Z29uIHBvaW50cz0nNjg2LjAsMTM5LjAgNjc2LjAsMTQ0LjAgNjc2LjAsMTM0LjAnIGZpbGw9JyMxQTFEMjEnLz4NCjx0ZXh0IHg9JzY1NicgeT0nMTI3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5TdGFydDwvdGV4dD4NCjxsaW5lIHgxPSc3MzQnIHkxPScxNjYnIHgyPSc3MzQnIHkyPScyMTgnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzczNC4wLDIyOC4wIDcyOS4wLDIxOC4wIDczOS4wLDIxOC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc3MjYnIHk9JzIwMycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J2VuZCc+SG9sZDwvdGV4dD4NCjxsaW5lIHgxPSc4MDAnIHkxPScyMzInIHgyPSc4MDAnIHkyPScxODAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzgwMC4wLDE3MC4wIDgwNS4wLDE4MC4wIDc5NS4wLDE4MC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc4MDgnIHk9JzIwMycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5TdGFydDwvdGV4dD4NCjxsaW5lIHgxPSc3NjYnIHkxPScyODYnIHgyPSc3NjYnIHkyPSczMTAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8bGluZSB4MT0nNzY2JyB5MT0nMzEwJyB4Mj0nNTQ2JyB5Mj0nMzEwJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMicvPg0KPGxpbmUgeDE9JzU0NicgeTE9JzMxMCcgeDI9JzU0NicgeTI9JzE4MCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxwb2x5Z29uIHBvaW50cz0nNTQ2LjAsMTcwLjAgNTUxLjAsMTgwLjAgNTQxLjAsMTgwLjAnIGZpbGw9JyMxQTFEMjEnLz4NCjx0ZXh0IHg9JzY1NicgeT0nMzI2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5naeG7ryBTdG9wIDIgZ2nDonkg4oaSIGh14bu3IGNodSB0csOsbmg8L3RleHQ+DQo8bGluZSB4MT0nMTA2JyB5MT0nMTY2JyB4Mj0nMTA2JyB5Mj0nMzQwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSc1LDQnLz4NCjxsaW5lIHgxPSczNTYnIHkxPScxNjYnIHgyPSczNTYnIHkyPSczNDAnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzUsNCcvPg0KPGxpbmUgeDE9JzgwNicgeTE9JzI4NicgeDI9JzgwNicgeTI9JzM0MCcgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nNSw0Jy8+DQo8bGluZSB4MT0nMTA2JyB5MT0nMzQwJyB4Mj0nODA2JyB5Mj0nMzQwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMS44Jy8+DQo8bGluZSB4MT0nNjAxJyB5MT0nMzQwJyB4Mj0nNjAxJyB5Mj0nMzcwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cG9seWdvbiBwb2ludHM9JzYwMS4wLDM4MC4wIDU5Ni4wLDM3MC4wIDYwNi4wLDM3MC4wJyBmaWxsPScjQzAzOTJCJy8+DQo8dGV4dCB4PSc4MTgnIHk9JzM0NScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPnThu6sgTeG7jEkgdHLhuqFuZyB0aMOhaTwvdGV4dD4NCjxsaW5lIHgxPSc0NjYnIHkxPSc0MTEnIHgyPSc0MTYnIHkyPSc0MTEnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzQwNi4wLDQxMS4wIDQxNi4wLDQwNi4wIDQxNi4wLDQxNi4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc0MzYnIHk9JzM3NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+UmVzZXQgKGzhu5dpIMSRw6MgaOG6v3QpPC90ZXh0Pg0KPGxpbmUgeDE9JzI5MCcgeTE9JzM4NCcgeDI9JzI5MCcgeTI9JzIwMCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxsaW5lIHgxPScyOTAnIHkxPScyMDAnIHgyPScyOTAnIHkyPScxODAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzI5MC4wLDE3MC4wIDI5NS4wLDE4MC4wIDI4NS4wLDE4MC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PScyODAnIHk9JzIxOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J2VuZCc+eG/DoSB4b25nIOKGkiB24buBIGfhu5FjIGzhuqFpPC90ZXh0Pg0KPHJlY3QgeD0nMjQnIHk9JzQ4Nicgd2lkdGg9Jzg5MicgaGVpZ2h0PSc1Micgcng9JzMnIGZpbGw9JyNGREY2RTcnIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzQyJyB5PSc1MDgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz7imqAgIEUtU3RvcCBLSMOUTkcgcGjhuqNpIG3hu5l0IHRy4bqhbmcgdGjDoWkg4bufIMSRw6J5LiBOw7MgbMOgIG3huqFjaCBj4bupbmcgY+G6r3Qgbmd14buTbiBjxqEgY+G6pXUsIGhv4bqhdCDEkeG7mW5nIGvhu4MgY+G6oyBraGkgQ1BVIHRyZW8uPC90ZXh0Pg0KPHRleHQgeD0nNDInIHk9JzUyNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz5Nw6F5IHRy4bqhbmcgdGjDoWkgY2jhu4kgUEjhuqJOIOG7qE5HIHbhu5tpIHZp4buHYyBFLVN0b3AgxJHDoyBi4buLIG5o4bqlbiAoY2h1eeG7g24gc2FuZyBBbGFybSksIGNo4bupIGtow7RuZyBUSOG7sEMgSEnhu4ZOIHZp4buHYyBk4burbmcg4oCUIHhlbSBDaMawxqFuZyA0Ny48L3RleHQ+DQo8L3N2Zz4=)
+![Máy trạng thái chuẩn cho một cỗ máy](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5NDAgNTYwJyB3aWR0aD0nOTQwJyBoZWlnaHQ9JzU2MCc+DQo8cmVjdCB3aWR0aD0nOTQwJyBoZWlnaHQ9JzU2MCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDI1LjEg4oCUIE3DoXkgdHLhuqFuZyB0aMOhaSBjaHXhuqluIGNobyBt4buZdCBj4buXIG3DoXk8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nNTYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+VOG6oWkgbeG7jWkgdGjhu51pIMSRaeG7g20gbcOheSDhu58gxJDDmk5HIE3hu5hUIHRy4bqhbmcgdGjDoWkuIMSQxrDhu51uZyDEkeG7jzogbOG7l2kgeOG6o3kgcmEgxJHGsOG7o2Mg4bufIGLhuqV0IGPhu6kgxJHDonUsIG7Dqm4gbeG7jWkgdHLhuqFuZyB0aMOhaSDEkeG7gXUgcGjhuqNpIGPDsyBs4buRaSB2w6BvIEFsYXJtLjwvdGV4dD4NCjxyZWN0IHg9JzMwJyB5PScxMTInIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PScxMDYnIHk9JzEzNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5VbmluaXRpYWxpemVkPC90ZXh0Pg0KPHRleHQgeD0nMTA2JyB5PScxNTMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz524burYSBj4bqlcCBuZ3Xhu5NuPC90ZXh0Pg0KPHJlY3QgeD0nMjUwJyB5PScxMTInIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PSczMjYnIHk9JzEzNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5Ib21pbmc8L3RleHQ+DQo8dGV4dCB4PSczMjYnIHk9JzE1MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPsSRYW5nIHbhu4EgZ+G7kWM8L3RleHQ+DQo8cmVjdCB4PSc0NzAnIHk9JzExMicgd2lkdGg9JzE1MicgaGVpZ2h0PSc1NCcgcng9JzcnIGZpbGw9JyNGNEY1RjcnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScxLjcnLz4NCjx0ZXh0IHg9JzU0NicgeT0nMTM2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPklkbGU8L3RleHQ+DQo8dGV4dCB4PSc1NDYnIHk9JzE1MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPnPhurVuIHPDoG5nLCBjaOG7nSBs4buHbmg8L3RleHQ+DQo8cmVjdCB4PSc2OTAnIHk9JzExMicgd2lkdGg9JzE1MicgaGVpZ2h0PSc1NCcgcng9JzcnIGZpbGw9JyNFOEYyRUMnIHN0cm9rZT0nIzJFN0Q0Ricgc3Ryb2tlLXdpZHRoPScxLjcnLz4NCjx0ZXh0IHg9Jzc2NicgeT0nMTM2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlJ1bm5pbmc8L3RleHQ+DQo8dGV4dCB4PSc3NjYnIHk9JzE1MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPsSRYW5nIGNo4bqheSBjaHUgdHLDrG5oPC90ZXh0Pg0KPHJlY3QgeD0nNjkwJyB5PScyMzInIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PSc3NjYnIHk9JzI1NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5Ib2xkPC90ZXh0Pg0KPHRleHQgeD0nNzY2JyB5PScyNzMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5k4burbmcsIEdJ4buuIG5ndXnDqm4gduG7iyB0csOtPC90ZXh0Pg0KPHJlY3QgeD0nMjUwJyB5PSczODQnIHdpZHRoPScxNTInIGhlaWdodD0nNTQnIHJ4PSc3JyBmaWxsPScjRjRGNUY3JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMS43Jy8+DQo8dGV4dCB4PSczMjYnIHk9JzQwOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMi41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SZXNldHRpbmc8L3RleHQ+DQo8dGV4dCB4PSczMjYnIHk9JzQyNScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPsSRYW5nIHhvw6EgbOG7l2k8L3RleHQ+DQo8cmVjdCB4PSc0NzAnIHk9JzM4NCcgd2lkdGg9JzE1MicgaGVpZ2h0PSc1NCcgcng9JzcnIGZpbGw9JyNGOEU3RTQnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjcnLz4NCjx0ZXh0IHg9JzU0NicgeT0nNDA4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEyLjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkFsYXJtPC90ZXh0Pg0KPHRleHQgeD0nNTQ2JyB5PSc0MjUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5jw7MgbOG7l2ksIMSRw6MgZOG7q25nPC90ZXh0Pg0KPGxpbmUgeDE9JzE4MicgeTE9JzEzOScgeDI9JzIzNicgeTI9JzEzOScgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxwb2x5Z29uIHBvaW50cz0nMjQ2LjAsMTM5LjAgMjM2LjAsMTQ0LjAgMjM2LjAsMTM0LjAnIGZpbGw9JyMxQTFEMjEnLz4NCjx0ZXh0IHg9JzIxNicgeT0nMTI3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5SZXNldDwvdGV4dD4NCjxsaW5lIHgxPSc0MDInIHkxPScxMzknIHgyPSc0NTYnIHkyPScxMzknIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzQ2Ni4wLDEzOS4wIDQ1Ni4wLDE0NC4wIDQ1Ni4wLDEzNC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc0MzYnIHk9JzEyNycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+duG7gSBn4buRYyB4b25nPC90ZXh0Pg0KPGxpbmUgeDE9JzYyMicgeTE9JzEzOScgeDI9JzY3NicgeTI9JzEzOScgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxwb2x5Z29uIHBvaW50cz0nNjg2LjAsMTM5LjAgNjc2LjAsMTQ0LjAgNjc2LjAsMTM0LjAnIGZpbGw9JyMxQTFEMjEnLz4NCjx0ZXh0IHg9JzY1NicgeT0nMTI3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5TdGFydDwvdGV4dD4NCjxsaW5lIHgxPSc3MzQnIHkxPScxNjYnIHgyPSc3MzQnIHkyPScyMTgnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzczNC4wLDIyOC4wIDcyOS4wLDIxOC4wIDczOS4wLDIxOC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc3MjYnIHk9JzIwMycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J2VuZCc+SG9sZDwvdGV4dD4NCjxsaW5lIHgxPSc4MDAnIHkxPScyMzInIHgyPSc4MDAnIHkyPScxODAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzgwMC4wLDE3MC4wIDgwNS4wLDE4MC4wIDc5NS4wLDE4MC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc4MDgnIHk9JzIwMycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5TdGFydDwvdGV4dD4NCjxsaW5lIHgxPSc3NjYnIHkxPScyODYnIHgyPSc3NjYnIHkyPSczMTAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8bGluZSB4MT0nNzY2JyB5MT0nMzEwJyB4Mj0nMzgwJyB5Mj0nMzEwJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMicvPg0KPGxpbmUgeDE9JzM4MCcgeTE9JzMxMCcgeDI9JzM4MCcgeTI9JzE4MCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxwb2x5Z29uIHBvaW50cz0nMzgwLjAsMTcwLjAgMzg1LjAsMTgwLjAgMzc1LjAsMTgwLjAnIGZpbGw9JyMxQTFEMjEnLz4NCjx0ZXh0IHg9JzU3MycgeT0nMzI2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5naeG7ryBTdG9wIDIgZ2nDonkg4oaSIGh14bu3IGNodSB0csOsbmgsIHbhu4EgZ+G7kWMgbOG6oWk8L3RleHQ+DQo8bGluZSB4MT0nMTA2JyB5MT0nMTY2JyB4Mj0nMTA2JyB5Mj0nMzQwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMS41JyBzdHJva2UtZGFzaGFycmF5PSc1LDQnLz4NCjxsaW5lIHgxPSczNTYnIHkxPScxNjYnIHgyPSczNTYnIHkyPSczNDAnIHN0cm9rZT0nI0MwMzkyQicgc3Ryb2tlLXdpZHRoPScxLjUnIHN0cm9rZS1kYXNoYXJyYXk9JzUsNCcvPg0KPGxpbmUgeDE9JzgwNicgeTE9JzI4NicgeDI9JzgwNicgeTI9JzM0MCcgc3Ryb2tlPScjQzAzOTJCJyBzdHJva2Utd2lkdGg9JzEuNScgc3Ryb2tlLWRhc2hhcnJheT0nNSw0Jy8+DQo8bGluZSB4MT0nMTA2JyB5MT0nMzQwJyB4Mj0nODA2JyB5Mj0nMzQwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMS44Jy8+DQo8bGluZSB4MT0nNjAxJyB5MT0nMzQwJyB4Mj0nNjAxJyB5Mj0nMzcwJyBzdHJva2U9JyNDMDM5MkInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8cG9seWdvbiBwb2ludHM9JzYwMS4wLDM4MC4wIDU5Ni4wLDM3MC4wIDYwNi4wLDM3MC4wJyBmaWxsPScjQzAzOTJCJy8+DQo8dGV4dCB4PSc4MTgnIHk9JzM0NScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjQzAzOTJCJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPnThu6sgTeG7jEkgdHLhuqFuZyB0aMOhaTwvdGV4dD4NCjxsaW5lIHgxPSc0NjYnIHkxPSc0MTEnIHgyPSc0MTYnIHkyPSc0MTEnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzQwNi4wLDQxMS4wIDQxNi4wLDQwNi4wIDQxNi4wLDQxNi4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PSc0MzYnIHk9JzM3NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+UmVzZXQgKGzhu5dpIMSRw6MgaOG6v3QpPC90ZXh0Pg0KPGxpbmUgeDE9JzI5MCcgeTE9JzM4NCcgeDI9JzI5MCcgeTI9JzIwMCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzInLz4NCjxsaW5lIHgxPScyOTAnIHkxPScyMDAnIHgyPScyOTAnIHkyPScxODAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyJy8+DQo8cG9seWdvbiBwb2ludHM9JzI5MC4wLDE3MC4wIDI5NS4wLDE4MC4wIDI4NS4wLDE4MC4wJyBmaWxsPScjMUExRDIxJy8+DQo8dGV4dCB4PScyODAnIHk9JzIxOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J2VuZCc+eG/DoSB4b25nIOKGkiB24buBIGfhu5FjIGzhuqFpPC90ZXh0Pg0KPHJlY3QgeD0nMjQnIHk9JzQ4Nicgd2lkdGg9Jzg5MicgaGVpZ2h0PSc1Micgcng9JzMnIGZpbGw9JyNGREY2RTcnIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzQyJyB5PSc1MDgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz7imqAgIEUtU3RvcCBLSMOUTkcgcGjhuqNpIG3hu5l0IHRy4bqhbmcgdGjDoWkg4bufIMSRw6J5LiBOw7MgbMOgIG3huqFjaCBj4bupbmcgY+G6r3Qgbmd14buTbiBjxqEgY+G6pXUsIGhv4bqhdCDEkeG7mW5nIGvhu4MgY+G6oyBraGkgQ1BVIHRyZW8uPC90ZXh0Pg0KPHRleHQgeD0nNDInIHk9JzUyNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz5Nw6F5IHRy4bqhbmcgdGjDoWkgY2jhu4kgUEjhuqJOIOG7qE5HIHbhu5tpIHZp4buHYyBFLVN0b3AgxJHDoyBi4buLIG5o4bqlbiAoY2h1eeG7g24gc2FuZyBBbGFybSksIGNo4bupIGtow7RuZyBUSOG7sEMgSEnhu4ZOIHZp4buHYyBk4burbmcg4oCUIHhlbSBDaMawxqFuZyA0Ny48L3RleHQ+DQo8L3N2Zz4=)
 
 *Hình 25.1 — Bảy trạng thái và các chuyển tiếp hợp lệ. Mũi tên đỏ từ mọi trạng thái vào Alarm là điểm
 mấu chốt: lỗi có thể xảy ra ở bất cứ đâu.*
@@ -13339,7 +13962,7 @@ mấu chốt: lỗi có thể xảy ra ở bất cứ đâu.*
 | **Homing** | Đang đưa các cơ cấu về vị trí gốc đã biết | Về gốc xong → `Idle`; lỗi → `Alarm` |
 | **Idle** | Đã về gốc, đủ điều kiện, đang chờ lệnh | Nhấn Start → `Running`; chọn tay → `Manual` |
 | **Running** | Đang chạy chu trình tự động | Nhấn Hold; nhấn Stop; hoặc phát sinh lỗi |
-| **Hold** | Đã dừng có kiểm soát, **giữ nguyên vị trí và sản phẩm** | Tiếp tục → `Running`; huỷ → `Idle` |
+| **Hold** | Đã dừng có kiểm soát, **giữ nguyên vị trí và sản phẩm** | Tiếp tục → `Running`; huỷ → `Homing` (rồi mới `Idle`) |
 | **Alarm** | Có lỗi. Mọi chuyển động đã dừng | Xử lý xong nguyên nhân → nhấn Reset |
 | **Resetting** | Đang xoá lỗi và kiểm tra điều kiện | Sạch lỗi → `Homing` (không về thẳng `Idle` — xem dưới); còn lỗi → `Alarm` |
 
@@ -13388,7 +14011,7 @@ Mỗi dòng là một chuyển tiếp, và phải trả lời đủ bốn cột:
 | Running | `DI_StopPB` (nút Hold) | Hold | Bật đèn vàng; **giữ nguyên mọi ngõ ra vị trí** |
 | Running | Bất kỳ điều kiện lỗi nào | Alarm | Bật đèn đỏ + còi; cắt lệnh chuyển động |
 | Hold | `DI_StartPB` | Running | Bật đèn xanh; chạy tiếp từ bước đang nhớ |
-| Hold | Giữ `DI_StopPB` quá 2 giây | Idle | Nhả sản phẩm theo quy trình an toàn, về gốc |
+| Hold | Giữ `DI_StopPB` quá 2 giây | Homing | Huỷ chu trình: xả sản phẩm theo thứ tự an toàn, về gốc (Chương 28) — `Idle` chỉ tới **sau** khi về gốc xong |
 | Alarm | Sườn lên `DI_ResetPB` | Resetting | Tắt còi; ra lệnh xoá mọi cờ lỗi (`M_ClearFaults`) |
 | Resetting | Hết thời lượng xoá, **không còn cờ nào** | Homing | Bắt đầu trình tự về gốc |
 | Resetting | Hết thời lượng xoá, **còn cờ chốt lại** — nguyên nhân chưa hết | Alarm | Giữ đèn đỏ; còi không kêu lại |
@@ -13413,101 +14036,155 @@ Máy trạng thái không phụ thuộc ngôn ngữ. Dưới đây là cùng m�
 Cách gọn nhất khi ngôn ngữ có `CASE`.
 
 ```iecst
-// Khai báo trạng thái bằng kiểu liệt kê — KHÔNG dùng số trần
+// ✔ VÍ DỤ HOÀN CHỈNH — tầng máy của DP-01: bảy trạng thái, lỗi thắng mọi trạng thái
 TYPE E_MachineState :
     (Uninitialized, Homing, Idle, Running, Hold, Alarm, Resetting);
 END_TYPE
 
-VAR
-    MachineState : E_MachineState := Uninitialized;
-    T_Resetting  : TON;
+VAR_GLOBAL
+    // ── Vào: nút bấm và kết quả của các tầng khác ──
+    DI_StartPB      : BOOL;
+    DI_StopPB       : BOOL;             // ⚠ nút NC — bình thường TRUE, nhấn là FALSE (Chương 15)
+    DI_ResetPB      : BOOL;
+    M_AllPermissive : BOOL;             // chuỗi cho phép: dừng khẩn, khí, cửa (Phụ lục L mục L.2)
+    M_AnyFault      : BOOL;             // gom lỗi — gán ở ĐÚNG MỘT chỗ, ngay trước tầng máy (25.5c)
+    M_HomingDone    : BOOL;             // trình tự về gốc báo xong (Chương 28)
+    // ── Ra: trạng thái, lệnh cho các tầng khác, đèn tháp ──
+    MachineState    : E_MachineState := Uninitialized;
+    M_HomingRun     : BOOL;             // cho trình tự về gốc chạy
+    M_AbortCycle    : BOOL;             // huỷ chu trình: mọi trạm đưa bước về 0 (Chương 26)
+    M_CycleEnable   : BOOL;             // cho trình tự các trạm chạy (Chương 26)
+    M_MotionEnable  : BOOL;             // cho phép cơ cấu ĐỔI vị trí — chân Permit (Chương 27)
+    M_ClearFaults   : BOOL;             // lệnh xoá mọi cờ lỗi đã chốt (25.5c)
+    DO_LampGreen    : BOOL;
+    DO_LampYellow   : BOOL;
+    DO_LampRed      : BOOL;
+    DO_Buzzer       : BOOL;
 END_VAR
 
-// M_AnyFault đã được GOM ở đúng một chỗ, ngay trước đoạn này (mục 25.5c)
+PROGRAM Prg_Machine
+VAR_EXTERNAL
+    DI_StartPB, DI_StopPB, DI_ResetPB                  : BOOL;
+    M_AllPermissive, M_AnyFault, M_HomingDone          : BOOL;
+    MachineState                                       : E_MachineState;
+    M_HomingRun, M_AbortCycle, M_CycleEnable           : BOOL;
+    M_MotionEnable, M_ClearFaults                      : BOOL;
+    DO_LampGreen, DO_LampYellow, DO_LampRed, DO_Buzzer : BOOL;
+END_VAR
+VAR
+    TrigStart   : R_TRIG;
+    TrigStop    : R_TRIG;
+    TrigReset   : R_TRIG;
+    T_StopHeld  : TON;
+    T_Resetting : TON;
+    FirstScan   : BOOL := TRUE;         // KHÔNG giữ — TRUE ở mỗi lần khởi động (Chương 16 Bẫy 9)
+    StartPress  : BOOL;
+    StopPress   : BOOL;
+    ResetPress  : BOOL;
+    BuzzerOn    : BOOL;                 // còi của MỘT lần báo động mới — Reset thì tắt
+END_VAR
 
-// ── Chuyển tiếp ưu tiên cao nhất: lỗi từ BẤT KỲ trạng thái nào ──
-// Đặt TRƯỚC khối CASE để nó luôn thắng
-IF M_AnyFault AND MachineState <> Alarm AND MachineState <> Resetting THEN
-    MachineState := Alarm;
-    DO_LampRed  := TRUE;
-    DO_Buzzer   := TRUE;
-    M_MotionEnable := FALSE;          // cắt mọi lệnh chuyển động
-END_IF;
-
-// Thời lượng của Resetting — gọi đúng MỘT lần, ngoài CASE (Chương 17, Bẫy 5)
+// ── 1 · Mọi khối gọi ĐÚNG MỘT lần mỗi vòng, ngoài CASE, đầu vào lấy từ trạng thái ──
+TrigStart(CLK := DI_StartPB);
+TrigStop(CLK := NOT DI_StopPB);                     // nút NC: nhấn là sườn lên của NOT
+TrigReset(CLK := DI_ResetPB);
+StartPress := TrigStart.Q AND NOT FirstScan;        // che sườn giả của vòng quét đầu
+StopPress  := TrigStop.Q AND NOT FirstScan;
+ResetPress := TrigReset.Q AND NOT FirstScan;
+T_StopHeld(IN := (MachineState = Hold) AND NOT DI_StopPB, PT := T#2S);
 T_Resetting(IN := (MachineState = Resetting), PT := T#200MS);
 
-CASE MachineState OF
+// ── 2 · Lỗi thắng mọi trạng thái — đặt TRƯỚC CASE ──
+IF M_AnyFault AND MachineState <> Alarm AND MachineState <> Resetting THEN
+    MachineState := Alarm;
+    BuzzerOn     := TRUE;                           // báo động MỚI thì còi kêu
+END_IF;
+IF ResetPress THEN
+    BuzzerOn := FALSE;                              // người đã biết — tắt còi
+END_IF;
 
+// ── 3 · Chuyển trạng thái — mỗi nhánh CHỈ quyết định trạng thái kế tiếp ──
+CASE MachineState OF
     Uninitialized:
-        DO_LampYellow := TRUE;
-        IF R_TRIG_Reset.Q THEN                 // bắt sườn lên nút Reset
+        IF ResetPress THEN
             MachineState := Homing;
         END_IF;
 
     Homing:
-        M_HomingRun := TRUE;                   // gọi trình tự về gốc (Ch.28)
         IF M_HomingDone THEN
-            M_HomingRun := FALSE;
-            M_CycleStep := 0;                  // xoá bước chu trình
             MachineState := Idle;
         END_IF;
-        // timeout xử lý bên trong trình tự về gốc → chốt M_Alm_HomeTimeout (Ch.28)
 
     Idle:
-        DO_LampYellow := TRUE;
-        IF R_TRIG_Start.Q AND M_AllPermissive THEN
+        IF StartPress AND M_AllPermissive THEN
             MachineState := Running;
         END_IF;
 
     Running:
-        DO_LampGreen   := TRUE;
-        M_CycleEnable  := TRUE;                // cho phép trình tự chạy (Ch.26)
-        IF R_TRIG_Stop.Q THEN
-            M_CycleEnable := FALSE;            // dừng nhưng GIỮ nguyên vị trí
-            MachineState  := Hold;
+        IF StopPress THEN
+            MachineState := Hold;                   // dừng nhưng GIỮ nguyên vị trí
         END_IF;
 
     Hold:
-        DO_LampYellow := TRUE;
-        IF R_TRIG_Start.Q THEN
-            MachineState := Running;           // chạy tiếp từ bước đang nhớ
-        ELSIF T_StopHeld.Q THEN                // giữ nút Stop quá 2 giây
-            MachineState := Idle;              // huỷ chu trình, về gốc
+        IF StartPress AND M_AllPermissive THEN
+            MachineState := Running;                // chạy tiếp từ bước đang nhớ
+        ELSIF T_StopHeld.Q THEN
+            MachineState := Homing;                 // huỷ chu trình: xả sản phẩm, về gốc (Chương 28)
         END_IF;
 
     Alarm:
-        DO_LampRed := TRUE;
-        IF R_TRIG_Reset.Q THEN                 // chỉ cần SƯỜN LÊN — việc xét nguyên nhân
-            MachineState := Resetting;         // giao cho Resetting (mục 25.5c)
+        IF ResetPress THEN
+            MachineState := Resetting;              // chỉ cần sườn lên — xét nguyên nhân là việc của Resetting
         END_IF;
 
     Resetting:
-        M_ClearFaults := TRUE;                 // mọi chủ cờ lỗi tự xoá cờ của mình…
-        DO_Buzzer     := FALSE;
-        IF T_Resetting.Q THEN                  // …và đã có đủ vòng quét để làm việc đó
-            M_ClearFaults := FALSE;
+        IF T_Resetting.Q THEN
             IF M_AnyFault THEN
-                MachineState := Alarm;         // nguyên nhân còn → cờ đã chốt lại
+                MachineState := Alarm;              // nguyên nhân còn → cờ đã chốt lại; còi KHÔNG kêu lại
             ELSE
-                MachineState := Homing;        // KHÔNG về thẳng Idle
+                MachineState := Homing;             // KHÔNG về thẳng Idle
             END_IF;
         END_IF;
-
 END_CASE;
+
+// ── 4 · Lệnh và đèn SUY TỪ trạng thái — mỗi thứ gán ở MỘT chỗ, ngoài CASE (Bẫy 5) ──
+M_HomingRun    := (MachineState = Homing);
+M_AbortCycle   := (MachineState = Homing);              // đang về gốc: bước của mọi trạm giữ ở 0
+M_CycleEnable  := (MachineState = Running);
+M_MotionEnable := M_AllPermissive
+                  AND ((MachineState = Homing) OR (MachineState = Running));
+M_ClearFaults  := (MachineState = Resetting);
+DO_LampGreen   := (MachineState = Running);
+DO_LampYellow  := (MachineState = Uninitialized) OR (MachineState = Homing)
+                  OR (MachineState = Idle) OR (MachineState = Hold);
+DO_LampRed     := (MachineState = Alarm) OR (MachineState = Resetting);
+DO_Buzzer      := BuzzerOn AND (MachineState = Alarm);
+
+FirstScan := FALSE;                                     // dòng CUỐI của chương trình
+END_PROGRAM
 ```
 
-Ba điểm đáng chú ý trong đoạn trên:
+Bốn điểm đáng chú ý trong chương trình trên:
 
+- ⭐⭐ **Mỗi nhánh `CASE` chỉ quyết định trạng thái kế tiếp; mọi lệnh và đèn được SUY TỪ trạng thái, gán
+  ở MỘT chỗ ngoài `CASE`** (phần 4). Bản trước của đoạn này gán `DO_LampGreen := TRUE` bên trong nhánh
+  `Running` và không chỗ nào tắt nó — nên sang `Hold` thì **đèn xanh vẫn sáng**, đúng triệu chứng của
+  Bẫy 5 ở cuối chương; `M_CycleEnable` và `M_HomingRun` cũng ở lại TRUE khi máy vào `Alarm` qua khối
+  lỗi. ⚡ Một giá trị gán trong một nhánh sẽ **ở nguyên** khi rời nhánh bằng một đường khác — cùng bệnh
+  với hành động `N` viết bằng đoạn mã trong SFC (Chương 21). Gán theo trạng thái thì không thể sót.
 - **Khối lỗi đặt ngoài và trước `CASE`.** Nhờ vậy nó thắng mọi trạng thái, đúng như dòng cuối bảng
   chuyển trạng thái. Nếu nhét điều kiện lỗi vào từng nhánh `CASE` thì bạn phải nhớ lặp lại ở bảy chỗ,
   và sẽ quên ít nhất một chỗ.
+- **Hai chỗ nhỏ mà thiếu là có sự cố thật:** sườn nút bấm **che ở vòng quét đầu** (`FirstScan` —
+  nút Reset kẹt lúc cấp điện không được làm máy tự về gốc, Chương 16 Bẫy 9); và còi gắn với **một lần
+  báo động mới** (`BuzzerOn`) — Reset tắt còi, `Resetting` quay về `Alarm` thì còi **không kêu lại**,
+  đúng dòng cuối bảng chuyển trạng thái.
 - **Dùng kiểu liệt kê, không dùng số trần.** `MachineState := 3` không nói lên điều gì khi bạn xem
   trạng thái trực tuyến lúc hai giờ sáng; `Running` thì nói.
 - **Reset chỉ cần sườn lên — việc xét nguyên nhân thuộc về `Resetting`.** Nó ra lệnh xoá, chờ đủ
   lâu cho mọi nơi giữ cờ lỗi tự xoá rồi **phát hiện lại**, sau đó mới xem còn lỗi không. Nguyên nhân
   còn thì cờ đã chốt lại → quay về `Alarm`, **một lần cho mỗi lần nhấn** — không quay vòng. ⚠⚠ Đừng
-  viết `IF R_TRIG_Reset.Q AND NOT M_AnyFault`: khi cờ lỗi chỉ được xoá **bên trong** `Resetting`,
+  viết `IF ResetPress AND NOT M_AnyFault`: khi cờ lỗi chỉ được xoá **bên trong** `Resetting`,
   điều kiện đó không bao giờ đúng và máy **khoá chết** ở `Alarm` (mục 25.5c).
 
 ### Cách 2 — bit trạng thái (Ladder Diagram)
@@ -13651,13 +14328,13 @@ IF DI_ResetPB AND DI_AirOK AND NOT T_Stn1Step.Q AND NOT T_Home.Q THEN
 END_IF;
 
 // ── B · Mỗi nguồn ghi thẳng cờ chung ──
-IF T_Stn1Step.Q THEN  Stn1_Fault := TRUE;  M_AnyFault := TRUE;  END_IF;   // trong trạm 1
+IF T_Stn1Step.Q THEN  Stn1.Fault := TRUE;  M_AnyFault := TRUE;  END_IF;   // trong trạm 1
 IF T_Home.Q     THEN  M_AnyFault := TRUE;                       END_IF;   // trong trình tự về gốc
 
 // ── C · Mỗi nguồn MỘT cờ của riêng nó, gom MỘT chỗ, xoá qua Resetting ──
-IF M_ClearFaults THEN  Stn1_Fault := FALSE;  END_IF;       // chủ cờ: xoá TRƯỚC…
-IF T_Stn1Step.Q  THEN  Stn1_Fault := TRUE;   END_IF;       // …phát hiện SAU
-M_AnyFault := M_Alm_AirLow OR Stn1_Fault OR M_Alm_HomeTimeout;    // đúng MỘT chỗ gán
+IF M_ClearFaults THEN  Stn1.Fault := FALSE;  END_IF;       // chủ cờ: xoá TRƯỚC…
+IF T_Stn1Step.Q  THEN  Stn1.Fault := TRUE;   END_IF;       // …phát hiện SAU
+M_AnyFault := M_Alm_AirLow OR Stn1.Fault OR M_Alm_HomeTimeout;    // đúng MỘT chỗ gán
 ```
 
 | Cách | ⭐ Ưu | ⚠ Nhược |
@@ -13670,7 +14347,7 @@ M_AnyFault := M_Alm_AirLow OR Stn1_Fault OR M_Alm_HomeTimeout;    // đúng MỘ
 
 ### ⚠⚠ Vì sao cách B khoá chết máy
 
-Viết `Alarm → Resetting` với điều kiện `R_TRIG_Reset.Q AND NOT M_AnyFault`, trong khi cờ lỗi chỉ được
+Viết `Alarm → Resetting` với điều kiện `ResetPress AND NOT M_AnyFault`, trong khi cờ lỗi chỉ được
 xoá **bên trong** `Resetting` — thì:
 
 1. Lỗi xảy ra → cờ chốt → `M_AnyFault` = TRUE → máy vào `Alarm`.
@@ -13690,7 +14367,7 @@ dòng đó không bao giờ chạy.
 
 | # | Quy tắc | Vì sao |
 |:-:|---|---|
-| 1 | **Mỗi nguồn lỗi tự chốt cờ của chính nó** — `M_Alm_…` cho nguồn chung, `Stn1_Fault` cho trạm, `.Fault` cho khối cơ cấu. Không ai khác ghi vào cờ đó | Một biến, một nơi ghi (Chương 10). Và cờ nói được **lỗi gì** |
+| 1 | **Mỗi nguồn lỗi tự chốt cờ của chính nó** — `M_Alm_…` cho nguồn chung, `Stn1.Fault` cho trạm, `.Fault` cho khối cơ cấu. Không ai khác ghi vào cờ đó | Một biến, một nơi ghi (Chương 10). Và cờ nói được **lỗi gì** |
 | 2 | ⭐ **`M_AnyFault` được GÁN đúng một chỗ** — phép `OR` của mọi cờ, tính lại mỗi vòng, đặt **sau** tầng cơ cấu và **trước** tầng máy. Không nguồn nào ghi thẳng `M_AnyFault` | Hai nơi cùng ghi thì phép gán chạy sau **xoá mất** lỗi của phép chạy trước |
 | 3 | ⭐⭐ **Xoá đi qua `Resetting`.** Chủ cờ xoá cờ của mình **khi thấy `M_ClearFaults`**, đặt dòng xoá **trước** dòng phát hiện | Nguyên nhân còn thì cờ chốt lại ngay trong vòng đó — `Resetting` nhìn thấy và đưa máy về `Alarm`. ⭐ Việc *"nguyên nhân đã hết chưa"* giao cho **đúng nơi biết nguyên nhân** |
 
@@ -13704,7 +14381,7 @@ nhất** có chứa cờ lỗi (Chương 27 mục 27.6).
 ```iecst
 // ── GOM LỖI — đúng MỘT chỗ gán M_AnyFault; chạy SAU các nguồn lỗi, TRƯỚC tầng máy ──
 M_AnyFault := M_Alm_AirLow                    // nguồn chung (Phụ lục L mục L.11)
-              OR Stn1_Fault OR Stn2_Fault     // tầng trạm (Chương 26)
+              OR Stn1.Fault OR Stn2.Fault     // tầng trạm (Chương 26)
               OR M_Alm_HomeTimeout            // trình tự về gốc (Chương 28)
               OR M_Alm_StateInvalid;          // giám sát bit trạng thái (mục 25.5)
 // Chương 27 thêm cờ của các khối cơ cấu: … OR Clamp1.Fault OR …
@@ -13835,10 +14512,10 @@ không tính lại từ điều kiện khác:
 DO_LampGreen  := (MachineState = Running);
 DO_LampYellow := (MachineState = Idle) OR (MachineState = Hold)
                  OR (MachineState = Homing) OR (MachineState = Uninitialized);
-DO_LampRed    := (MachineState = Alarm);
+DO_LampRed    := (MachineState = Alarm) OR (MachineState = Resetting);
 ```
 
-Ba dòng, không điều kiện phụ. Đèn **không thể** nói khác biến trạng thái.
+Ba dòng, không điều kiện phụ — đúng ba dòng ở phần 4 của chương trình mục 25.5. Đèn **không thể** nói khác biến trạng thái.
 
 ---
 
@@ -14014,7 +14691,7 @@ Lưu đồ cho trạm 1 của DP-01, dạng đơn giản nhất:
       │ Chờ trạm 2  │                 │
       │   sẵn sàng  │                 │
       └──────┬──────┘                 │
-             │ Stn2_Ready = 1         │
+             │ Stn2.Ready = 1         │
       ┌──────▼──────┐                 │
       │  Hạ chặn,   │                 │
       │ chuyển board│─────────────────┘
@@ -14026,7 +14703,7 @@ Hai thứ cần chú ý ngay trên lưu đồ này:
 - **Mỗi mũi tên có một điều kiện**, và điều kiện đó là **tín hiệu phản hồi thật** — `DI_Stop1Up`,
   `DI_Clamp1Up` — chứ không phải một khoảng thời gian. Đây là nguyên tắc từ Chương 17, và nó quyết
   định trình tự có đáng tin hay không.
-- **Bước "Chờ trạm 2 sẵn sàng"** đọc `Stn2_Ready` — giao diện công bố của trạm 2, không phải biến nội
+- **Bước "Chờ trạm 2 sẵn sàng"** đọc `Stn2.Ready` — giao diện công bố của trạm 2, không phải biến nội
   bộ của nó (Chương 27).
 
 ### Chuyển lưu đồ thành bit bước
@@ -14181,6 +14858,7 @@ Trình tự trạm 1, viết bằng biến số bước:
 
 ```iecst
 // ── Trình tự trạm 1 — chỉ chạy khi tầng máy cho phép (Chương 27) ──
+//    ⭐ Yêu cầu phát ở CHUYỂN TIẾP (hành động khi vào bước); thân bước chỉ CHỜ kết quả
 IF NOT M_CycleEnable THEN
     ;                                         // ⭐ CỐ Ý: giữ nguyên bước, không tiến
 ELSE
@@ -14188,50 +14866,50 @@ ELSE
     CASE Stn1_Step OF
 
       0:  // Chờ board tới
-          Stn1_Ready := TRUE;                     // giao diện công bố
-          Stn1_Busy  := FALSE;
+          Stn1.Ready := TRUE;                     // giao diện công bố
+          Stn1.Busy  := FALSE;
           IF DI_BoardStn1 OR M_DryRun THEN
-              Stn1_Ready := FALSE;
-              Stn1_Busy  := TRUE;
-              Stn1_Step  := 10;
+              Stn1.Ready     := FALSE;
+              Stn1.Busy      := TRUE;
+              M_Stn1_StopReq := TRUE;             // → 10: nâng chặn — yêu cầu, khối cơ cấu thực hiện
+              Stn1_Step      := 10;
           END_IF;
 
-     10:  // Nâng chặn
-          M_Stn1_StopReq := TRUE;                 // yêu cầu, khối cơ cấu thực hiện
+     10:  // Chờ chặn lên
           IF Stop1.Done THEN
-              Stn1_Step := 20;
+              M_Stn1_ClampReq := TRUE;            // → 20: nâng kẹp
+              Stn1_Step       := 20;
           END_IF;
 
-     20:  // Nâng kẹp
-          M_Stn1_ClampReq := TRUE;
+     20:  // Chờ kẹp lên
           IF Clamp1.Done THEN
               Stn1_Step := 30;
           END_IF;
 
      30:  // Xử lý board  (nội dung xử lý ở lát cắt sau)
           IF M_Stn1_ProcessDone THEN
-              Stn1_Step := 40;
+              M_Stn1_ClampReq := FALSE;           // → 40: hạ kẹp
+              Stn1_Step       := 40;
           END_IF;
 
-     40:  // Hạ kẹp
-          M_Stn1_ClampReq := FALSE;
+     40:  // Chờ kẹp xuống
           IF Clamp1.Done THEN
-              Stn1_Step := 50;
+              Stn1.BoardDone := TRUE;             // → 50: công bố board đã xong
+              Stn1_Step      := 50;
           END_IF;
 
      50:  // Chờ trạm 2 sẵn sàng  ← điểm đồng bộ giữa hai trạm
-          Stn1_BoardDone := TRUE;
-          IF Stn2_Ready THEN
-              Stn1_Step := 60;
+          IF Stn2.Ready THEN
+              M_Stn1_StopReq := FALSE;            // → 60: hạ chặn, yêu cầu chuyền chạy
+              M_Stn1_ConvReq := TRUE;
+              Stn1_Step      := 60;
           END_IF;
 
-     60:  // Hạ chặn, chuyển board sang
-          M_Stn1_StopReq  := FALSE;
-          M_Stn1_ConvReq  := TRUE;                // yêu cầu chuyền chạy
+     60:  // Chờ board rời trạm
           IF NOT DI_BoardStn1 THEN
-              M_Stn1_ConvReq  := FALSE;
-              Stn1_BoardDone  := FALSE;
-              Stn1_Step       := 0;               // quay lại chờ board mới
+              M_Stn1_ConvReq := FALSE;
+              Stn1.BoardDone := FALSE;
+              Stn1_Step      := 0;                // quay lại chờ board mới
           END_IF;
 
     END_CASE;
@@ -14243,6 +14921,10 @@ Ba điểm thiết kế trong đoạn trên, mỗi cái đều nối tới một
 
 - **Không có dòng nào ghi `DO_…`** — trạm chỉ nêu yêu cầu, khối cơ cấu thực hiện (Chương 27, quy tắc Q3).
 - **Mọi chuyển tiếp dùng phản hồi thật** — `Stop1.Done`, `DI_BoardStn1` — không dùng timer (Chương 17).
+- ⭐⭐ **Yêu cầu phát ở CHUYỂN TIẾP, không phát trong thân bước.** Mỗi bước chỉ **chờ** kết quả của yêu
+  cầu đã phát lúc vào bước — đúng cột *"hành động khi vào trạng thái"* của bảng chuyển trạng thái
+  (Chương 25). ⚠ Viết kiểu *"trong bước 10: nâng chặn, rồi `IF Stop1.Done`"* thì trình tự **nhảy qua
+  bước mà không chờ** — Bẫy 7 giải thích vì sao.
 - **Cờ `M_DryRun` ở bước 0** cho phép chạy khô không có board (Chương 28).
 
 Nhưng đoạn code trên vẫn **chưa xong**. Nó thiếu đúng thứ đã gây ra sự cố ở mục 26.1.
@@ -14285,7 +14967,7 @@ END_VAR
 // ── Xoá cờ lỗi của trạm khi tầng máy ra lệnh — đặt NGOÀI cửa vào của trình tự,
 //    vì lúc máy đang Resetting thì trình tự không chạy (Chương 25 mục 25.5c) ──
 IF M_ClearFaults THEN
-    Stn1_Fault := FALSE;
+    Stn1.Fault := FALSE;
 END_IF;
 
 // ── Thời gian cho phép của từng bước ──
@@ -14299,16 +14981,23 @@ CASE Stn1_Step OF
    60:   Stn1_StepLimit := T#10S;             // chuyển board đi
 END_CASE;
 
-// ── Chạy timer: bước vừa đổi thì IN = FALSE đúng MỘT vòng → timer tự xoá về 0 ──
-T_StepTimeout(IN := (Stn1_StepLimit > T#0S) AND (Stn1_Step = Stn1_StepPrev),
+// ── Chạy timer: bước vừa đổi thì IN = FALSE đúng MỘT vòng → timer tự xoá về 0;
+//    trình tự đang bị giữ (M_CycleEnable tắt, Chương 25) thì IN = FALSE suốt → không báo giả ──
+T_StepTimeout(IN := M_CycleEnable
+                    AND (Stn1_StepLimit > T#0S) AND (Stn1_Step = Stn1_StepPrev),
               PT := Stn1_StepLimit);
 Stn1_StepPrev := Stn1_Step;
 
 IF T_StepTimeout.Q THEN
-    Stn1_FaultStep := Stn1_Step;              // GHI LẠI bước bị kẹt
-    Stn1_Fault     := TRUE;                   // cờ của TRẠM — gom vào M_AnyFault (Ch.25 mục 25.5c)
+    Stn1.FaultStep := Stn1_Step;              // GHI LẠI bước bị kẹt
+    Stn1.Fault     := TRUE;                   // cờ của TRẠM — gom vào M_AnyFault (Ch.25 mục 25.5c)
 END_IF;
 ```
+
+> ⚠ **`M_CycleEnable` trong `IN` là có chủ ý.** Máy đang giữ (Hold) thì bước không tiến — nhưng đó
+> không phải bước bị kẹt. Thiếu điều kiện này, giữ máy quá 3 giây ở bước 20 là báo lỗi giả. ⚠⚠ Còn
+> đặt bộ định thời vào **bên trong** nhánh bị giữ thì tệ hơn: lúc chạy tiếp nó tính luôn cả thời gian
+> đã giữ và báo lỗi **ngay khi vừa bấm Start** (Chương 17 mục 17.3, Phụ lục B mục B.9b).
 
 ### Hai bước cố ý **không** đặt giới hạn
 
@@ -14349,9 +15038,11 @@ Tách thành hai chuỗi bước độc lập, mỗi chuỗi một biến bướ
 ```iecst
 // Nhánh A: hạ kẹp
 CASE Stn1_BranchA OF
-   0:  IF M_ParallelStart THEN Stn1_BranchA := 10; END_IF;
-  10:  M_Stn1_ClampReq := FALSE;
-       IF Clamp1.Done THEN Stn1_BranchA := 99; END_IF;    // 99 = nhánh xong
+   0:  IF M_ParallelStart THEN
+           M_Stn1_ClampReq := FALSE;                         // phát ở CHUYỂN TIẾP (Bẫy 7)
+           Stn1_BranchA    := 10;
+       END_IF;
+  10:  IF Clamp1.Done THEN Stn1_BranchA := 99; END_IF;    // 99 = nhánh xong
 END_CASE;
 
 // Nhánh B: chuẩn bị dữ liệu cho trạm 2
@@ -14369,10 +15060,182 @@ IF Stn1_BranchA = 99 AND Stn1_BranchB = 99 THEN
 END_IF;
 ```
 
+> ⚠⚠ **Vùng song song có hai lối ra, không phải một.** Lối ra bình thường là điểm hợp nhất ở trên —
+> nó xoá cả hai biến nhánh. ⚠ Lối ra thứ hai là **lỗi hoặc huỷ chu trình giữa chừng**: trình tự bị kéo
+> về bước chờ trong khi `Stn1_BranchA` vẫn nằm ở 10. Chu trình sau, nhánh A **chạy tiếp ngay** — hạ
+> kẹp đúng lúc không ai yêu cầu. ⭐ Đây chính là quy tắc L7 của PLCopen cho SFC (*"đóng đúng nhánh song
+> song"*, Chương 21) viết lại cho `CASE`: **mọi chỗ đưa `Stn1_Step` về 0 cũng phải đưa mọi biến nhánh
+> về 0** — gom việc đó vào **một** đoạn *"huỷ chu trình"* duy nhất, đừng rải ra từng nơi.
+
 > ⚡ **LƯU Ý — đừng song song hoá thứ không cần**
 > Nhánh song song làm code khó đọc và khó gỡ lỗi hơn hẳn. Chỉ dùng khi **đo được** rằng nó rút ngắn
 > chu kỳ đáng kể (Chương 55). Song song hoá hai bước mỗi bước 200 ms trong một chu kỳ 12 giây là công
 > sức bỏ đi.
+
+---
+
+## 26.5b ⭐⭐ Ghép lại — trình tự trạm 1 hoàn chỉnh
+
+Mục 26.3 là thân trình tự, 26.4 là giám sát thời gian, 26.5 là lối ra thứ hai của một vùng dở dang.
+Dưới đây là cả ba ghép thành **một chương trình chép vào phần mềm được**, cộng thêm thứ mà ba mục kia
+chưa có: **một chỗ duy nhất huỷ chu trình**, khi tầng máy ra lệnh (Chương 25).
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — trình tự trạm 1 của DP-01, ghép mục 26.3 và 26.4 thành một chương trình
+//   Cần thêm: kiểu ST_Station (Chương 11 mục 11.5); khối FB_Cylinder2Pos, và tầng cơ cấu gọi
+//   Stop1, Clamp1 mỗi vòng quét (Chương 27 mục 27.3)
+VAR_GLOBAL
+    DI_BoardStn1       : BOOL;
+    M_CycleEnable      : BOOL;             // tầng máy cho trình tự chạy (Chương 25)
+    M_AbortCycle       : BOOL;             // tầng máy huỷ chu trình (Chương 25)
+    M_ClearFaults      : BOOL;             // lệnh xoá cờ lỗi (Chương 25 mục 25.5c)
+    M_DryRun           : BOOL;             // chạy khô — không có board (Chương 28)
+    M_Stn1_ProcessDone : BOOL;             // xử lý board xong — nội dung ở các lát cắt sau
+    M_Stn1_StopReq     : BOOL;             // ⭐ YÊU CẦU gửi tầng cơ cấu — trạm không ghi DO_
+    M_Stn1_ClampReq    : BOOL;
+    M_Stn1_ConvReq     : BOOL;
+    Stop1              : FB_Cylinder2Pos;  // tầng cơ cấu GỌI; trạm chỉ ĐỌC .Done
+    Clamp1             : FB_Cylinder2Pos;
+    Stn1               : ST_Station;       // giao diện công bố — CHỈ trạm 1 ghi
+    Stn2               : ST_Station;       // trạm 1 chỉ ĐỌC
+END_VAR
+
+PROGRAM Prg_Stn1Dispense
+VAR_EXTERNAL
+    DI_BoardStn1                                      : BOOL;
+    M_CycleEnable, M_AbortCycle, M_ClearFaults        : BOOL;
+    M_DryRun, M_Stn1_ProcessDone                      : BOOL;
+    M_Stn1_StopReq, M_Stn1_ClampReq, M_Stn1_ConvReq   : BOOL;
+    Stop1, Clamp1                                     : FB_Cylinder2Pos;
+    Stn1, Stn2                                        : ST_Station;
+END_VAR
+VAR
+    Stn1_Step      : INT;                  // ⚠⚠ bước — ruột của trạm, KHÔNG giữ qua mất điện
+    Stn1_StepPrev  : INT;
+    Stn1_StepLimit : TIME;
+    T_StepTimeout  : TON;
+END_VAR
+
+// ── 1 · Huỷ chu trình — MỘT chỗ duy nhất đưa bước và yêu cầu về trạng thái nghỉ ──
+IF M_AbortCycle THEN
+    Stn1_Step       := 0;
+    M_Stn1_ClampReq := FALSE;                  // hạ kẹp TRƯỚC…
+    M_Stn1_ConvReq  := FALSE;
+    IF Clamp1.Done AND NOT Clamp1.Valve THEN   // Done của lệnh HẠ — không phải Done cũ của lệnh nâng
+        M_Stn1_StopReq := FALSE;               // …kẹp hạ hẳn rồi mới hạ chặn (Chương 28, va chạm V1)
+    END_IF;
+    Stn1.Ready     := FALSE;
+    Stn1.Busy      := FALSE;
+    Stn1.BoardDone := FALSE;
+END_IF;
+
+// ── 2 · Xoá cờ lỗi của trạm khi tầng máy ra lệnh — ngoài cửa vào (Chương 25 mục 25.5c) ──
+IF M_ClearFaults THEN
+    Stn1.Fault     := FALSE;
+    Stn1.FaultStep := 0;
+END_IF;
+
+// ── 3 · Giám sát thời gian bước — gọi MỖI vòng, NGOÀI cửa vào (mục 26.4) ──
+CASE Stn1_Step OF
+    10, 20, 40: Stn1_StepLimit := T#5S;      // chờ chặn, chờ kẹp — DÀI HƠN giới hạn 3 s của khối
+                                             // cơ cấu: lỗi cụ thể nhất (xy-lanh nào) báo trước
+    30:         Stn1_StepLimit := T#60S;     // xử lý board
+    60:         Stn1_StepLimit := T#10S;     // chuyển board đi
+ELSE
+    Stn1_StepLimit := T#0S;                  // bước 0 và 50: chờ vô hạn, CÓ CHỦ Ý
+END_CASE;
+
+T_StepTimeout(IN := M_CycleEnable
+                    AND (Stn1_StepLimit > T#0S) AND (Stn1_Step = Stn1_StepPrev),
+              PT := Stn1_StepLimit);
+Stn1_StepPrev := Stn1_Step;
+
+IF T_StepTimeout.Q THEN
+    Stn1.FaultStep := Stn1_Step;             // ⭐ GHI LẠI bước bị kẹt
+    Stn1.Fault     := TRUE;                  // cờ của TRẠM — gom vào M_AnyFault (Chương 25)
+END_IF;
+
+// ── 4 · MỘT cửa vào: tầng máy chưa cho phép thì GIỮ NGUYÊN bước và yêu cầu ──
+//    ⭐ Yêu cầu phát ở CHUYỂN TIẾP — hành động khi vào bước; thân bước chỉ CHỜ kết quả
+IF NOT M_CycleEnable THEN
+    ;                                        // ⭐ CỐ Ý không làm gì
+ELSE
+    CASE Stn1_Step OF
+      0:  // Chờ board tới
+          Stn1.Ready := TRUE;
+          Stn1.Busy  := FALSE;
+          IF DI_BoardStn1 OR M_DryRun THEN
+              Stn1.Ready     := FALSE;
+              Stn1.Busy      := TRUE;
+              M_Stn1_StopReq := TRUE;        // → 10: nâng chặn
+              Stn1_Step      := 10;
+          END_IF;
+
+     10:  // Chờ chặn lên
+          IF Stop1.Done THEN
+              M_Stn1_ClampReq := TRUE;       // → 20: nâng kẹp
+              Stn1_Step       := 20;
+          END_IF;
+
+     20:  // Chờ kẹp lên
+          IF Clamp1.Done THEN
+              Stn1_Step := 30;
+          END_IF;
+
+     30:  // Xử lý board
+          IF M_Stn1_ProcessDone THEN
+              M_Stn1_ClampReq := FALSE;      // → 40: hạ kẹp
+              Stn1_Step       := 40;
+          END_IF;
+
+     40:  // Chờ kẹp xuống
+          IF Clamp1.Done THEN
+              Stn1.BoardDone := TRUE;        // → 50: công bố board đã xong
+              Stn1_Step      := 50;
+          END_IF;
+
+     50:  // Chờ trạm 2 trống — đọc GIAO DIỆN của trạm 2, không đọc bước của nó
+          IF Stn2.Ready THEN
+              M_Stn1_StopReq := FALSE;       // → 60: hạ chặn, cho chuyền chạy
+              M_Stn1_ConvReq := TRUE;
+              Stn1_Step      := 60;
+          END_IF;
+
+     60:  // Chờ board rời trạm
+          IF NOT DI_BoardStn1 THEN
+              M_Stn1_ConvReq := FALSE;
+              Stn1.BoardDone := FALSE;
+              Stn1.DoneCount := Stn1.DoneCount + 1;
+              Stn1_Step      := 0;
+          END_IF;
+
+    ELSE
+        Stn1_Step := 0;                      // giá trị lạ → về trạng thái đã biết (Chương 20)
+    END_CASE;
+END_IF;
+END_PROGRAM
+```
+
+⭐ Chương trình này **đã được chạy thử** cùng tầng máy của Chương 25 và khối xy-lanh của Chương 27,
+trên một mô hình chặn, kẹp, board đơn giản — theo thứ tự gọi của Chương 27 mục 27.6:
+
+| Kịch bản | Kết quả |
+|---|---|
+| Hai board **liên tiếp** | Cả hai đủ chu trình 0 → 60 → 0, `DoneCount` = 2, không lỗi |
+| ⚠ Giữ máy **10 giây** ở bước 20 (giới hạn 5 s) | **Không** báo lỗi giả lúc đang giữ, và **không** báo lỗi ngay khi chạy tiếp — bộ định thời nằm ngoài cửa vào, điều kiện giữ nằm trong `IN` (mục 26.4) |
+| Kẹp **kẹt** | Khối `Clamp1` báo lỗi ở giây thứ 3 (mã 1) — **trước** lưới 5 s của trạm; Reset khi còn kẹt → cờ chốt lại, máy quay về `Alarm` |
+| Gỡ kẹt, Reset → về gốc | Van kẹp tắt **trước**; van chặn chỉ tắt **sau** khi kẹp đã về gốc thật |
+
+> ⚠⚠ **Lần chạy thử đầu tiên tìm ra một lỗi thật — trong chính đoạn 26.3 của bản trước.** Khi yêu cầu
+> được phát **trong thân** bước 10 rồi đọc `Stop1.Done` ngay sau đó, trình tự đi từ bước 10 sang 30
+> **trong hai vòng quét**, không chờ chặn cũng không chờ kẹp. Bẫy 7 mổ xẻ nguyên nhân. ⭐ Và lần chạy
+> thử thứ hai tìm ra **cùng lỗi đó** trong đoạn huỷ chu trình của chính chương trình này lúc còn là bản
+> nháp — nên điều kiện hạ chặn mới là `Clamp1.Done AND NOT Clamp1.Valve`: *Done của lệnh hạ*.
+
+> ⭐ **Giới hạn của bước chờ cơ cấu là 5 s, dài hơn giới hạn 3 s của khối xy-lanh — có chủ ý.** Hai
+> tầng cùng canh một việc với cùng một con số thì **thứ tự quét** quyết định tầng nào báo trước. Đặt
+> bước dài hơn để lỗi **cụ thể nhất** — xy-lanh nào, mã gì — luôn tới trước; bước là lưới an toàn thứ
+> hai, bắt những gì khối cơ cấu không thấy.
 
 ---
 
@@ -14383,14 +15246,14 @@ END_IF;
 Ở máy nhiều trạm, dạng phổ biến nhất:
 
 ```text
-Trạm 1 ở bước 50:  "chờ trạm 2 sẵn sàng"   →  chờ  Stn2_Ready
+Trạm 1 ở bước 50:  "chờ trạm 2 sẵn sàng"   →  chờ  Stn2.Ready
 Trạm 2 ở bước 0:   "chờ board tới"          →  chờ  DI_BoardStn2
 ```
 
 Nghe có vẻ ổn — trạm 2 chờ board, trạm 1 sẽ gửi board sang. Nhưng nếu ai đó viết trạm 2 công bố
-`Stn2_Ready` **chỉ khi đã có board** (nhầm "sẵn sàng" thành "đang bận"), thì:
+`Stn2.Ready` **chỉ khi đã có board** (nhầm "sẵn sàng" thành "đang bận"), thì:
 
-- Trạm 1 chờ `Stn2_Ready` — không lên vì trạm 2 chưa có board.
+- Trạm 1 chờ `Stn2.Ready` — không lên vì trạm 2 chưa có board.
 - Trạm 2 chờ board — không tới vì trạm 1 đang chờ.
 
 **Cả hai đứng im vĩnh viễn**, và cả hai đều ở bước "chờ không giới hạn" nên không báo lỗi. Đây chính
@@ -14398,7 +15261,7 @@ là dạng nguy hiểm nhất: máy im lặng.
 
 ### Ba biện pháp, dùng cả ba
 
-**Một — định nghĩa giao diện cho đúng.** `Stn2_Ready` phải nghĩa là *"tôi trống và nhận được board
+**Một — định nghĩa giao diện cho đúng.** `Stn2.Ready` phải nghĩa là *"tôi trống và nhận được board
 mới"*, và phải **bằng TRUE khi trạm 2 rỗng**. Sai nghĩa ở đây là gốc của bế tắc trên.
 
 **Hai — giám sát "máy đứng chờ" ở tầng máy.** Đã nêu ở mục 26.4: nếu không sản phẩm nào ra trong một
@@ -14441,7 +15304,7 @@ sẽ tác động lên một cơ cấu chưa ở đúng vị trí.
 IF Clamp1.Done THEN
     Stn1_Step := 30;
 END_IF;
-// timeout xử lý riêng, đặt Stn1_Fault
+// timeout xử lý riêng, đặt Stn1.Fault
 ```
 
 ### 🔍 BẪY 3 — Đánh số bước liền nhau
@@ -14468,7 +15331,7 @@ biết khe trống nằm ở đâu.
 
 Trình tự báo lỗi rồi **đặt lại bước về 0**. Thông tin quan trọng nhất — kẹt ở bước nào — mất luôn.
 
-Luôn có một biến `Stn1_FaultStep` giữ lại bước lúc xảy ra lỗi, và biến đó **chỉ được xoá khi Reset**.
+Luôn có một biến `Stn1.FaultStep` giữ lại bước lúc xảy ra lỗi, và biến đó **chỉ được xoá khi Reset**.
 Đây là phiên bản thu nhỏ của "chụp ảnh trạng thái lúc sự cố" ở Chương 28.
 
 ### 🔍 BẪY 5 — Trình tự tự chạy khi máy không cho phép
@@ -14498,6 +15361,43 @@ lần nhánh kia chậm bất thường.
 
 Điểm hợp nhất **luôn dùng `AND`**, và bản thân nó cũng phải có timeout.
 
+### 🔍 BẪY 7 — Phát yêu cầu và đọc `Done` trong cùng một bước
+
+```iecst
+// ✗ SAI — nhảy qua bước mà không chờ
+10: M_Stn1_StopReq := TRUE;
+    IF Stop1.Done THEN
+        Stn1_Step := 20;
+    END_IF;
+```
+
+**Hiện tượng:** trình tự chạy "quá nhanh" — sang bước sau khi chặn chưa lên, kẹp chưa kẹp; cơ cấu kẹt
+cũng không báo lỗi vì không bước nào kịp chờ nó.
+
+**Vì sao:** tầng cơ cấu chạy **trước** tầng trạm (Chương 27 mục 27.6), nên `Stop1.Done` mà trạm đọc ở
+vòng đầu tiên của bước 10 được tính với **yêu cầu cũ** — chặn đang ở gốc, đúng như yêu cầu cũ, nên
+`Done` = TRUE. Khối cơ cấu chỉ thấy yêu cầu mới ở **vòng sau**. ⚡ Cùng một lỗi với cờ `M_CodeValid`
+của Chương 42: một kết quả **của lần trước** được đọc như kết quả của lần này.
+
+**Cách sửa:** phát yêu cầu ở **chuyển tiếp** — lúc gán bước mới — và để thân bước chỉ **chờ**:
+
+```iecst
+// ✓ ĐÚNG — phát khi VÀO bước; bước chỉ chờ kết quả
+0:  IF DI_BoardStn1 THEN
+        M_Stn1_StopReq := TRUE;
+        Stn1_Step      := 10;
+    END_IF;
+10: IF Stop1.Done THEN
+        Stn1_Step := 20;
+    END_IF;
+```
+
+⚡ Chỗ nào buộc phải đổi yêu cầu rồi đọc kết quả ngay trong cùng vòng — như đoạn huỷ chu trình ở mục
+26.5b — thì hỏi **Done của lệnh nào**: `Clamp1.Done AND NOT Clamp1.Valve` là *"đã về gốc theo lệnh
+hạ"*, còn `Clamp1.Done` một mình vẫn có thể là Done của lệnh nâng cũ. ⭐ Khối kích bằng sườn kiểu
+`Execute`/`Done`, gọi ngay trước `CASE` với `Execute` lấy từ bước, **không** mắc lỗi này: sườn lên của
+`Execute` xoá `Done` trong chính lần gọi đó (Chương 30 mục 30.5b).
+
 ---
 
 ## 26.8 Bảng chốt — kiểm tra một trình tự
@@ -14512,10 +15412,13 @@ lần nhánh kia chậm bất thường.
 | 6 | Số bước đánh **cách 10**? | Có |
 | 7 | ⭐ Đã hỏi *"có cảm biến nào cho biết bước này xong chưa?"* cho **từng** bước? | Có, và ghi lại câu trả lời |
 | 8 | ⚠ Bước nào **không** có phản hồi thật đã được **ghi vào đặc tả**? | Có — không để im lặng |
-| 7 | Có biến giữ **bước bị kẹt** lúc lỗi? | Có, chỉ xoá khi Reset |
-| 8 | Trình tự có kiểm **tầng máy cho phép** trước khi tiến bước? | Có — bằng một nhánh `IF` giữ nguyên bước, không bằng `RETURN` |
-| 9 | Điểm hợp nhất nhánh song song dùng **AND**? | Có |
-| 10 | Đã vẽ **đồ thị chờ** và kiểm không có vòng kín? | Có |
+| 9 | Có biến giữ **bước bị kẹt** lúc lỗi? | Có, chỉ xoá khi Reset |
+| 10 | Trình tự có kiểm **tầng máy cho phép** trước khi tiến bước? | Có — bằng một nhánh `IF` giữ nguyên bước, không bằng `RETURN` |
+| 11 | Điểm hợp nhất nhánh song song dùng **AND**? | Có |
+| 12 | Đã vẽ **đồ thị chờ** và kiểm không có vòng kín? | Có |
+| 13 | ⭐⭐ Yêu cầu phát ở **chuyển tiếp**, thân bước chỉ **chờ**? | Có — không bước nào vừa phát yêu cầu vừa đọc `Done` (Bẫy 7) |
+| 14 | ⭐ Bộ định thời giám sát bước gọi **ngoài** cửa vào, điều kiện giữ nằm trong `IN`? | Có — giữ máy lâu không báo lỗi giả, chạy tiếp không báo lỗi ngay |
+| 15 | ⭐ Có **một** chỗ duy nhất huỷ chu trình, đưa **mọi** biến bước và yêu cầu về nghỉ? | Có (mục 26.5b) |
 
 ---
 
@@ -14537,6 +15440,9 @@ lần nhánh kia chậm bất thường.
     nó là gì, và vì sao dùng sai điều kiện là quay lại sai lầm ở Chương 17?
 10. ⭐ Bạn đọc chương trình của người khác và thấy **một chuỗi timer nối tiếp, không có phản hồi nào**.
     Câu hỏi đầu tiên phải đặt là gì? Nêu hai kết luận có thể, và mỗi kết luận dẫn tới hành động nào.
+11. ⚠⚠ Bước 10 viết `M_Stn1_StopReq := TRUE; IF Stop1.Done THEN Stn1_Step := 20; END_IF;`. Máy chạy,
+    nhưng chặn chưa lên đã kẹp. **Vì sao** — dựa vào thứ tự gọi các tầng? Viết lại cho đúng.
+12. ⭐ Vì sao giới hạn thời gian của bước chờ kẹp nên **dài hơn** giới hạn của khối xy-lanh?
 
 Câu 2 và câu 6 là hai câu phân loại. Câu 2 là nguyên tắc trung tâm của chương; câu 6 kiểm tra bạn hiểu
 rằng "chờ" và "kẹt" nhìn từ ngoài **giống hệt nhau**, nên phải thiết kế cách phân biệt.
@@ -14546,7 +15452,7 @@ rằng "chờ" và "kẹt" nhìn từ ngoài **giống hệt nhau**, nên phải
 ### Chương tiếp theo
 
 **Chương 27 — Kiến trúc chương trình cho máy nhiều trạm.** Trình tự một trạm đã xong. Nhưng DP-01 có
-hai trạm chạy song song, dùng chung một chuyền — và chương này đã nhắc tới `Stn2_Ready`, `M_CycleEnable`,
+hai trạm chạy song song, dùng chung một chuyền — và chương này đã nhắc tới `Stn2.Ready`, `M_CycleEnable`,
 `Clamp1.Done` mà chưa nói chúng từ đâu ra. Chương 27 xây phần đó.
 
 ---
@@ -14736,6 +15642,7 @@ DP-01 ở lát cắt này có bốn xy-lanh hai vị trí (chặn ×2, kẹp ×2
 hành vi. Vậy viết một khối:
 
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — khối xy-lanh hai vị trí, dùng lại cho mọi xy-lanh (giống hệt Phụ lục L mục L.8)
 FUNCTION_BLOCK FB_Cylinder2Pos
 VAR_INPUT
     Req       : BOOL;            // TRUE = yêu cầu tới vị trí LÀM VIỆC — giữ mức, không phải xung
@@ -14808,7 +15715,8 @@ thật:
 Rồi tạo bốn thể hiện:
 
 ```iecst
-VAR
+VAR_GLOBAL
+    // ⭐ Toàn cục có chủ ý: tầng cơ cấu GỌI, tầng trạm ĐỌC Done (Chương 26) — không ai khác gọi
     Stop1  : FB_Cylinder2Pos;
     Clamp1 : FB_Cylinder2Pos;
     Stop2  : FB_Cylinder2Pos;
@@ -14970,21 +15878,33 @@ Vì sao sai, kể cả khi nó chạy:
 Mỗi trạm công bố một **tập biến ra nhỏ, ổn định**, và đó là **thứ duy nhất** người khác được đọc:
 
 ```iecst
+// Giao diện công bố của MỘT trạm — coi như hợp đồng, hạn chế thay đổi (kiểu ở Chương 11 mục 11.5)
+TYPE ST_Station :                      // giao diện CÔNG BỐ của một trạm — chỉ trạm đó ghi
+STRUCT
+    Ready       : BOOL;                // sẵn sàng nhận board mới
+    Busy        : BOOL;                // đang xử lý
+    Fault       : BOOL;                // trạm có lỗi — cờ đã chốt (Chương 25 mục 25.5c)
+    FaultStep   : INT;                 // bước lúc lỗi, 0 nếu không lỗi
+    BoardDone   : BOOL;                // board đã xong, chờ chuyển đi
+    DoneCount   : DINT;                // ⭐ DINT, không phải INT — sẽ tràn
+    LastCycleMs : DINT;                // ⭐ đơn vị trong tên
+END_STRUCT
+END_TYPE
+
 VAR_GLOBAL
-    // Giao diện công bố của trạm 2 — coi như hợp đồng, hạn chế thay đổi.
-    // ⭐ Toàn cục CÓ CHỦ Ý: nhiều phần cần đọc — và CHỈ trạm 2 được ghi (Chương 11 mục 11.6)
-    Stn2_Ready      : BOOL;     // sẵn sàng nhận board mới
-    Stn2_Busy       : BOOL;     // đang xử lý
-    Stn2_Fault      : BOOL;     // trạm này có lỗi
-    Stn2_BoardDone  : BOOL;     // board đã xử lý xong, chờ chuyển đi
+    // ⭐ Toàn cục CÓ CHỦ Ý: nhiều phần cần đọc — và CHỈ trạm N được ghi vào StnN (Chương 11 mục 11.6)
+    Stn1 : ST_Station;
+    Stn2 : ST_Station;
 END_VAR
 ```
 
-Bên trong trạm 2, cứ đổi bao nhiêu bước tuỳ ý — miễn là bốn biến trên vẫn đúng nghĩa. Trạm 1 chỉ đọc:
+⭐ Bước (`Stn2_Step`) **không** có trong kiểu này: nó là ruột, nằm trong chương trình của trạm 2.
+Bên trong trạm 2, cứ đổi bao nhiêu bước tuỳ ý — miễn là các trường trên vẫn đúng nghĩa. Trạm 1 chỉ
+đọc:
 
 ```iecst
 // ✓ ĐÚNG — đọc giao diện đã công bố, không đọc ruột
-IF Stn1_BoardDone AND Stn2_Ready THEN
+IF Stn1.BoardDone AND Stn2.Ready THEN
     M_Stn1_ReleaseBoard := TRUE;
 END_IF;
 ```
@@ -15045,7 +15965,7 @@ Chạy ổn định thì đơn giản. Bốn tình huống sau mới là chỗ c
 |---|---|---|
 | **Đổ đầy** *(startup)* — máy vừa chạy, chưa có board nào | Trạm 2 trống, chưa có gì để chờ | Chạy bình thường |
 | **Xả cạn** *(shutdown)* — không còn board mới vào | Trạm 1 rỗng, trạm 2 vẫn còn board đang xử lý | Không được báo "hết việc" cho tới khi trạm 2 xong |
-| **Trạm 2 chậm hơn** | Trạm 1 xong sớm, phải chờ | Giữ board, **không** nhả; báo `Stn1_BoardDone` và chờ `Stn2_Ready` |
+| **Trạm 2 chậm hơn** | Trạm 1 xong sớm, phải chờ | Giữ board, **không** nhả; báo `Stn1.BoardDone` và chờ `Stn2.Ready` |
 | **Trạm 2 lỗi** | Trạm 2 dừng, board kẹt ở đó | Trạm 1 **không được** nhả board sang. Tuỳ chính sách: dừng cả máy, hoặc cho trạm 1 giữ board và chờ |
 
 > 🔍 **BẪY — quên tình huống xả cạn**
@@ -15155,7 +16075,12 @@ Trong tác vụ duy nhất, thứ tự gọi các khối **là một phần củ
 ```
 
 Thứ tự này không tuỳ ý. Tầng cơ cấu chạy **trước** để `Done` và `Fault` là của **vòng quét này**; nếu
-gọi sau, tầng trạm sẽ dùng giá trị của vòng quét trước và mọi phản ứng chậm thêm một chu kỳ. ⭐ Gom
+gọi sau, tầng trạm sẽ dùng giá trị của vòng quét trước và mọi phản ứng chậm thêm một chu kỳ.
+
+⚠⚠ Nhưng *"Done của vòng này"* là Done **của yêu cầu mà khối đã nhận** — tức yêu cầu của vòng trước.
+Yêu cầu tầng trạm vừa phát ở vòng này thì **chưa khối nào nhìn thấy**. Hệ quả thực hành: trạm phát yêu
+cầu ở **chuyển tiếp**, bước sau mới đọc `Done` — viết ngược lại thì trình tự nhảy qua bước mà không chờ
+(Chương 26 Bẫy 7; ví dụ hoàn chỉnh ở Chương 26 mục 26.5b đã chạy thử theo đúng thứ tự gọi này). ⭐ Gom
 lỗi đứng ngay trước tầng máy vì cùng lý do: máy vào `Alarm` **trong chính vòng quét** lỗi được chốt.
 
 ---
@@ -15428,11 +16353,11 @@ Trước khi bàn về gốc, phải rõ máy có những chế độ nào và m
 **Một — chuyển chế độ phải có kiểm soát.** Không được chuyển từ `Auto` sang `Manual` giữa lúc cơ cấu
 đang chuyển động. Chuyển chế độ đi qua trạng thái trung gian: dừng chu trình → về `Idle` → mới đổi.
 
-**Two — Manual không có nghĩa là bỏ hết liên động.** Đây là hiểu nhầm nguy hiểm nhất về chế độ tay.
+**Hai — Manual không có nghĩa là bỏ hết liên động.** Đây là hiểu nhầm nguy hiểm nhất về chế độ tay.
 Ở `Manual`, người vận hành được chọn *thứ tự* thao tác, nhưng **các liên động chống va chạm vẫn phải
 còn nguyên**:
 
-```iecst
+```text
 // Ở Manual, nút "hạ chặn trạm 1" chỉ tác dụng khi kẹp đã hạ
 Cmd_ManStop1Down  AND  M_ModeManual  AND  DI_Clamp1Dn   →   DO_Stop1Vlv := FALSE
                                           ▲
@@ -15447,8 +16372,9 @@ chương trình không biết điều đó, mọi bước chờ cảm biến boa
 `M_DryRun` mà các bước chờ sản phẩm kiểm tra:
 
 ```iecst
+// Bước 0 của trạm 1 — chờ board (Chương 26)
 IF DI_BoardStn1 OR M_DryRun THEN
-    Step := Step + 1;
+    Stn1_Step := 10;
 END_IF;
 ```
 
@@ -15533,14 +16459,14 @@ viết trình tự về gốc, và nên làm cùng với người thiết kế c
 
 Thứ tự về gốc phải **không vi phạm bảng va chạm ở bất kỳ điểm xuất phát nào**.
 
-![Thứ tự về gốc: sai và đúng](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5NDAgNzAwJyB3aWR0aD0nOTQwJyBoZWlnaHQ9JzcwMCc+DQo8cmVjdCB3aWR0aD0nOTQwJyBoZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDI4LjEg4oCUIFRo4bupIHThu7EgduG7gSBn4buRYzogc2FpIHbDoCDEkcO6bmc8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nNTYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+Q8O5bmcgbeG7mXQgdMawIHRo4bq/IHh14bqldCBwaMOhdC4gVGjhu6kgdOG7sSBiw6puIHRyw6FpIHZpIHBo4bqhbSBi4bqjbmcgdmEgY2jhuqFtIG5nYXkg4bufIGLGsOG7m2MgxJHhuqd1IHRpw6puLjwvdGV4dD4NCjxyZWN0IHg9JzI0JyB5PSc3Nicgd2lkdGg9Jzg5MicgaGVpZ2h0PScxNTInIHJ4PSc1JyBmaWxsPScjRkJGQkZDJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PSc0MCcgeT0nOTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+VMavIFRI4bq+IFhV4bqkVCBQSMOBVCDigJQgbcOheSB24burYSB2w6BvIEFsYXJtIHbDrCBt4bqldCBraMOtPC90ZXh0Pg0KPHRleHQgeD0nNDAnIHk9JzExNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkhhaSBib2FyZCDEkWFuZyBi4buLIGvhurlwIE7Dgk5HIOG7nyBoYWkgdHLhuqFtLiBDaOG6t24gY+G6oyBoYWkgdHLhuqFtIMSRYW5nIG7Dom5nLiBDaHV54buBbiDEkcOjIGThu6tuZy48L3RleHQ+DQo8bGluZSB4MT0nMTkwJyB5MT0nMTkwJyB4Mj0nODcwJyB5Mj0nMTkwJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8dGV4dCB4PScxOTAnIHk9JzIwOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+Y2h1eeG7gW4gZOG7q25nPC90ZXh0Pg0KPHRleHQgeD0nMjkwJyB5PScxNDInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlRy4bqhbSAxPC90ZXh0Pg0KPGxpbmUgeDE9JzMzNCcgeTE9JzE5MCcgeDI9JzMzNCcgeTI9JzE3MCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPHRleHQgeD0nMzQwJyB5PScxNjgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmNo4bq3bjwvdGV4dD4NCjxsaW5lIHgxPScyNjQnIHkxPScxNjQnIHgyPSczMTYnIHkyPScxNjQnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjxsaW5lIHgxPScyNjQnIHkxPScxNjQnIHgyPScyNjQnIHkyPScxNzMnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjxsaW5lIHgxPSczMTYnIHkxPScxNjQnIHgyPSczMTYnIHkyPScxNzMnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjx0ZXh0IHg9JzI1NicgeT0nMTY4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdlbmQnPmvhurlwIOKGkTwvdGV4dD4NCjxyZWN0IHg9JzI2OCcgeT0nMTc0JyB3aWR0aD0nNDQnIGhlaWdodD0nOScgcng9JzEnIGZpbGw9JyNEQ0U5RjInIHN0cm9rZT0nIzJDNUY4RCcgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzI5MCcgeT0nMTcwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzguNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFGNEU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+Ym9hcmQgQTwvdGV4dD4NCjx0ZXh0IHg9JzQ0MCcgeT0nMTQyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5UcuG6oW0gMjwvdGV4dD4NCjxsaW5lIHgxPSc0ODQnIHkxPScxOTAnIHgyPSc0ODQnIHkyPScxNzAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjx0ZXh0IHg9JzQ5MCcgeT0nMTY4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzguNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5jaOG6t248L3RleHQ+DQo8bGluZSB4MT0nNDE0JyB5MT0nMTY0JyB4Mj0nNDY2JyB5Mj0nMTY0JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMi42Jy8+DQo8bGluZSB4MT0nNDE0JyB5MT0nMTY0JyB4Mj0nNDE0JyB5Mj0nMTczJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMi42Jy8+DQo8bGluZSB4MT0nNDY2JyB5MT0nMTY0JyB4Mj0nNDY2JyB5Mj0nMTczJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMi42Jy8+DQo8dGV4dCB4PSc0MDYnIHk9JzE2OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5JyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nZW5kJz5r4bq5cCDihpE8L3RleHQ+DQo8cmVjdCB4PSc0MTgnIHk9JzE3NCcgd2lkdGg9JzQ0JyBoZWlnaHQ9JzknIHJ4PScxJyBmaWxsPScjRENFOUYyJyBzdHJva2U9JyMyQzVGOEQnIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8dGV4dCB4PSc0NDAnIHk9JzE3MCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc4LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxRjRFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPmJvYXJkIEI8L3RleHQ+DQo8cmVjdCB4PScyNCcgeT0nMjQ2JyB3aWR0aD0nNDM2JyBoZWlnaHQ9JzM3Micgcng9JzUnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjgnLz4NCjx0ZXh0IHg9JzQwJyB5PScyNzInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTMnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdzdGFydCc+4pyXIFRI4buoIFThu7AgU0FJIOKAlCBo4bqhIGNo4bq3biB0csaw4bubYzwvdGV4dD4NCjxjaXJjbGUgY3g9JzU4JyBjeT0nMzA2JyByPScxMycgZmlsbD0nI0IwM0EyRScvPg0KPHRleHQgeD0nNTgnIHk9JzMxMCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+MTwvdGV4dD4NCjx0ZXh0IHg9JzgwJyB5PSczMDQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5I4bqhIGNo4bq3biBj4bqjIGhhaSB0cuG6oW08L3RleHQ+DQo8dGV4dCB4PSc4MCcgeT0nMzIxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5ib2FyZCDEkWFuZyB0cmVvIHRyw6puIGvhurlwIOKAlCBjaOG6t24ga2jDtG5nIGPDsm4gZ2nhu68gZ8OsPC90ZXh0Pg0KPGxpbmUgeDE9JzU4JyB5MT0nMzIwJyB4Mj0nNTgnIHkyPSczMjknIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjxwb2x5Z29uIHBvaW50cz0nNTguMCwzMzguMCA1My41LDMyOS4wIDYyLjUsMzI5LjAnIGZpbGw9JyM5QUEzQUInLz4NCjxjaXJjbGUgY3g9JzU4JyBjeT0nMzYwJyByPScxMycgZmlsbD0nI0IwM0EyRScvPg0KPHRleHQgeD0nNTgnIHk9JzM2NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+MjwvdGV4dD4NCjx0ZXh0IHg9JzgwJyB5PSczNTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5OaOG6oyBr4bq5cCBj4bqjIGhhaSB0cuG6oW08L3RleHQ+DQo8dGV4dCB4PSc4MCcgeT0nMzc1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5ib2FyZCBBIHbDoCBCIGPDuW5nIHLGoWkgeHXhu5FuZyBt4bq3dCBjaHV54buBbjwvdGV4dD4NCjxsaW5lIHgxPSc1OCcgeTE9JzM3NCcgeDI9JzU4JyB5Mj0nMzgzJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS42Jy8+DQo8cG9seWdvbiBwb2ludHM9JzU4LjAsMzkyLjAgNTMuNSwzODMuMCA2Mi41LDM4My4wJyBmaWxsPScjOUFBM0FCJy8+DQo8Y2lyY2xlIGN4PSc1OCcgY3k9JzQxNCcgcj0nMTMnIGZpbGw9JyNCMDNBMkUnLz4NCjx0ZXh0IHg9JzU4JyB5PSc0MTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPjM8L3RleHQ+DQo8dGV4dCB4PSc4MCcgeT0nNDEyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+Q2hvIGNodXnhu4FuIGNo4bqheSDEkeG7gyB44bqjIGJvYXJkPC90ZXh0Pg0KPHRleHQgeD0nODAnIHk9JzQyOScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjgnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+aGFpIGJvYXJkIHRyw7RpIHThu7EgZG8sIGJvYXJkIEEgxJF14buVaSBr4buLcCBib2FyZCBCPC90ZXh0Pg0KPHJlY3QgeD0nMzgnIHk9JzU1Nicgd2lkdGg9JzQwOCcgaGVpZ2h0PSc0OCcgcng9JzMnIGZpbGw9JyNGOEU3RTQnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzUyJyB5PSc1NzYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdzdGFydCc+VkEgQ0jhuqBNPC90ZXh0Pg0KPHRleHQgeD0nNTInIHk9JzU5MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5WaSBwaOG6oW0gVjEgKGJvYXJkIHLGoWkga2jDtG5nIGtp4buDbSBzb8OhdCkgdsOgIFYzIChoYWkgYm9hcmQgxJHDom0gbmhhdSkuPC90ZXh0Pg0KPHJlY3QgeD0nNDgwJyB5PScyNDYnIHdpZHRoPSc0MzYnIGhlaWdodD0nMzcyJyByeD0nNScgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjMkU3RDRGJyBzdHJva2Utd2lkdGg9JzEuOCcvPg0KPHRleHQgeD0nNDk2JyB5PScyNzInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTMnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdzdGFydCc+4pyTIFRI4buoIFThu7AgxJDDmk5HIOKAlCBo4bqhIGvhurlwIHRyxrDhu5tjPC90ZXh0Pg0KPGNpcmNsZSBjeD0nNTE0JyBjeT0nMzA2JyByPScxMycgZmlsbD0nIzJFN0Q0RicvPg0KPHRleHQgeD0nNTE0JyB5PSczMTAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkgwPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSczMDQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5E4burbmcgY2h1eeG7gW4sIGPhuqVtIGNodXnhu4NuIMSR4buZbmcgdOG7sSDEkeG7mW5nPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSczMjEnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS44JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmNo4buRdCDEkWnhu4F1IGtp4buHbiBhbiB0b8OgbiB0csaw4bubYyBt4buNaSB0aGFvIHTDoWM8L3RleHQ+DQo8bGluZSB4MT0nNTE0JyB5MT0nMzIwJyB4Mj0nNTE0JyB5Mj0nMzI5JyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS42Jy8+DQo8cG9seWdvbiBwb2ludHM9JzUxNC4wLDMzOC4wIDUwOS41LDMyOS4wIDUxOC41LDMyOS4wJyBmaWxsPScjOUFBM0FCJy8+DQo8Y2lyY2xlIGN4PSc1MTQnIGN5PSczNjAnIHI9JzEzJyBmaWxsPScjMkU3RDRGJy8+DQo8dGV4dCB4PSc1MTQnIHk9JzM2NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+SDE8L3RleHQ+DQo8dGV4dCB4PSc1MzYnIHk9JzM1OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMS41JyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjhuqAgS+G6uFAgY+G6oyBoYWkgdHLhuqFtPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSczNzUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS44JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmJvYXJkIGjhuqEgeHXhu5FuZyBt4bq3dCBjaHV54buBbiwgY2jhurduIHbhuqtuIGdp4buvIOKAlCBjaOG7kW5nIFYxPC90ZXh0Pg0KPGxpbmUgeDE9JzUxNCcgeTE9JzM3NCcgeDI9JzUxNCcgeTI9JzM4Mycgc3Ryb2tlPScjOUFBM0FCJyBzdHJva2Utd2lkdGg9JzEuNicvPg0KPHBvbHlnb24gcG9pbnRzPSc1MTQuMCwzOTIuMCA1MDkuNSwzODMuMCA1MTguNSwzODMuMCcgZmlsbD0nIzlBQTNBQicvPg0KPGNpcmNsZSBjeD0nNTE0JyBjeT0nNDE0JyByPScxMycgZmlsbD0nIzJFN0Q0RicvPg0KPHRleHQgeD0nNTE0JyB5PSc0MTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkgyPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSc0MTInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz7EkMOhbmggZOG6pXUgTkcgbeG7jWkgYm9hcmQgdHJvbmcgbcOheTwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNDI5JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5raMO0bmcgxJHhu4Mgc+G6o24gcGjhuqltIGThu58gZGFuZyBs4bqrbiBow6BuZyB04buRdDwvdGV4dD4NCjxsaW5lIHgxPSc1MTQnIHkxPSc0MjgnIHgyPSc1MTQnIHkyPSc0MzcnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjxwb2x5Z29uIHBvaW50cz0nNTE0LjAsNDQ2LjAgNTA5LjUsNDM3LjAgNTE4LjUsNDM3LjAnIGZpbGw9JyM5QUEzQUInLz4NCjxjaXJjbGUgY3g9JzUxNCcgY3k9JzQ2OCcgcj0nMTMnIGZpbGw9JyMyRTdENEYnLz4NCjx0ZXh0IHg9JzUxNCcgeT0nNDcyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5IMzwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNDY2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+WOG6oyBib2FyZCBU4buqIFRS4bqgTSAyIFRSxq/hu5pDLCBy4buTaSB0cuG6oW0gMTwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNDgzJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz50cuG6oW0gc2F1IHRy4buRbmcgdGjDrCB0cuG6oW0gdHLGsOG7m2MgbeG7m2kgY8OzIGNo4buXIMSRaSDigJQgY2jhu5FuZyBWMzwvdGV4dD4NCjxsaW5lIHgxPSc1MTQnIHkxPSc0ODInIHgyPSc1MTQnIHkyPSc0OTEnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjxwb2x5Z29uIHBvaW50cz0nNTE0LjAsNTAwLjAgNTA5LjUsNDkxLjAgNTE4LjUsNDkxLjAnIGZpbGw9JyM5QUEzQUInLz4NCjxjaXJjbGUgY3g9JzUxNCcgY3k9JzUyMicgcj0nMTMnIGZpbGw9JyMyRTdENEYnLz4NCjx0ZXh0IHg9JzUxNCcgeT0nNTI2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5INDwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNTIwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+TsOibmcgbOG6oWkgY2jhurduIHbhu4EgdMawIHRo4bq/IGfhu5FjPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSc1MzcnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS44JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPm3hu5dpIGLGsOG7m2MgY8OzIHRpbWVvdXQgKyBtw6MgbOG7l2kgcmnDqm5nPC90ZXh0Pg0KPHJlY3QgeD0nNDk0JyB5PSc1NTYnIHdpZHRoPSc0MDgnIGhlaWdodD0nNDgnIHJ4PSczJyBmaWxsPScjRThGMkVDJyBzdHJva2U9JyMyRTdENEYnIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8dGV4dCB4PSc1MDgnIHk9JzU3NicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMicgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzJFN0Q0RicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5W4buAIEfhu5BDIEFOIFRPw4BOPC90ZXh0Pg0KPHRleHQgeD0nNTA4JyB5PSc1OTMnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+S2jDtG5nIGLGsOG7m2MgbsOgbyB2aSBwaOG6oW0gYuG6o25nIHZhIGNo4bqhbSwgduG7m2kgbeG7jWkgdMawIHRo4bq/IHh14bqldCBwaMOhdC48L3RleHQ+DQo8cmVjdCB4PScyNCcgeT0nNjM4JyB3aWR0aD0nODkyJyBoZWlnaHQ9JzQ2JyByeD0nMycgZmlsbD0nI0ZERjZFNycgc3Ryb2tlPScjQjg4NjBCJyBzdHJva2Utd2lkdGg9JzEuMicvPg0KPHRleHQgeD0nNDInIHk9JzY2MCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMS41JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjN0E1QjA4JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkhhaSBxdXkgdOG6r2MgcsO6dCByYSDEkcaw4bujYywgxJHDum5nIHbhu5tpIGfhuqduIG5oxrAgbeG7jWkgbcOheTo8L3RleHQ+DQo8dGV4dCB4PSc0MicgeT0nNjc3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjN0E1QjA4JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPuKRoCBHaeG6o2kgcGjDs25nIHRyxrDhu5tjLCBkaSBjaHV54buDbiBzYXUg4oCUIG5o4bqjIGvhurlwL2dp4buvIHRyxrDhu5tjIGtoaSBjaG8gYuG6pXQgY+G7qSB0aOG7qSBnw6wgY2h1eeG7g24gxJHhu5luZy4gICDikaEgWOG6oyBz4bqjbiBwaOG6qW0gdOG7qyBjdeG7kWkgZMOieSBjaHV54buBbiB24buBIMSR4bqndS48L3RleHQ+DQo8L3N2Zz4=)
+![Thứ tự về gốc: sai và đúng](data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA5NDAgNzAwJyB3aWR0aD0nOTQwJyBoZWlnaHQ9JzcwMCc+DQo8cmVjdCB3aWR0aD0nOTQwJyBoZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicvPg0KPHRleHQgeD0nMjQnIHk9JzM0JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzE2JyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjDrG5oIDI4LjEg4oCUIFRo4bupIHThu7EgduG7gSBn4buRYzogc2FpIHbDoCDEkcO6bmc8L3RleHQ+DQo8dGV4dCB4PScyNCcgeT0nNTYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+Q8O5bmcgbeG7mXQgdMawIHRo4bq/IHh14bqldCBwaMOhdC4gVGjhu6kgdOG7sSBiw6puIHRyw6FpIHZpIHBo4bqhbSBi4bqjbmcgdmEgY2jhuqFtIG5nYXkg4bufIGLGsOG7m2MgxJHhuqd1IHRpw6puLjwvdGV4dD4NCjxyZWN0IHg9JzI0JyB5PSc3Nicgd2lkdGg9Jzg5MicgaGVpZ2h0PScxNTInIHJ4PSc1JyBmaWxsPScjRkJGQkZDJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS40Jy8+DQo8dGV4dCB4PSc0MCcgeT0nOTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+VMavIFRI4bq+IFhV4bqkVCBQSMOBVCDigJQgbcOheSB24burYSB2w6BvIEFsYXJtIHbDrCBt4bqldCBraMOtPC90ZXh0Pg0KPHRleHQgeD0nNDAnIHk9JzExNicgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkhhaSBib2FyZCDEkWFuZyBi4buLIGvhurlwIE7Dgk5HIOG7nyBoYWkgdHLhuqFtLiBDaOG6t24gY+G6oyBoYWkgdHLhuqFtIMSRYW5nIG7Dom5nLiBDaHV54buBbiDEkcOjIGThu6tuZy48L3RleHQ+DQo8bGluZSB4MT0nMTkwJyB5MT0nMTkwJyB4Mj0nODcwJyB5Mj0nMTkwJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMi40Jy8+DQo8dGV4dCB4PScxOTAnIHk9JzIwOCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjUnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+Y2h1eeG7gW4gZOG7q25nPC90ZXh0Pg0KPHRleHQgeD0nMjkwJyB5PScxNDInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPlRy4bqhbSAxPC90ZXh0Pg0KPGxpbmUgeDE9JzMzNCcgeTE9JzE5MCcgeDI9JzMzNCcgeTI9JzE3MCcgc3Ryb2tlPScjMUExRDIxJyBzdHJva2Utd2lkdGg9JzIuNicvPg0KPHRleHQgeD0nMzQwJyB5PScxNjgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOC41JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmNo4bq3bjwvdGV4dD4NCjxsaW5lIHgxPScyNjQnIHkxPScxNjQnIHgyPSczMTYnIHkyPScxNjQnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjxsaW5lIHgxPScyNjQnIHkxPScxNjQnIHgyPScyNjQnIHkyPScxNzMnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjxsaW5lIHgxPSczMTYnIHkxPScxNjQnIHgyPSczMTYnIHkyPScxNzMnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjx0ZXh0IHg9JzI1NicgeT0nMTY4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzknIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdlbmQnPmvhurlwIOKGkTwvdGV4dD4NCjxyZWN0IHg9JzI2OCcgeT0nMTc0JyB3aWR0aD0nNDQnIGhlaWdodD0nOScgcng9JzEnIGZpbGw9JyNEQ0U5RjInIHN0cm9rZT0nIzJDNUY4RCcgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzI5MCcgeT0nMTcwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzguNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzFGNEU2NicgdGV4dC1hbmNob3I9J21pZGRsZSc+Ym9hcmQgQTwvdGV4dD4NCjx0ZXh0IHg9JzQ0MCcgeT0nMTQyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5UcuG6oW0gMjwvdGV4dD4NCjxsaW5lIHgxPSc0ODQnIHkxPScxOTAnIHgyPSc0ODQnIHkyPScxNzAnIHN0cm9rZT0nIzFBMUQyMScgc3Ryb2tlLXdpZHRoPScyLjYnLz4NCjx0ZXh0IHg9JzQ5MCcgeT0nMTY4JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzguNScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5jaOG6t248L3RleHQ+DQo8bGluZSB4MT0nNDE0JyB5MT0nMTY0JyB4Mj0nNDY2JyB5Mj0nMTY0JyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMi42Jy8+DQo8bGluZSB4MT0nNDE0JyB5MT0nMTY0JyB4Mj0nNDE0JyB5Mj0nMTczJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMi42Jy8+DQo8bGluZSB4MT0nNDY2JyB5MT0nMTY0JyB4Mj0nNDY2JyB5Mj0nMTczJyBzdHJva2U9JyMxQTFEMjEnIHN0cm9rZS13aWR0aD0nMi42Jy8+DQo8dGV4dCB4PSc0MDYnIHk9JzE2OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5JyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nZW5kJz5r4bq5cCDihpE8L3RleHQ+DQo8cmVjdCB4PSc0MTgnIHk9JzE3NCcgd2lkdGg9JzQ0JyBoZWlnaHQ9JzknIHJ4PScxJyBmaWxsPScjRENFOUYyJyBzdHJva2U9JyMyQzVGOEQnIHN0cm9rZS13aWR0aD0nMS4yJy8+DQo8dGV4dCB4PSc0NDAnIHk9JzE3MCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc4LjUnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMxRjRFNjYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPmJvYXJkIEI8L3RleHQ+DQo8cmVjdCB4PScyNCcgeT0nMjQ2JyB3aWR0aD0nNDM2JyBoZWlnaHQ9JzM3Micgcng9JzUnIGZpbGw9JyNGRkZGRkYnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjgnLz4NCjx0ZXh0IHg9JzQwJyB5PScyNzInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTMnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdzdGFydCc+4pyXIFRI4buoIFThu7AgU0FJIOKAlCBo4bqhIGNo4bq3biB0csaw4bubYzwvdGV4dD4NCjxjaXJjbGUgY3g9JzU4JyBjeT0nMzA2JyByPScxMycgZmlsbD0nI0IwM0EyRScvPg0KPHRleHQgeD0nNTgnIHk9JzMxMCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+MTwvdGV4dD4NCjx0ZXh0IHg9JzgwJyB5PSczMDQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5I4bqhIGNo4bq3biBj4bqjIGhhaSB0cuG6oW08L3RleHQ+DQo8dGV4dCB4PSc4MCcgeT0nMzIxJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5ib2FyZCDEkWFuZyB0cmVvIHRyw6puIGvhurlwIOKAlCBjaOG6t24ga2jDtG5nIGPDsm4gZ2nhu68gZ8OsPC90ZXh0Pg0KPGxpbmUgeDE9JzU4JyB5MT0nMzIwJyB4Mj0nNTgnIHkyPSczMjknIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjxwb2x5Z29uIHBvaW50cz0nNTguMCwzMzguMCA1My41LDMyOS4wIDYyLjUsMzI5LjAnIGZpbGw9JyM5QUEzQUInLz4NCjxjaXJjbGUgY3g9JzU4JyBjeT0nMzYwJyByPScxMycgZmlsbD0nI0IwM0EyRScvPg0KPHRleHQgeD0nNTgnIHk9JzM2NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+MjwvdGV4dD4NCjx0ZXh0IHg9JzgwJyB5PSczNTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5OaOG6oyBr4bq5cCBj4bqjIGhhaSB0cuG6oW08L3RleHQ+DQo8dGV4dCB4PSc4MCcgeT0nMzc1JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5ib2FyZCBBIHbDoCBCIGPDuW5nIHLGoWkgeHXhu5FuZyBt4bq3dCBjaHV54buBbjwvdGV4dD4NCjxsaW5lIHgxPSc1OCcgeTE9JzM3NCcgeDI9JzU4JyB5Mj0nMzgzJyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS42Jy8+DQo8cG9seWdvbiBwb2ludHM9JzU4LjAsMzkyLjAgNTMuNSwzODMuMCA2Mi41LDM4My4wJyBmaWxsPScjOUFBM0FCJy8+DQo8Y2lyY2xlIGN4PSc1OCcgY3k9JzQxNCcgcj0nMTMnIGZpbGw9JyNCMDNBMkUnLz4NCjx0ZXh0IHg9JzU4JyB5PSc0MTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPjM8L3RleHQ+DQo8dGV4dCB4PSc4MCcgeT0nNDEyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+Q2hvIGNodXnhu4FuIGNo4bqheSDEkeG7gyB44bqjIGJvYXJkPC90ZXh0Pg0KPHRleHQgeD0nODAnIHk9JzQyOScgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSc5LjgnIGZvbnQtd2VpZ2h0PSc0MDAnIGZpbGw9JyM1NjVFNjYnIHRleHQtYW5jaG9yPSdzdGFydCc+aGFpIGJvYXJkIHRyw7RpIHThu7EgZG8sIGJvYXJkIEEgxJF14buVaSBr4buLcCBib2FyZCBCPC90ZXh0Pg0KPHJlY3QgeD0nMzgnIHk9JzU1Nicgd2lkdGg9JzQwOCcgaGVpZ2h0PSc0OCcgcng9JzMnIGZpbGw9JyNGOEU3RTQnIHN0cm9rZT0nI0IwM0EyRScgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzUyJyB5PSc1NzYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNCMDNBMkUnIHRleHQtYW5jaG9yPSdzdGFydCc+VkEgQ0jhuqBNPC90ZXh0Pg0KPHRleHQgeD0nNTInIHk9JzU5MycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5WaSBwaOG6oW0gVjEgKGJvYXJkIHLGoWkga2jDtG5nIGtp4buDbSBzb8OhdCkgdsOgIFYzIChoYWkgYm9hcmQgxJHDom0gbmhhdSkuPC90ZXh0Pg0KPHJlY3QgeD0nNDgwJyB5PScyNDYnIHdpZHRoPSc0MzYnIGhlaWdodD0nMzcyJyByeD0nNScgZmlsbD0nI0ZGRkZGRicgc3Ryb2tlPScjMkU3RDRGJyBzdHJva2Utd2lkdGg9JzEuOCcvPg0KPHRleHQgeD0nNDk2JyB5PScyNzInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTMnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdzdGFydCc+4pyTIFRI4buoIFThu7AgxJDDmk5HIOKAlCBo4bqhIGvhurlwIHRyxrDhu5tjPC90ZXh0Pg0KPGNpcmNsZSBjeD0nNTE0JyBjeT0nMzA2JyByPScxMycgZmlsbD0nIzJFN0Q0RicvPg0KPHRleHQgeD0nNTE0JyB5PSczMTAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkgwPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSczMDQnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz5E4burbmcgY2h1eeG7gW4sIGPhuqVtIGNodXnhu4NuIMSR4buZbmcgdOG7sSDEkeG7mW5nPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSczMjEnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS44JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmNo4buRdCDEkWnhu4F1IGtp4buHbiBhbiB0b8OgbiB0csaw4bubYyBt4buNaSB0aGFvIHTDoWM8L3RleHQ+DQo8bGluZSB4MT0nNTE0JyB5MT0nMzIwJyB4Mj0nNTE0JyB5Mj0nMzI5JyBzdHJva2U9JyM5QUEzQUInIHN0cm9rZS13aWR0aD0nMS42Jy8+DQo8cG9seWdvbiBwb2ludHM9JzUxNC4wLDMzOC4wIDUwOS41LDMyOS4wIDUxOC41LDMyOS4wJyBmaWxsPScjOUFBM0FCJy8+DQo8Y2lyY2xlIGN4PSc1MTQnIGN5PSczNjAnIHI9JzEzJyBmaWxsPScjMkU3RDRGJy8+DQo8dGV4dCB4PSc1MTQnIHk9JzM2NCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMCcgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nI0ZGRkZGRicgdGV4dC1hbmNob3I9J21pZGRsZSc+SDE8L3RleHQ+DQo8dGV4dCB4PSc1MzYnIHk9JzM1OCcgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMS41JyBmb250LXdlaWdodD0nNjAwJyBmaWxsPScjMUExRDIxJyB0ZXh0LWFuY2hvcj0nc3RhcnQnPkjhuqAgS+G6uFAgY+G6oyBoYWkgdHLhuqFtPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSczNzUnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nOS44JyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPmJvYXJkIGjhuqEgeHXhu5FuZyBt4bq3dCBjaHV54buBbiwgY2jhurduIHbhuqtuIGdp4buvIOKAlCBjaOG7kW5nIFYxPC90ZXh0Pg0KPGxpbmUgeDE9JzUxNCcgeTE9JzM3NCcgeDI9JzUxNCcgeTI9JzM4Mycgc3Ryb2tlPScjOUFBM0FCJyBzdHJva2Utd2lkdGg9JzEuNicvPg0KPHBvbHlnb24gcG9pbnRzPSc1MTQuMCwzOTIuMCA1MDkuNSwzODMuMCA1MTguNSwzODMuMCcgZmlsbD0nIzlBQTNBQicvPg0KPGNpcmNsZSBjeD0nNTE0JyBjeT0nNDE0JyByPScxMycgZmlsbD0nIzJFN0Q0RicvPg0KPHRleHQgeD0nNTE0JyB5PSc0MTgnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTAnIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyNGRkZGRkYnIHRleHQtYW5jaG9yPSdtaWRkbGUnPkgyPC90ZXh0Pg0KPHRleHQgeD0nNTM2JyB5PSc0MTInIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzYwMCcgZmlsbD0nIzFBMUQyMScgdGV4dC1hbmNob3I9J3N0YXJ0Jz7EkMOhbmggZOG6pXUgTkcgbeG7jWkgYm9hcmQgdHJvbmcgbcOheTwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNDI5JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz5raMO0bmcgxJHhu4Mgc+G6o24gcGjhuqltIGThu58gZGFuZyBs4bqrbiBow6BuZyB04buRdDwvdGV4dD4NCjxsaW5lIHgxPSc1MTQnIHkxPSc0MjgnIHgyPSc1MTQnIHkyPSc0MzcnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjxwb2x5Z29uIHBvaW50cz0nNTE0LjAsNDQ2LjAgNTA5LjUsNDM3LjAgNTE4LjUsNDM3LjAnIGZpbGw9JyM5QUEzQUInLz4NCjxjaXJjbGUgY3g9JzUxNCcgY3k9JzQ2OCcgcj0nMTMnIGZpbGw9JyMyRTdENEYnLz4NCjx0ZXh0IHg9JzUxNCcgeT0nNDcyJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5IMzwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNDY2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+WOG6oyBib2FyZCBU4buqIFRS4bqgTSAyIFRSxq/hu5pDLCBy4buTaSB0cuG6oW0gMTwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNDgzJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz50cuG6oW0gc2F1IHRy4buRbmcgdGjDrCB0cuG6oW0gdHLGsOG7m2MgbeG7m2kgY8OzIGNo4buXIMSRaSDigJQgY2jhu5FuZyBWMzwvdGV4dD4NCjxsaW5lIHgxPSc1MTQnIHkxPSc0ODInIHgyPSc1MTQnIHkyPSc0OTEnIHN0cm9rZT0nIzlBQTNBQicgc3Ryb2tlLXdpZHRoPScxLjYnLz4NCjxwb2x5Z29uIHBvaW50cz0nNTE0LjAsNTAwLjAgNTA5LjUsNDkxLjAgNTE4LjUsNDkxLjAnIGZpbGw9JyM5QUEzQUInLz4NCjxjaXJjbGUgY3g9JzUxNCcgY3k9JzUyMicgcj0nMTMnIGZpbGw9JyMyRTdENEYnLz4NCjx0ZXh0IHg9JzUxNCcgeT0nNTI2JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNzAwJyBmaWxsPScjRkZGRkZGJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJz5INDwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNTIwJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzExLjUnIGZvbnQtd2VpZ2h0PSc2MDAnIGZpbGw9JyMxQTFEMjEnIHRleHQtYW5jaG9yPSdzdGFydCc+WMOhYyBuaOG6rW4gY2jhurduLCBr4bq5cCDEkcOjIHbhu4EgdMawIHRo4bq/IG5naOG7iTwvdGV4dD4NCjx0ZXh0IHg9JzUzNicgeT0nNTM3JyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzkuOCcgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzU2NUU2NicgdGV4dC1hbmNob3I9J3N0YXJ0Jz50xrAgdGjhur8gbmdo4buJID0gaOG6oSAoUGjhu6UgbOG7pWMgSikgwrcgbeG7l2kgYsaw4bubYyBjw7MgdGltZW91dCArIG3DoyBs4buXaTwvdGV4dD4NCjxyZWN0IHg9JzQ5NCcgeT0nNTU2JyB3aWR0aD0nNDA4JyBoZWlnaHQ9JzQ4JyByeD0nMycgZmlsbD0nI0U4RjJFQycgc3Ryb2tlPScjMkU3RDRGJyBzdHJva2Utd2lkdGg9JzEuMicvPg0KPHRleHQgeD0nNTA4JyB5PSc1NzYnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTInIGZvbnQtd2VpZ2h0PSc3MDAnIGZpbGw9JyMyRTdENEYnIHRleHQtYW5jaG9yPSdzdGFydCc+VuG7gCBH4buQQyBBTiBUT8OATjwvdGV4dD4NCjx0ZXh0IHg9JzUwOCcgeT0nNTkzJyBmb250LWZhbWlseT0iU2Vnb2UgVUksUm9ib3RvLEhlbHZldGljYSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9JzEwJyBmb250LXdlaWdodD0nNDAwJyBmaWxsPScjNTY1RTY2JyB0ZXh0LWFuY2hvcj0nc3RhcnQnPktow7RuZyBixrDhu5tjIG7DoG8gdmkgcGjhuqFtIGLhuqNuZyB2YSBjaOG6oW0sIHbhu5tpIG3hu41pIHTGsCB0aOG6vyB4deG6pXQgcGjDoXQuPC90ZXh0Pg0KPHJlY3QgeD0nMjQnIHk9JzYzOCcgd2lkdGg9Jzg5MicgaGVpZ2h0PSc0Nicgcng9JzMnIGZpbGw9JyNGREY2RTcnIHN0cm9rZT0nI0I4ODYwQicgc3Ryb2tlLXdpZHRoPScxLjInLz4NCjx0ZXh0IHg9JzQyJyB5PSc2NjAnIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxSb2JvdG8sSGVsdmV0aWNhLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0nMTEuNScgZm9udC13ZWlnaHQ9JzcwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz5IYWkgcXV5IHThuq9jIHLDunQgcmEgxJHGsOG7o2MsIMSRw7puZyB24bubaSBn4bqnbiBuaMawIG3hu41pIG3DoXk6PC90ZXh0Pg0KPHRleHQgeD0nNDInIHk9JzY3NycgZm9udC1mYW1pbHk9IlNlZ29lIFVJLFJvYm90byxIZWx2ZXRpY2EsQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPScxMScgZm9udC13ZWlnaHQ9JzQwMCcgZmlsbD0nIzdBNUIwOCcgdGV4dC1hbmNob3I9J3N0YXJ0Jz7ikaAgR2nhuqNpIHBow7NuZyB0csaw4bubYywgZGkgY2h1eeG7g24gc2F1IOKAlCBuaOG6oyBr4bq5cC9naeG7ryB0csaw4bubYyBraGkgY2hvIGLhuqV0IGPhu6kgdGjhu6kgZ8OsIGNodXnhu4NuIMSR4buZbmcuICAg4pGhIFjhuqMgc+G6o24gcGjhuqltIHThu6sgY3Xhu5FpIGTDonkgY2h1eeG7gW4gduG7gSDEkeG6p3UuPC90ZXh0Pg0KPC9zdmc+)
 
 *Hình 28.1 — Cùng một tình huống xuất phát, hai thứ tự về gốc. Thứ tự bên trái vi phạm V1 và V3 ngay
 ở bước đầu.*
 
 Thứ tự đúng cho DP-01:
 
-```iecst
+```text
 Bước H0 — Dừng chuyền, cấm mọi chuyển động tự động
           DO_ConvRun := FALSE
 
@@ -15556,8 +16482,10 @@ Bước H3 — Đẩy board ra theo THỨ TỰ TỪ CUỐI VỀ ĐẦU
           H3b: hạ chặn trạm 1, chạy chuyền tới khi DI_BoardStn1 = 0
           ▸ vì sao từ cuối: xả trạm 2 trước thì trạm 1 mới có chỗ đi — tránh V3
 
-Bước H4 — Nâng lại chặn cả hai trạm về tư thế gốc
-          chờ DI_Stop1Up AND DI_Stop2Up          timeout 3 s
+Bước H4 — Xác nhận chặn và kẹp cả hai trạm đã ở tư thế NGHỈ (hạ)
+          chờ DI_Stop1Dn AND DI_Stop2Dn AND DI_Clamp1Dn AND DI_Clamp2Dn
+                                                  timeout 3 s
+          ▸ tư thế nghỉ lấy từ bảng I/O (Phụ lục J mục J.2.1) — không tự suy
 
 Bước H5 — Dừng chuyền, báo đã về gốc
           M_HomingDone := TRUE
@@ -15590,6 +16518,74 @@ END_IF;
 
 Không có timeout thì trình tự về gốc kẹt vĩnh viễn ở một bước, và không ai biết bước nào — người sửa
 phải đọc code để đoán. Với timeout có mã lỗi, màn hình nói thẳng chỗ kẹt.
+
+⭐ Trình tự về gốc và bốn trạm của máy đều cần đúng một thứ: *"bước này đã quá giờ chưa, và là bước
+nào"*. Viết nó **một lần**, thành khối — ví dụ hoàn chỉnh của chương:
+
+```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — giám sát thời gian bước đóng gói thành khối, dùng cho trình tự về gốc
+FUNCTION_BLOCK FB_StepWatch
+VAR_INPUT
+    Step   : INT;                        // bước hiện tại của trình tự được giám sát
+    Limit  : TIME;                       // thời gian cho phép của bước này; T#0S = không giới hạn
+    Active : BOOL;                       // trình tự đang được phép chạy — tắt khi giữ, khi không chạy
+    Clear  : BOOL;                       // xoá lỗi đã chốt — nối M_ClearFaults (Chương 25)
+END_VAR
+VAR_OUTPUT
+    Fault     : BOOL;                    // ĐÃ CHỐT: có một bước quá thời gian
+    FaultStep : INT;                     // bước lúc quá thời gian — cho mã lỗi và màn hình
+END_VAR
+VAR
+    T_Step   : TON;
+    StepPrev : INT;
+END_VAR
+IF Clear THEN                            // xoá TRƯỚC…
+    Fault     := FALSE;
+    FaultStep := 0;
+END_IF;
+T_Step(IN := Active AND (Limit > T#0S) AND (Step = StepPrev), PT := Limit);
+StepPrev := Step;
+IF T_Step.Q THEN                         // …phát hiện SAU (Chương 25 mục 25.5c)
+    Fault     := TRUE;
+    FaultStep := Step;
+END_IF;
+END_FUNCTION_BLOCK
+
+VAR_GLOBAL
+    HomingStep        : INT;             // bước của trình tự về gốc: 1 = H1 … 5 = H5 (mục 28.4)
+    M_HomingRun       : BOOL;            // tầng máy đang ở Homing (Chương 25)
+    M_ClearFaults     : BOOL;
+    M_Alm_HomeTimeout : BOOL;            // cờ chốt — gom vào M_AnyFault (Chương 25)
+    HomeFaultStep     : INT;             // HOME-0x trên màn hình: x chính là số này
+END_VAR
+
+PROGRAM Prg_HomeWatch
+VAR_EXTERNAL
+    HomingStep, HomeFaultStep                       : INT;
+    M_HomingRun, M_ClearFaults, M_Alm_HomeTimeout   : BOOL;
+END_VAR
+VAR
+    HomeWatch : FB_StepWatch;
+    HomeLimit : TIME;
+END_VAR
+CASE HomingStep OF
+    1, 4: HomeLimit := T#3S;             // H1 hạ kẹp · H4 kiểm tư thế nghỉ
+    3:    HomeLimit := T#10S;            // H3 xả board
+ELSE
+    HomeLimit := T#0S;                   // H2 đánh dấu NG, H5 — tức thời
+END_CASE;
+HomeWatch(Step := HomingStep, Limit := HomeLimit, Active := M_HomingRun, Clear := M_ClearFaults);
+M_Alm_HomeTimeout := HomeWatch.Fault;
+HomeFaultStep     := HomeWatch.FaultStep;
+END_PROGRAM
+```
+
+Chạy thử: bước H1 2,5 s — chưa lỗi; sang H3 là đếm lại từ đầu (9 s — chưa lỗi); H3 quá 10 s — lỗi
+**chốt**, bước ghi lại là 3; máy rời `Homing` — lỗi **vẫn** chốt; lệnh xoá — hết lỗi; bước H2 không giới
+hạn — không bao giờ lỗi. ⚠ Chân `Active` là thứ làm khối **không báo lỗi giả khi máy đang giữ**: tắt
+`Active` là đưa bộ định thời về 0, bật lại là đếm lại từ đầu — đúng bài học của Chương 17 mục 17.3 về
+bộ định thời không được gọi. ⭐ Tên chân là `Active`, **không** phải `Enable`: tắt nó không xoá lỗi đã
+chốt, nên nó không theo hợp đồng `Enable`/`Valid` (Chương 30 mục 30.5b).
 
 ---
 
@@ -15968,6 +16964,8 @@ STRUCT
     CureTimeMs      : DINT;
     // ── Tham số chung ──
     ConvSpeedPct    : INT;
+    // … các chương sau thêm trường của lát cắt sau — nhiệt độ keo (Chương 39), đường
+    //   tra keo (Chương 43). Bản đầy đủ: Phụ lục J mục J.5
 END_STRUCT
 END_TYPE
 
@@ -16035,25 +17033,36 @@ Bốn lý do không được tin:
 | **Nhận dạng** | `Id` tồn tại trong bảng; `Version` không rỗng |
 
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — kiểm công thức trước khi nạp; dải lấy từ số liệu chốt của máy
+//   Cần thêm: kiểu ST_Recipe (mục 29.3 — bản đầy đủ ở Phụ lục J mục J.5)
 FUNCTION KiemTraCongThuc : BOOL
 VAR_INPUT
     r : ST_Recipe;
 END_VAR
 VAR_OUTPUT
-    LyDo : INT;          // ⭐ mã lý do — để nói được SAI Ở ĐÂU
+    LyDo : INT;                          // ⭐ mã lý do — để nói được SAI Ở ĐÂU
+END_VAR
+VAR CONSTANT
+    ID_MAX        : INT  := 20;          // số ô của bảng công thức (mục 29.3)
+    CURE_MIN_MS   : DINT := 5000;        // sấy UV 5 – 120 s (Phụ lục J mục J.5)
+    CURE_MAX_MS   : DINT := 120000;
+    LEN_MIN_TENTH : INT  := 50;          // đoạn keo 5 – 200 mm
+    LEN_MAX_TENTH : INT  := 2000;
+    CONV_MIN_PCT  : INT  := 20;          // tốc độ chuyền 20 – 100 % (Phụ lục J mục J.5)
+    CONV_MAX_PCT  : INT  := 100;
 END_VAR
 
     LyDo := 0;
     KiemTraCongThuc := FALSE;
 
     // ⭐ Một chuỗi ELSIF: dừng ở lỗi ĐẦU TIÊN, và hàm chỉ có MỘT điểm thoát (Phụ lục N, CP14)
-    IF r.Id < 1 OR r.Id > 20 THEN
+    IF r.Id < 1 OR r.Id > ID_MAX THEN
         LyDo := 1;                               // mã công thức ngoài dải
-    ELSIF r.CureTimeMs < 3000 OR r.CureTimeMs > 30000 THEN
+    ELSIF r.CureTimeMs < CURE_MIN_MS OR r.CureTimeMs > CURE_MAX_MS THEN
         LyDo := 2;                               // thời gian sấy ngoài dải
-    ELSIF r.DispenseLenTenthMm < 50 OR r.DispenseLenTenthMm > 2000 THEN
+    ELSIF r.DispenseLenTenthMm < LEN_MIN_TENTH OR r.DispenseLenTenthMm > LEN_MAX_TENTH THEN
         LyDo := 3;                               // chiều dài đoạn keo ngoài dải
-    ELSIF r.ConvSpeedPct < 10 OR r.ConvSpeedPct > 100 THEN
+    ELSIF r.ConvSpeedPct < CONV_MIN_PCT OR r.ConvSpeedPct > CONV_MAX_PCT THEN
         LyDo := 4;                               // tốc độ chuyền ngoài dải
     ELSE
         KiemTraCongThuc := TRUE;                 // ⭐ chỉ tới đây khi MỌI kiểm tra đều đạt
@@ -16598,7 +17607,8 @@ Ví dụ từ DP-01:
 | `DI_BoardStn1` | ngõ vào số · board · trạm 1 | |
 | `DO_Clamp1Vlv` | ngõ ra số · van kẹp · trạm 1 | |
 | `M_Stn1_ClampReq` | biến nội · trạm 1 · yêu cầu kẹp | ⭐ yêu cầu, không phải lệnh ra van (Chương 27) |
-| `Stn2_Ready` | giao diện công bố của trạm 2 | không có tiền tố `M_` vì nó là giao diện, không phải biến nội |
+| `Stn2.Ready` | giao diện công bố của trạm 2 — một trường của `Stn2 : ST_Station` | không có tiền tố `M_` vì nó là giao diện, không phải biến nội (mục 30.3) |
+| `Stn1_Step` | bước của trình tự trạm 1 — **ruột** của trạm | ⭐ biến của chương trình trạm, không ai khác đọc; tiền tố `Stn1_` chỉ để đoạn trích đứng một mình vẫn biết của trạm nào (Phụ lục N mục N.7) |
 
 ### Năm quy tắc đặt tên
 
@@ -16767,26 +17777,27 @@ type, UDT)* thay vì để rời rạc:
 ```iecst
 // ✗ Rời rạc — bốn biến không có gì nối chúng lại
 VAR_GLOBAL
-    M_Stn1_Step      : INT;
+    M_Stn1_Ready     : BOOL;
+    M_Stn1_Busy      : BOOL;
     M_Stn1_Fault     : BOOL;
     M_Stn1_FaultStep : INT;
-    M_Stn1_Ready     : BOOL;
 END_VAR
 
-// ✓ Gói lại — một kiểu, dùng cho mọi trạm
-TYPE ST_Station :
+// ✓ Gói lại — một kiểu, dùng cho mọi trạm (Chương 11 mục 11.5)
+TYPE ST_Station :                      // giao diện CÔNG BỐ của một trạm — chỉ trạm đó ghi
 STRUCT
-    Step       : INT;
-    Fault      : BOOL;
-    FaultStep  : INT;
-    Ready      : BOOL;
-    Busy       : BOOL;
-    BoardDone  : BOOL;
+    Ready       : BOOL;                // sẵn sàng nhận board mới
+    Busy        : BOOL;                // đang xử lý
+    Fault       : BOOL;                // trạm có lỗi — cờ đã chốt (Chương 25 mục 25.5c)
+    FaultStep   : INT;                 // bước lúc lỗi, 0 nếu không lỗi
+    BoardDone   : BOOL;                // board đã xong, chờ chuyển đi
+    DoneCount   : DINT;                // ⭐ DINT, không phải INT — sẽ tràn
+    LastCycleMs : DINT;                // ⭐ đơn vị trong tên
 END_STRUCT
 END_TYPE
 
-VAR
-    Stn1 : ST_Station;
+VAR_GLOBAL
+    Stn1 : ST_Station;                 // ⭐ CHỈ trạm 1 ghi vào Stn1 — mọi nơi khác chỉ đọc
     Stn2 : ST_Station;
 END_VAR
 ```
@@ -16797,6 +17808,32 @@ Ba lợi ích, và lợi ích thứ ba là lớn nhất:
 2. Thêm một trường cho mọi trạm chỉ cần sửa **một chỗ**.
 3. ⭐ **Không thể quên** — khi bạn tạo `Stn3`, nó tự động có đủ mọi trường. Với biến rời rạc, bạn sẽ
    quên ít nhất một cái.
+
+#### ⭐⭐ Gói những gì — ba cách, và vì sao `Step` ở ngoài
+
+Câu hỏi thật không phải *"gói hay không"*, mà là **gói những gì**. Cùng bài toán — trạm 1 chờ trạm 2
+trống rồi nhả board — viết theo ba cách:
+
+```iecst
+// ✗ A · Gói TẤT CẢ, kể cả bước — Stn2.Step là biến toàn cục
+IF Stn1.BoardDone AND Stn2.Step = 0 THEN  M_Stn1_ReleaseBoard := TRUE;  END_IF;
+
+// B · Để rời tất cả
+IF Stn1_BoardDone AND Stn2_Ready THEN  M_Stn1_ReleaseBoard := TRUE;  END_IF;
+
+// C · Gói phần CÔNG BỐ, để bước là ruột — cách của sách
+IF Stn1.BoardDone AND Stn2.Ready THEN  M_Stn1_ReleaseBoard := TRUE;  END_IF;
+```
+
+| Cách | ⭐ Ưu | ⚠ Nhược |
+|---|---|---|
+| A — gói tất cả | Một biến chứa mọi thứ về trạm | ⚠⚠ Bước thành toàn cục: đọc `Stn2.Step` ở trạm 1 dễ như đọc `Stn2.Ready` — đúng lỗi *"nhìn vào ruột"* của Chương 27 mục 27.4, và **không có gì ngăn** |
+| B — để rời | Chạy trên mọi hệ, kể cả hệ chưa có kiểu cấu trúc | Mọi nhược của mục này: chép tay, quên trường, không truyền được cả cụm; và ⚠ không nhìn tên mà biết biến nào được phép đọc |
+| ⭐ C — gói phần công bố | ⭐ **Dấu chấm = hợp đồng**: thứ gì đọc được qua `Stn2.` là thứ trạm 2 hứa giữ nghĩa; bước nằm trong chương trình trạm nên người khác **không với tới** một cách vô tình | Hai kiểu tên cho hai loại biến — phải giải thích một lần, như ở đây |
+
+⭐ **Khuyến nghị: C** — cho DP-01 và cho mọi máy có từ hai trạm. Dùng **B** chỉ khi hệ của bạn không có
+kiểu cấu trúc. ⚠ Tránh **A**: nó trông gọn nhất, nhưng biến ranh giới giữa các trạm thành một lời hứa
+miệng.
 
 ---
 
@@ -17149,6 +18186,7 @@ Bài toán: đưa board từ trạm 1 sang trạm 2 — bước 60 ở Chương 
 không được chờ mãi.
 
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — khối kích bằng sườn theo hợp đồng Execute/Done (giống hệt Phụ lục L mục L.8b)
 FUNCTION_BLOCK FB_BoardTransfer
 VAR_INPUT
     Execute   : BOOL;            // ⭐ SƯỜN LÊN = bắt đầu · tham số được CHỐT tại sườn này
@@ -17240,10 +18278,10 @@ CASE Stn1_Step OF
     60: // Hạ chặn, chuyển board sang — khối lo phần "chờ và giám sát"
         M_Stn1_StopReq := FALSE;
         IF Xfer1.Done THEN
-            Stn1_BoardDone := FALSE;
+            Stn1.BoardDone := FALSE;
             Stn1_Step      := 0;
         ELSIF Xfer1.Error THEN
-            Stn1_Fault := TRUE;             // khối BÁO — trạm chốt cờ của nó (Chương 25 mục 25.5c)
+            Stn1.Fault := TRUE;             // khối BÁO — trạm chốt cờ của nó (Chương 25 mục 25.5c)
         END_IF;
 END_CASE;
 ```
@@ -17282,8 +18320,8 @@ xả xong (Chương 27 mục 27.5, bảng chốt dòng 10: *"không chỉ trạm
 
 ```iecst
 // ── A · Cách của sách: mỗi trạm công bố biến toàn cục, tầng máy đọc từng cái ──
-M_AllEmpty := Stn1_Ready AND NOT Stn1_Busy
-              AND Stn2_Ready AND NOT Stn2_Busy;
+M_AllEmpty := Stn1.Ready AND NOT Stn1.Busy
+              AND Stn2.Ready AND NOT Stn2.Busy;
 
 // ── B · Trạm là khối có phương thức: tầng máy HỎI, không đọc biến bên trong ──
 M_AllEmpty := Station1.IsEmpty() AND Station2.IsEmpty();
@@ -17308,14 +18346,15 @@ INTERFACE I_Station
 END_INTERFACE
 
 FUNCTION_BLOCK FB_Stn2Cure IMPLEMENTS I_Station
-    // … khai báo và trình tự của trạm 2 — như Chương 26, nhưng nằm trong khối …
+    // … khai báo và trình tự của trạm 2 — như Chương 26, nhưng nằm trong khối;
+    //   cảm biến board vào qua chân BoardIn, không đọc thẳng DI_BoardStn2 (CP6, Chương 11) …
 
     METHOD IsReady : BOOL
         IsReady := (Stn2_Step = 0);
     END_METHOD
 
     METHOD IsEmpty : BOOL
-        IsEmpty := (Stn2_Step = 0) AND NOT DI_BoardStn2;
+        IsEmpty := (Stn2_Step = 0) AND NOT BoardIn;
     END_METHOD
 
     METHOD HasFault : BOOL
@@ -20295,6 +21334,7 @@ PID_GlueTemp(...);
 ```iecst
 // ✓ ĐÚNG — gọi trong tác vụ chu kỳ cố định, hoặc theo một xung định kỳ
 IF TrigPidTick.Q THEN            // xung đều đặn, ví dụ 500 ms
+    // ⭐ CỐ Ý gọi trong nhánh: khối PID lấy Δt = CycleMs, nên PHẢI chạy đúng một lần mỗi nhịp
     PID_GlueTemp(..., CycleMs := 500);
 END_IF;
 ```
@@ -21537,8 +22577,8 @@ MoveZ(Axis     := AX_Z,
       Error    => M_ZMoveError);
 
 // Chuyển bước bằng PHẢN HỒI THẬT — Done, không phải timer (Chương 17)
-IF Stn1.Step = 40 AND M_ZMoveDone THEN
-    Stn1.Step := 50;
+IF Stn1_Step = 40 AND M_ZMoveDone THEN
+    Stn1_Step := 50;
 END_IF;
 ```
 
@@ -21660,15 +22700,18 @@ Z 0–50 mm**, cả ba trục là **servo**.
 ### Thứ tự về gốc
 
 ```iecst
+// ⭐ Gọi MỖI vòng quét, NGOÀI CASE — Execute lấy thẳng từ bước: vào bước là sườn lên,
+//    rời bước là sườn xuống, nên lần về gốc SAU cũng phát được lệnh (Chương 30 mục 30.5b)
+HomeZ(Axis := AX_Z, Execute := (HomeStep = 10));
+HomeX(Axis := AX_X, Execute := (HomeStep = 20));
+HomeY(Axis := AX_Y, Execute := (HomeStep = 20));
+
 CASE HomeStep OF
     10:  // ⭐ Z LÊN TRƯỚC — nếu không, đầu keo quét ngang qua board
-        MC_Home_Z(Axis := AX_Z, Execute := TRUE);
-        IF M_ZHomed THEN  HomeStep := 20;  END_IF;
+        IF HomeZ.Done THEN  HomeStep := 20;  END_IF;
 
     20:  // X và Y về gốc được, sau khi Z đã an toàn
-        MC_Home_X(Axis := AX_X, Execute := TRUE);
-        MC_Home_Y(Axis := AX_Y, Execute := TRUE);
-        IF M_XHomed AND M_YHomed THEN  HomeStep := 30;  END_IF;
+        IF HomeX.Done AND HomeY.Done THEN  HomeStep := 30;  END_IF;
 
     30:
         M_Homed := TRUE;        // ⚠⚠ biến KHÔNG giữ qua mất điện (mục 37.3)
@@ -21680,7 +22723,7 @@ END_CASE;
 
 // Timeout song song — cữ hỏng thì trục chạy mãi (Chương 17, Chương 26)
 T_HomeTimeout(IN := (HomeStep > 0), PT := T#30S);
-IF T_HomeTimeout.Q THEN
+IF T_HomeTimeout.Q OR HomeZ.Error OR HomeX.Error OR HomeY.Error THEN
     M_HomeFault := TRUE;
     // dừng mọi trục
 END_IF;
@@ -21773,10 +22816,15 @@ mục 16.4).
 **Cách sửa:** phanh cơ khí, và ⚠ **thứ tự kẹp trước khi nhả mô-men** phải đặt đúng trong tham số
 drive (mục 37.9).
 
-### 🔍 BẪY 7 — Giữ `Execute` ở mức TRUE
+### 🔍 BẪY 7 — `Execute` không bao giờ hạ xuống
 
 **Hiện tượng:** lệnh chạy được lần đầu, những lần sau **không phát được** — trình tự treo ở bước đó.
-**Cách sửa:** kích bằng **cạnh lên** (mục 37.8, Chương 16).
+⚠ Hai cách viết gây ra nó, và cả hai trông vô hại: gọi với **hằng** `Execute := TRUE`, hoặc gọi khối
+**bên trong** nhánh `CASE` — rời bước thì khối không được gọi nữa, nên nó **không bao giờ thấy**
+`Execute` hạ xuống (Phụ lục B mục B.9b). Chính đoạn về gốc ở mục 37.9 từng mắc lỗi này.
+**Cách sửa:** lệnh kích bằng **cạnh lên**, nên giữa hai lệnh phải có **cạnh xuống**. Gọi khối **mỗi
+vòng, ngoài `CASE`**, với `Execute := (HomeStep = 10)` — giữ TRUE suốt bước, tự hạ khi rời bước — hoặc
+bằng một xung sườn lên như Phụ lục L mục L.9 (Chương 30 mục 30.5b, Chương 16).
 
 ### 🔍 BẪY 8 — Dùng chung một thể hiện khối chuyển động
 
@@ -23017,17 +24065,21 @@ IF ActiveRecipe.GlueTempSetX10 <> LastWrittenSetpoint THEN
     M_NeedWriteSetpoint := TRUE;
 END_IF;
 
-IF M_NeedWriteSetpoint AND NOT M_TcBusy THEN
-    WriteSetpoint(Execute := TRUE,
-                  SlaveId := 1,
-                  FunctionCode := 6,          // Write Single Register
-                  Addr := 1,
-                  Value := ActiveRecipe.GlueTempSetX10,
-                  Done => M_WriteDone);
-    IF M_WriteDone THEN
-        LastWrittenSetpoint := ActiveRecipe.GlueTempSetX10;
-        M_NeedWriteSetpoint := FALSE;
-    END_IF;
+// ⭐ Gọi MỖI vòng, NGOÀI IF — Execute lấy từ cờ yêu cầu (Chương 30 mục 30.5b)
+WriteSetpoint(Execute      := M_NeedWriteSetpoint AND NOT ReadTempCtrl.Busy,   // bus một đường
+              SlaveId      := 1,
+              FunctionCode := 6,          // Write Single Register
+              Addr         := 1,
+              Value        := ActiveRecipe.GlueTempSetX10,
+              Done         => M_WriteDone,
+              Error        => M_WriteError);
+
+IF M_WriteDone THEN
+    LastWrittenSetpoint := ActiveRecipe.GlueTempSetX10;
+    M_NeedWriteSetpoint := FALSE;         // ⭐ Execute hạ xuống → khối sẵn sàng cho lần ghi sau
+ELSIF M_WriteError THEN
+    M_NeedWriteSetpoint := FALSE;         // hạ Execute một vòng; vòng sau so lại → thử lại
+    TcErrCount := TcErrCount + 1;         // đếm lỗi liên tiếp — mục 38.9
 END_IF;
 ```
 
@@ -23037,6 +24089,10 @@ Ba điểm thiết kế:
   giới hạn số lần ghi (Chương 38, Bẫy 9).
 - **Không ghi khi đang bận** — bus chỉ có một đường (Chương 38, mục 38.8).
 - **Chỉ cập nhật `LastWrittenSetpoint` khi `Done`** — nếu ghi thất bại thì lần sau thử lại.
+- ⚠⚠ **Khối ghi được gọi mỗi vòng, ngoài `IF`.** Gọi `WriteSetpoint(Execute := TRUE, …)` bên trong
+  `IF` trông gọn hơn — nhưng khối không bao giờ thấy `Execute` hạ xuống: lần ghi đầu chạy, **lần đổi
+  công thức thứ hai thì không**, và nhánh *"ghi hỏng thì thử lại"* cũng không bao giờ chạy (Phụ lục B
+  mục B.9b). Bản trước của đoạn này mắc đúng lỗi đó.
 
 ### Xử lý mất kết nối
 
@@ -24623,7 +25679,7 @@ END_IF;
 ```iecst
 FUNCTION KiemTraMaHopLe : BOOL
 VAR_INPUT
-    Ma : STRING(40);
+    Ma : STRING[40];
 END_VAR
 VAR
     i  : INT;
@@ -24902,22 +25958,44 @@ END_CASE;
 ### Báo kết quả ở trạm 2
 
 ```iecst
-// Board rời trạm 2 — báo kết quả kèm số liệu quá trình
+// Board rời trạm 2 — CHỐT yêu cầu báo; khối gọi mỗi vòng, ngoài IF (Phụ lục B mục B.9b)
 IF TrigStn2Done.Q THEN
-    ReportMes(Execute   := TRUE,
-              BoardCode := Stn2_BoardCode,
-              Result    := SEL(M_Board2IsNG, RESULT_OK, RESULT_NG),
-              NgReason  := M_Ng2Reason,
-              RecipeId  := ActiveRecipe.Id,
-              RecipeVer := ActiveRecipe.Version,      // ⭐ phiên bản, Chương 29
-              // ⭐ Số liệu quá trình — trả lời câu hỏi ở mục 42.1
-              CureTimeMs    := ActualCureTimeMs,
-              UvIntensity   := UvIntensityX10,         // Chương 31, 33
-              GlueTempX10   := GlueTempX10,            // Chương 39
-              GluePressX100 := GluePressAvgX100,       // Chương 32
-              Degraded  := M_DegradedMode);            // ⚠ board này chưa được kiểm trước
+    M_ReportReq := TRUE;
+END_IF;
+
+ReportMes(Execute   := M_ReportReq,          // tham số chốt ở sườn lên — đúng board vừa rời trạm
+          BoardCode := Stn2_BoardCode,
+          Result    := SEL(M_Board2IsNG, RESULT_OK, RESULT_NG),
+          NgReason  := M_Ng2Reason,
+          RecipeId  := ActiveRecipe.Id,
+          RecipeVer := ActiveRecipe.Version,      // ⭐ phiên bản, Chương 29
+          // ⭐ Số liệu quá trình — trả lời câu hỏi ở mục 42.1
+          CureTimeMs    := ActualCureTimeMs,
+          UvIntensity   := UvIntensityX10,         // Chương 31, 33
+          GlueTempX10   := GlueTempX10,            // Chương 39
+          GluePressX100 := GluePressAvgX100,       // Chương 32
+          Degraded  := M_DegradedMode,             // ⚠ board này chưa được kiểm trước
+          Done      => M_ReportDone,
+          Error     => M_ReportError);
+
+IF M_ReportDone THEN
+    M_ReportReq := FALSE;                      // hạ Execute → sẵn sàng cho board sau
+    MesErrCount := 0;
+ELSIF M_ReportError THEN
+    M_ReportReq := FALSE;                      // bản ghi vào bộ đệm gửi bù — mục 42.6
+    MesErrCount := MesErrCount + 1;            // đếm lỗi liên tiếp → M_MesCommFault (mục 42.6)
 END_IF;
 ```
+
+> ⚠⚠ **Bản trước của đoạn này gọi `ReportMes(Execute := TRUE, …)` bên trong `IF TrigStn2Done.Q`** —
+> tức là khối chỉ được gọi **đúng một vòng quét** cho mỗi board. Khối truyền thông cần được gọi **suốt
+> thời gian `Busy`** để đi tới `Done`; gọi một vòng rồi thôi thì nó **đứng yên giữa chừng**, không xong,
+> không lỗi — và vì không bao giờ thấy `Execute` hạ xuống, board thứ hai cũng không phát được yêu cầu
+> (Phụ lục B mục B.9b). Mọi bản ghi truy xuất **mất lặng lẽ**.
+>
+> ⚠ Một yêu cầu tại một thời điểm là đủ khi chu kỳ máy (12 s) dài hơn hẳn thời gian chờ MES. Chu kỳ
+> của bạn ngắn hơn thời gian chờ thì cần **hàng đợi** — không thì board sau tới lúc yêu cầu trước còn
+> `Busy` sẽ không được báo.
 
 > ⭐ **Trường `UvIntensity` là trường đắt giá nhất trong bản ghi này.**
 > Nó biến câu hỏi "board nào bị ảnh hưởng khi đèn UV yếu" từ **không trả lời được** thành **một truy
@@ -25226,6 +26304,9 @@ nhau mỗi lần** — và kết quả đo toạ độ sai theo.
 Cách đơn giản và đáng tin nhất: **dừng vật lại rồi mới chụp**.
 
 ```iecst
+// ⭐ Gọi MỖI vòng, NGOÀI CASE — vào bước 40 là bắt đầu đếm, rời bước là tự xoá (Phụ lục B mục B.9b)
+T_Settle(IN := (Step = 40), PT := T#100MS);      // chờ hết rung
+
 CASE Step OF
     30: // Đưa vật tới vị trí chụp
         IF DI_AtInspectPos THEN
@@ -25233,7 +26314,6 @@ CASE Step OF
         END_IF;
 
     40: // ⭐ Chờ vật ĐỨNG YÊN HẲN trước khi chụp
-        T_Settle(IN := TRUE, PT := T#100MS);     // chờ hết rung
         IF T_Settle.Q THEN
             DO_CameraTrigger := TRUE;             // ⭐ trigger phần cứng
             Step := 50;
@@ -25253,6 +26333,12 @@ END_CASE;
 >
 > ⚠ Thời gian chờ phải **đo**, không đoán: cho cơ cấu dừng rồi chụp liên tiếp nhiều ảnh, xem sau bao
 > lâu kết quả ổn định.
+>
+> ⚠⚠ **Và bộ định thời phải gọi ngoài `CASE`.** Bản trước của đoạn này gọi `T_Settle(IN := TRUE, …)`
+> **bên trong** bước 40. Vật đầu tiên chờ đúng 100 ms. Rời bước thì khối không được gọi nữa, nên nó
+> **đứng yên với `Q` = TRUE**; vật thứ hai vào bước 40, gọi lại với `IN` vẫn TRUE — không có sườn lên
+> nào, `Q` đã TRUE sẵn → **chụp ngay, bỏ qua thời gian chờ**. Triệu chứng đúng là *"thỉnh thoảng đo
+> sai"* ở trên, và nó chỉ xuất hiện từ **vật thứ hai** (Phụ lục B mục B.9b).
 
 ---
 
@@ -27068,7 +28154,7 @@ Không phải lúc nào cũng sai. Robot làm chủ hợp khi:
 | Tín hiệu | Chiều | Ghi chú |
 |---|---|---|
 | Số chương trình | PLC → Robot | Vài bit, hoặc một thanh ghi |
-| ⭐ **Bắt đầu** | PLC → Robot | Kích bằng **cạnh lên** (Chương 16) |
+| ⭐ **Bắt đầu** | PLC → Robot | Kích bằng **cạnh lên** (Chương 16) — ⭐ **giữ** tới khi robot báo *Đang chạy*: xung một vòng quét có thể ngắn hơn chu kỳ đọc ngõ vào của robot và bị **bỏ lỡ** (cùng lý do PLC bỏ lỡ xung ngắn hơn vòng quét — Chương 10) |
 | Cho phép chạy | PLC → Robot | ⚠ Mất tín hiệu này → robot dừng |
 | **Đang chạy** | Robot → PLC | |
 | ⭐ **Xong** | Robot → PLC | ⭐ Chuyển bước bằng **cái này**, không bằng timer (Chương 17) |
@@ -27248,19 +28334,19 @@ board từ khay** thay vì nhận từ máy trước:
 ```iecst
 // PLC làm chủ: robot là một bước trong trình tự
 CASE LoadStep OF
-    10: // Yêu cầu robot gắp board từ ô tiếp theo
-        RobotProgNo := PROG_PICK_FROM_TRAY;
+    10: // Chọn chương trình và ô tiếp theo
+        RobotProgNo    := PROG_PICK_FROM_TRAY;
         RobotSlotIndex := NextSlot;              // ⭐ tham số, không phải chương trình riêng
-        Step := 20;
+        LoadStep := 20;
 
-    20: // ⭐ Kích bằng cạnh lên (Chương 16)
-        TrigRobotStart(CLK := TRUE);
-        DO_RobotStart := TrigRobotStart.Q;
-        Step := 30;
+    20: // ⭐ "Bắt đầu" đang bật (dòng gán ngoài CASE) — chờ robot báo ĐÃ NHẬN lệnh
+        IF DI_RobotRunning THEN
+            LoadStep := 30;
+        END_IF;
 
     30: // ⭐ Chờ PHẢN HỒI THẬT, không chờ timer (Chương 17)
         IF DI_RobotDone THEN
-            Step := 40;
+            LoadStep := 40;
         ELSIF DI_RobotError THEN
             M_Alm_Robot := TRUE;               // cờ chốt — gom vào M_AnyFault (Ch.25)
             M_FaultCode := 460 + RobotErrorCode;  // ⭐ mã cụ thể
@@ -27268,14 +28354,18 @@ CASE LoadStep OF
 
     40: // ⭐ Chờ robot RA KHỎI VÙNG trước khi cho chuyền chạy
         IF DI_RobotAtSafePos THEN
-            M_ConvInRun := TRUE;
+            M_ConvInRun := TRUE;               // yêu cầu — tầng chuyền xoá khi board tới (Chương 27)
             NextSlot := NextSlot + 1;
-            Step := 0;
+            LoadStep := 0;
         END_IF;
 
 ELSE
     LoadStep := 0;                                // Chương 20
 END_CASE;
+
+// ⭐ Ngõ ra SUY TỪ BƯỚC, gán ở MỘT chỗ ngoài CASE: sườn lên khi vào bước 20, GIỮ tới khi robot báo
+//    đã nhận — không bao giờ kẹt ở TRUE, và không ngắn hơn chu kỳ đọc ngõ vào của robot
+DO_RobotStart := (LoadStep = 20);
 
 // ⚠ Timeout cho mọi bước chờ (Chương 26)
 T_Robot(IN := (LoadStep > 0), PT := T#20S);
@@ -27286,6 +28376,12 @@ END_IF;
 
 > ⭐ **Bước 40 là bước chống va chạm.** "Robot báo xong" không đủ — phải chờ nó **ra khỏi vùng**. Đây
 > là tín hiệu hay bị quên nhất khi ghép robot (mục 46.4).
+>
+> ⚠⚠ **Bản trước của đoạn này có ba lỗi**, bộ kiểm mã của sách bắt được cả ba (đợt 62): `CASE LoadStep`
+> nhưng các nhánh lại gán cho biến **`Step`** — trình tự **không bao giờ rời bước 10**; `R_TRIG` gọi
+> với **hằng** `CLK := TRUE` bên trong bước 20 — chỉ báo sườn **một lần trong đời máy**; và
+> `DO_RobotStart` gán trong nhánh — rời bước là **kẹt ở TRUE**. Cả ba cùng một gốc: **ngõ ra và khối
+> phải được gán/gọi ở MỘT chỗ, ngoài `CASE`, theo bước** (Phụ lục B mục B.9b).
 
 ---
 
@@ -33189,7 +34285,9 @@ Chương trình chính
 | Ngõ vào số | `DI_<chỗ><cái gì>` | 23 |
 | Ngõ ra số | `DO_<chỗ><cái gì>` | 23 |
 | Analog | `AI_/AO_<đại lượng>` | 31 |
-| Bit trạng thái | `Stn1_<trạng thái>` | 26 |
+| Giao diện công bố của trạm | `Stn1.<trường>` — kiểu `ST_Station` | 11, 27 |
+| Ruột của trình tự trạm | `Stn1_<tên>` — bước, giới hạn thời gian bước | 26 |
+| Yêu cầu trạm gửi tầng cơ cấu | `M_Stn1_<cơ cấu>Req` | 27 |
 | Tham số công thức | ⭐ **Không** tiền tố riêng — là thành phần của cấu trúc: `ActiveRecipe.<tham số>`, kiểu `ST_Recipe` | 29 |
 
 > ⭐ Quy ước phải **khớp với số dây trong tủ** (Ch.49 mục 49.6) và **khớp với nhãn trên HMI** (Ch.44).
@@ -33230,7 +34328,7 @@ Và `Prg_OutputMap` — khối ngắn nhất, nhưng là khối giữ cho chươ
 // Mỗi ngõ ra xuất hiện ĐÚNG MỘT LẦN trong toàn chương trình, và là ở đây.
 DO_Stop1Vlv  := Stop1.Valve;                      // Ch.27 — FB_Cylinder2Pos
 DO_Clamp1Vlv := Clamp1.Valve;
-DO_UvLamp    := Stn2_UvReq AND M_AllPermissive AND DI_ShutterClosed;
+DO_UvLamp    := M_Stn2_UvReq AND M_AllPermissive AND DI_ShutterClosed;
 DO_LampRed   := M_AnyFault;                       // Ch.5, 25 — mẫu đèn tháp L.13
 ```
 
@@ -34570,8 +35668,10 @@ END_CASE;
 > Instance DB. Cấu trúc tư duy giống hệt — vì cả hai bám IEC 61131-3.
 >
 > ⚠⚠ **Vì sao bộ định thời gọi NGOÀI `CASE` ở cả hai bản:** một thể hiện khối **không được gọi thì
-> giữ nguyên trạng thái**. Gọi nó bên trong nhánh `40` thì rời bước là nó đứng yên với `Q` = TRUE
-> (nếu vừa quá giờ) — lần sau vào bước 40 là **báo lỗi ngay** ở vòng quét đầu. Gọi ngoài `CASE` với
+> giữ nguyên trạng thái**. Gọi nó bên trong nhánh `40` thì rời bước là nó **đứng yên** — và lần sau
+> vào bước 40, `IN` vẫn TRUE nên không có sườn lên nào để đếm lại: `Q` còn TRUE từ lần trước, hoặc
+> `ET` tính luôn cả thời gian từ lần trước tới giờ (Phụ lục B mục B.9b) — **báo lỗi ngay** ở vòng quét
+> đầu, **dù lần trước không hề quá giờ**. Gọi ngoài `CASE` với
 > `IN` lấy từ bước thì rời bước là `IN` = FALSE → tự xoá, và mỗi thể hiện được gọi **đúng một lần**
 > mỗi vòng (PLCopen CP20, Phụ lục N).
 
@@ -35038,7 +36138,7 @@ Ba câu hỏi mà bảng lệnh không trả lời, nhưng quyết định chư�
 
 | Khối | ⭐ Cập nhật khi nào | Lần gọi đầu sau khởi động | ⚠ Khi **không** được gọi |
 |---|---|---|---|
-| `TON` · `TOF` · `TP` | **Chỉ trong lần gọi** — `ET`, `Q` tính lại ở mỗi lần gọi | `ET` = 0, `Q` = FALSE; `IN` đã TRUE thì bắt đầu đếm từ lần này | ⚠⚠ **Đứng yên** — `ET` không tăng, `Q` giữ giá trị cũ. Khác hẳn lệnh `OUT` bộ định thời của hệ kiểu thiết bị: điều kiện tắt là **về 0** (Phụ lục A2 mục A2.8) |
+| `TON` · `TOF` · `TP` | **Chỉ trong lần gọi** — `ET`, `Q` tính lại ở mỗi lần gọi | `ET` = 0, `Q` = FALSE; `IN` đã TRUE thì bắt đầu đếm từ lần này | Ngõ ra **đứng yên** — `ET`, `Q` không cập nhật. ⚠⚠ Nhưng **không tạm dừng**: lần gọi kế tiếp tính **cả khoảng không được gọi** (Siemens: *bây giờ trừ lúc bắt đầu*; Rockwell: *cộng thời gian từ lần quét trước*) — `ET` **nhảy vọt**, `Q` có thể lên ngay. Khác hẳn lệnh `OUT` bộ định thời của hệ kiểu thiết bị: điều kiện tắt là **về 0** (Phụ lục A2 mục A2.8) |
 | `R_TRIG` | So `CLK` với giá trị **ở lần gọi trước** | ⚠⚠ `CLK` đã TRUE thì báo **một sườn lên giả** (Chương 16 Bẫy 9) | Không thấy những gì xảy ra lúc không gọi; lần gọi sau so với một giá trị **có thể đã rất cũ** |
 | `F_TRIG` | Như trên | ⭐ `CLK` đã FALSE thì **không** báo sườn — ⚠ **không đối xứng** với `R_TRIG` | Như trên |
 | `CTU` · `CTD` · `CTUD` | Đếm theo **sườn** của `CU` / `CD` | ⚠ Sườn được nhận như `R_TRIG` — đầu vào đã TRUE ở lần đầu thì có thể đếm một lần; kiểm trên hệ | Không đếm những sườn xảy ra lúc không gọi |
@@ -35051,6 +36151,17 @@ Ba câu hỏi mà bảng lệnh không trả lời, nhưng quyết định chư�
 > điều kiện, với đầu vào lấy từ trạng thái.** Muốn bộ định thời chạy ở bước 20 thì viết
 > `T_Step20(IN := (Stn1_Step = 20), …)` ngoài `CASE` — rời bước là tự xoá, không bao giờ đứng yên với
 > giá trị cũ, và không bao giờ phải gọi lần hai để xoá (PLCopen CP20, Phụ lục N).
+>
+> ⚠⚠ **Muốn bộ định thời ngưng đếm khi máy giữ (Hold), đưa điều kiện giữ vào `IN`** — đừng đặt khối
+> vào một nhánh không chạy. Tắt `IN` là xoá về 0, bật lại là đếm lại từ đầu; còn khối bị bỏ không gọi
+> thì lúc gọi lại **tính luôn** khoảng thời gian đã bỏ qua, và báo quá giờ ngay vòng quét đầu (Phụ lục L
+> mục L.6). ⭐ Bộ kiểm mã của sách báo lỗi mọi thể hiện khối được gọi bên trong nhánh `IF`/`CASE`.
+>
+> *Nguồn cho cột "khi không được gọi" của `TON`/`TOF`/`TP`: tài liệu hệ thống S7-1200 (mục 7.2 —
+> bộ định thời lưu thời điểm bắt đầu lấy từ đồng hồ chạy liên tục của CPU, cập nhật khi lệnh được gọi
+> hoặc khi `Q`/`ET` được đọc); tài liệu lệnh chung Logix 5000 (mục "How a Timer Runs" — `ACC` cộng
+> thời gian kể từ lần quét trước, và phải quét lại trong vòng 69 phút). Kiểm 2026-09-28. Hệ khác: thử
+> trên hệ của bạn trước khi dựa vào.*
 
 ---
 
@@ -37500,6 +38611,37 @@ cùng một máy chạy nhiều mã hàng trong một ca.
 | Ngưỡng cường độ UV tối thiểu | mW/cm² | 20 – 180 | S2.40 |
 | Tốc độ chuyền | % | 20 – 100 | mọi bước chuyền |
 
+⭐ Khai báo kiểu công thức — bản **đầy đủ**, gom đúng các trường mà mã mẫu trong sách dùng tới
+(Chương 29 khai phần của lát cắt 2; Chương 39 thêm nhiệt độ keo; Chương 43 thêm đường tra keo). Các
+tham số còn lại của bảng trên thêm vào theo cùng khuôn:
+
+```iecst
+TYPE ST_Recipe :
+STRUCT
+    // ── Nhận dạng ──
+    Id                 : INT;          // mã số công thức
+    Name               : STRING[20];   // tên đọc được, hiện trên màn hình
+    Version            : INT;          // ⭐ tăng mỗi lần sửa (Chương 29 mục 29.6)
+    // ── Tham số trạm 1: tra keo ──
+    DispenseLenTenthMm : INT;          // ⭐ đơn vị trong tên (Chương 11)
+    DispenseSpeed      : INT;
+    GlueTempSetX10     : INT;          // nhiệt độ keo đặt, 0,1 °C — ghi xuống bộ điều khiển (Ch.39)
+    TempMinX10         : INT;          // dải cho phép của nhiệt độ keo, 0,1 °C (Ch.39)
+    TempMaxX10         : INT;
+    PathX              : ARRAY[1..20] OF DINT;   // đường tra keo, 0,01 mm (Chương 37, 43)
+    PathY              : ARRAY[1..20] OF DINT;
+    // ── Tham số trạm 2: sấy UV ──
+    CureTimeMs         : DINT;
+    // ── Tham số chung ──
+    ConvSpeedPct       : INT;
+END_STRUCT
+END_TYPE
+```
+
+> ⭐ Bộ kiểm mã của sách (`kiem_cu_phap_st.py`) so **mọi** bản khai báo `ST_Recipe` với bản này: bản
+> trích ở Chương 29 phải là tập con, và mọi `ActiveRecipe.<trường>` ở bất kỳ chương nào phải có thật ở
+> đây. Đợt 62 tìm ra năm trường được dùng ở Chương 39 và 43 mà chưa từng được khai.
+
 > ⚠⚠ **Kiểm tra hợp lệ là bắt buộc (Ch.29 mục 29.4).** Nếu công thức tải từ MES có nhiệt độ đặt 600 °C do lỗi
 > nhập liệu, máy phải **từ chối và báo lỗi**, không được nhận.
 >
@@ -38287,41 +39429,43 @@ END_VAR
 // ── 0. Xoá cờ lỗi của trạm khi tầng máy ra lệnh — đặt NGOÀI cửa vào, vì lúc máy đang
 //       Resetting thì trình tự không chạy (Chương 25 mục 25.5c) ──
 IF M_ClearFaults THEN
-    Stn1_Fault := FALSE;
+    Stn1.Fault := FALSE;
 END_IF;
 
-// ── 1. MỘT cửa vào: tạm dừng, hoặc tầng máy chưa cho phép → GIỮ NGUYÊN bước và ngõ ra ──
+// ── 1. Một timer dùng chung — gọi ĐÚNG MỘT lần mỗi vòng, NGOÀI cửa vào (Phụ lục B mục B.9b).
+//       Bước vừa đổi, hoặc trình tự đang bị giữ → IN = FALSE → timer về 0; chạy tiếp là bước
+//       được TRỌN thời gian cho phép (Chương 26 · Chương 17 Bẫy 3, Bẫy 5 · PLCopen CP20) ──
+CASE Stn1_Step OF
+    0:   Stn1_StepLimit := T#0S;         // 0 = chờ vô hạn, CÓ CHỦ Ý
+   10:   Stn1_StepLimit := T#3S;
+   20:   Stn1_StepLimit := T#3S;
+   30:   Stn1_StepLimit := T#60S;
+END_CASE;
+
+T_StepTimeout(IN := M_CycleEnable AND NOT M_Paused
+                    AND (Stn1_StepLimit > T#0S) AND (Stn1_Step = Stn1_StepPrev),
+              PT := Stn1_StepLimit);
+Stn1_StepPrev := Stn1_Step;
+
+IF T_StepTimeout.Q THEN
+    Stn1.FaultStep := Stn1_Step;         // ⭐ GHI LẠI bước bị kẹt — không chỉ "lỗi trạm 1"
+    Stn1.Fault     := TRUE;              // cờ của TRẠM — không ghi thẳng M_AnyFault (Chương 25 mục 25.5c)
+END_IF;
+
+// ── 2. MỘT cửa vào: tạm dừng, hoặc tầng máy chưa cho phép → GIỮ NGUYÊN bước và ngõ ra ──
 //    ⚠ Huỷ chu trình KHÔNG làm ở đây. Nó là một chuyển trạng thái riêng ở tầng máy
 //      (Hold → Idle, Chương 25), và bước được xoá ở đó — không phải mỗi lần cờ này tắt.
 IF M_Paused OR NOT M_CycleEnable THEN
     ;                                    // ⭐ CỐ Ý không làm gì (L.4, Chương 25)
 ELSE
 
-    // ── 2. Một timer dùng chung: bước vừa đổi thì IN = FALSE đúng một vòng → tự xoá.
-    //       Gọi ĐÚNG MỘT lần mỗi vòng quét (Chương 26 · Chương 17 Bẫy 5 · PLCopen CP20) ──
-    CASE Stn1_Step OF
-        0:   Stn1_StepLimit := T#0S;         // 0 = chờ vô hạn, CÓ CHỦ Ý
-       10:   Stn1_StepLimit := T#3S;
-       20:   Stn1_StepLimit := T#3S;
-       30:   Stn1_StepLimit := T#60S;
-    END_CASE;
-
-    T_StepTimeout(IN := (Stn1_StepLimit > T#0S) AND (Stn1_Step = Stn1_StepPrev),
-                  PT := Stn1_StepLimit);
-    Stn1_StepPrev := Stn1_Step;
-
-    IF T_StepTimeout.Q THEN
-        Stn1_FaultStep := Stn1_Step;         // ⭐ GHI LẠI bước bị kẹt — không chỉ "lỗi trạm 1"
-        Stn1_Fault     := TRUE;              // cờ của TRẠM — không ghi thẳng M_AnyFault (Chương 25 mục 25.5c)
-    END_IF;
-
     // ── 3. Thân trình tự — chuyển bước bằng PHẢN HỒI THẬT ──
     CASE Stn1_Step OF
-      0:  Stn1_Ready := TRUE;
-          Stn1_Busy  := FALSE;
+      0:  Stn1.Ready := TRUE;
+          Stn1.Busy  := FALSE;
           IF DI_BoardStn1 THEN
-              Stn1_Ready := FALSE;
-              Stn1_Busy  := TRUE;
+              Stn1.Ready := FALSE;
+              Stn1.Busy  := TRUE;
               Stn1_Step  := 10;
           END_IF;
 
@@ -38352,11 +39496,13 @@ END_IF;
 > ⚡ Nhánh rỗng `;` có chú thích là cách chính tài liệu PLCopen dùng để nói *"ở đây cố ý không làm
 > gì"* — Phụ lục N.
 
-> ⚠ **Một hệ quả phải biết: khi đang giữ, bộ định thời báo lỗi bước KHÔNG chạy** — nó nằm trong nhánh
-> không được thực thi nên bị đóng băng (Chương 17, Bẫy 3). Ở đây đó là **điều mong muốn**: một bước
-> đang tạm dừng không phải bước bị kẹt. ⚡ Nếu cơ cấu của bạn cần thời gian khởi động lại sau một lần
-> dừng lâu, hãy **đặt lại bộ định thời khi thoát khỏi trạng thái giữ** — đừng để nó báo lỗi ngay sau
-> khi chạy tiếp.
+> ⚠⚠ **Vì sao bộ định thời nằm NGOÀI cửa vào, với điều kiện giữ đưa vào `IN`.** Bản trước của khung
+> này gọi nó **bên trong** nhánh `ELSE`, với ý định *"đang giữ thì đóng băng — một bước đang tạm dừng
+> không phải bước bị kẹt"*. Ý định đúng, cách làm sai: bộ định thời **không được gọi thì không tạm
+> dừng** — nó tính `ET` từ thời điểm bắt đầu theo đồng hồ nền của CPU (Chương 17 mục 17.3, Phụ lục B
+> mục B.9b). Giữ máy mười phút ở bước 20 rồi chạy tiếp → lần gọi đầu tiên thấy `ET` = mười phút →
+> **báo lỗi bước ngay khi vừa bấm Start**. ⭐ Đưa điều kiện giữ vào `IN` thì đúng ý: đang giữ → timer
+> về 0; chạy tiếp → bước được **trọn** thời gian cho phép.
 
 > ⭐⭐ **Hai quy tắc của khung này quan trọng hơn bản thân đoạn code:**
 >
@@ -38439,6 +39585,7 @@ M_BoardArrived := R_Board.Q;
 lý do của từng quyết định thiết kế nằm ở đó; ở đây là bản để chép.
 
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — khối xy-lanh hai vị trí (giống hệt Chương 27 mục 27.3)
 FUNCTION_BLOCK FB_Cylinder2Pos
 VAR_INPUT
     Req       : BOOL;            // TRUE = yêu cầu tới vị trí LÀM VIỆC — giữ mức, không phải xung
@@ -38540,6 +39687,7 @@ chu trình con, đọc một thanh ghi. Viết theo đúng năm quy tắc chung 
 **y như khối của hãng** — lý do và bảng quy tắc ở Chương 30 mục 30.5b; ở đây là bản để chép.
 
 ```iecst
+// ✔ VÍ DỤ HOÀN CHỈNH — khối kích bằng sườn theo hợp đồng Execute/Done (giống hệt Chương 30 mục 30.5b)
 FUNCTION_BLOCK FB_BoardTransfer
 VAR_INPUT
     Execute   : BOOL;            // ⭐ SƯỜN LÊN = bắt đầu · tham số được CHỐT tại sườn này
@@ -38798,7 +39946,7 @@ END_IF;
 M_AnyAlarmActive := M_Alm_EStop OR M_Alm_AirLow OR M_Alm_VisionNoAnswer OR M_Alm_AxisZ;
 M_AnyFault       := M_AnyAlarmActive
                     OR Stop1.Fault OR Clamp1.Fault OR Stop2.Fault OR Clamp2.Fault
-                    OR Stn1_Fault OR Stn2_Fault;
+                    OR Stn1.Fault OR Stn2.Fault;
 
 IF NOT M_AnyAlarmActive THEN
     FirstAlarmCode := ALM_NONE;              // hết sạch mới xoá
@@ -39776,7 +40924,7 @@ nhiều từ; và nếu có tiền tố thì chuyển sang `lowerCamelCase`. Sá
 | | Gợi ý của PLCopen | Sách chọn | ⭐ Lý do |
 |---|---|---|---|
 | Tên có tiền tố | `diBoardStn1` | `DI_BoardStn1` | ⭐⭐ Tên tag trong sách **là chữ in trên nhãn trong tủ** và trên màn hình (Chương 44). Chữ HOA có gạch tách tiền tố đọc được từ xa, và khớp cách đánh số dây (Chương 49 mục 49.6; Chương 57) |
-| Loại tiền tố | Thường là tiền tố **kiểu** — `x` cho BOOL, `i` cho INT | Tiền tố **vai trò** — `DI_` `DO_` `AI_` `M_` `T_` `Stn1_` | ⭐ Tiền tố vai trò trả lời câu người sửa máy cần hỏi nhất: *"tín hiệu này từ đâu tới?"* |
+| Loại tiền tố | Thường là tiền tố **kiểu** — `x` cho BOOL, `i` cho INT | Tiền tố **vai trò** — `DI_` `DO_` `AI_` `M_` `T_` `Stn1_` · `Stn1.` | ⭐ Tiền tố vai trò trả lời câu người sửa máy cần hỏi nhất: *"tín hiệu này từ đâu tới?"* |
 
 **Hai cách đặt tiền tố, cùng một biến — ưu và nhược:**
 
@@ -39826,7 +40974,7 @@ trong dự án thật.
 
 | Mã | Câu hỏi phải trả lời | Sách chọn |
 |---|---|---|
-| N2 | Có dùng tiền tố cho biến không, loại nào? | ⭐ Tiền tố **vai trò**: `DI_` `DO_` `AI_` `AO_` `AX_` `NET_` · `M_` cờ nội bộ · `T_` bộ định thời · `C_` bộ đếm · `Stn1_` biến của trạm · ⭐ tham số công thức **không** có tiền tố riêng: chúng là thành phần của cấu trúc `ActiveRecipe` kiểu `ST_Recipe` (Chương 29) — truy cập bằng tên, đúng CP1 |
+| N2 | Có dùng tiền tố cho biến không, loại nào? | ⭐ Tiền tố **vai trò**: `DI_` `DO_` `AI_` `AO_` `AX_` `NET_` · `M_` cờ nội bộ · `T_` bộ định thời · `C_` bộ đếm · `Stn1.` giao diện công bố của trạm (kiểu `ST_Station`) · `Stn1_` ruột của trạm (bước) · ⭐ tham số công thức **không** có tiền tố riêng: chúng là thành phần của cấu trúc `ActiveRecipe` kiểu `ST_Recipe` (Chương 29) — truy cập bằng tên, đúng CP1 |
 | N3 | Từ nào **không** được dùng trong tên? | Từ khoá và tên lệnh chuẩn (`TON`, `MOVE`…) · từ mơ hồ không nói được gì: `Temp`, `Data`, `Test`, `Flag`, `Aux` |
 | N4 | Viết hoa thế nào? | Tiền tố VIẾT HOA + `_` + `UpperCamelCase`: `DI_BoardStn1` · từ khoá VIẾT HOA: `IF`, `END_IF` |
 | N6 | Tên dài bao nhiêu? | ⭐ Tag của máy mẫu dài nhất **16 ký tự**; nên giữ **≤ 25** như PLCopen gợi ý |
@@ -39856,12 +41004,45 @@ trong dự án thật.
 
 | Loại | Nhận ra bằng | Chép vào phần mềm được không |
 |---|---|---|
-| ⭐ **Ví dụ hoàn chỉnh** | Có khai báo `VAR … END_VAR`, hoặc là một POU đầy đủ (`FUNCTION_BLOCK … END_FUNCTION_BLOCK`) | ✅ **Được** — đủ khai báo để biên dịch |
-| **Đoạn trích** | Không có khai báo | ⚠ **Không trực tiếp** — tag lấy theo bảng I/O của máy mẫu (**Phụ lục J**); biến nội bộ tự suy ra từ ngữ cảnh |
+| ⭐ **Ví dụ hoàn chỉnh** | Dòng đầu là `// ✔ VÍ DỤ HOÀN CHỈNH` | ✅ **Được** — tự đủ khai báo; kiểu hay khối định nghĩa ở chương khác được ghi rõ ngay dòng thứ hai |
+| **Đoạn trích** | Không có dòng đó — kể cả khi có `VAR … END_VAR` | ⚠ **Không trực tiếp** — tag lấy theo bảng I/O của máy mẫu (**Phụ lục J**); biến nội bộ tự suy ra từ ngữ cảnh; phần lược bớt đánh dấu `…` |
+
+> ⚠ **Bản trước của mục này** định nghĩa *"có `VAR … END_VAR` là hoàn chỉnh"* — sai sự thật: nhiều khối
+> có `VAR` vẫn dùng tag không khai báo. Đợt 62 đổi sang **dấu hiệu tường minh**, để người đọc thấy ngay
+> và bộ kiểm biết khối nào phải nghiêm.
 
 > ⭐ **Vì sao không khai báo đầy đủ trong mọi khối:** một đoạn ba dòng minh hoạ một ý, nếu kèm mười dòng
-> khai báo thì **ý chính bị chìm**. ⚡ Sách chọn giữ đoạn trích gọn, và bảo đảm **mỗi chương về lập trình
-> có ít nhất một ví dụ hoàn chỉnh** để bạn có một điểm xuất phát chép chạy được.
+> khai báo thì **ý chính bị chìm**. ⚡ Sách chọn giữ đoạn trích gọn, và bảo đảm **mỗi chương dạy viết mã
+> (Chương 14–21, 24–30) có ít nhất một ví dụ hoàn chỉnh** để bạn có một điểm xuất phát chép chạy được
+> (Chương 22, 23 dạy cách đọc mã và viết đặc tả).
+
+**Một ví dụ hoàn chỉnh phải thoả — và bộ kiểm `tools/kiem_cu_phap_st.py` kiểm từng điều:**
+
+| # | Điều kiện | Vì sao |
+|:-:|---|---|
+| 1 | Mọi biến dùng tới đều **khai trong chính khối** — kể cả tag I/O, qua `VAR_GLOBAL` và `VAR_EXTERNAL` | Chép vào một dự án trống là biên dịch được; và `VAR_EXTERNAL` biến sự phụ thuộc thành một dòng nhìn thấy được (Chương 11 mục 11.6) |
+| 2 | Mọi **kiểu** có thật — chuẩn, định nghĩa ở đâu đó trong sách, hoặc khối chuyển động `MC_*` | Không có tên kiểu nào người đọc phải tự đoán |
+| 3 | Không có dấu lược `…` trong mã | Có lược thì là đoạn trích |
+| 4 | Không có biến cục bộ khai mà không dùng (CP24) | Rác trong khai báo làm người đọc tìm công dụng không có |
+| 5 | Sơ đồ LD, FBD hay SFC đi kèm: mọi tên có dấu gạch dưới trong sơ đồ đều đã khai | Phần khai báo và phần vẽ phải khớp nhau |
+
+Và mọi khối — hoàn chỉnh hay trích — còn chịu các phép kiểm chung: khối cùng tên **giống hệt từng chữ**
+ở mọi nơi; kiểu cấu trúc cùng tên **cùng các trường**; `biến.trường` phải là trường có thật; ⭐⭐ **thể
+hiện khối không được gọi bên trong nhánh `IF`/`CASE`** (Phụ lục B mục B.9b); đầu vào sườn không được là
+hằng (`CLK := TRUE`, `Execute := TRUE`); và `CASE` theo một biến bước thì không được gán số cho biến bước
+khác.
+
+> ⭐ **Ví dụ hoàn chỉnh viết bằng ST còn được CHẠY THỬ**, không chỉ kiểm cú pháp: một bộ chạy thử ST nhỏ
+> (`tools/chay_thu/`) chạy chính văn bản in trong sách, qua **nhiều chu trình liên tiếp**, giữ máy lâu,
+> cơ cấu kẹt, Reset khi lỗi còn nguyên. ⚡ Đợt 62 dùng nó tìm ra lỗi *"`Done` của lệnh cũ"* (Chương 26
+> Bẫy 7) — lỗi mà cả sáu bộ kiểm tĩnh đều không thấy. ⚠ Nó chỉ hiểu ST: ví dụ SFC (Chương 21)
+> và LD (Chương 15) mới được kiểm tĩnh.
+
+**Một quy ước tên của riêng mã mẫu:** biến **ruột** của một trạm — bước, giới hạn thời gian bước — mang
+tiền tố trạm (`Stn1_Step`). Trong dự án thật, đó là biến cục bộ của chương trình trạm và chỉ cần tên
+`Step`; sách thêm `Stn1_` để mỗi đoạn trích **đứng một mình vẫn biết là của trạm nào**. Thứ trạm
+**công bố** thì nằm trong một cấu trúc: `Stn1.Ready`, `Stn1.Fault` — kiểu `ST_Station` (Chương 11 mục
+11.5, lý do ở Chương 30 mục 30.3).
 
 ---
 

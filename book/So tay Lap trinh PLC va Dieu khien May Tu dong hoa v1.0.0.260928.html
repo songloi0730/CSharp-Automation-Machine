@@ -2326,8 +2326,8 @@ chúng trước khi chép:</p>
 </tbody></table></div>
 <p>Mỗi chương dạy viết mã (Chương 14–21, 24–30) có ít nhất một ví dụ hoàn chỉnh; Chương 22, 23 dạy cách
 đọc mã và viết đặc tả nên không có. Cả hai loại khối đều đi qua <strong>bộ kiểm mã của sách</strong> (Phụ lục N mục
-N.7) — và các ví dụ hoàn chỉnh viết bằng ST còn được <strong>chạy thử</strong> qua nhiều vòng quét, nhiều chu trình
-liên tiếp (ví dụ LD, SFC thì chưa: bộ chạy thử chỉ hiểu ST).</p>
+N.7) — và các ví dụ hoàn chỉnh viết bằng ST hay SFC dạng văn bản còn được <strong>chạy thử</strong> qua nhiều vòng
+quét, nhiều chu trình liên tiếp (ví dụ LD thì chưa: bộ chạy thử không đọc sơ đồ thang).</p>
 <blockquote>
 <p>⚠ <strong>Kiểm bằng công cụ không thay được việc chạy trên phần mềm và phần cứng của bạn.</strong> Bộ kiểm không
 biết kiểu dữ liệu của từng biểu thức, bộ chạy thử là một mô hình chứ không phải PLC thật, và mỗi hãng
@@ -10732,6 +10732,13 @@ thừa, mà vì <strong>những nhóm bài toán khác nhau</strong>, và ép t�
 <td>21</td>
 </tr>
 </tbody></table></div>
+<blockquote>
+<p>⚡ <strong>Nói cho chính xác: SFC không hẳn là &quot;ngôn ngữ thứ năm&quot;.</strong> Nó chia một POU thành <strong>bước và
+chuyển tiếp</strong>, còn điều kiện chuyển và hành động phải viết bằng một trong các ngôn ngữ kia — nên
+PLCopen nói thẳng SFC <em>&quot;không được coi là một ngôn ngữ lập trình&quot;</em> (tài liệu <em>Structuring with
+SFC</em>, mục 1). Sách vẫn đếm &quot;năm&quot; theo thói quen của nghề và của tài liệu hãng; chỉ cần nhớ: viết
+SFC là viết <strong>cùng</strong> một ngôn ngữ khác.</p>
+</blockquote>
 <h3>Chọn ngôn ngữ theo bài toán</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -16917,7 +16924,7 @@ ladder</strong>, kể cả khi FBD gọn hơn.</p>
         │  S30  Gia công   │               │
         └────────┬─────────┘               │
                  │                         │
-            ─────┼─────  M_ProcessDone     │
+            ─────┼───── M_Stn1_ProcessDone │
                  └─────────────────────────┘
 </code></pre>
 <p>So với cùng trình tự viết bằng <code>CASE</code> (Chương 20, mục 20.2): SFC <strong>thấy được toàn cảnh</strong> — bao nhiêu
@@ -16976,7 +16983,10 @@ im vĩnh viễn, không báo gì. Đúng cỗ máy ở Chương 26, mục 26.1.<
 </tbody></table></div>
 <blockquote>
 <p>⚠ Dùng <code>S</code> mà quên <code>R</code> là biến thể SFC của bẫy SET/RESET ở Chương 16: một thứ được bật rồi không ai
-tắt. Quy tắc giống hệt — <strong>mỗi <code>S</code> phải có một <code>R</code> tương ứng</strong>, và bạn phải chỉ ra được nó ở đâu.</p>
+tắt. Quy tắc giống hệt — <strong>mỗi <code>S</code> phải có một <code>R</code> tương ứng</strong>, và bạn phải chỉ ra được nó ở đâu.
+⚡ PLCopen còn đi xa hơn: <strong>tránh</strong> <code>S</code>/<code>R</code> — khoảng giữa <code>S</code> và <code>R</code> dài, hay có nhánh chen giữa, thì
+nhìn sơ đồ không biết hành động đang chạy hay không. Thay bằng <code>N</code> gắn vào từng bước cần nó, hoặc
+một nhánh song song giữ hành động đó (tài liệu SFC, mục 4.6 và 4.8).</p>
 </blockquote>
 <blockquote>
 <p>⚠⚠ <strong>Hành động <code>N</code> &quot;tự tắt&quot; — nhưng thứ nó đã GÁN thì không.</strong></p>
@@ -16985,7 +16995,9 @@ khi bước hoạt động và <strong>về FALSE khi rời bước</strong> —
 (<code>DO_Clamp1Vlv := TRUE;</code> viết trong hành động): cái dừng là <strong>đoạn mã</strong>, còn giá trị nó đã gán thì <strong>ở
 nguyên</strong>. Sổ tay SFC của Rockwell ghi thẳng: với tuỳ chọn mặc định, khi rời bước <em>&quot;mọi dữ liệu giữ
 giá trị hiện tại&quot;</em> — muốn tắt thì phải tự viết lệnh tắt. CODESYS thì <strong>chạy đoạn mã thêm một lần</strong>
-sau khi rời bước (ở vòng quét kế tiếp) — tức một hành động <code>N</code> luôn chạy ít nhất hai lần.</p>
+sau khi rời bước (ở vòng quét kế tiếp) — tức một hành động <code>N</code> luôn chạy ít nhất hai lần. ⚡ Chuẩn bản 3
+để lần chạy thêm này — <em>lần quét cuối</em> <em>(final scan)</em> — là <strong>lựa chọn của hệ</strong>: có hoặc không, mỗi
+hệ chọn một (tài liệu SFC của PLCopen, mục 3.6).</p>
 <p>⭐ Hệ quả thực hành: ngõ ra và yêu cầu của máy, hoặc là <strong>hành động biến BOOL</strong>, hoặc là <strong>gán ở
 ngoài sơ đồ theo cờ bước</strong> (<code>M_Stn1_ClampReq := S20.X OR S30.X;</code>) — đừng gán TRUE trong đoạn mã rồi
 tin nó tự tắt.</p>
@@ -17011,8 +17023,8 @@ tin nó tự tắt.</p>
 </tr>
 <tr>
 <td>⚠ <strong>P</strong> — <em>pulse</em></td>
-<td>⚠⚠ Ở CODESYS: chạy <strong>đúng hai lần</strong> — một lần khi vào bước, một lần khi rời bước</td>
-<td>⚠ <strong>Không</strong> thay được <code>R_TRIG</code>: đoạn <code>Count := Count + 1</code> trong hành động <code>P</code> cộng <strong>hai</strong> mỗi lần đi qua bước</td>
+<td>Theo chuẩn: chạy <strong>một lần</strong> khi bước được kích hoạt (PLCopen). ⚠⚠ Nhưng ở hệ có <em>lần quét cuối</em> như CODESYS: chạy <strong>đúng hai lần</strong> — một lần khi vào bước, một lần khi rời bước</td>
+<td>⚠ Trên hệ đó <strong>không</strong> thay được <code>R_TRIG</code>: đoạn <code>Count := Count + 1</code> trong hành động <code>P</code> cộng <strong>hai</strong> mỗi lần đi qua bước</td>
 </tr>
 <tr>
 <td><strong>L</strong> — <em>time limited</em></td>
@@ -17056,7 +17068,7 @@ tự động, không phải khai báo</strong>:</p>
 <tr>
 <td>⭐⭐ <code>TênBước.T</code></td>
 <td><code>TIME</code></td>
-<td>⭐ <strong>Thời gian đã ở trong bước</strong> — <strong>về <code>t#0s</code> khi VÀO bước</strong>, rồi chạy suốt lúc bước hoạt động. ⚠ Khi <strong>rời</strong> bước thì <strong>tuỳ hệ</strong>: có hệ giữ nguyên giá trị cuối, có tài liệu nói về 0 — xem ô dưới</td>
+<td>⭐ <strong>Thời gian đã ở trong bước</strong> — <strong>về <code>t#0s</code> khi VÀO bước</strong>, rồi chạy suốt lúc bước hoạt động. ⚠ Khi <strong>rời</strong> bước: chuẩn cho <strong>giữ nguyên</strong> giá trị lúc rời — nhưng có tài liệu mô tả về 0; xem ô dưới</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -17074,17 +17086,21 @@ END_IF;
 </code></pre>
 <p>⚡ Và vì <code>.T</code> <strong>tự về 0 mỗi lần vào bước</strong>, bạn không phải nhớ đặt lại timer — ⚠ đúng cái hay quên
 nhất khi tự dựng bằng <code>TON</code> (Chương 17, Bẫy 2).</p>
-<p>⚠⚠ <strong>Nhưng luôn kèm <code>.X</code>.</strong> Tài liệu của một hệ SFC theo chuẩn (Horner) ghi rõ: rời bước thì <code>.T</code>
-<strong>giữ nguyên</strong>, chỉ về 0 ở lần vào bước sau — bộ đếm thời gian bước của Rockwell cũng vậy. Trên hệ
-như thế, một bước từng chờ 3,2 giây rồi mới đi tiếp để lại <code>.T</code> = 3,2 s: điều kiện thiếu <code>.X</code> <strong>đúng
-mãi</strong>, cờ lỗi <strong>chốt lại ngay sau mỗi lần Reset</strong>, và máy kẹt ở <code>Alarm</code> (Chương 25 mục 25.5c). ⚡ Giáo
-trình Hanssen (viết trên CoDeSys) lại nói <code>.T</code> về 0 khi rời bước — hai nguồn ngược nhau, nên viết
-sao cho <strong>đúng với cả hai</strong>: thêm <code>.X</code>.</p>
+<p>⚠⚠ <strong>Nhưng luôn kèm <code>.X</code>.</strong> Theo chuẩn — tài liệu SFC của PLCopen tóm tắt ở mục 2.1 — rời bước thì
+<code>.T</code> <strong>giữ nguyên</strong> giá trị lúc rời, chỉ về 0 ở lần vào bước sau; Horner và bộ đếm thời gian bước của
+Rockwell làm đúng như vậy. Trên hệ như thế, một bước từng chờ 3,2 giây rồi mới đi tiếp để lại <code>.T</code> =
+3,2 s: điều kiện thiếu <code>.X</code> <strong>đúng mãi</strong>, cờ lỗi <strong>chốt lại ngay sau mỗi lần Reset</strong>, và máy kẹt ở
+<code>Alarm</code> (Chương 25 mục 25.5c). ⚡ Giáo trình Hanssen (viết trên CoDeSys) lại mô tả <code>.T</code> về 0 khi rời
+bước — hệ của bạn theo cách nào thì cũng viết sao cho <strong>đúng với cả hai</strong>: thêm <code>.X</code>.</p>
 </blockquote>
 <blockquote>
 <p>⭐ <strong>Công dụng hai — <code>.X</code> là cách đúng để phần còn lại của chương trình biết trình tự đang ở đâu.</strong></p>
 <p>Dùng cho đèn báo, cho điều kiện liên động, cho chẩn đoán — ⚠ <strong>thay vì tự nuôi một biến &quot;bước hiện
 tại&quot; song song</strong>, thứ chắc chắn sẽ lệch với thực tế vào một ngày nào đó.</p>
+<p>⚠ Nhưng theo chuẩn, tên bước, cờ bước và thời gian bước <strong>chỉ có nghĩa bên trong POU chứa sơ đồ</strong>
+(tài liệu SFC của PLCopen, mục 2.1). Muốn POU khác biết, có hai đường: xuất ra bằng <strong>hành động biến
+BOOL</strong> — cách ví dụ ở mục 21.6 làm với <code>M_Stn1_ClampReq</code> — hoặc dùng đường truy cập riêng của hệ:
+CODESYS cho POU khác đọc <code>Prg_Stn1Sfc.S20.x</code>. Đường thứ hai <strong>không mang sang hệ khác được</strong>.</p>
 </blockquote>
 <blockquote>
 <p>⚠ <strong>Một luật cấu trúc dễ vi phạm khi vẽ: không được đặt hai bước liền nhau mà không có bước chuyển
@@ -17134,8 +17150,8 @@ trình tự trong ladder. Vẽ GRAFCET không bắt buộc bạn phải lập tr
 <h3>⭐⭐ Nên và không nên khi viết SFC</h3>
 <p>Trước hết, hai luật của <strong>chuẩn</strong> — không phải lời khuyên: SFC <strong>chỉ</strong> dùng được trong khối chức năng
 và chương trình, <strong>không</strong> trong hàm — vì sơ đồ phải <strong>nhớ</strong> bước nào đang hoạt động; và một phần
-của POU đã viết bằng SFC thì <strong>cả POU</strong> phải chia thành bước và chuyển tiếp (tờ giới thiệu của PLCopen
-về SFC). Còn lại là các lựa chọn — và mỗi dòng dưới đây có một sự cố thật đứng sau:</p>
+của POU đã viết bằng SFC thì <strong>cả POU</strong> phải chia thành bước và chuyển tiếp (tài liệu SFC của PLCopen,
+mục 1). Còn lại là các lựa chọn — và mỗi dòng dưới đây có một sự cố thật đứng sau:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -17167,13 +17183,13 @@ về SFC). Còn lại là các lựa chọn — và mỗi dòng dưới đây c�
 <td align="center">4</td>
 <td>Điều kiện chuyển là <strong>biểu thức thuần</strong>: đọc, so sánh, kết hợp</td>
 <td>Gán biến hay gọi khối <strong>trong</strong> điều kiện chuyển</td>
-<td>CODESYS <strong>không cho</strong> gán hay gọi khối trong điều kiện viết thẳng trên sơ đồ; điều kiện có tác dụng phụ chạy theo thứ tự rất khó đoán</td>
+<td>⭐ Chuẩn: đánh giá điều kiện chuyển <strong>không được có tác dụng phụ</strong> (tài liệu SFC của PLCopen, mục 2.1). CODESYS <strong>không cho</strong> gán hay gọi khối trong điều kiện viết thẳng trên sơ đồ; điều kiện có tác dụng phụ chạy theo thứ tự rất khó đoán</td>
 </tr>
 <tr>
 <td align="center">5</td>
-<td>Nhánh lựa chọn: các điều kiện <strong>loại trừ nhau</strong></td>
-<td>Hai điều kiện có thể cùng đúng</td>
-<td>Hệ xét từ trái sang phải và đi nhánh <strong>đầu tiên</strong> đúng — nhánh nào &quot;thắng&quot; do <strong>vị trí vẽ</strong>, không do logic. Giáo trình Hanssen coi hai nhánh lựa chọn cùng kích hoạt là <strong>lỗi</strong></td>
+<td>Nhánh lựa chọn: các điều kiện <strong>loại trừ nhau</strong> — muốn nhánh Y thắng nhánh X thì viết lại X thành <code>X AND NOT Y</code></td>
+<td>Hai điều kiện có thể cùng đúng; ⚠ gán <strong>độ ưu tiên</strong> cho nhánh</td>
+<td>Mặc định nhánh <strong>trái nhất</strong> đang đúng thắng — nhánh nào &quot;thắng&quot; do <strong>vị trí vẽ</strong>, không do logic; độ ưu tiên đánh số thì dễ sai khi nhiều nhánh chồng nhau. PLCopen khuyên chỉ dùng điều kiện loại trừ nhau (tài liệu SFC, mục 4.3–4.4) — ví dụ ở mục 21.6 viết nhánh lỗi đúng kiểu đó: <code>S20.T &gt; T#3S AND NOT DI_Clamp1Up</code>. Giáo trình Hanssen coi hai nhánh lựa chọn cùng kích hoạt là <strong>lỗi</strong></td>
 </tr>
 <tr>
 <td align="center">6</td>
@@ -17198,6 +17214,12 @@ về SFC). Còn lại là các lựa chọn — và mỗi dòng dưới đây c�
 <td>SFC cho trình tự <strong>bên trong</strong> chế độ <code>Running</code></td>
 <td>SFC cho <strong>chế độ máy</strong></td>
 <td>Mục trên: &quot;mọi trạng thái → <code>Alarm</code>&quot; vẽ ra thành mớ bòng bong</td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td>Các hành động có thể chạy trong <strong>cùng một vòng quét</strong> thì <strong>độc lập</strong>: không ghi chung một biến, không đọc thứ hành động kia vừa ghi</td>
+<td>Hai hành động cùng sửa một biến, hay cái này dựa vào kết quả cái kia</td>
+<td>⭐ Chuẩn <strong>không quy định thứ tự chạy các hành động</strong>. Và vì <em>lần quét cuối</em>, hành động của <strong>hai bước liền nhau</strong> vẫn có thể chạy cùng một vòng dù không có nhánh song song — kết quả đổi theo hệ (tài liệu SFC của PLCopen, mục 3.6 và 4.7). Cùng bệnh với cuộn dây trùng (Chương 10, Bẫy 4)</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -17403,20 +17425,20 @@ trình soạn thảo đồ hoạ, dùng khối dưới như bản vẽ chính x�
 <pre><code class="language-iecst">// ✔ VÍ DỤ HOÀN CHỈNH — trạm 1 bằng SFC, viết ở DẠNG VĂN BẢN của chuẩn IEC 61131-3
 //   Phần mềm đồ hoạ vẽ lại đúng từng bước, chuyển tiếp và hành động dưới đây
 VAR_GLOBAL
-    DI_BoardStn1    : BOOL;
-    DI_Clamp1Up     : BOOL;
-    DI_Clamp1Dn     : BOOL;
-    DI_ResetPB      : BOOL;
-    M_ProcessDone   : BOOL;              // xử lý board xong — lát cắt sau
-    M_Stn1_ClampReq : BOOL;              // hành động BOOL: yêu cầu nâng kẹp
-    M_Stn1_ConvReq  : BOOL;              // hành động BOOL: yêu cầu chuyền chạy
-    M_Alm_Stn1Seq   : BOOL;              // hành động BOOL: báo động của trình tự trạm 1
+    DI_BoardStn1       : BOOL;
+    DI_Clamp1Up        : BOOL;
+    DI_Clamp1Dn        : BOOL;
+    DI_ResetPB         : BOOL;
+    M_Stn1_ProcessDone : BOOL;           // xử lý board xong — lát cắt sau
+    M_Stn1_ClampReq    : BOOL;           // hành động BOOL: yêu cầu nâng kẹp
+    M_Stn1_ConvReq     : BOOL;           // hành động BOOL: yêu cầu chuyền chạy
+    M_Alm_Stn1Seq      : BOOL;           // hành động BOOL: báo động của trình tự trạm 1
 END_VAR
 
 PROGRAM Prg_Stn1Sfc
 VAR_EXTERNAL
     DI_BoardStn1, DI_Clamp1Up, DI_Clamp1Dn, DI_ResetPB : BOOL;
-    M_ProcessDone                                      : BOOL;
+    M_Stn1_ProcessDone                                 : BOOL;
     M_Stn1_ClampReq, M_Stn1_ConvReq, M_Alm_Stn1Seq     : BOOL;
 END_VAR
 
@@ -17452,9 +17474,9 @@ END_TRANSITION
 TRANSITION FROM S20 TO S90 := S20.T &gt; T#3S AND NOT DI_Clamp1Up;
 END_TRANSITION
 
-TRANSITION FROM S30 TO S40 := M_ProcessDone;
+TRANSITION FROM S30 TO S40 := M_Stn1_ProcessDone;
 END_TRANSITION
-TRANSITION FROM S30 TO S90 := S30.T &gt; T#60S AND NOT M_ProcessDone;
+TRANSITION FROM S30 TO S90 := S30.T &gt; T#60S AND NOT M_Stn1_ProcessDone;
 END_TRANSITION
 
 TRANSITION FROM S40 TO S50 := DI_Clamp1Dn;
@@ -17472,7 +17494,7 @@ TRANSITION FROM S90 TO S50 := DI_ResetPB AND DI_Clamp1Dn;
 END_TRANSITION
 END_PROGRAM
 </code></pre>
-<p>Chương trình này áp <strong>năm dòng</strong> của bảng <em>nên và không nên</em> ở mục 21.3:</p>
+<p>Chương trình này áp <strong>sáu dòng</strong> của bảng <em>nên và không nên</em> ở mục 21.3:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -17500,7 +17522,18 @@ END_PROGRAM
 <td align="center">8</td>
 <td>Lỗi xong <strong>không</strong> quay về bước đầu mà đi <strong>xả board</strong> (S90 → S50): board đang dở không bị gia công lại</td>
 </tr>
+<tr>
+<td align="center">10</td>
+<td>Mỗi biến chỉ do <strong>một</strong> hành động ghi. <code>M_Stn1_ClampReq</code> gắn vào hai bước nhưng vẫn là <strong>một</strong> hành động — chuẩn điều khiển nó bằng một khối điều khiển hành động duy nhất, nên dù hai bước cùng sống nó cũng chỉ chạy một lần mỗi vòng (tài liệu SFC của PLCopen, mục 3.6.1)</td>
+</tr>
 </tbody></table></div>
+<p>⭐ <strong>Ví dụ này đã được chạy thử</strong> (đợt 63): bộ chạy thử của sách đọc chính văn bản trên và cho nó qua
+ba board liền nhau, kẹp chậm sát giới hạn 3 giây, kẹp kẹt giữa hành trình, Reset khi kẹp chưa về, xử
+lý không bao giờ xong, board kẹt trên chuyền. ⭐⭐ Mỗi tình huống chạy <strong>hai lần</strong> — một lần <code>.T</code> giữ giá
+trị khi rời bước như chuẩn, một lần <code>.T</code> về 0 — và hai lần cho <strong>cùng một chuỗi bước</strong>: dòng 7 giữ đúng
+lời hứa <em>&quot;đúng với cả hai hệ&quot;</em>. Cũng không lần nào hai chuyển tiếp từ một bước cùng đúng (dòng 5).
+⚠ Bộ chạy thử là một mô hình, theo cách thực thi <em>&quot;điển hình&quot;</em> mà PLCopen mô tả; hệ của bạn có thể khác
+ở chi tiết trong một vòng quét.</p>
 <hr>
 <h2 id="217-khác-bit-gia-các-hãng">21.7 Khác biệt giữa các hãng</h2>
 <div class="table-wrap"><table>
@@ -17721,12 +17754,18 @@ CoDeSys</em>, §10.3 và ch. 12: ⭐ <strong>chuẩn không quy định thứ t�
 thực; có hãng không cho vẽ hồi tiếp tường minh); ⭐⭐ <strong><code>Step.X</code> và <code>Step.T</code></strong> — mọi bước SFC có sẵn
 cờ trạng thái và <strong>timer nội</strong>, cả hai chỉ đọc; bảng <strong>bổ ngữ hành động</strong> <code>N</code>/<code>S</code>/<code>R</code>/<code>P</code>/<code>L</code>/<code>D</code>;
 và luật <strong>không đặt hai bước liền nhau không có bước chuyển</strong>. ⚠ Giáo trình này ghi <code>.T</code> về 0 khi
-rời bước — ngược với Horner và Rockwell bên dưới; sách viết mã đúng với cả hai (đợt 62).</li>
+rời bước — ngược với chuẩn (theo PLCopen) và với Horner, Rockwell bên dưới; sách viết mã đúng với
+cả hai (đợt 62, 63).</li>
 <li><strong>PLCopen</strong> — <em>Coding Guidelines v1.0</em> (2016), nhóm quy tắc ngôn ngữ SFC: L7 đóng đúng nhánh song
 song (mức cao), L8 không viết hành động bằng SFC, L9 giới hạn độ phức tạp một sơ đồ (gợi ý 32 phần
-tử); và danh sách tính năng bị bỏ ở bản 3 (biến chỉ báo của khối hành động). Tờ giới thiệu
-<em>&quot;Structuring with SFC — do&#39;s and don&#39;ts&quot;</em>: SFC chỉ trong khối chức năng và chương trình; một phần
-POU là SFC thì cả POU là SFC.</li>
+tử); và danh sách tính năng bị bỏ ở bản 3 (biến chỉ báo của khối hành động).</li>
+<li><strong>PLCopen</strong> — <em>Structuring with SFC: do&#39;s and don&#39;ts</em>, v1.0 (2018, 59 trang; bản đầy đủ, đối chiếu
+2026-09-28): SFC <em>&quot;không được coi là một ngôn ngữ lập trình&quot;</em>, chỉ dùng trong khối chức năng và
+chương trình, một phần POU là SFC thì cả POU (mục 1); <code>.T</code> giữ khi rời bước và về 0 khi vào, cờ bước
+cục bộ trong POU, điều kiện chuyển không có tác dụng phụ (mục 2.1); <code>P</code> chạy một lần khi bước được
+kích hoạt, <code>N</code> có thể chạy lần cuối ngay sau khi bước tắt (mục 3.5); lần quét cuối là lựa chọn của
+hệ (mục 3.6); bốn quy tắc cho nhánh song song (mục 4.1); điều kiện loại trừ nhau, không dùng độ ưu
+tiên (mục 4.3–4.4); hành động độc lập (mục 4.7, 4.10); hạn chế <code>S</code>/<code>R</code> (mục 4.8).</li>
 <li><strong>Rockwell Automation</strong> — <em>Logix 5000 Sequential Function Charts</em> (1756-PM006L, 9/2024): chọn cỡ
 bước; bước đầu dùng để khởi tạo; <em>&quot;không nối vào, ra, hay giữa một nhánh song song&quot;</em>; bộ đếm thời
 gian bước về 0 khi bước <strong>bắt đầu</strong> hoạt động; tuỳ chọn <em>Don&#39;t scan</em> mặc định — rời bước thì mọi dữ
@@ -17735,7 +17774,7 @@ liệu <strong>giữ giá trị</strong>; <code>P1</code>/<code>P0</code>; lện
 Element: Action</em> (hành động IEC chạy thêm một lần khi bước tắt; biến BOOL làm hành động), <em>Processing
 Order in SFC</em> (nhánh lựa chọn xét trái sang phải), <em>SFC Elements: Step and Transition</em> (điều kiện
 viết thẳng không chứa phép gán hay lời gọi khối), <em>Implicit Variables</em> (ghi cờ bước để ép bước — có
-thể mất ổn định), <em>SFC flags</em> (<code>SFCInit</code>, <code>SFCReset</code>). Kiểm 2026-09-28.</li>
+thể mất ổn định; POU khác đọc cờ bước bằng <code>&lt;POU&gt;.&lt;bước&gt;.x</code>), <em>SFC flags</em> (<code>SFCInit</code>, <code>SFCReset</code>). Kiểm 2026-09-28.</li>
 <li><strong>Horner Automation</strong> — trợ giúp Cscape, mục IEC SFC: <code>.T</code> giữ nguyên khi bước tắt, về 0 ở lần
 kích hoạt sau. <strong>Fernhill Software</strong> — trợ giúp IEC 61131-3, mục SFC Step: bảng bổ ngữ có <code>P1</code>/<code>P0</code>;
 gán vào thành phần của bước là lỗi. Kiểm 2026-09-28.</li>
@@ -26011,8 +26050,9 @@ PLCopen sẽ hiểu <em>&quot;tắt Enable là tắt van&quot;</em> — đúng l
 <code>Permit</code>.</p>
 </blockquote>
 <h3>⭐⭐ Năm quy tắc của hợp đồng <code>Execute</code> / <code>Done</code></h3>
-<p>Tài liệu thư viện khối chuyển động của <strong>hai hãng khác nhau</strong>, cùng mô tả <em>&quot;quy tắc chung&quot;</em> theo
-PLCopen, khớp nhau ở bốn điểm đầu — và ⚠ <strong>lệch nhau ở điểm thứ năm</strong>:</p>
+<p>Quy tắc chung cho khối của PLCopen (Phụ lục 4 của tài liệu <em>Creating PLCopen Compliant Libraries</em>) và
+tài liệu thư viện khối chuyển động của <strong>hai hãng</strong> nói giống nhau ở bốn điểm đầu — ⚠ còn điểm thứ năm
+thì <strong>chính PLCopen có hai câu trả lời</strong>:</p>
 <div class="table-wrap"><table>
 <thead>
 <tr>
@@ -26033,7 +26073,7 @@ PLCopen, khớp nhau ở bốn điểm đầu — và ⚠ <strong>lệch nhau �
 </tr>
 <tr>
 <td align="center">3</td>
-<td><code>Busy</code>, <code>Done</code>, <code>Error</code> <strong>loại trừ nhau</strong> — mỗi lúc nhiều nhất một cái</td>
+<td><code>Busy</code>, <code>Done</code>, <code>Error</code> — và <code>Aborted</code> nếu khối có chân huỷ — <strong>loại trừ nhau</strong>; khi <code>Execute</code> đang TRUE thì luôn có <strong>đúng một</strong> cái bật</td>
 <td>Thấy vừa <code>Done</code> vừa <code>Error</code>, không biết tin cái nào</td>
 </tr>
 <tr>
@@ -26044,7 +26084,7 @@ PLCopen, khớp nhau ở bốn điểm đầu — và ⚠ <strong>lệch nhau �
 <tr>
 <td align="center">5</td>
 <td>⚠ Kích lại khi <strong>đang <code>Busy</code></strong></td>
-<td>⚠ <strong>Hãng xử lý khác nhau</strong>: một tài liệu ghi là lệnh mới bị <strong>bỏ qua</strong>, tài liệu kia ghi là lệnh cũ <strong>mất phản hồi</strong>. ⭐ Khối của bạn nên <strong>bỏ qua</strong>; còn người gọi thì <strong>đừng làm</strong> — chờ <code>Busy</code> tắt</td>
+<td>⚠ <strong>Không thống nhất — ngay trong PLCopen</strong>: quy tắc chung của khối chuyển động ghi lệnh trước <strong>mất phản hồi</strong> (lệnh mới thay nó); còn khối mẫu <code>ETrig</code> PLCopen đưa cho người viết thư viện thì <strong>không nhìn</strong> <code>Execute</code> khi đang bận — tức <strong>bỏ qua</strong>. Tài liệu hãng cũng chia hai phe như vậy. ⭐ Khối của bạn theo <code>ETrig</code>: <strong>bỏ qua</strong>; còn người gọi thì <strong>đừng làm</strong> — chờ <code>Busy</code> tắt</td>
 </tr>
 </tbody></table></div>
 <pre><code class="language-text">  Execute giữ mức tới khi xong          Execute chỉ là một xung
@@ -26052,6 +26092,13 @@ PLCopen, khớp nhau ở bốn điểm đầu — và ⚠ <strong>lệch nhau �
   Busy    ▁▁██████▁▁▁▁▁▁▁▁▁▁            Busy    ▁▁██████▁▁▁▁▁▁▁▁
   Done    ▁▁▁▁▁▁▁▁██████▁▁▁▁            Done    ▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁   ← đúng MỘT vòng quét
 </code></pre>
+<blockquote>
+<p>⚡ <strong>Hai chi tiết của khối mẫu PLCopen đáng chép theo.</strong> Việc xong <strong>ngay trong lần gọi đầu</strong> thì <code>Busy</code>
+<strong>không bao giờ</strong> được thấy — người gọi đừng chờ thấy <code>Busy</code> mới coi là khối đã nhận lệnh. Và mã lỗi
+<code>0</code> = không lỗi, <code>1</code> = quá thời gian là hai mã PLCopen <strong>dành sẵn</strong> cho mọi thư viện: mỗi thư viện có
+miền mã riêng, mã của thư viện con phải <strong>dịch</strong> sang miền của mình chứ không đẩy thẳng ra — khối dưới
+dùng đúng hai mã đó (tài liệu thư viện, mục 3.4 và 3.5).</p>
+</blockquote>
 <h3>Một khối viết theo đúng năm quy tắc</h3>
 <p>Bài toán: đưa board từ trạm 1 sang trạm 2 — bước 60 ở Chương 26. Xin chuyền chạy, chờ tới nơi, và
 không được chờ mãi.</p>
@@ -26338,7 +26385,7 @@ dùng khi muốn đóng gói mà chưa cần đa hình.</p>
 <tr>
 <td align="center">5</td>
 <td>⚠ <strong>Kế thừa theo kiểu &quot;có liên quan&quot;.</strong> Máy bơm <strong>dùng</strong> một động cơ, nhưng máy bơm <strong>không phải là</strong> một động cơ — cho <code>FB_Pump EXTENDS FB_Motor</code> là trộn hai quan hệ</td>
-<td>Hỏi <em>&quot;khối con <strong>có phải là</strong> khối cha không?&quot;</em> — không phải thì <strong>chứa</strong> một thể hiện của nó thay vì kế thừa. ⭐ PLCopen đặt đúng câu hỏi này cho người viết thư viện: <em>kết hợp hay kế thừa?</em></td>
+<td>Hỏi <em>&quot;khối con <strong>có phải là</strong> khối cha không?&quot;</em> — không phải thì <strong>chứa</strong> một thể hiện của nó thay vì kế thừa. ⭐ PLCopen đặt đúng câu hỏi này cho người viết thư viện: <em>kết hợp hay kế thừa?</em> — và tài liệu OOP của họ kể một chuyện thật: ví dụ lò hơi cho mọi khối kế thừa một khối mô hình hành vi, rồi không mở rộng thêm được vì một khối chỉ có <strong>một</strong> cha, phải chuyển sang <strong>chứa</strong> (mục 4.5, 5.1)</td>
 </tr>
 </tbody></table></div>
 <blockquote>
@@ -26346,6 +26393,9 @@ dùng khi muốn đóng gói mà chưa cần đa hình.</p>
 được <strong>nhiều</strong> interface); và khối con <strong>không được</strong> khai lại biến trùng tên với khối cha. Khi sửa
 chương trình đang chạy mà có tham chiếu interface, hệ phải định địa chỉ lại các tham chiếu đó — tài
 liệu hãng cảnh báo việc này tốn thêm thời gian và có thể gây <strong>rung thời gian quét</strong>.</p>
+<p>⚡ Và về thời gian quét nói chung: tài liệu OOP của PLCopen ghi nhận một lời gọi phương thức qua
+interface (gọi &quot;ảo&quot;) có thể tốn thời gian <strong>hơn hẳn</strong> một lời gọi thường, tuỳ phần cứng (mục 5.2).
+Dùng interface trong một vòng lặp dài chạy mỗi vòng quét thì <strong>đo</strong> trước.</p>
 </blockquote>
 <h3>Thuộc tính — và vì sao sách dùng phương thức thay cho nó</h3>
 <p>Bản 4 của chuẩn định nghĩa thuộc tính bằng hai phương thức đặc biệt, <code>PROPERTY_GET</code> và <code>PROPERTY_SET</code>.
@@ -26710,21 +26760,30 @@ kiểu&quot; ở mục 30.5.</p>
 phải <strong>phát triển cùng dự án</strong>, để tới cuối thì chi tiết đã quên nên vừa lâu hơn vừa thiếu; và cách
 dùng <strong>biểu mẫu để sẵn</strong>, đặt nơi mọi người truy cập và cập nhật được khi máy thay đổi.</p>
 </li>
-<li><p><strong>PLCopen</strong> — <em>Creating PLCopen compliant Function Block libraries</em> (tờ tóm tắt, bản 1.0 phát hành
-5/2017): hai loại khối — <strong>kích bằng sườn</strong> (<code>Execute</code> ↔ <code>Done</code>) và <strong>điều khiển theo mức</strong>
-(<code>Enable</code> ↔ <code>Valid</code>); ⭐ phát hiện sườn cần <strong>hai vòng quét</strong> nên khối phải nhận giá trị mới mỗi vòng
-thì dùng mô hình mức — nền cho mục 30.5b. Bản đặc tả đầy đủ chưa có trong bộ tài liệu.</p>
+<li><p><strong>PLCopen</strong> — <em>Creating PLCopen Compliant Libraries</em>, v1.0 (5/2017, 89 trang; bản đầy đủ, đối chiếu
+2026-09-28): hai loại khối — <strong>kích bằng sườn</strong> (<code>Execute</code> ↔ <code>Done</code>) và <strong>điều khiển theo mức</strong>
+(<code>Enable</code> ↔ <code>Valid</code>) (mục 2.2); ⭐ phát hiện sườn cần <strong>hai vòng quét</strong> nên khối phải nhận giá trị mới
+mỗi vòng thì dùng mô hình mức (mục 3.1); quy tắc khối kích bằng sườn — tham số chốt ở sườn lên, sườn
+xuống không huỷ việc, ngõ ra giữ ít nhất một lần gọi (mục 3.2); <code>Busy</code> bật ngay khi nhận lệnh, việc
+xong trong một lần gọi thì không thấy <code>Busy</code> (mục 3.4); miền mã lỗi, <code>0</code> và <code>1</code> dành sẵn (mục 3.5);
+khối mẫu <code>ETrig</code> không nhìn <code>Execute</code> khi đang bận (mục 5.1); quy tắc chung của khối chuyển động —
+loại trừ nhau, xoá ở sườn xuống, kích lại khi chưa xong thì lệnh trước không có phản hồi (Phụ lục 4)
+— nền cho mục 30.5b.</p>
 </li>
 <li><p>Tài liệu thư viện khối chuyển động của <strong>hai hãng khác nhau</strong>, mục <em>quy tắc chung cho khối</em> theo
 PLCopen (đối chiếu 2026-09-26): tham số chốt ở sườn lên; <code>Busy</code>/<code>Done</code>/<code>Error</code> loại trừ nhau; kết
 quả xoá ở sườn xuống và vẫn hiện ít nhất một vòng nếu <code>Execute</code> tắt giữa chừng; <code>Enable</code> tắt thì
-khối ngừng và xoá ngõ ra. ⚠ Hai tài liệu <strong>lệch nhau</strong> ở hành vi kích lại khi đang <code>Busy</code> — bảng
-năm quy tắc ở mục 30.5b ghi rõ chỗ lệch.</p>
+khối ngừng và xoá ngõ ra. ⚠ Hai tài liệu <strong>lệch nhau</strong> ở hành vi kích lại khi đang <code>Busy</code> — đúng hai
+câu trả lời có trong chính PLCopen; bảng năm quy tắc ở mục 30.5b ghi rõ chỗ lệch.</p>
 </li>
-<li><p><strong>PLCopen</strong> — <em>Guidelines for Object Orientation</em> (tờ giới thiệu 1 trang): bản 3 của IEC 61131-3 cho
-phép lập trình hướng đối tượng; cách cổ điển <strong>không bị thay thế</strong> mà cùng tồn tại; các câu hỏi thiết
-kế — chỉ dùng phương thức hay cả truy cập biến trực tiếp, interface, <em>kết hợp hay kế thừa</em> — nền cho
-mục 30.5c. Bản hướng dẫn đầy đủ chưa có trong bộ tài liệu.</p>
+<li><p><strong>PLCopen</strong> — <em>Guidelines for usage of Object-Oriented Programming</em>, v1.0 (11/2021, 27 trang; bản đầy
+đủ, đối chiếu 2026-09-28): cách cổ điển <strong>không bị thay thế</strong> mà cùng tồn tại (mục 1.1); các câu hỏi
+thiết kế — chỉ dùng phương thức hay cả truy cập biến trực tiếp, interface, <em>kết hợp hay kế thừa</em> (mục
+1); bảng so sánh ở mục 2.3 — bản 3 có lớp, phương thức, interface, đa hình, nhưng <strong>không</strong> có thuộc
+tính và hàm tạo chỉ một phần, khớp nhận định <em>&quot;thuộc tính vào chuẩn ở bản 4&quot;</em> của mục 30.5c; năm
+nguyên tắc SOLID (mục 3.1); ví dụ lò hơi vướng giới hạn một cha, chuyển từ kế thừa sang chứa (mục
+4.5, 5.1); gọi phương thức &quot;ảo&quot; tốn thời gian khác hẳn nhau theo phần cứng (mục 5.2) — nền cho mục
+30.5c.</p>
 </li>
 <li><p><strong>CODESYS</strong> — trợ giúp trực tuyến (đối chiếu 2026-09-26), các mục <em>Method</em>, <em>Property</em>, <em>Interface</em>,
 <em>Implementation of an Interface</em>, <em>Extension of a Function Block</em>, <em>REFERENCE TO</em>, <em>THIS</em>, <em>SUPER</em>,
@@ -64736,11 +64795,11 @@ hiện khối không được gọi bên trong nhánh <code>IF</code>/<code>CASE
 hằng (<code>CLK := TRUE</code>, <code>Execute := TRUE</code>); và <code>CASE</code> theo một biến bước thì không được gán số cho biến bước
 khác.</p>
 <blockquote>
-<p>⭐ <strong>Ví dụ hoàn chỉnh viết bằng ST còn được CHẠY THỬ</strong>, không chỉ kiểm cú pháp: một bộ chạy thử ST nhỏ
+<p>⭐ <strong>Ví dụ hoàn chỉnh viết bằng ST và SFC còn được CHẠY THỬ</strong>, không chỉ kiểm cú pháp: một bộ chạy thử nhỏ
 (<code>tools/chay_thu/</code>) chạy chính văn bản in trong sách, qua <strong>nhiều chu trình liên tiếp</strong>, giữ máy lâu,
 cơ cấu kẹt, Reset khi lỗi còn nguyên. ⚡ Đợt 62 dùng nó tìm ra lỗi <em>&quot;<code>Done</code> của lệnh cũ&quot;</em> (Chương 26
-Bẫy 7) — lỗi mà cả sáu bộ kiểm tĩnh đều không thấy. ⚠ Nó chỉ hiểu ST: ví dụ SFC (Chương 21)
-và LD (Chương 15) mới được kiểm tĩnh.</p>
+Bẫy 7) — lỗi mà cả sáu bộ kiểm tĩnh đều không thấy. Từ đợt 63 nó chạy cả SFC dạng văn bản (Chương
+21); ⚠ riêng ví dụ LD (Chương 15) mới được kiểm tĩnh.</p>
 </blockquote>
 <p><strong>Một quy ước tên của riêng mã mẫu:</strong> biến <strong>ruột</strong> của một trạm — bước, giới hạn thời gian bước — mang
 tiền tố trạm (<code>Stn1_Step</code>). Trong dự án thật, đó là biến cục bộ của chương trình trạm và chỉ cần tên

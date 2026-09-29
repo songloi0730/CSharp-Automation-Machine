@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.2.260928</title>
+<title>C# cho Automation Machine — v1.0.2.260929</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -430,6 +430,7 @@
   <li style="padding-left:16px;font-size:13px"><a href="#173-deployment-lên-máy-trm-công-nghip">17.3 Deployment lên máy trạm công nghiệp</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#174-đi-chiu-thc-t-ngành-cái-gì-tht-s-đưc-dùng-và-nên-bt-đu-t-đâu">17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#175-sau-khi-bàn-giao-bn-loi-thay-đi-và-vì-sao-phi-phân-bit-chúng">17.5 Sau khi bàn giao: bốn loại thay đổi, và vì sao phải phân biệt chúng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#176-khi-ngưi-sa-máy-không-phi-ngưi-vit-phn-mm">17.6 Khi người sửa máy không phải người viết phần mềm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#tng-kt-chương-17">Tổng kết chương</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#ph-lc-17a-lnh-git-thưng-dùng-tra-cu-nhanh">Phụ lục 17A — Lệnh Git thường dùng (tra cứu nhanh)</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#li-thưng-gp-17">Lỗi thường gặp</a></li>
@@ -601,6 +602,13 @@
   <li style="padding-left:16px;font-size:13px"><a href="#i15-nhng-điu-leetcode-không-dy">I.15  Những điều LeetCode không dạy</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#i16-vài-lưu-ý-khi-luyn-bng-c">I.16  Vài lưu ý khi luyện bằng C#</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#i17-li-gii-mu-c-cho-hai-mươi-bài-xương-sng">I.17  Lời giải mẫu C# cho hai mươi bài xương sống</a></li>
+  <li><a href="#ph-lc-j-s-tay-sa-máy-ti-hin-trưng">Phụ lục J: Sổ tay sửa máy tại hiện trường</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j1-sa-cho-chy-đưc-và-cái-giá-v-sau">J.1  Sửa cho chạy được, và cái giá về sau</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j2-mưi-kiu-sa-vi-và-cách-sa-thay-th">J.2  Mười kiểu sửa vội và cách sửa thay thế</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j3-bn-cp-mã-sa-vi-và-sa-thay-th">J.3  Bốn cặp mã: sửa vội và sửa thay thế</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j4-năm-bưc-và-s-sa-ti-hin-trưng">J.4  Năm bước, và sổ sửa tại hiện trường</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j5-khi-nào-dng-li-và-gi-ngưi-ph-trách-phn-mm">J.5  Khi nào dừng lại và gọi người phụ trách phần mềm</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#j6-trang-tóm-tt-đ-dán-cnh-máy">J.6  Trang tóm tắt để dán cạnh máy</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -620,7 +628,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.2.260928</td>
+<td>v1.0.2.260929</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -771,6 +779,10 @@ trận đánh của mình cho khôn ngoan, thay vì đề xuất một quy trìn
 <td><strong>Phụ lục H</strong> (là gì → vì sao tồn tại → dùng ở đâu → phân biệt với cái nào)</td>
 </tr>
 <tr>
+<td><strong>Phải sửa máy lúc đang dừng, ít kinh nghiệm lập trình</strong></td>
+<td><strong>Phụ lục J</strong> (sổ tay sửa tại hiện trường, có trang tóm tắt để in) → Chương 19 mục 19.1 (tìm lỗi khi không có Visual Studio)</td>
+</tr>
+<tr>
 <td><strong>Đã biết nghề, tra cứu điểm cụ thể</strong></td>
 <td>Mục lục tra cứu (Index) và Bảng thuật ngữ ở cuối sách</td>
 </tr>
@@ -792,7 +804,7 @@ thói quen của một thế giới sang thế giới kia.</p>
 <tbody><tr>
 <td><code>MeoBench/</code></td>
 <td>Lời giải mẫu cho 40 bài thực hành, kèm bộ tự kiểm</td>
-<td>Phụ lục G, H, I; Chương 17 mục 17.3.7</td>
+<td>Phụ lục G, H, I, J; Chương 17 mục 17.3.7 và 17.6</td>
 </tr>
 <tr>
 <td><code>MeoFrameMini/</code></td>
@@ -5044,6 +5056,24 @@ public void Tick()
 <li><strong>Tạo string trong tick</strong> — format chuỗi log mỗi tick là cấp phát. Đẩy sự kiện log (dạng struct) vào queue, để thread logger format và ghi.</li>
 <li><strong>Chia sẻ collection với UI mà không snapshot</strong> — UI và luồng điều khiển đọc/ghi cùng một list dẫn đến lock, contention, hoặc crash. Giải pháp: snapshot định kỳ hoặc double-buffer.</li>
 </ul>
+<blockquote>
+<p>💡 <strong>Hiện trường làm khác: LINQ và cấp phát ngay trong mã trình tự.</strong> Mục này tránh LINQ và cấp phát
+&quot;trong vòng quét&quot;. Nhưng 8/13 phần mềm máy thật dùng LINQ ngay trong các file trạm và trình tự, và
+phần lớn vẫn chạy ổn. Hai điều đó không mâu thuẫn, vì quy tắc phụ thuộc vào <strong>vòng lặp chạy nhanh
+cỡ nào</strong>.</p>
+<p>Đo trên .NET 9 (máy tính văn phòng, heap nhỏ): một bước lọc 20 cảnh báo bằng <code>Where(...).ToList()</code>
+rồi ghép một chuỗi nhật ký cấp phát khoảng 270 byte. Chạy bước đó <strong>1.000 lần mỗi giây</strong> trong một
+phút: 2 lần GC thế hệ 0, tổng thời gian dừng 0,34 ms. Tăng lượng cấp phát lên gấp 20 lần: 52 lần GC,
+tổng thời gian dừng 4,1 ms, mỗi lần khoảng 0,1 ms.</p>
+<ul>
+<li><strong>Vòng lặp có hạn chót dưới 1 ms</strong> (đọc bộ mã hoá vòng quay, vòng điều khiển nhanh): quy tắc của
+mục này đúng. Một lần dừng 0,1–0,2 ms đã chiếm một phần đáng kể của mỗi chu kỳ.</li>
+<li><strong>Bước trình tự chạy vài chục lần mỗi giây trở xuống</strong>: LINQ gọn và dễ đọc hơn, còn chi phí của nó
+không đo được. Dùng được.</li>
+<li><strong>Ứng dụng giữ nhiều dữ liệu trong bộ nhớ</strong> (nhiều ảnh, lịch sử dài): mỗi lần GC có thể lâu hơn
+nhiều. Hãy đo trên chính máy của bạn (mục 19.3.2) trước khi kết luận theo chiều nào.</li>
+</ul>
+</blockquote>
 <p>Khi thật sự cần chia sẻ dữ liệu giữa nhiều luồng, .NET có các collection thread-safe (<code>ConcurrentDictionary</code>, <code>ConcurrentQueue</code>, <code>BlockingCollection</code>). Chúng giải bài toán concurrency nhưng có overhead — không tự động làm hệ thống &quot;real-time friendly&quot;. <code>BlockingCollection&lt;T&gt;</code> đặc biệt hợp cho pipeline log/event vì hỗ trợ giới hạn dung lượng (backpressure): khi consumer chậm, producer bị chặn lại thay vì để bộ nhớ phình vô hạn.</p>
 <p>Khi cần jitter thấp nhất, một <strong>Ring Buffer</strong> <!--idx:Ring Buffer--> (buffer vòng, kích thước cố định) là lựa chọn mạnh vì không bao giờ resize:</p>
 <p><strong>Code 3.21 — Ring Buffer (dùng trong một luồng — xem lưu ý bên dưới trước khi dùng chéo luồng)</strong></p>
@@ -6943,6 +6973,23 @@ mỗi 20 ms hàm chờ gọi nó một lần để đọc lại giá trị mới
 <li><strong>Dừng Thread</strong>: không bao giờ <code>Abort()</code> (đã bị loại bỏ ở .NET hiện đại). Thiết kế thread <strong>tự kết thúc</strong> qua tín hiệu hủy (<code>CancellationToken</code> hoặc cờ), giống Logger ở Chương 3 dùng <code>CompleteAdding()</code>.</li>
 </ul>
 <blockquote>
+<p>💡 <strong>Hiện trường làm khác: <code>Thread.Sleep</code> trên luồng của trình tự.</strong> Mục 5.1.4 cảnh báo không dùng
+<code>Thread.Sleep</code>. Vậy mà 11/13 phần mềm máy thật vẫn dùng, có dự án hơn 330 lần. Phần lớn không sai:
+trong một chương trình <strong>đồng bộ</strong>, mỗi trình tự chạy trên luồng riêng của nó (mục 5.7), và
+<code>Thread.Sleep</code> chỉ làm luồng đó chờ, không ảnh hưởng ai khác.</p>
+<p>Cảnh báo ở 5.1.4 đúng ở ba chỗ, và cả ba vẫn đúng với chương trình đồng bộ:</p>
+<ul>
+<li><strong>Trên luồng giao diện</strong>: màn hình đứng hình suốt thời gian ngủ. Mục G.15.2 đếm được 966 lần như
+vậy trong các file giao diện của mã thật.</li>
+<li><strong>Trong mã <code>async</code></strong>: dùng <code>await Task.Delay(ms, ct)</code>. <code>Thread.Sleep</code> giữ chết một luồng dùng
+chung của ThreadPool.</li>
+<li><strong>Làm thuốc chữa lỗi</strong>: <code>Sleep(500)</code> thêm vào &quot;cho hết lỗi&quot; chỉ che một lỗi tranh chấp (Phụ lục J,
+Bảng J.1 dòng 1).</li>
+</ul>
+<p>Còn một cái giá nhỏ nên biết: <code>Thread.Sleep(3000)</code> không thể dừng giữa chừng khi người vận hành bấm
+Dừng. Nếu cần ngủ lâu, chia thành nhiều đoạn ngắn và kiểm tra cờ dừng giữa các đoạn.</p>
+</blockquote>
+<blockquote>
 <p>🔍 <strong>Đào sâu thêm — vì sao code cũ lại đầy <code>Thread.Abort()</code>, và cái giá cuối cùng.</strong> Gần như không
 ai chọn <code>Abort()</code> một cách có chủ ý; nó là thứ người ta <strong>buộc phải dùng khi cơ chế dừng hợp tác đã
 hỏng từ trước</strong>. Chuỗi nhân-quả quan sát được trong một dự án tham khảo:</p>
@@ -7028,6 +7075,26 @@ private async void OnPollTimerTick(object? sender, EventArgs e)
 </code></pre>
 <p><code>WaitAsync(0)</code> trả về <code>false</code> ngay lập tức nếu semaphore đang bị giữ — không đợi, không chặn luồng gọi. Cùng ý tưởng áp dụng được cho việc chặn lệnh Start/Reset bị bấm dội (double-click) trong lúc lệnh trước còn đang xử lý.</p>
 <p>Hai nguyên tắc xương máu khi dùng lock: <strong>giữ lock càng ngắn càng tốt</strong>, và <strong>tuyệt đối không lock quanh I/O</strong> (đọc PLC, ghi DB) — I/O có thể treo lâu, khoá luôn mọi luồng khác đang chờ lock đó.</p>
+<blockquote>
+<p>💡 <strong>Hiện trường làm khác: <code>lock</code> bao quanh giao tiếp thiết bị.</strong> Câu trên nói tuyệt đối không <code>lock</code>
+quanh I/O. Trong 13 phần mềm máy thật, 7 dự án có tổng cộng 191 chỗ <code>lock</code> bao quanh lệnh đọc/ghi
+PLC hoặc cổng nối tiếp. Nhiều chỗ trong số đó <strong>đúng</strong>.</p>
+<p>Lý do: một cổng nối tiếp hay một kết nối tới PLC thường chỉ xử lý được <strong>một giao dịch mỗi lúc</strong>: gửi
+lệnh, rồi đọc trả lời. Nếu hai luồng cùng gửi, trả lời của lệnh này có thể bị đọc nhầm thành trả lời
+của lệnh kia. <code>lock</code> bao quanh trọn một giao dịch là cách giữ thứ tự đó. Ở đây, thứ cần bảo vệ là
+chính kênh truyền, không phải một biến trong bộ nhớ.</p>
+<p>Điều câu trên thật sự muốn tránh là <strong>chờ vô hạn trong lúc đang giữ khoá</strong>. <code>lock</code> quanh I/O chấp
+nhận được khi đủ ba điều kiện:</p>
+<ol>
+<li>Lệnh I/O bên trong <strong>có hạn giờ</strong> (đặt <code>ReadTimeout</code>/<code>WriteTimeout</code> cho cổng, hoặc hạn giờ của
+thư viện). Thiết bị không trả lời thì khoá được nhả sau hạn giờ, không treo mãi.</li>
+<li><strong>Một khoá cho một kênh</strong>, và khoá chỉ bao đúng một giao dịch. Không làm việc khác trong khoá, như
+ghi file hay cập nhật giao diện.</li>
+<li><strong>Không lồng khoá</strong>: đang giữ khoá của kênh này thì không xin khoá của kênh khác (mục 5.3.4).</li>
+</ol>
+<p>Với mã <code>async</code>, dùng <code>SemaphoreSlim(1, 1)</code> và <code>await _kenh.WaitAsync(hanGio, ct)</code> thay cho <code>lock</code>,
+vì C# không cho <code>await</code> bên trong <code>lock</code>.</p>
+</blockquote>
 <blockquote>
 <p>💡 <strong><code>ConcurrentDictionary&lt;TKey,TValue&gt;</code> — khi cả cấu trúc dữ liệu tự lo <code>lock</code> bên trong.</strong> Code
 5.7 tự quản một <code>List&lt;T&gt;</code> bằng <code>lock</code> viết tay quanh mỗi thao tác đọc/ghi. Với một bảng tra cứu
@@ -25727,6 +25794,22 @@ vận hành chỉ thấy máy đứng im ở bước 7.</p>
 trong thời gian chờ tối đa của riêng bạn</strong> (Chương 5 mục 5.2), rồi biến hết giờ thành một cảnh báo có
 nội dung. Nguyên tắc chung: <em>một thao tác trong trình tự máy không bao giờ được phép chờ vô hạn.</em></p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Hiện trường làm khác: có những chỗ chờ vô hạn là đúng.</strong> Máy chờ người vận hành nạp phôi, chờ
+máy trước giao khay, chờ máy sau sẵn sàng nhận. Những việc chờ đó không có hạn giờ tự nhiên: ca đêm
+hết hàng thì máy phải chờ tới sáng, và báo lỗi sau 30 giây chỉ bắt người vận hành bấm xác nhận liên
+tục. Mã thật xử lý đúng kiểu này: một dự án tham khảo chờ máy sau sẵn sàng nhận khay mà không có hạn
+giờ, nhưng khi bắt đầu chờ thì <strong>hiện lên màn hình</strong> dòng &quot;đang chờ máy sau nhận khay&quot;, ghi một dòng
+nhật ký, và trong mỗi vòng chờ vẫn kiểm tra lệnh tạm dừng hay dừng.</p>
+<p>Vì vậy nguyên tắc chính xác hơn là: <strong>không chờ vô hạn một cách im lặng.</strong> Cần phân biệt hai loại:</p>
+<ul>
+<li><strong>Chờ thiết bị trả lời</strong> (đọc PLC, chờ trục tới vị trí, chờ camera): phải có hạn giờ; hết giờ là
+lỗi.</li>
+<li><strong>Chờ điều kiện bên ngoài</strong> (người, máy khác, vật tư): được chờ lâu, nhưng phải hiện rõ đang chờ
+cái gì, vẫn dừng được, và nên tính thời gian chờ vào thống kê dừng máy, tách riêng &quot;đói hàng&quot; với
+&quot;bị chặn&quot; (mục 14.1.9 và mục 12.5).</li>
+</ul>
+</blockquote>
 <h4>Cách B — mỗi địa chỉ là một DÒNG SỰ KIỆN</h4>
 <pre><code class="language-csharp">var plc = new Sharp7Plc(&quot;10.30.3.10&quot;, rack: 0, slot: 2);
 await plc.InitializeConnection();
@@ -30302,6 +30385,18 @@ còn được kiểm tra. Áp dụng đúng 5 lớp bảo vệ của Force IO ch
 interlock phần mềm, nhưng không bao giờ nhầm nó với việc vô hiệu hoá một
 Safety Function phần cứng.</p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Hiện trường làm khác: bỏ qua để sản xuất tiếp, không phải để thử.</strong> Quy định ở trên (mức Quản
+trị, xác nhận hai bước, tự khôi phục sau khoảng 30 phút) viết cho việc bỏ qua <strong>để thử tay</strong>. Ngoài
+hiện trường còn một nhu cầu khác hẳn: thiết bị của một phép kiểm <strong>chất lượng</strong> hỏng lúc nửa đêm, ví
+dụ đầu đọc mã in trên sản phẩm, và nhà máy quyết định chạy tiếp cả ca trong lúc chờ hàng thay. Bỏ
+qua 30 phút thì vô dụng, và ca đêm thường không có ai ở mức Quản trị. Nên mã thật làm đơn giản hơn
+nhiều: một tham số bật/tắt trên màn hình, không hạn, không phân quyền.</p>
+<p>Cả hai cách đều có lý, và cả hai đều thiếu. Đường giữa là một <strong>đường bỏ qua để sản xuất</strong> với năm
+tính chất: chỉ dành cho phép kiểm chất lượng, không bao giờ cho an toàn; mức Kỹ thuật được bật; hạn
+tính theo ca, vài giờ; phép kiểm <strong>vẫn chạy và kết quả gốc vẫn được ghi</strong>; mỗi sản phẩm đi qua mang
+dấu đã bỏ qua. Chương 17 mục 17.6.2 có mã chạy được, và kể một máy thật đã làm đúng phần lớn điều này.</p>
+</blockquote>
 <p><strong>Code 15.8 — GuardEngine.Evaluate() — ba tầng kiểm tra tuần tự</strong></p>
 <pre><code class="language-csharp">// MeoFrame.Services/GuardEngine.cs
 public sealed class GuardEngine : IGuardEngine
@@ -34504,6 +34599,216 @@ làm được cho người kế nhiệm</strong> là: giữ tên trạng thái/t
 viết vào README ba dòng nói rõ phần nào đã chạy với phần cứng thật, phần nào chưa.</p>
 </blockquote>
 <hr>
+<h2 id="176-khi-ngưi-sa-máy-không-phi-ngưi-vit-phn-mm">17.6 Khi người sửa máy không phải người viết phần mềm</h2>
+<p>Mục 17.5 nói sửa gấp là loại thay đổi duy nhất được phá quy trình. Mục này nói về người làm việc đó.</p>
+<p>Người sửa phần mềm lúc máy dừng thường không phải người đã viết nó. Đó có thể là kỹ thuật viên của
+nhà máy, hoặc kỹ sư lắp đặt của công ty máy. Họ hiểu máy, hiểu bản vẽ điện, nhưng ít kinh nghiệm lập
+trình. Họ đứng cạnh một dây chuyền đang dừng, và cứ mười phút lại có người hỏi bao giờ chạy lại.
+Trong hoàn cảnh đó, họ sẽ chọn cách nhanh nhất để máy chạy. Không quy định nào thay đổi được điều này.</p>
+<p>Việc người viết phần mềm làm được là chuẩn bị từ trước, để <strong>cách nhanh nhất cũng là cách không làm
+hỏng phần mềm</strong>. Phụ lục J là phần dành cho người sửa máy. Mục này dành cho người viết.</p>
+<h3>17.6.1  Dấu vết của những lần sửa vội</h3>
+<p>Mã nguồn của 13 phần mềm máy thật mang dấu vết rất rõ của những lần sửa như vậy:</p>
+<p><strong>Bảng 17.11 — Dấu vết sửa vội trong 13 phần mềm máy thật</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Dấu vết</th>
+<th>Số chỗ</th>
+<th>Số dự án có</th>
+<th>Thường là gì</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Dòng mã bị biến thành chú thích (không tính chú thích bằng chữ)</td>
+<td>10.598</td>
+<td>13/13</td>
+<td>Tắt một đoạn cho máy chạy, để lại &quot;phòng khi cần&quot;</td>
+</tr>
+<tr>
+<td><code>Thread.Sleep</code> hoặc <code>Task.Delay</code> với con số viết thẳng</td>
+<td>1.644</td>
+<td>13/13</td>
+<td>Chờ thêm cho hết lỗi. Hay gặp nhất: 100, 10, 1000, 800 và 500 ms</td>
+</tr>
+<tr>
+<td>Ngày tháng viết trong chú thích</td>
+<td>236</td>
+<td>7/13</td>
+<td>Nhật ký sửa chữa ghi thẳng vào mã; phần lớn nằm ở một dự án</td>
+</tr>
+</tbody></table></div>
+<p>Riêng <code>Thread.Sleep(800)</code> xuất hiện 114 lần. 800 ms không phải con số tròn mà người ta nghĩ ra lúc
+ngồi viết. Gần như chắc chắn nó là kết quả của một lần thử ngoài hiện trường: 500 chưa đủ, 1000 thì
+chậm, 800 thì chạy. Con số đó đúng với máy đó, vào ngày đó. Không dòng chú thích nào cho biết nó được
+đo trên máy nào, để chờ cái gì.</p>
+<p>Ba dấu vết trên có chung một nguyên nhân: <strong>phần mềm không có chỗ nào khác để sửa ngoài mã nguồn.</strong>
+Nếu thời gian chờ là một tham số, người sửa đã đổi tham số. Nếu có một cách tắt phép kiểm đúng quy
+trình, người sửa đã dùng nó thay vì biến dòng kiểm tra thành chú thích. Ba mục dưới đây tạo ra những
+chỗ như vậy.</p>
+<h3>17.6.2  Đường bỏ qua có chủ ý cho phép kiểm chất lượng</h3>
+<p>Tình huống rất hay gặp: 2 giờ sáng, đầu đọc mã in trên sản phẩm (OCR) của trạm 1 hỏng, và hàng thay
+phải chiều mai mới tới. Nếu phần mềm chỉ có một đường là &quot;OCR trượt thì dừng máy&quot;, cả ca đêm sẽ dừng.
+Người sửa máy sẽ tìm dòng kiểm tra trong mã và biến nó thành chú thích. Máy chạy lại. Sau đó không ai
+nhớ bật lại.</p>
+<p>Một dự án trong bộ mẫu giải bài này khá đúng cách. &quot;Bỏ qua kiểm tra OCR của trạm 1&quot; là một <strong>tham số
+quy trình</strong> hẳn hoi, nằm trên màn hình tham số, riêng cho từng trạm. Khi tham số đó bật, phần mềm
+không đơn giản là bỏ qua:</p>
+<ul>
+<li>Phép so khớp OCR <strong>vẫn chạy</strong>, vì nó còn dùng để lấy thông tin vật tư từ hệ thống MES.</li>
+<li>Kết quả gốc (đạt hay trượt, trượt vì sao) được ghi vào nhật ký ở mức cảnh báo.</li>
+<li>Bản ghi của sản phẩm mang một dấu riêng, cho biết phép kiểm nào đã bị bỏ qua và lỗi gốc là gì. Về sau khách hàng hỏi
+về một sản phẩm, ta biết ngay nó đã đi qua trạm trong lúc phép kiểm bị bỏ qua.</li>
+</ul>
+<p>Đây là điểm quan trọng nhất: <strong>đường bỏ qua chỉ đổi quyết định của máy, không đổi sự thật đo được.</strong>
+Biến dòng kiểm tra thành chú thích thì mất cả hai.</p>
+<p>Dự án đó vẫn thiếu ba thứ, và cả ba đều đã có ở các phần trước của sách:</p>
+<ol>
+<li><strong>Ai được bật.</strong> Ở dự án đó, ai mở được màn hình tham số là bật được. Nên giới hạn ở mức Kỹ thuật
+trở lên (mục 15.2.3).</li>
+<li><strong>Tự hết hạn.</strong> Không có hạn thì &quot;tạm thời&quot; sẽ thành vĩnh viễn. Hạn nên đủ cho một ca, tính bằng
+giờ, chứ không phải 30 phút như việc bỏ qua để thử ở mục 15.2.3, vì đây là bỏ qua để sản xuất tiếp.</li>
+<li><strong>Vết kiểm toán.</strong> Ai bật, lúc nào, vì sao, và lúc nào hết hạn (mục G.13).</li>
+</ol>
+<p>Và một điều kiện không thương lượng: <strong>phép kiểm an toàn không có đường bỏ qua bằng phần mềm</strong>, ở bất
+kỳ mức quyền nào (mục 15.2.2).</p>
+<p><strong>Code 17.6 — Đường bỏ qua có chủ ý: vẫn chạy phép kiểm, chỉ đổi quyết định</strong></p>
+<pre><code class="language-csharp">// Tầng trình tự (minh hoạ): LUÔN chạy phép kiểm thật, rồi hỏi bộ quản lý bỏ qua
+var goc = await _ocr.KiemAsync(phoi, ct);              // kết quả thật
+var kq  = _boQua.Xet(&quot;OCR_TRAM1&quot;, goc);
+
+phoi.GhiChu = kq.GhiChuSanPham;                        // &quot;BOQUA:OCR_TRAM1|...&quot; nếu đã bỏ qua
+if (!kq.ChoChayTiep)
+    throw new AlarmException(MaCanhBao.OcrTruot, &quot;TRAM1&quot;, goc.ChiTiet);
+
+// Bên trong QuanLyBoQua.Xet (rút gọn)
+public KetQuaCoBoQua Xet(string phepKiem, KetQuaPhepKiem goc)
+{
+    var lenh = ConHieuLuc(phepKiem);                   // quá hạn thì tự gỡ và ghi vết
+    if (goc.Dat)      return new(true,  true,  false, &quot;&quot;);
+    if (lenh is null) return new(false, false, false, goc.ChiTiet);
+
+    _nhatKy.Ghi(MucLog.CanhBao, phepKiem, &quot;Bỏ qua kết quả trượt {ChiTiet}, bật bởi {Nguoi}&quot;,
+                (&quot;ChiTiet&quot;, goc.ChiTiet), (&quot;Nguoi&quot;, lenh.NguoiBat));
+    return new(true, false, true, $&quot;BOQUA:{phepKiem}|{goc.ChiTiet}&quot;);
+}
+</code></pre>
+<p>Bộ quản lý đó cũng trả về các dòng banner để màn hình chính hiện liên tục chừng nào còn một đường bỏ
+qua đang bật: tên phép kiểm, thời gian còn lại, ai bật, vì sao. Mã đầy đủ nằm ở
+<code>src/csharp-automation-machine/MeoBench/DuongBoQua.cs</code>, kèm phép kiểm chạy bằng <code>dotnet run -- J</code>.
+Các phép kiểm khẳng định đúng những điều nói ở trên: chưa đủ quyền thì không bật được; phép kiểm an
+toàn không bật được kể cả ở mức Quản trị; phải có lý do và hạn không quá 12 giờ; trong lúc bỏ qua, kết
+quả gốc vẫn là trượt và sản phẩm mang dấu; quá hạn thì tự kiểm lại như thường và banner biến mất.</p>
+<h3>17.6.3  Số dò ngoài hiện trường là tham số, không phải hằng số</h3>
+<p>Chương 3 cảnh báo việc dùng <code>const</code> cho giá trị lẽ ra phải cấu hình được. Nhưng làm ngược lại, biến
+mọi con số thành tham số, thì gặp căn bệnh ở mục 13.1.6: file cấu hình phình ra, không ai biết tham
+số nào còn được dùng. Cần một cách phân loại. Mỗi con số trong mã thuộc một trong ba loại:</p>
+<p><strong>Bảng 17.12 — Ba loại con số trong phần mềm máy, và chỗ đặt từng loại</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Loại</th>
+<th>Ví dụ</th>
+<th>Đặt ở đâu</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Do vật lý hay giao thức quy định, không bao giờ đổi</td>
+<td>Mã hàm Modbus <code>0x03</code>; 1 inch = 25,4 mm</td>
+<td>Hằng số có tên, trong mã</td>
+</tr>
+<tr>
+<td>Do thiết kế máy quy định, giống nhau trên mọi máy cùng loại</td>
+<td>Số trạm; số lần đo mỗi phôi</td>
+<td>Hằng số có tên, hoặc cấu hình theo loại máy</td>
+</tr>
+<tr>
+<td><strong>Dò ra ngoài hiện trường</strong>, có thể khác giữa hai máy cùng loại</td>
+<td>Thời gian chờ xi lanh hết rung; thời gian chờ tối đa một cảm biến; độ trễ trước khi chụp ảnh</td>
+<td><strong>Tham số của máy</strong>, kèm đơn vị, dải cho phép, và ghi chú đo ở đâu</td>
+</tr>
+</tbody></table></div>
+<p><code>Thread.Sleep(800)</code> ở mục 17.6.1 thuộc loại thứ ba. Viết đúng loại thì trông như sau:</p>
+<p><strong>Code 17.7 — Con số dò ngoài hiện trường, trước và sau</strong></p>
+<pre><code class="language-csharp">// ❌ Số dò ngoài hiện trường viết thẳng vào mã: người sau không biết vì sao là 800
+_xiLanh.Day();
+Thread.Sleep(800);
+
+// ✅ Tham số của máy: có tên, có đơn vị, có dải; người sửa máy đổi được mà không build lại
+_xiLanh.Day();
+await Task.Delay(_thamSo.ThoiGianOnDinhXiLanhMs, ct);   // mặc định 800, dải 100–3000 ms
+</code></pre>
+<p>Tốt hơn nữa là không chờ theo thời gian mà <strong>chờ tín hiệu</strong>: nếu xi lanh có cảm biến cuối hành trình,
+hãy chờ cảm biến đó, có hạn giờ (mục 5.2). Chờ một khoảng thời gian cố định chỉ nên dùng khi thật sự
+không có tín hiệu nào để chờ, ví dụ chờ cơ cấu hết rung sau khi trục dừng.</p>
+<h3>17.6.4  Mỗi việc người sửa máy cần làm phải có chỗ làm ngoài mã nguồn</h3>
+<p>Hai mục trên là hai trường hợp của một nguyên tắc: <strong>cái gì người sửa máy có thể cần đổi, hãy cho họ
+một chỗ để đổi ngoài mã nguồn.</strong> Danh sách những chỗ như vậy, và nơi sách đã bàn:</p>
+<p><strong>Bảng 17.13 — Việc người sửa máy cần làm, và chỗ làm việc đó ngoài mã nguồn</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Người sửa máy cần</th>
+<th>Chỗ để làm</th>
+<th>Đã bàn ở</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Đổi một thời gian chờ, một ngưỡng</td>
+<td>Màn hình tham số có dải và quyền</td>
+<td>mục 13.1.6, 17.6.3</td>
+</tr>
+<tr>
+<td>Tạm bỏ qua một phép kiểm chất lượng</td>
+<td>Đường bỏ qua có chủ ý</td>
+<td>mục 17.6.2</td>
+</tr>
+<tr>
+<td>Chạy từng trục, bật tắt từng van để tìm lỗi</td>
+<td>Màn hình chạy tay có khoá liên động</td>
+<td>mục 15.2.3, G.13</td>
+</tr>
+<tr>
+<td>Biết trục, cảm biến hay kết nối nào đang hỏng</td>
+<td>Màn hình chẩn đoán, nút tự kiểm</td>
+<td>mục 18.6.4</td>
+</tr>
+<tr>
+<td>Biết lỗi xảy ra lúc nào, trước đó máy làm gì</td>
+<td>Nhật ký tra được</td>
+<td>mục 19.4.1</td>
+</tr>
+<tr>
+<td>Quay lại bản chạy tốt hôm qua</td>
+<td>Thư mục phiên bản cũ</td>
+<td>mục 17.3.2</td>
+</tr>
+</tbody></table></div>
+<p>Mỗi dòng còn thiếu trong bảng này là một lý do để người sửa máy mở mã nguồn.</p>
+<h3>17.6.5  Sau khi sửa: đưa bản sửa về kho trong 48 giờ</h3>
+<p>Dù chuẩn bị kỹ tới đâu, vẫn có lúc phải sửa mã ngay trên máy. Điều nguy hiểm nhất lúc đó không phải
+bản sửa sai, mà là bản sửa <strong>đúng nhưng chỉ nằm trên máy đó</strong>. Lần cập nhật sau, ai đó chép bản mới từ
+kho lên, và lỗi cũ quay lại.</p>
+<p>Quy trình tối thiểu:</p>
+<ol>
+<li>Người sửa ghi vào <strong>sổ sửa tại hiện trường</strong> đặt trong thư mục dữ liệu của máy (mẫu ở Phụ lục J
+mục J.4): sửa gì, ở file nào, vì sao, cách quay lại.</li>
+<li>Trong 48 giờ, người phụ trách phần mềm đọc sổ, lấy thay đổi về, và tạo nhánh <code>hotfix/*</code> từ đúng
+tag đang chạy trên máy (mục 17.1.2). Để lâu hơn thì người sửa quên chi tiết, và máy có thể đã bị
+cập nhật đè.</li>
+<li>Người phụ trách <strong>viết lại bản sửa cho đúng cách</strong> nếu cần: <code>Thread.Sleep(800)</code> thành tham số, một
+dòng kiểm tra bị tắt thành một đường bỏ qua có hạn.</li>
+<li>Tạo tag mới, đưa lên máy theo mục 17.3, và ghi vào sổ rằng bản sửa đã được đưa về kho.</li>
+</ol>
+<p>Bước 3 là bước hay bị bỏ nhất, vì bản sửa tại chỗ &quot;đang chạy tốt&quot;. Nhưng chính bước đó biến một lần
+sửa vội thành một chỗ để sửa ngoài mã nguồn cho lần sau.</p>
+<blockquote>
+<p>💡 <strong>Đọc bản sửa của người khác mà không làm họ ngại lần sau.</strong> Người sửa máy vừa giữ cho dây chuyền
+chạy. Nếu mỗi lần sửa đều bị chê, lần sau họ sẽ sửa mà không ghi sổ. Khi đưa bản sửa về kho, hãy hỏi
+<em>&quot;lúc đó máy bị gì&quot;</em> trước khi hỏi <em>&quot;sao lại sửa thế này&quot;</em>. Câu trả lời cho câu đầu thường chỉ ra
+đúng chỗ phần mềm còn thiếu một tham số hoặc một đường bỏ qua.</p>
+</blockquote>
+<hr>
 <h2 id="tng-kt-chương-17">Tổng kết chương</h2>
 <ul>
 <li><p>Git giải quyết đúng nỗi đau của quản lý phiên bản kiểu folder-copy:
@@ -34551,6 +34856,12 @@ cũ để rollback tức thì) thay cho ghi đè trực tiếp.</p>
 </li>
 <li><p>Chọn Windows Service/Task Scheduler/chạy tay theo đúng vai trò của
 từng thành phần (nền vs có giao diện), không theo thói quen.</p>
+</li>
+<li><p>Người sửa máy lúc dây chuyền dừng sẽ chọn cách nhanh nhất; hãy làm sao
+cho cách nhanh nhất cũng là cách đúng (mục 17.6): đường bỏ qua có chủ ý
+cho phép kiểm chất lượng, số dò ngoài hiện trường thành tham số, và đưa
+mọi bản sửa tại chỗ về kho trong 48 giờ. Phụ lục J là phần dành cho
+người sửa máy.</p>
 </li>
 </ul>
 <h2 id="ph-lc-17a-lnh-git-thưng-dùng-tra-cu-nhanh">Phụ lục 17A — Lệnh Git thường dùng (tra cứu nhanh)</h2>
@@ -36606,6 +36917,18 @@ cùng định dạng.</p>
 cho cả hai cùng ghi vào một thư mục với quy ước tên file giống nhau — như vậy ít nhất người đọc log
 biết phải tìm ở đâu.</p>
 </blockquote>
+<blockquote>
+<p>💡 <strong>Hiện trường làm khác: nhật ký chữ thường, đọc bằng Notepad.</strong> Mục này dạy nhật ký có cấu trúc để
+tra cứu. Trong 13 dự án thật chỉ một dự án làm vậy; số còn lại ghi chuỗi chữ vào file văn bản. Lý do
+không chỉ là thói quen: người đọc nhật ký ngoài hiện trường thường là kỹ thuật viên, trên một máy
+tính công nghiệp không có mạng, và chỉ có Notepad. Một file JSON mỗi dòng một bản ghi rất tiện cho
+công cụ tra cứu, nhưng khó đọc bằng mắt ngay tại máy.</p>
+<p>Không cần chọn một trong hai. &quot;Có cấu trúc&quot; là nói về <strong>cách gọi hàm ghi</strong> (khuôn có tham số đặt
+tên), không bắt buộc về <strong>định dạng file</strong>. Code 19.7 ngay dưới ghi ra file văn bản đọc được bằng
+Notepad, trong khi lời gọi <code>_logger.LogWarning(&quot;Trục {Truc} quá giờ&quot;, truc)</code> vẫn giữ tên thuộc tính.
+Khi cần tra cứu, thêm một đầu ra thứ hai dạng JSON, hoặc gửi về một máy chủ nhật ký, mà không phải
+sửa lời gọi nào. Đầu ra văn bản dành cho người đứng cạnh máy; đầu ra JSON dành cho công cụ.</p>
+</blockquote>
 <p><strong>Code 19.7 — Cấu hình Serilog cơ bản cho ứng dụng automation</strong></p>
 <pre><code class="language-csharp">Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
@@ -37409,6 +37732,99 @@ chạy tốt thì đừng động vào, trừ khi biết chắc tại sao ban đ
 viết như vậy, và có lý do thật sự chính đáng để đổi. Trong công nghiệp,
 ổn định thường quan trọng hơn một tính năng mới hay một đoạn code &quot;đẹp&quot;
 hơn theo sách.</p>
+<p>Nhiều chỗ trong sách đặt hai cách làm cạnh nhau: cách sách khuyên, và cách máy thật thường làm cùng
+lý do của nó. Bảng dưới gom các cặp đó để tra lại. Trước khi đổi một đoạn mã đang chạy cho &quot;đúng
+sách&quot;, hãy đọc mục ở cột cuối.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Chủ đề</th>
+<th>Sách khuyên</th>
+<th>Máy thật thường làm</th>
+<th>Bàn ở</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cấu hình</td>
+<td>JSON có kiểu, kiểm tra dải</td>
+<td>File INI phẳng, có ở cả 13/13 dự án</td>
+<td>mục 3.6.4</td>
+</tr>
+<tr>
+<td>Bắt lỗi</td>
+<td>Không nuốt lỗi</td>
+<td>646 chỗ <code>catch</code> rỗng, và chúng không nguy hiểm như nhau</td>
+<td>mục 3.5.5</td>
+</tr>
+<tr>
+<td>Cấp phát, LINQ</td>
+<td>Tránh trong vòng quét</td>
+<td>LINQ ngay trong mã trạm ở 8/13 dự án</td>
+<td>mục 3.7.2</td>
+</tr>
+<tr>
+<td>Bất đồng bộ</td>
+<td><code>async</code>/<code>await</code></td>
+<td>Chặn trên luồng riêng; 4/13 dự án không có chữ <code>async</code> nào</td>
+<td>mục 5.7, 7.6</td>
+</tr>
+<tr>
+<td>Chờ theo thời gian</td>
+<td><code>await Task.Delay</code></td>
+<td><code>Thread.Sleep</code> ở 11/13 dự án</td>
+<td>mục 5.3.1</td>
+</tr>
+<tr>
+<td>Khoá</td>
+<td>Không <code>lock</code> quanh I/O</td>
+<td>191 chỗ <code>lock</code> bao quanh giao tiếp thiết bị</td>
+<td>mục 5.3.2</td>
+</tr>
+<tr>
+<td>Thiết bị</td>
+<td>Interface cho mọi thiết bị</td>
+<td>Gọi thẳng; 9/13 dự án có không quá 3 interface</td>
+<td>mục 7.7</td>
+</tr>
+<tr>
+<td>Chờ</td>
+<td>Mọi việc chờ đều có hạn giờ</td>
+<td>Chờ người, chờ máy khác không hạn, nhưng hiện rõ đang chờ gì</td>
+<td>mục 14.1.4</td>
+</tr>
+<tr>
+<td>Bỏ qua phép kiểm</td>
+<td>Mức Quản trị, hạn 30 phút</td>
+<td>Tham số bật/tắt, không hạn</td>
+<td>mục 15.2.3, 17.6.2</td>
+</tr>
+<tr>
+<td>Quản lý mã</td>
+<td>Git, nhánh, tag</td>
+<td>Thư mục chép tay ở 4/13 dự án; tag ở 0/13</td>
+<td>mục 17.4</td>
+</tr>
+<tr>
+<td>Kiểm thử</td>
+<td>Kiểm thử tự động</td>
+<td>Có ở 1/13 dự án</td>
+<td>mục 18.6.4</td>
+</tr>
+<tr>
+<td>Nhật ký</td>
+<td>Có cấu trúc, tra cứu được</td>
+<td>Chuỗi chữ trong file văn bản, đọc bằng Notepad</td>
+<td>mục 19.4.1</td>
+</tr>
+<tr>
+<td>Logic giao diện</td>
+<td>Tách khỏi nút bấm</td>
+<td>46 % dòng mã nằm trong file giao diện</td>
+<td>mục G.15.4</td>
+</tr>
+</tbody></table></div>
+<p>Không dòng nào trong bảng kết luận &quot;máy thật sai&quot;. Mỗi mục ở cột cuối nói rõ khi nào cách làm của máy
+thật chấp nhận được, khi nào không, và đường giữa là gì.</p>
 <p>Bước tiếp theo: áp dụng ngay một phần nhỏ vào dự án đang làm, đừng chờ
 đọc xong mới bắt đầu — kiến thức chỉ đọng lại khi dùng trên một bài toán
 cụ thể. Chọn đúng chỗ khó nhất với riêng mình — với nhiều người là
@@ -40301,6 +40717,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <em>Xuất hiện đầu tiên: Chương 16, mục 16.5.</em></p>
 <p><strong>Đối tượng kết quả (Result Object)</strong> — Cách thứ ba để một bước quy trình báo thất bại, bên cạnh ném exception và trả <code>bool</code>: trả về một đối tượng mang <strong>cả trạng thái lẫn lý do</strong> (mã lỗi + thông điệp). Hợp nhất với <strong>động cơ chạy quy trình</strong> cần cầm kết quả từng bước để quyết định nhánh tiếp theo. Quy tắc chọn: quy trình <strong>là code</strong> → exception; quy trình <strong>là dữ liệu do động cơ chạy</strong> → đối tượng kết quả. (→ xem CancellationToken, AlarmException)
 <em>Xuất hiện đầu tiên: Chương 3, mục 3.5.4.</em></p>
+<p><strong>Đường bỏ qua có chủ ý</strong> (Deliberate Bypass) — Cơ chế thiết kế sẵn để tạm bỏ qua một phép kiểm <strong>chất lượng</strong> khi thiết bị kiểm hỏng: vẫn chạy phép kiểm và ghi kết quả gốc, chỉ đổi quyết định cho máy chạy tiếp; có phân quyền, tự hết hạn, vết kiểm toán, banner trên màn hình và dấu trên bản ghi sản phẩm. Không bao giờ áp cho phép kiểm an toàn. (→ xem Vết kiểm toán, Safety Function)
+<em>Xuất hiện đầu tiên: Chương 17, mục 17.6.2.</em></p>
 <h2 id="e">E</h2>
 <p><strong>E-Stop</strong> (Emergency Stop — Dừng khẩn cấp) — Thiết bị phần cứng dừng máy ngay lập tức khi nhấn; thuộc safety level — mạch an toàn phần cứng, không qua CPU điều khiển. C# không điều khiển E-Stop mà chỉ đọc trạng thái để cập nhật HMI và ghi log. Khác Interlock: Interlock là logic phần mềm kiểm tra điều kiện tiền đề, E-Stop là cơ chế vật lý dừng khẩn cấp sau sự cố. (→ xem Interlock, Safety Function)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.2.1.</em></p>
@@ -40786,6 +41204,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 10, mục 10.1.4.</em></p>
 <p><strong>Sổ lý do dừng máy (Downtime Reason Ledger)</strong> — Mô hình thay cho bộ đếm rời rạc khi tính OEE: <strong>tại mọi thời điểm máy ở đúng một trạng thái có lý do</strong>, mỗi lần đổi lý do đều ghi kèm mốc thời gian, và mọi con số OEE được <strong>suy ra</strong> bằng cách cộng thời lượng theo nhóm. Lưu ý: &quot;trạng thái có lý do&quot; <strong>khác</strong> trạng thái của máy trạng thái điều khiển. (→ xem OEE, PackML)
 <em>Xuất hiện đầu tiên: Chương 12, mục 12.5.2.</em></p>
+<p><strong>Sổ sửa tại hiện trường</strong> (Field Change Log) — Tệp văn bản đặt trong thư mục dữ liệu của máy, ghi mỗi lần sửa phần mềm tại chỗ: thời điểm, người sửa, triệu chứng, đã đổi gì, cách quay lại. Là đầu vào để người phụ trách đưa bản sửa về kho mã nguồn trong 48 giờ.
+<em>Xuất hiện đầu tiên: Phụ lục J, mục J.4.</em></p>
 <p><strong>Soft Limit</strong> — Cặp toạ độ giới hạn hành trình trục cấu hình BẰNG PHẦN MỀM (driver so sánh vị trí đọc được với cặp giá trị này trước khi cho phép lệnh move tiếp tục), khác hẳn <strong>limit switch vật lý</strong> (cảm biến thật gắn trên ray trượt, luôn hoạt động dù phần mềm lỗi). Mục đích của soft limit là dừng SỚM hơn limit switch vật lý — một vùng đệm an toàn — không phải thay thế nó; trục có soft limit đúng cấu hình vẫn cần limit switch vật lý làm lớp bảo vệ cuối cùng (phòng thủ nhiều lớp). Thường xuất hiện trong bit trạng thái driver dạng <code>SPEL</code>/<code>SMEL</code> (Software Positive/Negative End Limit), phân biệt với <code>PEL</code>/<code>MEL</code> (limit vật lý). (→ xem Deadband)
 <em>Xuất hiện đầu tiên: Chương 15, mục 15.1.2.</em></p>
 <p><strong>Soft-PLC</strong> — Biến thể kiến trúc trong đó logic PLC (thường vẫn viết bằng Ladder/Structured Text) chạy dưới dạng phần mềm ngay trên IPC — cùng máy với ứng dụng C# — thường cấp riêng một lõi CPU và hệ điều hành thời gian thực (real-time OS) chạy song song Windows để đảm bảo determinism. Làm mờ ranh giới PLC/PC vật lý, nhưng nguyên tắc phân vai (I/O &amp; safety cho logic PLC, điều phối/HMI/dữ liệu cho C#) vẫn giữ nguyên. (→ xem IPC (Industrial PC), PC-Based Control)
@@ -41089,6 +41509,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>Double-Checked Locking</strong> — 2.5</li>
 <li><strong>Double-encoded JSON</strong> — 14.2.9</li>
 <li><strong>Dual State (Trạng thái kép — PackML)</strong> — 12.2.2</li>
+<li><strong>Đường bỏ qua có chủ ý</strong> — 17.6.2</li>
 <li><strong>dynamic</strong> — 16.1.2</li>
 <li><strong>DynamicResource</strong> — 9.3.3</li>
 </ul>
@@ -43605,7 +44026,7 @@ trước xây dựng</strong>.</p>
 <p>Khung tham chiếu tốt nhất hiện có là cẩm nang <em>The AI-Native SDLC playbook</em> của nhóm Applied AI
 thuộc Anthropic (Louis Claxton, 21/08/2026, <code>claude.com/blog/the-ai-native-sdlc-playbook</code>). Luận
 điểm trung tâm của nó rất đáng mang sang đây: <strong>khi viết mã không còn là nút thắt, nút thắt chuyển
-sang các bước xung quanh</strong> — lập kế hoạch, duyệt, triển khai, quản trị — vì những bước đó vẫn chạy
+sang các bước xung quanh</strong> — lập kế hoạch, duyệt và kiểm thử, triển khai — vì những bước đó vẫn chạy
 ở tốc độ con người. Sinh mã nhanh gấp mười mà hàng đợi duyệt dài gấp mười thì tổng thời gian không
 đổi, chỉ đổi chỗ tắc.</p>
 <h4>Bốn thực hành chuyển sang phần mềm máy rất tốt</h4>
@@ -44494,6 +44915,7 @@ dotnet run -- G14          # đối chiếu với mã máy thật (mục G.14)
 dotnet run -- G15          # cấu trúc và khả năng kiểm thử (mục G.15)
 dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H)
 dotnet run -- I            # lời giải bài xương sống (Phụ lục I)
+dotnet run -- J            # đường bỏ qua có chủ ý (mục 17.6, Phụ lục J)
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 </code></pre>
@@ -45289,6 +45711,11 @@ sau một hợp đồng nhỏ</strong>, rồi phần còn lại kiểm được 
 <td><code>VanHanhThuc.cs</code> + <code>KiemVanHanhThuc.cs</code></td>
 <td><strong>mục G.13</strong> — năng lực vận hành máy thật</td>
 <td><code>dotnet run -- G13</code></td>
+</tr>
+<tr>
+<td><code>DuongBoQua.cs</code> + <code>KiemDuongBoQua.cs</code></td>
+<td><strong>mục 17.6</strong>, Phụ lục J — đường bỏ qua có chủ ý</td>
+<td><code>dotnet run -- J</code></td>
 </tr>
 <tr>
 <td><code>Program.cs</code></td>
@@ -49478,6 +49905,256 @@ public sealed class ChotThuTu : IDisposable
 <hr>
 <blockquote>
 <p>📌 <strong>Đọc xong hai mươi bài này, thứ đáng mang đi không phải hai mươi thuật toán.</strong> Nhìn lại cả loạt, ba thói quen lặp đi lặp lại trong các bản máy mà không bản LeetCode nào có: <strong>(1) nhận thời gian từ ngoài</strong> thay vì gọi <code>DateTime.Now</code>, để kiểm thử được; <strong>(2) trả về <code>false</code>/<code>null</code> cho tình huống bình thường</strong>, chỉ ném cho tình huống bất thường; <strong>(3) đếm cả những thứ mình từ chối</strong> — số lần bị chặn, số khung hỏng, số lần thử lại. Ba thói quen đó không xuất hiện trong bất kỳ bài luyện thuật toán nào, nhưng chúng là thứ phân biệt một hàm chạy được với một hàm dùng được.</p>
+</blockquote>
+<!-- SECTION: Phu_Luc_J_HienTruong -->
+<hr>
+<h1 id="ph-lc-j-s-tay-sa-máy-ti-hin-trưng">Phụ lục J: Sổ tay sửa máy tại hiện trường</h1>
+<p>Phụ lục này viết cho người phải sửa phần mềm máy trong lúc máy đang dừng, và không phải là người đã
+viết ra phần mềm đó. Bạn không cần đọc hết cuốn sách để dùng nó. Mục J.6 có một trang tóm tắt để in
+ra dán cạnh máy.</p>
+<p>Nếu bạn là người <strong>viết</strong> phần mềm, hãy đọc Chương 17 mục 17.6 trước. Phụ lục này dễ làm theo hơn
+nhiều khi phần mềm đã có sẵn những &quot;chỗ để sửa ngoài mã nguồn&quot; được mô tả ở đó.</p>
+<h2 id="j1-sa-cho-chy-đưc-và-cái-giá-v-sau">J.1  Sửa cho chạy được, và cái giá về sau</h2>
+<p>Khi máy dừng, việc đầu tiên là cho máy chạy lại. Điều đó đúng. Vấn đề là nhiều cách làm máy chạy lại
+hôm nay sẽ gây ra một lần dừng khác, khó tìm hơn, vài tuần sau.</p>
+<p>Mã nguồn của 13 phần mềm máy thật cho thấy rõ điều này (Bảng 17.11). Trong đó có hơn mười nghìn dòng
+mã bị biến thành chú thích, hơn một nghìn sáu trăm lệnh chờ với con số viết thẳng, và hàng trăm chú
+thích ghi ngày sửa. Mỗi dấu vết là một lần ai đó sửa đúng lúc, nhưng để lại cho người sau một câu hỏi
+không ai trả lời được: <em>đoạn này bị tắt vì sao, có bật lại được không?</em></p>
+<p>Phụ lục này không yêu cầu bạn sửa chậm hơn. Với mỗi kiểu sửa vội hay gặp, nó chỉ ra một cách sửa
+nhanh ngang như vậy nhưng không để lại câu hỏi đó.</p>
+<h2 id="j2-mưi-kiu-sa-vi-và-cách-sa-thay-th">J.2  Mười kiểu sửa vội và cách sửa thay thế</h2>
+<p><strong>Bảng J.1 — Mười kiểu sửa vội hay gặp, và cách sửa thay thế nhanh ngang</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>Kiểu sửa vội</th>
+<th>Vì sao về sau gây hại</th>
+<th>Cách sửa thay thế</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Thêm <code>Thread.Sleep(500)</code> cho hết lỗi</td>
+<td>Chỉ che lỗi. Máy chậm hơn, và lỗi quay lại khi máy nóng lên hay mạng chậm hơn</td>
+<td>Tìm xem đang chờ <strong>cái gì</strong>. Có tín hiệu thì chờ tín hiệu, có hạn giờ (Code J.1). Không có tín hiệu thì dùng tham số thời gian chờ; chưa có tham số thì đặt tên cho con số (Code J.4)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bọc <code>try { … } catch { }</code> cho hết văng lỗi</td>
+<td>Lỗi vẫn xảy ra, chỉ là không ai biết nữa. Máy chạy tiếp với dữ liệu sai</td>
+<td>Bắt đúng loại lỗi, ghi nhật ký. Nếu đã quyết định cho máy chạy tiếp thì vẫn ghi ở mức cảnh báo (Code J.2)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Biến dòng kiểm tra thành chú thích</td>
+<td>Phép kiểm mất vĩnh viễn, không ai nhớ bật lại</td>
+<td>Dùng đường bỏ qua có sẵn của phần mềm (có hạn, có ghi vết, mục 17.6.2). Phần mềm chưa có thì dùng một cờ cấu hình có tên rõ và ghi nhật ký mỗi lần bỏ qua (Code J.3). <strong>Không bao giờ</strong> làm vậy với kiểm tra an toàn</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tăng thời gian chờ tối đa lên gấp mười</td>
+<td>Lần hỏng thật tiếp theo, máy đứng chờ lâu gấp mười mới báo lỗi</td>
+<td>Ghi lại thời gian thực tế vài chục lần. Đặt thời gian chờ bằng giá trị lớn nhất đo được cộng thêm một khoảng dư, và ghi con số đã đo vào sổ</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Sửa thẳng toạ độ hay ngưỡng trong mã</td>
+<td>Máy thứ hai cùng loại chạy sai. Lần cập nhật sau mất giá trị vừa sửa</td>
+<td>Sửa trong tham số, công thức, hoặc bảng điểm dạy. Nếu giá trị chỉ có trong mã, báo người phụ trách để đưa nó ra thành tham số</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Chép một hàm thành <code>Xxx2</code> rồi sửa bản chép</td>
+<td>Hai bản trôi dần xa nhau. Sửa lỗi ở bản này, quên bản kia</td>
+<td>Nếu chỉ khác một giá trị, thêm tham số cho hàm cũ. Nếu buộc phải chép, ghi chú ở cả hai hàm vì sao có hai bản</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Thêm <code>if (tenMay == &quot;M03&quot;)</code> để xử lý riêng một máy</td>
+<td>Mỗi máy mới thêm một nhánh. Sau một năm không ai biết máy nào chạy nhánh nào</td>
+<td>Đưa khác biệt đó thành cấu hình riêng của máy, trong thư mục <code>config/</code> (mục 17.3.7)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Comment cả khối cũ, viết khối mới bên dưới</td>
+<td>File dài gấp đôi, người sau không biết khối nào đang chạy</td>
+<td>Xoá hẳn khối cũ. Kho mã (Git) giữ lịch sử; chưa có Git thì bản sao lưu ở bước 1 của mục J.4 giữ nó</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Ghi <code>// 29/09 sửa lỗi kẹp</code> vào mã</td>
+<td>Mã đầy nhật ký, còn lý do thật thì nằm trong đầu người sửa</td>
+<td>Ghi ngày, người sửa, lý do vào sổ sửa tại hiện trường (mục J.4). Chú thích trong mã chỉ giải thích <em>vì sao mã làm vậy</em></td>
+</tr>
+<tr>
+<td>10</td>
+<td>Gán thẳng trạng thái máy (<code>trangThai = SanSang</code>) để thoát kẹt</td>
+<td>Máy báo &quot;sẵn sàng&quot; trong khi trục chưa về gốc, kẹp chưa nhả</td>
+<td>Dùng Reset đúng quy trình. Nếu máy kẹt ở một trạng thái không có lối ra, ghi trạng thái đó vào sổ: đó là lỗi của bảng chuyển trạng thái (mục 12.1, bài G.5.4)</td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>⚠️ <strong>Một ranh giới không có ngoại lệ.</strong> Cửa bảo vệ, dừng khẩn, màn chắn sáng, giới hạn hành trình,
+mạch an toàn: không tắt, không bỏ qua, không sửa trong phần mềm, dù máy đang dừng và dù có người
+yêu cầu. Nếu máy không chạy được vì một tín hiệu an toàn, lỗi nằm ở phần cứng hoặc ở cách làm việc,
+và người có thẩm quyền về an toàn phải quyết định (Chương 15 mục 15.2).</p>
+</blockquote>
+<h2 id="j3-bn-cp-mã-sa-vi-và-sa-thay-th">J.3  Bốn cặp mã: sửa vội và sửa thay thế</h2>
+<p>Bốn kiểu đầu của Bảng J.1 là bốn kiểu gặp nhiều nhất. Mỗi cặp dưới đây đặt bản sửa vội cạnh bản sửa
+thay thế. Bản thay thế không dài hơn bao nhiêu.</p>
+<p><strong>Code J.1 — Chờ tín hiệu thay vì chờ thời gian</strong></p>
+<pre><code class="language-csharp">// ❌ Sửa vội: xi lanh kẹp chưa kịp đóng thì chờ thêm
+_io.Ghi(&quot;VAN_KEP&quot;, true);
+Thread.Sleep(500);
+
+// ✅ Chương trình dùng async: chờ đúng cảm biến &quot;kẹp đã đóng&quot;, tối đa 2 giây (hàm ở mục 5.2)
+_io.Ghi(&quot;VAN_KEP&quot;, true);
+await WaitForSignalAsync(() =&gt; _io.Doc(&quot;CB_KEP_DONG&quot;), timeoutMs: 2000,
+    MaCanhBao.KepKhongDong, &quot;TRAM2&quot;, ct);
+
+// ✅ Chương trình đồng bộ (không dùng async): cùng ý đó, viết bằng Stopwatch
+_io.Ghi(&quot;VAN_KEP&quot;, true);
+var dongHo = Stopwatch.StartNew();
+while (!_io.Doc(&quot;CB_KEP_DONG&quot;))
+{
+    if (dongHo.ElapsedMilliseconds &gt; 2000)
+        throw new AlarmException(MaCanhBao.KepKhongDong, &quot;TRAM2&quot;, &quot;Kẹp không đóng sau 2 giây&quot;);
+    Thread.Sleep(10);
+}
+</code></pre>
+<p>Bản sửa vội chờ đúng 500 ms dù kẹp đã đóng từ ms thứ 200, và vẫn chạy tiếp dù kẹp <strong>không bao giờ
+đóng</strong>. Bản thay thế chạy tiếp ngay khi kẹp đóng, và báo đúng tên lỗi khi kẹp hỏng. Phần lớn chương
+trình máy thật là chương trình đồng bộ (mục 5.7), nên bản thứ ba là bản bạn sẽ dùng nhiều nhất.
+<code>Thread.Sleep(10)</code> trong vòng chờ đó không có hại, vì nó nằm trên luồng riêng của trình tự (mục 5.3.1).</p>
+<p><strong>Code J.2 — Cho máy chạy tiếp mà không xoá dấu vết</strong></p>
+<pre><code class="language-csharp">// ❌ Sửa vội: máy in nhãn thỉnh thoảng báo lỗi, bọc lại cho hết văng
+try { _mayIn.In(nhan); } catch { }
+
+// ✅ Sửa thay thế: vẫn chạy tiếp, nhưng biết lỗi gì, ở phôi nào, và phôi đó chưa có nhãn
+try
+{
+    _mayIn.In(nhan);
+}
+catch (IOException ex)
+{
+    _log.LogWarning(ex, &quot;In nhãn lỗi cho phôi {Phoi}, máy vẫn chạy tiếp&quot;, phoi.SoHieu);
+    phoi.GhiChu = &quot;CHUA_IN_NHAN&quot;;      // trạm sau hoặc người vận hành xử lý
+}
+</code></pre>
+<p>Bản thay thế chỉ bắt <code>IOException</code>, loại lỗi đã thấy khi máy in mất kết nối. Lỗi lạ khác vẫn đi lên
+như cũ. Mục 3.5.5 giải thích vì sao không phải <code>catch { }</code> nào cũng nguy hiểm như nhau, và cách phân
+biệt chúng.</p>
+<p><strong>Code J.3 — Tạm bỏ qua một phép kiểm khi phần mềm chưa có đường bỏ qua</strong></p>
+<pre><code class="language-csharp">// ❌ Sửa vội: đầu đọc OCR hỏng, tắt luôn dòng kiểm tra
+// if (!ocrDat) throw new AlarmException(MaCanhBao.OcrTruot, &quot;TRAM1&quot;, chiTiet);
+
+// ✅ Sửa thay thế: cờ có tên, đọc từ cấu hình, và ghi lại MỖI lần bỏ qua
+if (!ocrDat)
+{
+    if (_cauHinh.TamBoQuaOcrTram1)
+        _log.LogWarning(&quot;Bỏ qua OCR trượt ở trạm 1 (cấu hình TamBoQuaOcrTram1): {ChiTiet}&quot;, chiTiet);
+    else
+        throw new AlarmException(MaCanhBao.OcrTruot, &quot;TRAM1&quot;, chiTiet);
+}
+</code></pre>
+<p>Bật lại phép kiểm bây giờ là đổi một dòng cấu hình, không phải sửa mã và build lại. Mọi sản phẩm đi
+qua trong lúc bỏ qua đều có một dòng nhật ký. Ghi việc này vào sổ để người phụ trách thay nó bằng một
+đường bỏ qua có hạn và có phân quyền (mục 17.6.2).</p>
+<p><strong>Code J.4 — Đặt tên cho con số dò ra ngoài hiện trường</strong></p>
+<pre><code class="language-csharp">// ❌ Sửa vội
+Thread.Sleep(800);
+
+// ✅ Sửa thay thế khi chưa có tham số: tên nói nó là gì, chú thích nói nó từ đâu ra
+// Thời gian xi lanh kẹp hết rung, đo trên máy: 600–700 ms, cộng thêm khoảng dư.
+// Nên đưa ra thành tham số của máy (mục 17.6.3).
+private const int ThoiGianOnDinhKepMs = 800;
+
+Thread.Sleep(ThoiGianOnDinhKepMs);
+</code></pre>
+<p>Con số vẫn là 800. Nhưng người sau đọc được nó là gì và vì sao, và biết đó là thứ đã đo chứ không
+phải thứ đoán.</p>
+<h2 id="j4-năm-bưc-và-s-sa-ti-hin-trưng">J.4  Năm bước, và sổ sửa tại hiện trường</h2>
+<ol>
+<li><strong>Sao lưu bản đang chạy trước khi đụng vào.</strong> Chép nguyên thư mục chương trình (và mã nguồn nếu có
+trên máy) sang một thư mục có tên kèm ngày giờ. Có Git thì commit trạng thái hiện tại. Đây là
+đường quay lại khi bản sửa làm mọi thứ tệ hơn.</li>
+<li><strong>Ghi lại triệu chứng trước khi sửa.</strong> Chụp màn hình cảnh báo, chép vài chục dòng nhật ký quanh
+lúc lỗi. Sửa xong thì những thứ này mất, mà chúng lại là thứ người phụ trách cần nhất.</li>
+<li><strong>Mỗi lần chỉ sửa một chỗ, rồi chạy thử.</strong> Sửa ba chỗ cùng lúc mà máy chạy được thì không biết chỗ
+nào có tác dụng, và hai chỗ còn lại sẽ ở lại mãi.</li>
+<li><strong>Ưu tiên sửa ngoài mã nguồn:</strong> tham số, công thức, đường bỏ qua, màn hình chạy tay. Chỉ mở mã
+nguồn khi không còn chỗ nào khác.</li>
+<li><strong>Ghi vào sổ ngay khi máy chạy lại</strong>, không để tới cuối ca.</li>
+</ol>
+<p>Sổ sửa tại hiện trường là một tệp văn bản thường, mở được bằng Notepad. Đặt nó trong <strong>thư mục dữ
+liệu</strong> của máy, không đặt trong thư mục chương trình, vì lần cập nhật sau sẽ thay cả thư mục chương
+trình (mục 17.3.7). Mỗi lần sửa ghi một mục:</p>
+<p><strong>Bảng J.2 — Mẫu một mục trong sổ sửa tại hiện trường</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Trường</th>
+<th>Ví dụ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Thời điểm, người sửa</td>
+<td>29/09/2026 02:40 · Bình (kỹ thuật ca đêm)</td>
+</tr>
+<tr>
+<td>Triệu chứng</td>
+<td>Trạm 1 báo &quot;OCR không khớp&quot; liên tục từ 02:10; đầu đọc không bắt được sáng</td>
+</tr>
+<tr>
+<td>Đã đổi gì</td>
+<td>Bật bỏ qua OCR_TRAM1 trong 8 giờ trên màn hình; không sửa mã</td>
+</tr>
+<tr>
+<td>Nếu có sửa mã</td>
+<td>Tên file, số dòng, trước và sau khi sửa</td>
+</tr>
+<tr>
+<td>Cách quay lại</td>
+<td>Tắt bỏ qua trên màn hình, hoặc đợi tự hết hạn lúc 10:40</td>
+</tr>
+<tr>
+<td>Việc cần làm tiếp</td>
+<td>Thay đầu đọc; người phụ trách xem vì sao đèn chiếu yếu</td>
+</tr>
+</tbody></table></div>
+<p>Người phụ trách phần mềm đọc sổ này và đưa mọi bản sửa mã về kho trong vòng 48 giờ (mục 17.6.5).</p>
+<h2 id="j5-khi-nào-dng-li-và-gi-ngưi-ph-trách-phn-mm">J.5  Khi nào dừng lại và gọi người phụ trách phần mềm</h2>
+<p>Dừng tự sửa và gọi người phụ trách khi gặp một trong những trường hợp sau:</p>
+<ul>
+<li>Bản sửa đụng tới bất cứ thứ gì liên quan an toàn (xem ranh giới ở mục J.2).</li>
+<li>Phải sửa ở một lớp dùng chung cho nhiều trạm hoặc nhiều máy, ví dụ lớp giao tiếp PLC hay lớp điều
+khiển trục. Sửa ở đó cho trạm này có thể làm hỏng trạm khác.</li>
+<li>Không tái hiện được lỗi. Sửa một lỗi chưa tận mắt thấy là đoán.</li>
+<li>Lỗi chỉ xảy ra theo giờ: qua nửa đêm, lúc đổi ca, sau vài ngày chạy liên tục. Đây thường là lỗi về
+thời gian, bộ đếm hoặc rò bộ nhớ (Chương 19), không sửa được bằng một dòng.</li>
+<li>Đã sửa hai lần mà lỗi vẫn quay lại.</li>
+<li>Bản sửa phải dài hơn khoảng mười dòng.</li>
+</ul>
+<h2 id="j6-trang-tóm-tt-đ-dán-cnh-máy">J.6  Trang tóm tắt để dán cạnh máy</h2>
+<blockquote>
+<p>📌 <strong>Trước khi sửa phần mềm máy</strong></p>
+<ol>
+<li>Sao lưu bản đang chạy. Ghi lại cảnh báo và nhật ký.</li>
+<li>Tìm chỗ sửa ngoài mã trước: tham số, công thức, đường bỏ qua, chạy tay.</li>
+<li>Sửa một chỗ, chạy thử, rồi mới sửa chỗ tiếp theo.</li>
+</ol>
+<p><strong>Khi phải sửa mã</strong></p>
+<ul>
+<li>Chờ tín hiệu, đừng chờ thời gian. Phải chờ thời gian thì đặt tên cho con số.</li>
+<li>Không <code>catch { }</code> rỗng. Cho máy chạy tiếp thì vẫn ghi nhật ký.</li>
+<li>Không biến dòng kiểm tra thành chú thích. Dùng đường bỏ qua có hạn, hoặc cờ cấu hình có tên.</li>
+<li>Xoá mã cũ thay vì comment. Bản sao lưu đã giữ bản cũ.</li>
+<li>Không gán thẳng trạng thái máy. Dùng Reset.</li>
+</ul>
+<p><strong>Không bao giờ:</strong> tắt, bỏ qua, hay sửa bất cứ thứ gì thuộc về an toàn.</p>
+<p><strong>Sau khi sửa:</strong> ghi vào sổ ngay. Người phụ trách phần mềm đưa bản sửa về kho trong 48 giờ.</p>
 </blockquote>
 </div>
 </div>

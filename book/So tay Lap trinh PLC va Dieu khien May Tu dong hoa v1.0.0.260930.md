@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260929 |
+| **Phiên bản** | v1.0.0.260930 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -517,7 +517,7 @@ Phụ lục A **mô tả khác biệt, không xếp hạng hãng**. Chỗ nào m
 
 ### Khối cảnh báo
 
-Bốn loại, phân biệt theo **hậu quả nếu bỏ qua**:
+Bốn loại, phân biệt theo **hậu quả nếu bỏ qua** — cộng một loại thứ năm:
 
 > ⚠ **NGUY HIỂM**
 > Sai là hỏng thiết bị, điện giật, máy chạy bất ngờ, hoặc gây thương tích cho người.
@@ -530,6 +530,12 @@ Bốn loại, phân biệt theo **hậu quả nếu bỏ qua**:
 
 > 🔍 **BẪY**
 > Chỗ người mới sai nhiều nhất. Mỗi cái bẫy được đặt tên riêng để bạn tra lại được sau này.
+
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> Chỗ sách dạy đúng về kỹ thuật, nhưng ngoài hiện trường người ta **làm khác**. Mỗi ô trả lời ba câu:
+> **người ta làm gì**, **vì sao** — áp lực thật về thời gian, chi phí, tần suất — và **ranh giới** nào không
+> được vượt. ⭐ Không phải để bênh cách làm tắt, mà để bạn nhận ra nó, và thiết kế sao cho cách đúng cũng
+> là cách nhanh.
 
 ### Thuật ngữ song ngữ
 
@@ -1445,6 +1451,17 @@ lúc có người đang làm việc.
 > (Chương 6, mục 6.7; Chương 47, mục 47.10):
 > khoá được · có cửa xả · đặt ở chỗ với tới được.
 
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> **Người ta làm gì:** bỏ LOTO cho những việc "một phút" — gỡ một sản phẩm kẹt, lau một cảm biến, chỉnh
+> một cữ — vì đi tới tủ, cắt, khoá, xả khí rồi thử lại mất lâu hơn chính việc đó.
+> **Vì sao:** việc ấy lặp lại nhiều lần mỗi ca, còn quy trình LOTO không phân biệt việc lớn việc nhỏ.
+> **Ranh giới:** hướng dẫn an toàn máy của SICK, dẫn theo quy định kiểm soát năng lượng nguy hiểm ở Mỹ,
+> cho biết việc bảo dưỡng nhỏ **lặp lại, gắn liền với sản xuất** có thể được miễn LOTO — nhưng ⚠ **chỉ
+> khi** nó được làm dưới một **biện pháp bảo vệ thay thế hiệu quả**; và LOTO là để **bổ sung**, không thay
+> cho che chắn. Nghĩa là việc can thiệp thường xuyên phải được **thiết kế cho**: che chắn có khoá liên
+> động, chế độ vận hành đặc biệt (Chương 47 mục 47.7c). Không có biện pháp đó thì LOTO — không ngoại
+> lệ. Quy định nơi bạn làm việc có thể khác; quy trình của cơ sở vẫn là thứ quyết định.
+
 Quy trình LOTO cụ thể do **cơ sở của bạn ban hành**. Nội dung trên là để bạn hiểu logic đằng sau nó —
 không phải để thay nó.
 
@@ -1586,6 +1603,10 @@ hợp mà thiếu nó thì đấu cảm biến chỉ là đoán.
   toàn — nền cho mục 3.5.
 - IEC 61140 — *Protection against electric shock*: phân loại điện áp và nguyên tắc bảo vệ chống điện
   giật — nền cho mục 3.3 và 3.7.
+- **SICK** — *Guidelines for Safe Machinery — Six Steps*, mục *Lock-Out/Tag-Out* (tr. 2-7): việc
+  bảo dưỡng nhỏ lặp lại, gắn liền với sản xuất chỉ được miễn LOTO khi làm dưới biện pháp bảo vệ
+  thay thế hiệu quả; LOTO bổ sung, không thay che chắn — dẫn theo OSHA 29 CFR 1910.147. Nền cho ô
+  *Ngoài hiện trường* ở mục 3.7. Kiểm 2026-09-29.
 - **Quy định an toàn điện và quy trình LOTO của cơ sở nơi bạn làm việc** — đây mới là văn bản bạn phải
   tuân theo; chương này chỉ giải thích logic đằng sau nó.
 
@@ -7916,7 +7937,7 @@ trong chương trình máy Nhật:
 tắt. Gặp cặp `SET`/`RST` trong máy thật — đó là phong cách hợp lệ — thì kiểm ba thứ: `RST` đã viết sau
 `SET` chưa, bit có nằm trong dải chốt không, và bạn đã tìm hết mọi `RST` của nó chưa.
 
-> ⚠ **Một lời phản biện chính cuốn sách.** Mọi ví dụ của sách dùng tên tag kiểu `DI_StartPB`, và phần lớn
+> ⚖ **NGOÀI HIỆN TRƯỜNG — và một lời phản biện chính cuốn sách.** Mọi ví dụ của sách dùng tên tag kiểu `DI_StartPB`, và phần lớn
 > mã trình tự viết bằng ST — tức gần phong cách Siemens, CODESYS, Rockwell. Ở nhà máy chạy nhiều máy
 > Nhật, bạn sẽ mở ra `X0`, `M100`, `D100` và rất nhiều `SET`/`RST`. ⭐ Nguyên tắc của sách không đổi — chỉ
 > phải đọc qua bảng chú thích thiết bị. Và khi **viết** cho nhà máy đó, hãy viết theo phong cách đội bảo
@@ -13312,6 +13333,18 @@ Vì thứ tự thật sự của công việc là ba bước, và **bước sau 
 > tinh thần Bẫy 1 ở mục 23.7. ⚡ Thời gian bỏ ra ở đây **rẻ hơn nhiều lần** so với sửa cùng vấn đề đó
 > ở bước 3.
 
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> **Người ta làm gì:** bắt đầu lập trình khi đặc tả còn trống vài chỗ, vì tiến độ đã ký không chờ; rồi
+> khách đổi yêu cầu ngay trong lúc chạy thử.
+> **Vì sao:** khách thường chỉ biết chắc mình muốn gì khi thấy máy chạy; và hiếm ai trả tiền cho những
+> tuần ngồi viết đặc tả.
+> **Ranh giới:** viết trước phần **đã rõ** thì được — phần đó vẫn phải có bảng I/O và trình tự bằng lời
+> (ngưỡng thực dụng ở Bẫy 1, mục 23.7). Chỗ chưa rõ thì ghi thành **giả định có tên** trong đặc tả và
+> cho khách xác nhận — đừng tự quyết âm thầm (câu 3 của bảng *Ba câu hỏi* ở trên). Thay đổi sau khi
+> đã chốt thì cập nhật đặc tả thành **phiên bản mới**, có lý do và người duyệt — cùng tinh thần quy
+> trình thay đổi ở Chương 53 mục 53.3 — để lúc nghiệm thu (mục 23.6) còn biết máy được làm theo yêu
+> cầu nào.
+
 ---
 
 ## 23.6 Tiêu chí nghiệm thu — viết từ đầu, không viết cuối
@@ -16835,7 +16868,7 @@ của người lập trình** — nhưng người lập trình phải trình bà
 >
 > Thiếu bất kỳ điều nào — chọn huỷ chu trình. Một sản phẩm hỏng rẻ hơn một cỗ máy hỏng rất nhiều.
 
-> ⚠⚠ **Phản biện chính bảng trên — nó thiếu một chiều: TẦN SUẤT.** *"Huỷ chu trình"* đúng với lỗi
+> ⚖ **NGOÀI HIỆN TRƯỜNG — bảng trên thiếu một chiều: TẦN SUẤT.** *"Huỷ chu trình"* đúng với lỗi
 > **hiếm**. Với một lỗi lặp **mỗi giờ**, đường phục hồi dài nhân với số máy mỗi người trông sẽ đẩy người
 > vận hành tới chỗ **vượt qua cửa an toàn** — và khi đó máy kém an toàn hơn hẳn một máy phục hồi nhanh
 > (Chương 47 mục 47.7c). ⭐ Cách giữ được cả hai: **chia lỗi theo cách phục hồi**, không dùng một đường
@@ -21516,6 +21549,17 @@ Cùng một mức tác động tích phân được ghi bằng **hai đơn vị 
 
 *(Đối chiếu: Kuphaldt — Lessons in Industrial Instrumentation, mục về tác động tích phân và đơn vị
 minutes-per-repeat / repeats-per-minute; và mục về thiết bị direct-acting / reverse-acting.)*
+
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> **Người ta làm gì:** chép bộ tham số PID từ một máy "chị em" đang chạy tốt sang máy mới — gần như ai
+> cũng làm.
+> **Vì sao:** chỉnh định từ đầu mất cả buổi, còn máy kia đang chạy được.
+> **Ranh giới:** câu *"không được chép"* ở trên nói tuyệt đối để chặn cách làm nguy hiểm nhất: **chép
+> rồi coi như xong**. Chép làm **điểm xuất phát** thì chấp nhận được, với ba điều kiện: cùng model và
+> **đơn vị khâu tích phân đã xác minh** trên cả hai bộ, không suy ra từ việc cùng model (phần Hai);
+> cùng **chiều tác động** (phần Một); và sau đó vẫn **chỉnh lại có đồ thị** trên chính máy này (mục
+> 35.10, Bẫy 7) — tải, cảm biến, đường ống không bao giờ giống hệt. Giữa hai hệ **khác hãng** thì không
+> có điểm xuất phát nào: chỉnh lại từ đầu (Phụ lục A2 mục A2.7).
 
 ---
 
@@ -26681,6 +26725,16 @@ sản phẩm tốt bị loại, và lòng tin vào hệ thống giảm dần cho
 > Trong phép đo trên, ánh sáng thay đổi làm báo lỗi giả tăng thêm **2–3 %**. ⭐ Bao che chắn sáng và
 > khống chế nguồn sáng rẻ hơn nhiều so với mọi thủ thuật ở tầng PLC.
 
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> **Người ta làm gì:** camera loại nhầm nhiều thì người vận hành xin **nới ngưỡng**, hoặc bật **bỏ qua
+> camera** cho kịp sản lượng.
+> **Vì sao:** mỗi sản phẩm tốt bị loại nhầm là một lần kiểm tay, một lần dừng — nhân lên cả ca.
+> **Ranh giới:** nới ngưỡng là **quyết định chất lượng**, không phải thao tác vận hành — cần người có
+> quyền và có ghi vết (Chương 44 mục 44.4). Bỏ qua camera thì mọi sản phẩm đi qua lúc đó **chưa được
+> kiểm**, và hồ sơ phải nói đúng như vậy (Chương 51 mục 51.7b, yêu cầu 4). ⭐ Cách chặn tận gốc vẫn là
+> số liệu ở mục này: đo tỉ lệ loại nhầm, tìm nguyên nhân — thường là chiếu sáng — và sửa, trước khi nó
+> thành lý do để tắt camera.
+
 ---
 
 ## 43.6 Hiệu chỉnh toạ độ camera và toạ độ máy
@@ -28937,6 +28991,110 @@ nói rõ **riêng ở chỗ nào** — vì hiểu sai điểm này dẫn tới m
 
 ---
 
+## 47.4c ⭐⭐ Trên một PLC an toàn thật — sáu điều bạn sẽ gặp ngay
+
+Mục 47.4b nói công cụ ràng buộc bạn thế nào. Mục này là **ngày đầu tiên** bạn mở một dự án có PLC an
+toàn — sáu điều, đối chiếu tài liệu của ba hệ: **Siemens** (bộ điều khiển an toàn S7-1200/1500, hướng
+dẫn lập trình an toàn của hãng), **Rockwell** (GuardLogix 5580, sổ tay tham chiếu an toàn) và **SICK**
+(bộ điều khiển an toàn Flexi Soft). Tên gọi khác nhau; ⭐ **cơ chế giống nhau**.
+
+### Một — phần an toàn là một chương trình riêng, chạy nhịp riêng
+
+| | Siemens | Rockwell | SICK Flexi Soft |
+|---|---|---|---|
+| Phần an toàn chạy ở đâu | **Nhóm thời gian chạy an toàn** *(F-runtime group)*, gọi từ khối ngắt chu kỳ | **Một** tác vụ an toàn định kỳ duy nhất; chu kỳ 2–500 ms; hãng khuyên đặt ưu tiên cao nhất | Logic của bộ điều khiển an toàn, theo chu kỳ logic riêng |
+| Ngôn ngữ | LAD, FBD | ⚠ **Chỉ ladder** trong tác vụ an toàn | Khối chức năng đồ hoạ đã chứng nhận |
+| Ngõ vào an toàn cập nhật khi nào | Đầu mỗi lần nhóm chạy — đọc ảnh vào an toàn | ⭐ **Chỉ ở đầu** mỗi lần tác vụ an toàn chạy, kể cả khi mạng gửi về nhanh hơn | Mỗi chu kỳ logic |
+| ⚠ Điều lạ so với PLC thường | Chu kỳ phải **dài hơn** thời gian chạy chương trình an toàn, không thì CPU về STOP | ⭐ Thời gian **đóng băng** trong lúc tác vụ an toàn chạy — `TON` không cộng giữa chừng | Bit trung gian và đường nhảy vòng ngược làm trễ **thêm một chu kỳ logic** |
+
+### Hai — thời gian phản hồi là một con số phải TÍNH
+
+Rockwell ghi thành công thức: thời gian phản hồi của hệ = cảm biến + phần điều khiển + cơ cấu, trong đó
+phần điều khiển gồm giới hạn thời gian của kết nối vào, **(chu kỳ tác vụ an toàn + thời gian giám sát
+watchdog) × 1,01**, giới hạn thời gian của kết nối ra, và trễ của thiết bị vào/ra. Với số mặc định —
+kết nối vào 40 ms, chu kỳ và watchdog cùng 20 ms, kết nối ra 60 ms — riêng phần điều khiển đã khoảng
+**140 ms**, chưa kể cảm biến và cơ cấu. Siemens nói cùng một ý: chu kỳ an toàn dài thì chương trình thường
+có thêm thời gian, nhưng **chức năng an toàn phản hồi chậm hơn** — và hãng có sẵn bảng tính để ước lượng.
+
+> ⭐⭐ **Vì sao người lập trình phải quan tâm:** con số này là một phần của thời gian dừng mà khoảng cách
+> lắp rèm quang phải tính theo (mục 47.7). Tăng chu kỳ tác vụ an toàn "cho nhẹ CPU" là **dời rèm quang ra
+> xa** — hoặc làm nó không còn đủ xa.
+
+### Ba — PLC an toàn tự nghi ngờ chính nó, và dừng hẳn khi nghi
+
+Siemens dùng **xử lý mã hoá** *(coded processing)*: chương trình an toàn chạy **hai lần** — bản gốc, và
+một bản mã hoá do trình biên dịch sinh ra — rồi so kết quả; khác nhau là CPU về STOP. Rockwell: tác vụ an
+toàn chạy quá thời gian watchdog là **lỗi an toàn không phục hồi**, mọi ngõ ra về trạng thái an toàn.
+
+> ⚠ **Hệ quả thực tế: lỗi lập trình cũng làm máy dừng hẳn.** Siemens liệt kê các nguyên nhân do người viết
+> gây ra: ⭐ nguyên nhân **hay gặp nhất** là màn hình vận hành hoặc chương trình thường **ghi vào dữ liệu
+> đúng lúc chương trình an toàn đang đọc**; kèm theo là tràn số, chia cho 0, truy cập bằng con trỏ vào vùng
+> an toàn. Máy dừng vì một dòng mã sai — không vì có ai gặp nguy hiểm.
+
+### Bốn — kênh lỗi bị "thụ động hoá", và phải được cho phép quay lại
+
+Khi phát hiện lỗi liên quan an toàn (đứt dây, chập chéo, lệch giữa hai kênh…), Siemens **thụ động hoá**
+*(passivation)* kênh đó hoặc cả module: ngõ vào báo giá trị thay thế **0**, ngõ ra bị ép **0** bất kể
+chương trình. Sửa xong, kênh phải được **tái tích hợp** *(reintegration)*: bằng tay (một lệnh xác nhận)
+hoặc tự động. ⚠ Hãng cảnh báo tái tích hợp tự động **có thể dẫn tới tình huống nguy hiểm** — được phép hay
+không do đánh giá rủi ro quyết định; ⚠ lỗi **truyền thông** thì luôn phải tái tích hợp bằng tay.
+
+SICK thêm một chi tiết mà người lập trình hay quên: giá trị an toàn là 0, và ⚠ một lỗi — mất mạng, đứt
+dây, chập — có thể tạo ra **sườn giả** trên tín hiệu (0 → 1 → 0). Khối nào dùng sườn phải tính tới điều đó.
+
+⚠ Và một chiều ngược lại, Siemens cảnh báo riêng: khi chương trình an toàn **khởi động lại** — sau một
+lần STOP chẳng hạn — mọi dữ liệu an toàn trở về giá trị đầu, thông tin lỗi đã lưu **mất**, và module được
+**tự động tái tích hợp**. Máy không được phép tự khởi động (mục 47.6) thì việc chặn đó **người lập trình
+phải tự viết** trong chương trình an toàn: giữ ngõ ra cho tới khi người vận hành xác nhận.
+
+### Năm — mọi thay đổi đều để lại dấu vân tay
+
+| | Siemens | Rockwell | SICK Flexi Soft |
+|---|---|---|---|
+| Dấu vân tay | **Chữ ký** của chương trình an toàn; lịch sử thay đổi phần an toàn | ⭐ **Chữ ký an toàn** 64 ký tự, **phân cấp** — tác vụ, chương trình, routine, tag đều có chữ ký riêng | Tổng kiểm tra riêng của logic |
+| Chú thích có đổi chữ ký không | ⭐ **Không** — hãng khuyên ghi chữ ký vào chú thích khối sau khi nghiệm thu | Không | — |
+| Khi đã có chữ ký hoặc đã khoá | — | ⚠ **Không** ép *(force)* được tag an toàn, không sửa được phần an toàn | — |
+| Khi nạp chương trình | — | ⭐ Phải **tự so chữ ký** với hồ sơ nghiệm thu | — |
+
+⭐ Nhờ chữ ký phân cấp, đổi một routine chỉ phải nghiệm thu lại **những phần bị ảnh hưởng** — nếu kế hoạch
+thẩm định cho phép. ⚠ Và một câu đáng nhớ trong sổ tay của Rockwell: hãng **không có dịch vụ phá mật khẩu**
+cho chức năng khoá an toàn — mất mật khẩu là mất.
+
+### Sáu — giữa phần thường và phần an toàn chỉ có một cửa hẹp
+
+- ⭐ Rockwell: routine an toàn **không đọc trực tiếp** được tag thường — phải qua **ánh xạ** *(tag mapping)*,
+  chép vào ở đầu tác vụ an toàn; phần thường đọc được tag an toàn nhưng **không ghi**. ⚠ *"Dữ liệu thường
+  nằm trong một tag an toàn vẫn KHÔNG phải dữ liệu an toàn"* — không được điều khiển trực tiếp ngõ ra an
+  toàn bằng nó.
+- Siemens: trao đổi qua **hai khối dữ liệu, mỗi chiều một khối**; nhưng ⭐ **nút reset và công tắc chọn chế
+  độ** nên đọc thẳng trong chương trình an toàn — chúng thuộc tính toàn vẹn của hệ, nên đổi chúng phải
+  làm đổi chữ ký.
+- ⚠ **Ghi từ màn hình vận hành vào phần an toàn** được làm rất khó, có chủ ý. Rockwell đòi sáu bước: gửi
+  giá trị **hai lần** vào hai tag khác nhau, ánh xạ sang hai tag an toàn, chương trình an toàn kiểm **bằng
+  nhau và trong dải**, đọc lại hiển thị, người vận hành đã được đào tạo **nhìn và xác nhận**. Siemens dùng
+  xác nhận hai bước qua khối `ACK_OP`.
+- ⭐ **Reset không được khởi động máy.** Siemens: chương trình thường khoá lệnh chạy bằng tín hiệu cho phép
+  từ phần an toàn — dừng an toàn là xoá luôn lệnh chạy, phải bấm chạy lại. SICK: khối `Reset` chỉ nhận
+  xung dài **từ 100 ms (hoặc 350 ms) tới 30 s** — ngắn hơn hay dài hơn đều bị bỏ qua, nên nút kẹt không
+  reset được; đèn *"cần reset"* nháy 1 Hz; và ⚠ dây nút reset chập lên 24 V có thể tự tạo ra một xung
+  reset — phải đi dây có bảo vệ.
+
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> **Người ta làm gì:** nhét cả logic đèn báo, màn hình vào phần an toàn cho tiện — rồi mỗi lần sửa một đèn
+> lại phải nghiệm thu, nên lần sau **chuyển ngược cả logic có liên quan an toàn sang phần thường** cho khỏi
+> vướng; hoặc bật tái tích hợp tự động cho khỏi phải bấm xác nhận.
+> **Vì sao:** chữ ký đổi là phải nghiệm thu lại; bấm xác nhận sau mỗi lần chập chờn tốn thời gian.
+> **Ranh giới:** Siemens khuyên đúng hướng thứ nhất — **đưa logic không an toàn ra phần thường** để phần
+> an toàn gọn và ít phải nghiệm thu lại; ⚠ nhưng tín hiệu thuộc tính toàn vẹn (reset, chọn chế độ) **ở lại**
+> phần an toàn, và tái tích hợp tự động chỉ khi đánh giá rủi ro cho phép. Cửa hẹp ở điều Sáu tồn tại chính
+> để hai việc này không trộn vào nhau.
+
+> ⚠⚠ **Cũng như mục 47.4b: mục này mô tả những gì bạn GẶP — nó không dạy thiết kế chức năng an toàn.**
+> Mọi con số ở đây là của tài liệu hãng, cho đúng dòng sản phẩm đã nêu; hệ và phiên bản của bạn phải tra
+> tài liệu của chính nó.
+
+---
+
 ## 47.5 Mức hiệu năng và kiến trúc — đủ để làm việc
 
 Phần này diễn giải khái niệm ở mức đủ để bạn **đọc hiểu tài liệu và trao đổi với chuyên gia**. Nó
@@ -29280,9 +29438,23 @@ bảo vệ được ai khi nó đã bị vô hiệu hoá.
 >   làm được việc**, **làm chậm sản xuất**, **cản trở việc khác**, hoặc **khó dùng**.
 > - Thiết bị khoá liên động phải được chọn và lắp để **khó bị vô hiệu hoá**, và che chắn nói chung **không
 >   được cản trở sản xuất quá mức cần thiết** (hướng dẫn an toàn máy của Schneider).
+> - ⚠ **Không phải chuyện hiếm.** Một nghiên cứu của hội bảo hiểm tai nạn nghề nghiệp Đức (HVBG) thấy
+>   thiết bị an toàn bị vô hiệu hoá trên **gần 37 %** số máy gia công kim loại được khảo sát; viện IFA ngày
+>   nay ước tính **cứ bốn máy thì một máy** — và coi máy có động cơ vô hiệu hoá cao là máy **không an toàn,
+>   không được vận hành**.
 > - ⭐ ISO 14119 dành hẳn một chương cho việc này — chương 8 ở bản 2024 (ở bản 2013 là mục 7): *thiết kế để
 >   giảm động cơ vô hiệu hoá*. Trình tự của nó: làm biện pháp cơ bản → kiểm xem có **động cơ vô hiệu hoá
 >   có thể lường trước** không → **loại bỏ** động cơ nếu được → còn động cơ thì **bắt buộc** thêm biện pháp.
+
+Cuốn tổng hợp an toàn của Pilz liệt kê những thiếu sót thiết kế hay dẫn tới vô hiệu hoá — và ví dụ trên
+rơi đúng vào dòng cuối:
+
+- gián đoạn lặp đi lặp lại do thiết kế công nghệ hoặc độ chính xác linh kiện;
+- không có chỗ can thiệp hay lấy mẫu mà không phải vào trong;
+- không **chia vùng dừng**, không có bộ đệm — muốn vào một phần là phải dừng cả dây chuyền;
+- bộ phận thao tác thường xuyên bị đặt **sau** che chắn có khoá liên động;
+- ⚠ mở cửa thì máy dừng nhanh và chắc — nhưng sau đó **không chạy tiếp được, hoặc phải khởi động lại từ
+  đầu**.
 
 ### Năm tầng biện pháp — theo thứ tự, như mục 47.3
 
@@ -29290,7 +29462,7 @@ bảo vệ được ai khi nó đã bị vô hiệu hoá.
 |:-:|---|---|---|
 | 1 | ⭐⭐ **Bỏ lý do phải vào** | Một lỗi lặp mỗi giờ là lỗi **quy trình hoặc cơ khí** cần sửa từ gốc — không phải việc người vận hành cần làm nhanh hơn. Đếm lỗi theo nguyên nhân (Chương 53), sửa cái đứng đầu | Board lệch chặn: kiểm dẫn hướng và tốc độ chuyền lúc board vào chặn |
 | 2 | ⭐ **Làm được việc thường xuyên mà không mở cửa** | Việc lặp lại được thiết kế để làm **từ ngoài** che chắn: thử lại bước từ màn hình, chạy lùi chuyền chậm khi cửa **đóng**, ô kính để nhìn | Nút *thử lại bước* trên màn hình vận hành (Chương 44), chỉ cho phép khi cửa đóng |
-| 3 | ⭐ **Làm cho đường an toàn nhanh** | **Chia vùng** — mở cửa trạm 1 chỉ dừng mối nguy ở trạm 1, nếu đánh giá rủi ro cho phép; nút **yêu cầu vào** — máy dừng ở tư thế an toàn rồi mới nhả khoá; thời gian nhả khoá bằng **thời gian dừng đo thật**, không đặt dư "cho chắc"; sau khi đóng cửa, **phục hồi có kiểm chứng** thay vì luôn về gốc toàn bộ (Chương 28 mục 28.5) | DP-01 có sẵn hai cửa cho hai trạm (SF3, mục 47.9) — nền để chia vùng, nếu đánh giá rủi ro cho phép |
+| 3 | ⭐ **Làm cho đường an toàn nhanh** | **Chia vùng** — mở cửa trạm 1 chỉ dừng mối nguy ở trạm 1, nếu đánh giá rủi ro cho phép; nút **yêu cầu vào** — máy dừng ở tư thế an toàn rồi mới nhả khoá; thời gian nhả khoá bằng **thời gian dừng đo thật**, không đặt dư "cho chắc"; sau khi đóng cửa, **phục hồi có kiểm chứng** thay vì luôn về gốc toàn bộ (Chương 28 mục 28.5); việc can thiệp thường xuyên có một **chế độ vận hành đặc biệt** — tốc độ giảm, thiết bị cho phép ba vị trí (Bẫy 5) | DP-01 có sẵn hai cửa cho hai trạm (SF3, mục 47.9) — nền để chia vùng, nếu đánh giá rủi ro cho phép |
 | 4 | **Làm cho việc vượt qua khó** | Thiết bị khoá liên động có **mã hoá** (cơ, điện, từ hoặc quang); gắn chắc, tháo phải dùng dụng cụ; che không cho với tới thiết bị khi cửa mở; giá đỡ đủ cứng (Schneider) — và không vượt qua được bằng **vật dụng sẵn có** (SICK) | Mức mã hoá lấy theo đánh giá rủi ro, không chọn theo giá |
 | 5 | **Làm cho việc vượt qua lộ ra** | Ghi mỗi lần mở và đóng cửa, mỗi lần xử lý lỗi, thời gian phục hồi; báo cáo lên người quản lý | ⚠ Đây là **dữ liệu tổ chức**, không phải chức năng an toàn — chạy trên PLC thường được, nhưng không bao giờ được coi là biện pháp bảo vệ |
 
@@ -29570,7 +29742,29 @@ tin lệnh** là nguyên tắc xuyên suốt cả cuốn sách.
   ⭐ quan hệ giữa **kích thước lỗ trên che chắn** và **khoảng cách an toàn**; hai cách chống kẹp
   (⭐ **khe hở tối thiểu** — loại bỏ mối nguy — so với **giảm lực/năng lượng**); và ⚠⚠ **bốn cấu hình
   sinh ra điểm cuốn**, trong đó có **con lăn tiếp xúc băng tải** — nền cho mục 47.7.
-- ⭐ **Động cơ vô hiệu hoá thiết bị bảo vệ** (mục 47.7c): **SICK** — *Guidelines for Safe Machinery — Six
+- ⭐ **Siemens** — *Programming Guideline Safety for SIMATIC S7-1200/1500* (V1.2, 09/2021, mã 109750255)
+  — nguồn cho mục 47.4c: chọn CPU theo thời gian phản hồi, chu kỳ an toàn so với chương trình thường,
+  thứ tự gọi trong khối an toàn chính, trao đổi dữ liệu hai chiều, đọc nút reset và công tắc chế độ
+  trong phần an toàn, ghi từ màn hình (`ACK_OP`), reset không khởi động máy, thụ động hoá và tái tích
+  hợp, xử lý mã hoá và các nguyên nhân về STOP. Tải và đối chiếu 2026-09-29.
+- ⭐ **Siemens** — *SIMATIC Safety — Configuring and Programming* (sổ tay lập trình và vận hành, 11/2023,
+  A5E02714440-AN) — đối chiếu cho mục 47.4c: mục 6.4–6.5, thụ động hoá và tái tích hợp (tái tích hợp tự
+  động chỉ khi an toàn cho phép; sau lỗi truyền thông chỉ tái tích hợp bằng xác nhận của người dùng);
+  mục 5.5, chặn khởi động lại ngoài ý muốn. Đối chiếu 2026-09-30.
+- ⭐ **Rockwell Automation** — *GuardLogix 5580 and Compact GuardLogix 5380 Controller Systems Safety
+  Reference Manual* (1756-RM012J, 9/2025) — nguồn cho mục 47.4c: chữ ký an toàn phân cấp, khoá an toàn,
+  tác vụ an toàn (chu kỳ 2–500 ms, chỉ ladder, thời gian đóng băng), ánh xạ tag, sáu bước ghi từ màn
+  hình, công thức thời gian phản hồi. Tải và đối chiếu 2026-09-29.
+- ⭐ **SICK** — *Flexi Soft in Flexi Soft Designer* (hướng dẫn vận hành, IM0031659) — nguồn cho mục
+  47.4c: giá trị an toàn, sườn giả khi lỗi, trễ do bit trung gian, khối `Reset`/`Restart` (xung
+  100/350 ms – 30 s, đèn 1 Hz). Tải và đối chiếu 2026-09-29.
+- ⭐ **Động cơ vô hiệu hoá thiết bị bảo vệ** (mục 47.7c): **Pilz** — *The Safety Compendium* (2017), mục
+  4.4: nghiên cứu HVBG — gần 37 % máy gia công kim loại được khảo sát bị vô hiệu hoá thiết bị an toàn; các
+  thiếu sót thiết kế dẫn tới vô hiệu hoá; chế độ vận hành đặc biệt. **DGUV / IFA** — trang *Manipulation
+  von Schutzeinrichtungen verhindern* (đọc 2026-09-29): ước tính cứ bốn máy một máy; nguyên nhân chủ yếu
+  là khái niệm bảo vệ không khớp với việc vận hành; máy có động cơ vô hiệu hoá cao không được coi là an
+  toàn.
+- ⭐ Cũng cho mục 47.7c: **SICK** — *Guidelines for Safe Machinery — Six
   Steps*, mục ước lượng rủi ro: khả năng vượt qua biện pháp bảo vệ và động cơ vượt qua (không làm được
   việc, làm chậm sản xuất, cản trở việc khác, khó dùng); mục che chắn di động: không vượt qua được bằng
   vật dụng sẵn có; *Safety Guide for the Americas*: yếu tố con người. **Schneider Electric** — *Machine
@@ -31795,6 +31989,15 @@ Ba điều quan trọng mà người mới hay hiểu sai:
 > ⚡ **LƯU Ý**
 > Với máy nhỏ, ba mốc có thể gộp lại — nhưng **gộp phải là quyết định có ghi lại**, không phải là
 > chuyện quên làm. Ghi rõ trong biên bản: "SIT gộp vào SAT do máy chạy độc lập, không ghép chuyền."
+
+> ⚖ **NGOÀI HIỆN TRƯỜNG**
+> **Người ta làm gì:** ở SAT, dưới áp lực tiến độ, bước 3 bị rút gọn *("đã kiểm ở xưởng rồi")*, bước 7
+> và 8 bị cắt vì khách muốn chạy hàng ngay.
+> **Vì sao:** trễ bàn giao có khi bị phạt theo ngày, và máy đã chạy được ở xưởng.
+> **Ranh giới:** bước 1, 2 và 4 **không bao giờ** bỏ. Bước 3 nếu buộc phải rút gọn thì rút có kiểm
+> soát: mọi đầu nối đã tháo ra để vận chuyển, mọi dây đấu mới tại hiện trường vẫn kiểm **1-1** — đó
+> chính là lý do mốc SAT tồn tại. Bước 7, 8 nếu bị cắt thì ghi vào biên bản như một **hạng mục còn
+> mở**, có ngày làm — không để nó biến mất trong im lặng.
 
 ---
 
@@ -35772,8 +35975,10 @@ Trước khi vào bảng, cần phân biệt ba loại quan hệ:
 > mục lệnh `OUT` cho bộ định thời.)*
 
 > ⭐ **Điểm chung của cả năm hệ — nhắc lại vì nó quan trọng hơn mọi khác biệt cú pháp:**
-> ⚠⚠ **Bộ định thời KHÔNG dùng để chuyển bước trình tự** — chỉ để báo lỗi khi phản hồi không tới
-> (Chương 17, 26).
+> ⚠⚠ **Bộ định thời KHÔNG dùng để chờ một cơ cấu** — có cảm biến báo cơ cấu đã tới thì chuyển bước bằng
+> cảm biến đó; bộ định thời chỉ để báo lỗi khi nó không tới (Chương 17, 26). ⚡ Ngoại lệ có thật: bước mà
+> **chính thời gian là yêu cầu của quy trình** (thời gian sấy, thời gian giữ), hoặc bước không có gì để đo
+> — Chương 26 mục 26.2b nêu điều kiện, và đòi ghi rõ điều đó trong đặc tả.
 
 ---
 
@@ -36242,10 +36447,12 @@ TON:  IN ▔▔▔▔▔▔▁▁▁      TOF:  IN ▔▔▔▔▁▁▁▁▁  
          └PT┘                        └PT┘               └─PT─┘
 ```
 
-> ⚠⚠ **Bộ định thời KHÔNG dùng để chuyển bước trình tự.**
+> ⚠⚠ **Bộ định thời KHÔNG dùng để chờ một cơ cấu.**
 >
 > ⭐ Chuyển bước bằng **tín hiệu phản hồi thật**; bộ định thời chỉ để **báo lỗi khi phản hồi không
-> tới**. Một bộ định thời không biết khi cơ cấu không tới nơi (Chương 17, 26).
+> tới**. Một bộ định thời không biết khi cơ cấu không tới nơi (Chương 17, 26). ⚡ Ngoại lệ: bước mà
+> **thời gian là yêu cầu của chính quy trình** (sấy, giữ), hoặc không có gì để đo — điều kiện và cách
+> ghi vào đặc tả ở Chương 26 mục 26.2b.
 
 ---
 

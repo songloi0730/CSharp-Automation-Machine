@@ -25,7 +25,7 @@ public static class KiemVanHanhThuc
     {
         var dongHo = new DongHoGia(new DateTime(2026, 9, 20, 8, 0, 0));
 
-        // ---------- G.13.1 — phân quyền (13/13 dự án có) ----------
+        // ---------- G.13.1 — phân quyền (rất hay gặp) ----------
         Kiem.MoBai("G.13.1", "Mức người dùng và phân quyền");
         var phien = new PhienDangNhap(dongHo) { HetHanSauKhiKhongThaoTac = TimeSpan.FromMinutes(15) };
         Kiem.Bang(phien.Muc, MucNguoiDung.ChuaDangNhap, "chưa đăng nhập thì mức thấp nhất");
@@ -48,8 +48,8 @@ public static class KiemVanHanhThuc
         Kiem.Bang(phien.MucHienTai(), MucNguoiDung.ChuaDangNhap,
                   "★ quá 15 phút không thao tác → TỰ HẠ QUYỀN (người vận hành hay quên đăng xuất)");
 
-        // ---------- G.13.2 — vết kiểm toán (0/13 dự án có!) ----------
-        Kiem.MoBai("G.13.2", "Vết kiểm toán — năng lực KHÔNG dự án nào trong bộ mẫu có");
+        // ---------- G.13.2 — vết kiểm toán (không gặp!) ----------
+        Kiem.MoBai("G.13.2", "Vết kiểm toán — năng lực KHÔNG dự án nào có");
         var vet = new VetKiemToan(Path.Combine(goc, "data", "kiemtoan.csv"), dongHo);
         vet.Ghi("kysu01", "Đổi chiều dày danh định", "2.000", "2.100");
         vet.Ghi("kysu01", "Đổi dung sai trên", "0.050", "0.080");
@@ -62,7 +62,7 @@ public static class KiemVanHanhThuc
         Kiem.Dung(csv.Contains("2026-09-20T08:20:00", StringComparison.Ordinal),
                   "★ ghi ra file ngay — trả lời được câu 'hôm đó ai sửa công thức'");
 
-        // ---------- G.13.3 — thử lại (12/13) ----------
+        // ---------- G.13.3 — thử lại (rất hay gặp) ----------
         Kiem.MoBai("G.13.3", "Thử lại khi thiết bị lỗi thoáng qua");
         var kb = new CamBienTheoKichBan(hatGiong: 9)
             .Xep(LoaiLoiGiaLap.MatKetNoi, LoaiLoiGiaLap.MatKetNoi, LoaiLoiGiaLap.KhongLoi);
@@ -89,7 +89,7 @@ public static class KiemVanHanhThuc
         Kiem.Bang(soLanGoi, 1,
                   "★ lỗi VĨNH VIỄN chỉ gọi MỘT lần — thử lại một lỗi không thể tự khỏi chỉ làm chậm việc phát hiện");
 
-        // ---------- G.13.4 — chạy tay và jog (11/13) ----------
+        // ---------- G.13.4 — chạy tay và jog (rất hay gặp) ----------
         Kiem.MoBai("G.13.4", "Chạy tay và jog trục");
         var tz = new TrucGiaLap("Z", mmMoiBuoc: 20.0);
         var cd = new ChuyenDong(tz, -1.0, 60.0, 1000);
@@ -120,7 +120,7 @@ public static class KiemVanHanhThuc
         Kiem.Dung(!j5.DaChay, "★ jog vượt hành trình → bị chặn, KHÔNG đâm cơ khí");
         Kiem.Gan(j5.ViTriSauMm, 10.0, 1e-6, "trục đứng yên sau lần jog bị từ chối");
 
-        // ---------- G.13.5 — đèn tháp (7/13) ----------
+        // ---------- G.13.5 — đèn tháp (hay gặp) ----------
         Kiem.MoBai("G.13.5", "Đèn tháp và còi");
         Kiem.Bang(DenThap.Theo(TrangThaiMay.DangChay, false),
                   new TrangThaiDenThap(MauDen.Xanh, false, false), "Đang chạy → xanh, không nháy, không còi");
@@ -136,7 +136,7 @@ public static class KiemVanHanhThuc
         Kiem.Dung(Enum.GetValues<TrangThaiMay>().All(t => DenThap.Theo(t, false) is not null),
                   "mọi trạng thái đều có tổ hợp đèn — không trạng thái nào 'không biết bật gì'");
 
-        // ---------- G.13.6 — truy xuất nguồn gốc (9/13) ----------
+        // ---------- G.13.6 — truy xuất nguồn gốc (hay gặp) ----------
         Kiem.MoBai("G.13.6", "Số sê-ri từng phôi");
         var seri = new SoSeriPhoi("MEOBENCH-01", "CA-A-20260920", 42);
         Kiem.Bang(seri.Ma, "MEOBENCH-01_CA-A-20260920_000042",
@@ -151,7 +151,7 @@ public static class KiemVanHanhThuc
         Kiem.Nem<ArgumentException>(() => _ = new SoSeriPhoi("MAY_01", "CA-A", 1).Ma,
                   "★ mã máy chứa dấu phân cách → BỊ TỪ CHỐI ngay ở hàm dựng, không đợi lúc tách");
 
-        // ---------- G.13.7 — watchdog (5/13) ----------
+        // ---------- G.13.7 — watchdog (có gặp) ----------
         Kiem.MoBai("G.13.7", "Watchdog phát hiện chu kỳ treo");
         var dongHo2 = new DongHoGia(new DateTime(2026, 9, 20, 8, 0, 0));
         var wd = new WatchdogChuKy(dongHo2, TimeSpan.FromSeconds(30));
@@ -167,7 +167,7 @@ public static class KiemVanHanhThuc
         Kiem.Dung(exWd!.Message.Contains("50", StringComparison.Ordinal), "nói rõ treo bao lâu");
         Kiem.Dung(wd.Kiem() is null, "★ báo một lần rồi tính lại — không đẻ ra lũ cảnh báo mỗi nhịp quét");
 
-        // ---------- G.13.8 — lịch sử cảnh báo (3/13) ----------
+        // ---------- G.13.8 — lịch sử cảnh báo (hiếm gặp) ----------
         Kiem.MoBai("G.13.8", "Lịch sử cảnh báo lưu ra file");
         var ls = new LichSuCanhBao(Path.Combine(goc, "data", "canhbao.csv"), dongHo);
         ls.Phat(new AlarmException(MaCanhBao.CamBienKhongPhanHoi, "CB_DAY", "mất tín hiệu"));
@@ -184,7 +184,7 @@ public static class KiemVanHanhThuc
         Kiem.Bang(xep[0].SoLan, 2, "đếm đúng số lần");
         Kiem.Dung(File.Exists(Path.Combine(goc, "data", "canhbao.csv")), "lưu ra file, sống sót khởi động lại");
 
-        // ---------- G.13.9 — giờ chạy và tuổi thọ linh kiện (13/13) ----------
+        // ---------- G.13.9 — giờ chạy và tuổi thọ linh kiện (rất hay gặp) ----------
         Kiem.MoBai("G.13.9", "Đếm tuổi thọ linh kiện");
         var bt = new SoBaoTri();
         bt.KhaiBao("VanKep", nguongThayThe: 1_000_000);
@@ -206,7 +206,7 @@ public static class KiemVanHanhThuc
         bt.DaThayThe("DayDaiTrucX");
         Kiem.Bang(bt.TatCa.First(t => t.Ten == "DayDaiTrucX").SoLanDaDung, 0L, "thay xong → đếm lại từ 0");
 
-        // ---------- G.13.10 — sao lưu và khôi phục cấu hình (7/13) ----------
+        // ---------- G.13.10 — sao lưu và khôi phục cấu hình (hay gặp) ----------
         Kiem.MoBai("G.13.10", "Sao lưu và khôi phục cấu hình");
         var kho = new KhoCauHinh(Path.Combine(goc, "may"));
         kho.TaoNeuThieu();

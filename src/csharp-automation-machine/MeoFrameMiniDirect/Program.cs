@@ -1,8 +1,8 @@
 // -------------------------------------------------------
 // File:    Program.cs
 // Project: MeoFrameMiniDirect — bản KHÔNG interface, KHÔNG Task
-// Purpose: Cùng cỗ máy gắp-đặt, viết theo lối mà 3/13 dự án khảo sát đang
-//          dùng: gọi thẳng class cụ thể, chặn luồng, giả lập bằng cờ bool.
+// Purpose: Cùng cỗ máy gắp-đặt, viết theo lối vẫn gặp trong mã máy có
+//          sẵn: gọi thẳng class cụ thể, chặn luồng, giả lập bằng cờ bool.
 //          Đọc kèm Chương 7 mục 7.7 — mục đó phân tích cái giá phải trả.
 // -------------------------------------------------------
 using System.Diagnostics;

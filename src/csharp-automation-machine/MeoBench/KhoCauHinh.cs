@@ -9,9 +9,9 @@
 // đè mất cấu hình của cỗ máy đó — và người đi cập nhật lúc 2 giờ sáng sẽ là
 // người phát hiện ra.
 //
-// Đo trên 13 phần mềm máy thật: 294 chỗ đọc đường dẫn CẠNH FILE CHẠY (12/13
-// dự án), chỉ 6 chỗ dùng thư mục dữ liệu của hệ điều hành, và 912 đường dẫn
-// tuyệt đối gõ cứng trong mã (một dự án có 595 chỗ).
+// Trong mã máy thật, đọc đường dẫn CẠNH FILE CHẠY rất hay gặp (hàng trăm chỗ),
+// dùng thư mục dữ liệu của hệ điều hành thì rất ít, và đường dẫn tuyệt đối gõ
+// cứng trong mã cũng hay gặp (có dự án gần sáu trăm chỗ).
 //
 // Bố trí ở đây:
 //   <gốc dữ liệu>/config/   cấu hình CỖ MÁY NÀY  — không bao giờ bị cập nhật đè

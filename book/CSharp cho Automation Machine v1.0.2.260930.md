@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.2.260929 |
+| **Phiên bản** | v1.0.2.260930 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -68,10 +68,10 @@ Quét mã QR hoặc truy cập: [docs.google.com/forms/.../viewform](https://doc
 >    trích một chuẩn (SEMI E37, ISA-18.2, ISA-101, PackML/ISA-88…), sách ghi đúng số hiệu
 >    ngay tại chỗ để người đọc tự tra bản gốc — không dựng danh mục trích dẫn không kiểm
 >    chứng được.
-> 2. **Số liệu khảo sát nói rõ cỡ mẫu.** Các con số dạng "9/13 dự án có kho Git" đến từ
->    một bộ mẫu **13 phần mềm máy thật** mà tác giả đọc được mã nguồn. Đó là *"những gì
->    tồn tại thật trong bộ mẫu này"*, **không phải** tỷ lệ của toàn ngành — xem giải thích
->    đầy đủ ở Chương 1 mục 1.3.1.
+> 2. **Nhận xét về mã nguồn thật không phải thống kê ngành.** Những câu kiểu "hay gặp",
+>    "hiếm gặp" dựa trên mã nguồn của một số phần mềm máy mà tác giả tự tìm và tiếp cận
+>    được. Các dự án đó nghiêng theo nguồn tìm được, nên không đại diện cho cả ngành (xem
+>    Lời nói đầu).
 >
 > **Về tên riêng:** mọi dự án, máy móc, công ty và phần mềm tham khảo đều đã được **ẩn
 > danh**. Dự án mẫu xuyên suốt sách mang tên `MeoFrame` là tên hư cấu. Ngược lại, **tên
@@ -100,20 +100,24 @@ Người viết loại phần mềm này thường đến từ hai phía, và c�
 
 Sách này viết cho **cả hai**, và cố ý không giả định bạn thuộc phía nào.
 
-## Sách được kiểm chứng bằng mã nguồn thật, không phải bằng lý thuyết
+## Sách có đối chiếu với mã nguồn thật
 
-Điều làm sách này khác với một cuốn dịch: gần như mọi lời khuyên trong đây đều được đối
-chiếu với **13 phần mềm máy tự động hoá thật** đang hoặc đã chạy trong nhà máy điện tử —
-máy lắp ráp nhiều trạm, máy bonding, máy kiểm tra thị giác, máy hiệu chỉnh có phản hồi
-lực, và vài framework dùng chung. Tác giả đọc mã nguồn của chúng, không đọc tài liệu
-quảng cáo của chúng.
+Nhiều lời khuyên trong sách được đối chiếu với mã nguồn của một số phần mềm máy tự động hoá
+đang hoặc đã chạy trong nhà máy: máy lắp ráp nhiều trạm, máy kiểm tra thị giác, máy có phản
+hồi lực, và vài bộ khung dùng chung. Đó là những dự án tác giả tự tìm và tiếp cận được, nên
+chúng nghiêng theo mục đích tìm kiếm và theo nguồn tìm được. **Chúng không đại diện cho cả
+ngành.**
 
-Vì vậy bạn sẽ gặp trong sách những con số hơi khó chịu: chỉ **1 trong 13** dự án có
-kiểm thử tự động đang chạy; **4 trong 13** không dùng Git mà chép tay thư mục; **0 trong
-13** dùng tag để đánh dấu phiên bản đã giao. Những con số đó không nhằm chê ai. Chúng ở
-đó để bạn biết **khoảng cách giữa cách làm đúng và thực tế ngành lớn cỡ nào** — và chọn
-trận đánh của mình cho khôn ngoan, thay vì đề xuất một quy trình hoàn hảo trong tuần đầu
-đi làm rồi bị từ chối và mất luôn cơ hội cải thiện.
+Vì vậy, khi sách nói một cách làm "hay gặp" hay "hiếm gặp", hãy hiểu là *hay gặp trong những
+mã nguồn đó*. Nhận xét như vậy cho biết bạn **có thể** gặp gì khi mở một dự án có sẵn, không
+cho biết cả ngành đang làm thế nào. Các bảng trong sách dùng một thang chữ cố định, từ nhiều tới ít: *rất hay
+gặp* · *hay gặp* · *có gặp* · *hiếm gặp* · *không gặp*.
+
+Bạn sẽ gặp trong sách vài nhận xét hơi khó chịu: kiểm thử tự động rất hiếm; có dự án không
+dùng Git mà chép tay thư mục; hầu như không ai dùng tag để đánh dấu phiên bản đã giao. Những
+nhận xét đó không nhằm chê ai. Chúng ở đó để bạn thấy khoảng cách giữa cách làm đúng và những
+gì có thể đang chạy ngoài kia, rồi chọn việc cần cải thiện cho khôn ngoan, thay vì đề xuất một
+quy trình hoàn hảo trong tuần đầu đi làm rồi bị từ chối.
 
 Cũng vì vậy, sách nhiều lần nói *"đây là thứ bạn sẽ **đọc**, không phải thứ bạn nên
 **viết**"*. Một phần công việc thật của nghề này là tiếp quản mã nguồn người khác để lại.
@@ -489,7 +493,7 @@ chịu trách nhiệm cho khối IPC ở trên cùng.
 
 ---
 
-### 1.3.1 Hai kiến trúc đều phổ biến — và bộ mẫu khảo sát của cuốn sách này
+### 1.3.1 Hai kiến trúc đều phổ biến
 
 Mục trên trình bày các thành phần của một hệ PC-Based. Mục này nói về **cách chúng được ghép lại
 trong thực tế**, vì có hai kiến trúc rất khác nhau cùng phổ biến trong nhà máy điện tử, và biết mình
@@ -511,26 +515,14 @@ sẵn đội ngũ và tiêu chuẩn PLC: phần chuyển động và an toàn gi
 chứng nhận an toàn), còn C# nhận đúng những việc PLC làm dở — giao diện, xử lý ảnh, cơ sở dữ liệu,
 tích hợp hệ thống trên.
 
-> ⚠️ **Về bộ mẫu khảo sát dùng trong cuốn sách này — đọc một lần, nhớ cho mọi chương.** Nhiều chương
-> sau có các bảng "đối chiếu thực tế" trích số liệu từ **13 dự án phần mềm máy thật** mà tác giả thu
-> thập được. Những con số đó có ích, nhưng chúng đo **bộ mẫu này**, không phải toàn ngành. Ba giới hạn
-> cần biết:
+> ⚠️ **Về các ví dụ lấy từ mã nguồn thật trong sách.** Những phần mềm máy tác giả tiếp cận được
+> chủ yếu thuộc kiến trúc **A**, và chủ yếu là máy phi tiêu chuẩn của các nhà chế tạo vừa và nhỏ.
+> Nên khi sách nói "hay gặp" một cách làm như gọi thẳng SDK của card, hãy hiểu đó là chuyện của kiến
+> trúc A. Ở kiến trúc B, bức tranh khác hẳn: gần như không có lời gọi SDK nào, thay vào đó là một lớp
+> giao tiếp PLC và một bảng tag.
 >
-> 1. **Bộ mẫu nghiêng hẳn về kiến trúc A.** Các dự án thu thập được chủ yếu là máy điều khiển chuyển
->    động trực tiếp bằng C#. Vì vậy mọi kết luận dạng "phần lớn dự án gọi thẳng SDK card" phản ánh
->    **cách chọn mẫu**, không phải tỷ lệ thật của ngành. Với kiến trúc B — cũng rất phổ biến — bức
->    tranh khác hẳn: gần như không có `[DllImport]` nào, thay vào đó là một lớp giao tiếp PLC và một
->    bảng tag.
-> 2. **Chỉ nhìn được phần mã nguồn được giao.** Nhiều đội **không đóng gói mã kiểm thử cùng sản phẩm**
->    khi bàn giao cho khách hàng, nên một dự án "không thấy test" có thể vẫn có test đầy đủ trong kho
->    mã nguồn nội bộ của họ. Con số về kiểm thử ở Chương 18 vì vậy là **giới hạn dưới**, không phải
->    con số thật.
-> 3. **Không có dự án nào của hãng máy lớn phương Tây hay Nhật.** Bộ mẫu chủ yếu là máy phi tiêu chuẩn
->    của các nhà chế tạo vừa và nhỏ ở châu Á.
->
-> Cách dùng các bảng đó cho đúng: coi chúng là **"đây là những gì tồn tại thật ngoài kia"**, không
-> phải **"đây là tỷ lệ của ngành"**. Chúng có giá trị vì cho thấy điều gì **có thể** gặp và vì sao —
-> chứ không phải để kết luận cái gì phổ biến hơn cái gì.
+> Một giới hạn nữa: mã nguồn được bàn giao cho khách hàng thường **không kèm mã kiểm thử**. Một dự án
+> "không thấy kiểm thử" vẫn có thể có kiểm thử đầy đủ trong kho nội bộ của đội làm ra nó.
 
 #### Nếu bạn đang ở kiến trúc B: ranh giới nằm ở đâu
 
@@ -581,17 +573,16 @@ mục A.3).
 
 Hệ quả thiết kế quan trọng nhất: vì phần nối phần cứng là SDK riêng của **một** hãng, rủi ro phụ
 thuộc hãng là có thật và xảy ra thường xuyên — hãng ngừng bán dòng card, hoặc khách hàng thứ hai yêu
-cầu hãng khác. Đó là lý do Chương 13 nhấn mạnh đặt lớp trừu tượng ngay tại ranh giới thiết bị. Trong
-bộ mẫu khảo sát có một dự án **không** làm điều đó và phải trả giá bằng **bốn** họ card với gần
+cầu hãng khác. Đó là lý do Chương 13 nhấn mạnh đặt lớp trừu tượng ngay tại ranh giới thiết bị. Có
+phần mềm máy **không** làm điều đó và phải trả giá bằng **bốn** họ card với gần
 **16.000 dòng** code gần trùng nhau, mỗi họ một bản chép riêng.
 
 > 📌 **Còn OPC UA đứng ở đâu trong hai kiến trúc này?** Nó là chuẩn để **nối lên trên** — máy nói
 > chuyện với hệ giám sát, hệ điều độ, hoặc giữa các máy với nhau — chứ không phải cách điều khiển
 > trục của chính máy mình. Ở kiến trúc B nó là một trong các lựa chọn cho ranh giới PLC ↔ C# (đặc biệt
 > khi PLC đã có sẵn máy chủ OPC UA); ở kiến trúc A nó gần như chỉ xuất hiện ở phần tích hợp nhà máy.
-> Trong bộ mẫu khảo sát — vốn nghiêng về kiến trúc A và về máy phi tiêu chuẩn chưa nối MES qua OPC UA
-> — **không dự án nào dùng nó**, nhưng như cảnh báo ở trên, đó là đặc điểm của bộ mẫu chứ không phải
-> của ngành. Chương 14 mục 14.1.1 dạy OPC UA đầy đủ; hãy học nó khi bài toán của bạn là **tích hợp**,
+> Trong mã nguồn sách đã đọc, vốn nghiêng về kiến trúc A, OPC UA hầu như không xuất hiện; điều đó
+> nói về nguồn đã đọc, không nói về ngành. Chương 14 mục 14.1.1 dạy OPC UA đầy đủ; hãy học nó khi bài toán của bạn là **tích hợp**,
 > và học SDK card hoặc giao tiếp PLC trước khi bài toán của bạn là **điều khiển**.
 
 ---
@@ -637,7 +628,7 @@ về mặt thời gian. Nó là cách người ta mua lại tính xác định b
 | Đổi hãng servo | Đổi cấu hình PLC | Có thể phải **viết lại lớp driver** | Đổi file mô tả mạng |
 | Bàn ở đâu trong sách | Chương 14 | **Phụ lục A** + Chương 13 | Chương 14 mục 14.1.4 |
 
-Cột giữa là cột đáng lo nhất — và cũng là cột phổ biến nhất trong bộ mẫu 13 dự án của sách.
+Cột giữa là cột đáng lo nhất, và cũng là cách làm hay gặp nhất khi mở một phần mềm máy có sẵn.
 Khi C# gọi thẳng SDK của card, **tiến trình phần mềm của bạn trở thành một mắt xích trong chuỗi
 điều khiển chuyển động**. Một `NullReferenceException` không được bắt lúc đó không còn nghĩa là
 "ứng dụng bị đóng" — nó là một cỗ máy đang có trục chạy dở.
@@ -1823,7 +1814,7 @@ Một kỹ sư PLC đã có sẵn nhiều bản năng đúng. Bảng sau ánh x�
 
 > ⚠️ **Hậu quả thật khi "bit nhớ retentive" (dòng bảng trên) bị đặt nhầm chỗ:**
 > field `static` không chỉ "sống lâu" — nó còn dùng CHUNG cho MỌI instance của
-> class, bất kể có 1 hay 100 object đang tồn tại. Một dự án tham khảo có 3
+> class, bất kể có 1 hay 100 object đang tồn tại. Có phần mềm máy có 3
 > kênh giao tiếp TCP độc lập của cùng 1 robot (3 object thật, 3 vùng nhớ heap
 > khác nhau), mỗi kênh cần 1 cổng (port) riêng. Nhưng cấu hình cổng của mỗi
 > kênh lại được lưu trong 1 `struct` khai báo LỒNG bên trong class, với MỌI
@@ -2730,23 +2721,23 @@ Cách (4) là cách duy nhất biến lỗi này thành **lỗi bắt được**
 này (ngưỡng, giới hạn, quy đổi đơn vị) vào nhóm **ưu tiên kiểm thử cao nhất**, và lý do nằm ở ví dụ
 trên: nó rẻ để kiểm, và khi sai thì sai im lặng.
 
-#### Quét cả bộ mẫu: lỗi này hiếm, nhưng họ hàng của nó thì không
+#### Lỗi này hiếm, nhưng họ hàng của nó thì không
 
-Đã quét tất cả biểu thức dạng `x > A ± m && x < B ± n` trong 13 phần mềm máy của bộ mẫu. Kết quả
-trung thực: **chỉ tìm được một chỗ** như Code 3.23. Đừng đọc nó thành *"ngành này đầy điều kiện
+Tìm mọi biểu thức dạng `x > A ± m && x < B ± n` trong mã nguồn máy thật đã đọc thì **chỉ thấy
+một chỗ** như Code 3.23. Đừng đọc nó thành *"ngành này đầy điều kiện
 chết"*. Hãy đọc nó thành: **một chỗ là đủ, và nó nằm đúng ở một lớp bảo vệ.**
 
 Hai họ hàng gần của nó xuất hiện nhiều hơn hẳn, và đáng nói vì chúng cùng một bản chất — *điều kiện
 hợp lệ về cú pháp nhưng sai về ý nghĩa*:
 
-- **So sánh số thực bằng `==`: 13 chỗ, trong đó 12 chỗ nằm ở cùng một dự án.** Dạng
+- **So sánh số thực bằng `==`: ít gặp, và gần như dồn cả vào một dự án.** Dạng
   `if (viTri == 125.0)` với `viTri` là toạ độ trục đọc về từ card chuyển động. Trục dừng ở
   125.0000001 mm là chuyện bình thường; điều kiện đó đơn giản là không đúng. Cách viết đúng là so
   theo dung sai: `Math.Abs(viTri - 125.0) <= 0.01`. Đây là lỗi *xác suất* — chạy đúng chín lần rồi
   sai lần thứ mười — nên còn khó tìm hơn điều kiện chết.
-- **`== true` và `!= false` thừa: 1.049 chỗ, 13/13 dự án.** Và đây là chỗ cần công bằng: những chỗ
+- **`== true` và `!= false` thừa: rất hay gặp, hơn một nghìn chỗ.** Và đây là chỗ cần công bằng: những chỗ
   này **vô hại**. `if (dangChay == true)` chạy đúng y như `if (dangChay)`. Nêu ra để nói một điều
-  về thứ tự ưu tiên khi đọc mã người khác: đừng tiêu ngân sách review vào 1.049 chỗ rườm rà mà vô
+  về thứ tự ưu tiên khi đọc mã người khác: đừng tiêu ngân sách review vào hơn một nghìn chỗ rườm rà mà vô
   hại, hãy tiêu vào **những điều kiện ghép hai phép so sánh trên cùng một biến** — đó là chỗ duy
   nhất trong ba dạng này có thể khiến máy chạy sai.
 
@@ -2895,21 +2886,21 @@ Một nguyên tắc bao trùm cho mọi method trong điều khiển máy: **m�
 
 ### 3.4.4  Đọc hai chữ ký hàm dài — một cái gọi được, một cái không
 
-Mục 3.4.1 tới 3.4.3 nói cách viết hàm. Mục này đo **độ dài chữ ký hàm** trong 13 phần mềm máy thật và
+Mục 3.4.1 tới 3.4.3 nói cách viết hàm. Mục này xem **độ dài chữ ký hàm** trong mã nguồn máy thật và
 đọc hai chữ ký dài nhất tìm được. Điểm bất ngờ: chúng dài gần bằng nhau, nhưng **không xấu như nhau** —
 và chỗ khác nhau đó chính là bài học.
 
-Số đo trên 25.128 chữ ký hàm:
+Số đo trên hơn hai mươi lăm nghìn chữ ký hàm:
 
-**Bảng 3.6 — Độ dài chữ ký hàm trong 13 phần mềm máy thật**
+**Bảng 3.6 — Độ dài chữ ký hàm trong mã nguồn máy thật**
 
 | Chỉ tiêu | Số đo | Ghi chú |
 |---|---|---|
-| Tổng số hàm quét được | 25.128 | Chỉ tính chữ ký nằm gọn trên một dòng |
-| Hàm có **≥ 5 tham số** | 905 (3,6 %) | 13/13 dự án đều có |
-| Hàm có **≥ 8 tham số** | 275 (1,1 %) | Nhiều nhất một dự án: 97 |
-| Hàm có tham số `ref`/`out` | 908 | Nhiều nhất một dự án: 255 |
-| Hàm có **từ 2 tham số `bool` trở lên** | 121 | Nhiều nhất một dự án: 33 |
+| Tổng số hàm quét được | hơn 25.000 | Chỉ tính chữ ký nằm gọn trên một dòng |
+| Hàm có **≥ 5 tham số** | khoảng 3–4 % | Rất hay gặp |
+| Hàm có **≥ 8 tham số** | khoảng 1 % | Có dự án gần một trăm hàm như vậy |
+| Hàm có tham số `ref`/`out` | gần một nghìn | Có dự án hơn hai trăm hàm |
+| Hàm có **từ 2 tham số `bool` trở lên** | hơn một trăm | Có dự án hơn ba mươi hàm |
 | Chữ ký dài nhất tìm được | **27 tham số** | Dài nhì: 25 · dài ba: 23 |
 
 Tỷ lệ tổng thể nhỏ (3,6 %), nhưng phân bố rất lệch: hai dự án chiếm quá nửa số hàm ≥ 8 tham số. Nói
@@ -2948,7 +2939,7 @@ Bốn vấn đề, xếp theo mức độ khó chịu tăng dần:
 
 #### Chữ ký 25 tham số — dài gần bằng, nhưng khác hẳn
 
-Dự án khác trong bộ mẫu có một chữ ký 25 tham số. Cùng độ dài, nhưng:
+Một dự án khác có một chữ ký 25 tham số. Cùng độ dài, nhưng:
 
 **Code 3.26 — Chữ ký 25 tham số vẫn gọi được, vì ba lý do**
 
@@ -3261,9 +3252,9 @@ Chương 15).
 
 ---
 
-### 3.5.5  646 chỗ nuốt lỗi: đọc, đếm, rồi phân loại
+### 3.5.5  Nuốt lỗi: đọc, đếm, rồi phân loại
 
-Mục 3.5.1 nói `catch` để làm gì. Mục này đếm xem trong 13 phần mềm máy thật, người ta dùng `catch`
+Mục 3.5.1 nói `catch` để làm gì. Mục này đếm xem trong mã nguồn máy thật, người ta dùng `catch`
 để **không làm gì** ở bao nhiêu chỗ — và quan trọng hơn, phân loại xem những chỗ đó nguy hiểm tới
 đâu. Vì chúng **không nguy hiểm như nhau**, và một cuốn sách kết luận *"`catch {}` luôn luôn sai"*
 sẽ khiến bạn tiêu công sức không đúng chỗ.
@@ -3271,26 +3262,26 @@ sẽ khiến bạn tiêu công sức không đúng chỗ.
 Mẫu được đếm là khối bắt lỗi rỗng — `catch { }` hoặc `catch (Exception) { }`. Phân loại theo **nội
 dung khối `try` đứng ngay trước nó**:
 
-**Bảng 3.8 — 646 khối bắt lỗi rỗng, phân loại theo thứ được bọc**
+**Bảng 3.8 — Khối bắt lỗi rỗng, phân loại theo thứ được bọc**
 
-| Thứ nằm trong `try` | Số chỗ | Mức nguy hiểm | Vì sao |
+| Thứ nằm trong `try` | Tỉ lệ | Mức nguy hiểm | Vì sao |
 |---|---|---|---|
-| **Thiết bị / vào-ra / truyền thông** | 156 | 🔴 Cao | Lệnh xuống máy thất bại mà không ai biết — mục dưới có một ví dụ |
-| Vừa thiết bị vừa giao diện | 47 | 🔴 Cao | Trộn hai mối quan tâm, nên nuốt luôn cả lỗi thiết bị |
-| **Chỉ giao diện** (độ rộng cột, màu, vẽ lại) | 176 | 🟢 Thấp | Hỏng thì người dùng thấy ngay; không ảnh hưởng phôi |
-| Dọn dẹp (`Dispose`, `Close`, `Stop`) | 24 | 🟡 Trung bình | Bọc lúc đóng tài nguyên là **có lý** — xem callout dưới |
-| Khác (phân tích chuỗi, đọc/ghi file, tính toán) | 243 | 🟡 Trung bình | Tuỳ chỗ; nguy hiểm khi nuốt lỗi phân tích dữ liệu sản xuất |
-| **Tổng** | **646** | | 12/13 dự án có ít nhất một chỗ |
+| **Thiết bị / vào-ra / truyền thông** | khoảng 1/4 | 🔴 Cao | Lệnh xuống máy thất bại mà không ai biết — mục dưới có một ví dụ |
+| Vừa thiết bị vừa giao diện | dưới 1/10 | 🔴 Cao | Trộn hai mối quan tâm, nên nuốt luôn cả lỗi thiết bị |
+| **Chỉ giao diện** (độ rộng cột, màu, vẽ lại) | khoảng 1/4, nhóm đông nhất | 🟢 Thấp | Hỏng thì người dùng thấy ngay; không ảnh hưởng phôi |
+| Dọn dẹp (`Dispose`, `Close`, `Stop`) | vài phần trăm | 🟡 Trung bình | Bọc lúc đóng tài nguyên là **có lý** — xem callout dưới |
+| Khác (phân tích chuỗi, đọc/ghi file, tính toán) | hơn 1/3 | 🟡 Trung bình | Tuỳ chỗ; nguy hiểm khi nuốt lỗi phân tích dữ liệu sản xuất |
+| **Tổng** | **hơn 600 chỗ** | | Rất hay gặp |
 
-Hai con số cần đọc kỹ. Thứ nhất: **176 chỗ — nhóm đông nhất — chỉ bọc chuyện thẩm mỹ giao diện**,
+Hai điều cần đọc kỹ. Thứ nhất: **nhóm đông nhất chỉ bọc chuyện thẩm mỹ giao diện**,
 kiểu `dataGridView1.Columns[i].Width = …`. Bọc chúng lại rồi bỏ qua là một quyết định **phòng thủ
 hợp lý**: người vận hành thà thấy bảng xấu còn hơn thấy phần mềm chết giữa ca sản xuất. Thứ hai:
-**hai dự án gần như không dùng mẫu này** (0 chỗ và 1 chỗ), nên đây không phải chuyện bắt buộc phải
+**có dự án gần như không dùng mẫu này**, nên đây không phải chuyện bắt buộc phải
 đánh đổi để giao máy đúng hạn.
 
 #### Chỗ nguy hiểm trông như thế nào
 
-Đây là một trong 156 chỗ nhóm đỏ, viết lại và bỏ tên thật. Nó là **nhịp tim báo sống** mà máy gửi
+Đây là một chỗ thuộc nhóm đỏ, viết lại và bỏ tên thật. Nó là **nhịp tim báo sống** mà máy gửi
 lên hệ thống điều hành sản xuất của nhà máy: cứ mỗi 5 giây, đảo một bit để bên kia biết máy còn sống.
 
 **Code 3.27 — Nuốt lỗi ở chỗ đắt nhất: bit báo sống gửi lên hệ thống nhà máy**
@@ -3327,7 +3318,7 @@ rằng nó vừa rớt.**
 
 #### Bản đối chứng: bắt cùng loại lỗi, ở cùng vị trí, nhưng có nói
 
-Cũng trong bộ mẫu, một dự án khác bắt lỗi ở vòng lặp nghiệp vụ của trạm. Cùng là `catch (Exception)`
+Một dự án khác bắt lỗi ở vòng lặp nghiệp vụ của trạm. Cùng là `catch (Exception)`
 bao trùm, cùng là "không cho lỗi giết luồng", nhưng khác ở ba điểm:
 
 ```csharp
@@ -3374,8 +3365,8 @@ nó cũng không dám giữ nó.
 
 > 💡 **Một cách soát rẻ mà hiệu quả cho dự án đang có sẵn.** Đừng tìm mọi `catch {}`. Hãy tìm giao
 > của hai tập: **khối bắt lỗi rỗng** và **trong `try` có lời gọi thiết bị/truyền thông** (`Read`,
-> `Write`, `Move`, `Send`, `Connect`). Trong bộ mẫu, phép lọc đó rút 646 chỗ xuống còn **203 chỗ**
-> (156 + 47) — chưa tới một phần ba, và đó là phần duy nhất có thể làm máy chạy sai mà không ai
+> `Write`, `Move`, `Send`, `Connect`). Phép lọc đó thường rút số chỗ cần xem xuống **chưa tới một
+> phần ba**, và đó là phần duy nhất có thể làm máy chạy sai mà không ai
 > biết. Thêm một dòng log vào mỗi chỗ đó là một buổi chiều, và nó đổi hẳn khả năng chẩn đoán của
 > phần mềm.
 
@@ -3599,30 +3590,30 @@ public static class JsonConfigIO
 
 Tóm lại chiến lược file cho một dự án PC-Based Control: **Log** → text + rolling + batch; **Config** → JSON + version + atomic + backup; **Recipe/Historical** → binary (compact) hoặc JSON/CSV (dễ kiểm); **Export sản xuất** → CSV với invariant culture.
 
-### 3.6.4  Hai định dạng sách chưa nhắc mà dự án nào cũng có: INI và Excel
+### 3.6.4  Hai định dạng sách chưa nhắc mà bạn sẽ gặp rất thường: INI và Excel
 
 Mục trên bàn CSV và JSON — hai định dạng bạn **nên** chọn khi bắt đầu mới; hai mục sau bàn XML và YAML, thứ bạn sẽ gặp trong mã kế thừa. Nhưng
 khi mở một dự án máy có sẵn, hai định dạng khác mới là thứ đập vào mắt trước, và sách sẽ thiếu
 sót nếu không nói về chúng.
 
-Đếm dấu vết trong bộ mẫu 13 dự án:
+Mức độ hay gặp của từng định dạng khi mở mã nguồn máy có sẵn:
 
-**Bảng 3.9 — Định dạng dữ liệu/cấu hình thực sự gặp trong 13 phần mềm máy thật**
+**Bảng 3.9 — Định dạng dữ liệu/cấu hình hay gặp trong phần mềm máy có sẵn**
 
-| Định dạng | Số dự án | Dự án dùng nhiều nhất |
+| Định dạng | Mức độ gặp | Có dự án dùng tới |
 |---|---|---|
-| **INI** (`GetPrivateProfileString`, `*.ini`) | **13** / 13 | **591** lần |
-| **Excel** (Interop / NPOI / `.xls`) | **11** / 13 | **429** lần |
-| CSV | 13 / 13 | 119 lần |
-| SQLite | 5 / 13 | 79 lần |
+| **INI** (`GetPrivateProfileString`, `*.ini`) | **Rất hay gặp** | gần 600 chỗ |
+| **Excel** (Interop / NPOI / `.xls`) | **Rất hay gặp** | hơn 400 chỗ |
+| CSV | Rất hay gặp | hơn 100 chỗ |
+| SQLite | Có gặp | gần 80 chỗ |
 
 Đọc bảng này cùng lúc với thứ tự các mục trong chương sẽ thấy một khoảng cách đáng chú ý: định
-dạng **phổ biến nhất ngoài thực tế** lại là định dạng **ít được sách vở nhắc tới nhất**.
+dạng **hay gặp nhất trong mã có sẵn** lại là định dạng **ít được sách vở nhắc tới nhất**.
 
 #### INI — cũ, hạn chế, và vẫn là lựa chọn hợp lý cho một phần cấu hình
 
 INI là định dạng phẳng hai cấp: `[Mục]` rồi `Khoá=Giá trị`. Nó không có kiểu dữ liệu, không có
-cấu trúc lồng nhau, không có mảng. Vậy vì sao 13/13 dự án vẫn dùng?
+cấu trúc lồng nhau, không có mảng. Vậy vì sao nó vẫn hay gặp đến vậy?
 
 **Bảng 3.10 — INI so với JSON cho cấu hình máy**
 
@@ -3657,7 +3648,7 @@ một dòng INI hỏng chỉ làm mất một khoá.
 
 #### Excel — công cụ báo cáo mà nhà máy đòi, và cái giá kỹ thuật của nó
 
-11/13 dự án có dấu vết Excel, một dự án tới 429 lần. Lý do rất đơn giản và không thể tranh cãi:
+Dấu vết Excel rất hay gặp; có dự án tới hơn 400 chỗ. Lý do rất đơn giản và không thể tranh cãi:
 **nhà máy muốn báo cáo mở được bằng Excel**, vì đó là công cụ mọi người đều có và đều biết dùng.
 
 Vấn đề không nằm ở yêu cầu đó mà ở **cách đáp ứng nó**:
@@ -3969,7 +3960,7 @@ Bốn nguồn jitter/GC phổ biến nhất trong vòng quét:
 - **Chia sẻ collection với UI mà không snapshot** — UI và luồng điều khiển đọc/ghi cùng một list dẫn đến lock, contention, hoặc crash. Giải pháp: snapshot định kỳ hoặc double-buffer.
 
 > 💡 **Hiện trường làm khác: LINQ và cấp phát ngay trong mã trình tự.** Mục này tránh LINQ và cấp phát
-> "trong vòng quét". Nhưng 8/13 phần mềm máy thật dùng LINQ ngay trong các file trạm và trình tự, và
+> "trong vòng quét". Nhưng trong mã máy thật, LINQ ngay trong các file trạm và trình tự là chuyện hay gặp, và
 > phần lớn vẫn chạy ổn. Hai điều đó không mâu thuẫn, vì quy tắc phụ thuộc vào **vòng lặp chạy nhanh
 > cỡ nào**.
 >
@@ -4152,7 +4143,7 @@ Các từ khoá dưới đây ít xuất hiện trong code automation thông th�
 
 > 📌 **Bảng đầy đủ nằm ở Phụ lục E.** Bảng 3.4 chỉ liệt kê những từ khoá *ít gặp* mà bạn có thể
 > bối rối khi đọc mã kế thừa. **Phụ lục E** giải thích **toàn bộ 77 từ khoá dành riêng** và nhóm
-> từ khoá ngữ cảnh, kèm tần suất đo được trong 13 phần mềm máy thật và mười hai cặp từ khoá hay
+> từ khoá ngữ cảnh, kèm mức độ hay gặp trong mã máy thật và mười hai cặp từ khoá hay
 > bị dùng nhầm lẫn nhau.
 
 **Bảng 3.4 — Từ khoá C# ít dùng trong automation**
@@ -4615,28 +4606,23 @@ Lợi ích rất cụ thể: màn hình Jog tay chỉ cần `IMovable + IEnablea
 
 ---
 
-### 4.2.4  Đối chiếu thực tế — interface được dùng nhiều đến đâu
+### 4.2.4  Khi mở một dự án có sẵn: interface được dùng nhiều đến đâu
 
 Mục 4.2.2 nói interface là "trái tim của hệ thống tốt". Đó là lời khuyên đúng, nhưng nếu bạn mở một
 dự án máy thật ngày mai và **không thấy interface nào**, đừng vội kết luận đội cũ làm ẩu. Số liệu
 dưới đây giúp bạn đọc tình huống cho đúng.
 
-Đếm số file có khai báo `interface IXxx` trong **13 dự án phần mềm máy thật**:
+Số file có khai báo `interface IXxx` trong các dự án máy thật chia thành hai nhóm rất rõ:
 
 **Bảng 4.4b — Mức dùng interface, sắp theo nhóm**
 
 | Nhóm dự án | Số file khai báo interface | Đặc điểm chung |
 |---|---|---|
-| **Ba dự án dạng *framework*** (viết để dùng lại cho nhiều máy) | **82, 54, 41** | Có tầng trừu tượng thiết bị rõ ràng |
-| **Mười dự án dạng *một máy cụ thể*** | **0 – 8** (năm dự án có **đúng 0**) | Gọi thẳng SDK/card từ nơi cần dùng |
+| **Dự án dạng *framework*** (viết để dùng lại cho nhiều máy) | **vài chục file** | Có tầng trừu tượng thiết bị rõ ràng |
+| **Dự án dạng *một máy cụ thể*** | **từ 0 tới vài file**; không ít dự án có **đúng 0** | Gọi thẳng SDK/card từ nơi cần dùng |
 
 
-> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
-> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
-> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
-> mục 1.3.1.
-
-Sự phân hoá này rất rõ, và nó **không ngẫu nhiên**. Ba dự án nhiều interface nhất cũng chính là:
+Sự phân hoá này rất rõ, và nó **không ngẫu nhiên**. Những dự án nhiều interface nhất cũng chính là:
 
 - **dự án duy nhất có kiểm thử tự động đang chạy** (Chương 18 mục 18.6.4), và
 - **ba dự án duy nhất dùng Repository** để tách truy cập dữ liệu (Chương 11 mục 11.3.4).
@@ -5020,15 +5006,15 @@ axis.PositionChanged += (sender, e) => hmi.UpdatePosition(e.AxisId, e.Position);
 
 ### 4.4.4  Một số liệu bất ngờ: `event` phổ biến hơn `interface`
 
-Cùng khảo sát trên, đếm số file có dùng `event`/`EventHandler`:
+Đếm theo cùng cách, lần này với `event`/`EventHandler`:
 
-**Bảng 4.5b — `event` so với `interface` trong cùng 13 dự án**
+**Bảng 4.5b — `event` so với `interface` trong mã máy có sẵn**
 
-| | Số dự án dùng ở mức đáng kể | Ghi chú |
+| | Mức độ gặp | Ghi chú |
 |---|---|---|
-| `List<T>` / `Dictionary<K,V>` | **13 / 13** | Không dự án nào không dùng — generic collection là nền, không cần bàn |
-| **`event`** | **13 / 13** | Có dự án dùng `event` trong **132 file** nhưng khai báo **0 interface** |
-| `interface` | 3 / 13 ở mức cao | Xem Bảng 4.4b |
+| `List<T>` / `Dictionary<K,V>` | **Rất hay gặp** | Dự án nào cũng dùng — generic collection là nền, không cần bàn |
+| **`event`** | **Rất hay gặp** | Có dự án dùng `event` trong **132 file** nhưng khai báo **0 interface** |
+| `interface` | Hiếm gặp ở mức cao | Xem Bảng 4.4b |
 
 Điều này đáng chú ý vì nó ngược với thứ tự ưu tiên mà nhiều tài liệu lập trình ngầm định. Với phần
 mềm máy, `event` là **cơ chế phổ biến nhất** để nối các phần với nhau, và lý do rất tự nhiên: máy là
@@ -5425,7 +5411,7 @@ không luồng nào. Đó là khác biệt duy nhất về bản chất — mọ
 > ⚠️ **Cái thật sự nguy hiểm không phải lối chặn, mà là TRỘN hai lối.** Một hàm đồng bộ gọi thư
 > viện trả về `Task` rồi `.Result` để lấy kết quả — đó là lúc bạn có đủ nhược điểm của cả hai
 > phía: vẫn chiếm luồng như lối chặn, **và** có nguy cơ treo cứng như mục 5.1.4 mô tả. Mục 5.7
-> cho thấy đây không phải nguy cơ lý thuyết: trong bộ mẫu khảo sát có một dự án **không có một
+> cho thấy đây không phải nguy cơ lý thuyết: có dự án **không có một
 > chữ `async` nào nhưng gọi `.Result` hơn hai trăm lần**.
 
 ---
@@ -5536,7 +5522,7 @@ UploadLogAsync().Forget(_logger);
 `ContinueWith` vẫn chạy được nhưng dài dòng và ít phổ biến trong .NET 6+ — `Task.Run` với async lambda gọn và rõ hơn.
 
 > 📌 **Ca thứ hai mà `async void` là bắt buộc: ghi đè phương thức khởi động của ứng dụng.** Trong một
-> dự án tham khảo, toàn bộ trình tự khởi động — nạp cơ sở dữ liệu, nạp công thức, mở dịch vụ truyền
+> dự án có sẵn, toàn bộ trình tự khởi động — nạp cơ sở dữ liệu, nạp công thức, mở dịch vụ truyền
 > thông — nằm trong `protected override async void OnStartup(StartupEventArgs e)`. Chữ ký của phương
 > thức được ghi đè trả `void`, nên không có cách nào khác. Nhưng hệ quả thì y hệt: **mọi ngoại lệ sau
 > lệnh `await` đầu tiên trở thành ngoại lệ không ai bắt**, và cái người dùng thấy là phần mềm tắt ngay
@@ -5840,13 +5826,13 @@ Bản chất không đổi so với vòng polling PLC — chỉ khác cú pháp:
 - **Dừng Thread**: không bao giờ `Abort()` (đã bị loại bỏ ở .NET hiện đại). Thiết kế thread **tự kết thúc** qua tín hiệu hủy (`CancellationToken` hoặc cờ), giống Logger ở Chương 3 dùng `CompleteAdding()`.
 
 > 💡 **Hiện trường làm khác: `Thread.Sleep` trên luồng của trình tự.** Mục 5.1.4 cảnh báo không dùng
-> `Thread.Sleep`. Vậy mà 11/13 phần mềm máy thật vẫn dùng, có dự án hơn 330 lần. Phần lớn không sai:
+> `Thread.Sleep`. Vậy mà trong mã máy thật nó rất hay gặp, có dự án hơn 330 lần. Phần lớn không sai:
 > trong một chương trình **đồng bộ**, mỗi trình tự chạy trên luồng riêng của nó (mục 5.7), và
 > `Thread.Sleep` chỉ làm luồng đó chờ, không ảnh hưởng ai khác.
 >
 > Cảnh báo ở 5.1.4 đúng ở ba chỗ, và cả ba vẫn đúng với chương trình đồng bộ:
-> - **Trên luồng giao diện**: màn hình đứng hình suốt thời gian ngủ. Mục G.15.2 đếm được 966 lần như
->   vậy trong các file giao diện của mã thật.
+> - **Trên luồng giao diện**: màn hình đứng hình suốt thời gian ngủ. Mục G.15.2 cho thấy điều này rất hay
+>   gặp trong các file giao diện của mã thật.
 > - **Trong mã `async`**: dùng `await Task.Delay(ms, ct)`. `Thread.Sleep` giữ chết một luồng dùng
 >   chung của ThreadPool.
 > - **Làm thuốc chữa lỗi**: `Sleep(500)` thêm vào "cho hết lỗi" chỉ che một lỗi tranh chấp (Phụ lục J,
@@ -5857,7 +5843,7 @@ Bản chất không đổi so với vòng polling PLC — chỉ khác cú pháp:
 
 > 🔍 **Đào sâu thêm — vì sao code cũ lại đầy `Thread.Abort()`, và cái giá cuối cùng.** Gần như không
 > ai chọn `Abort()` một cách có chủ ý; nó là thứ người ta **buộc phải dùng khi cơ chế dừng hợp tác đã
-> hỏng từ trước**. Chuỗi nhân-quả quan sát được trong một dự án tham khảo:
+> hỏng từ trước**. Chuỗi nhân-quả quan sát được trong một dự án có sẵn:
 >
 > 1. Tác giả chọn cơ chế dừng dạng **trả về `bool`** — một hàm `IsExit()` mà mỗi bước của quy trình
 >    phải tự gọi và tự kiểm tra (đúng phương án mà Chương 3 mục 3.5.4 đã phân tích đánh đổi).
@@ -5952,8 +5938,8 @@ private async void OnPollTimerTick(object? sender, EventArgs e)
 Hai nguyên tắc xương máu khi dùng lock: **giữ lock càng ngắn càng tốt**, và **tuyệt đối không lock quanh I/O** (đọc PLC, ghi DB) — I/O có thể treo lâu, khoá luôn mọi luồng khác đang chờ lock đó.
 
 > 💡 **Hiện trường làm khác: `lock` bao quanh giao tiếp thiết bị.** Câu trên nói tuyệt đối không `lock`
-> quanh I/O. Trong 13 phần mềm máy thật, 7 dự án có tổng cộng 191 chỗ `lock` bao quanh lệnh đọc/ghi
-> PLC hoặc cổng nối tiếp. Nhiều chỗ trong số đó **đúng**.
+> quanh I/O. Trong mã máy thật, `lock` bao quanh lệnh đọc/ghi PLC hoặc cổng nối tiếp lại hay gặp,
+> có dự án tới hàng chục chỗ. Nhiều chỗ trong số đó **đúng**.
 >
 > Lý do: một cổng nối tiếp hay một kết nối tới PLC thường chỉ xử lý được **một giao dịch mỗi lúc**: gửi
 > lệnh, rồi đọc trả lời. Nếu hai luồng cùng gửi, trả lời của lệnh này có thể bị đọc nhầm thành trả lời
@@ -6110,7 +6096,7 @@ tránh nhầm với tiến trình khác trùng tên, phức tạp hơn `Mutex` m
 > thường. Kết quả đúng bằng thứ ta muốn tránh: hai tiến trình cùng mở kết nối tới card và PLC. Với
 > phần mềm điều khiển máy, gần như luôn phải là `Global\`.
 >
-> **2. Tên phải DUY NHẤT trên toàn máy.** Tên Mutex thật gặp trong các dự án tham khảo: một dự án
+> **2. Tên phải DUY NHẤT trên toàn máy.** Tên Mutex thật từng gặp: một dự án
 > dùng đúng chuỗi `"AA"`, một dự án dùng `"se_base"`, một dự án dùng tên sản phẩm, và một dự án dùng
 > `Global\` kèm một **GUID**. Chỉ dự án cuối là an toàn. Tên chung chung hỏng theo hai chiều, và
 > chiều thứ hai khó chẩn đoán hơn nhiều: một phần mềm khác trên cùng máy tình cờ đặt trùng tên sẽ
@@ -6350,23 +6336,23 @@ Dấu `?` trên kiểu mang ý nghĩa thiết kế rõ ràng: `IMotionDriver?` �
 | Chờ cái nào xong trước / timeout | `Task.WhenAny` |
 | Cần huỷ thao tác | `CancellationToken` |
 
-## 5.7  Đối chiếu thực tế ngành — phần lớn code máy không dùng async
+## 5.7  Khi mở một dự án có sẵn: nhiều phần mềm máy không dùng async
 
-Cả chương này dạy `async/await`. Trước khi khép lại, cần một đoạn thẳng thắn: **phần lớn phần
-mềm máy ngoài thực tế không viết như vậy**, và biết trước điều đó quan trọng hơn là ngạc nhiên
+Cả chương này dạy `async/await`. Trước khi khép lại, cần nói rõ: **rất nhiều phần
+mềm máy có sẵn không viết như vậy**, và biết trước điều đó quan trọng hơn là ngạc nhiên
 khi mở dự án đầu tiên ra.
 
-Đếm số lần xuất hiện của từng từ khoá trong mã nguồn của 13 dự án máy thật:
+Khi mở mã nguồn máy có sẵn, đây là những gì hay gặp:
 
-**Bảng 5.3 — Lối viết bất đồng bộ trong 13 phần mềm máy thật**
+**Bảng 5.3 — Lối viết bất đồng bộ trong phần mềm máy có sẵn**
 
-| Nhóm | Số dự án | Ghi chú |
+| Nhóm | Mức độ gặp | Ghi chú |
 |---|---|---|
-| **Không có một chữ `async` nào** | **4** / 13 | Chặn hoàn toàn, chu trình chạy trên luồng riêng |
-| Dùng lác đác (dưới 70 lần `await` trong cả dự án) | **7** / 13 | Thường chỉ ở vài chỗ mới viết sau này |
-| **Dùng như kiến trúc chính** (trên 1.000 lần `await`) | **2** / 13 | Và cả hai đều là dự án mang dáng dấp *framework* dùng lại nhiều máy |
-| Có `Thread.Sleep` | **11** / 13 | Dự án nhiều nhất: hơn 330 lần |
-| Có `.Result` hoặc `.Wait()` | **12** / 13 | Xem cảnh báo dưới đây |
+| **Không có một chữ `async` nào** | **Có gặp** | Chặn hoàn toàn, chu trình chạy trên luồng riêng |
+| Dùng lác đác (dưới 70 lần `await` trong cả dự án) | **Hay gặp** | Thường chỉ ở vài chỗ mới viết sau này |
+| **Dùng như kiến trúc chính** (trên 1.000 lần `await`) | **Hiếm gặp** | Thường là dự án mang dáng dấp *framework* dùng lại nhiều máy |
+| Có `Thread.Sleep` | **Rất hay gặp** | Dự án nhiều nhất: hơn 330 lần |
+| Có `.Result` hoặc `.Wait()` | **Rất hay gặp** | Xem cảnh báo dưới đây |
 
 Ba điều đọc ra được, và cả ba đều đi ngược trực giác của người mới học async:
 
@@ -6381,7 +6367,7 @@ giữa chừng dựng bằng tay**: một lớp cờ dừng, một luồng canh 
 rác mà **không ai nhắc bạn nếu quên**. Mục 5.3.1 đã kể chuyện một dự án quên đúng chuyện đó ở
 một file 2.067 dòng.
 
-**3. Con số đáng lo nhất là 12/13 có `.Result`.** Trong đó có một dự án **không có một chữ
+**3. Điều đáng lo nhất là `.Result` rất hay gặp.** Trong đó có một dự án **không có một chữ
 `async` nào nhưng gọi `.Result` hơn hai trăm lần** — nghĩa là nó gọi thư viện của hãng (vốn trả
 về `Task`) rồi chặn lại để lấy kết quả. Đây đúng là cái bẫy ở mục 5.1.4, và nó không phải lựa
 chọn kiến trúc mà là **hệ quả của việc buộc phải dùng một thư viện async trong một chương trình
@@ -6728,25 +6714,20 @@ cloud — nhưng không bao giờ ở lõi điều khiển máy.
 
 ---
 
-### 6.1.6  Đối chiếu thực tế — ba mô hình đó thật sự được dùng thế nào
+### 6.1.6  Khi mở một dự án có sẵn: ba mô hình đó được dùng thế nào
 
-Mục 6.1.2 trình bày ba mô hình lập trình trong điều khiển máy. Mục này cho biết tỷ lệ thật, đo trên
-**13 dự án phần mềm máy đang hoặc đã chạy sản xuất** trong nhà máy điện tử.
+Mục 6.1.2 trình bày ba mô hình lập trình trong điều khiển máy. Mục này cho biết
+chúng hay gặp tới đâu trong mã nguồn máy thật.
 
-**Bảng 6.4b — Phong cách xử lý thời gian và đồng thời trong 13 dự án thật**
+**Bảng 6.4b — Phong cách xử lý thời gian và đồng thời trong mã máy có sẵn**
 
-| Kỹ thuật | Số dự án dùng | Nhận xét |
+| Kỹ thuật | Mức độ gặp | Nhận xét |
 |---|---|---|
-| **`Thread.Sleep`** | **12 / 13** | Gần như phổ quát — kể cả trong các dự án hiện đại |
-| **Luồng riêng** (`new Thread` / `Task.Run`) | **13 / 13** | Mọi dự án đều có luồng nền riêng cho quy trình |
-| **`Timer`** | **13 / 13** | Dùng cho làm tươi giao diện và quét trạng thái định kỳ |
-| **`async` / `await`** | **3 / 13 ở mức đáng kể** (104, 97, 27 file); **năm dự án dùng ĐÚNG 0** | Phân hoá rất mạnh |
+| **`Thread.Sleep`** | **Rất hay gặp** | Gần như phổ quát — kể cả trong các dự án hiện đại |
+| **Luồng riêng** (`new Thread` / `Task.Run`) | **Rất hay gặp** | Dự án nào cũng có luồng nền riêng cho quy trình |
+| **`Timer`** | **Rất hay gặp** | Dùng cho làm tươi giao diện và quét trạng thái định kỳ |
+| **`async` / `await`** | **Hiếm gặp ở mức đáng kể**; không ít dự án **không dùng lần nào** | Phân hoá rất mạnh |
 
-
-> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
-> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
-> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
-> mục 1.3.1.
 
 Ba kết luận, và cái thứ ba là quan trọng nhất:
 
@@ -7299,7 +7280,7 @@ loại cảm biến/dây cáp có đặc tính rung khác nhau.
 > từ động cơ, do rung cơ khí, do chính bộ chuyển đổi. Nếu đem giá trị thô đi so ngưỡng, kết quả phán
 > định sẽ nhảy qua nhảy lại ở vùng biên.
 >
-> Ba bộ lọc thường gặp, xếp theo độ phức tạp — và trong một dự án tham khảo, cả ba đều tồn tại như ba
+> Ba bộ lọc thường gặp, xếp theo độ phức tạp — và có phần mềm máy cho cả ba cùng tồn tại như ba
 > lựa chọn cấu hình được cho từng kênh đo:
 >
 > | Bộ lọc | Làm gì | Mạnh ở | Yếu ở |
@@ -7961,7 +7942,7 @@ IPlcPort` mới và đổi đăng ký trong DI container.
 > ⚠️ **Trường hợp thứ ba, dễ bị bỏ sót khi review: interface đúng chuẩn tồn
 > tại, có cài đặt đúng — nhưng consumer vẫn bind vào KIỂU CỤ THỂ.** Khác hẳn
 > 2 mô hình ghép nối ở trên (qua interface hành vi thật, hoặc qua kiểu dữ
-> liệu chung), một dự án tham khảo cho thấy 1 biến thể tinh vi hơn: `IPlcPort`
+> liệu chung), có dự án cho thấy 1 biến thể tinh vi hơn: `IPlcPort`
 > tồn tại đúng hình dạng, MỘT cài đặt thật (`ModbusPlcAdapter`) implement nó
 > đầy đủ, đúng chuẩn — nhưng nơi sử dụng thật duy nhất tìm được trong toàn bộ
 > mã nguồn lại khai báo field kiểu `ModbusPlcAdapter` cụ thể
@@ -9176,8 +9157,8 @@ sẽ mở rộng nó:
 
 ## 7.6  Cùng cỗ máy đó, viết không dùng Task
 
-Chương trình ở mục 7.5 dùng `async/await` xuyên suốt. Nhưng như mục 5.7 cho thấy, **phần lớn
-phần mềm máy ngoài thực tế không viết như vậy** — 4 trong 13 dự án khảo sát không có một chữ
+Chương trình ở mục 7.5 dùng `async/await` xuyên suốt. Nhưng như mục 5.7 cho thấy, **rất nhiều
+phần mềm máy có sẵn không viết như vậy** — có dự án không có lấy một chữ
 `async` nào. Nếu bạn đến từ thế giới đó, hoặc sắp tiếp quản một dự án như vậy, mục này viết lại
 **đúng cỗ máy đó theo lối chặn** để bạn có hai bản đặt cạnh nhau.
 
@@ -9334,8 +9315,8 @@ Mục 7.6 bỏ `Task`. Mục này bỏ nốt thứ còn lại: **interface**. L�
 cách rất nhiều phần mềm máy thật đang viết, và người đọc nên gặp nó ở đây trước khi gặp nó ở
 hiện trường.
 
-Con số trong bộ mẫu 13 dự án: **5 dự án không có một `interface` nào** trong toàn bộ mã nguồn,
-và **3 trong số đó không có cả `async` lẫn `interface`** — hai lựa chọn này đi cùng nhau, vì
+Trong mã máy có sẵn, **dự án không có một `interface` nào** không hiếm,
+và nhiều dự án trong số đó **cũng không có `async`** — hai lựa chọn này đi cùng nhau, vì
 chúng đến từ cùng một tư duy: *viết thẳng thứ cần làm, đừng thêm tầng nào ở giữa*.
 
 ### 7.7.1  Nói điều khó nghe trước: bản này NGẮN NHẤT
@@ -9458,7 +9439,7 @@ nhận ra.
 
 ### 7.7.3  Vậy khi nào lối này chấp nhận được
 
-Năm dự án trong bộ mẫu chọn lối này và chúng **vẫn đang chạy trong nhà máy**. Nói rằng chúng sai
+Nhiều phần mềm máy chọn lối này và chúng **vẫn đang chạy trong nhà máy**. Nói rằng chúng sai
 là không trung thực. Lối viết thẳng hợp lý khi **cả năm điều** dưới đây cùng đúng:
 
 | Điều kiện | Vì sao |
@@ -10060,8 +10041,7 @@ khiển.
 Mục 8.1.1 nói vòng lặp thông điệp là thứ giữ cho giao diện sống. Mục này nói về hàm mà người ta gọi
 khi vòng lặp đó **chết**, và vì sao nó tạo ra một loại lỗi khó tìm hơn hẳn thứ nó chữa.
 
-Đếm trong 13 phần mềm máy thật của bộ mẫu: `Application.DoEvents()` xuất hiện **99 lần ở 6 trong 13
-dự án**, riêng một dự án dùng **78 lần**. Không phải chuyện hiếm — đây là một trong những phản xạ
+Trong mã máy có sẵn, `Application.DoEvents()` **khá hay gặp**, có dự án dùng tới **78 lần**. Không phải chuyện hiếm — đây là một trong những phản xạ
 phổ biến nhất của người viết phần mềm máy bằng WinForms.
 
 #### Vì sao người ta gọi nó, và lời giải thích đó đúng
@@ -10135,7 +10115,7 @@ Ba hệ quả, và hệ quả thứ ba là thứ khiến lỗi này rất đắt
 > *"chỉ có một luồng nên không cần đồng bộ"* đều sai. Hàm của bạn đơn giản là **bị gọi lại trước khi
 > lần gọi trước kết thúc**.
 
-Hai chỗ dùng thật trong bộ mẫu cho thấy nó lan xa tới đâu khi đã thành phản xạ: một chỗ đặt
+Hai chỗ dùng thật cho thấy nó lan xa tới đâu khi đã thành phản xạ: một chỗ đặt
 `DoEvents()` trong **vòng lặp đổi số thập phân sang nhị phân** — một phép tính thuần tuý chạy trong
 vài micro-giây, không có gì để chờ; một chỗ khác đặt nó ở dòng đầu của `while (true)` trong hàm đọc
 phản hồi từ một phiên đăng nhập từ xa. Ở chỗ thứ nhất, nó chỉ làm chậm và mở thêm cửa cho tái nhập,
@@ -10175,20 +10155,20 @@ nghiệp, tỉ lệ này thường **không phải 100 %**, và lý do rất đ�
 chữ nhỏ quá nên chỉnh cho dễ đọc, hoặc bản Windows cài sẵn theo máy đã đặt sẵn 125 %. Không ai báo
 cho người viết phần mềm.
 
-Đo trong bộ mẫu — và con số này gây bất ngờ:
+Trong mã máy có sẵn, kết quả gây bất ngờ:
 
-**Bảng 8.8 — Khai báo nhận biết DPI trong 13 phần mềm máy thật**
+**Bảng 8.8 — Khai báo nhận biết DPI trong phần mềm máy có sẵn**
 
-| Tình trạng | Số dự án |
+| Tình trạng | Mức độ gặp |
 |---|---|
-| **Không có file manifest nào** (nên hệ điều hành coi là *không nhận biết DPI*) | **10** / 13 |
-| Có manifest khai báo `dpiAware` | 2 / 13 |
-| Gọi API đặt chế độ DPI trong mã (`SetProcessDpiAwareness`, `HighDpiMode`…) | **0** / 13 |
-| Có đặt `AutoScaleMode` trên form | 6 / 13 |
+| **Không có file manifest nào** (nên hệ điều hành coi là *không nhận biết DPI*) | **Rất hay gặp** |
+| Có manifest khai báo `dpiAware` | Hiếm gặp |
+| Gọi API đặt chế độ DPI trong mã (`SetProcessDpiAwareness`, `HighDpiMode`…) | **Không gặp** |
+| Có đặt `AutoScaleMode` trên form | Khoảng một nửa |
 
 #### Ba chuyện khác nhau xảy ra, tuỳ vào khai báo
 
-**1. Không khai báo gì (10/13 dự án).** Hệ điều hành coi ứng dụng là *không nhận biết DPI*, và xử lý
+**1. Không khai báo gì (trường hợp hay gặp nhất).** Hệ điều hành coi ứng dụng là *không nhận biết DPI*, và xử lý
 bằng cách **phóng to ảnh bitmap của cửa sổ**. Kết quả ở 150 %:
 
 - Ứng dụng tin rằng nó đang chạy trên màn hình **1280×720**, không phải 1920×1080. Mọi con số bố cục
@@ -10485,7 +10465,7 @@ một event handler khác, tick của Timer bị trì hoãn cho đến khi hàng
 > UI qua `Invoke`/`BeginInvoke` như mục 8.2.3.
 
 > ⚠️ **Bẫy thật — chọn nhầm class Timer khiến phải tự marshal thủ công khắp
-> nơi:** một dự án tham khảo dùng `System.Timers.Timer` (namespace
+> nơi:** có dự án dùng `System.Timers.Timer` (namespace
 > `System.Timers`, KHÁC `System.Windows.Forms.Timer` dù tên method giống hệt
 > nhau) để cập nhật trạng thái trục lên UI mỗi vài trăm mili-giây. Sự kiện
 > `Elapsed` của `System.Timers.Timer` chạy trên một luồng ThreadPool — không
@@ -12037,24 +12017,24 @@ hệ thống cũ — không viết mới bằng nó.
 
 ---
 
-### 9.2.5 Đối chiếu thực tế — các dự án máy thật đang dùng gì
+### 9.2.5 Khi mở một dự án có sẵn: các dự án máy WPF đang dùng gì
 
-Khuyến nghị ở mục 9.2.4 không chỉ dựa trên đặc điểm kỹ thuật. Khảo sát các dự án
-phần mềm máy tự động hoá thật có giao diện WPF cho kết quả như sau:
+Khuyến nghị ở mục 9.2.4 không chỉ dựa trên đặc điểm kỹ thuật. Trong các dự án
+máy có giao diện WPF đã đọc, các lựa chọn MVVM như sau:
 
 **Bảng 9.3b — Lựa chọn MVVM trong các dự án máy WPF thật**
 
-| Cách làm | Số dự án | Ghi chú |
+| Cách làm | Mức độ gặp | Ghi chú |
 |---|---|---|
-| **CommunityToolkit.Mvvm** | 2 | Cả hai đều là dự án .NET 8 mới; một dự án dùng `[ObservableProperty]` trong **160 file** và `RelayCommand` trong 63 file |
-| **Prism + DryIoc** | 1 | Framework dùng chung cho nhiều máy — đúng trường hợp Bảng 9.2 nói nên chọn Prism |
-| **Tự viết `INotifyPropertyChanged`** | 1 | Dự án cũ hơn, không dùng thư viện MVVM nào |
-| **MVVM Light** | 0 | Không dự án nào dùng — khớp với khuyến nghị "không viết mới bằng nó" |
+| **CommunityToolkit.Mvvm** | Hay gặp ở dự án mới | Các dự án .NET 8 mới; có dự án dùng `[ObservableProperty]` trong **160 file** và `RelayCommand` trong 63 file |
+| **Prism + DryIoc** | Có gặp | Framework dùng chung cho nhiều máy — đúng trường hợp Bảng 9.2 nói nên chọn Prism |
+| **Tự viết `INotifyPropertyChanged`** | Có gặp | Dự án cũ hơn, không dùng thư viện MVVM nào |
+| **MVVM Light** | Không gặp | Khớp với khuyến nghị "không viết mới bằng nó" |
 
-Ba điều xác nhận được từ số liệu này:
+Ba điều rút ra:
 
 - **Khuyến nghị "mặc định dùng CommunityToolkit.Mvvm cho màn hình WPF mới" khớp với
-  thực tế**: đó là lựa chọn của cả hai dự án hiện đại trong nhóm khảo sát.
+  các dự án mới**: đó là lựa chọn của các dự án .NET mới đã đọc.
 - **Prism không sai, nhưng đúng phạm vi hẹp** — dự án dùng Prism là một *framework
   dùng chung cho nhiều máy*, tức là đúng tình huống "nhiều module độc lập" mà Bảng
   9.2 mô tả, chứ không phải một máy đơn lẻ.
@@ -12890,7 +12870,7 @@ Hai chi tiết trong `OperatorChoice` không được bỏ:
 
 Máy tính công nghiệp trong xưởng thường **không có bàn phím**, hoặc có nhưng nằm trong tủ điện khoá
 lại. Mọi ô nhập số và nhập chữ trên giao diện vì vậy phải mở một **bàn phím ảo** khi người dùng chạm
-vào. Đây là thành phần nhỏ nhưng có mặt trong **mọi** dự án tham khảo có màn hình cảm ứng, và nó có
+vào. Đây là thành phần nhỏ nhưng có mặt ở hầu hết phần mềm máy có màn hình cảm ứng, và nó có
 nhiều quyết định thiết kế hơn vẻ ngoài.
 
 **Ba loại bàn phím ảo, đừng dùng một loại cho mọi chỗ:**
@@ -12904,7 +12884,7 @@ nhiều quyết định thiết kế hơn vẻ ngoài.
 **Bốn điều làm nên một bàn phím ảo dùng được:**
 
 **1. Hiển thị giá trị CŨ bên cạnh giá trị đang nhập.** Người vận hành cần biết mình đang thay đổi từ
-đâu sang đâu. Một dự án tham khảo làm đúng điều này — có hai ô, một ô "hiện tại" và một ô "giá trị
+đâu sang đâu. Có phần mềm máy làm đúng điều này — có hai ô, một ô "hiện tại" và một ô "giá trị
 mới" — và đó là chi tiết nhỏ nhưng ngăn được loại lỗi phổ biến nhất: sửa nhầm ô, hoặc gõ tiếp vào
 giá trị cũ thay vì thay thế nó.
 
@@ -12913,7 +12893,7 @@ bao nhiêu đến bao nhiêu, và **từ chối ngay** khi người dùng bấm 
 rõ dải hợp lệ. Nếu để giá trị sai đi tiếp vào tầng dưới, nơi bắt được nó sẽ là một alarm khó hiểu
 giữa chu kỳ, hoặc tệ hơn là không ai bắt.
 
-> ⚠️ **Đây là chỗ dễ làm dở nhất, và có ví dụ thật.** Trong một dự án tham khảo, lớp bàn phím số **có
+> ⚠️ **Đây là chỗ dễ làm dở nhất, và có ví dụ thật.** Trong một dự án có sẵn, lớp bàn phím số **có
 > sẵn hai trường `m_minValue`/`m_maxValue`** nhưng hàm đặt giá trị cho chúng **bị comment lại** — tức
 > là ý định kiểm tra dải đã có, nhưng chưa bao giờ được nối vào. Kết quả: một ô nhập trông như có
 > kiểm tra, thực tế nhận mọi giá trị. Khi tiếp quản một dự án, đây là loại chi tiết đáng kiểm tra
@@ -12931,7 +12911,7 @@ hơn nữa vì người dùng bấm nhanh và liên tiếp.
 
 > 💡 **Đừng tự viết logic xử lý phím từ đầu cho mỗi màn hình.** Nghe đơn giản, nhưng xử lý chuỗi khi
 > gõ có nhiều trường hợp biên hơn dự đoán: xoá lùi tới khi rỗng, dấu âm bấm hai lần, dấu thập phân
-> thứ hai, chuỗi chỉ có `"-"` hoặc `"."`, số `0` đứng đầu. Trong dự án tham khảo, riêng phần này đã
+> thứ hai, chuỗi chỉ có `"-"` hoặc `"."`, số `0` đứng đầu. Trong dự án đó, riêng phần này đã
 > chiếm hơn trăm dòng — và đó là **một** bàn phím. Viết **một** lớp dùng chung, kiểm thử nó cho kỹ
 > (đây đúng là loại logic thuần dễ viết test nhất — Chương 18, bậc 2), rồi mọi màn hình dùng lại.
 
@@ -13141,7 +13121,7 @@ mà vì **mỗi nút thừa là một nút bấm nhầm được**, và vì mộ
 được nút Dừng nhanh hơn.
 
 > ⚠️ **Nút Bắt đầu phải có điều kiện tiên quyết, và điều kiện đó không được phép "tạm bỏ".** Trong một
-> dự án tham khảo, hàm xử lý nút Bắt đầu kiểm tra máy đã về gốc xong chưa — đúng và cần. Nhưng ngay
+> dự án có sẵn, hàm xử lý nút Bắt đầu kiểm tra máy đã về gốc xong chưa — đúng và cần. Nhưng ngay
 > dưới đó, đoạn kiểm tra an toàn trước khi chuyển động **bị chú thích lại toàn bộ** và ở nguyên như vậy
 > trong mã nguồn giao cho khách. Gần như chắc chắn nó bị tắt tạm lúc chạy thử rồi không ai bật lại.
 >
@@ -14297,10 +14277,10 @@ người viết chỉ nghĩ tới trường hợp thuận lợi.
 
 #### 1. Menu chuột phải — nơi cất chức năng mà một nửa người dùng không với tới
 
-Khảo sát bộ mẫu cho một con số bất ngờ: **11/13 dự án có dùng menu chuột phải**. Bất ngờ hơn là
+Một điều bất ngờ khi đọc mã máy có sẵn: **menu chuột phải rất hay gặp**. Bất ngờ hơn là
 những gì nằm trong đó — không phải *sao chép* hay *dán*, mà là:
 
-**Bảng 10.2l — Những gì thực sự nằm trong menu chuột phải của các dự án khảo sát**
+**Bảng 10.2l — Những gì thực sự nằm trong menu chuột phải của phần mềm máy**
 
 | Nhóm | Mục menu tìm thấy (đã dịch) | Nhận xét |
 |---|---|---|
@@ -14349,12 +14329,12 @@ hoàn toàn — và trên máy sản xuất, đoán nhầm loại rỗng là chu
 > luôn nói rõ nó thuộc loại nào**, và loại "không đọc được" phải trông như một sự cố chứ không
 > như một sự yên tĩnh.
 >
-> Mục này không có số liệu khảo sát — không có cách nào đếm "trạng thái rỗng" bằng cách quét mã
-> nguồn. Nhưng chính vì không đếm được nên nó cũng không bao giờ được ai rà lại.
+> Không có cách nào tìm "trạng thái rỗng" bằng cách quét mã nguồn. Chính vì không tìm được bằng máy
+> nên nó cũng hiếm khi được ai rà lại.
 
 #### 3. Hai màn hình — hiếm, nhưng hỏng theo kiểu khó chịu
 
-Chỉ **2/13 dự án** trong bộ mẫu có dấu vết xử lý nhiều màn hình, nên đây là tình huống ít gặp.
+Dấu vết xử lý nhiều màn hình **hiếm gặp** trong mã máy có sẵn.
 Nhưng nó có thật ở những chỗ nhà máy gắn thêm một màn cho hệ thống ngoài hoặc cho ảnh thị giác,
 và khi gặp thì bốn cái bẫy dưới đây đến gần như cùng lúc:
 
@@ -14931,7 +14911,7 @@ public sealed class TranslationService : INotifyPropertyChanged
 ```
 
 > 📌 **Cách thứ ba bạn sẽ gặp trong mã nguồn thật: một CLASS với mỗi nhãn một field.** Thay vì tra cứu
-> theo khoá chuỗi, một dự án tham khảo khai báo hẳn một lớp ngôn ngữ, mỗi phần tử giao diện một trường,
+> theo khoá chuỗi, có dự án khai báo hẳn một lớp ngôn ngữ, mỗi phần tử giao diện một trường,
 > tên trường ghép từ **tên màn hình + tên điều khiển** — rồi nạp giá trị cho lớp đó theo ngôn ngữ đang
 > chọn (dự án đó có ba thứ tiếng, gồm cả tiếng Việt):
 > ```csharp
@@ -15251,30 +15231,30 @@ dialog...) để operator học một lần, dùng được ở mọi nơi.
 
 ---
 
-## 10.5 Đối chiếu thực tế ngành — khung giao diện nào thật sự đang chạy
+## 10.5 Khi mở một dự án có sẵn: khung giao diện nào đang chạy
 
 Cả chương này trình bày cách làm màn hình đúng chuẩn. Mục này nói về thứ khác: **cái gì
-thật sự đang chạy trong nhà máy**, vì nó quyết định bạn sẽ *đọc* code kiểu gì khi tiếp
+bạn có thể gặp khi mở một máy có sẵn**, vì nó quyết định bạn sẽ *đọc* code kiểu gì khi tiếp
 quản một máy — và điều đó thường đến trước khi bạn được viết một màn hình mới.
 
-Đếm số lượng form WinForms (file `*.Designer.cs`) và số file XAML trong bộ mẫu 13 dự án:
+Đếm form WinForms (file `*.Designer.cs`) và file XAML trong mã máy có sẵn thì thấy ba nhóm:
 
-**Bảng 10.6 — Khung giao diện trong 13 phần mềm máy thật**
+**Bảng 10.6 — Khung giao diện trong phần mềm máy có sẵn**
 
-| Nhóm | Số dự án | Đặc điểm |
+| Nhóm | Mức độ gặp | Đặc điểm |
 |---|---|---|
-| **Chỉ WinForms** (0 file XAML) | **6** / 13 | Nhiều dự án có tới 80–110 form trong một solution |
-| **Chỉ WPF** (0 form WinForms) | **2** / 13 | Đều là các dự án mang dáng dấp *framework*, không phải máy đơn lẻ |
-| **Trộn cả hai** trong cùng solution | **5** / 13 | Thường là WinForms cũ + phần mới viết bằng WPF, hoặc ngược lại |
+| **Chỉ WinForms** (0 file XAML) | **Hay gặp** | Nhiều dự án có tới 80–110 form trong một solution |
+| **Chỉ WPF** (0 form WinForms) | **Hiếm gặp** | Thường là các dự án mang dáng dấp *framework*, không phải máy đơn lẻ |
+| **Trộn cả hai** trong cùng solution | **Hay gặp** | Thường là WinForms cũ + phần mới viết bằng WPF, hoặc ngược lại |
 
 Ba điều rút ra, và cả ba đều đi ngược trực giác của người mới:
 
-**1. WinForms không hề "chết".** Nó có mặt trong **11/13** dự án ở dạng này hay dạng khác.
+**1. WinForms không hề "chết".** Nó **rất hay gặp**, ở dạng này hay dạng khác.
 Nếu bạn học WPF rồi bỏ qua Chương 8 vì nghĩ WinForms là công nghệ cũ, xác suất rất cao là
 máy đầu tiên bạn tiếp quản sẽ mở ra một solution đầy `*.Designer.cs`. Chương 8 nằm trong
 sách chính vì lý do này, không phải vì hoài cổ.
 
-**2. Trộn hai khung trong một solution là chuyện bình thường, không phải bệnh.** 5/13 dự án
+**2. Trộn hai khung trong một solution là chuyện bình thường, không phải bệnh.** Không ít dự án
 làm vậy. Lý do thường rất thực dụng: phần mới cần biểu đồ, cần binding, cần theme → viết
 bằng WPF và nhúng vào; phần cũ vẫn chạy tốt → không ai đụng vào. Đây là **quyết định kinh
 tế đúng**, và nếu bạn đề xuất "viết lại toàn bộ bằng WPF cho đồng nhất" trong tháng đầu đi
@@ -15285,12 +15265,6 @@ form không có nghĩa người vận hành phải học 106 màn hình — ph�
 form kỹ thuật, form debug. Nhưng nó nói lên một điều về cách tổ chức: **màn hình sinh sôi
 dễ hơn nhiều so với bị xoá đi**. Đó chính là lý do mục "bao nhiêu nút thì đủ" ở trên đặt ra
 một tiêu chí loại bỏ, chứ không đặt ra một tiêu chí thêm vào.
-
-> 📌 **Về cách đo và giới hạn của nó.** Con số trên đếm **dấu vết trong mã nguồn được bàn
-> giao**, không phải khảo sát người dùng: một dự án có file XAML chưa chắc đã dùng WPF cho
-> màn hình chính. Đọc nó như *"khung nào có mặt"*, không phải *"khung nào chiếm bao nhiêu
-> phần trăm màn hình"*. Bộ mẫu cũng nghiêng về máy điều khiển chuyển động trực tiếp bằng C#
-> — xem giải thích đầy đủ ở Chương 1 mục 1.3.1.
 
 ---
 
@@ -15608,7 +15582,7 @@ public readonly record struct Acceleration(decimal ValueMmPerSec2)
 Mỗi Value Object tự xác thực đầu vào. Khi domain nhận Position thay vì double, compiler chặn lỗi "truyền mm/s vào chỗ cần mm" ngay lúc build — không cần đến lúc chạy mới phát hiện.
 
 > 💡 **Mẹo thực chiến:** Position còn giấu một bẫy khác mà kiểu dữ liệu không
-> tự bắt được — dấu (+/-) nghĩa là gì. Một dự án tham khảo từng ghi thành văn
+> tự bắt được — dấu (+/-) nghĩa là gì. Có dự án từng ghi thành văn
 > bản yêu cầu tường minh ngay tại đặc tả: chiều dương/âm của mỗi trục quy ước
 > theo hướng nhìn của operator đứng trước máy (trái/phải, trước/sau, dưới/
 > trên tương ứng dấu âm/dương thống nhất toàn máy). Không có quy ước bằng
@@ -16065,33 +16039,28 @@ Anti-Corruption Layer (ACL) — dịch ngôn ngữ tại biên context
 MES / SCADA  (Bounded Context khác)
 ```
 
-### 11.3.4  Đối chiếu thực tế — phần nào của chương này thật sự được dùng
+### 11.3.4  Khi mở một dự án có sẵn: phần nào của chương này được dùng
 
 Chương này trình bày DDD khá đầy đủ: Entity, Value Object, Aggregate Root, Domain Event, Bounded
-Context, Domain Service, Repository. Trước khi khép lại, cần một đoạn thẳng thắn về mức độ áp dụng
+Context, Domain Service, Repository. Trước khi khép lại, cần nói rõ về mức độ áp dụng
 thật, vì khoảng cách ở đây lớn hơn mọi chương khác — và biết trước sẽ giúp bạn dùng chương này **đúng
 cách** thay vì kỳ vọng sai.
 
-Khảo sát **13 dự án phần mềm máy tự động hoá thật** trong nhà máy điện tử, tìm dấu vết từng khái niệm:
+Tìm dấu vết từng khái niệm trong mã nguồn máy có sẵn thì thấy:
 
-**Bảng 11.5b — Mức độ áp dụng DDD trong 13 dự án máy thật**
+**Bảng 11.5b — Mức độ gặp các khái niệm DDD trong mã máy có sẵn**
 
-| Khái niệm | Số dự án dùng |
+| Khái niệm | Mức độ gặp |
 |---|---|
-| **Repository** (tách truy cập dữ liệu sau một interface) | **3** / 13 |
-| Aggregate Root | **0** / 13 |
-| Domain Event | **0** / 13 |
-| Value Object (theo nghĩa DDD) | **0** / 13 |
-| Bounded Context (tách model theo ngữ cảnh, có tài liệu) | **0** / 13 |
-| Có tầng `Domain` / `Application` / `Infrastructure` tách bạch | **0** / 13 |
+| **Repository** (tách truy cập dữ liệu sau một interface) | **Hiếm gặp** |
+| Aggregate Root | **Không gặp** |
+| Domain Event | **Không gặp** |
+| Value Object (theo nghĩa DDD) | **Không gặp** |
+| Bounded Context (tách model theo ngữ cảnh, có tài liệu) | **Không gặp** |
+| Có tầng `Domain` / `Application` / `Infrastructure` tách bạch | **Không gặp** |
 
 
-> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
-> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
-> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
-> mục 1.3.1.
-
-Con số này cần được đọc cho đúng, vì nó dễ dẫn tới hai kết luận sai ngược nhau.
+Bảng này cần được đọc cho đúng, vì nó dễ dẫn tới hai kết luận sai ngược nhau.
 
 **Kết luận sai thứ nhất: "vậy chương này vô dụng, bỏ qua đi".** Không đúng, vì ba lý do:
 
@@ -16128,11 +16097,11 @@ dụng đủ bộ DDD vào một máy đơn lẻ thường tạo ra nhiều tầ
 > khi bạn xây một **framework dùng cho nhiều máy** — nơi độ phức tạp đủ lớn để trả công cho lớp trừu
 > tượng thêm vào. Với một máy đơn lẻ giao trong sáu tháng, chúng thường là chi phí không thu hồi được.
 
-> 📌 **Một chi tiết phương pháp khi tự khảo sát kiểu này.** Khi đếm số dự án "có Value Object", kết
-> quả thô ban đầu là 3 — nhưng mở ra xem thì đó là các property tên `ValueObject` với nghĩa hoàn toàn
+> 📌 **Nếu bạn tự tìm dấu vết DDD trong một dự án, đừng tin phép đếm từ khoá.** Tìm chữ
+> "ValueObject" có thể ra vài chỗ — nhưng mở ra xem thì có khi đó là các property tên `ValueObject` với nghĩa hoàn toàn
 > khác ("giá trị dưới dạng object"), không liên quan gì tới DDD. Đây là lý do vì sao Chương 2 mục 2.4
 > nhấn mạnh: **đếm số lần xuất hiện của một từ khoá không phải là bằng chứng — phải mở ra xem ít nhất
-> vài chỗ** trước khi kết luận. Sai lầm này rất dễ mắc khi khảo sát nhanh trên nhiều dự án.
+> vài chỗ** trước khi kết luận. Sai lầm này rất dễ mắc khi đọc nhanh nhiều dự án.
 
 ## Tổng kết chương
 
@@ -16275,7 +16244,7 @@ Ba vấn đề nảy sinh không thể tránh khi code theo cách này:
 ### 12.1.1b  Biến thể hay gặp nhất, và cũng tệ nhất: không có biến trạng thái nào cả
 
 Mục 12.1.1 nêu ba cách biểu diễn trạng thái mà code cũ hay dùng: chuỗi, số nguyên tuỳ ý, và enum.
-Đọc mã của 13 phần mềm máy thật thì thấy một biến thể thứ tư, phổ biến hơn cả ba, và nó tệ hơn vì
+Đọc mã máy thật thì hay gặp một biến thể thứ tư, phổ biến hơn cả ba, và nó tệ hơn vì
 một lý do rất khác: **nó không có "biến trạng thái" nào để mà chỉ ra.**
 
 Trạng thái máy nằm rải ở nhiều biến `bool` độc lập, thường là biến `public static` dùng chung toàn
@@ -16299,8 +16268,8 @@ public class BienToanCuc
 ```
 
 Số đo trong dự án gốc: lớp biến toàn cục đó có **151 thành viên `public static`**, được tham chiếu
-**3.680 lần trên 97 file**. Không phải ngoại lệ: **13/13 dự án** trong bộ mẫu đều có biến
-`public static` dùng chung, tổng **1.514 khai báo**.
+**3.680 lần trên 97 file**. Không phải ngoại lệ: biến `public static` dùng chung
+**rất hay gặp** trong mã máy có sẵn.
 
 #### Vì sao bảy biến `bool` tệ hơn một chuỗi hay một số
 
@@ -16335,7 +16304,7 @@ Ba hệ quả cụ thể, theo thứ tự hay gặp:
 #### Và hệ quả ở tầng trình tự: một hàm 28.635 dòng
 
 Khi trạng thái không có hình dạng, trình tự cũng không. Dự án có chữ ký 27 tham số ở mục 3.4.4 cũng
-là dự án có file nguồn lớn nhất bộ mẫu: **28.635 dòng trong một file**, chứa **861 nhãn `case`**,
+là dự án có file nguồn lớn nhất từng gặp: **28.635 dòng trong một file**, chứa **861 nhãn `case`**,
 **346 lệnh `switch`** và — con số nói lên nhiều nhất — **991 lệnh `goto case`**.
 
 **Code 12.1c — Trình tự khi trạng thái không có hình dạng**
@@ -16361,15 +16330,15 @@ lý. Dùng **991 chỗ** thì nó đã trở thành cơ chế chuyển trạng t
 cơ chế **không liệt kê được**: không có bảng nào nói *"từ trạng thái A đi được tới những đâu"*, câu
 trả lời nằm rải trong 28.635 dòng. Muốn biết vì sao máy đang ở bước này, chỉ còn cách đọc ngược.
 
-Đây cũng là lý do thực dụng nhất, đo được, để không đi theo lối này: **ba dự án trong bộ mẫu không có
-file nào quá 2.000 dòng** — và đúng ba dự án đó là nhóm dùng enum trạng thái, dùng interface, và là
-nơi duy nhất tìm thấy kiểm thử tự động (Chương 18 mục 18.6.4). Ngược lại, dự án nhiều file khổng lồ
+Đây cũng là lý do thực dụng nhất, đo được, để không đi theo lối này: **những dự án không có
+file nào quá 2.000 dòng** cũng chính là những dự án dùng enum trạng thái, dùng interface, và là
+nơi duy nhất thấy kiểm thử tự động (Chương 18 mục 18.6.4). Ngược lại, dự án nhiều file khổng lồ
 nhất có **17 file trên 2.000 dòng**. Đây là tương quan, không phải quan hệ nhân quả đã chứng minh —
 nhưng nó nhất quán với lập luận của cả chương này.
 
 #### Bản đối chứng: bảng chuyển trạng thái khai báo được
 
-Một dự án khác trong bộ mẫu — cũng là phần mềm máy nhiều trạm, cũng viết bằng C# — biểu diễn đúng
+Một dự án khác — cũng là phần mềm máy nhiều trạm, cũng viết bằng C# — biểu diễn đúng
 bài toán đó bằng một **bảng chuyển trạng thái khai báo**, tám trạng thái và mười lệnh kích hoạt:
 
 ```csharp
@@ -17616,7 +17585,7 @@ kỳ chuẩn nào — và không hiểu chúng thì không dám bấm.
 > **Dọn máy / Clear** (xả hết phôi còn sót bên trong — bắt buộc trước khi đổi mã hàng), và **Gỡ rối /
 > Debug** (chạy từng bước một, dừng sau mỗi bước để kỹ sư quan sát). Chúng khác nhóm với bốn chế độ
 > trên: bốn chế độ kia trả lời *"chạy sản xuất theo kiểu nào"*, còn nhóm này là *"trình tự phụ trợ
-> nào đang chạy"*. Trong một dự án tham khảo, cả hai nhóm được gộp vào một enum kiểu **cờ tổ hợp**, và
+> nào đang chạy"*. Trong một dự án có sẵn, cả hai nhóm được gộp vào một enum kiểu **cờ tổ hợp**, và
 > mỗi máy khai báo tập chế độ nó hỗ trợ ngay lúc khởi động — gọn hơn hẳn việc mỗi máy sửa lại phần rẽ
 > nhánh chọn chế độ.
 
@@ -17731,7 +17700,7 @@ Bảng 12.7b trả lời *"chạy sản xuất theo kiểu nào"*. Nhưng mở m
 sẽ thấy trên màn hình có **hai ô chế độ chứ không phải một**, và hai ô đó không thay thế được cho nhau.
 Ô thứ hai trả lời một câu hỏi khác hẳn: **máy đang làm việc trong hoàn cảnh nào**.
 
-Trong một dự án tham khảo, trục thứ hai này có bảy giá trị. Dịch và bỏ phần đặc thù, chúng gom thành
+Trong một dự án có sẵn, trục thứ hai này có bảy giá trị. Dịch và bỏ phần đặc thù, chúng gom thành
 ba nhóm:
 
 | Nhóm | Giá trị | Nghĩa và ảnh hưởng tới phần mềm |
@@ -17762,7 +17731,7 @@ tế.
 
 #### Dấu hiệu bạn đã tách trục sai
 
-Hai trục chỉ có ích khi chúng **vuông góc** — mọi tổ hợp đều có nghĩa. Trong dự án tham khảo nói trên,
+Hai trục chỉ có ích khi chúng **vuông góc** — mọi tổ hợp đều có nghĩa. Trong dự án nói trên,
 hai trục lại chồng lấn: *chạy khô* xuất hiện **ở cả hai trục** (một giá trị của trục thứ nhất, và hai
 giá trị *chạy khô nối tuyến* / *chạy khô độc lập* ở trục thứ hai). Hậu quả lộ ra ngay trong đoạn code
 cập nhật ô hiển thị chế độ: một `switch` theo trục thứ nhất, và bên trong mỗi nhánh lại là một chuỗi
@@ -17793,7 +17762,7 @@ Ba câu hỏi kiểm tra trước khi thêm một chế độ mới — trả l�
 
 Bảng 12.3 đã nói PackML ánh xạ sang phân loại OEE. Mục này đi tiếp một bước, và là bước mà mọi dự án
 đều phải làm nhưng ít tài liệu nào mô tả: **biến chuỗi trạng thái của máy thành báo cáo mà quản đốc
-đọc mỗi sáng**. Hai dự án tham khảo làm việc này theo hai cách cách nhau rất xa, và khoảng cách đó là
+đọc mỗi sáng**. Hai dự án có sẵn làm việc này theo hai cách cách nhau rất xa, và khoảng cách đó là
 bài học chính của mục.
 
 ### 12.5.1  Cách đơn giản — và bốn chỗ nó hỏng
@@ -18657,7 +18626,7 @@ tránh.
 
 #### Mẫu đáng học: mỗi tham số mang theo mọi thứ màn hình cần
 
-Trong một dự án tham khảo, mỗi dòng tham số trong file cấu hình trông như sau (đã dịch tên trường):
+Trong một dự án có sẵn, mỗi dòng tham số trong file cấu hình trông như sau (đã dịch tên trường):
 
 ```xml
 <Param Khoa="VisionEnable"
@@ -18744,7 +18713,7 @@ Ba hậu quả thật, xếp theo mức đau tăng dần:
 ### 13.1.7  Công thức là một lớp, hay là một tập biến có tên?
 
 Mục 13.1.5 bàn về phiên bản và kiểm tra hợp lệ của công thức; mục 13.1.6 bàn về hình dạng tệp tham
-số. Mục này bàn về câu hỏi nằm trước cả hai: **trong code, công thức là cái gì?** Hai dự án tham khảo
+số. Mục này bàn về câu hỏi nằm trước cả hai: **trong code, công thức là cái gì?** Hai dự án có sẵn
 trả lời theo hai cách đối lập, và lựa chọn giữa chúng ảnh hưởng tới việc thêm một tham số mới tốn năm
 phút hay tốn cả một lần cập nhật phần mềm.
 
@@ -19132,7 +19101,7 @@ Dài hơn bản đầu khoảng mười lăm dòng, và mười lăm dòng đó 
 > thành một việc bảo trì có kế hoạch.
 
 > 📌 **Và cùng một khuôn này áp cho mọi cơ cấu hai trạng thái**: kẹp/nhả, hút/xả chân không, nâng/hạ
-> chốt, cửa che đóng/mở. Trong dự án tham khảo nói trên, cùng thư mục còn có lớp cho **băng tải** và
+> chốt, cửa che đóng/mở. Trong dự án nói trên, cùng thư mục còn có lớp cho **băng tải** và
 > **servo** viết theo đúng khuôn đó, mỗi lớp đi kèm **một điều khiển giao diện dùng lại được** — nên
 > màn hình chạy tay của một trạm mới chỉ là việc xếp các điều khiển ấy lại, không phải vẽ lại từ đầu
 > (Phụ lục B mục B.2.2).
@@ -19726,7 +19695,7 @@ gộp chung một thông báo "về gốc quá giờ" là bỏ phí thông tin c
 | **Lùi ra khỏi cảm biến** | Vào rồi mà không ra được | Cảm biến dính (luôn báo có), khoảng lùi quá ngắn |
 | **Vào lại chậm** | Ra rồi mà không vào lại được | Trục bị kẹt cơ khí, tốc độ giai đoạn 2 quá nhỏ so với ma sát |
 
-Một dự án tham khảo có **ba hộp thoại riêng** cho ba trường hợp này. Đó là chi tiết nhỏ nhưng đúng
+Có dự án có **ba hộp thoại riêng** cho ba trường hợp này. Đó là chi tiết nhỏ nhưng đúng
 tinh thần Chương 15: thông báo phải nói cho người xử lý biết **đi kiểm tra cái gì trước**, không chỉ
 báo rằng có lỗi.
 
@@ -20000,7 +19969,7 @@ cả hai implement cùng `IMotionAxisDriver`.
 > chuyển động phát hành kèm **thiết bị ảo** (virtual device) — một driver giả cài vào máy để
 > SDK thật chạy được mà không cần cắm card. Khi có nó, bạn được bản giả lập ở **đúng biên
 > SDK**: mã nguồn không đổi một dòng nào, vẫn gọi đúng hàm của hãng, chỉ khác là bên dưới
-> không có phần cứng. Đây là con đường rẻ nhất để đạt điều mà mục 13.5 cho thấy chỉ 5/13 dự
+> không có phần cứng. Đây là con đường rẻ nhất để đạt điều mà mục 13.5 cho thấy ít dự
 > án làm được — và nó **không loại trừ** `SimulatedAxisDriver` ở trên: thiết bị ảo giúp bạn
 > chạy *toàn bộ tầng driver thật*, còn bản giả lập trong mã nguồn giúp bạn chạy *unit test*
 > nhanh và không phụ thuộc máy cài gì.
@@ -20087,7 +20056,7 @@ Nghĩa là toàn bộ phần khó của phần mềm máy — trình tự, cản
 **một lần**, và nó không quan tâm bên dưới là bản giả lập, card hãng A hay card hãng B.
 
 Đó là toàn bộ lý do tồn tại của tầng trừu tượng, phát biểu bằng công việc thật chứ không bằng
-nguyên lý. Và nó cũng giải thích con số ở mục 13.5: **9/13 dự án khảo sát có ≤3 interface trong
+nguyên lý. Và nó cũng giải thích điều ở mục 13.5: **nhiều dự án có không quá 3 interface trong
 toàn bộ mã nguồn** — với những dự án đó, bảng trên không có cột "ai chịu trách nhiệm", vì câu trả
 lời luôn là *"mọi file có chạm tới trục"*.
 
@@ -20099,8 +20068,8 @@ Bản giả lập ở mục 13.2.9 cần số ngẫu nhiên: nhiễu của cảm
 thoảng một lần đọc lỗi để thử nhánh xử lý sự cố. Đây là chỗ gần như mọi bản giả lập đều gọi `Random`,
 và cũng là chỗ có một lời khuyên rất nổi tiếng mà **ngày nay đã không còn đúng**.
 
-Đo trong bộ mẫu: `new Random(...)` xuất hiện **41 lần ở 7 trong 13 dự án**, và **0 trong 13 dự án**
-dùng một thể hiện dùng chung (`static readonly Random`). Nghĩa là gần như mọi chỗ đều tạo mới tại
+Trong mã máy có sẵn, `new Random(...)` **khá hay gặp**, còn một thể hiện dùng chung
+(`static readonly Random`) thì **không gặp**. Nghĩa là gần như mọi chỗ đều tạo mới tại
 chỗ.
 
 #### Lời khuyên nổi tiếng, và phép thử
@@ -20204,8 +20173,8 @@ phải làm **sớm**, vì đảo ngược nó về sau rất tốn kém.
 > 📌 **Mục này bàn biến thể ở mức THIẾT KẾ; chỗ CẤT cấu hình là chuyện khác.** Dù chọn mức nào
 > dưới đây, những giá trị khác nhau giữa từng cỗ máy — điểm dạy, địa chỉ IP, hành trình — phải
 > nằm ở một thư mục mà **bản cập nhật phần mềm không đụng tới**. Chương 17 mục 17.3.7 bàn riêng
-> việc đó, kèm số đo: 294 chỗ trong bộ mẫu đặt cấu hình ngay cạnh file chạy, chỉ 6 chỗ đặt ở nơi
-> an toàn khi cập nhật.
+> việc đó, kèm nhận xét: đặt cấu hình ngay cạnh file chạy rất hay gặp, còn đặt ở nơi an
+> toàn khi cập nhật thì hiếm.
 
 **Bảng 13.7b — Ba mức xử lý biến thể máy, theo thứ tự nên ưu tiên**
 
@@ -20695,7 +20664,7 @@ thuật lại có hệ quả an toàn.
 
 #### Trước hết: đặt việc kết nối lại ở tầng nào
 
-Hai dự án tham khảo đặt nó ở hai nơi hoàn toàn khác nhau, và chỗ đặt quyết định mọi thứ còn lại:
+Hai dự án có sẵn đặt nó ở hai nơi hoàn toàn khác nhau, và chỗ đặt quyết định mọi thứ còn lại:
 
 | | Đặt trong **tầng trừu tượng thiết bị** | Đặt trong **màn hình** |
 |---|---|---|
@@ -20710,7 +20679,7 @@ với vài loại thiết bị nó lại đúng hơn (xem bẫy ở cuối mục
 
 #### Bốn câu hỏi chính sách
 
-Một lớp kết nối lại viết tốt trong dự án tham khảo lộ ra đúng bốn quyết định:
+Một lớp kết nối lại viết tốt trong một dự án có sẵn lộ ra đúng bốn quyết định:
 
 ```csharp
 public bool AutoReconnect      { get; set; } = false;   // ← mặc định TẮT
@@ -20795,7 +20764,7 @@ sai kèm cách phòng.
 
 Chương 10 mục 10.1.7 đã bàn *giao diện* dạy điểm. Mục này bàn thứ nằm dưới nó: **điểm được lưu ra sao**.
 Đây là tệp dữ liệu nhỏ nhất trong cả phần mềm — vài chục dòng số — nhưng cũng là tệp mà một con số sai
-sẽ làm đầu gắp đâm vào đồ gá. Bốn dự án tham khảo lưu nó theo bốn kiểu khác nhau, và so bốn kiểu đó
+sẽ làm đầu gắp đâm vào đồ gá. Bốn dự án có sẵn lưu nó theo bốn kiểu khác nhau, và so bốn kiểu đó
 dạy được gần như mọi thứ cần biết.
 
 #### Trước hết: một máy cần những loại điểm nào
@@ -20903,7 +20872,7 @@ cứu, và tên hiển thị lấy từ bảng dịch (Chương 10 mục 10.4.2)
 bởi bất kỳ ai vào được màn hình dạy điểm. Khi máy đột nhiên đâm hoặc kết quả lệch, câu hỏi đầu tiên
 luôn là *"hôm qua có ai chỉnh điểm không"* — và nếu chỉ có một tệp bị ghi đè, không ai trả lời được.
 
-Trong các dự án tham khảo, cách xử lý phổ biến nhất là **một tệp `.bak` nằm cạnh tệp chính** — có còn
+Trong mã có sẵn, cách xử lý hay gặp nhất là **một tệp `.bak` nằm cạnh tệp chính** — có còn
 hơn không, nhưng chỉ giữ được đúng một đời trước. Ba việc nhỏ nâng hẳn mức an toàn, không cái nào tốn
 quá một buổi:
 
@@ -21118,7 +21087,7 @@ Người mới thường coi đèn là phần cơ khí: lắp lên, chỉnh cho 
   nghìn giờ, cùng một cấu hình cho ra ảnh tối hơn, ngưỡng phán định bắt đầu trượt, và tỷ lệ đánh sai
   tăng từ từ trong nhiều tuần — không có sự kiện nào để lần theo.
 
-Cách phòng cho vấn đề thứ ba đơn giản đến bất ngờ, và hai dự án tham khảo độc lập đều làm giống nhau:
+Cách phòng cho vấn đề thứ ba đơn giản đến bất ngờ, và hai dự án độc lập đều làm giống nhau:
 **dùng chính bức ảnh để đo độ sáng**. Thêm một vùng dò cố định lên một chi tiết luôn có mặt (nền gá,
 mảng chuẩn trắng), tính độ sáng trung bình của vùng đó mỗi lần chụp, và cảnh báo khi nó trôi khỏi dải
 đã đặt:
@@ -21182,7 +21151,7 @@ phải gọi về.
 
 **Thiết bị nối qua mạng cần một kênh kiểm tra độc lập với SDK.**
 
-Đây là bài học đắt từ một dự án tham khảo. Camera GigE nối qua Ethernet, và mạng thì rớt — nhưng SDK
+Đây là bài học từ một dự án có sẵn. Camera GigE nối qua Ethernet, và mạng thì rớt — nhưng SDK
 **không phải lúc nào cũng báo**: đối tượng camera trong bộ nhớ vẫn còn, lệnh chụp vẫn gọi được, nó
 chỉ **không bao giờ trả về**. Dự án đó còn làm tình hình tệ hơn bằng hai dòng liền nhau:
 
@@ -21257,7 +21226,7 @@ Không có kiểu nào của hãng trong chữ ký. Nhờ vậy: tầng quy trì
 và quan trọng nhất — **tầng quy trình không thể vô tình phụ thuộc vào chi tiết của hãng**.
 
 > 💡 **Một dấu hiệu để tự kiểm tra thiết kế:** nếu tầng quy trình của bạn có dòng nào
-> `using` vùng tên của hãng thị giác, ranh giới đã bị thủng. Trong một dự án tham khảo,
+> `using` vùng tên của hãng thị giác, ranh giới đã bị thủng. Trong một dự án có sẵn,
 > class kiểm tra khay vừa kế thừa lớp quy trình của khung máy, vừa là ViewModel cho giao
 > diện, vừa được lưu ra XML làm recipe — 1051 dòng gánh ba vai với ba nhịp thay đổi khác
 > nhau. Hệ quả không phải "code xấu" trừu tượng, mà rất cụ thể: **không test được phần nào
@@ -21580,7 +21549,7 @@ ghi gắn nhầm mã còn tệ hơn không có bản ghi.
 > phẩm vừa quét sẽ **được gõ vào ô tốc độ**, và Enter có thể xác nhận luôn. Nghe như chuyện đùa, nhưng
 > đây là sự cố có thật và rất khó tái hiện vì nó phụ thuộc vào việc người dùng đang mở màn hình nào.
 >
-> Một dự án tham khảo xử lý bằng cách cho ô quét mã một hàm **tự đòi tiêu điểm**, và màn hình gọi hàm đó
+> Có dự án xử lý bằng cách cho ô quét mã một hàm **tự đòi tiêu điểm**, và màn hình gọi hàm đó
 > mỗi khi được kích hoạt. Đó là mức tối thiểu. Ba việc nên làm thêm nếu buộc phải dùng cách này:
 > - **Khoá cửa sổ khác khi đang chờ quét** — hoặc ít nhất không cho ô nhập số nào nhận tiêu điểm.
 > - **Nhận chuỗi ở cấp cửa sổ**, không ở cấp ô nhập: bắt sự kiện bàn phím của cửa sổ chính, nhận diện
@@ -21873,25 +21842,25 @@ theo một nhóm thuộc tính mô tả **cách thu thập nó**:
 
 ---
 
-## 13.5 Đối chiếu thực tế ngành — tầng trừu tượng này có thật ngoài đời không?
+## 13.5 Khi mở một dự án có sẵn: tầng trừu tượng này có gặp không?
 
 Chương này dạy cách đặt interface giữa logic máy và SDK của hãng. Trước khi khép lại, cần
-một đoạn thẳng thắn: **trong bộ mẫu 13 dự án, phần lớn không làm như vậy** — và biết trước
+nói rõ: **rất nhiều dự án có sẵn không làm như vậy** — và biết trước
 điều đó quan trọng hơn là bực mình vì nó.
 
-Đếm số khai báo `public interface I…` trong toàn bộ mã nguồn từng dự án:
+Đếm khai báo `public interface I…` trong mã nguồn từng dự án thì thấy:
 
-**Bảng 13.11 — Mức độ dùng interface và chế độ giả lập trong 13 dự án máy thật**
+**Bảng 13.11 — Mức độ dùng interface và chế độ giả lập trong mã máy có sẵn**
 
-| Nhóm | Số dự án | Ghi chú |
+| Nhóm | Mức độ gặp | Ghi chú |
 |---|---|---|
-| **0 interface** trong toàn bộ solution | **5** / 13 | Gọi thẳng SDK hãng từ nơi cần dùng |
-| **1–3 interface** (gần như không có) | **4** / 13 | Có vài interface lẻ, không phải tầng trừu tượng |
-| **≥ 30 interface** — có tầng trừu tượng thật | **4** / 13 | Cả bốn đều là dự án mang dáng dấp *framework* dùng lại nhiều máy |
-| Có **chế độ giả lập** chạy được không cần phần cứng | **5** / 13 | — |
+| **0 interface** trong toàn bộ solution | **Hay gặp** | Gọi thẳng SDK hãng từ nơi cần dùng |
+| **1–3 interface** (gần như không có) | **Có gặp** | Có vài interface lẻ, không phải tầng trừu tượng |
+| **≥ 30 interface** — có tầng trừu tượng thật | **Có gặp** | Thường là dự án mang dáng dấp *framework* dùng lại nhiều máy |
+| Có **chế độ giả lập** chạy được không cần phần cứng | **Có gặp** | — |
 
-**Điều đáng chú ý nhất không phải con số 9/13, mà là ai nằm trong nhóm 4/13.** Bốn dự án
-có tầng trừu tượng thật đều là những dự án được thiết kế để **dùng lại cho nhiều máy**.
+**Điều đáng chú ý nhất là ai nằm trong nhóm có tầng trừu tượng thật.** Các dự án
+đó đều là những dự án được thiết kế để **dùng lại cho nhiều máy**.
 Các dự án viết cho *một* cỗ máy cụ thể gần như luôn gọi thẳng SDK. Đó không phải sự lười
 biếng — đó là một đánh đổi hợp lý khi bạn biết chắc sẽ không bao giờ đổi hãng card: interface
 lúc đó là chi phí không có người trả.
@@ -21903,23 +21872,18 @@ interface". Nó là ba câu hỏi:
    thường có; cảm biến rời thì hiếm. Có → bọc. Không → có thể gọi thẳng.
 2. **Bạn có cần chạy phần mềm khi không có máy không?** Nếu có, bạn **buộc** phải có
    interface, vì không có interface thì không có chỗ để cắm bản giả lập vào. Đây là lý do
-   thật sự khiến bốn dự án kia đầu tư vào trừu tượng hoá — và cũng là lý do chỉ 5/13 dự án
-   có chế độ giả lập.
+   thật sự khiến các dự án kia đầu tư vào trừu tượng hoá — và cũng là lý do chế độ giả lập
+   không phổ biến.
 3. **Đoạn code này có cần test được không?** Câu trả lời gần như luôn trùng với câu 2.
-   Chương 18 mục 18.6.4 cho thấy dự án duy nhất có kiểm thử tự động đang chạy cũng chính là
-   một trong bốn dự án có tầng trừu tượng thật. **Khả năng test là hệ quả của kiến trúc,
+   Chương 18 mục 18.6.4 cho thấy kiểm thử tự động, khi có, nằm ở chính những dự án có tầng
+   trừu tượng thật. **Khả năng test là hệ quả của kiến trúc,
    không phải của kỷ luật.**
 
-> 💡 **Nếu bạn đang tiếp quản một dự án thuộc nhóm 9/13.** Đừng bắt đầu bằng việc bọc lại
+> 💡 **Nếu bạn đang tiếp quản một dự án gần như không có interface.** Đừng bắt đầu bằng việc bọc lại
 > toàn bộ. Hãy bọc **đúng một thiết bị** — thường là camera hoặc card chuyển động — rồi viết
 > một bản giả lập cho nó và chạy thử phần trình tự không cần máy. Một lần làm được như vậy
 > thuyết phục cả đội hơn mọi lập luận về SOLID, vì nó rút ngắn được thứ mà ai cũng ghét:
 > thời gian phải đứng cạnh máy để thử một thay đổi nhỏ.
-
-> 📌 **Giới hạn của cách đo.** Đếm `public interface I…` là đo **dấu vết cú pháp**, không đo
-> chất lượng thiết kế: một dự án có 50 interface vẫn có thể lộ kiểu dữ liệu của hãng ra
-> ngoài (đúng lỗi mà mục 13.4.2 cảnh báo), và một dự án 0 interface vẫn có thể tách tầng tốt
-> bằng class trừu tượng. Con số này nói về **xu hướng**, không phải bảng xếp hạng.
 
 ---
 
@@ -22098,10 +22062,9 @@ dây vào-ra khô khốc với cái máy đứng kế bên. Mục này đi qua t
 > ranh giới PLC ↔ C# (kiến trúc B ở Chương 1 mục 1.3.1) chọn OPC UA làm giao thức — điều khá thường
 > gặp vì nhiều dòng PLC đã có sẵn máy chủ OPC UA bên trong.
 >
-> Đáng lưu ý: trong bộ mẫu 13 dự án của cuốn sách, **không dự án nào dùng OPC UA** — nhưng bộ mẫu đó
-> nghiêng hẳn về máy điều khiển chuyển động trực tiếp bằng C# và chưa nối MES qua OPC UA, nên đó là
-> đặc điểm của bộ mẫu chứ không phải của ngành (Chương 1 mục 1.3.1). Nếu bạn đang làm kiến trúc B,
-> khả năng gặp OPC UA cao hơn nhiều.
+> Đáng lưu ý: trong mã nguồn sách đã đọc, vốn nghiêng về máy điều khiển chuyển động trực tiếp bằng
+> C#, OPC UA hầu như không xuất hiện. Điều đó nói về nguồn đã đọc, không nói về ngành. Nếu bạn đang
+> làm kiến trúc B, khả năng gặp OPC UA cao hơn nhiều.
 
 **Máy nào dùng OPC UA?** PLC Siemens S7-1500/1200 (TIA Portal bật OPC UA server), Beckhoff
 TwinCAT 3, Mitsubishi MELSEC iQ-R, máy CNC Fanuc 30i trở lên, robot ABB/KUKA, và ngày
@@ -22783,7 +22746,7 @@ giới hạn, cho phép chạy — ghi rồi đọc lại so sánh là mười d
 > 💡 **Hiện trường làm khác: có những chỗ chờ vô hạn là đúng.** Máy chờ người vận hành nạp phôi, chờ
 > máy trước giao khay, chờ máy sau sẵn sàng nhận. Những việc chờ đó không có hạn giờ tự nhiên: ca đêm
 > hết hàng thì máy phải chờ tới sáng, và báo lỗi sau 30 giây chỉ bắt người vận hành bấm xác nhận liên
-> tục. Mã thật xử lý đúng kiểu này: một dự án tham khảo chờ máy sau sẵn sàng nhận khay mà không có hạn
+> tục. Mã thật xử lý đúng kiểu này: có dự án chờ máy sau sẵn sàng nhận khay mà không có hạn
 > giờ, nhưng khi bắt đầu chờ thì **hiện lên màn hình** dòng "đang chờ máy sau nhận khay", ghi một dòng
 > nhật ký, và trong mỗi vòng chờ vẫn kiểm tra lệnh tạm dừng hay dừng.
 >
@@ -23301,15 +23264,15 @@ giao thức ứng dụng C# **tương tác trực tiếp**, không phải fieldb
 #### Con đường thứ ba: khi chính máy tính là EtherCAT master
 
 Phần trên đúng cho kiến trúc phổ biến nhất — PLC làm chủ fieldbus, C# đứng trên nói OPC UA. Nhưng
-khảo sát mã nguồn các dự án máy thật cho thấy một kiến trúc thứ ba đủ phổ biến để cần biết: **3 trong
-13 dự án gọi hàm EtherCAT trực tiếp từ C#**.
+trong mã nguồn máy thật còn có một kiến trúc thứ ba đủ hay gặp để cần biết: **C# gọi hàm EtherCAT
+trực tiếp**.
 
 Chuyện gì xảy ra ở đó? Máy **không có PLC**. Thay vào đó, một **card chuyển động cắm trong máy tính
 đóng vai EtherCAT master**, và servo drive, module I/O, bộ đọc encoder là các slave trên bus. Phần
 mềm C# gọi API của card — và API đó lộ thẳng các khái niệm EtherCAT ra ngoài:
 
 ```csharp
-// Mẫu rút gọn từ một dự án tham khảo (tên hàm giữ nguyên tinh thần của SDK card)
+// Mẫu rút gọn từ một dự án có sẵn (tên hàm giữ nguyên tinh thần của SDK card)
 [DllImport("ecat_motion.dll")]
 public static extern short M_LoadEcatConfigPath(string ecatCfgPath, short card = 0);
 
@@ -23442,7 +23405,7 @@ làm.
 là **một phần của cấu hình máy** và phải được sao lưu cùng recipe và bảng điểm (Phụ lục B mục B.4).
 Mất nó thì máy không khởi động được, và nó không nằm trong mã nguồn nên rất dễ bị quên khi bàn giao.
 
-**2. Lỗi bus trở thành alarm mà người vận hành phải đọc được.** Trong một dự án tham khảo, bảng mã
+**2. Lỗi bus trở thành alarm mà người vận hành phải đọc được.** Trong một dự án có sẵn, bảng mã
 alarm có hẳn một nhóm dành cho lỗi bus, với hướng dẫn xử lý viết cho **thợ điện**, không phải cho lập
 trình viên: *"kiểm tra dây truyền thông đã cắm đúng chưa; kiểm tra dây bus có lỏng hoặc đứt không"*.
 Đây là ví dụ tốt cho nguyên tắc ở Chương 15: alarm phải nói bằng ngôn ngữ của người xử lý nó. Đứt một
@@ -23561,7 +23524,7 @@ của .NET (tham số `sender`/`SerialDataReceivedEventArgs e`) cũng tuân theo
 này — không có lý do kỹ thuật nào để driver tự viết đi chệch khuôn, ngoài thói quen sao
 chép từ 1 bản mẫu sai ban đầu rồi nhân bản cho mọi thiết bị sau đó.
 
-> ⚠️ **Anti-pattern có thật:** một dự án tham khảo nhét thẳng dữ liệu (`byte[]` hoặc
+> ⚠️ **Anti-pattern có thật:** có dự án nhét thẳng dữ liệu (`byte[]` hoặc
 > `double`) vào tham số `sender` và luôn truyền `null` cho `e` — `IncomingData(data, null)`
 > thay vì `IncomingData(this, new DataReceivedEventArgs(data))`. Vì tham số `sender` khai
 > báo kiểu `object`, C# chấp nhận cả 2 cách dùng mà không báo lỗi biên dịch — nơi subscribe
@@ -23586,7 +23549,7 @@ tách message — không có khái niệm "1 message = 1 lần đọc" nào đư
 
 > ⚠️ **Bẫy khi copy khung mẫu sang thiết bị mới:** khung `STX...ETX` LUÔN có dữ liệu thật
 > nằm giữa 2 ký tự (không liền kề), khác hẳn khung `CR+LF` (2 ký tự đúng là liền kề ở cuối
-> gói). Một dự án tham khảo có driver dùng điều kiện `buff[i-1] == STX && buff[i] == ETX`
+> gói). Có dự án có driver dùng điều kiện `buff[i-1] == STX && buff[i] == ETX`
 > (đòi 2 byte liền kề) cho một thiết bị dùng khung `STX...ETX` — gần như sẽ không bao giờ
 > khớp một gói tin có nội dung thật, vì STX và ETX của khung này không liền kề nhau về bản
 > chất giao thức. Dấu hiệu rõ: đoạn code trông giống hệt khuôn kiểm tra `CR`+`LF` ở gần đó,
@@ -23616,7 +23579,7 @@ liệu ở tầng dưới:
 > 📌 **`SerialPort.GetPortNames()` — API sẵn có, không cần tự đọc Registry:** liệt kê danh
 > sách cổng COM đang có trên máy là nhu cầu phổ biến (hiển thị dropdown chọn cổng khi cấu
 > hình thiết bị mới), và .NET có sẵn `SerialPort.GetPortNames()` trả về `string[]` chỉ trong
-> 1 dòng. Một dự án tham khảo không dùng API này — thay vào đó tự đọc registry
+> 1 dòng. Có dự án không dùng API này — thay vào đó tự đọc registry
 > (`Microsoft.Win32.Registry.LocalMachine.OpenSubKey("HARDWARE\\DEVICEMAP\\SERIALCOMM")`)
 > để lấy cùng thông tin, và hàm ~15 dòng đó bị copy-paste giống hệt ký-tự-cho-ký-tự vào
 > **8 file khác nhau** trong cùng dự án. Bài học kép: (1) luôn kiểm tra BCL có sẵn API
@@ -23788,21 +23751,21 @@ Hàng thứ ba là thứ khiến lỗi này sống lâu. Ở tốc độ baud th
 như luôn tới nguyên vẹn. Lỗi chỉ xuất hiện khi máy chạy nhanh, khi dây dài hơn, khi máy tính bận —
 tức là **ở nhà máy, không phải ở bàn thử**.
 
-#### Đo thực tế: ngành này làm đúng hay sai?
+#### Mã có sẵn làm đúng hay sai?
 
-Đây là một trong số ít chủ đề mà số liệu cho kết quả **tích cực**, và cần nói ra cho công bằng. Phân
-tích **41 hàm xử lý `DataReceived`** tìm được trong bộ mẫu 13 dự án:
+Đây là một trong số ít chủ đề mà mã có sẵn cho kết quả **tích cực**, và cần nói ra cho công bằng. Phân
+loại các hàm xử lý `DataReceived` tìm được theo việc chúng làm:
 
-**Bảng 14.5f — 41 hàm xử lý `DataReceived` trong phần mềm máy thật, phân loại theo việc chúng làm**
+**Bảng 14.5f — Hàm xử lý `DataReceived` trong phần mềm máy thật, phân loại theo việc chúng làm**
 
-| Hàm xử lý làm gì | Số hàm | Đánh giá |
+| Hàm xử lý làm gì | Tỉ lệ | Đánh giá |
 |---|---|---|
-| **Đọc rồi tích luỹ vào bộ đệm**, để nơi khác tách khung | **31** | ✅ Đúng cách |
-| **Ghi thẳng lên điều khiển giao diện** trong chính hàm xử lý | 6 | ❌ Hai lỗi cùng lúc — xem dưới |
-| Khác / không phân loại được | 4 | — |
-| *Trong đó có dùng `BytesToRead`* | *33 / 41* | ✅ |
+| **Đọc rồi tích luỹ vào bộ đệm**, để nơi khác tách khung | **đa số** | ✅ Đúng cách |
+| **Ghi thẳng lên điều khiển giao diện** trong chính hàm xử lý | khoảng một phần bảy | ❌ Hai lỗi cùng lúc — xem dưới |
+| Khác / không phân loại được | vài hàm | — |
+| *Trong đó có dùng `BytesToRead`* | *đa số* | ✅ |
 
-Ba mươi mốt hàm làm đúng gần như đến từ **một dự án duy nhất**, và cách họ làm đáng học: một **lớp
+Phần lớn các hàm làm đúng đến từ **một dự án duy nhất**, và cách họ làm đáng học: một **lớp
 cơ sở Serial dùng chung** được khoảng ba mươi driver thiết bị kế thừa — máy đọc mã vạch của bốn
 hãng, cân, cảm biến đo, bộ gia nhiệt, biến tần, máy in nhãn. Viết đúng **một lần**, dùng đúng ở ba
 mươi chỗ. Đây chính là lập luận của Chương 7 về chỗ đặt trừu tượng, nhìn thấy được bằng số.
@@ -23878,15 +23841,15 @@ mã không nhìn thấy nó.
 | Cách | Ưu điểm | Nhược điểm | Dùng khi |
 |---|---|---|---|
 | `ReadExisting()` trong `DataReceived` | Đơn giản nhất | Trả về *"những gì đang có"* — có thể nửa khung hoặc hai khung; **bắt buộc** phải có bộ đệm tích luỹ đi kèm | Khung văn bản, có bộ đệm ở ngoài |
-| `BytesToRead` + `Read(buf, 0, n)` | Kiểm soát chính xác số byte; dùng được cho **khung nhị phân** | Dài dòng hơn vài dòng | **Mặc định nên chọn** — 33/41 hàm trong bộ mẫu dùng cách này |
+| `BytesToRead` + `Read(buf, 0, n)` | Kiểm soát chính xác số byte; dùng được cho **khung nhị phân** | Dài dòng hơn vài dòng | **Mặc định nên chọn** — đa số hàm trong mã có sẵn dùng cách này |
 | `ReadLine()` | Ngắn nhất khi thiết bị kết thúc khung bằng ký tự cố định | **Chặn luồng** tới khi đủ khung hoặc hết `ReadTimeout`; ném `TimeoutException` — phải bắt; không dùng được cho khung nhị phân | Luồng riêng dành cho một thiết bị, khung văn bản |
 | `port.BaseStream.ReadAsync(...)` | Bất đồng bộ thật, hợp với `CancellationToken` (Chương 5) | Vẫn phải tự tách khung; ít ví dụ sẵn hơn | Mã mới viết theo lối `async` |
 
-Ba lưu ý đi kèm, đều rút từ số đo:
+Ba lưu ý đi kèm, đều rút từ mã có sẵn:
 
-- **`ReadTimeout` phải đặt.** Trong bộ mẫu chỉ **30 chỗ** đặt nó. Mặc định là chờ **vô hạn**, nên
+- **`ReadTimeout` phải đặt.** Trong mã có sẵn, **rất ít chỗ** đặt nó. Mặc định là chờ **vô hạn**, nên
   một `ReadLine()` trên thiết bị đã rút cáp sẽ treo luồng đó mãi mãi.
-- **Huỷ đăng ký `DataReceived` khi đóng cổng.** Chỉ **6 chỗ** trong bộ mẫu có `DataReceived -=`. Đây
+- **Huỷ đăng ký `DataReceived` khi đóng cổng.** **Rất hiếm chỗ** có `DataReceived -=`. Đây
   chính là dạng rò rỉ đăng ký sự kiện nói ở Phụ lục E mục E.9, và với cổng Serial nó còn kéo theo
   một hệ quả riêng: đối tượng cổng cũ vẫn sống và vẫn có thể phát sự kiện sau khi bạn tưởng đã dừng.
 - **Rút cáp USB-Serial khi đang mở là trường hợp phải thử.** Bộ chuyển USB-Serial biến mất khỏi hệ
@@ -23927,7 +23890,7 @@ thiết kế sai ngay từ đầu.
 #### Ba kênh, không phải một
 
 Điểm mà người mới hay bất ngờ nhất: nói chuyện với một robot thường cần **ba đường khác nhau**, mỗi
-đường một mục đích. Một thư viện tích hợp robot cộng tác trong dự án tham khảo mô hình hoá đúng ba loại:
+đường một mục đích. Một thư viện tích hợp robot cộng tác trong một dự án có sẵn mô hình hoá đúng ba loại:
 
 **1. Kênh điều khiển máy** — cổng nhận lệnh dạng văn bản để bật/tắt và điều khiển vòng đời robot. Danh
 sách lệnh của nó chính là danh sách những việc phần mềm máy phải làm được với robot:
@@ -24134,10 +24097,9 @@ không đưa hàng cho nhau. Bốn thứ cần quyết ngay từ đầu:
 | Gộp sản lượng | Cộng số liệu ở tầng trên, **không** để mỗi máy tự cộng vào một bộ đếm chung — hai máy ghi cùng lúc là mất số |
 | Màn hình | Mỗi máy một màn hình vận hành, **cộng thêm** một màn hình tổng cho cả nhóm; đừng cố nhồi bốn máy vào một màn hình vận hành |
 
-> 📌 **Đối chiếu thực tế:** trong bộ mẫu 13 dự án của sách, **6 dự án** có dấu vết bắt tay
-> máy–máy trong mã nguồn — tên tín hiệu nói thẳng vai trò của chúng (*"khay sẵn ở phía trước"*,
+> 📌 **Trong mã có sẵn,** dấu vết bắt tay máy–máy **khá hay gặp** — tên tín hiệu nói thẳng vai trò của chúng (*"khay sẵn ở phía trước"*,
 > *"phía sau sẵn sàng nhận khay"*, và các biến trạng thái *phía trước / phía sau* riêng biệt).
-> Nói cách khác: gần một nửa số máy trong mẫu **không phải máy đứng một mình**, dù không dự án
+> Nói cách khác: rất nhiều máy **không phải máy đứng một mình**, dù không dự án
 > nào coi đây là một tầng kiến trúc đáng đặt tên. Đó cũng là lý do mục này tồn tại — thứ xuất
 > hiện ở nửa số dự án mà không ai gọi tên thì luôn là thứ mỗi người tự làm một kiểu.
 
@@ -24700,7 +24662,7 @@ từng mã phân loại), và **được chuẩn hoá bởi SEMI**, nên bạn k
 sẵn.
 
 > 💡 **Đừng gõ tay các class ánh xạ XML đó.** Cấu trúc bản đồ khay dịch sang C# là khoảng **700 dòng**
-> class lồng nhau — trong dự án tham khảo, toàn bộ 700 dòng ấy là **code sinh tự động từ lược đồ XML**,
+> class lồng nhau — trong một dự án có sẵn, toàn bộ 700 dòng ấy là **code sinh tự động từ lược đồ XML**,
 > không ai gõ. Cách làm và quy tắc kèm theo xem ở Chương 3 (mục sinh class từ lược đồ XML). Nhận ra
 > được điều này tiết kiệm vài ngày công và tránh hàng chục lỗi gõ nhầm tên trường.
 
@@ -25074,7 +25036,7 @@ var reply = await client.ReportInspectionAsync(partId, passed ? "OK" : "NG", rea
 > trong vài chỗ có thể chặn hẳn việc nâng cấp, cùng nhóm với `BinaryFormatter` và `Thread.Abort` đã
 > nêu ở các chương trước.
 
-> 💡 **Đừng đánh giá thấp khối lượng công việc của phần nối MES.** Trong một dự án tham khảo là máy
+> 💡 **Đừng đánh giá thấp khối lượng công việc của phần nối MES.** Trong một dự án có sẵn là máy
 > kiểm tra bằng thị giác, file nối hệ MES là file **lớn thứ hai của cả dự án** (gần 2000 dòng), chỉ
 > sau logic sản phẩm — lớn hơn cả phần điều khiển camera. Điều này lặp lại ở nhiều dự án khác: phần
 > "báo kết quả cho hệ thống nhà máy" thường tốn công tương đương phần "làm ra kết quả", vì nó phải xử
@@ -25231,59 +25193,49 @@ cũ, vì đầu ra cần thời gian ổn định. Đây đúng là nguyên tắ
 `ĐặtĐiệnÁpAsync`, `ĐọcDòngAsync`), và để đúng một lớp biết mặt chuỗi lệnh. Đổi hãng lúc đó là
 viết một lớp mới, không phải sửa cả trình tự test.
 
-> 📌 **Vì sao mục này không có số liệu khảo sát như các mục khác trong chương.** Bộ mẫu 13 dự án
-> của sách **không có dự án nào** dùng họ giao thức này — quét toàn bộ mã nguồn không thấy dấu
-> vết nào. Điều đó phản ánh **cách chọn mẫu**, không phản ánh ngành: bộ mẫu nghiêng về máy lắp
-> ráp và máy thị giác, còn thiết bị đo để bàn sống ở nhóm **máy kiểm tra điện** (ICT/FCT) — một
-> nhóm máy không có mặt trong mẫu. Nêu mục này ra vì người đọc rất có thể sẽ gặp nó, nhưng theo
-> đúng quy tắc của sách: **không có số liệu thì nói rõ là không có**, thay vì mượn con số của
-> nhóm khác.
+> 📌 **Mục này không dựa trên mã nguồn đã đọc.** Họ giao thức này không xuất hiện trong mã nguồn
+> sách đã đọc, vốn nghiêng về máy lắp ráp và máy thị giác; thiết bị đo để bàn sống ở nhóm **máy
+> kiểm tra điện** (ICT/FCT). Nêu mục này ra vì người đọc rất có thể sẽ gặp nó.
 
 ---
 
-### 14.3.6  Đối chiếu thực tế ngành — giao thức nào thật sự xuất hiện
+### 14.3.6  Khi mở một dự án có sẵn: giao thức nào hay gặp
 
 Ba mục trên giúp bạn *chọn* giao thức. Mục này nói về thứ bạn sẽ *gặp*, và hai danh sách đó
-lệch nhau đáng kể. Tìm dấu vết từng giao thức trong mã nguồn của bộ mẫu 13 dự án:
+lệch nhau đáng kể. Dấu vết từng giao thức trong mã nguồn máy có sẵn:
 
-**Bảng 14.13 — Dấu vết giao thức trong 13 phần mềm máy thật**
+**Bảng 14.13 — Dấu vết giao thức trong phần mềm máy có sẵn**
 
-| Giao thức / kênh | Số dự án có dấu vết | Nhận xét |
+| Giao thức / kênh | Mức độ gặp | Nhận xét |
 |---|---|---|
-| **Socket TCP thô** (`TcpClient`/`Socket`) | **11** / 13 | Kênh phổ biến nhất — phần lớn là **giao thức tự định nghĩa**, không theo chuẩn nào |
-| **Cổng nối tiếp** (`SerialPort`) | **10** / 13 | Máy quét mã, cân, bộ điều khiển đèn, thiết bị cũ — chưa hề biến mất |
-| **SDK card chuyển động** qua P/Invoke | **7** / 13 | Kiến trúc A ở Chương 1 mục 1.3.2 |
-| **Modbus** (RTU/TCP) | **6** / 13 | Thường để nói chuyện với PLC hoặc bộ điều khiển nhiệt |
-| **SECS/GEM** | **5** / 13 | Chỉ ở các máy đặt trong nhà máy bán dẫn/SMT có host |
-| **OPC UA** | **0** / 13 | Không tìm thấy dấu vết ở bất kỳ dự án nào |
+| **Socket TCP thô** (`TcpClient`/`Socket`) | **Rất hay gặp** | Kênh phổ biến nhất — phần lớn là **giao thức tự định nghĩa**, không theo chuẩn nào |
+| **Cổng nối tiếp** (`SerialPort`) | **Hay gặp** | Máy quét mã, cân, bộ điều khiển đèn, thiết bị cũ — chưa hề biến mất |
+| **SDK card chuyển động** qua P/Invoke | **Hay gặp** | Kiến trúc A ở Chương 1 mục 1.3.2 |
+| **Modbus** (RTU/TCP) | **Có gặp** | Thường để nói chuyện với PLC hoặc bộ điều khiển nhiệt |
+| **SECS/GEM** | **Có gặp** | Chỉ ở các máy đặt trong nhà máy bán dẫn/SMT có host |
+| **OPC UA** | **Không gặp** | Không tìm thấy dấu vết |
 
-Con số cuối cùng gây ngạc nhiên nhất, và cần được đọc cho đúng.
+Dòng cuối cùng gây ngạc nhiên nhất, và cần được đọc cho đúng.
 
-**OPC UA = 0/13 không có nghĩa OPC UA không quan trọng.** Nó có nghĩa là: trong nhóm máy
-**điều khiển chuyển động trực tiếp bằng C#** — đúng nhóm mà bộ mẫu này nghiêng về — OPC UA
+**OPC UA không xuất hiện không có nghĩa OPC UA không quan trọng.** Nó có nghĩa là: trong nhóm máy
+**điều khiển chuyển động trực tiếp bằng C#** — đúng nhóm mà mã nguồn sách đã đọc nghiêng về — OPC UA
 hiếm khi là lựa chọn, vì nó giải quyết bài toán *liên thông giữa hệ thống* chứ không giải
 quyết bài toán *điều khiển một thiết bị trong máy*. OPC UA sống ở tầng trên: giữa máy và
-SCADA, giữa dây chuyền và MES. Nếu bộ mẫu gồm các hệ SCADA thay vì các máy đơn lẻ, con số
+SCADA, giữa dây chuyền và MES. Nếu đọc mã của các hệ SCADA thay vì các máy đơn lẻ, kết quả
 này gần như chắc chắn sẽ đảo ngược.
 
 Hai điều rút ra có giá trị thực tế ngay:
 
 **1. Thứ bạn phải giỏi nhất không phải là một chuẩn công nghiệp, mà là *đọc một giao thức
-tự định nghĩa*.** 11/13 dự án mở socket TCP, và phần lớn tự quy định khung tin của mình —
+tự định nghĩa*.** Socket TCP rất hay gặp, và phần lớn tự quy định khung tin của mình —
 `STX … ETX`, chuỗi phân tách bằng dấu phẩy, hoặc một cấu trúc nhị phân do người viết trước
 đặt ra. Không có tài liệu chuẩn nào cứu bạn ở đây; thứ cứu bạn là các nguyên tắc ở mục
 14.1.6 (đọc theo khung, không đọc theo số byte cố định) và một công cụ bắt gói.
 
-**2. Cổng nối tiếp vẫn đáng học, dù nghe như công nghệ của thế kỷ trước.** 10/13. Lý do rất
+**2. Cổng nối tiếp vẫn đáng học, dù nghe như công nghệ của thế kỷ trước.** Nó vẫn hay gặp. Lý do rất
 đơn giản: các thiết bị ngoại vi rẻ tiền và bền — máy quét mã vạch, cân, bộ điều khiển đèn,
 bộ đọc nhiệt độ — không có lý do gì để đổi sang Ethernet, và chúng sống lâu hơn phần mềm
 điều khiển chúng.
-
-> 📌 **Cách đo và giới hạn.** Đây là phép đếm **dấu vết chuỗi trong mã nguồn**, nên là
-> **giới hạn dưới**: một dự án dùng thư viện bọc sẵn của hãng có thể không lộ ra từ khoá nào
-> mà phép đếm này bắt được. Ngược lại, một dấu vết cũng có thể là mã chết còn sót lại. Đọc
-> bảng theo hướng *"cái gì chắc chắn có mặt"*, không phải *"tỷ lệ chính xác của ngành"* —
-> xem thêm Chương 1 mục 1.3.1.
 
 ---
 
@@ -25520,7 +25472,7 @@ Liên hệ với PackML (Chương 12): `AlarmSeverity.Critical` tương ứng v�
 Mục trên dùng `AlarmCode` là một số nguyên. Câu hỏi tiếp theo, và là câu mọi dự án đều phải trả lời:
 **danh mục alarm — mã, nội dung, mức độ, hướng dẫn xử lý — được cất ở đâu?**
 
-Đây là chỗ các dự án thật khác nhau nhiều nhất. Khảo sát các dự án tham khảo cho ra **năm cách**, và
+Đây là chỗ các dự án thật khác nhau nhiều nhất. Mã có sẵn cho thấy **năm cách**, và
 chúng không phải năm mức độ tốt/xấu mà là năm điểm đánh đổi khác nhau:
 
 **Bảng 15.2b — Năm cách định nghĩa danh mục alarm**
@@ -25535,7 +25487,7 @@ chúng không phải năm mức độ tốt/xấu mà là năm điểm đánh đ
 
 #### Cách 1 — attribute trên hằng số: nhiều thông tin hơn bạn nghĩ
 
-Một dự án tham khảo gắn attribute lên từng hằng số mã alarm, và điều đáng học là **attribute đó chứa
+Có dự án gắn attribute lên từng hằng số mã alarm, và điều đáng học là **attribute đó chứa
 gì**:
 
 ```csharp
@@ -25614,7 +25566,7 @@ cái này trước, rồi cái này"*, chứ không phải một câu khuyên ch
 
 #### Cách 3 — file dữ liệu: khi khách hàng quy định mã
 
-Một dự án tham khảo khác đặt toàn bộ danh mục trong một file XML, mỗi dòng như sau (dịch tên trường):
+Một dự án khác đặt toàn bộ danh mục trong một file XML, mỗi dòng như sau (dịch tên trường):
 
 ```xml
 <ErrorCode SoThuTu="1"
@@ -25645,7 +25597,7 @@ cỗ máy lại rất đều đặn: **mỗi trục** có báo lỗi servo, ch�
 hiệu vào** có hết giờ chờ. Máy mười hai trục và tám mươi tín hiệu vào là **116 alarm** — viết tay từng
 cái vừa tốn thời gian vừa chắc chắn sót.
 
-Một dự án tham khảo giải quyết bằng cách **sinh chúng ra lúc khởi động**, từ chính bảng khai báo trục và
+Có dự án giải quyết bằng cách **sinh chúng ra lúc khởi động**, từ chính bảng khai báo trục và
 bảng tên tín hiệu vào mà phần mềm đã có:
 
 ```csharp
@@ -26680,7 +26632,7 @@ public sealed class AuthenticationService : IAuthenticationService
 **Tự động đăng xuất khi không thao tác — và cái bẫy an toàn nằm ngay trong nó.** Phiên đăng nhập cấp
 cao bị bỏ quên là lỗ hổng thường gặp nhất trong nhà máy: kỹ sư đăng nhập để chỉnh tham số, có việc gọi
 đi, và màn hình đứng ở quyền Kỹ sư suốt ca. Vì vậy gần như mọi phần mềm máy nghiêm túc đều có bộ đếm
-thời gian không thao tác — một dự án tham khảo đặt 15 phút, kiểm tra mỗi phút một lần, và **bỏ qua nếu
+thời gian không thao tác — có dự án đặt 15 phút, kiểm tra mỗi phút một lần, và **bỏ qua nếu
 người đang đăng nhập vốn đã ở mức thấp nhất**.
 
 > ⚠️ **Nhưng "đăng xuất" trong phần mềm máy không được hiểu như đăng xuất một trang web.** Nếu hết giờ
@@ -27214,22 +27166,21 @@ ISA-18.2 phân biệt rõ bốn cơ chế tắt alarm — mỗi cơ chế có tr
 
 ---
 
-## 15.4 Đối chiếu thực tế ngành — cảnh báo thì ai cũng làm, interlock thì không ai gọi tên
+## 15.4 Khi mở một dự án có sẵn: cảnh báo thì hay có, interlock thì ít khi được gọi tên
 
 Chương này trình bày hai thứ: **quản lý cảnh báo** theo ISA-18.2 và **interlock/dừng khẩn
-cấp**. Đối chiếu với bộ mẫu 13 dự án cho thấy hai thứ đó có số phận rất khác nhau trong thực
-tế — và sự khác nhau đó nói lên điều gì đó về nghề.
+cấp**. Trong mã có sẵn, hai thứ đó có số phận rất khác nhau — và sự khác nhau đó nói lên điều gì đó về nghề.
 
-**Bảng 15.10 — Dấu vết xử lý cảnh báo và an toàn trong 13 phần mềm máy thật**
+**Bảng 15.10 — Dấu vết xử lý cảnh báo và an toàn trong phần mềm máy có sẵn**
 
-| Hạng mục | Số dự án có dấu vết | Ghi chú |
+| Hạng mục | Mức độ gặp | Ghi chú |
 |---|---|---|
-| Có xử lý **cảnh báo/mã lỗi** | **12** / 13 | Một dự án có tới 139 file chạm tới cảnh báo |
-| Có nhắc tới **dừng khẩn cấp** | **12** / 13 | Gần như phổ quát |
-| Có dùng đúng từ **interlock** trong mã nguồn | **6** / 13 | Bảy dự án còn lại **không** có file nào chứa từ này |
+| Có xử lý **cảnh báo/mã lỗi** | **Rất hay gặp** | Một dự án có tới 139 file chạm tới cảnh báo |
+| Có nhắc tới **dừng khẩn cấp** | **Rất hay gặp** | Gần như dự án nào cũng có |
+| Có dùng đúng từ **interlock** trong mã nguồn | **Khoảng một nửa** | Nửa còn lại **không** có file nào chứa từ này |
 
-**Chênh lệch 12/13 với 6/13 là phát hiện đáng nói nhất của mục này.** Bảy dự án không dùng
-từ "interlock" gần như chắc chắn **vẫn có** logic interlock — chúng chỉ không gọi tên nó.
+**Chênh lệch giữa hai dòng đầu và dòng cuối là điều đáng nói nhất của mục này.** Những dự án
+không dùng từ "interlock" gần như chắc chắn **vẫn có** logic interlock — chúng chỉ không gọi tên nó.
 Điều kiện an toàn nằm rải rác trong các câu `if` ngay trước lệnh chuyển động, mỗi chỗ một
 kiểu, đặt tên theo cảm hứng của người viết lúc đó.
 
@@ -27239,30 +27190,25 @@ nếu chúng chưa bao giờ được gom lại; bạn cũng không thể kiểm
 động đều đi qua chúng. Đó chính xác là bài toán mà Guard Engine ở mục 15.2.3 giải: không
 phải thêm logic mới, mà **gom logic đã có về một chỗ có tên**.
 
-> 💡 **Việc rẻ nhất bạn có thể làm với một dự án thuộc nhóm bảy.** Đừng viết lại gì cả. Hãy
+> 💡 **Việc rẻ nhất bạn có thể làm với một dự án không gọi tên interlock.** Đừng viết lại gì cả. Hãy
 > tìm toàn văn các lệnh gây chuyển động, liệt kê **mọi câu `if` đứng ngay trước chúng**, rồi
 > viết danh sách đó ra một file văn bản. Chỉ riêng danh sách đó — chưa cần dòng code nào —
 > đã trả lời được câu hỏi mà không ai trong đội trả lời nổi: *"máy này chặn chuyển động
 > trong những trường hợp nào?"*. Đó cũng là đầu vào của Guard Engine nếu sau này bạn muốn
 > gom chúng lại thật.
 
-Còn về cảnh báo, con số 12/13 nói rằng đây là phần **ai cũng làm** — nhưng "có làm" và "làm
-theo ISA-18.2" là hai chuyện khác nhau. Những thứ mà bộ mẫu hiếm khi có: phân cấp mức ưu
+Còn về cảnh báo, hai dòng đầu cho thấy đây là phần **gần như ai cũng làm** — nhưng "có làm" và "làm
+theo ISA-18.2" là hai chuyện khác nhau. Những thứ hiếm khi thấy: phân cấp mức ưu
 tiên có tiêu chí (mục 15.1.2), chống lũ cảnh báo (mục 15.1.7), và đo tốc độ phát cảnh báo
 để biết hệ thống cảnh báo có khoẻ không (mục 15.3.4). Nếu bạn muốn chọn **một** việc để cải
 thiện hệ thống cảnh báo của một máy đang chạy, hãy chọn cái thứ hai — chống lũ — vì nó là
 thứ người vận hành cảm nhận được ngay trong ca làm việc.
 
-> ⚠️ **Một điều mà phép đếm này KHÔNG nói, và đừng suy ra.** "12/13 dự án có nhắc tới dừng
-> khẩn cấp" **không** có nghĩa 12 dự án đó *thực hiện* dừng khẩn cấp bằng phần mềm — và nếu
+> ⚠️ **Một điều mà bảng này KHÔNG nói, và đừng suy ra.** "Có nhắc tới dừng
+> khẩn cấp" **không** có nghĩa dự án đó *thực hiện* dừng khẩn cấp bằng phần mềm — và nếu
 > có thì đó mới là vấn đề. Như mục 15.2.2 đã nói: phần mềm C# chỉ *biết* rằng dừng khẩn cấp
 > đã kích hoạt để phản ứng cho đúng; việc cắt năng lượng là của mạch phần cứng. Dấu vết trong
 > mã nguồn ở đây phần lớn là mã đọc trạng thái, đúng như nó phải thế.
-
-> 📌 **Giới hạn của cách đo.** Phép đếm dựa trên **từ khoá trong mã nguồn**, nên nó đo *cách
-> đặt tên* nhiều hơn đo *hành vi*. Một dự án gọi interlock là `SafeCheck` sẽ bị đếm nhầm vào
-> nhóm bảy. Điều đó không làm hỏng kết luận — vì kết luận ở đây chính là về việc **không có
-> tên gọi chung**.
 
 ---
 
@@ -28793,7 +28739,7 @@ Ba bài học, và cả ba đều tổng quát hơn cái khung này:
    chỉ biết *"hỏng"* chứ không biết *hỏng cái gì* — mất trắng thông tin cần để xử lý. Nếu buộc phải bắt,
    ít nhất hãy ghi ngoại lệ vào nhật ký trước (Chương 19).
 3. **Đọc code lạ: mỗi lời gọi có giá trị trả về mà không ai dùng đều là một câu hỏi.** Đôi khi nó vô
-   hại; trong trình tự máy thì gần như luôn là lỗi. Đây là cùng loại phát hiện với một dự án tham khảo
+   hại; trong trình tự máy thì gần như luôn là lỗi. Đây là cùng loại phát hiện với một dự án có sẵn
    khác, nơi hàm chạy một bước trả về trạng thái máy và giá trị đó bị bỏ qua hoàn toàn.
 
 > 📌 **Hai chi tiết nhỏ khác trong cùng file, hữu ích khi bạn tự đọc mã nguồn mở.** Thứ nhất, đầu file
@@ -29921,25 +29867,25 @@ chỉ IP riêng, số hiệu cổng nối tiếp riêng, hành trình trục hơ
 trong thư mục chương trình thì **mỗi lần cập nhật phần mềm là một lần đè mất cấu hình** — và người
 phát hiện ra sẽ là người đi cập nhật lúc hai giờ sáng.
 
-#### Đo thực tế: ngành này để cấu hình ở đâu
+#### Mã có sẵn để cấu hình ở đâu
 
-**Bảng 17.9 — Chỗ đặt cấu hình trong 13 phần mềm máy thật**
+**Bảng 17.9 — Chỗ đặt cấu hình trong phần mềm máy có sẵn**
 
-| Dấu hiệu | Số chỗ | Số dự án |
+| Dấu hiệu | Số chỗ | Mức độ gặp |
 |---|---|---|
-| Đọc đường dẫn **cạnh file chạy** (`BaseDirectory`, `StartupPath`, thư mục hiện hành) | **294** | **12 / 13** |
-| Dùng **thư mục dữ liệu của hệ điều hành** (`CommonApplicationData`, `ProgramData`) | **6** | 4 / 13 |
-| **Đường dẫn tuyệt đối gõ cứng** trong mã (`"D:\..."`, `"E:\..."`) | **912** | 9 / 13 |
-| **Địa chỉ IP gõ cứng** trong mã nguồn | **133** | **12 / 13** |
-| Có thư mục tên `config` / `setting` | 87 | 8 / 13 |
-| Có thư mục tên `product` / `recipe` / `model` | 157 | 9 / 13 |
+| Đọc đường dẫn **cạnh file chạy** (`BaseDirectory`, `StartupPath`, thư mục hiện hành) | **hàng trăm** | **Rất hay gặp** |
+| Dùng **thư mục dữ liệu của hệ điều hành** (`CommonApplicationData`, `ProgramData`) | **rất ít** | Có gặp |
+| **Đường dẫn tuyệt đối gõ cứng** trong mã (`"D:\..."`, `"E:\..."`) | **hàng trăm** | Hay gặp |
+| **Địa chỉ IP gõ cứng** trong mã nguồn | **hơn một trăm** | **Rất hay gặp** |
+| Có thư mục tên `config` / `setting` | hàng chục | Hay gặp |
+| Có thư mục tên `product` / `recipe` / `model` | hơn một trăm | Hay gặp |
 
-Hai dòng đầu đặt cạnh nhau là cả câu chuyện: **294 chỗ đặt cấu hình ngay cạnh file chạy, chỉ 6 chỗ
-đặt ở nơi mà bộ cài đặt không xoá.** Và trong 912 đường dẫn gõ cứng, một dự án chiếm 595 chỗ, trong
-đó **một đường dẫn duy nhất xuất hiện 153 lần** — đổi ổ đĩa lưu dữ liệu ở máy đó nghĩa là biên dịch
+Hai dòng đầu đặt cạnh nhau là cả câu chuyện: **hàng trăm chỗ đặt cấu hình ngay cạnh file chạy, rất
+ít chỗ đặt ở nơi mà bộ cài đặt không xoá.** Và trong số đường dẫn gõ cứng, có dự án chiếm gần sáu trăm
+chỗ, trong đó **một đường dẫn duy nhất xuất hiện 153 lần** — đổi ổ đĩa lưu dữ liệu ở máy đó nghĩa là biên dịch
 lại phần mềm.
 
-> ⚠️ **Dòng cuối cùng đáng sợ hơn vẻ ngoài: 133 địa chỉ IP gõ cứng ở 12/13 dự án.** Địa chỉ IP là
+> ⚠️ **Địa chỉ IP gõ cứng rất hay gặp, và nó đáng sợ hơn vẻ ngoài.** Địa chỉ IP là
 > thứ **chắc chắn khác nhau** giữa hai cỗ máy và **chắc chắn đổi** khi nhà máy quy hoạch lại mạng.
 > Gõ cứng nó nghĩa là mỗi lần bộ phận IT đổi dải mạng, phần mềm máy phải được biên dịch lại — bởi
 > đúng người đã viết nó, người mà hai năm sau có thể đã chuyển công ty.
@@ -30024,39 +29970,34 @@ ra nó ở xưởng rẻ hơn rất nhiều so với tìm ra ở nhà máy khác
 
 ---
 
-## 17.4 Đối chiếu thực tế ngành — cái gì thật sự được dùng, và nên bắt đầu từ đâu
+## 17.4 Khi mở một dự án có sẵn: cái gì thật sự được dùng, và nên bắt đầu từ đâu
 
 Ba mục trên trình bày cách làm đúng. Mục này nói về khoảng cách giữa cách làm đúng và thực tế,
 vì biết trước sẽ giúp bạn chọn trận đánh — thay vì đề xuất một quy trình đầy đủ trong tuần đầu đi làm
 rồi bị từ chối và mất luôn cơ hội cải thiện.
 
-Khảo sát **13 dự án phần mềm máy tự động hoá thật** trong nhà máy điện tử:
+Trong mã máy có sẵn, bức tranh về quản lý mã nguồn như sau:
 
 **Bảng 17.6b — Thực trạng quản lý mã nguồn và tự động hoá build**
 
 | Hạng mục | Kết quả |
 |---|---|
-| Có kho Git | **9** / 13 (4 dự án chỉ có thư mục chép tay) |
-| Số commit | Trải rất rộng: **6** commit ở dự án ít nhất, **739** ở dự án nhiều nhất |
-| Có dùng **tag** để đánh dấu phiên bản đã giao | **0** / 13 |
-| Có CI tự động | **1** / 13 |
+| Có kho Git | **Hay gặp**, nhưng vẫn có dự án chỉ có thư mục chép tay |
+| Số commit | Trải rất rộng: từ vài commit tới hàng trăm commit |
+| Có dùng **tag** để đánh dấu phiên bản đã giao | **Không gặp** |
+| Có CI tự động | **Hiếm gặp** |
 | CI đó có chạy test | Không — chỉ `restore` + `build` |
 
 
-> 📌 **Về bộ mẫu:** số liệu này đo trên bộ mẫu 13 dự án của cuốn sách, vốn **nghiêng về máy điều
-> khiển chuyển động trực tiếp bằng C#** và chỉ thấy phần mã nguồn được bàn giao. Đọc nó như *"đây là
-> những gì tồn tại thật"*, không phải *"đây là tỷ lệ của ngành"* — xem giải thích đầy đủ ở Chương 1
-> mục 1.3.1.
-
 Ba điều đáng chú ý:
 
-**1. Không dự án nào dùng tag.** Trong khi tag lại là thứ **rẻ
+**1. Gần như không ai dùng tag.** Trong khi tag lại là thứ **rẻ
 nhất** trong cả chương này — một câu lệnh, không cần công cụ gì thêm, không cần ai đồng ý. Hệ quả
 thực tế của việc thiếu nó rất cụ thể: khi khách hàng báo lỗi trên máy giao tháng trước, không ai xác
 định được **chính xác** mã nguồn nào đang chạy trên máy đó. Người ta dò lại bằng ngày sửa file, bằng
 trí nhớ, hoặc bằng cách so từng file với bản hiện tại.
 
-**2. CI dừng ở "có build được không" — và như vậy đã có giá trị.** Dự án duy nhất có CI chạy đúng ba
+**2. CI dừng ở "có build được không" — và như vậy đã có giá trị.** Dự án có CI chạy đúng ba
 việc: lấy mã nguồn, cài .NET SDK, `dotnet restore` + `dotnet build --configuration Release`. Không
 test, không đóng gói, không triển khai. Nhưng nó vẫn bắt được lớp lỗi phổ biến nhất trong đội nhiều
 người: **"trên máy tôi build được"** — thiếu một file chưa commit, một tham chiếu trỏ vào thư mục cá
@@ -30085,7 +30026,7 @@ trình nhánh — mà là `git init` và commit nguyên trạng bản đang ch�
 khả năng biết mình vừa sửa gì.
 
 > ⚠️ **Đã có Git rồi thì đừng "xoá" code bằng cách vô hiệu hoá nó.** Hai kiểu hay gặp trong mã nguồn
-> máy: comment cả khối vài trăm dòng, và bọc trong `#if false` (một dự án tham khảo có **9 chỗ** như
+> máy: comment cả khối vài trăm dòng, và bọc trong `#if false` (có dự án có **9 chỗ** như
 > vậy). Cả hai đều tệ hơn xoá hẳn, và kiểu thứ hai tệ hơn kiểu thứ nhất: code trong `#if false`
 > **không được biên dịch**, nên khi API xung quanh thay đổi nó cũng không báo lỗi — đến lúc ai đó bật
 > lại thì nó đã hỏng từ lâu mà không ai biết. Người đọc sau cũng không có cách nào biết khối đó còn
@@ -30101,7 +30042,7 @@ khả năng biết mình vừa sửa gì.
 > 📌 **Bản gói lại của toàn bộ quy trình nằm ở Phụ lục F.** Chương này bàn phần hạ tầng
 > (Git, CI, triển khai). **Phụ lục F** gộp cả sáu bước của một thay đổi, hai mươi quy tắc viết
 > mã dễ đọc và giữ cấu trúc, lưới an toàn tự động, phần về trợ lý AI, và một danh sách kiểm
-> trước khi giao máy — mỗi mục đều truy được về một chương hoặc một số đo trên 13 dự án.
+> trước khi giao máy — mỗi mục đều truy được về một chương của sách.
 
 **Bảng 17.7b — Nên làm gì trước khi đội chưa có gì**
 
@@ -30169,7 +30110,7 @@ khi bước này bị bỏ: bản vá tạm ở lại vĩnh viễn trong máy, k
 
 **2. Loại thứ hai là loại đắt nhất và bị đánh giá thấp nhất.** "Card đó hãng ngừng bán rồi" là
 một câu nói bình thường sau ba năm, nhưng nó là một dự án chứ không phải một yêu cầu sửa. Mục
-13.5 cho thấy 9/13 dự án khảo sát có **≤3 interface** trong toàn bộ mã nguồn — với những dự án
+13.5 cho thấy nhiều dự án có **không quá 3 interface** trong toàn bộ mã nguồn — với những dự án
 đó, đổi hãng card nghĩa là mở gần như mọi file. Đây là lập luận thuyết phục nhất cho tầng trừu
 tượng, và nó là lập luận về **tiền**, không phải về sự trong sáng của kiến trúc.
 
@@ -30201,17 +30142,17 @@ hỏng phần mềm**. Phụ lục J là phần dành cho người sửa máy. M
 
 ### 17.6.1  Dấu vết của những lần sửa vội
 
-Mã nguồn của 13 phần mềm máy thật mang dấu vết rất rõ của những lần sửa như vậy:
+Mã nguồn máy thật mang dấu vết rất rõ của những lần sửa như vậy:
 
-**Bảng 17.11 — Dấu vết sửa vội trong 13 phần mềm máy thật**
+**Bảng 17.11 — Dấu vết sửa vội trong phần mềm máy có sẵn**
 
-| Dấu vết | Số chỗ | Số dự án có | Thường là gì |
+| Dấu vết | Số chỗ | Mức độ gặp | Thường là gì |
 |---|---|---|---|
-| Dòng mã bị biến thành chú thích (không tính chú thích bằng chữ) | 10.598 | 13/13 | Tắt một đoạn cho máy chạy, để lại "phòng khi cần" |
-| `Thread.Sleep` hoặc `Task.Delay` với con số viết thẳng | 1.644 | 13/13 | Chờ thêm cho hết lỗi. Hay gặp nhất: 100, 10, 1000, 800 và 500 ms |
-| Ngày tháng viết trong chú thích | 236 | 7/13 | Nhật ký sửa chữa ghi thẳng vào mã; phần lớn nằm ở một dự án |
+| Dòng mã bị biến thành chú thích (không tính chú thích bằng chữ) | hơn mười nghìn | Rất hay gặp | Tắt một đoạn cho máy chạy, để lại "phòng khi cần" |
+| `Thread.Sleep` hoặc `Task.Delay` với con số viết thẳng | hơn một nghìn sáu trăm | Rất hay gặp | Chờ thêm cho hết lỗi. Hay gặp nhất: 100, 10, 1000, 800 và 500 ms |
+| Ngày tháng viết trong chú thích | hơn hai trăm | Hay gặp | Nhật ký sửa chữa ghi thẳng vào mã; phần lớn nằm ở một dự án |
 
-Riêng `Thread.Sleep(800)` xuất hiện 114 lần. 800 ms không phải con số tròn mà người ta nghĩ ra lúc
+Riêng `Thread.Sleep(800)` xuất hiện hơn một trăm lần. 800 ms không phải con số tròn mà người ta nghĩ ra lúc
 ngồi viết. Gần như chắc chắn nó là kết quả của một lần thử ngoài hiện trường: 500 chưa đủ, 1000 thì
 chậm, 800 thì chạy. Con số đó đúng với máy đó, vào ngày đó. Không dòng chú thích nào cho biết nó được
 đo trên máy nào, để chờ cái gì.
@@ -30228,7 +30169,7 @@ phải chiều mai mới tới. Nếu phần mềm chỉ có một đường là
 Người sửa máy sẽ tìm dòng kiểm tra trong mã và biến nó thành chú thích. Máy chạy lại. Sau đó không ai
 nhớ bật lại.
 
-Một dự án trong bộ mẫu giải bài này khá đúng cách. "Bỏ qua kiểm tra OCR của trạm 1" là một **tham số
+Một dự án có sẵn giải bài này khá đúng cách. "Bỏ qua kiểm tra OCR của trạm 1" là một **tham số
 quy trình** hẳn hoi, nằm trên màn hình tham số, riêng cho từng trạm. Khi tham số đó bật, phần mềm
 không đơn giản là bỏ qua:
 
@@ -30553,7 +30494,7 @@ Tỷ lệ phát hiện lỗi sớm ảnh hưởng trực tiếp tới chi phí s
 
 Những lỗi tìm được sớm nhất bằng unit test là đúng những lỗi *không* làm crash ngay: kiểm tra điều kiện biên sai, logic interlock bỏ sót một trường hợp, phép tính đơn vị nhầm mm/mm². Unit test là lớp phòng thủ đầu tiên, rẻ nhất, và chạy được hoàn toàn tự động.
 
-> ⚠️ **Không phải chuyện lý thuyết:** Khảo sát nhiều hệ thống automation production thực tế cho thấy phần lớn hoàn toàn không có test tự động, không có mock/simulator interface đối xứng cho phần cứng — kiểm thử chỉ dựa vào chạy thật trên xưởng, phát hiện lỗi bằng cách để máy chạy và xem có ra phế phẩm không. Bảng 18.1 ở trên không phải số liệu suy diễn cho vui — nó mô tả đúng cái giá thực tế của việc bỏ qua unit test: chi phí một lỗi bị đẩy dần từ 1× lên 200×+ đúng theo tỷ lệ nó bị phát hiện muộn thế nào, và đây chính là hiện trạng mặc định của phần lớn phần mềm điều khiển đang chạy thật ngoài kia.
+> ⚠️ **Không phải chuyện lý thuyết:** Trong mã nguồn máy có sẵn, kiểm thử tự động rất hiếm, không có mock/simulator interface đối xứng cho phần cứng — kiểm thử chỉ dựa vào chạy thật trên xưởng, phát hiện lỗi bằng cách để máy chạy và xem có ra phế phẩm không. Bảng 18.1 ở trên không phải số liệu suy diễn cho vui — nó mô tả đúng cái giá thực tế của việc bỏ qua unit test: chi phí một lỗi bị đẩy dần từ 1× lên 200×+ đúng theo tỷ lệ nó bị phát hiện muộn thế nào, và đây là hiện trạng rất hay gặp ở phần mềm điều khiển đang chạy.
 
 ### 18.1.2  Ba cấp kiểm thử — chương này tập trung cấp 1
 
@@ -31325,30 +31266,29 @@ dotnet test --filter "Category=Unit"    # Chỉ chạy unit test trong CI pipeli
 dotnet test --filter "Category=Integration"  # Chạy thủ công trên lab machine
 ```
 
-### 18.6.4  Đối chiếu thực tế ngành — và lối đi khả thi nếu bạn đang ở con số 0
+### 18.6.4  Khi mở một dự án có sẵn — và lối đi khả thi nếu bạn đang ở con số 0
 
 Cả chương này trình bày cách viết test đúng. Trước khi khép lại, cần một đoạn trung thực về điều bạn
 sẽ thật sự gặp khi vào làm, vì khoảng cách giữa hai thứ đó rất lớn và biết trước sẽ đỡ hụt hẫng.
 
-Khảo sát **13 dự án phần mềm máy tự động hoá thật** đang hoặc đã chạy trong nhà máy điện tử (máy lắp
-ráp nhiều trạm, máy bonding, máy kiểm tra thị giác, máy hiệu chỉnh có phản hồi lực, và vài framework
-dùng chung), tìm dấu vết của các thuộc tính test (`[Fact]`, `[Test]`, `[TestMethod]`, `[Theory]`):
+Tìm dấu vết các thuộc tính test (`[Fact]`, `[Test]`, `[TestMethod]`, `[Theory]`) trong mã nguồn máy có
+sẵn thì thấy:
 
-**Bảng 18.7b — Kiểm thử tự động trong 13 dự án phần mềm máy thật**
+**Bảng 18.7b — Kiểm thử tự động trong phần mềm máy có sẵn**
 
-| Tình trạng | Số dự án |
+| Tình trạng | Mức độ gặp |
 |---|---|
-| Có test viết bằng **khung kiểm thử** (xUnit), 192 phép kiểm | **1** / 13 |
-| Có test **tự viết không dùng khung**, 31 phép kiểm — cách đếm ở trên bỏ sót (xem mục ngay dưới) | **1** / 13 |
-| Có test project nhưng **rỗng** — dựng lên rồi bỏ | 2 / 13 |
-| Không tìm thấy gì | 9 / 13 |
+| Có test viết bằng **khung kiểm thử** (xUnit) | **Hiếm gặp** |
+| Có test **tự viết không dùng khung** — cách đếm ở trên bỏ sót (xem mục ngay dưới) | **Hiếm gặp** |
+| Có test project nhưng **rỗng** — dựng lên rồi bỏ | Hiếm gặp |
+| Không tìm thấy gì | Hay gặp |
 
-> ⚠️ **Con số này là GIỚI HẠN DƯỚI, không phải con số thật — và lý do rất quan trọng.** Khảo sát chỉ
+> ⚠️ **Bảng này chỉ cho biết giới hạn dưới — và lý do rất quan trọng.** Ta chỉ
 > nhìn được phần **mã nguồn được bàn giao**, mà nhiều đội **không đóng gói project kiểm thử cùng sản
 > phẩm** khi giao cho khách hàng: test nằm trong kho mã nguồn nội bộ, bản giao đi chỉ có phần chạy
 > máy. Vì vậy một dự án "không thấy test" hoàn toàn có thể là một dự án **có test đầy đủ**. Đọc bảng
-> trên như *"ít nhất một dự án làm việc này nghiêm túc và đây là cách họ làm"*, đừng đọc như *"chỉ 8%
-> dự án trong ngành có test"*. Xem thêm ghi chú chung về bộ mẫu ở Chương 1 mục 1.3.1.
+> trên như *"có dự án làm việc này nghiêm túc và đây là cách họ làm"*, đừng đọc như *"ngành này
+> không viết test"*.
 
 Dù vậy, phần phân tích bên dưới vẫn giữ nguyên giá trị, vì nó không dựa vào tỷ lệ mà dựa vào **quan
 hệ nhân quả**: nhìn vào dự án có test và hỏi *điều gì khiến nó test được*. Và ngược lại, khi tiếp quản một dự án không có test nào, đó là
@@ -31356,7 +31296,7 @@ tình huống bình thường chứ không phải dấu hiệu đội cũ yếu 
 máy phải giao đúng hạn, phần cứng đến muộn, và mọi thứ cần "chạy được trước đã".
 
 
-#### Một dạng kiểm thử khác mà khảo sát suýt bỏ sót: tự kiểm tra nằm trong chính phần mềm máy
+#### Một dạng kiểm thử khác dễ bị bỏ sót: tự kiểm tra nằm trong chính phần mềm máy
 
 Cách đếm ở bảng trên tìm các thuộc tính của khung kiểm thử (`[Fact]`, `[Test]`, `[TestMethod]`,
 `[Theory]`). Khi đọc kỹ hơn, một dự án nữa **có tới 31 hàm kiểm thử** nhưng **không dùng khung nào
@@ -31408,10 +31348,10 @@ lục B mục B.8.1): **kiểm tra phần logic thuần, ngay trong sản phẩm
 > kiểm tra nhúng, việc bắt buộc phải làm cùng lúc là **thêm nút gọi nó vào màn hình chẩn đoán** — nếu
 > không, nó chỉ là mã chết mang lại cảm giác an toàn giả.
 
-> 💡 **Hai điều rút ra cho cách bạn tự khảo sát một dự án lạ.** Thứ nhất, **đừng chỉ tìm thuộc tính
+> 💡 **Hai điều rút ra khi bạn tự tìm kiểm thử trong một dự án lạ.** Thứ nhất, **đừng chỉ tìm thuộc tính
 > của khung kiểm thử** — hãy tìm cả tên thư mục (`Tests`, `UnitTest`), tên lớp kết thúc bằng `Tests`,
 > và các hàm tên bắt đầu bằng `Test`. Thứ hai, và quan trọng hơn: **tìm thấy test rồi thì kiểm tra
-> xem có ai gọi chúng không** — cả hai dự án có test trong khảo sát này đều cho thấy tồn tại ≠ đang
+> xem có ai gọi chúng không** — cả hai dự án có test nói ở trên đều cho thấy tồn tại ≠ đang
 > chạy (Chương 19 gọi đó là "code tồn tại không đồng nghĩa code đang hoạt động").
 
 #### Dự án dùng khung kiểm thử làm gì khác?
@@ -31477,7 +31417,7 @@ bậc, và bạn dừng ở bất kỳ bậc nào cũng vẫn có lãi:
 > Nó cũng là nơi bắt được lỗi có hậu quả nặng nhất — một trạng thái quên xử lý lệnh Dừng khẩn thì
 > không có cách nào phát hiện bằng chạy thử tay, vì bạn không bao giờ thử đủ tổ hợp.
 
-> ⚠️ **Test project rỗng còn tệ hơn không có.** Hai trong 13 dự án có sẵn một project test nhưng
+> ⚠️ **Test project rỗng còn tệ hơn không có.** Có dự án có sẵn một project test nhưng
 > không chứa test nào — dựng lên trong tuần đầu rồi bỏ. Nó tạo ấn tượng sai cho người mới tiếp quản
 > ("dự án này có test"), và làm hỏng luôn thói quen chạy `dotnet test` vì lệnh đó luôn báo xanh mà
 > không kiểm tra gì. Hoặc viết test thật, hoặc xoá project đó đi.
@@ -31532,7 +31472,7 @@ rẻ nhất cho từng câu:
 ## Tổng kết chương
 
 - **Chi phí lỗi automation** tăng theo cấp số nhân từ dev đến production — unit test là lớp phòng thủ rẻ nhất và chạy mỗi commit.
-- **Khả năng test là hệ quả của kiến trúc, không phải của kỷ luật** (mục 18.6.4): khảo sát 13 dự án máy thật cho thấy chỉ 1 có test đang chạy — và đó là dự án duy nhất có chế độ giả lập ở cấp hệ thống, thiết bị sau interface, và cấu hình nạp được từ luồng dữ liệu bất kỳ. Nếu hôm nay bạn có 0 test, bắt đầu từ bảng chuyển trạng thái (bậc 1) — một buổi, không cần đổi kiến trúc.
+- **Khả năng test là hệ quả của kiến trúc, không phải của kỷ luật** (mục 18.6.4): trong mã máy có sẵn, dự án có test đang chạy cũng là dự án có chế độ giả lập ở cấp hệ thống, thiết bị sau interface, và cấu hình nạp được từ luồng dữ liệu bất kỳ. Nếu hôm nay bạn có 0 test, bắt đầu từ bảng chuyển trạng thái (bậc 1) — một buổi, không cần đổi kiến trúc.
 - **xUnit** với `[Fact]` và `[Theory]` + `[InlineData]` là bộ công cụ chuẩn hiện đại cho .NET; `[Theory]` đặc biệt phù hợp với bảng transition state machine.
 - **Moq** mock interface (không phải class cụ thể) — cho phép test `Axis`, `GuardEngine`, `AlarmService` hoàn toàn không cần phần cứng, bằng cách hoán đổi driver thật bằng mock.
 - **Async test:** khai báo `async Task` là đủ — tuyệt đối không dùng `.Result` hay `.Wait()` trong test code.
@@ -31752,7 +31692,7 @@ rà soát thành danh mục riêng trước khi bàn giao:
 | Đồng hồ lệch, dữ liệu truy xuất không khớp giữa các máy | Máy hiện trường không đồng bộ giờ | Đồng bộ NTP; lưu mốc thời gian dạng UTC trong cơ sở dữ liệu |
 
 > 📌 **Đường dẫn cố định theo ổ đĩa — trong phần mềm máy, đây thường KHÔNG phải lỗi.** Đọc mã nguồn
-> các dự án tham khảo sẽ gặp rất nhiều đường dẫn kiểu `E:\Log\`, `D:\<TênMáy>\Log\Step`,
+> máy có sẵn sẽ gặp rất nhiều đường dẫn kiểu `E:\Log\`, `D:\<TênMáy>\Log\Step`,
 > `E:\<TênDựÁn>\RunLog\`. Với phần mềm chạy trên máy tính của người dùng bất kỳ thì đó là mùi code;
 > với **máy công nghiệp thì thường là một quyết định thiết kế có chủ ý**, và là quyết định đúng.
 >
@@ -31823,7 +31763,7 @@ lịch sử vẫn còn trong Git), không để lại "phòng khi cần" lẫn v
 đang chạy thật.
 
 > 🔍 **Ví dụ thật — cả một abstraction được đầu tư kỹ nhưng 0 lượt gọi:**
-> trong một dự án tham khảo, một dialog "tạo Recipe" có đầy đủ: base class
+> trong một dự án có sẵn, một dialog "tạo Recipe" có đầy đủ: base class
 > generic validate theo `[Required]`/`IValidatableObject` (Chương 9, mục
 > 9.1.5), một lớp cầu nối dùng Reflection để đóng dialog mà không cần biết
 > kiểu `T` lúc biên dịch — rõ ràng tốn nhiều công sức thiết kế. Grep toàn bộ
@@ -31837,7 +31777,7 @@ lịch sử vẫn còn trong Git), không để lại "phòng khi cần" lẫn v
 > hay không.
 
 > 🔍 **Biến thể mạnh hơn — cả một `namespace` riêng lạc trong solution, 3 tầng
-> "định làm nhưng không làm" chồng lên nhau:** một dự án tham khảo khác có 1
+> "định làm nhưng không làm" chồng lên nhau:** một dự án khác có 1
 > file 1421 dòng chứa 6 thuật toán "tìm điểm gốc" (homing) tham số hoá đầy đủ
 > theo từng trục — nhìn qua tưởng là thư viện trung tâm cho thao tác home. Quy
 > trình xác minh bằng grep, theo đúng thứ tự: (1) file này khai báo 1
@@ -31860,7 +31800,7 @@ lịch sử vẫn còn trong Git), không để lại "phòng khi cần" lẫn v
 
 > ⚠️ **Họ hàng gần: mẹo gỡ rối viết tạm, rồi đi theo máy ra hiện trường.** Khác với dòng bị chú thích
 > ở trên — thứ *làm ít hơn* code nói — loại này *làm khác hẳn* code nói, nên khó phát hiện hơn nhiều.
-> Một dự án tham khảo nhận tham số dòng lệnh để chọn cấp quyền lúc khởi động, và đoạn xử lý là:
+> Có dự án nhận tham số dòng lệnh để chọn cấp quyền lúc khởi động, và đoạn xử lý là:
 >
 > ```csharp
 > if (args.Length > 1)
@@ -32212,15 +32152,15 @@ này, không bind trực tiếp vào một thư viện cụ thể như Serilog h
 quyết định log đi đâu (file xoay vòng theo ngày/kích thước, Event
 Viewer, database).
 
-> 📌 **Bạn sẽ gặp thư viện log nào ngoài thực tế — và một mùi code hay lặp lại.** Khảo sát các dự án
-> tham khảo cho thấy phân bố khá rõ:
+> 📌 **Bạn sẽ gặp thư viện log nào ngoài thực tế — và một mùi code hay lặp lại.** Trong mã máy có sẵn,
+> phân bố khá rõ:
 >
-> | Thư viện | Số dự án | Ghi chú |
+> | Thư viện | Mức độ gặp | Ghi chú |
 > |---|---|---|
-> | **log4net** | 5 | Phổ biến nhất trong code kế thừa; cấu hình bằng file XML, API `ILog` + `LogManager.GetLogger(...)` |
-> | **Serilog** | 1 | Dự án mới nhất trong nhóm — cũng là dự án duy nhất dùng log có cấu trúc đúng nghĩa |
-> | **NLog** | 2 | Thường đi cùng một thư viện khác trong cùng dự án (xem cảnh báo dưới) |
-> | **Tự viết** | 6 | Một lớp `LogHelper`/`LogMgr` ghi thẳng ra file text |
+> | **log4net** | Có gặp, nhiều nhất trong các thư viện | Phổ biến nhất trong code kế thừa; cấu hình bằng file XML, API `ILog` + `LogManager.GetLogger(...)` |
+> | **Serilog** | Hiếm gặp | Ở dự án mới — cũng là nơi duy nhất dùng log có cấu trúc đúng nghĩa |
+> | **NLog** | Hiếm gặp | Thường đi cùng một thư viện khác trong cùng dự án (xem cảnh báo dưới) |
+> | **Tự viết** | Hay gặp | Một lớp `LogHelper`/`LogMgr` ghi thẳng ra file text |
 >
 > Hai điều đáng rút ra:
 >
@@ -32250,7 +32190,7 @@ Viewer, database).
 > biết phải tìm ở đâu.
 
 > 💡 **Hiện trường làm khác: nhật ký chữ thường, đọc bằng Notepad.** Mục này dạy nhật ký có cấu trúc để
-> tra cứu. Trong 13 dự án thật chỉ một dự án làm vậy; số còn lại ghi chuỗi chữ vào file văn bản. Lý do
+> tra cứu. Trong mã máy có sẵn, điều đó rất hiếm; gần như dự án nào cũng ghi chuỗi chữ vào file văn bản. Lý do
 > không chỉ là thói quen: người đọc nhật ký ngoài hiện trường thường là kỹ thuật viên, trên một máy
 > tính công nghiệp không có mạng, và chỉ có Notepad. Một file JSON mỗi dòng một bản ghi rất tiện cho
 > công cụ tra cứu, nhưng khó đọc bằng mắt ngay tại máy.
@@ -32328,23 +32268,23 @@ rạc.
 ### 19.4.1b  Đọc hai bộ ghi log thật — một xấu, một tốt
 
 Mục trên trình bày *nên* ghi log thế nào. Mục này làm điều hữu ích hơn: mở hai bộ ghi log **có
-thật** trong bộ mẫu khảo sát ra đọc, phân tích từng chỗ, và cho thấy khoảng cách giữa hai cách
+thật** ra đọc, phân tích từng chỗ, và cho thấy khoảng cách giữa hai cách
 làm lớn tới mức nào — cả hai đều do kỹ sư máy viết, cả hai đều đang chạy trong nhà máy.
 
-Con số nền trước đã, vì nó giải thích vì sao mục này cần thiết:
+Bức tranh chung trước đã, vì nó giải thích vì sao mục này cần thiết:
 
-**Bảng 19.4 — Cách ghi log trong 13 phần mềm máy thật**
+**Bảng 19.4 — Cách ghi log trong phần mềm máy có sẵn**
 
-| Cách ghi | Số dự án | Ghi chú |
+| Cách ghi | Mức độ gặp | Ghi chú |
 |---|---|---|
-| Có dùng **thư viện log** (log4net / NLog / Serilog) | **6** / 13 | Dự án dùng nhiều nhất: ~90 lời gọi |
-| **Tự viết** lớp log | **8** / 13 | Từ 30 tới hơn 200 dòng |
-| `Console.WriteLine` trong mã sản xuất | **11** / 13 | Dự án nhiều nhất: **316 lần** |
-| Ghi thẳng ra file bằng `File.AppendText` rải rác | **6** / 13 | Dự án nhiều nhất: **43 chỗ** |
+| Có dùng **thư viện log** (log4net / NLog / Serilog) | **Có gặp** | Dự án dùng nhiều nhất: khoảng 90 lời gọi |
+| **Tự viết** lớp log | **Hay gặp** | Từ 30 tới hơn 200 dòng |
+| `Console.WriteLine` trong mã sản xuất | **Rất hay gặp** | Dự án nhiều nhất: **316 lần** |
+| Ghi thẳng ra file bằng `File.AppendText` rải rác | **Có gặp** | Dự án nhiều nhất: **43 chỗ** |
 
-Ba phần tư số dự án tự viết bộ ghi log, và 11/13 còn để lại `Console.WriteLine` trong mã giao cho
-khách. Vậy nên "tự viết logger" không phải chuyện hiếm cần cảnh báo — nó là **mặc định của
-ngành**, và điều đáng làm là biết tự viết cho đúng.
+Tự viết bộ ghi log là chuyện hay gặp, và `Console.WriteLine` còn sót trong mã giao cho khách thì
+rất hay gặp. Vậy nên "tự viết logger" không phải chuyện hiếm cần cảnh báo — nó gần như là **cách làm
+mặc định**, và điều đáng làm là biết tự viết cho đúng.
 
 #### Bản xấu: một lớp `Log` tĩnh 213 dòng
 
@@ -32442,7 +32382,7 @@ public class Log
 
 #### Bản tốt: cùng nhu cầu, 49 dòng, và lưới là một "cửa ra"
 
-Một dự án khác trong bộ mẫu có **đúng cùng nhu cầu** — hiện log lên lưới giao diện và ghi ra file
+Một dự án khác có **đúng cùng nhu cầu** — hiện log lên lưới giao diện và ghi ra file
 — nhưng giải theo hướng ngược lại: thay vì cho logger biết về lưới, họ cho lưới **cắm vào** đường
 ống log như một cửa ra (*sink*):
 
@@ -32860,7 +32800,7 @@ có thể — một tag kiểm tra, một phép đo round-trip time là đủ.
 
 **Lỗi 6: Tra cứu dữ liệu giữa hai tầng bằng chuỗi ký tự tự do, không qua
 enum/whitelist — sai chính tả bị bỏ qua trong im lặng.**
-Một dự án tham khảo cho thấy đúng mẫu lỗi này lặp lại độc lập ở ba nơi khác
+Có dự án cho thấy đúng mẫu lỗi này lặp lại độc lập ở ba nơi khác
 nhau: tên tham số recipe do người vận hành gõ tự do ở màn hình tạo, rồi
 Sequence tra lại bằng `FindByParam("TenThamSo")` — nếu chuỗi tra bằng
 `TryParse` (không phải `Parse`), sai một ký tự khiến khối `if` bị bỏ qua
@@ -32879,7 +32819,7 @@ bằng kỷ luật con người.
 
 **Lỗi 7: Coi "biên dịch sạch, không cảnh báo" là bằng chứng code đang được
 dùng.**
-Một dự án tham khảo có 1 class TCP client 585 dòng, dùng thư viện bên thứ ba
+Có dự án có 1 class TCP client 585 dòng, dùng thư viện bên thứ ba
 để kết nối — biên dịch vào bản build thật (symbol điều kiện biên dịch của nó
 được định nghĩa sẵn trong file cấu hình project, cả Debug lẫn Release), không
 có cảnh báo nào của compiler. Nhưng grep toàn bộ mã nguồn còn lại xác nhận
@@ -32898,7 +32838,7 @@ không?"
 
 **Lỗi 8: `switch` phân loại dữ liệu vào rồi ghi xuống, nhưng dòng ghi lại nằm
 NGOÀI switch, chạy vô điều kiện với giá trị mặc định.**
-Một dự án tham khảo có hàm ghi nhận thống kê lỗi vào file cấu hình: khai báo 1
+Có dự án có hàm ghi nhận thống kê lỗi vào file cấu hình: khai báo 1
 biến đếm cục bộ mặc định `0`, `switch` theo tên loại lỗi (chuỗi) chỉ khớp một
 số case biết trước — mỗi case gán giá trị đếm mới cho biến đó — nhưng dòng ghi
 biến đó xuống file lại đặt NGAY SAU khối `switch`, không nằm trong bất kỳ case
@@ -32912,7 +32852,7 @@ biến rồi dùng biến đó sau switch, luôn thêm case `default` xử lý t
 trường hợp "không khớp gì cả" âm thầm rơi qua với giá trị mặc định của biến.
 
 **Lỗi 9: Hàm trả `bool` nhưng một nhánh thất bại vẫn `return true`.**
-Một dự án tham khảo có hàm nạp tham số cấu hình từ file: nhánh thành công trả
+Có dự án có hàm nạp tham số cấu hình từ file: nhánh thành công trả
 `true` (đúng); nhánh thất bại (file không tồn tại, dữ liệu hỏng, ép kiểu ra
 `null`) phục hồi lại bằng bản sao lưu mặc định hard-code trong code rồi... vẫn
 `return true`. Chữ ký `bool LoadParameter(...)` ngầm định giá trị trả về phản
@@ -33025,28 +32965,28 @@ viết như vậy, và có lý do thật sự chính đáng để đổi. Trong 
 ổn định thường quan trọng hơn một tính năng mới hay một đoạn code "đẹp"
 hơn theo sách.
 
-Nhiều chỗ trong sách đặt hai cách làm cạnh nhau: cách sách khuyên, và cách máy thật thường làm cùng
-lý do của nó. Bảng dưới gom các cặp đó để tra lại. Trước khi đổi một đoạn mã đang chạy cho "đúng
+Nhiều chỗ trong sách đặt hai cách làm cạnh nhau: cách sách khuyên, và cách hay gặp trong mã có sẵn
+cùng lý do của nó. Bảng dưới gom các cặp đó để tra lại. Trước khi đổi một đoạn mã đang chạy cho "đúng
 sách", hãy đọc mục ở cột cuối.
 
-| Chủ đề | Sách khuyên | Máy thật thường làm | Bàn ở |
+| Chủ đề | Sách khuyên | Mã có sẵn hay làm | Bàn ở |
 |---|---|---|---|
-| Cấu hình | JSON có kiểu, kiểm tra dải | File INI phẳng, có ở cả 13/13 dự án | mục 3.6.4 |
-| Bắt lỗi | Không nuốt lỗi | 646 chỗ `catch` rỗng, và chúng không nguy hiểm như nhau | mục 3.5.5 |
-| Cấp phát, LINQ | Tránh trong vòng quét | LINQ ngay trong mã trạm ở 8/13 dự án | mục 3.7.2 |
-| Bất đồng bộ | `async`/`await` | Chặn trên luồng riêng; 4/13 dự án không có chữ `async` nào | mục 5.7, 7.6 |
-| Chờ theo thời gian | `await Task.Delay` | `Thread.Sleep` ở 11/13 dự án | mục 5.3.1 |
-| Khoá | Không `lock` quanh I/O | 191 chỗ `lock` bao quanh giao tiếp thiết bị | mục 5.3.2 |
-| Thiết bị | Interface cho mọi thiết bị | Gọi thẳng; 9/13 dự án có không quá 3 interface | mục 7.7 |
+| Cấu hình | JSON có kiểu, kiểm tra dải | File INI phẳng, rất hay gặp | mục 3.6.4 |
+| Bắt lỗi | Không nuốt lỗi | `catch` rỗng rất hay gặp, và chúng không nguy hiểm như nhau | mục 3.5.5 |
+| Cấp phát, LINQ | Tránh trong vòng quét | LINQ ngay trong mã trạm, hay gặp | mục 3.7.2 |
+| Bất đồng bộ | `async`/`await` | Chặn trên luồng riêng; có dự án không có chữ `async` nào | mục 5.7, 7.6 |
+| Chờ theo thời gian | `await Task.Delay` | `Thread.Sleep`, rất hay gặp | mục 5.3.1 |
+| Khoá | Không `lock` quanh I/O | `lock` bao quanh giao tiếp thiết bị, hay gặp | mục 5.3.2 |
+| Thiết bị | Interface cho mọi thiết bị | Gọi thẳng; nhiều dự án có không quá 3 interface | mục 7.7 |
 | Chờ | Mọi việc chờ đều có hạn giờ | Chờ người, chờ máy khác không hạn, nhưng hiện rõ đang chờ gì | mục 14.1.4 |
 | Bỏ qua phép kiểm | Mức Quản trị, hạn 30 phút | Tham số bật/tắt, không hạn | mục 15.2.3, 17.6.2 |
-| Quản lý mã | Git, nhánh, tag | Thư mục chép tay ở 4/13 dự án; tag ở 0/13 | mục 17.4 |
-| Kiểm thử | Kiểm thử tự động | Có ở 1/13 dự án | mục 18.6.4 |
+| Quản lý mã | Git, nhánh, tag | Có dự án chỉ chép tay thư mục; tag gần như không ai dùng | mục 17.4 |
+| Kiểm thử | Kiểm thử tự động | Rất hiếm | mục 18.6.4 |
 | Nhật ký | Có cấu trúc, tra cứu được | Chuỗi chữ trong file văn bản, đọc bằng Notepad | mục 19.4.1 |
-| Logic giao diện | Tách khỏi nút bấm | 46 % dòng mã nằm trong file giao diện | mục G.15.4 |
+| Logic giao diện | Tách khỏi nút bấm | Gần một nửa dòng mã nằm trong file giao diện | mục G.15.4 |
 
-Không dòng nào trong bảng kết luận "máy thật sai". Mỗi mục ở cột cuối nói rõ khi nào cách làm của máy
-thật chấp nhận được, khi nào không, và đường giữa là gì.
+Không dòng nào trong bảng kết luận "mã có sẵn sai". Mỗi mục ở cột cuối nói rõ khi nào cách làm đó
+chấp nhận được, khi nào không, và đường giữa là gì.
 
 Bước tiếp theo: áp dụng ngay một phần nhỏ vào dự án đang làm, đừng chờ
 đọc xong mới bắt đầu — kiến thức chỉ đọng lại khi dùng trên một bài toán
@@ -33490,7 +33430,7 @@ public struct TrapProfileParam { public double acc; public double dec; public sh
 ### A.3.4  Các họ card chuyển động thường gặp ngoài hiện trường
 
 Trường học hầu như không dạy phần này, mà hiện trường thì gặp hằng ngày. Bảng dưới liệt kê các họ card
-xuất hiện trong các dự án tham khảo của sách, để bạn nhận diện được ngay khi mở một solution lạ và
+hay gặp trong mã máy có sẵn, để bạn nhận diện được ngay khi mở một solution lạ và
 thấy tên file quen quen.
 
 **Bảng A.3 — Nhận diện họ card qua tên DLL và tiền tố hàm**
@@ -33653,7 +33593,7 @@ tách được thành sáu tầng sau. Cột bên phải là chương đã dạy
 ## B.2 Danh mục màn hình
 
 Đây là phần khác biệt lớn nhất giữa "biết lập trình C#" và "biết làm phần mềm máy". Số lượng màn
-hình thường vượt xa hình dung ban đầu: các dự án tham khảo có từ **40 đến 70 màn hình**, trong khi
+hình thường vượt xa hình dung ban đầu: các dự án có sẵn thường có từ **40 đến 70 màn hình**, trong khi
 đặc tả ban đầu của khách hàng thường chỉ nhắc tới bốn hay năm.
 
 Bảng dưới nhóm chúng thành bảy nhóm chức năng. Cột "Bắt buộc" đánh dấu những màn hình mà **mọi** máy
@@ -33924,7 +33864,7 @@ chỉ phát hiện ra chúng khi chúng **thiếu**.
 ### B.3.1 Trạm ghi bằng chứng — nhóm chức năng ít được nhắc tới
 
 Có một nhóm chức năng không sản xuất ra gì, không kiểm tra gì, chỉ **ghi lại bằng chứng** về những
-việc đã xảy ra. Trong các dự án tham khảo, chúng tồn tại như những trạm độc lập chạy song song với
+việc đã xảy ra. Trong mã có sẵn, chúng tồn tại như những trạm độc lập chạy song song với
 trạm sản xuất, được bật/tắt bằng chính cơ chế bắt tay đã học ở Ch16:
 
 - **Ghi dữ liệu chuyển động thô** — lấy mẫu vị trí, tốc độ, mô-men của servo trong lúc thao tác quan
@@ -33948,7 +33888,7 @@ Câu cuối của callout trên — *"kèm theo đó là chính sách xoá tự 
 Thực tế nó là phần **hay hỏng nhất** của cả nhóm chức năng này, và hỏng theo cách rất khó phát hiện. Mục
 này nói cụ thể vì sao.
 
-**Chuyện đã xảy ra trong một dự án tham khảo.** Phần mềm lưu ảnh vào **thư mục theo ngày** (`20260815/`,
+**Chuyện đã xảy ra trong một dự án có sẵn.** Phần mềm lưu ảnh vào **thư mục theo ngày** (`20260815/`,
 `20260816/`…), và có hẳn một cơ chế dọn dẹp viết khá cẩn thận: chạy nền để không làm treo giao diện, bắt
 lỗi cho **từng thư mục** để một thư mục đang bị khoá không chặn phần còn lại, ghi một dòng nhật ký cho
 mỗi lần xoá, và một bộ đếm giờ tự đặt lại lịch mỗi ngày một lần.
@@ -34096,7 +34036,7 @@ dưới và không ai cần biết.
 #### Con đường 3 trông như thế nào khi làm đến nơi đến chốn
 
 Bảng trên nói con đường 3 gần như luôn thắng, nhưng "cấu hình dạng dữ liệu" nghe còn trừu tượng. Dưới
-đây là hình dung cụ thể, rút từ một dự án tham khảo đã hiện thực trọn vẹn cách này.
+đây là hình dung cụ thể, rút từ một dự án đã hiện thực trọn vẹn cách này.
 
 **Ý tưởng: quy trình là một ĐỒ THỊ, còn C# chỉ cung cấp thư viện các nút.**
 
@@ -34248,7 +34188,7 @@ tham số cho từng nút.**
 
 Một nút "chạy tới điểm" có tham số là *điểm nào*. Nếu ô nhập tham số đó là một **ô văn bản trống**,
 kỹ sư phải gõ đúng tên điểm — gõ sai thì đồ thị vẫn lưu được, vẫn chạy được, và hỏng lúc vận hành.
-Trong dự án tham khảo, mỗi loại tham số **có một trình soạn riêng**: chọn điểm đã dạy từ danh sách,
+Trong dự án đó, mỗi loại tham số **có một trình soạn riêng**: chọn điểm đã dạy từ danh sách,
 chọn trục từ danh sách trục đã khai báo, chọn sự kiện host từ danh sách sự kiện đã định nghĩa. Các
 nút phức tạp còn có **hẳn một màn hình cấu hình riêng** thay vì một bảng thuộc tính.
 
@@ -34323,9 +34263,9 @@ Trình soạn tham số ngăn người dùng nhập sai **một ô**. Nhưng cò
 bộ quy trình**: hai bước trùng mã, một bước nhảy tới mã không tồn tại, một vòng lặp có bước nhảy bằng
 không. Không trình soạn ô nào bắt được chúng.
 
-Đó là việc của một **bộ kiểm tra cấu hình** — chạy trước khi cho phép nạp quy trình, và trong dự án
-tham khảo có bộ kiểm tra dài **hơn 700 dòng** cho một hệ quy trình dạng danh sách bước. Đây là thành
-phần mà cả hai hệ cấu hình dạng dữ liệu khác trong khảo sát **đều không có**, và nó chính là thứ biến
+Đó là việc của một **bộ kiểm tra cấu hình** — chạy trước khi cho phép nạp quy trình, và trong một dự án
+có sẵn, bộ kiểm tra dài **hơn 700 dòng** cho một hệ quy trình dạng danh sách bước. Đây là thành
+phần mà cả hai hệ cấu hình dạng dữ liệu khác từng gặp **đều không có**, và nó chính là thứ biến
 "cấu hình dạng dữ liệu" từ một ý tưởng hay thành một hệ dùng được ngoài hiện trường.
 
 **Ba mức nghiêm trọng, không phải hai.** Đây là điểm thiết kế quan trọng nhất: kết quả kiểm tra không
@@ -34402,7 +34342,7 @@ viên.
 > - **Danh sách bước CÓ điều khiển luồng**: vẫn là danh sách (dễ hiển thị, dễ sửa hơn đồ thị nhiều),
 >   nhưng thêm vài loại bước đặc biệt — lặp N lần, lặp theo điều kiện, lặp qua một danh sách, rẽ
 >   nhánh, gọi một quy trình con — cộng **biến có phạm vi** (biến dùng chung cho cả máy và biến riêng
->   của một lần chạy). Một dự án tham khảo làm đúng mức này và nó đủ diễn đạt cho một máy kiểm tra
+>   của một lần chạy). Có dự án làm đúng mức này và nó đủ diễn đạt cho một máy kiểm tra
 >   nhiều bước đo.
 >
 > Mức thứ hai đáng cân nhắc nhất cho phần lớn dự án: nó cho gần hết sức mạnh của đồ thị với chi phí
@@ -34412,7 +34352,7 @@ viên.
 
 > ⚠️ **Dấu hiệu nhận biết con đường 1 trong dự án kế thừa, và vì sao nên dừng nó lại.** Nếu thấy một
 > class vài trăm dòng toàn các chuỗi kiểu `"public class " + name + " : StationBase" + xuongDong + "{"` — đó là
-> bộ sinh mã bằng nối chuỗi. Trong một dự án tham khảo, bộ này dài **608 dòng**, và nằm cạnh một
+> bộ sinh mã bằng nối chuỗi. Trong một dự án có sẵn, bộ này dài **608 dòng**, và nằm cạnh một
 > trình soạn thảo code C# nhúng trong app (đầy đủ tô màu cú pháp, gợi ý khi gõ, gấp khối) mà **nút
 > Build thì để trống, chỉ có comment ghi tên vài thư viện định dùng**. Tham vọng rất lớn, hoàn thành
 > thì không. Đây là mẫu thất bại điển hình khi con đường 1 và 2 được làm ở dạng **rộng nhất**: chi phí
@@ -34594,7 +34534,7 @@ Ba điểm quyết định chất lượng của cơ chế này:
 
 1. **Nạp hỏng một plugin không làm chết ứng dụng** — bọc `try/catch` quanh từng file. Đúng với bối
    cảnh máy: thiếu module thị giác thì vẫn nên vào được màn hình để chạy tay và chẩn đoán.
-2. **Nhưng phải HIỂN THỊ plugin nào nạp hỏng, không chỉ ghi log.** Đây là điều một dự án tham khảo
+2. **Nhưng phải HIỂN THỊ plugin nào nạp hỏng, không chỉ ghi log.** Đây là điều có dự án
    làm thiếu, và nó nguy hiểm: máy chạy **thiếu chức năng** trong khi giao diện trông vẫn bình thường.
    Một dòng cảnh báo thường trực trên màn hình chính ("Thiếu module: Thị giác — máy đang chạy hạn
    chế") giải quyết được.
@@ -34610,7 +34550,7 @@ Ba điểm quyết định chất lượng của cơ chế này:
 | **2. Một bộ mã, khác nhau ở tổ hợp plugin** | Khung chung + thư viện plugin; mỗi máy cài một tập plugin | Khác biệt ở **chức năng**: máy này có thị giác, máy kia có đo lực |
 | **3. Bản build riêng cho từng khách** | Hằng biên dịch riêng, nhánh mã nguồn riêng | Gần như hai sản phẩm khác nhau — **và hãy chắc chắn trước khi chọn** |
 
-> ⚠️ **Đừng dùng mức 3 cho việc chỉ cần mức 1.** Trong một dự án tham khảo, hằng biên dịch riêng theo
+> ⚠️ **Đừng dùng mức 3 cho việc chỉ cần mức 1.** Trong một dự án có sẵn, hằng biên dịch riêng theo
 > **tên nhà máy** được dùng cho... việc đổi kích thước cửa sổ mặc định. Cái giá: mỗi lần sửa một lỗi
 > bất kỳ phải build và kiểm thử **hai bản**, và bản của nhà máy ít được chú ý hơn sẽ dần lệch pha với
 > bản chính. Quy tắc phân biệt rất đơn giản: nếu khác biệt có thể viết thành **một dòng trong file cấu
@@ -34656,12 +34596,12 @@ trải, hãy đọc có mục tiêu như Bước 0 của mọi nhật ký đọc
    thì đọc mã nguồn mở là hoạt động vô tận và không đọng lại gì.
 2. **Ánh xạ project vào sáu tầng** ở mục B.1 — biết mình đang đứng ở tầng nào trước khi đọc dòng nào.
 3. **Đọc test trước code, nếu dự án có test.** Đây là lợi thế lớn nhất của dự án mã nguồn mở so với
-   phần mềm máy trong công ty (mục 18.6.4 cho thấy chỉ 1/13 dự án máy thật có test): **test là tài
+   phần mềm máy trong công ty (mục 18.6.4 cho thấy kiểm thử rất hiếm trong mã máy có sẵn): **test là tài
    liệu đặc tả chạy được**. Muốn biết một class dùng thế nào, mở file test của nó nhanh hơn đọc
    chính nó.
 4. **Đọc lịch sử thay đổi của một file hay sửa.** Lệnh `git log -p --follow <file>` cho thấy file đó
    đã sai những gì và được sửa ra sao — thứ mà mã nguồn ở trạng thái hiện tại không kể lại. Đây là
-   thứ hoàn toàn không có khi đọc mã nguồn chép tay không có Git (4/13 dự án máy thật, mục 17.4).
+   thứ hoàn toàn không có khi đọc mã nguồn chép tay không có Git (vẫn có gặp, mục 17.4).
 5. **Đọc phần thảo luận (issue, pull request) của một tính năng bạn quan tâm.** Nó cho thấy các
    phương án đã được cân nhắc và lý do chọn — đúng loại thông tin mà code không bao giờ nói.
 
@@ -34754,8 +34694,8 @@ kỳ câu nào cũng cho ra dữ liệu **ghi thành công nhưng sai nội dung
 
 Vì vậy hàm chuyển đổi nên nhận đủ các tham số đó một cách tường minh, và — quan trọng hơn — **phải có
 test**. Đây là một trong số ít chỗ trong phần mềm máy mà kiểm thử tự động dễ viết và có lợi ích tức
-thì: đầu vào là chuỗi, đầu ra là mảng byte, không cần phần cứng nào (đúng bậc 2 của Bảng 18.8b). Một
-dự án tham khảo có hẳn hai hàm tự kiểm tra riêng cho thứ tự byte và cho phép tính mã kiểm tra — dấu
+thì: đầu vào là chuỗi, đầu ra là mảng byte, không cần phần cứng nào (đúng bậc 2 của Bảng 18.8b). Có
+dự án có hẳn hai hàm tự kiểm tra riêng cho thứ tự byte và cho phép tính mã kiểm tra — dấu
 hiệu tác giả đã từng bị đúng hai lỗi đó.
 
 **3. Mã kiểm tra: thường có nhiều hơn một loại, chọn theo từng trường.** Cùng một sản phẩm có thể dùng
@@ -34818,7 +34758,7 @@ nhiên vài chục file cũng không dựng ra được.
 
 ### B.9.1 Năm giai đoạn, và thứ tự giữa chúng có lý do
 
-Gom các dự án tham khảo lại, trình tự khởi động của phần mềm máy luôn rơi vào năm giai đoạn dưới đây.
+Trong mã có sẵn, trình tự khởi động của phần mềm máy gần như luôn rơi vào năm giai đoạn dưới đây.
 Tên gọi khác nhau, nhưng thứ tự thì gần như không đổi — và mỗi mũi tên đều có lý do:
 
 | # | Giai đoạn | Làm gì | Vì sao phải ở vị trí này |
@@ -34831,7 +34771,7 @@ Tên gọi khác nhau, nhưng thứ tự thì gần như không đổi — và m
 
 Hai chỗ trong bảng này đáng dừng lại:
 
-**Vì sao giai đoạn 3 phải theo đúng dây chuyền đó.** Trong một dự án tham khảo, thứ tự nạp là: file cấu
+**Vì sao giai đoạn 3 phải theo đúng dây chuyền đó.** Trong một dự án có sẵn, thứ tự nạp là: file cấu
 hình hệ thống cho biết **tên** của file tham số → nạp tham số → nạp file điểm → dựng danh sách trạm →
 sau cùng mới **ghép tên trục với trạm**. Không thể đảo: bạn không biết cần nạp bao nhiêu trục trước khi
 biết có bao nhiêu trạm. Khi đọc code lạ mà thấy một thứ tự nạp trông lộn xộn, gần như luôn có một dây
@@ -34885,7 +34825,7 @@ cách 2 giải quyết luôn vấn đề của họ.
 > 📌 **Ba chi tiết của mutex mà bỏ qua thì nó chặn hụt** — đã bàn kỹ ở Chương 5: đặt tiền tố `Global\`
 > để chặn cả khi có nhiều phiên đăng nhập, kèm một GUID vào tên để không trùng với phần mềm khác, và
 > **giữ mutex sống** bằng cách để nó ở một trường của lớp chứ không phải biến cục bộ — biến cục bộ bị
-> bộ dọn rác thu hồi thì khoá cũng biến mất. Một dự án tham khảo làm đúng cả ba, và giải phóng trong
+> bộ dọn rác thu hồi thì khoá cũng biến mất. Có dự án làm đúng cả ba, và giải phóng trong
 > `OnExit`; hai dự án khác dùng biến `static` không có `Global\` — chặn được trong đa số trường hợp,
 > nhưng không phải mọi trường hợp.
 
@@ -34926,7 +34866,7 @@ người kỹ thuật tin rằng máy đã kiểm tra kết nối, nên khi có 
 
 ### B.9.4 Và đừng quên chiều ngược lại: trình tự tắt
 
-Trình tự khởi động thường được chăm chút; trình tự tắt thì hay bị bỏ trống. Trong các dự án tham khảo,
+Trình tự khởi động thường được chăm chút; trình tự tắt thì hay bị bỏ trống. Trong mã có sẵn,
 phần đóng lại tối thiểu gồm: **ngắt kết nối card chuyển động và card IO**, dừng các luồng giám sát, và
 đóng kết nối truyền thông. Thứ tự là **ngược lại** thứ tự mở.
 
@@ -34986,7 +34926,7 @@ Ba câu hỏi nên tự trả lời cho máy của mình, vì bỏ qua thì hậ
 
 ## Lỗi thường gặp
 
-Danh sách này gom các lỗi **lặp lại ở nhiều dự án** trong quá trình khảo sát mã nguồn thật — không
+Danh sách này gom các lỗi **lặp lại ở nhiều dự án** trong mã nguồn thật đã đọc — không
 phải lỗi cú pháp, mà là những quyết định trông vô hại lúc viết và trở thành sự cố sau khi máy ra hiện
 trường. Xếp theo nhóm để dễ dùng như một danh mục rà soát.
 
@@ -36949,10 +36889,9 @@ lớp) và khoảng **bốn mươi từ khoá ngữ cảnh** (*contextual keywor
 một vị trí, ngoài chỗ đó vẫn dùng làm tên bình thường). Phụ lục này giải thích **tất cả**, nhóm theo
 công dụng, kèm hai thứ mà một bảng tra ngôn ngữ thông thường không có:
 
-- **Cột tần suất thật.** Mỗi từ khoá kèm số lần nó thực sự xuất hiện trong **13 phần mềm máy tự động
-  hoá thật** của bộ mẫu dùng xuyên suốt sách — tổng cộng **3.752** file `.cs`,
-  **883.160** dòng mã. Cách đo: bỏ hết chú thích và chuỗi ký tự trước khi đếm, khớp theo biên từ.
-  Con số này trả lời câu hỏi mà mọi người mới đều hỏi: *"tôi phải học thuộc bao nhiêu trong số này?"*
+- **Mức độ gặp trong mã thật.** Mỗi từ khoá kèm mức độ nó xuất hiện trong mã nguồn phần mềm máy
+  thật mà sách đã đọc (hàng nghìn file `.cs`, gần một triệu dòng mã; đã bỏ chú thích và chuỗi ký tự
+  trước khi đếm). Nó trả lời câu hỏi mà mọi người mới đều hỏi: *"tôi phải học thuộc bao nhiêu trong số này?"*
 - **Ghi chú theo bối cảnh máy.** Chỗ nào một từ khoá có ý nghĩa riêng trong phần mềm điều khiển máy
   (hoặc là cái bẫy riêng của lĩnh vực này), ghi chú nói rõ.
 
@@ -37078,8 +37017,8 @@ thấy thứ này"*:
 > ⚠️ **`static` — nơi phần lớn phần mềm máy đi chệch đường.** `static` nghĩa là *"chỉ có một bản,
 > dùng chung cho toàn chương trình"*. Với một hằng số hay một hàm tiện ích thuần tuý, đó là lựa chọn
 > đúng và rẻ. Với **dữ liệu thay đổi được**, nó tạo ra trạng thái toàn cục: ai cũng đọc được, ai cũng
-> ghi được, và không có chỗ nào để đặt một lớp kiểm tra. Đo trong 13 phần mềm máy của bộ mẫu:
-> **1.514 khai báo `public static` có thể ghi**, nhiều nhất một dự án là **640** — và đó cũng là dự
+> ghi được, và không có chỗ nào để đặt một lớp kiểm tra. Trong mã máy có sẵn,
+> khai báo `public static` có thể ghi **rất hay gặp**, có dự án tới **640** khai báo — và đó cũng là dự
 > án mà trạng thái máy nằm ở bảy biến `bool` rời nhau. Mục 12.1.1b phân tích đúng trường hợp đó, kèm
 > lối thoát từng bước.
 >
@@ -37106,10 +37045,10 @@ thấy thứ này"*:
 | `goto` | Nhảy tới nhãn, hoặc sang một nhánh `case` khác | ⬤ | Xem cảnh báo |
 | `in` (trong `foreach`) | Nối biến duyệt với tập | ⬤⬤⬤ | `in` còn hai nghĩa khác — xem E.6 và E.10 |
 
-> ⚠️ **`while (true)` và `goto` — hai con số từ bộ mẫu, đọc kèm nhau.** `while (true)` xuất hiện
-> **546 lần / 12 trong 13 dự án**: đây là hình dạng của **vòng quét** mang từ tư duy PLC sang, và
+> ⚠️ **`while (true)` và `goto` — hai điều nên đọc kèm nhau.** `while (true)` **rất hay
+> gặp**: đây là hình dạng của **vòng quét** mang từ tư duy PLC sang, và
 > Chương 6 bàn kỹ vì sao nó vừa tự nhiên vừa nguy hiểm trên PC (không có cơ chế dừng, ăn CPU, khó
-> kiểm thử). `goto` thì ngược lại — chỉ **2 trong 13 dự án** dùng, nhưng **một dự án dùng 991 lần**,
+> kiểm thử). `goto` thì ngược lại — **hiếm gặp**, nhưng có **một dự án dùng 991 lần**,
 > gần như toàn bộ là `goto case` để nhảy giữa các nhánh của một `switch` khổng lồ. Mục 12.1.1b mổ xẻ
 > chính đoạn mã đó. Kết luận thực dụng: `goto` không phải thứ bị cấm về đạo đức, nhưng khi nó trở
 > thành **cơ chế chuyển trạng thái chính** thì phần mềm đã mất khả năng liệt kê được trạng thái của
@@ -37122,7 +37061,7 @@ thấy thứ này"*:
 | Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
 |---|---|---|---|
 | `try` | Mở vùng có thể sinh lỗi | ⬤⬤⬤ | |
-| `catch` | Bắt lỗi thuộc loại đã nêu | ⬤⬤⬤ | `catch {}` rỗng: 646 chỗ trong bộ mẫu — mục 3.5.5 |
+| `catch` | Bắt lỗi thuộc loại đã nêu | ⬤⬤⬤ | `catch {}` rỗng rất hay gặp — mục 3.5.5 |
 | `finally` | Chạy dù có lỗi hay không | ⬤⬤⬤ | Chỗ đặt lệnh nhả kẹp, tắt nguồn, đóng cổng |
 | `throw` | Ném lỗi ra ngoài | ⬤⬤⬤ | `throw;` và `throw ex;` khác nhau — xem E.13 |
 | `when` *(ngữ cảnh)* | Bộ lọc gắn vào `catch`: chỉ bắt khi điều kiện đúng | ⬤⬤ | `catch (OperationCanceledException) when (!ct.IsCancellationRequested)` — mẫu chuẩn của hạn giờ, mục 5.5 |
@@ -37141,7 +37080,7 @@ thấy thứ này"*:
 | `params` | Nhận số lượng tham số tuỳ ý thành một mảng | ⬤⬤ | `Log(string mẫu, params object[] giáTrị)` |
 | `scoped` *(ngữ cảnh)* | Giới hạn tuổi thọ của tham chiếu | ⬤ | Rất hiếm; liên quan `ref struct` |
 
-> 📌 **Đo trong bộ mẫu: 908 hàm có tham số `ref`/`out`**, nhiều nhất một dự án là 255. Mục 3.4.4 đọc
+> 📌 **Hàm có tham số `ref`/`out` rất hay gặp**, có dự án hơn hai trăm hàm như vậy. Mục 3.4.4 đọc
 > một chữ ký có **ba tham số `ref double[]`** — tức là ba kết quả trả về đội lốt đầu vào. Đó là dấu
 > hiệu rõ nhất cho thấy hàm cần trả về một `record` kết quả thay vì nhồi qua tham số.
 
@@ -37188,7 +37127,7 @@ thấy thứ này"*:
 | Từ khoá | Nghĩa | Mức cần nắm | Ghi chú |
 |---|---|---|---|
 | `async` *(ngữ cảnh)* | Đánh dấu hàm có thể **tạm nhường** khi chờ | ⬤⬤⬤ | Chương 5; `async void` chỉ dành cho trình xử lý sự kiện |
-| `await` *(ngữ cảnh)* | Chờ một việc xong mà **không chặn luồng** | ⬤⬤⬤ | Đo được trong bộ mẫu: 9/13 dự án dùng, 4 dự án không dùng dòng nào |
+| `await` *(ngữ cảnh)* | Chờ một việc xong mà **không chặn luồng** | ⬤⬤⬤ | Hay gặp, nhưng vẫn có dự án không dùng dòng nào |
 | `lock` | Cho phép **một luồng tại một thời điểm** vào đoạn mã | ⬤⬤⬤ | Đừng `await` bên trong `lock`; đừng gọi mã lạ bên trong `lock` |
 | `volatile` | Mọi lần đọc đều đọc giá trị mới nhất | ⬤⬤ | Đủ cho **một cờ `bool` dừng**, không đủ cho mọi thứ khác |
 | `yield` *(ngữ cảnh)* | Sinh phần tử tiếp theo của một dãy, theo yêu cầu | ⬤⬤ | `yield return` — hợp để phát từng bước của quy trình |
@@ -37244,91 +37183,92 @@ Chỉ mang nghĩa đặc biệt bên trong một biểu thức truy vấn; ngoà
 
 ## E.12  Bảng tra nhanh theo thứ tự chữ cái
 
-Cột **Số lần xuất hiện** là tổng trên 3.752 file `.cs` của 13 phần mềm máy thật (đã bỏ chú thích
-và chuỗi ký tự trước khi đếm). Cột **Số dự án** cho biết bao nhiêu trong 13 dự án có dùng ít nhất
-một lần — cột này nói nhiều hơn cột tổng, vì nó không bị một dự án khổng lồ kéo lệch.
+Cột **Tần suất** cho biết từ khoá xuất hiện nhiều hay ít trong mã nguồn máy thật đã đọc: *rất nhiều*
+(hàng chục nghìn lần trở lên), *nhiều* (hàng nghìn), *vừa* (hàng trăm), *ít* (hàng chục), *rất ít*
+(vài lần). Cột **Mức độ gặp** cho biết nó có mặt ở nhiều dự án hay ít. Cột này nói nhiều hơn cột tần
+suất, vì nó không bị một dự án khổng lồ kéo lệch.
 
-**Bảng E.1 — 77 từ khoá dành riêng của C#, kèm tần suất thật trong 13 phần mềm máy**
+**Bảng E.1 — 77 từ khoá dành riêng của C#, kèm mức độ gặp trong mã máy thật**
 
-| Từ khoá | Nghĩa một dòng | Nhóm | Số lần xuất hiện | Số dự án |
+| Từ khoá | Nghĩa một dòng | Nhóm | Tần suất | Mức độ gặp |
 |---|---|---|---|---|
-| `abstract` | Lớp không tạo được đối tượng; hoặc hàm buộc lớp con phải cài đặt | E.3 | 296 | 10/13 |
-| `as` | Chuyển kiểu, thất bại thì cho `null` thay vì ném lỗi | E.7 | 1.628 | 13/13 |
-| `base` | Lớp cha — gọi hàm dựng hoặc hàm của nó | E.8 | 1.585 | 13/13 |
-| `bool` | Kiểu logic `true`/`false` | E.1 | 11.876 | 13/13 |
-| `break` | Thoát vòng lặp, hoặc kết thúc một nhánh `case` | E.4 | 7.480 | 13/13 |
-| `byte` | Số nguyên 0…255 — đơn vị của mọi khung truyền thông | E.1 | 4.790 | 13/13 |
-| `case` | Một nhánh của `switch` | E.4 | 9.178 | 13/13 |
-| `catch` | Bắt ngoại lệ | E.5 | 3.380 | 13/13 |
-| `char` | Một ký tự UTF-16 | E.1 | 211 | 11/13 |
-| `checked` | Bật kiểm tra tràn số — tràn thì ném lỗi | E.5 | 3 | 1/13 |
-| `class` | Khai báo kiểu tham chiếu | E.2 | 4.396 | 13/13 |
-| `const` | Hằng chốt lúc biên dịch, nhúng vào nơi gọi | E.3 | 8.861 | 13/13 |
-| `continue` | Bỏ qua phần còn lại, sang vòng lặp kế | E.4 | 794 | 13/13 |
-| `decimal` | Số thực cơ số 10, 28–29 chữ số — dùng cho tiền | E.1 | 123 | 8/13 |
-| `default` | Nhánh còn lại của `switch`; hoặc giá trị mặc định của kiểu | E.4 | 1.187 | 13/13 |
-| `delegate` | Kiểu của một tham chiếu tới hàm | E.2 | 398 | 11/13 |
-| `do` | Vòng lặp chạy thân ít nhất một lần rồi mới kiểm điều kiện | E.4 | 84 | 7/13 |
-| `double` | Số thực ~15–17 chữ số — mặc định cho toạ độ và kết quả đo | E.1 | 19.408 | 13/13 |
-| `else` | Nhánh còn lại của `if` | E.4 | 7.924 | 13/13 |
-| `enum` | Tập giá trị có tên, cố định | E.2 | 1.119 | 13/13 |
-| `event` | Sự kiện: nhiều nơi đăng ký, một nơi phát | E.9 | 713 | 13/13 |
-| `explicit` | Định nghĩa phép ép kiểu phải ghi rõ | E.7 | 11 | 2/13 |
-| `extern` | Hàm nằm trong thư viện native — đi cùng `[DllImport]` | E.3 | 12.575 | 13/13 |
-| `false` | Giá trị logic sai | E.8 | 15.807 | 13/13 |
-| `finally` | Khối luôn chạy, dù có lỗi hay không | E.5 | 248 | 11/13 |
-| `fixed` | Ghim đối tượng để bộ gom rác không dời | E.3 | 11 | 1/13 |
-| `float` | Số thực ~7 chữ số — không đủ cho toạ độ chính xác cao | E.1 | 953 | 11/13 |
-| `for` | Vòng lặp có bộ đếm | E.4 | 3.654 | 13/13 |
-| `foreach` | Duyệt từng phần tử của một tập | E.4 | 2.558 | 13/13 |
-| `goto` | Nhảy tới nhãn hoặc sang nhánh `case` khác | E.4 | 1.087 | 2/13 |
-| `if` | Rẽ nhánh theo điều kiện | E.4 | 36.434 | 13/13 |
-| `implicit` | Định nghĩa phép chuyển kiểu tự động | E.7 | 22 | 3/13 |
-| `in` | Ba nghĩa: biến duyệt `foreach`; tham số chỉ đọc; nguồn LINQ | E.6 | 2.575 | 13/13 |
-| `int` | Số nguyên ±2,1 tỷ — mặc định cho số nguyên | E.1 | 40.584 | 13/13 |
-| `interface` | Hợp đồng: liệt kê việc phải làm được | E.2 | 227 | 8/13 |
-| `internal` | Chỉ nhìn thấy trong cùng một project | E.3 | 847 | 12/13 |
-| `is` | Hỏi "có phải kiểu này không" và gán luôn nếu đúng | E.7 | 1.725 | 12/13 |
-| `lock` | Cho một luồng tại một thời điểm vào đoạn mã | E.9 | 609 | 11/13 |
-| `long` | Số nguyên ±9,2 tỷ tỷ | E.1 | 758 | 13/13 |
-| `namespace` | Không gian tên | E.2 | 3.486 | 13/13 |
-| `new` | Tạo đối tượng; hoặc (bổ nghĩa) che thành viên lớp cha | E.8 | 27.483 | 13/13 |
-| `null` | Không trỏ tới đối tượng nào | E.8 | 10.990 | 13/13 |
-| `object` | Kiểu gốc của mọi kiểu | E.1 | 7.422 | 13/13 |
-| `operator` | Nạp chồng toán tử | E.7 | 160 | 5/13 |
-| `out` | Tham số chỉ để trả ra — hàm buộc phải gán | E.6 | 4.146 | 13/13 |
-| `override` | Thay hành vi của hàm `virtual`/`abstract` | E.3 | 2.968 | 12/13 |
-| `params` | Nhận số lượng tham số tuỳ ý thành một mảng | E.6 | 107 | 9/13 |
-| `private` | Chỉ nhìn thấy bên trong chính lớp đó | E.3 | 17.183 | 13/13 |
-| `protected` | Lớp đó và các lớp con nhìn thấy | E.3 | 1.811 | 13/13 |
-| `public` | Mọi nơi nhìn thấy | E.3 | 61.059 | 13/13 |
-| `readonly` | Chỉ gán được lúc khai báo hoặc trong hàm dựng | E.3 | 2.522 | 12/13 |
-| `ref` | Truyền tham chiếu tới biến — đọc và ghi được biến gốc | E.6 | 10.755 | 13/13 |
-| `return` | Trả giá trị và thoát khỏi hàm | E.4 | 25.372 | 13/13 |
-| `sbyte` | Số nguyên −128…127 | E.1 | 32 | 6/13 |
-| `sealed` | Cấm kế thừa tiếp | E.3 | 167 | 7/13 |
-| `short` | Số nguyên −32.768…32.767 — kiểu của thanh ghi Modbus | E.1 | 19.668 | 10/13 |
-| `sizeof` | Kích thước byte của một kiểu giá trị | E.7 | 25 | 3/13 |
-| `stackalloc` | Cấp phát mảng trên ngăn xếp | E.8 | 0 | 0/13 |
-| `static` | Thuộc về kiểu, không thuộc đối tượng nào | E.3 | 21.024 | 13/13 |
-| `string` | Chuỗi ký tự, bất biến | E.1 | 24.753 | 13/13 |
-| `struct` | Kiểu giá trị — gán là chép toàn bộ dữ liệu | E.2 | 480 | 12/13 |
-| `switch` | Chọn một trong nhiều nhánh theo giá trị | E.4 | 1.570 | 13/13 |
-| `this` | Chính đối tượng hiện tại | E.8 | 25.808 | 13/13 |
-| `throw` | Ném ngoại lệ | E.5 | 1.973 | 12/13 |
-| `true` | Giá trị logic đúng | E.8 | 12.356 | 13/13 |
-| `try` | Mở vùng có thể sinh lỗi | E.5 | 3.297 | 13/13 |
-| `typeof` | Lấy đối tượng mô tả một kiểu | E.7 | 3.208 | 13/13 |
-| `uint` | Số nguyên không dấu 0…4,29 tỷ | E.1 | 9.176 | 13/13 |
-| `ulong` | Số nguyên không dấu 0…18 tỷ tỷ | E.1 | 144 | 5/13 |
-| `unchecked` | Tắt kiểm tra tràn — là hành vi mặc định | E.5 | 7 | 1/13 |
-| `unsafe` | Cho phép dùng con trỏ | E.3 | 306 | 4/13 |
-| `ushort` | Số nguyên không dấu 0…65.535 — thanh ghi Modbus | E.1 | 13.462 | 12/13 |
-| `using` | Tự gọi `Dispose()`; hoặc khai báo dùng một không gian tên | E.8 | 26.462 | 13/13 |
-| `virtual` | Hàm cho phép lớp con thay hành vi | E.3 | 701 | 12/13 |
-| `void` | Hàm không trả về gì | E.1 | 13.812 | 13/13 |
-| `volatile` | Mọi lần đọc đều lấy giá trị mới nhất | E.3 | 30 | 5/13 |
-| `while` | Lặp khi điều kiện còn đúng | E.4 | 1.099 | 13/13 |
+| `abstract` | Lớp không tạo được đối tượng; hoặc hàm buộc lớp con phải cài đặt | E.3 | vừa | Hay gặp |
+| `as` | Chuyển kiểu, thất bại thì cho `null` thay vì ném lỗi | E.7 | nhiều | Rất hay gặp |
+| `base` | Lớp cha — gọi hàm dựng hoặc hàm của nó | E.8 | nhiều | Rất hay gặp |
+| `bool` | Kiểu logic `true`/`false` | E.1 | rất nhiều | Rất hay gặp |
+| `break` | Thoát vòng lặp, hoặc kết thúc một nhánh `case` | E.4 | nhiều | Rất hay gặp |
+| `byte` | Số nguyên 0…255 — đơn vị của mọi khung truyền thông | E.1 | nhiều | Rất hay gặp |
+| `case` | Một nhánh của `switch` | E.4 | nhiều | Rất hay gặp |
+| `catch` | Bắt ngoại lệ | E.5 | nhiều | Rất hay gặp |
+| `char` | Một ký tự UTF-16 | E.1 | vừa | Rất hay gặp |
+| `checked` | Bật kiểm tra tràn số — tràn thì ném lỗi | E.5 | rất ít | Hiếm gặp |
+| `class` | Khai báo kiểu tham chiếu | E.2 | nhiều | Rất hay gặp |
+| `const` | Hằng chốt lúc biên dịch, nhúng vào nơi gọi | E.3 | nhiều | Rất hay gặp |
+| `continue` | Bỏ qua phần còn lại, sang vòng lặp kế | E.4 | vừa | Rất hay gặp |
+| `decimal` | Số thực cơ số 10, 28–29 chữ số — dùng cho tiền | E.1 | vừa | Hay gặp |
+| `default` | Nhánh còn lại của `switch`; hoặc giá trị mặc định của kiểu | E.4 | nhiều | Rất hay gặp |
+| `delegate` | Kiểu của một tham chiếu tới hàm | E.2 | vừa | Rất hay gặp |
+| `do` | Vòng lặp chạy thân ít nhất một lần rồi mới kiểm điều kiện | E.4 | ít | Hay gặp |
+| `double` | Số thực ~15–17 chữ số — mặc định cho toạ độ và kết quả đo | E.1 | rất nhiều | Rất hay gặp |
+| `else` | Nhánh còn lại của `if` | E.4 | nhiều | Rất hay gặp |
+| `enum` | Tập giá trị có tên, cố định | E.2 | nhiều | Rất hay gặp |
+| `event` | Sự kiện: nhiều nơi đăng ký, một nơi phát | E.9 | vừa | Rất hay gặp |
+| `explicit` | Định nghĩa phép ép kiểu phải ghi rõ | E.7 | ít | Hiếm gặp |
+| `extern` | Hàm nằm trong thư viện native — đi cùng `[DllImport]` | E.3 | rất nhiều | Rất hay gặp |
+| `false` | Giá trị logic sai | E.8 | rất nhiều | Rất hay gặp |
+| `finally` | Khối luôn chạy, dù có lỗi hay không | E.5 | vừa | Rất hay gặp |
+| `fixed` | Ghim đối tượng để bộ gom rác không dời | E.3 | ít | Hiếm gặp |
+| `float` | Số thực ~7 chữ số — không đủ cho toạ độ chính xác cao | E.1 | vừa | Rất hay gặp |
+| `for` | Vòng lặp có bộ đếm | E.4 | nhiều | Rất hay gặp |
+| `foreach` | Duyệt từng phần tử của một tập | E.4 | nhiều | Rất hay gặp |
+| `goto` | Nhảy tới nhãn hoặc sang nhánh `case` khác | E.4 | nhiều | Hiếm gặp |
+| `if` | Rẽ nhánh theo điều kiện | E.4 | rất nhiều | Rất hay gặp |
+| `implicit` | Định nghĩa phép chuyển kiểu tự động | E.7 | ít | Hiếm gặp |
+| `in` | Ba nghĩa: biến duyệt `foreach`; tham số chỉ đọc; nguồn LINQ | E.6 | nhiều | Rất hay gặp |
+| `int` | Số nguyên ±2,1 tỷ — mặc định cho số nguyên | E.1 | rất nhiều | Rất hay gặp |
+| `interface` | Hợp đồng: liệt kê việc phải làm được | E.2 | vừa | Hay gặp |
+| `internal` | Chỉ nhìn thấy trong cùng một project | E.3 | vừa | Rất hay gặp |
+| `is` | Hỏi "có phải kiểu này không" và gán luôn nếu đúng | E.7 | nhiều | Rất hay gặp |
+| `lock` | Cho một luồng tại một thời điểm vào đoạn mã | E.9 | vừa | Rất hay gặp |
+| `long` | Số nguyên ±9,2 tỷ tỷ | E.1 | vừa | Rất hay gặp |
+| `namespace` | Không gian tên | E.2 | nhiều | Rất hay gặp |
+| `new` | Tạo đối tượng; hoặc (bổ nghĩa) che thành viên lớp cha | E.8 | rất nhiều | Rất hay gặp |
+| `null` | Không trỏ tới đối tượng nào | E.8 | rất nhiều | Rất hay gặp |
+| `object` | Kiểu gốc của mọi kiểu | E.1 | nhiều | Rất hay gặp |
+| `operator` | Nạp chồng toán tử | E.7 | vừa | Có gặp |
+| `out` | Tham số chỉ để trả ra — hàm buộc phải gán | E.6 | nhiều | Rất hay gặp |
+| `override` | Thay hành vi của hàm `virtual`/`abstract` | E.3 | nhiều | Rất hay gặp |
+| `params` | Nhận số lượng tham số tuỳ ý thành một mảng | E.6 | vừa | Hay gặp |
+| `private` | Chỉ nhìn thấy bên trong chính lớp đó | E.3 | rất nhiều | Rất hay gặp |
+| `protected` | Lớp đó và các lớp con nhìn thấy | E.3 | nhiều | Rất hay gặp |
+| `public` | Mọi nơi nhìn thấy | E.3 | rất nhiều | Rất hay gặp |
+| `readonly` | Chỉ gán được lúc khai báo hoặc trong hàm dựng | E.3 | nhiều | Rất hay gặp |
+| `ref` | Truyền tham chiếu tới biến — đọc và ghi được biến gốc | E.6 | rất nhiều | Rất hay gặp |
+| `return` | Trả giá trị và thoát khỏi hàm | E.4 | rất nhiều | Rất hay gặp |
+| `sbyte` | Số nguyên −128…127 | E.1 | ít | Có gặp |
+| `sealed` | Cấm kế thừa tiếp | E.3 | vừa | Hay gặp |
+| `short` | Số nguyên −32.768…32.767 — kiểu của thanh ghi Modbus | E.1 | rất nhiều | Hay gặp |
+| `sizeof` | Kích thước byte của một kiểu giá trị | E.7 | ít | Hiếm gặp |
+| `stackalloc` | Cấp phát mảng trên ngăn xếp | E.8 | không | Không gặp |
+| `static` | Thuộc về kiểu, không thuộc đối tượng nào | E.3 | rất nhiều | Rất hay gặp |
+| `string` | Chuỗi ký tự, bất biến | E.1 | rất nhiều | Rất hay gặp |
+| `struct` | Kiểu giá trị — gán là chép toàn bộ dữ liệu | E.2 | vừa | Rất hay gặp |
+| `switch` | Chọn một trong nhiều nhánh theo giá trị | E.4 | nhiều | Rất hay gặp |
+| `this` | Chính đối tượng hiện tại | E.8 | rất nhiều | Rất hay gặp |
+| `throw` | Ném ngoại lệ | E.5 | nhiều | Rất hay gặp |
+| `true` | Giá trị logic đúng | E.8 | rất nhiều | Rất hay gặp |
+| `try` | Mở vùng có thể sinh lỗi | E.5 | nhiều | Rất hay gặp |
+| `typeof` | Lấy đối tượng mô tả một kiểu | E.7 | nhiều | Rất hay gặp |
+| `uint` | Số nguyên không dấu 0…4,29 tỷ | E.1 | nhiều | Rất hay gặp |
+| `ulong` | Số nguyên không dấu 0…18 tỷ tỷ | E.1 | vừa | Có gặp |
+| `unchecked` | Tắt kiểm tra tràn — là hành vi mặc định | E.5 | rất ít | Hiếm gặp |
+| `unsafe` | Cho phép dùng con trỏ | E.3 | vừa | Có gặp |
+| `ushort` | Số nguyên không dấu 0…65.535 — thanh ghi Modbus | E.1 | rất nhiều | Rất hay gặp |
+| `using` | Tự gọi `Dispose()`; hoặc khai báo dùng một không gian tên | E.8 | rất nhiều | Rất hay gặp |
+| `virtual` | Hàm cho phép lớp con thay hành vi | E.3 | vừa | Rất hay gặp |
+| `void` | Hàm không trả về gì | E.1 | rất nhiều | Rất hay gặp |
+| `volatile` | Mọi lần đọc đều lấy giá trị mới nhất | E.3 | ít | Có gặp |
+| `while` | Lặp khi điều kiện còn đúng | E.4 | nhiều | Rất hay gặp |
 
 ---
 
@@ -37459,9 +37399,9 @@ nên xuất hiện ở chỗ buộc phải có (COM/Excel Interop — mục 3.6.
 
 ## E.14  Vậy phải học thuộc bao nhiêu?
 
-Câu trả lời từ số liệu, và nó nhẹ nhàng hơn nhiều so với vẻ ngoài của một danh sách 77 mục.
+Câu trả lời từ mã nguồn thật, và nó nhẹ nhàng hơn nhiều so với vẻ ngoài của một danh sách 77 mục.
 
-Trong 561.143 lần một từ khoá dành riêng xuất hiện ở 13 phần mềm máy thật:
+Trong mã máy thật đã đọc, các từ khoá dành riêng phân bố như sau:
 
 **Bảng E.2 — Phân bố thật: bao nhiêu từ khoá làm nên bao nhiêu phần của mã nguồn**
 
@@ -37469,23 +37409,23 @@ Trong 561.143 lần một từ khoá dành riêng xuất hiện ở 13 phần m�
 |---|---|---|
 | Chiếm **một nửa** tổng số lần xuất hiện | **9** | `public`, `int`, `if`, `new`, `using`, `this`, `return`, `string`, `static` |
 | Chiếm **90 %** | **28** | Chín từ trên, cộng các từ ở nhóm E.1, E.4 và E.5 |
-| Có mặt ở **cả 13/13** dự án | **44** | Nhóm lõi — nếu thuộc hết nhóm này thì bạn đọc được mọi phần mềm máy trong bộ mẫu |
-| Xuất hiện **dưới 100 lần** trên toàn bộ 883.160 dòng | **10** | `do`, `sbyte`, `volatile`, `sizeof`, `implicit`, `explicit`, `fixed`, `unchecked`, `checked`, `stackalloc` |
-| **Không dự án nào dùng** | **1** | `stackalloc` |
+| Gặp ở **gần như mọi** dự án | **khoảng 40** | Nhóm lõi — thuộc hết nhóm này thì bạn đọc được gần như mọi phần mềm máy |
+| **Rất hiếm** (dưới một trăm lần trên gần một triệu dòng) | **10** | `do`, `sbyte`, `volatile`, `sizeof`, `implicit`, `explicit`, `fixed`, `unchecked`, `checked`, `stackalloc` |
+| **Không gặp** | **1** | `stackalloc` |
 
-Nói cách khác: **học chắc 44 từ khoá là đọc được gần như mọi dòng mã trong ngành này**, và 9 từ đầu
-tiên chiếm một nửa những gì bạn nhìn thấy. Ba mươi ba từ còn lại thuộc loại *tra khi gặp* — đó chính
+Nói cách khác: **học chắc khoảng 40 từ khoá là đọc được gần như mọi dòng mã phần mềm máy**, và 9 từ đầu
+tiên chiếm một nửa những gì bạn nhìn thấy. Những từ còn lại thuộc loại *tra khi gặp* — đó chính
 là lý do phụ lục này tồn tại.
 
 > ⚠️ **Nhưng hãy nhìn lại dòng "dưới 100 lần" một lần nữa.** Trong mười từ khoá hiếm nhất có
-> **`volatile`** (30 lần, 5 dự án) và **`checked`** (3 lần, 1 dự án) — hai từ khoá mà mục E.13 và
+> **`volatile`** và **`checked`** — hai từ khoá mà mục E.13 và
 > Chương 3 đều dành hẳn một callout để giải thích. Hiếm mà quan trọng: `volatile` sai thì một cờ dừng
 > có thể không bao giờ được luồng kia nhìn thấy; thiếu `checked` thì một giá trị tràn kiểu đi thẳng
 > vào logic điều khiển mà không ai biết. Đây đúng là chỗ mà **tần suất và tầm quan trọng đi ngược
 > nhau**, và là lý do cột "Mức cần nắm" tồn tại tách khỏi cột tần suất.
 >
-> Một ví dụ nữa theo chiều ngược lại: **`interface` chỉ được khai báo 227 lần, ở 8 trong 13 dự án** —
-> con số nhỏ tới mức dễ tưởng đây là thứ thứ yếu. Nhưng 227 khai báo ấy quyết định phần mềm nào thay
+> Một ví dụ nữa theo chiều ngược lại: **`interface` được khai báo khá ít** —
+> ít tới mức dễ tưởng đây là thứ thứ yếu. Nhưng chính những khai báo ấy quyết định phần mềm nào thay
 > được thiết bị, chạy được khi chưa có máy, và kiểm thử được. Chương 7 và Chương 13 nói về đúng
 > chuyện đó.
 
@@ -37505,8 +37445,8 @@ bộ quy tắc** đủ ngắn để in ra dán cạnh màn hình.
 
 Ba điều cần nói trước để bạn biết mình đang đọc gì:
 
-- **Mỗi quy tắc ở đây đều truy ngược được** về một mục trong sách, hoặc về một **con số đo trên 13
-  phần mềm máy thật** của bộ mẫu. Không có quy tắc nào đưa vào vì "người ta hay khuyên thế".
+- **Mỗi quy tắc ở đây đều truy ngược được** về một mục trong sách, hoặc về một **quan sát trên mã nguồn
+  máy thật**. Không có quy tắc nào đưa vào vì "người ta hay khuyên thế".
 - **Đây không phải chuẩn bắt buộc.** Đội bạn có thể đổi bất kỳ điều nào — miễn là đổi **có chủ ý** và
   ghi lại lý do. Mục F.2 nói về chỗ ghi.
 - **Mục F.6 nói về việc có trợ lý AI tham gia viết mã**, và nó nói cả những chỗ **không áp dụng
@@ -37620,23 +37560,23 @@ Ba quy ước đi kèm, và quy ước thứ ba là quan trọng nhất:
 
 ## F.3  Mười hai quy tắc để mã dễ đọc
 
-Mỗi quy tắc kèm **con số đo được** trên 13 phần mềm máy thật, để bạn biết nó phổ biến tới đâu chứ
+Mỗi quy tắc kèm **điều quan sát được** trong mã nguồn máy thật, để bạn biết nó hay gặp tới đâu chứ
 không chỉ nghe lời khuyên.
 
 **Bảng F.3 — Mười hai quy tắc đọc được, và bằng chứng**
 
-| # | Quy tắc | Đo được trong bộ mẫu | Chi tiết |
+| # | Quy tắc | Gặp trong mã có sẵn | Chi tiết |
 |---|---|---|---|
 | 1 | **Tên nói việc, không nói kiểu.** `DiToViTriGap()` chứ không `DoWork2()` | — | Ch.3 |
-| 2 | **Hàm không quá 5 tham số.** Nhiều hơn thì gom thành `record` | 905 hàm ≥5 tham số, **275 hàm ≥8**, dài nhất **27** | mục 3.4.4 |
-| 3 | **Kết quả đi ra bằng giá trị trả về**, không bằng `ref`/`out` | **908** hàm có `ref`/`out` | mục 3.4.4 |
-| 4 | **File không quá ~1.000 dòng.** Quá thì tách theo trách nhiệm | 43 file >2.000 dòng; lớn nhất **28.635 dòng** | mục 12.1.1b |
+| 2 | **Hàm không quá 5 tham số.** Nhiều hơn thì gom thành `record` | Hàm ≥5 tham số khá hay gặp; dài nhất **27** tham số | mục 3.4.4 |
+| 3 | **Kết quả đi ra bằng giá trị trả về**, không bằng `ref`/`out` | Gần một nghìn hàm có `ref`/`out` | mục 3.4.4 |
+| 4 | **File không quá ~1.000 dòng.** Quá thì tách theo trách nhiệm | Hàng chục file >2.000 dòng; lớn nhất **28.635 dòng** | mục 12.1.1b |
 | 5 | **Điều kiện ghép hai phép so sánh cùng một biến phải đọc lại hai lần** | 1 lớp bảo vệ **không bao giờ chạy** | mục 3.3.3 |
-| 6 | **Không so sánh số thực bằng `==`** — luôn so theo dung sai | 13 chỗ | mục 3.3.3 |
+| 6 | **Không so sánh số thực bằng `==`** — luôn so theo dung sai | Ít gặp, nhưng khó tìm | mục 3.3.3 |
 | 7 | **Không để số ma.** Ngưỡng, thời gian chờ, chỉ số trục → hằng có tên | — | Ch.3 |
-| 8 | **Xoá mã đã chú thích.** Git nhớ hộ bạn rồi | **13.976** dòng mã bị chú thích | Ch.17 |
-| 9 | **`catch` phải nói.** Ít nhất một dòng log có ngữ cảnh | **646** khối `catch` rỗng, 156 trong đó bọc thiết bị | mục 3.5.5 |
-| 10 | **Log bằng khuôn có tham số**, không nối chuỗi | 11/13 dự án còn `Console.WriteLine` trong mã sản xuất | mục 19.4.1 |
+| 8 | **Xoá mã đã chú thích.** Git nhớ hộ bạn rồi | **Hơn mười nghìn** dòng mã bị chú thích | Ch.17 |
+| 9 | **`catch` phải nói.** Ít nhất một dòng log có ngữ cảnh | **Hơn 600** khối `catch` rỗng, khoảng một phần tư bọc thiết bị | mục 3.5.5 |
+| 10 | **Log bằng khuôn có tham số**, không nối chuỗi | `Console.WriteLine` còn sót trong mã sản xuất rất hay gặp | mục 19.4.1 |
 | 11 | **Phân tích số phải nói rõ văn hoá** (`InvariantCulture`) | `"5.0"` thành **50** trên máy đặt vùng miền Việt Nam | mục 3.6.4 |
 | 12 | **Đơn vị nằm trong tên hoặc trong kiểu.** `viTriMm`, không `viTri` | — | Ch.11 |
 
@@ -37773,7 +37713,7 @@ Một trang, dùng trực tiếp. Mỗi mục đều truy được về một ch
 | ☐ | Phần mềm chạy được khi **rút cáp** thiết bị nối tiếp/mạng | Báo lỗi rõ ràng thay vì tắt ngang | mục 14.1.7b |
 | ☐ | Thử bố cục ở tỉ lệ hiển thị **100 %, 125 %, 150 %** | Máy tính công nghiệp thường không đặt 100 % | mục 8.1.6 |
 | ☐ | Mọi lệnh xuống thiết bị đều có **hạn giờ** | Không có thì một lệnh treo là treo cả chu kỳ | Ch.5 |
-| ☐ | Không còn `catch` rỗng nào bọc lời gọi thiết bị | 156 chỗ như vậy trong bộ mẫu | mục 3.5.5 |
+| ☐ | Không còn `catch` rỗng nào bọc lời gọi thiết bị | Khoảng một phần tư số `catch` rỗng thuộc loại này | mục 3.5.5 |
 | ☐ | Nhật ký ghi đủ để chẩn đoán **mà không cần nối máy tính** | Ca đêm không có kỹ sư | mục 19.4.1b |
 | ☐ | Mở phần mềm **hai lần** thì lần hai bị chặn | Hai tiến trình cùng ra lệnh một card | Ch.5 |
 | ☐ | Điều kiện an toàn nằm ở **mạch phần cứng**, không phải trong `if` | Một dòng `if` chú thích được trong ba giây | mục 15.2.2b |
@@ -38272,8 +38212,8 @@ khối bắt lỗi bất ngờ, nhớ truyền **cả đối tượng lỗi** v�
 một dòng log giải thích — không cần bất kỳ câu `if` nào ở chỗ gọi.
 
 **Hướng làm.** (a) `Dictionary<(TrangThai, Lenh), TrangThai>` — không thêm phụ thuộc, đủ tốt; (b)
-thư viện máy trạng thái — thêm được hành động khi vào/ra trạng thái, đúng thứ dùng ở một dự án
-trong bộ mẫu; (c) `switch` lồng — quay lại đúng vấn đề mục 12.1.1.
+thư viện máy trạng thái — thêm được hành động khi vào/ra trạng thái, đúng thứ có dự án
+đang dùng; (c) `switch` lồng — quay lại đúng vấn đề mục 12.1.1.
 
 **Gợi ý.** Viết ra **bảng** trước trên giấy: hàng là trạng thái, cột là lệnh. Ô trống nghĩa là không
 cho phép. Bạn sẽ phát hiện vài ô mình chưa từng nghĩ tới.
@@ -38326,8 +38266,8 @@ nếu file hỏng.
 **Kết quả mong đợi.** Sửa file thành nội dung rác, khởi động lại phần mềm: máy báo lỗi rõ ràng và
 chạy với công thức mặc định, **không sập**.
 
-**Hướng làm.** (a) JSON — có kiểu, lồng được, công cụ sẵn; (b) INI — **13/13 dự án trong bộ mẫu
-dùng**, người bảo trì quen, nhưng phẳng và không có kiểu; (c) SQLite — hợp khi cần lịch sử đổi công
+**Hướng làm.** (a) JSON — có kiểu, lồng được, công cụ sẵn; (b) INI — **rất hay
+gặp**, người bảo trì quen, nhưng phẳng và không có kiểu; (c) SQLite — hợp khi cần lịch sử đổi công
 thức, nặng hơn cho một máy nhỏ.
 
 **Gợi ý.** Dù chọn gì, khi phân tích số **phải nói rõ văn hoá**. Trên máy đặt vùng miền Việt Nam,
@@ -38379,7 +38319,7 @@ ngoài phần mềm, dễ bị quên khi cài lại máy.
 
 **Gợi ý.** Đây là bài dạy một thói quen quan trọng hơn chính nó: **tiêm đồng hồ** (một giao diện
 `IDongHo` thay vì gọi thẳng `DateTime.Now`). Không có nó thì mọi thứ liên quan tới thời gian đều
-không kiểm thử được. Trong bộ mẫu có **1.881** chỗ gọi thẳng `DateTime.Now`.
+không kiểm thử được. Trong mã máy có sẵn, gọi thẳng `DateTime.Now` **rất hay gặp**.
 
 **Ghép vào.** G.8.2.
 
@@ -38494,9 +38434,9 @@ lẫn bảng giao diện.
 **Kết quả mong đợi.** Tìm được **mọi lần trục Z quá thời gian** bằng một phép lọc theo thuộc tính,
 không phải tìm chuỗi văn bản.
 
-**Hướng làm.** (a) Thư viện log có khuôn thông điệp — khuyến nghị; (b) tự viết bộ ghi log — trong
-bộ mẫu **8/13 dự án** làm vậy, và mục 19.4.1b mổ xẻ mười vấn đề của một bản như thế; (c) giữ
-`Console.WriteLine` — **11/13 dự án** vẫn còn trong mã sản xuất, và không tra cứu được gì.
+**Hướng làm.** (a) Thư viện log có khuôn thông điệp — khuyến nghị; (b) tự viết bộ ghi log — rất
+hay gặp, và mục 19.4.1b mổ xẻ mười vấn đề của một bản như thế; (c) giữ
+`Console.WriteLine` — **rất hay gặp** trong mã sản xuất, và không tra cứu được gì.
 
 **Gợi ý.** Ghi `_logger.Information("Trục {Ten} tới {ViTri} mm", ten, viTri)` chứ không nối chuỗi.
 Khác biệt là thứ cho phép lọc theo `Ten` về sau.
@@ -38511,8 +38451,8 @@ G.2.4.
 **Kết quả mong đợi.** Hàm xử lý sự kiện **chỉ gom byte vào bộ đệm**, không phân tích, không chạm
 giao diện. Rút cáp giữa chừng thì phát cảnh báo rõ ràng, không làm sập chương trình.
 
-**Hướng làm.** (a) `BytesToRead` rồi `Read(buf, 0, n)` và đẩy vào bộ đệm — **33/41 hàm trong bộ mẫu
-làm cách này**; (b) `ReadExisting()` cộng bộ đệm chuỗi — được, chỉ dùng cho khung văn bản; (c)
+**Hướng làm.** (a) `BytesToRead` rồi `Read(buf, 0, n)` và đẩy vào bộ đệm — **đa số hàm trong mã
+có sẵn làm cách này**; (b) `ReadExisting()` cộng bộ đệm chuỗi — được, chỉ dùng cho khung văn bản; (c)
 `ReadLine()` trên luồng riêng — ngắn nhất, nhưng chặn và phải bắt lỗi hết giờ.
 
 **Gợi ý.** Nếu không có cảm biến thật, dùng một cặp cổng ảo nối chéo và viết một chương trình nhỏ
@@ -38647,7 +38587,7 @@ Chỉ chạy nhóm khớp 'G4':
 > thích: máy tính công nghiệp ngoài hiện trường không có Visual Studio và không chạy được
 > `dotnet test`. Cả bộ kiểm gói trong một file `Kiem.cs` khoảng 60 dòng, không phụ thuộc gì bên
 > ngoài — nên **gắn được vào một nút trên màn hình chẩn đoán của máy thật**. Chương 18 mục 18.6.4
-> mô tả đúng cách làm này ở một dự án trong bộ mẫu. Khi nào bạn có môi trường phát triển đầy đủ thì
+> mô tả đúng cách làm này ở một dự án có sẵn. Khi nào bạn có môi trường phát triển đầy đủ thì
 > chuyển sang xUnit; hai thứ không loại trừ nhau.
 
 ### G.10.1  Ba bài kiểu miền — G.1.2, G.1.3, G.1.5
@@ -38834,7 +38774,7 @@ public async Task<KetQuaDo> DoAsync(int soHieuPhoi, CancellationToken ct = defau
 Hai chi tiết đáng nói. Thứ nhất, `CancellationToken.None` trong `finally`: dùng `ct` ở đó nghĩa là
 khi người vận hành bấm Dừng, đầu đo **kẹt ở dưới** — phôi kế tiếp trôi vào sẽ va. Thứ hai,
 `IDongHo` tiêm vào: không có nó thì không phép kiểm nào khẳng định được thời điểm, và bạn sẽ gặp
-lại vấn đề của 1.881 chỗ gọi thẳng `DateTime.Now` trong bộ mẫu.
+lại vấn đề của việc gọi thẳng `DateTime.Now`, rất hay gặp trong mã có sẵn.
 
 ### G.10.6  G.5.1 và G.5.2 — Trình tự
 
@@ -39355,8 +39295,8 @@ dotnet run              # toàn bộ bộ tự kiểm
 Bốn mươi bài và phần ghép máy ở G.11 đều chạy với cấu hình nằm trong mã. Một cỗ máy thật thì không
 được phép như vậy, vì **cỗ máy thứ hai cùng loại** sẽ có điểm dạy khác, IP khác, hành trình khác.
 
-Chương 17 mục 17.3.7 bàn nguyên tắc và số đo (294 chỗ đặt cấu hình cạnh file chạy trong bộ mẫu, chỉ
-6 chỗ đặt ở nơi an toàn khi cập nhật). Mục này là phần **chạy được** của nó:
+Chương 17 mục 17.3.7 bàn nguyên tắc và thực tế (đặt cấu hình cạnh file chạy rất hay gặp, đặt ở nơi
+an toàn khi cập nhật thì hiếm). Mục này là phần **chạy được** của nó:
 `src/csharp-automation-machine/MeoBench/KhoCauHinh.cs`, chạy bằng `dotnet run -- G12`.
 
 **Bảng G.5 — Sáu nhóm kiểm của phần tách cấu hình**
@@ -39386,44 +39326,44 @@ cỗ máy, cài đè bản mới, rồi kiểm xem cấu hình còn không.
 
 ---
 
-## G.13  Đối chiếu với máy thật — cỗ máy mẫu còn thiếu gì
+## G.13  So với máy thật — cỗ máy mẫu còn thiếu gì
 
 Mục G.11 ghép đủ mọi thứ bốn mươi bài sinh ra, và mọi phép kiểm đều xanh. Nhưng "ghép đủ những gì
-mình đã làm" khác hẳn "đủ những gì một cỗ máy cần". Mục này trả lời câu hỏi thứ hai bằng cách **đo
-trên 13 phần mềm máy thật**: liệt kê những năng lực chúng có, rồi đối chiếu với bản mẫu.
+mình đã làm" khác hẳn "đủ những gì một cỗ máy cần". Mục này trả lời câu hỏi thứ hai bằng cách xem
+mã nguồn máy thật có những năng lực gì, rồi đối chiếu với bản mẫu.
 
 ### G.13.1  Máy thật có những năng lực gì
 
-Quét 13 dự án tìm dấu vết của từng năng lực, xếp theo **số dự án có** (không phải số lần xuất hiện,
-vì số lần dễ bị một dự án khổng lồ kéo lệch):
+Tìm dấu vết của từng năng lực trong mã máy có sẵn, xếp theo **mức độ hay gặp** (tính theo số dự án
+có, không theo số lần xuất hiện, vì số lần dễ bị một dự án khổng lồ kéo lệch):
 
 **Bảng G.6 — Năng lực của phần mềm máy thật, và bản mẫu có hay không**
 
-| Năng lực | Số dự án có | Cỗ máy ở G.11 | Lời giải G.13 |
+| Năng lực | Mức độ gặp | Cỗ máy ở G.11 | Lời giải G.13 |
 |---|---|---|---|
-| Phân quyền theo mức người dùng | **13 / 13** | ✗ không có | ✓ `PhienDangNhap` |
-| Đếm giờ chạy / tuổi thọ linh kiện | **13 / 13** | ✗ chỉ có nhịp giây/phôi | ✓ `SoBaoTri` |
-| Đăng nhập | 12 / 13 | ✗ | ✓ (phần phân quyền) |
-| **Thử lại khi thiết bị lỗi thoáng qua** | **12 / 13** | ✗ **không có chỗ nào thử lại** | ✓ `ThuLai` |
-| Chạy tay / jog trục | 11 / 13 | ✗ | ✓ `ChayTay` |
-| Truy xuất nguồn gốc (số sê-ri từng phôi) | 9 / 13 | ✗ chỉ có số đếm `int` | ✓ `SoSeriPhoi` |
-| Chế độ tay riêng | 7 / 13 | ✗ | ✓ (phần jog) |
-| Đèn tháp và còi | 7 / 13 | ✗ | ✓ `DenThap` |
-| Sao lưu / khôi phục cấu hình | 7 / 13 | ✗ | ✓ `SaoLuuCauHinh` |
-| Đa ngôn ngữ | 7 / 13 | ✗ | ✗ — **cố ý không làm**, xem G.13.4 |
-| Giao tiếp MES / host | 7 / 13 | ✗ | ✗ — **cố ý không làm** |
-| Watchdog phát hiện treo | 5 / 13 | ✗ | ✓ `WatchdogChuKy` |
-| Chạy từng bước | 4 / 13 | ✗ | ✗ — để làm bài tập |
-| Lịch sử cảnh báo lưu ra file | 3 / 13 | ✗ chỉ có cảnh báo đang hoạt động | ✓ `LichSuCanhBao` |
-| **Vết kiểm toán** | **0 / 13** | ✗ | ✓ `VetKiemToan` — xem callout |
+| Phân quyền theo mức người dùng | **Rất hay gặp** | ✗ không có | ✓ `PhienDangNhap` |
+| Đếm giờ chạy / tuổi thọ linh kiện | **Rất hay gặp** | ✗ chỉ có nhịp giây/phôi | ✓ `SoBaoTri` |
+| Đăng nhập | Rất hay gặp | ✗ | ✓ (phần phân quyền) |
+| **Thử lại khi thiết bị lỗi thoáng qua** | **Rất hay gặp** | ✗ **không có chỗ nào thử lại** | ✓ `ThuLai` |
+| Chạy tay / jog trục | Rất hay gặp | ✗ | ✓ `ChayTay` |
+| Truy xuất nguồn gốc (số sê-ri từng phôi) | Hay gặp | ✗ chỉ có số đếm `int` | ✓ `SoSeriPhoi` |
+| Chế độ tay riêng | Hay gặp | ✗ | ✓ (phần jog) |
+| Đèn tháp và còi | Hay gặp | ✗ | ✓ `DenThap` |
+| Sao lưu / khôi phục cấu hình | Hay gặp | ✗ | ✓ `SaoLuuCauHinh` |
+| Đa ngôn ngữ | Hay gặp | ✗ | ✗ — **cố ý không làm**, xem G.13.4 |
+| Giao tiếp MES / host | Hay gặp | ✗ | ✗ — **cố ý không làm** |
+| Watchdog phát hiện treo | Có gặp | ✗ | ✓ `WatchdogChuKy` |
+| Chạy từng bước | Có gặp | ✗ | ✗ — để làm bài tập |
+| Lịch sử cảnh báo lưu ra file | Hiếm gặp | ✗ chỉ có cảnh báo đang hoạt động | ✓ `LichSuCanhBao` |
+| **Vết kiểm toán** | **Không gặp** | ✗ | ✓ `VetKiemToan` — xem callout |
 
-> 📌 **Dòng đáng chú ý nhất là dòng "thử lại": 12/13 dự án có, bản mẫu KHÔNG có chỗ nào.** Suốt bốn
+> 📌 **Dòng đáng chú ý nhất là dòng "thử lại": rất hay gặp trong mã thật, nhưng bản mẫu KHÔNG có chỗ nào.** Suốt bốn
 > mươi bài, mọi lỗi thiết bị đều dẫn thẳng tới cảnh báo và dừng máy. Nghe thì "an toàn", nhưng một
 > cỗ máy dừng vì **một lần** cảm biến trả lời chậm là cỗ máy không ai chịu được: mỗi ca sẽ dừng vài
 > chục lần, và người vận hành sẽ học được cách bấm Reset thật nhanh mà không đọc cảnh báo — đó là
 > lúc phần mềm mất hết tác dụng bảo vệ.
 
-> ⚠️ **Dòng cuối: KHÔNG dự án nào trong 13 có vết kiểm toán.**
+> ⚠️ **Dòng cuối: vết kiểm toán không gặp ở dự án nào.**
 > Không dự án nào ghi lại *ai đã đổi thông số gì, lúc nào, từ giá trị nào sang giá trị nào*. Đây
 > không phải tính năng xa xỉ: nó là thứ **đầu tiên bị hỏi khi một lô hàng bị trả về** — *"hôm đó ai
 > sửa công thức?"*. Lời giải mẫu có nó (`VetKiemToan`, 40 dòng) và sách khuyến nghị nó, nhưng cần
@@ -39481,11 +39421,11 @@ if (maMay.Contains(DauPhanCach, StringComparison.Ordinal))
 
 Có ba năng lực khá phổ biến trong mã thật mà lời giải mẫu không cài:
 
-| Không cài | Số dự án có | Lý do |
+| Không cài | Mức độ gặp | Lý do |
 |---|---|---|
-| **Đa ngôn ngữ** | 7/13 | Thuần tầng giao diện, và cách làm (tệp tài nguyên, `CultureInfo`) không có gì riêng của phần mềm máy. Cài vào chỉ làm dài bản mẫu mà không dạy thêm điều gì |
-| **Giao tiếp MES / host** | 7/13 | Chương 14 đã bàn kỹ SECS/GEM và giao thức tuỳ biến; bản mẫu đã có bắt tay hai dây (G.8.4) làm đại diện cho lớp "nói chuyện với bên ngoài" |
-| **Chạy từng bước** | 4/13 | Khuôn đã có sẵn: cổng tạm dừng ở ranh giới bước của G.5.5. Biến nó thành chế độ chạy từng bước là **bài tập mở rộng tốt** — và người làm sẽ gặp đúng câu hỏi thú vị: *chạy từng bước có được phép ở mức Vận hành không?* |
+| **Đa ngôn ngữ** | Hay gặp | Thuần tầng giao diện, và cách làm (tệp tài nguyên, `CultureInfo`) không có gì riêng của phần mềm máy. Cài vào chỉ làm dài bản mẫu mà không dạy thêm điều gì |
+| **Giao tiếp MES / host** | Hay gặp | Chương 14 đã bàn kỹ SECS/GEM và giao thức tuỳ biến; bản mẫu đã có bắt tay hai dây (G.8.4) làm đại diện cho lớp "nói chuyện với bên ngoài" |
+| **Chạy từng bước** | Có gặp | Khuôn đã có sẵn: cổng tạm dừng ở ranh giới bước của G.5.5. Biến nó thành chế độ chạy từng bước là **bài tập mở rộng tốt** — và người làm sẽ gặp đúng câu hỏi thú vị: *chạy từng bước có được phép ở mức Vận hành không?* |
 
 ### G.13.5  Bản mẫu vẫn chưa phải phần mềm máy thật
 
@@ -39513,7 +39453,7 @@ Dù đã có đủ những năng lực trên, bản mẫu **vẫn chưa phải p
 
 Mục G.13 so **năng lực**: máy thật có gì mà bản mẫu chưa có. Mục này đi theo chiều ngược lại. Mỗi
 phép kiểm của bản mẫu khẳng định một **bất biến** — một điều lúc nào cũng phải đúng, ví dụ *"mọi
-lời gọi thiết bị đều có hạn giờ"*. Lấy mười bất biến như vậy, đem đối chiếu với mã nguồn của mười ba
+lời gọi thiết bị đều có hạn giờ"*. Lấy mười bất biến như vậy, đem đối chiếu với mã nguồn
 phần mềm máy thật, và hỏi:
 
 > **Những hàm trong mã máy thật có qua được các phép kiểm của bản mẫu không?**
@@ -39532,20 +39472,20 @@ thì không biên dịch được ngoài môi trường của nó, và phần l�
 
 ### G.14.2  Kết quả
 
-**Bảng G.7 — Mười bất biến của bản mẫu, đối chiếu mười ba dự án thật**
+**Bảng G.7 — Mười bất biến của bản mẫu, đối chiếu mã máy thật**
 
-| Mã | Bất biến bản mẫu khẳng định | Dự án đạt | Vì sao |
+| Mã | Bất biến bản mẫu khẳng định | Mức độ đạt | Vì sao |
 |---|---|---|---|
-| RT-1 | Mọi lời gọi thiết bị có hạn giờ | **2/13** | ⓝ hình dạng |
-| RT-2 | Method async nhận `CancellationToken` | **0/13** | ⓝ hình dạng |
-| RT-3 | Cấu hình hỏng → chạy bằng dự phòng | **3/13** | ⓕ trượt thật |
-| RT-4 | Cấu hình sống sót qua cập nhật | **3/13** | ⓕ trượt thật |
-| RT-5 | Số ghi ra file không lệ thuộc máy | **4/13** | ⓕ trượt thật |
-| RT-6 | Phần mềm chỉ **đọc** tín hiệu an toàn | **13/13** | ⓧ dò từ khoá ra 6/13 — sai |
-| RT-7 | Điểm dạy kiểm theo hành trình lúc nạp | **8/13** | ⓟ đạt |
-| RT-8 | Nhật ký có cấu trúc, tra được | **0/13** | ⓕ trượt thật |
-| RT-9 | Phân biệt dừng chủ ý với lỗi thật | **0/13** | ⓝ hình dạng |
-| RT-10 | Số liệu ca sống sót khởi động lại | **13/13** | ⓟ đạt |
+| RT-1 | Mọi lời gọi thiết bị có hạn giờ | **Hiếm đạt** | ⓝ hình dạng |
+| RT-2 | Method async nhận `CancellationToken` | **Không đạt** | ⓝ hình dạng |
+| RT-3 | Cấu hình hỏng → chạy bằng dự phòng | **Hiếm đạt** | ⓕ trượt thật |
+| RT-4 | Cấu hình sống sót qua cập nhật | **Hiếm đạt** | ⓕ trượt thật |
+| RT-5 | Số ghi ra file không lệ thuộc máy | **Một số đạt** | ⓕ trượt thật |
+| RT-6 | Phần mềm chỉ **đọc** tín hiệu an toàn | **Hầu hết đạt** | ⓧ dò từ khoá cho kết quả ngược lại — sai |
+| RT-7 | Điểm dạy kiểm theo hành trình lúc nạp | **Nhiều dự án đạt** | ⓟ đạt |
+| RT-8 | Nhật ký có cấu trúc, tra được | **Không đạt** | ⓕ trượt thật |
+| RT-9 | Phân biệt dừng chủ ý với lỗi thật | **Không đạt** | ⓝ hình dạng |
+| RT-10 | Số liệu ca sống sót khởi động lại | **Hầu hết đạt** | ⓟ đạt |
 
 Bốn nhóm lý do, xếp theo mức đáng suy nghĩ giảm dần: **ⓝ** phép kiểm không áp được vì hình dạng
 kiến trúc khác · **ⓕ** áp được và mã thật trượt thật · **ⓧ** dò bằng từ khoá cho kết quả sai ·
@@ -39558,20 +39498,20 @@ hình dạng kiến trúc mà phần lớn mã thật không có.**
 
 Hình dạng đó có hai phần. Thứ nhất, mã **bất đồng bộ** (`async`/`await`, Chương 5). Thứ hai, mã có
 **chỗ cắm**: chỗ mà ta thay được thiết bị thật bằng một bản giả lập để kiểm thử. Trong C#, chỗ cắm
-thường là một interface được truyền vào qua hàm dựng (mục 7.4). Đếm hai thứ đó trong mười ba dự án:
+thường là một interface được truyền vào qua hàm dựng (mục 7.4). Đếm hai thứ đó trong mã máy có sẵn:
 
-**Bảng G.8 — Hình dạng kiến trúc của mười ba phần mềm máy thật**
+**Bảng G.8 — Hình dạng kiến trúc của phần mềm máy có sẵn**
 
-| Tính chất | Số dự án |
+| Tính chất | Mức độ gặp |
 |---|---|
-| **Hoàn toàn đồng bộ** (dưới 20 chỗ `await` trong cả dự án) | **9 / 13** |
-| Có chỗ cắm được bản giả (≥10 interface **và** ≥10 hàm dựng nhận interface) | 4 / 13 |
-| **Vừa bất đồng bộ vừa có chỗ cắm** — tức hình dạng bản mẫu giả định | **2 / 13** |
+| **Hoàn toàn đồng bộ** (dưới 20 chỗ `await` trong cả dự án) | **Hay gặp** |
+| Có chỗ cắm được bản giả (≥10 interface **và** ≥10 hàm dựng nhận interface) | Có gặp |
+| **Vừa bất đồng bộ vừa có chỗ cắm** — tức hình dạng bản mẫu giả định | **Hiếm gặp** |
 
 Vì sao phần lớn đồng bộ? Con số sau giải thích:
 
-> **12.612 khai báo `[DllImport]`** trong mười ba dự án. Cùng với **1.592 `Thread.Sleep`** và
-> **594 chỗ `.Result` / `.Wait()`**.
+> **Hơn mười hai nghìn khai báo `[DllImport]`**, cùng với **hơn một nghìn rưỡi `Thread.Sleep`** và
+> **hàng trăm chỗ `.Result` / `.Wait()`**.
 
 `[DllImport]` là cách C# gọi một hàm trong DLL viết bằng C/C++ của hãng thiết bị — gọi là
 **P/Invoke** (Phụ lục A). Một lời gọi P/Invoke **chặn luồng** cho tới khi hàm trả về, **không nhận
@@ -39591,8 +39531,8 @@ vậy.** Chê nó "chưa hiện đại" là chê nhầm chỗ.
 ### G.14.4  Một con số đếm sai, và vì sao nó sai
 
 Dòng RT-6 hỏi: phần mềm có **ghi** vào tín hiệu an toàn không? Nếu dò bằng từ khoá — tìm `EMG`,
-`EStop`, `Emergency` đứng cạnh các động từ `Write`, `Set`, `Reset` — kết quả là chỉ **6/13** dự án
-đạt. Tức là bảy dự án bị nghi **ghi vào mạch an toàn**, một lỗi rất nặng nếu có thật.
+`EStop`, `Emergency` đứng cạnh các động từ `Write`, `Set`, `Reset` — kết quả là **chỉ khoảng một nửa** số
+dự án đạt. Tức là nửa còn lại bị nghi **ghi vào mạch an toàn**, một lỗi rất nặng nếu có thật.
 
 Mở từng chỗ khớp ra đọc thì thấy (tên hàm đã đổi cho gọn):
 
@@ -39604,7 +39544,7 @@ Mở từng chỗ khớp ra đọc thì thấy (tên hàm đã đổi cho gọn)
 | `Set(ref _isEmergency, value)` | hàm đặt thuộc tính MVVM của một cờ hiển thị |
 | `SetValue(AppliesToProperty, value)` | thuộc tính phụ thuộc của WPF, không liên quan gì |
 
-Không chỗ nào ghi vào mạch an toàn. Con số đúng là **13/13 đạt** — thực tế **xác nhận** nguyên tắc ở
+Không chỗ nào ghi vào mạch an toàn. Kết quả đúng là **gần như mọi dự án đều đạt** — thực tế **xác nhận** nguyên tắc ở
 mục 15.2.2b, chứ không mâu thuẫn với nó.
 
 > ⚠️ **Tên gọi không phải hành vi.** Trong mã nguồn công nghiệp, chữ `EMG` xuất hiện nhiều nhất ở ba
@@ -39703,17 +39643,17 @@ Bốn dòng ⓕ trong Bảng G.7 là những chỗ phép kiểm **áp được**
 
 | Bất biến | Kết quả | Chi tiết |
 |---|---|---|
-| Nhật ký có cấu trúc (RT-8) | **0/13** | 0 mẫu thông điệp `{Ten}`; hơn 350 lời gọi nối chuỗi |
-| Cấu hình sống sót cập nhật (RT-4) | 3/13 | một dự án có **151** lần lấy đường dẫn cạnh file chạy |
-| Cấu hình hỏng → dự phòng (RT-3) | 3/13 | phần lớn chỗ nạp cấu hình không có `try/catch` bao quanh |
-| Số không lệ thuộc máy (RT-5) | 4/13 | `ToString("F2")` không nêu culture nhiều hơn `InvariantCulture` |
+| Nhật ký có cấu trúc (RT-8) | **Không đạt** | 0 mẫu thông điệp `{Ten}`; hơn 350 lời gọi nối chuỗi |
+| Cấu hình sống sót cập nhật (RT-4) | Hiếm đạt | một dự án có **151** lần lấy đường dẫn cạnh file chạy |
+| Cấu hình hỏng → dự phòng (RT-3) | Hiếm đạt | phần lớn chỗ nạp cấu hình không có `try/catch` bao quanh |
+| Số không lệ thuộc máy (RT-5) | Một số đạt | `ToString("F2")` không nêu culture nhiều hơn `InvariantCulture` |
 
 Bốn chỗ này khác hẳn ba nguyên nhân trên: **không có SDK nào ép, không có hình dạng kiến trúc nào
 cản.** Thêm `InvariantCulture` vào một lời gọi `ToString` tốn mười lăm ký tự. Bọc `try/catch` quanh
 chỗ nạp cấu hình tốn bốn dòng. Chúng không được làm vì **chưa ai gặp sự cố**, và khi gặp thì thường
 là ở nhà máy khách lúc hai giờ sáng.
 
-> 💡 **Nếu chỉ sửa một thứ, hãy sửa dòng RT-8.** Không dự án nào trong mười ba có nhật ký tra được.
+> 💡 **Nếu chỉ sửa một thứ, hãy sửa dòng RT-8.** Không dự án nào có nhật ký tra được.
 > Mọi dự án đều *có* nhật ký — hàng trăm lời gọi — nhưng tất cả đều là chuỗi đã nối sẵn, nên không
 > lọc được theo trục, không đếm được theo mã lỗi, không trả lời được câu *"đêm qua trạm 3 hỏng bao
 > nhiêu lần"* mà không mở file ra đọc bằng mắt. Đổi `Log("Trục " + ten + " lỗi")` thành
@@ -39745,47 +39685,50 @@ thiết bị thiếu đường dừng, và cơ chế hạn giờ vô tác dụng
 
 ## G.15  Cấu trúc — mã thật tổ chức thế nào, và sách khác ở đâu
 
-Mục G.14 đối chiếu **bất biến**. Mục này đối chiếu **hình dạng**: mười ba phần mềm máy thật chia
+Mục G.14 đối chiếu **bất biến**. Mục này đối chiếu **hình dạng**: phần mềm máy thật chia
 mã ra sao, so với cách sách đề xuất, và — câu hỏi quyết định — **phép kiểm với tới đâu trong mỗi
 cách**.
 
 ### G.15.1  Hình dạng tổng thể
 
-**Bảng G.9 — Cấu trúc tổng thể của mười ba dự án**
+**Bảng G.9 — Cấu trúc tổng thể của mã máy có sẵn**
 
 | Chỉ số | Kết quả |
 |---|---|
 | Số project (`.csproj`) mỗi dự án | từ **1** tới **22** |
-| Dự án chỉ có **đúng một** project | **4 / 13** |
-| Dự án có **file ≥ 1.000 dòng** | **13 / 13** |
-| Tổng số file ≥ 1.000 dòng | **167** |
+| Dự án chỉ có **đúng một** project | **Có gặp** |
+| Dự án có **file ≥ 1.000 dòng** | **Rất hay gặp** |
+| Tổng số file ≥ 1.000 dòng | **hơn 150** |
 | File dài nhất | **28.635 dòng** |
-| Dự án có **kiểm thử tự động** | **1 / 13** |
+| Dự án có **kiểm thử tự động** | **Hiếm gặp** |
 
-Dòng cuối cần giải thích. Nếu chỉ tìm **thư mục tên `test`** thì thấy 4/13, nhưng ba trong số đó
+Dòng cuối cần giải thích. Nếu chỉ tìm **thư mục tên `test`** thì thấy nhiều hơn, nhưng phần lớn
 không có phép kiểm nào bên trong. Đếm theo dấu hiệu thật của phép kiểm (`[Fact]`, `[Theory]`,
 `[Test]`, `Assert.`) thì:
 
-- **Một** dự án có kiểm thử thật: 203 phép kiểm, 446 câu `Assert`, 46 file, dùng xUnit.
-- **Mười hai** dự án còn lại: **0**. Không một câu `Assert` nào trong toàn bộ mã nguồn.
+- Dự án có kiểm thử thật **rất hiếm**; dự án đầy đủ nhất có khoảng hai trăm phép kiểm, dùng xUnit.
+- Các dự án còn lại: **không một câu `Assert` nào** trong toàn bộ mã nguồn.
 
-> 📌 **Dự án duy nhất có kiểm thử cũng là một trong bốn dự án có chỗ cắm** (82 interface, 102 hàm
-> dựng nhận interface — xem mục G.14.3). Nhưng chiều ngược lại **không đúng**: ba dự án kia cũng có
-> chỗ cắm mà vẫn không có phép kiểm nào. Chỗ cắm là **điều kiện cần, không phải điều kiện đủ** — nó
+> 📌 **Dự án có kiểm thử cũng là dự án có chỗ cắm** (hàng chục interface và hàm dựng nhận
+> interface, xem mục G.14.3). Nhưng chiều ngược lại **không đúng**: có những dự án có chỗ cắm mà vẫn
+> không có phép kiểm nào. Chỗ cắm là **điều kiện cần, không phải điều kiện đủ** — nó
 > cho bạn khả năng viết phép kiểm, không cho bạn thói quen viết.
 
 ### G.15.2  Mã nằm ở đâu: gần một nửa nằm trong giao diện
 
-Phân loại 879.408 dòng mã theo *file có phải giao diện không* (tên chứa `Form`/`Window`/`View`/…,
+Phân loại mã nguồn theo *file có phải giao diện không* (tên chứa `Form`/`Window`/`View`/…,
 hoặc kế thừa `Window`, hoặc dùng `System.Windows.Forms`):
 
 **Bảng G.10 — Tỉ lệ dòng mã nằm trong file giao diện**
 
-| Dự án | A | B | C | D | E | F | G | H | I | K | L | M | N | **Chung** |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| % dòng ở giao diện | 21 | 26 | 32 | 28 | 23 | **74** | **86** | 12 | 33 | 51 | **64** | **70** | 49 | **46 %** |
+| Nhóm dự án | % dòng mã nằm ở giao diện |
+|---|---|
+| Khoảng một nửa số dự án | 12–33 % |
+| Một số dự án | khoảng 50 % |
+| Một số dự án khác | **64–86 %** |
+| **Tính chung** | **gần một nửa** |
 
-Gần một nửa mã của phần mềm máy nằm trong file giao diện, và ở bốn dự án, giao diện chiếm
+Gần một nửa mã của phần mềm máy nằm trong file giao diện, và ở một số dự án, giao diện chiếm
 **64–86 %**.
 
 Con số đó một mình chưa nói được gì — giao diện máy vốn nhiều. Câu hỏi thật là: **cái gì nằm trong
@@ -39793,13 +39736,13 @@ Con số đó một mình chưa nói được gì — giao diện máy vốn nhi
 
 **Bảng G.11 — Dấu vết logic máy, nằm trong hay ngoài file giao diện**
 
-| Dấu vết | Trong file giao diện | Ngoài | **% nằm ở giao diện** |
-|---|---|---|---|
-| Gọi phần cứng qua `[DllImport]` | 913 | 11.699 | **7 %** |
-| Lệnh chuyển động (`MoveAbs`, `Home`, `Jog`…) | 412 | 417 | **50 %** |
-| Ghi file trực tiếp | 143 | 102 | **58 %** |
-| Chờ bằng `Thread.Sleep` | 966 | 626 | **61 %** |
-| Đọc/ghi tín hiệu vào-ra | 1.082 | 599 | **64 %** |
+| Dấu vết | **% nằm ở giao diện** |
+|---|---|
+| Gọi phần cứng qua `[DllImport]` | **7 %** |
+| Lệnh chuyển động (`MoveAbs`, `Home`, `Jog`…) | **50 %** |
+| Ghi file trực tiếp | **58 %** |
+| Chờ bằng `Thread.Sleep` | **61 %** |
+| Đọc/ghi tín hiệu vào-ra | **64 %** |
 
 > ⚠️ **Driver đã được tách ra; logic dùng driver thì chưa.** Dòng đầu cho thấy chỉ 7 % lời gọi
 > P/Invoke nằm trong file giao diện: người viết những phần mềm này *biết* phải bọc SDK hãng lại, và
@@ -39809,27 +39752,27 @@ Con số đó một mình chưa nói được gì — giao diện máy vốn nhi
 > Quyết định "bật van nào, chờ bao lâu, khi nào thì được phép" vẫn nằm trong thân hàm xử lý nút bấm.
 > Tầng trừu tượng thiết bị có tồn tại; tầng nghiệp vụ thì không.
 >
-> Và dòng `Thread.Sleep` — **966 lần trong file giao diện** — là dòng gây hại nhất: mỗi lần như vậy
+> Và dòng `Thread.Sleep` — **hàng trăm lần trong file giao diện** — là dòng gây hại nhất: mỗi lần như vậy
 > là một lần **luồng giao diện đứng hình**. Người vận hành thấy màn hình treo, tưởng máy hỏng, bấm
 > tiếp. Mục 8.1.5 bàn `Application.DoEvents()`, cách chữa cháy phổ biến nhất của WinForms; đây là
 > lý do người ta phải dùng tới nó.
 
 ### G.15.3  Nhìn gần: hai nghìn nút bấm
 
-Gom toàn bộ hàm xử lý sự kiện nút/menu trong mười ba dự án — **2.041 hàm**:
+Gom toàn bộ hàm xử lý sự kiện nút/menu trong mã máy có sẵn — **hơn hai nghìn hàm**:
 
 | Chỉ số | Kết quả |
 |---|---|
 | Độ dài thân hàm, trung vị | **7 dòng** |
 | 90 % nằm dưới | 32 dòng |
 | Dài nhất | **652 dòng** |
-| Có gọi thẳng thiết bị trong thân hàm | 154 (8 %) |
-| Có chặn luồng (`Sleep` / `.Wait()` / `.Result` / `DoEvents`) | 70 (3 %) |
-| **Có `await`** | **8 (0,4 %)** |
+| Có gọi thẳng thiết bị trong thân hàm | khoảng 8 % |
+| Có chặn luồng (`Sleep` / `.Wait()` / `.Result` / `DoEvents`) | khoảng 3 % |
+| **Có `await`** | **dưới 1 %** |
 
 Trung vị 7 dòng là tin **tốt**: phần lớn hàm xử lý nút bấm ngắn. Hai con số ở hai đầu mới đáng chú
-ý: một hàm xử lý nút dài **652 dòng**, và trong hai nghìn hàm chỉ có **tám** hàm dùng `await` —
-khớp với mục G.14.3: 9/13 dự án hoàn toàn đồng bộ.
+ý: một hàm xử lý nút dài **652 dòng**, và trong hơn hai nghìn hàm chỉ có **vài** hàm dùng `await` —
+khớp với mục G.14.3: rất nhiều dự án hoàn toàn đồng bộ.
 
 Hình dạng lặp lại nhiều nhất trong các hàm ấy trông như sau (đã viết lại bằng tên chung):
 
@@ -41218,7 +41161,7 @@ dừng máy lúc hai giờ sáng; và một thuật toán đúng nhưng không c
 > này và **tám giờ** cho Phụ lục G. Lý do không phải vì thuật toán không quan trọng, mà vì phần
 > thuật toán của phần mềm máy **nhỏ hơn người ta tưởng rất nhiều** — phần lớn thời gian viết máy
 > là dựng ranh giới, xử lý lỗi, và làm cho thứ chạy được lúc 2 giờ sáng. Mục G.14
-> cho thấy điều đó theo một cách khác: không một bất biến nào trong mười bất biến làm mười ba dự án
+> cho thấy điều đó theo một cách khác: không một bất biến nào trong mười bất biến làm mã máy
 > thật trượt là bất biến **thuật toán** — tất cả đều là bất biến về **hình dạng và kỷ luật**.
 
 ## I.16  Vài lưu ý khi luyện bằng C#
@@ -42157,7 +42100,7 @@ nhiều khi phần mềm đã có sẵn những "chỗ để sửa ngoài mã ng
 Khi máy dừng, việc đầu tiên là cho máy chạy lại. Điều đó đúng. Vấn đề là nhiều cách làm máy chạy lại
 hôm nay sẽ gây ra một lần dừng khác, khó tìm hơn, vài tuần sau.
 
-Mã nguồn của 13 phần mềm máy thật cho thấy rõ điều này (Bảng 17.11). Trong đó có hơn mười nghìn dòng
+Mã nguồn máy thật cho thấy rõ điều này (Bảng 17.11). Trong đó có hơn mười nghìn dòng
 mã bị biến thành chú thích, hơn một nghìn sáu trăm lệnh chờ với con số viết thẳng, và hàng trăm chú
 thích ghi ngày sửa. Mỗi dấu vết là một lần ai đó sửa đúng lúc, nhưng để lại cho người sau một câu hỏi
 không ai trả lời được: *đoạn này bị tắt vì sao, có bật lại được không?*

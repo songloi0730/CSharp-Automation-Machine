@@ -1,32 +1,32 @@
 // -------------------------------------------------------
 // File:    VanHanhThuc.cs
 // Project: MeoBench
-// Purpose: Những năng lực mà PHẦN MỀM MÁY THẬT nào cũng có, đo trên 13 dự án,
+// Purpose: Những năng lực hay gặp trong PHẦN MỀM MÁY THẬT
 //          mà bản mẫu 40 bài + phần ghép G.11 còn thiếu.
 //
-// Xếp theo số dự án có (đo được, không phải phỏng đoán):
-//   13/13  phân quyền theo mức người dùng
-//   13/13  đếm giờ chạy / đếm tuổi thọ linh kiện
-//   12/13  thử lại khi thiết bị lỗi thoáng qua
-//   11/13  chạy tay / jog trục
-//    9/13  truy xuất nguồn gốc (số sê-ri từng phôi)
-//    7/13  đèn tháp và còi
-//    7/13  sao lưu / khôi phục cấu hình
-//    5/13  watchdog phát hiện chu kỳ treo
-//    3/13  lịch sử cảnh báo lưu ra file
-//    0/13  vết kiểm toán — KHÔNG dự án nào có, và đó là một thiếu sót
+// Xếp theo mức độ hay gặp trong mã máy thật:
+//   rất hay gặp phân quyền theo mức người dùng
+//   rất hay gặp đếm giờ chạy / đếm tuổi thọ linh kiện
+//   rất hay gặp thử lại khi thiết bị lỗi thoáng qua
+//   rất hay gặp chạy tay / jog trục
+//   hay gặp     truy xuất nguồn gốc (số sê-ri từng phôi)
+//   hay gặp     đèn tháp và còi
+//   hay gặp     sao lưu / khôi phục cấu hình
+//   có gặp      watchdog phát hiện chu kỳ treo
+//   hiếm gặp    lịch sử cảnh báo lưu ra file
+//   không gặp   vết kiểm toán — KHÔNG dự án nào có, và đó là một thiếu sót
 //
-// CHƯA cài trong bản mẫu, và nói rõ vì sao (xem Phụ lục G mục G.13.11):
-//    7/13  đa ngôn ngữ          — thuộc tầng giao diện, không dạy thêm gì ở đây
-//    7/13  giao tiếp MES/host   — Chương 14 đã bàn kỹ, cài lại là lặp
-//    4/13  chạy từng bước       — bài tập mở rộng, khuôn đã có sẵn ở G.5.5
+// CHƯA cài trong bản mẫu, và nói rõ vì sao (xem Phụ lục G mục G.13.4):
+//   hay gặp     đa ngôn ngữ          — thuộc tầng giao diện, không dạy thêm gì ở đây
+//   hay gặp     giao tiếp MES/host   — Chương 14 đã bàn kỹ, cài lại là lặp
+//   có gặp      chạy từng bước       — bài tập mở rộng, khuôn đã có sẵn ở G.5.5
 // -------------------------------------------------------
 using System.Globalization;
 using System.Text;
 
 namespace MeoBench;
 
-// ══════════════ 13/13 — Mức người dùng và phân quyền ══════════════
+// ══════════════ Rất hay gặp — Mức người dùng và phân quyền ══════════════
 
 public enum MucNguoiDung { ChuaDangNhap = 0, VanHanh = 1, KyThuat = 2, QuanTri = 3 }
 
@@ -75,14 +75,14 @@ public sealed class PhienDangNhap(IDongHo dongHo)
     }
 }
 
-// ══════════════ 0/13 — Vết kiểm toán: KHÔNG dự án nào có ══════════════
+// ══════════════ Không gặp — Vết kiểm toán: KHÔNG dự án nào có ══════════════
 
 public sealed record BanGhiKiemToan(
     DateTime ThoiDiem, string NguoiDung, string Viec, string Truoc, string Sau);
 
 /// <summary>
 /// Ai đổi thông số gì, lúc nào, từ giá trị nào sang giá trị nào.
-/// Đây là năng lực mà **không dự án nào trong bộ mẫu có** — và là thứ đầu tiên
+/// Đây là năng lực mà **không dự án nào có** — và là thứ đầu tiên
 /// bị hỏi khi một lô hàng bị trả về: "hôm đó ai sửa công thức?".
 /// </summary>
 public sealed class VetKiemToan(string duongDan, IDongHo dongHo)
@@ -109,7 +109,7 @@ public sealed class VetKiemToan(string duongDan, IDongHo dongHo)
         => s.Contains(',', StringComparison.Ordinal) ? "\"" + s.Replace("\"", "\"\"", StringComparison.Ordinal) + "\"" : s;
 }
 
-// ══════════════ 13/13 — Giờ chạy và tuổi thọ linh kiện ══════════════
+// ══════════════ Rất hay gặp — Giờ chạy và tuổi thọ linh kiện ══════════════
 
 public sealed record TuoiThoLinhKien(string Ten, long SoLanDaDung, long NguongThayThe)
 {
@@ -141,7 +141,7 @@ public sealed class SoBaoTri
         => [.. _bang.Values.Where(t => t.SapDenHan)];
 }
 
-// ══════════════ 12/13 — Thử lại khi thiết bị lỗi thoáng qua ══════════════
+// ══════════════ Rất hay gặp — Thử lại khi thiết bị lỗi thoáng qua ══════════════
 
 public sealed record KetQuaThuLai<T>(bool ThanhCong, T? GiaTri, int SoLanThu, AlarmException? LoiCuoi);
 
@@ -190,7 +190,7 @@ public static class ThuLai
     }
 }
 
-// ══════════════ 11/13 — Chạy tay và jog trục ══════════════
+// ══════════════ Rất hay gặp — Chạy tay và jog trục ══════════════
 
 public sealed record KetQuaJog(bool DaChay, double ViTriSauMm, string? LyDoTuChoi);
 
@@ -227,7 +227,7 @@ public sealed class ChayTay(ChuyenDong truc, PhienDangNhap phien, IAnToanChiDoc 
     }
 }
 
-// ══════════════ 7/13 — Đèn tháp và còi ══════════════
+// ══════════════ Hay gặp — Đèn tháp và còi ══════════════
 
 public enum MauDen { Tat, Xanh, Vang, Do }
 
@@ -252,7 +252,7 @@ public static class DenThap
     };
 }
 
-// ══════════════ 9/13 — Truy xuất nguồn gốc ══════════════
+// ══════════════ Hay gặp — Truy xuất nguồn gốc ══════════════
 
 public sealed record SoSeriPhoi
 {
@@ -299,7 +299,7 @@ public sealed record SoSeriPhoi
     }
 }
 
-// ══════════════ 5/13 — Watchdog phát hiện chu kỳ treo ══════════════
+// ══════════════ Có gặp — Watchdog phát hiện chu kỳ treo ══════════════
 
 public sealed class WatchdogChuKy(IDongHo dongHo, TimeSpan nguongTreo)
 {
@@ -330,7 +330,7 @@ public sealed class WatchdogChuKy(IDongHo dongHo, TimeSpan nguongTreo)
     }
 }
 
-// ══════════════ 3/13 — Lịch sử cảnh báo lưu ra file ══════════════
+// ══════════════ Hiếm gặp — Lịch sử cảnh báo lưu ra file ══════════════
 
 public sealed record BanGhiCanhBao(DateTime ThoiDiem, int Ma, string ViTri, string ThongDiep, DateTime? LucXacNhan);
 
@@ -377,7 +377,7 @@ public sealed class LichSuCanhBao(string duongDan, IDongHo dongHo)
     }
 }
 
-// ══════════════ 7/13 — Sao lưu và khôi phục cấu hình ══════════════
+// ══════════════ Hay gặp — Sao lưu và khôi phục cấu hình ══════════════
 
 public static class SaoLuuCauHinh
 {

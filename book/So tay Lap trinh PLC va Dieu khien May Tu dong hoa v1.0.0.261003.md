@@ -8,7 +8,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.261001 |
+| **Phiên bản** | v1.0.0.261003 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 09/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -141,7 +141,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | 8 | [Kiến trúc phần cứng PLC](ch08_kien_truc_phan_cung_plc.md) | CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs **I/O phân tán *(remote I/O)*** — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module, và ⭐ **vì sao bản đồ khe cắm phải là một tài liệu** (bốn câu nó phải trả lời được — biểu mẫu Phụ lục C.10); pin & thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó | ✅ |
 | 9 | [Module vào/ra số — chọn đúng kiểu](ch09_module_vao_ra_so.md) | Ngõ vào sink vs source; ngõ ra **rơ-le vs transistor vs triac** — bảng đánh đổi (dòng, tốc độ đóng cắt, tuổi thọ, AC/DC, dòng rò) và bài toán chọn cho từng tải của DP-01; cách ly quang *(optical isolation)*; dòng tổng cho phép trên chân chung *(common)*; ước tính công suất nguồn 24 V cho toàn bộ I/O; module hỗn hợp và khi nào nên tránh | ✅ |
 | 10 | [⭐ Vòng quét — mô hình tinh thần quan trọng nhất](ch10_vong_quet.md) | Đọc ảnh ngõ vào → chạy chương trình → ghi ảnh ngõ ra → xử lý hệ thống; **ảnh quá trình *(process image)* vs truy cập trực tiếp *(immediate/direct I/O)***; hệ quả thực tế: vì sao đảo thứ tự hai nấc thang *(rung)* đổi kết quả, xung ngắn hơn một chu kỳ quét bị **mất hoàn toàn** (→ vì sao cần bắt cạnh hoặc bộ đếm tốc độ cao), tranh chấp *(race condition)* giữa hai POU; đo thời gian quét *(scan time)* và cái gì làm nó phình; **watchdog** và điều gì xảy ra khi vượt | ✅ |
-| 11 | [Bộ nhớ, biến & kiểu dữ liệu](ch11_bo_nho_bien_va_kieu_du_lieu.md) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; ⭐ phạm vi biến — `VAR_EXTERNAL`, và vì sao **khối chức năng không đọc biến toàn cục**; **kiểu dữ liệu người dùng** *(UDT)*, **struct**, **mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)*  ⚠⚠ **Đánh số I/O theo hệ bát phân** trên hệ kiểu thiết bị — `X10` là ngõ vào thứ **chín**, không có `X8`/`X9`; ánh xạ số dây thẳng sang số thiết bị **sai từ điểm thứ tám trở đi** mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng. | ✅ |
+| 11 | [Bộ nhớ, biến & kiểu dữ liệu](ch11_bo_nho_bien_va_kieu_du_lieu.md) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; ⭐ phạm vi biến — `VAR_EXTERNAL`, và vì sao **khối chức năng không đọc biến toàn cục**; **kiểu dữ liệu người dùng** *(UDT)*, **struct**, **mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)*; ⭐ trên hệ kiểu thiết bị: **quy hoạch vùng nhớ theo khối** trước dòng mã đầu tiên (mục 11.8b)  ⚠⚠ **Đánh số I/O theo hệ bát phân** trên hệ kiểu thiết bị — `X10` là ngõ vào thứ **chín**, không có `X8`/`X9`; ánh xạ số dây thẳng sang số thiết bị **sai từ điểm thứ tám trở đi** mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng. | ✅ |
 | 12 | [IO-Link & lớp cảm biến thông minh](ch12_io_link_va_cam_bien_thong_minh.md) | Vì sao lớp đấu nối rời rạc/analog truyền thống đang bị thay dần; IO-Link là gì và **không** là gì (không phải bus trường); tham số hoá cảm biến từ PLC; ⭐ **thay cảm biến hỏng mà không phải chỉnh lại bằng tay** — tham số tự nạp xuống thiết bị mới; dữ liệu chẩn đoán mà cảm biến rời rạc không có (độ dự trữ tín hiệu, số giờ chạy, cảnh báo sớm); khi nào IO-Link không đáng dùng | ✅ |
 | 13 | [Chọn PLC & dựng bàn thực hành của riêng bạn](ch13_chon_plc_va_ban_thuc_hanh.md) | Tiêu chí chọn PLC cho dự án thật (số I/O + dự phòng, loại I/O, thời gian quét cần thiết, mạng, hệ sinh thái phần mềm, khả năng cung ứng dài hạn, chi phí bản quyền); ⭐ **bàn thực hành tự dựng *(PLC trainer)*** — danh sách vật tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra, cầu chì & cầu đấu; bảng đánh đổi các đường học rẻ: PLC nhỏ giá thấp / PLC cũ trên thị trường second-hand / PLC mềm *(soft-PLC)* + mô phỏng 3D / PLC mã nguồn mở trên máy tính nhúng — so theo chi phí, độ giống thực tế, giá trị khi phỏng vấn | ✅ |
 
@@ -167,7 +167,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 23 | [Từ yêu cầu tới đặc tả điều khiển](ch23_tu_yeu_cau_toi_dac_ta.md) | Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của "code chạy nhưng máy sai"; lập **bảng I/O *(I/O list)*** trước; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ & điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐⭐ **chín bước đầu dự án** — thứ tự, sản phẩm từng bước, ai duyệt, ⭐ định nghĩa **"xong" kiểm được** cho từng bước, và ⚠ **ba quan hệ chặn** (đánh giá rủi ro chặn việc chọn phần cứng · bảng I/O chặn việc đấu tủ · phép tính nguồn chặn việc chốt đơn hàng); ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?) | ✅ |
+| 23 | [Từ yêu cầu tới đặc tả điều khiển](ch23_tu_yeu_cau_toi_dac_ta.md) | Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của "code chạy nhưng máy sai"; lập **bảng I/O *(I/O list)*** trước, ⭐ xếp địa chỉ theo **bảy quy tắc** của các dự án thật; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ & điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐⭐ **chín bước đầu dự án** — thứ tự, sản phẩm từng bước, ai duyệt, ⭐ định nghĩa **"xong" kiểm được** cho từng bước, và ⚠ **ba quan hệ chặn** (đánh giá rủi ro chặn việc chọn phần cứng · bảng I/O chặn việc đấu tủ · phép tính nguồn chặn việc chốt đơn hàng); ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?) | ✅ |
 | 24 | [Đại số Boolean & bảng chân lý dùng được](ch24_dai_so_boolean_va_bang_chan_ly.md) | AND/OR/NOT/XOR; **định luật De Morgan** áp vào ladder — vì sao "NOT(A AND B)" đổi hình dạng nấc thang; bảng chân lý → biểu thức → nấc thang; **bìa Karnaugh** ở mức thực dụng; ⭐ khi nào **không** nên tối ưu — logic gọn nhưng không ai đọc nổi thì đã sai mục tiêu | ✅ |
 | 25 | [⭐ Thiết kế theo máy trạng thái](ch25_thiet_ke_theo_may_trang_thai.md) | Mô hình chuẩn cho một máy: Uninitialized → Homing → Idle → Running → Hold → Alarm → Reset; **bảng chuyển trạng thái *(state transition table)*** và sơ đồ; hiện thực bằng biến trạng thái + CASE (ST) hoặc bit trạng thái (LD); ⭐ vì sao mô hình trạng thái thắng "mớ nấc thang chằng chịt": mỗi lúc máy chỉ ở **một** trạng thái, gỡ lỗi chỉ cần đọc một biến; trạng thái máy tổng vs trạng thái từng trạm; ⭐⭐ **đường đi của lỗi** — mỗi nguồn chốt cờ riêng, `M_AnyFault` gán đúng một chỗ, xoá qua `Resetting`, và vì sao viết `Reset AND NOT M_AnyFault` làm máy **khoá chết** ở `Alarm` | ✅ |
 | 26 | [Thiết kế theo lưu đồ & bit trình tự](ch26_luu_do_va_bit_trinh_tu.md) | Lưu đồ *(flowchart)* → bit bước *(step bit)*; một bước bật thì bước trước tắt; **nhánh song song** và điểm hợp nhất; ⚠ **bế tắc *(deadlock)*** — hai bước cùng chờ nhau, cách phát hiện sớm bằng timeout mỗi bước; nguyên tắc: timeout của bước là **cơ chế báo lỗi**, không phải cơ chế điều khiển | ✅ |
@@ -201,7 +201,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | 41 | [⭐ **Ghép nối máy-máy trong dây chuyền**](ch41_ghep_noi_may_may_trong_day_chuyen.md) | Máy điện tử gần như luôn nằm trong chuyền. Bắt tay *(handshake)* kiểu SMEMA: chỉ 2 tín hiệu mỗi chiều mà đủ điều phối — vì sao thiết kế đó hiệu quả kể cả giữa máy khác hãng; bắt tay bằng **tín hiệu cứng** vs **qua mạng** — đánh đổi độ tin cậy và chẩn đoán; ⭐ **ai đang giữ sản phẩm** — quy tắc bàn giao để không bao giờ có hai máy cùng tưởng mình sở hữu; xử lý tắc chuyền *(line jam)* và máy sau dừng; khởi động lại cả chuyền sau sự cố — thứ tự và điều kiện; cách ly quang cho tín hiệu liên máy và vì sao bắt buộc | ✅ |
 | 42 | [⭐ **Mã vạch, mã 2D & truy xuất nguồn gốc**](ch42_ma_2d_va_truy_xuat_nguon_goc.md) | Bắt buộc trong sản xuất điện tử. Mã vạch 1D vs mã 2D *(Data Matrix, QR)* — vì sao điện tử dùng 2D; đầu đọc cố định vs cầm tay, chiếu sáng & tiêu cự; ghép đầu đọc vào PLC qua serial hay Ethernet; ⭐ **luồng truy xuất đầy đủ**: đọc mã → hỏi MES "board này có được làm ở công đoạn này không" → nhận công thức → làm → báo kết quả; ⚠ **chống nhảy cóc công đoạn và chống làm trùng** — vì sao đây là lý do tồn tại của truy xuất; ⚠⚠ **xử lý khi mất kết nối MES**: dừng chuyền hay chạy tạm rồi gửi bù? Quyết định này thuộc về khách hàng, sách chỉ trình bày đánh đổi; đọc mã lỗi & quy trình nhập tay có kiểm soát · ⭐ kiểm định dạng mã bằng hàm chuỗi, tách mã lô, bảng ca thử | ✅ |
 | 43 | [Tích hợp vision với PLC](ch43_tich_hop_vision_voi_plc.md) | Ranh giới trách nhiệm: PLC điều phối, hệ vision quyết định; PLC ra lệnh chụp *(trigger)* — vì sao trigger phần cứng chính xác hơn trigger bằng lệnh mạng; nhận kết quả OK/NG và toạ độ lệch; đồng bộ giữa lúc chụp và lúc vật thể đứng yên; hiệu chỉnh toạ độ camera ↔ toạ độ máy ở mức khái niệm; ⚠ xử lý khi vision không trả lời; ⭐ khi nào vision là quá mức cần thiết — một cảm biến quang 200 nghìn giải quyết được thì đừng dùng camera | ✅ |
-| 44 | [HMI/SCADA — thiết kế màn hình vận hành](ch44_hmi_scada_thiet_ke_man_hinh.md) | Phân cấp màn hình (tổng quan → cụm → chi tiết → chẩn đoán); ⭐ **báo động *(alarm)***: phân cấp ưu tiên, xác nhận *(acknowledge)*, lịch sử, và vì sao "mọi thứ đều báo động" = không có báo động nào; thông báo lỗi phải nói **làm gì tiếp**, không chỉ nói cái gì hỏng; phân quyền người dùng theo cấp; màu chỉ dùng khi có nghĩa; nút nguy hiểm cần xác nhận hai bước; liên kết tag; ⚠ **vì sao HMI không được chứa logic điều khiển** | ✅ |
+| 44 | [HMI/SCADA — thiết kế màn hình vận hành](ch44_hmi_scada_thiet_ke_man_hinh.md) | Phân cấp màn hình (tổng quan → cụm → chi tiết → chẩn đoán); ⭐ **báo động *(alarm)***: phân cấp ưu tiên, xác nhận *(acknowledge)*, lịch sử, và vì sao "mọi thứ đều báo động" = không có báo động nào; thông báo lỗi phải nói **làm gì tiếp**, không chỉ nói cái gì hỏng; ⭐ **đánh số báo động** theo khối và theo số thứ tự thiết bị; phân quyền người dùng theo cấp; màu chỉ dùng khi có nghĩa; nút nguy hiểm cần xác nhận hai bước; liên kết tag; ⚠ **vì sao HMI không được chứa logic điều khiển** | ✅ |
 | 45 | [Kết nối lên trên — dữ liệu, MES & an ninh mạng OT](ch45_ket_noi_len_tren_va_an_ninh_ot.md) | Ghi dữ liệu sản xuất: cái gì đáng ghi, ghi ở đâu, tần suất nào, giữ bao lâu; kho dữ liệu *(historian)* & cơ sở dữ liệu; OPC UA & MQTT ở mức khái niệm và khi nào dùng cái nào; ⚠⚠ **vì sao không cho hệ thống IT/IIoT truy cập trực tiếp PLC** — phải qua lớp trung gian; phân vùng mạng & vùng đệm *(DMZ)*; ⭐ **mô hình Purdue** — 5 mức từ thiết bị hiện trường lên tới mạng doanh nghiệp, và vì sao nó vẫn là ngôn ngữ chung khi bàn về phân vùng OT dù đã có tranh luận là lỗi thời; nhập môn IEC 62443; bài học rút ra từ các sự cố an ninh công nghiệp có thật — **nguyên lý phòng thủ, không phải hướng dẫn tấn công** | ✅ |
 | 46 | [Tích hợp robot & tay gắp](ch46_tich_hop_robot_va_tay_gap.md) | Khi nào cần robot thay vì cơ cấu chuyên dụng; ⭐ **ai chỉ huy ai** — PLC làm chủ và robot làm tớ, hay ngược lại, và hệ quả lên cách viết chương trình; các cách ghép (I/O cứng, mạng, gọi chương trình theo số); dạy điểm *(teaching)* và vì sao toạ độ dạy tay là dữ liệu cần sao lưu như code; tay gắp chân không cho board mạch (liên hệ Ch.6); ⚠ **vùng an toàn chung giữa người, robot và máy** — không gian làm việc chồng lấn là bài toán an toàn, dẫn Ch.47 | ✅ |
 
@@ -236,7 +236,7 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 | A1 | [⭐ **Đối chiếu khái niệm 5 hệ**](pl_a1_doi_chieu_khai_niem_5_he.md) | Siemens · Mitsubishi · Inovance · CODESYS · Rockwell. Bảng đối chiếu: tag/ký hiệu, khối dữ liệu vs UDT vs struct, thể hiện FB, task & chu kỳ, ảnh ngõ vào, vùng nhớ giữ, cách đánh địa chỉ module. **CODESYS làm cột neo** — khi 4 hệ khác nhau thì cột này cho biết chuẩn IEC nói gì | ✅ |
 | A2 | [⭐ **Đối chiếu lệnh + cùng một đoạn logic viết 5 lần**](pl_a2_doi_chieu_lenh_va_cung_doan_logic.md) | TON, CTU, MOVE, quy đổi thang, bắt cạnh, khối PID, khối chuyển động; cùng một đoạn trình tự của DP-01 hiện thực trên cả 5 hệ; ⚠ những chỗ **không tương đương 1-1** — nêu rõ, không giả vờ. Phụ lục **mô tả khác biệt, không xếp hạng hãng** | ✅ |
 | B | [Tra nhanh lệnh IEC 61131-3](pl_b_tra_nhanh_lenh_iec.md) | Một trang in được: lệnh cơ bản theo nhóm, ký hiệu LD & ST tương ứng, kiểu dữ liệu, thứ tự ưu tiên toán tử · hàm chuỗi (vị trí đếm từ 1), dịch bit · ⭐⭐ **hành vi thực thi** — khối chạy thế nào ở vòng quét đầu và khi **không** được gọi · các thay đổi của bản 2025 | ✅ |
-| C | [Biểu mẫu dùng ngay](pl_c_bieu_mau_dung_ngay.md) | **Mười một biểu mẫu**: bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu an toàn · phiếu bàn giao · ⭐ **bảng cấu hình phần cứng** (bản đồ khe cắm + thiết bị mạng) · ⭐ **danh mục vật tư** (có cột *sinh từ* và quy tắc chọn phụ tùng dự phòng). Mỗi biểu mẫu kèm ⭐ **danh mục kiểm "đạt yêu cầu khi"** (dẫn Ch.8, 13, 23, 25, 29, 49, 50, 52) | ✅ |
+| C | [Biểu mẫu dùng ngay](pl_c_bieu_mau_dung_ngay.md) | **Mười một biểu mẫu**: bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu an toàn · phiếu bàn giao · ⭐ **bảng cấu hình phần cứng** (bản đồ khe cắm + thiết bị mạng + **trục và động cơ**) · ⭐ **danh mục vật tư** (có cột *sinh từ* và quy tắc chọn phụ tùng dự phòng). Mỗi biểu mẫu kèm ⭐ **danh mục kiểm "đạt yêu cầu khi"** (dẫn Ch.8, 13, 23, 25, 29, 49, 50, 52) | ✅ |
 | D | [Checklist đấu dây & bật nguồn lần đầu](pl_d_checklist_dau_day_va_bat_nguon.md) | Trước khi cấp điện lần đầu: thứ tự kiểm, cái gì đo trước, cái gì tuyệt đối không bỏ qua | ✅ ⚠ |
 | E | [⭐ Chỉ mục tra theo triệu chứng](pl_e_tra_theo_trieu_chung.md) | "Máy không khởi động được", "một ngõ vào không lên", "giá trị analog nhảy loạn", "mạng rớt ngẫu nhiên", "chu trình dừng giữa chừng", "board hỏng mà máy báo OK", "chuyền tắc"… → dẫn đúng mục chương. ⭐ Kèm hai nhóm mà **máy vẫn chạy** nên sống lâu nhất trước khi có ai đi tìm: **E.4b — thao tác của người vận hành không ăn** (nhấn một lần ra hai lần · phải giữ nút mới chạy · nút Dừng không dừng được · cuộn dây trùng) và **E.5b — máy chạy bình thường nhưng con số sai** (đếm thiếu/thừa · tràn số · bộ định thời đóng băng · đổi công thức mà vẫn chạy tham số cũ). Hiện thực hoá Đường tra cứu 3 đã hứa ở Ch.1 | ✅ |
 | F | [Thuật ngữ Việt–Anh](pl_f_thuat_ngu_viet_anh.md) | Bảng đối chiếu đầy đủ, sắp theo chủ đề và theo vần. Bổ trợ cho bất biến B11 — tài liệu hãng và diễn đàn đều tiếng Anh, người đọc phải tra được đúng lúc cần tra nhất | ✅ |
@@ -5547,6 +5547,63 @@ Chi tiết đối chiếu năm hệ: **Phụ lục A1**.
 
 ---
 
+## 11.8b ⭐⭐ Hệ đánh địa chỉ theo thiết bị: quy hoạch vùng nhớ theo khối, trước dòng mã đầu tiên
+
+Ở hệ có tag và cấu trúc, trình biên dịch tự cấp chỗ nhớ — bạn chỉ đặt tên (mục 11.3, 11.5). Ở hệ kiểu
+thiết bị (mục 11.8; Chương 15 mục 15.6), kể cả khi dùng nhãn, **mỗi cờ, mỗi thanh ghi, mỗi bước vẫn phải
+nằm ở một số thiết bị cụ thể** — và ai đó phải chọn số đó. Không chọn có kế hoạch thì số được chọn bằng
+thói quen *"lấy ô trống kế tiếp"*, và sau một năm, cờ của trạm 1 nằm rải ở `M7`, `M213`, `M1150`.
+
+Bảng I/O của các nhóm làm máy trên hệ kiểu thiết bị vì vậy thường đi kèm một trang **quy hoạch địa
+chỉ** *(address map)*: chia vùng của từng loại thiết bị thành **khối 100**, mỗi khối một chủ.
+
+### Ba cách cấp địa chỉ — cùng một việc: thêm cờ *"trạm 1 xin board"*
+
+| Cách | Cờ đó nằm ở | ⭐ Ưu | ⚠ Nhược |
+|---|---|---|---|
+| A — Lấy ô trống kế tiếp | `M57` — vì `M56` vừa dùng | Không phải lập kế hoạch | ⚠ Đọc địa chỉ không biết của ai; chép trạm thứ hai phải dò từng ô; xoá một trạm để lại lỗ khắp vùng nhớ |
+| ⭐ B — Quy hoạch theo khối | `M110` — khối `M100–M199` của trạm 1 | ⭐ Đọc địa chỉ là biết trạm; chép trạm thứ hai là dời đúng 100; còn chỗ trống ngay trong khối | Phí một ít địa chỉ; phải lập bảng trước khi viết |
+| C — Tag và cấu trúc | `Stn1.ReqBoard` | Không phải nghĩ về địa chỉ | Chỉ có ở hệ hỗ trợ tag và cấu trúc (mục 11.5) |
+
+> ⭐ **Trên hệ kiểu thiết bị, chọn B.** Trên hệ có tag, chọn C — và khi đó việc *quy hoạch* chuyển thành
+> việc *đặt tên* (Chương 30 mục 30.2).
+
+### Một trang quy hoạch cho DP-01 — nếu viết trên hệ kiểu thiết bị
+
+| Vùng | Chủ | Ghi chú |
+|---|---|---|
+| `M0–M99` | Chung: chế độ, cho phép chạy, gom lỗi | |
+| `M100–M199` | Trạm 1 — tra keo | |
+| `M200–M299` | Trạm 2 — sấy | |
+| `M300–M399` | Chuyền và tài nguyên chung | Một chủ duy nhất (Chương 27 Bẫy 4) |
+| `M900–M999` | Dự phòng | |
+| `M1000–M1999` | Bit báo động | ⭐ Báo động số *n* ở `M1000 + n` — đánh số theo khối và theo số thứ tự thiết bị (Chương 44 mục 44.3) |
+| `S0–S99` | ⚠ Để riêng — bước khởi đầu, về gốc | ⚠ Lệnh khởi tạo trạng thái của hãng có thể **chiếm sẵn** một phần khối này — ví dụ ngay dưới |
+| `S100–S199` | Trình tự trạm 1 | ⭐ `S120` đọc ra *"trạm 1, bước 20"* — khớp cách đánh số bước cách 10 (Chương 26) |
+| `S200–S299` | Trình tự trạm 2 | |
+| `D0–D99` · `D100–D199` · `D200–D299` | Số liệu chung · trạm 1 · trạm 2 | ⚠ Thứ cần giữ qua mất điện phải nằm trong **dải giữ được** của dòng PLC (mục 11.4) |
+| `T0–T49` · `T50–T99` | Bộ định thời trạm 1 · trạm 2 | |
+| `C0–C49` | Bộ đếm sản lượng, tuổi thọ | Thường phải giữ — ⚠ kiểm dải giữ được (Chương 18 mục 18.6b) |
+
+> ⚠⚠ **Một ví dụ về "bị chiếm sẵn".** Trên dòng FX5 của Mitsubishi, khi dùng lệnh `IST` — lệnh khởi tạo
+> trạng thái cho máy có chế độ chạy từng cơ cấu, về gốc và tự động — thì `S0`–`S9` dành cho bước khởi đầu
+> (`S0` chạy từng cơ cấu, `S1` về gốc, `S2` tự động) và `S10`–`S19` dành cho trình tự về gốc. Tài liệu của
+> hãng ghi rõ **không được dùng chúng làm bước thường**, và lệnh đó chỉ dùng được **một lần** trong chương
+> trình. ⭐ Đó là lý do khối đầu của vùng `S` nên để riêng, và trình tự trạm bắt đầu từ `S100`.
+
+### ✅ Trang quy hoạch đạt khi
+
+- [ ] Mỗi khối có **một chủ**, ghi trong trang quy hoạch.
+- [ ] Tham chiếu chéo theo dải: không địa chỉ nào được dùng ngoài khối của chủ nó.
+- [ ] Thứ cần giữ qua mất điện nằm trong dải giữ được — ⭐ đã thử bằng cách mất điện rồi bật lại.
+- [ ] Trang quy hoạch nằm cùng bảng I/O trong hồ sơ bàn giao.
+
+> ⚡ **Khối 100 là quy tắc thực dụng của nghề**, không phải chuẩn: đủ rộng cho một trạm cỡ DP-01 và dễ
+> đọc nhẩm. Trạm lớn thì dùng khối 200 hoặc 500 — miễn là **mọi trạm cùng một cỡ khối**, để địa chỉ của
+> trạm 2 luôn là địa chỉ của trạm 1 cộng một số cố định.
+
+---
+
 ## 11.9 Bẫy thường gặp
 
 ### 🔍 BẪY 1 — Dùng địa chỉ tuyệt đối trong chương trình
@@ -5614,6 +5671,13 @@ không phải bit bạn chờ. ⚠ Không có báo lỗi biên dịch, vì `X8` 
 **Cách sửa:** kiểm hệ đếm của dải thiết bị bằng chính con số trong tài liệu (mục 11.8); và
 ⭐ **kiểm I/O 1-1 bằng cách tác động thật** — Phụ lục C.6 bắt được nhóm lỗi này ngay.
 
+### 🔍 BẪY 11 — Lấy ô trống kế tiếp
+
+**Hiện tượng:** trên hệ kiểu thiết bị, mỗi cờ mới lấy địa chỉ trống ngay sau cờ vừa dùng. Một năm sau,
+cờ của trạm 1 rải khắp vùng nhớ; muốn chép trạm 1 thành trạm 3 thì phải dò từng ô, và một ô sót là trạm 3
+ghi vào cờ của trạm 1.
+**Cách sửa:** trang quy hoạch theo khối **trước** dòng mã đầu tiên (mục 11.8b).
+
 ## 11.10 Bảng chốt
 
 | Câu hỏi | Trả lời |
@@ -5630,6 +5694,7 @@ không phải bit bạn chờ. ⚠ Không có báo lỗi biên dịch, vì `X8` 
 | Phạm vi biến | **Hẹp nhất còn dùng được** |
 | Câu hỏi cho mọi biến quan trọng | *"Mất điện rồi bật lại, biến này **nên** bằng mấy?"* |
 | Hai biến không bao giờ giữ | ⚠⚠ `M_Running` và **biến bước** |
+| Hệ kiểu thiết bị — cấp địa chỉ thế nào | ⭐ **Quy hoạch theo khối** trước khi viết: mỗi trạm một khối 100 cho mỗi loại thiết bị |
 
 ---
 
@@ -5652,6 +5717,9 @@ không phải bit bạn chờ. ⚠ Không có báo lỗi biên dịch, vì `X8` 
 10. ⭐ Câu hỏi nào phải đặt ra cho mọi biến quan trọng khi quyết định giữ hay không giữ? Vì sao câu
     hỏi đó dùng chữ "**nên**" chứ không phải "sẽ"?
 
+11. ⭐ Trên hệ kiểu thiết bị, cờ *"trạm 1 xin board"* nên nằm ở đâu nếu trạm 1 giữ khối `M100–M199`? Vì sao
+    lấy *ô trống kế tiếp* làm chép trạm khó, và vì sao khối đầu của vùng `S` nên để riêng?
+
 > Câu 2, 4 và 10 là ba câu phân loại. Câu 10 là tinh thần của cả chương: **hành vi của biến là thứ
 > bạn THIẾT KẾ, không phải thứ bạn chấp nhận theo mặc định của hệ.**
 
@@ -5670,6 +5738,12 @@ một sợi dây mang một bit, cảm biến gửi cả tham số và trạng t
 - Tài liệu lập trình của từng hệ trong Phụ lục A — dùng cho bảng ở mục 11.8: mô hình tag và địa chỉ,
   nơi chứa dữ liệu, cách khai báo biến giữ được. Đây là chỗ khác nhau nhiều nhất giữa các hãng.
 - Bảng I/O của DP-01 — Phụ lục J; khối khai báo ở mục 11.7 lấy tên tag từ đó.
+- **Mitsubishi** — *MELSEC iQ-F FX5 Programming Manual (Instructions, Standard Functions/Function Blocks)*,
+  phần 8.20 *Initial State* (lệnh `IST`): `S0`–`S9` dành cho bước khởi đầu (`S0` chạy từng cơ cấu, `S1` về
+  gốc, `S2` tự động), `S10`–`S19` dành cho trình tự về gốc, không dùng làm bước thường; lệnh chỉ dùng
+  một lần — nền cho mục 11.8b. Kiểm 2026-10-03.
+- Trang quy hoạch địa chỉ theo khối ở mục 11.8b tổng quát hoá từ **bảng I/O nội bộ của các nhóm làm máy**
+  mà sách tham khảo — đã bỏ mọi chi tiết nhận dạng dự án.
 - **Siemens** — *Programming Guideline for S7-1200/S7-1500*, ch. 2.6 *Optimized blocks*: ⭐ khối tối
   ưu **chỉ truy cập được theo tên**; bảng đối chiếu cách lưu dữ liệu trên S7-1500 (có phải đổi thứ
   tự byte không, ⚠ **đọc một bit thì khoá cả byte** ở khối chuẩn, kích thước tối đa 64 kB so với
@@ -13283,6 +13357,32 @@ thiết bị phải mua** và **cách đấu dây**. Phát hiện muộn nghĩa 
 > "phải dừng" → an toàn. Trả lời "báo lỗi rồi chờ người xử lý" → quy trình. Câu hỏi này quyết định cả
 > năm cột còn lại.
 
+### ⭐⭐ Xếp địa chỉ — bảy quy tắc lặp lại trên bảng I/O của các dự án thật
+
+Sáu cột ở trên nói **mỗi dòng ghi gì**. Còn một câu phải trả lời trước khi điền dòng đầu tiên: **tín
+hiệu nào nằm ở kênh nào**. Bảng I/O của các nhóm làm máy có kinh nghiệm lặp đi lặp lại bảy quy tắc dưới
+đây. Không quy tắc nào là yêu cầu của tiêu chuẩn — mỗi quy tắc trả lại công ở một khâu cụ thể:
+
+| # | Quy tắc | ⭐ Trả lại công ở đâu |
+|---|---|---|
+| 1 | ⭐ **Xếp theo trạm hoặc cụm cơ khí**; mỗi module mở đầu bằng **một dòng tiêu đề**: mã module, và số nút mạng nếu là I/O phân tán | Đọc bảng là thấy máy; người kiểm I/O đi lần lượt từng module, không nhảy dòng (Chương 52 mục 52.4) |
+| 2 | ⭐ **Hai cảm biến của một xy-lanh nằm liền nhau**, theo **cùng một thứ tự** cho mọi xy-lanh — ví dụ vị trí làm việc trước, vị trí gốc ngay sau — và cặp bắt đầu ở **kênh chẵn** | Tra một biết hai; viết khối cơ cấu và kiểm I/O theo cặp (Chương 27 mục 27.3). Bắt đầu ở kênh chẵn thì cặp không vắt qua ranh giới nhóm 8 kênh của hệ đánh số bát phân (Chương 11 mục 11.8) |
+| 3 | **Van hai cuộn: hai cuộn nằm liền nhau**, và ghi rõ **cuộn nào đưa cơ cấu về vị trí ban đầu** | Lúc điều khiển cơ cấu bằng tay, người bảo trì không phải đoán bật cuộn nào (Chương 6 mục 6.3) |
+| 4 | ⭐ **Chừa kênh dự phòng ngay trong nhóm của từng trạm**, không dồn hết xuống cuối bảng | Thêm một cảm biến cho trạm 1 về sau vẫn nằm cạnh các tín hiệu trạm 1 — bảng, dây và chương trình giữ được thứ tự. ⚠ Khác với **khe module** dự phòng: khe trống phải ở **cuối rack** để không dịch địa chỉ (Phụ lục C mục C.10) |
+| 5 | **Tín hiệu bắt tay với máy khác đi qua rơ-le trung gian — ghi số rơ-le** (`K3`, `K4`…) vào cột ghi chú | Mất bắt tay thì đo ngay ở rơ-le, không phải mở máy bên kia (Chương 41 mục 41.3) |
+| 6 | ⭐ **Tín hiệu an toàn có bảng riêng**; hai kênh của một thiết bị là **hai dòng liền nhau**, cùng tên thiết bị kèm số kênh 1, 2 | Thấy ngay thiết bị nào thiếu một kênh; người có thẩm quyền về an toàn duyệt đúng một bảng (Chương 47) |
+| 7 | **I/O phân tán cắm qua hộp chia** *(junction box)*: cột *cầu đấu* ghi **hộp chia và số cổng** | Cảm biến cắm vào hộp chia không đi qua cầu đấu nào trong tủ — không ghi cổng thì muốn tìm sợi cáp phải rút thử từng cái |
+
+> ⭐ **Xếp theo trạm hay xếp theo loại tín hiệu?**
+>
+> | Cách | Ví dụ | ⭐ Ưu | ⚠ Nhược |
+> |---|---|---|---|
+> | ⭐ Theo trạm | Module 2 chứa mọi tín hiệu của trạm 1, module 3 của trạm 2 | Bảng soi gương máy, khớp cách chia chương trình theo ranh giới vật lý (Chương 27 mục 27.2); sửa trạm nào mở đúng chỗ | Mỗi module có thể còn vài kênh lẻ |
+> | Theo loại | Module 2 chứa mọi reed, module 3 mọi cảm biến quang | Dùng kín kênh từng module | ⚠ Một trạm rải trên nhiều module; thêm thiết bị là chen vào giữa |
+>
+> ⭐ **Chọn theo trạm.** Theo loại chỉ đáng khi máy chỉ có một trạm và số kênh rất sát. Biểu mẫu có sẵn
+> các cột và danh mục kiểm: Phụ lục C mục C.1; các bước làm theo thứ tự: Phụ lục O mục O.2.
+
 ---
 
 ## 23.4 Mô tả trình tự bằng lời có cấu trúc
@@ -15078,6 +15178,11 @@ sinh ra đúng để làm bit bước, dùng kèm chương trình SFC.
 > thiết bị riêng, nó được công cụ hỗ trợ tốt hơn nhưng cũng mang theo luật riêng.** ⚠ Đọc tài liệu
 > lệnh trước khi dùng — đừng suy từ thói quen với cờ nhớ thường.
 
+> ⭐ **Dùng loại thiết bị này thì chia vùng của nó theo khối — mỗi trình tự một khối 100.** `S120` khi đó
+> đọc ra *"trạm 1, bước 20"*, đúng cách đánh số bước cách 10 (Bẫy 3). ⚠ Và để riêng khối đầu tiên: trên
+> dòng FX5, lệnh khởi tạo trạng thái `IST` chiếm sẵn `S0`–`S19`. Trang quy hoạch đầy đủ: Chương 11 mục
+> 11.8b.
+
 ---
 
 ## 26.2b ⭐ Phương pháp thứ hai — và biết KHI NÀO nó hợp lệ mới là phần khó
@@ -16377,6 +16482,19 @@ IF Stn1.BoardDone AND Stn2.Ready THEN
     M_Stn1_ReleaseBoard := TRUE;
 END_IF;
 ```
+
+> ⚖ **NGOÀI HIỆN TRƯỜNG — giao diện trạm bằng mảng cờ đánh số.**
+> **Người ta làm gì:** nhiều chương trình thật không có kiểu như `ST_Station`. Thay vào đó là **một mảng
+> chung cho mọi trạm** — mỗi trạm một phần tử, trong đó một dãy cờ đánh số `done[0]`…`done[9]` cộng vài
+> cờ có tên — còn nghĩa của từng cờ nằm trong một bảng tính đi kèm: *"trạm 3, cờ 1 = trạm ra liệu xin
+> hàng"*.
+> **Vì sao:** thêm trạm chỉ là thêm một phần tử; một màn hình chẩn đoán chung hiện được mọi trạm bằng một
+> vòng lặp; viết nhanh.
+> **Ranh giới:** cờ đánh số chỉ an toàn khi **nghĩa của chỉ số sống cùng chương trình** — hằng có tên cho
+> từng chỉ số (`DONE_REQ_BOARD` mang giá trị 1), hoặc chú thích ngay tại khai báo — và mỗi cờ **vẫn chỉ
+> một nơi ghi** (Phụ lục C mục C.2, cột *Ai ghi*). Bảng nghĩa nằm ở một tệp riêng thì sau lần sửa thứ
+> ba nó sai, và `done[3]` không còn nói gì. ⭐ Viết mới thì dùng trường có tên như trên; nhận một chương
+> trình kiểu này thì việc đầu tiên là dựng lại bảng nghĩa (Chương 22 mục 22.4).
 
 > ⚡ **LƯU Ý — "chờ bận" trong PLC nghĩa là gì**
 > Trong lập trình thông thường, *chờ bận (busy-wait)* là vòng lặp quay tại chỗ đến khi điều kiện đúng.
@@ -27572,6 +27690,56 @@ chờ vài giây rồi mới báo sẽ loại được phần lớn báo giả (
 > Đây là cùng nguyên tắc với mã lý do khi từ chối công thức (Chương 29, mục 29.4) và với cửa sổ
 > lực–vị trí (Chương 34, mục 34.5): **chẩn đoán, không chỉ phán quyết.**
 
+### ⭐⭐ Đánh số báo động — theo khối, và theo số thứ tự của thiết bị
+
+Báo động cần một **số**: để màn hình tra ra chữ, để nhật ký lọc được, để người bảo trì gọi điện nói được
+*"máy báo 51"*. Câu hỏi là số đó lấy từ đâu.
+
+| Cách | Ví dụ: kẹp trạm 1 không tới vị trí làm việc | ⭐ Ưu | ⚠ Nhược |
+|---|---|---|---|
+| A — Số tự do, ai viết trước lấy trước | `1042` | Không phải nghĩ | ⚠ Số không nói gì; bảng chữ trên màn hình gõ tay từng dòng; thêm một xy-lanh là thêm một số "ở đâu đó" |
+| B — Số theo bước | `S1.40` — trạm 1, bước 40 đang chờ kẹp | ⭐ Tra thẳng ra dòng trong đặc tả (Phụ lục J mục J.3) | Chỉ hợp cho **lỗi trình tự**; một xy-lanh dùng ở nhiều bước thì cùng một sự cố ra nhiều số |
+| ⭐ C — **Khối theo loại lỗi**, vị trí trong khối theo **số thứ tự thiết bị** | `51` = khối 50–99 *(không tới đích)* + thiết bị số 1 *(Clamp1)* | ⭐ Thêm một xy-lanh chỉ là thêm một dòng vào danh sách cơ cấu — mọi số báo động của nó **tự có**; bảng chữ sinh bằng công thức *tên thiết bị + loại lỗi* | Phải giữ **danh sách cơ cấu** đánh số cố định |
+
+⭐ Bảng báo động của các dự án thật hay đi theo **C cho thiết bị**, và để lỗi trình tự trong một **khối
+riêng theo trạm**. Sách khuyên thêm một bước: trong khối của trạm, lấy luôn **số bước** làm số báo động —
+cách B nằm gọn trong cách C. Một trang số báo động của DP-01 theo cách đó:
+
+| Khối | Loại | DP-01 |
+|---|---|---|
+| `0–49` | Xy-lanh **không về gốc** | `0` Stop1 · `1` Clamp1 · `2` Stop2 · `3` Clamp2 |
+| `50–99` | Xy-lanh **không tới vị trí làm việc** | `50`–`53` |
+| `100–149` | Xy-lanh **hai cảm biến cùng báo** | `100`–`103` |
+| `600–699` · `700–799` | Lỗi trình tự trạm 1 · trạm 2 — số trong khối theo bước, nên mỗi trạm cần đủ 100 số | `640` = trạm 1, bước 40 · `790` = trạm 2, bước 90 |
+
+> ⭐ **Vì sao tách *không về gốc* và *không tới đích* thành hai số**, thay vì một số *"quá giờ"*: chiều hỏng
+> chỉ ngay chỗ phải nhìn — cảm biến gốc hay cảm biến đích, cơ cấu kẹt lúc đi ra hay lúc về. ⚡ Khối
+> `FB_Cylinder2Pos` (Chương 27 mục 27.3) đã có sẵn thông tin đó: mã lỗi `1` kèm **chiều của van** lúc lỗi.
+
+```iecst
+// Đoạn trích — số báo động của xy-lanh tính từ SỐ THỨ TỰ trong danh sách cơ cấu
+VAR
+    Cyl      : ARRAY[0..3] OF FB_Cylinder2Pos;   // 0 Stop1 · 1 Clamp1 · 2 Stop2 · 3 Clamp2
+    AlarmBit : ARRAY[0..999] OF BOOL;
+    i        : INT;
+END_VAR
+
+FOR i := 0 TO 3 DO
+    AlarmBit[i]       := Cyl[i].Fault AND (Cyl[i].FaultCode = 1) AND NOT Cyl[i].Valve;  // không về gốc
+    AlarmBit[50 + i]  := Cyl[i].Fault AND (Cyl[i].FaultCode = 1) AND Cyl[i].Valve;      // không tới đích
+    AlarmBit[100 + i] := Cyl[i].Fault AND (Cyl[i].FaultCode = 2);                       // hai cảm biến
+END_FOR;
+```
+
+> ⚡ DP-01 khai bốn thể hiện có tên (`Stop1`, `Clamp1`…) chứ không phải mảng — khi đó viết bốn dòng cho
+> mỗi khối; **số thứ tự trong danh sách cơ cấu vẫn là thứ quyết định số báo động**. ⭐ Và kênh thông điệp
+> thứ ba ở mục 44.3b — lời nhắc ở chế độ tay, kiểu *"không đi được vì kẹp chưa lên"* — dùng **cùng số thứ
+> tự thiết bị**, ở một mảng riêng.
+>
+> ⚡ **Cỡ khối là quy tắc thực dụng**: lấy lớn hơn số thiết bị dự kiến, cộng chỗ cho phần thêm về sau — 50
+> xy-lanh mỗi khối là đủ cho một máy cỡ DP-01 nhiều lần. Ghi cách đánh số vào trang quy hoạch địa chỉ
+> (Chương 11 mục 11.8b, Phụ lục O mục O.9).
+
 ### Xác nhận và lịch sử
 
 | Việc | Yêu cầu |
@@ -27986,6 +28154,13 @@ treo hoặc mất mạng.
 sau.
 **Cách sửa:** ⭐ màn hình mức 4 là hạng mục **đáng đầu tư nhất** (mục 44.7).
 
+### 🔍 BẪY 13 — Một số "quá giờ" cho cả hai chiều của xy-lanh
+
+**Hiện tượng:** màn hình báo *"kẹp trạm 1 quá giờ"*. Người sửa không biết kẹp kẹt lúc đi lên hay lúc đi
+xuống, nên kiểm cả hai cảm biến, cả hai chiều khí — gấp đôi thời gian.
+**Cách sửa:** hai số riêng — *không về gốc* và *không tới đích* — suy từ mã lỗi và chiều của van lúc lỗi
+(mục 44.3).
+
 ---
 
 ## 44.10 Bảng chốt
@@ -27999,6 +28174,7 @@ sau.
 | Chống lụt báo động | Ức chế hệ quả · ghi **báo động đầu tiên** · trễ trước khi báo |
 | Ức chế phải | Có điều kiện rõ ràng, **tự gỡ**, và ⭐ **vẫn ghi vào nhật ký** |
 | Thành phần quan trọng nhất của một dòng báo động | ⭐⭐ **Làm gì tiếp** |
+| ⭐ Đánh số báo động | **Khối theo loại lỗi + số thứ tự thiết bị**; lỗi trình tự: khối theo trạm, số theo bước |
 | Xác nhận báo động | ⚠ **Không xoá được** khi nguyên nhân còn |
 | Phân quyền quá chặt thì | ⚠ **Bị đi vòng** — mật khẩu dán trong tủ |
 | Dù có phân quyền HMI | ⚠ **PLC vẫn phải tự kiểm** |
@@ -28029,6 +28205,9 @@ sau.
 12. ⭐ Vì sao hiển thị **tên bước bằng chữ** trên màn hình chẩn đoán lại quan trọng? Nó giải quyết vấn
     đề nêu ở chương nào?
 
+13. ⭐ Kẹp trạm 1 là thiết bị số 1 trong danh sách cơ cấu. Theo cách đánh số ở mục 44.3, *không tới vị trí
+    làm việc* của nó mang số mấy? Vì sao tách *không về gốc* và *không tới đích* thành hai số?
+
 > Câu 3, 5, 9 và 10 là bốn câu phân loại. Câu 1 là tinh thần của cả chương: **thiết kế giao diện vận
 > hành phần lớn là việc BỚT ĐI — bốn mươi bảy dòng báo động cho một sự cố không phải là nhiều thông
 > tin, mà là không có thông tin nào.**
@@ -28051,6 +28230,8 @@ công** — và về một thực tế khó chịu: phần lớn giao thức cô
 - **Tài liệu hệ HMI/SCADA** đang dùng — dùng cho liên kết tag, phân quyền, lưu lịch sử, và ⚠ **cách
   sao lưu dự án**.
 - Bảng I/O, bảng công thức và số liệu đã chốt của DP-01 — Phụ lục J.
+- Cách đánh số báo động theo khối và theo số thứ tự thiết bị ở mục 44.3 tổng quát hoá từ **bảng báo động
+  nội bộ của các nhóm làm máy** mà sách tham khảo — đã bỏ mọi chi tiết nhận dạng dự án.
 
 > ⚡ Việc chia **ba mức báo động** ở mục 44.3 và **bốn mức màn hình** ở mục 44.2 là **cấu trúc thực
 > dụng thường dùng**, không phải quy định cứng của tiêu chuẩn. Một số ngành và một số đơn vị có quy
@@ -37112,24 +37293,31 @@ Mạch tự giữ — mẫu cơ bản nhất:
 ⭐ **Dùng để:** làm tài liệu nền của cả dự án — đầu vào cho sơ đồ điện, đánh số dây, chương trình, HMI
 và hồ sơ bàn giao. ⚠ **Làm trước khi đấu tủ** (Chương 23, 49).
 
-| Tag | Mô tả | Loại thiết bị | NO/NC | PNP/NPN | Trạng thái nghỉ | Địa chỉ | Số dây | Cầu đấu | Ghi chú |
-|---|---|---|---|---|---|---|---|---|---|
-| `DI_BoardStn1` | Board tới vị trí trạm keo | Quang thu-phát | NO | PNP | 0 | %I0.3 | 214 | X2:14 | Ví dụ DP-01 |
-| | | | | | | | | | |
+| Tag | Mô tả | Loại thiết bị | NO/NC | PNP/NPN | Trạng thái nghỉ | ⭐ Phân loại | Hành vi khi mất | Địa chỉ | Số dây | Cầu đấu · hộp chia/cổng | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **Module 1 · DI 16 kênh · khe 0·1** | | | | | | | | | | | ⭐ Dòng tiêu đề module |
+| `DI_BoardStn1` | Board tới vị trí trạm keo | Quang thu-phát | NO | PNP | 0 | Quy trình | Quá giờ bước, báo lỗi | %I0.3 | 214 | X2:14 | Ví dụ DP-01 |
+| `DI_Clamp1Up` | Bàn nâng kẹp trạm 1 đã lên | Reed | NO | PNP | 0 | Quy trình | Quá giờ cơ cấu, báo lỗi | %I1.0 | 220 | X2:20 | ⭐ Cặp liền nhau, bắt đầu ở kênh chẵn |
+| `DI_Clamp1Dn` | Bàn nâng kẹp trạm 1 đã xuống | Reed | NO | PNP | 1 | Quy trình | Quá giờ cơ cấu, báo lỗi | %I1.1 | 221 | X2:21 | |
+| *(dự phòng trạm 1)* | | | | | | | | %I1.2 | | | ⭐ Dự phòng nằm trong nhóm của trạm |
+| | | | | | | | | | | | |
 
 | Cột | Vì sao có |
 |---|---|
 | ⭐ **Tag** | Tên dùng trong chương trình — **phải giống nhãn HMI và khớp số dây** |
+| ⭐ **Phân loại · Hành vi khi mất** | An toàn hay quy trình, và máy phải làm gì khi tín hiệu biến mất — hai cột bắt buộc của Chương 23 mục 23.3, đầu vào cho Chương 48 |
 | NO/NC | ⚠ Quyết định logic; tín hiệu an toàn quan trọng dùng **NC** |
 | PNP/NPN | ⭐ Sai cái này thì module không nhận dù cảm biến sáng đèn |
 | Trạng thái nghỉ | Giá trị khi máy đứng yên — ⭐ dùng khi kiểm tra I/O |
-| ⭐ **Số dây · Cầu đấu** | ⭐⭐ Nối bảng này với tủ thật — thứ giúp đi từ triệu chứng tới sợi dây |
+| ⭐ **Số dây · Cầu đấu** | ⭐⭐ Nối bảng này với tủ thật — thứ giúp đi từ triệu chứng tới sợi dây. I/O phân tán cắm qua hộp chia thì ghi **hộp chia và cổng** |
 
 > ⚠ **Trước khi coi là xong:**
 >
 > - [ ] Mỗi tag có **một** ý nghĩa, không kiêm nhiệm
 > - [ ] Đã chừa **20 % kênh dự phòng** trên mỗi module
-> - [ ] Tín hiệu an toàn đã tách riêng và đánh dấu rõ
+> - [ ] Tín hiệu an toàn có **bảng riêng**; hai kênh của một thiết bị là hai dòng liền nhau
+> - [ ] ⭐ Mỗi module có dòng tiêu đề; hai cảm biến của mỗi xy-lanh liền nhau, cùng thứ tự; dự phòng
+>       nằm **trong** nhóm của từng trạm (Chương 23 mục 23.3)
 > - [ ] ⭐ Số dây khớp sơ đồ điện **và** khớp nhãn trong tủ
 > - [ ] Đã kiểm dòng tổng qua chân chung của từng module ngõ ra
 
@@ -37410,6 +37598,22 @@ Chương 54).
 > phiên bản thì **không dựng lại được cấu hình mạng** trên một máy tính mới — mục 7 của bộ sao lưu ở
 > C.9 đòi chính thứ này.
 
+### C.10.3 Trục và động cơ
+
+| Tag | Tên · vị trí | Loại | Điều khiển | Công suất | ⭐ Phanh — ai đóng mở | STO | Gốc · giới hạn | Mã driver | Cáp động lực · encoder | Ghi chú |
+|---|---|---|---|---|---|---|---|---|---|---|
+| `AX_Z` | Nâng/hạ đầu tra keo | Servo | Mạng — `NET_Drives` | ___ W | ⭐ Có — kẹp khi mất điện; ghi rõ driver hay PLC đóng mở | ___ | Gốc + giới hạn hai đầu | | ⚠ Chạy trong máng xích | Trục đứng có tải treo — ví dụ DP-01 |
+| `AX_X`, `AX_Y` | Gantry mang đầu tra keo | Servo | Mạng — `NET_Drives` | ___ W | ___ | ___ | Gốc + giới hạn hai đầu | | | |
+| — | Động cơ chuyền | Không đồng bộ, qua biến tần | `DO_ConvRun` + `AO_ConvSpeed` | ___ kW | — | ___ | — | | | |
+| | | | | | | | | | | |
+
+| Cột | Vì sao có |
+|---|---|
+| ⭐⭐ **Phanh — ai đóng mở** | Trục đứng có tải treo: mất mô-men là rơi (Chương 48 mục 48.2, Chương 37 Bẫy 6). Ghi rõ phanh do driver hay do ngõ ra PLC đóng mở — ⚠ và nếu **hai trục dùng chung một ngõ ra phanh**, ghi rõ, vì nhả phanh cho trục này là nhả luôn trục kia |
+| ⭐ **STO** | Có hay không quyết định cách dừng an toàn của trục (Chương 36 mục 36.6, Chương 37 mục 37.6b) |
+| **Gốc · giới hạn** | Trình tự về gốc dùng tín hiệu nào (Chương 28 mục 28.4b, Chương 37 mục 37.3) |
+| **Cáp** | Cáp chạy trong máng xích phải là loại dành cho máng xích — tính theo số lần uốn (Chương 49 mục 49.7) |
+
 ### ⭐⭐ Yêu cầu với kết quả — bảng này đạt khi
 
 > ⚠ **Trước khi coi là xong:**
@@ -37420,6 +37624,7 @@ Chương 54).
 > - [ ] Kiểu **sink / source** đã chọn được ghi rõ — ⚠ và **cũng đã ghi lên nhãn trong tủ**
 > - [ ] Dải địa chỉ trong bảng này **khớp cột "Địa chỉ" của C.1**, không sai một kênh
 > - [ ] ⭐ Phiên bản firmware của CPU và mọi module đã ghi, **ghi lúc nghiệm thu**
+> - [ ] ⭐ Mọi trục và động cơ có một dòng ở C.10.3; trục đứng có tải treo ghi rõ **phanh và ai đóng mở**
 > - [ ] Còn **≥ 20 %** kênh dự phòng trên mỗi loại module
 > - [ ] Bảng này đã nằm trong bộ sao lưu (C.9, mục 2 của bộ tám hạng mục)
 
@@ -42011,6 +42216,8 @@ mục 22.4b.
 | 4 | Kiểm dòng tổng qua **chân chung** của từng module ngõ ra (Chương 9 mục 9.4) |
 | 5 | Ghi rõ **NC** ở mọi tiếp điểm NC — người sau sẽ mặc định là NO (Chương 15) |
 | 6 | Ký — sau mốc này, đổi bảng I/O là một thay đổi có kiểm soát |
+| 7 | ⭐ Xếp địa chỉ theo **bảy quy tắc** ở Chương 23 mục 23.3: theo trạm, cặp cảm biến liền nhau, dự phòng trong nhóm, bảng an toàn riêng… |
+| 8 | Máy có truyền động: lập thêm bảng **trục và động cơ** — phanh, STO, gốc, cáp (Phụ lục C mục C.10.3) |
 
 ### ✅ Đạt khi
 
@@ -42019,6 +42226,9 @@ mục 22.4b.
 - [ ] Tín hiệu an toàn đã tách riêng và đánh dấu.
 - [ ] ⭐ Số dây khớp sơ đồ điện **và** khớp nhãn trong tủ.
 - [ ] Dòng tổng qua mỗi chân chung đã kiểm và nằm trong giới hạn datasheet.
+- [ ] ⭐ Mỗi module có dòng tiêu đề; hai cảm biến của mỗi xy-lanh liền nhau, cùng thứ tự, bắt đầu ở kênh
+      chẵn; kênh dự phòng nằm **trong** nhóm của từng trạm.
+- [ ] Tín hiệu an toàn có **bảng riêng**; hai kênh của một thiết bị là hai dòng liền nhau.
 
 ### 📏 Con số
 
@@ -42055,6 +42265,8 @@ mục 22.4b.
 - [ ] Cùng một khái niệm, cùng một từ — `Board` ở mọi nơi, không lẫn `PCB`, `Part`.
 - [ ] Địa chỉ tuyệt đối **chỉ** xuất hiện ở phần khai báo (Chương 27 mục 27.2b).
 - [ ] Quy ước đã **viết ra** (Phụ lục N mục N.6). Khách có quy ước riêng thì dùng của khách.
+- [ ] ⭐ Hệ kiểu thiết bị: có **trang quy hoạch địa chỉ theo khối** trước dòng mã đầu tiên — mỗi trạm một
+      khối cho mỗi loại thiết bị, khối đầu của vùng bước để riêng (Chương 11 mục 11.8b).
 
 > 💡 **Tiền tố theo vai trò là để tham chiếu chéo trả lời nhanh.** Tìm `DI_` cho bạn mọi chỗ chạm dây;
 > nếu kết quả nằm ngoài tầng ánh xạ, bạn vừa tìm ra một chỗ đọc vòng (thẻ O.4) — trong ba giây,
@@ -42271,6 +42483,7 @@ mục 22.4b.
 | 4 | **Ức chế hệ quả** có điều kiện rõ, tự gỡ, và vẫn ghi vào nhật ký |
 | 5 | Ghi **báo động đầu tiên** của một chuỗi |
 | 6 | Tín hiệu dao động: **trễ trước khi báo** cho xung nhiễu; **vùng chết** cho giá trị sát ngưỡng |
+| 7 | ⭐ **Đánh số**: khối theo loại lỗi + số thứ tự thiết bị; lỗi trình tự: khối theo trạm, số theo bước (Chương 44 mục 44.3) |
 
 ### ✅ Đạt khi
 
@@ -42281,6 +42494,8 @@ mục 22.4b.
 - [ ] ⭐ Ngắt khí → **một** báo động gốc, không kéo theo quá giờ của từng xy-lanh.
 - [ ] Mọi báo động theo ngưỡng có **ngưỡng báo khác ngưỡng gỡ**.
 - [ ] Xác nhận **không xoá được** báo động khi nguyên nhân còn.
+- [ ] ⭐ Mỗi xy-lanh có **hai số riêng**: *không về gốc* và *không tới đích* — không gộp thành một số
+      *"quá giờ"*.
 
 ### 📏 Con số
 
@@ -42551,6 +42766,9 @@ In riêng trang này nếu chỉ in một trang.
 | Đo sản lượng | Một giờ liên tục | Chương 52 | O.14 |
 | Sao lưu định kỳ | Hàng quý | [Nghề] | O.15 |
 | Ghi một thay đổi | Dưới hai phút; khẩn cấp: ghi trong 24 giờ | [Nghề] | O.16 |
+| Cỡ khối quy hoạch địa chỉ (hệ kiểu thiết bị) | 100 mỗi trạm, mọi trạm cùng cỡ | [Nghề] | O.3 |
+| FX5, khi dùng lệnh `IST` | `S0`–`S19` bị chiếm sẵn — trình tự bắt đầu từ `S100` | [Hãng] | O.3 |
+| Cỡ khối số báo động | Lớn hơn số thiết bị dự kiến cộng chỗ thêm — ví dụ 50 | [Nghề] | O.9 |
 
 > ⭐⭐ **Mỗi con số [Nghề] trong bảng là một quyết định bạn được phép đổi — nhưng phải ghi lại.**
 > Đổi `Limit` từ 2 × xuống 1,5 × vì máy của bạn rất ổn định là hợp lý; đổi mà không ghi thì người sau

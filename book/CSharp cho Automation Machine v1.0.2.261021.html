@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.2.260930</title>
+<title>C# cho Automation Machine — v1.0.2.261021</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -609,6 +609,27 @@
   <li style="padding-left:16px;font-size:13px"><a href="#j4-năm-bưc-và-s-sa-ti-hin-trưng">J.4  Năm bước, và sổ sửa tại hiện trường</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#j5-khi-nào-dng-li-và-gi-ngưi-ph-trách-phn-mm">J.5  Khi nào dừng lại và gọi người phụ trách phần mềm</a></li>
   <li style="padding-left:16px;font-size:13px"><a href="#j6-trang-tóm-tt-đ-dán-cnh-máy">J.6  Trang tóm tắt để dán cạnh máy</a></li>
+  <li><a href="#ph-lc-k-tra-cu-nhanh-hàm-c-hay-dùng-khi-không-có-gi-ý">Phụ lục K: Tra cứu nhanh hàm C# hay dùng — khi không có gợi ý</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k0-cách-đc-ph-lc-này">K.0  Cách đọc phụ lục này</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k1-chui-ký-t-string">K.1  Chuỗi ký tự (`string`)</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k2-s-đi-kiu-làm-tròn">K.2  Số, đổi kiểu, làm tròn</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k3-ngày-gi-và-đo-thi-gian">K.3  Ngày giờ và đo thời gian</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k4-mng-danh-sách-bng-tra">K.4  Mảng, danh sách, bảng tra</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k5-linq-lc-đm-sp-xp-danh-sách">K.5  LINQ — lọc, đếm, sắp xếp danh sách</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k6-file-thư-mc-đưng-dn">K.6  File, thư mục, đường dẫn</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k7-ini-csv-json-xml">K.7  INI, CSV, JSON, XML</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k8-ch-lung-khoá">K.8  Chờ, luồng, khoá</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k9-b-hn-gi-timer">K.9  Bộ hẹn giờ (`Timer`)</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k10-cng-ni-tip-serialport">K.10  Cổng nối tiếp (`SerialPort`)</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k11-tcpip-và-mng">K.11  TCP/IP và mạng</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k12-byte-bit-mã-hoá-ký-t">K.12  Byte, bit, mã hoá ký tự</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k13-x-lý-li">K.13  Xử lý lỗi</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k14-winforms">K.14  WinForms</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k15-wpf">K.15  WPF</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k16-h-thng-tin-trình">K.16  Hệ thống, tiến trình</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k17-đc-li-biên-dch-khi-không-có-visual-studio">K.17  Đọc lỗi biên dịch khi không có Visual Studio</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k18-nhng-ch-gõ-sai-hay-gp">K.18  Những chỗ gõ sai hay gặp</a></li>
+  <li style="padding-left:16px;font-size:13px"><a href="#k19-ch-mc-theo-tên">K.19  Chỉ mục theo tên</a></li>
 </ul></nav>
 <div id="main">
 <!-- SECTION: COVER -->
@@ -628,7 +649,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.2.260930</td>
+<td>v1.0.2.261021</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -786,6 +807,10 @@ quy trình hoàn hảo trong tuần đầu đi làm rồi bị từ chối.</p>
 <td><strong>Phụ lục J</strong> (sổ tay sửa tại hiện trường, có trang tóm tắt để in) → Chương 19 mục 19.1 (tìm lỗi khi không có Visual Studio)</td>
 </tr>
 <tr>
+<td><strong>Phải sửa mã bằng Notepad hoặc trong ô script, không có gợi ý hàm</strong></td>
+<td><strong>Phụ lục K</strong> (tra hàm theo việc cần làm; cột C# 5 cho biết cách viết nào chạy được trong script đời cũ) → mục K.17 (đọc lỗi biên dịch)</td>
+</tr>
+<tr>
 <td><strong>Đã biết nghề, tra cứu điểm cụ thể</strong></td>
 <td>Mục lục tra cứu (Index) và Bảng thuật ngữ ở cuối sách</td>
 </tr>
@@ -818,6 +843,11 @@ thói quen của một thế giới sang thế giới kia.</p>
 <td><code>MeoFrameMiniSync/</code>, <code>MeoFrameMiniDirect/</code>, <code>MeoFrameMiniMixed/</code></td>
 <td>Cùng máy đó, viết theo ba cách khác để so sánh</td>
 <td>Chương 7 mục 7.6–7.7</td>
+</tr>
+<tr>
+<td><code>TraCuuHam/</code></td>
+<td>Mọi đoạn mã của Phụ lục K, dựng được ở ba mức: C# 5, .NET Framework 4.8, .NET 9</td>
+<td>Phụ lục K</td>
 </tr>
 </tbody></table></div>
 <p>Trong sách, đường dẫn mã luôn tính từ gốc kho, ví dụ <code>src/csharp-automation-machine/MeoBench/Kiem.cs</code>.
@@ -40567,6 +40597,10 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <p><strong>CQRS (Command Query Responsibility Segregation)</strong> — Nguyên tắc tách rõ thao tác <em>ghi</em> (Command — thay đổi state, có side-effect) khỏi thao tác <em>đọc</em> (Query — chỉ trả dữ liệu, không side-effect); trong Device Gateway Pattern (Ch13) thể hiện qua việc tách riêng method đọc snapshot và method gửi lệnh trong cùng interface. Command trong CQRS là lệnh nghiệp vụ (StartMachineCommand) — khác Command Pattern (GoF) vốn đóng gói một lệnh thiết bị vật lý atomic. (→ xem Command Pattern (GoF), Device Gateway Pattern)
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.1.</em></p>
 <p><strong>Cross-thread UI update</strong> → xem <strong>Control.Invoke / BeginInvoke</strong>.</p>
+<p><strong>csc.exe</strong> — Trình biên dịch C# chạy bằng dòng lệnh. Bản cũ có sẵn trong mọi máy Windows (thư mục <code>Microsoft.NET\Framework64\v4.0.30319</code>) và chỉ hiểu cú pháp tới C# 5 — cùng mức với ô script của một số phần mềm thị giác đời cũ; dùng nó để biên dịch mã đã sửa bằng Notepad khi máy không có Visual Studio. (→ xem String interpolation)
+<em>Xuất hiện đầu tiên: Phụ lục K, mục K.0.</em></p>
+<p><strong>CultureInfo.InvariantCulture</strong> — Thiết lập vùng miền &quot;trung lập&quot; của .NET: dấu chấm thập phân, định dạng ngày cố định, không đổi theo cài đặt Windows. Dùng mỗi khi đọc/ghi số hoặc ngày giờ vào file, gửi xuống thiết bị: trên máy đặt vùng miền Việt Nam, <code>double.Parse(&quot;12.5&quot;)</code> không có nó đọc ra <code>125</code>.
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.6.</em></p>
 <h2 id="d">D</h2>
 <p><strong>Dải bảo vệ (Guard Band)</strong> — Khoảng thu hẹp ngưỡng phán định của máy so với quy cách của khách hàng, đúng bằng (hoặc một phần) sai số của chính hệ đo. Đánh đổi có chủ đích: <strong>loại nhầm một ít hàng tốt còn hơn để lọt hàng xấu</strong>. Phải là tham số trong công thức và phải <strong>ghi vào bản ghi sản phẩm</strong>, không được tự ý đặt. (→ xem GR&amp;R, Phán định OK/NG)
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.4.7.</em></p>
@@ -40812,6 +40846,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <p><strong>INotifyPropertyChanged</strong> — Interface .NET cho một object tự báo &quot;property này vừa đổi giá trị&quot; (<code>event PropertyChangedEventHandler PropertyChanged</code>) để mọi <code>Binding</code> trỏ vào nó tự cập nhật; là điều kiện bắt buộc để một ViewModel hoạt động đúng với Data Binding Engine của WPF. Không dùng <code>PropertyChanged</code> quá dày (100–500Hz) — cần throttle qua <code>Dispatcher</code>/<code>DispatcherTimer</code> trước khi đẩy vào ViewModel. (→ xem Binding (WPF), ObservableCollection&lt;T&gt;)
 <em>Xuất hiện đầu tiên: Chương 9, mục 9.1.5.</em></p>
 <p><strong>instance</strong> → xem <strong>object</strong>.</p>
+<p><strong>IntelliSense</strong> — Tính năng gợi ý tự động của Visual Studio: gõ dấu chấm là hiện danh sách hàm, thuộc tính, kèm tham số. Không có khi sửa mã bằng Notepad hay trong ô script của phần mềm thị giác — lúc đó tra Phụ lục K.
+<em>Xuất hiện đầu tiên: Chương 4, mục 4.2.1.</em></p>
 <p><strong>interface</strong> — Một <em>hợp đồng</em> (contract) liệt kê các method/property mà class phải có, nhưng không quy định cách làm; một class có thể implement nhiều interface. Là nền tảng để đổi vendor, mô phỏng/test, và tách tầng (Dependency Inversion) trong automation; tách nhỏ theo năng lực để mỗi module chỉ phụ thuộc cái nó dùng. (→ xem Capability Interface, abstract class, Dependency Injection)
 <em>Xuất hiện đầu tiên: Chương 4, mục 4.2 (dùng từ Chương 11, 13).</em></p>
 <p><strong>Interface Segregation Principle (ISP)</strong> — Nguyên lý thứ 4 trong SOLID: client không nên bị buộc phụ thuộc vào interface mà nó không dùng. Thay vì &quot;interface béo&quot; <code>IMachine</code> với 15 method, tách thành <code>IStartable</code>, <code>IStoppable</code>, <code>IResettable</code>, <code>IRecipeLoadable</code>; <code>OperatorPanel</code> chỉ inject <code>IStartable + IStoppable</code>. Kết hợp với Capability Interface và ISP/DIP triển khai qua Adapter cho thiết bị legacy. (→ xem SOLID, Capability Interface, Dependency Inversion Principle)
@@ -41161,6 +41197,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 7, mục 7.3.5.</em></p>
 <p><strong>Strategy Pattern</strong> — Mẫu đóng gói thuật toán/hành vi thay đổi được vào interface; client code gọi interface, không biết concrete class nào đang chạy. Trong DAL: IProtocolClient là Strategy — đổi OPC UA sang Modbus TCP bằng cấu hình, không sửa driver.
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.2.3.</em></p>
+<p><strong>String interpolation (nội suy chuỗi)</strong> — Cú pháp <code>$&quot;Trục {ten} tới {viTri:F2} mm&quot;</code>: đặt biến thẳng vào chuỗi trong cặp <code>{ }</code>. Có từ C# 6; trình biên dịch C# 5 (csc.exe cũ, ô script đời cũ) báo lỗi CS1056 — khi đó viết <code>string.Format(&quot;Trục {0} tới {1:F2} mm&quot;, ten, viTri)</code>. (→ xem csc.exe)
+<em>Xuất hiện đầu tiên: Chương 3, mục 3.5.3.</em></p>
 <p><strong>struct</strong> — Kiểu giá trị (value type) gom nhiều field thành một khối liền mạch trong bộ nhớ; copy theo giá trị, không cấp phát heap, hợp cho dữ liệu thiết bị nhỏ cần snapshot theo vòng quét (AxisStatus, SensorReading). (→ xem Value Type, readonly record struct)
 <em>Xuất hiện đầu tiên: Chương 3, mục 3.1.3.</em></p>
 <p><strong>Structured Logging</strong> — Cách ghi log dùng message template (<code>_logger.LogError(&quot;Axis {AxisName} fault: {ErrorCode}&quot;, axisName, errorCode)</code>) thay vì string đã ghép sẵn (<code>$&quot;Axis {axisName} fault&quot;</code>); hệ thống log lưu từng tham số như một trường dữ liệu riêng, cho phép truy vấn (&quot;AxisName = &#39;X&#39; và ErrorCode = 1234 xảy ra bao nhiêu lần&quot;) thay vì chỉ tìm kiếm chuỗi văn bản. Điều kiện cần để log thực sự dùng được khi điều tra sự cố hàng loạt. (→ xem Serilog, Seq)
@@ -41400,6 +41438,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>Correlation ID</strong> — 19.4, 19.4.4</li>
 <li><strong>CQRS (Command Query Responsibility Segregation)</strong> — 13.1.1</li>
 <li><strong>Cross-thread UI update</strong> — 8.1.2</li>
+<li><strong>CultureInfo.InvariantCulture</strong> — 3.6</li>
 <li><strong>Custom exception</strong> — 3.5.3</li>
 </ul>
 <h2 id="d-2">D</h2>
@@ -41529,6 +41568,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>inheritance</strong> — 4.3</li>
 <li><strong>INotifyDataErrorInfo</strong> — 9.1.5</li>
 <li><strong>INotifyPropertyChanged</strong> — 9.1.5</li>
+<li><strong>IntelliSense</strong> — 4.2.1</li>
 <li><strong>interface</strong> — 4.2, 4.2.1, 4.2.2, 4.2.3, 4.2.4, 4.3.4, 4.4.4, 7.2.4, 7.7, 8.3.4, 11.3.2, 13.2.1, 16.2.2, 18.3, 18.3.1</li>
 <li><strong>Interface Segregation Principle (ISP)</strong> — 7.2.4</li>
 <li><strong>Interlock</strong> — 15.2, 15.2.1, 15.4</li>
@@ -41725,6 +41765,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>stateless</strong> — 6.1.4</li>
 <li><strong>Strangler Pattern (Strangler Fig Pattern)</strong> — 7.3.5, 8.3.9</li>
 <li><strong>Strategy Pattern</strong> — 13.2.3</li>
+<li><strong>String interpolation (nội suy chuỗi)</strong> — 3.5.3</li>
 <li><strong>struct</strong> — 3.1.3, 4.1.2, 6.3.1, 11.3.2, 19.4.1</li>
 <li><strong>Structured Logging</strong> — 19.4, 19.4.1</li>
 <li><strong>Structured Text (ST — IEC 61131-3)</strong> — 6.3.1</li>
@@ -49989,7 +50030,9 @@ lúc lỗi. Sửa xong thì những thứ này mất, mà chúng lại là thứ
 <li><strong>Mỗi lần chỉ sửa một chỗ, rồi chạy thử.</strong> Sửa ba chỗ cùng lúc mà máy chạy được thì không biết chỗ
 nào có tác dụng, và hai chỗ còn lại sẽ ở lại mãi.</li>
 <li><strong>Ưu tiên sửa ngoài mã nguồn:</strong> tham số, công thức, đường bỏ qua, màn hình chạy tay. Chỉ mở mã
-nguồn khi không còn chỗ nào khác.</li>
+nguồn khi không còn chỗ nào khác. Phải sửa mã mà không có Visual Studio (Notepad, ô script của
+phần mềm thị giác) thì tra cú pháp ở <strong>Phụ lục K</strong>: cột C# 5 cho biết cách viết nào chạy được trong
+script đời cũ, mục K.17 giúp đọc thông báo lỗi biên dịch.</li>
 <li><strong>Ghi vào sổ ngay khi máy chạy lại</strong>, không để tới cuối ca.</li>
 </ol>
 <p>Sổ sửa tại hiện trường là một tệp văn bản thường, mở được bằng Notepad. Đặt nó trong <strong>thư mục dữ
@@ -50060,6 +50103,3855 @@ thời gian, bộ đếm hoặc rò bộ nhớ (Chương 19), không sửa đư�
 <p><strong>Không bao giờ:</strong> tắt, bỏ qua, hay sửa bất cứ thứ gì thuộc về an toàn.</p>
 <p><strong>Sau khi sửa:</strong> ghi vào sổ ngay. Người phụ trách phần mềm đưa bản sửa về kho trong 48 giờ.</p>
 </blockquote>
+<!-- SECTION: Phu_Luc_K_TraCuuHam -->
+<hr>
+<h1 id="ph-lc-k-tra-cu-nhanh-hàm-c-hay-dùng-khi-không-có-gi-ý">Phụ lục K: Tra cứu nhanh hàm C# hay dùng — khi không có gợi ý</h1>
+<p>Ngoài nhà máy, có lúc bạn phải sửa mã mà không có Visual Studio: sửa trong Notepad rồi biên dịch lại,
+hoặc gõ thẳng vào ô script của phần mềm thị giác. Không có gợi ý tự động, bạn phải nhớ đúng tên hàm,
+đúng chữ hoa chữ thường, đúng thứ tự tham số. Gõ sai một chữ là không biên dịch được, và thông báo
+lỗi thì bằng tiếng Anh.</p>
+<p>Phụ lục này xếp theo <strong>việc bạn muốn làm</strong> (&quot;cắt khoảng trắng&quot;, &quot;đổi chuỗi sang số&quot;, &quot;cập nhật giao
+diện từ luồng khác&quot;). Mỗi việc có cách viết đúng, kết quả, các biến thể hay dùng, và cột cho biết
+cách viết đó chạy được ở đâu. Cuối phụ lục có mục đọc lỗi biên dịch (K.17), các lỗi gõ sai hay gặp
+(K.18) và chỉ mục theo tên hàm (K.19) cho lúc bạn nhớ tên mà quên cú pháp.</p>
+<h2 id="k0-cách-đc-ph-lc-này">K.0  Cách đọc phụ lục này</h2>
+<p>Ba cột cuối của mỗi bảng cho biết dòng mã <strong>biên dịch được ở đâu</strong>: ✓ là được, ✗ là không. Đây là
+kết quả biên dịch chính dòng đó ở ba mức, không phải suy ra từ tài liệu:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cột</th>
+<th>Nghĩa</th>
+<th>Khi nào bạn cần nhìn cột này</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>C# 5</strong></td>
+<td>Trình biên dịch C# cũ đi kèm .NET Framework 4.x (<code>csc.exe</code> trong thư mục Windows). Chỉ hiểu cú pháp C# 5</td>
+<td>Gõ script trong phần mềm thị giác đời cũ; sửa mã bằng Notepad rồi biên dịch bằng <code>csc.exe</code> có sẵn trong Windows</td>
+</tr>
+<tr>
+<td><strong>FW</strong></td>
+<td>.NET Framework 4.8 trong Visual Studio, cú pháp C# 7.3 (mặc định của Visual Studio cho dự án Framework)</td>
+<td>Dự án WinForms/WPF đời cũ — rất hay gặp ở phần mềm máy đang chạy</td>
+</tr>
+<tr>
+<td><strong>.NET</strong></td>
+<td>.NET 9</td>
+<td>Dự án mới</td>
+</tr>
+</tbody></table></div>
+<p>Dòng ghi &quot;Ném …&quot; vẫn có ✓: nó biên dịch được, lỗi chỉ xảy ra lúc chạy. Kết quả ở cột thứ hai giống
+nhau trên .NET Framework 4.8 và .NET 9, trừ chỗ ghi rõ hai kết quả. Muốn tự thử một dòng trên máy của bạn, mọi đoạn mã của phụ
+lục nằm trong <code>src/csharp-automation-machine/TraCuuHam/</code>, kèm chương trình chạy chúng và kiểm kết quả.</p>
+<blockquote>
+<p>⚠️ <strong>Script của phần mềm thị giác đời cũ thường chỉ hiểu C# 5.</strong> Ví dụ VisionPro 9.0 CR2: nội suy
+chuỗi <code>$&quot;...&quot;</code>, toán tử <code>?.</code>, <code>out var</code> đều báo lỗi biên dịch, và script không biên dịch được thì
+bị <strong>bỏ qua im lặng</strong> khi chạy. Đoạn mã dán từ Visual Studio sang có thể làm cả khối logic biến
+mất mà không ai biết. Khi gõ script, chỉ dùng dòng có ✓ ở cột C# 5. Phiên bản mới hơn có thể hiểu
+cú pháp mới hơn; muốn biết chắc, thử biên dịch một dòng <code>$&quot;&quot;</code> trong ô script.</p>
+</blockquote>
+<p><strong>Năm quy tắc khi gõ mà không có gợi ý:</strong></p>
+<ol>
+<li><strong>C# phân biệt chữ hoa chữ thường.</strong> <code>ToString</code> khác <code>Tostring</code>, <code>Length</code> khác <code>length</code>. Tên hàm và
+thuộc tính của .NET luôn viết hoa chữ cái đầu mỗi từ.</li>
+<li><strong>Hàm có ngoặc, thuộc tính không có.</strong> <code>s.Trim()</code> là hàm; <code>s.Length</code> là thuộc tính. Gõ <code>s.Length()</code>
+hay <code>s.Trim</code> đều lỗi (K.17).</li>
+<li><strong>Thiếu <code>using</code> thì trình biên dịch không tìm thấy kiểu.</strong> Lỗi CS0246 gần như luôn là quên dòng
+<code>using</code> ở đầu file. Mỗi nhóm trong phụ lục ghi rõ cần <code>using</code> gì.</li>
+<li><strong>Chuỗi thường không đổi tại chỗ.</strong> <code>s.Trim()</code>, <code>s.Replace(...)</code>, <code>s.ToUpper()</code> trả về chuỗi <strong>mới</strong>;
+phải gán lại: <code>s = s.Trim();</code>.</li>
+<li><strong>Số thực và ngày giờ phụ thuộc vùng miền của Windows.</strong> Trên máy đặt vùng miền Việt Nam, dấu thập
+phân là dấu phẩy. Đọc/ghi số vào file thì luôn dùng <code>CultureInfo.InvariantCulture</code> (K.2).</li>
+</ol>
+<h2 id="k1-chui-ký-t-string">K.1  Chuỗi ký tự (<code>string</code>)</h2>
+<p>Không cần <code>using</code> thêm, trừ <code>StringBuilder</code> (<code>using System.Text;</code>).</p>
+<h3>Cắt khoảng trắng</h3>
+<p>Cho trước: <code>string s = &quot;  Truc X  &quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>s.Trim()</code></td>
+<td><code>&quot;Truc X&quot;</code> — bỏ khoảng trắng hai đầu</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.TrimStart()</code></td>
+<td><code>&quot;Truc X  &quot;</code> — chỉ bỏ khoảng trắng bên trái; 2 dấu cách cuối vẫn còn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.TrimEnd()</code></td>
+<td><code>&quot;  Truc X&quot;</code> — chỉ bỏ khoảng trắng bên phải; 2 dấu cách đầu vẫn còn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;##12##&quot;.Trim(&#39;#&#39;)</code></td>
+<td><code>&quot;12&quot;</code> — bỏ ký tự chỉ định</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;12\r\n&quot;.TrimEnd(&#39;\r&#39;, &#39;\n&#39;)</code></td>
+<td><code>&quot;12&quot;</code> — bỏ ký tự xuống dòng nhận từ cổng nối tiếp</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Lấy một đoạn của chuỗi</h3>
+<p>Cho trước: <code>string ma = &quot;SN-2026-00042&quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ma.Substring(3, 4)</code></td>
+<td><code>&quot;2026&quot;</code> — <strong>(vị trí bắt đầu, số ký tự)</strong>, không phải (đầu, cuối)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.Substring(8)</code></td>
+<td><code>&quot;00042&quot;</code> — từ vị trí 8 tới hết</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.Substring(ma.Length - 5)</code></td>
+<td><code>&quot;00042&quot;</code> — 5 ký tự cuối</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma[0]</code></td>
+<td><code>&#39;S&#39;</code> — một ký tự, kiểu <code>char</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma[^5..]</code></td>
+<td><code>&quot;00042&quot;</code> — cú pháp khoảng, C# 8</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.Substring(8, 10)</code></td>
+<td>Ném <code>ArgumentOutOfRangeException</code> khi vượt quá độ dài — kiểm <code>Length</code> trước</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Tìm, kiểm có chứa</h3>
+<p>Cho trước: <code>string ma = &quot;SN-2026-00042&quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ma.IndexOf(&quot;-&quot;)</code></td>
+<td><code>2</code> — vị trí đầu tiên; không thấy thì <code>-1</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.LastIndexOf(&#39;-&#39;)</code></td>
+<td><code>7</code> — vị trí cuối cùng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.Contains(&quot;2026&quot;)</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.StartsWith(&quot;SN&quot;)</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.EndsWith(&quot;42&quot;)</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.IndexOf(&quot;sn&quot;, StringComparison.OrdinalIgnoreCase)</code></td>
+<td><code>0</code> — không phân biệt hoa thường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ma.Contains(&quot;sn&quot;, StringComparison.OrdinalIgnoreCase)</code></td>
+<td><code>True</code> — chỉ có trên .NET; trên FW dùng <code>IndexOf(...) &gt;= 0</code></td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Tách chuỗi thành nhiều phần</h3>
+<p>Cho trước: <code>string dong = &quot;X,12.5,,OK&quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dong.Split(&#39;,&#39;)</code></td>
+<td>4 phần: <code>&quot;X&quot;</code>, <code>&quot;12.5&quot;</code>, <code>&quot;&quot;</code>, <code>&quot;OK&quot;</code> — <strong>giữ</strong> phần rỗng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dong.Split(new[] { &#39;,&#39; }, StringSplitOptions.RemoveEmptyEntries)</code></td>
+<td>3 phần — bỏ phần rỗng; chạy được ở mọi nơi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dong.Split(&#39;,&#39;, StringSplitOptions.RemoveEmptyEntries)</code></td>
+<td>3 phần — gọn hơn, nhưng chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;a;b|c&quot;.Split(&#39;;&#39;, &#39;|&#39;)</code></td>
+<td>3 phần — tách theo nhiều ký tự</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;A--B&quot;.Split(new[] { &quot;--&quot; }, StringSplitOptions.None)</code></td>
+<td>2 phần — tách theo chuỗi nhiều ký tự</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Ghép nhiều phần thành một chuỗi</h3>
+<p>Cho trước: <code>string[] mang = { &quot;X&quot;, &quot;Y&quot;, &quot;Z&quot; };</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>string.Join(&quot;,&quot;, mang)</code></td>
+<td><code>&quot;X,Y,Z&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string.Concat(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;)</code></td>
+<td><code>&quot;abc&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;a&quot; + 1 + 2</code></td>
+<td><code>&quot;a12&quot;</code> — đã gặp chuỗi thì mọi thứ phía sau thành chuỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>1 + 2 + &quot;a&quot;</code></td>
+<td><code>&quot;3a&quot;</code> — cộng số trước, rồi mới thành chuỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Thay thế, đổi hoa thường</h3>
+<p>Cho trước: <code>string s = &quot;Truc X&quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>s = s.Replace(&quot;X&quot;, &quot;Y&quot;);</code></td>
+<td><code>&quot;Truc Y&quot;</code> — <strong>phải gán lại</strong> vào <code>s</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.Replace(&quot;X&quot;, &quot;Y&quot;);</code></td>
+<td><code>s</code> vẫn là <code>&quot;Truc X&quot;</code> — gọi mà không gán thì không đổi gì</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.ToUpper()</code></td>
+<td><code>&quot;TRUC X&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.ToLower()</code></td>
+<td><code>&quot;truc x&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.ToUpperInvariant()</code></td>
+<td><code>&quot;TRUC X&quot;</code> — không phụ thuộc ngôn ngữ của Windows; nên dùng cho mã, tên khoá</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>So sánh chuỗi, kiểm rỗng</h3>
+<p>Cho trước: <code>string a = &quot;OK&quot;; string b = &quot;ok&quot;; string rong = null;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>a == b</code></td>
+<td><code>False</code> — <code>==</code> phân biệt hoa thường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string.Equals(a, b, StringComparison.OrdinalIgnoreCase)</code></td>
+<td><code>True</code> — không phân biệt hoa thường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string.Compare(a, b, true) == 0</code></td>
+<td><code>True</code> — cách cũ, tham số <code>true</code> là bỏ qua hoa thường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string.IsNullOrEmpty(rong)</code></td>
+<td><code>True</code> — đúng cho cả <code>null</code> lẫn <code>&quot;&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string.IsNullOrWhiteSpace(&quot;   &quot;)</code></td>
+<td><code>True</code> — coi chuỗi toàn khoảng trắng cũng là rỗng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>rong.Length</code></td>
+<td>Ném <code>NullReferenceException</code> — gọi bất cứ gì trên chuỗi <code>null</code> đều lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Đệm cho đủ độ dài</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&quot;42&quot;.PadLeft(5, &#39;0&#39;)</code></td>
+<td><code>&quot;00042&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;OK&quot;.PadRight(5)</code></td>
+<td><code>&quot;OK&quot;</code> thêm 3 dấu cách bên phải cho đủ 5 ký tự, rồi tới <code>|</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>42.ToString(&quot;D5&quot;)</code></td>
+<td><code>&quot;00042&quot;</code> — cách khác cho số nguyên</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Đưa giá trị vào chuỗi</h3>
+<p>Cho trước: <code>string ten = &quot;X&quot;; double viTri = 12.3456;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>string.Format(&quot;Truc {0} toi {1:F2} mm&quot;, ten, viTri)</code></td>
+<td><code>&quot;Truc X toi 12.35 mm&quot;</code> — <code>{0}</code>, <code>{1}</code> là thứ tự tham số; <code>:F2</code> là 2 chữ số thập phân</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>$&quot;Truc {ten} toi {viTri:F2} mm&quot;</code></td>
+<td>Như trên — nội suy chuỗi, <strong>C# 6 trở lên</strong></td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;Truc &quot; + ten + &quot; toi &quot; + viTri.ToString(&quot;F2&quot;) + &quot; mm&quot;</code></td>
+<td>Như trên — nối bằng <code>+</code>, chạy được ở mọi nơi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string.Format(&quot;{0,6}|{1,-6}|&quot;, 42, &quot;OK&quot;)</code></td>
+<td>4 dấu cách rồi <code>42</code>, sau đó <code>OK</code> rồi 4 dấu cách — số sau dấu phẩy là độ rộng (6 ký tự); số dương căn phải, số âm căn trái. Dùng để in bảng thẳng cột trong nhật ký</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Ghép chuỗi nhiều lần (trong vòng lặp)</h3>
+<pre><code class="language-csharp">var sb = new StringBuilder();
+for (int i = 0; i &lt; 3; i++)
+    sb.Append(i).Append(&#39;;&#39;);
+sb.AppendLine(&quot;xong&quot;);
+sb.AppendFormat(&quot;{0:F1}&quot;, 2.26);
+string t = sb.ToString();     // &quot;0;1;2;xong\r\n2.3&quot;
+sb.Clear();                   // dùng lại, không tạo mới
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓ — Ghép trong vòng lặp bằng <code>+</code> tạo chuỗi mới mỗi lần; <code>StringBuilder</code> thì không</p>
+<h3>Ký tự đặc biệt và đường dẫn</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@&quot;D:\Log\a.txt&quot;</code></td>
+<td>Chuỗi nguyên văn <code>@&quot;...&quot;</code>: dấu <code>\</code> không phải ký tự thoát — dùng cho đường dẫn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;D:\\Log\\a.txt&quot;</code></td>
+<td>Như trên, không có <code>@</code> thì phải gõ <code>\\</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Environment.NewLine</code></td>
+<td>Xuống dòng đúng kiểu của hệ điều hành (<code>\r\n</code> trên Windows)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&quot;Dong 1\r\nDong 2\tTab \&quot;ngoac\&quot;&quot;</code></td>
+<td><code>\r\n</code> xuống dòng, <code>\t</code> tab, <code>\&quot;</code> dấu nháy kép trong chuỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Kiểm từng ký tự</h3>
+<p>Cho trước: <code>string s = &quot;A1 b&quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>char.IsDigit(s[1])</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>char.IsLetter(s[0])</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>char.IsWhiteSpace(s[2])</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>s.ToCharArray()</code></td>
+<td>Mảng 4 ký tự</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>&#39;7&#39; - &#39;0&#39;</code></td>
+<td><code>7</code> — đổi một ký tự số thành giá trị số</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k2-s-đi-kiu-làm-tròn">K.2  Số, đổi kiểu, làm tròn</h2>
+<p>Đọc/ghi số với <code>CultureInfo</code> cần <code>using System.Globalization;</code>.</p>
+<h3>Đổi chuỗi sang số — khi chắc chắn chuỗi đúng định dạng</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>int.Parse(&quot;42&quot;)</code></td>
+<td><code>42</code>; chuỗi sai định dạng thì ném <code>FormatException</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>double.Parse(&quot;12.5&quot;, CultureInfo.InvariantCulture)</code></td>
+<td><code>12.5</code> — <strong>luôn</strong> ghi <code>InvariantCulture</code> khi đọc số từ file, thiết bị</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>double.Parse(&quot;12.5&quot;, new CultureInfo(&quot;vi-VN&quot;))</code></td>
+<td><code>125</code> — ở vùng miền Việt Nam, dấu chấm là dấu ngăn hàng nghìn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>int.Parse(&quot;12.5&quot;)</code></td>
+<td>Ném <code>FormatException</code> — <code>int.Parse</code> không nhận số có phần thập phân</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Đổi chuỗi sang số — khi chuỗi có thể sai</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>int n; bool ok = int.TryParse(&quot;abc&quot;, out n);</code></td>
+<td><code>ok = False</code>, <code>n = 0</code> — không ném lỗi; khai báo <code>n</code> trước, chạy được ở mọi nơi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>int.TryParse(&quot;42&quot;, out int n)</code></td>
+<td><code>ok = True</code>, <code>n = 42</code> — khai báo ngay trong lời gọi, <strong>C# 7 trở lên</strong></td>
+<td>✗</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>double d; bool ok = double.TryParse(&quot;12.5&quot;, NumberStyles.Float, CultureInfo.InvariantCulture, out d);</code></td>
+<td><code>ok = True</code>, <code>d = 12.5</code> — đủ bốn tham số mới chỉ định được vùng miền</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Convert — đổi qua lại giữa các kiểu</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Convert.ToInt32(&quot;42&quot;)</code></td>
+<td><code>42</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToInt32((string)null)</code></td>
+<td><code>0</code> — khác <code>int.Parse(null)</code> (ném lỗi)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToInt32(12.5)</code></td>
+<td><code>12</code> — làm tròn về số <strong>chẵn</strong> gần nhất khi đúng giữa (12.5 → 12, 13.5 → 14)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>(int)12.9</code></td>
+<td><code>12</code> — ép kiểu thì <strong>cắt bỏ</strong> phần thập phân, không làm tròn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToDouble(&quot;12.5&quot;, CultureInfo.InvariantCulture)</code></td>
+<td><code>12.5</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToInt32(&quot;FF&quot;, 16)</code></td>
+<td><code>255</code> — đọc chuỗi hex (cơ số 16); cơ số 2 cũng được</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToString(10, 2)</code></td>
+<td><code>&quot;1010&quot;</code> — số sang chuỗi nhị phân</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToBoolean(&quot;true&quot;)</code></td>
+<td><code>True</code> — nhận &quot;true&quot;/&quot;True&quot;/&quot;TRUE&quot;; <strong>không</strong> nhận &quot;1&quot;</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Số sang chuỗi có định dạng</h3>
+<p>Cho trước: <code>double v = 1234.5678; int n = 255;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>v.ToString(&quot;F2&quot;)</code></td>
+<td><code>&quot;1234.57&quot;</code> — 2 chữ số thập phân</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v.ToString(&quot;N2&quot;)</code></td>
+<td><code>&quot;1,234.57&quot;</code> — có dấu ngăn hàng nghìn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v.ToString(&quot;0.000&quot;)</code></td>
+<td><code>&quot;1234.568&quot;</code> — khuôn tự định; <code>0</code> là chữ số bắt buộc</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>0.5.ToString(&quot;0.##&quot;)</code></td>
+<td><code>&quot;0.5&quot;</code> — <code>#</code> là chữ số tuỳ chọn, không in số 0 thừa</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>n.ToString(&quot;X4&quot;)</code></td>
+<td><code>&quot;00FF&quot;</code> — hex, 4 chữ số; <code>&quot;x&quot;</code> cho chữ thường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v.ToString(&quot;F2&quot;, CultureInfo.InvariantCulture)</code></td>
+<td><code>&quot;1234.57&quot;</code> trên <strong>mọi</strong> máy — dùng khi ghi file, gửi thiết bị</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v.ToString(&quot;F2&quot;, new CultureInfo(&quot;vi-VN&quot;))</code></td>
+<td><code>&quot;1234,57&quot;</code> — máy đặt vùng miền Việt Nam in dấu phẩy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string a = 2.5.ToString(&quot;F0&quot;, CultureInfo.InvariantCulture); string b = 1.005.ToString(&quot;F2&quot;, CultureInfo.InvariantCulture);</code></td>
+<td>.NET Framework ra <code>&quot;3&quot;</code> và <code>&quot;1.01&quot;</code>; .NET 9 ra <code>&quot;2&quot;</code> và <code>&quot;1.00&quot;</code> — <strong>cùng dòng mã, hai kết quả</strong>. .NET 9 làm tròn số đúng giữa (2.5) về số chẵn, và tính theo giá trị thật trong bộ nhớ (1.005 thật ra là 1,00499999…). Chuyển dự án từ Framework sang .NET là báo cáo, file CSV có thể lệch ở chữ số cuối</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string c = Math.Round(2.5, 0, MidpointRounding.AwayFromZero).ToString(&quot;F0&quot;, CultureInfo.InvariantCulture);</code></td>
+<td><code>&quot;3&quot;</code> trên cả hai nền. Muốn hai nền ra cùng một chuỗi: làm tròn bằng <code>Math.Round(x, n, MidpointRounding.AwayFromZero)</code> trước rồi mới định dạng (1.005 làm vậy ra <code>&quot;1.00&quot;</code> ở cả hai)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Làm tròn</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Math.Round(2.5)</code></td>
+<td><code>2</code> — mặc định làm tròn về số <strong>chẵn</strong> (2.5 → 2, 3.5 → 4)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Round(2.5, MidpointRounding.AwayFromZero)</code></td>
+<td><code>3</code> — làm tròn kiểu thông thường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Round(1.2345, 2)</code></td>
+<td><code>1.23</code> — giữ 2 chữ số thập phân</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Floor(2.7)</code></td>
+<td><code>2</code> — xuống</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Ceiling(2.1)</code></td>
+<td><code>3</code> — lên</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Truncate(-2.7)</code></td>
+<td><code>-2</code> — bỏ phần thập phân (về phía 0)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Lớn nhất, nhỏ nhất, kẹp trong khoảng</h3>
+<p>Cho trước: <code>double v = 120;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Math.Max(3, 7)</code></td>
+<td><code>7</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Abs(-3.5)</code></td>
+<td><code>3.5</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Max(0, Math.Min(100, v))</code></td>
+<td><code>100</code> — kẹp vào [0, 100], chạy được ở mọi nơi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Clamp(v, 0, 100)</code></td>
+<td><code>100</code> — gọn hơn, chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Luỹ thừa, căn, lượng giác</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Math.Pow(2, 10)</code></td>
+<td><code>1024</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Sqrt(16)</code></td>
+<td><code>4</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>double rad = 30 * Math.PI / 180; double r = Math.Sin(rad);</code></td>
+<td><code>0.5</code> (sai số rất nhỏ) — hàm lượng giác nhận <strong>radian</strong>, không nhận độ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Atan2(1, 1) * 180 / Math.PI</code></td>
+<td><code>45</code> — góc từ hai cạnh (y, x), đổi ra độ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>So sánh số thực, chia số nguyên, tràn số</h3>
+<p>Cho trước: <code>double a = 0.1 + 0.2;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>a == 0.3</code></td>
+<td><code>False</code> — số thực có sai số; <strong>không</strong> so bằng <code>==</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Math.Abs(a - 0.3) &lt; 1e-9</code></td>
+<td><code>True</code> — so theo dung sai</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>7 / 2</code></td>
+<td><code>3</code> — hai số nguyên chia nhau thì bỏ phần dư</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>7 / 2.0</code></td>
+<td><code>3.5</code> — một bên là số thực thì ra số thực</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>7 % 3</code></td>
+<td><code>1</code> — phần dư</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>double.IsNaN(0.0 / 0.0)</code></td>
+<td><code>True</code> — kiểm giá trị &quot;không phải số&quot; từ cảm biến lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>int lon = int.MaxValue; int tran = lon + 1;</code></td>
+<td><code>int.MaxValue</code> là 2147483647; cộng thêm 1 thì <strong>tràn</strong> thành số âm nhỏ nhất, không báo lỗi — bộ đếm chạy nhiều năm nên dùng <code>long</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Số ngẫu nhiên (cho bản giả lập)</h3>
+<p>Cho trước: <code>Random r = new Random(12345);</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>r.Next(1, 7)</code></td>
+<td>Từ 1 tới <strong>6</strong> — cận trên không lấy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>r.NextDouble()</code></td>
+<td>Từ 0 tới dưới 1</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>new Random(5).Next() == new Random(5).Next()</code></td>
+<td><code>True</code> — cùng hạt giống thì cùng dãy số: lặp lại được một lần chạy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Enum ↔ số ↔ chuỗi</h3>
+<p>Cho trước: <code>TrangThai t = TrangThai.DangChay;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>(int)t</code></td>
+<td><code>1</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.ToString()</code></td>
+<td><code>&quot;DangChay&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>(TrangThai)Enum.Parse(typeof(TrangThai), &quot;Loi&quot;)</code></td>
+<td><code>TrangThai.Loi</code>; tên sai thì ném lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>TrangThai x; bool ok = Enum.TryParse(&quot;Loi&quot;, out x);</code></td>
+<td><code>ok = True</code> — không ném lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Enum.Parse&lt;TrangThai&gt;(&quot;Loi&quot;)</code></td>
+<td>Như dòng <code>Enum.Parse(typeof(TrangThai), &quot;Loi&quot;)</code> ở trên, gọn hơn — chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Enum.IsDefined(typeof(TrangThai), 7)</code></td>
+<td><code>False</code> — kiểm số đọc từ PLC có phải giá trị hợp lệ không</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k3-ngày-gi-và-đo-thi-gian">K.3  Ngày giờ và đo thời gian</h2>
+<p><code>Stopwatch</code> cần <code>using System.Diagnostics;</code>. Định dạng ngày giờ phân biệt hoa thường: <code>MM</code> là tháng, <code>mm</code> là phút; <code>HH</code> là giờ 24, <code>hh</code> là giờ 12.</p>
+<h3>Lấy thời điểm hiện tại</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DateTime.Now</code></td>
+<td>Ngày giờ hiện tại theo giờ máy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>DateTime.Today</code></td>
+<td>Ngày hôm nay, giờ 00:00:00</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>DateTime.UtcNow</code></td>
+<td>Giờ quốc tế — dùng khi so thời gian giữa các máy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Ngày giờ sang chuỗi</h3>
+<p>Cho trước: <code>DateTime t = new DateTime(2026, 9, 30, 21, 5, 7, 123);</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>t.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)</code></td>
+<td><code>&quot;2026-09-30 21:05:07&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.ToString(&quot;yyyyMMdd_HHmmss&quot;)</code></td>
+<td><code>&quot;20260930_210507&quot;</code> — dùng làm tên file, sắp xếp đúng thứ tự</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.ToString(&quot;HH:mm:ss.fff&quot;)</code></td>
+<td><code>&quot;21:05:07.123&quot;</code> — có mili-giây</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.ToString(&quot;yyyy-mm-dd&quot;)</code></td>
+<td><code>&quot;2026-05-30&quot;</code> — <strong>sai</strong>: <code>mm</code> là phút</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.ToString(&quot;hh:mm&quot;)</code></td>
+<td><code>&quot;09:05&quot;</code> — <strong>sai</strong> cho ca đêm: <code>hh</code> là giờ 12, 9 giờ sáng và 9 giờ tối trùng nhau</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;, CultureInfo.InvariantCulture)</code></td>
+<td>Như dòng đầu bảng, nhưng ra cùng kết quả trên mọi máy — một số vùng miền dùng ký tự ngăn giờ khác</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Chuỗi sang ngày giờ</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DateTime.ParseExact(&quot;2026-09-30 21:05&quot;, &quot;yyyy-MM-dd HH:mm&quot;, CultureInfo.InvariantCulture)</code></td>
+<td>Đọc đúng theo khuôn cho trước</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>DateTime t; bool ok = DateTime.TryParseExact(&quot;30/09/2026&quot;, &quot;dd/MM/yyyy&quot;, CultureInfo.InvariantCulture, DateTimeStyles.None, out t);</code></td>
+<td><code>ok = True</code> — không ném lỗi khi chuỗi sai</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Cộng trừ, lấy từng phần</h3>
+<p>Cho trước: <code>DateTime t = new DateTime(2026, 9, 30, 23, 0, 0);</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>t.AddDays(-30)</code></td>
+<td>30 ngày trước; <code>AddHours</code>, <code>AddMinutes</code>, <code>AddSeconds</code>, <code>AddMilliseconds</code> tương tự</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.AddHours(2)</code></td>
+<td><code>2026-10-01 01:00</code> — tự sang ngày, sang tháng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.Date</code></td>
+<td>Chỉ còn phần ngày (giờ 00:00)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.Hour</code></td>
+<td>Các thuộc tính <code>Year</code>, <code>Month</code>, <code>Day</code>, <code>Hour</code>, <code>Minute</code>, <code>Second</code>, <code>Millisecond</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>t.DayOfWeek == DayOfWeek.Sunday</code></td>
+<td><code>False</code> — 30/09/2026 là thứ Tư</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Khoảng thời gian (<code>TimeSpan</code>)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new DateTime(2026, 9, 30, 8, 30, 0) - new DateTime(2026, 9, 30, 8, 0, 0)</code></td>
+<td>Trừ hai thời điểm ra một <code>TimeSpan</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>TimeSpan d = TimeSpan.FromMinutes(90); double giay = d.TotalSeconds;</code></td>
+<td><code>5400</code> — <code>Total...</code> là tổng; <code>d.Minutes</code> chỉ là <strong>phần phút</strong> (= 30)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>TimeSpan d = TimeSpan.FromSeconds(5);</code></td>
+<td><code>d.TotalMilliseconds</code> là <code>5000</code>. Cũng có <code>FromMilliseconds</code>, <code>FromMinutes</code>, <code>FromHours</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>TimeSpan.FromMinutes(150).ToString(@&quot;hh\:mm\:ss&quot;)</code></td>
+<td><code>&quot;02:30:00&quot;</code> — dấu <code>:</code> trong khuôn <code>TimeSpan</code> phải thoát bằng <code>\</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Đo thời gian chạy</h3>
+<pre><code class="language-csharp">Stopwatch sw = Stopwatch.StartNew();
+Thread.Sleep(20);
+long ms = sw.ElapsedMilliseconds;   // khoảng 20
+sw.Restart();                       // về 0 và chạy tiếp
+TimeSpan d = sw.Elapsed;            // dạng TimeSpan
+sw.Stop();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓ — Đo nhịp máy, thời gian một bước, hạn giờ chờ cảm biến</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Environment.TickCount</code></td>
+<td>Số mili-giây từ lúc Windows khởi động; quay vòng sau khoảng 24,9 ngày</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k4-mng-danh-sách-bng-tra">K.4  Mảng, danh sách, bảng tra</h2>
+<p><code>List</code>, <code>Dictionary</code>, <code>Queue</code> cần <code>using System.Collections.Generic;</code>. <strong>Mảng và chuỗi dùng <code>Length</code>; <code>List</code>, <code>Dictionary</code> dùng <code>Count</code>.</strong></p>
+<h3>Mảng</h3>
+<p>Cho trước: <code>int[] b = { 5, 2, 9 };</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new int[5]</code></td>
+<td>Mảng 5 phần tử, tất cả là 0; kích thước cố định</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>b.Length</code></td>
+<td><code>3</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Array.Sort(b);</code></td>
+<td><code>b</code> thành <code>{ 2, 5, 9 }</code> — sắp xếp tại chỗ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Array.IndexOf(b, 9)</code></td>
+<td><code>2</code>; không thấy thì <code>-1</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Array.Resize(ref b, 5);</code></td>
+<td><code>b</code> dài 5, hai phần tử mới là 0 — nhớ chữ <code>ref</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>int[] c = new int[3]; Array.Copy(b, 0, c, 0, 3);</code></td>
+<td>Chép 3 phần tử từ <code>b[0]</code> sang <code>c[0]</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>double[,] m = new double[3, 4]; m[2, 3] = 1.5; int hang = m.GetLength(0);</code></td>
+<td>Mảng hai chiều; <code>GetLength(0)</code> là số hàng (<code>3</code>), <code>GetLength(1)</code> là số cột</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Danh sách (<code>List&lt;T&gt;</code>)</h3>
+<p>Cho trước: <code>List&lt;double&gt; ds = new List&lt;double&gt; { 1.5, 2.5, -1.0 };</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ds.Add(3.5);</code></td>
+<td>Thêm vào cuối</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.AddRange(new[] { 4.0, 5.0 });</code></td>
+<td>Thêm nhiều phần tử</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Insert(0, 9.9);</code></td>
+<td>Chèn vào vị trí 0</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.RemoveAt(0);</code></td>
+<td>Xoá theo vị trí</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Remove(2.5)</code></td>
+<td><code>True</code> — xoá theo giá trị (phần tử đầu tiên khớp)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.RemoveAll(x =&gt; x &lt; 0)</code></td>
+<td><code>1</code> — xoá mọi phần tử thoả điều kiện, trả số đã xoá</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Contains(1.5)</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Find(v =&gt; v &gt; 2)</code></td>
+<td><code>2.5</code> — phần tử đầu tiên thoả; không thấy thì giá trị mặc định (<code>0</code>)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.FindAll(v =&gt; v &lt; 0)</code></td>
+<td>Danh sách mới gồm mọi phần tử thoả</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Exists(v =&gt; v &lt; 0)</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Sort();</code></td>
+<td>Sắp xếp tăng dần tại chỗ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.ToArray()</code></td>
+<td>Sang mảng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Clear();</code></td>
+<td>Xoá hết; <code>ds.Count</code> còn 0</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>foreach (double v in ds) ds.Remove(v);</code></td>
+<td>Ném <code>InvalidOperationException</code> — không được thêm/xoá trong lúc <code>foreach</code> trên chính danh sách đó</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Bảng tra (<code>Dictionary&lt;TKey, TValue&gt;</code>)</h3>
+<p>Cho trước: <code>Dictionary&lt;string, int&gt; d = new Dictionary&lt;string, int&gt;();</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>d[&quot;A&quot;] = 1;</code></td>
+<td>Thêm, hoặc <strong>ghi đè</strong> nếu khoá đã có</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d.Add(&quot;B&quot;, 2);</code></td>
+<td>Thêm; khoá đã có thì <strong>ném lỗi</strong></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d.ContainsKey(&quot;A&quot;)</code></td>
+<td><code>True</code> — kiểm khoá có chưa trước khi đọc</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>int v; bool co = d.TryGetValue(&quot;X&quot;, out v);</code></td>
+<td><code>co = False</code>, <code>v = 0</code> — đọc an toàn, không ném lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d[&quot;X&quot;]</code></td>
+<td>Ném <code>KeyNotFoundException</code> — đọc khoá không có bằng <code>d[&quot;X&quot;]</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>foreach (KeyValuePair&lt;string, int&gt; kv in d)</code></td>
+<td>Duyệt từng cặp khoá–giá trị; <code>var kv</code> cũng được</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d.Remove(&quot;A&quot;)</code></td>
+<td><code>True</code> — xoá theo khoá; khoá không có thì trả <code>False</code>, không ném lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>new Dictionary&lt;string, int&gt; { { &quot;X&quot;, 1 }, { &quot;Y&quot;, 2 } }</code></td>
+<td>Khởi tạo có sẵn giá trị</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d.TryAdd(&quot;A&quot;, 1)</code></td>
+<td><code>True</code> — thêm nếu chưa có, không ném lỗi; chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d.GetValueOrDefault(&quot;X&quot;, -1)</code></td>
+<td><code>-1</code> — không có thì lấy giá trị dự phòng; chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>d.Keys.ToList()</code></td>
+<td>Danh sách khoá; <code>d.Values</code> cho danh sách giá trị</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Hàng đợi, ngăn xếp, tập không trùng</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var q = new Queue&lt;string&gt;(); q.Enqueue(&quot;P1&quot;); q.Enqueue(&quot;P2&quot;); string dau = q.Dequeue();</code></td>
+<td><code>&quot;P1&quot;</code> — vào trước ra trước; <code>q.Peek()</code> xem mà không lấy ra</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>var st = new Stack&lt;int&gt;(); st.Push(1); st.Push(2); int tren = st.Pop();</code></td>
+<td><code>2</code> — vào sau ra trước</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>var tap = new HashSet&lt;string&gt;(); bool moi = tap.Add(&quot;SN1&quot;); bool lai = tap.Add(&quot;SN1&quot;);</code></td>
+<td><code>moi = True</code>, <code>lai = False</code> — phát hiện mã trùng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>var cq = new ConcurrentQueue&lt;string&gt;(); cq.Enqueue(&quot;A&quot;); string x; bool lay = cq.TryDequeue(out x);</code></td>
+<td><code>True</code>, <code>x = &quot;A&quot;</code> — hàng đợi dùng an toàn từ nhiều luồng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k5-linq-lc-đm-sp-xp-danh-sách">K.5  LINQ — lọc, đếm, sắp xếp danh sách</h2>
+<p>Cần <code>using System.Linq;</code> — thiếu dòng này thì mọi hàm dưới đây báo CS1061. Có từ .NET Framework 3.5, chạy được cả trong C# 5.</p>
+<h3>Lọc, đếm, kiểm</h3>
+<p>Cho trước: <code>var ds = new List&lt;Phoi&gt; { new Phoi(1, 2.01, true), new Phoi(2, 2.12, false), new Phoi(3, 1.99, true) };</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ds.Where(p =&gt; p.Dat).ToList()</code></td>
+<td>2 phôi đạt — <code>Where</code> trả về dãy, thêm <code>.ToList()</code> để có danh sách</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Count(p =&gt; !p.Dat)</code></td>
+<td><code>1</code> — đếm theo điều kiện (khác thuộc tính <code>ds.Count</code>)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Any(p =&gt; p.Day &gt; 2.1)</code></td>
+<td><code>True</code> — có ít nhất một</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.All(p =&gt; p.Day &gt; 1.9)</code></td>
+<td><code>True</code> — tất cả đều thoả</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.FirstOrDefault(p =&gt; p.So == 9)</code></td>
+<td><code>null</code> — không thấy thì trả mặc định, không ném lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.First(p =&gt; p.So == 9)</code></td>
+<td>Ném lỗi — <code>First</code> bắt buộc phải thấy; dùng khi chắc chắn có</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Last()</code></td>
+<td>Phôi số 3</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Tính toán</h3>
+<p>Cho trước: <code>var ds = new List&lt;Phoi&gt; { new Phoi(1, 2.01, true), new Phoi(2, 2.12, false), new Phoi(3, 1.99, true) };</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ds.Max(p =&gt; p.Day)</code></td>
+<td><code>2.12</code>; <code>Min</code> tương tự</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Average(p =&gt; p.Day)</code></td>
+<td><code>2.04</code>; danh sách rỗng thì <strong>ném lỗi</strong></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Sum(p =&gt; p.Day)</code></td>
+<td><code>6.12</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.MaxBy(p =&gt; p.Day)</code></td>
+<td>Phôi dày nhất (số 2) — chỉ có trên .NET 6+</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.OrderByDescending(p =&gt; p.Day).First()</code></td>
+<td>Như trên, chạy được ở mọi nơi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Sắp xếp, chọn, gom nhóm</h3>
+<p>Cho trước: <code>var ds = new List&lt;Phoi&gt; { new Phoi(1, 2.01, true), new Phoi(2, 2.12, false), new Phoi(3, 1.99, true) };</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ds.OrderBy(p =&gt; p.Day).ToList()</code></td>
+<td>Tăng dần; <code>OrderByDescending</code> giảm dần; thêm <code>.ThenBy(...)</code> cho tiêu chí phụ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Select(p =&gt; p.Day).ToList()</code></td>
+<td>Lấy riêng một trường</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>int[] khac = new[] { 1, 1, 2 }.Distinct().ToArray();</code></td>
+<td><code>{ 1, 2 }</code> — bỏ trùng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.GroupBy(p =&gt; p.Dat).ToDictionary(g =&gt; g.Key, g =&gt; g.Count())</code></td>
+<td><code>{ True: 2, False: 1 }</code> — đếm theo nhóm</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>ds.Skip(1).Take(2).ToList()</code></td>
+<td>Bỏ 1, lấy 2 — phân trang bảng hiển thị</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>from p in ds where p.Dat orderby p.Day select p.So</code></td>
+<td><code>{ 3, 1 }</code> — cách viết dạng truy vấn, cùng nghĩa với <code>Where</code>/<code>OrderBy</code>/<code>Select</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k6-file-thư-mc-đưng-dn">K.6  File, thư mục, đường dẫn</h2>
+<p>Cần <code>using System.IO;</code> (và <code>using System.Text;</code> cho <code>Encoding</code>). Các ví dụ dùng một thư mục tạm; ngoài máy thật thay bằng đường dẫn của bạn.</p>
+<h3>Đọc, ghi cả file</h3>
+<p>Cho trước: <code>p</code> là đường dẫn một file, ví dụ <code>@&quot;D:\Log\log.txt&quot;</code>; <code>thuMuc</code> là thư mục chứa nó</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>File.WriteAllText(p, &quot;Dong 1&quot;);</code></td>
+<td>Ghi đè cả file; chưa có thì tạo mới</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.AppendAllText(p, &quot;Dong 2&quot; + Environment.NewLine);</code></td>
+<td>Ghi thêm vào cuối — dùng cho file nhật ký</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.ReadAllLines(p)</code></td>
+<td>Đọc thành mảng, mỗi phần tử một dòng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.ReadAllText(p, Encoding.UTF8)</code></td>
+<td>Chỉ định bảng mã — cần khi file có tiếng Việt và phần mềm khác đọc lại</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.ReadAllBytes(p)</code></td>
+<td>Đọc dạng byte (ảnh, file nhị phân)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Đọc, ghi từng dòng (file lớn, ghi liên tục)</h3>
+<p>Cho trước: <code>p</code> là đường dẫn một file, ví dụ <code>@&quot;D:\Log\log.txt&quot;</code>; <code>thuMuc</code> là thư mục chứa nó</p>
+<p><strong>Ghi thêm và đọc từng dòng — chạy được ở mọi nơi</strong></p>
+<pre><code class="language-csharp">using (StreamWriter w = new StreamWriter(p, true, Encoding.UTF8))   // true = ghi thêm
+{
+    w.WriteLine(&quot;Dong 1&quot;);
+    w.WriteLine(&quot;Dong 2&quot;);
+}                                   // ra khỏi khối using là file được đóng
+
+using (StreamReader r = new StreamReader(p, Encoding.UTF8))
+{
+    string dong;
+    while ((dong = r.ReadLine()) != null)
+        Console.WriteLine(dong);
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Cách viết gọn của C# 8 trở lên</strong></p>
+<pre><code class="language-csharp">using var w = new StreamWriter(p, true);   // C# 8: tự đóng khi ra khỏi khối { } đang chứa nó
+w.WriteLine(&quot;Dong 3&quot;);
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✗ · FW ✗ · .NET ✓</p>
+<h3>Kiểm, chép, chuyển, xoá file</h3>
+<p>Cho trước: <code>p</code> là đường dẫn một file <strong>đã có</strong>, nội dung <code>&quot;x&quot;</code> (1 byte); <code>thuMuc</code> là thư mục chứa nó</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>File.Exists(p)</code></td>
+<td><code>True</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.Copy(p, p + &quot;.bak&quot;, true);</code></td>
+<td>Chép; <code>true</code> = ghi đè nếu file đích đã có</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string q = p + &quot;.moi&quot;; if (File.Exists(q)) File.Delete(q); File.Move(p, q);</code></td>
+<td>Chuyển/đổi tên; file đích đã có thì <strong>ném lỗi</strong> trên FW</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.Move(p, p + &quot;.moi&quot;, true);</code></td>
+<td>Như trên, có tham số ghi đè — chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.Delete(p);</code></td>
+<td>Xoá; file không tồn tại thì <strong>không</strong> báo lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>File.GetLastWriteTime(p)</code></td>
+<td>Lần sửa cuối</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>new FileInfo(p).Length</code></td>
+<td><code>1</code> byte</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Thư mục</h3>
+<p>Cho trước: <code>p</code> là đường dẫn một file <strong>đã có</strong>, nội dung <code>&quot;x&quot;</code> (1 byte); <code>thuMuc</code> là thư mục chứa nó</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Directory.CreateDirectory(Path.Combine(thuMuc, &quot;2026&quot;, &quot;09&quot;));</code></td>
+<td>Tạo cả các thư mục cha; đã có thì <strong>không</strong> báo lỗi. Kiểm có chưa: <code>Directory.Exists(...)</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Directory.GetFiles(thuMuc, &quot;*.txt&quot;)</code></td>
+<td>Danh sách đường dẫn đầy đủ của các file khớp mẫu</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Directory.GetFiles(thuMuc, &quot;*.*&quot;, SearchOption.AllDirectories)</code></td>
+<td>Tìm cả trong thư mục con</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Directory.GetDirectories(thuMuc)</code></td>
+<td>Các thư mục con</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string tam = Path.Combine(thuMuc, &quot;xoa&quot;); Directory.CreateDirectory(tam); Directory.Delete(tam, true);</code></td>
+<td>Xoá; <code>true</code> = xoá cả nội dung bên trong</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Đường dẫn</h3>
+<p>Cho trước: <code>string p = @&quot;D:\Data\2026\ketqua.csv&quot;;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Path.Combine(@&quot;D:\Data&quot;, &quot;2026&quot;, &quot;ketqua.csv&quot;)</code></td>
+<td><code>D:\Data\2026\ketqua.csv</code> — tự thêm dấu <code>\</code> đúng chỗ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Path.GetFileName(p)</code></td>
+<td><code>&quot;ketqua.csv&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Path.GetFileNameWithoutExtension(p)</code></td>
+<td><code>&quot;ketqua&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Path.GetExtension(p)</code></td>
+<td><code>&quot;.csv&quot;</code> — có dấu chấm</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Path.GetDirectoryName(p)</code></td>
+<td><code>D:\Data\2026</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Path.ChangeExtension(p, &quot;.bak&quot;)</code></td>
+<td><code>D:\Data\2026\ketqua.bak</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Path.GetTempPath()</code></td>
+<td>Thư mục tạm của người dùng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Thư mục chương trình và thư mục dữ liệu</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>AppDomain.CurrentDomain.BaseDirectory</code></td>
+<td>Thư mục chứa file <code>.exe</code> — chạy được ở mọi loại ứng dụng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)</code></td>
+<td><code>C:\ProgramData</code> — chỗ để cấu hình <strong>không bị cập nhật đè</strong> (mục 17.3.7)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>string tl = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);</code></td>
+<td>Thư mục Documents của người đang đăng nhập</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k7-ini-csv-json-xml">K.7  INI, CSV, JSON, XML</h2>
+<p>INI đọc qua hàm của Windows; JSON trên .NET Framework cần thêm gói NuGet <code>Newtonsoft.Json</code> (trên .NET có sẵn <code>System.Text.Json</code>); XML có sẵn ở mọi nơi (<code>using System.Xml.Linq;</code>).</p>
+<h3>File INI</h3>
+<p><strong>Khai báo một lần trong lớp, dùng ở mọi nơi</strong></p>
+<pre><code class="language-csharp">[DllImport(&quot;kernel32.dll&quot;, CharSet = CharSet.Unicode)]
+static extern int GetPrivateProfileString(string muc, string khoa, string macDinh,
+    StringBuilder ketQua, int kichThuoc, string duongDan);
+
+[DllImport(&quot;kernel32.dll&quot;, CharSet = CharSet.Unicode)]
+static extern bool WritePrivateProfileString(string muc, string khoa, string giaTri, string duongDan);
+
+static string DocIni(string tep, string muc, string khoa, string macDinh)
+{
+    var sb = new StringBuilder(255);
+    GetPrivateProfileString(muc, khoa, macDinh, sb, sb.Capacity, tep);
+    return sb.ToString();
+}
+
+// Dùng:   WritePrivateProfileString(&quot;Truc&quot;, &quot;TocDo&quot;, &quot;50&quot;, @&quot;D:\Cfg\may.ini&quot;);
+//         string v = DocIni(@&quot;D:\Cfg\may.ini&quot;, &quot;Truc&quot;, &quot;TocDo&quot;, &quot;10&quot;);
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓ — Đường dẫn file INI phải là đường dẫn <strong>đầy đủ</strong>; chỉ ghi tên file thì Windows tìm trong thư mục Windows</p>
+<h3>CSV</h3>
+<p>Cho trước: <code>p</code> là đường dẫn một file, ví dụ <code>@&quot;D:\Log\log.txt&quot;</code>; <code>thuMuc</code> là thư mục chứa nó</p>
+<p><strong>Ghi một dòng CSV và đọc lại — luôn dùng <code>InvariantCulture</code>, nếu không dấu phẩy thập phân sẽ phá cột</strong></p>
+<pre><code class="language-csharp">double day = 2.0042;
+string dong = string.Join(&quot;,&quot;, &quot;2026-09-30T08:00:00&quot;, &quot;42&quot;,
+    day.ToString(&quot;F4&quot;, CultureInfo.InvariantCulture), &quot;Dat&quot;);
+File.AppendAllText(p, dong + Environment.NewLine, Encoding.UTF8);
+
+// Đọc lại
+string[] o = File.ReadAllLines(p)[0].Split(&#39;,&#39;);
+double doc = double.Parse(o[2], CultureInfo.InvariantCulture);
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>JSON</h3>
+<p><strong>Newtonsoft.Json — chạy được ở mọi nơi (cần gói NuGet <code>Newtonsoft.Json</code>)</strong></p>
+<pre><code class="language-csharp">var cauHinh = new Dictionary&lt;string, double&gt; { { &quot;TocDo&quot;, 50 }, { &quot;GiaToc&quot;, 200 } };
+string json = JsonConvert.SerializeObject(cauHinh, Formatting.Indented);
+var doc = JsonConvert.DeserializeObject&lt;Dictionary&lt;string, double&gt;&gt;(json);
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>System.Text.Json — có sẵn trên .NET, không cần gói</strong></p>
+<pre><code class="language-csharp">var cauHinh = new Dictionary&lt;string, double&gt; { { &quot;TocDo&quot;, 50 } };
+string json = JsonSerializer.Serialize(cauHinh, new JsonSerializerOptions { WriteIndented = true });
+var doc = JsonSerializer.Deserialize&lt;Dictionary&lt;string, double&gt;&gt;(json);
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✗ · FW ✗ · .NET ✓</p>
+<h3>XML</h3>
+<p>Cho trước: <code>p</code> là đường dẫn một file, ví dụ <code>@&quot;D:\Log\log.txt&quot;</code>; <code>thuMuc</code> là thư mục chứa nó</p>
+<p><strong>Ghi và đọc XML với <code>XElement</code>/<code>XDocument</code></strong></p>
+<pre><code class="language-csharp">var may = new XElement(&quot;May&quot;,
+    new XElement(&quot;Ten&quot;, &quot;MAY-01&quot;),
+    new XElement(&quot;Truc&quot;, new XAttribute(&quot;ten&quot;, &quot;X&quot;), new XElement(&quot;TocDo&quot;, 50)));
+may.Save(p);
+
+XDocument doc = XDocument.Load(p);
+string ten = doc.Root.Element(&quot;Ten&quot;).Value;                  // &quot;MAY-01&quot;
+XElement truc = doc.Root.Element(&quot;Truc&quot;);
+string tenTruc = truc.Attribute(&quot;ten&quot;).Value;                 // &quot;X&quot;
+double tocDo = (double)truc.Element(&quot;TocDo&quot;);                 // ép kiểu thẳng ra số
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var x = XElement.Parse(&quot;&lt;A&gt;&lt;B&gt;1&lt;/B&gt;&lt;B&gt;2&lt;/B&gt;&lt;/A&gt;&quot;); int n = x.Elements(&quot;B&quot;).Count();</code></td>
+<td><code>2</code> — đếm các phần tử con cùng tên</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k8-ch-lung-khoá">K.8  Chờ, luồng, khoá</h2>
+<p>Cần <code>using System.Threading;</code> và <code>using System.Threading.Tasks;</code>. Mục 5.3 và 5.7 giải thích khi nào dùng cách nào.</p>
+<h3>Chờ một khoảng thời gian</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Thread.Sleep(100);</code></td>
+<td>Chặn luồng hiện tại 100 ms — dùng trên luồng riêng của trình tự; <strong>không</strong> dùng trên luồng giao diện</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<p><strong>Chờ không chặn luồng — chỉ dùng trong hàm <code>async</code></strong></p>
+<pre><code class="language-csharp">await Task.Delay(100);
+await Task.Delay(TimeSpan.FromSeconds(1));
+await Task.Delay(100, CancellationToken.None);   // có token: dừng được giữa chừng
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Chạy việc trên luồng khác</h3>
+<p><strong>Luồng riêng, chạy lâu dài</strong></p>
+<pre><code class="language-csharp">Thread t = new Thread(() =&gt;
+{
+    // vòng lặp trình tự
+});
+t.IsBackground = true;   // tắt chương trình thì luồng cũng dừng
+t.Start();
+bool xong = t.Join(1000);  // chờ tối đa 1 giây cho luồng kết thúc
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Việc ngắn trên luồng dùng chung (.NET Framework 4.5 trở lên)</strong></p>
+<pre><code class="language-csharp">Task viec = Task.Run(() =&gt; Console.WriteLine(&quot;chạy nền&quot;));
+viec.Wait();
+Task&lt;int&gt; tinh = Task.Run(() =&gt; 6 * 7);
+int kq = tinh.Result;     // chặn tới khi có kết quả — không gọi trên luồng giao diện
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Chờ nhiều việc, hoặc chờ có hạn giờ</strong></p>
+<pre><code class="language-csharp">Task a = Task.Delay(50), b = Task.Delay(80);
+await Task.WhenAll(a, b);                         // chờ cả hai xong
+Task xongTruoc = await Task.WhenAny(a, Task.Delay(1000));
+bool kipGio = xongTruoc == a;                     // tự đo hạn giờ (mục 5.1.2)
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Khoá, đếm an toàn giữa các luồng</h3>
+<p><strong>Khai báo trong lớp</strong></p>
+<pre><code class="language-csharp">static readonly object _khoa = new object();
+static int _demPhoi;
+static volatile bool _dungLai;          // cờ dừng đọc từ luồng khác
+
+static void TangDem()
+{
+    lock (_khoa)                       // chỉ một luồng vào một lúc
+    {
+        _demPhoi++;
+    }
+    Interlocked.Increment(ref _demPhoi);  // cộng 1 an toàn, không cần lock
+}
+
+static bool ThuKhoa()
+{
+    if (!Monitor.TryEnter(_khoa, 500)) return false;   // chờ khoá tối đa 500 ms
+    try { _demPhoi = 0; return true; }
+    finally { Monitor.Exit(_khoa); }
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Dừng, huỷ, chờ tín hiệu</h3>
+<p><strong>Tín hiệu huỷ cho thao tác dài (mục 5.2)</strong></p>
+<pre><code class="language-csharp">var cts = new CancellationTokenSource();
+CancellationToken ct = cts.Token;
+cts.CancelAfter(1000);                 // tự huỷ sau 1 giây (FW 4.5+)
+bool daHuy = ct.IsCancellationRequested;
+cts.Cancel();                          // huỷ ngay — ví dụ khi bấm nút Dừng
+bool loi = Co.Nem&lt;OperationCanceledException&gt;(() =&gt; ct.ThrowIfCancellationRequested());
+cts.Dispose();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Chờ một tín hiệu từ luồng khác, có hạn giờ</strong></p>
+<pre><code class="language-csharp">var coPhoi = new ManualResetEvent(false);
+// luồng cảm biến:   coPhoi.Set();
+bool kipGio = coPhoi.WaitOne(500);     // chờ tối đa 500 ms; False nếu hết giờ
+coPhoi.Reset();                        // về trạng thái chưa có
+
+var moiLan = new AutoResetEvent(false); // tự Reset sau mỗi lần WaitOne thành công
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h2 id="k9-b-hn-gi-timer">K.9  Bộ hẹn giờ (<code>Timer</code>)</h2>
+<p>Có bốn lớp cùng tên <code>Timer</code> khác nhau. Gọi nhầm loại là nguồn lỗi hay gặp: loại của WinForms và WPF chạy trên luồng giao diện, hai loại còn lại chạy trên luồng khác (Bảng 9.4b ở mục 9.3.2 so sánh cách chọn).</p>
+<h3>Bốn loại Timer</h3>
+<p><strong>WinForms — sự kiện <code>Tick</code> chạy trên luồng giao diện, sửa control trực tiếp được</strong></p>
+<pre><code class="language-csharp">var t = new System.Windows.Forms.Timer();
+t.Interval = 200;                      // mili-giây, kiểu int
+t.Tick += (s, e) =&gt; label1.Text = DateTime.Now.ToString(&quot;HH:mm:ss&quot;);
+t.Start();                             // t.Stop() để dừng
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>WPF — <code>DispatcherTimer</code>, cũng chạy trên luồng giao diện</strong></p>
+<pre><code class="language-csharp">var t = new DispatcherTimer();
+t.Interval = TimeSpan.FromMilliseconds(200);   // kiểu TimeSpan, không phải int
+t.Tick += (s, e) =&gt; text1.Text = DateTime.Now.ToString(&quot;HH:mm:ss&quot;);
+t.Start();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong><code>System.Threading.Timer</code> — cho việc nền</strong></p>
+<pre><code class="language-csharp">var t = new System.Threading.Timer(trangThai =&gt;
+{
+    // chạy trên luồng khác — muốn sửa giao diện phải qua Invoke/Dispatcher
+}, null, 0, 1000);                      // bắt đầu ngay, lặp mỗi 1000 ms
+t.Change(Timeout.Infinite, Timeout.Infinite);   // tạm dừng
+t.Dispose();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong><code>System.Timers.Timer</code> — sự kiện <code>Elapsed</code>, cũng chạy trên luồng khác</strong></p>
+<pre><code class="language-csharp">var t = new System.Timers.Timer(1000);    // mili-giây, kiểu double
+t.Elapsed += (s, e) =&gt; { /* luồng khác */ };
+t.AutoReset = true;                        // false = chỉ chạy một lần
+t.Start();
+t.Stop();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h2 id="k10-cng-ni-tip-serialport">K.10  Cổng nối tiếp (<code>SerialPort</code>)</h2>
+<p>Cần <code>using System.IO.Ports;</code>. Có sẵn trong .NET Framework; trên .NET phải thêm gói NuGet <code>System.IO.Ports</code>. Mục 14.1.7b giải thích cách đọc cho đúng.</p>
+<h3>Mở, ghi, đọc, đóng</h3>
+<p><strong>Một vòng đầy đủ</strong></p>
+<pre><code class="language-csharp">string[] cong = SerialPort.GetPortNames();      // { &quot;COM1&quot;, &quot;COM3&quot;, ... }
+
+var port = new SerialPort(&quot;COM3&quot;, 9600, Parity.None, 8, StopBits.One);
+port.ReadTimeout = 500;          // mặc định là chờ VÔ HẠN — luôn đặt
+port.WriteTimeout = 500;
+port.NewLine = &quot;\r&quot;;             // ký tự kết thúc dòng của thiết bị
+port.Open();
+
+port.WriteLine(&quot;READ&quot;);           // gửi kèm NewLine
+string traLoi = port.ReadLine();  // đọc tới NewLine; quá ReadTimeout thì ném TimeoutException
+
+byte[] lenh = { 0x02, 0x31, 0x03 };
+port.Write(lenh, 0, lenh.Length); // gửi byte
+int co = port.BytesToRead;        // số byte đang chờ đọc
+byte[] buf = new byte[co];
+int n = port.Read(buf, 0, co);
+string tatCa = port.ReadExisting(); // lấy mọi thứ đang có, có thể là nửa khung
+
+port.Close();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓ — Trên .NET cần gói NuGet <code>System.IO.Ports</code></p>
+<p><strong>Nhận dữ liệu bằng sự kiện — sự kiện chạy trên luồng khác, <strong>không</strong> sửa giao diện trực tiếp ở đây</strong></p>
+<pre><code class="language-csharp">var port = new SerialPort(&quot;COM3&quot;, 9600);
+var boDem = new StringBuilder();
+port.DataReceived += (s, e) =&gt;
+{
+    boDem.Append(port.ReadExisting());   // chỉ gom vào bộ đệm, tách khung ở nơi khác
+};
+// Khi đóng: huỷ đăng ký trước rồi mới Close
+// port.DataReceived -= ...; port.Close();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h2 id="k11-tcpip-và-mng">K.11  TCP/IP và mạng</h2>
+<p>Cần <code>using System.Net;</code>, <code>using System.Net.Sockets;</code>, <code>using System.Text;</code>.</p>
+<h3>Máy khách TCP (máy là bên kết nối tới)</h3>
+<p><strong>Kết nối có hạn giờ, gửi lệnh, đọc trả lời</strong></p>
+<pre><code class="language-csharp">using (var client = new TcpClient())
+{
+    client.ReceiveTimeout = 1000;              // ms; mặc định chờ vô hạn
+    client.SendTimeout = 1000;
+    if (!client.ConnectAsync(&quot;192.168.0.10&quot;, 5000).Wait(2000))
+        throw new TimeoutException(&quot;Không kết nối được trong 2 giây&quot;);
+
+    NetworkStream ns = client.GetStream();
+    byte[] lenh = Encoding.ASCII.GetBytes(&quot;TRIGGER\r\n&quot;);
+    ns.Write(lenh, 0, lenh.Length);
+
+    byte[] buf = new byte[1024];
+    int n = ns.Read(buf, 0, buf.Length);      // 0 nghĩa là bên kia đã đóng kết nối
+    string traLoi = Encoding.ASCII.GetString(buf, 0, n);
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓ — <code>client.Connect(...)</code> (đồng bộ) không có tham số hạn giờ: tới một địa chỉ không có máy trả lời, nó treo khoảng 21 giây (mặc định của Windows) rồi mới báo lỗi</p>
+<h3>Máy chủ TCP (máy là bên chờ kết nối)</h3>
+<p><strong>Chờ một kết nối</strong></p>
+<pre><code class="language-csharp">var server = new TcpListener(IPAddress.Any, 5000);
+server.Start();
+TcpClient khach = server.AcceptTcpClient();   // chặn tới khi có máy kết nối
+NetworkStream ns = khach.GetStream();
+// ... đọc/ghi như máy khách ...
+khach.Close();
+server.Stop();
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Kiểm kết nối mạng</h3>
+<p><strong>Ping một thiết bị</strong></p>
+<pre><code class="language-csharp">using (var ping = new Ping())
+{
+    PingReply r = ping.Send(&quot;192.168.0.10&quot;, 1000);   // hạn giờ 1000 ms
+    bool songSot = r.Status == IPStatus.Success;
+    long tre = r.RoundtripTime;                      // ms
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h2 id="k12-byte-bit-mã-hoá-ký-t">K.12  Byte, bit, mã hoá ký tự</h2>
+<p><code>Encoding</code> cần <code>using System.Text;</code>.</p>
+<h3>Chuỗi ↔ byte</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Encoding.ASCII.GetBytes(&quot;AB&quot;)</code></td>
+<td><code>{ 0x41, 0x42 }</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Encoding.ASCII.GetString(new byte[] { 0x4F, 0x4B })</code></td>
+<td><code>&quot;OK&quot;</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Encoding.UTF8.GetBytes(&quot;Trục&quot;)</code></td>
+<td>6 byte cho 4 chữ — chữ có dấu chiếm 2–3 byte; mã ASCII biến chữ có dấu thành <code>?</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>BitConverter.ToString(new byte[] { 0x01, 0x0A, 0xFF })</code></td>
+<td><code>&quot;01-0A-FF&quot;</code> — in byte ra nhật ký</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>BitConverter.ToString(new byte[] { 0x01, 0xFF }).Replace(&quot;-&quot;, &quot;&quot;)</code></td>
+<td><code>&quot;01FF&quot;</code> — không dấu gạch, chạy được ở mọi nơi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToHexString(new byte[] { 0x01, 0xFF })</code></td>
+<td><code>&quot;01FF&quot;</code> — gọn hơn, chỉ có trên .NET</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Convert.ToByte(&quot;FF&quot;, 16)</code></td>
+<td><code>255</code> — một byte từ chuỗi hex</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Số ↔ byte (thanh ghi, khung truyền)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>BitConverter.ToInt16(new byte[] { 0x34, 0x12 }, 0)</code></td>
+<td><code>0x1234</code> — byte thấp đứng trước (little-endian, kiểu của PC)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>byte[] b = { 0x12, 0x34 }; Array.Reverse(b); short v = BitConverter.ToInt16(b, 0);</code></td>
+<td><code>0x1234</code> — dữ liệu Modbus/PLC thường là byte cao trước, phải đảo</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>(ushort)((0x12 &lt;&lt; 8) | 0x34)</code></td>
+<td><code>0x1234</code> — ghép hai byte bằng phép dịch bit, không phụ thuộc thứ tự byte của máy</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>byte[] b = BitConverter.GetBytes(12.5f); float f = BitConverter.ToSingle(b, 0);</code></td>
+<td>4 byte; đọc lại ra <code>12.5</code> — số thực 32 bit từ hai thanh ghi Modbus</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>BitConverter.IsLittleEndian</code></td>
+<td><code>True</code> trên PC</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Làm việc với từng bit</h3>
+<p>Cho trước: <code>int v = 0x0A;</code></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>(v &amp; (1 &lt;&lt; 3)) != 0</code></td>
+<td><code>True</code> — bit 3 đang bật (0x0A = 1010)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v |= 1 &lt;&lt; 0;</code></td>
+<td>Bật bit 0 → <code>0x0B</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v &amp;= ~(1 &lt;&lt; 1);</code></td>
+<td>Tắt bit 1 → <code>0x08</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>v ^= 1 &lt;&lt; 3;</code></td>
+<td>Đảo bit 3 → <code>0x02</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>(0x1234 &gt;&gt; 8) &amp; 0xFF</code></td>
+<td><code>0x12</code> — lấy byte cao</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k13-x-lý-li">K.13  Xử lý lỗi</h2>
+<p>Mục 3.5 và 3.5.5 giải thích khi nào bắt, khi nào để lỗi đi lên.</p>
+<h3>Bắt, ném, dọn dẹp</h3>
+<p><strong>Bắt đúng loại lỗi; <code>finally</code> luôn chạy</strong></p>
+<pre><code class="language-csharp">try
+{
+    string s = File.ReadAllText(@&quot;D:\khong_co.txt&quot;);
+}
+catch (FileNotFoundException ex)        // loại cụ thể trước
+{
+    Console.WriteLine(&quot;Không thấy file: &quot; + ex.FileName);
+}
+catch (IOException ex)                  // loại rộng hơn sau
+{
+    Console.WriteLine(ex.Message);
+}
+finally
+{
+    // luôn chạy, có lỗi hay không — đóng kết nối, nâng đầu đo...
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Lấy thông tin lỗi, ném tiếp đúng cách</strong></p>
+<pre><code class="language-csharp">try { throw new TimeoutException(&quot;Trục X quá 2000 ms&quot;); }
+catch (Exception ex)
+{
+    string ngan = ex.Message;      // chỉ câu thông báo
+    string day = ex.ToString();    // loại lỗi + thông báo + dòng mã gây lỗi — ghi nhật ký cái này
+    // throw;                      // ném tiếp, GIỮ nguyên vết lỗi gốc
+    // throw ex;                   // KHÔNG nên: mất vết, nhìn như lỗi phát sinh ở đây
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Bắt có điều kiện</strong></p>
+<pre><code class="language-csharp">try { int.Parse(&quot;x&quot;); }
+catch (FormatException ex) when (ex.Message.Length &gt; 0)
+{
+    // chỉ bắt khi điều kiện đúng — C# 6 trở lên (mục 5.2)
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✗ · FW ✓ · .NET ✓</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>throw new InvalidOperationException(&quot;Máy chưa về gốc&quot;);</code></td>
+<td>Tự ném lỗi kèm thông báo đọc được</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Ghi ra cửa sổ gỡ lỗi</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Debug.WriteLine(&quot;chỉ hiện khi chạy bản Debug&quot;);</code></td>
+<td>Chỉ chạy khi biên dịch có ký hiệu <code>DEBUG</code> (bản Debug của Visual Studio). Bản Release, và <code>csc.exe</code> không có <code>/define:DEBUG</code>, bỏ dòng này đi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Trace.WriteLine(&quot;hiện cả ở bản Release&quot;);</code></td>
+<td>Xem bằng công cụ DebugView khi không có Visual Studio. Biên dịch bằng <code>csc.exe</code> thì phải thêm <code>/define:TRACE</code> — thiếu nó, dòng này bị bỏ <strong>im lặng</strong></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k14-winforms">K.14  WinForms</h2>
+<p>Các đoạn dưới đặt trong một hàm của <code>Form</code> có sẵn <code>label1</code>, <code>textBox1</code>, <code>button1</code>, <code>comboBox1</code>, <code>dataGridView1</code>, <code>numericUpDown1</code>, <code>checkBox1</code>, <code>listBox1</code>. Cần <code>using System.Windows.Forms;</code>; màu cần <code>using System.Drawing;</code>.</p>
+<h3>Cập nhật giao diện từ luồng khác</h3>
+<p><strong>Mẫu chuẩn — gọi được từ bất kỳ luồng nào</strong></p>
+<pre><code class="language-csharp">if (label1.InvokeRequired)
+    label1.BeginInvoke(new Action(() =&gt; label1.Text = &quot;OK&quot;));
+else
+    label1.Text = &quot;OK&quot;;
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓ — <code>BeginInvoke</code> không chờ; <code>Invoke</code> chờ tới khi giao diện làm xong (dễ treo nếu luồng giao diện đang chờ ngược lại)</p>
+<p><strong>Hai cách viết khác hay gặp trong mã cũ</strong></p>
+<pre><code class="language-csharp">this.Invoke((MethodInvoker)delegate { label1.Text = &quot;OK&quot;; });
+this.BeginInvoke((MethodInvoker)(() =&gt; textBox1.AppendText(&quot;dong\r\n&quot;)));
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>label1.Invoke(() =&gt; label1.Text = &quot;OK&quot;)</code></td>
+<td>Không bọc <code>new Action(...)</code>: chỉ .NET 6 trở lên có <code>Invoke(Action)</code>; .NET Framework báo lỗi CS1660</td>
+<td>✗</td>
+<td>✗</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>this.Invoke((MethodInvoker)delegate { })</code></td>
+<td>Ném <code>InvalidOperationException</code> nếu control <strong>chưa có handle</strong> (form chưa hiện lần nào) — mọi cách gọi <code>Invoke</code>/<code>BeginInvoke</code> đều vậy. Gọi từ hàm khởi tạo của form là gặp</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Hộp thông báo</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>MessageBox.Show(&quot;Đã lưu công thức&quot;);</code></td>
+<td>Hộp thông báo đơn giản</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>DialogResult r = MessageBox.Show(&quot;Xoá công thức?&quot;, &quot;Xác nhận&quot;, MessageBoxButtons.YesNo, MessageBoxIcon.Warning); if (r == DialogResult.Yes) { }</code></td>
+<td>Hỏi Có/Không. <strong>WPF dùng tên khác</strong> (K.15)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Ô chữ, nhãn, nút, màu</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>textBox1.AppendText(&quot;Dòng mới&quot; + Environment.NewLine);</code></td>
+<td>Thêm vào cuối và tự cuộn xuống — dùng cho ô nhật ký</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>textBox1.Clear();</code></td>
+<td>Xoá nội dung</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>button1.Enabled = false;</code></td>
+<td>Làm mờ nút; <code>Visible = false</code> là ẩn hẳn</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>label1.BackColor = Color.LimeGreen;</code></td>
+<td>Màu có tên</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Color.FromArgb(200, 30, 30)</code></td>
+<td>Màu theo giá trị đỏ, xanh lá, xanh dương (0–255)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>button1.Click += (s, e) =&gt; label1.Text = &quot;Đã bấm&quot;;</code></td>
+<td>Gắn hàm xử lý bằng mã; gỡ ra thì dùng <code>-=</code> với hàm có tên</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>(double)numericUpDown1.Value</code></td>
+<td><code>Value</code> là kiểu <code>decimal</code> — phải ép sang <code>double</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>checkBox1.Checked</code></td>
+<td>Ô đánh dấu; <code>RadioButton</code> cũng dùng <code>Checked</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>ComboBox, ListBox</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>comboBox1.Items.Add(&quot;Công thức A&quot;);</code></td>
+<td>Thêm một mục</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>comboBox1.Items.AddRange(new object[] { &quot;A&quot;, &quot;B&quot;, &quot;C&quot; });</code></td>
+<td>Thêm nhiều mục</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>comboBox1.SelectedIndex = 0;</code></td>
+<td>Chọn mục đầu; <code>-1</code> là bỏ chọn. Danh sách đang rỗng thì ném lỗi</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>comboBox1.SelectedItem as string</code></td>
+<td>Mục đang chọn (<code>null</code> nếu chưa chọn); <code>comboBox1.Text</code> là chữ đang hiện</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;</code></td>
+<td>Chỉ cho chọn, không cho gõ chữ tuỳ ý</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>comboBox1.DataSource = new List&lt;string&gt; { &quot;X&quot;, &quot;Y&quot; };</code></td>
+<td>Gắn cả danh sách; dùng <code>DataSource</code> thì không dùng <code>Items.Add</code> nữa</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>listBox1.Items.Insert(0, &quot;Mới nhất ở trên&quot;);</code></td>
+<td>Thêm lên đầu; kèm <code>if (listBox1.Items.Count &gt; 500) listBox1.Items.RemoveAt(listBox1.Items.Count - 1);</code> để giới hạn số dòng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>DataGridView</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>dataGridView1.Columns.Add(&quot;ma&quot;, &quot;Mã&quot;);</code></td>
+<td>Thêm cột: (tên trong mã, chữ hiện trên đầu cột)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dataGridView1.Rows.Add(&quot;SN-42&quot;, &quot;Đạt&quot;)</code></td>
+<td>Thêm một hàng, trả về chỉ số hàng (<code>0</code> cho hàng đầu)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dataGridView1.Rows[0].Cells[&quot;ma&quot;].Value</code></td>
+<td>Đọc một ô theo số cột hoặc theo tên cột; kiểu <code>object</code>, cần ép hoặc <code>ToString()</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dataGridView1.Rows.Clear();</code></td>
+<td>Xoá hết hàng (khi không gắn <code>DataSource</code>). <code>Rows.Count</code> vẫn là <code>1</code>: hàng trống cuối bảng không bị xoá</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dataGridView1.AllowUserToAddRows = false;</code></td>
+<td><code>Rows.Count</code> từ <code>1</code> về <code>0</code> — mặc định bảng có một hàng trống cuối để người dùng gõ thêm, và hàng đó được tính vào <code>Rows.Count</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dataGridView1.FirstDisplayedScrollingRowIndex = dataGridView1.RowCount - 1;</code></td>
+<td>Cuộn xuống hàng cuối</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>dataGridView1.Rows[0].DefaultCellStyle.BackColor = Color.MistyRose;</code></td>
+<td>Tô màu cả hàng — đánh dấu hàng không đạt</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Hộp thoại chọn file, thư mục</h3>
+<p><strong>Chọn file, chọn thư mục — <code>SaveFileDialog</code> dùng giống <code>OpenFileDialog</code></strong></p>
+<pre><code class="language-csharp">using (var dlg = new OpenFileDialog())
+{
+    dlg.Filter = &quot;Công thức (*.json)|*.json|Tất cả (*.*)|*.*&quot;;
+    if (dlg.ShowDialog() == DialogResult.OK)
+    {
+        string duongDan = dlg.FileName;
+    }
+}
+using (var dlg = new FolderBrowserDialog())
+{
+    if (dlg.ShowDialog() == DialogResult.OK) { string thuMuc = dlg.SelectedPath; }
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Form, ứng dụng</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>new Form().Show();</code></td>
+<td>Mở form mới, không chờ; <code>ShowDialog()</code> thì chờ tới khi form đó đóng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>e.Cancel = true;</code></td>
+<td>Hỏi trước khi đóng; <code>e.Cancel = true</code> là huỷ việc đóng</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Application.StartupPath</code></td>
+<td>Thư mục chứa <code>.exe</code> (chỉ có ở WinForms)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>this.Close();</code></td>
+<td>Đóng form này; đóng form chính là thoát chương trình. <code>Application.Exit()</code> đóng mọi form</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Application.DoEvents();</code></td>
+<td>Cho giao diện vẽ lại giữa vòng lặp dài — tránh dùng (mục 8.1.5)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k15-wpf">K.15  WPF</h2>
+<p>Các đoạn dưới đặt trong một hàm của <code>Window</code> có sẵn <code>text1</code> (TextBlock), <code>textBox1</code>, <code>button1</code>, <code>list1</code> (ListBox), <code>comboBox1</code>. Cần <code>using System.Windows;</code>. <strong>Nhiều tên giống WinForms nhưng khác kiểu</strong> — xem bảng cuối mục.</p>
+<h3>Cập nhật giao diện từ luồng khác</h3>
+<p><strong><code>Dispatcher</code> thay cho <code>Invoke</code> của WinForms</strong></p>
+<pre><code class="language-csharp">if (Dispatcher.CheckAccess())
+    text1.Text = &quot;OK&quot;;
+else
+    Dispatcher.BeginInvoke(new Action(() =&gt; text1.Text = &quot;OK&quot;));
+
+Dispatcher.Invoke(() =&gt; text1.Text = &quot;OK&quot;);        // chờ làm xong
+Dispatcher.InvokeAsync(() =&gt; text1.Text = &quot;OK&quot;);   // không chờ, như BeginInvoke (FW 4.5+)
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Application.Current.Dispatcher.Invoke(() =&gt; { })</code></td>
+<td>Dùng khi ở lớp không phải <code>Window</code>. <strong><code>Application.Current</code> là <code>null</code></strong> nếu chương trình không phải ứng dụng WPF (cửa sổ WPF mở từ phần mềm WinForms, bộ kiểm thử…), và dòng này ném <code>NullReferenceException</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h3>Hộp thông báo, hộp thoại file</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>MessageBoxResult r = MessageBox.Show(&quot;Xoá công thức?&quot;, &quot;Xác nhận&quot;, MessageBoxButton.YesNo, MessageBoxImage.Warning); if (r == MessageBoxResult.Yes) { }</code></td>
+<td><code>MessageBoxButton</code> (không có <strong>s</strong>), <code>MessageBoxImage</code>, <code>MessageBoxResult</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<p><strong>Hộp thoại chọn file của WPF nằm ở <code>Microsoft.Win32</code></strong></p>
+<pre><code class="language-csharp">var dlg = new Microsoft.Win32.OpenFileDialog();
+dlg.Filter = &quot;CSV (*.csv)|*.csv&quot;;
+if (dlg.ShowDialog() == true)          // kiểu bool?, KHÔNG phải DialogResult.OK
+{
+    string duongDan = dlg.FileName;
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Danh sách hiển thị và báo thay đổi</h3>
+<p><strong><code>ObservableCollection</code> — chỉ sửa trên luồng giao diện</strong></p>
+<pre><code class="language-csharp">var canhBao = new ObservableCollection&lt;string&gt;();
+list1.ItemsSource = canhBao;       // thêm/xoá trong canhBao là danh sách tự cập nhật
+canhBao.Insert(0, &quot;Trục X quá giờ&quot;);
+if (canhBao.Count &gt; 200) canhBao.RemoveAt(canhBao.Count - 1);
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<p><strong>Thuộc tính tự báo cho giao diện khi đổi — viết theo C# 5 để dùng được ở mọi nơi</strong></p>
+<pre><code class="language-csharp">public class TrangThaiTruc : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    double _viTri;
+    public double ViTri
+    {
+        get { return _viTri; }
+        set { _viTri = value; BaoDoi(); }
+    }
+
+    void BaoDoi([CallerMemberName] string ten = null)
+    {
+        var h = PropertyChanged;
+        if (h != null) h(this, new PropertyChangedEventArgs(ten));
+    }
+}
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<h3>Màu, hiện/ẩn</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>text1.Foreground = Brushes.Red;</code></td>
+<td>Màu có tên — WPF dùng <code>Brush</code>, không dùng <code>Color</code> trực tiếp</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>new SolidColorBrush(Color.FromRgb(200, 30, 30))</code></td>
+<td><code>Color</code> ở đây là <code>System.Windows.Media.Color</code>, khác <code>System.Drawing.Color</code> của WinForms</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>button1.Visibility = Visibility.Collapsed;</code></td>
+<td><code>Collapsed</code> ẩn và không chiếm chỗ; <code>Hidden</code> ẩn nhưng vẫn chiếm chỗ</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>button1.IsEnabled = false;</code></td>
+<td>Làm mờ — WPF là <code>IsEnabled</code>, WinForms là <code>Enabled</code></td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<p><strong>Bảng K.1 — Cùng việc, tên khác nhau giữa WinForms và WPF</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Việc</th>
+<th>WinForms</th>
+<th>WPF</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sửa giao diện từ luồng khác</td>
+<td><code>control.Invoke(...)</code> / <code>BeginInvoke</code></td>
+<td><code>Dispatcher.Invoke(...)</code> / <code>BeginInvoke</code></td>
+</tr>
+<tr>
+<td>Nút của hộp thông báo</td>
+<td><code>MessageBoxButtons.YesNo</code></td>
+<td><code>MessageBoxButton.YesNo</code></td>
+</tr>
+<tr>
+<td>Biểu tượng hộp thông báo</td>
+<td><code>MessageBoxIcon.Warning</code></td>
+<td><code>MessageBoxImage.Warning</code></td>
+</tr>
+<tr>
+<td>Kết quả hộp thông báo</td>
+<td><code>DialogResult.Yes</code></td>
+<td><code>MessageBoxResult.Yes</code></td>
+</tr>
+<tr>
+<td>Hộp thoại chọn file trả về</td>
+<td><code>== DialogResult.OK</code></td>
+<td><code>== true</code></td>
+</tr>
+<tr>
+<td>Làm mờ control</td>
+<td><code>Enabled</code></td>
+<td><code>IsEnabled</code></td>
+</tr>
+<tr>
+<td>Ẩn control</td>
+<td><code>Visible = false</code></td>
+<td><code>Visibility = Visibility.Collapsed</code></td>
+</tr>
+<tr>
+<td>Màu</td>
+<td><code>System.Drawing.Color</code></td>
+<td><code>Brush</code> / <code>System.Windows.Media.Color</code></td>
+</tr>
+<tr>
+<td>Chữ của nhãn</td>
+<td><code>label1.Text</code></td>
+<td><code>textBlock.Text</code> (TextBlock), <code>label.Content</code> (Label)</td>
+</tr>
+<tr>
+<td>Bộ hẹn giờ trên luồng giao diện</td>
+<td><code>System.Windows.Forms.Timer</code>, <code>Interval</code> kiểu <code>int</code></td>
+<td><code>DispatcherTimer</code>, <code>Interval</code> kiểu <code>TimeSpan</code></td>
+</tr>
+</tbody></table></div>
+<h2 id="k16-h-thng-tin-trình">K.16  Hệ thống, tiến trình</h2>
+<p><code>Process</code> cần <code>using System.Diagnostics;</code>.</p>
+<h3>Chạy chương trình khác, thông tin máy</h3>
+<p><strong>Mở chương trình, kiểm chương trình khác đang chạy</strong></p>
+<pre><code class="language-csharp">Process.Start(&quot;notepad.exe&quot;, @&quot;D:\Log\may.log&quot;);          // mở file bằng Notepad
+Process.Start(&quot;explorer.exe&quot;, @&quot;D:\Data&quot;);                // mở thư mục
+bool dangChay = Process.GetProcessesByName(&quot;MeoFrame&quot;).Length &gt; 0;   // tên không có &quot;.exe&quot;
+</code></pre>
+<p><em>Chạy ở:</em> C# 5 ✓ · FW ✓ · .NET ✓</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Cách viết</th>
+<th>Kết quả / ghi chú</th>
+<th>C# 5</th>
+<th>FW</th>
+<th>.NET</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Environment.MachineName</code></td>
+<td>Tên máy tính — ghi kèm vào nhật ký, bản ghi sản phẩm</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Environment.UserName</code></td>
+<td>Tài khoản Windows đang đăng nhập</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td><code>Environment.Is64BitProcess</code></td>
+<td>Chương trình đang chạy 64 bit hay 32 bit — quan trọng khi nạp DLL của hãng (mục 2.2.3)</td>
+<td>✓</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+</tbody></table></div>
+<h2 id="k17-đc-li-biên-dch-khi-không-có-visual-studio">K.17  Đọc lỗi biên dịch khi không có Visual Studio</h2>
+<p>Biên dịch bằng dòng lệnh hoặc trong ô script, bạn chỉ có một dòng chữ tiếng Anh kèm mã lỗi <code>CSxxxx</code> và
+vị trí <code>(dòng, cột)</code>. Bảng dưới là những lỗi gặp nhiều nhất khi gõ tay. Cột thứ ba là <strong>nguyên văn</strong>
+thông báo của trình biên dịch .NET 9, lấy từ việc biên dịch chính đoạn mã ở cột thứ hai. Trình biên
+dịch cũ (C# 5) dùng cùng mã lỗi trong hầu hết trường hợp; chỗ nào khác, mã của nó ghi trong ngoặc.</p>
+<p><strong>Đọc lỗi theo thứ tự:</strong> chỉ sửa <strong>lỗi đầu tiên</strong>, biên dịch lại, rồi mới xem lỗi tiếp theo. Một dấu <code>;</code>
+hay <code>}</code> thiếu có thể sinh ra cả chục lỗi phía sau, và chúng tự hết khi lỗi đầu được sửa.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mã lỗi</th>
+<th>Bạn đã gõ</th>
+<th>Trình biên dịch nói (.NET / Visual Studio)</th>
+<th>Thường do</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CS1002</strong></td>
+<td><code>int x = 1 }</code></td>
+<td>; expected</td>
+<td>Thiếu dấu <code>;</code> cuối lệnh. Vị trí báo lỗi thường là <strong>cuối</strong> dòng thiếu dấu</td>
+</tr>
+<tr>
+<td><strong>CS0103</strong></td>
+<td><code>int x = soLan + 1;</code></td>
+<td>The name &#39;soLan&#39; does not exist in the current context</td>
+<td>Gõ sai tên biến, chưa khai báo, hoặc khai báo ở khối <code>{ }</code> khác</td>
+</tr>
+<tr>
+<td><strong>CS1061</strong></td>
+<td><code>s.Lenght</code></td>
+<td>&#39;string&#39; does not contain a definition for &#39;Lenght&#39; and no accessible extension method &#39;Lenght&#39; accepting a first argument of type &#39;string&#39; could be found (are you missing a using directive or an assembly reference?)</td>
+<td>Gõ sai tên thuộc tính/hàm (đúng: <code>Length</code>), hoặc <strong>thiếu <code>using System.Linq;</code></strong> khi gọi <code>Count()</code>, <code>Where()</code>…</td>
+</tr>
+<tr>
+<td><strong>CS0117</strong></td>
+<td><code>string.IsNullOrEmty(&quot;a&quot;)</code></td>
+<td>&#39;string&#39; does not contain a definition for &#39;IsNullOrEmty&#39;</td>
+<td>Gõ sai tên hàm tĩnh (đúng: <code>IsNullOrEmpty</code>), hoặc hàm chỉ có trên .NET mà đang biên dịch cho Framework (ví dụ <code>Math.Clamp</code>)</td>
+</tr>
+<tr>
+<td><strong>CS0246</strong></td>
+<td><code>new StringBuilder()</code></td>
+<td>The type or namespace name &#39;StringBuilder&#39; could not be found (are you missing a using directive or an assembly reference?)</td>
+<td>Thiếu <code>using</code> (ở đây là <code>using System.Text;</code>), hoặc thiếu tham chiếu tới DLL</td>
+</tr>
+<tr>
+<td><strong>CS0029</strong></td>
+<td><code>int n = &quot;42&quot;;</code></td>
+<td>Cannot implicitly convert type &#39;string&#39; to &#39;int&#39;</td>
+<td>Gán chuỗi cho biến số — dùng <code>int.Parse(&quot;42&quot;)</code></td>
+</tr>
+<tr>
+<td><strong>CS0266</strong></td>
+<td><code>int n = d;</code></td>
+<td>Cannot implicitly convert type &#39;double&#39; to &#39;int&#39;. An explicit conversion exists (are you missing a cast?)</td>
+<td>Gán số thực cho số nguyên — ép kiểu <code>(int)d</code> hoặc <code>Convert.ToInt32(d)</code> (K.2)</td>
+</tr>
+<tr>
+<td><strong>CS1503 (C# 5: CS1502)</strong></td>
+<td><code>int.Parse(42)</code></td>
+<td>Argument 1: cannot convert from &#39;int&#39; to &#39;System.ReadOnlySpan<byte>&#39;</td>
+<td>Truyền sai kiểu tham số — <code>Parse</code> nhận chuỗi. &quot;Argument 1&quot; là tham số thứ nhất. Kiểu lạ trong câu (<code>ReadOnlySpan&lt;byte&gt;</code>) chỉ là một phiên bản khác của hàm mà trình biên dịch đem ra so; đừng tìm nó trong mã của bạn</td>
+</tr>
+<tr>
+<td><strong>CS1501</strong></td>
+<td><code>Substring(1, 2, 3)</code></td>
+<td>No overload for method &#39;Substring&#39; takes 3 arguments</td>
+<td>Sai số lượng tham số</td>
+</tr>
+<tr>
+<td><strong>CS0165</strong></td>
+<td><code>int n; Console.WriteLine(n);</code></td>
+<td>Use of unassigned local variable &#39;n&#39;</td>
+<td>Dùng biến chưa gán giá trị</td>
+</tr>
+<tr>
+<td><strong>CS0161</strong></td>
+<td><code>if (b) return 1;</code></td>
+<td>&#39;L10.A(bool)&#39;: not all code paths return a value</td>
+<td>Hàm có kiểu trả về nhưng có nhánh không <code>return</code></td>
+</tr>
+<tr>
+<td><strong>CS0120</strong></td>
+<td><code>static void A() { _dem++; }</code></td>
+<td>An object reference is required for the non-static field, method, or property &#39;L11._dem&#39;</td>
+<td>Hàm <code>static</code> dùng biến không <code>static</code> của lớp</td>
+</tr>
+<tr>
+<td><strong>CS0019</strong></td>
+<td><code>int n = s - 1;</code></td>
+<td>Operator &#39;-&#39; cannot be applied to operands of type &#39;string&#39; and &#39;int&#39;</td>
+<td>Toán tử không dùng được cho kiểu này — chuỗi không trừ được, phải đổi sang số trước</td>
+</tr>
+<tr>
+<td><strong>CS0128</strong></td>
+<td><code>int x = 1; int x = 2;</code></td>
+<td>A local variable or function named &#39;x&#39; is already defined in this scope</td>
+<td>Khai báo trùng tên biến trong cùng khối</td>
+</tr>
+<tr>
+<td><strong>CS1061</strong></td>
+<td><code>5.Tostring()</code></td>
+<td>&#39;int&#39; does not contain a definition for &#39;Tostring&#39; and no accessible extension method &#39;Tostring&#39; accepting a first argument of type &#39;int&#39; could be found (are you missing a using directive or an assembly reference?)</td>
+<td>Sai chữ hoa chữ thường (đúng: <code>ToString</code>) — C# coi <code>Tostring</code> là một tên khác hẳn</td>
+</tr>
+<tr>
+<td><strong>CS1526</strong></td>
+<td><code>new List&lt;int&gt;;</code></td>
+<td>A new expression requires an argument list or (), [], or {} after type</td>
+<td>Thiếu <code>()</code> sau tên kiểu khi tạo đối tượng — đúng: <code>new List&lt;int&gt;()</code></td>
+</tr>
+<tr>
+<td><strong>CS1955</strong></td>
+<td><code>&quot;ab&quot;.Length()</code></td>
+<td>Non-invocable member &#39;string.Length&#39; cannot be used like a method.</td>
+<td>Gọi thuộc tính như hàm — bỏ dấu <code>()</code></td>
+</tr>
+<tr>
+<td><strong>CS0428</strong></td>
+<td><code>&quot;ab&quot;.ToUpper</code></td>
+<td>Cannot convert method group &#39;ToUpper&#39; to non-delegate type &#39;string&#39;. Did you intend to invoke the method?</td>
+<td>Gọi hàm mà quên dấu <code>()</code></td>
+</tr>
+<tr>
+<td><strong>CS1009</strong></td>
+<td><code>&quot;C:\Temp\log.txt&quot;</code></td>
+<td>Unrecognized escape sequence</td>
+<td>Dấu <code>\</code> trong chuỗi bị hiểu là ký tự thoát — viết <code>@&quot;C:\Temp\log.txt&quot;</code> hoặc <code>\\</code></td>
+</tr>
+<tr>
+<td><strong>CS0029</strong></td>
+<td><code>if (x = 5)</code></td>
+<td>Cannot implicitly convert type &#39;int&#39; to &#39;bool&#39;</td>
+<td>Dùng <code>=</code> (gán) thay vì <code>==</code> (so sánh) trong điều kiện</td>
+</tr>
+<tr>
+<td><strong>CS0103</strong></td>
+<td><code>Sqrt(4)</code></td>
+<td>The name &#39;Sqrt&#39; does not exist in the current context</td>
+<td>Quên tên lớp phía trước hàm tĩnh — đúng: <code>Math.Sqrt(4)</code></td>
+</tr>
+<tr>
+<td><strong>CS1061</strong></td>
+<td><code>a.Count</code></td>
+<td>&#39;int[]&#39; does not contain a definition for &#39;Count&#39; and no accessible extension method &#39;Count&#39; accepting a first argument of type &#39;int[]&#39; could be found (are you missing a using directive or an assembly reference?)</td>
+<td>Mảng dùng <code>Length</code>, không có <code>Count</code> (trừ khi có <code>using System.Linq;</code> và viết <code>Count()</code>)</td>
+</tr>
+<tr>
+<td><strong>CS1056 <em>(chỉ C# 5)</em></strong></td>
+<td><code>$&quot;n = {n}&quot;</code></td>
+<td>Unexpected character &#39;$&#39;</td>
+<td>Nội suy chuỗi là C# 6 — <strong>chỉ trình biên dịch cũ báo lỗi</strong>; .NET không báo gì. Viết <code>string.Format(...)</code></td>
+</tr>
+<tr>
+<td><strong>CS1525 <em>(chỉ C# 5)</em></strong></td>
+<td><code>s?.Length</code></td>
+<td>Invalid expression term &#39;.&#39;</td>
+<td>Toán tử <code>?.</code> là C# 6 — chỉ trình biên dịch cũ báo lỗi. Viết <code>if (s != null)</code></td>
+</tr>
+<tr>
+<td><strong>CS1525 <em>(chỉ C# 5)</em></strong></td>
+<td><code>out int n</code></td>
+<td>Invalid expression term &#39;int&#39;</td>
+<td>Khai báo trong <code>out</code> là C# 7 — chỉ trình biên dịch cũ báo lỗi. Khai báo <code>int n;</code> ở dòng trước</td>
+</tr>
+<tr>
+<td><strong>CS1002 <em>(chỉ C# 5)</em></strong></td>
+<td><code>static int Hai() =&gt; 2;</code></td>
+<td>; expected</td>
+<td>Hàm viết bằng <code>=&gt;</code> là C# 6 — chỉ trình biên dịch cũ báo lỗi. Viết <code>{ return 2; }</code></td>
+</tr>
+</tbody></table></div>
+<blockquote>
+<p>💡 <strong>Bốn lỗi cuối không báo trên Visual Studio đời mới, chỉ báo khi gõ vào ô script đời cũ.</strong> Đó chính
+là lý do nhiều đoạn mã chạy tốt trên máy văn phòng lại làm script ngoài máy ngừng chạy. Trước khi dán
+mã sang script, tìm trong đoạn mã các dấu hiệu <code>$&quot;</code>, <code>?.</code>, <code>out var</code>/<code>out int</code>, <code>=&gt;</code> sau tên hàm, và
+thay bằng cách viết ở cột C# 5 của các mục trên.</p>
+</blockquote>
+<h2 id="k18-nhng-ch-gõ-sai-hay-gp">K.18  Những chỗ gõ sai hay gặp</h2>
+<p><strong>Bảng K.2 — Gõ sai thường gặp và cách đúng</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Gõ sai</th>
+<th>Đúng</th>
+<th>Ghi chú</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>s.Tostring()</code>, <code>s.tostring()</code></td>
+<td><code>s.ToString()</code></td>
+<td>Phân biệt hoa thường — CS1061</td>
+</tr>
+<tr>
+<td><code>s.Lenght</code>, <code>ds.Lenght</code></td>
+<td><code>s.Length</code> (chuỗi, mảng), <code>ds.Count</code> (List)</td>
+<td>K.4</td>
+</tr>
+<tr>
+<td><code>s.Length()</code></td>
+<td><code>s.Length</code></td>
+<td>Thuộc tính không có <code>()</code> — CS1955</td>
+</tr>
+<tr>
+<td><code>s.Trim</code></td>
+<td><code>s.Trim()</code></td>
+<td>Hàm phải có <code>()</code> — CS0428</td>
+</tr>
+<tr>
+<td><code>s.Trim();</code> rồi dùng <code>s</code></td>
+<td><code>s = s.Trim();</code></td>
+<td>Chuỗi không đổi tại chỗ (K.1)</td>
+</tr>
+<tr>
+<td><code>s.Substring(3, 7)</code> để lấy từ 3 tới 7</td>
+<td><code>s.Substring(3, 4)</code></td>
+<td>Tham số thứ hai là <strong>số ký tự</strong></td>
+</tr>
+<tr>
+<td><code>if (x = 5)</code></td>
+<td><code>if (x == 5)</code></td>
+<td>CS0029</td>
+</tr>
+<tr>
+<td><code>&quot;yyyy-mm-dd&quot;</code></td>
+<td><code>&quot;yyyy-MM-dd&quot;</code></td>
+<td><code>mm</code> là phút (K.3)</td>
+</tr>
+<tr>
+<td><code>&quot;hh:mm:ss&quot;</code> cho nhật ký</td>
+<td><code>&quot;HH:mm:ss&quot;</code></td>
+<td><code>hh</code> là giờ 12 — ca đêm trùng giờ ca ngày</td>
+</tr>
+<tr>
+<td><code>double.Parse(&quot;12.5&quot;)</code></td>
+<td><code>double.Parse(&quot;12.5&quot;, CultureInfo.InvariantCulture)</code></td>
+<td>Máy vùng miền Việt Nam đọc ra 125 (K.2)</td>
+</tr>
+<tr>
+<td><code>&quot;C:\Temp\a.txt&quot;</code></td>
+<td><code>@&quot;C:\Temp\a.txt&quot;</code></td>
+<td>CS1009 (K.17)</td>
+</tr>
+<tr>
+<td><code>if (a == 0.3)</code> với số thực</td>
+<td><code>if (Math.Abs(a - 0.3) &lt; 1e-9)</code></td>
+<td>K.2</td>
+</tr>
+<tr>
+<td><code>7 / 2</code> muốn ra 3.5</td>
+<td><code>7 / 2.0</code></td>
+<td>Chia hai số nguyên bỏ phần dư</td>
+</tr>
+<tr>
+<td><code>(int)12.9</code> muốn làm tròn</td>
+<td><code>(int)Math.Round(12.9)</code></td>
+<td>Ép kiểu là cắt, không làm tròn</td>
+</tr>
+<tr>
+<td><code>Math.Round(2.5)</code> muốn ra 3</td>
+<td><code>Math.Round(2.5, MidpointRounding.AwayFromZero)</code></td>
+<td>Mặc định làm tròn về số chẵn</td>
+</tr>
+<tr>
+<td><code>MessageBoxButtons</code> trong WPF</td>
+<td><code>MessageBoxButton</code></td>
+<td>Bảng K.1</td>
+</tr>
+<tr>
+<td><code>dlg.ShowDialog() == DialogResult.OK</code> trong WPF</td>
+<td><code>dlg.ShowDialog() == true</code></td>
+<td>Bảng K.1</td>
+</tr>
+<tr>
+<td><code>Invoke(() =&gt; ...)</code> trên control WinForms, dự án .NET Framework</td>
+<td><code>Invoke(new Action(() =&gt; ...))</code></td>
+<td>CS1660 — Framework cần một kiểu delegate cụ thể; .NET 6 trở lên mới nhận lambda trực tiếp (K.14)</td>
+</tr>
+<tr>
+<td><code>List&lt;int&gt; a = new List&lt;int&gt;;</code></td>
+<td><code>new List&lt;int&gt;()</code></td>
+<td>Thiếu <code>()</code> sau tên kiểu — CS1526</td>
+</tr>
+<tr>
+<td><code>foreach (var x in ds) ds.Remove(x);</code></td>
+<td><code>ds.RemoveAll(x =&gt; ...)</code></td>
+<td>Ném lỗi lúc chạy (K.4)</td>
+</tr>
+<tr>
+<td><code>$&quot;...&quot;</code>, <code>?.</code>, <code>out var</code> trong script cũ</td>
+<td><code>string.Format</code>, <code>if (x != null)</code>, khai báo trước</td>
+<td>Script bị bỏ qua im lặng (K.0)</td>
+</tr>
+</tbody></table></div>
+<h2 id="k19-ch-mc-theo-tên">K.19  Chỉ mục theo tên</h2>
+<p>Nhớ tên hàm mà quên cú pháp: tìm tên ở đây, rồi mở mục tương ứng.</p>
+<p><strong>Ký hiệu</strong></p>
+<ul>
+<li><code>&amp; | ^ ~ (phép bit)</code> — K.12</li>
+<li><code>&lt;&lt; &gt;&gt; (dịch bit)</code> — K.12</li>
+<li><code>@&quot;...&quot;</code> — K.1</li>
+</ul>
+<p><strong>A</strong></p>
+<ul>
+<li><code>AcceptTcpClient</code> — K.11</li>
+<li><code>Add</code> — K.4</li>
+<li><code>AddDays</code> — K.3</li>
+<li><code>AddHours</code> — K.3</li>
+<li><code>AddMinutes</code> — K.3</li>
+<li><code>AddRange</code> — K.4</li>
+<li><code>AddSeconds</code> — K.3</li>
+<li><code>All</code> — K.5</li>
+<li><code>AllowUserToAddRows</code> — K.14</li>
+<li><code>Any</code> — K.5</li>
+<li><code>AppDomain.CurrentDomain.BaseDirectory</code> — K.6</li>
+<li><code>Append</code> — K.1</li>
+<li><code>AppendFormat</code> — K.1</li>
+<li><code>AppendLine</code> — K.1</li>
+<li><code>AppendText</code> — K.14</li>
+<li><code>Application.Current.Dispatcher</code> — K.15</li>
+<li><code>Application.DoEvents</code> — K.14</li>
+<li><code>Application.Exit</code> — K.14</li>
+<li><code>Application.StartupPath</code> — K.14</li>
+<li><code>Array.Copy</code> — K.4</li>
+<li><code>Array.IndexOf</code> — K.4</li>
+<li><code>Array.Resize</code> — K.4</li>
+<li><code>Array.Reverse</code> — K.12</li>
+<li><code>Array.Sort</code> — K.4</li>
+<li><code>Attribute</code> — K.7</li>
+<li><code>AutoResetEvent</code> — K.8</li>
+<li><code>Average</code> — K.5</li>
+</ul>
+<p><strong>B</strong></p>
+<ul>
+<li><code>BackColor</code> — K.14</li>
+<li><code>BeginInvoke</code> — K.14</li>
+<li><code>BitConverter.GetBytes</code> — K.12</li>
+<li><code>BitConverter.IsLittleEndian</code> — K.12</li>
+<li><code>BitConverter.ToInt16</code> — K.12</li>
+<li><code>BitConverter.ToSingle</code> — K.12</li>
+<li><code>BitConverter.ToString</code> — K.12</li>
+<li><code>Brushes</code> — K.15</li>
+<li><code>BytesToRead</code> — K.10</li>
+</ul>
+<p><strong>C</strong></p>
+<ul>
+<li><code>CallerMemberName</code> — K.15</li>
+<li><code>Cancel</code> — K.8</li>
+<li><code>CancelAfter</code> — K.8</li>
+<li><code>CancellationTokenSource</code> — K.8</li>
+<li><code>catch</code> — K.13</li>
+<li><code>Cells</code> — K.14</li>
+<li><code>char.IsDigit</code> — K.1</li>
+<li><code>char.IsLetter</code> — K.1</li>
+<li><code>Clear</code> — K.4, K.14</li>
+<li><code>Click</code> — K.14</li>
+<li><code>Close</code> — K.10, K.14</li>
+<li><code>Color.FromArgb</code> — K.14</li>
+<li><code>Columns.Add</code> — K.14</li>
+<li><code>ConcurrentQueue</code> — K.4</li>
+<li><code>Connect</code> — K.11</li>
+<li><code>ConnectAsync</code> — K.11</li>
+<li><code>Contains</code> — K.1, K.4</li>
+<li><code>ContainsKey</code> — K.4</li>
+<li><code>Convert.ToBoolean</code> — K.2</li>
+<li><code>Convert.ToByte</code> — K.12</li>
+<li><code>Convert.ToDouble</code> — K.2</li>
+<li><code>Convert.ToHexString</code> — K.12</li>
+<li><code>Convert.ToInt32</code> — K.2</li>
+<li><code>Convert.ToString</code> — K.2</li>
+<li><code>Count</code> — K.4, K.5</li>
+<li><code>CSV</code> — K.7</li>
+<li><code>CultureInfo.InvariantCulture</code> — K.2</li>
+</ul>
+<p><strong>D</strong></p>
+<ul>
+<li><code>DataReceived</code> — K.10</li>
+<li><code>DataSource</code> — K.14</li>
+<li><code>DateTime.Now</code> — K.3</li>
+<li><code>DateTime.ParseExact</code> — K.3</li>
+<li><code>DateTime.Today</code> — K.3</li>
+<li><code>DateTime.TryParseExact</code> — K.3</li>
+<li><code>DateTime.UtcNow</code> — K.3</li>
+<li><code>DayOfWeek</code> — K.3</li>
+<li><code>Debug.WriteLine</code> — K.13</li>
+<li><code>DefaultCellStyle</code> — K.14</li>
+<li><code>Dequeue</code> — K.4</li>
+<li><code>DialogResult</code> — K.14</li>
+<li><code>Dictionary</code> — K.4</li>
+<li><code>Directory.CreateDirectory</code> — K.6</li>
+<li><code>Directory.Delete</code> — K.6</li>
+<li><code>Directory.Exists</code> — K.6</li>
+<li><code>Directory.GetDirectories</code> — K.6</li>
+<li><code>Directory.GetFiles</code> — K.6</li>
+<li><code>Dispatcher.BeginInvoke</code> — K.15</li>
+<li><code>Dispatcher.CheckAccess</code> — K.15</li>
+<li><code>Dispatcher.Invoke</code> — K.15</li>
+<li><code>Dispatcher.InvokeAsync</code> — K.15</li>
+<li><code>DispatcherTimer</code> — K.9</li>
+<li><code>Distinct</code> — K.5</li>
+<li><code>DllImport</code> — K.7</li>
+<li><code>double.IsNaN</code> — K.2</li>
+<li><code>double.Parse</code> — K.2</li>
+<li><code>DropDownStyle</code> — K.14</li>
+</ul>
+<p><strong>E</strong></p>
+<ul>
+<li><code>Elapsed</code> — K.9</li>
+<li><code>ElapsedMilliseconds</code> — K.3</li>
+<li><code>Element</code> — K.7</li>
+<li><code>Enabled</code> — K.14</li>
+<li><code>Encoding.ASCII.GetBytes</code> — K.12</li>
+<li><code>Encoding.ASCII.GetString</code> — K.12</li>
+<li><code>Encoding.UTF8.GetBytes</code> — K.12</li>
+<li><code>EndsWith</code> — K.1</li>
+<li><code>Enqueue</code> — K.4</li>
+<li><code>Enum.IsDefined</code> — K.2</li>
+<li><code>Enum.Parse</code> — K.2</li>
+<li><code>Enum.TryParse</code> — K.2</li>
+<li><code>Environment.GetFolderPath</code> — K.6</li>
+<li><code>Environment.Is64BitProcess</code> — K.16</li>
+<li><code>Environment.MachineName</code> — K.16</li>
+<li><code>Environment.NewLine</code> — K.1</li>
+<li><code>Environment.TickCount</code> — K.3</li>
+<li><code>Environment.UserName</code> — K.16</li>
+<li><code>Exists</code> — K.4</li>
+</ul>
+<p><strong>F</strong></p>
+<ul>
+<li><code>File.AppendAllText</code> — K.6</li>
+<li><code>File.Copy</code> — K.6</li>
+<li><code>File.Delete</code> — K.6</li>
+<li><code>File.Exists</code> — K.6</li>
+<li><code>File.GetLastWriteTime</code> — K.6</li>
+<li><code>File.Move</code> — K.6</li>
+<li><code>File.ReadAllBytes</code> — K.6</li>
+<li><code>File.ReadAllLines</code> — K.6</li>
+<li><code>File.ReadAllText</code> — K.6</li>
+<li><code>File.WriteAllLines</code> — K.6</li>
+<li><code>File.WriteAllText</code> — K.6</li>
+<li><code>FileInfo</code> — K.6</li>
+<li><code>FileName</code> — K.14</li>
+<li><code>Filter</code> — K.14</li>
+<li><code>finally</code> — K.13</li>
+<li><code>Find</code> — K.4</li>
+<li><code>FindAll</code> — K.4</li>
+<li><code>First</code> — K.5</li>
+<li><code>FirstDisplayedScrollingRowIndex</code> — K.14</li>
+<li><code>FirstOrDefault</code> — K.5</li>
+<li><code>FolderBrowserDialog</code> — K.14</li>
+<li><code>FormClosing</code> — K.14</li>
+</ul>
+<p><strong>G</strong></p>
+<ul>
+<li><code>GetPortNames</code> — K.10</li>
+<li><code>GetPrivateProfileString</code> — K.7</li>
+<li><code>GetStream</code> — K.11</li>
+<li><code>GetValueOrDefault</code> — K.4</li>
+<li><code>GroupBy</code> — K.5</li>
+</ul>
+<p><strong>H</strong></p>
+<ul>
+<li><code>HashSet</code> — K.4</li>
+</ul>
+<p><strong>I</strong></p>
+<ul>
+<li><code>IndexOf</code> — K.1</li>
+<li><code>INotifyPropertyChanged</code> — K.15</li>
+<li><code>Insert</code> — K.4</li>
+<li><code>int.MaxValue</code> — K.2</li>
+<li><code>int.Parse</code> — K.2</li>
+<li><code>Interlocked.Increment</code> — K.8</li>
+<li><code>Interval</code> — K.9</li>
+<li><code>InvalidOperationException</code> — K.13</li>
+<li><code>Invoke</code> — K.14</li>
+<li><code>InvokeRequired</code> — K.14</li>
+<li><code>IPAddress.Any</code> — K.11</li>
+<li><code>IPStatus</code> — K.11</li>
+<li><code>IsBackground</code> — K.8</li>
+<li><code>IsCancellationRequested</code> — K.8</li>
+<li><code>IsNullOrEmpty</code> — K.1</li>
+<li><code>IsNullOrWhiteSpace</code> — K.1</li>
+<li><code>Items.Add</code> — K.14</li>
+<li><code>Items.AddRange</code> — K.14</li>
+<li><code>Items.Insert</code> — K.14</li>
+<li><code>ItemsSource</code> — K.15</li>
+</ul>
+<p><strong>J</strong></p>
+<ul>
+<li><code>JsonConvert.DeserializeObject</code> — K.7</li>
+<li><code>JsonConvert.SerializeObject</code> — K.7</li>
+<li><code>JsonSerializer.Deserialize</code> — K.7</li>
+<li><code>JsonSerializer.Serialize</code> — K.7</li>
+</ul>
+<p><strong>K</strong></p>
+<ul>
+<li><code>Keys</code> — K.4</li>
+<li><code>KeyValuePair</code> — K.4</li>
+</ul>
+<p><strong>L</strong></p>
+<ul>
+<li><code>Last</code> — K.5</li>
+<li><code>LastIndexOf</code> — K.1</li>
+<li><code>Length</code> — K.1, K.4</li>
+<li><code>List</code> — K.4</li>
+<li><code>Load</code> — K.7</li>
+<li><code>lock</code> — K.8</li>
+</ul>
+<p><strong>M</strong></p>
+<ul>
+<li><code>ManualResetEvent</code> — K.8</li>
+<li><code>Math.Abs</code> — K.2</li>
+<li><code>Math.Atan2</code> — K.2</li>
+<li><code>Math.Ceiling</code> — K.2</li>
+<li><code>Math.Clamp</code> — K.2</li>
+<li><code>Math.Floor</code> — K.2</li>
+<li><code>Math.Max</code> — K.2</li>
+<li><code>Math.Min</code> — K.2</li>
+<li><code>Math.PI</code> — K.2</li>
+<li><code>Math.Pow</code> — K.2</li>
+<li><code>Math.Round</code> — K.2</li>
+<li><code>Math.Sin</code> — K.2</li>
+<li><code>Math.Sqrt</code> — K.2</li>
+<li><code>Math.Truncate</code> — K.2</li>
+<li><code>Max</code> — K.5</li>
+<li><code>MaxBy</code> — K.5</li>
+<li><code>Message</code> — K.13</li>
+<li><code>MessageBox.Show</code> — K.14</li>
+<li><code>MessageBoxButton</code> — K.15</li>
+<li><code>MessageBoxButtons</code> — K.14</li>
+<li><code>MessageBoxIcon</code> — K.14</li>
+<li><code>MessageBoxImage</code> — K.15</li>
+<li><code>MessageBoxResult</code> — K.15</li>
+<li><code>MethodInvoker</code> — K.14</li>
+<li><code>Microsoft.Win32.OpenFileDialog</code> — K.15</li>
+<li><code>MidpointRounding</code> — K.2</li>
+<li><code>Min</code> — K.5</li>
+<li><code>Monitor.TryEnter</code> — K.8</li>
+</ul>
+<p><strong>N</strong></p>
+<ul>
+<li><code>NetworkStream</code> — K.11</li>
+<li><code>NewLine</code> — K.10</li>
+<li><code>Next</code> — K.2</li>
+<li><code>NextDouble</code> — K.2</li>
+<li><code>NumberStyles</code> — K.2</li>
+</ul>
+<p><strong>O</strong></p>
+<ul>
+<li><code>ObservableCollection</code> — K.15</li>
+<li><code>Open</code> — K.10</li>
+<li><code>OpenFileDialog</code> — K.14</li>
+<li><code>OrderBy</code> — K.5</li>
+<li><code>OrderByDescending</code> — K.5</li>
+</ul>
+<p><strong>P</strong></p>
+<ul>
+<li><code>PadLeft</code> — K.1</li>
+<li><code>PadRight</code> — K.1</li>
+<li><code>Path.ChangeExtension</code> — K.6</li>
+<li><code>Path.Combine</code> — K.6</li>
+<li><code>Path.GetDirectoryName</code> — K.6</li>
+<li><code>Path.GetExtension</code> — K.6</li>
+<li><code>Path.GetFileName</code> — K.6</li>
+<li><code>Path.GetFileNameWithoutExtension</code> — K.6</li>
+<li><code>Path.GetTempPath</code> — K.6</li>
+<li><code>Peek</code> — K.4</li>
+<li><code>Ping</code> — K.11</li>
+<li><code>Process.GetProcessesByName</code> — K.16</li>
+<li><code>Process.Start</code> — K.16</li>
+<li><code>PropertyChanged</code> — K.15</li>
+</ul>
+<p><strong>Q</strong></p>
+<ul>
+<li><code>Queue</code> — K.4</li>
+</ul>
+<p><strong>R</strong></p>
+<ul>
+<li><code>Random</code> — K.2</li>
+<li><code>Read</code> — K.11</li>
+<li><code>ReadExisting</code> — K.10</li>
+<li><code>ReadLine</code> — K.6, K.10</li>
+<li><code>ReadTimeout</code> — K.10</li>
+<li><code>ReceiveTimeout</code> — K.11</li>
+<li><code>Remove</code> — K.4</li>
+<li><code>RemoveAll</code> — K.4</li>
+<li><code>RemoveAt</code> — K.4</li>
+<li><code>Replace</code> — K.1</li>
+<li><code>Restart</code> — K.3</li>
+<li><code>Rows.Add</code> — K.14</li>
+<li><code>Rows.Clear</code> — K.14</li>
+</ul>
+<p><strong>S</strong></p>
+<ul>
+<li><code>Save</code> — K.7</li>
+<li><code>SaveFileDialog</code> — K.14</li>
+<li><code>SearchOption</code> — K.6</li>
+<li><code>Select</code> — K.5</li>
+<li><code>SelectedIndex</code> — K.14</li>
+<li><code>SelectedItem</code> — K.14</li>
+<li><code>SelectedPath</code> — K.14</li>
+<li><code>SerialPort</code> — K.10</li>
+<li><code>Show</code> — K.14</li>
+<li><code>ShowDialog</code> — K.14</li>
+<li><code>Skip</code> — K.5</li>
+<li><code>SolidColorBrush</code> — K.15</li>
+<li><code>SpecialFolder</code> — K.6</li>
+<li><code>Split</code> — K.1</li>
+<li><code>Stack</code> — K.4</li>
+<li><code>StartNew</code> — K.3</li>
+<li><code>StartsWith</code> — K.1</li>
+<li><code>Stopwatch</code> — K.3</li>
+<li><code>StreamReader</code> — K.6</li>
+<li><code>StreamWriter</code> — K.6</li>
+<li><code>string.Compare</code> — K.1</li>
+<li><code>string.Concat</code> — K.1</li>
+<li><code>string.Equals</code> — K.1</li>
+<li><code>string.Format</code> — K.1</li>
+<li><code>string.Join</code> — K.1</li>
+<li><code>StringBuilder</code> — K.1</li>
+<li><code>StringSplitOptions</code> — K.1</li>
+<li><code>Substring</code> — K.1</li>
+<li><code>Sum</code> — K.5</li>
+<li><code>System.Threading.Timer</code> — K.9</li>
+<li><code>System.Timers.Timer</code> — K.9</li>
+<li><code>System.Windows.Forms.Timer</code> — K.9</li>
+</ul>
+<p><strong>T</strong></p>
+<ul>
+<li><code>Take</code> — K.5</li>
+<li><code>Task.Delay</code> — K.8</li>
+<li><code>Task.Run</code> — K.8</li>
+<li><code>Task.WhenAll</code> — K.8</li>
+<li><code>Task.WhenAny</code> — K.8</li>
+<li><code>TcpClient</code> — K.11</li>
+<li><code>TcpListener</code> — K.11</li>
+<li><code>ThenBy</code> — K.5</li>
+<li><code>Thread</code> — K.8</li>
+<li><code>Thread.Sleep</code> — K.8</li>
+<li><code>throw</code> — K.13</li>
+<li><code>ThrowIfCancellationRequested</code> — K.8</li>
+<li><code>Tick</code> — K.9</li>
+<li><code>TimeoutException</code> — K.13</li>
+<li><code>TimeSpan</code> — K.3</li>
+<li><code>TimeSpan.FromSeconds</code> — K.3</li>
+<li><code>ToArray</code> — K.4, K.5</li>
+<li><code>ToCharArray</code> — K.1</li>
+<li><code>ToDictionary</code> — K.5</li>
+<li><code>ToLower</code> — K.1</li>
+<li><code>ToString</code> — K.1</li>
+<li><code>ToString(&quot;0.000&quot;)</code> — K.2</li>
+<li><code>ToString(&quot;F2&quot;)</code> — K.2</li>
+<li><code>ToString(&quot;N2&quot;)</code> — K.2</li>
+<li><code>ToString(&quot;X4&quot;)</code> — K.2</li>
+<li><code>ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;)</code> — K.3</li>
+<li><code>TotalMilliseconds</code> — K.3</li>
+<li><code>TotalSeconds</code> — K.3</li>
+<li><code>ToUpper</code> — K.1</li>
+<li><code>ToUpperInvariant</code> — K.1</li>
+<li><code>Trace.WriteLine</code> — K.13</li>
+<li><code>Trim</code> — K.1</li>
+<li><code>TrimEnd</code> — K.1</li>
+<li><code>TrimStart</code> — K.1</li>
+<li><code>try</code> — K.13</li>
+<li><code>TryAdd</code> — K.4</li>
+<li><code>TryDequeue</code> — K.4</li>
+<li><code>TryGetValue</code> — K.4</li>
+<li><code>TryParse</code> — K.2</li>
+</ul>
+<p><strong>U</strong></p>
+<ul>
+<li><code>using</code> — K.6</li>
+</ul>
+<p><strong>V</strong></p>
+<ul>
+<li><code>Values</code> — K.4</li>
+<li><code>Visibility</code> — K.15</li>
+<li><code>Visible</code> — K.14</li>
+<li><code>volatile</code> — K.8</li>
+</ul>
+<p><strong>W</strong></p>
+<ul>
+<li><code>WaitOne</code> — K.8</li>
+<li><code>Where</code> — K.5</li>
+<li><code>Write</code> — K.10, K.11</li>
+<li><code>WriteLine</code> — K.6, K.10</li>
+<li><code>WritePrivateProfileString</code> — K.7</li>
+</ul>
+<p><strong>X</strong></p>
+<ul>
+<li><code>XDocument</code> — K.7</li>
+<li><code>XElement</code> — K.7</li>
+</ul>
 </div>
 </div>
 

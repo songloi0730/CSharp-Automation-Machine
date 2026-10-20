@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Dự án kiểm cho Phụ lục K. Mau/ là các đoạn mã của phụ lục (tự sinh); xem README.md để dựng ở 3 mức. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoWarn>CS0168;CS0219;CS0414;CS0649;CS0169;CS1998;CS0162;CS0618;CS0105</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Muc)'=='fw'">
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Muc)'!='fw'">
+    <TargetFramework>net9.0-windows</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Chung.cs;Program.cs;Mau/*.cs" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Muc)'!='fw'">
+    <PackageReference Include="System.IO.Ports" Version="9.0.0" />
+  </ItemGroup>
+  <Import Project="LoaiTru.$(Muc).props" Condition="Exists('LoaiTru.$(Muc).props')" />
+</Project>

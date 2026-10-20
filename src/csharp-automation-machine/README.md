@@ -1,7 +1,7 @@
 # Mã ví dụ — sách *C# cho Automation Machine*
 
-Sáu project .NET 9, tất cả **chạy được ngay không cần phần cứng**. Mỗi project tương ứng với một
-phần cụ thể trong sách.
+Bảy project .NET 9 (`TraCuuHam` dựng được cả cho .NET Framework 4.8), tất cả **chạy được ngay không
+cần phần cứng**. Mỗi project tương ứng với một phần cụ thể trong sách.
 
 | Project | Dùng cho | Chạy |
 |---|---|---|
@@ -9,8 +9,9 @@ phần cụ thể trong sách.
 | [`MeoFrameMiniSync/`](MeoFrameMiniSync/) | Mục 7.6 — cùng cỗ máy, viết theo lối **chặn luồng** | `dotnet run` |
 | [`MeoFrameMiniDirect/`](MeoFrameMiniDirect/) | Mục 7.7 — **bỏ cả interface**, và cái giá phải trả | `dotnet run` |
 | [`MeoFrameMiniMixed/`](MeoFrameMiniMixed/) | Mục 7.7.4 — bản pha trộn được khuyến nghị | `dotnet run` |
-| [`MeoBench/`](MeoBench/) | **Phụ lục G** — lời giải mẫu **đủ 40/40** bài thực hành | xem bên dưới |
+| [`MeoBench/`](MeoBench/) | **Phụ lục G** — lời giải mẫu **đủ 40/40** bài thực hành; kèm phép kiểm của Phụ lục H, I, J | xem bên dưới |
 | [`RandomProbe/`](RandomProbe/) | Mục 13.2.5c — đo hành vi thật của `Random` trên .NET 9 | `dotnet run` |
+| [`TraCuuHam/`](TraCuuHam/) | **Phụ lục K** — mọi đoạn mã tra cứu hàm, dựng ở ba mức: C# 5, .NET Framework 4.8, .NET 9 | xem [`TraCuuHam/README.md`](TraCuuHam/README.md) |
 
 ## Bốn biến thể MeoFrameMini
 
@@ -26,13 +27,15 @@ cd MeoFrameMiniMixed  && dotnet run    # 368 dòng · 1 interface (IStep)
 
 ## MeoBench — lời giải mẫu Phụ lục G
 
-Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **458 phép kiểm**: 294 cho **đủ 40** bài thực hành,
+Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **619 phép kiểm**: 294 cho **đủ 40** bài thực hành,
 62 cho **cỗ máy ghép hoàn chỉnh** (G.11), 34 cho **tách cấu hình** (G.12), 68 cho **năng lực vận
-hành máy thật** (G.13). Chạy lẻ được từng nhóm — không phải làm xong hết mới biết sai ở đâu:
+hành máy thật** (G.13), 9 kiểm ngược (G.14), 20 kiểm cấu trúc (G.15), 27 cho các khẳng định về ngôn
+ngữ ở Phụ lục H, 87 cho 20 lời giải ở Phụ lục I, 18 cho đường bỏ qua có chủ ý (mục 17.6, Phụ lục J).
+Chạy lẻ được từng nhóm — không phải làm xong hết mới biết sai ở đâu:
 
 ```bash
 cd MeoBench
-dotnet run                 # tất cả — 458 phép kiểm
+dotnet run                 # tất cả — 619 phép kiểm
 dotnet run -- G1           # nhóm kiểu dữ liệu miền
 dotnet run -- G2           # logic thuần
 dotnet run -- G3           # hợp đồng thiết bị và bản giả lập
@@ -44,6 +47,11 @@ dotnet run -- G8           # ráp nối và chạy máy
 dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
 dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
 dotnet run -- G13          # quyền, jog, đèn tháp, truy xuất… — 68 phép kiểm
+dotnet run -- G14          # kiểm ngược: đối chiếu bất biến với mã thật — 9 phép kiểm
+dotnet run -- G15          # cấu trúc: kiểm thử với tới đâu — 20 phép kiểm
+dotnet run -- H            # khẳng định về ngôn ngữ C# ở Phụ lục H — 27 phép kiểm
+dotnet run -- I            # 20 lời giải xương sống ở Phụ lục I — 87 phép kiểm
+dotnet run -- J            # đường bỏ qua có chủ ý (mục 17.6, Phụ lục J) — 18 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
@@ -65,7 +73,8 @@ nút trên màn hình chẩn đoán của máy thật.
 
 ## Yêu cầu
 
-.NET SDK 9.0 trở lên. Không cần phần cứng, không cần thư viện ngoài nào.
+.NET SDK 9.0 trở lên. Không cần phần cứng. Các project không dùng thư viện ngoài, trừ `TraCuuHam`
+(hai gói NuGet `Newtonsoft.Json` và `System.IO.Ports`, SDK tự tải).
 
-Mọi project bật `TreatWarningsAsErrors=true`; `MeoBench` bật thêm `AnalysisMode=Recommended` và
-biên dịch sạch **0 cảnh báo**.
+Mọi project bật `TreatWarningsAsErrors=true`, trừ `TraCuuHam` — các đoạn mẫu của nó cố ý giữ cả cách
+viết cũ để so sánh. `MeoBench` bật thêm `AnalysisMode=Recommended` và biên dịch sạch **0 cảnh báo**.

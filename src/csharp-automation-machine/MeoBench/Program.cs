@@ -12,12 +12,17 @@
 //   dotnet run -- G13         → năng lực vận hành máy thật (quyền, jog, đèn tháp…)
 //   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
 //   dotnet run -- H           → kiểm các khẳng định của Phụ lục H (boxing, closure, Span…)
+//   dotnet run -- L           → yêu cầu công nghiệp của Phụ lục L (chết/mở lại, đồng hồ, ổ đĩa…)
 //   dotnet run -- --danhsach  → liệt kê 40 bài
 // -------------------------------------------------------
 using System.Globalization;
 using MeoBench;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+// Chế độ ẩn: phép kiểm 19.5 tự khởi chạy MeoBench làm tiến trình con để nó chết thật.
+if (args.Length == 3 && args[0] == "--chet-lan-dau")
+    return TienTrinhThu.Chay(args[1], args[2]);
 
 var danhSachBai = new[]
 {
@@ -63,6 +68,7 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["I"]   = KiemBaiXuongSong.Chay,       // Phụ lục I: 20 lời giải xương sống
     ["G15"] = KiemCauTruc.Chay,            // cấu trúc: kiểm thử với tới đâu
     ["J"]   = KiemDuongBoQua.Chay,         // mục 17.6 / Phụ lục J: đường bỏ qua có chủ ý
+    ["L"]   = KiemYeuCauCongNghiep.Chay,   // Phụ lục L: yêu cầu công nghiệp của chương trình máy
 };
 
 string tuyChon = args.Length > 0 ? args[0].Trim() : "";
@@ -102,6 +108,7 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemBaiXuongSong.Chay();
     await KiemCauTruc.Chay();
     await KiemDuongBoQua.Chay();
+    await KiemYeuCauCongNghiep.Chay();
 }
 else
 {

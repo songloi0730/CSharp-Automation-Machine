@@ -1743,7 +1743,7 @@ lỗi hay gặp — file có trong thư mục nhưng build không thấy, vì
 <p>Ba khái niệm dễ nhầm lẫn khi mới bắt đầu: <strong>.NET SDK</strong> là bộ công cụ dòng
 lệnh (<code>dotnet build</code>, <code>dotnet run</code>) và compiler — cài SDK là đủ để build
 và chạy ứng dụng C# mà không cần Visual Studio. <strong>.NET Runtime</strong> là phần
-nhỏ hơn, chỉ đủ để <em>chạy</em> ứng dụng đã build sẵn (cài trên IPC production
+nhỏ hơn, chỉ đủ để <em>chạy</em> ứng dụng đã build sẵn (cài trên IPC — máy tính công nghiệp chạy production —
 không cần VS hay SDK đầy đủ). <strong>Visual Studio</strong> là IDE trực quan bao gồm
 SDK bên trong — khi cài VS, .NET SDK tự động được cài kèm.</p>
 <h3>2.1.1  Cài đặt Visual Studio và chọn Workload</h3>
@@ -1989,7 +1989,7 @@ nhất — dễ bắt đầu, nhưng khó bảo trì và gần như không thể
 <p>Node <strong>Dependencies</strong> trong Solution Explorer của mỗi project chứa ba
 loại tham chiếu: <strong>Packages</strong> (NuGet), <strong>Projects</strong> (tham chiếu project
 khác trong solution), và <strong>Assemblies</strong> (file <code>.dll</code> thêm thủ công).</p>
-<p>Nhiều SDK phần cứng (đặc biệt camera, motion card của các hãng Đài Loan/
+<p>Nhiều SDK phần cứng (đặc biệt camera, card chuyển động của các hãng Đài Loan/
 Trung Quốc) không có trên NuGet — chỉ cung cấp file <code>.dll</code> tải về từ
 website hãng. Để thêm vào project: chuột phải vào <strong>Dependencies</strong> →
 <strong>Add Reference...</strong> → tab <strong>Browse</strong> → chọn file <code>.dll</code> (khác <strong>Project
@@ -3482,8 +3482,15 @@ bool doorClosed = (inputWord &amp; (1 &lt;&lt; DoorClosedBit)) != 0;
 // Hai kỹ thuật ĐỘC LẬP — không chạy nối tiếp nhau (nối tiếp sẽ triệt tiêu lẫn nhau)
 ushort outputWord = 0;
 outputWord |= (1 &lt;&lt; 5);     // Cách 1: BẬT bit số 5 (output &quot;Clamp&quot;) mà không đụng các bit khác
-outputWord &amp;= ~(1 &lt;&lt; 5);    // Cách 2: TẮT bit số 5 mà không đụng các bit khác
+outputWord = (ushort)(outputWord &amp; ~(1 &lt;&lt; 5));   // Cách 2: TẮT bit số 5 mà không đụng các bit khác
 </code></pre>
+<blockquote>
+<p>📌 <strong>Vì sao dòng tắt bit dài hơn dòng bật bit.</strong> C# tính mọi phép bitwise trên <code>ushort</code> bằng kiểu
+<code>int</code>. Dòng bật bit viết gọn <code>outputWord |= (1 &lt;&lt; 5)</code> được, vì <code>1 &lt;&lt; 5</code> là hằng 32, vừa với <code>ushort</code>.
+Dòng tắt bit thì không: <code>~(1 &lt;&lt; 5)</code> là hằng <strong>−33</strong>, không vừa với <code>ushort</code>, nên <code>outputWord &amp;= ~(1 &lt;&lt; 5)</code>
+báo lỗi biên dịch <em>CS0031: Constant value &#39;-33&#39; cannot be converted to a &#39;ushort&#39;</em>. Tính phép <code>&amp;</code> trên
+<code>int</code> rồi ép cả kết quả về <code>ushort</code>, như dòng trên, là cách viết đúng.</p>
+</blockquote>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Bitwise nhanh và gọn, nhưng <code>(inputWord &amp; (1 &lt;&lt; 3)) != 0</code> không tự giải thích nó là cái gì. Luôn đặt tên bit qua hằng (<code>DoorClosedBit</code>) hoặc bọc trong một method/extension có tên (<code>io.IsOn(&quot;DoorClosed&quot;)</code>) — nếu không, ba tháng sau chính bạn cũng không đọc nổi code I/O của mình.</p>
 </blockquote>
@@ -3491,7 +3498,7 @@ outputWord &amp;= ~(1 &lt;&lt; 5);    // Cách 2: TẮT bit số 5 mà không đ
 <p>📌 <strong>Biến thể khác của cùng kỹ thuật, hay gặp trong code SDK cũ:</strong> <code>Convert.ToBoolean(statusWord &amp; 0x400) == false</code>.
 Đây là CÙNG Ý TƯỞNG với Code 3.5 (<code>&amp;</code> để mask một bit) — chỉ khác <code>Convert.ToBoolean(x)</code> được dùng
 thay cho <code>x != 0</code> để đổi kết quả phép <code>&amp;</code> (vẫn là số nguyên) sang <code>bool</code>. Hằng số hex như <code>0x400</code>
-(= 1024 = bit thứ 10) thường xuất hiện trong SDK motion card/PLC trả về &quot;status word&quot; — phải tra
+(= 1024 = bit thứ 10) thường xuất hiện trong SDK card chuyển động/PLC trả về &quot;status word&quot; — phải tra
 tài liệu hãng để biết bit nào ứng với ý nghĩa gì (ví dụ bit 10 = &quot;đang chạy&quot;). Đọc gặp mẫu này,
 nhận ra ngay đó là đọc 1 bit cờ trạng thái, không phải phép tính số học thông thường.</p>
 </blockquote>
@@ -4230,7 +4237,7 @@ vòng ngoài mà không báo alarm.</p>
 <code>throw new SafeException</code> bằng <code>return</code> (mất khả năng dừng ở các tầng sâu), cũng không trộn lẫn hai
 cơ chế trong cùng một quy trình (một nửa dừng bằng exception, một nửa bằng <code>CancellationToken</code> → có
 đường thoát nào không được bắt đúng). Nếu muốn chuyển sang <code>CancellationToken</code>, chuyển <strong>cả một
-trạm/quy trình</strong> một lần, kèm chạy thử đủ các tình huống dừng: Stop, Pause→Stop, E-Stop giữa lúc trục
+trạm/quy trình</strong> một lần, kèm chạy thử đủ các tình huống dừng: Stop, Pause→Stop, E-Stop (dừng khẩn cấp) giữa lúc trục
 đang chuyển động.</p>
 </blockquote>
 <p><strong>2b. Cách thứ ba: trả về một ĐỐI TƯỢNG KẾT QUẢ.</strong></p>
@@ -5215,7 +5222,7 @@ một lớp bảo vệ mà alias không cho được.</p>
 <blockquote>
 <p>📌 <strong>Quy tắc phụ thuộc:</strong> <code>UI → Sequence/Logic → Devices (Abstractions/Adapters) → Drivers → Vendor SDK</code>. Các điều cấm: Driver không tham chiếu UI; Core không tham chiếu UI hay Driver; UI không tham chiếu trực tiếp Vendor SDK. Phá quy tắc này là nguồn gốc của circular dependency, khó mock/simulate, và &quot;đổi vendor kéo theo sửa cả UI&quot;.</p>
 </blockquote>
-<p>Với SDK vendor (camera, motion card, PLC), thực hành tốt là luôn bọc trong một <strong>project wrapper</strong> riêng (<code>...Drivers.VendorX</code>): đóng gói call SDK, chuẩn hoá lỗi, che giấu phụ thuộc vendor. Khi đổi đời SDK hoặc đổi hãng, chỉ wrapper đổi — phần còn lại của hệ thống gần như không động tới. Đây cũng là điều kiện để viết simulator/mock thay cho phần cứng thật (Chương 13 và 18).</p>
+<p>Với SDK vendor (camera, card chuyển động, PLC), thực hành tốt là luôn bọc trong một <strong>project wrapper</strong> riêng (<code>...Drivers.VendorX</code>): đóng gói call SDK, chuẩn hoá lỗi, che giấu phụ thuộc vendor. Khi đổi đời SDK hoặc đổi hãng, chỉ wrapper đổi — phần còn lại của hệ thống gần như không động tới. Đây cũng là điều kiện để viết simulator/mock thay cho phần cứng thật (Chương 13 và 18).</p>
 <blockquote>
 <p>💡 <strong>Mẹo thực chiến:</strong> Cảnh giác với project tên <code>Common</code> hoặc <code>Utils</code>. Không có kỷ luật, chúng nhanh chóng thành &quot;bãi chứa&quot; mọi thứ &quot;tiện tay&quot;, kéo phụ thuộc chéo tăng vọt. Nếu có <code>Common</code>, quy định rõ: chỉ chứa thành phần thật sự dùng chung và ổn định (logging, Result pattern, base interface), mỗi thành phần có owner và mục đích rõ.</p>
 </blockquote>
@@ -6409,7 +6416,7 @@ public bool ServoOn { get; private set; }
 <p><strong>Sau chương này, bạn sẽ:</strong></p>
 <ul>
 <li>Viết async/await đúng cách để không chặn vòng quét điều khiển hay luồng UI</li>
-<li>Dùng CancellationToken như &quot;E-Stop phần mềm&quot; cho thao tác bất đồng bộ</li>
+<li>Dùng CancellationToken như một &quot;nút dừng khẩn cấp (E-Stop) bằng phần mềm&quot; cho thao tác bất đồng bộ</li>
 <li>Đồng bộ hoá đa luồng an toàn (lock, SemaphoreSlim) và tránh race condition</li>
 <li>Xây pipeline producer-consumer bằng Channel&lt;T&gt;, quản lý tài nguyên bằng IDisposable</li>
 </ul>
@@ -6750,19 +6757,14 @@ sau màn hình chờ, không thông báo gì.</p>
     catch (Exception ex)
     {
         _logger.LogCritical(ex, &quot;Khởi động thất bại&quot;);
-        MessageBox.Show($&quot;Không khởi động được phần mềm:
-</code></pre>
-</blockquote>
-<p>{ex.Message}&quot;, &quot;Lỗi khởi động&quot;);</p>
-<blockquote>
-<pre><code>    Shutdown(exitCode: 1);              // thoát có kiểm soát, không để treo nửa vời
+        MessageBox.Show($&quot;Không khởi động được phần mềm:\n{ex.Message}&quot;, &quot;Lỗi khởi động&quot;);
+        Shutdown(exitCode: 1);              // thoát có kiểm soát, không để treo nửa vời
+    }
 }
 </code></pre>
-<p>}</p>
-<pre><code>Ba điểm của mẫu này: **một `try` bọc trọn**, **ghi nhật ký trước khi hiện hộp thoại** (vì hộp thoại
-có thể không hiện được nếu giao diện chưa dựng xong), và **thoát có mã lỗi** thay vì để ứng dụng
-sống tiếp trong trạng thái dở dang. Xem thêm Phụ lục B mục B.9 về thứ tự các giai đoạn khởi động.
-</code></pre>
+<p>Ba điểm của mẫu này: <strong>một <code>try</code> bọc trọn</strong>, <strong>ghi nhật ký trước khi hiện hộp thoại</strong> (vì hộp thoại
+có thể không hiện được nếu giao diện chưa dựng xong), và <strong>thoát có mã lỗi</strong> thay vì để ứng dụng
+sống tiếp trong trạng thái dở dang. Xem thêm Phụ lục B mục B.9 về thứ tự các giai đoạn khởi động.</p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Họ hàng gần, không phải async nhưng cùng một gốc bệnh: đối tượng TỰ ĐĂNG KÝ MÌNH trong
@@ -7401,7 +7403,7 @@ public async Task ExportAsync(string path, CancellationToken ct)
     // writer.Dispose() gọi tự động khi method kết thúc
 }
 </code></pre>
-<p>Với class <strong>giữ tài nguyên của vendor/hệ điều hành</strong> (handle motion card, camera SDK, kết nối mạng), tự implement <code>IDisposable</code> để release đúng lúc:</p>
+<p>Với class <strong>giữ tài nguyên của vendor/hệ điều hành</strong> (handle card chuyển động, camera SDK, kết nối mạng), tự implement <code>IDisposable</code> để release đúng lúc:</p>
 <p><strong>Code 5.11 — Dispose pattern cho class giữ handle SDK</strong></p>
 <pre><code class="language-csharp">public sealed class MotionCardHandle : IDisposable
 {
@@ -7426,7 +7428,7 @@ public async Task ExportAsync(string path, CancellationToken ct)
 <p>📌 <strong>Lưu ý:</strong> Đây là Dispose Pattern <strong>rút gọn</strong> cho class <code>sealed</code> không có unmanaged finalizer — đủ cho khoảng 90% trường hợp automation. Pattern đầy đủ (có <code>~Finalizer()</code> và <code>GC.SuppressFinalize(this)</code>) chỉ cần khi class giữ unmanaged resource trực tiếp <em>và</em> có thể bị kế thừa — hiếm gặp hơn.</p>
 </blockquote>
 <blockquote>
-<p>📌 <strong>Vì sao automation đặc biệt cần Dispose:</strong> Quên <code>Dispose()</code> trong app văn phòng thường chỉ là rò bộ nhớ chậm. Trong automation, <strong>handle thiết bị không được trả</strong> gây hậu quả nặng hơn nhiều: lần kết nối sau báo &quot;device busy / in use&quot;, camera không mở lại được, motion card khoá — máy <em>mất kết nối thiết bị</em>, không phải chỉ tốn RAM. Mỗi class giữ handle SDK, file, hay kết nối phải có đường giải phóng rõ ràng.</p>
+<p>📌 <strong>Vì sao automation đặc biệt cần Dispose:</strong> Quên <code>Dispose()</code> trong app văn phòng thường chỉ là rò bộ nhớ chậm. Trong automation, <strong>handle thiết bị không được trả</strong> gây hậu quả nặng hơn nhiều: lần kết nối sau báo &quot;device busy / in use&quot;, camera không mở lại được, card chuyển động khoá — máy <em>mất kết nối thiết bị</em>, không phải chỉ tốn RAM. Mỗi class giữ handle SDK, file, hay kết nối phải có đường giải phóng rõ ràng.</p>
 </blockquote>
 <p>Với tài nguyên cần đóng <em>bất đồng bộ</em> (gửi gói tin tắt qua mạng, flush stream lớn), .NET có <strong><code>IAsyncDisposable</code></strong> <!--idx:IAsyncDisposable--> với <code>DisposeAsync()</code>, dùng qua <code>await using</code>:</p>
 <pre><code class="language-csharp">await using var conn = await OpenConnectionAsync(ct);   // đóng async khi ra scope
@@ -7844,7 +7846,7 @@ Machine hoặc Sequence Engine (Chương 12) thay vì code tuyến tính đơn t
 kiểm soát và debug.</p>
 <p><strong>Song song (Parallel)</strong> — nhiều hoạt động xảy ra đồng thời:</p>
 <ul>
-<li>Trục X di chuyển trong khi trục Z đang về home</li>
+<li>Trục X di chuyển trong khi trục Z đang về gốc</li>
 <li>Camera xử lý ảnh trong khi cơ cấu khác đang chạy</li>
 <li>Ghi log song song với vận hành</li>
 </ul>
@@ -7855,7 +7857,7 @@ riêng (Chương 5, mục 5.2).</p>
 <p>⚠️ <strong>Cảnh báo:</strong> song song trong điều khiển máy <strong>không có nghĩa là tự do hoàn
 toàn</strong> — luôn cần interlock điều kiện, thứ tự ưu tiên, và điểm đồng bộ. Thiếu
 interlock trong lập trình song song có thể gây va chạm cơ học. Pattern interlock
-cụ thể (Guard Engine, Safety Interlock, E-Stop handling) được trình bày đầy đủ
+cụ thể (Guard Engine, Safety Interlock, E-Stop handling — xử lý dừng khẩn cấp) được trình bày đầy đủ
 ở Chương 15 — mục này chỉ nêu khái niệm để nhận diện vấn đề.</p>
 </blockquote>
 <p><strong>Hướng sự kiện (Event-driven)</strong> — thay vì liên tục kiểm tra (polling), hệ thống
@@ -8431,7 +8433,7 @@ trình bài bản hơn và kỷ luật kiến trúc cao hơn.</p>
 <blockquote>
 <p>💡 <strong>Thực tế hiện trường:</strong> Ladder và C# không loại trừ nhau — kiến trúc hybrid
 là phổ biến nhất trên thực tế. PLC chạy safety logic và I/O cứng (Ladder/ST);
-IPC chạy Sequence Engine, HMI, data logging và cloud integration (C#); giao tiếp
+IPC (máy tính công nghiệp) chạy Sequence Engine, HMI, data logging và cloud integration (C#); giao tiếp
 qua OPC UA hoặc Modbus TCP (Chương 14).</p>
 </blockquote>
 <h3>6.3.2  C#, C++ và Python — ba tầng trong kiến trúc hybrid</h3>
@@ -9267,7 +9269,7 @@ từng thực sự được dùng để hoán đổi (swap) 2 cài đặt khác 
 quan trọng: kiểm tra &quot;có interface không&quot; và &quot;có ai implement nó không&quot; là
 CHƯA ĐỦ — phải kiểm tra thêm CẢ kiểu khai báo ở phía consumer (biến/field/
 tham số dùng kiểu interface hay kiểu cụ thể). Bỏ qua vế thứ ba này, một
-interface được thiết kế đúng vẫn có thể chưa từng đóng vai trò seam đa hình
+interface được thiết kế đúng vẫn có thể chưa từng đóng vai trò seam (chỗ cắm) đa hình
 nào trong thực tế — nó chỉ đang &quot;làm tài liệu&quot; cho 1 class cụ thể.</p>
 </blockquote>
 <p><strong>Lifetime management trong ứng dụng máy:</strong></p>
@@ -9562,7 +9564,7 @@ nhà máy không dừng máy lâu.</p>
 <p>Giải pháp: <strong>Strangler Pattern</strong> — viết module mới thay thế dần từng phần, không
 phải rewrite toàn bộ.</p>
 <p><strong>Bốn phase cơ bản:</strong></p>
-<p><strong>Phase 0 — Tạo seam (điểm tách) không đổi hành vi</strong></p>
+<p><strong>Phase 0 — Tạo seam (chỗ cắm) không đổi hành vi</strong></p>
 <p>Bọc mọi lời gọi ra ngoài bằng interface tối thiểu:</p>
 <ul>
 <li><code>IPlcGateway</code> bọc SDK PLC cũ.</li>
@@ -14464,7 +14466,8 @@ public partial class TeachPointWizardViewModel : ObservableObject
     private bool CanGoNext() =&gt; currentStep switch
     {
         TeachStep.ChonTruc  =&gt; SelectedAxis is not null,
-        TeachStep.DatToaDo  =&gt; PositionMm is &gt;= 0 and &lt;= MaxTravelMm,
+        TeachStep.DatToaDo  =&gt; PositionMm &gt;= 0 &amp;&amp; PositionMm &lt;= MaxTravelMm,   // không viết được &quot;is &gt;= 0 and &lt;= MaxTravelMm&quot;:
+                                                                            // mẫu chỉ nhận hằng, hành trình thì đổi theo trục
         TeachStep.DatTocDo  =&gt; SpeedRatio is &gt; 0 and &lt;= 1.0,
         TeachStep.ChayThu   =&gt; TestRunPassed,          // BẮT BUỘC chạy thử mới được xác nhận
         _ =&gt; true
@@ -14682,7 +14685,7 @@ mà vì <strong>mỗi nút thừa là một nút bấm nhầm được</strong>,
 được nút Dừng nhanh hơn.</p>
 <blockquote>
 <p>⚠️ <strong>Nút Bắt đầu phải có điều kiện tiên quyết, và điều kiện đó không được phép &quot;tạm bỏ&quot;.</strong> Trong một
-dự án có sẵn, hàm xử lý nút Bắt đầu kiểm tra máy đã về gốc xong chưa — đúng và cần. Nhưng ngay
+dự án có sẵn, hàm xử lý nút Start kiểm tra máy đã về gốc xong chưa — đúng và cần. Nhưng ngay
 dưới đó, đoạn kiểm tra an toàn trước khi chuyển động <strong>bị chú thích lại toàn bộ</strong> và ở nguyên như vậy
 trong mã nguồn giao cho khách. Gần như chắc chắn nó bị tắt tạm lúc chạy thử rồi không ai bật lại.</p>
 <p>Đây là một trong những cách nguy hiểm nhất mà an toàn bị mất: không ai quyết định bỏ nó, nó chỉ đơn
@@ -17408,7 +17411,9 @@ if (pathPart is (int row, int col))     // vừa kiểm tra ĐÚNG tuple (int,in
 <p>Các mảnh nhỏ (type pattern, property pattern, combinator <code>and</code>/<code>or</code>, gán biến) còn ghép được thành
 MỘT biểu thức nhiều tầng:</p>
 <pre><code class="language-csharp">if (newValue is ArrayBase and IIndex1D { Size: &gt; 0 } index1D)
+{
     var first = index1D.GetValue(0);
+}
 </code></pre>
 <p>Đọc từ trái sang phải: <code>newValue</code> phải là <code>ArrayBase</code> (type pattern) <strong>VÀ</strong> (combinator <code>and</code>) phải
 implement <code>IIndex1D</code> <strong>VÀ</strong> property <code>Size</code> của nó phải <code>&gt; 0</code> (property pattern lồng có so sánh
@@ -20618,7 +20623,7 @@ phân loại &quot;lịch sử alarm, audit trail&quot; vào dữ liệu bền v
 ghi ở đó thấp (một alarm, một lần đổi tham số). Nhưng có một loại dữ liệu thứ ba
 dễ bị nhầm route qua Repository: <strong>telemetry/lịch sử cảm biến tần suất cao</strong>
 (ví dụ ghi nhiệt độ hoặc vị trí trục mỗi 100ms). Insert từng dòng qua EF Core
-xuống SQLite ở tần suất đó tạo áp lực ghi liên tục lên SSD của IPC — mỗi
+xuống SQLite ở tần suất đó tạo áp lực ghi liên tục lên SSD của IPC (máy tính công nghiệp) — mỗi
 transaction SQLite mặc định flush xuống đĩa, và số lần ghi vật lý thực tế trên
 ổ có thể lớn hơn nhiều lần số bản ghi logic (<strong>write amplification<!--idx:Write Amplification--></strong>), rút ngắn
 tuổi thọ SSD công nghiệp đáng kể qua nhiều tháng chạy 24/7 — chưa kể nguy cơ
@@ -21045,7 +21050,7 @@ public sealed class RecipeValidationResult
     public IReadOnlyList&lt;ValidationIssue&gt; Issues { get; init; } = [];
     // Error: có ít nhất 1 issue Error → chặn chạy
     // Warning/Suggestion: cho phép chạy, nhưng phải hiển thị cho kỹ sư xem lại
-    public bool CanRun =&gt; !Issues.Exists(i =&gt; i.Severity == ValidationSeverity.Error);
+    public bool CanRun =&gt; !Issues.Any(i =&gt; i.Severity == ValidationSeverity.Error);   // Exists là của List&lt;T&gt;, IReadOnlyList không có
 }
 </code></pre>
 <p><code>Error</code> (ví dụ: velocity âm, tham chiếu trục không tồn tại) chặn chạy hoàn toàn.
@@ -21163,14 +21168,15 @@ số. Mục này bàn về câu hỏi nằm trước cả hai: <strong>trong cod
 trả lời theo hai cách đối lập, và lựa chọn giữa chúng ảnh hưởng tới việc thêm một tham số mới tốn năm
 phút hay tốn cả một lần cập nhật phần mềm.</p>
 <h4>Cách A — công thức là một lớp có kiểu</h4>
-<pre><code class="language-csharp">public abstract class RecipeParamBase
+<pre><code class="language-csharp">// Rút gọn: chỉ giữ chữ ký — phần thân không phải điểm đáng bàn ở đây
+public abstract class RecipeParamBase
 {
     [Required, MinLength(1)]
     public string   RecipeName { get; set; }
     public DateTime CreateTime { get; set; } = DateTime.Now;
     public DateTime UpdateTime { get; set; } = DateTime.Now;
 
-    public virtual bool Validate(out string err) { /* dùng DataAnnotations */ }
+    public virtual bool Validate(out string err);    // kiểm bằng DataAnnotations
     public string ToJson();
     public static T FromJson&lt;T&gt;(string json) where T : RecipeParamBase;
     public abstract RecipeParamBase DeepClone();     // buộc lớp con phải nghĩ tới sao chép sâu
@@ -21456,17 +21462,22 @@ gọn nhất để hiểu vì sao &quot;trừu tượng hoá thiết bị&quot; 
 <h4>Mô hình đúng thì rất ngắn</h4>
 <p>Về phần cứng, một xi-lanh hai chiều thông thường gồm bốn tín hiệu: <strong>hai cuộn van</strong> (đẩy ra, thu về) và
 <strong>hai cảm biến vị trí</strong> (đã ra hết, đã về hết). Vậy lớp mô tả nó cũng chỉ cần bốn tín hiệu đó:</p>
-<pre><code class="language-csharp">public sealed class Cylinder
+<pre><code class="language-csharp">// Một bit vào hoặc ra, đọc từ bản sao tín hiệu mà luồng quét vào-ra cập nhật mỗi chu kỳ (mục 6.1.1):
+// đọc là tức thì, không cần await. Luồng quét mới là nơi gọi IDigitalInput.ReadAsync của Code 13.5.
+public interface IInputBit  { bool IsOn { get; }  bool IsOff =&gt; !IsOn; }
+public interface IOutputBit { bool Value { get; set; } }
+
+public sealed class Cylinder
 {
-    private readonly IDigitalOutput _solExtend, _solRetract;
-    private readonly IDigitalInput  _lsExtended, _lsRetracted;
+    private readonly IOutputBit _solExtend, _solRetract;
+    private readonly IInputBit  _lsExtended, _lsRetracted;
     private readonly SemaphoreSlim  _gate = new(1, 1);     // mỗi cơ cấu một cửa
     private readonly int            _timeoutMs;
     private readonly ValveType      _valveType;            // GiuKhiMatDien | LoXoHoiVi
     public  string                  Name { get; }
 
-    public Cylinder(string name, IDigitalOutput solExtend, IDigitalOutput solRetract,
-                    IDigitalInput lsExtended, IDigitalInput lsRetracted) { /* ... */ }
+    public Cylinder(string name, IOutputBit solExtend, IOutputBit solRetract,
+                    IInputBit lsExtended, IInputBit lsRetracted) { /* ... */ }
 
     public bool IsExtended  =&gt; _lsExtended.IsOn  &amp;&amp; _lsRetracted.IsOff;
     public bool IsRetracted =&gt; _lsRetracted.IsOn &amp;&amp; _lsExtended.IsOff;
@@ -21805,8 +21816,9 @@ public interface IMotionAxisDriver
     Task&lt;double&gt; ReadPositionRawAsync(CancellationToken ct);
 }
 
-// Abstraction — tầng trên chỉ dùng interface này
-public sealed class MotionAxis : IMotionAxis
+// Abstraction — tầng trên chỉ dùng interface này. Là một IDevice (vòng đời, Code 13.5) và có năng lực
+// IMotionAxis — thiết bị implement đúng những gì nó có; nhờ vậy factory ở Code 13.6 trả được nó ra.
+public sealed class MotionAxis : IDevice, IMotionAxis
 {
     private readonly IMotionAxisDriver _driver;
     public string AxisId { get; }
@@ -21816,6 +21828,16 @@ public sealed class MotionAxis : IMotionAxis
         AxisId  = axisId;
         _driver = driver;
     }
+
+    // IDevice — rút gọn: bản thật nối các bước vòng đời với kết nối của driver
+    public string      DeviceId   =&gt; AxisId;
+    public string      DeviceType =&gt; &quot;Servo&quot;;
+    public DeviceState State      { get; private set; }
+    public void Configure(object configuration) { }
+    public Task ConnectAsync(CancellationToken ct) =&gt; Task.CompletedTask;
+    public Task StartAsync(CancellationToken ct)   =&gt; Task.CompletedTask;
+    public Task ResetAsync(CancellationToken ct)   =&gt; Task.CompletedTask;
+    public ValueTask DisposeAsync()                =&gt; ValueTask.CompletedTask;
 
     public Task HomeAsync(CancellationToken ct) =&gt; _driver.HomeAsync(ct);
 
@@ -23547,6 +23569,8 @@ internal static class VisionToolNames
     public const string TrayFixture = &quot;TrayFixture&quot;;
     public const string PartAlign   = &quot;PartAlign&quot;;
     public const string EmptyPocket = &quot;EmptyPocketDetect&quot;;
+
+    public static readonly string[] All = [TrayFixture, PartAlign, EmptyPocket];
 }
 
 // 2. Kiểm tra ngay khi NẠP, không đợi tới lúc chạy sản xuất
@@ -23554,7 +23578,7 @@ public void LoadAndVerify(string jobPath)
 {
     _job = VisionJob.Load(jobPath);
     foreach (var name in VisionToolNames.All)
-        if (!_job.Tools.Contains(name))
+        if (!_job.Tools.Any(t =&gt; t.Name == name))
             throw new AlarmException(AlarmCodes.VisionJobMismatch, &quot;VISION&quot;,
                 $&quot;Job &#39;{Path.GetFileName(jobPath)}&#39; thiếu công cụ &#39;{name}&#39;. &quot; +
                 $&quot;Job hiện có: {string.Join(&quot;, &quot;, _job.Tools.Select(t =&gt; t.Name))}&quot;);
@@ -26239,7 +26263,7 @@ Thư viện vendor chỉ chạy trên .NET Framework cũ, có native dependency 
 <tr>
 <td><strong>Nhóm 3</strong> — Thư viện không tương thích</td>
 <td>Vision lib .NET FW 4.x, SDK proprietary cũ</td>
-<td>Process isolation + IPC contract đầy đủ (mục này)</td>
+<td>Process isolation + IPC contract (IPC ở đây là giao tiếp liên tiến trình, không phải máy tính công nghiệp) đầy đủ (mục này)</td>
 </tr>
 </tbody></table></div>
 <h4>Bài toán thực tế: SEHException và quyết định tách process</h4>
@@ -26487,8 +26511,8 @@ kiểu cơ bản + JSON) là nguyên tắc quan trọng: cả hai process có th
 <blockquote>
 <p>⚠️ <strong>Cảnh báo:</strong> <code>TcpClient.Connected</code> chỉ phản ánh trạng thái local socket — không phát
 hiện được TCP half-open<!--idx:TCP half-open--> (peer đã tắt nhưng socket local vẫn báo Connected). Trong môi
-trường công nghiệp, điều này xảy ra thường xuyên khi switch mạng khởi động lại hoặc IPC
-bị tắt đột ngột. Heartbeat chính là cơ chế phát hiện half-open — nếu không nhận được reply
+trường công nghiệp, điều này xảy ra thường xuyên khi switch mạng khởi động lại hoặc máy tính
+công nghiệp bị tắt đột ngột. Heartbeat chính là cơ chế phát hiện half-open — nếu không nhận được reply
 trong timeout, đóng socket và reconnect, không tin vào Connected.</p>
 </blockquote>
 <blockquote>
@@ -26881,8 +26905,7 @@ public sealed class SerialScaleClient : IDisposable
         while (true)
         {
             string s   = _buffer.ToString();
-            int    end = s.IndexOf(&quot;
-&quot;, StringComparison.Ordinal);
+            int    end = s.IndexOf(&quot;\r\n&quot;, StringComparison.Ordinal);
             if (end &lt; 0) break;                     // chưa đủ một khung — chờ lần sau
 
             string frame = s[..end];
@@ -29272,7 +29295,7 @@ cho từng bài toán.</p>
 <h1 id="chương-15-safety-alarm-management">Chương 15: Safety &amp; Alarm Management</h1>
 <p>Ca đêm, 3 giờ sáng. Màn hình HMI của dây chuyền đóng gói đột nhiên chuyển sang đỏ rực — 47 alarm xuất hiện đồng loạt trong vòng mười giây. Operator chạy đến, cuộn danh sách alarm lên xuống, không biết bắt đầu từ đâu. Sau tám phút, anh tắt được nguồn gốc: sensor áp suất khí nén số 3 bị hở — một lỗi sẽ xử lý trong hai phút nếu nhìn thấy ngay từ đầu. Nhưng 46 alarm thứ cấp đã che khuất nó hoàn toàn.</p>
 <p>Đây không phải câu chuyện về thiếu người hay thiếu thiết bị. Đây là câu chuyện về <strong>thiết kế phần mềm sai</strong> — alarm được tạo ra theo kiểu &quot;cứ có lỗi là fire&quot;, không có phân cấp, không có logic lọc, không có triết lý. Bắt đầu bằng alarm tốt. Kết thúc bằng tai nạn.</p>
-<p>Chương này xây dựng hai tầng phòng thủ cho hệ thống điều khiển: <strong>tầng alarm</strong> (phát hiện, phân loại, lọc, và vòng đời xử lý) và <strong>tầng safety</strong> (interlock, E-Stop, và Guard Engine ngăn thao tác sai quyền). Mục 15.3 bổ sung triết lý thiết kế theo chuẩn ISA-18.2 (Management of Alarm Systems for the Process Industries) — nền tảng để xây alarm <em>đúng</em> ngay từ đầu, không chỉ đủ để chạy được.</p>
+<p>Chương này xây dựng hai tầng phòng thủ cho hệ thống điều khiển: <strong>tầng alarm</strong> (phát hiện, phân loại, lọc, và vòng đời xử lý) và <strong>tầng safety</strong> (interlock, dừng khẩn cấp — E-Stop — và Guard Engine ngăn thao tác sai quyền). Mục 15.3 bổ sung triết lý thiết kế theo chuẩn ISA-18.2 (Management of Alarm Systems for the Process Industries) — nền tảng để xây alarm <em>đúng</em> ngay từ đầu, không chỉ đủ để chạy được.</p>
 <blockquote>
 <p>📌 <strong>Alarm Management và Functional Safety là hai discipline khác nhau</strong> dù cùng xuất hiện trong chương này. <em>Alarm Management</em> hỗ trợ operator nhận biết bất thường và ra quyết định đúng — chuẩn gốc là ISA-18.2. <em>Functional Safety</em> bảo vệ con người và thiết bị khỏi nguy hiểm vật lý qua phần cứng được chứng nhận — chuẩn gốc là IEC 61508, IEC 62061, ISO 13849. Không phải mọi alarm đều liên quan safety: &quot;Recipe mismatch&quot; là alarm operational, không phải safety. Chương trình bày cả hai vì kỹ sư C# thường cần hiểu ranh giới giữa chúng khi xây dựng software tầng điều khiển.</p>
 </blockquote>
@@ -31199,7 +31222,7 @@ SMT, máy Pick &amp; Place, hệ thống Vision đều chạy 24/7 và rất nh�
 điện áp, trong khi vị trí nhà xưởng (thường ở khu công nghiệp, mái lớn, nhiều
 đường dây trên cao) khiến sét đánh gần hoặc lan truyền qua lưới là rủi ro
 thường trực chứ không phải hãn hữu. Một thiết kế UPS phổ biến — và cũng là
-điểm mù phổ biến nhất — là chỉ backup cho IPC và PLC logic, trong khi tầng
+điểm mù phổ biến nhất — là chỉ backup cho IPC (máy tính công nghiệp) và PLC logic, trong khi tầng
 công suất của servo drive (motor power stage) vẫn đấu thẳng vào nguồn chính.
 Hệ quả: PC vẫn &quot;sống&quot; và hiển thị HMI bình thường, nhưng trục đang chuyển
 động có thể mất lực giữ ngay giữa chu trình — phần mềm phải xử lý đúng tình
@@ -32205,7 +32228,7 @@ public sealed class ScadaEventHandler : IDomainEventHandler&lt;PackMlStateChange
 // Thêm subscriber mới = thêm 1 dòng đăng ký DI, KHÔNG sửa Machine hay Service
 </code></pre>
 <blockquote>
-<p>💡 <strong>Mẹo thực chiến:</strong> <code>InMemoryEventPublisher</code> đủ dùng cho phần lớn hệ thống automation single-process. Chỉ nâng cấp lên message queue (RabbitMQ, Azure Service Bus) khi cần publish event sang process khác hoặc sang SCADA server qua network. Đừng over-engineer với message queue cho hệ thống chạy trên 1 IPC duy nhất.</p>
+<p>💡 <strong>Mẹo thực chiến:</strong> <code>InMemoryEventPublisher</code> đủ dùng cho phần lớn hệ thống automation single-process. Chỉ nâng cấp lên message queue (RabbitMQ, Azure Service Bus) khi cần publish event sang process khác hoặc sang SCADA server qua network. Đừng over-engineer với message queue cho hệ thống chạy trên 1 IPC (máy tính công nghiệp) duy nhất.</p>
 </blockquote>
 <blockquote>
 <p>⚠️ <strong>Khi nào KHÔNG nên dùng Event Aggregator<!--idx:Event Aggregator--> (<code>IEventPublisher</code>):</strong> nếu chỉ có 2 class cần giao tiếp trực tiếp và không cần mở rộng thêm subscriber, dùng interface thông thường (dependency injection trực tiếp) đơn giản hơn. Event Aggregator hữu ích khi số subscriber không biết trước hoặc thay đổi runtime — áp dụng vào 2 class cố định là over-engineering.</p>
@@ -32789,7 +32812,7 @@ mỗi file (tránh copy-paste rồi quên đổi tên class trong logger của f
 <p>Không cần tự viết Reflection từ đầu để đọc hiểu 3 idiom trên — chỉ cần nhận ra chúng đang làm gì khi
 gặp lặp lại (đặc biệt dòng khai báo logger, thường xuất hiện ở gần như MỌI file trong một dự án lớn).</p>
 </blockquote>
-<p><code>CommandDispatcher</code> ở trên thực thi danh sách lệnh theo đúng thứ tự khai báo (FIFO). Nhưng queue trong automation không phải lúc nào cũng FIFO thuần túy: một số lệnh được phép chen hàng — E-Stop, Abort, Reset thường phải thực thi ngay lập tức bất kể có bao nhiêu lệnh đang chờ. Khi cần một queue đứng (standing queue) nhận lệnh liên tục, pattern phổ biến là dùng <code>PriorityQueue&lt;IDeviceCommand, int&gt;</code> thay cho <code>Queue&lt;IDeviceCommand&gt;</code>, với priority nhỏ hơn = thực thi trước (ví dụ: Emergency = 0, Normal = 10). Lệnh ở priority thấp nhất (Emergency) luôn được pop trước — đây là nguyên tắc sống còn với máy có E-Stop.</p>
+<p><code>CommandDispatcher</code> ở trên thực thi danh sách lệnh theo đúng thứ tự khai báo (FIFO). Nhưng queue trong automation không phải lúc nào cũng FIFO thuần túy: một số lệnh được phép chen hàng — E-Stop (dừng khẩn cấp), Abort, Reset thường phải thực thi ngay lập tức bất kể có bao nhiêu lệnh đang chờ. Khi cần một queue đứng (standing queue) nhận lệnh liên tục, pattern phổ biến là dùng <code>PriorityQueue&lt;IDeviceCommand, int&gt;</code> thay cho <code>Queue&lt;IDeviceCommand&gt;</code>, với priority nhỏ hơn = thực thi trước (ví dụ: Emergency = 0, Normal = 10). Lệnh ở priority thấp nhất (Emergency) luôn được pop trước — đây là nguyên tắc sống còn với máy có E-Stop.</p>
 <p><strong>Code 16.7b — CommandQueue dùng PriorityQueue: E-Stop luôn chen trước</strong></p>
 <pre><code class="language-csharp">public sealed class CommandQueue
 {
@@ -33942,7 +33965,7 @@ riêng trên máy mỗi người — đó là bước đầu tiên, gần như v
 văn hoá DevOps. Chương này xây tiếp trên nền đó: không chỉ <em>đặt file vào
 đâu</em>, mà <em>cả nhóm phối hợp thay đổi mã nguồn như thế nào</em> trong suốt vòng
 đời một dự án automation — từ lúc code còn nằm trên laptop kỹ sư, đến lúc
-chạy ổn định trên IPC ngoài xưởng.</p>
+chạy ổn định trên IPC (máy tính công nghiệp) ngoài xưởng.</p>
 <p>Nhiều kỹ sư PLC/automation đến với Git rất muộn, và thường là miễn cưỡng.
 Lý do dễ hiểu: phần lớn trong số họ đã &quot;quản lý phiên bản&quot; theo cách riêng
 suốt nhiều năm — sao chép cả thư mục dự án, đặt tên theo ngày hoặc theo
@@ -37191,7 +37214,7 @@ Bộ kiểm xanh mà không có mã yêu cầu nào gắn trên phép kiểm th�
 <!--idx:dotnet-counters--><p>3 giờ sáng, điện thoại trực ca đổ chuông: dây chuyền Line 3 vừa dừng đột
 ngột, HMI đứng hình, và không ai trong ca đêm biết vì sao. Kỹ sư trực
 cách nhà máy 40km, không có laptop cài Visual Studio bên cạnh — và ngay
-cả khi có, máy IPC đang chạy MeoFrame HMI không hề có source code, chỉ
+cả khi có, máy tính công nghiệp (IPC) đang chạy MeoFrame HMI không hề có source code, chỉ
 có bản artifact đã publish (Chương 17). Không đặt breakpoint được, vì
 không có gì để đặt breakpoint vào.</p>
 <p>Đây chính là khoảng cách giữa &quot;code chạy đúng trên máy dev&quot; (17 chương
@@ -37417,7 +37440,7 @@ trong danh mục kiểm bàn giao ở Phụ lục B mục B.5.</p>
 </blockquote>
 <h3>19.1.6  Code tồn tại không đồng nghĩa code đang hoạt động</h3>
 <p>Một trong những bài học khó chấp nhận nhất khi debug production: đọc
-source code thấy đầy đủ logic giám sát an toàn (kiểm tra E-Stop, cửa an
+source code thấy đầy đủ logic giám sát an toàn (kiểm tra nút dừng khẩn cấp E-Stop, cửa an
 toàn, light curtain...) không có nghĩa đường gọi tới logic đó đang thực
 sự thực thi. Timer polling vẫn chạy đúng chu kỳ, nhưng thân callback bên
 trong — vì một lần sửa dở dang, một dòng bị comment-out &quot;tạm thời&quot; rồi
@@ -38635,8 +38658,10 @@ cáo — một lần là sự cố, ba lần một tuần là lỗi phải sửa
 <p>Vì sao dùng tệp mà không dùng mã thoát: mục 19.5.1 đã cho thấy mã thoát 0 vẫn có thể là chết, còn mất
 điện thì <strong>không có mã thoát nào</strong> để đọc. Tệp trên đĩa trả lời được cả ba trường hợp.</p>
 <h3>19.5.4  Tự mở lại — có giới hạn, và không bao giờ tự chạy tiếp</h3>
-<p>Người mở lại là một <strong>tiến trình giám sát</strong> riêng: một chương trình rất nhỏ, gần như không có logic gì
-để mà chết, chạy chương trình máy rồi chờ nó thoát. Chương trình có giao diện không chạy được như
+<p>Người mở lại là một <strong>bộ giám sát tiến trình</strong> riêng: một chương trình rất nhỏ, gần như không có logic
+gì để mà chết, chạy chương trình máy rồi chờ nó thoát. Đừng nhầm nó với watchdog ở mục 19.4.6: watchdog
+chạy <em>bên trong</em> chương trình và phát hiện treo; bộ giám sát chạy <em>bên ngoài</em> và mở lại khi chương trình
+đã chết. Chương trình có giao diện không chạy được như
 Windows Service (mục 17.3.4), nên bộ giám sát được khởi chạy lúc người vận hành đăng nhập (mục 17.3.8).</p>
 <p><strong>Code 19.16 — Chính sách tự mở lại (rút gọn)</strong></p>
 <pre><code class="language-csharp">public sealed class ChinhSachMoLai(IDongHo dongHo)
@@ -39468,7 +39493,7 @@ gọi hàm C thuần. Từ .NET 7, <code>[LibraryImport]</code><!--idx:LibraryIm
 (Source Generator P/Invoke) sinh code marshalling ngay lúc biên dịch
 thay vì dựa vào reflection lúc chạy như <code>[DllImport]</code> — nhanh hơn, và
 quan trọng hơn với ứng dụng industrial: tương thích Native AOT (biên
-dịch thẳng ra máy thật, không cần .NET Runtime cài sẵn trên IPC).</p>
+dịch thẳng ra máy thật, không cần .NET Runtime cài sẵn trên IPC, tức máy tính công nghiệp).</p>
 <pre><code class="language-csharp">// [DllImport] cũ — marshalling giải quyết lúc runtime
 [DllImport(&quot;CameraSdk.dll&quot;)]
 static extern int Camera_GrabFrame(IntPtr handle, byte[] buffer, int size);
@@ -41776,7 +41801,7 @@ lỗi khó hiểu từ thư viện của hãng, chứ không phải một thông
 <li><strong>Cũng ở giai đoạn 2: xét dung lượng ổ dữ liệu</strong> (Chương 19 mục 19.6.3) — ổ đầy thì nhật ký của chính
 các giai đoạn sau không ghi được.</li>
 <li><strong>Giai đoạn 5: kiểm giấy phép thư viện hãng</strong> cùng lúc mở thiết bị của hãng đó (Chương 17 mục 17.3.9).</li>
-<li><strong>Sau giai đoạn 5: bộ điều kiện chạy</strong> quyết định nút Bắt đầu sáng hay tối, và hiện đủ mọi lý do khi tối
+<li><strong>Sau giai đoạn 5: bộ điều kiện chạy</strong> quyết định nút Start sáng hay tối, và hiện đủ mọi lý do khi tối
 (Chương 15 mục 15.2.3b).</li>
 </ul>
 <h3>B.9.2 Chặn chạy hai lần — hai cách, và cách thứ hai tốt hơn hẳn</h3>
@@ -42174,6 +42199,8 @@ tra cứu, người đọc sẽ tìm theo tên thuật ngữ, không theo trình
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.2.4.</em></p>
 <p><strong>Channel&lt;T&gt;</strong> — Hàng đợi producer–consumer bất đồng bộ hoàn toàn của .NET (<code>WriteAsync</code>/<code>ReadAsync</code> không chặn thread); bản <em>bounded</em> cho backpressure rõ ràng. Lựa chọn hiện đại cho pipeline vision/telemetry/command, thay <code>BlockingCollection</code>. (→ xem producer-consumer, backpressure)
 <em>Xuất hiện đầu tiên: Chương 5, mục 5.4.</em></p>
+<p><strong>Chỗ cắm (seam)</strong> — Chỗ trong mã cho phép đổi hành vi mà không phải sửa chính đoạn mã đó — thường là một tham số kiểu interface hay một delegate truyền qua hàm dựng. Có chỗ cắm thì phép kiểm cắm được bản giả, và mã mới gắn được vào mã cũ từng bước. (→ xem Dependency Injection, Strangler Pattern)
+<em>Xuất hiện đầu tiên: Chương 7, mục 7.2.5.</em></p>
 <p><strong>CI/CD</strong> (Continuous Integration / Continuous Deployment hoặc Delivery) — Trong automation, <strong>không</strong> đồng nghĩa &quot;tự động deploy lên cloud&quot; như phần mềm web: CI tự động build + chạy test mỗi khi có thay đổi; CD đóng gói thành artifact sẵn sàng triển khai, nhưng bước đưa lên máy đang chạy sản xuất vẫn cần con người phê duyệt và một cửa sổ bảo trì. (→ xem Pipeline, Artifact)
 <em>Xuất hiện đầu tiên: Chương 17, mục 17.2.</em></p>
 <p><strong>CiA 402</strong> — Chuẩn hồ sơ thiết bị truyền động cho servo drive nối qua fieldbus; quy định một <strong>máy trạng thái</strong> mà trục phải đi qua từng bước để được phép chuyển động (chưa cho phép bật → sẵn sàng → đã bật → đang vận hành), giao tiếp qua <em>từ điều khiển</em> và <em>từ trạng thái</em> nằm trong dữ liệu chu kỳ. Điểm dễ nhầm: trạng thái &quot;đã bật&quot; <strong>chưa</strong> giữ mô-men — trục thẳng đứng sẽ rơi nếu nhả phanh ở bước này. (→ xem PDO, SDO, EtherCAT, STO)
@@ -42848,6 +42875,8 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 18, mục 18.3.3.</em></p>
 <p><strong>Subscription (OPC UA)</strong> — Cơ chế đăng ký nhận thông báo từ OPC UA server khi giá trị Variable thay đổi vượt ngưỡng deadband, thay vì polling định kỳ; gồm Subscription object (PublishingInterval) và Monitored Items (SamplingInterval, DeadbandValue). Khi mất kết nối và reconnect, Subscription cũ không tự khôi phục — cần tạo lại từ đầu sau Session.Create(). (→ xem Information Model, NodeId)
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.1.1.</em></p>
+<p><strong>Sườn lên (rising edge)</strong> — Thời điểm một tín hiệu số chuyển từ tắt sang bật. Có những việc phải bắt theo sườn chứ không theo mức: xung đếm sản phẩm, một phôi rơi ngang cảm biến máng. Tín hiệu kẹt ở mức bật không tạo ra sườn lên nào, nên bắt theo sườn còn phát hiện được cảm biến kẹt. Tương ứng lệnh R_TRIG của PLC. (→ xem Scan Cycle, Debounce)
+<em>Xuất hiện đầu tiên: Chương 13, mục 13.4.9.</em></p>
 <p><strong>Supervising Controller</strong> (Supervising Presenter) — Biến thể MVP trong đó View được phép làm một phần việc UI thuần tuý (data binding đơn giản, format hiển thị), Presenter vẫn điều phối nghiệp vụ chính. Test khó hơn Passive View vì một phần logic nằm trong View. (→ xem MVP, Passive View)
 <em>Xuất hiện đầu tiên: Chương 8, mục 8.3.3.</em></p>
 <p><strong>SUT (Subject Under Test — Đối tượng đang kiểm thử)</strong> — Thuật ngữ xác định rõ class/method/thành phần đang được test trong một test case; phần còn lại là fixture (cấu hình) và dependencies (mock/stub). Đặt tên biến <code>sut</code> thay vì tên class cụ thể giúp test rõ ý định hơn.
@@ -42960,7 +42989,7 @@ trả <code>false</code> dù đang gọi từ luồng nền, dẫn tới cập n
 <em>Xuất hiện đầu tiên: Chương 14, mục 14.2.8.</em></p>
 <p><strong>WPF (Windows Presentation Foundation)</strong> — Nền tảng UI desktop của .NET theo mô hình retained-mode: mô tả cấu trúc giao diện qua XAML, hệ thống layout/render tự tính toán và vẽ lại khi cần — khác WinForms/GDI+ (immediate-mode, code ra lệnh vẽ trực tiếp). Mạnh về data binding, style/template, animation; phù hợp màn hình HMI phức tạp hơn là hệ thống kế thừa (Chương 8). (→ xem Binding (WPF), MVVM, Dependency Property (DP))
 <em>Xuất hiện đầu tiên: Chương 9 (tiêu đề chương).</em></p>
-<p><strong>wrapper SDK</strong> (project wrapper cho vendor SDK) — Thực hành đóng gói toàn bộ lời gọi SDK của một hãng (camera, motion card, PLC) vào một project riêng; chuẩn hoá lỗi và che giấu phụ thuộc vendor, để khi đổi đời SDK hoặc đổi hãng chỉ wrapper thay đổi. Là điều kiện để viết simulator/mock. (→ xem Simulator Driver)
+<p><strong>wrapper SDK</strong> (project wrapper cho vendor SDK) — Thực hành đóng gói toàn bộ lời gọi SDK của một hãng (camera, card chuyển động, PLC) vào một project riêng; chuẩn hoá lỗi và che giấu phụ thuộc vendor, để khi đổi đời SDK hoặc đổi hãng chỉ wrapper thay đổi. Là điều kiện để viết simulator/mock. (→ xem Simulator Driver)
 <em>Xuất hiện đầu tiên: Chương 3, mục 3.8.2.</em></p>
 <p><strong>Write Amplification</strong> (khuếch đại ghi) — Hiện tượng số lần ghi vật lý thực tế trên SSD lớn hơn nhiều lần số bản ghi logic ứng dụng gửi xuống — mỗi transaction insert từng dòng qua ORM (EF Core) xuống SQLite ở tần suất cao (ví dụ ghi telemetry mỗi 100ms) đều có thể kích hoạt flush xuống đĩa, rút ngắn tuổi thọ SSD công nghiệp đáng kể qua nhiều tháng chạy 24/7. Giải pháp: gom vào buffer RAM (<code>Channel&lt;T&gt;</code>) rồi ghi theo lô (batch write) ở tần suất thấp hơn nhiều, hoặc dùng file nhị phân append-only/CSV nối đuôi cho riêng luồng dữ liệu tần suất cao. (→ xem Channel<T>, Repository Pattern)
 <em>Xuất hiện đầu tiên: Chương 13, mục 13.1.</em></p>
@@ -43059,6 +43088,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>Cây tác vụ (Task Tree)</strong> — 16.4</li>
 <li><strong>CEID (Collection Event ID)</strong> — 14.2.4</li>
 <li><strong>Channel<T></strong> — 5.4</li>
+<li><strong>Chỗ cắm (seam)</strong> — 7.2.5</li>
 <li><strong>Chốt vị trí (latch)</strong> — 1.3.2</li>
 <li><strong>CI/CD</strong> — 17.2, 17.2.1</li>
 <li><strong>CiA 402</strong> — 14.1.6</li>
@@ -43424,6 +43454,7 @@ dựng bản in/<code>.docx</code>, số mục ở đây được thay bằng s�
 <li><strong>Structured Text (ST — IEC 61131-3)</strong> — 6.3.1</li>
 <li><strong>Stub</strong> — 18.3.3</li>
 <li><strong>Subscription (OPC UA)</strong> — 14.1.1</li>
+<li><strong>Sườn lên (rising edge)</strong> — 13.4.9</li>
 <li><strong>Supervising Controller</strong> — 8.3.3</li>
 <li><strong>SUT (Subject Under Test — Đối tượng đang kiểm thử)</strong> — 18.2.2</li>
 <li><strong>SynchronizationContext</strong> — 5.1.3</li>
@@ -46210,7 +46241,7 @@ cho phép. Bạn sẽ phát hiện vài ô mình chưa từng nghĩ tới.</p>
 <p><strong>Ghép vào.</strong> G.7.1, G.8.5.</p>
 <h3>G.5.5 — Tạm dừng, dừng, và chạy lại ★★★ ⟨Ch.12 mục 12.2.4⟩</h3>
 <p><strong>Yêu cầu.</strong> Ba lệnh với ba ngữ nghĩa khác nhau: <em>tạm dừng</em> (dừng ở ranh giới bước, giữ nguyên
-phôi), <em>dừng</em> (kết thúc chu kỳ hiện tại rồi dừng), <em>dừng khẩn</em> (dừng ngay — nhưng chỉ <strong>phản ánh</strong>
+phôi), <em>dừng</em> (kết thúc chu kỳ hiện tại rồi dừng), <em>dừng khẩn cấp</em> (dừng ngay — nhưng chỉ <strong>phản ánh</strong>
 trạng thái mạch an toàn phần cứng).</p>
 <p><strong>Kết quả mong đợi.</strong> Tạm dừng giữa chừng rồi chạy tiếp thì <strong>không mất phôi và không đo lại</strong>.</p>
 <p><strong>Hướng làm.</strong> (a) Kiểm cờ tạm dừng ở ranh giới giữa các bước — an toàn nhất, độ trễ tối đa bằng một
@@ -48573,9 +48604,9 @@ của G.11 gần như không phải sửa. Mọi yêu cầu đều cắm vào m�
 <p>Ba thứ còn lại không gắn với chỗ nào trong chu kỳ mà gắn với <strong>người</strong>: đèn tháp và còi được tính ở
 một hàm duy nhất từ trạng thái máy và các cảnh báo chưa xác nhận (L-35, mục 15.1.9); mọi xác nhận
 &quot;đã làm xong việc gì đó&quot; đều mang tên người (L-34, L-49); và một nút tạo gói chẩn đoán (L-42, mục 19.7).</p>
-<h3>G.16.2  Ba điểm cắm, và vì sao chỉ cần ba</h3>
+<h3>G.16.2  Ba chỗ cắm, và vì sao chỉ cần ba</h3>
 <p><code>MayCongNghiep</code> <strong>bọc</strong> cỗ máy G.11 chứ không viết lại nó. Để bọc được, <code>MayHoanChinh</code> chỉ phải mở
-thêm ba <strong>điểm cắm</strong> — chỗ mà mã bên ngoài gắn hành vi của mình vào mà không phải sửa lớp đó:</p>
+thêm ba <strong>chỗ cắm</strong> (seam) — nơi mã bên ngoài gắn hành vi của mình vào mà không phải sửa lớp đó:</p>
 <pre><code class="language-csharp">// Hỏi ở ranh giới chu kỳ, TRƯỚC khi nhận phôi mới
 public Func&lt;KetQuaKiemQuyen&gt;? CongTruocChuKy { get; set; }
 
@@ -48586,7 +48617,7 @@ public bool CheDoMauChuan { get; set; }
 public void ThemBuocSau(int maBuocTruoc, IBuoc buocMoi)
 </code></pre>
 <p>Trong vòng chạy, chỗ dùng chúng chỉ là hai đoạn ngắn:</p>
-<pre><code class="language-csharp">// Điểm cắm G.16 — hỏi TRƯỚC khi nhận phôi mới, nên từ chối ở đây không bỏ dở phôi nào
+<pre><code class="language-csharp">// Chỗ cắm G.16 — hỏi TRƯỚC khi nhận phôi mới, nên từ chối ở đây không bỏ dở phôi nào
 var cong = CongTruocChuKy?.Invoke();
 if (cong is { ChoPhep: false })
 {
@@ -48605,8 +48636,8 @@ else
 </code></pre>
 <p>Dòng <code>cong is { ChoPhep: false }</code> đọc là: <em>có cổng, và cổng từ chối</em>. Không cắm cổng nào thì <code>cong</code> là
 <code>null</code>, điều kiện sai, và vòng chạy đi tiếp như cũ. Để trống cả ba thì cỗ máy chạy y hệt G.11, và sáu mươi hai phép kiểm của nhóm <code>G9</code> vẫn xanh nguyên.
-Hai điểm cắm đầu đi theo khuôn đã có: cổng ở ranh giới chu kỳ là <strong>dạng tổng quát của việc dừng khi
-khí nén yếu</strong> (bài G.4.4): dừng có trật tự, về Sẵn sàng, không phải Báo động. Điểm cắm thứ ba là phần
+Hai chỗ cắm đầu đi theo khuôn đã có: cổng ở ranh giới chu kỳ là <strong>dạng tổng quát của việc dừng khi
+khí nén yếu</strong> (bài G.4.4): dừng có trật tự, về Sẵn sàng, không phải Báo động. Chỗ cắm thứ ba là phần
 thưởng của quyết định ở bài G.5.1: chu trình là <strong>dữ liệu</strong>, một danh sách bước, nên chèn thêm một bước
 không phải sửa vòng chạy. Màn hình tự hiện &quot;Bước 8/8&quot; mà không sửa dòng nào của giao diện, đúng như
 phép kiểm của bài G.7.2 đã hứa.</p>
@@ -48627,8 +48658,8 @@ là đặt việc canh vào cổng ranh giới chu kỳ, cạnh việc xét ổ 
 cảm biến máng. Cách đó hỏng vì một chi tiết của <code>XacNhanBoNG</code> (mục 13.4.9): nó chỉ tính <strong>sườn lên</strong> của
 cảm biến xảy ra <em>sau</em> lúc bắt đầu canh, để một cảm biến kẹt sáng sẵn không bị tính là đã thấy phôi. Phôi
 thì rơi qua cảm biến trong lúc trục đang chạy bước &quot;Về vị trí chờ&quot;, tức là trước khi cổng kịp hỏi. Canh
-muộn thì sườn lên đã trôi qua, và máy báo động oan. Cấy thử một độ trễ 100 ms giữa lúc nhả và lúc bắt
-đầu canh: mọi phôi NG đều thành báo động oan, kể cả mẫu chuẩn lỗi, và 33 trên 75 phép kiểm đỏ.</p>
+muộn thì sườn lên đã trôi qua, và máy phát cảnh báo giả. Cấy thử một độ trễ 100 ms giữa lúc nhả và lúc bắt
+đầu canh: mọi phôi NG đều sinh cảnh báo giả, kể cả mẫu chuẩn lỗi, và 33 trên 75 phép kiểm đỏ.</p>
 <p>Có bốn chỗ đặt việc canh, mỗi chỗ một giá:</p>
 <p><strong>Bảng G.15 — Canh phôi NG ở đâu</strong></p>
 <div class="table-wrap"><table>
@@ -48642,7 +48673,7 @@ muộn thì sườn lên đã trôi qua, và máy báo động oan. Cấy thử 
 <tbody><tr>
 <td>Ở cổng ranh giới chu kỳ, sau khi đếm</td>
 <td>Đơn giản, không đụng chu trình</td>
-<td>Bắt đầu canh muộn: bỏ lỡ sườn lên, báo động oan</td>
+<td>Bắt đầu canh muộn: bỏ lỡ sườn lên, cảnh báo giả</td>
 </tr>
 <tr>
 <td><strong>Một bước chèn ngay sau &quot;Nhả phôi&quot;</strong> (bản mẫu chọn)</td>
@@ -48767,7 +48798,7 @@ hình khi chạy, không phải số mục của phụ lục.</p>
 <tr>
 <td>Bắt đầu canh phôi NG muộn 100 ms</td>
 <td>33</td>
-<td>chín trên mười nhóm: mọi phôi NG, kể cả mẫu lỗi, thành báo động oan</td>
+<td>chín trên mười nhóm: mọi phôi NG, kể cả mẫu lỗi, sinh cảnh báo giả</td>
 </tr>
 <tr>
 <td>Xoá cờ phiên ở bước <strong>đầu</strong> của trình tự tắt</td>
@@ -51909,7 +51940,7 @@ nhanh ngang như vậy nhưng không để lại câu hỏi đó.</p>
 </tr>
 </tbody></table></div>
 <blockquote>
-<p>⚠️ <strong>Một ranh giới không có ngoại lệ.</strong> Cửa bảo vệ, dừng khẩn, màn chắn sáng, giới hạn hành trình,
+<p>⚠️ <strong>Một ranh giới không có ngoại lệ.</strong> Cửa bảo vệ, dừng khẩn cấp, màn chắn sáng, giới hạn hành trình,
 mạch an toàn: không tắt, không bỏ qua, không sửa trong phần mềm, dù máy đang dừng và dù có người
 yêu cầu. Nếu máy không chạy được vì một tín hiệu an toàn, lỗi nằm ở phần cứng hoặc ở cách làm việc,
 và người có thẩm quyền về an toàn phải quyết định (Chương 15 mục 15.2).</p>
@@ -55939,7 +55970,7 @@ không bỏ sót.</p>
 <li><strong>Người viết phần mềm</strong> dùng nó lúc thiết kế, như một danh sách việc phải có chỗ trong kiến trúc. Thứ
 thêm vào muộn — cờ phiên chạy, bộ điều kiện chạy, cổng mẫu chuẩn — rẻ khi có từ đầu, đắt khi phải
 chen vào một chương trình đã chạy. Phụ lục G mục G.16 ráp chúng vào cỗ máy mẫu và cho thấy chúng cắm vào
-đúng năm chỗ: khởi động, nút Bắt đầu, ranh giới chu kỳ, một bước trong chu kỳ, lúc tắt.</li>
+đúng năm chỗ: khởi động, nút Start, ranh giới chu kỳ, một bước trong chu kỳ, lúc tắt.</li>
 <li><strong>Người nghiệm thu</strong> chép các dòng cần thiết vào ma trận truy vết yêu cầu (Chương 18 mục 18.7). Mã
 <code>L-xx</code> không đổi qua các lần in, nên dùng thẳng làm mã yêu cầu được. Hai chữ viết tắt sẽ gặp nhiều
 lần: <strong>FAT</strong> là nghiệm thu tại xưởng người làm máy, <strong>SAT</strong> là nghiệm thu tại nhà máy của khách, trên
@@ -56201,7 +56232,7 @@ máy thật hoặc trên bản giả lập.</p>
 <td>L-29</td>
 <td>Phôi NG chỉ coi là đã rời máy khi cảm biến máng thấy nó; việc canh bắt đầu ngay lúc ra lệnh đẩy</td>
 <td>Bắt buộc với máy có loại phôi</td>
-<td>Giữ phôi ở miệng máng: chu kỳ sau không chạy. Chạy bình thường một ca: không có báo động oan nào</td>
+<td>Giữ phôi ở miệng máng: chu kỳ sau không chạy. Chạy bình thường một ca: không có cảnh báo giả nào</td>
 <td>Mục 13.4.9, Phụ lục G mục G.16.3</td>
 </tr>
 <tr>
@@ -56552,7 +56583,7 @@ trong kế hoạch FAT hoặc SAT, và kết quả ghi vào ma trận truy vết
 <p>Các dòng trong danh mục đến từ ba nguồn, và mỗi nguồn có giới hạn của nó:</p>
 <ul>
 <li><strong>Mã nguồn của các phần mềm máy mà sách đối chiếu</strong> (Lời nói đầu) — kể cả một bản yêu cầu chương trình
-mà một phần mềm máy ghi thành chú thích ngay trong mã nguồn: đèn tháp, dừng khẩn, reset, thông báo không
+mà một phần mềm máy ghi thành chú thích ngay trong mã nguồn: đèn tháp, dừng khẩn cấp, reset, thông báo không
 thể khởi động, xác nhận bỏ phôi lỗi, chống kiểm lặp, đếm sản lượng. Những mã nguồn đó nghiêng theo nguồn
 tìm được; một yêu cầu &quot;không gặp ở đâu&quot; trong đó không có nghĩa là ngành không làm.</li>
 <li><strong>Tiêu chuẩn</strong>: IEC 60204-1 (màu đèn báo), ISA-18.2 (quản lý cảnh báo), ISA-101 (giao diện vận hành),

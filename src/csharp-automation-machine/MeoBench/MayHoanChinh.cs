@@ -15,7 +15,7 @@
 //   (2) tín hiệu an toàn CHỈ ĐỌC và việc khoá lệnh theo nó (mục 15.2.2b)
 //   (3) tắt máy sạch: chốt số liệu ca, đẩy nốt nhật ký, trả tài nguyên
 //
-// Mục G.16 thêm BA điểm cắm (CongTruocChuKy, CheDoMauChuan, ThemBuocSau) để
+// Mục G.16 thêm BA chỗ cắm (CongTruocChuKy, CheDoMauChuan, ThemBuocSau) để
 // lớp yêu cầu công nghiệp bọc ngoài cài vào. Để trống thì máy chạy y hệt G.11.
 // -------------------------------------------------------
 using System.Globalization;
@@ -243,7 +243,7 @@ public sealed class MayHoanChinh : IDisposable
     public void DatNguonPhoi(bool coPhoi) => _coPhoiChoSan = coPhoi;
     public void DatMaySau(bool sanSang)   => _maySauSanSang = sanSang;
 
-    // ── Điểm cắm cho lớp yêu cầu công nghiệp (mục G.16) ──
+    // ── Chỗ cắm cho lớp yêu cầu công nghiệp (mục G.16) ──
 
     /// <summary>
     /// Hỏi ở RANH GIỚI chu kỳ, trước khi nhận phôi mới. Từ chối thì máy dừng có trật tự — về
@@ -345,7 +345,7 @@ public sealed class MayHoanChinh : IDisposable
                 break;
             }
 
-            // Điểm cắm G.16 — hỏi TRƯỚC khi nhận phôi mới, nên từ chối ở đây không bỏ dở phôi nào
+            // Chỗ cắm G.16 — hỏi TRƯỚC khi nhận phôi mới, nên từ chối ở đây không bỏ dở phôi nào
             var cong = CongTruocChuKy?.Invoke();
             if (cong is { ChoPhep: false })
             {

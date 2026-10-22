@@ -67,6 +67,7 @@ var nhom = new Dictionary<string, Func<Task>>(StringComparer.OrdinalIgnoreCase)
     ["G14"] = KiemNguoc.Chay,              // kiểm ngược: đối chiếu bất biến với mã thật
     ["I"]   = KiemBaiXuongSong.Chay,       // Phụ lục I: 20 lời giải xương sống
     ["G15"] = KiemCauTruc.Chay,            // cấu trúc: kiểm thử với tới đâu
+    ["G16"] = KiemMayCongNghiep.Chay,      // ráp yêu cầu công nghiệp vào cỗ máy G.11
     ["J"]   = KiemDuongBoQua.Chay,         // mục 17.6 / Phụ lục J: đường bỏ qua có chủ ý
     ["L"]   = KiemYeuCauCongNghiep.Chay,   // Phụ lục L: yêu cầu công nghiệp của chương trình máy
 };
@@ -109,6 +110,7 @@ if (string.IsNullOrEmpty(tuyChon))
     await KiemCauTruc.Chay();
     await KiemDuongBoQua.Chay();
     await KiemYeuCauCongNghiep.Chay();
+    await KiemMayCongNghiep.Chay();
 }
 else
 {

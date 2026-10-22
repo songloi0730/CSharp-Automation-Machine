@@ -89,6 +89,8 @@ public static class DanhMucCanhBao
                 "Kiểm tra cáp nối tiếp và nguồn cấp cho cảm biến",         HanhDongKhiCanhBao.DungNgay),
             new(MaCanhBao.KepKhongXacNhan,     "Kẹp không lên tín hiệu xác nhận",
                 "Kiểm tra áp suất khí và cảm biến kẹp",                    HanhDongKhiCanhBao.DungCuoiChuKy),
+            new(MaCanhBao.PhoiNgKhongRoiMay,   "Phôi NG không thấy rơi vào máng NG",
+                "Tìm phôi trên đường trượt, lấy ra, rồi bấm Xác nhận phôi NG", HanhDongKhiCanhBao.DungNgay),
         }.ToDictionary(t => t.Ma);
 
     public static IReadOnlyCollection<ThongTinCanhBao> TatCa => Bang.Values;

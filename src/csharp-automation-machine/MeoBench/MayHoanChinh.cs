@@ -14,6 +14,9 @@
 //   (1) đường ra khỏi trạng thái báo động: xác nhận cảnh báo rồi Reset
 //   (2) tín hiệu an toàn CHỈ ĐỌC và việc khoá lệnh theo nó (mục 15.2.2b)
 //   (3) tắt máy sạch: chốt số liệu ca, đẩy nốt nhật ký, trả tài nguyên
+//
+// Mục G.16 thêm BA điểm cắm (CongTruocChuKy, CheDoMauChuan, ThemBuocSau) để
+// lớp yêu cầu công nghiệp bọc ngoài cài vào. Để trống thì máy chạy y hệt G.11.
 // -------------------------------------------------------
 using System.Globalization;
 
@@ -108,7 +111,7 @@ public sealed class MayHoanChinh : IDisposable
     private readonly IAnToanChiDoc    _anToan;
     private readonly VaoRaGiaLap      _io;
     private readonly BoiCanh          _bc;
-    private readonly IReadOnlyList<IBuoc> _buocs;
+    private IReadOnlyList<IBuoc> _buocs;
 
     private SemaphoreSlim _congTamDung = new(1, 1);
     private bool _daHuy;
@@ -240,6 +243,36 @@ public sealed class MayHoanChinh : IDisposable
     public void DatNguonPhoi(bool coPhoi) => _coPhoiChoSan = coPhoi;
     public void DatMaySau(bool sanSang)   => _maySauSanSang = sanSang;
 
+    // ── Điểm cắm cho lớp yêu cầu công nghiệp (mục G.16) ──
+
+    /// <summary>
+    /// Hỏi ở RANH GIỚI chu kỳ, trước khi nhận phôi mới. Từ chối thì máy dừng có trật tự — về
+    /// Sẵn sàng, không phải Báo động — giống hệt cách dừng khi khí nén yếu.
+    /// </summary>
+    public Func<KetQuaKiemQuyen>? CongTruocChuKy { get; set; }
+
+    /// <summary>Đang chạy mẫu chuẩn: phôi đi đủ các bước nhưng KHÔNG được đếm, không vào sổ kết quả (mục 13.4.9).</summary>
+    public bool CheDoMauChuan { get; set; }
+
+    /// <summary>Kết quả của phôi cuối cùng đi HẾT chu kỳ trong lần chạy này — kể cả mẫu chuẩn; null nếu chưa phôi nào xong.</summary>
+    public KetQuaDo? KetQuaGanNhat { get; private set; }
+
+    /// <summary>
+    /// Chèn một bước vào chu trình, ngay sau bước có mã cho trước. Chu trình là dữ liệu (G.5.1),
+    /// nên thêm bước không phải sửa vòng chạy. Chỉ làm được khi máy chưa khởi tạo.
+    /// </summary>
+    public void ThemBuocSau(int maBuocTruoc, IBuoc buocMoi)
+    {
+        ArgumentNullException.ThrowIfNull(buocMoi);
+        if (TrangThai != TrangThaiMay.ChuaKhoiTao)
+            throw new InvalidOperationException("Chỉ thêm bước khi máy chưa khởi tạo");
+        var ds = _buocs.ToList();
+        int k = ds.FindIndex(b => b.Ma == maBuocTruoc);
+        if (k < 0) throw new ArgumentException($"Không có bước mã {maBuocTruoc}", nameof(maBuocTruoc));
+        ds.Insert(k + 1, buocMoi);
+        _buocs = ds;
+    }
+
     // ── Chuyển trạng thái: BẮT BUỘC đi qua bảng của G.5.4 ──
     private bool ThuChuyen(LenhMay lenh)
     {
@@ -261,9 +294,9 @@ public sealed class MayHoanChinh : IDisposable
     public TrangThaiNut TrangThaiNut(LenhMay lenh)
     {
         var tn = NutManHinhChinh.Tinh(TrangThai, lenh);
-        if (tn.BatDuoc && lenh is LenhMay.BatDau or LenhMay.ChayTiep && !_anToan.DungKhanDangNhan == false)
+        if (tn.BatDuoc && (lenh is LenhMay.BatDau or LenhMay.ChayTiep) && _anToan.DungKhanDangNhan)
             return new TrangThaiNut(false, "Dừng khẩn đang nhấn");
-        if (tn.BatDuoc && lenh is LenhMay.BatDau or LenhMay.ChayTiep && _anToan.ManChanBiChe)
+        if (tn.BatDuoc && (lenh is LenhMay.BatDau or LenhMay.ChayTiep) && _anToan.ManChanBiChe)
             return new TrangThaiNut(false, "Màn chắn sáng đang bị che");
         return tn;
     }
@@ -287,6 +320,8 @@ public sealed class MayHoanChinh : IDisposable
 
     public async Task ChayAsync(int soChuKy, CancellationToken ct = default)
     {
+        KetQuaGanNhat = null;
+
         // Khoá lệnh theo tín hiệu an toàn — vai trò thứ 4 ở mục 15.2.2
         if (_anToan.DungKhanDangNhan || _anToan.ManChanBiChe)
         {
@@ -307,6 +342,14 @@ public sealed class MayHoanChinh : IDisposable
             if (_yeuCauDungCuoiChuKy)
             {
                 NhatKy.Ghi(MucLog.CanhBao, "MAY", "Dừng cuối chu kỳ theo yêu cầu của giám sát khí nén");
+                break;
+            }
+
+            // Điểm cắm G.16 — hỏi TRƯỚC khi nhận phôi mới, nên từ chối ở đây không bỏ dở phôi nào
+            var cong = CongTruocChuKy?.Invoke();
+            if (cong is { ChoPhep: false })
+            {
+                NhatKy.Ghi(MucLog.CanhBao, "MAY", "Dừng ở ranh giới chu kỳ: {LyDo}", ("LyDo", cong.LyDoTuChoi));
                 break;
             }
 
@@ -337,7 +380,12 @@ public sealed class MayHoanChinh : IDisposable
                     await buoc.ThucThiAsync(_bc, ct).ConfigureAwait(false);
                 }
 
-                GhiNhanPhoi(_bc.KetQua);
+                KetQuaGanNhat = _bc.KetQua;
+                if (CheDoMauChuan)
+                    NhatKy.Ghi(MucLog.ThongTin, "MAUCHUAN", "Mẫu chuẩn dày {Day} mm, kết luận {KetLuan} — không đếm vào sản lượng",
+                               ("Day", _bc.KetQua.ChieuDayMm), ("KetLuan", _bc.KetQua.KetLuan));
+                else
+                    GhiNhanPhoi(_bc.KetQua);
             }
             catch (AlarmException ex)
             {

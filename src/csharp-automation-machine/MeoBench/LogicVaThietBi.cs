@@ -131,6 +131,7 @@ public sealed class CamBienGiaLap : ICamBienChieuDay
     private int    _soLanDaDoc;
     private int    _phoiHienTai = -1;
     private double _chieuDayThatCuaPhoi;
+    private double? _phoiTiepTheoMm;
 
     public CamBienGiaLap(int hatGiong, int soLanDoMoiPhoi = 3, double tamMm = 2.000,
                          double nhieuMm = 0.004, double tyLePhoiLoi = 0.10, double lechPhoiLoi = 0.120)
@@ -148,6 +149,12 @@ public sealed class CamBienGiaLap : ICamBienChieuDay
     public int  HatGiong { get; }
     public bool MoPhongKhongPhanHoi { get; set; }
 
+    /// <summary>
+    /// Giả lập việc người vận hành đặt lên máy một phôi ĐÃ BIẾT chiều dày — mẫu chuẩn (mục G.16).
+    /// Chỉ áp cho phôi kế tiếp; các phôi sau lại theo hạt giống như cũ.
+    /// </summary>
+    public void DatPhoiTiepTheo(double chieuDayThatMm) => _phoiTiepTheoMm = chieuDayThatMm;
+
     public Task<double> DocAsync(CancellationToken ct = default)
     {
         ct.ThrowIfCancellationRequested();
@@ -163,8 +170,9 @@ public sealed class CamBienGiaLap : ICamBienChieuDay
         if (phoi != _phoiHienTai)
         {
             _phoiHienTai         = phoi;
-            _chieuDayThatCuaPhoi = _tamMm
-                + (_ngauNhien.NextDouble() < _tyLePhoiLoi ? _lechPhoiLoi : 0.0);
+            _chieuDayThatCuaPhoi = _phoiTiepTheoMm ?? (_tamMm
+                + (_ngauNhien.NextDouble() < _tyLePhoiLoi ? _lechPhoiLoi : 0.0));
+            _phoiTiepTheoMm      = null;
         }
         _soLanDaDoc++;
 

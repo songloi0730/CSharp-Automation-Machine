@@ -55,6 +55,7 @@ public static class MaCanhBao
     public const int TrucChuaVeGoc        = 10002;
     public const int CamBienKhongPhanHoi  = 20001;  // 20000–20999 cảm biến
     public const int KepKhongXacNhan      = 30001;  // 30000–30999 khí / cơ cấu
+    public const int PhoiNgKhongRoiMay    = 30002;  // mục G.16: phôi NG không thấy rơi vào máng
 }
 
 /// <summary>

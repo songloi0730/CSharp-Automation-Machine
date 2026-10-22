@@ -146,8 +146,12 @@ public sealed class GiamSatTienTrinh(ChinhSachMoLai chinhSach, string duongDanCo
             await p.WaitForExitAsync(ct).ConfigureAwait(false);
             await Task.WhenAll(docRa, docLoi).ConfigureAwait(false);
 
-            var qd = chinhSach.SauKhiThoat(p.ExitCode, File.Exists(duongDanCoPhien));
-            nhatKy.Ghi(qd.MoLai ? MucLog.Loi : MucLog.ThongTin, "GiamSat", "{LyDo}", ("LyDo", qd.LyDo));
+            bool conCoPhien = File.Exists(duongDanCoPhien);
+            var qd = chinhSach.SauKhiThoat(p.ExitCode, conCoPhien);
+            // Mức nhật ký theo việc chương trình máy có CHẾT không — không theo việc có mở lại không:
+            // "chết liên tục, thôi mở lại" là chuyện nặng nhất, không được ghi thành mức Thông tin.
+            bool daChet = p.ExitCode != 0 || conCoPhien;
+            nhatKy.Ghi(daChet ? MucLog.Loi : MucLog.ThongTin, "GiamSat", "{LyDo}", ("LyDo", qd.LyDo));
             if (!qd.MoLai) break;
             await cho(qd.ChoTruoc, ct).ConfigureAwait(false);
         }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>C# cho Automation Machine — v1.0.2.261022</title>
+<title>C# cho Automation Machine — v1.0.2.261023</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -666,7 +666,7 @@ lập trình phần mềm điều khiển máy</p>
 </thead>
 <tbody><tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.2.261022</td>
+<td>v1.0.2.261023</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -24588,8 +24588,13 @@ mà người kiểm tra của khách hàng sẽ yêu cầu.</li>
 <li><strong>Mẫu chuẩn là một vật có vòng đời.</strong> Nó mòn, xước thêm, có khi thất lạc. Quản lý nó như một dụng cụ
 đo: có mã, có chỗ cất, có ngày kiểm lại chính nó.</li>
 </ol>
-<p>Cổng mẫu chuẩn nối vào máy qua bộ điều kiện chạy (Chương 15 mục 15.2.3b): một điều kiện tên
-<code>MAU_CHUAN</code> đọc <code>ChoPhepSanXuat()</code>, và lý do từ chối hiện thẳng trong danh sách cạnh nút Start.</p>
+<p>Cổng mẫu chuẩn nối vào máy ở <strong>hai</strong> chỗ. Chỗ thứ nhất là bộ điều kiện chạy (Chương 15 mục 15.2.3b): một
+điều kiện tên <code>MAU_CHUAN</code> đọc <code>ChoPhepSanXuat()</code>, và lý do từ chối hiện thẳng trong danh sách cạnh nút
+Start. Chỗ thứ hai dễ quên hơn: <strong>ranh giới giữa hai chu kỳ</strong>. Kết quả mẫu có thể hết hiệu lực khi máy
+đang chạy giữa ca, và nếu chỉ hỏi lúc bấm Start thì máy sẽ sản xuất tiếp bằng một kết quả đã hết hạn cho
+tới lần dừng sau. Còn một chi tiết nữa: lúc chạy mẫu, phôi vẫn đi đủ các bước của chu kỳ, nhưng <strong>không
+được đếm</strong> vào sản lượng hay ghi vào sổ kết quả. Phụ lục G mục G.16 ráp cả ba điều này vào cỗ máy mẫu và
+kiểm chúng.</p>
 <h4>Kiểm lại — giới hạn số lần, và giữ lại mọi lần</h4>
 <p>Phôi bị đánh lỗi ở sát ngưỡng thường được cho kiểm lại — đôi khi vì có lý do (phôi đặt lệch, bụi bám),
 đôi khi chỉ vì <em>&quot;thử lần nữa xem sao&quot;</em>. Vấn đề nằm ở con số: một phôi sát ngưỡng có 30 % khả năng lọt
@@ -24674,6 +24679,10 @@ không bao giờ tạo ra sườn lên, nên lần chờ kết thúc ở <em>qu�
 người vận hành phải tự kiểm máng rồi bấm xác nhận — có tên người, để ghi vết. Nếu phôi rơi rất nhanh và
 xung cảm biến ngắn hơn chu kỳ quét, hãy chốt xung ở phía bộ điều khiển (bộ đếm hoặc ngõ vào có chốt)
 thay vì hy vọng vòng quét bắt kịp.</p>
+<p>Cũng vì máy chỉ tin sườn lên xảy ra <strong>sau</strong> lúc gọi <code>BatDauCho</code>, hàm đó phải được gọi <strong>ngay lúc ra lệnh
+đẩy phôi</strong>. Gọi muộn — chẳng hạn đợi xong cả chu kỳ mới gọi — thì phôi đã rơi qua cảm biến từ trước, sườn
+lên đã trôi qua, và máy báo quá hạn oan cho mọi phôi NG. Phụ lục G mục G.16.3 đo được đúng chuyện này
+khi ráp lớp này vào cỗ máy mẫu.</p>
 <hr>
 <h2 id="135-khi-m-mt-d-án-có-sn-tng-tru-tưng-này-có-gp-không">13.5 Khi mở một dự án có sẵn: tầng trừu tượng này có gặp không?</h2>
 <p>Chương này dạy cách đặt interface giữa logic máy và SDK của hãng. Trước khi khép lại, cần
@@ -30198,6 +30207,8 @@ tắt còi vừa xác nhận, người ta sẽ xác nhận mà không đọc —
 thanh cảnh báo vẫn hiện. Một cảnh báo <strong>mới</strong> xuất hiện sau đó vẫn kêu, theo mức của chính nó.</li>
 <li><strong>Xác nhận</strong> là thao tác có chủ ý sau khi đã đọc, theo vòng đời ở mục 15.1.1.</li>
 </ul>
+<p>Mã mẫu dưới đây dùng tên tiếng Việt cho bốn mức của <code>AlarmSeverity</code>: <code>Thap</code> là <code>Warning</code>, <code>Vua</code> là
+<code>Minor</code>, <code>Cao</code> là <code>Major</code>, <code>KhanCap</code> là <code>Critical</code>.</p>
 <p><strong>Code 15.13 — Đèn tháp và còi ở một chỗ (rút gọn từ <code>src/csharp-automation-machine/MeoBench/YeuCauCongNghiep2.cs</code>)</strong></p>
 <pre><code class="language-csharp">public sealed class DenThapVaCoi
 {
@@ -30215,7 +30226,7 @@ thanh cảnh báo vẫn hiện. Một cảnh báo <strong>mới</strong> xuất 
     public TinHieuThap Tinh(TrangThaiMay trangThai, IReadOnlyCollection&lt;CanhBaoChuaXacNhan&gt; chuaXacNhan)
     {
         var mucKeu = chuaXacNhan.Where(c =&gt; !_daTatCoi.Contains(c.Ma))      // bỏ cái đã tắt còi
-                                .Select(c =&gt; (int)c.Muc).DefaultIfEmpty(0).Max();
+                                .Select(c =&gt; (int)c.Muc).DefaultIfEmpty(0).Max();   // không còn gì kêu → 0
         var coi = mucKeu switch
         {
             (int)MucUuTienCanhBao.KhanCap =&gt; KieuCoi.LienTuc,
@@ -30239,7 +30250,9 @@ thanh cảnh báo vẫn hiện. Một cảnh báo <strong>mới</strong> xuất 
 }
 </code></pre>
 <p>Đoạn mã này là <strong>nơi duy nhất</strong> quyết định đèn và còi. Muốn đổi sang quy ước A của Bảng 15.14 cho một
-nhà máy khác, chỉ sửa khối <code>switch</code> cuối — không phải đi tìm mọi chỗ bật đèn đỏ trong cả chương trình.</p>
+nhà máy khác, chỉ sửa khối <code>switch</code> cuối — không phải đi tìm mọi chỗ bật đèn đỏ trong cả chương trình.
+Phụ lục G mục G.16 cắm đúng lớp này vào cỗ máy mẫu và kiểm ba điều: tắt còi thì còi im mà đèn vẫn đỏ
+nhấp nháy, cảnh báo mới sau đó thì còi kêu lại, xác nhận hết thì đèn đỏ đứng yên chờ Reset.</p>
 <hr>
 <h2 id="152-safety-interlock-emergency-stop">15.2  Safety Interlock &amp; Emergency Stop</h2>
 <h3>15.2.1  Ba khái niệm hay bị lẫn</h3>
@@ -30935,12 +30948,17 @@ trình tự xử lý hợp lý (về gốc trước khi chọn công thức).</l
 dòng lý do nữa, kèm thông báo lỗi.</li>
 <li><strong>Đây không phải cảnh báo.</strong> Điều kiện chạy chưa đạt là một <strong>trạng thái</strong> — không cần xác nhận,
 không vào lịch sử cảnh báo, không bật còi. Nếu đưa nó vào hệ thống cảnh báo, mỗi lần giao ca sẽ sinh
-ra một loạt cảnh báo &quot;rác&quot; — đúng thứ ISA-18.2 cảnh báo ở mục 15.3.4. Cảnh báo chỉ sinh ra khi một
-điều kiện <em>đang đạt</em> thì mất đi trong lúc chạy — lúc đó nó là interlock, đã bàn ở mục 15.2.2.</li>
+ra một loạt cảnh báo &quot;rác&quot; — đúng thứ ISA-18.2 cảnh báo ở mục 15.3.4. Chuyện khác hẳn khi một điều
+kiện <em>đang đạt</em> thì mất đi trong lúc chạy. Khi đó máy phải phản ứng, theo hậu quả: dừng ngay nếu đó
+là an toàn — một interlock, đã bàn ở mục 15.2.2; dừng ở cuối chu kỳ nếu chỉ là không được nhận phôi
+mới, như ổ dữ liệu sắp đầy hay kết quả mẫu chuẩn vừa hết hiệu lực (Phụ lục G mục G.16.3). Cách nào
+thì lý do dừng cũng phải hiện lên cho người vận hành.</li>
 </ol>
 <p>Trên màn hình chính, danh sách này hiện <strong>thường trực</strong> mỗi khi máy đang chờ mà chưa đủ điều kiện, ngay
 cạnh nút Start đang bị khoá — không đợi người vận hành bấm rồi mới bật hộp thoại báo lỗi. Người vận
-hành nhìn vào là biết cần làm gì, theo thứ tự nào; danh sách rỗng thì nút Start sáng lên.</p>
+hành nhìn vào là biết cần làm gì, theo thứ tự nào; danh sách rỗng thì nút Start sáng lên. Phụ lục G
+mục G.16 khai báo mười điều kiện kiểu này cho cỗ máy mẫu, và phép kiểm của nó cho thấy năm lý do hiện ra
+trong một lần bấm.</p>
 <h3>15.2.4  Authentication — xác thực danh tính, không chỉ phân quyền</h3>
 <p><code>UserLevel</code> và <code>RiskTier</code> ở mục 15.2.3 giải quyết bài toán <strong>authorization</strong> (đã đăng nhập rồi thì được làm gì) rất đầy đủ. Nhưng authorization giả định một điều đứng trước nó: <strong>authentication</strong><!--idx:Authentication--> (ai đang đăng nhập) đã đáng tin cậy. Đây là điểm mù thường gặp trong nhiều hệ thống automation production — vòng phân quyền được thiết kế cẩn thận, trong khi phần xác thực danh tính lại bị bỏ qua hoàn toàn.</p>
 <p><strong>Mật khẩu không bao giờ lưu dạng đọc được.</strong> Không hiếm gặp trong thực tế: mật khẩu lưu plaintext ngay trong file cấu hình hoặc mã nguồn, thậm chí seed mặc định là chuỗi rỗng cho mọi role. Nguyên tắc tối thiểu: hash bằng thuật toán chuyên cho mật khẩu (BCrypt, Argon2 — không phải MD5/SHA1 vốn được thiết kế để chạy nhanh, ngược hoàn toàn với mục tiêu chống brute-force của hash mật khẩu), so sánh bằng hàm verify của cùng thư viện, không bao giờ decrypt ngược lại để so sánh chuỗi.</p>
@@ -34891,7 +34909,7 @@ Bảng dưới là danh sách để giao việc đó cho một người cụ th�
 <td>Tắt</td>
 </tr>
 <tr>
-<td>Tiết kiệm điện khe PCIe</td>
+<td>Tiết kiệm điện khe PCIe (ASPM)</td>
 <td>Tuỳ máy</td>
 <td>Card chuyển động, card ghép camera trả lời chậm hoặc mất kết nối</td>
 <td>Tắt</td>
@@ -34904,7 +34922,7 @@ Bảng dưới là danh sách để giao việc đó cho một người cụ th�
 </tr>
 <tr>
 <td>Hộp thoại khi chương trình chết</td>
-<td>Tuỳ cấu hình</td>
+<td>Tuỳ cấu hình báo cáo lỗi của Windows: có máy hiện, có máy không</td>
 <td>Khi hộp thoại còn chờ người bấm, tiến trình chưa thoát hẳn — bộ giám sát (mục 19.5.4) chờ theo</td>
 <td>Không hiện hộp thoại</td>
 </tr>
@@ -34946,8 +34964,9 @@ Bảng dưới là danh sách để giao việc đó cho một người cụ th�
 </tr>
 </tbody></table></div>
 <p>Phần lớn bảng trên làm được bằng một tệp lệnh chạy một lần, bằng quyền quản trị, ngay sau khi cài
-Windows. Các mã GUID trong tệp là mã thật của Windows — đọc được bằng <code>powercfg /aliases</code> và
-<code>powercfg /query</code>:</p>
+Windows. <code>powercfg</code> là công cụ dòng lệnh có sẵn trong Windows để chỉnh chế độ nguồn điện. Các mã GUID
+trong tệp (chuỗi dạng <code>2a737441-1930-…</code>) là mã định danh thật của từng mục cài đặt — đọc được bằng
+<code>powercfg /aliases</code> và <code>powercfg /query</code>:</p>
 <p><strong>Code 17.8 — Chỉnh nguồn điện và hộp thoại lỗi cho máy chạy liên tục (PowerShell, quyền quản trị)</strong></p>
 <pre><code class="language-powershell">#Requires -RunAsAdministrator
 
@@ -35097,7 +35116,7 @@ và cũng là những việc bộ phận an ninh của nhà máy sẽ hỏi đ�
 <tr>
 <th>Hạng mục</th>
 <th>Nên làm</th>
-<th>Hay gặp ngoài thực tế</th>
+<th>Cách làm dễ gặp, nên tránh</th>
 </tr>
 </thead>
 <tbody><tr>
@@ -38488,12 +38507,12 @@ chạy một chương trình thử trên .NET 9, mỗi dòng một kiểu lỗi:
 <tr>
 <td><code>Task</code> bị lỗi mà không ai <code>await</code></td>
 <td><strong>Sống</strong></td>
-<td>Lỗi bị nuốt; chỉ có sự kiện <code>TaskScheduler.UnobservedTaskException</code>, và chỉ khi bộ gom rác dọn tới <code>Task</code> đó</td>
+<td>Lỗi bị nuốt; chỉ có sự kiện <code>TaskScheduler.UnobservedTaskException</code>, và chỉ khi bộ gom rác dọn tới <code>Task</code> đó — có khi vài phút sau, có khi không bao giờ nếu chương trình chưa cần dọn bộ nhớ</td>
 </tr>
 <tr>
 <td>Ngoại lệ trên luồng giao diện</td>
-<td>Tuỳ cấu hình</td>
-<td>WinForms: <code>Application.ThreadException</code>; WPF: <code>DispatcherUnhandledException</code> (mục 8.1.1)</td>
+<td><strong>Sống nếu có bộ xử lý</strong></td>
+<td>WinForms: <code>Application.ThreadException</code>; WPF: <code>DispatcherUnhandledException</code> với <code>e.Handled = true</code> (mục 8.1.1). Không đăng ký thì hành vi mặc định khác nhau giữa hai nền — đừng dựa vào nó</td>
 </tr>
 <tr>
 <td>Vượt hạn mức đối tượng GDI hoặc USER</td>
@@ -38507,8 +38526,9 @@ chạy một chương trình thử trên .NET 9, mỗi dòng một kiểu lỗi:
 này tuỳ máy, nhưng không bằng 0 — và trong khoảng đó <strong>các luồng khác vẫn chạy</strong>: luồng
 trình tự vẫn có thể ra lệnh cho trục. Đó là lý do lưới an toàn ở Code 8.0b đưa máy về trạng thái an
 toàn <em>trước</em>, rồi mới ghi nhật ký.</li>
-<li><strong>Mã thoát của tiến trình chết vì ngoại lệ là <code>0xE0434352</code></strong> (đọc kiểu <code>int</code> là −532 462 766).
-Nhưng nếu luồng chính kết thúc <em>trong</em> ba giây đó, tiến trình trả về <strong>0</strong> như một lần thoát bình
+<li><strong>Tiến trình chết vì ngoại lệ trả về mã thoát <code>0xE0434352</code></strong> (đọc kiểu <code>int</code> là −532 462 766). Mã
+thoát là con số một tiến trình trả lại cho Windows khi kết thúc; quy ước 0 là bình thường, khác 0 là
+có chuyện. Nhưng nếu luồng chính kết thúc <em>trong</em> ba giây đó, tiến trình trả về <strong>0</strong> như một lần thoát bình
 thường. Đo thử: hàm <code>async void</code> ném lỗi ở mili-giây thứ 50, <code>Main</code> kết thúc ở mili-giây thứ 1 000
 → mã thoát 0; cho <code>Main</code> chờ 10 giây → mã thoát <code>0xE0434352</code>. Mã thoát vì vậy <strong>không đủ</strong> để biết
 chương trình đã chết hay chưa. Mục 19.5.3 có cách đáng tin hơn.</li>
@@ -38547,8 +38567,13 @@ Phải để hệ thống tự chụp, và có hai cách tuỳ chương trình c
 <td>Không đo trong sách — làm theo hướng dẫn &quot;Collecting User-Mode Dumps&quot; của Microsoft</td>
 </tr>
 </tbody></table></div>
-<p>Với .NET, chỉ cần ba dòng trong bộ giám sát:</p>
-<pre><code class="language-csharp">var lenh = new ProcessStartInfo(@&quot;C:\MeoFrame\MeoFrame.exe&quot;) { UseShellExecute = false };
+<p>Biến môi trường là các cặp tên–giá trị mà Windows trao cho một tiến trình lúc khởi chạy; runtime .NET đọc
+ba biến trên ngay khi chương trình bắt đầu. Đặt chúng trong lệnh khởi chạy thì chỉ chương trình máy chịu
+ảnh hưởng, không đụng tới chương trình nào khác trên máy. Với .NET, chỉ cần ba dòng trong bộ giám sát:</p>
+<pre><code class="language-csharp">var lenh = new ProcessStartInfo(@&quot;C:\MeoFrame\MeoFrame.exe&quot;)
+{
+    UseShellExecute = false,                 // phải là false thì mới truyền được biến môi trường
+};
 lenh.Environment[&quot;DOTNET_DbgEnableMiniDump&quot;] = &quot;1&quot;;
 lenh.Environment[&quot;DOTNET_DbgMiniDumpType&quot;]  = &quot;2&quot;;                       // kèm heap: đủ để tìm rò rỉ
 lenh.Environment[&quot;DOTNET_DbgMiniDumpName&quot;]  = @&quot;D:\MeoFrameData\Dump\may_%p.dmp&quot;;
@@ -38592,13 +38617,18 @@ vị trí nào, chu kỳ dở tới bước nào.</p>
     }
 }
 </code></pre>
+<p>Ghi vào tệp tạm rồi đổi tên là vì phép đổi tên trong cùng một ổ đĩa không có trạng thái nửa vời: tệp
+đích hoặc vẫn là bản cũ, hoặc đã là bản mới đầy đủ. Mất điện giữa lúc ghi chỉ để lại một tệp <code>.tmp</code>
+dở dang, còn cờ thì không bao giờ là một nửa.</p>
 <p>Khi <code>Mo</code> báo <code>LanTruocTatBatThuong</code>, chương trình phải làm ba việc trước khi cho người vận hành chạm
 vào bất cứ nút nào:</p>
 <ol>
 <li><strong>Vào trạng thái chưa khởi tạo và khoá Start cho tới khi về gốc xong</strong> — chạy tiếp là xác minh,
 không phải bấm chạy lại (Chương 12 mục 12.2.4).</li>
 <li><strong>Hiện một cảnh báo nói rõ chuyện gì đã xảy ra</strong>: <em>&quot;Phần mềm đã thoát bất thường lúc 02:14 (phiên
-bản 2.3.0). Kiểm tra phôi trên máy trước khi về gốc.&quot;</em> — kèm đường dẫn tệp dump nếu có.</li>
+bản 2.3.0). Kiểm tra phôi trên máy trước khi về gốc.&quot;</em> — kèm đường dẫn tệp dump nếu có. Và đừng chỉ
+<em>dặn</em>: chưa có người đã đăng nhập bấm xác nhận đã kiểm máy thì nút về gốc cũng chưa được bấm, vì phôi
+còn kẹt trong tay kẹp có thể rơi ngay ở chuyển động đầu tiên (Phụ lục G mục G.16.3).</li>
 <li><strong>Ghi vào nhật ký và đếm.</strong> Chương trình chết bao nhiêu lần trong tuần là con số phải có trong báo
 cáo — một lần là sự cố, ba lần một tuần là lỗi phải sửa.</li>
 </ol>
@@ -38639,8 +38669,10 @@ while (true)
 {
     using var p = Process.Start(lenh)!;                                 // lenh: Bảng 19.8
     await p.WaitForExitAsync().ConfigureAwait(false);
-    var qd = chinhSach.SauKhiThoat(p.ExitCode, File.Exists(duongDanCoPhien));
-    nhatKy.Ghi(MucLog.Loi, &quot;GiamSat&quot;, &quot;{LyDo}&quot;, (&quot;LyDo&quot;, qd.LyDo));
+    bool conCoPhien = File.Exists(duongDanCoPhien);
+    var qd = chinhSach.SauKhiThoat(p.ExitCode, conCoPhien);
+    bool daChet = p.ExitCode != 0 || conCoPhien;                         // thoát bình thường: không phải lỗi
+    nhatKy.Ghi(daChet ? MucLog.Loi : MucLog.ThongTin, &quot;GiamSat&quot;, &quot;{LyDo}&quot;, (&quot;LyDo&quot;, qd.LyDo));
     if (!qd.MoLai) break;                                               // báo người, không thử nữa
     await Task.Delay(qd.ChoTruoc).ConfigureAwait(false);
 }
@@ -38670,8 +38702,8 @@ bất thường&quot;, và bộ giám sát dừng sau khi lần hai tắt đúng
 chỉ xuất hiện ở nhà máy.</p>
 <h3>19.6.1  Hai loại đồng hồ — đo khoảng thời gian không bằng giờ tường</h3>
 <p><code>DateTime.Now</code> là <strong>giờ tường</strong>: giờ để hiển thị cho người. Nó có thể bị chỉnh — đồng bộ giờ kéo tới
-hay lùi vài giây, người vận hành sửa tay, máy đổi múi giờ. <code>Stopwatch</code> và <code>Environment.TickCount64</code> là
-<strong>đồng hồ đơn điệu</strong>: chỉ đi tới, không ai chỉnh được.</p>
+hay lùi vài giây, người vận hành sửa tay, máy đổi múi giờ. <code>Stopwatch</code> và <code>Environment.TickCount64</code> (số
+mili-giây kể từ lúc máy khởi động) là <strong>đồng hồ đơn điệu</strong>: chỉ tăng, không ai chỉnh được.</p>
 <p>Quy tắc rút ra chỉ có một dòng: <strong>mốc thời gian</strong> (ghi vào bản ghi sản phẩm, nhật ký) dùng giờ tường;
 <strong>khoảng thời gian</strong> (hạn giờ chờ cảm biến, nhịp máy, thời gian một bước) dùng đồng hồ đơn điệu.</p>
 <p>Trong mã máy thật, đo khoảng thời gian bằng <code>DateTime.Now - batDau</code> là cách <strong>hay gặp</strong>. Code 3.27 ở
@@ -38687,7 +38719,7 @@ giây bằng giờ tường. Bảng dưới là điều xảy ra với một h�
 </tr>
 </thead>
 <tbody><tr>
-<td>Đồng bộ giờ kéo lùi 1 giờ ở giây thứ 3</td>
+<td>Đồng bộ giờ kéo lùi 1 giờ ở giây thứ 3 (máy đã lệch lâu ngày, nay mới được đồng bộ lần đầu)</td>
 <td><strong>Không hết hạn</strong> sau 11 giây — chờ thêm gần một tiếng. Cảm biến hỏng mà máy đứng chờ cả tiếng không báo</td>
 <td>Hết hạn đúng lúc</td>
 </tr>
@@ -38734,7 +38766,8 @@ giờ địa phương.</p>
 máy sau ghi phôi đi vào lúc 08:00:02 — lệch ba giây là đủ để thứ tự bị đảo và hai bản ghi không ghép
 được với nhau. Dữ liệu gửi lại sau khi mất kết nối MES (Chương 13 mục 13.1.2) cũng được sắp xếp theo mốc
 thời gian của máy gửi.</p>
-<p>Đo trên một máy Windows 11 không gia nhập domain: dịch vụ giờ của Windows (<code>w32time</code>) ở chế độ
+<p>Domain là hệ thống quản lý máy tính tập trung của phòng IT; máy văn phòng thường gia nhập, máy trong
+xưởng thường không. Đo trên một máy Windows 11 không gia nhập domain: dịch vụ giờ của Windows (<code>w32time</code>) ở chế độ
 <strong>Manual</strong>, đang <strong>dừng</strong>, và chỉ tự khởi động khi máy gia nhập domain. Một máy tính công nghiệp đứng
 một mình, không có Internet, rất có thể <strong>không bao giờ đồng bộ giờ</strong>. Đồng hồ máy tính trôi vài giây
 mỗi tuần; sau một năm, lệch vài phút là chuyện thường.</p>
@@ -38766,7 +38799,9 @@ khởi động — đúng hướng, nhưng chỉ lúc khởi động: máy chạ
 ba tuần.</p>
 <p>Ngưỡng nên tính theo <strong>số ngày còn chạy được</strong>, không theo phần trăm. Ổ 1 TB còn 5 % là 50 GB; ổ 128 GB
 còn 5 % chỉ đủ vài giờ ghi ảnh. Số ngày cần một con số đo thật: máy ghi bao nhiêu byte mỗi ngày (cộng
-nhật ký, ảnh, bản ghi sản phẩm, dump). Có con số đó, ba mức tự nhiên hiện ra:</p>
+nhật ký, ảnh, bản ghi sản phẩm, dump). Cách đo rẻ nhất: trong tuần chạy thử đầu tiên, mỗi ngày ghi dung
+lượng còn trống của ổ dữ liệu vào nhật ký, rồi lấy mức giảm trung bình. Có con số đó, ba mức tự nhiên
+hiện ra:</p>
 <p><strong>Bảng 19.10 — Ba mức của ổ dữ liệu</strong></p>
 <div class="table-wrap"><table>
 <thead>
@@ -38818,7 +38853,7 @@ chết&quot; — và chương trình mở lại (mục 19.5.4) sẽ chết tiế
         }
     }
 
-    public void GhiLai() =&gt; DangNgung = false;   // gọi khi bộ canh ổ đĩa báo đã có lại chỗ
+    public void GhiLai() =&gt; DangNgung = false;   // gọi khi ổ đã có lại chỗ — bộ canh ổ đĩa báo, hoặc người bấm
 }
 </code></pre>
 <p>Bộ lọc <code>when</code> chỉ nuốt <strong>đúng</strong> lỗi ổ đầy. Mọi lỗi tệp khác — tệp đang bị chương trình khác giữ, đường
@@ -38831,7 +38866,8 @@ ghi một dòng chỉ số mỗi 10 phút</strong> — bộ nhớ riêng, số h
 lượng ổ dữ liệu. Một tuần sau mở nhật ký ra là thấy xu hướng, không cần ai trực.</p>
 <p>Hai con số trong dòng đó cần giải thích riêng, vì chúng gây ra một kiểu chết rất khó chẩn đoán. Windows
 giới hạn mỗi tiến trình ở <strong>10 000 đối tượng GDI</strong> (ảnh, bút vẽ, phông chữ) và <strong>10 000 đối tượng
-USER</strong> (cửa sổ, control). Đo trên máy thử, giá trị trong registry đúng bằng 10 000 cho cả hai, và:</p>
+USER</strong> (cửa sổ, control). Đo trên máy thử, hai giá trị <code>GDIProcessHandleQuota</code> và <code>USERProcessHandleQuota</code> trong khoá registry
+<code>HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows</code> đều bằng 10 000, và:</p>
 <ul>
 <li>Tạo ảnh GDI liên tục không giải phóng: hỏng ở khoảng lần thứ <strong>9 995</strong>, với thông báo
 <strong><code>A generic error occurred in GDI+</code></strong> — không có chữ nào nói tới handle hay giới hạn.</li>
@@ -38847,6 +38883,7 @@ trong các mã nguồn sách đối chiếu tự theo dõi hai con số này.</p
     uint gdi = 0, user = 0;
     if (OperatingSystem.IsWindows())
     {
+        // GetGuiResources là hàm Win32, khai báo bằng P/Invoke (Phụ lục A)
         gdi  = NativeMethods.GetGuiResources(p.Handle, 0);   // 0 = GR_GDIOBJECTS
         user = NativeMethods.GetGuiResources(p.Handle, 1);   // 1 = GR_USEROBJECTS
     }
@@ -38864,7 +38901,10 @@ public static bool NghiRoRi(IReadOnlyList&lt;double&gt; chuoi, double tiLeBuocTa
 }
 </code></pre>
 <p>Cách đọc xu hướng: một chỉ số <strong>leo đều</strong> qua nhiều giờ là dấu hiệu rò rỉ; một chỉ số <strong>lên rồi tụt</strong>
-theo nhịp là bộ gom rác đang làm việc bình thường. Khi thấy leo đều, dùng dump (mục 19.2) để tìm ai
+theo nhịp là bộ gom rác đang làm việc bình thường. Hàm <code>NghiRoRi</code> biến câu đó thành hai điều kiện: ít
+nhất 80 % số lần đo cao hơn lần đo ngay trước nó, <strong>và</strong> giá trị cuối cao hơn giá trị đầu ít nhất 20 %. Điều
+kiện thứ hai loại những chuỗi tăng đều nhưng không đáng kể. Hàm cần ít nhất sáu lần đo — một giờ, nếu
+ghi mỗi 10 phút. Khi thấy leo đều, dùng dump (mục 19.2) để tìm ai
 đang giữ các đối tượng đó. Đặt ngưỡng cảnh báo GDI và USER ở khoảng 8 000 — đủ sớm để kịp lên lịch dừng
 máy, thay vì để chương trình tự chết giữa ca.</p>
 <h2 id="197-gói-chn-đoán-mt-nút-đ-ngưi-xa-nhìn-thy-máy">19.7 Gói chẩn đoán — một nút để người ở xa nhìn thấy máy</h2>
@@ -38955,7 +38995,8 @@ the file … because it is being used by another process&quot;</em>, đúng tệ
 được; <code>File.Copy</code> thì chép được. Gói chẩn đoán cần <strong>đọc</strong> nội dung để che mật khẩu, nên mở bằng
 <code>FileStream</code> với <code>FileShare.ReadWrite</code> — đọc được mà không chặn bộ ghi.</li>
 <li><strong>Che bí mật theo tên khoá</strong>, cho cả JSON lẫn INI: khoá nào có chữ <code>password</code>, <code>pwd</code>, <code>matkhau</code>, <code>secret</code>,
-<code>token</code>, <code>connectionstring</code> thì giá trị thành <code>***</code>. Tham số thường giữ nguyên — người hỗ trợ cần thấy
+<code>token</code>, <code>connectionstring</code> thì giá trị thành <code>***</code>: dòng JSON <code>&quot;MatKhauMes&quot;: &quot;abc123&quot;</code> thành
+<code>&quot;MatKhauMes&quot;: &quot;***&quot;</code>, dòng INI <code>Password=abc123</code> thành <code>Password=***</code>. Tham số thường giữ nguyên — người hỗ trợ cần thấy
 tốc độ trục là 50 chứ không phải <code>***</code>.</li>
 <li><strong>Tệp giới thiệu</strong> trong gói ghi rõ máy nào, phiên bản nào, tạo lúc nào, <strong>và thứ gì đã bị bỏ ra ngoài</strong>
 (vượt giới hạn dung lượng, tệp không còn). Người đọc gói không phải đoán vì sao thiếu nhật ký thứ Hai.</li>
@@ -39127,6 +39168,12 @@ dọn dẹp thành một vòng chết – mở lại – chết. Bắt <strong>�
 Hàm đó mở tệp với <code>FileShare.Read</code>; bộ ghi nhật ký đang giữ tệp hôm nay để ghi nên lệnh mở ném <em>&quot;being
 used by another process&quot;</em> — đúng tệp quan trọng nhất là tệp không lấy được. Mở bằng <code>FileStream</code> với
 <code>FileShare.ReadWrite | FileShare.Delete</code> (mục 19.7).</p>
+<p><strong>Lỗi 15: Bộ giám sát chọn mức nhật ký theo việc có mở lại hay không.</strong>
+Viết <code>MoLai ? Lỗi : Thông tin</code> nghe hợp lý, nhưng &quot;không mở lại&quot; gồm hai chuyện trái ngược: chương trình
+tắt đúng cách, và chương trình chết liên tục tới mức bộ giám sát bỏ cuộc. Chuyện thứ hai là chuyện nặng
+nhất trong cả mục 19.5, vậy mà lại được ghi ở mức Thông tin. Ngược lại, ghi cố định mức Lỗi thì mỗi lần
+tắt máy cuối ca lại có một dòng lỗi oan. Chọn mức theo <strong>sự kiện</strong> — chương trình có chết hay không: mã
+thoát khác 0 hoặc cờ phiên còn trên đĩa (Code 19.16).</p>
 <!-- SECTION: LoiKet -->
 <hr>
 <h1 id="li-kt">Lời kết</h1>
@@ -48528,7 +48575,7 @@ một hàm duy nhất từ trạng thái máy và các cảnh báo chưa xác nh
 &quot;đã làm xong việc gì đó&quot; đều mang tên người (L-34, L-49); và một nút tạo gói chẩn đoán (L-42, mục 19.7).</p>
 <h3>G.16.2  Ba điểm cắm, và vì sao chỉ cần ba</h3>
 <p><code>MayCongNghiep</code> <strong>bọc</strong> cỗ máy G.11 chứ không viết lại nó. Để bọc được, <code>MayHoanChinh</code> chỉ phải mở
-thêm ba điểm cắm:</p>
+thêm ba <strong>điểm cắm</strong> — chỗ mà mã bên ngoài gắn hành vi của mình vào mà không phải sửa lớp đó:</p>
 <pre><code class="language-csharp">// Hỏi ở ranh giới chu kỳ, TRƯỚC khi nhận phôi mới
 public Func&lt;KetQuaKiemQuyen&gt;? CongTruocChuKy { get; set; }
 
@@ -48556,7 +48603,8 @@ if (CheDoMauChuan)
 else
     GhiNhanPhoi(_bc.KetQua);
 </code></pre>
-<p>Để trống cả ba thì cỗ máy chạy y hệt G.11, và sáu mươi hai phép kiểm của nhóm <code>G9</code> vẫn xanh nguyên.
+<p>Dòng <code>cong is { ChoPhep: false }</code> đọc là: <em>có cổng, và cổng từ chối</em>. Không cắm cổng nào thì <code>cong</code> là
+<code>null</code>, điều kiện sai, và vòng chạy đi tiếp như cũ. Để trống cả ba thì cỗ máy chạy y hệt G.11, và sáu mươi hai phép kiểm của nhóm <code>G9</code> vẫn xanh nguyên.
 Hai điểm cắm đầu đi theo khuôn đã có: cổng ở ranh giới chu kỳ là <strong>dạng tổng quát của việc dừng khi
 khí nén yếu</strong> (bài G.4.4): dừng có trật tự, về Sẵn sàng, không phải Báo động. Điểm cắm thứ ba là phần
 thưởng của quyết định ở bài G.5.1: chu trình là <strong>dữ liệu</strong>, một danh sách bước, nên chèn thêm một bước
@@ -55893,7 +55941,9 @@ thêm vào muộn — cờ phiên chạy, bộ điều kiện chạy, cổng m�
 chen vào một chương trình đã chạy. Phụ lục G mục G.16 ráp chúng vào cỗ máy mẫu và cho thấy chúng cắm vào
 đúng năm chỗ: khởi động, nút Bắt đầu, ranh giới chu kỳ, một bước trong chu kỳ, lúc tắt.</li>
 <li><strong>Người nghiệm thu</strong> chép các dòng cần thiết vào ma trận truy vết yêu cầu (Chương 18 mục 18.7). Mã
-<code>L-xx</code> không đổi qua các lần in, nên dùng thẳng làm mã yêu cầu được.</li>
+<code>L-xx</code> không đổi qua các lần in, nên dùng thẳng làm mã yêu cầu được. Hai chữ viết tắt sẽ gặp nhiều
+lần: <strong>FAT</strong> là nghiệm thu tại xưởng người làm máy, <strong>SAT</strong> là nghiệm thu tại nhà máy của khách, trên
+dây chuyền thật.</li>
 <li><strong>Người tiếp quản một máy có sẵn</strong> đánh dấu có/không cho từng dòng — trong một buổi chiều là biết phần
 mềm đó thiếu gì, và thiếu ở đâu thì nguy hiểm nhất.</li>
 </ul>
@@ -55990,10 +56040,10 @@ máy thật hoặc trên bản giả lập.</p>
 </tr>
 <tr>
 <td>L-10</td>
-<td>Lần khởi động sau một lần chết biết là lần trước tắt bất thường, vào trạng thái chưa khởi tạo, hiện cảnh báo</td>
+<td>Lần khởi động sau một lần chết biết là lần trước tắt bất thường, vào trạng thái chưa khởi tạo, hiện cảnh báo; chưa cho trục chạy khi chưa có người xác nhận đã kiểm máy</td>
 <td>Bắt buộc</td>
-<td>Tắt chương trình bằng Task Manager rồi mở lại</td>
-<td>Mục 19.5.3</td>
+<td>Tắt chương trình bằng Task Manager rồi mở lại: có cảnh báo, nút về gốc chưa bấm được</td>
+<td>Mục 19.5.3, Phụ lục G mục G.16.3</td>
 </tr>
 <tr>
 <td>L-11</td>
@@ -56149,10 +56199,10 @@ máy thật hoặc trên bản giả lập.</p>
 </tr>
 <tr>
 <td>L-29</td>
-<td>Phôi NG chỉ coi là đã rời máy khi cảm biến máng thấy nó</td>
+<td>Phôi NG chỉ coi là đã rời máy khi cảm biến máng thấy nó; việc canh bắt đầu ngay lúc ra lệnh đẩy</td>
 <td>Bắt buộc với máy có loại phôi</td>
-<td>Giữ phôi ở miệng máng: chu kỳ sau không chạy</td>
-<td>Mục 13.4.9</td>
+<td>Giữ phôi ở miệng máng: chu kỳ sau không chạy. Chạy bình thường một ca: không có báo động oan nào</td>
+<td>Mục 13.4.9, Phụ lục G mục G.16.3</td>
 </tr>
 <tr>
 <td>L-30</td>
@@ -56470,7 +56520,7 @@ trong kế hoạch FAT hoặc SAT, và kết quả ghi vào ma trận truy vết
 <tr>
 <td>6</td>
 <td>Mở cửa, chưa về gốc, chưa đăng nhập — rồi bấm Start</td>
-<td>Không chạy; màn hình hiện đủ ba lý do cùng lúc</td>
+<td>Không chạy; màn hình hiện cả ba lý do đó (cùng mọi lý do khác đang có) trong một lần</td>
 <td>L-33</td>
 </tr>
 <tr>

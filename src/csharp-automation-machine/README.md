@@ -27,17 +27,17 @@ cd MeoFrameMiniMixed  && dotnet run    # 368 dòng · 1 interface (IStep)
 
 ## MeoBench — lời giải mẫu Phụ lục G
 
-Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **788 phép kiểm**: 294 cho **đủ 40** bài thực hành,
+Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **789 phép kiểm**: 294 cho **đủ 40** bài thực hành,
 62 cho **cỗ máy ghép hoàn chỉnh** (G.11), 34 cho **tách cấu hình** (G.12), 68 cho **năng lực vận
 hành máy thật** (G.13), 9 kiểm ngược (G.14), 20 kiểm cấu trúc (G.15), 27 cho các khẳng định về ngôn
-ngữ ở Phụ lục H, 87 cho 20 lời giải ở Phụ lục I, 18 cho đường bỏ qua có chủ ý (mục 17.6, Phụ lục J), 94 cho các yêu cầu công nghiệp của Phụ lục L
+ngữ ở Phụ lục H, 87 cho 20 lời giải ở Phụ lục I, 18 cho đường bỏ qua có chủ ý (mục 17.6, Phụ lục J), 95 cho các yêu cầu công nghiệp của Phụ lục L
 (chết–dump–mở lại chạy thật, đồng hồ, ổ đĩa, mẫu chuẩn, điều kiện chạy, đèn tháp và còi…), 75 cho
 **cỗ máy G.11 sau khi ráp các yêu cầu đó** (G.16).
 Chạy lẻ được từng nhóm — không phải làm xong hết mới biết sai ở đâu:
 
 ```bash
 cd MeoBench
-dotnet run                 # tất cả — 788 phép kiểm
+dotnet run                 # tất cả — 789 phép kiểm
 dotnet run -- G1           # nhóm kiểu dữ liệu miền
 dotnet run -- G2           # logic thuần
 dotnet run -- G3           # hợp đồng thiết bị và bản giả lập
@@ -55,7 +55,7 @@ dotnet run -- G16          # cỗ máy có yêu cầu công nghiệp (mục G.16
 dotnet run -- H            # khẳng định về ngôn ngữ C# ở Phụ lục H — 27 phép kiểm
 dotnet run -- I            # 20 lời giải xương sống ở Phụ lục I — 87 phép kiểm
 dotnet run -- J            # đường bỏ qua có chủ ý (mục 17.6, Phụ lục J) — 18 phép kiểm
-dotnet run -- L            # yêu cầu công nghiệp (Phụ lục L) — 94 phép kiểm
+dotnet run -- L            # yêu cầu công nghiệp (Phụ lục L) — 95 phép kiểm
 dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```

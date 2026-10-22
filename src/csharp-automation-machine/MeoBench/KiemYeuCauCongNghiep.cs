@@ -165,6 +165,9 @@ public static class KiemYeuCauCongNghiep
         Kiem.Bang(Directory.GetFiles(thuMucDump, "*.dmp").Length, 1,
                   "có đúng một tệp dump của lần chết — chỉ nhờ biến môi trường, không đụng cấu hình Windows");
         Kiem.Bang(choDaXin.Count == 1 ? choDaXin[0] : TimeSpan.Zero, TimeSpan.FromSeconds(5), "chờ 5 giây trước khi mở lại");
+        var giamSat = log.TatCa.Where(b => b.Nguon == "GiamSat").Select(b => b.Muc).ToList();
+        Kiem.Bang(string.Join(",", giamSat), "Loi,ThongTin",
+                  "lần chết ghi mức Lỗi, lần tắt đúng cách ghi mức Thông tin — nhật ký không kêu oan");
         Don(thuMuc);
     }
 

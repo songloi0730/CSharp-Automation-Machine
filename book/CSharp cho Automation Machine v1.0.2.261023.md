@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.2.261022 |
+| **Phiên bản** | v1.0.2.261023 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -21954,8 +21954,13 @@ Bốn quy tắc nằm sau đoạn mã:
 4. **Mẫu chuẩn là một vật có vòng đời.** Nó mòn, xước thêm, có khi thất lạc. Quản lý nó như một dụng cụ
    đo: có mã, có chỗ cất, có ngày kiểm lại chính nó.
 
-Cổng mẫu chuẩn nối vào máy qua bộ điều kiện chạy (Chương 15 mục 15.2.3b): một điều kiện tên
-`MAU_CHUAN` đọc `ChoPhepSanXuat()`, và lý do từ chối hiện thẳng trong danh sách cạnh nút Start.
+Cổng mẫu chuẩn nối vào máy ở **hai** chỗ. Chỗ thứ nhất là bộ điều kiện chạy (Chương 15 mục 15.2.3b): một
+điều kiện tên `MAU_CHUAN` đọc `ChoPhepSanXuat()`, và lý do từ chối hiện thẳng trong danh sách cạnh nút
+Start. Chỗ thứ hai dễ quên hơn: **ranh giới giữa hai chu kỳ**. Kết quả mẫu có thể hết hiệu lực khi máy
+đang chạy giữa ca, và nếu chỉ hỏi lúc bấm Start thì máy sẽ sản xuất tiếp bằng một kết quả đã hết hạn cho
+tới lần dừng sau. Còn một chi tiết nữa: lúc chạy mẫu, phôi vẫn đi đủ các bước của chu kỳ, nhưng **không
+được đếm** vào sản lượng hay ghi vào sổ kết quả. Phụ lục G mục G.16 ráp cả ba điều này vào cỗ máy mẫu và
+kiểm chúng.
 
 #### Kiểm lại — giới hạn số lần, và giữ lại mọi lần
 
@@ -22054,6 +22059,11 @@ không bao giờ tạo ra sườn lên, nên lần chờ kết thúc ở *quá h
 người vận hành phải tự kiểm máng rồi bấm xác nhận — có tên người, để ghi vết. Nếu phôi rơi rất nhanh và
 xung cảm biến ngắn hơn chu kỳ quét, hãy chốt xung ở phía bộ điều khiển (bộ đếm hoặc ngõ vào có chốt)
 thay vì hy vọng vòng quét bắt kịp.
+
+Cũng vì máy chỉ tin sườn lên xảy ra **sau** lúc gọi `BatDauCho`, hàm đó phải được gọi **ngay lúc ra lệnh
+đẩy phôi**. Gọi muộn — chẳng hạn đợi xong cả chu kỳ mới gọi — thì phôi đã rơi qua cảm biến từ trước, sườn
+lên đã trôi qua, và máy báo quá hạn oan cho mọi phôi NG. Phụ lục G mục G.16.3 đo được đúng chuyện này
+khi ráp lớp này vào cỗ máy mẫu.
 
 ---
 
@@ -26319,6 +26329,9 @@ Vì vậy hai thao tác phải tách:
   thanh cảnh báo vẫn hiện. Một cảnh báo **mới** xuất hiện sau đó vẫn kêu, theo mức của chính nó.
 - **Xác nhận** là thao tác có chủ ý sau khi đã đọc, theo vòng đời ở mục 15.1.1.
 
+Mã mẫu dưới đây dùng tên tiếng Việt cho bốn mức của `AlarmSeverity`: `Thap` là `Warning`, `Vua` là
+`Minor`, `Cao` là `Major`, `KhanCap` là `Critical`.
+
 **Code 15.13 — Đèn tháp và còi ở một chỗ (rút gọn từ `src/csharp-automation-machine/MeoBench/YeuCauCongNghiep2.cs`)**
 
 ```csharp
@@ -26338,7 +26351,7 @@ public sealed class DenThapVaCoi
     public TinHieuThap Tinh(TrangThaiMay trangThai, IReadOnlyCollection<CanhBaoChuaXacNhan> chuaXacNhan)
     {
         var mucKeu = chuaXacNhan.Where(c => !_daTatCoi.Contains(c.Ma))      // bỏ cái đã tắt còi
-                                .Select(c => (int)c.Muc).DefaultIfEmpty(0).Max();
+                                .Select(c => (int)c.Muc).DefaultIfEmpty(0).Max();   // không còn gì kêu → 0
         var coi = mucKeu switch
         {
             (int)MucUuTienCanhBao.KhanCap => KieuCoi.LienTuc,
@@ -26364,6 +26377,8 @@ public sealed class DenThapVaCoi
 
 Đoạn mã này là **nơi duy nhất** quyết định đèn và còi. Muốn đổi sang quy ước A của Bảng 15.14 cho một
 nhà máy khác, chỉ sửa khối `switch` cuối — không phải đi tìm mọi chỗ bật đèn đỏ trong cả chương trình.
+Phụ lục G mục G.16 cắm đúng lớp này vào cỗ máy mẫu và kiểm ba điều: tắt còi thì còi im mà đèn vẫn đỏ
+nhấp nháy, cảnh báo mới sau đó thì còi kêu lại, xác nhận hết thì đèn đỏ đứng yên chờ Reset.
 
 ---
 
@@ -27012,12 +27027,17 @@ Bốn quyết định thiết kế nằm sau đoạn mã, và cả bốn đều 
    dòng lý do nữa, kèm thông báo lỗi.
 4. **Đây không phải cảnh báo.** Điều kiện chạy chưa đạt là một **trạng thái** — không cần xác nhận,
    không vào lịch sử cảnh báo, không bật còi. Nếu đưa nó vào hệ thống cảnh báo, mỗi lần giao ca sẽ sinh
-   ra một loạt cảnh báo "rác" — đúng thứ ISA-18.2 cảnh báo ở mục 15.3.4. Cảnh báo chỉ sinh ra khi một
-   điều kiện *đang đạt* thì mất đi trong lúc chạy — lúc đó nó là interlock, đã bàn ở mục 15.2.2.
+   ra một loạt cảnh báo "rác" — đúng thứ ISA-18.2 cảnh báo ở mục 15.3.4. Chuyện khác hẳn khi một điều
+   kiện *đang đạt* thì mất đi trong lúc chạy. Khi đó máy phải phản ứng, theo hậu quả: dừng ngay nếu đó
+   là an toàn — một interlock, đã bàn ở mục 15.2.2; dừng ở cuối chu kỳ nếu chỉ là không được nhận phôi
+   mới, như ổ dữ liệu sắp đầy hay kết quả mẫu chuẩn vừa hết hiệu lực (Phụ lục G mục G.16.3). Cách nào
+   thì lý do dừng cũng phải hiện lên cho người vận hành.
 
 Trên màn hình chính, danh sách này hiện **thường trực** mỗi khi máy đang chờ mà chưa đủ điều kiện, ngay
 cạnh nút Start đang bị khoá — không đợi người vận hành bấm rồi mới bật hộp thoại báo lỗi. Người vận
-hành nhìn vào là biết cần làm gì, theo thứ tự nào; danh sách rỗng thì nút Start sáng lên.
+hành nhìn vào là biết cần làm gì, theo thứ tự nào; danh sách rỗng thì nút Start sáng lên. Phụ lục G
+mục G.16 khai báo mười điều kiện kiểu này cho cỗ máy mẫu, và phép kiểm của nó cho thấy năm lý do hiện ra
+trong một lần bấm.
 
 ### 15.2.4  Authentication — xác thực danh tính, không chỉ phân quyền
 
@@ -30416,9 +30436,9 @@ Bảng dưới là danh sách để giao việc đó cho một người cụ th�
 | Ngủ, ngủ đông | Ngủ sau một lúc không có chuột, phím | Máy đang chạy tự động bị coi là "không dùng" | Không bao giờ ngủ; tắt ngủ đông |
 | Tắt ổ đĩa khi rảnh | Bật | Lần ghi đầu tiên sau khi ổ "ngủ" chậm hàng giây | Không bao giờ tắt |
 | Tiết kiệm điện cổng USB | Bật (đo trên một máy Windows 11 cài mặc định: đang bật) | Đầu đọc mã vạch, khoá bản quyền, bộ chuyển USB–nối tiếp bị ngắt rồi nhận lại — cổng COM "biến mất" giữa ca | Tắt |
-| Tiết kiệm điện khe PCIe | Tuỳ máy | Card chuyển động, card ghép camera trả lời chậm hoặc mất kết nối | Tắt |
+| Tiết kiệm điện khe PCIe (ASPM) | Tuỳ máy | Card chuyển động, card ghép camera trả lời chậm hoặc mất kết nối | Tắt |
 | Cập nhật Windows | Tự tải, tự cài, tự khởi động lại ngoài "giờ hoạt động" | Máy chạy ba ca không có giờ nào là "ngoài giờ hoạt động" | Chỉ cập nhật trong lần dừng bảo trì có kế hoạch; thử trên máy dự phòng trước |
-| Hộp thoại khi chương trình chết | Tuỳ cấu hình | Khi hộp thoại còn chờ người bấm, tiến trình chưa thoát hẳn — bộ giám sát (mục 19.5.4) chờ theo | Không hiện hộp thoại |
+| Hộp thoại khi chương trình chết | Tuỳ cấu hình báo cáo lỗi của Windows: có máy hiện, có máy không | Khi hộp thoại còn chờ người bấm, tiến trình chưa thoát hẳn — bộ giám sát (mục 19.5.4) chờ theo | Không hiện hộp thoại |
 | Đăng nhập | Hỏi mật khẩu | Mất điện rồi có điện lại: máy đứng ở màn hình đăng nhập, phần mềm không chạy | Tự đăng nhập tài khoản vận hành, tự chạy bộ giám sát |
 | Tài khoản chạy phần mềm | Người cài hay dùng tài khoản quản trị | Phần mềm máy chạy quyền quản trị thì mọi lỗi của nó cũng có quyền quản trị | Tài khoản thường; chỉ bộ cài cần quyền quản trị |
 | Định dạng vùng miền | Theo người cài | Dấu thập phân đổi theo vùng miền (Phụ lục K mục K.2) | Cố định một vùng miền và ghi vào tài liệu; mã luôn dùng `InvariantCulture` |
@@ -30427,8 +30447,9 @@ Bảng dưới là danh sách để giao việc đó cho một người cụ th�
 | Phần mềm diệt vi-rút | Theo chính sách nhà máy | Mục 17.3.6 | Loại trừ thư mục dữ liệu và tệp thực thi |
 
 Phần lớn bảng trên làm được bằng một tệp lệnh chạy một lần, bằng quyền quản trị, ngay sau khi cài
-Windows. Các mã GUID trong tệp là mã thật của Windows — đọc được bằng `powercfg /aliases` và
-`powercfg /query`:
+Windows. `powercfg` là công cụ dòng lệnh có sẵn trong Windows để chỉnh chế độ nguồn điện. Các mã GUID
+trong tệp (chuỗi dạng `2a737441-1930-…`) là mã định danh thật của từng mục cài đặt — đọc được bằng
+`powercfg /aliases` và `powercfg /query`:
 
 **Code 17.8 — Chỉnh nguồn điện và hộp thoại lỗi cho máy chạy liên tục (PowerShell, quyền quản trị)**
 
@@ -30556,7 +30577,7 @@ và cũng là những việc bộ phận an ninh của nhà máy sẽ hỏi đ�
 
 **Bảng 17.16 — Những việc an ninh người làm máy tự quyết được**
 
-| Hạng mục | Nên làm | Hay gặp ngoài thực tế |
+| Hạng mục | Nên làm | Cách làm dễ gặp, nên tránh |
 |---|---|---|
 | Mạng | Tách **mạng thiết bị** (PLC, camera, robot) khỏi **mạng nhà máy** bằng hai card mạng; không định tuyến giữa hai bên; chỉ mở đúng cổng mà MES cần | Một mạng phẳng: máy tính văn phòng nào cũng "nhìn thấy" PLC |
 | Chương trình máy nghe ở đâu | Máy chủ TCP của phần mềm máy chỉ nghe trên địa chỉ của card mạng thiết bị | Nghe trên mọi card (`IPAddress.Any`) — Phụ lục K dùng cách đó cho ví dụ gọn, máy thật thì không |
@@ -33521,8 +33542,8 @@ chạy một chương trình thử trên .NET 9, mỗi dòng một kiểu lỗi:
 |---|---|---|
 | Ngoại lệ không ai bắt trên một luồng nền (`new Thread`) | **Chết** | Sự kiện `AppDomain.UnhandledException` chạy với `IsTerminating = true` |
 | Ngoại lệ trong hàm `async void` | **Chết** | Hay gặp ở hàm xử lý sự kiện viết `async void` (mục 5.1.4) |
-| `Task` bị lỗi mà không ai `await` | **Sống** | Lỗi bị nuốt; chỉ có sự kiện `TaskScheduler.UnobservedTaskException`, và chỉ khi bộ gom rác dọn tới `Task` đó |
-| Ngoại lệ trên luồng giao diện | Tuỳ cấu hình | WinForms: `Application.ThreadException`; WPF: `DispatcherUnhandledException` (mục 8.1.1) |
+| `Task` bị lỗi mà không ai `await` | **Sống** | Lỗi bị nuốt; chỉ có sự kiện `TaskScheduler.UnobservedTaskException`, và chỉ khi bộ gom rác dọn tới `Task` đó — có khi vài phút sau, có khi không bao giờ nếu chương trình chưa cần dọn bộ nhớ |
+| Ngoại lệ trên luồng giao diện | **Sống nếu có bộ xử lý** | WinForms: `Application.ThreadException`; WPF: `DispatcherUnhandledException` với `e.Handled = true` (mục 8.1.1). Không đăng ký thì hành vi mặc định khác nhau giữa hai nền — đừng dựa vào nó |
 | Vượt hạn mức đối tượng GDI hoặc USER | Ném ngoại lệ ở chỗ tạo ảnh/control | Thường kéo theo chết sau đó — mục 19.6.4 |
 
 Hai con số đo được đáng nhớ hơn cả bảng:
@@ -33531,8 +33552,9 @@ Hai con số đo được đáng nhớ hơn cả bảng:
   này tuỳ máy, nhưng không bằng 0 — và trong khoảng đó **các luồng khác vẫn chạy**: luồng
   trình tự vẫn có thể ra lệnh cho trục. Đó là lý do lưới an toàn ở Code 8.0b đưa máy về trạng thái an
   toàn *trước*, rồi mới ghi nhật ký.
-- **Mã thoát của tiến trình chết vì ngoại lệ là `0xE0434352`** (đọc kiểu `int` là −532 462 766).
-  Nhưng nếu luồng chính kết thúc *trong* ba giây đó, tiến trình trả về **0** như một lần thoát bình
+- **Tiến trình chết vì ngoại lệ trả về mã thoát `0xE0434352`** (đọc kiểu `int` là −532 462 766). Mã
+  thoát là con số một tiến trình trả lại cho Windows khi kết thúc; quy ước 0 là bình thường, khác 0 là
+  có chuyện. Nhưng nếu luồng chính kết thúc *trong* ba giây đó, tiến trình trả về **0** như một lần thoát bình
   thường. Đo thử: hàm `async void` ném lỗi ở mili-giây thứ 50, `Main` kết thúc ở mili-giây thứ 1 000
   → mã thoát 0; cho `Main` chờ 10 giây → mã thoát `0xE0434352`. Mã thoát vì vậy **không đủ** để biết
   chương trình đã chết hay chưa. Mục 19.5.3 có cách đáng tin hơn.
@@ -33555,10 +33577,15 @@ Phải để hệ thống tự chụp, và có hai cách tuỳ chương trình c
 | Cần quyền quản trị | **Không** — đặt ngay trong lệnh khởi chạy của bộ giám sát (mục 19.5.4) | Có — ghi vào nhánh máy (HKLM) |
 | Kết quả đo | Chương trình thử chết: dump loại 2 nặng 10,6 MB, ghi xong trong 1,7 giây | Không đo trong sách — làm theo hướng dẫn "Collecting User-Mode Dumps" của Microsoft |
 
-Với .NET, chỉ cần ba dòng trong bộ giám sát:
+Biến môi trường là các cặp tên–giá trị mà Windows trao cho một tiến trình lúc khởi chạy; runtime .NET đọc
+ba biến trên ngay khi chương trình bắt đầu. Đặt chúng trong lệnh khởi chạy thì chỉ chương trình máy chịu
+ảnh hưởng, không đụng tới chương trình nào khác trên máy. Với .NET, chỉ cần ba dòng trong bộ giám sát:
 
 ```csharp
-var lenh = new ProcessStartInfo(@"C:\MeoFrame\MeoFrame.exe") { UseShellExecute = false };
+var lenh = new ProcessStartInfo(@"C:\MeoFrame\MeoFrame.exe")
+{
+    UseShellExecute = false,                 // phải là false thì mới truyền được biến môi trường
+};
 lenh.Environment["DOTNET_DbgEnableMiniDump"] = "1";
 lenh.Environment["DOTNET_DbgMiniDumpType"]  = "2";                       // kèm heap: đủ để tìm rò rỉ
 lenh.Environment["DOTNET_DbgMiniDumpName"]  = @"D:\MeoFrameData\Dump\may_%p.dmp";
@@ -33608,13 +33635,19 @@ public sealed class PhienChay(string duongDanCo, IDongHo dongHo)
 }
 ```
 
+Ghi vào tệp tạm rồi đổi tên là vì phép đổi tên trong cùng một ổ đĩa không có trạng thái nửa vời: tệp
+đích hoặc vẫn là bản cũ, hoặc đã là bản mới đầy đủ. Mất điện giữa lúc ghi chỉ để lại một tệp `.tmp`
+dở dang, còn cờ thì không bao giờ là một nửa.
+
 Khi `Mo` báo `LanTruocTatBatThuong`, chương trình phải làm ba việc trước khi cho người vận hành chạm
 vào bất cứ nút nào:
 
 1. **Vào trạng thái chưa khởi tạo và khoá Start cho tới khi về gốc xong** — chạy tiếp là xác minh,
    không phải bấm chạy lại (Chương 12 mục 12.2.4).
 2. **Hiện một cảnh báo nói rõ chuyện gì đã xảy ra**: *"Phần mềm đã thoát bất thường lúc 02:14 (phiên
-   bản 2.3.0). Kiểm tra phôi trên máy trước khi về gốc."* — kèm đường dẫn tệp dump nếu có.
+   bản 2.3.0). Kiểm tra phôi trên máy trước khi về gốc."* — kèm đường dẫn tệp dump nếu có. Và đừng chỉ
+   *dặn*: chưa có người đã đăng nhập bấm xác nhận đã kiểm máy thì nút về gốc cũng chưa được bấm, vì phôi
+   còn kẹt trong tay kẹp có thể rơi ngay ở chuyển động đầu tiên (Phụ lục G mục G.16.3).
 3. **Ghi vào nhật ký và đếm.** Chương trình chết bao nhiêu lần trong tuần là con số phải có trong báo
    cáo — một lần là sự cố, ba lần một tuần là lỗi phải sửa.
 
@@ -33660,8 +33693,10 @@ while (true)
 {
     using var p = Process.Start(lenh)!;                                 // lenh: Bảng 19.8
     await p.WaitForExitAsync().ConfigureAwait(false);
-    var qd = chinhSach.SauKhiThoat(p.ExitCode, File.Exists(duongDanCoPhien));
-    nhatKy.Ghi(MucLog.Loi, "GiamSat", "{LyDo}", ("LyDo", qd.LyDo));
+    bool conCoPhien = File.Exists(duongDanCoPhien);
+    var qd = chinhSach.SauKhiThoat(p.ExitCode, conCoPhien);
+    bool daChet = p.ExitCode != 0 || conCoPhien;                         // thoát bình thường: không phải lỗi
+    nhatKy.Ghi(daChet ? MucLog.Loi : MucLog.ThongTin, "GiamSat", "{LyDo}", ("LyDo", qd.LyDo));
     if (!qd.MoLai) break;                                               // báo người, không thử nữa
     await Task.Delay(qd.ChoTruoc).ConfigureAwait(false);
 }
@@ -33695,8 +33730,8 @@ chỉ xuất hiện ở nhà máy.
 ### 19.6.1  Hai loại đồng hồ — đo khoảng thời gian không bằng giờ tường
 
 `DateTime.Now` là **giờ tường**: giờ để hiển thị cho người. Nó có thể bị chỉnh — đồng bộ giờ kéo tới
-hay lùi vài giây, người vận hành sửa tay, máy đổi múi giờ. `Stopwatch` và `Environment.TickCount64` là
-**đồng hồ đơn điệu**: chỉ đi tới, không ai chỉnh được.
+hay lùi vài giây, người vận hành sửa tay, máy đổi múi giờ. `Stopwatch` và `Environment.TickCount64` (số
+mili-giây kể từ lúc máy khởi động) là **đồng hồ đơn điệu**: chỉ tăng, không ai chỉnh được.
 
 Quy tắc rút ra chỉ có một dòng: **mốc thời gian** (ghi vào bản ghi sản phẩm, nhật ký) dùng giờ tường;
 **khoảng thời gian** (hạn giờ chờ cảm biến, nhịp máy, thời gian một bước) dùng đồng hồ đơn điệu.
@@ -33709,7 +33744,7 @@ giây bằng giờ tường. Bảng dưới là điều xảy ra với một h�
 
 | Chuyện xảy ra | Đo bằng `DateTime.Now` | Đo bằng đồng hồ đơn điệu |
 |---|---|---|
-| Đồng bộ giờ kéo lùi 1 giờ ở giây thứ 3 | **Không hết hạn** sau 11 giây — chờ thêm gần một tiếng. Cảm biến hỏng mà máy đứng chờ cả tiếng không báo | Hết hạn đúng lúc |
+| Đồng bộ giờ kéo lùi 1 giờ ở giây thứ 3 (máy đã lệch lâu ngày, nay mới được đồng bộ lần đầu) | **Không hết hạn** sau 11 giây — chờ thêm gần một tiếng. Cảm biến hỏng mà máy đứng chờ cả tiếng không báo | Hết hạn đúng lúc |
 | Người chỉnh giờ tới 1 giờ ở giây thứ 1 | **Báo quá giờ ngay** sau 1 giây — cảnh báo giả, máy dừng vô cớ | Chưa hết hạn, đúng |
 
 **Code 19.17 — Hạn giờ đo bằng đồng hồ đơn điệu**
@@ -33754,7 +33789,8 @@ máy sau ghi phôi đi vào lúc 08:00:02 — lệch ba giây là đủ để th
 được với nhau. Dữ liệu gửi lại sau khi mất kết nối MES (Chương 13 mục 13.1.2) cũng được sắp xếp theo mốc
 thời gian của máy gửi.
 
-Đo trên một máy Windows 11 không gia nhập domain: dịch vụ giờ của Windows (`w32time`) ở chế độ
+Domain là hệ thống quản lý máy tính tập trung của phòng IT; máy văn phòng thường gia nhập, máy trong
+xưởng thường không. Đo trên một máy Windows 11 không gia nhập domain: dịch vụ giờ của Windows (`w32time`) ở chế độ
 **Manual**, đang **dừng**, và chỉ tự khởi động khi máy gia nhập domain. Một máy tính công nghiệp đứng
 một mình, không có Internet, rất có thể **không bao giờ đồng bộ giờ**. Đồng hồ máy tính trôi vài giây
 mỗi tuần; sau một năm, lệch vài phút là chuyện thường.
@@ -33792,7 +33828,9 @@ ba tuần.
 
 Ngưỡng nên tính theo **số ngày còn chạy được**, không theo phần trăm. Ổ 1 TB còn 5 % là 50 GB; ổ 128 GB
 còn 5 % chỉ đủ vài giờ ghi ảnh. Số ngày cần một con số đo thật: máy ghi bao nhiêu byte mỗi ngày (cộng
-nhật ký, ảnh, bản ghi sản phẩm, dump). Có con số đó, ba mức tự nhiên hiện ra:
+nhật ký, ảnh, bản ghi sản phẩm, dump). Cách đo rẻ nhất: trong tuần chạy thử đầu tiên, mỗi ngày ghi dung
+lượng còn trống của ổ dữ liệu vào nhật ký, rồi lấy mức giảm trung bình. Có con số đó, ba mức tự nhiên
+hiện ra:
 
 **Bảng 19.10 — Ba mức của ổ dữ liệu**
 
@@ -33831,7 +33869,7 @@ public sealed class GhiKhongSap(Action<string> ghiThat)
         }
     }
 
-    public void GhiLai() => DangNgung = false;   // gọi khi bộ canh ổ đĩa báo đã có lại chỗ
+    public void GhiLai() => DangNgung = false;   // gọi khi ổ đã có lại chỗ — bộ canh ổ đĩa báo, hoặc người bấm
 }
 ```
 
@@ -33848,7 +33886,8 @@ lượng ổ dữ liệu. Một tuần sau mở nhật ký ra là thấy xu hư�
 
 Hai con số trong dòng đó cần giải thích riêng, vì chúng gây ra một kiểu chết rất khó chẩn đoán. Windows
 giới hạn mỗi tiến trình ở **10 000 đối tượng GDI** (ảnh, bút vẽ, phông chữ) và **10 000 đối tượng
-USER** (cửa sổ, control). Đo trên máy thử, giá trị trong registry đúng bằng 10 000 cho cả hai, và:
+USER** (cửa sổ, control). Đo trên máy thử, hai giá trị `GDIProcessHandleQuota` và `USERProcessHandleQuota` trong khoá registry
+`HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows` đều bằng 10 000, và:
 
 - Tạo ảnh GDI liên tục không giải phóng: hỏng ở khoảng lần thứ **9 995**, với thông báo
   **`A generic error occurred in GDI+`** — không có chữ nào nói tới handle hay giới hạn.
@@ -33868,6 +33907,7 @@ public static ChiSoTaiNguyen Doc()
     uint gdi = 0, user = 0;
     if (OperatingSystem.IsWindows())
     {
+        // GetGuiResources là hàm Win32, khai báo bằng P/Invoke (Phụ lục A)
         gdi  = NativeMethods.GetGuiResources(p.Handle, 0);   // 0 = GR_GDIOBJECTS
         user = NativeMethods.GetGuiResources(p.Handle, 1);   // 1 = GR_USEROBJECTS
     }
@@ -33886,7 +33926,10 @@ public static bool NghiRoRi(IReadOnlyList<double> chuoi, double tiLeBuocTang = 0
 ```
 
 Cách đọc xu hướng: một chỉ số **leo đều** qua nhiều giờ là dấu hiệu rò rỉ; một chỉ số **lên rồi tụt**
-theo nhịp là bộ gom rác đang làm việc bình thường. Khi thấy leo đều, dùng dump (mục 19.2) để tìm ai
+theo nhịp là bộ gom rác đang làm việc bình thường. Hàm `NghiRoRi` biến câu đó thành hai điều kiện: ít
+nhất 80 % số lần đo cao hơn lần đo ngay trước nó, **và** giá trị cuối cao hơn giá trị đầu ít nhất 20 %. Điều
+kiện thứ hai loại những chuỗi tăng đều nhưng không đáng kể. Hàm cần ít nhất sáu lần đo — một giờ, nếu
+ghi mỗi 10 phút. Khi thấy leo đều, dùng dump (mục 19.2) để tìm ai
 đang giữ các đối tượng đó. Đặt ngưỡng cảnh báo GDI và USER ở khoảng 8 000 — đủ sớm để kịp lên lịch dừng
 máy, thay vì để chương trình tự chết giữa ca.
 
@@ -33956,7 +33999,8 @@ Ba chi tiết trong đoạn mã, mỗi chi tiết là một lần gói chẩn đ
   được; `File.Copy` thì chép được. Gói chẩn đoán cần **đọc** nội dung để che mật khẩu, nên mở bằng
   `FileStream` với `FileShare.ReadWrite` — đọc được mà không chặn bộ ghi.
 - **Che bí mật theo tên khoá**, cho cả JSON lẫn INI: khoá nào có chữ `password`, `pwd`, `matkhau`, `secret`,
-  `token`, `connectionstring` thì giá trị thành `***`. Tham số thường giữ nguyên — người hỗ trợ cần thấy
+  `token`, `connectionstring` thì giá trị thành `***`: dòng JSON `"MatKhauMes": "abc123"` thành
+  `"MatKhauMes": "***"`, dòng INI `Password=abc123` thành `Password=***`. Tham số thường giữ nguyên — người hỗ trợ cần thấy
   tốc độ trục là 50 chứ không phải `***`.
 - **Tệp giới thiệu** trong gói ghi rõ máy nào, phiên bản nào, tạo lúc nào, **và thứ gì đã bị bỏ ra ngoài**
   (vượt giới hạn dung lượng, tệp không còn). Người đọc gói không phải đoán vì sao thiếu nhật ký thứ Hai.
@@ -34142,6 +34186,13 @@ dọn dẹp thành một vòng chết – mở lại – chết. Bắt **đúng*
 Hàm đó mở tệp với `FileShare.Read`; bộ ghi nhật ký đang giữ tệp hôm nay để ghi nên lệnh mở ném *"being
 used by another process"* — đúng tệp quan trọng nhất là tệp không lấy được. Mở bằng `FileStream` với
 `FileShare.ReadWrite | FileShare.Delete` (mục 19.7).
+
+**Lỗi 15: Bộ giám sát chọn mức nhật ký theo việc có mở lại hay không.**
+Viết `MoLai ? Lỗi : Thông tin` nghe hợp lý, nhưng "không mở lại" gồm hai chuyện trái ngược: chương trình
+tắt đúng cách, và chương trình chết liên tục tới mức bộ giám sát bỏ cuộc. Chuyện thứ hai là chuyện nặng
+nhất trong cả mục 19.5, vậy mà lại được ghi ở mức Thông tin. Ngược lại, ghi cố định mức Lỗi thì mỗi lần
+tắt máy cuối ca lại có một dòng lỗi oan. Chọn mức theo **sự kiện** — chương trình có chết hay không: mã
+thoát khác 0 hoặc cờ phiên còn trên đĩa (Code 19.16).
 
 <!-- SECTION: LoiKet -->
 ---
@@ -41313,7 +41364,7 @@ một hàm duy nhất từ trạng thái máy và các cảnh báo chưa xác nh
 ### G.16.2  Ba điểm cắm, và vì sao chỉ cần ba
 
 `MayCongNghiep` **bọc** cỗ máy G.11 chứ không viết lại nó. Để bọc được, `MayHoanChinh` chỉ phải mở
-thêm ba điểm cắm:
+thêm ba **điểm cắm** — chỗ mà mã bên ngoài gắn hành vi của mình vào mà không phải sửa lớp đó:
 
 ```csharp
 // Hỏi ở ranh giới chu kỳ, TRƯỚC khi nhận phôi mới
@@ -41347,7 +41398,8 @@ else
     GhiNhanPhoi(_bc.KetQua);
 ```
 
-Để trống cả ba thì cỗ máy chạy y hệt G.11, và sáu mươi hai phép kiểm của nhóm `G9` vẫn xanh nguyên.
+Dòng `cong is { ChoPhep: false }` đọc là: *có cổng, và cổng từ chối*. Không cắm cổng nào thì `cong` là
+`null`, điều kiện sai, và vòng chạy đi tiếp như cũ. Để trống cả ba thì cỗ máy chạy y hệt G.11, và sáu mươi hai phép kiểm của nhóm `G9` vẫn xanh nguyên.
 Hai điểm cắm đầu đi theo khuôn đã có: cổng ở ranh giới chu kỳ là **dạng tổng quát của việc dừng khi
 khí nén yếu** (bài G.4.4): dừng có trật tự, về Sẵn sàng, không phải Báo động. Điểm cắm thứ ba là phần
 thưởng của quyết định ở bài G.5.1: chu trình là **dữ liệu**, một danh sách bước, nên chèn thêm một bước
@@ -45666,7 +45718,9 @@ Ba người dùng được danh mục này theo ba cách:
   chen vào một chương trình đã chạy. Phụ lục G mục G.16 ráp chúng vào cỗ máy mẫu và cho thấy chúng cắm vào
   đúng năm chỗ: khởi động, nút Bắt đầu, ranh giới chu kỳ, một bước trong chu kỳ, lúc tắt.
 - **Người nghiệm thu** chép các dòng cần thiết vào ma trận truy vết yêu cầu (Chương 18 mục 18.7). Mã
-  `L-xx` không đổi qua các lần in, nên dùng thẳng làm mã yêu cầu được.
+  `L-xx` không đổi qua các lần in, nên dùng thẳng làm mã yêu cầu được. Hai chữ viết tắt sẽ gặp nhiều
+  lần: **FAT** là nghiệm thu tại xưởng người làm máy, **SAT** là nghiệm thu tại nhà máy của khách, trên
+  dây chuyền thật.
 - **Người tiếp quản một máy có sẵn** đánh dấu có/không cho từng dòng — trong một buổi chiều là biết phần
   mềm đó thiếu gì, và thiếu ở đâu thì nguy hiểm nhất.
 
@@ -45696,7 +45750,7 @@ máy thật hoặc trên bản giả lập.
 | L-07 | Lưới bắt lỗi đưa máy về an toàn trước, ghi nhật ký có ngữ cảnh máy, ép bộ đệm nhật ký xuống đĩa | Bắt buộc | Đọc nhật ký sau lần ném thử: có trạng thái máy, có công thức, có vết lỗi | Mục 8.1.1 (Code 8.0b) |
 | L-08 | Không có `async void` ngoài trình xử lý sự kiện | Bắt buộc | Tìm `async void` trong mã nguồn | Mục 5.1.4 |
 | L-09 | Chương trình chết thì tự ghi dump | Nên có | Cho bản giả lập chết: có tệp `.dmp` trong thư mục dump | Mục 19.5.2 |
-| L-10 | Lần khởi động sau một lần chết biết là lần trước tắt bất thường, vào trạng thái chưa khởi tạo, hiện cảnh báo | Bắt buộc | Tắt chương trình bằng Task Manager rồi mở lại | Mục 19.5.3 |
+| L-10 | Lần khởi động sau một lần chết biết là lần trước tắt bất thường, vào trạng thái chưa khởi tạo, hiện cảnh báo; chưa cho trục chạy khi chưa có người xác nhận đã kiểm máy | Bắt buộc | Tắt chương trình bằng Task Manager rồi mở lại: có cảnh báo, nút về gốc chưa bấm được | Mục 19.5.3, Phụ lục G mục G.16.3 |
 | L-11 | Có bộ giám sát tự mở lại, có giới hạn số lần, chờ tăng dần; mở lại không bao giờ là chạy tiếp | Nên có | Cho chết bốn lần liên tiếp: lần thứ tư không mở lại, có cảnh báo cần người | Mục 19.5.4 |
 | L-12 | Thư viện native dễ làm sập tiến trình được cách ly | Nên có | Đọc danh sách thư viện native; thư viện nào từng làm sập máy thì chạy trong tiến trình riêng | Mục 14.1.5 |
 | L-13 | Thiết bị mất kết nối: tự nối lại hoặc báo rõ và chờ; nối lại được không có nghĩa là chạy tiếp được | Bắt buộc | Rút cáp mạng camera giữa chu kỳ, cắm lại | Mục 13.3.5 |
@@ -45729,7 +45783,7 @@ máy thật hoặc trên bản giả lập.
 | L-26 | Phán định trên giá trị thô; ba kết luận (đạt, lỗi, không đo được); lưu cả giá trị đo và ngưỡng đã dùng | Bắt buộc | Đọc một bản ghi sản phẩm: có giá trị đo và ngưỡng | Mục 13.4.7 |
 | L-27 | Chưa qua mẫu chuẩn thì không sản xuất; kết quả mẫu mất hiệu lực khi đổi mã hàng, sau bảo trì, quá hạn | Bắt buộc với máy kiểm | Cho một mẫu lỗi đi qua như phôi đạt: sản xuất bị chặn | Mục 13.4.9 |
 | L-28 | Kiểm lại có giới hạn số lần, giữ mọi lượt, báo cả tỉ lệ đạt lần đầu | Bắt buộc với máy kiểm | Kiểm lại một phôi lỗi ba lần | Mục 13.4.9 |
-| L-29 | Phôi NG chỉ coi là đã rời máy khi cảm biến máng thấy nó | Bắt buộc với máy có loại phôi | Giữ phôi ở miệng máng: chu kỳ sau không chạy | Mục 13.4.9 |
+| L-29 | Phôi NG chỉ coi là đã rời máy khi cảm biến máng thấy nó; việc canh bắt đầu ngay lúc ra lệnh đẩy | Bắt buộc với máy có loại phôi | Giữ phôi ở miệng máng: chu kỳ sau không chạy. Chạy bình thường một ca: không có báo động oan nào | Mục 13.4.9, Phụ lục G mục G.16.3 |
 | L-30 | Mã sản phẩm trùng có chính sách cho từng nguyên nhân | Bắt buộc | Quét cùng một mã hai lần ở chế độ sản xuất | Mục 13.4.5 |
 | L-31 | Chạy tiếp sau tạm dừng hay mất điện là xác minh, không phải bấm chạy lại | Bắt buộc | Mở cửa giữa chu kỳ, đóng lại: không tự chạy | Mục 12.2.4, 15.2.6 |
 | L-32 | Chế độ chạy chỉ đổi khi máy dừng; bản ghi sản phẩm có cột chế độ | Bắt buộc | Thử đổi chế độ khi máy đang chạy | Mục 12.4 |
@@ -45804,7 +45858,7 @@ trong kế hoạch FAT hoặc SAT, và kết quả ghi vào ma trận truy vết
 | 3 | Chạy qua đêm ở cấu hình tối đa | Số đếm khớp, nhịp không trôi, bộ nhớ và GDI/USER không leo đều | L-14, L-19, L-20 |
 | 4 | Trên máy thử: chỉnh giờ Windows lùi một giờ khi máy đang chờ cảm biến | Hạn giờ vẫn hết đúng lúc | L-15 |
 | 5 | Trỏ thư mục dữ liệu sang một ổ nhỏ, chạy tới khi gần đầy rồi đầy | Cảnh báo trước, ngừng nhận phôi, nhật ký không làm sập chương trình | L-17, L-18 |
-| 6 | Mở cửa, chưa về gốc, chưa đăng nhập — rồi bấm Start | Không chạy; màn hình hiện đủ ba lý do cùng lúc | L-33 |
+| 6 | Mở cửa, chưa về gốc, chưa đăng nhập — rồi bấm Start | Không chạy; màn hình hiện cả ba lý do đó (cùng mọi lý do khác đang có) trong một lần | L-33 |
 | 7 | Chạy bộ mẫu chuẩn, cố ý cho một mẫu lỗi bị máy đánh đạt (ví dụ che camera một phần) | Sản xuất bị chặn, lý do "để lọt mẫu lỗi" | L-27 |
 | 8 | Gây một cảnh báo, tắt còi, gây cảnh báo thứ hai | Còi kêu lại; cảnh báo thứ nhất vẫn chưa được xác nhận | L-34, L-35 |
 | 9 | Đăng nhập tài khoản thấp nhất, thử chạm vào mọi nút | Mọi thao tác ngoài quyền bị chặn kèm lý do | L-49 |

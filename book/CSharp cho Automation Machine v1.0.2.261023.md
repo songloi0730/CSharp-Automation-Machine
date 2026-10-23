@@ -1555,6 +1555,12 @@ mình phải sửa hơn hai chỗ, nhiều khả năng đã hiểu sai cấu tr�
 > có" hoá ra chỉ là "có, nhưng gọi bằng tên khác" — và kết luận sai kiểu này
 > dẫn thẳng tới việc viết lại một thứ đã tồn tại.
 
+> 💡 **Trước khi mở file nào, nhìn hình dạng cả dự án.** Cây thư mục ngăn nắp trong Solution
+> Explorer không có nghĩa là các thư mục độc lập với nhau. Mục G.15.2b vẽ bản đồ phụ thuộc của năm
+> dự án có sẵn, mỗi bản một hình dạng, và bàn cách vẽ cho dự án bạn đang đọc mà không đưa mã ra khỏi
+> máy. Thứ nên tìm đầu tiên là **tâm** của bản đồ: chỗ mà mọi thư mục cùng trỏ vào, thường là một lớp
+> toàn cục.
+
 ## 2.5  Khi code thực tế không giống ví dụ trong sách
 
 Sách dạy cách viết code **nên** như thế nào — class/interface rõ ràng,
@@ -41200,12 +41206,17 @@ không có phép kiểm nào bên trong. Đếm theo dấu hiệu thật của p
 `[Test]`, `Assert.`) thì:
 
 - Dự án có kiểm thử thật **rất hiếm**; dự án đầy đủ nhất có khoảng hai trăm phép kiểm, dùng xUnit.
-- Các dự án còn lại: **không một câu `Assert` nào** trong toàn bộ mã nguồn.
+- Một dự án khác có phép kiểm **tự viết**: tự làm hàm so sánh riêng, không dùng thư viện kiểm thử
+  nào, nên đếm theo `[Fact]` hay `Assert.` sẽ không thấy. Nhưng không chỗ nào trong chương trình gọi
+  tới các phép kiểm ấy (mục G.15.2b, Hình G.4).
+- Các dự án còn lại: **không có phép kiểm nào** trong toàn bộ mã nguồn.
 
-> 📌 **Dự án có kiểm thử cũng là dự án có chỗ cắm** (hàng chục interface và hàm dựng nhận
+> 📌 **Dự án có kiểm thử đầy đủ cũng là dự án có chỗ cắm** (hàng chục interface và hàm dựng nhận
 > interface, xem mục G.14.3). Nhưng chiều ngược lại **không đúng**: có những dự án có chỗ cắm mà vẫn
 > không có phép kiểm nào. Chỗ cắm là **điều kiện cần, không phải điều kiện đủ** — nó
-> cho bạn khả năng viết phép kiểm, không cho bạn thói quen viết.
+> cho bạn khả năng viết phép kiểm, không cho bạn thói quen viết. Còn dự án có phép kiểm tự viết thì
+> không có interface nào, và phép kiểm của nó chỉ chạm tới phần tính toán thuần: đúng phần không cần
+> chỗ cắm.
 
 ### G.15.2  Mã nằm ở đâu: gần một nửa nằm trong giao diện
 
@@ -41249,6 +41260,292 @@ Con số đó một mình chưa nói được gì — giao diện máy vốn nhi
 > là một lần **luồng giao diện đứng hình**. Người vận hành thấy màn hình treo, tưởng máy hỏng, bấm
 > tiếp. Mục 8.1.5 bàn `Application.DoEvents()`, cách chữa cháy phổ biến nhất của WinForms; đây là
 > lý do người ta phải dùng tới nó.
+
+### G.15.2b  Vẽ thành bản đồ: năm hình dạng
+
+Bảng G.10 và G.11 là số **gộp**, và số gộp làm mất hình dạng: hai dự án cùng 60 % mã ở giao diện có
+thể tổ chức khác hẳn nhau. Mục này vẽ **bản đồ phụ thuộc** của năm dự án có sẵn. Mỗi bản đại diện cho
+một hình dạng gặp lại ở dự án khác, xếp từ rối nhất tới gọn nhất.
+
+Cách đọc các bản đồ:
+
+- **Mỗi hộp là một mô-đun.** Dự án nhiều project thì mỗi `.csproj` là một hộp; dự án chỉ có một
+  project thì mỗi **thư mục cấp một** là một hộp. Tên thật đã thay bằng **vai trò** (Trình tự, Driver,
+  Hộp thoại…); mô-đun nhỏ được lược bớt.
+- **Trong hộp:** cỡ, tính bằng nghìn dòng (không đếm dòng trống), và **% GD**: phần trăm số dòng nằm
+  trong file giao diện.
+- **Mũi tên A ──► B** đọc giống Hình 7.1 ở mục 7.4.3: *"A biết tới B"*. Con số trên mũi tên là **số
+  lần** mã trong A dùng một kiểu khai báo trong B, đã làm tròn. Số càng lớn, hai mô-đun càng dính chặt.
+- Mọi con số đo bằng **Roslyn**, bộ phân tích mã của chính trình biên dịch C#, chạy hoàn toàn trên
+  máy. Vì sao chi tiết "trên máy" quan trọng: xem phần cuối mục này.
+
+> 📌 **"File giao diện" ở đây được đếm chặt hơn một bậc so với Bảng G.10.** Một file chỉ bị tính là
+> giao diện khi tên hoặc lớp cha của nó là form, **hoặc nó thực sự dùng** một kiểu thuộc
+> `System.Windows` (`MessageBox`, `DataGridView`, `Form`…): trình phân tích lần theo từng tên trong mã
+> tới đúng kiểu mà tên đó chỉ vào. Đếm thô theo chữ `System.Windows.Forms` xuất hiện trong file thì gom
+> luôn những file chỉ còn **sót một dòng `using`** từ mẫu của Visual Studio. Ở một dự án, cách đếm thô
+> cho thư mục thiết bị 59 % giao diện, cách đếm chặt cho 31 %. Cùng một bài học với mục G.15.1: bộ dò
+> bắt **chữ** thì sai, phải bắt **bản chất**.
+
+**Hình G.1 — Một project, mười chín thư mục, một tâm: lớp toàn cục**
+
+```
+ Thư mục (vai trò)     nghìn dòng  % GD           ┌──────────────────────────┐
+ Hộp thoại                 15       100 ─ 2.200 ─►│ THƯ MỤC GỐC              │
+ Thị giác                   5        23 ─── 720 ─►│                          │
+ Trình tự                   2,6      50 ─── 630 ─►│ form chính               │
+ Luồng chạy nền             1,2      27 ─── 240 ─►│ + MỘT LỚP TOÀN CỤC       │
+ Máy (cơ cấu, điểm dạy)     1,2       0 ─── 240 ─►│   giữ biến dùng chung    │
+ Giao tiếp host (TCP)       0,7       0 ─── 200 ─►│   cho cả chương trình    │
+ Dữ liệu, cấu hình          2,7       0 ─── 190 ─►│                          │
+ Chuyển động                1,7       0 ─── 160 ─►│ 5,4 nghìn dòng · 91 % GD │
+                                                  └──────────────────────────┘
+ Chuyển động, Máy, gốc ── 590 ─►  Thư viện chuyển động của hãng (bọc DLL)
+                                  5,7 nghìn dòng · 0 % GD · ~780 [DllImport]
+```
+
+- **Tâm của bản đồ không phải form chính, mà là một lớp.** Khoảng **ba phần tư** số tham chiếu đổ
+  vào thư mục gốc chỉ vào đúng một lớp toàn cục, nơi giữ biến dùng chung cho cả chương trình. Hộp
+  thoại, thị giác, trình tự, giao tiếp host: ai cũng đọc và ghi vào cùng một chỗ.
+- **Cây thư mục không nói gì về phụ thuộc.** Mười chín thư mục chia theo chức năng trông rất ngăn nắp
+  trong Solution Explorer. Bản đồ cho thấy chúng là **một khối**: không thư mục nào lấy riêng ra dùng
+  được mà không kéo theo lớp toàn cục, và lớp ấy nằm cạnh form chính.
+- **Muốn kiểm thử trình tự thì phải dựng cả lớp toàn cục.** Đây chính là "God Object" mà mục 16.1.1
+  cảnh báo, ở dạng một túi biến chung thay vì một lớp quản lý.
+- Thư viện của hãng **đã được bọc riêng**, khớp với dòng đầu Bảng G.11. Nhưng thư mục Máy vẫn dùng
+  thẳng các hằng liệt kê của thư viện hãng (khoảng 160 lần): **kiểu của hãng rò lên tầng trên**. Mục
+  13.2.1 chặn chuyện này bằng interface theo năng lực.
+- Một dự án khác, nhỏ hơn, có đúng hình dạng này: thư mục thị giác của nó dùng lớp toàn cục khoảng
+  một nghìn lần.
+
+**Hình G.2 — Thư mục thiết bị và giao diện biết nhau theo cả hai chiều**
+
+```
+ ┌──────────────────────┐ ── 1.160 ──►  ┌───────────────────────────┐
+ │ Form                 │               │ CARD CHUYỂN ĐỘNG          │
+ │ 10 nghìn · 100 % GD  │ ◄─── 300 ──── │ (thư mục thiết bị)        │
+ └──────────────────────┘   hộp thoại   │ 40 nghìn dòng · 31 % GD   │
+ ┌──────────────────────┐ ─── 980 ───►  │ ~1.100 [DllImport]        │
+ │ User control         │               │                           │
+ │ 12 nghìn · 100 % GD  │ ◄──── 50 ──── │ bọc DLL của hãng, và giữ  │
+ └──────────────────────┘   nhật ký     │ luôn trạm, điểm dạy,      │
+ ┌──────────────────────┐ ── 1.170 ──►  │ cấu hình trục             │
+ │ Trình tự             │               └──────┬─────────────▲──────┘
+ │ 6 nghìn · 43 % GD    │                1.170 │             │ 180
+ └──────────┬───────────┘                      ▼             │
+            │ 390                       ┌───────────────────────────┐
+            └─────────────────────────► │ BIẾN TOÀN CỤC + tiện ích  │
+     Form 730 · Quản lý trình tự 320 ─► │ 4 nghìn dòng · 39 % GD    │
+                                        └───────────────────────────┘
+```
+
+- **Ba cặp mũi tên hai chiều:** card ⇄ form, card ⇄ user control, card ⇄ biến toàn cục. Bản đồ không
+  có "đáy": không mô-đun nào đứng một mình được. Hình 7.1 có mọi mũi tên chỉ xuống; đây là trường
+  hợp ngược hẳn.
+- **Mũi tên card → form (khoảng 300) là một hộp thoại.** Toàn bộ số tham chiếu ấy chỉ vào một lớp
+  bọc hộp thoại báo lỗi, mở bằng `ShowDialog()`. Nghĩa là **thư mục thiết bị tự dừng lại chờ người
+  bấm OK**. Đây là dòng "Báo lỗi: `MessageBox` tại chỗ" của Bảng G.12, nhưng lần này ở tầng thiết bị,
+  nơi đáng lẽ chỉ ném lỗi lên để tầng trên quyết định.
+- **Mũi tên card → user control (khoảng 50) là ghi nhật ký.** Card, trình tự và phần quản lý trình tự
+  đều ghi nhật ký bằng cách gọi một hàm tĩnh nằm trong **control hiển thị nhật ký** trên màn hình.
+  Chạy trình tự mà không có giao diện thì không ghi được nhật ký.
+- Thư mục card chiếm hơn một nửa số dòng và ôm hai việc: bọc DLL của hãng, và giữ khái niệm nghiệp vụ
+  (trạm, điểm dạy, cấu hình trục). Câu "driver đã được tách ra" ở Bảng G.11 ở đây chỉ đúng một nửa:
+  driver nằm riêng một thư mục, nhưng thư mục ấy không riêng.
+
+**Hình G.3 — Chín project, mũi tên đúng chiều, nhưng đáy là một thư viện có giao diện**
+
+```
+               ┌───────────────────────────────────────┐
+               │ ỨNG DỤNG CHÍNH (exe)                  │
+               │ 72 nghìn dòng · 93 % GD               │
+               │ ~140 Thread.Sleep nằm trong file GD   │
+               └───┬─────────────┬───────────┬─────────┘
+             2.650 │       1.890 │       815 │
+                   ▼             ▼           ▼
+ ┌────────────────────────┐ ┌──────────────┐ ┌─────────────┐
+ │ THƯ VIỆN MÁY           │ │ Công cụ,     │ │ Nút, panel  │
+ │ trạm, trục, điểm, IO   │ │ dữ liệu SP   │ │ tự vẽ       │
+ │ 13 nghìn · 88 % GD     │ │ 20 nghìn     │ │ 3 nghìn     │
+ │ 77/77 lệnh chuyển động │ │ 85 % GD      │ │ 99 % GD     │
+ │ nằm trong file GD      │ └──────┬───────┘ └─────────────┘
+ └─────┬────────────┬─────┘        │
+   210 │            │              │        ┌─────────────┐
+       ▼            │              │        │ PLC         │
+ ┌──────────────┐   │              │        │ 6 nghìn     │
+ │ DRIVER       │   │              │        │ 0 % GD      │
+ │ chuyển động  │   │              │        └──────┬──────┘
+ │ + IO         │   │              │               │
+ │ 32 nghìn     │   │              │               │
+ │ 35 % GD      │   │              │               │
+ │ ~3.700       │   │              │               │
+ │ [DllImport]  │   │              │               │
+ └──────┬───────┘   │              │               │
+  2.480 │     1.280 │          740 │           970 │
+        ▼           ▼              ▼               ▼
+ ┌──────────────────────────────────────────────────────────┐
+ │ TIỆN ÍCH CHUNG: khuôn singleton, cảnh báo, ngôn ngữ      │
+ │ 6,6 nghìn dòng · 83 % GD                                 │
+ │ ◄── ứng dụng chính: 3.900 (riêng khuôn singleton: 1.700) │
+ └──────────────────────────────────────────────────────────┘
+```
+
+(Lược: project giao tiếp TCP/cổng COM và các mũi tên dưới 100.)
+
+- **Hướng mũi tên gần như hoàn hảo.** Mọi mũi tên chỉ xuống; theo chiều ngược, giữa các project chỉ có
+  sáu lần tham chiếu. Xét riêng *hướng* phụ thuộc, đây là bản đồ giống Hình 7.1 nhất trong các
+  dự án WinForms.
+- **Nhưng tách project không phải là tách logic.** Thư viện máy, nơi khai báo trạm, trục, điểm dạy và
+  IO, có 88 % số dòng nằm trong file dùng kiểu giao diện, và **cả 77 lệnh chuyển động** của nó nằm
+  trong những file ấy. Lý do đọc được ngay trong mã: lớp nền của trạm bật `MessageBox` và đổ dữ liệu
+  vào `DataGridView`.
+- **Đáy của bản đồ là một thư viện có giao diện.** Tiện ích chung là nơi mọi project đứng lên, **kể
+  cả driver** (khoảng 2.480 lần), và 83 % số dòng của nó nằm trong file dùng WinForms. Muốn chạy thử
+  driver trong một chương trình console thì phải kéo theo WinForms.
+- Tâm vẫn là "toàn cục", chỉ đổi áo: một **khuôn singleton** mà riêng ứng dụng chính đã dùng khoảng
+  1.700 lần. Bảng 2.5 ở mục 2.5.1 xếp đúng mẫu này vào dòng "Singleton tự chế" và chỉ cách nhận diện.
+
+**Hình G.4 — Một project, nhưng logic có thư mục riêng, và có cả phép kiểm**
+
+```
+ ┌──────────────────────────┐ ──── 13 ───►  ┌───────────────────────────┐
+ │ LOGIC                    │               │ Trang giao diện           │
+ │ trình tự, phép đo,       │ ◄─── 10 ────  │ 7,7 nghìn dòng · 100 % GD │
+ │ máy, sản phẩm            │               └─────────────┬─────────────┘
+ │ 12 nghìn dòng · 3 % GD   │                             │ 360
+ └────┬────────────────▲────┘                             ▼
+      │ 410            │ 530                ┌───────────────────────────┐
+      │       ┌────────┴─────────┐          │ THƯ MỤC GỐC               │
+      │       │ KIỂM THỬ         │          │ form chính + một đối      │
+      │       │ 1,3 nghìn · 0 %  │          │ tượng ứng dụng toàn cục   │
+      │       │ ~30 hàm kiểm     │          │ 3,1 nghìn dòng · 85 % GD  │
+      │       └──────────────────┘          └───────────────────────────┘
+      │                                                   ▲
+      └───────────────────────────────────────────────────┘
+```
+
+- **Hình dạng sách đề xuất làm được ngay trong một project.** Thư mục Logic có 12 nghìn dòng mà chỉ
+  3 % nằm trong file giao diện. Không cần tách solution, cũng không cần interface: dự án này **không
+  có interface nào**. Chỉ cần một thư mục, và kỷ luật "file trong thư mục này không dùng kiểu giao
+  diện".
+- **Logic tách ra được thì mới viết được phép kiểm.** Thư mục kiểm thử chỉ dùng Logic (khoảng 530
+  lần), không đụng tới giao diện. Các phép kiểm ở đây chạm vào phần **tính toán thuần và dữ liệu**
+  (phép tính, bước trình tự, giới hạn đo), đúng những phần không cần chỗ cắm.
+- **Nhưng không ai chạy chúng.** Hai file kiểm thử tự viết hàm so sánh riêng, không dùng thư viện
+  kiểm thử nào, và hàm "chạy tất cả" của chúng **không được gọi từ bất cứ đâu** trong chương trình.
+  Có phép kiểm mà không có thói quen chạy phép kiểm: mục 17.2 giải quyết đúng chuyện này bằng một
+  bước `dotnet test` chạy sau mỗi lần build.
+- Còn hai vết: Logic vẫn dùng một **đối tượng ứng dụng toàn cục** ở thư mục gốc (khoảng 410 lần), và
+  biết tới form chạy tự động (13 lần). Muốn chạy Logic trong console thì phải cắt cả hai.
+
+**Hình G.5 — Hai mươi hai project, mọi mũi tên về lõi**
+
+```
+ ┌───────────────────┐ ┌────────────────────┐ ┌─────────────────────┐
+ │ Shell (exe)       │ │ 7 MODULE GIAO DIỆN │ │ GIAO DIỆN MÁY       │
+ │ 3 nghìn · 69 % GD │ │ cảnh báo, nhật ký, │ │ vận hành tay, gỡ lỗi│
+ │                   │ │ tham số, người dùng│ │ 9,5 nghìn · 99 % GD │
+ │                   │ │ 12 nghìn · 95 % GD │ │                     │
+ └─────────┬─────────┘ └─────────┬──────────┘ └───┬──────────────┬──┘
+       730 │             ~1.800  │          1.060 │        1.040 │
+           │                     │                │              ▼
+           │                     │                │   ┌─────────────────────┐
+           │                     │                │   │ TRÌNH TỰ MÁY        │
+           │                     │                │   │ 13 nghìn · 1 % GD   │
+           │                     │                │   │ 0 lệnh chuyển động  │
+           │                     │                │   │ trong file GD       │
+           │                     │                │   └───┬────────────┬────┘
+           │                     │                │ 3.140 │      2.160 │
+           │                     │                │       │            ▼
+           │                     │                │       │  ┌────────────────────┐
+           │                     │                │       │  │ HẠ TẦNG: driver    │
+           │                     │                │       │  │ + lớp nền trạm,    │
+           │                     │                │       │  │ lớp nền cơ cấu     │
+           │                     │                │       │  │ 15 nghìn · 0 % GD  │
+           │                     │                │       │  │ ~1.300 [DllImport] │
+           │                     │                │       │  └────────┬───────────┘
+           ▼                     ▼                ▼       ▼     1.870 ▼
+ ┌─────────────────────────────────────────────────────────────────────────┐
+ │ LÕI: 44 interface · trạng thái máy · kết quả cơ cấu · mức cảnh báo      │
+ │ 6,7 nghìn dòng · 1 % GD — không biết tới mô-đun nào khác                │
+ └─────────────────────────────────────────────────────────────────────────┘
+```
+
+(Lược: dịch vụ, dữ liệu, thư viện control tự viết khoảng 37 nghìn dòng, và các mũi tên dưới 200.)
+
+- **Đây là bản đồ gần Hình 7.1 nhất.** Mọi mũi tên đổ về lõi, và lõi không biết tới mô-đun nào khác.
+  Lõi gần như chỉ chứa hợp đồng: 44 interface, các kiểu trạng thái, kết quả và mức cảnh báo.
+- **Trình tự máy có 13 nghìn dòng, 1 % giao diện, không một lệnh chuyển động nào nằm trong file giao
+  diện.** Đặt cạnh Hình G.3 (88 %): cùng là "thư viện chứa trình tự máy", khác nhau ở chỗ có giữ được
+  kỷ luật hay không.
+- Mũi tên trình tự → hạ tầng (khoảng 2.160) **không phải trình tự gọi thẳng driver**. Gần như toàn bộ
+  là **kế thừa lớp nền** (lớp nền trạm, lớp nền cơ cấu) đặt trong project hạ tầng. Dời các lớp nền ấy
+  sang một project riêng thì bản đồ còn sạch hơn, và máy chạy không đổi gì.
+- **Giao diện máy vẫn gọi thẳng chuyển động** (29 lệnh, tất cả trong file giao diện): đó là màn vận
+  hành tay và màn gỡ lỗi. Nút jog thì *phải* điều khiển trục, nên chỗ này có lý hơn các hình trước.
+  Nhưng chính vì vậy, luật an toàn của nút jog cần một cửa kiểm tập trung (mục 15.2.3) chứ không nằm
+  rải trong từng nút.
+- **Cái giá:** hai mươi hai project cho một máy, thêm gần 40 nghìn dòng thư viện control tự viết.
+  Người mới phải lần qua nhiều project mới thấy một nút bấm đi tới đâu. Và dù có 44 interface, dự án
+  này **không có phép kiểm nào**: đúng câu ở mục G.15.1, chỗ cắm là điều kiện cần, không phải điều
+  kiện đủ.
+
+**Bảng G.11b — Năm hình dạng, đặt cạnh nhau**
+
+| Hình | Số project | Tâm của bản đồ | Mũi tên ngược chiều | Logic máy nằm ở đâu | Phép kiểm |
+|---|---|---|---|---|---|
+| G.1 | 1 | một lớp toàn cục | có (gốc ⇄ hộp thoại) | rải khắp, nối với nhau qua biến chung | không |
+| G.2 | 1 | thư mục thiết bị, cộng một túi biến toàn cục | **ba cặp** hai chiều | thư mục thiết bị, trộn với hộp thoại | không |
+| G.3 | 9 | khuôn singleton trong thư viện tiện ích | gần như không | thư viện máy, nhưng trong file dùng giao diện | không |
+| G.4 | 1 | đối tượng ứng dụng toàn cục | ít (logic → form) | thư mục Logic, 3 % GD | có, nhưng không ai chạy |
+| G.5 | 22 | lõi chỉ chứa hợp đồng | không | project trình tự, 1 % GD | không |
+
+> 📌 **Ba điều bản đồ cho thấy mà bảng số ở mục G.15.2 không cho thấy:**
+> 1. **Số project không nói lên độ tách.** Hình G.3 có chín project mà logic vẫn ở file giao diện;
+>    Hình G.4 chỉ một project mà logic tách sạch.
+> 2. **Tâm của bản đồ hầu như luôn là một thứ "toàn cục"**: lớp toàn cục, khuôn singleton, đối tượng
+>    ứng dụng. Chỉ Hình G.5 có tâm là hợp đồng. Khi đọc một dự án lạ, đi tìm cái tâm ấy trước: nó cho
+>    biết mọi thứ dính vào nhau qua đâu.
+> 3. **Hướng mũi tên và chỗ đặt logic là hai chuyện riêng.** Hình G.3 đúng hướng nhưng logic đặt sai
+>    chỗ; Hình G.4 đặt logic đúng chỗ nhưng còn vài mũi tên ngược. Lối đi ở mục G.15.6 sửa chỗ đặt
+>    logic trước, vì đó là thứ quyết định viết được phép kiểm hay không.
+
+**Công cụ vẽ bản đồ có sẵn, và vì sao mục này không dùng**
+
+Bốn công cụ mã nguồn mở dưới đây vẽ được bản đồ kiểu này cho cả một kho mã, và đều đáng thử **trên mã
+của chính bạn**. Thông tin lấy theo README của từng công cụ, tháng 10/2026; công cụ loại này đổi
+nhanh, nên đọc lại README trước khi dùng.
+
+**Bảng G.11c — Bốn công cụ vẽ bản đồ mã, nhìn từ góc mã máy có hợp đồng bảo mật**
+
+| | Understand-Anything | codegraph | GitNexus | graphify |
+|---|---|---|---|---|
+| Cách đọc mã | tree-sitter, cộng tác tử LLM đọc mã gốc | tree-sitter, lưu chỉ mục vào SQLite | tree-sitter, dựng đồ thị tri thức | tree-sitter cho mã; tài liệu, PDF, ảnh thì nhờ trợ lý AI |
+| Mã có rời khỏi máy? | **Có**, gửi cho LLM (có tuỳ chọn dùng mô hình chạy trên máy) | Không gửi mã; nhưng **bật thống kê sử dụng ẩn danh theo mặc định** (hỏi khi cài, tắt được) | Không, trừ lệnh sinh wiki (gọi LLM) | Không, khi chỉ trích mã (`graphify extract`) |
+| Tự ghi gì vào kho, vào cấu hình | thư mục `.ua/`; tuỳ chọn hook sau commit | thư mục `.codegraph/`; đoạn hướng dẫn trong `CLAUDE.md`/`AGENTS.md`; tự thêm quyền cho trợ lý AI (tắt bằng `--no-permissions`) | thư mục `.gitnexus/`; `AGENTS.md`/`CLAUDE.md`; skill và hook cho trợ lý AI (tắt được bằng cờ) | thư mục `graphify-out/`; skill cho trợ lý AI khi chạy `install`; tuỳ chọn hook git |
+| Hình vẽ ra | bảng điều khiển web, xuất PNG/SVG | không xuất hình; là chỉ mục để trợ lý AI truy vấn | sơ đồ Mermaid | trang HTML tương tác; SVG (cài thêm gói) |
+| C# | README không nhắc tới | có | có | có |
+| Giấy phép | MIT | MIT | **PolyForm Noncommercial**: không dùng cho việc thương mại | Apache-2.0 và MIT |
+
+> ⚠️ **Mã phần mềm máy thường nằm dưới hợp đồng bảo mật (NDA) với khách hàng hoặc với hãng.** Trước
+> khi chạy bất kỳ công cụ nào lên mã đó, kiểm ba điều; bảng trên đã trả lời sẵn cho bốn công cụ này:
+> 1. **Mã có rời khỏi máy không?** Công cụ gửi mã cho một LLM trên mạng là đã chuyển mã cho bên thứ
+>    ba. Với mã có NDA, đó là vi phạm, dù không ai cố ý.
+> 2. **Công cụ ghi gì vào kho?** File hướng dẫn cho trợ lý AI, hook git, quyền tự cấp: tất cả theo lần
+>    commit kế tiếp sang máy đồng nghiệp, hoặc lên kho của khách.
+> 3. **Giấy phép có cho dùng trong việc có trả tiền không?** Viết phần mềm máy cho khách là việc thương
+>    mại.
+>
+> Thêm một điều hay bị quên: cách cài bằng một dòng `curl … | sh` hay `irm … | iex` là chạy mã tải về
+> từ mạng trên máy làm việc, ngay khi bấm Enter.
+
+> 💡 **Các bản đồ trong mục này được vẽ theo đúng ba bước mà những công cụ trên làm: phân tích cú
+> pháp, nối tham chiếu thành đồ thị, gom theo mô-đun.** Khác ở chỗ dùng Roslyn (gói NuGet
+> `Microsoft.CodeAnalysis.CSharp`), chạy trên máy và không ghi gì vào kho. Phần đếm mũi tên chỉ có
+> vậy: nạp mọi file `.cs` vào một `CSharpCompilation`, rồi với từng tên trong mã, hỏi mô hình ngữ
+> nghĩa *"tên này chỉ vào kiểu nào, kiểu đó khai báo ở thư mục nào"*. Cả chương trình dưới hai trăm
+> dòng C#. Với mã của riêng bạn, không vướng NDA, graphify ở chế độ chỉ trích mã cho kết quả tương tự
+> kèm một trang hình tương tác.
 
 ### G.15.3  Nhìn gần: hai nghìn nút bấm
 

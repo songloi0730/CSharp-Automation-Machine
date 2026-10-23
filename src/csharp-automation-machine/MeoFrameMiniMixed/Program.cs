@@ -1,9 +1,9 @@
 // -------------------------------------------------------
 // File:    Program.cs
 // Project: MeoFrameMiniMixed — pha trộn: thiết bị gọi thẳng, trình tự giữ IStep của chương trình mẫu
-// Purpose: Cùng một cỗ máy gắp-đặt như MeoFrameMini, nhưng viết theo lối
-//          CHẶN (blocking) + một luồng chạy riêng — đúng lối mà phần lớn
-//          phần mềm máy ngoài thực tế đang dùng. Đọc kèm Chương 7 mục 7.6.
+// Purpose: Cùng một cỗ máy gắp-đặt như MeoFrameMini: lớp thiết bị gọi thẳng
+//          (không interface), trình tự giữ IStep — vẫn hiện được "bước 3/7",
+//          hạn giờ gói một chỗ, kiểm thử được tầng trình tự. Đọc kèm mục 7.7.4.
 // -------------------------------------------------------
 using System.Diagnostics;
 

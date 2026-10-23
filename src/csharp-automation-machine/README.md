@@ -10,7 +10,7 @@ cần phần cứng**. Mỗi project tương ứng với một phần cụ thể
 | [`MeoFrameMiniDirect/`](MeoFrameMiniDirect/) | Mục 7.7 — **bỏ cả interface**, và cái giá phải trả | `dotnet run` |
 | [`MeoFrameMiniMixed/`](MeoFrameMiniMixed/) | Mục 7.7.4 — bản pha trộn được khuyến nghị | `dotnet run` |
 | [`MeoBench/`](MeoBench/) | **Phụ lục G** — lời giải mẫu **đủ 40/40** bài thực hành; kèm phép kiểm của Phụ lục H, I, J, L | xem bên dưới |
-| [`RandomProbe/`](RandomProbe/) | Mục 13.2.5c — đo hành vi thật của `Random` trên .NET 9 | `dotnet run` |
+| [`RandomProbe/`](RandomProbe/) | Mục 13.2.9c — đo hành vi thật của `Random` trên .NET 9 | `dotnet run` |
 | [`TraCuuHam/`](TraCuuHam/) | **Phụ lục K** — mọi đoạn mã tra cứu hàm, dựng ở ba mức: C# 5, .NET Framework 4.8, .NET 9 | xem [`TraCuuHam/README.md`](TraCuuHam/README.md) |
 
 ## Bốn biến thể MeoFrameMini
@@ -21,7 +21,7 @@ giống hệt nhau** — đó chính là điểm của bài: cùng một hành v
 ```bash
 cd MeoFrameMini       && dotnet run    # 350 dòng · 4 interface · async
 cd MeoFrameMiniSync   && dotnet run    # 390 dòng · 4 interface · chặn luồng
-cd MeoFrameMiniDirect && dotnet run    # 336 dòng · 0 interface · 10 nhánh cờ giả lập
+cd MeoFrameMiniDirect && dotnet run    # 336 dòng · 0 interface · 4 nhánh cờ giả lập
 cd MeoFrameMiniMixed  && dotnet run    # 368 dòng · 1 interface (IStep)
 ```
 
@@ -56,7 +56,8 @@ dotnet run -- H            # khẳng định về ngôn ngữ C# ở Phụ lục
 dotnet run -- I            # 20 lời giải xương sống ở Phụ lục I — 87 phép kiểm
 dotnet run -- J            # đường bỏ qua có chủ ý (mục 17.6, Phụ lục J) — 18 phép kiểm
 dotnet run -- L            # yêu cầu công nghiệp (Phụ lục L) — 95 phép kiểm
-dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
+dotnet run -- --demo       # cỗ máy hoàn chỉnh (G.11) qua năm tình huống, in nhật ký
+dotnet run -- --demo-g85   # máy ráp ở bài G.8.5, đúng 20 chu kỳ (nhật ký ở mục G.10.7)
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
 

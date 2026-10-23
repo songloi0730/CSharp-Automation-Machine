@@ -1,1 +1,3 @@
 bin_cs5/
+# .gitignore gốc của kho bỏ qua *.rsp; tệp này là đầu vào của mức C# 5 (xem README) nên phải có trong kho
+!cs5.rsp

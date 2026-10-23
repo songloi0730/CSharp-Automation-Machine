@@ -10,7 +10,8 @@
 //   dotnet run -- G9          → chỉ kiểm CỖ MÁY GHÉP HOÀN CHỈNH
 //   dotnet run -- G12         → chỉ kiểm phần TÁCH CẤU HÌNH (config/product)
 //   dotnet run -- G13         → năng lực vận hành máy thật (quyền, jog, đèn tháp…)
-//   dotnet run -- --demo      → chạy máy 20 chu kỳ và in nhật ký
+//   dotnet run -- --demo      → chạy CỖ MÁY HOÀN CHỈNH (G.11) qua năm tình huống, in nhật ký
+//   dotnet run -- --demo-g85  → chạy máy ráp ở bài G.8.5 đúng 20 chu kỳ (nhật ký in ở mục G.10.7)
 //   dotnet run -- H           → kiểm các khẳng định của Phụ lục H (boxing, closure, Span…)
 //   dotnet run -- L           → yêu cầu công nghiệp của Phụ lục L (chết/mở lại, đồng hồ, ổ đĩa…)
 //   dotnet run -- --danhsach  → liệt kê 40 bài
@@ -80,6 +81,12 @@ if (tuyChon == "--demo")
     return 0;
 }
 
+if (tuyChon == "--demo-g85")
+{
+    await ChayDemoG85();
+    return 0;
+}
+
 if (tuyChon == "--danhsach")
 {
     foreach (var (ma, ten) in danhSachBai) Console.WriteLine($"{ma}  {ten}");
@@ -133,6 +140,23 @@ else
 }
 
 return Kiem.TongKet();
+
+// ── Chạy máy ráp ở bài G.8.5 đúng 20 chu kỳ — nhật ký này in ở mục G.10.7 ──
+static async Task ChayDemoG85()
+{
+    Console.WriteLine("=== MeoBench-01 · chạy 20 chu kỳ trên bản giả lập ===");
+    var may = RapNoi.Tao(new CauHinhMay { HatGiongGiaLap = 2026 });
+    may.DaBaoCao += (_, dong) => Console.WriteLine("  " + dong);
+
+    await may.VeGocAsync();
+    await may.ChayAsync(20);
+
+    Console.WriteLine();
+    Console.WriteLine($"Trạng thái cuối : {may.TrangThai}");
+    Console.WriteLine($"Tổng phôi       : {may.SoPhoi}");
+    Console.WriteLine($"Đạt / Không đạt : {may.SoOk} / {may.SoNg}");
+    Console.WriteLine($"Hạt giống       : {may.CauHinh.HatGiongGiaLap}  (chạy lại số này ra đúng kết quả trên)");
+}
 
 // ── Chạy CỖ MÁY HOÀN CHỈNH để nhìn bằng mắt ───────────────────────────
 static async Task ChayDemo()

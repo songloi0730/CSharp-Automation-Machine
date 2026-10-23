@@ -2,8 +2,8 @@
 // File:    Program.cs
 // Project: MeoFrameMiniSync — bản KHÔNG dùng Task của chương trình mẫu
 // Purpose: Cùng một cỗ máy gắp-đặt như MeoFrameMini, nhưng viết theo lối
-//          CHẶN (blocking) + một luồng chạy riêng — đúng lối mà phần lớn
-//          phần mềm máy ngoài thực tế đang dùng. Đọc kèm Chương 7 mục 7.6.
+//          CHẶN (blocking) + một luồng chạy riêng — lối hay gặp trong mã
+//          máy có sẵn mà sách đối chiếu. Đọc kèm Chương 7 mục 7.6.
 // -------------------------------------------------------
 using System.Diagnostics;
 

@@ -62,7 +62,7 @@ public sealed record CauHinhHoanChinh
 /// <summary>
 /// Nguồn byte giả lập một cảm biến RS-232 thật: sinh khung STX + số + tổng kiểm
 /// + ETX, rồi CẮT NGẪU NHIÊN thành nhiều mảnh — đúng cách cổng nối tiếp thật
-/// giao dữ liệu (mục 14.1.5b).
+/// giao dữ liệu (mục 14.1.7b).
 /// </summary>
 public sealed class NguonNoiTiepGiaLap(int hatGiong, int soLanDoMoiPhoi = 3, double tamMm = 2.000)
     : INguonByte

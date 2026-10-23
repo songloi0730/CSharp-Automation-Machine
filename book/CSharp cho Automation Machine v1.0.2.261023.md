@@ -153,6 +153,7 @@ Các ví dụ chạy được nằm trên GitHub, cùng kho với bản sách n�
 | `MeoBench/` | Lời giải mẫu cho 40 bài thực hành, kèm bộ tự kiểm | Phụ lục G, H, I, J, L; Chương 17 mục 17.3.7 và 17.6 |
 | `MeoFrameMini/` | Một máy nhỏ viết theo kiến trúc sách đề xuất: bất đồng bộ, có interface | Chương 7 mục 7.5 |
 | `MeoFrameMiniSync/`, `MeoFrameMiniDirect/`, `MeoFrameMiniMixed/` | Cùng máy đó, viết theo ba cách khác để so sánh | Chương 7 mục 7.6–7.7 |
+| `RandomProbe/` | Đo hành vi thật của `Random` trên .NET 9 — kiểm lại một lời khuyên cũ | Chương 13 mục 13.2.9c |
 | `TraCuuHam/` | Mọi đoạn mã của Phụ lục K, dựng được ở ba mức: C# 5, .NET Framework 4.8, .NET 9 | Phụ lục K |
 
 Trong sách, đường dẫn mã luôn tính từ gốc kho, ví dụ `src/csharp-automation-machine/MeoBench/Kiem.cs`.
@@ -9347,7 +9348,7 @@ kia** — cùng 12 chu kỳ, cùng cảnh báo 4,96 bar. Đo ba bản:
 |---|---|---|---|
 | Số dòng | 350 | 390 | **336** — ngắn nhất |
 | Số `interface` | 4 | 4 | **0** |
-| Nhánh `if (_simulate)` trong lớp thiết bị | 0 | 0 | **10** |
+| Nhánh `if (_simulate)` trong lớp thiết bị | 0 | 0 | **4** (cờ xuất hiện 10 lần) |
 | Kết quả chạy | giống nhau | giống nhau | giống nhau |
 
 Đừng bỏ qua dòng đầu. **Lối viết thẳng thật sự ngắn hơn**, và nó còn có hai ưu điểm mà người
@@ -14999,35 +15000,39 @@ hành đổi ngôn ngữ, không phải lập trình viên hardcode `CultureInfo
 dụ trên:
 
 ```csharp
+// record, không phải tuple: binding WPF chỉ đọc PROPERTY (xem 📌 ngay dưới)
+public sealed record LanguageOption(string Code, string Name);
+
 public partial class LanguageSelectorViewModel : ObservableObject
 {
-    public List<(string Code, string Name)> Languages { get; } =
+    public List<LanguageOption> Languages { get; } =
     [
-        ("vi-VN", "Tiếng Việt"),
-        ("en-US", "English"),
-        ("zh-CN", "中文"),
-        ("ja-JP", "日本語"),
-        ("ko-KR", "한국어"),
+        new("vi-VN", "Tiếng Việt"),
+        new("en-US", "English"),
+        new("zh-CN", "中文"),
+        new("ja-JP", "日本語"),
+        new("ko-KR", "한국어"),
     ];
 
-    [ObservableProperty] private (string Code, string Name) selectedLanguage;
+    [ObservableProperty] private LanguageOption? selectedLanguage;
 
-    partial void OnSelectedLanguageChanged((string Code, string Name) value)
+    partial void OnSelectedLanguageChanged(LanguageOption? value)
     {
+        if (value is null) return;
         CultureInfo.CurrentUICulture = new CultureInfo(value.Code);
         TranslationService.Instance.RefreshCulture();
     }
 }
 ```
 
-> 📌 **`(string Code, string Name)` — tuple có tên:** đóng gói 2 giá trị liên
-> quan thành một "cặp" tạm thời, không cần khai riêng một `class`/`record` chỉ
-> để chứa 2 field. Đặt tên trong ngoặc (`Code`, `Name`) cho phép đọc
-> `value.Code`/`value.Name` thay vì `value.Item1`/`value.Item2` (tuple không
-> tên). `("vi-VN", "Tiếng Việt")` là một *giá trị* tuple — khớp đúng thứ tự
-> với khai báo kiểu. Dùng tuple khi dữ liệu chỉ đi qua nội bộ, tạm thời (như
-> danh sách ngôn ngữ ở đây); dữ liệu quan trọng/dùng lại nhiều nơi nên là
-> `record` (Chương 7) để có tên kiểu rõ ràng, dễ tra lỗi.
+> 📌 **Vì sao là `record` mà không phải tuple `(string Code, string Name)`.** Tuple có tên
+> đóng gói hai giá trị mà không cần khai một kiểu riêng, và trong mã C# đọc được `value.Code`
+> thay vì `value.Item1`. Nhưng tên `Code`, `Name` chỉ tồn tại **lúc biên dịch**: lúc chạy,
+> tuple chỉ có hai *field* `Item1`, `Item2` — mà binding WPF chỉ đọc *property*. Đo thử:
+> `{Binding Name}` trên một tuple cho chuỗi rỗng, `{Binding Item2}` cũng rỗng, cùng phép thử
+> trên `record` thì ra đúng "Tiếng Việt". ComboBox sẽ hiện năm dòng trống, và không có lỗi
+> nào được báo. Quy tắc rút ra: tuple dùng tốt cho dữ liệu đi qua nội bộ trong mã C#; dữ
+> liệu đưa lên giao diện thì phải là kiểu có property — `record` (Chương 7) là cách gọn nhất.
 
 ```xml
 <ComboBox ItemsSource="{Binding Languages}"
@@ -32392,8 +32397,11 @@ bằng chính công cụ vừa cài, hoặc bằng PowerShell:
 ```cmd
 REM Liệt kê mọi .NET process đang chạy kèm PID
 dotnet-counters ps
+```
 
-REM Hoặc dùng PowerShell nếu cần lọc theo tên
+Hoặc trong PowerShell, khi cần lọc theo tên:
+
+```powershell
 Get-Process -Name MeoFrame.Presentation | Select-Object Id, ProcessName
 ```
 
@@ -34495,7 +34503,10 @@ nằm ngoài phạm vi automation, tự tra tài liệu C++/CLI khi cần).
 - **Destructor `~ClassName()` và Finalizer `!ClassName()`** — `~` tương
   đương `Dispose()` (giải phóng ngay khi C# gọi `using`/`Dispose()`);
   `!` là lưới an toàn chạy bởi GC nếu người dùng quên gọi Dispose. Thiếu
-  `!` là lỗi phổ biến nhất khiến tài nguyên native rò rỉ âm thầm.
+  `!` là lỗi phổ biến nhất khiến tài nguyên native rò rỉ âm thầm. Chiều gọi
+  theo hướng dẫn của Microsoft: **`~` gọi `!`**, và `!` là nơi duy nhất giải
+  phóng tài nguyên native. Finalizer không được đụng vào đối tượng managed
+  khác, vì lúc nó chạy GC có thể đã dọn chúng rồi.
 - **Chuyển đổi kiểu tại biên giới** — `msclr::interop::marshal_as` xử lý
   chuyển đổi kiểu dữ liệu thông thường (`System::String^` sang
   `std::string`/`std::wstring`, số, enum); `Marshal::Copy` dùng để copy
@@ -34518,7 +34529,9 @@ nằm ngoài phạm vi automation, tự tra tài liệu C++/CLI khi cần).
 
 using namespace System;
 
-namespace MeoFrame::Infrastructure::Cameras {
+// Ba namespace lồng viết tách: dạng gộp MeoFrame::Infrastructure::Cameras cần /std:c++17,
+// mà project C++/CLI tạo mới để mặc định C++14 (lỗi C2429)
+namespace MeoFrame { namespace Infrastructure { namespace Cameras {
 
     public ref class CameraWrapper : public ICameraDriver
     {
@@ -34534,7 +34547,7 @@ namespace MeoFrame::Infrastructure::Cameras {
         virtual array<Byte>^ GrabFrame();
         virtual bool Connect();
     };
-}
+} } }
 ```
 
 **Code A.1b — `CameraWrapper.cpp` (implementation)**
@@ -34545,12 +34558,16 @@ namespace MeoFrame::Infrastructure::Cameras {
 #include "NativeCamera.h"
 #pragma managed(pop)
 
+// marshal_as nằm ở header này. Đặt nó TRƯỚC CameraWrapper.h: header của ta có
+// "using namespace System", và đặt sau thì header Windows mà msclr kéo vào va chạm
+// với System::IServiceProvider (lỗi C2371)
+#include <msclr/marshal_cppstd.h>
 #include "CameraWrapper.h"
 using namespace System;
 using namespace System::Runtime::InteropServices;
 using namespace msclr::interop;
 
-namespace MeoFrame::Infrastructure::Cameras {
+namespace MeoFrame { namespace Infrastructure { namespace Cameras {
 
     // Constructor: cấp phát native object
     CameraWrapper::CameraWrapper(String^ ipAddress)
@@ -34561,21 +34578,23 @@ namespace MeoFrame::Infrastructure::Cameras {
     }
 
     // Destructor (IDisposable.Dispose): gọi khi using(){} kết thúc
-    // hoặc khi Dispose() được gọi tường minh
+    // hoặc khi Dispose() được gọi tường minh. Giải phóng tài nguyên managed
+    // (nếu có) ở đây, rồi gọi finalizer — chiều gọi Microsoft hướng dẫn
     CameraWrapper::~CameraWrapper()
+    {
+        this->!CameraWrapper();
+    }
+
+    // Finalizer: nơi DUY NHẤT giải phóng tài nguyên native. Chạy khi destructor
+    // gọi tới, hoặc khi GC dọn mà Dispose() bị quên. Không đụng vào đối tượng
+    // managed khác ở đây — GC có thể đã dọn chúng
+    CameraWrapper::!CameraWrapper()
     {
         if (_native != nullptr)
         {
             delete _native;
             _native = nullptr;
         }
-    }
-
-    // Finalizer: lưới an toàn — GC gọi nếu Dispose() bị quên
-    // Quy ước: finalizer gọi lại destructor để tái dùng logic giải phóng
-    CameraWrapper::!CameraWrapper()
-    {
-        this->~CameraWrapper();
     }
 
     bool CameraWrapper::Connect()
@@ -34596,7 +34615,7 @@ namespace MeoFrame::Infrastructure::Cameras {
         Marshal::Copy(IntPtr(nativeBuffer), result, 0, size);
         return result;
     }
-}
+} } }
 ```
 
 `Marshal::Copy` an toàn hơn `pin_ptr` cho trường hợp này vì không cần
@@ -34872,7 +34891,9 @@ thấy tên file quen quen.
 Nếu người dùng C# quên gọi `Dispose()` (không dùng `using`), object
 native sẽ không bao giờ được giải phóng khi GC thu gom — vì GC chỉ biết
 gọi finalizer, không biết gọi destructor `~`. Luôn khai báo cả hai theo
-đúng mẫu.
+đúng mẫu: `~` gọi `!`, còn `!` giải phóng tài nguyên native. Viết ngược lại —
+`!` gọi `~` — thì mọi việc dọn dẹp trong destructor, kể cả việc đụng vào đối
+tượng managed, đều chạy trong finalizer, đúng chỗ Microsoft khuyên tránh.
 
 **Lỗi 2: Sai encoding khi chuyển `String^` sang `std::string`.**
 `System::String^` là UTF-16 nội bộ; nếu SDK kỳ vọng ANSI/code page cụ
@@ -34892,6 +34913,15 @@ Code A.1 đã làm), trình biên dịch có thể cố dịch code C++ thuần 
 managed code, gây ra lỗi biên dịch khó hiểu không liên quan gì đến logic
 thật của wrapper. Code A.1 đã làm đúng — không bỏ qua cặp
 `#pragma managed(push, off)`/`#pragma managed(pop)` dù có vẻ dư thừa.
+
+**Lỗi 5: `using namespace System;` đứng trước header của Windows.**
+Nhiều header — kể cả `<msclr/marshal_cppstd.h>` — kéo theo header Windows có
+kiểu `IServiceProvider`. Nếu trước đó đã có `using namespace System;` (thường
+nằm trong chính header của wrapper), tên đó trùng với `System::IServiceProvider`
+và trình biên dịch báo hàng loạt lỗi C2371, C3699 ở tận trong thư mục Windows Kits —
+nhìn không ra liên quan gì tới mã của bạn. Cách sửa: include mọi header hệ thống
+và `msclr` **trước** header của mình, như Code A.1b; tốt hơn nữa là không đặt
+`using namespace` trong header.
 
 <!-- SECTION: PhuLucB_GiaiPhauPhanMemMay -->
 ---
@@ -39875,8 +39905,8 @@ nguồn, từ khoá `new` với lớp thiết bị chỉ xuất hiện **ở fil
 
 **Hướng làm.** (a) Tự tạo bằng tay trong `Main` — không thêm phụ thuộc, nhìn thấy hết, đủ cho máy
 nhỏ; (b) thùng chứa tiêm phụ thuộc — hợp khi số lớp lớn; (c) cờ giả lập bên trong từng lớp thiết bị
-— **đừng**: quyết định thật/giả rải ra mọi nơi, và mục 7.7 đo được 10 nhánh rẽ như vậy trong một
-chương trình mẫu nhỏ.
+— **đừng**: quyết định thật/giả rải ra mọi nơi, và mục 7.7 đếm được bốn nhánh rẽ như vậy, cùng mười
+chỗ nhắc tới cờ, trong một chương trình mẫu chỉ có ba lớp thiết bị.
 
 **Ghép vào.** G.8.5.
 
@@ -40019,7 +40049,8 @@ dotnet run -- H            # khẳng định về ngôn ngữ C# (Phụ lục H)
 dotnet run -- I            # lời giải bài xương sống (Phụ lục I)
 dotnet run -- J            # đường bỏ qua có chủ ý (mục 17.6, Phụ lục J)
 dotnet run -- L            # yêu cầu công nghiệp: chết/mở lại, đồng hồ, ổ đĩa, mẫu chuẩn (Phụ lục L)
-dotnet run -- --demo       # chạy máy 20 chu kỳ, in nhật ký
+dotnet run -- --demo       # cỗ máy hoàn chỉnh (mục G.11) qua năm tình huống, in nhật ký
+dotnet run -- --demo-g85   # máy ráp ở bài G.8.5, đúng 20 chu kỳ (nhật ký ở mục G.10.7)
 dotnet run -- --danhsach   # liệt kê đủ 40 bài
 ```
 
@@ -40279,7 +40310,8 @@ bị chặn **ngay lúc ráp**, không đợi tới giữa chu kỳ.
 | Phôi đã xong trước khi dừng vẫn được tính | Không mất dữ liệu sản xuất |
 | Chạy khi chưa về gốc → bị từ chối | Bảo vệ theo trạng thái |
 
-Chạy `dotnet run -- --demo` cho ra nhật ký thật như sau (hạt giống 2026):
+Chạy `dotnet run -- --demo-g85` cho ra nhật ký thật như sau (hạt giống 2026). Lệnh `--demo` không có
+hậu tố chạy cỗ máy hoàn chỉnh của mục G.11, không phải máy của bài này.
 
 ```text
 === MeoBench-01 · chạy 20 chu kỳ trên bản giả lập ===
@@ -40632,7 +40664,7 @@ bị hỏng gửi mãi không có `ETX` thì bộ đệm phải **tự giải ph
 | `DuongBoQua.cs` + `KiemDuongBoQua.cs` | **mục 17.6**, Phụ lục J — đường bỏ qua có chủ ý | `dotnet run -- J` |
 | `YeuCauCongNghiep.cs`, `YeuCauCongNghiep2.cs` + hai tệp kiểm | **mục 13.4.9, 15.1.9, 15.2.3b, 17.3.9, 18.7, 19.5–19.7** — yêu cầu công nghiệp, từng lớp riêng lẻ (Phụ lục L) | `dotnet run -- L` |
 | `MayCongNghiep.cs` + `KiemMayCongNghiep.cs` | **mục G.16** — ráp yêu cầu công nghiệp vào cỗ máy G.11 | `dotnet run -- G16` |
-| `Program.cs` | bộ chạy + chế độ `--demo` | `dotnet run -- --demo` |
+| `Program.cs` | bộ chạy + hai chế độ chạy thử: `--demo` (máy G.11), `--demo-g85` (máy G.8.5) | `dotnet run -- --demo` |
 
 > 📌 **Cách dùng lời giải mẫu cho đúng.** Đừng mở nó ra trước. Trình tự có ích nhất: (1) đọc đặc tả
 > và tiêu chí chấm ở mục này; (2) **chép riêng phần hàm kiểm** của bài đó vào project của bạn —

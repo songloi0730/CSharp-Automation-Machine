@@ -32,7 +32,8 @@ public sealed class ChuyenDong
         if (!_truc.DaVeGoc)
             throw new AlarmException(MaCanhBao.TrucChuaVeGoc, _truc.Ten, "chưa về gốc mà đã ra lệnh đi");
 
-        if (viTriMm < _gioiHanDuoiMm || viTriMm > _gioiHanTrenMm)
+        // NaN làm mọi phép so sánh thành sai, nên phải chặn riêng trước (mục F.4b, quy tắc 1)
+        if (!double.IsFinite(viTriMm) || viTriMm < _gioiHanDuoiMm || viTriMm > _gioiHanTrenMm)
             throw new ArgumentOutOfRangeException(nameof(viTriMm),
                 string.Format(CultureInfo.InvariantCulture,
                     "{0} nằm ngoài hành trình [{1}; {2}]", viTriMm, _gioiHanDuoiMm, _gioiHanTrenMm));
@@ -254,6 +255,8 @@ public static class KiemNghiepVuVaTrinhTu
 
         Kiem.Nem<ArgumentOutOfRangeException>(() => z.DiToiAsync(999.0).GetAwaiter().GetResult(),
             "vị trí ngoài hành trình → ArgumentOutOfRangeException");
+        Kiem.Nem<ArgumentOutOfRangeException>(() => z.DiToiAsync(double.NaN).GetAwaiter().GetResult(),
+            "vị trí NaN (số đo hỏng) → ArgumentOutOfRangeException, KHÔNG thành lệnh chạy");
 
         tz.MoPhongTreo = true;
         var exTreo = await Kiem.BatAsync<AlarmException>(() => z.DiToiAsync(0.0));

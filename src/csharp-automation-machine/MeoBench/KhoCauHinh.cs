@@ -118,7 +118,7 @@ public sealed record BoDiemDay
                      ("ViTriChoMm",    ViTriChoMm,    coMay.HanhTrinhXMm),
                  })
         {
-            if (v < 0 || v > tran)
+            if (!double.IsFinite(v) || v < 0 || v > tran)   // NaN qua được mọi phép so, phải chặn riêng
                 loi.Add(string.Format(CultureInfo.InvariantCulture,
                     "Điểm {0} = {1} nằm ngoài hành trình [0; {2}]", ten, v, tran));
         }

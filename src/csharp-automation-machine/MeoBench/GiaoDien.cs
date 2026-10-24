@@ -142,7 +142,8 @@ public sealed class BoNhapSo(double nhoNhat, double lonNhat, string donVi, int s
 
         string chuan = vanBan.Trim().Replace(',', '.');
 
-        if (!double.TryParse(chuan, NumberStyles.Float, CultureInfo.InvariantCulture, out double v))
+        // TryParse nhận cả chữ "NaN" và "Infinity" (dán vào ô thì lọt qua bộ chặn lúc gõ): chúng không phải số đo
+        if (!double.TryParse(chuan, NumberStyles.Float, CultureInfo.InvariantCulture, out double v) || !double.IsFinite(v))
             return new KetQuaNhap(false, 0, "Không phải số hợp lệ");
 
         if (v < nhoNhat || v > lonNhat)
@@ -307,6 +308,7 @@ public static class KiemGiaoDien
         Kiem.Dung(o.Kiem("2,0").HopLe,  "★ gõ '2,0' (dấu PHẨY) → cũng hợp lệ");
         Kiem.Gan(o.Kiem("2,0").GiaTri, 2.0, 1e-9, "dấu phẩy cho ra đúng 2,0 — KHÔNG thành 20");
         Kiem.Dung(!o.Kiem("abc").HopLe, "gõ chữ → không hợp lệ");
+        Kiem.Dung(!o.Kiem("NaN").HopLe, "★ dán chữ 'NaN' (TryParse vẫn nhận) → không hợp lệ");
         Kiem.Dung(!o.Kiem("").HopLe,    "để trống → không hợp lệ");
         Kiem.Dung(!o.Kiem("3.0").HopLe, "vượt dải trên → không hợp lệ");
         Kiem.Dung(o.Kiem("3.0").ThongBao!.Contains("1.5", StringComparison.Ordinal),

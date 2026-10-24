@@ -9,7 +9,7 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.2.261023 |
+| **Phiên bản** | v1.0.2.261025 |
 | **Tác giả** | AI & songloi0730 |
 | **Xuất bản** | 07/2026 |
 | **Giấy phép** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
@@ -4339,7 +4339,9 @@ Cuối cùng là **hành vi** — constructor đưa object về trạng thái h�
         if (!Connected)                          { error = "Axis chưa kết nối."; return false; }
         if (Alarm)                               { error = "Axis đang báo lỗi."; return false; }
         if (!ServoOn)                            { error = "Servo đang OFF.";    return false; }
-        if (velocity <= 0 || velocity > MaxVelocity) { error = $"Vận tốc vượt giới hạn {MaxVelocity}."; return false; }
+        // IsFinite trước: NaN làm mọi phép so sánh thành sai, nên "<= 0 || > Max" để nó lọt qua (Phụ lục F mục F.4b)
+        if (!double.IsFinite(velocity) || velocity <= 0 || velocity > MaxVelocity)
+                                                 { error = $"Vận tốc vượt giới hạn {MaxVelocity}."; return false; }
 
         return _driver.TryMoveAbs(AxisId, position, velocity, out error);
     }
@@ -4741,7 +4743,8 @@ public abstract class AxisBase : IMovable
     {
         if (Alarm)                          throw new InvalidOperationException("Axis đang alarm.");
         if (!ServoOn)                       throw new InvalidOperationException("Servo OFF.");
-        if (vel <= 0 || vel > MaxVelocity)  throw new ArgumentOutOfRangeException(nameof(vel));
+        if (!double.IsFinite(vel) || vel <= 0 || vel > MaxVelocity)
+                                            throw new ArgumentOutOfRangeException(nameof(vel));
 
         await MoveAbsoluteCoreAsync(pos, vel, ct);   // phần đặc thù vendor
     }
@@ -31374,6 +31377,7 @@ Khi nhiều test case có cùng cấu trúc "nếu đầu vào là X thì kết 
 [InlineData(0,   false)]   // velocity = 0 (không hợp lệ)
 [InlineData(501, false)]   // velocity = 501 (vượt max)
 [InlineData(-10, false)]   // velocity âm
+[InlineData(double.NaN, false)]   // velocity NaN (số tính hỏng) — dòng hay bị quên nhất
 public void TryMoveAbs_KiemTraGioiHanVelocity(double velocity, bool expectedOk)
 {
     var mockDriver = new Mock<IMotionDriver>();
@@ -31394,6 +31398,8 @@ public void TryMoveAbs_KiemTraGioiHanVelocity(double velocity, bool expectedOk)
 ```
 
 Mỗi dòng `[InlineData(...)]` là một test case độc lập — Visual Studio Test Explorer hiển thị riêng từng dòng. Thêm case biên mới chỉ cần thêm 1 dòng `InlineData`, không sửa code test.
+
+Dòng `double.NaN` là dòng hay bị quên nhất với tham số kiểu `double`. Một số `NaN` làm mọi phép so sánh thành sai, nên điều kiện `velocity <= 0 || velocity > MaxVelocity` để nó lọt qua; bản `Axis` ở Chương 4 vì thế kiểm `double.IsFinite(velocity)` trước. Phụ lục F mục F.4b có danh sách giá trị biên đáng đưa vào mọi `[Theory]` (0, âm, `NaN`, rỗng, lớn nhất).
 
 > 📌 **Bốn dòng `.Setup(...)` dùng thư viện Moq — đọc kỹ vì cú pháp khác mọi
 > lambda đã gặp:**
@@ -38943,6 +38949,7 @@ Ba điều cần nói trước để bạn biết mình đang đọc gì:
   được** cho phần mềm máy. Đó là phần quan trọng nhất của mục ấy.
 
 > 📌 **Đọc theo nhu cầu.** Bắt đầu một dự án mới → F.1 và F.2. Tiếp quản mã người khác → F.3 và F.4.
+> Vừa viết xong một hàm, muốn biết nó chịu được đầu vào xấu, lỗi giữa chừng, bấm hai lần chưa → F.4b.
 > Muốn giảm số lỗi lọt ra hiện trường mà không thêm họp hành → F.5. Đội đang dùng trợ lý AI → F.6.
 > Sắp giao máy → F.7, một trang, dùng được ngay.
 
@@ -39110,11 +39117,128 @@ Mục F.3 làm mã dễ đọc **hôm nay**. Mục này giữ cho nó còn sửa
 > mềm đã bước vào giai đoạn **chỉ thêm, không sửa** — và từ đó mọi thay đổi đắt dần. Mục 7.7 gọi đây
 > là dấu hiệu nặng nhất.
 
+## F.4b  Mười sáu quy tắc cho những đường đi ngoài luồng chính
+
+Mục F.3 làm mã dễ đọc, mục F.4 giữ cấu trúc. Cả hai đều ngầm giả định mã chạy **đúng như người viết
+hình dung**: đầu vào hợp lệ, thiết bị trả lời, người vận hành bấm đúng một lần. Phần lớn lỗi lọt ra
+hiện trường lại nằm ở những đường đi mà người viết **không hình dung**: một số đo ra `NaN`, một khay
+trống, một thiết bị im lặng, nút Stop bấm giữa chừng, một nút bấm hai lần, một nhánh chưa ai từng chạy.
+
+Mục này gom các đường đi ấy thành mười sáu quy tắc trong bốn nhóm. Cột **"Gặp trong mã có sẵn"** đo
+trên đúng khối mã của Bảng F.3, bằng một chương trình Roslyn chạy trên máy (cách đo như mục G.15.2b);
+số đếm **thận trọng**: chỉ đếm khi chắc, nên con số thật chỉ có thể lớn hơn. Cột **"Máy bắt được?"** đã
+thử trên .NET 9 với bộ phân tích bật đầy đủ (mục F.5); "Không" nghĩa là không quy tắc dựng sẵn nào báo.
+
+**Bảng F.4b — Mười sáu quy tắc cho đường đi ngoài luồng chính**
+
+| # | Quy tắc | Gặp trong mã có sẵn | Máy bắt được? | Chi tiết |
+|---|---|---|---|---|
+| | **A. Giá trị ở biên** | | | |
+| 1 | **Số đọc từ ngoài vào có thể là `NaN`, và `NaN` làm mọi phép so sánh thành sai.** Kiểm `double.IsFinite` trước khi so ngưỡng | Gần **1.900** phép so sánh số thực, chỉ **66** lần kiểm `NaN`; dự án không kiểm lần nào: **hay gặp** | Không (CA2242 chỉ bắt `x == double.NaN`) | Code F.1, mục G.6.1 |
+| 2 | **Chia cho một biến thì chặn 0 trước.** Số nguyên chia 0 thì ném lỗi; số thực chia 0 thì **không ném**, ra vô cực hoặc `NaN` rồi đi tiếp | Khoảng **640** phép chia cho biến hay thuộc tính; hơn **500** trong đó, cùng hàm không có phép so số chia với 0 | Không | Code F.1, mục 6.1.7 |
+| 3 | **Tập rỗng là chuyện thường, không phải ngoại lệ.** Khay trống, chưa đo lần nào, công thức chưa có bước. `First`, `Last`, `Max`, `Min`, `Average` ném lỗi khi tập rỗng | Khoảng **750** lời gọi loại này; gần **500** cùng hàm không kiểm tập rỗng | Không | Code F.1 |
+| 4 | **Chuỗi thành số thì dùng `TryParse`, và nói rõ văn hoá** | Hơn **1.500** lời gọi `Parse`/`Convert.To…` trên chuỗi, so với khoảng **240** lời gọi `TryParse`; khoảng **700** lần phân tích số thực không nói văn hoá | Một nửa: CA1305 bắt thiếu văn hoá; không quy tắc nào đòi `TryParse` | mục 3.4.1, Bảng F.3 dòng 11 |
+| 5 | **Biên của vòng lặp, chỉ số và bộ đếm.** `<` hay `<=`; phần tử đầu, phần tử cuối; bộ đếm `ushort` qua 65.535 thì quay về 0 | — | Không | mục 3.1.4, Bảng 3.4, mục 14.1.9, Phụ lục I mục I.17 |
+| | **B. Ngoại lệ và lỗi thiết bị** | | | |
+| 6 | **Bắt lỗi ở chỗ biết phải làm gì.** Tầng thiết bị ném lỗi kèm ngữ cảnh; tầng trình tự quyết định dừng, thử lại hay hỏi người; tầng giao diện chỉ hiển thị | Hơn **400** lời gọi `MessageBox.Show` nằm trong file không phải form hay cửa sổ; **85 %** khối `catch` bắt mọi loại lỗi | Một phần: CA1031 bắt `catch (Exception)` | mục 3.5, Hình G.2 |
+| 7 | **Huỷ không phải lỗi.** `OperationCanceledException` khi người bấm Stop là đường đi bình thường: không ghi thành cảnh báo đỏ, và không nuốt nó, vì nuốt thì Stop không dừng được | — | Không | mục 5.2 |
+| 8 | **Lỗi giữa chừng phải để lại trạng thái biết được.** Bước 3 trong 5 hỏng thì van nào đang mở, trục ở đâu, phôi còn trong kẹp không? `finally` đưa đầu ra về an toàn; máy chuyển sang "cần người kiểm", không về "sẵn sàng" | — | Không | mục 12.2.3, Phụ lục L dòng L-05, L-10 |
+| 9 | **Thử lại có giới hạn, và chỉ với việc thử lại được.** Đọc lại một giá trị thì được. Gửi lại lệnh chạy trục thì không, vì lệnh đầu có thể đã chạy | — | Không | mục 13.3.3 |
+| | **C. Thời gian và thứ tự** | | | |
+| 10 | **Mọi vòng chờ có hạn giờ, và hạn giờ đo bằng đồng hồ đơn điệu** | Khoảng **265** vòng chờ có `Sleep`/`Delay`; ít nhất **30** vòng không có dấu hiệu giới hạn nào (chờ trục xong, chờ về gốc): **hay gặp**. **66** phép trừ có `DateTime.Now`, một phần là tính ngày lịch, hợp lệ | Không | Ch.5, mục 19.6.1 |
+| 11 | **Vòng lặp nền phải có đường thoát** khi tắt chương trình hay bấm Stop | Khoảng **350** vòng `while (true)` có `Sleep`; **25** vòng không có lối thoát nào (`break`, `return`, `throw`, cờ huỷ) | Không | mục 5.2, Phụ lục L dòng L-05 |
+| 12 | **Một lệnh có thể tới hai lần.** Bấm hai lần, sự kiện tới chồng, lệnh mạng gửi lại: chặn chạy chồng, hoặc làm cho gọi lặp là vô hại | — | Không | mục 8.1.5, mục 13.3.3 |
+| 13 | **Không có `Task` "phóng rồi quên".** Mọi `Task` có người chờ hoặc có chỗ bắt lỗi; `async void` chỉ dành cho hàm xử lý sự kiện, không gọi thẳng | Gần **150** lời gọi trả về `Task` bị bỏ không ai chờ; **29** hàm `async void` bị gọi thẳng như hàm thường | Một phần: CS4014, chỉ bên trong hàm `async` | mục 5.1.4, mục 19.5.1 |
+| | **D. Mã không chạy** | | | |
+| 14 | **`switch` trên `enum` xét đủ mọi giá trị, hoặc nhánh mặc định ném lỗi.** Thêm một chế độ mới vào `enum` thì chỗ quên lộ ra ngay, thay vì âm thầm không làm gì | **290** trong **835** câu `switch` trên `enum` thiếu nhánh và không có nhánh mặc định: **rất hay gặp** | Có: CS8509 (biểu thức `switch`, bật sẵn), IDE0010 (câu lệnh `switch`, phải bật) | mục 3.3.1, mục 12.1.2 |
+| 15 | **Mã không ai gọi thì xoá; hàm sự kiện không gắn vào đâu là tính năng tưởng có mà không có** | Hơn **500** hàm không ai gọi hoặc không gắn vào sự kiện nào, gần **6.700** dòng; **91** nút đã gắn mà thân hàm chỉ còn chú thích: nút còn trên màn hình, bấm không làm gì | Một phần: IDE0051 bắt hàm `private` không ai gọi, nhưng **cố ý bỏ qua hàm có chữ ký sự kiện** | mục 19.1.6, Bảng F.3 dòng 8 |
+| 16 | **Một điều kiện bảo vệ chưa từng thấy bật thì chưa biết nó chạy.** Thử tới khi thấy nó chặn ít nhất một lần, và để lại một phép kiểm cho ca bị chặn | Một lớp bảo vệ không bao giờ đúng (mục 3.3.3); phép kiểm có mà không ai gọi (Hình G.4) | Không: `x > 10 && x < 5` biên dịch sạch, qua cả bộ phân tích | mục 3.3.3, mục 18.6.2 |
+
+Ba chỗ biên đầu bảng hiếm khi được dạy kỹ, nên đáng xem tận mã. Mỗi chỗ có một bản sai và một bản đúng:
+
+**Code F.1 — Ba chỗ biên hay lọt: `NaN`, chia cho 0, tập rỗng**
+
+```csharp
+public static class BaChoBien
+{
+    private const double ApSuatToiThieuBar = 0.4;
+
+    // (1) NaN: mọi phép so sánh với NaN đều cho false
+    public static bool ThieuApSai(double apSuatBar) => apSuatBar < ApSuatToiThieuBar;      // ❌ NaN → false: không báo
+    public static bool ThieuApDung(double apSuatBar) =>
+        !double.IsFinite(apSuatBar) || apSuatBar < ApSuatToiThieuBar;                        // ✅ không hữu hạn = lỗi đo
+
+    // (2) Số thực chia 0 không ném lỗi: ra vô cực hoặc NaN, rồi đi tiếp vào lệnh chạy
+    public static double TocDoSai(double quangDuongMm, double dtGiay) => quangDuongMm / dtGiay;   // ❌ dt = 0 → vô cực
+    public static double TocDoDung(double quangDuongMm, double dtGiay)
+    {
+        if (!(dtGiay > 0))                                    // ✅ viết ngược thế này thì NaN cũng bị chặn
+            throw new ArgumentOutOfRangeException(nameof(dtGiay), dtGiay, "dt phải dương");
+        return quangDuongMm / dtGiay;
+    }
+
+    // (3) Tập rỗng là chuyện thường: khay trống, chưa đo lần nào
+    public static double CaoNhatSai(IReadOnlyList<double> cacLanDo) => cacLanDo.Max();      // ❌ rỗng → ném lỗi giữa chu kỳ
+    public static double? CaoNhatDung(IReadOnlyList<double> cacLanDo)
+    {
+        ArgumentNullException.ThrowIfNull(cacLanDo);
+        return cacLanDo.Count == 0 ? null : cacLanDo.Max();                                  // ✅ "chưa có" là một kết quả
+    }
+}
+```
+
+Ba chi tiết trong Code F.1 dễ đọc lướt qua, và đều đã chạy thử trên .NET 9:
+
+- **`if (dtGiay <= 0)` để lọt `NaN`**, vì `NaN <= 0` cũng là `false`. Viết ngược thành `if (!(dtGiay > 0))`
+  thì chặn được cả 0, số âm lẫn `NaN`. Hàm dựng sẵn `ArgumentOutOfRangeException.ThrowIfNegativeOrZero`
+  cũng ném lỗi với `NaN`, dùng nó cũng được.
+- **Kẹp giới hạn không cứu được `NaN`:** `Math.Clamp(double.NaN, 0, 10)` vẫn trả về `NaN`. Kẹp chỉ có
+  nghĩa khi giá trị là một con số.
+- **`NaN` đi xa hơn bạn nghĩ:** trên .NET 9, ép `NaN` sang `int` cho ra **0**. Một vị trí đo hỏng, ép
+  sang số xung để gửi xuống card chuyển động, trở thành lệnh chạy về toạ độ 0, không có lỗi nào được
+  ném ra trên đường đi.
+
+Bảng trên dùng lúc review. Lúc vừa viết xong một hàm, mười câu dưới đây nhanh hơn:
+
+**Bảng F.4c — Mười câu hỏi trước khi coi một hàm là xong**
+
+| # | Câu hỏi | Nhóm |
+|---|---|---|
+| 1 | Đầu vào bằng 0, âm, `NaN`, rỗng, lớn nhất thì hàm làm gì? | A |
+| 2 | Có phép chia nào mà số chia có thể bằng 0 không? | A |
+| 3 | Đơn vị và văn hoá của mọi con số đọc vào đã rõ chưa? | A |
+| 4 | Thiết bị không trả lời thì hàm chờ bao lâu, rồi làm gì? | B, C |
+| 5 | Một ngoại lệ ném ra ở dòng giữa thì đầu ra nào còn đang bật? | B |
+| 6 | Người bấm Stop giữa chừng thì sao? | B, C |
+| 7 | Hàm bị gọi hai lần liền, hoặc gọi khi máy đang ở trạng thái khác, thì sao? | C |
+| 8 | Có nhánh nào chưa chạy lần nào trong lúc thử không? | D |
+| 9 | Có điều kiện bảo vệ nào chưa từng thấy bật không? | D |
+| 10 | Khi hàm hỏng, nhật ký có đủ để người ca đêm biết chuyện gì xảy ra không? | B |
+
+> 💡 **Bật những gì máy bắt được, để dành sức người cho phần còn lại.** Năm quy tắc trong bảng có mã
+> phân tích dựng sẵn. CS8509 và CS4014 bật sẵn. Các mã còn lại cần hai dòng trong file project:
+> ```xml
+> <AnalysisMode>All</AnalysisMode>
+> <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+> ```
+> và vài dòng trong `.editorconfig`, vì nhóm IDE mặc định chỉ hiện gợi ý trong trình soạn thảo:
+> ```ini
+> [*.cs]
+> dotnet_diagnostic.IDE0010.severity = warning   # switch câu lệnh thiếu nhánh
+> dotnet_diagnostic.IDE0051.severity = warning   # thành viên private không ai dùng
+> ```
+> Theo đúng bậc thang ở mục F.5: bật trên **một project nhỏ** trước, sửa hết rồi mới mở rộng.
+
+> ⚠️ **Phần máy không bắt được mới là phần nguy hiểm.** `NaN` chưa kiểm, chia cho 0, tập rỗng, vòng chờ
+> không hạn giờ, `async void` gọi thẳng, hàm sự kiện không gắn, điều kiện không bao giờ đúng: không quy
+> tắc dựng sẵn nào báo những thứ này, và chúng biên dịch sạch. Bảng F.4c tồn tại vì chúng; dòng cuối
+> của Bảng F.7, **một người thứ hai chạy thử máy**, cũng vậy.
+
 ---
 
 ## F.5  Lưới an toàn tự động — để quy tắc không phụ thuộc trí nhớ
 
-Hai mục trên là hai mươi quy tắc. Không ai nhớ hết, và nhắc nhau trong review thì mệt mỏi và không
+Ba mục trên là ba mươi sáu quy tắc. Không ai nhớ hết, và nhắc nhau trong review thì mệt mỏi và không
 đều. Cách bền hơn: **cái gì máy kiểm được thì để máy kiểm**.
 
 **Bảng F.5 — Quy tắc nào máy tự kiểm được, quy tắc nào chỉ người mới thấy**
@@ -39122,7 +39246,7 @@ Hai mục trên là hai mươi quy tắc. Không ai nhớ hết, và nhắc nhau
 | Cách chặn | Chặn được gì | Chi phí dựng |
 |---|---|---|
 | **Bật cảnh báo thành lỗi biên dịch** (`TreatWarningsAsErrors`) | Biến không dùng, ép kiểu mất dữ liệu, `async` không `await` | 1 dòng trong file project |
-| **Bộ phân tích mã** (analyzer) + file quy tắc | Tên sai quy ước, `catch` rỗng, so sánh số thực bằng `==`, `Thread.Sleep` trong mã async | Nửa buổi |
+| **Bộ phân tích mã** (analyzer) + file quy tắc | Tên sai quy ước, `catch` rỗng, so sánh số thực bằng `==`, `Thread.Sleep` trong mã async, `switch` thiếu nhánh, hàm không ai gọi (mục F.4b) | Nửa buổi |
 | **Hook trước khi commit** | Định dạng lộn xộn, file quá lớn, mã bị chú thích còn sót, khoá/mật khẩu lọt vào kho | Một buổi |
 | **Phép kiểm tự động cho logic thuần** | Ngưỡng, quy đổi đơn vị, tính toán — đúng loại lỗi ở mục 3.3.3 | Vài ngày |
 | **Máy dựng tự động** (CI) | "Chạy được trên máy tôi" | Ch.17 mục 17.2 |
@@ -39159,7 +39283,7 @@ sang các bước xung quanh** — lập kế hoạch, duyệt và kiểm thử,
 |---|---|
 | **Lập kế hoạch trước, viết mã sau** — thống nhất danh sách file sẽ sửa và rủi ro trước khi gõ dòng đầu tiên | Chính là bước 3 ở Bảng F.1. Với máy, "rủi ro" có nghĩa vật lý, nên bước này đáng giá hơn hẳn so với phần mềm web |
 | **Chuỗi tài liệu nằm trong Git** | Đúng mục F.2 — và giải đúng bài toán "máy sống mười năm, người thì không" |
-| **Một file quy tắc dự án mà trợ lý đọc được** | Hai mươi quy tắc ở F.3/F.4 viết thành một file ngắn trong kho mã; trợ lý đọc nó mỗi phiên, người mới cũng đọc nó ngày đầu tiên. Giữ **dưới 200 dòng** — dài hơn thì cả người lẫn máy đều bỏ qua |
+| **Một file quy tắc dự án mà trợ lý đọc được** | Các quy tắc ở F.3, F.4 và F.4b viết thành một file ngắn trong kho mã; trợ lý đọc nó mỗi phiên, người mới cũng đọc nó ngày đầu tiên. Giữ **dưới 200 dòng** — dài hơn thì cả người lẫn máy đều bỏ qua |
 | **Quy tắc thực thi được bằng mã** (hook chặn, kiểm tự động) | Đúng tinh thần mục F.5: luật nào máy chặn được thì đừng để nó sống bằng lời nhắc |
 
 #### Và bốn thứ **không** chuyển sang được — đây mới là phần quan trọng
@@ -39211,6 +39335,7 @@ Một trang, dùng trực tiếp. Mỗi mục đều truy được về một ch
 | ☐ | Cấu hình máy này **không nằm trong mã**, và đã sao lưu | Cài lại máy tính là chuyện sẽ xảy ra | Ch.17 mục 17.3.6 |
 | ☐ | Bản giao có **thẻ phiên bản** trong Git, khớp với số hiện trên màn hình | Không có thì không biết hiện trường đang chạy bản nào | Ch.17 mục 17.1.3 |
 | ☐ | `intent.md` / `spec.md` của các thay đổi lớn đã commit và **đúng trạng thái** | Người sau bạn cần lý do, không cần đoán | mục F.2 |
+| ☐ | Mỗi điều kiện bảo vệ đã được **thấy bật** ít nhất một lần, và cách gây ra nó được ghi lại | Điều kiện chưa từng thấy bật thì chưa biết nó chạy | mục F.4b, mục 3.3.3 |
 | ☐ | Có **một người thứ hai** đã chạy thử máy | Người viết mã luôn thử đúng những gì mình nghĩ tới | Bảng F.1, bước 5 |
 
 > 📌 **Mục cuối cùng là mục hay bị bỏ nhất và cứu được nhiều nhất.** Người viết mã thử đúng những
@@ -40199,7 +40324,7 @@ public async Task DiToiAsync(double viTriMm, CancellationToken ct = default)
     if (!_truc.DaVeGoc)
         throw new AlarmException(MaCanhBao.TrucChuaVeGoc, _truc.Ten, "chưa về gốc mà đã ra lệnh đi");
 
-    if (viTriMm < _gioiHanDuoiMm || viTriMm > _gioiHanTrenMm)
+    if (!double.IsFinite(viTriMm) || viTriMm < _gioiHanDuoiMm || viTriMm > _gioiHanTrenMm)
         throw new ArgumentOutOfRangeException(nameof(viTriMm), …);
 
     using var cts = CancellationTokenSource.CreateLinkedTokenSource(ct);
@@ -40226,6 +40351,10 @@ báo giả. Và cảnh báo giả là con đường ngắn nhất tới việc n
 
 Bài này cũng dùng tới `MoPhongTreo` của bản giả lập (ý của bài G.3.5): không có nó thì **không có
 cách nào** kiểm nhánh hết giờ mà không đứng cạnh một cỗ máy đang hỏng.
+
+Điều kiện hành trình mở đầu bằng `!double.IsFinite(viTriMm)`. Thiếu nó, một vị trí `NaN` (từ một phép
+tính hỏng) qua được cả `<` lẫn `>` và trở thành lệnh chạy: bản giả lập nhận lệnh mà không ném lỗi gì. Lời
+giải có một phép kiểm riêng cho ca này (mục F.4b, quy tắc 1).
 
 > 📌 **Mã trên là phiên bản để học, chưa đủ cho trục thật.** Nó chỉ đúng khi thiết bị *hợp tác* — tự
 > dừng khi token bị huỷ. Trục điều khiển qua DLL của hãng thường không làm vậy, và khi đó
@@ -40500,7 +40629,7 @@ public bool ChoPhepKyTu(char c, string dangCo);     // chặn ngay lúc gõ
 public KetQuaNhap Kiem(string? vanBan);             // kiểm khi rời ô
 ```
 
-**Tiêu chí chấm — 12 phép kiểm.** Ba phép quan trọng nhất:
+**Tiêu chí chấm — 13 phép kiểm.** Ba phép quan trọng nhất:
 
 | Người dùng gõ | Kết quả bắt buộc |
 |---|---|
@@ -40516,6 +40645,10 @@ trình: người vận hành gõ theo thói quen và theo bàn phím số họ c
 
 Ba phép kiểm còn lại nhắm vào `ChoPhepKyTu`: chặn chữ cái, chặn **dấu thập phân thứ hai**, và chặn
 dấu trừ khi dải không cho phép số âm.
+
+Phép kiểm thứ mười ba nhắm vào chỗ ít ai nghĩ tới: `double.TryParse` nhận cả chữ `"NaN"` và
+`"Infinity"`. Bộ chặn lúc gõ không cho gõ chữ cái, nhưng chữ dán vào ô thì không đi qua bộ chặn ấy. Vì
+vậy `Kiem` coi số không hữu hạn là "không phải số hợp lệ" (mục F.4b, quy tắc 1).
 
 #### Bài G.7.4 — Bảng log: hai bất biến phải giữ
 

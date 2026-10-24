@@ -27,8 +27,8 @@ cd MeoFrameMiniMixed  && dotnet run    # 368 dòng · 1 interface (IStep)
 
 ## MeoBench — lời giải mẫu Phụ lục G
 
-Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **789 phép kiểm**: 294 cho **đủ 40** bài thực hành,
-62 cho **cỗ máy ghép hoàn chỉnh** (G.11), 34 cho **tách cấu hình** (G.12), 68 cho **năng lực vận
+Máy **MeoBench-01** (kiểm chiều dày và phân loại OK/NG), kèm bộ tự kiểm **792 phép kiểm**: 296 cho **đủ 40** bài thực hành,
+62 cho **cỗ máy ghép hoàn chỉnh** (G.11), 35 cho **tách cấu hình** (G.12), 68 cho **năng lực vận
 hành máy thật** (G.13), 9 kiểm ngược (G.14), 20 kiểm cấu trúc (G.15), 27 cho các khẳng định về ngôn
 ngữ ở Phụ lục H, 87 cho 20 lời giải ở Phụ lục I, 18 cho đường bỏ qua có chủ ý (mục 17.6, Phụ lục J), 95 cho các yêu cầu công nghiệp của Phụ lục L
 (chết–dump–mở lại chạy thật, đồng hồ, ổ đĩa, mẫu chuẩn, điều kiện chạy, đèn tháp và còi…), 75 cho
@@ -37,7 +37,7 @@ Chạy lẻ được từng nhóm — không phải làm xong hết mới biết
 
 ```bash
 cd MeoBench
-dotnet run                 # tất cả — 789 phép kiểm
+dotnet run                 # tất cả — 792 phép kiểm
 dotnet run -- G1           # nhóm kiểu dữ liệu miền
 dotnet run -- G2           # logic thuần
 dotnet run -- G3           # hợp đồng thiết bị và bản giả lập
@@ -47,7 +47,7 @@ dotnet run -- G6           # công thức, cấu hình, dữ liệu
 dotnet run -- G7           # giao diện
 dotnet run -- G8           # ráp nối và chạy máy
 dotnet run -- G9           # CỖ MÁY GHÉP HOÀN CHỈNH — 62 phép kiểm
-dotnet run -- G12          # tách cấu hình config/product — 34 phép kiểm
+dotnet run -- G12          # tách cấu hình config/product — 35 phép kiểm
 dotnet run -- G13          # quyền, jog, đèn tháp, truy xuất… — 68 phép kiểm
 dotnet run -- G14          # kiểm ngược: đối chiếu bất biến với mã thật — 9 phép kiểm
 dotnet run -- G15          # cấu trúc: kiểm thử với tới đâu — 20 phép kiểm

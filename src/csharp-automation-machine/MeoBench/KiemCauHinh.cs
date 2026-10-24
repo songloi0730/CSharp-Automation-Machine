@@ -87,6 +87,10 @@ public static class KiemCauHinh
                   "★ chép nhầm điểm dạy từ máy khác → BỊ BẮT ngay lúc nạp, không đợi trục đâm");
         Kiem.Dung(nap3.CanhBao.Any(c => c.Contains("380", StringComparison.Ordinal)),
                   "cảnh báo nói rõ giá trị nào và hành trình bao nhiêu");
+        // điểm dạy không phải là số: JSON không chở được NaN, nhưng một phép tính hỏng thì có
+        var diemNaN = new BoDiemDay { ViTriDoMm = double.NaN };
+        Kiem.Dung(diemNaN.KiemTraTrongHanhTrinh(new CauHinhCoMay()).Any(l => l.Contains("ViTriDoMm", StringComparison.Ordinal)),
+                  "điểm dạy là NaN → BỊ BẮT, không lọt qua phép so hành trình");
 
         // ---------- G.12.4 ----------
         Kiem.MoBai("G.12.4", "File cấu hình hỏng không làm sập máy");

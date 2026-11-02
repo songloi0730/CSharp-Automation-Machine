@@ -4,155 +4,9 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.260922</title>
+  <title>Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá — v1.0.0.261103</title>
   <style>
 
-html {
-color: #1a1a1a;
-background-color: #fdfdfd;
-}
-body {
-margin: 0 auto;
-max-width: 36em;
-padding-left: 50px;
-padding-right: 50px;
-padding-top: 50px;
-padding-bottom: 50px;
-hyphens: auto;
-overflow-wrap: break-word;
-text-rendering: optimizeLegibility;
-font-kerning: normal;
-}
-@media (max-width: 600px) {
-body {
-font-size: 0.9em;
-padding: 12px;
-}
-h1 {
-font-size: 1.8em;
-}
-}
-@media print {
-html {
-background-color: white;
-}
-body {
-background-color: transparent;
-color: black;
-font-size: 12pt;
-}
-p, h2, h3 {
-orphans: 3;
-widows: 3;
-}
-h2, h3, h4 {
-page-break-after: avoid;
-}
-}
-p {
-margin: 1em 0;
-}
-a {
-color: #1a1a1a;
-}
-a:visited {
-color: #1a1a1a;
-}
-img {
-max-width: 100%;
-}
-svg {
-height: auto;
-max-width: 100%;
-}
-h1, h2, h3, h4, h5, h6 {
-margin-top: 1.4em;
-}
-h5, h6 {
-font-size: 1em;
-font-style: italic;
-}
-h6 {
-font-weight: normal;
-}
-ol, ul {
-padding-left: 1.7em;
-margin-top: 1em;
-}
-li > ol, li > ul {
-margin-top: 0;
-}
-blockquote {
-margin: 1em 0 1em 1.7em;
-padding-left: 1em;
-border-left: 2px solid #e6e6e6;
-color: #606060;
-}
-code {
-white-space: pre-wrap;
-font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-font-size: 85%;
-margin: 0;
-hyphens: manual;
-}
-pre {
-margin: 1em 0;
-overflow: auto;
-}
-pre code {
-padding: 0;
-overflow: visible;
-overflow-wrap: normal;
-}
-.sourceCode {
-background-color: transparent;
-overflow: visible;
-}
-hr {
-border: none;
-border-top: 1px solid #1a1a1a;
-height: 1px;
-margin: 1em 0;
-}
-table {
-margin: 1em 0;
-border-collapse: collapse;
-width: 100%;
-overflow-x: auto;
-display: block;
-font-variant-numeric: lining-nums tabular-nums;
-}
-table caption {
-margin-bottom: 0.75em;
-}
-tbody {
-margin-top: 0.5em;
-border-top: 1px solid #1a1a1a;
-border-bottom: 1px solid #1a1a1a;
-}
-th {
-border-top: 1px solid #1a1a1a;
-padding: 0.25em 0.5em 0.25em 0.5em;
-}
-td {
-padding: 0.125em 0.5em 0.25em 0.5em;
-}
-header {
-margin-bottom: 4em;
-text-align: center;
-}
-#TOC li {
-list-style: none;
-}
-#TOC ul {
-padding-left: 1.3em;
-}
-#TOC > ul {
-padding-left: 0;
-}
-#TOC a:not(:hover) {
-text-decoration: none;
-}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: 1.5em;}
 div.column{flex: auto;}
@@ -236,11 +90,211 @@ code span.va { color: #19177c; }
 code span.vs { color: #4070a0; } 
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
 </style>
+  <style type="text/css">
+:root {
+--toc-w: 300px;
+--noi-dung: 980px;
+--font-chu: "Segoe UI", -apple-system, "Helvetica Neue", Arial, "Noto Sans",
+"Liberation Sans", Roboto, Tahoma, sans-serif,
+"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji";
+--font-ma: Consolas, "Cascadia Mono", Menlo, "DejaVu Sans Mono", "Liberation Mono",
+"Courier New", monospace;
+}
+
+html { color: #1a1a2e; background: #f4f6f9; -webkit-text-size-adjust: 100%; }
+body {
+font-family: var(--font-chu);
+font-size: 16px;
+line-height: 1.65;
+box-sizing: border-box;
+max-width: var(--noi-dung);
+margin: 0 auto;
+padding: 40px 48px 80px;
+background: #fff;
+min-height: 100vh;
+box-shadow: 0 0 40px rgba(0,0,0,.06);
+overflow-wrap: break-word;
+hyphens: manual; 
+}
+code, pre, kbd, samp { font-family: var(--font-ma); }
+header#title-block-header { margin-bottom: 2em; text-align: center; }
+header#title-block-header h1 { border-bottom: 0; }
+h1, h2, h3, h4, h5, h6 { line-height: 1.3; margin: 1.6em 0 .6em; scroll-margin-top: 16px; }
+h1 { font-size: 1.9rem; color: #0f172a; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; }
+h2 { font-size: 1.5rem; color: #1e3a5f; border-left: 4px solid #6366f1; padding-left: 12px; }
+h3 { font-size: 1.2rem; color: #1e40af; }
+h4 { font-size: 1.05rem; color: #374151; }
+h5, h6 { font-size: 1em; font-style: italic; }
+p { margin: 0 0 1em; }
+ol, ul { margin: 0 0 1em; padding-left: 1.7em; }
+li > ol, li > ul { margin: 0; }
+li { margin-bottom: .2em; }
+a { color: #1d4ed8; }
+a:visited { color: #1d4ed8; }
+strong { color: #1e3a8a; }
+img, svg { max-width: 100%; height: auto; }
+
+img[src^="data:image/jpeg"], img[src^="data:image/png"], img[src^="data:image/webp"] {
+display: block; max-height: 460px; width: auto; margin: 0 auto;
+}
+figure { margin: 1em 0; text-align: center; }
+figcaption { font-size: .9em; color: #4b5563; }
+hr { border: none; border-top: 2px dashed #e2e8f0; margin: 2.5em 0; }
+blockquote {
+margin: 1em 0;
+padding: 10px 18px;
+border-left: 4px solid #6366f1;
+border-radius: 0 8px 8px 0;
+background: #f5f3ff;
+color: #312e81;
+}
+blockquote > :last-child { margin-bottom: 0; }
+code {
+font-size: .875em;
+background: #f1f5f9;
+color: #9d174d;
+padding: 1px 5px;
+border-radius: 4px;
+white-space: pre-wrap;
+}
+pre {
+background: #f6f8fa;
+border: 1px solid #e5e7eb;
+border-radius: 8px;
+padding: 12px 16px;
+overflow: auto;
+line-height: 1.45;
+margin: 1em 0 1.5em;
+}
+pre code { background: none; color: inherit; padding: 0; font-size: 13.5px; white-space: pre; }
+
+table {
+display: block;
+overflow-x: auto;
+width: 100%;
+border-collapse: collapse;
+margin: 1em 0 1.5em;
+font-size: 14px;
+font-variant-numeric: lining-nums tabular-nums;
+}
+th, td { border: 1px solid #d1d5db; padding: 6px 10px; text-align: left; vertical-align: top; }
+th { background: #f1f5f9; font-weight: 600; }
+tbody tr:nth-child(even) td { background: #fafbfc; }
+
+#TOC {
+position: fixed;
+top: 0; left: 0; bottom: 0;
+width: var(--toc-w);
+overflow-y: auto;
+overscroll-behavior: contain;
+background: #1e2133;
+padding: 56px 0 40px;
+z-index: 200;
+font-size: 14px;
+line-height: 1.4;
+transform: translateX(-100%);
+visibility: hidden;
+transition: transform .25s ease, visibility .25s;
+}
+html.toc-open #TOC { transform: none; visibility: visible; }
+#TOC .toc-tieu-de {
+position: absolute; top: 18px; left: 20px;
+font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+color: #6b8bc4;
+}
+#TOC ul { list-style: none; margin: 0; padding: 0; }
+#TOC li { margin: 0; }
+#TOC a {
+display: block;
+padding: 6px 16px 6px 20px;
+color: #a3acc8;
+text-decoration: none;
+}
+#TOC a:hover { color: #fff; background: #2a2d3e; }
+#TOC a.active { color: #fff; background: #2f3a5c; box-shadow: inset 3px 0 0 #60a5fa; }
+
+#TOC > ul > li > a { font-weight: 600; color: #dbe3f5; }
+#TOC > ul > li > ul > li { position: relative; }
+#TOC > ul > li > ul > li > a { padding-right: 36px; }
+#TOC ul ul ul a { padding-left: 36px; font-size: 13px; }
+#TOC ul ul ul { display: none; }
+#TOC li.mo > ul { display: block; }
+#TOC .mo-chuong {
+position: absolute; top: 2px; right: 6px;
+width: 26px; height: 26px;
+border: 0; border-radius: 4px; background: transparent;
+color: #8892b0; font-size: 12px; cursor: pointer;
+transition: transform .15s;
+}
+#TOC .mo-chuong:hover { background: #2a2d3e; color: #fff; }
+#TOC li.mo > .mo-chuong { transform: rotate(90deg); }
+
+#toc-toggle {
+position: fixed;
+top: 12px; left: 12px;
+z-index: 250;
+width: 40px; height: 40px;
+border: 0; border-radius: 8px;
+background: #1e2133; color: #e2e8f0;
+font-size: 18px; line-height: 40px; text-align: center;
+cursor: pointer;
+box-shadow: 0 2px 10px rgba(0,0,0,.25);
+transition: left .25s ease;
+}
+html.toc-open #toc-toggle { left: calc(var(--toc-w) - 52px); box-shadow: none; }
+#toc-toggle:hover { background: #2f3a5c; }
+#toc-backdrop {
+display: none;
+position: fixed; inset: 0;
+background: rgba(0,0,0,.45);
+z-index: 150;
+}
+
+html.chua-san-sang #TOC, html.chua-san-sang #toc-toggle, html.chua-san-sang body { transition: none; }
+
+@media (min-width: 1100px) {
+body { transition: margin-left .25s ease; }
+html.toc-open body {
+margin-left: calc(var(--toc-w) + max(24px, (100vw - var(--toc-w) - var(--noi-dung)) / 2));
+}
+}
+
+@media (max-width: 1099.98px) {
+:root { --toc-w: min(300px, 85vw); }
+html.toc-open #toc-backdrop { display: block; }
+html.toc-open #TOC { box-shadow: 4px 0 24px rgba(0,0,0,.35); }
+body { padding: 64px 24px 56px; }
+h1, h2, h3, h4 { scroll-margin-top: 64px; }
+}
+@media (max-width: 600px) {
+body { padding: 64px 16px 48px; font-size: 15px; }
+}
+@media print {
+#TOC, #toc-toggle, #toc-backdrop { display: none !important; }
+html, body { background: #fff; }
+body { margin: 0 auto !important; padding: 0; max-width: none; box-shadow: none; min-height: 0; }
+table { display: table; overflow: visible; }
+}
+</style>
+  <!-- book_sidebar_head.html — build_release.py chèn vào <head> qua --include-in-header.
+       Đặt trạng thái mục lục TRƯỚC khi vẽ trang để không nháy: màn rộng mở sẵn (trừ khi lần
+       trước người đọc đã đóng), màn hẹp đóng sẵn. Phần còn lại ở book_sidebar.html. -->
+  <script>
+  (function () {
+    var html = document.documentElement;
+    html.classList.add('chua-san-sang');
+    var daDong = false;
+    try { daDong = localStorage.getItem('awh-muc-luc') === 'dong'; } catch (e) { /* file:// bị chặn lưu */ }
+    if (window.matchMedia('(min-width: 1100px)').matches && !daDong) {
+      html.classList.add('toc-open');
+    }
+  })();
+  </script>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">Sổ tay đấu nối &amp; cài tham số thiết bị tự động hoá
-— v1.0.0.260922</h1>
+— v1.0.0.261103</h1>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -252,108 +306,980 @@ bất kỳ số liệu nào</a></li>
 <li><a href="#mục-lục-bản-gộp" id="toc-mục-lục-bản-gộp">Mục lục bản
 gộp</a></li>
 <li><a href="#bước-1--danh-mục-thiết-bị-tự-động-hoá-bom-tổng" id="toc-bước-1--danh-mục-thiết-bị-tự-động-hoá-bom-tổng">Bước 1 — Danh
-mục thiết bị tự động hoá (BOM tổng)</a></li>
+mục thiết bị tự động hoá (BOM tổng)</a>
+<ul>
+<li><a href="#bảng-tra-nhanh-16-nhóm" id="toc-bảng-tra-nhanh-16-nhóm">Bảng tra nhanh 16 nhóm</a></li>
+<li><a href="#e--nguồn--phân-phối-điện" id="toc-e--nguồn--phân-phối-điện">E — Nguồn &amp; phân phối
+điện</a></li>
+<li><a href="#s--an-toàn-máy" id="toc-s--an-toàn-máy">S — An toàn
+máy</a></li>
+<li><a href="#k--bộ-điều-khiển" id="toc-k--bộ-điều-khiển">K — Bộ điều
+khiển</a></li>
+<li><a href="#i--io--module-mở-rộng" id="toc-i--io--module-mở-rộng">I —
+I/O &amp; module mở rộng</a></li>
+<li><a href="#b--cảm-biến-hiện-diện--vị-trí" id="toc-b--cảm-biến-hiện-diện--vị-trí">B — Cảm biến hiện diện &amp; vị
+trí</a></li>
+<li><a href="#p--cảm-biến-quá-trình" id="toc-p--cảm-biến-quá-trình">P —
+Cảm biến quá trình</a></li>
+<li><a href="#m--truyền-động-điện" id="toc-m--truyền-động-điện">M —
+Truyền động điện</a></li>
+<li><a href="#a--khí-nén" id="toc-a--khí-nén">A — Khí nén</a></li>
+<li><a href="#g--cơ-cấu-chấp-hành-khác" id="toc-g--cơ-cấu-chấp-hành-khác">G — Cơ cấu chấp hành khác</a></li>
+<li><a href="#r--đóng-cắt--bảo-vệ-mạch" id="toc-r--đóng-cắt--bảo-vệ-mạch">R — Đóng cắt &amp; bảo vệ
+mạch</a></li>
+<li><a href="#v--vision--chiếu-sáng-máy" id="toc-v--vision--chiếu-sáng-máy">V — Vision &amp; chiếu sáng
+máy</a></li>
+<li><a href="#c--nhận-dạng" id="toc-c--nhận-dạng">C — Nhận dạng</a></li>
+<li><a href="#n--truyền-thông--mạng" id="toc-n--truyền-thông--mạng">N —
+Truyền thông &amp; mạng</a></li>
+<li><a href="#h--hmi-nút-bấm-báo-hiệu" id="toc-h--hmi-nút-bấm-báo-hiệu">H — HMI, nút bấm, báo hiệu</a></li>
+<li><a href="#w--đầu-nối-dây--phụ-kiện-đấu-nối" id="toc-w--đầu-nối-dây--phụ-kiện-đấu-nối">W — Đầu nối, dây &amp; phụ
+kiện đấu nối</a></li>
+<li><a href="#t--nhiệt--môi-trường-tủ-điện" id="toc-t--nhiệt--môi-trường-tủ-điện">T — Nhiệt &amp; môi trường tủ
+điện</a></li>
+<li><a href="#ma-trận-khác-biệt-dùng-chung--chương-2-ngôn-ngữ-chung" id="toc-ma-trận-khác-biệt-dùng-chung--chương-2-ngôn-ngữ-chung">Ma trận
+khác biệt dùng chung (→ Chương 2 &quot;ngôn ngữ chung&quot;)</a></li>
+<li><a href="#ước-lượng-quy-mô" id="toc-ước-lượng-quy-mô">Ước lượng quy
+mô</a></li>
+<li><a href="#việc-kế-tiếp-bước-2" id="toc-việc-kế-tiếp-bước-2">Việc kế
+tiếp (Bước 2)</a></li>
+</ul></li>
 <li><a href="#danh-mục-thiết-bị--phần-bổ-sung" id="toc-danh-mục-thiết-bị--phần-bổ-sung">Danh mục thiết bị — PHẦN BỔ
-SUNG</a></li>
+SUNG</a>
+<ul>
+<li><a href="#q--băng-tải--xử-lý-vật-liệu" id="toc-q--băng-tải--xử-lý-vật-liệu">Q — Băng tải &amp; xử lý vật
+liệu</a></li>
+<li><a href="#y--robot--cơ-cấu-chuyển-động-đặc-biệt" id="toc-y--robot--cơ-cấu-chuyển-động-đặc-biệt">Y — Robot &amp; cơ cấu
+chuyển động đặc biệt</a></li>
+<li><a href="#j--gia-công--liên-kết-trong-chuyền" id="toc-j--gia-công--liên-kết-trong-chuyền">J — Gia công &amp; liên kết
+trong chuyền</a></li>
+<li><a href="#u--đo-lường--kiểm-tra-trong-chuyền" id="toc-u--đo-lường--kiểm-tra-trong-chuyền">U — Đo lường &amp; kiểm tra
+trong chuyền</a></li>
+<li><a href="#x--phụ-trợ-nhà-máy--xử-lý-môi-trường" id="toc-x--phụ-trợ-nhà-máy--xử-lý-môi-trường">X — Phụ trợ nhà máy &amp;
+xử lý môi trường</a></li>
+<li><a href="#bổ-sung-vào-các-nhóm-đã-có" id="toc-bổ-sung-vào-các-nhóm-đã-có">Bổ sung vào các nhóm đã có</a></li>
+<li><a href="#quy-mô-sau-khi-bổ-sung" id="toc-quy-mô-sau-khi-bổ-sung">Quy mô sau khi bổ sung</a></li>
+</ul></li>
 <li><a href="#chương-1--cách-dùng-sách-này--cách-đọc-bản-vẽ-điện-máy" id="toc-chương-1--cách-dùng-sách-này--cách-đọc-bản-vẽ-điện-máy">Chương 1
-— Cách dùng sách này &amp; cách đọc bản vẽ điện máy</a></li>
+— Cách dùng sách này &amp; cách đọc bản vẽ điện máy</a>
+<ul>
+<li><a href="#11-sách-này-dành-cho-ai" id="toc-11-sách-này-dành-cho-ai">1.1 Sách này dành cho ai</a></li>
+<li><a href="#12-cách-tra-nhanh" id="toc-12-cách-tra-nhanh">1.2 Cách tra
+nhanh</a></li>
+<li><a href="#13-nên-đọc-theo-thứ-tự-nào" id="toc-13-nên-đọc-theo-thứ-tự-nào">1.3 Nên đọc theo thứ tự nào</a></li>
+<li><a href="#14-đọc-bản-vẽ-điện-máy" id="toc-14-đọc-bản-vẽ-điện-máy">1.4 Đọc bản vẽ điện máy</a></li>
+<li><a href="#15-trước-khi-cấp-điện-lần-đầu" id="toc-15-trước-khi-cấp-điện-lần-đầu">1.5 Trước khi cấp điện lần
+đầu</a></li>
+<li><a href="#16-bản-quyền-và-giới-hạn-của-sách" id="toc-16-bản-quyền-và-giới-hạn-của-sách">1.6 Bản quyền và giới hạn của
+sách</a></li>
+<li><a href="#17-sai-lầm-thường-gặp-khi-đọc-bản-vẽ" id="toc-17-sai-lầm-thường-gặp-khi-đọc-bản-vẽ">1.7 Sai lầm thường gặp khi
+đọc bản vẽ</a></li>
+<li><a href="#nguồn-tham-khảo" id="toc-nguồn-tham-khảo">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-2--ngôn-ngữ-chung-của-đấu-nối" id="toc-chương-2--ngôn-ngữ-chung-của-đấu-nối">Chương 2 — Ngôn ngữ chung
-của đấu nối</a></li>
+của đấu nối</a>
+<ul>
+<li><a href="#21-npn-và-pnp--sự-khác-nhau-duy-nhất-cần-nhớ" id="toc-21-npn-và-pnp--sự-khác-nhau-duy-nhất-cần-nhớ">2.1 NPN và PNP —
+sự khác nhau duy nhất cần nhớ</a></li>
+<li><a href="#22-sink--source--cái-bẫy-thuật-ngữ-lớn-nhất-trong-nghề" id="toc-22-sink--source--cái-bẫy-thuật-ngữ-lớn-nhất-trong-nghề">2.2 Sink
+/ Source — cái bẫy thuật ngữ lớn nhất trong nghề</a></li>
+<li><a href="#23-cảm-biến-2-dây-3-dây-4-dây" id="toc-23-cảm-biến-2-dây-3-dây-4-dây">2.3 Cảm biến 2 dây, 3 dây, 4
+dây</a></li>
+<li><a href="#24-dòng-rò--vì-sao-plc-báo-on-dù-cảm-biến-chưa-tác-động" id="toc-24-dòng-rò--vì-sao-plc-báo-on-dù-cảm-biến-chưa-tác-động">2.4
+Dòng rò — vì sao PLC báo ON dù cảm biến chưa tác động</a></li>
+<li><a href="#25-no--nc-và-nguyên-tắc-hỏng-thì-phải-an-toàn" id="toc-25-no--nc-và-nguyên-tắc-hỏng-thì-phải-an-toàn">2.5 NO / NC và
+nguyên tắc &quot;hỏng thì phải an toàn&quot;</a></li>
+<li><a href="#26-màu-dây--chuẩn-và-ngoại-lệ" id="toc-26-màu-dây--chuẩn-và-ngoại-lệ">2.6 Màu dây — chuẩn và ngoại
+lệ</a></li>
+<li><a href="#27-sơ-đồ-chân-đầu-nối-tròn" id="toc-27-sơ-đồ-chân-đầu-nối-tròn">2.7 Sơ đồ chân đầu nối tròn</a></li>
+<li><a href="#28-dập-xung-cuộn-cảm--thứ-quyết-định-tuổi-thọ-tiếp-điểm" id="toc-28-dập-xung-cuộn-cảm--thứ-quyết-định-tuổi-thọ-tiếp-điểm">2.8 Dập
+xung cuộn cảm — thứ quyết định tuổi thọ tiếp điểm</a></li>
+<li><a href="#29-tín-hiệu-analog--420-ma-và-010-v" id="toc-29-tín-hiệu-analog--420-ma-và-010-v">2.9 Tín hiệu analog — 4–20
+mA và 0–10 V</a></li>
+<li><a href="#210-open-collector-và-line-driver-tín-hiệu-encoder" id="toc-210-open-collector-và-line-driver-tín-hiệu-encoder">2.10
+Open-collector và line driver (tín hiệu encoder)</a></li>
+<li><a href="#211-nối-đất-và-chống-nhiễu" id="toc-211-nối-đất-và-chống-nhiễu">2.11 Nối đất và chống nhiễu</a></li>
+<li><a href="#212-cách-đọc-một-mã-hàng-lạ" id="toc-212-cách-đọc-một-mã-hàng-lạ">2.12 Cách đọc một mã hàng
+lạ</a></li>
+<li><a href="#213-sai-lầm-thường-gặp" id="toc-213-sai-lầm-thường-gặp">2.13 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương--bản-một-trang-để-in" id="toc-tóm-tắt-chương--bản-một-trang-để-in">Tóm tắt chương — bản một
+trang để in</a></li>
+<li><a href="#nguồn-tham-khảo-1" id="toc-nguồn-tham-khảo-1">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-3--nguồn--phân-phối-điện" id="toc-chương-3--nguồn--phân-phối-điện">Chương 3 — Nguồn &amp; phân
-phối điện</a></li>
-<li><a href="#chương-4--an-toàn-máy" id="toc-chương-4--an-toàn-máy">Chương 4 — An toàn máy</a></li>
+phối điện</a>
+<ul>
+<li><a href="#31-tính-công-suất-nguồn-24-v" id="toc-31-tính-công-suất-nguồn-24-v">3.1 Tính công suất nguồn 24
+V</a></li>
+<li><a href="#32-chọn-bộ-nguồn--các-thông-số-thật-sự-quan-trọng" id="toc-32-chọn-bộ-nguồn--các-thông-số-thật-sự-quan-trọng">3.2 Chọn bộ
+nguồn — các thông số thật sự quan trọng</a></li>
+<li><a href="#33--kiến-trúc-phân-phối-24-v--phần-quyết-định-máy-có-ổn-định-hay-không" id="toc-33--kiến-trúc-phân-phối-24-v--phần-quyết-định-máy-có-ổn-định-hay-không">3.3
+⚠ Kiến trúc phân phối 24 V — phần quyết định máy có ổn định hay
+không</a></li>
+<li><a href="#34-bảo-vệ-mạch" id="toc-34-bảo-vệ-mạch">3.4 Bảo vệ
+mạch</a></li>
+<li><a href="#35-starstar-cầu-dao-chính-mạch-ngoại-lệ-và-điện-áp-dư--yêu-cầu-iec-60204-1" id="toc-35-starstar-cầu-dao-chính-mạch-ngoại-lệ-và-điện-áp-dư--yêu-cầu-iec-60204-1">3.5
+⭐⭐ Cầu dao chính, mạch ngoại lệ và điện áp dư — yêu cầu IEC
+60204-1</a></li>
+<li><a href="#36-nối-đất" id="toc-36-nối-đất">3.6 Nối đất</a></li>
+<li><a href="#37-chọn-mua" id="toc-37-chọn-mua">3.7 Chọn mua</a></li>
+<li><a href="#38-sai-lầm-thường-gặp" id="toc-38-sai-lầm-thường-gặp">3.8
+Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương" id="toc-tóm-tắt-chương">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-2" id="toc-nguồn-tham-khảo-2">Nguồn tham
+khảo</a></li>
+</ul></li>
+<li><a href="#chương-4--an-toàn-máy" id="toc-chương-4--an-toàn-máy">Chương 4 — An toàn máy</a>
+<ul>
+<li><a href="#41-thứ-tự-bắt-buộc-rủi-ro-trước-thiết-bị-sau" id="toc-41-thứ-tự-bắt-buộc-rủi-ro-trước-thiết-bị-sau">4.1 Thứ tự bắt
+buộc: rủi ro trước, thiết bị sau</a></li>
+<li><a href="#42-thứ-tự-ưu-tiên-giảm-rủi-ro--thiết-bị-điện-là-lựa-chọn-cuối" id="toc-42-thứ-tự-ưu-tiên-giảm-rủi-ro--thiết-bị-điện-là-lựa-chọn-cuối">4.2
+Thứ tự ưu tiên giảm rủi ro — thiết bị điện là lựa chọn CUỐI</a></li>
+<li><a href="#43-mức-hiệu-năng-pl-và-cấp-kiến-trúc-category" id="toc-43-mức-hiệu-năng-pl-và-cấp-kiến-trúc-category">4.3 Mức hiệu năng
+(PL) và cấp kiến trúc (Category)</a></li>
+<li><a href="#44-hai-kênh-và-phát-hiện-lỗi-chập-kênh" id="toc-44-hai-kênh-và-phát-hiện-lỗi-chập-kênh">4.4 Hai kênh và phát
+hiện lỗi chập kênh</a></li>
+<li><a href="#45-edm--phản-hồi-từ-cơ-cấu-ngắt" id="toc-45-edm--phản-hồi-từ-cơ-cấu-ngắt">4.5 EDM — phản hồi từ cơ cấu
+ngắt</a></li>
+<li><a href="#46-reset--tự-động-hay-có-giám-sát" id="toc-46-reset--tự-động-hay-có-giám-sát">4.6 Reset — tự động hay có
+giám sát</a></li>
+<li><a href="#47-ba-loại-dừng--chọn-đúng-loại" id="toc-47-ba-loại-dừng--chọn-đúng-loại">4.7 Ba loại dừng — chọn đúng
+loại</a></li>
+<li><a href="#48-nút-dừng-khẩn-cấp--và-điều-nó-không-phải" id="toc-48-nút-dừng-khẩn-cấp--và-điều-nó-không-phải">4.8 Nút dừng khẩn
+cấp — và điều nó KHÔNG phải</a></li>
+<li><a href="#49-khoá-liên-động-cửa" id="toc-49-khoá-liên-động-cửa">4.9
+Khoá liên động cửa</a></li>
+<li><a href="#410-màn-chắn-sáng" id="toc-410-màn-chắn-sáng">4.10 Màn
+chắn sáng</a></li>
+<li><a href="#411-sto-trên-driver" id="toc-411-sto-trên-driver">4.11 STO
+trên driver</a></li>
+<li><a href="#412--những-điều-tuyệt-đối-không-làm" id="toc-412--những-điều-tuyệt-đối-không-làm">4.12 ⚠⚠ Những điều TUYỆT
+ĐỐI không làm</a></li>
+<li><a href="#413-nghiệm-thu--thử-cả-trường-hợp-lỗi" id="toc-413-nghiệm-thu--thử-cả-trường-hợp-lỗi">4.13 Nghiệm thu — thử cả
+trường hợp LỖI</a></li>
+<li><a href="#414-chọn-mua" id="toc-414-chọn-mua">4.14 Chọn mua</a></li>
+<li><a href="#415-sai-lầm-thường-gặp" id="toc-415-sai-lầm-thường-gặp">4.15 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-1" id="toc-tóm-tắt-chương-1">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-3" id="toc-nguồn-tham-khảo-3">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-5--bộ-điều-khiển-plc-ipc--motion-controller" id="toc-chương-5--bộ-điều-khiển-plc-ipc--motion-controller">Chương 5 —
-Bộ điều khiển: PLC, IPC &amp; motion controller</a></li>
+Bộ điều khiển: PLC, IPC &amp; motion controller</a>
+<ul>
+<li><a href="#51-chọn-kiến-trúc" id="toc-51-chọn-kiến-trúc">5.1 Chọn
+kiến trúc</a></li>
+<li><a href="#52-plc-compact" id="toc-52-plc-compact">5.2 PLC
+compact</a></li>
+<li><a href="#53-plc-dạng-rack" id="toc-53-plc-dạng-rack">5.3 PLC dạng
+rack</a></li>
+<li><a href="#54-chu-kỳ-quét--và-tín-hiệu-bị-bỏ-sót" id="toc-54-chu-kỳ-quét--và-tín-hiệu-bị-bỏ-sót">5.4 Chu kỳ quét — và tín
+hiệu bị bỏ sót</a></li>
+<li><a href="#55-ipc-và-soft-plc" id="toc-55-ipc-và-soft-plc">5.5 IPC và
+soft-PLC</a></li>
+<li><a href="#56-motion-controller-chuyên-dụng" id="toc-56-motion-controller-chuyên-dụng">5.6 Motion controller chuyên
+dụng</a></li>
+<li><a href="#57-pin-nhớ-và-lưu-chương-trình" id="toc-57-pin-nhớ-và-lưu-chương-trình">5.7 Pin nhớ và lưu chương
+trình</a></li>
+<li><a href="#58-nối-đất-và-chống-nhiễu" id="toc-58-nối-đất-và-chống-nhiễu">5.8 Nối đất và chống nhiễu</a></li>
+<li><a href="#59-chọn-mua" id="toc-59-chọn-mua">5.9 Chọn mua</a></li>
+<li><a href="#510-sai-lầm-thường-gặp" id="toc-510-sai-lầm-thường-gặp">5.10 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-2" id="toc-tóm-tắt-chương-2">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-4" id="toc-nguồn-tham-khảo-4">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-6--module-io--remote-io" id="toc-chương-6--module-io--remote-io">Chương 6 — Module I/O &amp;
-remote I/O</a></li>
+remote I/O</a>
+<ul>
+<li><a href="#61-số-liệu-neo-dùng-xuyên-chương" id="toc-61-số-liệu-neo-dùng-xuyên-chương">6.1 Số liệu neo dùng xuyên
+chương</a></li>
+<li><a href="#62-module-ngõ-vào-số-di" id="toc-62-module-ngõ-vào-số-di">6.2 Module ngõ vào số (DI)</a></li>
+<li><a href="#63-module-ngõ-ra-số-do" id="toc-63-module-ngõ-ra-số-do">6.3 Module ngõ ra số (DO)</a></li>
+<li><a href="#64-module-analog-vào-ai" id="toc-64-module-analog-vào-ai">6.4 Module analog vào (AI)</a></li>
+<li><a href="#65-module-analog-ra-ao" id="toc-65-module-analog-ra-ao">6.5 Module analog ra (AO)</a></li>
+<li><a href="#66-module-nhiệt-độ" id="toc-66-module-nhiệt-độ">6.6 Module
+nhiệt độ</a></li>
+<li><a href="#67-module-đếm-xung-tốc-độ-cao" id="toc-67-module-đếm-xung-tốc-độ-cao">6.7 Module đếm xung tốc độ
+cao</a></li>
+<li><a href="#68-remote-io-trên-fieldbus" id="toc-68-remote-io-trên-fieldbus">6.8 Remote I/O trên
+fieldbus</a></li>
+<li><a href="#69-starstar-ánh-xạ-dữ-liệu-remote-io--đọc-ra-số-sai-mà-không-đèn-nào-báo" id="toc-69-starstar-ánh-xạ-dữ-liệu-remote-io--đọc-ra-số-sai-mà-không-đèn-nào-báo">6.9
+⭐⭐ Ánh xạ dữ liệu remote I/O — &quot;đọc ra số sai mà không đèn nào
+báo&quot;</a></li>
+<li><a href="#610-io-link--nói-ngắn" id="toc-610-io-link--nói-ngắn">6.10
+IO-Link — nói ngắn</a></li>
+<li><a href="#611-khối-terminal-chuyển-tiếp-relay-terminal--cáp-idc" id="toc-611-khối-terminal-chuyển-tiếp-relay-terminal--cáp-idc">6.11 Khối
+terminal chuyển tiếp (relay terminal / cáp IDC)</a></li>
+<li><a href="#612-sai-lầm-thường-gặp" id="toc-612-sai-lầm-thường-gặp">6.12 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-3" id="toc-tóm-tắt-chương-3">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-5" id="toc-nguồn-tham-khảo-5">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-7--cảm-biến-tiệm-cận-từ--điện-dung" id="toc-chương-7--cảm-biến-tiệm-cận-từ--điện-dung">Chương 7 — Cảm biến
-tiệm cận (từ &amp; điện dung)</a></li>
-<li><a href="#chương-8--cảm-biến-quang" id="toc-chương-8--cảm-biến-quang">Chương 8 — Cảm biến quang</a></li>
+tiệm cận (từ &amp; điện dung)</a>
+<ul>
+<li><a href="#71-nó-là-gì-dùng-khi-nào" id="toc-71-nó-là-gì-dùng-khi-nào">7.1 Nó là gì, dùng khi nào</a></li>
+<li><a href="#72-phân-loại--mọi-biến-thể-cần-phân-biệt" id="toc-72-phân-loại--mọi-biến-thể-cần-phân-biệt">7.2 Phân loại — mọi
+biến thể cần phân biệt</a></li>
+<li><a href="#73-đấu-nối" id="toc-73-đấu-nối">7.3 Đấu nối</a></li>
+<li><a href="#74-lắp-đặt--phần-quyết-định-cảm-biến-chạy-ổn-định-hay-không" id="toc-74-lắp-đặt--phần-quyết-định-cảm-biến-chạy-ổn-định-hay-không">7.4
+Lắp đặt — phần quyết định cảm biến chạy ổn định hay không</a></li>
+<li><a href="#75-chọn-mua--mã-hàng-thật" id="toc-75-chọn-mua--mã-hàng-thật">7.5 Chọn mua — mã hàng thật</a></li>
+<li><a href="#76-sai-lầm-thường-gặp" id="toc-76-sai-lầm-thường-gặp">7.6
+Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-4" id="toc-tóm-tắt-chương-4">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-6" id="toc-nguồn-tham-khảo-6">Nguồn tham
+khảo</a></li>
+</ul></li>
+<li><a href="#chương-8--cảm-biến-quang" id="toc-chương-8--cảm-biến-quang">Chương 8 — Cảm biến quang</a>
+<ul>
+<li><a href="#81-bốn-nguyên-lý--chọn-sai-là-hỏng-cả-ứng-dụng" id="toc-81-bốn-nguyên-lý--chọn-sai-là-hỏng-cả-ứng-dụng">8.1 Bốn nguyên
+lý — chọn sai là hỏng cả ứng dụng</a></li>
+<li><a href="#82-các-biến-thể-phải-phân-biệt" id="toc-82-các-biến-thể-phải-phân-biệt">8.2 Các biến thể phải phân
+biệt</a></li>
+<li><a href="#83-cảm-biến-quang-dạng-chữ-u-khe--photomicro" id="toc-83-cảm-biến-quang-dạng-chữ-u-khe--photomicro">8.3 Cảm biến quang
+dạng chữ U (khe / photomicro)</a></li>
+<li><a href="#84-cảm-biến-sợi-quang--bộ-khuếch-đại" id="toc-84-cảm-biến-sợi-quang--bộ-khuếch-đại">8.4 Cảm biến sợi quang +
+bộ khuếch đại</a></li>
+<li><a href="#85-đấu-nối" id="toc-85-đấu-nối">8.5 Đấu nối</a></li>
+<li><a href="#86-chọn-mua--mã-hàng-thật-omron-e3z-đã-xác-minh" id="toc-86-chọn-mua--mã-hàng-thật-omron-e3z-đã-xác-minh">8.6 Chọn mua —
+mã hàng thật (Omron E3Z, đã xác minh)</a></li>
+<li><a href="#87-sai-lầm-thường-gặp" id="toc-87-sai-lầm-thường-gặp">8.7
+Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-5" id="toc-tóm-tắt-chương-5">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-7" id="toc-nguồn-tham-khảo-7">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-9--cảm-biến-xy-lanh-công-tắc-hành-trình--encoder" id="toc-chương-9--cảm-biến-xy-lanh-công-tắc-hành-trình--encoder">Chương
-9 — Cảm biến xy lanh, công tắc hành trình &amp; encoder</a></li>
+9 — Cảm biến xy lanh, công tắc hành trình &amp; encoder</a>
+<ul>
+<li><a href="#91-cảm-biến-từ-gắn-trên-xy-lanh" id="toc-91-cảm-biến-từ-gắn-trên-xy-lanh">9.1 Cảm biến từ gắn trên xy
+lanh</a></li>
+<li><a href="#92-công-tắc-hành-trình-cơ-khí--vi-công-tắc" id="toc-92-công-tắc-hành-trình-cơ-khí--vi-công-tắc">9.2 Công tắc hành
+trình cơ khí &amp; vi công tắc</a></li>
+<li><a href="#93-encoder" id="toc-93-encoder">9.3 Encoder</a></li>
+<li><a href="#94-sai-lầm-thường-gặp" id="toc-94-sai-lầm-thường-gặp">9.4
+Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-6" id="toc-tóm-tắt-chương-6">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-8" id="toc-nguồn-tham-khảo-8">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-10--cảm-biến-quá-trình-áp-suất-chân-không-nhiệt-độ-lưu-lượng-lực" id="toc-chương-10--cảm-biến-quá-trình-áp-suất-chân-không-nhiệt-độ-lưu-lượng-lực">Chương
 10 — Cảm biến quá trình: áp suất, chân không, nhiệt độ, lưu lượng,
-lực</a></li>
+lực</a>
+<ul>
+<li><a href="#101-công-tắc--cảm-biến-áp-suất-khí-nén-dạng-số" id="toc-101-công-tắc--cảm-biến-áp-suất-khí-nén-dạng-số">10.1 Công tắc /
+cảm biến áp suất khí nén dạng số</a></li>
+<li><a href="#102-cảm-biến-chân-không--chỉ-những-gì-khác-với-áp-dương" id="toc-102-cảm-biến-chân-không--chỉ-những-gì-khác-với-áp-dương">10.2
+Cảm biến chân không — chỉ những gì khác với áp dương</a></li>
+<li><a href="#103-đo-nhiệt-độ" id="toc-103-đo-nhiệt-độ">10.3 Đo nhiệt
+độ</a></li>
+<li><a href="#104-bộ-điều-khiển-nhiệt-độ" id="toc-104-bộ-điều-khiển-nhiệt-độ">10.4 Bộ điều khiển nhiệt độ</a></li>
+<li><a href="#105-cảm-biến-lưu-lượng" id="toc-105-cảm-biến-lưu-lượng">10.5 Cảm biến lưu lượng</a></li>
+<li><a href="#106-loadcell-và-bộ-khuếch-đại" id="toc-106-loadcell-và-bộ-khuếch-đại">10.6 Loadcell và bộ khuếch
+đại</a></li>
+<li><a href="#107-sai-lầm-thường-gặp" id="toc-107-sai-lầm-thường-gặp">10.7 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-7" id="toc-tóm-tắt-chương-7">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-9" id="toc-nguồn-tham-khảo-9">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-11--động-cơ-bước--driver" id="toc-chương-11--động-cơ-bước--driver">Chương 11 — Động cơ bước &amp;
-driver</a></li>
+driver</a>
+<ul>
+<li><a href="#111-phân-loại-động-cơ" id="toc-111-phân-loại-động-cơ">11.1
+Phân loại động cơ</a></li>
+<li><a href="#112-đấu-dây-động-cơ--4-6-8-dây" id="toc-112-đấu-dây-động-cơ--4-6-8-dây">11.2 Đấu dây động cơ — 4, 6, 8
+dây</a></li>
+<li><a href="#113-đấu-tín-hiệu-điều-khiển--phần-dễ-sai-nhất" id="toc-113-đấu-tín-hiệu-điều-khiển--phần-dễ-sai-nhất">11.3 Đấu tín hiệu
+điều khiển — phần dễ sai nhất</a></li>
+<li><a href="#114-cài-đặt-bằng-dip-switch" id="toc-114-cài-đặt-bằng-dip-switch">11.4 Cài đặt bằng DIP
+switch</a></li>
+<li><a href="#115-vận-hành--mô-men-theo-tốc-độ-tăng-tốc-và-cộng-hưởng" id="toc-115-vận-hành--mô-men-theo-tốc-độ-tăng-tốc-và-cộng-hưởng">11.5
+Vận hành — mô-men theo tốc độ, tăng tốc, và cộng hưởng</a></li>
+<li><a href="#116-chọn-nguồn-cấp" id="toc-116-chọn-nguồn-cấp">11.6 Chọn
+nguồn cấp</a></li>
+<li><a href="#117-chọn-mua" id="toc-117-chọn-mua">11.7 Chọn mua</a></li>
+<li><a href="#118-sai-lầm-thường-gặp" id="toc-118-sai-lầm-thường-gặp">11.8 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-8" id="toc-tóm-tắt-chương-8">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-10" id="toc-nguồn-tham-khảo-10">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-12--servo-ac" id="toc-chương-12--servo-ac">Chương
-12 — Servo AC</a></li>
+12 — Servo AC</a>
+<ul>
+<li><a href="#121-servo-và-động-cơ-bước--khác-nhau-ở-đâu" id="toc-121-servo-và-động-cơ-bước--khác-nhau-ở-đâu">12.1 Servo và động
+cơ bước — khác nhau ở đâu</a></li>
+<li><a href="#122-ba-chế-độ-điều-khiển" id="toc-122-ba-chế-độ-điều-khiển">12.2 Ba chế độ điều khiển</a></li>
+<li><a href="#123-sơ-đồ-io--phần-sai-nhiều-nhất-khi-đấu-máy" id="toc-123-sơ-đồ-io--phần-sai-nhiều-nhất-khi-đấu-máy">12.3 Sơ đồ I/O —
+phần sai nhiều nhất khi đấu máy</a></li>
+<li><a href="#124-đấu-tầng-xung" id="toc-124-đấu-tầng-xung">12.4 Đấu
+tầng xung</a></li>
+<li><a href="#125-encoder-tuyệt-đối-và-pin" id="toc-125-encoder-tuyệt-đối-và-pin">12.5 Encoder tuyệt đối và
+pin</a></li>
+<li><a href="#126--phanh-điện-từ--chỗ-nguy-hiểm-nhất-chương-này" id="toc-126--phanh-điện-từ--chỗ-nguy-hiểm-nhất-chương-này">12.6 ⚠ Phanh
+điện từ — chỗ nguy hiểm nhất chương này</a></li>
+<li><a href="#127-sto--safe-torque-off" id="toc-127-sto--safe-torque-off">12.7 STO — Safe Torque Off</a></li>
+<li><a href="#128-điện-trở-xả-regenerative-resistor" id="toc-128-điện-trở-xả-regenerative-resistor">12.8 Điện trở xả
+(regenerative resistor)</a></li>
+<li><a href="#129-cáp-và-nối-đất--servo-là-nguồn-nhiễu-mạnh-nhất-trong-tủ" id="toc-129-cáp-và-nối-đất--servo-là-nguồn-nhiễu-mạnh-nhất-trong-tủ">12.9
+Cáp và nối đất — servo là nguồn nhiễu mạnh nhất trong tủ</a></li>
+<li><a href="#1210-star-danh-sách-tham-số-tối-thiểu-để-servo-quay-lần-đầu" id="toc-1210-star-danh-sách-tham-số-tối-thiểu-để-servo-quay-lần-đầu">12.10
+⭐ Danh sách tham số tối thiểu để servo quay lần đầu</a></li>
+<li><a href="#1211-chỉnh-servo--sau-khi-đã-quay-được-trước-khi-giao-máy" id="toc-1211-chỉnh-servo--sau-khi-đã-quay-được-trước-khi-giao-máy">12.11
+Chỉnh servo — sau khi đã quay được, trước khi giao máy</a></li>
+<li><a href="#1212-nhiều-trục-làm-việc-cùng-nhau--đồng-bộ-song-song-và-bắt-vị-trí" id="toc-1212-nhiều-trục-làm-việc-cùng-nhau--đồng-bộ-song-song-và-bắt-vị-trí">12.12
+Nhiều trục làm việc cùng nhau — đồng bộ, song song, và bắt vị
+trí</a></li>
+<li><a href="#1213-quy-trình-chạy-thử-an-toàn--làm-đúng-thứ-tự-này" id="toc-1213-quy-trình-chạy-thử-an-toàn--làm-đúng-thứ-tự-này">12.13 Quy
+trình chạy thử an toàn — làm đúng thứ tự này</a></li>
+<li><a href="#1214-chọn-mua" id="toc-1214-chọn-mua">12.14 Chọn
+mua</a></li>
+<li><a href="#1215-sai-lầm-thường-gặp" id="toc-1215-sai-lầm-thường-gặp">12.15 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-9" id="toc-tóm-tắt-chương-9">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-11" id="toc-nguồn-tham-khảo-11">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-13--động-cơ-giảm-tốc-bldc-biến-tần--trục-điện" id="toc-chương-13--động-cơ-giảm-tốc-bldc-biến-tần--trục-điện">Chương 13
-— Động cơ giảm tốc, BLDC, biến tần &amp; trục điện</a></li>
+— Động cơ giảm tốc, BLDC, biến tần &amp; trục điện</a>
+<ul>
+<li><a href="#131-động-cơ-giảm-tốc-ac" id="toc-131-động-cơ-giảm-tốc-ac">13.1 Động cơ giảm tốc AC</a></li>
+<li><a href="#132-động-cơ-bldc--brushless" id="toc-132-động-cơ-bldc--brushless">13.2 Động cơ BLDC /
+brushless</a></li>
+<li><a href="#133-biến-tần-vfd--phần-dài-nhất-chương" id="toc-133-biến-tần-vfd--phần-dài-nhất-chương">13.3 Biến tần (VFD) —
+phần dài nhất chương</a></li>
+<li><a href="#134-chỉnh-biến-tần--sau-khi-đã-quay-được-trước-khi-giao-máy" id="toc-134-chỉnh-biến-tần--sau-khi-đã-quay-được-trước-khi-giao-máy">13.4
+Chỉnh biến tần — sau khi đã quay được, trước khi giao máy</a></li>
+<li><a href="#135-trục-điện-electric-actuator" id="toc-135-trục-điện-electric-actuator">13.5 Trục điện (electric
+actuator)</a></li>
+<li><a href="#136-sai-lầm-thường-gặp" id="toc-136-sai-lầm-thường-gặp">13.6 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-10" id="toc-tóm-tắt-chương-10">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-12" id="toc-nguồn-tham-khảo-12">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-14--nguồn-khí--xử-lý-khí" id="toc-chương-14--nguồn-khí--xử-lý-khí">Chương 14 — Nguồn khí &amp; xử
-lý khí</a></li>
+lý khí</a>
+<ul>
+<li><a href="#141-tính-lưu-lượng-máy-nén--làm-bằng-bảng-không-đoán" id="toc-141-tính-lưu-lượng-máy-nén--làm-bằng-bảng-không-đoán">14.1 Tính
+lưu lượng máy nén — làm bằng bảng, không đoán</a></li>
+<li><a href="#142-chất-lượng-khí--đọc-được-iso-8573-1-là-biết-mình-đang-mua-gì" id="toc-142-chất-lượng-khí--đọc-được-iso-8573-1-là-biết-mình-đang-mua-gì">14.2
+Chất lượng khí — đọc được ISO 8573-1 là biết mình đang mua gì</a></li>
+<li><a href="#143-máy-sấy-khí--làm-lạnh-hay-hấp-thụ" id="toc-143-máy-sấy-khí--làm-lạnh-hay-hấp-thụ">14.3 Máy sấy khí — làm
+lạnh hay hấp thụ</a></li>
+<li><a href="#144-bộ-lọc-đường-ống--ba-cấp-và-thứ-tự-không-được-đảo" id="toc-144-bộ-lọc-đường-ống--ba-cấp-và-thứ-tự-không-được-đảo">14.4 Bộ
+lọc đường ống — ba cấp, và thứ tự không được đảo</a></li>
+<li><a href="#145-bộ-frl--lọc--điều-áp--tra-dầu" id="toc-145-bộ-frl--lọc--điều-áp--tra-dầu">14.5 Bộ FRL — Lọc · Điều áp ·
+Tra dầu</a></li>
+<li><a href="#146-van-khởi-động-chậm-và-van-khoá-có-ổ-khoá-loto" id="toc-146-van-khởi-động-chậm-và-van-khoá-có-ổ-khoá-loto">14.6 Van khởi
+động chậm và van khoá có ổ khoá (LOTO)</a></li>
+<li><a href="#147-đường-ống--nơi-tiền-điện-âm-thầm-biến-mất" id="toc-147-đường-ống--nơi-tiền-điện-âm-thầm-biến-mất">14.7 Đường ống —
+nơi tiền điện âm thầm biến mất</a></li>
+<li><a href="#148-rò-rỉ-khí--khoản-chi-phí-ẩn-lớn-nhất-của-xưởng" id="toc-148-rò-rỉ-khí--khoản-chi-phí-ẩn-lớn-nhất-của-xưởng">14.8 Rò rỉ
+khí — khoản chi phí ẩn lớn nhất của xưởng</a></li>
+<li><a href="#149-chọn-mua" id="toc-149-chọn-mua">14.9 Chọn mua</a></li>
+<li><a href="#1410-sai-lầm-thường-gặp" id="toc-1410-sai-lầm-thường-gặp">14.10 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-11" id="toc-tóm-tắt-chương-11">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-13" id="toc-nguồn-tham-khảo-13">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-15--van-điện-từ-khí-nén" id="toc-chương-15--van-điện-từ-khí-nén">Chương 15 — Van điện từ khí
-nén</a></li>
+nén</a>
+<ul>
+<li><a href="#151-đọc-ký-hiệu-van--phải-tự-đọc-được-catalogue" id="toc-151-đọc-ký-hiệu-van--phải-tự-đọc-được-catalogue">15.1 Đọc ký
+hiệu van — phải tự đọc được catalogue</a></li>
+<li><a href="#152-cuộn-đơn-và-cuộn-kép--quyết-định-mất-điện-thì-đi-đâu" id="toc-152-cuộn-đơn-và-cuộn-kép--quyết-định-mất-điện-thì-đi-đâu">15.2
+Cuộn đơn và cuộn kép — quyết định &quot;mất điện thì đi đâu&quot;</a></li>
+<li><a href="#153-tác-động-trực-tiếp-và-tác-động-pilot" id="toc-153-tác-động-trực-tiếp-và-tác-động-pilot">15.3 Tác động trực
+tiếp và tác động pilot</a></li>
+<li><a href="#154-phần-điện--trọng-tâm-của-cuốn-sách-này" id="toc-154-phần-điện--trọng-tâm-của-cuốn-sách-này">15.4 Phần điện —
+trọng tâm của cuốn sách này</a></li>
+<li><a href="#155-lắp-rời-và-lắp-cụm-manifold" id="toc-155-lắp-rời-và-lắp-cụm-manifold">15.5 Lắp rời và lắp cụm
+(manifold)</a></li>
+<li><a href="#156-van-tiết-lưu-điều-tốc-speed-controller" id="toc-156-van-tiết-lưu-điều-tốc-speed-controller">15.6 Van tiết lưu
+điều tốc (speed controller)</a></li>
+<li><a href="#157-chọn-mua--giải-mã-mã-hàng-smc-sy-đã-xác-minh" id="toc-157-chọn-mua--giải-mã-mã-hàng-smc-sy-đã-xác-minh">15.7 Chọn mua
+— giải mã mã hàng SMC SY (đã xác minh)</a></li>
+<li><a href="#158-sai-lầm-thường-gặp" id="toc-158-sai-lầm-thường-gặp">15.8 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-12" id="toc-tóm-tắt-chương-12">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-14" id="toc-nguồn-tham-khảo-14">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-16--xy-lanh-khí-nén--hệ-chân-không" id="toc-chương-16--xy-lanh-khí-nén--hệ-chân-không">Chương 16 — Xy lanh
 khí nén &amp; hệ chân không</a></li>
-<li><a href="#phần-a--xy-lanh-khí-nén" id="toc-phần-a--xy-lanh-khí-nén">PHẦN A — XY LANH KHÍ NÉN</a></li>
+<li><a href="#phần-a--xy-lanh-khí-nén" id="toc-phần-a--xy-lanh-khí-nén">PHẦN A — XY LANH KHÍ NÉN</a>
+<ul>
+<li><a href="#161-tác-động-đơn-và-tác-động-kép" id="toc-161-tác-động-đơn-và-tác-động-kép">16.1 Tác động đơn và tác động
+kép</a></li>
+<li><a href="#162-các-họ-thân-xy-lanh" id="toc-162-các-họ-thân-xy-lanh">16.2 Các họ thân xy lanh</a></li>
+<li><a href="#163-đệm-giảm-chấn" id="toc-163-đệm-giảm-chấn">16.3 Đệm
+giảm chấn</a></li>
+<li><a href="#164-tính-chọn-xy-lanh--có-công-thức-đừng-chọn-theo-cảm-tính" id="toc-164-tính-chọn-xy-lanh--có-công-thức-đừng-chọn-theo-cảm-tính">16.4
+Tính chọn xy lanh — có công thức, đừng chọn theo cảm tính</a></li>
+<li><a href="#165--ty-nam-châm--mã-hàng-khác-xy-lanh-thường" id="toc-165--ty-nam-châm--mã-hàng-khác-xy-lanh-thường">16.5 ⚠ Ty nam
+châm — mã hàng khác xy lanh thường</a></li>
+<li><a href="#166-lắp-đặt" id="toc-166-lắp-đặt">16.6 Lắp đặt</a></li>
+</ul></li>
 <li><a href="#phần-b--hệ-chân-không" id="toc-phần-b--hệ-chân-không">PHẦN
-B — HỆ CHÂN KHÔNG</a></li>
+B — HỆ CHÂN KHÔNG</a>
+<ul>
+<li><a href="#167-bộ-tạo-chân-không-ejector" id="toc-167-bộ-tạo-chân-không-ejector">16.7 Bộ tạo chân không
+(ejector)</a></li>
+<li><a href="#168-giác-hút-chân-không" id="toc-168-giác-hút-chân-không">16.8 Giác hút chân không</a></li>
+<li><a href="#169-ống-đầu-nối-và-lọc-chân-không" id="toc-169-ống-đầu-nối-và-lọc-chân-không">16.9 Ống, đầu nối và lọc chân
+không</a></li>
+<li><a href="#1610-sai-lầm-thường-gặp" id="toc-1610-sai-lầm-thường-gặp">16.10 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-13" id="toc-tóm-tắt-chương-13">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-15" id="toc-nguồn-tham-khảo-15">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-17--cơ-cấu-chấp-hành-khác" id="toc-chương-17--cơ-cấu-chấp-hành-khác">Chương 17 — Cơ cấu chấp hành
 khác</a></li>
 <li><a href="#phần-a--van-điện-từ-cho-nước-chất-lỏng-và-hơi" id="toc-phần-a--van-điện-từ-cho-nước-chất-lỏng-và-hơi">PHẦN A — VAN ĐIỆN
-TỪ CHO NƯỚC, CHẤT LỎNG VÀ HƠI</a></li>
+TỪ CHO NƯỚC, CHẤT LỎNG VÀ HƠI</a>
+<ul>
+<li><a href="#171-van-nước-khác-van-khí-ở-chỗ-nào" id="toc-171-van-nước-khác-van-khí-ở-chỗ-nào">17.1 Van nước khác van khí
+ở chỗ nào</a></li>
+<li><a href="#172-thường-đóng-nc-và-thường-mở-no" id="toc-172-thường-đóng-nc-và-thường-mở-no">17.2 Thường đóng (NC) và
+thường mở (NO)</a></li>
+<li><a href="#173--tác-động-trực-tiếp-và-màng-pilot--chênh-áp-tối-thiểu" id="toc-173--tác-động-trực-tiếp-và-màng-pilot--chênh-áp-tối-thiểu">17.3
+⚠ Tác động trực tiếp và màng pilot — chênh áp tối thiểu</a></li>
+<li><a href="#174-vật-liệu-thân-và-gioăng--chọn-theo-môi-chất" id="toc-174-vật-liệu-thân-và-gioăng--chọn-theo-môi-chất">17.4 Vật liệu
+thân và gioăng — chọn theo môi chất</a></li>
+<li><a href="#175--lắp-đúng-chiều--và-cuộn-ac-bị-kẹt-sẽ-cháy" id="toc-175--lắp-đúng-chiều--và-cuộn-ac-bị-kẹt-sẽ-cháy">17.5 ⚠ Lắp đúng
+chiều — và cuộn AC bị kẹt sẽ CHÁY</a></li>
+<li><a href="#176-chọn-mua-và-giải-mã-mã-hàng" id="toc-176-chọn-mua-và-giải-mã-mã-hàng">17.6 Chọn mua và giải mã mã
+hàng</a></li>
+</ul></li>
 <li><a href="#phần-b--nam-châm-điện-solenoid-tuyến-tính" id="toc-phần-b--nam-châm-điện-solenoid-tuyến-tính">PHẦN B — NAM CHÂM
-ĐIỆN, SOLENOID TUYẾN TÍNH</a></li>
-<li><a href="#phần-c--các-nguyên-lý-gắp" id="toc-phần-c--các-nguyên-lý-gắp">PHẦN C — CÁC NGUYÊN LÝ GẮP</a></li>
+ĐIỆN, SOLENOID TUYẾN TÍNH</a>
+<ul>
+<li><a href="#177-nam-châm-điện-và-solenoid-tuyến-tính" id="toc-177-nam-châm-điện-và-solenoid-tuyến-tính">17.7 Nam châm điện và
+solenoid tuyến tính</a></li>
+</ul></li>
+<li><a href="#phần-c--các-nguyên-lý-gắp" id="toc-phần-c--các-nguyên-lý-gắp">PHẦN C — CÁC NGUYÊN LÝ GẮP</a>
+<ul>
+<li><a href="#178-gắp-điện-electric-gripper" id="toc-178-gắp-điện-electric-gripper">17.8 Gắp điện (electric
+gripper)</a></li>
+<li><a href="#179-gắp-từ-tính--và-khác-biệt-an-toàn-lớn-nhất-trong-chương-này" id="toc-179-gắp-từ-tính--và-khác-biệt-an-toàn-lớn-nhất-trong-chương-này">17.9
+Gắp từ tính — và khác biệt an toàn lớn nhất trong chương này</a></li>
+<li><a href="#1710-gắp-bernoulli-gắp-kim-gắp-mềm" id="toc-1710-gắp-bernoulli-gắp-kim-gắp-mềm">17.10 Gắp Bernoulli, gắp
+kim, gắp mềm</a></li>
+</ul></li>
 <li><a href="#phần-d--cấp-phôi-lắp-ráp-định-lượng" id="toc-phần-d--cấp-phôi-lắp-ráp-định-lượng">PHẦN D — CẤP PHÔI, LẮP RÁP,
-ĐỊNH LƯỢNG</a></li>
+ĐỊNH LƯỢNG</a>
+<ul>
+<li><a href="#1711-bộ-cấp-rung-bowl-feeder-và-bộ-điều-khiển" id="toc-1711-bộ-cấp-rung-bowl-feeder-và-bộ-điều-khiển">17.11 Bộ cấp rung
+(bowl feeder) và bộ điều khiển</a></li>
+<li><a href="#1712-bắt-vít-tự-động" id="toc-1712-bắt-vít-tự-động">17.12
+Bắt vít tự động</a></li>
+<li><a href="#1713-bơm-keo-và-định-lượng-dispensing" id="toc-1713-bơm-keo-và-định-lượng-dispensing">17.13 Bơm keo và định
+lượng (dispensing)</a></li>
+<li><a href="#1714-ionizer-khử-tĩnh-điện" id="toc-1714-ionizer-khử-tĩnh-điện">17.14 Ionizer khử tĩnh điện</a></li>
+<li><a href="#1715-sai-lầm-thường-gặp" id="toc-1715-sai-lầm-thường-gặp">17.15 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-14" id="toc-tóm-tắt-chương-14">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-16" id="toc-nguồn-tham-khảo-16">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-18--rơ-le-ssr-contactor--cầu-đấu" id="toc-chương-18--rơ-le-ssr-contactor--cầu-đấu">Chương 18 — Rơ le, SSR,
-contactor &amp; cầu đấu</a></li>
+contactor &amp; cầu đấu</a>
+<ul>
+<li><a href="#181-rơ-le-trung-gian" id="toc-181-rơ-le-trung-gian">18.1
+Rơ le trung gian</a></li>
+<li><a href="#182-ssr--rơ-le-bán-dẫn" id="toc-182-ssr--rơ-le-bán-dẫn">18.2 SSR — rơ le bán dẫn</a></li>
+<li><a href="#183-contactor--rơ-le-nhiệt" id="toc-183-contactor--rơ-le-nhiệt">18.3 Contactor &amp; rơ le
+nhiệt</a></li>
+<li><a href="#184-cầu-đấu-terminal-block" id="toc-184-cầu-đấu-terminal-block">18.4 Cầu đấu (terminal
+block)</a></li>
+<li><a href="#185-bố-trí-trong-tủ" id="toc-185-bố-trí-trong-tủ">18.5 Bố
+trí trong tủ</a></li>
+<li><a href="#186-sai-lầm-thường-gặp" id="toc-186-sai-lầm-thường-gặp">18.6 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-15" id="toc-tóm-tắt-chương-15">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-17" id="toc-nguồn-tham-khảo-17">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-19--vision--chiếu-sáng-máy" id="toc-chương-19--vision--chiếu-sáng-máy">Chương 19 — Vision &amp;
-chiếu sáng máy</a></li>
+chiếu sáng máy</a>
+<ul>
+<li><a href="#191-một-hệ-vision-gồm-những-gì" id="toc-191-một-hệ-vision-gồm-những-gì">19.1 Một hệ vision gồm những
+gì</a></li>
+<li><a href="#192-giao-tiếp-camera--chọn-chuẩn-nào" id="toc-192-giao-tiếp-camera--chọn-chuẩn-nào">19.2 Giao tiếp camera —
+chọn chuẩn nào</a></li>
+<li><a href="#193-đấu-nối-camera-công-nghiệp--đầu-hirose" id="toc-193-đấu-nối-camera-công-nghiệp--đầu-hirose">19.3 Đấu nối camera
+công nghiệp — đầu Hirose</a></li>
+<li><a href="#194-trigger--chụp-đúng-lúc" id="toc-194-trigger--chụp-đúng-lúc">19.4 Trigger — chụp đúng
+lúc</a></li>
+<li><a href="#195-smart-camera-nhật--omron-fhv7" id="toc-195-smart-camera-nhật--omron-fhv7">19.5 Smart camera Nhật —
+Omron FHV7</a></li>
+<li><a href="#196-chiếu-sáng--phần-quyết-định-thành-bại" id="toc-196-chiếu-sáng--phần-quyết-định-thành-bại">19.6 Chiếu sáng —
+phần quyết định thành bại</a></li>
+<li><a href="#197-bộ-điều-khiển-đèn--chế-độ-và-tham-số" id="toc-197-bộ-điều-khiển-đèn--chế-độ-và-tham-số">19.7 Bộ điều khiển đèn
+— chế độ và tham số</a></li>
+<li><a href="#198-starstar-chỉnh-tham-số-chụp--nơi-quyết-định-tỉ-lệ-ng-giả" id="toc-198-starstar-chỉnh-tham-số-chụp--nơi-quyết-định-tỉ-lệ-ng-giả">19.8
+⭐⭐ Chỉnh tham số chụp — nơi quyết định tỉ lệ NG giả</a></li>
+<li><a href="#199-sai-lầm-thường-gặp" id="toc-199-sai-lầm-thường-gặp">19.9 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-18" id="toc-nguồn-tham-khảo-18">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-20--nhận-dạng-mã-vạch--rfid" id="toc-chương-20--nhận-dạng-mã-vạch--rfid">Chương 20 — Nhận dạng: mã
-vạch &amp; RFID</a></li>
+vạch &amp; RFID</a>
+<ul>
+<li><a href="#201-chọn-mã-vạch-hay-rfid" id="toc-201-chọn-mã-vạch-hay-rfid">20.1 Chọn mã vạch hay RFID</a></li>
+<li><a href="#202-mã-vạch--1d-2d-và-dpm" id="toc-202-mã-vạch--1d-2d-và-dpm">20.2 Mã vạch — 1D, 2D và DPM</a></li>
+<li><a href="#203-star-ba-kiểu-giao-tiếp-đầu-đọc--và-cái-bẫy-lớn-nhất-chương-này" id="toc-203-star-ba-kiểu-giao-tiếp-đầu-đọc--và-cái-bẫy-lớn-nhất-chương-này">20.3
+⭐ Ba kiểu giao tiếp đầu đọc — và cái bẫy lớn nhất chương này</a></li>
+<li><a href="#204-đầu-đọc-cố-định-nhật--omron-v430-f" id="toc-204-đầu-đọc-cố-định-nhật--omron-v430-f">20.4 Đầu đọc cố định
+Nhật — Omron V430-F</a></li>
+<li><a href="#205-đặt-và-chỉnh-đầu-đọc" id="toc-205-đặt-và-chỉnh-đầu-đọc">20.5 Đặt và chỉnh đầu đọc</a></li>
+<li><a href="#206-rfid--ba-dải-tần-chọn-sai-là-làm-lại" id="toc-206-rfid--ba-dải-tần-chọn-sai-là-làm-lại">20.6 RFID — ba dải
+tần, chọn sai là làm lại</a></li>
+<li><a href="#207-rfid-công-nghiệp-nhật--omron-v680s" id="toc-207-rfid-công-nghiệp-nhật--omron-v680s">20.7 RFID công nghiệp
+Nhật — Omron V680S</a></li>
+<li><a href="#208-đặt-nhiều-đầu-đọc-gần-nhau" id="toc-208-đặt-nhiều-đầu-đọc-gần-nhau">20.8 Đặt nhiều đầu đọc gần
+nhau</a></li>
+<li><a href="#209-sai-lầm-thường-gặp" id="toc-209-sai-lầm-thường-gặp">20.9 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-19" id="toc-nguồn-tham-khảo-19">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-21--truyền-thông--mạng-công-nghiệp" id="toc-chương-21--truyền-thông--mạng-công-nghiệp">Chương 21 — Truyền
-thông &amp; mạng công nghiệp</a></li>
+thông &amp; mạng công nghiệp</a>
+<ul>
+<li><a href="#211-ba-tầng-mạng-trong-một-nhà-máy" id="toc-211-ba-tầng-mạng-trong-một-nhà-máy">21.1 Ba tầng mạng trong một
+nhà máy</a></li>
+<li><a href="#212-rs-485--nền-của-gần-như-mọi-bus-nối-tiếp-công-nghiệp" id="toc-212-rs-485--nền-của-gần-như-mọi-bus-nối-tiếp-công-nghiệp">21.2
+RS-485 — nền của gần như mọi bus nối tiếp công nghiệp</a></li>
+<li><a href="#213-modbus-rtu-và-modbus-tcp" id="toc-213-modbus-rtu-và-modbus-tcp">21.3 Modbus RTU và Modbus
+TCP</a></li>
+<li><a href="#214-đọc-dữ-liệu-cho-đúng-và-đủ--phần-sai-nhiều-nhất-sau-khi-dây-đã-thông" id="toc-214-đọc-dữ-liệu-cho-đúng-và-đủ--phần-sai-nhiều-nhất-sau-khi-dây-đã-thông">21.4
+Đọc dữ liệu cho ĐÚNG và ĐỦ — phần sai nhiều nhất sau khi dây đã
+thông</a></li>
+<li><a href="#215-ethernet-công-nghiệp--khác-ethernet-văn-phòng-ở-đâu" id="toc-215-ethernet-công-nghiệp--khác-ethernet-văn-phòng-ở-đâu">21.5
+Ethernet công nghiệp — khác Ethernet văn phòng ở đâu</a></li>
+<li><a href="#216-so-sánh-các-bus-thời-gian-thực" id="toc-216-so-sánh-các-bus-thời-gian-thực">21.6 So sánh các bus thời
+gian thực</a></li>
+<li><a href="#217-họ-cc-link--mã-neo-nhật" id="toc-217-họ-cc-link--mã-neo-nhật">21.7 Họ CC-Link — mã neo
+Nhật</a></li>
+<li><a href="#218-gateway--khi-phải-nối-hai-thế-giới" id="toc-218-gateway--khi-phải-nối-hai-thế-giới">21.8 Gateway — khi phải
+nối hai thế giới</a></li>
+<li><a href="#219-sai-lầm-thường-gặp" id="toc-219-sai-lầm-thường-gặp">21.9 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-20" id="toc-nguồn-tham-khảo-20">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-22--hmi-nút-bấm--báo-hiệu" id="toc-chương-22--hmi-nút-bấm--báo-hiệu">Chương 22 — HMI, nút bấm &amp;
-báo hiệu</a></li>
+báo hiệu</a>
+<ul>
+<li><a href="#221-nút-bấm-φ22--cấu-tạo-module" id="toc-221-nút-bấm-φ22--cấu-tạo-module">22.1 Nút bấm Φ22 — cấu tạo
+module</a></li>
+<li><a href="#222--màu-nút-theo-iec-60204-1--khác-với-thói-quen-nhiều-người" id="toc-222--màu-nút-theo-iec-60204-1--khác-với-thói-quen-nhiều-người">22.2
+⚠ Màu nút theo IEC 60204-1 — khác với thói quen nhiều người</a></li>
+<li><a href="#223-đèn-báo" id="toc-223-đèn-báo">22.3 Đèn báo</a></li>
+<li><a href="#224-đèn-tháp-tower-light" id="toc-224-đèn-tháp-tower-light">22.4 Đèn tháp (tower light)</a></li>
+<li><a href="#225-hmi--màn-hình-cảm-ứng" id="toc-225-hmi--màn-hình-cảm-ứng">22.5 HMI — màn hình cảm ứng</a></li>
+<li><a href="#226-nút-hai-tay-two-hand-control" id="toc-226-nút-hai-tay-two-hand-control">22.6 Nút hai tay (two-hand
+control)</a></li>
+<li><a href="#227-bố-trí-bảng-điều-khiển" id="toc-227-bố-trí-bảng-điều-khiển">22.7 Bố trí bảng điều khiển</a></li>
+<li><a href="#228-chọn-mua" id="toc-228-chọn-mua">22.8 Chọn mua</a></li>
+<li><a href="#229-sai-lầm-thường-gặp" id="toc-229-sai-lầm-thường-gặp">22.9 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-16" id="toc-tóm-tắt-chương-16">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-21" id="toc-nguồn-tham-khảo-21">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-23--đầu-nối-dây--kỹ-thuật-đấu" id="toc-chương-23--đầu-nối-dây--kỹ-thuật-đấu">Chương 23 — Đầu nối, dây
-&amp; kỹ thuật đấu</a></li>
+&amp; kỹ thuật đấu</a>
+<ul>
+<li><a href="#231-đầu-nối-tròn-m5--m8--m12--m16" id="toc-231-đầu-nối-tròn-m5--m8--m12--m16">23.1 Đầu nối tròn M5 / M8 /
+M12 / M16</a></li>
+<li><a href="#232-đầu-nối-chữ-nhật--đầu-nối-nhiều-chân" id="toc-232-đầu-nối-chữ-nhật--đầu-nối-nhiều-chân">23.2 Đầu nối chữ nhật
+&amp; đầu nối nhiều chân</a></li>
+<li><a href="#233-đầu-nối-bo-mạch--thiết-bị" id="toc-233-đầu-nối-bo-mạch--thiết-bị">23.3 Đầu nối bo mạch &amp; thiết
+bị</a></li>
+<li><a href="#234-đầu-nối-servo--encoder-chuyên-dụng" id="toc-234-đầu-nối-servo--encoder-chuyên-dụng">23.4 Đầu nối servo &amp;
+encoder chuyên dụng</a></li>
+<li><a href="#235-đầu-cos-và-kìm-bấm" id="toc-235-đầu-cos-và-kìm-bấm">23.5 Đầu cos và kìm bấm</a></li>
+<li><a href="#236-dây-dẫn" id="toc-236-dây-dẫn">23.6 Dây dẫn</a></li>
+<li><a href="#237-xích-cáp-cable-carrier" id="toc-237-xích-cáp-cable-carrier">23.7 Xích cáp (cable
+carrier)</a></li>
+<li><a href="#238-đánh-dấu-và-hoàn-thiện" id="toc-238-đánh-dấu-và-hoàn-thiện">23.8 Đánh dấu và hoàn thiện</a></li>
+<li><a href="#239-cấp-bảo-vệ-ip" id="toc-239-cấp-bảo-vệ-ip">23.9 Cấp bảo
+vệ IP</a></li>
+<li><a href="#2310-sai-lầm-thường-gặp" id="toc-2310-sai-lầm-thường-gặp">23.10 Sai lầm thường gặp</a></li>
+<li><a href="#tóm-tắt-chương-17" id="toc-tóm-tắt-chương-17">Tóm tắt
+chương</a></li>
+<li><a href="#nguồn-tham-khảo-22" id="toc-nguồn-tham-khảo-22">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-24--nhiệt--môi-trường-tủ-điện" id="toc-chương-24--nhiệt--môi-trường-tủ-điện">Chương 24 — Nhiệt &amp;
-môi trường tủ điện</a></li>
+môi trường tủ điện</a>
+<ul>
+<li><a href="#241-vì-sao-phải-quan-tâm--con-số-làm-người-ta-chú-ý" id="toc-241-vì-sao-phải-quan-tâm--con-số-làm-người-ta-chú-ý">24.1 Vì sao
+phải quan tâm — con số làm người ta chú ý</a></li>
+<li><a href="#242-bước-1--tính-nhiệt-sinh-ra-trong-tủ-q̇v" id="toc-242-bước-1--tính-nhiệt-sinh-ra-trong-tủ-q̇v">24.2 Bước 1 — tính
+nhiệt sinh ra trong tủ (Q̇v)</a></li>
+<li><a href="#243-bước-2--tính-nhiệt-tự-tản-qua-vỏ-tủ-q̇s" id="toc-243-bước-2--tính-nhiệt-tự-tản-qua-vỏ-tủ-q̇s">24.3 Bước 2 — tính
+nhiệt tự tản qua vỏ tủ (Q̇s)</a></li>
+<li><a href="#244-bước-3--chọn-giải-pháp" id="toc-244-bước-3--chọn-giải-pháp">24.4 Bước 3 — chọn giải
+pháp</a></li>
+<li><a href="#245-quạt-lọc--chỗ-hiểu-sai-lớn-nhất-của-cả-chương" id="toc-245-quạt-lọc--chỗ-hiểu-sai-lớn-nhất-của-cả-chương">24.5 Quạt lọc
+— chỗ hiểu sai lớn nhất của cả chương</a></li>
+<li><a href="#246-máy-lạnh-tủ-điện--mã-neo-nhật-apiste-enc-gr" id="toc-246-máy-lạnh-tủ-điện--mã-neo-nhật-apiste-enc-gr">24.6 Máy lạnh
+tủ điện — mã neo Nhật (Apiste ENC-GR)</a></li>
+<li><a href="#247-ngưng-đọng-nước--vấn-đề-ngược-của-nhiệt" id="toc-247-ngưng-đọng-nước--vấn-đề-ngược-của-nhiệt">24.7 Ngưng đọng
+nước — vấn đề ngược của nhiệt</a></li>
+<li><a href="#248-bố-trí-thiết-bị-trong-tủ" id="toc-248-bố-trí-thiết-bị-trong-tủ">24.8 Bố trí thiết bị trong
+tủ</a></li>
+<li><a href="#249-star-việc-nên-làm-mà-hầu-như-không-ai-làm-đưa-nhiệt-độ-tủ-vào-plc" id="toc-249-star-việc-nên-làm-mà-hầu-như-không-ai-làm-đưa-nhiệt-độ-tủ-vào-plc">24.9
+⭐ Việc nên làm mà hầu như không ai làm: đưa nhiệt độ tủ vào
+PLC</a></li>
+<li><a href="#2410-sai-lầm-thường-gặp" id="toc-2410-sai-lầm-thường-gặp">24.10 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-23" id="toc-nguồn-tham-khảo-23">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-25--băng-tải--xử-lý-vật-liệu" id="toc-chương-25--băng-tải--xử-lý-vật-liệu">Chương 25 — Băng tải &amp;
-xử lý vật liệu</a></li>
+xử lý vật liệu</a>
+<ul>
+<li><a href="#251-bốn-kiểu-băng-tải--chọn-theo-vật-không-theo-giá" id="toc-251-bốn-kiểu-băng-tải--chọn-theo-vật-không-theo-giá">25.1 Bốn
+kiểu băng tải — chọn theo vật, không theo giá</a></li>
+<li><a href="#252-mdr--con-lăn-tự-truyền-động-24-v" id="toc-252-mdr--con-lăn-tự-truyền-động-24-v">25.2 MDR — con lăn tự
+truyền động 24 V</a></li>
+<li><a href="#253-zpa--tích-luỹ-không-áp-lực" id="toc-253-zpa--tích-luỹ-không-áp-lực">25.3 ZPA — tích luỹ không áp
+lực</a></li>
+<li><a href="#254-star-cấp-nguồn-cho-mdr--chỗ-sai-nhiều-nhất" id="toc-254-star-cấp-nguồn-cho-mdr--chỗ-sai-nhiều-nhất">25.4 ⭐ Cấp
+nguồn cho MDR — chỗ sai nhiều nhất</a></li>
+<li><a href="#255-cữ-chặn-stopper--mã-neo-nhật-smc-rsqrsg" id="toc-255-cữ-chặn-stopper--mã-neo-nhật-smc-rsqrsg">25.5 Cữ chặn
+(stopper) — mã neo Nhật SMC RSQ/RSG</a></li>
+<li><a href="#256-bàn-nâng-và-chuyển-hướng" id="toc-256-bàn-nâng-và-chuyển-hướng">25.6 Bàn nâng và chuyển
+hướng</a></li>
+<li><a href="#257-bắt-tay-với-agv--amr" id="toc-257-bắt-tay-với-agv--amr">25.7 Bắt tay với AGV / AMR</a></li>
+<li><a href="#258-an-toàn-băng-tải" id="toc-258-an-toàn-băng-tải">25.8
+An toàn băng tải</a></li>
+<li><a href="#259-sai-lầm-thường-gặp" id="toc-259-sai-lầm-thường-gặp">25.9 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-24" id="toc-nguồn-tham-khảo-24">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-26--robot--cơ-cấu-chuyển-động-đặc-biệt" id="toc-chương-26--robot--cơ-cấu-chuyển-động-đặc-biệt">Chương 26 — Robot
-&amp; cơ cấu chuyển động đặc biệt</a></li>
+&amp; cơ cấu chuyển động đặc biệt</a>
+<ul>
+<li><a href="#261-bốn-kiểu-robot--chọn-theo-bài-toán" id="toc-261-bốn-kiểu-robot--chọn-theo-bài-toán">26.1 Bốn kiểu robot —
+chọn theo bài toán</a></li>
+<li><a href="#262-robot-nói-chuyện-với-plc-thế-nào" id="toc-262-robot-nói-chuyện-với-plc-thế-nào">26.2 Robot nói chuyện với
+PLC thế nào</a></li>
+<li><a href="#263-star-io-an-toàn-của-robot--phần-quan-trọng-nhất-chương" id="toc-263-star-io-an-toàn-của-robot--phần-quan-trọng-nhất-chương">26.3
+⭐ I/O an toàn của robot — phần quan trọng nhất chương</a></li>
+<li><a href="#264-cobot--và-cái-bẫy-lớn-nhất" id="toc-264-cobot--và-cái-bẫy-lớn-nhất">26.4 Cobot — và cái bẫy lớn
+nhất</a></li>
+<li><a href="#265-tool-changer-và-khớp-xoay" id="toc-265-tool-changer-và-khớp-xoay">26.5 Tool changer và khớp
+xoay</a></li>
+<li><a href="#266-động-cơ-tuyến-tính-và-truyền-động-trực-tiếp" id="toc-266-động-cơ-tuyến-tính-và-truyền-động-trực-tiếp">26.6 Động cơ
+tuyến tính và truyền động trực tiếp</a></li>
+<li><a href="#267-cam-indexer--cơ-cấu-chia-độ-cơ-khí" id="toc-267-cam-indexer--cơ-cấu-chia-độ-cơ-khí">26.7 Cam indexer — cơ
+cấu chia độ cơ khí</a></li>
+<li><a href="#268-star-chỉnh-chuyển-động-và-điểm-dạy--phần-quyết-định-nhịp-máy-và-độ-lặp-lại" id="toc-268-star-chỉnh-chuyển-động-và-điểm-dạy--phần-quyết-định-nhịp-máy-và-độ-lặp-lại">26.8
+⭐ Chỉnh chuyển động và điểm dạy — phần quyết định nhịp máy và độ lặp
+lại</a></li>
+<li><a href="#269-sai-lầm-thường-gặp" id="toc-269-sai-lầm-thường-gặp">26.9 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-25" id="toc-nguồn-tham-khảo-25">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-27--thiết-bị-gia-công--liên-kết" id="toc-chương-27--thiết-bị-gia-công--liên-kết">Chương 27 — Thiết bị gia
-công &amp; liên kết</a></li>
+công &amp; liên kết</a>
+<ul>
+<li><a href="#271-bốn-họ-công-nghệ--chọn-theo-vật-liệu" id="toc-271-bốn-họ-công-nghệ--chọn-theo-vật-liệu">27.1 Bốn họ công nghệ
+— chọn theo vật liệu</a></li>
+<li><a href="#272-hàn-siêu-âm-nhựa" id="toc-272-hàn-siêu-âm-nhựa">27.2
+Hàn siêu âm nhựa</a></li>
+<li><a href="#273-hàn-xung-nhiệt-pulse-heat--mã-neo-nhật" id="toc-273-hàn-xung-nhiệt-pulse-heat--mã-neo-nhật">27.3 Hàn xung nhiệt
+(pulse heat) — mã neo Nhật</a></li>
+<li><a href="#274-ép-nhiệt-heat-staking" id="toc-274-ép-nhiệt-heat-staking">27.4 Ép nhiệt (heat staking)</a></li>
+<li><a href="#275-servo-press--ép-có-bằng-chứng" id="toc-275-servo-press--ép-có-bằng-chứng">27.5 Servo press — ép có bằng
+chứng</a></li>
+<li><a href="#276--laser--an-toàn-là-phần-chính" id="toc-276--laser--an-toàn-là-phần-chính">27.6 ⚠⚠ Laser — an toàn là
+phần chính</a></li>
+<li><a href="#277-bắt-vít-và-bơm-keo--bổ-sung-cho-ch17" id="toc-277-bắt-vít-và-bơm-keo--bổ-sung-cho-ch17">27.7 Bắt vít và bơm
+keo — bổ sung cho Ch.17</a></li>
+<li><a href="#278-sai-lầm-thường-gặp" id="toc-278-sai-lầm-thường-gặp">27.8 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-26" id="toc-nguồn-tham-khảo-26">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-28--trạm-đo-lường--kiểm-tra" id="toc-chương-28--trạm-đo-lường--kiểm-tra">Chương 28 — Trạm đo lường
-&amp; kiểm tra</a></li>
+&amp; kiểm tra</a>
+<ul>
+<li><a href="#281-trạm-đo-kiểm-khác-gì-thiết-bị-sản-xuất" id="toc-281-trạm-đo-kiểm-khác-gì-thiết-bị-sản-xuất">28.1 Trạm đo kiểm
+khác gì thiết bị sản xuất</a></li>
+<li><a href="#282--máy-thử-cao-áp-hipot--an-toàn-trước" id="toc-282--máy-thử-cao-áp-hipot--an-toàn-trước">28.2 ⚠⚠ Máy thử cao áp
+(hipot) — an toàn trước</a></li>
+<li><a href="#283-starstar-thời-gian-tăng-áp--và-vì-sao-chính-phép-thử-có-thể-làm-hỏng-sản-phẩm" id="toc-283-starstar-thời-gian-tăng-áp--và-vì-sao-chính-phép-thử-có-thể-làm-hỏng-sản-phẩm">28.3
+⭐⭐ Thời gian tăng áp — và vì sao chính phép thử có thể làm hỏng sản
+phẩm</a></li>
+<li><a href="#284-starstar-giới-hạn-dưới--cái-bẫy-cả-lô-đều-pass" id="toc-284-starstar-giới-hạn-dưới--cái-bẫy-cả-lô-đều-pass">28.4 ⭐⭐
+Giới hạn DƯỚI — cái bẫy &quot;cả lô đều PASS&quot;</a></li>
+<li><a href="#285-điện-trở-cách-điện-và-ba-phép-thử-điện-an-toàn" id="toc-285-điện-trở-cách-điện-và-ba-phép-thử-điện-an-toàn">28.5 Điện
+trở cách điện và ba phép thử điện an toàn</a></li>
+<li><a href="#286-nguồn-lập-trình-và-giao-tiếp-scpi" id="toc-286-nguồn-lập-trình-và-giao-tiếp-scpi">28.6 Nguồn lập trình và
+giao tiếp SCPI</a></li>
+<li><a href="#287-kiểm-tra-rò-rỉ" id="toc-287-kiểm-tra-rò-rỉ">28.7 Kiểm
+tra rò rỉ</a></li>
+<li><a href="#288-đo-nhiệt-không-tiếp-xúc--độ-phát-xạ" id="toc-288-đo-nhiệt-không-tiếp-xúc--độ-phát-xạ">28.8 Đo nhiệt không
+tiếp xúc — độ phát xạ</a></li>
+<li><a href="#289-sai-lầm-thường-gặp" id="toc-289-sai-lầm-thường-gặp">28.9 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-27" id="toc-nguồn-tham-khảo-27">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-29--hệ-phụ-trợ-nhà-máy" id="toc-chương-29--hệ-phụ-trợ-nhà-máy">Chương 29 — Hệ phụ trợ nhà
-máy</a></li>
+máy</a>
+<ul>
+<li><a href="#291-bốn-hệ-phụ-trợ-và-cái-chúng-ảnh-hưởng" id="toc-291-bốn-hệ-phụ-trợ-và-cái-chúng-ảnh-hưởng">29.1 Bốn hệ phụ trợ
+và cái chúng ảnh hưởng</a></li>
+<li><a href="#292-chiller--tcu--mã-neo-nhật-smc-hrs" id="toc-292-chiller--tcu--mã-neo-nhật-smc-hrs">29.2 Chiller / TCU — mã
+neo Nhật SMC HRS</a></li>
+<li><a href="#293-hút-khói-và-hút-bụi" id="toc-293-hút-khói-và-hút-bụi">29.3 Hút khói và hút bụi</a></li>
+<li><a href="#294-bôi-trơn-tự-động" id="toc-294-bôi-trơn-tự-động">29.4
+Bôi trơn tự động</a></li>
+<li><a href="#295--đo-điện-năng--biến-dòng-và-cái-bẫy-chết-người" id="toc-295--đo-điện-năng--biến-dòng-và-cái-bẫy-chết-người">29.5 ⚠⚠ Đo
+điện năng — biến dòng và cái bẫy chết người</a></li>
+<li><a href="#296-sai-lầm-thường-gặp" id="toc-296-sai-lầm-thường-gặp">29.6 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-28" id="toc-nguồn-tham-khảo-28">Nguồn tham
+khảo</a></li>
+</ul></li>
 <li><a href="#chương-30--cảm-biến-siêu-âm-mức--giám-sát-tình-trạng" id="toc-chương-30--cảm-biến-siêu-âm-mức--giám-sát-tình-trạng">Chương 30
-— Cảm biến siêu âm, mức &amp; giám sát tình trạng</a></li>
-<li><a href="#phụ-lục-a--tra-nhanh-màu-dây" id="toc-phụ-lục-a--tra-nhanh-màu-dây">Phụ lục A — Tra nhanh màu
+— Cảm biến siêu âm, mức &amp; giám sát tình trạng</a>
+<ul>
+<li><a href="#301-siêu-âm--khi-nào-nó-thắng-cảm-biến-quang" id="toc-301-siêu-âm--khi-nào-nó-thắng-cảm-biến-quang">30.1 Siêu âm — khi
+nào nó thắng cảm biến quang</a></li>
+<li><a href="#302-mã-neo-nhật--keyence-fw" id="toc-302-mã-neo-nhật--keyence-fw">30.2 Mã neo Nhật — Keyence
+FW</a></li>
+<li><a href="#303--hai-con-số-quyết-định-việc-gá-đặt" id="toc-303--hai-con-số-quyết-định-việc-gá-đặt">30.3 ⚠⚠ Hai con số quyết
+định việc gá đặt</a></li>
+<li><a href="#304-cảm-biến-mức--sáu-nguyên-lý" id="toc-304-cảm-biến-mức--sáu-nguyên-lý">30.4 Cảm biến mức — sáu nguyên
+lý</a></li>
+<li><a href="#305-giám-sát-rung-và-va-chạm" id="toc-305-giám-sát-rung-và-va-chạm">30.5 Giám sát rung và va
+chạm</a></li>
+<li><a href="#306-đầu-đo-tiếp-xúc" id="toc-306-đầu-đo-tiếp-xúc">30.6 Đầu
+đo tiếp xúc</a></li>
+<li><a href="#307-sai-lầm-thường-gặp" id="toc-307-sai-lầm-thường-gặp">30.7 Sai lầm thường gặp</a></li>
+<li><a href="#nguồn-tham-khảo-29" id="toc-nguồn-tham-khảo-29">Nguồn tham
+khảo</a></li>
+</ul></li>
+<li><a href="#phụ-lục-a--tra-nhanh-màu-dây" id="toc-phụ-lục-a--tra-nhanh-màu-dây">Phụ lục A — Tra nhanh màu dây</a>
+<ul>
+<li><a href="#a1-cảm-biến-dc-3-dây-và-4-dây" id="toc-a1-cảm-biến-dc-3-dây-và-4-dây">A.1 Cảm biến DC 3 dây và 4
 dây</a></li>
+<li><a href="#a2-cảm-biến-xy-lanh-smc---đã-đổi-màu-theo-neca-402" id="toc-a2-cảm-biến-xy-lanh-smc---đã-đổi-màu-theo-neca-402">A.2 Cảm biến
+xy lanh SMC — ⚠ đã ĐỔI màu theo NECA 402</a></li>
+<li><a href="#a3-cáp-rs-485--modbus-nối-tiếp" id="toc-a3-cáp-rs-485--modbus-nối-tiếp">A.3 Cáp RS-485 / Modbus nối
+tiếp</a></li>
+<li><a href="#a4-cặp-nhiệt---ba-chuẩn-màu-khác-nhau-cho-cùng-một-loại" id="toc-a4-cặp-nhiệt---ba-chuẩn-màu-khác-nhau-cho-cùng-một-loại">A.4 Cặp
+nhiệt — ⚠ BA chuẩn màu khác nhau cho CÙNG một loại</a></li>
+<li><a href="#a5--ba-trường-hợp-màu-dây-nói-dối" id="toc-a5--ba-trường-hợp-màu-dây-nói-dối">A.5 ⚠⚠ Ba trường hợp màu dây
+NÓI DỐI</a></li>
+<li><a href="#a6-ferrule-đầu-cos---màu-không-duy-nhất" id="toc-a6-ferrule-đầu-cos---màu-không-duy-nhất">A.6 Ferrule (đầu cos) —
+⚠ màu KHÔNG duy nhất</a></li>
+<li><a href="#a7-màu-bộ-phận-tác-động-nút-bấm--iec-60204-1" id="toc-a7-màu-bộ-phận-tác-động-nút-bấm--iec-60204-1">A.7 Màu bộ phận
+tác động (nút bấm) — IEC 60204-1</a></li>
+</ul></li>
 <li><a href="#phụ-lục-b--tiết-diện-dây-awg-và-cách-chọn-theo-dòng" id="toc-phụ-lục-b--tiết-diện-dây-awg-và-cách-chọn-theo-dòng">Phụ lục B —
-Tiết diện dây, AWG và cách chọn theo dòng</a></li>
+Tiết diện dây, AWG và cách chọn theo dòng</a>
+<ul>
+<li><a href="#b1-quy-đổi-awg--mm²-tính-từ-định-nghĩa-kiểm-lại-được" id="toc-b1-quy-đổi-awg--mm²-tính-từ-định-nghĩa-kiểm-lại-được">B.1 Quy
+đổi AWG ↔︎ mm² (tính từ định nghĩa, kiểm lại được)</a></li>
+<li><a href="#b2--vì-sao-sách-không-đưa-bảng-mm²--bao-nhiêu-ampe" id="toc-b2--vì-sao-sách-không-đưa-bảng-mm²--bao-nhiêu-ampe">B.2 ⚠⚠ Vì
+sao sách KHÔNG đưa bảng &quot;mm² → bao nhiêu ampe&quot;</a></li>
+<li><a href="#b3-sụt-áp--thường-là-yếu-tố-quyết-định-không-phải-dòng" id="toc-b3-sụt-áp--thường-là-yếu-tố-quyết-định-không-phải-dòng">B.3 Sụt
+áp — thường là yếu tố quyết định, không phải dòng</a></li>
+<li><a href="#b4-các-con-số-tiết-diện-đã-có-nguồn-trong-sách" id="toc-b4-các-con-số-tiết-diện-đã-có-nguồn-trong-sách">B.4 Các con số
+tiết diện ĐÃ CÓ NGUỒN trong sách</a></li>
+<li><a href="#b5-ferrule-và-đầu-cos--nhắc-lại-vì-hay-sai" id="toc-b5-ferrule-và-đầu-cos--nhắc-lại-vì-hay-sai">B.5 Ferrule và đầu
+cos — nhắc lại vì hay sai</a></li>
+</ul></li>
 <li><a href="#phụ-lục-c--đối-chiếu-hãng-nhật--trungđài-theo-nhóm-thiết-bị" id="toc-phụ-lục-c--đối-chiếu-hãng-nhật--trungđài-theo-nhóm-thiết-bị">Phụ
-lục C — Đối chiếu hãng Nhật ↔︎ Trung/Đài theo nhóm thiết bị</a></li>
+lục C — Đối chiếu hãng Nhật ↔︎ Trung/Đài theo nhóm thiết bị</a>
+<ul>
+<li><a href="#c1-cảm-biến" id="toc-c1-cảm-biến">C.1 Cảm biến</a></li>
+<li><a href="#c2-điều-khiển-io-và-mạng" id="toc-c2-điều-khiển-io-và-mạng">C.2 Điều khiển, I/O và mạng</a></li>
+<li><a href="#c3-truyền-động" id="toc-c3-truyền-động">C.3 Truyền
+động</a></li>
+<li><a href="#c4-khí-nén-chấp-hành-và-ngoại-vi" id="toc-c4-khí-nén-chấp-hành-và-ngoại-vi">C.4 Khí nén, chấp hành và
+ngoại vi</a></li>
+<li><a href="#c5--trước-khi-thay-thiết-bị-này-bằng-thiết-bị-tương-đương--kiểm-8-điều" id="toc-c5--trước-khi-thay-thiết-bị-này-bằng-thiết-bị-tương-đương--kiểm-8-điều">C.5
+⚠ Trước khi thay thiết bị này bằng thiết bị &quot;tương đương&quot; — kiểm 8
+điều</a></li>
+<li><a href="#c6-nhận-xét-thực-dụng-khi-chọn-giữa-nhật-và-trungđài" id="toc-c6-nhận-xét-thực-dụng-khi-chọn-giữa-nhật-và-trungđài">C.6 Nhận
+xét thực dụng khi chọn giữa Nhật và Trung/Đài</a></li>
+</ul></li>
 <li><a href="#phụ-lục-d--checklist-trước-khi-cấp-điện-lần-đầu" id="toc-phụ-lục-d--checklist-trước-khi-cấp-điện-lần-đầu">Phụ lục D —
-Checklist trước khi cấp điện lần đầu</a></li>
+Checklist trước khi cấp điện lần đầu</a>
+<ul>
+<li><a href="#bước-0--trước-khi-chạm-vào-tủ" id="toc-bước-0--trước-khi-chạm-vào-tủ">Bước 0 — Trước khi chạm vào
+tủ</a></li>
+<li><a href="#bước-1--kiểm-nguội-chưa-cấp-điện" id="toc-bước-1--kiểm-nguội-chưa-cấp-điện">Bước 1 — Kiểm nguội (chưa cấp
+điện)</a></li>
+<li><a href="#bước-2--cấp-điện-điều-khiển-chưa-cho-cơ-cấu-chạy" id="toc-bước-2--cấp-điện-điều-khiển-chưa-cho-cơ-cấu-chạy">Bước 2 — Cấp
+điện điều khiển (chưa cho cơ cấu chạy)</a></li>
+<li><a href="#bước-3---nghiệm-thu-mạch-an-toàn-trước-khi-cho-bất-cứ-gì-chuyển-động" id="toc-bước-3---nghiệm-thu-mạch-an-toàn-trước-khi-cho-bất-cứ-gì-chuyển-động">Bước
+3 — ⚠⚠ Nghiệm thu mạch an toàn (trước khi cho bất cứ gì chuyển
+động)</a></li>
+<li><a href="#bước-4--chạy-thử-cơ-cấu-từng-cái-tốc-độ-thấp" id="toc-bước-4--chạy-thử-cơ-cấu-từng-cái-tốc-độ-thấp">Bước 4 — Chạy thử
+cơ cấu (từng cái, tốc độ thấp)</a></li>
+<li><a href="#bước-5--nghiệm-thu-khi-chạy-tải-thật" id="toc-bước-5--nghiệm-thu-khi-chạy-tải-thật">Bước 5 — Nghiệm thu khi
+chạy TẢI THẬT</a></li>
+<li><a href="#bước-6--trước-khi-giao-máy" id="toc-bước-6--trước-khi-giao-máy">Bước 6 — Trước khi giao máy</a></li>
+<li><a href="#d6b-star-bốn-phép-thử-theo-iec-60204-1--làm-trước-khi-ký-bàn-giao" id="toc-d6b-star-bốn-phép-thử-theo-iec-60204-1--làm-trước-khi-ký-bàn-giao">D.6b
+⭐ Bốn phép thử theo IEC 60204-1 — làm trước khi ký bàn giao</a></li>
+<li><a href="#d7-năm-lỗi-hay-gặp-nhất-khi-cấp-điện-lần-đầu" id="toc-d7-năm-lỗi-hay-gặp-nhất-khi-cấp-điện-lần-đầu">D.7 Năm lỗi hay
+gặp nhất khi cấp điện lần đầu</a></li>
+</ul></li>
 <li><a href="#phụ-lục-e--chỉ-mục-tra-cứu-theo-triệu-chứng" id="toc-phụ-lục-e--chỉ-mục-tra-cứu-theo-triệu-chứng">Phụ lục E — Chỉ mục
-tra cứu theo triệu chứng</a></li>
+tra cứu theo triệu chứng</a>
+<ul>
+<li><a href="#e1-bạn-quan-sát-thấy-gì--mở-chương-nào" id="toc-e1-bạn-quan-sát-thấy-gì--mở-chương-nào">E.1 &quot;Bạn quan sát thấy
+gì?&quot; → mở chương nào</a></li>
+<li><a href="#e2--triệu-chứng-liên-quan-tới-an-toàn--đọc-trước-đừng-thử-nghiệm" id="toc-e2--triệu-chứng-liên-quan-tới-an-toàn--đọc-trước-đừng-thử-nghiệm">E.2
+⚠⚠ Triệu chứng liên quan tới AN TOÀN — đọc trước, đừng thử
+nghiệm</a></li>
+<li><a href="#e3-từ-khoá-tra-nhanh--gõ-ctrlf-trong-mục-e4" id="toc-e3-từ-khoá-tra-nhanh--gõ-ctrlf-trong-mục-e4">E.3 Từ khoá tra
+nhanh — gõ <code>Ctrl+F</code> trong mục E.4</a></li>
+<li><a href="#e4-chỉ-mục-đầy-đủ" id="toc-e4-chỉ-mục-đầy-đủ">E.4 Chỉ mục
+đầy đủ</a></li>
+<li><a href="#e4-chỉ-mục-đầy-đủ--611-triệu-chứng-theo-chương" id="toc-e4-chỉ-mục-đầy-đủ--611-triệu-chứng-theo-chương">E.4 Chỉ mục đầy
+đủ — <strong>611 triệu chứng</strong> theo chương</a></li>
+</ul></li>
 <li><a href="#phụ-lục-f--tham-số-phải-chốt-khi-dựng-máy-mới" id="toc-phụ-lục-f--tham-số-phải-chốt-khi-dựng-máy-mới">Phụ lục F — Tham
-số phải chốt khi dựng máy mới</a></li>
+số phải chốt khi dựng máy mới</a>
+<ul>
+<li><a href="#f1-star-sáu-con-số-phải-đo-lúc-máy-còn-mới--để-một-năm-sau-so-lại" id="toc-f1-star-sáu-con-số-phải-đo-lúc-máy-còn-mới--để-một-năm-sau-so-lại">F.1
+⭐ Sáu con số phải đo lúc máy còn mới — để một năm sau so lại</a></li>
+<li><a href="#f2-nguồn-và-phân-phối-điện" id="toc-f2-nguồn-và-phân-phối-điện">F.2 Nguồn và phân phối điện</a></li>
+<li><a href="#f3-an-toàn--chốt-trước-không-sửa-sau" id="toc-f3-an-toàn--chốt-trước-không-sửa-sau">F.3 An toàn — chốt trước,
+không sửa sau</a></li>
+<li><a href="#f4-plc-và-io" id="toc-f4-plc-và-io">F.4 PLC và
+I/O</a></li>
+<li><a href="#f5-truyền-động--servo-động-cơ-bước-biến-tần" id="toc-f5-truyền-động--servo-động-cơ-bước-biến-tần">F.5 Truyền động —
+servo, động cơ bước, biến tần</a></li>
+<li><a href="#f6-khí-nén" id="toc-f6-khí-nén">F.6 Khí nén</a></li>
+<li><a href="#f7-cảm-biến-và-đo-lường" id="toc-f7-cảm-biến-và-đo-lường">F.7 Cảm biến và đo lường</a></li>
+<li><a href="#f8-truyền-thông" id="toc-f8-truyền-thông">F.8 Truyền
+thông</a></li>
+<li><a href="#f9-nhiệt-tủ-điện-và-hệ-phụ-trợ" id="toc-f9-nhiệt-tủ-điện-và-hệ-phụ-trợ">F.9 Nhiệt tủ điện và hệ phụ
+trợ</a></li>
+<li><a href="#f10-năm-tham-số-hay-bị-bỏ-quên-nhất" id="toc-f10-năm-tham-số-hay-bị-bỏ-quên-nhất">F.10 Năm tham số hay bị bỏ
+quên nhất</a></li>
+</ul></li>
 <li><a href="#phụ-lục-g--thay-thế-thiết-bị-cái-khó-không-nằm-ở-phần-cứng" id="toc-phụ-lục-g--thay-thế-thiết-bị-cái-khó-không-nằm-ở-phần-cứng">Phụ
-lục G — Thay thế thiết bị: cái khó không nằm ở phần cứng</a></li>
+lục G — Thay thế thiết bị: cái khó không nằm ở phần cứng</a>
+<ul>
+<li><a href="#g1-starstar-mỗi-loại-thiết-bị-mang-theo-trạng-thái-gì" id="toc-g1-starstar-mỗi-loại-thiết-bị-mang-theo-trạng-thái-gì">G.1 ⭐⭐
+Mỗi loại thiết bị mang theo &quot;trạng thái&quot; gì</a></li>
+<li><a href="#g2-star-sao-lưu-trước--mười-phút-cứu-cả-một-ca-sản-xuất" id="toc-g2-star-sao-lưu-trước--mười-phút-cứu-cả-một-ca-sản-xuất">G.2 ⭐
+Sao lưu TRƯỚC — mười phút cứu cả một ca sản xuất</a></li>
+<li><a href="#g3-quy-trình-thay--tám-bước" id="toc-g3-quy-trình-thay--tám-bước">G.3 Quy trình thay — tám
+bước</a></li>
+<li><a href="#g4--bảy-cái-bẫy-khi-mua-con-thay-thế" id="toc-g4--bảy-cái-bẫy-khi-mua-con-thay-thế">G.4 ⚠ Bảy cái bẫy khi mua
+con thay thế</a></li>
+<li><a href="#g5--bốn-trường-hợp-thay-xong-phải-làm-thêm-việc--không-được-chạy-luôn" id="toc-g5--bốn-trường-hợp-thay-xong-phải-làm-thêm-việc--không-được-chạy-luôn">G.5
+⚠⚠ Bốn trường hợp thay xong PHẢI làm thêm việc — không được chạy
+luôn</a></li>
+<li><a href="#g6-vật-tư-dự-phòng-nên-có-sẵn" id="toc-g6-vật-tư-dự-phòng-nên-có-sẵn">G.6 Vật tư dự phòng nên có
+sẵn</a></li>
+</ul></li>
 <li><a href="#tài-liệu-tham-khảo--tổng-hợp-toàn-sách" id="toc-tài-liệu-tham-khảo--tổng-hợp-toàn-sách">Tài liệu tham khảo —
-tổng hợp toàn sách</a></li>
+tổng hợp toàn sách</a>
+<ul>
+<li><a href="#cách-dùng-file-này" id="toc-cách-dùng-file-này">Cách dùng
+file này</a></li>
+</ul></li>
 <li><a href="#phần-a--tiêu-chuẩn" id="toc-phần-a--tiêu-chuẩn">PHẦN A —
-Tiêu chuẩn</a></li>
+Tiêu chuẩn</a>
+<ul>
+<li><a href="#a1-iec--thiết-bị-điện-và-điều-khiển" id="toc-a1-iec--thiết-bị-điện-và-điều-khiển">A.1 IEC — thiết bị điện và
+điều khiển</a></li>
+<li><a href="#a2-iso--an-toàn-máy-và-khí-nén" id="toc-a2-iso--an-toàn-máy-và-khí-nén">A.2 ISO — an toàn máy và khí
+nén</a></li>
+<li><a href="#a3-tiêu-chuẩn-khu-vực" id="toc-a3-tiêu-chuẩn-khu-vực">A.3
+Tiêu chuẩn khu vực</a></li>
+</ul></li>
 <li><a href="#phần-b--datasheet--catalogue-của-hãng" id="toc-phần-b--datasheet--catalogue-của-hãng">PHẦN B — Datasheet &amp;
-catalogue của hãng</a></li>
+catalogue của hãng</a>
+<ul>
+<li><a href="#b1-omron" id="toc-b1-omron">B.1 Omron</a></li>
+<li><a href="#b2-mitsubishi-electric" id="toc-b2-mitsubishi-electric">B.2 Mitsubishi Electric</a></li>
+<li><a href="#b3-smc" id="toc-b3-smc">B.3 SMC</a></li>
+<li><a href="#b4-ckd" id="toc-b4-ckd">B.4 CKD</a></li>
+<li><a href="#b5-hãng-khác" id="toc-b5-hãng-khác">B.5 Hãng khác</a></li>
+</ul></li>
 <li><a href="#phần-c--tài-liệu-kỹ-thuật-phi-hãng" id="toc-phần-c--tài-liệu-kỹ-thuật-phi-hãng">PHẦN C — Tài liệu kỹ thuật
 phi-hãng</a></li>
 <li><a href="#phần-d--nguồn-đối-chiếu-phụ" id="toc-phần-d--nguồn-đối-chiếu-phụ">PHẦN D — Nguồn đối chiếu
 phụ</a></li>
 <li><a href="#phần-e--quy-trình-xác-minh-tái-lập-được" id="toc-phần-e--quy-trình-xác-minh-tái-lập-được">PHẦN E — Quy trình xác
-minh (tái lập được)</a></li>
+minh (tái lập được)</a>
+<ul>
+<li><a href="#e1-vì-sao-không-đọc-pdf-trực-tiếp" id="toc-e1-vì-sao-không-đọc-pdf-trực-tiếp">E.1 Vì sao không đọc PDF trực
+tiếp</a></li>
+<li><a href="#e1b-star-bảng-nhiều-cột-pypdf-làm-hỏng--dùng-pdfplumber-chế-độ-giữ-layout" id="toc-e1b-star-bảng-nhiều-cột-pypdf-làm-hỏng--dùng-pdfplumber-chế-độ-giữ-layout">E.1b
+⭐ Bảng nhiều cột: <code>pypdf</code> làm hỏng — dùng
+<code>pdfplumber</code> chế độ giữ layout</a></li>
+<li><a href="#e2-bốn-bước-chuẩn" id="toc-e2-bốn-bước-chuẩn">E.2 Bốn bước
+chuẩn</a></li>
+<li><a href="#e3-quy-tắc-ghi-mã-hàng-vào-sách" id="toc-e3-quy-tắc-ghi-mã-hàng-vào-sách">E.3 Quy tắc ghi mã hàng vào
+sách</a></li>
+<li><a href="#e4-nguồn-cho-hình-107-smc-ise30a--đọc-trực-tiếp-từ-catalogue" id="toc-e4-nguồn-cho-hình-107-smc-ise30a--đọc-trực-tiếp-từ-catalogue">E.4
+Nguồn cho Hình 10.7 (SMC ISE30A) — đọc trực tiếp từ catalogue</a></li>
+<li><a href="#e5-nguồn-cho-mục-214-khung-tin-modbus--đọc-thẳng-từ-đặc-tả" id="toc-e5-nguồn-cho-mục-214-khung-tin-modbus--đọc-thẳng-từ-đặc-tả">E.5
+Nguồn cho mục 21.4 (khung tin Modbus) — đọc thẳng từ đặc tả</a></li>
+</ul></li>
 <li><a href="#phần-f--trạng-thái-mã-hàng-theo-chương" id="toc-phần-f--trạng-thái-mã-hàng-theo-chương">PHẦN F — Trạng thái mã
-hàng theo chương</a></li>
+hàng theo chương</a>
+<ul>
+<li><a href="#f1-đã-xác-minh-trong-tài-liệu-gốc" id="toc-f1-đã-xác-minh-trong-tài-liệu-gốc">F.1 Đã xác minh trong tài
+liệu gốc</a></li>
+<li><a href="#f2-chỉ-ở-cấp-dòng-sản-phẩm---phải-tra-how-to-order-trước-khi-lên-bom" id="toc-f2-chỉ-ở-cấp-dòng-sản-phẩm---phải-tra-how-to-order-trước-khi-lên-bom">F.2
+Chỉ ở cấp dòng sản phẩm — ⚠ phải tra How-to-Order trước khi lên
+BOM</a></li>
+</ul></li>
 <li><a href="#phần-g--biên-bản-rà-soát-toàn-sách-2026-08-11" id="toc-phần-g--biên-bản-rà-soát-toàn-sách-2026-08-11">PHẦN G — Biên bản
-rà soát toàn sách (2026-08-11)</a></li>
+rà soát toàn sách (2026-08-11)</a>
+<ul>
+<li><a href="#g1-đã-kiểm-bằng-máy-kiểm-được-100--không-phụ-thuộc-phán-đoán" id="toc-g1-đã-kiểm-bằng-máy-kiểm-được-100--không-phụ-thuộc-phán-đoán">G.1
+Đã kiểm bằng máy (kiểm được 100 %, không phụ thuộc phán đoán)</a></li>
+<li><a href="#g2-đã-kiểm-mã-hàng-bằng-nguồn-ngoài-chọn-mẫu-theo-rủi-ro" id="toc-g2-đã-kiểm-mã-hàng-bằng-nguồn-ngoài-chọn-mẫu-theo-rủi-ro">G.2 Đã
+kiểm mã hàng bằng nguồn ngoài (chọn mẫu theo rủi ro)</a></li>
+<li><a href="#g3-đã-sửa-vì-gây-hiểu-sai-không-phải-mã-bịa-nhưng-dễ-dẫn-tới-đặt-sai" id="toc-g3-đã-sửa-vì-gây-hiểu-sai-không-phải-mã-bịa-nhưng-dễ-dẫn-tới-đặt-sai">G.3
+Đã sửa vì gây hiểu sai (không phải mã bịa, nhưng dễ dẫn tới đặt
+sai)</a></li>
+<li><a href="#g4-chưa-kiểm-hết--nói-thẳng" id="toc-g4-chưa-kiểm-hết--nói-thẳng">G.4 Chưa kiểm hết — nói
+thẳng</a></li>
+<li><a href="#g5-star-biên-bản-bổ-sung-ảnh-thật-2026-08-13--và-vì-sao-loại-62--81-ứng-viên" id="toc-g5-star-biên-bản-bổ-sung-ảnh-thật-2026-08-13--và-vì-sao-loại-62--81-ứng-viên">G.5
+⭐ Biên bản bổ sung ảnh thật (2026-08-13) — và vì sao <strong>loại 62 /
+81 ứng viên</strong></a></li>
+<li><a href="#g6-star-đợt-ảnh-thế-hệ-hiện-hành-2026-08-13--và-bài-học-ảnh-mới--máy-mới" id="toc-g6-star-đợt-ảnh-thế-hệ-hiện-hành-2026-08-13--và-bài-học-ảnh-mới--máy-mới">G.6
+⭐ Đợt ảnh THẾ HỆ HIỆN HÀNH (2026-08-13) — và bài học &quot;ảnh mới ≠ máy
+mới&quot;</a></li>
+<li><a href="#g7-star-ảnh-cho-đúng-mã-hàng--kết-quả-tra-044-và-đường-đi-thay-thế" id="toc-g7-star-ảnh-cho-đúng-mã-hàng--kết-quả-tra-044-và-đường-đi-thay-thế">G.7
+⭐ &quot;Ảnh cho ĐÚNG mã hàng&quot; — kết quả tra: <strong>0/44</strong>, và đường
+đi thay thế</a></li>
+<li><a href="#g8-star-đợt-ảnh-sai-bối-cảnh-2026-09-06--sửa-3-thêm-1-và-thừa-nhận-3-chỗ-không-tìm-được" id="toc-g8-star-đợt-ảnh-sai-bối-cảnh-2026-09-06--sửa-3-thêm-1-và-thừa-nhận-3-chỗ-không-tìm-được">G.8
+⭐ Đợt &quot;ảnh SAI BỐI CẢNH&quot; (2026-09-06) — sửa 3, thêm 1, và <strong>thừa
+nhận 3 chỗ không tìm được</strong></a></li>
+<li><a href="#g9-starstar-đợt-ảnh-2026-09-22--và-một-kết-luận-cũ-bị-lật" id="toc-g9-starstar-đợt-ảnh-2026-09-22--và-một-kết-luận-cũ-bị-lật">G.9
+⭐⭐ Đợt ảnh 2026-09-22 — và một KẾT LUẬN CŨ BỊ LẬT</a></li>
+<li><a href="#giới-hạn-của-sách-và-của-file-này" id="toc-giới-hạn-của-sách-và-của-file-này">Giới hạn của sách và của file
+này</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </nav>
@@ -371,7 +1297,7 @@ khi đấu máy, sửa máy, hoặc mua vật tư.</p>
 <tbody>
 <tr>
 <td><strong>Phiên bản</strong></td>
-<td>v1.0.0.260922</td>
+<td>v1.0.0.261103</td>
 </tr>
 <tr>
 <td><strong>Tác giả</strong></td>
@@ -379,7 +1305,7 @@ khi đấu máy, sửa máy, hoặc mua vật tư.</p>
 </tr>
 <tr>
 <td><strong>Xuất bản</strong></td>
-<td>09/2026</td>
+<td>11/2026</td>
 </tr>
 <tr>
 <td><strong>Nội dung</strong></td>
@@ -53871,5 +54797,102 @@ mã tài liệu (ví dụ <code>E62I-E-03</code>) giúp tìm lại</td>
 <hr />
 <p><strong>Quay lại:</strong> <a href="#muc-luc-ban-gop">Mục lục</a> ·
 <a href="#phan-00-danh-muc-thiet-bi">Danh mục thiết bị</a> · <a href="#phan-00b-danh-muc-bo-sung">Danh mục bổ sung</a></p>
+<!-- book_sidebar.html — build_release.py chèn cuối <body> qua --include-after-body.
+     Biến #TOC của pandoc thành thanh mục lục bên trái:
+       • nút ☰ đóng/mở; màn rộng nhớ lựa chọn (localStorage), màn hẹp là ngăn kéo
+       • mỗi chương thu gọn được, chương đang đọc tự mở ra
+       • tô sáng mục đang đọc khi cuộn
+     CSS tương ứng ở scripts/book.css. -->
+<button id="toc-toggle" type="button" aria-controls="TOC" title="Đóng/mở mục lục">☰</button>
+<div id="toc-backdrop"></div>
+<script>
+(function () {
+  var html = document.documentElement;
+  var toc = document.getElementById('TOC');
+  var nut = document.getElementById('toc-toggle');
+  var nen = document.getElementById('toc-backdrop');
+  if (!toc) { nut.style.display = 'none'; return; }
+
+  var manRong = window.matchMedia('(min-width: 1100px)');
+
+  var tieuDe = document.createElement('div');
+  tieuDe.className = 'toc-tieu-de';
+  tieuDe.textContent = 'Mục lục';
+  toc.insertBefore(tieuDe, toc.firstChild);
+
+  function dangMo() { return html.classList.contains('toc-open'); }
+  function datMo(mo) {
+    html.classList.toggle('toc-open', mo);
+    nut.setAttribute('aria-expanded', mo ? 'true' : 'false');
+    nut.setAttribute('aria-label', mo ? 'Đóng mục lục' : 'Mở mục lục');
+  }
+  function luu(mo) {
+    try { localStorage.setItem('awh-muc-luc', mo ? 'mo' : 'dong'); } catch (e) { /* không lưu được thì thôi */ }
+  }
+
+  datMo(dangMo());
+  nut.addEventListener('click', function () {
+    var mo = !dangMo();
+    datMo(mo);
+    if (manRong.matches) luu(mo);
+  });
+  nen.addEventListener('click', function () { datMo(false); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !manRong.matches) datMo(false);
+  });
+  // Xoay máy / kéo cửa sổ qua ngưỡng: theo lựa chọn đã lưu ở màn rộng, đóng ở màn hẹp
+  manRong.addEventListener('change', function (e) {
+    var daDong = false;
+    try { daDong = localStorage.getItem('awh-muc-luc') === 'dong'; } catch (er) { /* bỏ qua */ }
+    datMo(e.matches && !daDong);
+  });
+
+  // Chương thu gọn được: nút ▶ cạnh mỗi chương có mục con
+  toc.querySelectorAll(':scope > ul > li > ul > li').forEach(function (li) {
+    if (!li.querySelector(':scope > ul')) return;
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'mo-chuong';
+    b.textContent = '▶';
+    b.title = 'Mở/thu gọn chương';
+    b.addEventListener('click', function () { li.classList.toggle('mo'); });
+    li.querySelector(":scope > a").after(b);
+  });
+
+  // Chọn một mục trên màn hẹp thì đóng ngăn kéo
+  toc.addEventListener('click', function (e) {
+    if (e.target.closest('a') && !manRong.matches) datMo(false);
+  });
+
+  // Tô sáng mục đang đọc + mở chương chứa nó
+  var theoId = {};
+  toc.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    theoId[decodeURIComponent(a.getAttribute('href').slice(1))] = a;
+  });
+  var dangSang = null;
+  function toSang(a) {
+    if (a === dangSang) return;
+    if (dangSang) dangSang.classList.remove('active');
+    dangSang = a;
+    a.classList.add('active');
+    var chuong = a.closest('#TOC > ul > li > ul > li');
+    if (chuong) chuong.classList.add('mo');
+    if (dangMo()) a.scrollIntoView({ block: 'nearest' });
+  }
+  var tieuDeMuc = Array.prototype.filter.call(
+    document.querySelectorAll('h1[id], h2[id], h3[id]'),
+    function (h) { return theoId[h.id]; });
+  if ('IntersectionObserver' in window) {
+    var ob = new IntersectionObserver(function (ds) {
+      ds.forEach(function (d) { if (d.isIntersecting) toSang(theoId[d.target.id]); });
+    }, { rootMargin: '0px 0px -75% 0px' });
+    tieuDeMuc.forEach(function (h) { ob.observe(h); });
+  }
+
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () { html.classList.remove('chua-san-sang'); });
+  });
+})();
+</script>
 </body>
 </html>

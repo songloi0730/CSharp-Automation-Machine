@@ -9,9 +9,9 @@
 
 | | |
 |---|---|
-| **Phiên bản** | v1.0.0.260922 |
+| **Phiên bản** | v1.0.0.261103 |
 | **Tác giả** | AI & songloi0730 |
-| **Xuất bản** | 09/2026 |
+| **Xuất bản** | 11/2026 |
 | **Nội dung** | 30 chương + 7 phụ lục · 138 sơ đồ tự vẽ · 40 ảnh thật |
 | **Giấy phép — phần chữ và sơ đồ tự vẽ** | [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) |
 | **Giấy phép — ảnh thật** | ⚠ **Mỗi ảnh giữ giấy phép RIÊNG của nó** — xem chú thích dưới từng ảnh |

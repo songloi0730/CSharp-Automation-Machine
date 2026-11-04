@@ -49,6 +49,9 @@ Quét mã QR hoặc truy cập: [docs.google.com/forms/.../viewform](https://doc
 
 <!-- SECTION: MucLuc -->
 ---
+
+<div id="MucLuc"></div>
+
 # Mục lục — Sổ tay Lập trình PLC & Điều khiển Máy Tự động hoá
 
 > Sách độc lập, **trung lập hãng** *(vendor-neutral)*: dạy nguyên lý theo IEC 61131-3 một lần, rồi
@@ -126,38 +129,38 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 1 | [Sách này dành cho ai & cách dùng](ch01_sach_nay_danh_cho_ai.md) | 3 lộ trình đọc A/B/C và vì sao chia như vậy; ⭐ **lộ trình D cho người chỉ lập trình** — đọc lõi, đọc đúng mục ở phần giao diện, bỏ qua phần của người khác; giới thiệu máy mẫu DP-01 và cách máy được bóc lớp dần; **3 đường tra cứu** (học tuần tự / tra theo việc đang làm / tra theo triệu chứng hỏng — Phụ lục E); quy ước cảnh báo và quy ước song ngữ; "thành công = gì" sau mỗi phần | ✅ |
-| 2 | [PLC là gì — và khi nào **không** nên dùng PLC](ch02_plc_la_gi_va_khi_nao_khong_nen_dung.md) | Bài toán gốc: tủ rơ-le dây chuyền ô tô, mỗi lần đổi đời xe phải đi lại dây → Modicon 084 (Dick Morley, 1968); PLC khác máy tính thường ở đâu (môi trường, tính tất định *(deterministic)*, khởi động lại, tuổi đời 15–20 năm); so sánh **PLC vs PAC vs DCS vs IPC vs vi điều khiển** — mỗi loại thắng ở đâu; ⭐ khi nào PLC là lựa chọn sai (nguyên mẫu một lần, xử lý ảnh nặng, sản phẩm hàng loạt giá rẻ) | ✅ |
-| 3 | [Điện đủ dùng cho người làm PLC](ch03_dien_du_dung_cho_nguoi_lam_plc.md) | U/I/R, DC vs AC, vì sao chuẩn công nghiệp là 24 VDC; đọc đồng hồ vạn năng *(multimeter)* & ampe kìm *(clamp meter)* đúng cách — đo áp song song, đo dòng nối tiếp; rơ-le *(relay)* & contactor — cuộn hút vs tiếp điểm, tiếp điểm cưỡng bức *(forcibly guided contacts)*; **mạch Start/Stop tự giữ *(seal-in)* dựng bằng rơ-le trước khi dựng bằng PLC** — hiểu gốc của "latch"; an toàn điện & LOTO *(lockout–tagout)* | ✅ ⚠ |
-| 4 | [Cảm biến số & đấu nối — NPN/PNP, sinking/sourcing](ch04_cam_bien_so_va_dau_noi.md) | ⭐ Chương gây nhầm nhất của nghề: sơ đồ chiều dòng cho từng tổ hợp, **bảng 4 tổ hợp và tổ hợp nào không chạy**; cảm biến 2/3/4 dây; dòng rò *(leakage current)* của cảm biến 2 dây làm ngõ vào "dính"; công tắc hành trình, tiệm cận cảm ứng/điện dung *(inductive/capacitive proximity)*, quang thu-phát/phản xạ/khuếch tán *(through-beam / retro-reflective / diffuse)*, reed xy-lanh; ⭐ **"trạng thái NORMAL" là lúc không có kích thích** — và vì sao mạch dừng phải dùng tiếp điểm NC | ✅ |
-| 5 | [Cơ cấu chấp hành điện & tải](ch05_co_cau_chap_hanh_dien_va_tai.md) | Van điện từ *(solenoid valve)*; contactor cho động cơ; đèn tháp *(stack light)* & còi — quy ước màu; **tải cảm & mạch dập *(snubber)*** — V = L·di/dt, chọn diode / RC / varistor và đánh đổi thời gian nhả; rơ-le trung gian *(interposing relay)* — vì sao gần như luôn cần dù PLC "đủ dòng"; tính công suất nhánh 24 VDC | ✅ |
-| 6 | [**Khí nén cho máy tự động hoá**](ch06_khi_nen.md) | Bộ lọc–điều áp–tra dầu *(FRL)* và vì sao khí bẩn giết van; van 5/2 vs 5/3, và ⭐ vì sao 5/3 "hở giữa" khác hẳn 5/3 "kín giữa" **khi mất điện**; xy-lanh — tính lực đẩy/kéo theo đường kính và áp, tính tốc độ, van tiết lưu *(flow control)* điều tốc bằng xả chứ không bằng cấp; xy-lanh không trục, xy-lanh quay; **chân không & giác hút *(vacuum & suction cup)*** — bơm chân không vs ejector, cảm biến chân không, bài toán hút board mạch; an toàn khí nén: van xả khí có khoá, năng lượng tích trữ khi LOTO | ✅ ⚠ |
-| 7 | [**ESD & môi trường sản xuất điện tử**](ch07_esd_va_moi_truong_dien_tu.md) | ⭐ Đặc thù bắt buộc của ngành: vì sao board hỏng vì tĩnh điện **không có triệu chứng tại chỗ** — hỏng ngay hoặc hỏng tiềm ẩn bung ra ở tay khách hàng; cơ chế phóng tĩnh điện *(ESD)* và 3 mô hình phổ biến; **ba loại đất PE / 0V / ESD** — vì sao phải phân biệt, vì sao dây đeo cổ tay có điện trở hạn dòng; đường thoát tĩnh điện của máy: bàn, thảm, gá, băng tải; **bộ khử tĩnh điện *(ionizer)*** — đặt ở đâu, giám sát thế nào, vì sao phải đưa tín hiệu OK vào PLC; ảnh hưởng tới thiết kế cơ cấu chạm board; phòng sạch *(cleanroom)* ở mức đủ hiểu ràng buộc thiết kế | ✅ |
+| 1 | [Sách này dành cho ai & cách dùng](#ch01_sach_nay_danh_cho_ai) | 3 lộ trình đọc A/B/C và vì sao chia như vậy; ⭐ **lộ trình D cho người chỉ lập trình** — đọc lõi, đọc đúng mục ở phần giao diện, bỏ qua phần của người khác; giới thiệu máy mẫu DP-01 và cách máy được bóc lớp dần; **3 đường tra cứu** (học tuần tự / tra theo việc đang làm / tra theo triệu chứng hỏng — Phụ lục E); quy ước cảnh báo và quy ước song ngữ; "thành công = gì" sau mỗi phần | ✅ |
+| 2 | [PLC là gì — và khi nào **không** nên dùng PLC](#ch02_plc_la_gi_va_khi_nao_khong_nen_dung) | Bài toán gốc: tủ rơ-le dây chuyền ô tô, mỗi lần đổi đời xe phải đi lại dây → Modicon 084 (Dick Morley, 1968); PLC khác máy tính thường ở đâu (môi trường, tính tất định *(deterministic)*, khởi động lại, tuổi đời 15–20 năm); so sánh **PLC vs PAC vs DCS vs IPC vs vi điều khiển** — mỗi loại thắng ở đâu; ⭐ khi nào PLC là lựa chọn sai (nguyên mẫu một lần, xử lý ảnh nặng, sản phẩm hàng loạt giá rẻ) | ✅ |
+| 3 | [Điện đủ dùng cho người làm PLC](#ch03_dien_du_dung_cho_nguoi_lam_plc) | U/I/R, DC vs AC, vì sao chuẩn công nghiệp là 24 VDC; đọc đồng hồ vạn năng *(multimeter)* & ampe kìm *(clamp meter)* đúng cách — đo áp song song, đo dòng nối tiếp; rơ-le *(relay)* & contactor — cuộn hút vs tiếp điểm, tiếp điểm cưỡng bức *(forcibly guided contacts)*; **mạch Start/Stop tự giữ *(seal-in)* dựng bằng rơ-le trước khi dựng bằng PLC** — hiểu gốc của "latch"; an toàn điện & LOTO *(lockout–tagout)* | ✅ ⚠ |
+| 4 | [Cảm biến số & đấu nối — NPN/PNP, sinking/sourcing](#ch04_cam_bien_so_va_dau_noi) | ⭐ Chương gây nhầm nhất của nghề: sơ đồ chiều dòng cho từng tổ hợp, **bảng 4 tổ hợp và tổ hợp nào không chạy**; cảm biến 2/3/4 dây; dòng rò *(leakage current)* của cảm biến 2 dây làm ngõ vào "dính"; công tắc hành trình, tiệm cận cảm ứng/điện dung *(inductive/capacitive proximity)*, quang thu-phát/phản xạ/khuếch tán *(through-beam / retro-reflective / diffuse)*, reed xy-lanh; ⭐ **"trạng thái NORMAL" là lúc không có kích thích** — và vì sao mạch dừng phải dùng tiếp điểm NC | ✅ |
+| 5 | [Cơ cấu chấp hành điện & tải](#ch05_co_cau_chap_hanh_dien_va_tai) | Van điện từ *(solenoid valve)*; contactor cho động cơ; đèn tháp *(stack light)* & còi — quy ước màu; **tải cảm & mạch dập *(snubber)*** — V = L·di/dt, chọn diode / RC / varistor và đánh đổi thời gian nhả; rơ-le trung gian *(interposing relay)* — vì sao gần như luôn cần dù PLC "đủ dòng"; tính công suất nhánh 24 VDC | ✅ |
+| 6 | [**Khí nén cho máy tự động hoá**](#ch06_khi_nen) | Bộ lọc–điều áp–tra dầu *(FRL)* và vì sao khí bẩn giết van; van 5/2 vs 5/3, và ⭐ vì sao 5/3 "hở giữa" khác hẳn 5/3 "kín giữa" **khi mất điện**; xy-lanh — tính lực đẩy/kéo theo đường kính và áp, tính tốc độ, van tiết lưu *(flow control)* điều tốc bằng xả chứ không bằng cấp; xy-lanh không trục, xy-lanh quay; **chân không & giác hút *(vacuum & suction cup)*** — bơm chân không vs ejector, cảm biến chân không, bài toán hút board mạch; an toàn khí nén: van xả khí có khoá, năng lượng tích trữ khi LOTO | ✅ ⚠ |
+| 7 | [**ESD & môi trường sản xuất điện tử**](#ch07_esd_va_moi_truong_dien_tu) | ⭐ Đặc thù bắt buộc của ngành: vì sao board hỏng vì tĩnh điện **không có triệu chứng tại chỗ** — hỏng ngay hoặc hỏng tiềm ẩn bung ra ở tay khách hàng; cơ chế phóng tĩnh điện *(ESD)* và 3 mô hình phổ biến; **ba loại đất PE / 0V / ESD** — vì sao phải phân biệt, vì sao dây đeo cổ tay có điện trở hạn dòng; đường thoát tĩnh điện của máy: bàn, thảm, gá, băng tải; **bộ khử tĩnh điện *(ionizer)*** — đặt ở đâu, giám sát thế nào, vì sao phải đưa tín hiệu OK vào PLC; ảnh hưởng tới thiết kế cơ cấu chạm board; phòng sạch *(cleanroom)* ở mức đủ hiểu ràng buộc thiết kế | ✅ |
 
 ## PHẦN II — PHẦN CỨNG & VÒNG QUÉT
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 8 | [Kiến trúc phần cứng PLC](ch08_kien_truc_phan_cung_plc.md) | CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs **I/O phân tán *(remote I/O)*** — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module, và ⭐ **vì sao bản đồ khe cắm phải là một tài liệu** (bốn câu nó phải trả lời được — biểu mẫu Phụ lục C.10); pin & thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó | ✅ |
-| 9 | [Module vào/ra số — chọn đúng kiểu](ch09_module_vao_ra_so.md) | Ngõ vào sink vs source; ngõ ra **rơ-le vs transistor vs triac** — bảng đánh đổi (dòng, tốc độ đóng cắt, tuổi thọ, AC/DC, dòng rò) và bài toán chọn cho từng tải của DP-01; cách ly quang *(optical isolation)*; dòng tổng cho phép trên chân chung *(common)*; ước tính công suất nguồn 24 V cho toàn bộ I/O; module hỗn hợp và khi nào nên tránh | ✅ |
-| 10 | [⭐ Vòng quét — mô hình tinh thần quan trọng nhất](ch10_vong_quet.md) | Đọc ảnh ngõ vào → chạy chương trình → ghi ảnh ngõ ra → xử lý hệ thống; **ảnh quá trình *(process image)* vs truy cập trực tiếp *(immediate/direct I/O)***; hệ quả thực tế: vì sao đảo thứ tự hai nấc thang *(rung)* đổi kết quả, xung ngắn hơn một chu kỳ quét bị **mất hoàn toàn** (→ vì sao cần bắt cạnh hoặc bộ đếm tốc độ cao), tranh chấp *(race condition)* giữa hai POU; đo thời gian quét *(scan time)* và cái gì làm nó phình; **watchdog** và điều gì xảy ra khi vượt | ✅ |
-| 11 | [Bộ nhớ, biến & kiểu dữ liệu](ch11_bo_nho_bien_va_kieu_du_lieu.md) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; ⭐ phạm vi biến — `VAR_EXTERNAL`, và vì sao **khối chức năng không đọc biến toàn cục**; **kiểu dữ liệu người dùng** *(UDT)*, **struct**, **mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)*; ⭐ trên hệ kiểu thiết bị: **quy hoạch vùng nhớ theo khối** trước dòng mã đầu tiên (mục 11.8b)  ⚠⚠ **Đánh số I/O theo hệ bát phân** trên hệ kiểu thiết bị — `X10` là ngõ vào thứ **chín**, không có `X8`/`X9`; ánh xạ số dây thẳng sang số thiết bị **sai từ điểm thứ tám trở đi** mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng. | ✅ |
-| 12 | [IO-Link & lớp cảm biến thông minh](ch12_io_link_va_cam_bien_thong_minh.md) | Vì sao lớp đấu nối rời rạc/analog truyền thống đang bị thay dần; IO-Link là gì và **không** là gì (không phải bus trường); tham số hoá cảm biến từ PLC; ⭐ **thay cảm biến hỏng mà không phải chỉnh lại bằng tay** — tham số tự nạp xuống thiết bị mới; dữ liệu chẩn đoán mà cảm biến rời rạc không có (độ dự trữ tín hiệu, số giờ chạy, cảnh báo sớm); khi nào IO-Link không đáng dùng | ✅ |
-| 13 | [Chọn PLC & dựng bàn thực hành của riêng bạn](ch13_chon_plc_va_ban_thuc_hanh.md) | Tiêu chí chọn PLC cho dự án thật (số I/O + dự phòng, loại I/O, thời gian quét cần thiết, mạng, hệ sinh thái phần mềm, khả năng cung ứng dài hạn, chi phí bản quyền); ⭐ **bàn thực hành tự dựng *(PLC trainer)*** — danh sách vật tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra, cầu chì & cầu đấu; bảng đánh đổi các đường học rẻ: PLC nhỏ giá thấp / PLC cũ trên thị trường second-hand / PLC mềm *(soft-PLC)* + mô phỏng 3D / PLC mã nguồn mở trên máy tính nhúng — so theo chi phí, độ giống thực tế, giá trị khi phỏng vấn | ✅ |
+| 8 | [Kiến trúc phần cứng PLC](#ch08_kien_truc_phan_cung_plc) | CPU / nguồn / backplane / module; I/O tại chỗ vs mở rộng vs **I/O phân tán *(remote I/O)*** — vì sao remote thắng khi máy dài, và cái giá phải trả về thời gian đáp ứng; cách PLC đánh địa chỉ module, và ⭐ **vì sao bản đồ khe cắm phải là một tài liệu** (bốn câu nó phải trả lời được — biểu mẫu Phụ lục C.10); pin & thẻ nhớ, giữ chương trình khi mất điện; công tắc RUN/STOP/REM và ý nghĩa an toàn của nó | ✅ |
+| 9 | [Module vào/ra số — chọn đúng kiểu](#ch09_module_vao_ra_so) | Ngõ vào sink vs source; ngõ ra **rơ-le vs transistor vs triac** — bảng đánh đổi (dòng, tốc độ đóng cắt, tuổi thọ, AC/DC, dòng rò) và bài toán chọn cho từng tải của DP-01; cách ly quang *(optical isolation)*; dòng tổng cho phép trên chân chung *(common)*; ước tính công suất nguồn 24 V cho toàn bộ I/O; module hỗn hợp và khi nào nên tránh | ✅ |
+| 10 | [⭐ Vòng quét — mô hình tinh thần quan trọng nhất](#ch10_vong_quet) | Đọc ảnh ngõ vào → chạy chương trình → ghi ảnh ngõ ra → xử lý hệ thống; **ảnh quá trình *(process image)* vs truy cập trực tiếp *(immediate/direct I/O)***; hệ quả thực tế: vì sao đảo thứ tự hai nấc thang *(rung)* đổi kết quả, xung ngắn hơn một chu kỳ quét bị **mất hoàn toàn** (→ vì sao cần bắt cạnh hoặc bộ đếm tốc độ cao), tranh chấp *(race condition)* giữa hai POU; đo thời gian quét *(scan time)* và cái gì làm nó phình; **watchdog** và điều gì xảy ra khi vượt | ✅ |
+| 11 | [Bộ nhớ, biến & kiểu dữ liệu](#ch11_bo_nho_bien_va_kieu_du_lieu) | BOOL/BYTE/WORD/INT/DINT/REAL/STRING/TIME; **địa chỉ tuyệt đối vs tag có tên *(symbolic tag)*** — vì sao ngành đã chuyển sang tag; biến giữ vs không giữ *(retentive / non-retentive)* và câu hỏi "mất điện thì biến này còn không?"; ⭐ phạm vi biến — `VAR_EXTERNAL`, và vì sao **khối chức năng không đọc biến toàn cục**; **kiểu dữ liệu người dùng** *(UDT)*, **struct**, **mảng** — mô hình hoá một trạm thành một kiểu dữ liệu; tràn số nguyên *(overflow)* và bẫy so sánh bằng với số thực *(REAL)*; ⭐ trên hệ kiểu thiết bị: **quy hoạch vùng nhớ theo khối** trước dòng mã đầu tiên (mục 11.8b)  ⚠⚠ **Đánh số I/O theo hệ bát phân** trên hệ kiểu thiết bị — `X10` là ngõ vào thứ **chín**, không có `X8`/`X9`; ánh xạ số dây thẳng sang số thiết bị **sai từ điểm thứ tám trở đi** mà trình biên dịch không báo gì, kèm phép kiểm năm giây suy hệ đếm từ chính con số trong tài liệu hãng. | ✅ |
+| 12 | [IO-Link & lớp cảm biến thông minh](#ch12_io_link_va_cam_bien_thong_minh) | Vì sao lớp đấu nối rời rạc/analog truyền thống đang bị thay dần; IO-Link là gì và **không** là gì (không phải bus trường); tham số hoá cảm biến từ PLC; ⭐ **thay cảm biến hỏng mà không phải chỉnh lại bằng tay** — tham số tự nạp xuống thiết bị mới; dữ liệu chẩn đoán mà cảm biến rời rạc không có (độ dự trữ tín hiệu, số giờ chạy, cảnh báo sớm); khi nào IO-Link không đáng dùng | ✅ |
+| 13 | [Chọn PLC & dựng bàn thực hành của riêng bạn](#ch13_chon_plc_va_ban_thuc_hanh) | Tiêu chí chọn PLC cho dự án thật (số I/O + dự phòng, loại I/O, thời gian quét cần thiết, mạng, hệ sinh thái phần mềm, khả năng cung ứng dài hạn, chi phí bản quyền); ⭐ **bàn thực hành tự dựng *(PLC trainer)*** — danh sách vật tư, sơ đồ đấu, công tắc gạt làm ngõ vào, đèn làm ngõ ra, cầu chì & cầu đấu; bảng đánh đổi các đường học rẻ: PLC nhỏ giá thấp / PLC cũ trên thị trường second-hand / PLC mềm *(soft-PLC)* + mô phỏng 3D / PLC mã nguồn mở trên máy tính nhúng — so theo chi phí, độ giống thực tế, giá trị khi phỏng vấn | ✅ |
 
 ## PHẦN III — LẬP TRÌNH: NGÔN NGỮ IEC 61131-3
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 14 | [Tổng quan IEC 61131-3](ch14_tong_quan_iec_61131_3.md) | ⭐ các bản của chuẩn — 2013 đưa hướng đối tượng vào, 2025 **bỏ hẳn IL**; các ngôn ngữ và vì sao cần nhiều ngôn ngữ; **đơn vị tổ chức chương trình *(POU)*** — Program / Function Block / Function khác nhau ở chỗ **có bộ nhớ riêng hay không**; thể hiện *(instance)* của FB; tác vụ *(task)* chu kỳ / sự kiện / tự do; ⚠ sự thật về "tính khả chuyển" *(portability)*: chuẩn giúp **kỹ năng** chuyển được, **code** thì hiếm khi — dẫn Phụ lục A | ✅ |
-| 15 | [⭐ Ladder Diagram — nền tảng](ch15_ladder_diagram.md) | Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa **giúp** vừa **hại**; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ **bảng 4 tổ hợp** (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng *(power flow)*, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; **cuộn dây trùng *(double coil)*** — vì sao sai, hậu quả, và hãng nào cảnh báo  ⭐⭐ **Vì sao thực tế đầy tổ hợp 2** (nút Dừng NO + tiếp điểm thường đóng trong code) dù nó nguy hiểm — sáu lý do thật kèm phán xét từng cái, và ⭐ phân biệt **chức năng được định mức** với **chức năng được người vận hành tin tưởng**; hai cách sửa, trong đó cách hai đấu **cả hai khối tiếp điểm** vào hai ngõ vào rồi kiểm chúng luôn ngược nhau — bắt được cả đứt dây lẫn khối hỏng. | ✅ |
-| 16 | [Latch, Set/Reset & bắt cạnh](ch16_latch_set_reset_bat_canh.md) | Tự giữ *(seal-in)* vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy "không biết mình đang ở đâu"; **bắt cạnh lên/xuống *(rising/falling edge, one-shot)*** — khi nào **bắt buộc** (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên · ⚠⚠ **sườn giả ở vòng quét đầu** — nút kẹt lúc cấp điện thành một lần nhấn · ⚠ tự giữ theo mức **tự chạy lại** khi nút Start kẹt — dùng sườn | ✅ |
-| 17 | [Timer — TON / TOF / TP / RTO](ch17_timer.md) | Sơ đồ thời gian *(timing diagram)* từng loại; độ phân giải & sai số theo chu kỳ quét; timer bị đặt lại ngoài ý muốn khi điều kiện vào nhấp nháy; nối tầng timer để có thời gian dài; ⭐ **sai lầm lớn nhất: dùng timer thay cho tín hiệu phản hồi thật** — "chờ 2 giây chắc kẹp xong rồi" — vì sao hỏng máy, và cách làm đúng (phản hồi để chuyển tiếp, timeout để báo lỗi) | ✅ |
-| 18 | [Counter & đếm xung tốc độ cao](ch18_counter_va_dem_xung_toc_do_cao.md) | CTU/CTD/CTUD; đếm cạnh chứ không đếm mức; chống đếm trùng khi board rung hoặc cảm biến nhiễu; ⭐ khi nào **bắt buộc dùng bộ đếm tốc độ cao *(HSC)* phần cứng** — công thức quyết định so tần số xung với chu kỳ quét; encoder *(bộ mã hoá vòng quay)* và đếm vị trí; bộ đếm giữ giá trị qua mất điện | ✅ |
-| 19 | [So sánh, toán học & xử lý dữ liệu](ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu.md) | MOVE / COMPARE / cộng-trừ-nhân-chia; ⚠ chia cho 0 làm gì PLC (khác nhau theo hãng!); số nguyên vs số thực, ép kiểu *(type conversion)* và mất chính xác; chuẩn hoá & quy đổi thang *(scale/normalize)*; **thanh ghi dịch *(shift register)*** — bài toán kinh điển "board lỗi phát hiện ở trạm đầu, loại bỏ ở cuối chuyền"; mảng & con trỏ *(indirect addressing)* — khi nào đáng dùng, khi nào làm code không ai đọc nổi  ⭐⭐ **Ba kiểu mã hoá bạn gặp hằng ngày**: hex (mã lỗi, mặt nạ bit) · ⚠⚠ **BCD** — đọc nhầm thành nhị phân cho ra con số **sai mà trông hợp lý**, 25 thành 37 · **mã Gray** trên bộ mã hoá tuyệt đối và vì sao nó tồn tại; quy tắc: **quy đổi về nhị phân ngay tại biên**. | ✅ |
-| 20 | [Structured Text — cho người biết lập trình](ch20_structured_text.md) | Cú pháp, IF / CASE / FOR / WHILE, hàm; ⚠⚠ **vòng lặp trong môi trường quét** — vòng WHILE sai làm treo CPU và kích watchdog; khi nào ST vượt trội (toán, xử lý mảng, thuật toán, máy trạng thái bằng CASE); ⭐ **mảng cấu trúc, bộ đệm vòng, tìm kiếm, đánh giá rút gọn** (20.5b); ⭐ **ngân sách thời gian quét — chia việc nặng qua nhiều vòng quét** (20.5c); ⭐ khi nào ST là lựa chọn **tệ**: đội bảo trì tại nhà máy chỉ đọc được ladder — đây là bài toán **tổ chức**, không phải bài toán kỹ thuật | ✅ |
-| 21 | [FBD, SFC (và IL — đủ để đọc di sản)](ch21_fbd_sfc_va_il.md) | FBD cho luồng tín hiệu & analog; **SFC cho tuần tự** — bước *(step)* / chuyển tiếp *(transition)* / hành động *(action)*, nhánh song song & nhánh lựa chọn, quan hệ với GRAFCET; bảng "bài toán nào → ngôn ngữ nào"; IL *(Instruction List)*: vì sao vẫn gặp trong máy cũ, đọc hiểu đủ để bảo trì, và ghi chú IL đã bị rút khỏi bản mới của chuẩn | ✅ |
-| 22 | [Đọc & sửa chương trình của người khác](ch22_doc_va_sua_chuong_trinh_nguoi_khac.md) | Kỹ năng bị bỏ quên nhưng chiếm phần lớn thời gian đi làm: dò tham chiếu chéo *(cross-reference)*, tìm mọi nơi ghi vào một tag, đọc code không comment, nhận diện "phương ngữ nhà" của từng công ty; đọc chương trình đã bị sửa chắp vá qua nhiều đời; ⭐ quy tắc sửa an toàn: **hiểu trước, sao lưu, sửa nhỏ nhất, ghi lại**; ⭐⭐ **năm chỗ phải soi** khi nhận một chương trình đang chạy tốt — điều kiện gán cứng, sườn tính rồi bỏ đó, nhịp nhanh hơn tác vụ, vế chép trùng, hai tác vụ cùng ghi một biến | ✅ |
+| 14 | [Tổng quan IEC 61131-3](#ch14_tong_quan_iec_61131_3) | ⭐ các bản của chuẩn — 2013 đưa hướng đối tượng vào, 2025 **bỏ hẳn IL**; các ngôn ngữ và vì sao cần nhiều ngôn ngữ; **đơn vị tổ chức chương trình *(POU)*** — Program / Function Block / Function khác nhau ở chỗ **có bộ nhớ riêng hay không**; thể hiện *(instance)* của FB; tác vụ *(task)* chu kỳ / sự kiện / tự do; ⚠ sự thật về "tính khả chuyển" *(portability)*: chuẩn giúp **kỹ năng** chuyển được, **code** thì hiếm khi — dẫn Phụ lục A | ✅ |
+| 15 | [⭐ Ladder Diagram — nền tảng](#ch15_ladder_diagram) | Vì sao LD trông giống sơ đồ rơ-le và điều đó vừa **giúp** vừa **hại**; tiếp điểm NO/NC trong code vs tiếp điểm vật lý — ⭐ **bảng 4 tổ hợp** (cảm biến NO/NC × tiếp điểm NO/NC) để dứt điểm hiểu nhầm kinh điển; dòng năng lượng *(power flow)*, nhánh song song; thứ tự thực thi trên/dưới, trái/phải; **cuộn dây trùng *(double coil)*** — vì sao sai, hậu quả, và hãng nào cảnh báo  ⭐⭐ **Vì sao thực tế đầy tổ hợp 2** (nút Dừng NO + tiếp điểm thường đóng trong code) dù nó nguy hiểm — sáu lý do thật kèm phán xét từng cái, và ⭐ phân biệt **chức năng được định mức** với **chức năng được người vận hành tin tưởng**; hai cách sửa, trong đó cách hai đấu **cả hai khối tiếp điểm** vào hai ngõ vào rồi kiểm chúng luôn ngược nhau — bắt được cả đứt dây lẫn khối hỏng. | ✅ |
+| 16 | [Latch, Set/Reset & bắt cạnh](#ch16_latch_set_reset_bat_canh) | Tự giữ *(seal-in)* vs SET/RESET — khác nhau khi mất điện và khi RESET; ⚠ vì sao lạm dụng SET/RESET làm máy "không biết mình đang ở đâu"; **bắt cạnh lên/xuống *(rising/falling edge, one-shot)*** — khi nào **bắt buộc** (đếm, kích trình tự, gửi lệnh mạng, ghi log) và lỗi kinh điển khi quên · ⚠⚠ **sườn giả ở vòng quét đầu** — nút kẹt lúc cấp điện thành một lần nhấn · ⚠ tự giữ theo mức **tự chạy lại** khi nút Start kẹt — dùng sườn | ✅ |
+| 17 | [Timer — TON / TOF / TP / RTO](#ch17_timer) | Sơ đồ thời gian *(timing diagram)* từng loại; độ phân giải & sai số theo chu kỳ quét; timer bị đặt lại ngoài ý muốn khi điều kiện vào nhấp nháy; nối tầng timer để có thời gian dài; ⭐ **sai lầm lớn nhất: dùng timer thay cho tín hiệu phản hồi thật** — "chờ 2 giây chắc kẹp xong rồi" — vì sao hỏng máy, và cách làm đúng (phản hồi để chuyển tiếp, timeout để báo lỗi) | ✅ |
+| 18 | [Counter & đếm xung tốc độ cao](#ch18_counter_va_dem_xung_toc_do_cao) | CTU/CTD/CTUD; đếm cạnh chứ không đếm mức; chống đếm trùng khi board rung hoặc cảm biến nhiễu; ⭐ khi nào **bắt buộc dùng bộ đếm tốc độ cao *(HSC)* phần cứng** — công thức quyết định so tần số xung với chu kỳ quét; encoder *(bộ mã hoá vòng quay)* và đếm vị trí; bộ đếm giữ giá trị qua mất điện | ✅ |
+| 19 | [So sánh, toán học & xử lý dữ liệu](#ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu) | MOVE / COMPARE / cộng-trừ-nhân-chia; ⚠ chia cho 0 làm gì PLC (khác nhau theo hãng!); số nguyên vs số thực, ép kiểu *(type conversion)* và mất chính xác; chuẩn hoá & quy đổi thang *(scale/normalize)*; **thanh ghi dịch *(shift register)*** — bài toán kinh điển "board lỗi phát hiện ở trạm đầu, loại bỏ ở cuối chuyền"; mảng & con trỏ *(indirect addressing)* — khi nào đáng dùng, khi nào làm code không ai đọc nổi  ⭐⭐ **Ba kiểu mã hoá bạn gặp hằng ngày**: hex (mã lỗi, mặt nạ bit) · ⚠⚠ **BCD** — đọc nhầm thành nhị phân cho ra con số **sai mà trông hợp lý**, 25 thành 37 · **mã Gray** trên bộ mã hoá tuyệt đối và vì sao nó tồn tại; quy tắc: **quy đổi về nhị phân ngay tại biên**. | ✅ |
+| 20 | [Structured Text — cho người biết lập trình](#ch20_structured_text) | Cú pháp, IF / CASE / FOR / WHILE, hàm; ⚠⚠ **vòng lặp trong môi trường quét** — vòng WHILE sai làm treo CPU và kích watchdog; khi nào ST vượt trội (toán, xử lý mảng, thuật toán, máy trạng thái bằng CASE); ⭐ **mảng cấu trúc, bộ đệm vòng, tìm kiếm, đánh giá rút gọn** (20.5b); ⭐ **ngân sách thời gian quét — chia việc nặng qua nhiều vòng quét** (20.5c); ⭐ khi nào ST là lựa chọn **tệ**: đội bảo trì tại nhà máy chỉ đọc được ladder — đây là bài toán **tổ chức**, không phải bài toán kỹ thuật | ✅ |
+| 21 | [FBD, SFC (và IL — đủ để đọc di sản)](#ch21_fbd_sfc_va_il) | FBD cho luồng tín hiệu & analog; **SFC cho tuần tự** — bước *(step)* / chuyển tiếp *(transition)* / hành động *(action)*, nhánh song song & nhánh lựa chọn, quan hệ với GRAFCET; bảng "bài toán nào → ngôn ngữ nào"; IL *(Instruction List)*: vì sao vẫn gặp trong máy cũ, đọc hiểu đủ để bảo trì, và ghi chú IL đã bị rút khỏi bản mới của chuẩn | ✅ |
+| 22 | [Đọc & sửa chương trình của người khác](#ch22_doc_va_sua_chuong_trinh_nguoi_khac) | Kỹ năng bị bỏ quên nhưng chiếm phần lớn thời gian đi làm: dò tham chiếu chéo *(cross-reference)*, tìm mọi nơi ghi vào một tag, đọc code không comment, nhận diện "phương ngữ nhà" của từng công ty; đọc chương trình đã bị sửa chắp vá qua nhiều đời; ⭐ quy tắc sửa an toàn: **hiểu trước, sao lưu, sửa nhỏ nhất, ghi lại**; ⭐⭐ **năm chỗ phải soi** khi nhận một chương trình đang chạy tốt — điều kiện gán cứng, sườn tính rồi bỏ đó, nhịp nhanh hơn tác vụ, vế chép trùng, hai tác vụ cùng ghi một biến | ✅ |
 
 ## PHẦN IV — THIẾT KẾ LOGIC ⭐ trọng tâm khác biệt
 
@@ -167,26 +170,26 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 23 | [Từ yêu cầu tới đặc tả điều khiển](ch23_tu_yeu_cau_toi_dac_ta.md) | Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của "code chạy nhưng máy sai"; lập **bảng I/O *(I/O list)*** trước, ⭐ xếp địa chỉ theo **bảy quy tắc** của các dự án thật; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ & điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐⭐ **chín bước đầu dự án** — thứ tự, sản phẩm từng bước, ai duyệt, ⭐ định nghĩa **"xong" kiểm được** cho từng bước, và ⚠ **ba quan hệ chặn** (đánh giá rủi ro chặn việc chọn phần cứng · bảng I/O chặn việc đấu tủ · phép tính nguồn chặn việc chốt đơn hàng); ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?) | ✅ |
-| 24 | [Đại số Boolean & bảng chân lý dùng được](ch24_dai_so_boolean_va_bang_chan_ly.md) | AND/OR/NOT/XOR; **định luật De Morgan** áp vào ladder — vì sao "NOT(A AND B)" đổi hình dạng nấc thang; bảng chân lý → biểu thức → nấc thang; **bìa Karnaugh** ở mức thực dụng; ⭐ khi nào **không** nên tối ưu — logic gọn nhưng không ai đọc nổi thì đã sai mục tiêu | ✅ |
-| 25 | [⭐ Thiết kế theo máy trạng thái](ch25_thiet_ke_theo_may_trang_thai.md) | Mô hình chuẩn cho một máy: Uninitialized → Homing → Idle → Running → Hold → Alarm → Reset; **bảng chuyển trạng thái *(state transition table)*** và sơ đồ; hiện thực bằng biến trạng thái + CASE (ST) hoặc bit trạng thái (LD); ⭐ vì sao mô hình trạng thái thắng "mớ nấc thang chằng chịt": mỗi lúc máy chỉ ở **một** trạng thái, gỡ lỗi chỉ cần đọc một biến; trạng thái máy tổng vs trạng thái từng trạm; ⭐⭐ **đường đi của lỗi** — mỗi nguồn chốt cờ riêng, `M_AnyFault` gán đúng một chỗ, xoá qua `Resetting`, và vì sao viết `Reset AND NOT M_AnyFault` làm máy **khoá chết** ở `Alarm`; ⚖ trạng thái bằng cờ rời cộng một mã suy ra — lỗ của chuỗi `IF` không có `ELSE` | ✅ |
-| 26 | [Thiết kế theo lưu đồ & bit trình tự](ch26_luu_do_va_bit_trinh_tu.md) | Lưu đồ *(flowchart)* → bit bước *(step bit)*; một bước bật thì bước trước tắt; **nhánh song song** và điểm hợp nhất; ⚠ **bế tắc *(deadlock)*** — hai bước cùng chờ nhau, cách phát hiện sớm bằng timeout mỗi bước; nguyên tắc: timeout của bước là **cơ chế báo lỗi**, không phải cơ chế điều khiển | ✅ |
-| 27 | [⭐ **Kiến trúc chương trình cho máy nhiều trạm**](ch27_kien_truc_chuong_trinh_nhieu_tram.md) | Chỗ code của người mới sụp đổ khi máy lớn lên. Phân tầng **máy → trạm → cơ cấu**, ⭐ cộng **tầng ánh xạ vào/ra** — nơi duy nhất chương trình chạm dây (mục 27.3c); ai được ra lệnh cho ai và ai **không** được; vì sao trạm không gọi thẳng thiết bị; **đồng bộ giữa các trạm mà không chờ bận *(busy-wait)*** — cơ chế báo hiệu; bài toán pipeline của DP-01 (hai trạm, hai board, một chỗ trống); phân chia tác vụ *(task)* và thứ tự thực thi; khi nào tách chương trình con, khi nào đừng | ✅ |
-| 28 | [⭐ Chế độ vận hành & phục hồi sau lỗi](ch28_che_do_van_hanh_va_phuc_hoi.md) | Auto / Manual / Jog / Home / chạy khô *(dry-run)* và quyền được làm gì ở từng chế độ; ⭐ **"về gốc" *(homing)* là bài toán khó nhất thực tế**: máy dừng ở tư thế bất kỳ, đưa về an toàn mà không va chạm — thứ tự về gốc là kết quả của **phân tích va chạm và mối nguy**, không phải thứ tự tuỳ ý (ví dụ DP-01: tắt UV → nâng Z → mới nhả kẹp); dừng giữa chừng rồi chạy tiếp vs bỏ sản phẩm khởi động lại chu trình; **xử lý sản phẩm dở dang** — đánh dấu NG, không để lẫn vào hàng tốt; ⭐ **chạy khô nhiều mức** — cờ bỏ qua tính từ mức, ⚠ bật/tắt bằng sườn thì sai theo thứ tự dòng mã | ✅ |
-| 29 | [Công thức sản phẩm & quản lý tham số](ch29_cong_thuc_san_pham_va_tham_so.md) | Vì sao máy điện tử **bắt buộc** phải tách tham số khỏi logic: cùng một máy chạy nhiều mã hàng trong một ca; cấu trúc một công thức *(recipe)*; ⭐ **kiểm tra hợp lệ là việc của PLC, không phải của MES** — dải hợp lệ, từ chối công thức sai, cái gì xảy ra nếu nhận nhầm; đổi công thức khi đang chạy — được phép ở điểm nào của chu trình; phiên bản & vết thay đổi của công thức; ai được sửa (liên hệ phân quyền Ch.44) | ✅ |
-| 30 | [Chuẩn hoá & tái sử dụng](ch30_chuan_hoa_va_tai_su_dung.md) | Quy ước đặt tên tag — **nhất quán quan trọng hơn "đẹp"**; cấu trúc chương trình theo cơ cấu (FB cho xy-lanh, cho trạm, cho chuyền) thay vì theo bước; UDT gói trạng thái một cơ cấu; ⭐ **comment viết cho người sẽ sửa lúc 2 giờ sáng** — comment như nhật ký kỹ thuật, ghi cả cái đã thử mà không được; thư viện dùng lại giữa các dự án và cái giá của việc dùng lại sai; ⭐⭐ **viết khối của mình theo hợp đồng của hãng** — `Execute`/`Done` và `Enable`/`Valid` của PLCopen, năm quy tắc kèm một khối viết đúng cả năm; ⭐⭐ **hướng đối tượng** — phương thức, interface, kế thừa, tham chiếu: cùng một bài toán ba cách, năm cái bẫy chỉ có trên PLC, hệ nào có và hệ nào không; quản lý phiên bản chương trình PLC — cái gì so sánh được, cái gì không; ⚖ nhật ký sửa đổi nằm trong chương trình — số phiên bản phải đổi cùng nhật ký | ✅ |
+| 23 | [Từ yêu cầu tới đặc tả điều khiển](#ch23_tu_yeu_cau_toi_dac_ta) | Vì sao mở phần mềm trước khi viết đặc tả là nguyên nhân số 1 của "code chạy nhưng máy sai"; lập **bảng I/O *(I/O list)*** trước, ⭐ xếp địa chỉ theo **bảy quy tắc** của các dự án thật; mô tả trình tự bằng lời có cấu trúc; danh sách chế độ & điều kiện chuyển; tiêu chí nghiệm thu viết ngay từ đầu; ⭐⭐ **chín bước đầu dự án** — thứ tự, sản phẩm từng bước, ai duyệt, ⭐ định nghĩa **"xong" kiểm được** cho từng bước, và ⚠ **ba quan hệ chặn** (đánh giá rủi ro chặn việc chọn phần cứng · bảng I/O chặn việc đấu tủ · phép tính nguồn chặn việc chốt đơn hàng); ⭐ câu hỏi phải hỏi khách hàng mà người mới hay quên (xử lý sản phẩm lỗi ra sao? mất điện giữa chừng thì sao? ai được phép mở cửa?) | ✅ |
+| 24 | [Đại số Boolean & bảng chân lý dùng được](#ch24_dai_so_boolean_va_bang_chan_ly) | AND/OR/NOT/XOR; **định luật De Morgan** áp vào ladder — vì sao "NOT(A AND B)" đổi hình dạng nấc thang; bảng chân lý → biểu thức → nấc thang; **bìa Karnaugh** ở mức thực dụng; ⭐ khi nào **không** nên tối ưu — logic gọn nhưng không ai đọc nổi thì đã sai mục tiêu | ✅ |
+| 25 | [⭐ Thiết kế theo máy trạng thái](#ch25_thiet_ke_theo_may_trang_thai) | Mô hình chuẩn cho một máy: Uninitialized → Homing → Idle → Running → Hold → Alarm → Reset; **bảng chuyển trạng thái *(state transition table)*** và sơ đồ; hiện thực bằng biến trạng thái + CASE (ST) hoặc bit trạng thái (LD); ⭐ vì sao mô hình trạng thái thắng "mớ nấc thang chằng chịt": mỗi lúc máy chỉ ở **một** trạng thái, gỡ lỗi chỉ cần đọc một biến; trạng thái máy tổng vs trạng thái từng trạm; ⭐⭐ **đường đi của lỗi** — mỗi nguồn chốt cờ riêng, `M_AnyFault` gán đúng một chỗ, xoá qua `Resetting`, và vì sao viết `Reset AND NOT M_AnyFault` làm máy **khoá chết** ở `Alarm`; ⚖ trạng thái bằng cờ rời cộng một mã suy ra — lỗ của chuỗi `IF` không có `ELSE` | ✅ |
+| 26 | [Thiết kế theo lưu đồ & bit trình tự](#ch26_luu_do_va_bit_trinh_tu) | Lưu đồ *(flowchart)* → bit bước *(step bit)*; một bước bật thì bước trước tắt; **nhánh song song** và điểm hợp nhất; ⚠ **bế tắc *(deadlock)*** — hai bước cùng chờ nhau, cách phát hiện sớm bằng timeout mỗi bước; nguyên tắc: timeout của bước là **cơ chế báo lỗi**, không phải cơ chế điều khiển | ✅ |
+| 27 | [⭐ **Kiến trúc chương trình cho máy nhiều trạm**](#ch27_kien_truc_chuong_trinh_nhieu_tram) | Chỗ code của người mới sụp đổ khi máy lớn lên. Phân tầng **máy → trạm → cơ cấu**, ⭐ cộng **tầng ánh xạ vào/ra** — nơi duy nhất chương trình chạm dây (mục 27.3c); ai được ra lệnh cho ai và ai **không** được; vì sao trạm không gọi thẳng thiết bị; **đồng bộ giữa các trạm mà không chờ bận *(busy-wait)*** — cơ chế báo hiệu; bài toán pipeline của DP-01 (hai trạm, hai board, một chỗ trống); phân chia tác vụ *(task)* và thứ tự thực thi; khi nào tách chương trình con, khi nào đừng | ✅ |
+| 28 | [⭐ Chế độ vận hành & phục hồi sau lỗi](#ch28_che_do_van_hanh_va_phuc_hoi) | Auto / Manual / Jog / Home / chạy khô *(dry-run)* và quyền được làm gì ở từng chế độ; ⭐ **"về gốc" *(homing)* là bài toán khó nhất thực tế**: máy dừng ở tư thế bất kỳ, đưa về an toàn mà không va chạm — thứ tự về gốc là kết quả của **phân tích va chạm và mối nguy**, không phải thứ tự tuỳ ý (ví dụ DP-01: tắt UV → nâng Z → mới nhả kẹp); dừng giữa chừng rồi chạy tiếp vs bỏ sản phẩm khởi động lại chu trình; **xử lý sản phẩm dở dang** — đánh dấu NG, không để lẫn vào hàng tốt; ⭐ **chạy khô nhiều mức** — cờ bỏ qua tính từ mức, ⚠ bật/tắt bằng sườn thì sai theo thứ tự dòng mã | ✅ |
+| 29 | [Công thức sản phẩm & quản lý tham số](#ch29_cong_thuc_san_pham_va_tham_so) | Vì sao máy điện tử **bắt buộc** phải tách tham số khỏi logic: cùng một máy chạy nhiều mã hàng trong một ca; cấu trúc một công thức *(recipe)*; ⭐ **kiểm tra hợp lệ là việc của PLC, không phải của MES** — dải hợp lệ, từ chối công thức sai, cái gì xảy ra nếu nhận nhầm; đổi công thức khi đang chạy — được phép ở điểm nào của chu trình; phiên bản & vết thay đổi của công thức; ai được sửa (liên hệ phân quyền Ch.44) | ✅ |
+| 30 | [Chuẩn hoá & tái sử dụng](#ch30_chuan_hoa_va_tai_su_dung) | Quy ước đặt tên tag — **nhất quán quan trọng hơn "đẹp"**; cấu trúc chương trình theo cơ cấu (FB cho xy-lanh, cho trạm, cho chuyền) thay vì theo bước; UDT gói trạng thái một cơ cấu; ⭐ **comment viết cho người sẽ sửa lúc 2 giờ sáng** — comment như nhật ký kỹ thuật, ghi cả cái đã thử mà không được; thư viện dùng lại giữa các dự án và cái giá của việc dùng lại sai; ⭐⭐ **viết khối của mình theo hợp đồng của hãng** — `Execute`/`Done` và `Enable`/`Valid` của PLCopen, năm quy tắc kèm một khối viết đúng cả năm; ⭐⭐ **hướng đối tượng** — phương thức, interface, kế thừa, tham chiếu: cùng một bài toán ba cách, năm cái bẫy chỉ có trên PLC, hệ nào có và hệ nào không; quản lý phiên bản chương trình PLC — cái gì so sánh được, cái gì không; ⚖ nhật ký sửa đổi nằm trong chương trình — số phiên bản phải đổi cùng nhật ký | ✅ |
 
 ## PHẦN V — ANALOG, ĐO LƯỜNG & ĐIỀU KHIỂN LIÊN TỤC
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 31 | [Tín hiệu analog & vòng dòng 4–20 mA](ch31_tin_hieu_analog_va_vong_dong.md) | ⭐ **Vì sao 4 mA chứ không 0 mA** — phân biệt "giá trị bằng 0" với "đứt dây", chẩn đoán miễn phí; vì sao **dòng** chống nhiễu tốt hơn **áp** trên đường dài; 2 dây *(loop-powered)* vs 3/4 dây *(self-powered)* — ai cấp nguồn cho vòng, đấu sai thì sao; 0–10 V khi nào chấp nhận được; điện trở tải tối đa của vòng; **nối vỏ chống nhiễu *(shield)* một đầu** và lý do — vòng lặp đất *(ground loop)* | ✅ |
-| 32 | [Từ giá trị thô tới đại lượng kỹ thuật](ch32_tu_gia_tri_tho_toi_dai_luong_ky_thuat.md) | Độ phân giải bộ chuyển đổi *(ADC resolution)* — từ số bit ra bước nhỏ nhất đo được, và cách chọn dải đo cho đủ phân giải; công thức quy đổi thang tuyến tính + ví dụ đầy đủ với `AI_GluePress` của DP-01; ⭐ **nội suy theo bảng nhiều điểm** khi quan hệ không thẳng (32.4b); lọc trung bình / lọc số *(IIR)* và cái giá phải trả là độ trễ; vùng chết *(deadband)* chống dao động báo động; ⭐ **phát hiện ngoài dải *(out-of-range)* = đứt dây / chập**; hiệu chuẩn *(calibration)*: zero & span, LRV/URV, và "hiệu chuẩn ≠ đặt lại dải đo" | ✅ |
-| 33 | [Cảm biến quá trình thường gặp](ch33_cam_bien_qua_trinh_thuong_gap.md) | Áp suất; **nhiệt độ** — RTD Pt100 2/3/4 dây và ⭐ vì sao 3 dây là mặc định, vs can nhiệt *(thermocouple)* cần bù đầu lạnh *(cold junction compensation)*; đo khoảng cách/vị trí bằng laser & siêu âm; lưu lượng; mức; cảm biến chân không; đo cường độ ánh sáng (UV của DP-01); bảng chọn "đo cái gì → dùng loại nào → bẫy gì"  ⭐ **Đọc được tên thiết bị trên bản vẽ** (`TT-101`, `PSH-205`): chữ đầu = đại lượng, chữ sau = chức năng — và vì sao chữ **thứ hai** quan trọng hơn với người lập trình, vì nó quyết định kênh **analog hay số**. | ✅ |
-| 34 | [Cân & đo lực — load cell, giám sát lực/mô-men](ch34_can_va_do_luc.md) | Vì sao lắp ráp điện tử kiểm chất lượng bằng **đường cong lực theo hành trình**, không chỉ bằng cảm biến ON/OFF; nguyên lý cầu điện trở *(strain gauge bridge)*, bộ khuếch đại, hiệu chuẩn bằng quả cân chuẩn; nhiễu cơ học & lọc; ⭐ **cửa sổ lực–vị trí** làm tiêu chí OK/NG cho ép, siết vít, cắm connector; giám sát mô-men khi siết vít; khi nào cần bộ điều khiển chuyên dụng thay vì làm trong PLC | ✅ |
-| 35 | [Điều khiển PID trên PLC](ch35_dieu_khien_pid_tren_plc.md) | Vòng hở vs vòng kín *(open/closed loop)*; P làm gì và ⭐ vì sao P thuần **luôn** để lại sai lệch tĩnh *(offset)*; I xoá offset nhưng gây vọt lố và **bão hoà tích phân *(integral windup)*** → chống windup; D và vì sao thường tắt khi tín hiệu nhiễu; chuyển chế độ êm *(bumpless transfer)* khi Manual → Auto; quy trình chỉnh định *(tuning)* thực dụng từng bước với `AI_GlueTemp`; ⭐ khi nào **on/off có trễ** là đủ và PID là làm phức tạp vô ích | ✅ 🔍 |
-| 36 | [Động cơ & biến tần](ch36_dong_co_va_bien_tan.md) | Động cơ không đồng bộ 3 pha; khởi động trực tiếp *(DOL)* qua contactor vs **biến tần *(VFD)*** — chọn theo yêu cầu gì; đặt tốc độ bằng analog vs bằng mạng — đánh đổi giữa đơn giản và **chẩn đoán được**; tham số biến tần tối thiểu phải hiểu (tần số, dốc tăng/giảm tốc, giới hạn dòng, hãm); ⚠ hãm và điện trở xả; động cơ bước *(stepper)* — khi nào đủ dùng, khi nào mất bước mà không ai biết | ✅ |
-| 37 | [⭐ Điều khiển chuyển động servo](ch37_dieu_khien_chuyen_dong_servo.md) | Servo khác biến tần ở đâu (vòng kín vị trí); về gốc *(homing)* — các kiểu tìm gốc và chọn kiểu nào; chạy tương đối / tuyệt đối, chạy chậm *(jog)*, biên dạng vận tốc hình thang & làm mượt; ⭐ **giới hạn phần mềm không thay được giới hạn phần cứng** — công tắc giới hạn đi thẳng vào driver, không qua PLC; **phối hợp nhiều trục** — nội suy đường thẳng/cung, trục ảo, cam điện tử ở mức khái niệm; PLCopen Motion và vì sao khối lệnh chuyển động lại có `Execute`/`Done`/`Busy`/`Error`; bài toán gantry XY+Z của DP-01; ⭐⭐ **hai đầu chung một ray** — kiểm đích lúc ra lệnh, kiểm quãng dừng liên tục; ⚖ khối chuyển động chỉ gọi ở tác vụ của mạng trường | ✅ |
+| 31 | [Tín hiệu analog & vòng dòng 4–20 mA](#ch31_tin_hieu_analog_va_vong_dong) | ⭐ **Vì sao 4 mA chứ không 0 mA** — phân biệt "giá trị bằng 0" với "đứt dây", chẩn đoán miễn phí; vì sao **dòng** chống nhiễu tốt hơn **áp** trên đường dài; 2 dây *(loop-powered)* vs 3/4 dây *(self-powered)* — ai cấp nguồn cho vòng, đấu sai thì sao; 0–10 V khi nào chấp nhận được; điện trở tải tối đa của vòng; **nối vỏ chống nhiễu *(shield)* một đầu** và lý do — vòng lặp đất *(ground loop)* | ✅ |
+| 32 | [Từ giá trị thô tới đại lượng kỹ thuật](#ch32_tu_gia_tri_tho_toi_dai_luong_ky_thuat) | Độ phân giải bộ chuyển đổi *(ADC resolution)* — từ số bit ra bước nhỏ nhất đo được, và cách chọn dải đo cho đủ phân giải; công thức quy đổi thang tuyến tính + ví dụ đầy đủ với `AI_GluePress` của DP-01; ⭐ **nội suy theo bảng nhiều điểm** khi quan hệ không thẳng (32.4b); lọc trung bình / lọc số *(IIR)* và cái giá phải trả là độ trễ; vùng chết *(deadband)* chống dao động báo động; ⭐ **phát hiện ngoài dải *(out-of-range)* = đứt dây / chập**; hiệu chuẩn *(calibration)*: zero & span, LRV/URV, và "hiệu chuẩn ≠ đặt lại dải đo" | ✅ |
+| 33 | [Cảm biến quá trình thường gặp](#ch33_cam_bien_qua_trinh_thuong_gap) | Áp suất; **nhiệt độ** — RTD Pt100 2/3/4 dây và ⭐ vì sao 3 dây là mặc định, vs can nhiệt *(thermocouple)* cần bù đầu lạnh *(cold junction compensation)*; đo khoảng cách/vị trí bằng laser & siêu âm; lưu lượng; mức; cảm biến chân không; đo cường độ ánh sáng (UV của DP-01); bảng chọn "đo cái gì → dùng loại nào → bẫy gì"  ⭐ **Đọc được tên thiết bị trên bản vẽ** (`TT-101`, `PSH-205`): chữ đầu = đại lượng, chữ sau = chức năng — và vì sao chữ **thứ hai** quan trọng hơn với người lập trình, vì nó quyết định kênh **analog hay số**. | ✅ |
+| 34 | [Cân & đo lực — load cell, giám sát lực/mô-men](#ch34_can_va_do_luc) | Vì sao lắp ráp điện tử kiểm chất lượng bằng **đường cong lực theo hành trình**, không chỉ bằng cảm biến ON/OFF; nguyên lý cầu điện trở *(strain gauge bridge)*, bộ khuếch đại, hiệu chuẩn bằng quả cân chuẩn; nhiễu cơ học & lọc; ⭐ **cửa sổ lực–vị trí** làm tiêu chí OK/NG cho ép, siết vít, cắm connector; giám sát mô-men khi siết vít; khi nào cần bộ điều khiển chuyên dụng thay vì làm trong PLC | ✅ |
+| 35 | [Điều khiển PID trên PLC](#ch35_dieu_khien_pid_tren_plc) | Vòng hở vs vòng kín *(open/closed loop)*; P làm gì và ⭐ vì sao P thuần **luôn** để lại sai lệch tĩnh *(offset)*; I xoá offset nhưng gây vọt lố và **bão hoà tích phân *(integral windup)*** → chống windup; D và vì sao thường tắt khi tín hiệu nhiễu; chuyển chế độ êm *(bumpless transfer)* khi Manual → Auto; quy trình chỉnh định *(tuning)* thực dụng từng bước với `AI_GlueTemp`; ⭐ khi nào **on/off có trễ** là đủ và PID là làm phức tạp vô ích | ✅ 🔍 |
+| 36 | [Động cơ & biến tần](#ch36_dong_co_va_bien_tan) | Động cơ không đồng bộ 3 pha; khởi động trực tiếp *(DOL)* qua contactor vs **biến tần *(VFD)*** — chọn theo yêu cầu gì; đặt tốc độ bằng analog vs bằng mạng — đánh đổi giữa đơn giản và **chẩn đoán được**; tham số biến tần tối thiểu phải hiểu (tần số, dốc tăng/giảm tốc, giới hạn dòng, hãm); ⚠ hãm và điện trở xả; động cơ bước *(stepper)* — khi nào đủ dùng, khi nào mất bước mà không ai biết | ✅ |
+| 37 | [⭐ Điều khiển chuyển động servo](#ch37_dieu_khien_chuyen_dong_servo) | Servo khác biến tần ở đâu (vòng kín vị trí); về gốc *(homing)* — các kiểu tìm gốc và chọn kiểu nào; chạy tương đối / tuyệt đối, chạy chậm *(jog)*, biên dạng vận tốc hình thang & làm mượt; ⭐ **giới hạn phần mềm không thay được giới hạn phần cứng** — công tắc giới hạn đi thẳng vào driver, không qua PLC; **phối hợp nhiều trục** — nội suy đường thẳng/cung, trục ảo, cam điện tử ở mức khái niệm; PLCopen Motion và vì sao khối lệnh chuyển động lại có `Execute`/`Done`/`Busy`/`Error`; bài toán gantry XY+Z của DP-01; ⭐⭐ **hai đầu chung một ray** — kiểm đích lúc ra lệnh, kiểm quãng dừng liên tục; ⚖ khối chuyển động chỉ gọi ở tác vụ của mạng trường | ✅ |
 
 ## PHẦN VI — GIAO TIẾP & TÍCH HỢP HỆ THỐNG
 
@@ -195,37 +198,37 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 38 | [Nền tảng truyền thông công nghiệp](ch38_nen_tang_truyen_thong_cong_nghiep.md) | Điểm-điểm vs bus vs mạng; RS-232 / RS-422 / **RS-485** — tín hiệu vi sai *(differential)*, vì sao đi xa và chống nhiễu tốt; chủ-tớ *(master/slave)* vs sản xuất-tiêu thụ *(producer/consumer)*; tốc độ baud, bit chẵn lẻ, bit dừng; chiều dài cáp, điện trở đầu cuối *(terminator)*, phân cực; khung dữ liệu và cách tự đọc một bản tin bằng tay; vì sao serial vẫn sống dai | ✅ |
-| 39 | [Modbus RTU & Modbus TCP](ch39_modbus_rtu_va_tcp.md) | Vì sao Modbus là "tiếng phổ thông" của ngành — mở, đơn giản, ai cũng có; 4 vùng dữ liệu (coil / discrete input / holding register / input register); ⭐ **bẫy kinh điển #1: địa chỉ base-0 trong khung tin vs base-1 trong tài liệu (40001)**; ⭐ **bẫy #2: ghép 32-bit và thứ tự word/byte** giữa hai hãng khác nhau; mã hàm hay dùng; timeout, thử lại, CRC; RTU vs TCP khác nhau ở đâu; quy trình gỡ lỗi bằng phần mềm master giả lập; ⭐⭐ **PLC làm máy chủ cho phần mềm PC** — bảng thanh ghi chia theo người ghi, bắt tay bằng số thứ tự | ✅ |
-| 40 | [⭐ Ethernet công nghiệp — 3 họ, chọn thế nào](ch40_ethernet_cong_nghiep.md) | **Họ 1 — chạy trên TCP/IP thường** (EtherNet/IP, PROFINET RT, Modbus TCP): chu kỳ ~ms, sống chung được với lưu lượng khác, cần switch quản lý được, một số dùng PTP để đồng bộ thời gian. **Họ 2 — hỏi-đáp đồng bộ *(isochronous)*** (PROFINET IRT, POWERLINK): ~100 µs–1 ms, **không** chia sẻ dây với lưu lượng khác vì mục đích là không va chạm, ưa topology sao, hub độ trễ thấp có khi tốt hơn switch. **Họ 3 — dồn khung *(frame summation)*** (EtherCAT): ~50 µs, tốt nhất khi nối chuỗi *(daisy-chain)*. Bảng chọn theo yêu cầu thật (chu kỳ cần, số trạm, ngân sách, hệ sinh thái sẵn có); **PROFIBUS → PROFINET** bảng so sánh (tốc độ, tầm, không gian địa chỉ, máy-với-máy); ⚠ vì sao **không trộn** mạng điều khiển với mạng văn phòng; TSN & OPC UA đang đi tới đâu — nêu tranh luận đang diễn ra, không kết luận thay người đọc; **bus trường thế hệ trước còn gặp trong máy cũ** (PROFIBUS, DeviceNet, ControlNet, AS-i) — đủ để nhận diện và bảo trì; ⭐ **phiếu quyết định chọn giao thức** — bảng câu hỏi dẫn tới đúng một họ, thay cho việc so 20 cái tên; đồng bộ thời gian (PTP) và vì sao nó quan trọng khi cần xếp thứ tự sự kiện giữa nhiều trạm; QoS & quản lý lưu lượng; dự phòng mạng (topology vòng) — khi nào đáng làm | ✅ 🔍 |
-| 41 | [⭐ **Ghép nối máy-máy trong dây chuyền**](ch41_ghep_noi_may_may_trong_day_chuyen.md) | Máy điện tử gần như luôn nằm trong chuyền. Bắt tay *(handshake)* kiểu SMEMA: chỉ 2 tín hiệu mỗi chiều mà đủ điều phối — vì sao thiết kế đó hiệu quả kể cả giữa máy khác hãng; bắt tay bằng **tín hiệu cứng** vs **qua mạng** — đánh đổi độ tin cậy và chẩn đoán; ⭐ **ai đang giữ sản phẩm** — quy tắc bàn giao để không bao giờ có hai máy cùng tưởng mình sở hữu; xử lý tắc chuyền *(line jam)* và máy sau dừng; khởi động lại cả chuyền sau sự cố — thứ tự và điều kiện; cách ly quang cho tín hiệu liên máy và vì sao bắt buộc; ⚖ hai PLC của cùng một máy bắt tay qua mạng — nhịp tim hai chiều, mỗi byte một bên ghi | ✅ |
-| 42 | [⭐ **Mã vạch, mã 2D & truy xuất nguồn gốc**](ch42_ma_2d_va_truy_xuat_nguon_goc.md) | Bắt buộc trong sản xuất điện tử. Mã vạch 1D vs mã 2D *(Data Matrix, QR)* — vì sao điện tử dùng 2D; đầu đọc cố định vs cầm tay, chiếu sáng & tiêu cự; ghép đầu đọc vào PLC qua serial hay Ethernet; ⭐ **luồng truy xuất đầy đủ**: đọc mã → hỏi MES "board này có được làm ở công đoạn này không" → nhận công thức → làm → báo kết quả; ⚠ **chống nhảy cóc công đoạn và chống làm trùng** — vì sao đây là lý do tồn tại của truy xuất; ⚠⚠ **xử lý khi mất kết nối MES**: dừng chuyền hay chạy tạm rồi gửi bù? Quyết định này thuộc về khách hàng, sách chỉ trình bày đánh đổi; đọc mã lỗi & quy trình nhập tay có kiểm soát · ⭐ kiểm định dạng mã bằng hàm chuỗi, tách mã lô, bảng ca thử | ✅ |
-| 43 | [Tích hợp vision với PLC](ch43_tich_hop_vision_voi_plc.md) | Ranh giới trách nhiệm: PLC điều phối, hệ vision quyết định; PLC ra lệnh chụp *(trigger)* — vì sao trigger phần cứng chính xác hơn trigger bằng lệnh mạng; nhận kết quả OK/NG và toạ độ lệch; đồng bộ giữa lúc chụp và lúc vật thể đứng yên; hiệu chỉnh toạ độ camera ↔ toạ độ máy ở mức khái niệm; ⚠ xử lý khi vision không trả lời; ⭐ khi nào vision là quá mức cần thiết — một cảm biến quang 200 nghìn giải quyết được thì đừng dùng camera | ✅ |
-| 44 | [HMI/SCADA — thiết kế màn hình vận hành](ch44_hmi_scada_thiet_ke_man_hinh.md) | Phân cấp màn hình (tổng quan → cụm → chi tiết → chẩn đoán); ⭐ **báo động *(alarm)***: phân cấp ưu tiên, xác nhận *(acknowledge)*, lịch sử, và vì sao "mọi thứ đều báo động" = không có báo động nào; thông báo lỗi phải nói **làm gì tiếp**, không chỉ nói cái gì hỏng; ⭐ **đánh số báo động** theo khối và theo số thứ tự thiết bị; phân quyền người dùng theo cấp; màu chỉ dùng khi có nghĩa; nút nguy hiểm cần xác nhận hai bước; liên kết tag; ⚠ **vì sao HMI không được chứa logic điều khiển**; ⚠ **nút giữ trên màn hình kẹt khi mất kết nối** — bộ đếm sống cho jog | ✅ |
-| 45 | [Kết nối lên trên — dữ liệu, MES & an ninh mạng OT](ch45_ket_noi_len_tren_va_an_ninh_ot.md) | Ghi dữ liệu sản xuất: cái gì đáng ghi, ghi ở đâu, tần suất nào, giữ bao lâu; kho dữ liệu *(historian)* & cơ sở dữ liệu; OPC UA & MQTT ở mức khái niệm và khi nào dùng cái nào; ⚠⚠ **vì sao không cho hệ thống IT/IIoT truy cập trực tiếp PLC** — phải qua lớp trung gian; phân vùng mạng & vùng đệm *(DMZ)*; ⭐ **mô hình Purdue** — 5 mức từ thiết bị hiện trường lên tới mạng doanh nghiệp, và vì sao nó vẫn là ngôn ngữ chung khi bàn về phân vùng OT dù đã có tranh luận là lỗi thời; nhập môn IEC 62443; bài học rút ra từ các sự cố an ninh công nghiệp có thật — **nguyên lý phòng thủ, không phải hướng dẫn tấn công** | ✅ |
-| 46 | [Tích hợp robot & tay gắp](ch46_tich_hop_robot_va_tay_gap.md) | Khi nào cần robot thay vì cơ cấu chuyên dụng; ⭐ **ai chỉ huy ai** — PLC làm chủ và robot làm tớ, hay ngược lại, và hệ quả lên cách viết chương trình; các cách ghép (I/O cứng, mạng, gọi chương trình theo số); dạy điểm *(teaching)* và vì sao toạ độ dạy tay là dữ liệu cần sao lưu như code; tay gắp chân không cho board mạch (liên hệ Ch.6); ⚠ **vùng an toàn chung giữa người, robot và máy** — không gian làm việc chồng lấn là bài toán an toàn, dẫn Ch.47 | ✅ |
+| 38 | [Nền tảng truyền thông công nghiệp](#ch38_nen_tang_truyen_thong_cong_nghiep) | Điểm-điểm vs bus vs mạng; RS-232 / RS-422 / **RS-485** — tín hiệu vi sai *(differential)*, vì sao đi xa và chống nhiễu tốt; chủ-tớ *(master/slave)* vs sản xuất-tiêu thụ *(producer/consumer)*; tốc độ baud, bit chẵn lẻ, bit dừng; chiều dài cáp, điện trở đầu cuối *(terminator)*, phân cực; khung dữ liệu và cách tự đọc một bản tin bằng tay; vì sao serial vẫn sống dai | ✅ |
+| 39 | [Modbus RTU & Modbus TCP](#ch39_modbus_rtu_va_tcp) | Vì sao Modbus là "tiếng phổ thông" của ngành — mở, đơn giản, ai cũng có; 4 vùng dữ liệu (coil / discrete input / holding register / input register); ⭐ **bẫy kinh điển #1: địa chỉ base-0 trong khung tin vs base-1 trong tài liệu (40001)**; ⭐ **bẫy #2: ghép 32-bit và thứ tự word/byte** giữa hai hãng khác nhau; mã hàm hay dùng; timeout, thử lại, CRC; RTU vs TCP khác nhau ở đâu; quy trình gỡ lỗi bằng phần mềm master giả lập; ⭐⭐ **PLC làm máy chủ cho phần mềm PC** — bảng thanh ghi chia theo người ghi, bắt tay bằng số thứ tự | ✅ |
+| 40 | [⭐ Ethernet công nghiệp — 3 họ, chọn thế nào](#ch40_ethernet_cong_nghiep) | **Họ 1 — chạy trên TCP/IP thường** (EtherNet/IP, PROFINET RT, Modbus TCP): chu kỳ ~ms, sống chung được với lưu lượng khác, cần switch quản lý được, một số dùng PTP để đồng bộ thời gian. **Họ 2 — hỏi-đáp đồng bộ *(isochronous)*** (PROFINET IRT, POWERLINK): ~100 µs–1 ms, **không** chia sẻ dây với lưu lượng khác vì mục đích là không va chạm, ưa topology sao, hub độ trễ thấp có khi tốt hơn switch. **Họ 3 — dồn khung *(frame summation)*** (EtherCAT): ~50 µs, tốt nhất khi nối chuỗi *(daisy-chain)*. Bảng chọn theo yêu cầu thật (chu kỳ cần, số trạm, ngân sách, hệ sinh thái sẵn có); **PROFIBUS → PROFINET** bảng so sánh (tốc độ, tầm, không gian địa chỉ, máy-với-máy); ⚠ vì sao **không trộn** mạng điều khiển với mạng văn phòng; TSN & OPC UA đang đi tới đâu — nêu tranh luận đang diễn ra, không kết luận thay người đọc; **bus trường thế hệ trước còn gặp trong máy cũ** (PROFIBUS, DeviceNet, ControlNet, AS-i) — đủ để nhận diện và bảo trì; ⭐ **phiếu quyết định chọn giao thức** — bảng câu hỏi dẫn tới đúng một họ, thay cho việc so 20 cái tên; đồng bộ thời gian (PTP) và vì sao nó quan trọng khi cần xếp thứ tự sự kiện giữa nhiều trạm; QoS & quản lý lưu lượng; dự phòng mạng (topology vòng) — khi nào đáng làm | ✅ 🔍 |
+| 41 | [⭐ **Ghép nối máy-máy trong dây chuyền**](#ch41_ghep_noi_may_may_trong_day_chuyen) | Máy điện tử gần như luôn nằm trong chuyền. Bắt tay *(handshake)* kiểu SMEMA: chỉ 2 tín hiệu mỗi chiều mà đủ điều phối — vì sao thiết kế đó hiệu quả kể cả giữa máy khác hãng; bắt tay bằng **tín hiệu cứng** vs **qua mạng** — đánh đổi độ tin cậy và chẩn đoán; ⭐ **ai đang giữ sản phẩm** — quy tắc bàn giao để không bao giờ có hai máy cùng tưởng mình sở hữu; xử lý tắc chuyền *(line jam)* và máy sau dừng; khởi động lại cả chuyền sau sự cố — thứ tự và điều kiện; cách ly quang cho tín hiệu liên máy và vì sao bắt buộc; ⚖ hai PLC của cùng một máy bắt tay qua mạng — nhịp tim hai chiều, mỗi byte một bên ghi | ✅ |
+| 42 | [⭐ **Mã vạch, mã 2D & truy xuất nguồn gốc**](#ch42_ma_2d_va_truy_xuat_nguon_goc) | Bắt buộc trong sản xuất điện tử. Mã vạch 1D vs mã 2D *(Data Matrix, QR)* — vì sao điện tử dùng 2D; đầu đọc cố định vs cầm tay, chiếu sáng & tiêu cự; ghép đầu đọc vào PLC qua serial hay Ethernet; ⭐ **luồng truy xuất đầy đủ**: đọc mã → hỏi MES "board này có được làm ở công đoạn này không" → nhận công thức → làm → báo kết quả; ⚠ **chống nhảy cóc công đoạn và chống làm trùng** — vì sao đây là lý do tồn tại của truy xuất; ⚠⚠ **xử lý khi mất kết nối MES**: dừng chuyền hay chạy tạm rồi gửi bù? Quyết định này thuộc về khách hàng, sách chỉ trình bày đánh đổi; đọc mã lỗi & quy trình nhập tay có kiểm soát · ⭐ kiểm định dạng mã bằng hàm chuỗi, tách mã lô, bảng ca thử | ✅ |
+| 43 | [Tích hợp vision với PLC](#ch43_tich_hop_vision_voi_plc) | Ranh giới trách nhiệm: PLC điều phối, hệ vision quyết định; PLC ra lệnh chụp *(trigger)* — vì sao trigger phần cứng chính xác hơn trigger bằng lệnh mạng; nhận kết quả OK/NG và toạ độ lệch; đồng bộ giữa lúc chụp và lúc vật thể đứng yên; hiệu chỉnh toạ độ camera ↔ toạ độ máy ở mức khái niệm; ⚠ xử lý khi vision không trả lời; ⭐ khi nào vision là quá mức cần thiết — một cảm biến quang 200 nghìn giải quyết được thì đừng dùng camera | ✅ |
+| 44 | [HMI/SCADA — thiết kế màn hình vận hành](#ch44_hmi_scada_thiet_ke_man_hinh) | Phân cấp màn hình (tổng quan → cụm → chi tiết → chẩn đoán); ⭐ **báo động *(alarm)***: phân cấp ưu tiên, xác nhận *(acknowledge)*, lịch sử, và vì sao "mọi thứ đều báo động" = không có báo động nào; thông báo lỗi phải nói **làm gì tiếp**, không chỉ nói cái gì hỏng; ⭐ **đánh số báo động** theo khối và theo số thứ tự thiết bị; phân quyền người dùng theo cấp; màu chỉ dùng khi có nghĩa; nút nguy hiểm cần xác nhận hai bước; liên kết tag; ⚠ **vì sao HMI không được chứa logic điều khiển**; ⚠ **nút giữ trên màn hình kẹt khi mất kết nối** — bộ đếm sống cho jog | ✅ |
+| 45 | [Kết nối lên trên — dữ liệu, MES & an ninh mạng OT](#ch45_ket_noi_len_tren_va_an_ninh_ot) | Ghi dữ liệu sản xuất: cái gì đáng ghi, ghi ở đâu, tần suất nào, giữ bao lâu; kho dữ liệu *(historian)* & cơ sở dữ liệu; OPC UA & MQTT ở mức khái niệm và khi nào dùng cái nào; ⚠⚠ **vì sao không cho hệ thống IT/IIoT truy cập trực tiếp PLC** — phải qua lớp trung gian; phân vùng mạng & vùng đệm *(DMZ)*; ⭐ **mô hình Purdue** — 5 mức từ thiết bị hiện trường lên tới mạng doanh nghiệp, và vì sao nó vẫn là ngôn ngữ chung khi bàn về phân vùng OT dù đã có tranh luận là lỗi thời; nhập môn IEC 62443; bài học rút ra từ các sự cố an ninh công nghiệp có thật — **nguyên lý phòng thủ, không phải hướng dẫn tấn công** | ✅ |
+| 46 | [Tích hợp robot & tay gắp](#ch46_tich_hop_robot_va_tay_gap) | Khi nào cần robot thay vì cơ cấu chuyên dụng; ⭐ **ai chỉ huy ai** — PLC làm chủ và robot làm tớ, hay ngược lại, và hệ quả lên cách viết chương trình; các cách ghép (I/O cứng, mạng, gọi chương trình theo số); dạy điểm *(teaching)* và vì sao toạ độ dạy tay là dữ liệu cần sao lưu như code; tay gắp chân không cho board mạch (liên hệ Ch.6); ⚠ **vùng an toàn chung giữa người, robot và máy** — không gian làm việc chồng lấn là bài toán an toàn, dẫn Ch.47 | ✅ |
 
 ## PHẦN VII — AN TOÀN, LẮP ĐẶT, KIỂM THỬ & XỬ LÝ SỰ CỐ ⭐ trọng tâm khác biệt
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 47 | [An toàn máy — không logic thường nào thay được](ch47_an_toan_may.md) | Đánh giá rủi ro *(risk assessment)* trước, thiết kế sau; ⚠⚠ **vì sao E-Stop tuyệt đối không được chỉ đi qua logic PLC thường** — CPU treo thì logic chết theo; rơ-le an toàn vs Safety PLC vs mạch cứng — chọn cái nào; ISO 13849 (mức hiệu năng PL a–e, Category B/1/2/3/4 — **2 câu hỏi phân biệt: có dự phòng? có tự kiểm?**) và IEC 62061 (SIL) ở mức dùng được, **không thay bản gốc**; thiết bị bảo vệ: cửa khoá & giám sát, rèm quang *(light curtain)* & muting, điều khiển hai tay, thảm an toàn, giám sát tốc độ không; **STO** *(Safe Torque Off)* và vì sao "còn điện nhưng không sinh mô-men" là lợi thế; ⭐ mối nguy bức xạ UV của DP-01 — loại mối nguy **không có triệu chứng tức thời**; LOTO trong thiết kế | ✅ ⚠⚠ |
-| 48 | [Fail-safe & thiết kế phòng sự cố](ch48_fail_safe.md) | Chọn **trạng thái an toàn** cho từng ngõ ra khi mất nguồn / mất tín hiệu / đứt dây — van về đâu? kẹp giữ hay nhả? (DP-01: giữ kẹp); vì sao mạch dừng dùng tiếp điểm NC; ⭐ **giám sát phản hồi thay vì tin lệnh** — ra lệnh xy-lanh ra thì phải chờ reed xác nhận, kèm timeout báo lỗi; nhịp tim *(heartbeat)* & watchdog giữa PLC–HMI–máy lân cận; xử lý mất kết nối mạng giữa chu trình; ⭐ **lỗi mà máy không tự phát hiện được** — ví dụ ionizer hỏng: phải thiết kế để nó báo, vì sản phẩm hỏng không có triệu chứng tại chỗ | ✅ ⚠ |
-| 49 | [Lắp đặt, đấu tủ & chống nhiễu](ch49_lap_dat_dau_tu_va_chong_nhieu.md) | Tách cáp động lực / tín hiệu / an toàn, giao cắt vuông góc; tiếp địa & nối đất tủ, **PE ≠ 0 V**; nguồn 24 V và cầu chì từng nhánh — vì sao chia nhánh; đánh số dây & cầu đấu; đi dây cảm biến trên máng xích động — bán kính uốn và tuổi thọ cáp; nối đất vỏ chống nhiễu đúng cách, tiếp xúc trọn vòng 360°; ⭐ **sai lầm gây lỗi "ngẫu nhiên không tái hiện được"** — bảng triệu chứng nhiễu → nguyên nhân khả dĩ | ✅ |
-| 50 | [**Mô phỏng & kiểm thử trước khi ra hiện trường**](ch50_mo_phong_va_kiem_thu.md) | ⭐ Lỗi tìm ở bàn rẻ hơn tìm ở hiện trường rất nhiều lần. Mô phỏng I/O: giả lập cảm biến bằng biến nội, mô phỏng thời gian cơ cấu; chạy chương trình trên PLC mềm hoặc bộ giả lập; **danh sách ca kiểm thử** — không chỉ luồng chính mà cả: đứt cảm biến, hai board vào cùng lúc, nhấn Stop ở từng bước, mất khí, mất mạng; kiểm thử máy trạng thái bằng cách ép vào từng trạng thái; ghi lại kết quả kiểm thử làm bằng chứng nghiệm thu; ⭐ **kiểm thử đơn vị** từng khối bằng bàn thử viết bằng ST, và cài lỗi để thử chính bàn thử (50.5c); giới hạn của mô phỏng — cái gì **chỉ** phát hiện được trên máy thật | ✅ |
-| 51 | [⭐⭐ Xử lý sự cố — quy trình chẩn đoán có hệ thống](ch51_xu_ly_su_co.md) | Chương trả lời trực tiếp câu hỏi được hỏi nhiều nhất mà sách vở bỏ quên. ⭐⭐ **Nguyên tắc số một: bắt đầu từ ngõ ra bị lỗi và truy ngược** — xác nhận triệu chứng máy → tìm ngõ ra lẽ ra phải tác động → đọc rung ra lệnh và chuỗi cho phép → so trạng thái I/O trong PLC với module vật lý và thiết bị hiện trường → thu hẹp vùng nghi ngờ. Nguyên tắc số hai: **chia đôi bài toán, đừng đoán**; **quy trình 8 bước** (nguồn → trạng thái CPU → I/O → truyền thông → logic → thiết bị hiện trường) và **6 nhóm lỗi** (nguồn / CPU / I/O / truyền thông / chương trình / môi trường) — bảng tra 2 phút để định hướng ngay khi tới máy; **bộ công cụ đo tối thiểu và khi nào cần cái nào** (đồng hồ vạn năng, ampe kìm, máy hiện sóng, máy kiểm tra cáp mạng, bộ phân tích giao thức, súng đo nhiệt hồng ngoại, bộ mô phỏng vòng 4–20 mA, megôm kế); đèn LED trên module nói gì và **không** nói gì — bảng đối chiếu ý nghĩa LED theo từng hãng (liên kết Phụ lục A); phân biệt lỗi **cảm biến / dây / module / nguồn / logic** bằng 4 phép đo theo thứ tự; dùng đồng hồ vạn năng & ampe kìm đúng chỗ; đọc trạng thái trực tuyến, tham chiếu chéo, đồ thị xu hướng *(trend)*, thống kê thời gian quét; đọc mã lỗi CPU và lỗi module; ⚠ **cưỡng bức I/O *(forcing)*** — khi nào chính đáng, quy trình bắt buộc, và vì sao quên gỡ force là tai nạn chờ xảy ra; **bảng ~40 triệu chứng → nguyên nhân khả dĩ → phép kiểm xác nhận**; ⭐ **lỗi chập chờn — 4 nguyên nhân vật lý hay bị bỏ sót**: vòng lặp đất & chênh điện thế, nhiễu điện từ từ biến tần/servo/máy hàn, chu kỳ nóng-nguội làm mỏi đầu nối, tụ trong bộ nguồn lão hoá; cách bẫy bằng ghi log thay vì ngồi canh; **sửa hay thay** — tiêu chí quyết định, thiết bị hết vòng đời, hàng tân trang, khi nào nên nâng cấp thay vì sửa (dẫn Ch.56); bảo trì phòng ngừa nhìn từ PLC: thay pin, kiểm tra môi trường, theo dõi thời gian quét theo thời gian; ⭐ khi nào dừng tự sửa và gọi người khác; ⚖ cờ bỏ qua nằm chung vùng nhớ giữ qua mất điện | ✅ |
-| 52 | [Chạy thử & bàn giao *(commissioning)*](ch52_chay_thu_va_ban_giao.md) | Thứ tự bắt buộc: kiểm nguội → bật nguồn từng nhánh → ⭐ **kiểm I/O 1-1 *(point-to-point)* trước khi chạy bất kỳ logic nào** → chạy khô không sản phẩm → chạy có sản phẩm → chạy liên tục; ⭐ **thử tạo lỗi cố ý** — rút cảm biến, nhấn E-Stop giữa chu trình, ngắt khí, rút mạng: vì sao thử "điều kiện bình thường" là **chưa** nghiệm thu; đo chu kỳ thật và đối chiếu cam kết (dẫn Ch.55); biên bản nghiệm thu mẫu; đào tạo người vận hành; danh mục tài liệu bàn giao | ✅ |
-| 53 | [Bảo trì & thay đổi khi máy đang chạy](ch53_bao_tri_va_thay_doi_khi_may_dang_chay.md) | ⚠ Sửa trực tuyến *(online edit)*: cái gì sửa được khi RUN, cái gì không, rủi ro thật khi tải xuống giữa chu trình; quy trình thay đổi có kiểm soát — ai duyệt, sao lưu trước, ghi lý do, ai được thông báo; tài liệu **as-built** vs bản thiết kế; bảo trì phòng ngừa nhìn từ PLC (đếm số lần tác động, cảnh báo trước khi hỏng); ⭐ **viết code để người khác sửa được là một yêu cầu kỹ thuật, không phải phép lịch sự** | ✅ |
-| 54 | [Sao lưu, phiên bản & bảo mật chương trình](ch54_sao_luu_phien_ban_va_bao_mat_chuong_trinh.md) | ⚠ Mất chương trình PLC của một máy đang chạy là thảm hoạ có thật — dựng lại từ máy đang chạy thường **không thể**; quy trình sao lưu: sao lưu cái gì (chương trình, cấu hình phần cứng, tham số driver, công thức, dự án HMI), sao lưu khi nào, cất ở đâu, ai giữ; kiểm tra bản sao lưu có khôi phục được không — **bản sao lưu chưa thử khôi phục không phải bản sao lưu**; quản lý phiên bản & quy ước đánh số; khoá chương trình bằng mật khẩu — đánh đổi giữa bảo vệ sở hữu trí tuệ và **khách hàng không sửa được máy của chính họ lúc 2 giờ sáng**; bàn giao mã nguồn trong hợp đồng | ✅ |
+| 47 | [An toàn máy — không logic thường nào thay được](#ch47_an_toan_may) | Đánh giá rủi ro *(risk assessment)* trước, thiết kế sau; ⚠⚠ **vì sao E-Stop tuyệt đối không được chỉ đi qua logic PLC thường** — CPU treo thì logic chết theo; rơ-le an toàn vs Safety PLC vs mạch cứng — chọn cái nào; ISO 13849 (mức hiệu năng PL a–e, Category B/1/2/3/4 — **2 câu hỏi phân biệt: có dự phòng? có tự kiểm?**) và IEC 62061 (SIL) ở mức dùng được, **không thay bản gốc**; thiết bị bảo vệ: cửa khoá & giám sát, rèm quang *(light curtain)* & muting, điều khiển hai tay, thảm an toàn, giám sát tốc độ không; **STO** *(Safe Torque Off)* và vì sao "còn điện nhưng không sinh mô-men" là lợi thế; ⭐ mối nguy bức xạ UV của DP-01 — loại mối nguy **không có triệu chứng tức thời**; LOTO trong thiết kế | ✅ ⚠⚠ |
+| 48 | [Fail-safe & thiết kế phòng sự cố](#ch48_fail_safe) | Chọn **trạng thái an toàn** cho từng ngõ ra khi mất nguồn / mất tín hiệu / đứt dây — van về đâu? kẹp giữ hay nhả? (DP-01: giữ kẹp); vì sao mạch dừng dùng tiếp điểm NC; ⭐ **giám sát phản hồi thay vì tin lệnh** — ra lệnh xy-lanh ra thì phải chờ reed xác nhận, kèm timeout báo lỗi; nhịp tim *(heartbeat)* & watchdog giữa PLC–HMI–máy lân cận; xử lý mất kết nối mạng giữa chu trình; ⭐ **lỗi mà máy không tự phát hiện được** — ví dụ ionizer hỏng: phải thiết kế để nó báo, vì sản phẩm hỏng không có triệu chứng tại chỗ | ✅ ⚠ |
+| 49 | [Lắp đặt, đấu tủ & chống nhiễu](#ch49_lap_dat_dau_tu_va_chong_nhieu) | Tách cáp động lực / tín hiệu / an toàn, giao cắt vuông góc; tiếp địa & nối đất tủ, **PE ≠ 0 V**; nguồn 24 V và cầu chì từng nhánh — vì sao chia nhánh; đánh số dây & cầu đấu; đi dây cảm biến trên máng xích động — bán kính uốn và tuổi thọ cáp; nối đất vỏ chống nhiễu đúng cách, tiếp xúc trọn vòng 360°; ⭐ **sai lầm gây lỗi "ngẫu nhiên không tái hiện được"** — bảng triệu chứng nhiễu → nguyên nhân khả dĩ | ✅ |
+| 50 | [**Mô phỏng & kiểm thử trước khi ra hiện trường**](#ch50_mo_phong_va_kiem_thu) | ⭐ Lỗi tìm ở bàn rẻ hơn tìm ở hiện trường rất nhiều lần. Mô phỏng I/O: giả lập cảm biến bằng biến nội, mô phỏng thời gian cơ cấu; chạy chương trình trên PLC mềm hoặc bộ giả lập; **danh sách ca kiểm thử** — không chỉ luồng chính mà cả: đứt cảm biến, hai board vào cùng lúc, nhấn Stop ở từng bước, mất khí, mất mạng; kiểm thử máy trạng thái bằng cách ép vào từng trạng thái; ghi lại kết quả kiểm thử làm bằng chứng nghiệm thu; ⭐ **kiểm thử đơn vị** từng khối bằng bàn thử viết bằng ST, và cài lỗi để thử chính bàn thử (50.5c); giới hạn của mô phỏng — cái gì **chỉ** phát hiện được trên máy thật | ✅ |
+| 51 | [⭐⭐ Xử lý sự cố — quy trình chẩn đoán có hệ thống](#ch51_xu_ly_su_co) | Chương trả lời trực tiếp câu hỏi được hỏi nhiều nhất mà sách vở bỏ quên. ⭐⭐ **Nguyên tắc số một: bắt đầu từ ngõ ra bị lỗi và truy ngược** — xác nhận triệu chứng máy → tìm ngõ ra lẽ ra phải tác động → đọc rung ra lệnh và chuỗi cho phép → so trạng thái I/O trong PLC với module vật lý và thiết bị hiện trường → thu hẹp vùng nghi ngờ. Nguyên tắc số hai: **chia đôi bài toán, đừng đoán**; **quy trình 8 bước** (nguồn → trạng thái CPU → I/O → truyền thông → logic → thiết bị hiện trường) và **6 nhóm lỗi** (nguồn / CPU / I/O / truyền thông / chương trình / môi trường) — bảng tra 2 phút để định hướng ngay khi tới máy; **bộ công cụ đo tối thiểu và khi nào cần cái nào** (đồng hồ vạn năng, ampe kìm, máy hiện sóng, máy kiểm tra cáp mạng, bộ phân tích giao thức, súng đo nhiệt hồng ngoại, bộ mô phỏng vòng 4–20 mA, megôm kế); đèn LED trên module nói gì và **không** nói gì — bảng đối chiếu ý nghĩa LED theo từng hãng (liên kết Phụ lục A); phân biệt lỗi **cảm biến / dây / module / nguồn / logic** bằng 4 phép đo theo thứ tự; dùng đồng hồ vạn năng & ampe kìm đúng chỗ; đọc trạng thái trực tuyến, tham chiếu chéo, đồ thị xu hướng *(trend)*, thống kê thời gian quét; đọc mã lỗi CPU và lỗi module; ⚠ **cưỡng bức I/O *(forcing)*** — khi nào chính đáng, quy trình bắt buộc, và vì sao quên gỡ force là tai nạn chờ xảy ra; **bảng ~40 triệu chứng → nguyên nhân khả dĩ → phép kiểm xác nhận**; ⭐ **lỗi chập chờn — 4 nguyên nhân vật lý hay bị bỏ sót**: vòng lặp đất & chênh điện thế, nhiễu điện từ từ biến tần/servo/máy hàn, chu kỳ nóng-nguội làm mỏi đầu nối, tụ trong bộ nguồn lão hoá; cách bẫy bằng ghi log thay vì ngồi canh; **sửa hay thay** — tiêu chí quyết định, thiết bị hết vòng đời, hàng tân trang, khi nào nên nâng cấp thay vì sửa (dẫn Ch.56); bảo trì phòng ngừa nhìn từ PLC: thay pin, kiểm tra môi trường, theo dõi thời gian quét theo thời gian; ⭐ khi nào dừng tự sửa và gọi người khác; ⚖ cờ bỏ qua nằm chung vùng nhớ giữ qua mất điện | ✅ |
+| 52 | [Chạy thử & bàn giao *(commissioning)*](#ch52_chay_thu_va_ban_giao) | Thứ tự bắt buộc: kiểm nguội → bật nguồn từng nhánh → ⭐ **kiểm I/O 1-1 *(point-to-point)* trước khi chạy bất kỳ logic nào** → chạy khô không sản phẩm → chạy có sản phẩm → chạy liên tục; ⭐ **thử tạo lỗi cố ý** — rút cảm biến, nhấn E-Stop giữa chu trình, ngắt khí, rút mạng: vì sao thử "điều kiện bình thường" là **chưa** nghiệm thu; đo chu kỳ thật và đối chiếu cam kết (dẫn Ch.55); biên bản nghiệm thu mẫu; đào tạo người vận hành; danh mục tài liệu bàn giao | ✅ |
+| 53 | [Bảo trì & thay đổi khi máy đang chạy](#ch53_bao_tri_va_thay_doi_khi_may_dang_chay) | ⚠ Sửa trực tuyến *(online edit)*: cái gì sửa được khi RUN, cái gì không, rủi ro thật khi tải xuống giữa chu trình; quy trình thay đổi có kiểm soát — ai duyệt, sao lưu trước, ghi lý do, ai được thông báo; tài liệu **as-built** vs bản thiết kế; bảo trì phòng ngừa nhìn từ PLC (đếm số lần tác động, cảnh báo trước khi hỏng); ⭐ **viết code để người khác sửa được là một yêu cầu kỹ thuật, không phải phép lịch sự** | ✅ |
+| 54 | [Sao lưu, phiên bản & bảo mật chương trình](#ch54_sao_luu_phien_ban_va_bao_mat_chuong_trinh) | ⚠ Mất chương trình PLC của một máy đang chạy là thảm hoạ có thật — dựng lại từ máy đang chạy thường **không thể**; quy trình sao lưu: sao lưu cái gì (chương trình, cấu hình phần cứng, tham số driver, công thức, dự án HMI), sao lưu khi nào, cất ở đâu, ai giữ; kiểm tra bản sao lưu có khôi phục được không — **bản sao lưu chưa thử khôi phục không phải bản sao lưu**; quản lý phiên bản & quy ước đánh số; khoá chương trình bằng mật khẩu — đánh đổi giữa bảo vệ sở hữu trí tuệ và **khách hàng không sửa được máy của chính họ lúc 2 giờ sáng**; bàn giao mã nguồn trong hợp đồng | ✅ |
 
 ## PHẦN VIII — HIỆU NĂNG, RÁP LẠI & VÀO NGHỀ
 
 | # | Chương | Nội dung chính | TT |
 |---|---|---|---|
-| 55 | [Tính chu kỳ máy & năng suất](ch55_tinh_chu_ky_may_va_nang_suat.md) | Câu hỏi khách hàng luôn hỏi: máy chạy được bao nhiêu sản phẩm mỗi giờ? Chu kỳ *(cycle time)* → sản lượng giờ *(UPH)*; **nút cổ chai *(bottleneck)*** — vì sao chu kỳ máy nhiều trạm bằng chu kỳ trạm chậm nhất, không phải tổng; tính lý thuyết vs **đo thật bằng PLC** (ghi thời gian từng bước — dữ liệu này gần như miễn phí mà ít ai lấy); ⭐ tối ưu bằng song song hoá: thao tác nào có thể chạy chồng lấn; thời gian chết do chờ máy trước/máy sau; nhập môn **OEE** (khả dụng × hiệu suất × chất lượng) và vì sao con số OEE dễ bị bóp méo | ✅ |
-| 56 | [Nâng cấp máy cũ — retrofit](ch56_nang_cap_may_cu_retrofit.md) | Phần lớn công việc thực tế là sửa máy cũ, không phải làm máy mới. Khảo sát máy **không có tài liệu**: dựng lại bảng I/O từ tủ thật, dò dây, chụp ảnh có hệ thống; đọc chương trình PLC đời cũ và chuyển sang nền mới; thay PLC hết vòng đời — tìm hàng thay thế, đối chiếu thời gian quét & tập lệnh; ⚠ **rủi ro đặc thù của retrofit**: hành vi cũ không ai mô tả được nhưng người vận hành đã quen; giữ nguyên hay sửa "sai sót cũ"; nâng cấp phần an toàn khi chạm vào máy cũ — nghĩa vụ pháp lý phát sinh | ✅ ⚠ |
-| 57 | [⭐ Case study đầy đủ: DP-01 từ trang giấy tới máy chạy](ch57_case_study_dp01_day_du.md) | Ráp toàn bộ sách thành một dự án hoàn chỉnh: đặc tả (Ch.23) → bảng I/O → ⭐ **cấu hình phần cứng và danh mục vật tư** (Phụ lục C.10, C.11) → sơ đồ đấu (Ch.4, 5, 6, 9) → máy trạng thái 2 trạm (Ch.25, 27) → trình tự song song (Ch.26) → FB tái dùng (Ch.30) → công thức sản phẩm (Ch.29) → analog & giám sát bộ điều khiển nhiệt rời (Ch.32, 35) → gantry (Ch.37) → mã 2D & MES (Ch.42) → SMEMA (Ch.41) → HMI (Ch.44) → mạch an toàn (Ch.47) → kiểm thử (Ch.50) → chạy thử (Ch.52) → đo chu kỳ (Ch.55). Mỗi bước dẫn ngược đúng chương đã dạy | ✅ |
-| 58 | [Học tiếp thế nào & vào nghề thật](ch58_hoc_tiep_the_nao_va_vao_nghe_that.md) | Lộ trình 0 → 3 tháng → 1 năm → 3 năm, mỗi mốc kèm **"làm được gì thì coi là đạt"**; ⭐ **xây hồ sơ chứng minh năng lực khi chưa có kinh nghiệm** — video máy mô phỏng chạy, kho code có comment, viết lại bài toán–giải pháp–kết quả; phần mềm miễn phí & mô phỏng (Phụ lục G); diễn đàn & cộng đồng nghề; chứng chỉ và tổ chức nghề — cái gì đáng tiền; ⭐ **bốn nhánh nghề** (OEM chế tạo máy / tích hợp hệ thống / bảo trì nhà máy / dịch vụ hiện trường) — bảng đánh đổi: đi công tác, áp lực, chiều sâu kỹ thuật, thu nhập, khả năng chuyển việc; câu hỏi phỏng vấn thường gặp & cách trả lời bằng ví dụ thật | ✅ |
+| 55 | [Tính chu kỳ máy & năng suất](#ch55_tinh_chu_ky_may_va_nang_suat) | Câu hỏi khách hàng luôn hỏi: máy chạy được bao nhiêu sản phẩm mỗi giờ? Chu kỳ *(cycle time)* → sản lượng giờ *(UPH)*; **nút cổ chai *(bottleneck)*** — vì sao chu kỳ máy nhiều trạm bằng chu kỳ trạm chậm nhất, không phải tổng; tính lý thuyết vs **đo thật bằng PLC** (ghi thời gian từng bước — dữ liệu này gần như miễn phí mà ít ai lấy); ⭐ tối ưu bằng song song hoá: thao tác nào có thể chạy chồng lấn; thời gian chết do chờ máy trước/máy sau; nhập môn **OEE** (khả dụng × hiệu suất × chất lượng) và vì sao con số OEE dễ bị bóp méo | ✅ |
+| 56 | [Nâng cấp máy cũ — retrofit](#ch56_nang_cap_may_cu_retrofit) | Phần lớn công việc thực tế là sửa máy cũ, không phải làm máy mới. Khảo sát máy **không có tài liệu**: dựng lại bảng I/O từ tủ thật, dò dây, chụp ảnh có hệ thống; đọc chương trình PLC đời cũ và chuyển sang nền mới; thay PLC hết vòng đời — tìm hàng thay thế, đối chiếu thời gian quét & tập lệnh; ⚠ **rủi ro đặc thù của retrofit**: hành vi cũ không ai mô tả được nhưng người vận hành đã quen; giữ nguyên hay sửa "sai sót cũ"; nâng cấp phần an toàn khi chạm vào máy cũ — nghĩa vụ pháp lý phát sinh | ✅ ⚠ |
+| 57 | [⭐ Case study đầy đủ: DP-01 từ trang giấy tới máy chạy](#ch57_case_study_dp01_day_du) | Ráp toàn bộ sách thành một dự án hoàn chỉnh: đặc tả (Ch.23) → bảng I/O → ⭐ **cấu hình phần cứng và danh mục vật tư** (Phụ lục C.10, C.11) → sơ đồ đấu (Ch.4, 5, 6, 9) → máy trạng thái 2 trạm (Ch.25, 27) → trình tự song song (Ch.26) → FB tái dùng (Ch.30) → công thức sản phẩm (Ch.29) → analog & giám sát bộ điều khiển nhiệt rời (Ch.32, 35) → gantry (Ch.37) → mã 2D & MES (Ch.42) → SMEMA (Ch.41) → HMI (Ch.44) → mạch an toàn (Ch.47) → kiểm thử (Ch.50) → chạy thử (Ch.52) → đo chu kỳ (Ch.55). Mỗi bước dẫn ngược đúng chương đã dạy | ✅ |
+| 58 | [Học tiếp thế nào & vào nghề thật](#ch58_hoc_tiep_the_nao_va_vao_nghe_that) | Lộ trình 0 → 3 tháng → 1 năm → 3 năm, mỗi mốc kèm **"làm được gì thì coi là đạt"**; ⭐ **xây hồ sơ chứng minh năng lực khi chưa có kinh nghiệm** — video máy mô phỏng chạy, kho code có comment, viết lại bài toán–giải pháp–kết quả; phần mềm miễn phí & mô phỏng (Phụ lục G); diễn đàn & cộng đồng nghề; chứng chỉ và tổ chức nghề — cái gì đáng tiền; ⭐ **bốn nhánh nghề** (OEM chế tạo máy / tích hợp hệ thống / bảo trì nhà máy / dịch vụ hiện trường) — bảng đánh đổi: đi công tác, áp lực, chiều sâu kỹ thuật, thu nhập, khả năng chuyển việc; câu hỏi phỏng vấn thường gặp & cách trả lời bằng ví dụ thật | ✅ |
 
 ---
 
@@ -233,24 +236,24 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 | # | Phụ lục | Nội dung | TT |
 |---|---|---|---|
-| A1 | [⭐ **Đối chiếu khái niệm 5 hệ**](pl_a1_doi_chieu_khai_niem_5_he.md) | Siemens · Mitsubishi · Inovance · CODESYS · Rockwell. Bảng đối chiếu: tag/ký hiệu, khối dữ liệu vs UDT vs struct, thể hiện FB, task & chu kỳ, ảnh ngõ vào, vùng nhớ giữ, cách đánh địa chỉ module. **CODESYS làm cột neo** — khi 4 hệ khác nhau thì cột này cho biết chuẩn IEC nói gì | ✅ |
-| A2 | [⭐ **Đối chiếu lệnh + cùng một đoạn logic viết 5 lần**](pl_a2_doi_chieu_lenh_va_cung_doan_logic.md) | TON, CTU, MOVE, quy đổi thang, bắt cạnh, khối PID, khối chuyển động; cùng một đoạn trình tự của DP-01 hiện thực trên cả 5 hệ; ⚠ những chỗ **không tương đương 1-1** — nêu rõ, không giả vờ. Phụ lục **mô tả khác biệt, không xếp hạng hãng** | ✅ |
-| B | [Tra nhanh lệnh IEC 61131-3](pl_b_tra_nhanh_lenh_iec.md) | Một trang in được: lệnh cơ bản theo nhóm, ký hiệu LD & ST tương ứng, kiểu dữ liệu, thứ tự ưu tiên toán tử · hàm chuỗi (vị trí đếm từ 1), dịch bit · ⭐⭐ **hành vi thực thi** — khối chạy thế nào ở vòng quét đầu và khi **không** được gọi · các thay đổi của bản 2025 | ✅ |
-| C | [Biểu mẫu dùng ngay](pl_c_bieu_mau_dung_ngay.md) | **Mười một biểu mẫu**: bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu an toàn · phiếu bàn giao · ⭐ **bảng cấu hình phần cứng** (bản đồ khe cắm + thiết bị mạng + **trục và động cơ**) · ⭐ **danh mục vật tư** (có cột *sinh từ* và quy tắc chọn phụ tùng dự phòng). Mỗi biểu mẫu kèm ⭐ **danh mục kiểm "đạt yêu cầu khi"** (dẫn Ch.8, 13, 23, 25, 29, 49, 50, 52) | ✅ |
-| D | [Checklist đấu dây & bật nguồn lần đầu](pl_d_checklist_dau_day_va_bat_nguon.md) | Trước khi cấp điện lần đầu: thứ tự kiểm, cái gì đo trước, cái gì tuyệt đối không bỏ qua | ✅ ⚠ |
-| E | [⭐ Chỉ mục tra theo triệu chứng](pl_e_tra_theo_trieu_chung.md) | "Máy không khởi động được", "một ngõ vào không lên", "giá trị analog nhảy loạn", "mạng rớt ngẫu nhiên", "chu trình dừng giữa chừng", "board hỏng mà máy báo OK", "chuyền tắc"… → dẫn đúng mục chương. ⭐ Kèm hai nhóm mà **máy vẫn chạy** nên sống lâu nhất trước khi có ai đi tìm: **E.4b — thao tác của người vận hành không ăn** (nhấn một lần ra hai lần · phải giữ nút mới chạy · nút Dừng không dừng được · cuộn dây trùng) và **E.5b — máy chạy bình thường nhưng con số sai** (đếm thiếu/thừa · tràn số · bộ định thời đóng băng · đổi công thức mà vẫn chạy tham số cũ). Hiện thực hoá Đường tra cứu 3 đã hứa ở Ch.1 | ✅ |
-| F | [Thuật ngữ Việt–Anh](pl_f_thuat_ngu_viet_anh.md) | Bảng đối chiếu đầy đủ, sắp theo chủ đề và theo vần. Bổ trợ cho bất biến B11 — tài liệu hãng và diễn đàn đều tiếng Anh, người đọc phải tra được đúng lúc cần tra nhất | ✅ |
-| G | [Phần mềm miễn phí & mô phỏng](pl_g_phan_mem_mien_phi_va_mo_phong.md) | Bảng: công cụ → làm được gì → **giới hạn bản quyền thật** → phù hợp giai đoạn học nào. Kèm ngày kiểm tra và cảnh báo tự xác nhận lại (bất biến B10) | ✅ |
-| H | [Nguồn mở đã dùng & đọc thêm](pl_h_nguon_tham_khao_va_doc_them.md) | Tài liệu mở đã tham chiếu khi viết + sách thương mại nên mua + tiêu chuẩn nên có; ghi rõ giấy phép từng nguồn | ✅ |
-| I | [Bài tập — **5 mức, ~50 bài**](pl_i_bai_tap_5_muc.md) | ⭐ Cấu trúc theo mức, mỗi bài ghi rõ **khái niệm được rèn**: **Mức 1 — logic cơ bản (~12 bài)**: tự giữ, AND/OR/NOT, NO vs NC an toàn khi đứt dây, khoá chéo, biểu quyết 2/3, SET/RESET, bắt cạnh, mạch lật, báo động có ack, chuỗi cho phép & kiểm đèn. **Mức 2 — timer & counter (~12 bài)**: khởi động trễ, quạt chạy dư, mạch nháy 2 timer, sao-tam giác có khoảng chết, kéo dài xung, đếm mẻ, đếm lên-xuống, đếm phế có ngưỡng, đồng hồ giờ chạy, watchdog, chống rung tiếp điểm, đo chu kỳ. **Mức 3 — tuần tự & trạng thái (~10 bài)**: đèn giao thông, nút bộ hành có nhớ, phân loại theo thời gian vs **theo thanh ghi dịch**, trạm trộn, cổng bãi xe, báo động first-out, timeout từng bước, chuyển Manual↔Auto **không giật**, bỏ bước theo công thức. **Mức 4 — analog (~9 bài)**: quy đổi thang, phát hiện ngoài dải & giá trị thay thế, điều khiển trễ, PID, vùng chết, giới hạn tốc độ thay đổi, ép kiểu & tràn số, tích phân lưu lượng, dải báo động nhiều mức. **Mức 5 — đề bài dự án (~7 bài)**: rửa xe, qua đường cho người đi bộ, nạp silo có khoá liên động, luân phiên bơm chính-dự phòng, điều hoà theo vùng, thang máy 3 tầng, dây chuyền chiết rót có trạm loại. ⭐ Quy tắc bắt buộc mọi bài: **viết bảng I/O trước khi vẽ rung đầu tiên**. Khoảng 2/3 số bài có lời giải, phần còn lại để tự làm | ✅ |
-| J | [Hồ sơ máy mẫu DP-01 đầy đủ](pl_j_ho_so_may_mau_dp01.md) | Bảng I/O hoàn chỉnh, đặc tả trình tự, bảng chuyển trạng thái, bảng công thức, danh sách chức năng an toàn, kết quả tính chu kỳ — đóng gói để người đọc dùng lại làm khung cho dự án thật | ✅ |
-| K | [Bảng tra công thức tổng hợp](pl_k_bang_tra_cong_thuc.md) | Mọi công thức trong sách gom một trang, mỗi công thức kèm cột **điều kiện áp dụng**: quy đổi thang analog, lực & tốc độ xy-lanh, lưu lượng khí, ngưỡng chọn HSC, chu kỳ & UPH, ước lượng thời gian quét, chọn tiết diện dây tín hiệu | ✅ |
-| L | [⭐ **Thư viện mẫu code dùng ngay**](pl_l_thu_vien_mau_code.md) | 19 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm **điều kiện dùng** và **thứ nó KHÔNG làm**: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — **không phải** chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh & chống rung · khối xy-lanh hai vị trí dùng lại được · khung khối `Execute`/`Done` tự viết · servo theo PLCopen Motion · đảo chiều & sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng · hút chân không có thổi ngược · đếm tuổi thọ vật tư · ⭐ khoảng hở hai đầu chung một ray · ⭐ yêu cầu tới phần mềm PC theo số thứ tự. Kèm ⭐⭐ **danh mục khối dùng lại (L.17)** — khối nào chuẩn IEC/hãng đã có nên đừng viết lại, khối nào ⚠⚠ **tuyệt đối không được tự viết** vì là chức năng an toàn, khối nào mới thật sự đáng đưa vào thư viện của bạn — và bảng tra *việc cần làm → mẫu nào → bẫy lớn nhất* | ✅ |
-| M | [⭐⭐ **Cấu hình dự án phần mềm: phần trường không dạy**](pl_m_cau_hinh_du_an_phan_mem.md) | ⭐ Khoảng cách giữa bài tập mô phỏng và dự án thật, liệt kê thành việc phải làm: **cấu hình phần cứng trong phần mềm** (khai CPU/module đúng khe, ⭐ **tham số từng module** — thời gian lọc ngõ vào, dải analog, loại cảm biến nhiệt, chẩn đoán đứt dây, trạng thái ngõ ra khi CPU STOP) · **mạng** (địa chỉ tĩnh, tên trạm, sơ đồ địa chỉ, ⭐⭐ tách mạng máy khỏi mạng nhà máy) · ⭐⭐ **khởi động** (STOP/STARTUP/RUN, khởi động lại nóng so với xoá bộ nhớ, ⚠ nạp lại khối dữ liệu làm mất con số tích luỹ, việc được và KHÔNG được làm ở vòng quét đầu) · **đồng hồ và dấu thời gian** · ⭐⭐ **chẩn đoán của chính CPU** (đèn, bộ đệm chẩn đoán, lỗi nặng/lỗi nhẹ, ⚠⚠ bẫy an toàn của thủ tục xoá lỗi rồi chạy tiếp) · **mật khẩu & bảo vệ mã nguồn** như một quyết định hợp đồng · **nạp xuống, thẻ nhớ, thứ tự khôi phục** · ⚠⚠ **bảng mô phỏng KHÔNG kiểm được gì** · ⭐ **biến thể phần cứng** trong một dự án · danh mục kiểm 19 mục trước khi chạy thử | ✅ |
-| N | [⭐ **Quy ước viết mã**](pl_n_quy_uoc_viet_ma.md) | Quy ước viết mã của sách, lần đầu **viết ra thành văn** và đối chiếu với **PLCopen Coding Guidelines v1.0** (64 quy tắc): từng quy tắc mức Cao / Trung bình / Thấp và sách áp dụng ở đâu · ⭐ chỗ sách **lệch có chủ ý** kèm lý do (tiền tố **vai trò** `DI_` thay tiền tố **kiểu**; nhánh `IF … THEN ; ELSE` cố ý) · ⭐⭐ chỗ sách **từng sai và đã sửa** nhờ soát theo danh mục bên ngoài (`RETURN` trong khung trình tự, đọc phần tử mảng chưa gán, `=` với đại lượng đo, sửa biến đếm của `FOR`) · câu trả lời của sách cho mọi quy tắc *"hãy tự định nghĩa…"* (độ dài tên, độ dài dòng, thụt lề, số chân một khối) · quy ước **đoạn trích** và **ví dụ đầy đủ** | ✅ |
-| O | [⭐⭐ **Sổ tay việc của người lập trình**](pl_o_so_tay_viec_nguoi_lap_trinh.md) | Mười sáu thẻ theo thứ tự một dự án — nhận việc · bảng I/O · đặt tên · **ánh xạ vào** · **ghi ra** · khung chương trình · cơ cấu · trình tự · báo động · analog · truyền thông · thử trên bàn · kiểm I/O · chạy thử · sao lưu · sửa khi máy chạy. Mỗi thẻ: **các bước · ✅ đạt khi** (trả lời có/không) **· con số** gắn nhãn **[Chuẩn] / [Hãng] / [Nghề]** · mẹo nghề; cuối phụ lục là **bảng con số nhanh** in một trang | ✅ |
-| P | [⭐⭐ **Chương trình hoàn chỉnh của DP-01**](pl_p_chuong_trinh_hoan_chinh_dp01.md) | Cả cỗ máy trong **một** chương trình: danh sách biến toàn cục · chương trình chính 21 lời gọi · tầng ánh xạ bản đủ · giám sát an toàn và chuỗi cho phép · chống va chạm · năm xy-lanh · báo động có số theo Chương 44 và báo động đầu tiên · về gốc H1–H5 cho hai trạm · trạm 2 sấy UV · bắt tay chuyền · nạp công thức · tài nguyên chung · thống kê; bốn chương trình dùng lại **nguyên văn** từ Chương 25, 26, 28; trục, analog, truyền thông là **khe** có hợp đồng giao diện. ⭐ **Chạy thử trên mô hình hai trạm, một băng tải — 38 phép**: pipeline, giữ máy giữa lúc sấy, kẹt, mất khí, về gốc với hai board, chạy khô. ⭐⭐ **Mục P.2: mười chỗ vênh** — mỗi chỗ đúng khi đứng một mình, chỉ lộ khi ráp | ✅ |
-| Q | [⭐⭐ **Học từ mã PLC thật**](pl_q_hoc_tu_ma_plc_that.md) | Mã nguồn của **16 kho mã** — khung của hãng (Siemens, Beckhoff), khung mã nguồn mở, máy đang chạy sản xuất — đặt cạnh cách của sách, mỗi chỗ ghi **làm gì · vì sao · cái giá · áp lên DP-01**: tìm mã thật theo **chữ ký từ khoá** và đọc theo sáu bước (công cụ `tim_ma_plc.py`, `tach_ma_plc.py`) · ⭐ **năm cách tổ chức chương trình** — thư mục đánh số theo chức năng, ISA-88/PackML, khung đối tượng, ghép qua giao diện (kèm bảng điểm đo bằng `git diff`), tầng theo vai trò · **năm cách viết khối xy-lanh** và năm chính sách khi quá giờ · ⭐ khối thiết bị **`FB_DeviceOut`** — điều kiện cho phép khác liên động, vượt có kiểm soát, ai được ra lệnh — ví dụ hoàn chỉnh, **chạy thử 22 phép** · năm cách viết trình tự · **PackML** đặt cạnh máy trạng thái DP-01: bảng số, cấu hình theo chế độ, đèn tháp theo trạng thái · thông điệp: ba kênh trong mã thật, bố cục số báo động theo thiết bị, mười một mức nhật ký, **gác / chặn / vô hiệu** · ba chỗ đặt mô phỏng · ⚖ **sáu chỗ mã thật làm khác sách — và ranh giới** | ✅ |
+| A1 | [⭐ **Đối chiếu khái niệm 5 hệ**](#pl_a1_doi_chieu_khai_niem_5_he) | Siemens · Mitsubishi · Inovance · CODESYS · Rockwell. Bảng đối chiếu: tag/ký hiệu, khối dữ liệu vs UDT vs struct, thể hiện FB, task & chu kỳ, ảnh ngõ vào, vùng nhớ giữ, cách đánh địa chỉ module. **CODESYS làm cột neo** — khi 4 hệ khác nhau thì cột này cho biết chuẩn IEC nói gì | ✅ |
+| A2 | [⭐ **Đối chiếu lệnh + cùng một đoạn logic viết 5 lần**](#pl_a2_doi_chieu_lenh_va_cung_doan_logic) | TON, CTU, MOVE, quy đổi thang, bắt cạnh, khối PID, khối chuyển động; cùng một đoạn trình tự của DP-01 hiện thực trên cả 5 hệ; ⚠ những chỗ **không tương đương 1-1** — nêu rõ, không giả vờ. Phụ lục **mô tả khác biệt, không xếp hạng hãng** | ✅ |
+| B | [Tra nhanh lệnh IEC 61131-3](#pl_b_tra_nhanh_lenh_iec) | Một trang in được: lệnh cơ bản theo nhóm, ký hiệu LD & ST tương ứng, kiểu dữ liệu, thứ tự ưu tiên toán tử · hàm chuỗi (vị trí đếm từ 1), dịch bit · ⭐⭐ **hành vi thực thi** — khối chạy thế nào ở vòng quét đầu và khi **không** được gọi · các thay đổi của bản 2025 | ✅ |
+| C | [Biểu mẫu dùng ngay](#pl_c_bieu_mau_dung_ngay) | **Mười một biểu mẫu**: bảng I/O · bảng tag · đặc tả trình tự · bảng chuyển trạng thái · bảng công thức · biên bản kiểm I/O 1-1 · danh sách ca kiểm thử · biên bản nghiệm thu an toàn · phiếu bàn giao · ⭐ **bảng cấu hình phần cứng** (bản đồ khe cắm + thiết bị mạng + **trục và động cơ**) · ⭐ **danh mục vật tư** (có cột *sinh từ* và quy tắc chọn phụ tùng dự phòng). Mỗi biểu mẫu kèm ⭐ **danh mục kiểm "đạt yêu cầu khi"** (dẫn Ch.8, 13, 23, 25, 29, 49, 50, 52) | ✅ |
+| D | [Checklist đấu dây & bật nguồn lần đầu](#pl_d_checklist_dau_day_va_bat_nguon) | Trước khi cấp điện lần đầu: thứ tự kiểm, cái gì đo trước, cái gì tuyệt đối không bỏ qua | ✅ ⚠ |
+| E | [⭐ Chỉ mục tra theo triệu chứng](#pl_e_tra_theo_trieu_chung) | "Máy không khởi động được", "một ngõ vào không lên", "giá trị analog nhảy loạn", "mạng rớt ngẫu nhiên", "chu trình dừng giữa chừng", "board hỏng mà máy báo OK", "chuyền tắc"… → dẫn đúng mục chương. ⭐ Kèm hai nhóm mà **máy vẫn chạy** nên sống lâu nhất trước khi có ai đi tìm: **E.4b — thao tác của người vận hành không ăn** (nhấn một lần ra hai lần · phải giữ nút mới chạy · nút Dừng không dừng được · cuộn dây trùng) và **E.5b — máy chạy bình thường nhưng con số sai** (đếm thiếu/thừa · tràn số · bộ định thời đóng băng · đổi công thức mà vẫn chạy tham số cũ). Hiện thực hoá Đường tra cứu 3 đã hứa ở Ch.1 | ✅ |
+| F | [Thuật ngữ Việt–Anh](#pl_f_thuat_ngu_viet_anh) | Bảng đối chiếu đầy đủ, sắp theo chủ đề và theo vần. Bổ trợ cho bất biến B11 — tài liệu hãng và diễn đàn đều tiếng Anh, người đọc phải tra được đúng lúc cần tra nhất | ✅ |
+| G | [Phần mềm miễn phí & mô phỏng](#pl_g_phan_mem_mien_phi_va_mo_phong) | Bảng: công cụ → làm được gì → **giới hạn bản quyền thật** → phù hợp giai đoạn học nào. Kèm ngày kiểm tra và cảnh báo tự xác nhận lại (bất biến B10) | ✅ |
+| H | [Nguồn mở đã dùng & đọc thêm](#pl_h_nguon_tham_khao_va_doc_them) | Tài liệu mở đã tham chiếu khi viết + sách thương mại nên mua + tiêu chuẩn nên có; ghi rõ giấy phép từng nguồn | ✅ |
+| I | [Bài tập — **5 mức, ~50 bài**](#pl_i_bai_tap_5_muc) | ⭐ Cấu trúc theo mức, mỗi bài ghi rõ **khái niệm được rèn**: **Mức 1 — logic cơ bản (~12 bài)**: tự giữ, AND/OR/NOT, NO vs NC an toàn khi đứt dây, khoá chéo, biểu quyết 2/3, SET/RESET, bắt cạnh, mạch lật, báo động có ack, chuỗi cho phép & kiểm đèn. **Mức 2 — timer & counter (~12 bài)**: khởi động trễ, quạt chạy dư, mạch nháy 2 timer, sao-tam giác có khoảng chết, kéo dài xung, đếm mẻ, đếm lên-xuống, đếm phế có ngưỡng, đồng hồ giờ chạy, watchdog, chống rung tiếp điểm, đo chu kỳ. **Mức 3 — tuần tự & trạng thái (~10 bài)**: đèn giao thông, nút bộ hành có nhớ, phân loại theo thời gian vs **theo thanh ghi dịch**, trạm trộn, cổng bãi xe, báo động first-out, timeout từng bước, chuyển Manual↔Auto **không giật**, bỏ bước theo công thức. **Mức 4 — analog (~9 bài)**: quy đổi thang, phát hiện ngoài dải & giá trị thay thế, điều khiển trễ, PID, vùng chết, giới hạn tốc độ thay đổi, ép kiểu & tràn số, tích phân lưu lượng, dải báo động nhiều mức. **Mức 5 — đề bài dự án (~7 bài)**: rửa xe, qua đường cho người đi bộ, nạp silo có khoá liên động, luân phiên bơm chính-dự phòng, điều hoà theo vùng, thang máy 3 tầng, dây chuyền chiết rót có trạm loại. ⭐ Quy tắc bắt buộc mọi bài: **viết bảng I/O trước khi vẽ rung đầu tiên**. Khoảng 2/3 số bài có lời giải, phần còn lại để tự làm | ✅ |
+| J | [Hồ sơ máy mẫu DP-01 đầy đủ](#pl_j_ho_so_may_mau_dp01) | Bảng I/O hoàn chỉnh, đặc tả trình tự, bảng chuyển trạng thái, bảng công thức, danh sách chức năng an toàn, kết quả tính chu kỳ — đóng gói để người đọc dùng lại làm khung cho dự án thật | ✅ |
+| K | [Bảng tra công thức tổng hợp](#pl_k_bang_tra_cong_thuc) | Mọi công thức trong sách gom một trang, mỗi công thức kèm cột **điều kiện áp dụng**: quy đổi thang analog, lực & tốc độ xy-lanh, lưu lượng khí, ngưỡng chọn HSC, chu kỳ & UPH, ước lượng thời gian quét, chọn tiết diện dây tín hiệu | ✅ |
+| L | [⭐ **Thư viện mẫu code dùng ngay**](#pl_l_thu_vien_mau_code) | 19 mẫu logic lặp lại ở mọi máy, mỗi mẫu kèm **điều kiện dùng** và **thứ nó KHÔNG làm**: tự giữ Start/Stop · chuỗi cho phép chạy có mã lý do chặn · ⚠⚠ dừng khẩn cấp (phần giám sát — **không phải** chức năng an toàn) · ba lệnh dừng (dừng ngay / tạm dừng / cuối chu trình) · chạy một lần vs tuần hoàn · khung trình tự bước có timeout · bắt cạnh & chống rung · khối xy-lanh hai vị trí dùng lại được · khung khối `Execute`/`Done` tự viết · servo theo PLCopen Motion · đảo chiều & sao–tam giác · báo động first-out · analog bốn bước · đèn tháp · đếm sản lượng · hút chân không có thổi ngược · đếm tuổi thọ vật tư · ⭐ khoảng hở hai đầu chung một ray · ⭐ yêu cầu tới phần mềm PC theo số thứ tự. Kèm ⭐⭐ **danh mục khối dùng lại (L.17)** — khối nào chuẩn IEC/hãng đã có nên đừng viết lại, khối nào ⚠⚠ **tuyệt đối không được tự viết** vì là chức năng an toàn, khối nào mới thật sự đáng đưa vào thư viện của bạn — và bảng tra *việc cần làm → mẫu nào → bẫy lớn nhất* | ✅ |
+| M | [⭐⭐ **Cấu hình dự án phần mềm: phần trường không dạy**](#pl_m_cau_hinh_du_an_phan_mem) | ⭐ Khoảng cách giữa bài tập mô phỏng và dự án thật, liệt kê thành việc phải làm: **cấu hình phần cứng trong phần mềm** (khai CPU/module đúng khe, ⭐ **tham số từng module** — thời gian lọc ngõ vào, dải analog, loại cảm biến nhiệt, chẩn đoán đứt dây, trạng thái ngõ ra khi CPU STOP) · **mạng** (địa chỉ tĩnh, tên trạm, sơ đồ địa chỉ, ⭐⭐ tách mạng máy khỏi mạng nhà máy) · ⭐⭐ **khởi động** (STOP/STARTUP/RUN, khởi động lại nóng so với xoá bộ nhớ, ⚠ nạp lại khối dữ liệu làm mất con số tích luỹ, việc được và KHÔNG được làm ở vòng quét đầu) · **đồng hồ và dấu thời gian** · ⭐⭐ **chẩn đoán của chính CPU** (đèn, bộ đệm chẩn đoán, lỗi nặng/lỗi nhẹ, ⚠⚠ bẫy an toàn của thủ tục xoá lỗi rồi chạy tiếp) · **mật khẩu & bảo vệ mã nguồn** như một quyết định hợp đồng · **nạp xuống, thẻ nhớ, thứ tự khôi phục** · ⚠⚠ **bảng mô phỏng KHÔNG kiểm được gì** · ⭐ **biến thể phần cứng** trong một dự án · danh mục kiểm 19 mục trước khi chạy thử | ✅ |
+| N | [⭐ **Quy ước viết mã**](#pl_n_quy_uoc_viet_ma) | Quy ước viết mã của sách, lần đầu **viết ra thành văn** và đối chiếu với **PLCopen Coding Guidelines v1.0** (64 quy tắc): từng quy tắc mức Cao / Trung bình / Thấp và sách áp dụng ở đâu · ⭐ chỗ sách **lệch có chủ ý** kèm lý do (tiền tố **vai trò** `DI_` thay tiền tố **kiểu**; nhánh `IF … THEN ; ELSE` cố ý) · ⭐⭐ chỗ sách **từng sai và đã sửa** nhờ soát theo danh mục bên ngoài (`RETURN` trong khung trình tự, đọc phần tử mảng chưa gán, `=` với đại lượng đo, sửa biến đếm của `FOR`) · câu trả lời của sách cho mọi quy tắc *"hãy tự định nghĩa…"* (độ dài tên, độ dài dòng, thụt lề, số chân một khối) · quy ước **đoạn trích** và **ví dụ đầy đủ** | ✅ |
+| O | [⭐⭐ **Sổ tay việc của người lập trình**](#pl_o_so_tay_viec_nguoi_lap_trinh) | Mười sáu thẻ theo thứ tự một dự án — nhận việc · bảng I/O · đặt tên · **ánh xạ vào** · **ghi ra** · khung chương trình · cơ cấu · trình tự · báo động · analog · truyền thông · thử trên bàn · kiểm I/O · chạy thử · sao lưu · sửa khi máy chạy. Mỗi thẻ: **các bước · ✅ đạt khi** (trả lời có/không) **· con số** gắn nhãn **[Chuẩn] / [Hãng] / [Nghề]** · mẹo nghề; cuối phụ lục là **bảng con số nhanh** in một trang | ✅ |
+| P | [⭐⭐ **Chương trình hoàn chỉnh của DP-01**](#pl_p_chuong_trinh_hoan_chinh_dp01) | Cả cỗ máy trong **một** chương trình: danh sách biến toàn cục · chương trình chính 21 lời gọi · tầng ánh xạ bản đủ · giám sát an toàn và chuỗi cho phép · chống va chạm · năm xy-lanh · báo động có số theo Chương 44 và báo động đầu tiên · về gốc H1–H5 cho hai trạm · trạm 2 sấy UV · bắt tay chuyền · nạp công thức · tài nguyên chung · thống kê; bốn chương trình dùng lại **nguyên văn** từ Chương 25, 26, 28; trục, analog, truyền thông là **khe** có hợp đồng giao diện. ⭐ **Chạy thử trên mô hình hai trạm, một băng tải — 38 phép**: pipeline, giữ máy giữa lúc sấy, kẹt, mất khí, về gốc với hai board, chạy khô. ⭐⭐ **Mục P.2: mười chỗ vênh** — mỗi chỗ đúng khi đứng một mình, chỉ lộ khi ráp | ✅ |
+| Q | [⭐⭐ **Học từ mã PLC thật**](#pl_q_hoc_tu_ma_plc_that) | Mã nguồn của **16 kho mã** — khung của hãng (Siemens, Beckhoff), khung mã nguồn mở, máy đang chạy sản xuất — đặt cạnh cách của sách, mỗi chỗ ghi **làm gì · vì sao · cái giá · áp lên DP-01**: tìm mã thật theo **chữ ký từ khoá** và đọc theo sáu bước (công cụ `tim_ma_plc.py`, `tach_ma_plc.py`) · ⭐ **năm cách tổ chức chương trình** — thư mục đánh số theo chức năng, ISA-88/PackML, khung đối tượng, ghép qua giao diện (kèm bảng điểm đo bằng `git diff`), tầng theo vai trò · **năm cách viết khối xy-lanh** và năm chính sách khi quá giờ · ⭐ khối thiết bị **`FB_DeviceOut`** — điều kiện cho phép khác liên động, vượt có kiểm soát, ai được ra lệnh — ví dụ hoàn chỉnh, **chạy thử 22 phép** · năm cách viết trình tự · **PackML** đặt cạnh máy trạng thái DP-01: bảng số, cấu hình theo chế độ, đèn tháp theo trạng thái · thông điệp: ba kênh trong mã thật, bố cục số báo động theo thiết bị, mười một mức nhật ký, **gác / chặn / vô hiệu** · ba chỗ đặt mô phỏng · ⚖ **sáu chỗ mã thật làm khác sách — và ranh giới** | ✅ |
 
 ---
 
@@ -274,6 +277,9 @@ Ch.57 ráp toàn bộ; Phụ lục J là bản hồ sơ hoàn chỉnh để dùn
 
 <!-- SECTION: ch01_sach_nay_danh_cho_ai -->
 ---
+
+<div id="ch01_sach_nay_danh_cho_ai"></div>
+
 # Chương 1 — Sách này dành cho ai & cách dùng
 
 ---
@@ -839,6 +845,9 @@ trung lập hãng, chọn máy mẫu, quy ước song ngữ) được ghi trong 
 
 <!-- SECTION: ch02_plc_la_gi_va_khi_nao_khong_nen_dung -->
 ---
+
+<div id="ch02_plc_la_gi_va_khi_nao_khong_nen_dung"></div>
+
 # Chương 2 — PLC là gì, và khi nào **không** nên dùng PLC
 
 ---
@@ -1170,6 +1179,9 @@ phải dùng tiếp điểm thường đóng.
 
 <!-- SECTION: ch03_dien_du_dung_cho_nguoi_lam_plc -->
 ---
+
+<div id="ch03_dien_du_dung_cho_nguoi_lam_plc"></div>
+
 # Chương 3 — Điện đủ dùng cho người làm PLC
 
 ---
@@ -1700,6 +1712,9 @@ hợp mà thiếu nó thì đấu cảm biến chỉ là đoán.
 
 <!-- SECTION: ch04_cam_bien_so_va_dau_noi -->
 ---
+
+<div id="ch04_cam_bien_so_va_dau_noi"></div>
+
 # Chương 4 — Cảm biến số & đấu nối: NPN/PNP, sinking/sourcing
 
 ---
@@ -2150,6 +2165,9 @@ phần đi **ra**: van điện từ, contactor, đèn tháp — và vì sao mộ
 
 <!-- SECTION: ch05_co_cau_chap_hanh_dien_va_tai -->
 ---
+
+<div id="ch05_co_cau_chap_hanh_dien_va_tai"></div>
+
 # Chương 5 — Cơ cấu chấp hành điện & tải
 
 ---
@@ -2584,6 +2602,9 @@ của cả hai chương: *mất năng lượng thì cơ cấu về đâu*.
 
 <!-- SECTION: ch06_khi_nen -->
 ---
+
+<div id="ch06_khi_nen"></div>
+
 # Chương 6 — Khí nén cho máy tự động hoá
 
 ---
@@ -3065,6 +3086,9 @@ nói về loại năng lượng **không nhìn thấy, không cảm thấy** —
 
 <!-- SECTION: ch07_esd_va_moi_truong_dien_tu -->
 ---
+
+<div id="ch07_esd_va_moi_truong_dien_tu"></div>
+
 # Chương 7 — ESD & môi trường sản xuất điện tử
 
 ---
@@ -3488,6 +3512,9 @@ nối vào phần lập trình.
 
 <!-- SECTION: ch08_kien_truc_phan_cung_plc -->
 ---
+
+<div id="ch08_kien_truc_phan_cung_plc"></div>
+
 # Chương 8 — Kiến trúc phần cứng PLC
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -4057,6 +4084,9 @@ của DP-01.
 
 <!-- SECTION: ch09_module_vao_ra_so -->
 ---
+
+<div id="ch09_module_vao_ra_so"></div>
+
 # Chương 9 — Module vào/ra số: chọn đúng kiểu
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -4613,6 +4643,9 @@ nói về **cách PLC chạy chương trình** — bốn giai đoạn lặp mãi
 
 <!-- SECTION: ch10_vong_quet -->
 ---
+
+<div id="ch10_vong_quet"></div>
+
 # Chương 10 — Vòng quét: mô hình tinh thần quan trọng nhất
 
 > **Lát cắt máy mẫu:** 1 — chỉ dùng chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -5044,6 +5077,9 @@ chúng nằm ở đâu trong bộ nhớ, sống được bao lâu, và mất đi
 
 <!-- SECTION: ch11_bo_nho_bien_va_kieu_du_lieu -->
 ---
+
+<div id="ch11_bo_nho_bien_va_kieu_du_lieu"></div>
+
 # Chương 11 — Bộ nhớ, biến & kiểu dữ liệu
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -5770,6 +5806,9 @@ một sợi dây mang một bit, cảm biến gửi cả tham số và trạng t
 
 <!-- SECTION: ch12_io_link_va_cam_bien_thong_minh -->
 ---
+
+<div id="ch12_io_link_va_cam_bien_thong_minh"></div>
+
 # Chương 12 — IO-Link & lớp cảm biến thông minh
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -6224,6 +6263,9 @@ thật, và mua gì để tự học.
 
 <!-- SECTION: ch13_chon_plc_va_ban_thuc_hanh -->
 ---
+
+<div id="ch13_chon_plc_va_ban_thuc_hanh"></div>
+
 # Chương 13 — Chọn PLC & dựng bàn thực hành của riêng bạn
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -6748,6 +6790,9 @@ chiếm ưu thế ở tầng máy.
 
 <!-- SECTION: ch14_tong_quan_iec_61131_3 -->
 ---
+
+<div id="ch14_tong_quan_iec_61131_3"></div>
+
 # Chương 14 — Tổng quan IEC 61131-3
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -7390,6 +7435,9 @@ bằng ngôn ngữ chiếm ưu thế ở tầng máy và cũng là ngôn ngữ c
 
 <!-- SECTION: ch15_ladder_diagram -->
 ---
+
+<div id="ch15_ladder_diagram"></div>
+
 # Chương 15 — Ladder Diagram: nền tảng
 
 > **Lát cắt máy mẫu:** 1 — chỉ dùng chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, công tắc áp suất khí, đèn tháp.
@@ -8198,6 +8246,9 @@ khi reset**. Chương 16 so sánh hai cách và chỉ ra khi nào cách gọn l�
 
 <!-- SECTION: ch16_latch_set_reset_bat_canh -->
 ---
+
+<div id="ch16_latch_set_reset_bat_canh"></div>
+
 # Chương 16 — Latch, Set/Reset & bắt cạnh
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -8881,6 +8932,9 @@ phản hồi thật.
 
 <!-- SECTION: ch17_timer -->
 ---
+
+<div id="ch17_timer"></div>
+
 # Chương 17 — Timer: TON / TOF / TP
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -9463,6 +9517,9 @@ ngưỡng mà đếm bằng phần mềm không còn khả thi — chương sau 
 
 <!-- SECTION: ch18_counter_va_dem_xung_toc_do_cao -->
 ---
+
+<div id="ch18_counter_va_dem_xung_toc_do_cao"></div>
+
 # Chương 18 — Counter & đếm xung tốc độ cao
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -10167,6 +10224,9 @@ sau làm việc với **giá trị**: so sánh, tính toán, và những chỗ p
 
 <!-- SECTION: ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu -->
 ---
+
+<div id="ch19_so_sanh_toan_hoc_va_xu_ly_du_lieu"></div>
+
 # Chương 19 — So sánh, toán học & xử lý dữ liệu
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -11043,6 +11103,9 @@ là quyết định **tệ** dù nó gọn hơn.
 
 <!-- SECTION: ch20_structured_text -->
 ---
+
+<div id="ch20_structured_text"></div>
+
 # Chương 20 — Structured Text: cho người biết lập trình
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -12428,6 +12491,9 @@ bạn vừa viết bằng `CASE` — và IL, đủ để đọc chương trình 
 
 <!-- SECTION: ch21_fbd_sfc_va_il -->
 ---
+
+<div id="ch21_fbd_sfc_va_il"></div>
+
 # Chương 21 — FBD, SFC (và IL — đủ để đọc di sản)
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -13163,6 +13229,9 @@ có tài liệu, và phải sửa nó mà không làm hỏng thứ đang chạy.
 
 <!-- SECTION: ch22_doc_va_sua_chuong_trinh_nguoi_khac -->
 ---
+
+<div id="ch22_doc_va_sua_chuong_trinh_nguoi_khac"></div>
+
 # Chương 22 — Đọc & sửa chương trình của người khác
 
 > **Lát cắt máy mẫu:** 1 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp.
@@ -13939,6 +14008,9 @@ lỗi code: viết đúng cái không ai cần.
 
 <!-- SECTION: ch23_tu_yeu_cau_toi_dac_ta -->
 ---
+
+<div id="ch23_tu_yeu_cau_toi_dac_ta"></div>
+
 # Chương 23 — Từ yêu cầu tới đặc tả điều khiển
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -14442,6 +14514,9 @@ và biết khi nào **không** nên rút gọn chúng.
 
 <!-- SECTION: ch24_dai_so_boolean_va_bang_chan_ly -->
 ---
+
+<div id="ch24_dai_so_boolean_va_bang_chan_ly"></div>
+
 # Chương 24 — Đại số Boolean & bảng chân lý dùng được
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -15014,6 +15089,9 @@ quả khác nhau tuỳ máy đang ở đâu. Đó là lúc bảng chân lý hế
 
 <!-- SECTION: ch25_thiet_ke_theo_may_trang_thai -->
 ---
+
+<div id="ch25_thiet_ke_theo_may_trang_thai"></div>
+
 # Chương 25 — Thiết kế theo máy trạng thái
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, cộng thêm mô hình
@@ -15796,6 +15874,9 @@ song song và cách phát hiện bế tắc bằng timeout từng bước.
 
 <!-- SECTION: ch26_luu_do_va_bit_trinh_tu -->
 ---
+
+<div id="ch26_luu_do_va_bit_trinh_tu"></div>
+
 # Chương 26 — Thiết kế theo lưu đồ & bit trình tự
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -16698,6 +16779,9 @@ hai trạm chạy song song, dùng chung một chuyền — và chương này đ
 
 <!-- SECTION: ch27_kien_truc_chuong_trinh_nhieu_tram -->
 ---
+
+<div id="ch27_kien_truc_chuong_trinh_nhieu_tram"></div>
+
 # Chương 27 — Kiến trúc chương trình cho máy nhiều trạm
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -17787,6 +17871,9 @@ chưa trả lời: khi máy dừng giữa chừng ở một tư thế bất kỳ
 
 <!-- SECTION: ch28_che_do_van_hanh_va_phuc_hoi -->
 ---
+
+<div id="ch28_che_do_van_hanh_va_phuc_hoi"></div>
+
 # Chương 28 — Chế độ vận hành & phục hồi sau lỗi
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -18515,6 +18602,9 @@ kiểm tra công thức hợp lệ thuộc về PLC chứ không thuộc về h�
 
 <!-- SECTION: ch29_cong_thuc_san_pham_va_tham_so -->
 ---
+
+<div id="ch29_cong_thuc_san_pham_va_tham_so"></div>
+
 # Chương 29 — Công thức sản phẩm & quản lý tham số
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -19115,6 +19205,9 @@ lại, và quản lý phiên bản.
 
 <!-- SECTION: ch30_chuan_hoa_va_tai_su_dung -->
 ---
+
+<div id="ch30_chuan_hoa_va_tai_su_dung"></div>
+
 # Chương 30 — Chuẩn hoá & tái sử dụng
 
 > **Lát cắt máy mẫu:** 2 — chuyền, chặn, nâng kẹp, cảm biến board, nút bấm, đèn tháp, hai trạm, trình
@@ -20368,6 +20461,9 @@ một lớp: analog và chuyển động.
 
 <!-- SECTION: ch31_tin_hieu_analog_va_vong_dong -->
 ---
+
+<div id="ch31_tin_hieu_analog_va_vong_dong"></div>
+
 # Chương 31 — Tín hiệu analog & vòng dòng 4–20 mA
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z.
@@ -20894,6 +20990,9 @@ về độ phân giải, thứ quyết định phép đo của bạn có ý ngh�
 
 <!-- SECTION: ch32_tu_gia_tri_tho_toi_dai_luong_ky_thuat -->
 ---
+
+<div id="ch32_tu_gia_tri_tho_toi_dai_luong_ky_thuat"></div>
+
 # Chương 32 — Từ giá trị thô tới đại lượng kỹ thuật
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z servo.
@@ -21733,6 +21832,9 @@ hành xử rất khác nhau), lưu lượng, mức — và những chỗ mỗi l
 
 <!-- SECTION: ch33_cam_bien_qua_trinh_thuong_gap -->
 ---
+
+<div id="ch33_cam_bien_qua_trinh_thuong_gap"></div>
+
 # Chương 33 — Cảm biến quá trình thường gặp
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z servo.
@@ -22304,6 +22406,9 @@ biệt hữu ích trong lắp ráp điện tử: **lực theo hành trình** —
 
 <!-- SECTION: ch34_can_va_do_luc -->
 ---
+
+<div id="ch34_can_va_do_luc"></div>
+
 # Chương 34 — Cân & đo lực: load cell, giám sát lực/mô-men
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z servo.
@@ -22876,6 +22981,9 @@ chúng để **điều khiển** — và về câu hỏi quan trọng hơn: khi 
 
 <!-- SECTION: ch35_dieu_khien_pid_tren_plc -->
 ---
+
+<div id="ch35_dieu_khien_pid_tren_plc"></div>
+
 # Chương 35 — Điều khiển PID trên PLC
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z servo.
@@ -23574,6 +23682,9 @@ những gì, để bạn không chồng thêm một vòng nữa lên nó.
 
 <!-- SECTION: ch36_dong_co_va_bien_tan -->
 ---
+
+<div id="ch36_dong_co_va_bien_tan"></div>
+
 # Chương 36 — Động cơ & biến tần
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z servo.
@@ -24057,6 +24168,9 @@ vì sao giới hạn phần mềm không bao giờ thay được công tắc gi�
 
 <!-- SECTION: ch37_dieu_khien_chuyen_dong_servo -->
 ---
+
+<div id="ch37_dieu_khien_chuyen_dong_servo"></div>
+
 # Chương 37 — Điều khiển chuyển động servo
 
 > **Lát cắt máy mẫu:** 3 — thêm analog (áp suất, nhiệt độ, cường độ UV) và trục gantry XY+Z servo.
@@ -25032,6 +25146,9 @@ công nghiệp, và là cách bộ điều khiển nhiệt độ của DP-01 nó
 
 <!-- SECTION: ch38_nen_tang_truyen_thong_cong_nghiep -->
 ---
+
+<div id="ch38_nen_tang_truyen_thong_cong_nghiep"></div>
+
 # Chương 38 — Nền tảng truyền thông công nghiệp
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -25711,6 +25828,9 @@ gần như mọi người từng dùng nó.
 
 <!-- SECTION: ch39_modbus_rtu_va_tcp -->
 ---
+
+<div id="ch39_modbus_rtu_va_tcp"></div>
+
 # Chương 39 — Modbus RTU & Modbus TCP
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -26662,6 +26782,9 @@ của DP-01 với PLC.
 
 <!-- SECTION: ch40_ethernet_cong_nghiep -->
 ---
+
+<div id="ch40_ethernet_cong_nghiep"></div>
+
 # Chương 40 — Ethernet công nghiệp: ba họ, chọn thế nào
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -27221,6 +27344,9 @@ máy gặp nhau — **ai đang giữ sản phẩm**.
 
 <!-- SECTION: ch41_ghep_noi_may_may_trong_day_chuyen -->
 ---
+
+<div id="ch41_ghep_noi_may_may_trong_day_chuyen"></div>
+
 # Chương 41 — Ghép nối máy–máy trong dây chuyền
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -27876,6 +28002,9 @@ và báo kết quả về. Cùng với câu hỏi khó nhất: khi mất kết n
 
 <!-- SECTION: ch42_ma_2d_va_truy_xuat_nguon_goc -->
 ---
+
+<div id="ch42_ma_2d_va_truy_xuat_nguon_goc"></div>
+
 # Chương 42 — Mã vạch, mã 2D & truy xuất nguồn gốc
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -28565,6 +28694,9 @@ hơn: nhận toạ độ và góc lệch, đồng bộ lúc chụp với lúc v�
 
 <!-- SECTION: ch43_tich_hop_vision_voi_plc -->
 ---
+
+<div id="ch43_tich_hop_vision_voi_plc"></div>
+
 # Chương 43 — Tích hợp vision với PLC
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -29181,6 +29313,9 @@ thứ đều báo động" nghĩa là không có báo động nào.
 
 <!-- SECTION: ch44_hmi_scada_thiet_ke_man_hinh -->
 ---
+
+<div id="ch44_hmi_scada_thiet_ke_man_hinh"></div>
+
 # Chương 44 — HMI/SCADA: thiết kế màn hình vận hành
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -29990,6 +30125,9 @@ công** — và về một thực tế khó chịu: phần lớn giao thức cô
 
 <!-- SECTION: ch45_ket_noi_len_tren_va_an_ninh_ot -->
 ---
+
+<div id="ch45_ket_noi_len_tren_va_an_ninh_ot"></div>
+
 # Chương 45 — Kết nối lên trên: dữ liệu, MES & an ninh mạng OT
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -30529,6 +30667,9 @@ hệ quả của lựa chọn đó lên toàn bộ cách viết chương trình.
 
 <!-- SECTION: ch46_tich_hop_robot_va_tay_gap -->
 ---
+
+<div id="ch46_tich_hop_robot_va_tay_gap"></div>
+
 # Chương 46 — Tích hợp robot & tay gắp
 
 > **Lát cắt máy mẫu:** 4 — thêm mạng: mã 2D, MES, SMEMA, màn hình vận hành, và bộ điều khiển nhiệt độ
@@ -31034,6 +31175,9 @@ và làm sao làm việc đúng với người có thẩm quyền về an toàn.
 
 <!-- SECTION: ch47_an_toan_may -->
 ---
+
+<div id="ch47_an_toan_may"></div>
+
 # Chương 47 — An toàn máy: không logic thường nào thay được
 
 > **Lát cắt máy mẫu:** 5 — máy đầy đủ, gồm cả mạch an toàn, analog, chuyển động và mạng.
@@ -32017,6 +32161,9 @@ tin lệnh** là nguyên tắc xuyên suốt cả cuốn sách.
 
 <!-- SECTION: ch48_fail_safe -->
 ---
+
+<div id="ch48_fail_safe"></div>
+
 # Chương 48 — Fail-safe & thiết kế phòng sự cố
 
 > **Lát cắt máy mẫu:** 5 — máy đầy đủ, gồm cả mạch an toàn, analog, chuyển động và mạng.
@@ -32469,6 +32616,9 @@ nhiên không tái hiện được.
 
 <!-- SECTION: ch49_lap_dat_dau_tu_va_chong_nhieu -->
 ---
+
+<div id="ch49_lap_dat_dau_tu_va_chong_nhieu"></div>
+
 
 # Chương 49 — Lắp đặt, đấu tủ & chống nhiễu
 
@@ -33023,6 +33173,9 @@ việc tìm lỗi ở nơi rẻ nhất: trên bàn, trước khi có phần cứ
 
 <!-- SECTION: ch50_mo_phong_va_kiem_thu -->
 ---
+
+<div id="ch50_mo_phong_va_kiem_thu"></div>
+
 # Chương 50 — Mô phỏng & kiểm thử trước khi ra hiện trường
 
 > **Lát cắt máy mẫu:** 5 — máy đầy đủ, gồm cả mạch an toàn, analog, chuyển động và mạng.
@@ -33661,6 +33814,9 @@ trình chẩn đoán có hệ thống — thứ bạn sẽ dùng nhiều nhất 
 
 <!-- SECTION: ch51_xu_ly_su_co -->
 ---
+
+<div id="ch51_xu_ly_su_co"></div>
+
 # Chương 51 — Xử lý sự cố: quy trình chẩn đoán có hệ thống
 
 > **Lát cắt máy mẫu:** 5 — máy đầy đủ, gồm cả mạch an toàn, analog, chuyển động và mạng.
@@ -34426,6 +34582,9 @@ lớn những lỗi đó ngay từ lúc chạy thử — bằng một thứ mà 
 
 <!-- SECTION: ch52_chay_thu_va_ban_giao -->
 ---
+
+<div id="ch52_chay_thu_va_ban_giao"></div>
+
 # Chương 52 — Chạy thử & bàn giao
 
 > **Lát cắt máy mẫu:** 5 — máy đầy đủ, gồm cả mạch an toàn, analog, chuyển động và mạng.
@@ -34909,6 +35068,9 @@ thay đổi đều diễn ra trên một cỗ máy không được phép dừng 
 
 <!-- SECTION: ch53_bao_tri_va_thay_doi_khi_may_dang_chay -->
 ---
+
+<div id="ch53_bao_tri_va_thay_doi_khi_may_dang_chay"></div>
+
 
 # Chương 53 — Bảo trì & thay đổi khi máy đang chạy
 
@@ -35399,6 +35561,9 @@ mọi mục; chương sau nói **sao lưu cái gì, để ở đâu, và làm sa
 <!-- SECTION: ch54_sao_luu_phien_ban_va_bao_mat_chuong_trinh -->
 ---
 
+<div id="ch54_sao_luu_phien_ban_va_bao_mat_chuong_trinh"></div>
+
+
 # Chương 54 — Sao lưu, phiên bản & bảo mật chương trình
 
 > **Lát cắt máy mẫu:** 5 — máy đầy đủ, đã bàn giao và đang sản xuất.
@@ -35835,6 +36000,9 @@ không nhanh hơn được?**
 
 <!-- SECTION: ch55_tinh_chu_ky_may_va_nang_suat -->
 ---
+
+<div id="ch55_tinh_chu_ky_may_va_nang_suat"></div>
+
 
 # Chương 55 — Tính chu kỳ máy & năng suất
 
@@ -36583,6 +36751,9 @@ lớn công việc thực tế là **sửa máy đã có** — thường là má
 <!-- SECTION: ch56_nang_cap_may_cu_retrofit -->
 ---
 
+<div id="ch56_nang_cap_may_cu_retrofit"></div>
+
+
 # Chương 56 — Nâng cấp máy cũ *(retrofit)*
 
 > **Lát cắt máy mẫu:** 5 — toàn bộ kiến thức của sách, áp vào một cỗ máy không phải của bạn.
@@ -37098,6 +37269,9 @@ nhất: từ khảo sát yêu cầu tới nghiệm thu và bàn giao.
 
 <!-- SECTION: ch57_case_study_dp01_day_du -->
 ---
+
+<div id="ch57_case_study_dp01_day_du"></div>
+
 
 # Chương 57 — Case study đầy đủ: DP-01 từ trang giấy tới máy chạy
 
@@ -37644,6 +37818,9 @@ trước: học gì tiếp, chứng minh năng lực thế nào khi chưa có ki
 <!-- SECTION: ch58_hoc_tiep_the_nao_va_vao_nghe_that -->
 ---
 
+<div id="ch58_hoc_tiep_the_nao_va_vao_nghe_that"></div>
+
+
 # Chương 58 — Học tiếp thế nào & vào nghề thật
 
 > **Lát cắt máy mẫu:** — chương này không dùng máy mẫu.
@@ -38079,6 +38256,9 @@ Bạn sẽ phát hiện ra những chỗ mình tưởng đã hiểu. Đó là đ
 <!-- SECTION: pl_a1_doi_chieu_khai_niem_5_he -->
 ---
 
+<div id="pl_a1_doi_chieu_khai_niem_5_he"></div>
+
+
 # Phụ lục A1 — Đối chiếu khái niệm 5 hệ
 
 > **Thân sách dạy khái niệm theo IEC 61131-3. Phụ lục A là nơi khái niệm đó gặp giao diện thật của
@@ -38432,6 +38612,9 @@ Nếu bạn chỉ nhớ bốn điều từ phụ lục này:
 
 <!-- SECTION: pl_a2_doi_chieu_lenh_va_cung_doan_logic -->
 ---
+
+<div id="pl_a2_doi_chieu_lenh_va_cung_doan_logic"></div>
+
 
 # Phụ lục A2 — Đối chiếu lệnh & cùng một đoạn logic viết 5 lần
 
@@ -38865,6 +39048,9 @@ END_CASE;
 
 <!-- SECTION: pl_b_tra_nhanh_lenh_iec -->
 ---
+
+<div id="pl_b_tra_nhanh_lenh_iec"></div>
+
 
 # Phụ lục B — Tra nhanh lệnh IEC 61131-3
 
@@ -39303,6 +39489,9 @@ Mạch tự giữ — mẫu cơ bản nhất:
 
 <!-- SECTION: pl_c_bieu_mau_dung_ngay -->
 ---
+
+<div id="pl_c_bieu_mau_dung_ngay"></div>
+
 
 # Phụ lục C — Biểu mẫu dùng ngay
 
@@ -39760,6 +39949,9 @@ Chương 54).
 <!-- SECTION: pl_d_checklist_dau_day_va_bat_nguon -->
 ---
 
+<div id="pl_d_checklist_dau_day_va_bat_nguon"></div>
+
+
 # Phụ lục D — Checklist đấu dây & bật nguồn lần đầu
 
 > ⚠⚠ **ĐỌC TOÀN BỘ MỤC NÀY TRƯỚC KHI DÙNG DANH MỤC BÊN DƯỚI**
@@ -40045,6 +40237,9 @@ nhân** trước khi đi tiếp.
 
 <!-- SECTION: pl_e_tra_theo_trieu_chung -->
 ---
+
+<div id="pl_e_tra_theo_trieu_chung"></div>
+
 
 # Phụ lục E — Chỉ mục tra theo triệu chứng
 
@@ -40440,6 +40635,9 @@ sản lượng, bộ đếm, thời gian, giá trị tính toán.
 <!-- SECTION: pl_f_thuat_ngu_viet_anh -->
 ---
 
+<div id="pl_f_thuat_ngu_viet_anh"></div>
+
+
 # Phụ lục F — Thuật ngữ Việt–Anh
 
 > ⭐⭐ **Vì sao phụ lục này tồn tại: tài liệu nhà sản xuất, diễn đàn nghề, và mã lỗi thiết bị đều bằng
@@ -40782,6 +40980,9 @@ sản lượng, bộ đếm, thời gian, giá trị tính toán.
 <!-- SECTION: pl_g_phan_mem_mien_phi_va_mo_phong -->
 ---
 
+<div id="pl_g_phan_mem_mien_phi_va_mo_phong"></div>
+
+
 # Phụ lục G — Phần mềm miễn phí & mô phỏng
 
 > **Bạn học được PLC mà không cần mua PLC.** Phụ lục này nói học bằng gì.
@@ -40975,6 +41176,9 @@ sản lượng, bộ đếm, thời gian, giá trị tính toán.
 
 <!-- SECTION: pl_h_nguon_tham_khao_va_doc_them -->
 ---
+
+<div id="pl_h_nguon_tham_khao_va_doc_them"></div>
+
 
 # Phụ lục H — Nguồn đã dùng & đọc thêm
 
@@ -41180,6 +41384,9 @@ rồi đối chiếu với những gì tài liệu sẵn có đã trả lời t�
 
 <!-- SECTION: pl_i_bai_tap_5_muc -->
 ---
+
+<div id="pl_i_bai_tap_5_muc"></div>
+
 
 # Phụ lục I — Bài tập: 5 mức, 50 bài
 
@@ -41421,6 +41628,9 @@ viết ra mã là phần bạn phải làm.
 
 <!-- SECTION: pl_j_ho_so_may_mau_dp01 -->
 ---
+
+<div id="pl_j_ho_so_may_mau_dp01"></div>
+
 
 # Phụ lục J — Hồ sơ máy mẫu DP-01 đầy đủ
 
@@ -41838,6 +42048,9 @@ một phần của hồ sơ kỹ thuật**.
 <!-- SECTION: pl_k_bang_tra_cong_thuc -->
 ---
 
+<div id="pl_k_bang_tra_cong_thuc"></div>
+
+
 # Phụ lục K — Bảng tra công thức tổng hợp
 
 > **Tài liệu tra cứu.** Mọi công thức trong sách gom về một chỗ, mỗi công thức kèm cột ⭐ **điều kiện
@@ -42241,6 +42454,9 @@ Y(r,c) = Y1 + (c−1)·(Y2−Y1)/(C−1) + (r−1)·(Y3−Y1)/(R−1)
 
 <!-- SECTION: pl_l_thu_vien_mau_code -->
 ---
+
+<div id="pl_l_thu_vien_mau_code"></div>
+
 # Phụ lục L — Thư viện mẫu code dùng ngay
 
 > **Tài liệu tra cứu.** Mười chín đoạn logic lặp lại ở gần như mọi cỗ máy, gom về một chỗ — cộng một
@@ -43677,6 +43893,9 @@ hợp lý:
 
 <!-- SECTION: pl_m_cau_hinh_du_an_phan_mem -->
 ---
+
+<div id="pl_m_cau_hinh_du_an_phan_mem"></div>
+
 # Phụ lục M — Cấu hình dự án phần mềm: phần trường không dạy
 
 > **Ở trường, một bài PLC thường gồm: khai vài tag, viết logic, bấm mô phỏng, xong.**
@@ -44048,6 +44267,9 @@ của nó, vì đây đúng là chỗ người học ở trường hay nhầm.
 
 <!-- SECTION: pl_n_quy_uoc_viet_ma -->
 ---
+
+<div id="pl_n_quy_uoc_viet_ma"></div>
+
 # Phụ lục N — Quy ước viết mã
 
 > **Mã mẫu trong sách này vốn đã viết theo một quy ước nhất quán — nhưng quy ước đó chưa từng được
@@ -44353,6 +44575,9 @@ tiền tố trạm (`Stn1_Step`). Trong dự án thật, đó là biến cục b
 
 <!-- SECTION: pl_o_so_tay_viec_nguoi_lap_trinh -->
 ---
+
+<div id="pl_o_so_tay_viec_nguoi_lap_trinh"></div>
+
 # Phụ lục O — Sổ tay việc của người lập trình: từng việc · đạt khi · con số
 
 > **Một người lập trình PLC đọc bản thảo sách này đã nói: *"việc của tôi chủ yếu là ánh xạ, I/O và
@@ -45088,6 +45313,9 @@ In riêng trang này nếu chỉ in một trang.
 
 <!-- SECTION: pl_p_chuong_trinh_hoan_chinh_dp01 -->
 ---
+
+<div id="pl_p_chuong_trinh_hoan_chinh_dp01"></div>
+
 # Phụ lục P — Chương trình hoàn chỉnh của DP-01
 
 > **Năm mươi bảy chương dạy từng mảnh. Phụ lục này ráp chúng lại thành một chương trình PLC trọn vẹn
@@ -46569,6 +46797,9 @@ nào cờ về FALSE* (mục P.13) — và bài thử của người viết khe 
 
 <!-- SECTION: pl_q_hoc_tu_ma_plc_that -->
 ---
+
+<div id="pl_q_hoc_tu_ma_plc_that"></div>
+
 # Phụ lục Q — Học từ mã PLC thật: tổ chức chương trình, khối thiết bị, trình tự, chế độ, thông báo
 
 > Sách dạy **một** cách tổ chức chương trình — ba tầng, ánh xạ vào/ra, mỗi biến một chủ ghi (Chương 27,

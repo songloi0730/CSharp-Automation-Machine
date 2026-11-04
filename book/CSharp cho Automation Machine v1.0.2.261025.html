@@ -70,26 +70,37 @@
     z-index: 150;
   }
 
-  /* Nút hamburger — chỉ hiện trên mobile */
+  /* Nút đóng/mở mục lục: máy tính nằm ở góc trên-phải sidebar, đóng rồi thì ở mép trái; mobile là nút hamburger */
   #toc-toggle {
-    display: none;
+    display: block;
     position: fixed;
-    top: 14px; left: 14px;
+    top: 10px; left: 234px;
     z-index: 250;
-    width: 40px; height: 40px;
+    width: 36px; height: 36px;
+    cursor: pointer;
+    transition: left 0.25s ease;
     border: none;
     border-radius: 8px;
     background: #1e2133;
     color: #e2e8f0;
     font-size: 18px;
-    line-height: 40px;
+    line-height: 36px;
+    padding: 0;
     text-align: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
   }
+  #toc-toggle:hover { background: #2a2d3e; }
+  #toc-toggle:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+
+  /* Đã đóng mục lục (máy tính): sidebar trượt ra ngoài, nội dung căn giữa */
+  body.toc-closed #toc { transform: translateX(-100%); visibility: hidden; transition: transform 0.25s ease, visibility 0s 0.25s; }
+  body.toc-closed #toc-toggle { left: 14px; }
+  body.toc-closed #main { margin-left: auto; margin-right: auto; }
 
   /* ── NỘI DUNG CHÍNH ── */
   #main {
     margin-left: 280px;
+    transition: margin-left 0.25s ease;
     max-width: 860px;
     width: 100%;
     background: white;
@@ -254,14 +265,18 @@
 
   /* ── MOBILE: sidebar trở thành drawer trượt ra, có nút hamburger ── */
   @media (max-width: 820px) {
-    #toc-toggle { display: block; }
+    #toc-toggle { top: 14px; left: 14px; width: 40px; height: 40px; line-height: 40px; }
 
     #toc {
+      visibility: visible;
       transform: translateX(-100%);
       width: min(280px, 82vw);
       box-shadow: 4px 0 24px rgba(0,0,0,0.35);
     }
     #toc.open { transform: translateX(0); }
+    body.toc-closed #toc { visibility: visible; transition: transform 0.25s ease; }
+    body.toc-closed #toc.open { transform: translateX(0); }
+    body.toc-closed #toc-toggle { left: 14px; }
     #toc.open ~ #toc-backdrop { display: block; }
 
     #main {
@@ -281,8 +296,8 @@
 </style>
 </head>
 <body>
-<button id="toc-toggle" aria-label="Mở mục lục" onclick="document.getElementById('toc').classList.toggle('open')">☰</button>
-<div id="toc-backdrop" onclick="document.getElementById('toc').classList.remove('open')"></div>
+<button id="toc-toggle" type="button" aria-controls="toc" aria-expanded="true" aria-label="Đóng mục lục" title="Đóng mục lục">☰</button>
+<div id="toc-backdrop"></div>
 <nav id="toc"><h2>Mục lục</h2><ul>
   <li><a href="#c-cho-automation-machine">C# cho Automation Machine</a></li>
   <li><a href="#trang-bn-quyn">Trang bản quyền</a></li>
@@ -57332,11 +57347,45 @@ trong danh mục có mã mẫu chạy được trong <code>src/csharp-automation
     if (h.id) observer.observe(h);
   });
 
+  // Đóng/mở mục lục. Máy tính: thu sidebar, nhớ lựa chọn. Mobile: drawer như cũ.
+  var tocToggle = document.getElementById('toc-toggle');
+  var mobileToc = window.matchMedia('(max-width: 820px)');
+  function tocIsOpen() {
+    return mobileToc.matches ? tocEl.classList.contains('open') : !document.body.classList.contains('toc-closed');
+  }
+  function syncTocButton() {
+    var open = tocIsOpen();
+    var label = open ? 'Đóng mục lục' : 'Mở mục lục';
+    tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    tocToggle.setAttribute('aria-label', label);
+    tocToggle.title = label;
+    tocToggle.textContent = open && !mobileToc.matches ? '«' : '☰';
+  }
+  try {
+    if (localStorage.getItem('book-toc-closed') === '1') document.body.classList.add('toc-closed');
+  } catch (err) { /* trình duyệt chặn lưu trữ: mặc định mở */ }
+  tocToggle.addEventListener('click', function () {
+    if (mobileToc.matches) {
+      tocEl.classList.toggle('open');
+    } else {
+      var closed = document.body.classList.toggle('toc-closed');
+      try { localStorage.setItem('book-toc-closed', closed ? '1' : '0'); } catch (err) { /* bỏ qua */ }
+    }
+    syncTocButton();
+  });
+  document.getElementById('toc-backdrop').addEventListener('click', function () {
+    tocEl.classList.remove('open');
+    syncTocButton();
+  });
+  if (mobileToc.addEventListener) mobileToc.addEventListener('change', syncTocButton);
+  syncTocButton();
+
   // Trên mobile: đóng drawer mục lục ngay khi chọn một mục
   tocLinks.forEach(a => {
     a.addEventListener('click', () => {
       if (window.matchMedia('(max-width: 820px)').matches) {
         tocEl.classList.remove('open');
+        syncTocButton();
       }
     });
   });
@@ -57349,7 +57398,7 @@ trong danh mục có mã mẫu chạy được trong <code>src/csharp-automation
 
   // Đóng drawer bằng phím Esc
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') tocEl.classList.remove('open');
+    if (e.key === 'Escape') { tocEl.classList.remove('open'); syncTocButton(); }
   });
 </script>
 </body>

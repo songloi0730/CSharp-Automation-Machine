@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MeoFrame.Presentation": {
+      "commandName": "Project",
+      "commandLineArgs": "--tu-chay"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Cho phép kiểm gọi các helper Simulate...() (mục 18.2.2) -->
+    <InternalsVisibleTo Include="MeoFrame.Tests" />
+  </ItemGroup>
+
+</Project>

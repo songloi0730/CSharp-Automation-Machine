@@ -1,0 +1,24 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Code 10.2, Chương 10. Tương phản trên nền #1E1E1E: xem Hình 10.4 -->
+    <SolidColorBrush x:Key="BrushAlarmCritical" Color="#FF5252"/>
+    <SolidColorBrush x:Key="BrushAlarmMajor"    Color="#FF8C00"/>
+    <SolidColorBrush x:Key="BrushAlarmMinor"    Color="#FFD700"/>
+    <SolidColorBrush x:Key="BrushNormal"        Color="#3CB043"/>
+    <SolidColorBrush x:Key="BrushBackground"    Color="#1E1E1E"/>
+
+    <!-- Phần còn lại của màn hình mẫu: mọi thứ khác đều là xám -->
+    <SolidColorBrush x:Key="BrushSurface"       Color="#2A2A2A"/>
+    <SolidColorBrush x:Key="BrushBorder"        Color="#3C3C3C"/>
+    <SolidColorBrush x:Key="BrushTextPrimary"   Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="BrushTextSecondary" Color="#A0A0A0"/>
+    <SolidColorBrush x:Key="BrushProcessing"    Color="#4DA3FF"/>
+
+    <!-- Chip kết nối, mục 10.2.11: xanh/vàng/xám, không dùng đỏ của cảnh báo -->
+    <SolidColorBrush x:Key="BrushConnectionOk"   Color="#3CB043"/>
+    <SolidColorBrush x:Key="BrushConnectionWarn" Color="#FFD700"/>
+    <SolidColorBrush x:Key="BrushConnectionLost" Color="#A0A0A0"/>
+
+</ResourceDictionary>

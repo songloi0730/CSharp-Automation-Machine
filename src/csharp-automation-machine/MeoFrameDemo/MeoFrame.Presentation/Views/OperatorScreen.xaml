@@ -1,0 +1,231 @@
+<UserControl x:Class="MeoFrame.Presentation.Views.OperatorScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:MeoFrame.Presentation.Views"
+             xmlns:vm="clr-namespace:MeoFrame.Presentation.ViewModels"
+             Width="1920" Height="1080"
+             Background="{StaticResource BrushBackground}">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </UserControl.Resources>
+
+    <!-- Bố cục theo Bảng 10.2m: trên cùng là trạng thái và cảnh báo, giữa là nội dung, dưới cùng cố định là nút -->
+    <Grid Margin="24,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72"/>   <!-- trạng thái máy, chip kết nối -->
+            <RowDefinition Height="112"/>  <!-- vùng cảnh báo luôn có mặt -->
+            <RowDefinition Height="*"/>    <!-- nội dung -->
+            <RowDefinition Height="48"/>   <!-- phím chức năng -->
+            <RowDefinition Height="84"/>   <!-- nút hành động, vị trí không đổi -->
+        </Grid.RowDefinitions>
+
+        <!-- 1. Máy đang ở trạng thái nào -->
+        <DockPanel Grid.Row="0">
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <ItemsControl ItemsSource="{Binding Chips}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate><views:ConnectionChip FontSize="18" Margin="8,0,0,0"/></DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Style="{StaticResource TextNhan}" Margin="32,0,0,0" Text="{Binding UserText}"/>
+                <TextBlock Style="{StaticResource TextNhan}" Margin="24,0,0,0" Text="{Binding ClockText}"
+                           Typography.NumeralAlignment="Tabular"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <Ellipse Width="28" Height="28" Margin="0,0,16,0">
+                    <Ellipse.Style>
+                        <Style TargetType="Ellipse">
+                            <Setter Property="Fill" Value="{StaticResource BrushNormal}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsFault}" Value="True">
+                                    <Setter Property="Fill" Value="{StaticResource BrushAlarmCritical}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Ellipse.Style>
+                </Ellipse>
+                <TextBlock Style="{StaticResource TextDisplay}" FontSize="40" VerticalAlignment="Center"
+                           Text="{Binding MachineStateText}"/>
+                <TextBlock Style="{StaticResource TextNhan}" Margin="48,0,0,0">
+                    <Run Text="Chế độ:"/> <Run Foreground="#FFFFFF" Text="{Binding ModeText, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock Style="{StaticResource TextNhan}" Margin="32,0,0,0">
+                    <Run Text="Công thức:"/> <Run Foreground="#FFFFFF" Text="{Binding RecipeText, Mode=OneWay}"/>
+                </TextBlock>
+                <TextBlock Style="{StaticResource TextNhan}" Margin="32,0,0,0">
+                    <Run Text="Lô:"/> <Run Foreground="#FFFFFF" Text="{Binding LotText, Mode=OneWay}"/>
+                </TextBlock>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- 4. Nếu không ổn thì vì sao: vùng này luôn có mặt, và yên lặng khi không có gì -->
+        <Border Grid.Row="1" Margin="0,4,0,12" Background="{StaticResource BrushBackground}"
+                BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,1,0,1" Padding="0,4">
+            <Grid DataContext="{Binding AlarmBanner}">
+                <TextBlock Style="{StaticResource TextNhan}" Text="Không có cảnh báo đang hoạt động"
+                           Visibility="{Binding HasNoAlarms, Converter={StaticResource BoolToVis}}"/>
+                <!-- Code 10.3 giữ nguyên; phóng 1,5 lần vì màn hình đứng xa (cảnh báo dưới Bảng 10.2e) -->
+                <views:AlarmBanner x:Name="Banner">
+                    <views:AlarmBanner.LayoutTransform><ScaleTransform ScaleX="1.5" ScaleY="1.5"/></views:AlarmBanner.LayoutTransform>
+                </views:AlarmBanner>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 2. Máy đang làm gì: mỗi trạm một dòng. 5. Vật liệu nào đang ở trong máy: cột Phôi -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top" Style="{StaticResource TextTieuDe}" Text="Bước hiện tại của từng trạm"
+                           Margin="0,0,0,12"/>
+                <Grid DockPanel.Dock="Top" Margin="16,0,16,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="130"/><ColumnDefinition Width="210"/>
+                        <ColumnDefinition Width="90"/><ColumnDefinition Width="*"/><ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Style="{StaticResource TextNhan}" Text="Thời điểm"/>
+                    <TextBlock Grid.Column="1" Style="{StaticResource TextNhan}" Text="Trạm"/>
+                    <TextBlock Grid.Column="2" Style="{StaticResource TextNhan}" Text="Bước"/>
+                    <TextBlock Grid.Column="3" Style="{StaticResource TextNhan}" Text="Đang làm"/>
+                    <TextBlock Grid.Column="4" Style="{StaticResource TextNhan}" Text="Phôi"/>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding Stations}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:StationRow}">
+                            <Border x:Name="Dong" Background="{StaticResource BrushSurface}" CornerRadius="4"
+                                    Margin="0,0,0,8" Padding="16,20" BorderThickness="3" BorderBrush="Transparent">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="130"/><ColumnDefinition Width="210"/>
+                                        <ColumnDefinition Width="90"/><ColumnDefinition Width="*"/><ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource TextNhan}" FontSize="20" Text="{Binding Time}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                    <TextBlock Grid.Column="1" Style="{StaticResource TextBanLon}" FontSize="22" FontWeight="SemiBold" Text="{Binding Station}"/>
+                                    <TextBlock Grid.Column="2" Style="{StaticResource TextBanLon}" FontSize="22" Text="{Binding Step}"
+                                               Typography.NumeralAlignment="Tabular"/>
+                                    <TextBlock Grid.Column="3" Style="{StaticResource TextBanLon}" FontSize="22" Text="{Binding StepName}"/>
+                                    <TextBlock Grid.Column="4" Style="{StaticResource TextNhan}" FontSize="20" Text="{Binding Part}"/>
+                                </Grid>
+                            </Border>
+                            <DataTemplate.Triggers>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static vm:StationStatus.Error}">
+                                    <Setter TargetName="Dong" Property="BorderBrush" Value="{StaticResource BrushAlarmCritical}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static vm:StationStatus.Attention}">
+                                    <Setter TargetName="Dong" Property="BorderBrush" Value="{StaticResource BrushAlarmMinor}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static vm:StationStatus.Processing}">
+                                    <Setter TargetName="Dong" Property="BorderBrush" Value="{StaticResource BrushProcessing}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Status}" Value="{x:Static vm:StationStatus.NeedsOperator}">
+                                    <Setter TargetName="Dong" Property="BorderBrush" Value="{StaticResource BrushNormal}"/>
+                                </DataTrigger>
+                            </DataTemplate.Triggers>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+
+            <!-- 3. Có ổn không: số căn phải, đơn vị một cột riêng (mục 10.2.6b) -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Style="{StaticResource TextTieuDe}" Text="Ca này" Margin="0,0,0,12"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="56"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="56"/><RowDefinition Height="56"/><RowDefinition Height="56"/>
+                        <RowDefinition Height="56"/><RowDefinition Height="56"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Style="{StaticResource TextNhan}" Text="Sản lượng"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource TextSoLon}" Text="{Binding TotalCount}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="2" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="cái"/>
+                    <TextBlock Grid.Row="1" Style="{StaticResource TextNhan}" Text="NG"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource TextSoLon}" Text="{Binding NgCount}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="cái"/>
+                    <TextBlock Grid.Row="2" Style="{StaticResource TextNhan}" Text="Tỉ lệ NG"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource TextSoLon}" Text="{Binding NgRate}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="%"/>
+                    <TextBlock Grid.Row="3" Style="{StaticResource TextNhan}" Text="Nhịp lần cuối"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" Style="{StaticResource TextSoLon}" Text="{Binding LastTact}"/>
+                    <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="s"/>
+                    <TextBlock Grid.Row="4" Style="{StaticResource TextNhan}" Text="Nhịp trung bình"/>
+                    <TextBlock Grid.Row="4" Grid.Column="1" Style="{StaticResource TextSoLon}" Text="{Binding AverageTact}"/>
+                    <TextBlock Grid.Row="4" Grid.Column="2" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="s"/>
+                </Grid>
+
+                <TextBlock Style="{StaticResource TextTieuDe}" Text="Trục" Margin="0,28,0,8"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/><ColumnDefinition Width="120"/><ColumnDefinition Width="120"/><ColumnDefinition Width="56"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Grid.Column="1" Style="{StaticResource TextNhan}" HorizontalAlignment="Right" Text="Đặt"/>
+                    <TextBlock Grid.Column="2" Style="{StaticResource TextNhan}" HorizontalAlignment="Right" Text="Thực"/>
+                    <TextBlock Grid.Row="1" Style="{StaticResource TextBanLon}" FontSize="22" Text="Trục Z"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource TextNhan}" FontSize="22" HorizontalAlignment="Right" Text="{Binding AxisZTarget}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource TextBanLon}" FontSize="22" HorizontalAlignment="Right" Text="{Binding AxisZActual}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="3" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="mm"/>
+                    <TextBlock Grid.Row="2" Style="{StaticResource TextBanLon}" FontSize="22" Text="Trục X"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource TextNhan}" FontSize="22" HorizontalAlignment="Right" Text="{Binding AxisXTarget}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="2" Style="{StaticResource TextBanLon}" FontSize="22" HorizontalAlignment="Right" Text="{Binding AxisXActual}"/>
+                    <TextBlock Grid.Row="2" Grid.Column="3" Style="{StaticResource TextNhan}" Margin="8,0,0,0" Text="mm"/>
+                </Grid>
+
+                <TextBlock Style="{StaticResource TextTieuDe}" Text="An toàn" Margin="0,28,0,8"/>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource TextNhan}" Text="Cửa"/>
+                    <TextBlock Grid.Column="1" Style="{StaticResource TextBanLon}" Text="{Binding DoorText}"/>
+                    <TextBlock Grid.Row="1" Style="{StaticResource TextNhan}" Text="Dừng khẩn cấp"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource TextBanLon}" Text="{Binding EmergencyText}"/>
+                    <TextBlock Grid.Row="2" Style="{StaticResource TextNhan}" Text="Khí nén"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource TextBanLon}">
+                        <Run Text="{Binding AirPressure, Mode=OneWay}"/> <Run Text="MPa"/>
+                    </TextBlock>
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+        <!-- Phím chức năng: chỉ điều hướng, không gán cho thao tác gây chuyển động (mục 10.1.9) -->
+        <ItemsControl Grid.Row="3" ItemsSource="{Binding FunctionKeys}" Margin="0,4">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type vm:KeyItem}">
+                    <Border x:Name="O" Style="{StaticResource OPhim}">
+                        <TextBlock x:Name="Chu" Style="{StaticResource TextNhan}" Text="{Binding Text}"/>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                            <Setter TargetName="O" Property="Background" Value="#3C3C3C"/>
+                            <Setter TargetName="Chu" Property="Foreground" Value="#FFFFFF"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Nút hành động: vị trí cố định giữa mọi màn hình, nút Dừng luôn ở góc phải (Bảng 10.2m) -->
+        <DockPanel Grid.Row="4" Margin="0,12,0,0">
+            <Button DockPanel.Dock="Right" Style="{StaticResource NutDung}" MinWidth="220" Content="Dừng" Command="{Binding StopCommand}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Style="{StaticResource NutThuong}" MinWidth="180" Margin="0,0,8,0" Content="Khởi tạo" IsEnabled="{Binding CanInitialize}"/>
+                <Button Style="{StaticResource NutChinh}"  MinWidth="180" Margin="0,0,8,0" Content="Bắt đầu" Command="{Binding StartCommand}"/>
+                <Button Style="{StaticResource NutThuong}" MinWidth="220" Margin="0,0,8,0" Content="Xác nhận cảnh báo" IsEnabled="{Binding CanAcknowledge}"/>
+                <Button Style="{StaticResource NutThuong}" MinWidth="180" Content="Xoá bộ đếm"/>
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</UserControl>

@@ -1,10 +1,11 @@
 # Mã ví dụ — sách *C# cho Automation Machine*
 
-Bảy project .NET 9 (`TraCuuHam` dựng được cả cho .NET Framework 4.8), tất cả **chạy được ngay không
-cần phần cứng**. Mỗi project tương ứng với một phần cụ thể trong sách.
+Tám thư mục mã .NET 9 (`TraCuuHam` dựng được cả cho .NET Framework 4.8), tất cả **chạy được ngay không
+cần phần cứng**. Mỗi thư mục tương ứng với một phần cụ thể trong sách.
 
 | Project | Dùng cho | Chạy |
 |---|---|---|
+| [`MeoFrameDemo/`](MeoFrameDemo/) | Chương 2, 8, 10, 18, 19 — solution đúng Hình 2.3, màn hình WPF của Chương 10, nguồn của các ảnh trong sách | xem [`MeoFrameDemo/README.md`](MeoFrameDemo/README.md) |
 | [`MeoFrameMini/`](MeoFrameMini/) | Chương 7 mục 7.5 — bản `async` + interface | `dotnet run` |
 | [`MeoFrameMiniSync/`](MeoFrameMiniSync/) | Mục 7.6 — cùng cỗ máy, viết theo lối **chặn luồng** | `dotnet run` |
 | [`MeoFrameMiniDirect/`](MeoFrameMiniDirect/) | Mục 7.7 — **bỏ cả interface**, và cái giá phải trả | `dotnet run` |
